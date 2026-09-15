@@ -22,7 +22,7 @@ Zhou_1996_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -33,11 +33,11 @@ Zhou_1996_ganciclovir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Additive-linear effect on the central volume with a non-zero intercept:",
         "Vc = 0.627 + 0.437 * BW (L), so the slope 0.437 L/kg is a volume increment",
         "per kilogram and 0.627 L is the weight-independent intercept. Weight is not",
@@ -46,14 +46,14 @@ Zhou_1996_ganciclovir <- function() {
         "for its typical neonatal virtual patient.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Approximated creatinine clearance from serum creatinine (ASCC)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Approximated creatinine clearance from serum creatinine (ASCC)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote defines ASCC as 'approximated creatinine",
         "clearance from serum (mL/min/1.73 m^2)', i.e. a BSA-normalized",
         "creatinine-based estimate of renal function, stored under the canonical",
@@ -66,24 +66,24 @@ Zhou_1996_ganciclovir <- function() {
         "virtual patient.",
         sep = " "
       ),
-      source_name        = "ASCC"
+      source_name = "ASCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 27L,
+    n_studies = 1L,
     n_observations = 219L,
-    age_median     = "Newborns (exact ages not reported in Yang 2023 Table 2).",
-    weight_median  = "Not reported in Yang 2023 Table 2.",
+    age_median = "Newborns (exact ages not reported in Yang 2023 Table 2).",
+    weight_median = "Not reported in Yang 2023 Table 2.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported.",
-    disease_state  = "Newborns with acute symptomatic congenital CMV disease.",
-    dose_range     = "A single IV ganciclovir dose of 4 or 6 mg/kg as a 1 h constant-rate infusion.",
-    regions        = "United States (prospective; NIAID Collaborative Antiviral Study Group).",
-    bioassay       = "HPLC, LLOQ 0.1 ug/mL.",
-    notes          = paste(
+    disease_state = "Newborns with acute symptomatic congenital CMV disease.",
+    dose_range = "A single IV ganciclovir dose of 4 or 6 mg/kg as a 1 h constant-rate infusion.",
+    regions = "United States (prospective; NIAID Collaborative Antiviral Study Group).",
+    bioassay = "HPLC, LLOQ 0.1 ug/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Sex, age detail and weights",
       "are recorded as not reported (NR) in the review's table. Sampling strategy",
       "not reported. Covariates tested: weight, ASCC and platelet count; only ASCC",

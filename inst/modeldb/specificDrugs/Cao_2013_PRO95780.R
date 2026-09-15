@@ -10,24 +10,24 @@ Cao_2013_PRO95780 <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "drozitumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "drozitumab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "drozitumab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "drozitumab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "drozitumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "drozitumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "drozitumab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Camidge 2010 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Camidge 2010 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Advanced malignancies (PRO95780 / drozitumab, a death receptor 5 (DR5) agonistic human IgG1 antibody).",
-    dose_range     = "4, 10, 15, 20 mg/kg IV (Cao 2013 Figure 5 PRO95780 panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Camidge DR et al. Clin Cancer Res 2010;16:1256-1263 (PMID 20145186). The drug is also known as drozitumab in the literature."
+    disease_state = "Advanced malignancies (PRO95780 / drozitumab, a death receptor 5 (DR5) agonistic human IgG1 antibody).",
+    dose_range = "4, 10, 15, 20 mg/kg IV (Cao 2013 Figure 5 PRO95780 panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Camidge DR et al. Clin Cancer Res 2010;16:1256-1263 (PMID 20145186). The drug is also known as drozitumab in the literature."
   )
 
   ini({

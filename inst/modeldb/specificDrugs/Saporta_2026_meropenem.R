@@ -11,7 +11,9 @@ Saporta_2026_meropenem <- function() {
   # paper-specific exactly as Nielsen_2007_semimechanistic_antibiotic_pd.R
   # does for its growing / resting pair.
   paper_specific_compartments <- c(
-    "bact_susceptible", "bact_resting", "bact_phagocytosed"
+    "bact_susceptible",
+    "bact_resting",
+    "bact_phagocytosed"
   )
 
   compartmentData <- list(
@@ -19,9 +21,24 @@ Saporta_2026_meropenem <- function() {
     central = list(analyte = "meropenem", units = "mg/kg", specimen = "plasma", verified = TRUE),
     elf = list(analyte = "meropenem", units = "mg/kg", specimen = "epithelial lining fluid", verified = TRUE),
     lung = list(analyte = "meropenem", units = "mg/kg", specimen = "tissue", verified = TRUE),
-    bact_susceptible = list(analyte = "Klebsiella pneumoniae DSM116099, growing drug-susceptible (S) state", units = "CFU/lung", specimen = "not applicable", verified = TRUE),
-    bact_resting = list(analyte = "Klebsiella pneumoniae DSM116099, dormant non-growing drug-insusceptible (D) state", units = "CFU/lung", specimen = "not applicable", verified = TRUE),
-    bact_phagocytosed = list(analyte = "Klebsiella pneumoniae DSM116099, phagocytosed (P) state inside host immune cells", units = "CFU/lung", specimen = "not applicable", verified = TRUE)
+    bact_susceptible = list(
+      analyte = "Klebsiella pneumoniae DSM116099, growing drug-susceptible (S) state",
+      units = "CFU/lung",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_resting = list(
+      analyte = "Klebsiella pneumoniae DSM116099, dormant non-growing drug-insusceptible (D) state",
+      units = "CFU/lung",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_phagocytosed = list(
+      analyte = "Klebsiella pneumoniae DSM116099, phagocytosed (P) state inside host immune cells",
+      units = "CFU/lung",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

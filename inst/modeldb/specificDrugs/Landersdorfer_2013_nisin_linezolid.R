@@ -11,7 +11,11 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2013_nisin_amikacin_linezolid"
-  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (drug input concentration)",
+    concentration = "log10 CFU/mL (observation); mg/L (drug covariates)"
+  )
 
   # Cnis / Clin are the experimentally-controlled nisin and linezolid
   # broth concentrations in the static time-kill (and sequential
@@ -30,47 +34,77 @@ Landersdorfer_2013_nisin_linezolid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    prot_pool                      = list(analyte = "protein pool P", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    bact_susceptible_susceptible1  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible_susceptible2  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_susceptible1 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_susceptible2 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate1   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate2   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE)
+    prot_pool = list(analyte = "protein pool P", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_susceptible_susceptible1 = list(
+      analyte = "Nis-S/Lin-S bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Nis-S/Lin-S bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_susceptible1 = list(
+      analyte = "Nis-I/Lin-S bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_susceptible2 = list(
+      analyte = "Nis-I/Lin-S bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Nis-R/Lin-I bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Nis-R/Lin-I bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     Cnis = list(
-      description        = "Nisin concentration in the broth medium",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Nisin concentration in the broth medium",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally. Static time-kill: held at 4, 8, 32, or 128 mg/L for monotherapy and at 8, 16, or 32 mg/L for simultaneous combinations with linezolid. Sequential combinations: held at 8 or 32 mg/L for the 1.5-h pretreatment then set to 0 at ~1.75 h. In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
-      source_name        = "Nisin concentration (paper Methods, Combinations and Time-kill experiments)"
+      notes = "Time-varying covariate supplied externally. Static time-kill: held at 4, 8, 32, or 128 mg/L for monotherapy and at 8, 16, or 32 mg/L for simultaneous combinations with linezolid. Sequential combinations: held at 8 or 32 mg/L for the 1.5-h pretreatment then set to 0 at ~1.75 h. In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
+      source_name = "Nisin concentration (paper Methods, Combinations and Time-kill experiments)"
     ),
     Clin = list(
-      description        = "Linezolid concentration in the broth medium",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Linezolid concentration in the broth medium",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally. Static time-kill: held at 2, 8, or 32 mg/L for monotherapy. Simultaneous combinations: 2, 8, or 32 mg/L throughout. Sequential combinations: 0 during the 1.5-h nisin pretreatment then 8 or 32 mg/L after resuspension at ~1.75 h. In-vitro experimental input -- not in inst/references/covariate-columns.md.",
-      source_name        = "Linezolid concentration (paper Methods, Combinations and Time-kill experiments)"
+      notes = "Time-varying covariate supplied externally. Static time-kill: held at 2, 8, or 32 mg/L for monotherapy. Simultaneous combinations: 2, 8, or 32 mg/L throughout. Sequential combinations: 0 during the 1.5-h nisin pretreatment then 8 or 32 mg/L after resuspension at ~1.75 h. In-vitro experimental input -- not in inst/references/covariate-columns.md.",
+      source_name = "Linezolid concentration (paper Methods, Combinations and Time-kill experiments)"
     )
   )
 
   population <- list(
-    species             = "in vitro (methicillin-resistant Staphylococcus aureus, USA300 strain from the Network on Antimicrobial Resistance)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "MRSA USA300 (nisin MIC 16 mg/L; linezolid MIC 2 mg/L)",
-    system              = "Static-concentration time-kill assay in 20-mL conical tubes; serial viable counts over 48 h",
-    medium              = "Luria-Bertani broth supplemented with 12.5 mg/L Mg2+ and 25 mg/L Ca2+; viable counts on Luria-Bertani agar",
-    temperature         = "37 C",
-    duration            = "48 h",
-    inoculum            = "~10^7.7 CFU/mL diluted from a ~10^9 CFU/mL spectrophotometric saline suspension, then grown for 60 min to ~10^8.0 CFU/mL before antibiotic dosing",
-    mic_values          = c(nisin = "16 mg/L", linezolid = "2 mg/L"),
-    regimens            = "Nisin monotherapy at 4, 8, 32, and 128 mg/L; linezolid monotherapy at 2, 8, and 32 mg/L; nisin pretreatment (8 or 32 mg/L for 1.5 h) followed by removal and resuspension in 0/8/32 mg/L linezolid; simultaneous combinations of nisin (16 or 32 mg/L) with linezolid (2, 8, or 32 mg/L); 20 viable-count profiles total",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. Fitted simultaneously in S-ADAPT (importance-sampling Monte Carlo expectation-maximization, pmethod=4) and NONMEM (FOCE+I, ADVAN9); r = 0.99 and slope = 1.00 for observed vs individually fitted log10 viable counts (S-ADAPT). The S-ADAPT analysis included biological between-curve variability fixed to CV = 15% (linear-scale parameters), CV = 10% (Hill coefficient), and variance = 0.25 (log10-scale parameters) per Table 1 footnotes b-c; the packaged model omits between-curve variability and is intended for typical-value simulation only. See Landersdorfer 2013 Methods (page 2344) and Table 1."
+    species = "in vitro (methicillin-resistant Staphylococcus aureus, USA300 strain from the Network on Antimicrobial Resistance)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "MRSA USA300 (nisin MIC 16 mg/L; linezolid MIC 2 mg/L)",
+    system = "Static-concentration time-kill assay in 20-mL conical tubes; serial viable counts over 48 h",
+    medium = "Luria-Bertani broth supplemented with 12.5 mg/L Mg2+ and 25 mg/L Ca2+; viable counts on Luria-Bertani agar",
+    temperature = "37 C",
+    duration = "48 h",
+    inoculum = "~10^7.7 CFU/mL diluted from a ~10^9 CFU/mL spectrophotometric saline suspension, then grown for 60 min to ~10^8.0 CFU/mL before antibiotic dosing",
+    mic_values = c(nisin = "16 mg/L", linezolid = "2 mg/L"),
+    regimens = "Nisin monotherapy at 4, 8, 32, and 128 mg/L; linezolid monotherapy at 2, 8, and 32 mg/L; nisin pretreatment (8 or 32 mg/L for 1.5 h) followed by removal and resuspension in 0/8/32 mg/L linezolid; simultaneous combinations of nisin (16 or 32 mg/L) with linezolid (2, 8, or 32 mg/L); 20 viable-count profiles total",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. Fitted simultaneously in S-ADAPT (importance-sampling Monte Carlo expectation-maximization, pmethod=4) and NONMEM (FOCE+I, ADVAN9); r = 0.99 and slope = 1.00 for observed vs individually fitted log10 viable counts (S-ADAPT). The S-ADAPT analysis included biological between-curve variability fixed to CV = 15% (linear-scale parameters), CV = 10% (Hill coefficient), and variance = 0.25 (log10-scale parameters) per Table 1 footnotes b-c; the packaged model omits between-curve variability and is intended for typical-value simulation only. See Landersdorfer 2013 Methods (page 2344) and Table 1."
   )
 
   ini({

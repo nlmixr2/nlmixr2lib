@@ -17,7 +17,7 @@ Mensing_2017_ombitasvir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ombitasvir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ombitasvir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ombitasvir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -25,54 +25,54 @@ Mensing_2017_ombitasvir <- function() {
 
   covariatesDataExcluded <- list(
     HEPIMP_MILD = list(
-      description        = "Compensated cirrhosis (Child-Pugh stage A) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Compensated cirrhosis (Child-Pugh stage A) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cirrhosis)",
-      notes              = "Retained in the author's final ombitasvir model as a significant covariate on CL/F (Table 3, Mensing 2017). The Figure 2 forest plot reports a Cmax,ss ratio of 0.92 (0.88, 0.95) and AUC24,ss ratio of 0.90 (0.86, 0.95) for cirrhotic vs noncirrhotic patients; the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model(). All study subjects had no cirrhosis or compensated cirrhosis (Child-Pugh A) only; moderate/severe hepatic impairment was excluded.",
-      source_name        = "CIRR"
+      notes = "Retained in the author's final ombitasvir model as a significant covariate on CL/F (Table 3, Mensing 2017). The Figure 2 forest plot reports a Cmax,ss ratio of 0.92 (0.88, 0.95) and AUC24,ss ratio of 0.90 (0.86, 0.95) for cirrhotic vs noncirrhotic patients; the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model(). All study subjects had no cirrhosis or compensated cirrhosis (Child-Pugh A) only; moderate/severe hepatic impairment was excluded.",
+      source_name = "CIRR"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Retained in the author's final ombitasvir model as a significant covariate on CL/F (Table 3, Mensing 2017). The Figure 2 forest plot reports a Cmax,ss ratio of 1.46 (1.41, 1.51) and AUC24,ss ratio of 1.54 (1.48, 1.60) for females vs males; the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model(). Gender was the only covariate with a notable effect on ombitasvir exposures (46-54% higher in females).",
-      source_name        = "SEX"
+      notes = "Retained in the author's final ombitasvir model as a significant covariate on CL/F (Table 3, Mensing 2017). The Figure 2 forest plot reports a Cmax,ss ratio of 1.46 (1.41, 1.51) and AUC24,ss ratio of 1.54 (1.48, 1.60) for females vs males; the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model(). Gender was the only covariate with a notable effect on ombitasvir exposures (46-54% higher in females).",
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final ombitasvir model as a significant covariate on BOTH CL/F and Vc/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at Age 44 years and Age 64 years vs the cohort median of 54 years (Cmax,ss / AUC24,ss ratios of 0.89/0.91 at age 44 and 1.10/1.08 at age 64); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 18-71 years, median 54 years.",
-      source_name        = "AGE"
+      notes = "Retained in the author's final ombitasvir model as a significant covariate on BOTH CL/F and Vc/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at Age 44 years and Age 64 years vs the cohort median of 54 years (Cmax,ss / AUC24,ss ratios of 0.89/0.91 at age 44 and 1.10/1.08 at age 64); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 18-71 years, median 54 years.",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final ombitasvir model as a significant covariate on BOTH CL/F and Vc/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at body weight 66 kg and 86 kg vs the cohort median of 76 kg (Cmax,ss / AUC24,ss ratios of 1.08/1.10 at 66 kg and 0.93/0.93 at 86 kg); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 42-129 kg, median 76 kg.",
-      source_name        = "WT"
+      notes = "Retained in the author's final ombitasvir model as a significant covariate on BOTH CL/F and Vc/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at body weight 66 kg and 86 kg vs the cohort median of 76 kg (Cmax,ss / AUC24,ss ratios of 1.08/1.10 at 66 kg and 0.93/0.93 at 86 kg); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 42-129 kg, median 76 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2348L,
-    n_studies      = 7L,
-    age_range      = "18-71 years",
-    age_median     = "54 years",
-    weight_range   = "42-129 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 2348L,
+    n_studies = 7L,
+    age_range = "18-71 years",
+    age_median = "54 years",
+    weight_range = "42-129 kg",
+    weight_median = "76 kg",
     sex_female_pct = 42,
     race_ethnicity = c(Asian = 2, Black = 7, Nonblack_NonAsian = 91),
     ethnicity_hispanic_latino_pct = 6,
-    disease_state  = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
-    dose_range     = "Ombitasvir 25 mg orally once daily coformulated with paritaprevir 150 mg and ritonavir 100 mg, in combination with dasabuvir 250 mg twice daily and optional weight-based ribavirin (1000 mg/day for body weight < 75 kg, 1200 mg/day for body weight >= 75 kg, divided into twice-daily doses); 12-week or 24-week treatment courses.",
-    regions        = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
-    notes          = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348). HCV genotype distribution: 53% GT1a, 47% GT1b. Hispanic/Latino ethnicity 6%. Methadone/buprenorphine use 2%. Median creatinine clearance 104.0 mL/min (range 37.0-281.4) at baseline."
+    disease_state = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
+    dose_range = "Ombitasvir 25 mg orally once daily coformulated with paritaprevir 150 mg and ritonavir 100 mg, in combination with dasabuvir 250 mg twice daily and optional weight-based ribavirin (1000 mg/day for body weight < 75 kg, 1200 mg/day for body weight >= 75 kg, divided into twice-daily doses); 12-week or 24-week treatment courses.",
+    regions = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
+    notes = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348). HCV genotype distribution: 53% GT1a, 47% GT1b. Hispanic/Latino ethnicity 6%. Methadone/buprenorphine use 2%. Median creatinine clearance 104.0 mL/min (range 37.0-281.4) at baseline."
   )
 
   ini({

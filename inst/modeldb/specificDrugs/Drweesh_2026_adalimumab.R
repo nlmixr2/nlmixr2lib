@@ -16,43 +16,43 @@ Drweesh_2026_adalimumab <- function() {
     sep = " "
   )
   vignette <- "Drweesh_2026_adalimumab"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "adalimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 99L,
-    n_studies        = 1L,
-    n_observations   = 121L,
-    age_range        = "adults over 18 years (mean 36.8 +/- 10.9 years)",
-    age_mean_sd      = "36.8 +/- 10.9 years",
-    weight_mean_sd   = "69.11 +/- 18.7 kg",
+    species = "human",
+    n_subjects = 99L,
+    n_studies = 1L,
+    n_observations = 121L,
+    age_range = "adults over 18 years (mean 36.8 +/- 10.9 years)",
+    age_mean_sd = "36.8 +/- 10.9 years",
+    weight_mean_sd = "69.11 +/- 18.7 kg",
     adjusted_bw_mean_sd = "61.68 +/- 12.0 kg",
-    lean_bw_mean_sd  = "49.7 +/- 9.9 kg",
-    sex_female_pct   = 51.5,
-    race_ethnicity   = "Not reported (Saudi Arabian and Qatari multicenter cohort).",
-    disease_state    = "Adults with inflammatory bowel disease (Crohn's disease 59.6%, ulcerative colitis 21.2%) or other autoimmune disease (rheumatoid arthritis 13.1%, psoriasis 2.0%).",
-    dose_range       = "Subcutaneous adalimumab (mean dose 41.6 +/- 12.7 mg; mean dosing interval 276.6 +/- 80.7 h).",
-    regions          = "Multicenter retrospective: Saudi Arabia (Armed Forces Hospital Southern Region, Khamis Mushait; King Abdulaziz Medical City, Riyadh; King Fahd Specialist Hospital, Dammam; King Fahd University Hospital, Khobar) and Qatar (three hospitals in Hamad Medical Corporation).",
-    products         = "Humira (originator) 70.7%, Amgevita 16.2%, Hyrimoz 13.1%.",
+    lean_bw_mean_sd = "49.7 +/- 9.9 kg",
+    sex_female_pct = 51.5,
+    race_ethnicity = "Not reported (Saudi Arabian and Qatari multicenter cohort).",
+    disease_state = "Adults with inflammatory bowel disease (Crohn's disease 59.6%, ulcerative colitis 21.2%) or other autoimmune disease (rheumatoid arthritis 13.1%, psoriasis 2.0%).",
+    dose_range = "Subcutaneous adalimumab (mean dose 41.6 +/- 12.7 mg; mean dosing interval 276.6 +/- 80.7 h).",
+    regions = "Multicenter retrospective: Saudi Arabia (Armed Forces Hospital Southern Region, Khamis Mushait; King Abdulaziz Medical City, Riyadh; King Fahd Specialist Hospital, Dammam; King Fahd University Hospital, Khobar) and Qatar (three hospitals in Hamad Medical Corporation).",
+    products = "Humira (originator) 70.7%, Amgevita 16.2%, Hyrimoz 13.1%.",
     aaa_positive_pct = 40.4,
     aaa_negative_pct = 37.4,
-    aaa_unknown_pct  = 22.2,
-    albumin_mean_sd  = "36.16 +/- 8.5 g/L",
-    scr_mean_sd      = "61.95 +/- 20.4 umol/L",
-    crp_mean_sd      = "13.8 +/- 26.9 mg/L",
+    aaa_unknown_pct = 22.2,
+    albumin_mean_sd = "36.16 +/- 8.5 g/L",
+    scr_mean_sd = "61.95 +/- 20.4 umol/L",
+    crp_mean_sd = "13.8 +/- 26.9 mg/L",
     azathioprine_pct = 43.4,
-    trough_mean_sd   = "7.8 +/- 5.9 ug/mL (mg/L)",
-    notes            = "Multicenter retrospective TDM analysis. Concentrations measured by ELISA at all centers. Eight patients with all-BLQ samples were removed from the analysis. Covariate effects were assessed by stepwise linear regression on individual Bayesian-estimated clearances (NOT within the popPK model); only age and anti-adalimumab antibody status remained significant in the multivariable regression (R = 0.45, P = 0.001). Slope coefficients were not reported in the source, so the within-model covariate structure is empty here; see vignette Assumptions and deviations."
+    trough_mean_sd = "7.8 +/- 5.9 ug/mL (mg/L)",
+    notes = "Multicenter retrospective TDM analysis. Concentrations measured by ELISA at all centers. Eight patients with all-BLQ samples were removed from the analysis. Covariate effects were assessed by stepwise linear regression on individual Bayesian-estimated clearances (NOT within the popPK model); only age and anti-adalimumab antibody status remained significant in the multivariable regression (R = 0.45, P = 0.001). Slope coefficients were not reported in the source, so the within-model covariate structure is empty here; see vignette Assumptions and deviations."
   )
 
   ini({

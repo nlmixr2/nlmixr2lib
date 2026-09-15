@@ -7,7 +7,13 @@ LopezArguello_2023_cefoxitin_qsp <- function() {
   # Mechanistic per-cell molecule counts: six penicillin-binding proteins plus the
   # periplasmic drug pool. None map onto a canonical PK compartment name.
   paper_specific_compartments <- c(
-    "npbp1a", "npbp1b", "npbp2", "npbp3", "npbp4", "npbp56", "nperi"
+    "npbp1a",
+    "npbp1b",
+    "npbp2",
+    "npbp3",
+    "npbp4",
+    "npbp56",
+    "nperi"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -17,11 +23,11 @@ LopezArguello_2023_cefoxitin_qsp <- function() {
   compartmentData <- list(
     npbp1a = list(analyte = "PBP 1a", units = NA_character_, specimen = "administration site", verified = FALSE),
     npbp1b = list(analyte = "PBP 1b", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp2  = list(analyte = "PBP 2", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp3  = list(analyte = "PBP 3", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp4  = list(analyte = "PBP 4", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp2 = list(analyte = "PBP 2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp3 = list(analyte = "PBP 3", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp4 = list(analyte = "PBP 4", units = NA_character_, specimen = "administration site", verified = FALSE),
     npbp56 = list(analyte = "PBP 5/6", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nperi  = list(analyte = "Cefoxitin", units = NA_character_, specimen = "administration site", verified = FALSE)
+    nperi = list(analyte = "Cefoxitin", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
@@ -56,8 +62,10 @@ LopezArguello_2023_cefoxitin_qsp <- function() {
       "Estimated by population modelling in S-ADAPT v1.57 (importance sampling, pmethod=4);",
       "the intact-cell and lysed-cell data were fit simultaneously.",
       "The 15 drugs were split into five estimation datasets of four drugs each with imipenem as the shared backbone drug; the Noise, Fini and residual-error parameters in this file are those of dataset 5 (IPM, CAZ, FEP, FOX) (Table S2).",
-      paste("Cefoxitin appeared in datasets 2 and 5; the supplement states that the final cefoxitin",
-        "estimates arise from dataset 5, which is the dataset used here."),
+      paste(
+        "Cefoxitin appeared in datasets 2 and 5; the supplement states that the final cefoxitin",
+        "estimates arise from dataset 5, which is the dataset used here."
+      ),
       "The total number of PBP molecules per cell (1,731) was borrowed from published Escherichia coli data and split across the six PBPs using the P. aeruginosa relative band intensities (Materials and Methods, Mass balance equations; Table S3)."
     )
   )

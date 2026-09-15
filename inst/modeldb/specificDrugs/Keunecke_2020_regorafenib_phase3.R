@@ -10,24 +10,24 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     sep = " "
   )
   vignette <- "Keunecke_2020_regorafenib"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = "Retained on parent, M-2 and M-5 clearance. Entered as a multiplicative factor (1 - theta * SEXF) with male as the reference, which is how Appendix Section 3.1 reports it: 'women had on average a 17% lower CLP than men (2.53 L h-1 and 3.05 L h-1, respectively)', and 3.05 * (1 - 0.169) = 2.53. Sex was the covariate giving the largest drop in objective function on CL_P (-20.7 points) and the only one carried through for the metabolites, because adding a second metabolite covariate produced numerical instability (Appendix Section 3.3). Direction confirmed against Figure 4: the male:female ratio of median parent AUC is ~0.86 (within the 0.8-1.25 bioequivalence bounds) and of protein-binding-corrected total AUC is ~0.71 (below the lower bound) - i.e. female exposure is HIGHER for all three analytes. Cohort: 27.9% female (Appendix Table A2).",
-      source_name        = "Sex"
+      notes = "Retained on parent, M-2 and M-5 clearance. Entered as a multiplicative factor (1 - theta * SEXF) with male as the reference, which is how Appendix Section 3.1 reports it: 'women had on average a 17% lower CLP than men (2.53 L h-1 and 3.05 L h-1, respectively)', and 3.05 * (1 - 0.169) = 2.53. Sex was the covariate giving the largest drop in objective function on CL_P (-20.7 points) and the only one carried through for the metabolites, because adding a second metabolite covariate produced numerical instability (Appendix Section 3.3). Direction confirmed against Figure 4: the male:female ratio of median parent AUC is ~0.86 (within the 0.8-1.25 bioequivalence bounds) and of protein-binding-corrected total AUC is ~0.71 (below the lower bound) - i.e. female exposure is HIGHER for all three analytes. Cohort: 27.9% female (Appendix Table A2).",
+      source_name = "Sex"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained on parent clearance only. Appendix Section 3.1 states the selected continuous covariates 'were included in the model ... with exponential function ... acting on the typical value of apparent clearance (CL)', with coefficient -0.363, and that this 'implicates an expected 0.15% higher CLP for a patient with a 0.1 kg m-2 reduced BMI'. That statement fixes the parameterisation as exp(theta * (BMI - BMIref) / BMIref) with BMIref = 24.5 kg/m^2, the phase 3 median in Appendix Table A2: 0.363 / 24.5 * 0.1 = 0.148%. An un-normalised exp(theta * (BMI - BMIref)) would give 3.7% instead, and would predict an 18-fold AUC ratio between the BMI >= 30 and BMI < 30 groups where Figure 4A shows ~1.10. Higher BMI lowers clearance, which the authors attribute to reduced CYP3A4 expression at high BMI. Cohort median 24.5, 5-95th percentile 18.5-32.4 kg/m^2 (Appendix Table A2).",
-      source_name        = "BMI"
+      notes = "Retained on parent clearance only. Appendix Section 3.1 states the selected continuous covariates 'were included in the model ... with exponential function ... acting on the typical value of apparent clearance (CL)', with coefficient -0.363, and that this 'implicates an expected 0.15% higher CLP for a patient with a 0.1 kg m-2 reduced BMI'. That statement fixes the parameterisation as exp(theta * (BMI - BMIref) / BMIref) with BMIref = 24.5 kg/m^2, the phase 3 median in Appendix Table A2: 0.363 / 24.5 * 0.1 = 0.148%. An un-normalised exp(theta * (BMI - BMIref)) would give 3.7% instead, and would predict an 18-fold AUC ratio between the BMI >= 30 and BMI < 30 groups where Figure 4A shows ~1.10. Higher BMI lowers clearance, which the authors attribute to reduced CYP3A4 expression at high BMI. Cohort median 24.5, 5-95th percentile 18.5-32.4 kg/m^2 (Appendix Table A2).",
+      source_name = "BMI"
     )
   )
 
@@ -36,113 +36,158 @@ Keunecke_2020_regorafenib_phase3 <- function() {
   covariatesDataExcluded <- list(
     RACE_ASIAN = list(
       description = "Asian race (vs rest of world)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Statistically significant on CL_P in the univariate GAM, but excluded from the model-based analysis because the category contained <15% of the total (Appendix Section 3.1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Statistically significant on CL_P in the univariate GAM, but excluded from the model-based analysis because the category contained <15% of the total (Appendix Section 3.1)."
     ),
     CHILDPUGH = list(
       description = "Child-Pugh liver score",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Significant in the univariate GAM but <15% of the total in one category, so not carried into the model-based analysis (Appendix Section 3.1). 63.1% missing overall (Appendix Table A2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Significant in the univariate GAM but <15% of the total in one category, so not carried into the model-based analysis (Appendix Section 3.1). 63.1% missing overall (Appendix Table A2)."
     ),
     CONMED_UGT1A9_INDUCER = list(
       description = "UGT1A9 inducer received during the treatment period",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Significant in the univariate GAM but <15% of the total in one category (0.4% yes), so not carried into the model-based analysis (Appendix Section 3.1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Significant in the univariate GAM but <15% of the total in one category (0.4% yes), so not carried into the model-based analysis (Appendix Section 3.1)."
     ),
     TUMTP = list(
       description = "Tumour type (colorectal carcinoma / gastrointestinal stromal tumour / hepatocellular carcinoma)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Slope not significantly different from zero in the univariate GAM, so not taken forward (Appendix Section 3.1). Cohort 54% CRC, 8.8% GIST, 37.2% HCC."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Slope not significantly different from zero in the univariate GAM, so not taken forward (Appendix Section 3.1). Cohort 54% CRC, 8.8% GIST, 37.2% HCC."
     ),
     HGB = list(
       description = "Baseline haemoglobin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1). Significant for CL_M-2 but not pursued (Appendix Section 3.3)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1). Significant for CL_M-2 but not pursued (Appendix Section 3.3)."
     ),
     TPROT = list(
       description = "Baseline total protein",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1). It was the second most significant covariate for CL_M-5, but adding it after sex produced numerical issues and poorly estimated parameters (Appendix Section 3.3). Cohort median 70 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1). It was the second most significant covariate for CL_M-5, but adding it after sex produced numerical issues and poorly estimated parameters (Appendix Section 3.3). Cohort median 70 kg."
     ),
     BILI = list(
       description = "Baseline total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1); significant for CL_M-5 but not pursued."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Slope not significantly different from zero in the univariate GAM for CL_P (Appendix Section 3.1); significant for CL_M-5 but not pursued."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Carried into the model-based covariate analysis for CL_P but gave a non-significant drop in objective function once sex and BMI were in the model (Appendix Section 3.1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Carried into the model-based covariate analysis for CL_P but gave a non-significant drop in objective function once sex and BMI were in the model (Appendix Section 3.1)."
     ),
     EGFR = list(
       description = "Baseline estimated glomerular filtration rate",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Carried into the model-based covariate analysis for CL_P but gave a non-significant drop in objective function (Appendix Section 3.1)."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Carried into the model-based covariate analysis for CL_P but gave a non-significant drop in objective function (Appendix Section 3.1)."
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Significant in the univariate GAM for CL_M-2, but adding it after sex led to numerical issues and poorly estimated parameters, so metabolite covariate evaluation stopped at sex (Appendix Section 3.3)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Significant in the univariate GAM for CL_M-2, but adding it after sex led to numerical issues and poorly estimated parameters, so metabolite covariate evaluation stopped at sex (Appendix Section 3.3)."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Significant in the univariate GAM for CL_M-2 but not pursued (Appendix Section 3.3)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Significant in the univariate GAM for CL_M-2 but not pursued (Appendix Section 3.3)."
     )
   )
 
   compartmentData <- list(
-    depot            = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1         = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2         = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1      = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder      = list(analyte = "regorafenib", units = "mg", specimen = "bile", verified = TRUE),
-    transit1_m2      = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2_m2      = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3_m2      = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "administration site", verified = TRUE),
-    central_m2       = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m2   = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder_m2   = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "bile", verified = TRUE),
-    central_m5       = list(analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m5   = list(analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder_m5   = list(analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)", units = "mg", specimen = "bile", verified = TRUE)
+    depot = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
+    gallbladder = list(analyte = "regorafenib", units = "mg", specimen = "bile", verified = TRUE),
+    transit1_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    transit2_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    transit3_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gallbladder_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "bile",
+      verified = TRUE
+    ),
+    central_m5 = list(
+      analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1_m5 = list(
+      analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gallbladder_m5 = list(
+      analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)",
+      units = "mg",
+      specimen = "bile",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 906L,
-    n_studies      = 4L,
-    age_range      = "40-78 years (5th-95th percentile)",
-    age_median     = "61 years",
-    weight_range   = "48-99 kg (5th-95th percentile)",
-    weight_median  = "70 kg",
-    bmi_range      = "18.5-32.4 kg/m^2 (5th-95th percentile)",
-    bmi_median     = "24.5 kg/m^2",
+    species = "human",
+    n_subjects = 906L,
+    n_studies = 4L,
+    age_range = "40-78 years (5th-95th percentile)",
+    age_median = "61 years",
+    weight_range = "48-99 kg (5th-95th percentile)",
+    weight_median = "70 kg",
+    bmi_range = "18.5-32.4 kg/m^2 (5th-95th percentile)",
+    bmi_median = "24.5 kg/m^2",
     sex_female_pct = 27.9,
     race_ethnicity = c(Caucasian = 54.4, Asian = 33.8, Black = 1.1, AmericanIndian = 0.1, Mixed = 0.2, Missing = 10.4),
-    disease_state  = "Adults with treatment-refractory metastatic colorectal carcinoma (54%), advanced gastrointestinal stromal tumour (8.8%) or hepatocellular carcinoma after sorafenib (37.2%).",
-    dose_range     = "Regorafenib 160 mg once daily (4 x 40 mg tablets), 3 weeks on / 1 week off, versus matching placebo.",
-    regions        = "North America, Europe, Israel, Australia, South America and Asia.",
+    disease_state = "Adults with treatment-refractory metastatic colorectal carcinoma (54%), advanced gastrointestinal stromal tumour (8.8%) or hepatocellular carcinoma after sorafenib (37.2%).",
+    dose_range = "Regorafenib 160 mg once daily (4 x 40 mg tablets), 3 weeks on / 1 week off, versus matching placebo.",
+    regions = "North America, Europe, Israel, Australia, South America and Asia.",
     hepatic_function = "Category A (normal) 56.4%, B1 28.7%, B2 11.7%, C 3.2% (Appendix Table A2 footnote, defined on total bilirubin and AST/ALT).",
-    notes          = "Keunecke 2020 Appendix Tables A1 and A2. The four phase 3 studies are CORRECT (14387, NCT01103323, n = 388, 4059 PK observations), GRID (14874, NCT01271712, n = 81, 345 observations), CONCUR (15808, NCT01584830, n = 98, 1065 observations) and RESORCE (15982, NCT01774344, n = 339, 3210 observations). Sampling was sparse: predose trough at cycle 1 day 15 and cycle 2 day 15 in most patients, with 2-4 h and 5-10 h post-dose samples in subsets. Combined with the 62 phase 1 patients the full dataset is 968 patients and 10019 observations. Mealtimes were not recorded in the phase 3 studies; a 1 h interval between breakfast and dosing gave the lowest objective function and was imputed for all phase 3 patients (section 3.3.1), with lunch 4 h and dinner 10 h after breakfast per section 2.2. Median eGFR 100 mL/min/1.73m^2, median albumin 4.0 g/dL, median baseline ALT 25 U/L. Baseline distributions per study are in Appendix Table A2."
+    notes = "Keunecke 2020 Appendix Tables A1 and A2. The four phase 3 studies are CORRECT (14387, NCT01103323, n = 388, 4059 PK observations), GRID (14874, NCT01271712, n = 81, 345 observations), CONCUR (15808, NCT01584830, n = 98, 1065 observations) and RESORCE (15982, NCT01774344, n = 339, 3210 observations). Sampling was sparse: predose trough at cycle 1 day 15 and cycle 2 day 15 in most patients, with 2-4 h and 5-10 h post-dose samples in subsets. Combined with the 62 phase 1 patients the full dataset is 968 patients and 10019 observations. Mealtimes were not recorded in the phase 3 studies; a 1 h interval between breakfast and dosing gave the lowest objective function and was imputed for all phase 3 patients (section 3.3.1), with lunch 4 h and dinner 10 h after breakfast per section 2.2. Median eGFR 100 mL/min/1.73m^2, median albumin 4.0 g/dL, median baseline ALT 25 U/L. Baseline distributions per study are in Appendix Table A2."
   )
 
   ini({

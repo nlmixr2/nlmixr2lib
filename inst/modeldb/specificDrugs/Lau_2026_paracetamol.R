@@ -21,16 +21,31 @@ Lau_2026_paracetamol <- function() {
   # second absorption depot in the blessed depot<n> family, not a route-specific
   # depot_<route>.
   compartmentData <- list(
-    depot            = list(analyte = "paracetamol", units = "umol", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
-    transit1_gluc    = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "administration site", verified = TRUE),
-    central_gluc     = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "plasma", verified = TRUE),
-    central_sulf     = list(analyte = "paracetamol sulphate", units = "umol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "paracetamol", units = "umol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
+    transit1_gluc = list(
+      analyte = "paracetamol glucuronide",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_gluc = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "plasma", verified = TRUE),
+    central_sulf = list(analyte = "paracetamol sulphate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1_sulf = list(analyte = "paracetamol sulphate", units = "umol", specimen = "plasma", verified = TRUE),
-    transit1_cysmer  = list(analyte = "paracetamol cysteine + mercapturate", units = "umol", specimen = "administration site", verified = TRUE),
-    central_cysmer   = list(analyte = "paracetamol cysteine + mercapturate", units = "umol", specimen = "plasma", verified = TRUE),
-    gallbladder      = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "bile", verified = TRUE),
-    depot2           = list(analyte = "paracetamol", units = "umol", specimen = "administration site", verified = TRUE)
+    transit1_cysmer = list(
+      analyte = "paracetamol cysteine + mercapturate",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_cysmer = list(
+      analyte = "paracetamol cysteine + mercapturate",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gallbladder = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "bile", verified = TRUE),
+    depot2 = list(analyte = "paracetamol", units = "umol", specimen = "administration site", verified = TRUE)
   )
 
   # `etaltgb` is the single ETA(11) that the control stream applies to every
@@ -41,53 +56,53 @@ Lau_2026_paracetamol <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Two roles. (1) Power-law scaling on the glucuronide volume of distribution with reference TBW = 130.9 kg (the pooled median inherited from van Rongen 2016). (2) Drives cardiac output through the Young 2009 polynomial CO = (9119 - exp(9.164 - 0.0291*WT + 0.000391*WT^2 - 0.00000191*WT^3))/1000 L/min (Table S1), from which hepatic, portal, intestinal, mucosal and villous blood flows are derived; every extraction ratio in the model therefore responds to total body weight. Time-fixed at baseline. Source column 'TBW' / 'WT' renamed to canonical 'WT' on input.",
-      source_name        = "WT"
+      notes = "Two roles. (1) Power-law scaling on the glucuronide volume of distribution with reference TBW = 130.9 kg (the pooled median inherited from van Rongen 2016). (2) Drives cardiac output through the Young 2009 polynomial CO = (9119 - exp(9.164 - 0.0291*WT + 0.000391*WT^2 - 0.00000191*WT^3))/1000 L/min (Table S1), from which hepatic, portal, intestinal, mucosal and villous blood flows are derived; every extraction ratio in the model therefore responds to total body weight. Time-fixed at baseline. Source column 'TBW' / 'WT' renamed to canonical 'WT' on input.",
+      source_name = "WT"
     ),
     LBM = list(
-      description        = "Lean body mass at baseline (Janmahasatian et al. 2005 formula).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass at baseline (Janmahasatian et al. 2005 formula).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling with reference LBW = 65.2 kg (pooled median inherited from van Rongen 2016) on parent V, the glucuronidation and CYP2E1 intrinsic hepatic clearances, and the glucuronide elimination clearance. The LBW exponent on the sulphation intrinsic hepatic clearance is retained in the model but held at 0 (control stream THETA(20) 0 FIX; Results: 'We did not find a statistically significant effect of LBW on ... CL_H,int of PCM to PCM-SUL'). Methods 2.3.1 states LBW was calculated as described by Janmahasatian et al. (reference 20). Source column 'LBW' renamed to canonical 'LBM' on input (same biological quantity, no value transformation).",
-      source_name        = "LBW"
+      notes = "Power-law scaling with reference LBW = 65.2 kg (pooled median inherited from van Rongen 2016) on parent V, the glucuronidation and CYP2E1 intrinsic hepatic clearances, and the glucuronide elimination clearance. The LBW exponent on the sulphation intrinsic hepatic clearance is retained in the model but held at 0 (control stream THETA(20) 0 FIX; Results: 'We did not find a statistically significant effect of LBW on ... CL_H,int of PCM to PCM-SUL'). Methods 2.3.1 states LBW was calculated as described by Janmahasatian et al. (reference 20). Source column 'LBW' renamed to canonical 'LBM' on input (same biological quantity, no value transformation).",
+      source_name = "LBW"
     ),
     STUDY_PAPAYA = list(
-      description        = "1 = subject enrolled in Study 1 (the PAPAYA study, single 1000 mg oral paracetamol suspension, Albert Schweitzer Hospital / Erasmus MC, the Netherlands); 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in Study 1 (the PAPAYA study, single 1000 mg oral paracetamol suspension, Albert Schweitzer Hospital / Erasmus MC, the Netherlands); 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0",
-      notes              = "Selects the Study 1 gallbladder-emptying schedule (60 and 240 min post-dose) and the Study 1 fold increase in the combined PCM residual error (2.25) and the shared oral fold on the PCM-GLU residual error (0.872). Study 1 carries no structural clearance multiplier - it shares the reference clearances with Study 3. STUDY_PAPAYA = STUDY_CHEN = 0 selects Study 3 (van Rongen intravenous), the reference cohort.",
-      source_name        = "FLG3"
+      notes = "Selects the Study 1 gallbladder-emptying schedule (60 and 240 min post-dose) and the Study 1 fold increase in the combined PCM residual error (2.25) and the shared oral fold on the PCM-GLU residual error (0.872). Study 1 carries no structural clearance multiplier - it shares the reference clearances with Study 3. STUDY_PAPAYA = STUDY_CHEN = 0 selects Study 3 (van Rongen intravenous), the reference cohort.",
+      source_name = "FLG3"
     ),
     STUDY_CHEN = list(
-      description        = "1 = subject enrolled in Study 2 (the previously published Chen et al. oral-liquid study, single 1500 mg oral paracetamol, United States); 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in Study 2 (the previously published Chen et al. oral-liquid study, single 1500 mg oral paracetamol, United States); 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0",
-      notes              = "Selects the Study 2 gallbladder-emptying schedule (480 and 660 min post-dose), the Study 2 multipliers on the oxidative intrinsic hepatic clearance (1.94) and on the glucuronide (0.650), sulphate (0.826) and cysteine + mercapturate (1.59) elimination clearances, the additive-only residual error for PCM-CYS (0.288 umol/L), the Study 2 fold increase in the combined PCM residual error (1.87), and the shared oral fold on the PCM-GLU residual error (0.872). STUDY_PAPAYA = STUDY_CHEN = 0 selects Study 3 (van Rongen intravenous), the reference cohort.",
-      source_name        = "FLG1"
+      notes = "Selects the Study 2 gallbladder-emptying schedule (480 and 660 min post-dose), the Study 2 multipliers on the oxidative intrinsic hepatic clearance (1.94) and on the glucuronide (0.650), sulphate (0.826) and cysteine + mercapturate (1.59) elimination clearances, the additive-only residual error for PCM-CYS (0.288 umol/L), the Study 2 fold increase in the combined PCM residual error (1.87), and the shared oral fold on the PCM-GLU residual error (0.872). STUDY_PAPAYA = STUDY_CHEN = 0 selects Study 3 (van Rongen intravenous), the reference cohort.",
+      source_name = "FLG1"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 69L,
-    n_studies      = 3L,
-    age_range      = "18-65 years",
-    age_median     = "41-49 years by cohort (Table 1)",
-    weight_range   = "53-198 kg (TBW); 36-99 kg (LBW)",
-    weight_median  = "130.9 kg TBW / 65.2 kg LBW (covariate reference values inherited from van Rongen 2016)",
+    species = "human",
+    n_subjects = 69L,
+    n_studies = 3L,
+    age_range = "18-65 years",
+    age_median = "41-49 years by cohort (Table 1)",
+    weight_range = "53-198 kg (TBW); 36-99 kg (LBW)",
+    weight_median = "130.9 kg TBW / 65.2 kg LBW (covariate reference values inherited from van Rongen 2016)",
     sex_female_pct = 71.0,
     race_ethnicity = NA_character_,
-    disease_state  = "53 adults with obesity (BMI 30-77.5 kg/m^2; scheduled for laparoscopic Roux-en-Y gastric bypass or gastric sleeve, sampled before surgery) and 16 adults without obesity (healthy participants or patients undergoing oral and maxillofacial surgery). Exclusions in Study 1: pregnancy, liver disease, paracetamol within 24 h.",
-    dose_range     = "Study 1: single 1000 mg oral suspension (n = 30). Study 2: single 1500 mg oral liquid (n = 11). Study 3: single 2000 mg intravenous, with optional standard postoperative 1000 mg QID from 8 h onward (n = 28).",
-    regions        = "the Netherlands (Studies 1 and 3); United States (Study 2)",
-    notes          = "Pooled from three independent clinical studies (Table 1): Study 1 = PAPAYA (this paper, oral); Study 2 = Chen et al. reference [9] (oral); Study 3 = van Rongen et al. reference [5] (intravenous, already packaged as vanRongen_2016_acetaminophen). 41 participants received oral and 28 intravenous paracetamol. Observation counts: 782 PCM, 784 PCM-GLU, 783 PCM-SUL, 766 PCM-CYS & PCM-MER. Concentrations and doses are molar (umol/L, umol); molecular weights used for the conversion are PCM 151.16, PCM-GLU 327.29, PCM-SUL 231.23, PCM-CYS 270.30 and PCM-MER 312.24 g/mol (Methods 2.5)."
+    disease_state = "53 adults with obesity (BMI 30-77.5 kg/m^2; scheduled for laparoscopic Roux-en-Y gastric bypass or gastric sleeve, sampled before surgery) and 16 adults without obesity (healthy participants or patients undergoing oral and maxillofacial surgery). Exclusions in Study 1: pregnancy, liver disease, paracetamol within 24 h.",
+    dose_range = "Study 1: single 1000 mg oral suspension (n = 30). Study 2: single 1500 mg oral liquid (n = 11). Study 3: single 2000 mg intravenous, with optional standard postoperative 1000 mg QID from 8 h onward (n = 28).",
+    regions = "the Netherlands (Studies 1 and 3); United States (Study 2)",
+    notes = "Pooled from three independent clinical studies (Table 1): Study 1 = PAPAYA (this paper, oral); Study 2 = Chen et al. reference [9] (oral); Study 3 = van Rongen et al. reference [5] (intravenous, already packaged as vanRongen_2016_acetaminophen). 41 participants received oral and 28 intravenous paracetamol. Observation counts: 782 PCM, 784 PCM-GLU, 783 PCM-SUL, 766 PCM-CYS & PCM-MER. Concentrations and doses are molar (umol/L, umol); molecular weights used for the conversion are PCM 151.16, PCM-GLU 327.29, PCM-SUL 231.23, PCM-CYS 270.30 and PCM-MER 312.24 g/mol (Methods 2.5)."
   )
 
   ini({

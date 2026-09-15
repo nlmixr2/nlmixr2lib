@@ -25,8 +25,8 @@ Marcantonio_2022_infliximab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = paste(
+    time = "day",
+    dosing = paste(
       "Infliximab dose amount into Ab_00 (IV bolus) must be in nmol",
       "(convert from mg via amt_nmol = amt_mg * 1e6 / MW_Da; infliximab",
       "MW = 149100 Da, so 210 mg (=3 mg/kg x 70 kg) = 1408 nmol,",
@@ -43,31 +43,46 @@ Marcantonio_2022_infliximab <- function() {
   compartmentData <- list(
     depot = list(analyte = "Infliximab", units = NA_character_, specimen = "administration site", verified = FALSE),
     Ab_00 = list(analyte = "Infliximab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0L = list(analyte = "TNF-alpha-Infliximab complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(
+      analyte = "TNF-alpha-Infliximab complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
     Ab_L0 = list(analyte = "Free Infliximab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_LL = list(analyte = "TNF-alpha-Infliximab complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1    = list(analyte = "Soluble TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1    = list(analyte = "TNFR", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1R1  = list(analyte = "TNF-TNFR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1    = list(analyte = "Soluble TNF-alpha blocked by Infliximab", units = NA_character_, specimen = "plasma", verified = FALSE)
+    Ab_LL = list(
+      analyte = "TNF-alpha-Infliximab complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    L1 = list(analyte = "Soluble TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1 = list(analyte = "TNFR", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1 = list(analyte = "TNF-TNFR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1 = list(
+      analyte = "Soluble TNF-alpha blocked by Infliximab",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with active rheumatoid arthritis (RA); clinically approved indication for infliximab.",
-    dose_range     = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with active rheumatoid arthritis (RA); clinically approved indication for infliximab.",
+    dose_range = paste(
       "Clinically approved RA regimen: 3 mg/kg IV at weeks 0, 2, and 6,",
       "then maintenance every 8 weeks; may escalate to 10 mg/kg every 4",
       "weeks (Infliximab USPI 2013). Model prediction here targets the",
       "maintenance every-8-weeks dose.",
       sep = " "
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "See the sibling model Marcantonio_2022_adalimumab (Case Study 1) for",
       "shared target-side parameters (TNF-alpha soluble ligand and TNFR1",
       "membrane receptor turnover), the joint parameter-scan sensitivity",

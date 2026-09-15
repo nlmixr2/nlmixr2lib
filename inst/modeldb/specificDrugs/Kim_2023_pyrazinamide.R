@@ -8,34 +8,34 @@ Kim_2023_pyrazinamide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor on both CL/F and V/F with fixed exponents 0.75 and 1 respectively, normalised to a 48 kg reference subject (Supplementary File S1 $PK: 'TVCL = THETA (1) * (LBW/48)**(THETA(6))' and 'TVV = THETA (2) * (LBW/48)**(THETA(7))'). The 48 kg reference is the rounded median lean body weight of the 488-patient training set (48.1 kg, range 23.1-63.79 kg; Kim 2023 Table 1). Lean body weight outperformed total body weight as the size descriptor: adding allometric scaling on lean body weight dropped the objective function value by 112.3 points versus 88.5 points for total body weight (Kim 2023 Results, 'Development of a population PK model').",
-      source_name        = "LBW"
+      notes = "Allometric size descriptor on both CL/F and V/F with fixed exponents 0.75 and 1 respectively, normalised to a 48 kg reference subject (Supplementary File S1 $PK: 'TVCL = THETA (1) * (LBW/48)**(THETA(6))' and 'TVV = THETA (2) * (LBW/48)**(THETA(7))'). The 48 kg reference is the rounded median lean body weight of the 488-patient training set (48.1 kg, range 23.1-63.79 kg; Kim 2023 Table 1). Lean body weight outperformed total body weight as the size descriptor: adding allometric scaling on lean body weight dropped the objective function value by 112.3 points versus 88.5 points for total body weight (Kim 2023 Results, 'Development of a population PK model').",
+      source_name = "LBW"
     ),
     AGE_GE70 = list(
-      description        = "Advanced-age indicator (1 = aged 70 years or older at baseline, 0 = younger than 70 years).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Advanced-age indicator (1 = aged 70 years or older at baseline, 0 = younger than 70 years).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (younger than 70 years)",
-      notes              = "Kim 2023 tested advanced age at three thresholds (>= 60, >= 65 and >= 70 years) both alone and crossed with comorbidities. Age alone -- whether continuous or as any of the three threshold indicators -- did not improve the objective function value; only the interaction with diabetes mellitus did, and the >= 70 year threshold gave the largest drop (151.3 points, p < 0.001). This column therefore enters the model ONLY through the product AGE_GE70 * DIS_DIAB, never as a main effect. The underlying continuous AGE is listed in covariatesDataExcluded.",
-      source_name        = "OLD"
+      notes = "Kim 2023 tested advanced age at three thresholds (>= 60, >= 65 and >= 70 years) both alone and crossed with comorbidities. Age alone -- whether continuous or as any of the three threshold indicators -- did not improve the objective function value; only the interaction with diabetes mellitus did, and the >= 70 year threshold gave the largest drop (151.3 points, p < 0.001). This column therefore enters the model ONLY through the product AGE_GE70 * DIS_DIAB, never as a main effect. The underlying continuous AGE is listed in covariatesDataExcluded.",
+      source_name = "OLD"
     ),
     DIS_DIAB = list(
-      description        = "Diabetes-mellitus comorbidity indicator (1 = diabetes mellitus, 0 = no diabetes mellitus).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diabetes-mellitus comorbidity indicator (1 = diabetes mellitus, 0 = no diabetes mellitus).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes mellitus)",
-      notes              = "Diabetes mellitus recorded as a comorbidity at study entry; 55 of the 488 training-set patients (11.27%) were diabetic (Kim 2023 Table 1). Type 1 versus type 2 is not distinguished in the source paper. Like AGE_GE70, diabetes mellitus alone did not improve the objective function value and enters the model ONLY through the product AGE_GE70 * DIS_DIAB. Of the 488 training patients, 23 were both >= 70 years old and diabetic (Supplementary File S2 subgroup table). Kim 2023 attributes the higher apparent clearance in this subgroup to diabetes-induced elevation of xanthine oxidase, the enzyme that converts pyrazinamide to 5-hydroxypyrazinoic acid (Discussion).",
-      source_name        = "DM"
+      notes = "Diabetes mellitus recorded as a comorbidity at study entry; 55 of the 488 training-set patients (11.27%) were diabetic (Kim 2023 Table 1). Type 1 versus type 2 is not distinguished in the source paper. Like AGE_GE70, diabetes mellitus alone did not improve the objective function value and enters the model ONLY through the product AGE_GE70 * DIS_DIAB. Of the 488 training patients, 23 were both >= 70 years old and diabetic (Supplementary File S2 subgroup table). Kim 2023 attributes the higher apparent clearance in this subgroup to diabetes-induced elevation of xanthine oxidase, the enzyme that converts pyrazinamide to 5-hydroxypyrazinoic acid (Discussion).",
+      source_name = "DM"
     )
   )
 
@@ -44,87 +44,87 @@ Kim_2023_pyrazinamide <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as an allometric size descriptor but rejected in favour of lean body weight, which produced the larger objective-function drop (112.3 vs 88.5 points; Kim 2023 Results). Training-set median 60.8 kg (range 28.8-95.3 kg)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as an allometric size descriptor but rejected in favour of lean body weight, which produced the larger objective-function drop (112.3 vs 88.5 points; Kim 2023 Results). Training-set median 60.8 kg (range 28.8-95.3 kg)."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate and as threshold indicators at >= 60, >= 65 and >= 70 years; none improved the objective function value on its own. Retained only as the >= 70 year threshold crossed with diabetes mellitus (see AGE_GE70 in covariateData). Training-set median 54.5 years (range 19-96 years)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate and as threshold indicators at >= 60, >= 65 and >= 70 years; none improved the objective function value on its own. Retained only as the >= 70 year threshold crossed with diabetes mellitus (see AGE_GE70 in covariateData). Training-set median 54.5 years (range 19-96 years)."
     ),
     HT = list(
       description = "Body height at baseline",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; did not improve the objective function value (Kim 2023 Results). Also an input to the lean-body-weight derivation."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; did not improve the objective function value (Kim 2023 Results). Also an input to the lean-body-weight derivation."
     ),
     SEXF = list(
       description = "Biological sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; did not improve the objective function value. Training set was 33.4% female (Kim 2023 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; did not improve the objective function value. Training set was 33.4% female (Kim 2023 Table 1)."
     ),
     FED = list(
       description = "Fed-versus-fasted status at the dose preceding the sample (1 = fed, 0 = fasted).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as 'fasting or food intake status'; did not improve the objective function value. 75.6% of training-set records were fasted (Kim 2023 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'fasting or food intake status'; did not improve the objective function value. 75.6% of training-set records were fasted (Kim 2023 Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL (as reported by Kim 2023 Table 1; the canonical SI unit is g/L)",
-      type        = "continuous",
-      notes       = "Screened; did not improve the objective function value. Training-set median 4.2 g/dL (range 2.0-14.1 g/dL)."
+      units = "g/dL (as reported by Kim 2023 Table 1; the canonical SI unit is g/L)",
+      type = "continuous",
+      notes = "Screened; did not improve the objective function value. Training-set median 4.2 g/dL (range 2.0-14.1 g/dL)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "not reported by Kim 2023 (values are not tabulated)",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; did not improve the objective function value. Present as the NONMEM input column TBIL in Supplementary File S1 but never used in $PK."
+      units = "not reported by Kim 2023 (values are not tabulated)",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; did not improve the objective function value. Present as the NONMEM input column TBIL in Supplementary File S1 but never used in $PK."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; did not improve the objective function value. Training-set median 27 U/L (range 4.2-191 U/L)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; did not improve the objective function value. Training-set median 27 U/L (range 4.2-191 U/L)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; did not improve the objective function value. Training-set median 19 U/L (range 0.8-233 U/L)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; did not improve the objective function value. Training-set median 19 U/L (range 0.8-233 U/L)."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate, used by Kim 2023 to define the renal-disease stratum.",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Kim 2023 screened 'renal disease', defined as eGFR <= 60 mL/min/1.73 m^2, as a binary covariate and also crossed with advanced age; neither improved the objective function value. 19 of 488 training-set patients (3.9%) were below the threshold (Kim 2023 Table 1). Liver disease (a chart diagnosis, 2 of the 110 patients >= 70 years old) was screened the same way and likewise not retained; it has no canonical covariate column because it was not retained by any model in the library."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Kim 2023 screened 'renal disease', defined as eGFR <= 60 mL/min/1.73 m^2, as a binary covariate and also crossed with advanced age; neither improved the objective function value. 19 of 488 training-set patients (3.9%) were below the threshold (Kim 2023 Table 1). Liver disease (a chart diagnosis, 2 of the 110 patients >= 70 years old) was screened the same way and likewise not retained; it has no canonical covariate column because it was not retained by any model in the library."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 488L,
+    species = "human",
+    n_subjects = 488L,
     n_subjects_enrolled = 613L,
-    n_subjects_test     = 125L,
-    n_studies      = 1L,
-    n_sites        = 18L,
-    age_range      = "19-96 years",
-    age_median     = "54.5 years",
-    weight_range   = "28.8-95.3 kg",
-    weight_median  = "60.8 kg",
-    lbm_range      = "23.1-63.79 kg",
-    lbm_median     = "48.1 kg",
+    n_subjects_test = 125L,
+    n_studies = 1L,
+    n_sites = 18L,
+    age_range = "19-96 years",
+    age_median = "54.5 years",
+    weight_range = "28.8-95.3 kg",
+    weight_median = "60.8 kg",
+    lbm_range = "23.1-63.79 kg",
+    lbm_median = "48.1 kg",
     sex_female_pct = 33.4,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Adults (> 18 years) with bacteriologically confirmed drug-susceptible tuberculosis receiving a pyrazinamide-containing regimen for at least 2 weeks. Comorbidities in the 488-patient training set: 55 (11.27%) diabetes mellitus, 19 (3.9%) renal disease (eGFR <= 60 mL/min/1.73 m^2). 110 of the 613 enrolled patients were older than 70 years, of whom 23 had diabetes mellitus, 11 renal disease and 2 liver disease.",
-    dose_range     = "Oral pyrazinamide once daily at 20-30 mg/kg, rounded to the nearest tablet size as prescribed: 500 mg (0.6%), 1,000 mg (11.3%), 1,200 mg (4.1%), 1,250 mg (4.1%), 1,500 mg (67.2%), 1,600 mg (10.0%) and 2,000 mg (1.4%) in the training set. Sampling was at steady state; non-adherent and non-steady-state patients were excluded.",
-    regions        = "Republic of Korea (18 hospitals, cPMTb multicentre prospective tuberculosis cohort).",
+    disease_state = "Adults (> 18 years) with bacteriologically confirmed drug-susceptible tuberculosis receiving a pyrazinamide-containing regimen for at least 2 weeks. Comorbidities in the 488-patient training set: 55 (11.27%) diabetes mellitus, 19 (3.9%) renal disease (eGFR <= 60 mL/min/1.73 m^2). 110 of the 613 enrolled patients were older than 70 years, of whom 23 had diabetes mellitus, 11 renal disease and 2 liver disease.",
+    dose_range = "Oral pyrazinamide once daily at 20-30 mg/kg, rounded to the nearest tablet size as prescribed: 500 mg (0.6%), 1,000 mg (11.3%), 1,200 mg (4.1%), 1,250 mg (4.1%), 1,500 mg (67.2%), 1,600 mg (10.0%) and 2,000 mg (1.4%) in the training set. Sampling was at steady state; non-adherent and non-steady-state patients were excluded.",
+    regions = "Republic of Korea (18 hospitals, cPMTb multicentre prospective tuberculosis cohort).",
     renal_function = "Predominantly normal: 96.1% of the training set had eGFR > 60 mL/min/1.73 m^2.",
-    co_medication  = "Companion anti-tuberculosis regimens, chiefly RHZE (85.8% of the training set), plus RHZL, RZEM, RZEL and HZEL. Interactions among the anti-tuberculosis drugs were not modelled (Kim 2023 Discussion, limitation 3).",
-    notes          = "Data were split at random into a 488-patient training set (model development) and a 125-patient test set (external validation) in a 4:1 ratio. Blood samples were drawn at random times 0-24 h after the last observed dose: typically one sample per outpatient, and at least two samples (from pre-dose, 1, 2 and 5 h post-dose) per inpatient. Pyrazinamide was quantified by validated HPLC-ESI-MS/MS over 2.0-80.0 ug/mL (LLOQ 2.0 ug/mL); concentrations below the LLOQ were imputed as 1 ug/mL per Beal's M5 method. Baseline demographics from Kim 2023 Table 1 (training-data column); final parameter estimates from Kim 2023 Table 2; model structure and reference values from Supplementary File S1 (NONMEM control stream); geriatric-diabetes subgroup sizes from Supplementary File S2."
+    co_medication = "Companion anti-tuberculosis regimens, chiefly RHZE (85.8% of the training set), plus RHZL, RZEM, RZEL and HZEL. Interactions among the anti-tuberculosis drugs were not modelled (Kim 2023 Discussion, limitation 3).",
+    notes = "Data were split at random into a 488-patient training set (model development) and a 125-patient test set (external validation) in a 4:1 ratio. Blood samples were drawn at random times 0-24 h after the last observed dose: typically one sample per outpatient, and at least two samples (from pre-dose, 1, 2 and 5 h post-dose) per inpatient. Pyrazinamide was quantified by validated HPLC-ESI-MS/MS over 2.0-80.0 ug/mL (LLOQ 2.0 ug/mL); concentrations below the LLOQ were imputed as 1 ug/mL per Beal's M5 method. Baseline demographics from Kim 2023 Table 1 (training-data column); final parameter estimates from Kim 2023 Table 2; model structure and reference values from Supplementary File S1 (NONMEM control stream); geriatric-diabetes subgroup sizes from Supplementary File S2."
   )
 
   ini({

@@ -1,77 +1,77 @@
 Hazendonk_2016_factor_viii <- function() {
   description <- "Two-compartment population PK model for factor VIII (FVIII) concentrates in severe and moderate hemophilia A patients (adults and children, FVIII plasma concentration < 0.05 IU/mL) undergoing elective / minor / major surgery (Hazendonk 2016). PK parameters are allometrically scaled to a 68 kg reference body weight with fixed exponents of 0.75 on clearances and 1.0 on volumes; typical CL, V1, Q, V2 at the reference body weight are 150 mL/h, 2810 mL, 160 mL/h, 1900 mL. Clearance carries three covariate effects (age with power exponent -0.17 centered at 40 years; +26% for blood group O; -7% for a major surgical procedure) and central volume carries an age effect (power exponent -0.09 centered at 40 years). B-domain-deleted recombinant FVIII products (Refacto AF) are under-detected by the one-stage clotting assay by a fixed 34%, encoded as a multiplicative correction on the predicted concentration. IIV on CL and V1 is 37% and 27% (exponential); IIV on Q and V2 was not estimable. Residual error is combined (proportional 18% + additive 0.15 IU/mL) using the values reported for the majority center cluster (centers 1, 2, 3)."
-  reference   <- "Hazendonk H, Fijnvandraat K, Lock J, Driessens M, van der Meer F, Meijer K, Kruip M, Laros-van Gorkom B, Peters M, de Wildt S, Leebeek F, Cnossen M, Mathot R; OPTI-CLOT study group. A population pharmacokinetic model for perioperative dosing of factor VIII in hemophilia A patients. Haematologica. 2016 Oct;101(10):1159-1169. doi:10.3324/haematol.2015.136275. PMID:27390359."
-  vignette    <- "Hazendonk_2016_factor_viii"
-  units       <- list(time = "h", dosing = "IU", concentration = "IU/mL")
+  reference <- "Hazendonk H, Fijnvandraat K, Lock J, Driessens M, van der Meer F, Meijer K, Kruip M, Laros-van Gorkom B, Peters M, de Wildt S, Leebeek F, Cnossen M, Mathot R; OPTI-CLOT study group. A population pharmacokinetic model for perioperative dosing of factor VIII in hemophilia A patients. Haematologica. 2016 Oct;101(10):1159-1169. doi:10.3324/haematol.2015.136275. PMID:27390359."
+  vignette <- "Hazendonk_2016_factor_viii"
+  units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling at reference 68 kg (the total-cohort median): fixed theory-based exponent 0.75 on CL and Q, fixed exponent 1.0 on V1 and V2 (Hazendonk 2016 Structural model development and Table 5). Total-cohort weight median 75 kg (range 5-111 kg); adult median 80 kg (45-111 kg); pediatric median 18.5 kg (5-85 kg). Treated as time-fixed baseline body weight per subject.",
-      source_name        = "WT"
+      notes = "Allometric power scaling at reference 68 kg (the total-cohort median): fixed theory-based exponent 0.75 on CL and Q, fixed exponent 1.0 on V1 and V2 (Hazendonk 2016 Structural model development and Table 5). Total-cohort weight median 75 kg (range 5-111 kg); adult median 80 kg (45-111 kg); pediatric median 18.5 kg (5-85 kg). Treated as time-fixed baseline body weight per subject.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL (exponent -0.17) and V1 (exponent -0.09) centered at 40 years (Hazendonk 2016 Table 5). Older patients have lower FVIII CL and V1; the paper reports typical CL of 214, 169, 150, 142 mL/h/68 kg for a non-O, minor-surgery patient aged 5, 20, 40, 55 years. Total-cohort age median 40 years (range 0.2-78); adult median 48 years (19-78); pediatric median 4.3 years (0.2-17.3).",
-      source_name        = "AGE"
+      notes = "Power-form effect on CL (exponent -0.17) and V1 (exponent -0.09) centered at 40 years (Hazendonk 2016 Table 5). Older patients have lower FVIII CL and V1; the paper reports typical CL of 214, 169, 150, 142 mL/h/68 kg for a non-O, minor-surgery patient aged 5, 20, 40, 55 years. Total-cohort age median 40 years (range 0.2-78); adult median 48 years (19-78); pediatric median 4.3 years (0.2-17.3).",
+      source_name = "AGE"
     ),
     BLOOD_GROUP_O = list(
-      description        = "ABO blood group O indicator (1 = O, 0 = non-O: A, B, or AB)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABO blood group O indicator (1 = O, 0 = non-O: A, B, or AB)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-O ABO blood group: A, B, or AB)",
-      notes              = "Hazendonk 2016 Table 5: `1.26 ^ blood_group` on CL, so blood group O subjects show 26% higher FVIII clearance than non-O. Mechanism per Hazendonk 2016 Discussion: blood group O individuals have ~25% lower baseline VWF (the FVIII-protective carrier protein), leading to accelerated FVIII proteolytic degradation. Cohort prevalence 50% (51 of 101 with recorded blood group; 34/68 adults, 17/33 pediatric). Time-fixed per subject.",
-      source_name        = "BLOOD_GROUP_O"
+      notes = "Hazendonk 2016 Table 5: `1.26 ^ blood_group` on CL, so blood group O subjects show 26% higher FVIII clearance than non-O. Mechanism per Hazendonk 2016 Discussion: blood group O individuals have ~25% lower baseline VWF (the FVIII-protective carrier protein), leading to accelerated FVIII proteolytic degradation. Cohort prevalence 50% (51 of 101 with recorded blood group; 34/68 adults, 17/33 pediatric). Time-fixed per subject.",
+      source_name = "BLOOD_GROUP_O"
     ),
     SURG_SEV_MAJOR = list(
-      description        = "Major (vs minor) surgical procedure severity indicator (Koshy 1995 classification: major and high-risk collapsed to 1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Major (vs minor) surgical procedure severity indicator (Koshy 1995 classification: major and high-risk collapsed to 1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (minor surgical procedure)",
-      notes              = "Hazendonk 2016 Table 5: `0.93 ^ severity` on CL, so major-surgery cases show 7% lower typical FVIII clearance than minor cases. The severity classification follows Koshy et al. 1995 (Hazendonk 2016 Methods reference 19; major and high-risk categories collapsed together). Cohort prevalence 49% of surgical procedures (97 of 198; 61.4% adults, 19% pediatric). The paper's Discussion notes that the negative sign is confounded by age -- older patients underwent more major procedures and had lower CL -- so the univariate association was retained in the multivariate model but interpreted with caution. Time-fixed per surgical procedure (a subject can have different values across multiple procedures).",
-      source_name        = "SURG_SEV_MAJOR"
+      notes = "Hazendonk 2016 Table 5: `0.93 ^ severity` on CL, so major-surgery cases show 7% lower typical FVIII clearance than minor cases. The severity classification follows Koshy et al. 1995 (Hazendonk 2016 Methods reference 19; major and high-risk categories collapsed together). Cohort prevalence 49% of surgical procedures (97 of 198; 61.4% adults, 19% pediatric). The paper's Discussion notes that the negative sign is confounded by age -- older patients underwent more major procedures and had lower CL -- so the univariate association was retained in the multivariate model but interpreted with caution. Time-fixed per surgical procedure (a subject can have different values across multiple procedures).",
+      source_name = "SURG_SEV_MAJOR"
     ),
     FORM_FVIII_BDD = list(
-      description        = "B-domain-deleted (BDD) recombinant FVIII product indicator (1 = Refacto AF or other BDD recombinant FVIII; 0 = full-length recombinant or plasma-derived FVIII)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "B-domain-deleted (BDD) recombinant FVIII product indicator (1 = Refacto AF or other BDD recombinant FVIII; 0 = full-length recombinant or plasma-derived FVIII)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (full-length recombinant or plasma-derived FVIII)",
-      notes              = "Hazendonk 2016 Methods: `C_pred,bdp = C_pred * (1 - theta_bdp)` with theta_bdp = 0.34, applied to the predicted plasma concentration to correct for a well-documented ~34% under-detection of B-domain-deleted FVIII by the one-stage clotting assay (Refacto AF was the only BDD product administered in this cohort). Cohort prevalence 14% of surgical procedures received a BDD product (Discussion: 'of which 14% were a B-domain deleted FVIII concentrate'). Per-observation (per-row) indicator; a subject may have received different products across multiple surgical procedures.",
-      source_name        = "FORM_FVIII_BDD"
+      notes = "Hazendonk 2016 Methods: `C_pred,bdp = C_pred * (1 - theta_bdp)` with theta_bdp = 0.34, applied to the predicted plasma concentration to correct for a well-documented ~34% under-detection of B-domain-deleted FVIII by the one-stage clotting assay (Refacto AF was the only BDD product administered in this cohort). Cohort prevalence 14% of surgical procedures received a BDD product (Discussion: 'of which 14% were a B-domain deleted FVIII concentrate'). Per-observation (per-row) indicator; a subject may have received different products across multiple surgical procedures.",
+      source_name = "FORM_FVIII_BDD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 119L,
-    n_studies      = 1L,
-    n_surgeries    = 198L,
-    age_range      = "0.2-78 years (adult 19-78, pediatric 0.2-17.3)",
-    age_median     = "40 years total cohort (adult median 48; pediatric median 4.3)",
-    weight_range   = "5-111 kg (adult 45-111, pediatric 5-85)",
-    weight_median  = "75 kg total cohort (adult median 80; pediatric median 18.5)",
+    species = "human",
+    n_subjects = 119L,
+    n_studies = 1L,
+    n_surgeries = 198L,
+    age_range = "0.2-78 years (adult 19-78, pediatric 0.2-17.3)",
+    age_median = "40 years total cohort (adult median 48; pediatric median 4.3)",
+    weight_range = "5-111 kg (adult 45-111, pediatric 5-85)",
+    weight_median = "75 kg total cohort (adult median 80; pediatric median 18.5)",
     sex_female_pct = 0,
     race_ethnicity = "not reported in source; Netherlands multi-center cohort",
-    disease_state  = "Severe or moderate hemophilia A (FVIII plasma concentration < 0.05 IU/mL). 70% severe (< 0.01 IU/mL); 70% on prophylaxis. History of FVIII inhibitors recorded but inhibitor status at study entry not analysed as a covariate.",
-    dose_range     = "Perioperative FVIII replacement: pre-operative bolus ~50 IU/kg followed by continuous or bolus infusion targeting FVIII plasma concentration 0.80-1.00 IU/mL for the first 24 h, 0.50-0.80 for 24-120 h, 0.30-0.50 for >120 h per National Hemophilia Consensus (Hazendonk 2016 Methods). Approximately 3-4 mL/kg/h continuous infusion rate; 58% of procedures used continuous infusion, 42% bolus.",
-    regions        = "Netherlands (5 Academic Hemophilia Treatment Centers)",
-    products       = "Recombinant FVIII (77% of procedures): Kogenate FS, Helixate FS, Advate, Recombinate, Refacto AF (the B-domain-deleted product, 14% of recombinant procedures); plasma-derived (23%): Aafact, Hemofil M",
-    surgical_mix   = "Major or high-risk 49%; primary types orthopedic (47.5%), central-venous-catheter placement (16.2%, mostly pediatric), miscellaneous (15.7%), urology (6.1%), ENT (5.6%)",
-    notes          = "Retrospective study of hemophilia A patients undergoing 198 elective, minor, or major surgical procedures between 2000 and 2013. 1389 total FVIII plasma concentration measurements (median ~7 per patient) collected as trough / peak / steady-state samples from pre-operative through post-day-6+. FVIII plasma concentrations were measured by one-stage clotting assay at all centers. The population is Netherlands-only; ethnicity / race not reported. Hemophilia A is X-linked recessive, so the cohort is essentially all-male (sex_female_pct = 0 assumed; the paper does not tabulate sex explicitly). Center-specific residual error was reported (0.15 IU/mL additive + 18% proportional for centers 1-3; 0.05 IU/mL additive + 23% proportional for centers 4-5); only the majority center-cluster values are encoded here (see vignette Assumptions and deviations)."
+    disease_state = "Severe or moderate hemophilia A (FVIII plasma concentration < 0.05 IU/mL). 70% severe (< 0.01 IU/mL); 70% on prophylaxis. History of FVIII inhibitors recorded but inhibitor status at study entry not analysed as a covariate.",
+    dose_range = "Perioperative FVIII replacement: pre-operative bolus ~50 IU/kg followed by continuous or bolus infusion targeting FVIII plasma concentration 0.80-1.00 IU/mL for the first 24 h, 0.50-0.80 for 24-120 h, 0.30-0.50 for >120 h per National Hemophilia Consensus (Hazendonk 2016 Methods). Approximately 3-4 mL/kg/h continuous infusion rate; 58% of procedures used continuous infusion, 42% bolus.",
+    regions = "Netherlands (5 Academic Hemophilia Treatment Centers)",
+    products = "Recombinant FVIII (77% of procedures): Kogenate FS, Helixate FS, Advate, Recombinate, Refacto AF (the B-domain-deleted product, 14% of recombinant procedures); plasma-derived (23%): Aafact, Hemofil M",
+    surgical_mix = "Major or high-risk 49%; primary types orthopedic (47.5%), central-venous-catheter placement (16.2%, mostly pediatric), miscellaneous (15.7%), urology (6.1%), ENT (5.6%)",
+    notes = "Retrospective study of hemophilia A patients undergoing 198 elective, minor, or major surgical procedures between 2000 and 2013. 1389 total FVIII plasma concentration measurements (median ~7 per patient) collected as trough / peak / steady-state samples from pre-operative through post-day-6+. FVIII plasma concentrations were measured by one-stage clotting assay at all centers. The population is Netherlands-only; ethnicity / race not reported. Hemophilia A is X-linked recessive, so the cohort is essentially all-male (sex_female_pct = 0 assumed; the paper does not tabulate sex explicitly). Center-specific residual error was reported (0.15 IU/mL additive + 18% proportional for centers 1-3; 0.05 IU/mL additive + 23% proportional for centers 4-5); only the majority center-cluster values are encoded here (see vignette Assumptions and deviations)."
   )
 
   ini({

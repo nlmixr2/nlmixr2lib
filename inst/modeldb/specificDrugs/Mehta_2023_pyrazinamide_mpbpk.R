@@ -33,19 +33,19 @@ Mehta_2023_pyrazinamide_mpbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot  = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
-    blood  = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    blood = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE),
     lesion = list(analyte = "pyrazinamide", units = "mg", specimen = "tumor", verified = FALSE),
-    lung   = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE)
+    lung = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives cardiac output Qc = 312 * (WT/70)^0.75 L/h, total lung volume 0.0076 * WT L and",
         "blood-reservoir volume 0.0771 * WT L (0.0514 venous + 0.0257 arterial), and carries the",
         "0.75 allometric exponent on CL relative to a 70 kg reference. The absorption rate is NOT",
@@ -54,20 +54,20 @@ Mehta_2023_pyrazinamide_mpbpk <- function() {
         "used directly. See the vignette Assumptions and deviations section.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 500L,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 500L,
+    disease_state = paste(
       "Pulmonary tuberculosis with cavitary disease. Virtual population; cavity presence/absence",
       "and cavity size were sampled from the observed TB-PACTS distributions (Methods 2.2).",
       sep = " "
     ),
-    dose_range     = "Simulated pyrazinamide 1500 mg oral daily dosing at steady state (Figure 1).",
-    notes          = paste(
+    dose_range = "Simulated pyrazinamide 1500 mg oral daily dosing at steady state (Figure 1).",
+    notes = paste(
       "Developed on mouse plasma, lesion and uninvolved-lung data after a single oral 150 mg/kg",
       "dose digitised from the literature (ESM S1), then translated to humans using allometric",
       "exponents of -0.25 for ka and 0.75 for CL. Unlike bedaquiline and pretomanid, human lesion",

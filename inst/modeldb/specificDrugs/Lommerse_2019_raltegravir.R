@@ -5,8 +5,12 @@ Lommerse_2019_raltegravir <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "nM")
 
   paper_specific_compartments <- c(
-    "depot_mother", "central_mother", "peripheral_mother",
-    "depot_neonate", "central_neonate", "peripheral_neonate"
+    "depot_mother",
+    "central_mother",
+    "peripheral_mother",
+    "depot_neonate",
+    "central_neonate",
+    "peripheral_neonate"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -14,49 +18,49 @@ Lommerse_2019_raltegravir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_mother       = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    central_mother     = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral_mother  = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE),
-    depot_neonate      = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    central_neonate    = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_mother = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_mother = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_mother = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE),
+    depot_neonate = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_neonate = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral_neonate = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Neonate body weight (time-varying, kg)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Neonate body weight (time-varying, kg)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying per observation. Drives the allometric scaling of neonate CL, Q (exponent 0.75) and central/peripheral V (exponent 1.0) to a reference weight of 25 kg (Table 2 caption). Postnatal weight growth in the paper's simulations follows the empirical fit `BW(kg) = 2.935 + 8.909 * (1 - exp(-1.103 * PNA_years))` (Methods). Neonate birth weight in the analysis dataset ranged 2.2-3.4 kg for raltegravir-exposed and 2.2-5.3 kg for raltegravir-unexposed neonates (Table 1). Maternal body weight is not modelled as a covariate (Table 1 lists it as 'Unknown'); the maternal fixed disposition is applied at a typical maternal weight of 60 kg baked into the model with the same allometric exponents.",
-      source_name        = "BW"
+      notes = "Time-varying per observation. Drives the allometric scaling of neonate CL, Q (exponent 0.75) and central/peripheral V (exponent 1.0) to a reference weight of 25 kg (Table 2 caption). Postnatal weight growth in the paper's simulations follows the empirical fit `BW(kg) = 2.935 + 8.909 * (1 - exp(-1.103 * PNA_years))` (Methods). Neonate birth weight in the analysis dataset ranged 2.2-3.4 kg for raltegravir-exposed and 2.2-5.3 kg for raltegravir-unexposed neonates (Table 1). Maternal body weight is not modelled as a covariate (Table 1 lists it as 'Unknown'); the maternal fixed disposition is applied at a typical maternal weight of 60 kg baked into the model with the same allometric exponents.",
+      source_name = "BW"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth, months; time-varying)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth, months; time-varying)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the neonate CL and KA first-order maturation kernels. Paper uses PNA in YEARS (`CL_tau = 11.3 1/year`, `KA_tau = 63.2 1/year`); canonical PNA units are months, so the maturation equations are reparameterised inline as `1 - exp(-cl_tau * PNA/12)` and `1 - exp(-ka_tau * PNA/12)`. During pregnancy the neonate is a fetus and the CL/KA maturation is inactive; the paper reports 'no elimination capacity at birth' (CL_base = 0 fixed), so PNA >= 0 by construction and `pmax(PNA, 0)` clamps any negative in-utero time to zero.",
-      source_name        = "PNA"
+      notes = "Time-varying. Drives the neonate CL and KA first-order maturation kernels. Paper uses PNA in YEARS (`CL_tau = 11.3 1/year`, `KA_tau = 63.2 1/year`); canonical PNA units are months, so the maturation equations are reparameterised inline as `1 - exp(-cl_tau * PNA/12)` and `1 - exp(-ka_tau * PNA/12)`. During pregnancy the neonate is a fetus and the CL/KA maturation is inactive; the paper reports 'no elimination capacity at birth' (CL_base = 0 fixed), so PNA >= 0 by construction and `pmax(PNA, 0)` clamps any negative in-utero time to zero.",
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 104L,
-    n_subjects_mothers   = 19L,
-    n_subjects_neonates  = 61L,
-    n_subjects_infants   = 24L,
-    n_studies            = 3L,
-    n_observations       = 759L,
-    age_range            = "Mothers: adult, gravid at 3rd trimester or delivery. Raltegravir-unexposed neonates: 0-11 days at PK sampling (P1110 Cohort 1) or 0-6 weeks (P1110 Cohort 2). Raltegravir-exposed neonates: 0-11 days (P1110) or 0-2 days (P1097). Infants: 5 weeks to <2.4 years (P1066).",
-    weight_range         = "Raltegravir-unexposed neonates 2.2-5.3 kg; raltegravir-exposed neonates 2.2-4.1 kg; infants 3.7-14 kg; mothers unknown (Table 1 reports 'Unknown').",
-    sex_female_pct       = 40,
-    race_ethnicity       = "Predominantly African American / Black (majority per Methods 'Covariate analysis', not enumerated).",
-    disease_state        = "HIV-1-exposed neonates (with and without in utero raltegravir exposure), HIV-1-infected infants and toddlers, and HIV-1-infected pregnant women.",
-    dose_range           = "Mothers: 400 mg twice-daily raltegravir during pregnancy (IMPAACT P1097; last dose within 48 h of delivery). Raltegravir-unexposed neonates: 2 x 3 mg/kg single doses one week apart (P1110 Cohort 1) or the ramped 6-week regimen 1.5 mg/kg QD (days 1-7) -> 3 mg/kg BID (days 8-28) -> 6 mg/kg BID (days 28-42) (P1110 Cohort 2). Raltegravir-exposed neonates: 1.5 mg/kg single dose (P1110). Infants: 6 mg/kg BID granules for oral suspension (P1066).",
-    regions              = "United States, Brazil, South Africa, Thailand (IMPAACT network sites).",
-    notes                = "Data pooled from IMPAACT P1110 (raltegravir-unexposed and exposed term neonates 0-6 weeks), P1066 (infants and toddlers 4 weeks to <2 years), and P1097 (19 mother-infant pairs; mothers received raltegravir during pregnancy). Cohort composition and demographics from Table 1. Model estimated in NONMEM (ICON Inc.), SAS 9.4 for data assembly, R 3.1.3 for post-processing. Bootstrap N=1000 stratified by study, cohort, and in-utero-exposure status; 237 minimisation-terminated and 3 boundary runs omitted (Table 2 bootstrap columns)."
+    species = "human",
+    n_subjects = 104L,
+    n_subjects_mothers = 19L,
+    n_subjects_neonates = 61L,
+    n_subjects_infants = 24L,
+    n_studies = 3L,
+    n_observations = 759L,
+    age_range = "Mothers: adult, gravid at 3rd trimester or delivery. Raltegravir-unexposed neonates: 0-11 days at PK sampling (P1110 Cohort 1) or 0-6 weeks (P1110 Cohort 2). Raltegravir-exposed neonates: 0-11 days (P1110) or 0-2 days (P1097). Infants: 5 weeks to <2.4 years (P1066).",
+    weight_range = "Raltegravir-unexposed neonates 2.2-5.3 kg; raltegravir-exposed neonates 2.2-4.1 kg; infants 3.7-14 kg; mothers unknown (Table 1 reports 'Unknown').",
+    sex_female_pct = 40,
+    race_ethnicity = "Predominantly African American / Black (majority per Methods 'Covariate analysis', not enumerated).",
+    disease_state = "HIV-1-exposed neonates (with and without in utero raltegravir exposure), HIV-1-infected infants and toddlers, and HIV-1-infected pregnant women.",
+    dose_range = "Mothers: 400 mg twice-daily raltegravir during pregnancy (IMPAACT P1097; last dose within 48 h of delivery). Raltegravir-unexposed neonates: 2 x 3 mg/kg single doses one week apart (P1110 Cohort 1) or the ramped 6-week regimen 1.5 mg/kg QD (days 1-7) -> 3 mg/kg BID (days 8-28) -> 6 mg/kg BID (days 28-42) (P1110 Cohort 2). Raltegravir-exposed neonates: 1.5 mg/kg single dose (P1110). Infants: 6 mg/kg BID granules for oral suspension (P1066).",
+    regions = "United States, Brazil, South Africa, Thailand (IMPAACT network sites).",
+    notes = "Data pooled from IMPAACT P1110 (raltegravir-unexposed and exposed term neonates 0-6 weeks), P1066 (infants and toddlers 4 weeks to <2 years), and P1097 (19 mother-infant pairs; mothers received raltegravir during pregnancy). Cohort composition and demographics from Table 1. Model estimated in NONMEM (ICON Inc.), SAS 9.4 for data assembly, R 3.1.3 for post-processing. Bootstrap N=1000 stratified by study, cohort, and in-utero-exposure status; 237 minimisation-terminated and 3 boundary runs omitted (Table 2 bootstrap columns)."
   )
 
   ini({

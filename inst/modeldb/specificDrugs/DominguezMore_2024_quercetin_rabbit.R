@@ -34,19 +34,19 @@ DominguezMore_2024_quercetin_rabbit <- function() {
   dosing <- c("depot", "depot2")
 
   compartmentData <- list(
-    depot       = list(analyte = "quercetin conjugates", units = "ug/kg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "quercetin conjugates", units = "ug/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "quercetin",            units = "ug/kg", specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "quercetin",            units = "ug/kg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "quercetin conjugates", units = "ug/kg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "quercetin conjugates", units = "ug/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "quercetin", units = "ug/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "quercetin", units = "ug/kg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FORM_RUTIN_EXTRACT = list(
-      description        = "Source of the administered rutin: within the Physalis peruviana calyx extract matrix versus the isolated pure compound",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Source of the administered rutin: within the Physalis peruviana calyx extract matrix versus the isolated pure compound",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pure rutin)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal; each rabbit received only one treatment. The",
         "oral extract dose (500 mg/kg of extract, containing 14.80 ug rutin",
         "per mg) delivers 7.4 mg/kg of rutin against the 100 mg/kg pure-rutin",
@@ -55,25 +55,25 @@ DominguezMore_2024_quercetin_rabbit <- function() {
         "More 2024 Section 3.3 reports the extract affects ka1, ka2, V, k12",
         "and k21, but not k, F1 or Tlag2."
       ),
-      source_name        = "source of rutin"
+      source_name = "source of rutin"
     )
   )
 
   population <- list(
-    species        = "rabbit (New Zealand White, male)",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "9-10 weeks",
-    weight_range   = "1.8-2.2 kg",
+    species = "rabbit (New Zealand White, male)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "9-10 weeks",
+    weight_range = "1.8-2.2 kg",
     sex_female_pct = 0,
     race_ethnicity = "not applicable",
-    disease_state  = "healthy",
-    dose_range     = paste(
+    disease_state = "healthy",
+    dose_range = paste(
       "Single oral gavage dose (0.5 mL/kg): pure rutin 100 mg/kg, or",
       "P. peruviana calyx extract 500 mg/kg equivalent to 7.4 mg/kg of rutin"
     ),
-    regions        = "Colombia (Universidad Nacional de Colombia, Bogota)",
-    notes          = paste(
+    regions = "Colombia (Universidad Nacional de Colombia, Bogota)",
+    notes = paste(
       "The two oral arms (n = 5 each) of the four-arm study; the two",
       "intravenous arms fed the companion parent model",
       "DominguezMore_2024_rutin_rabbit. Plasma was sampled at 0, 0.083, 0.25,",

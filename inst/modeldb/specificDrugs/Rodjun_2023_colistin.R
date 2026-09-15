@@ -25,36 +25,36 @@ Rodjun_2023_colistin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "colistimethate sodium", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "colistimethate sodium", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE),
     central_col = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the model as a linear multiplier on BOTH the renal clearance of CMS (Rodjun 2023 Table 1: CLR = 0.0340 L/h per mL/min of CrCL) and the renal clearance of formed colistin (CLRC = 0.00834 L/h per mL/min of CrCL). No centering or normalization is applied - the Table 1 units 'L/h/CrCL' make the slope a clearance per mL/min, so CRCL is used in raw mL/min. Rodjun 2023 simulated the four discrete values 90, 50, 30 and 10 mL/min (Materials and methods, Simulated dosage regimens); the underlying Nation 2017 estimation cohort spanned 0-236 mL/min (Materials and methods, Pharmacokinetic model / Colistin). Stored under canonical CRCL per inst/references/covariate-columns.md, which accepts raw mL/min when the source paper does not apply BSA normalization (same convention as Karaiskos_2015_colistin.R).",
-      source_name        = "CrCL"
+      notes = "Enters the model as a linear multiplier on BOTH the renal clearance of CMS (Rodjun 2023 Table 1: CLR = 0.0340 L/h per mL/min of CrCL) and the renal clearance of formed colistin (CLRC = 0.00834 L/h per mL/min of CrCL). No centering or normalization is applied - the Table 1 units 'L/h/CrCL' make the slope a clearance per mL/min, so CRCL is used in raw mL/min. Rodjun 2023 simulated the four discrete values 90, 50, 30 and 10 mL/min (Materials and methods, Simulated dosage regimens); the underlying Nation 2017 estimation cohort spanned 0-236 mL/min (Materials and methods, Pharmacokinetic model / Colistin). Stored under canonical CRCL per inst/references/covariate-columns.md, which accepts raw mL/min when the source paper does not apply BSA normalization (same convention as Karaiskos_2015_colistin.R).",
+      source_name = "CrCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_simulated    = 10000L,
-    n_studies      = 1L,
-    age_range      = "Not reported on disk. Rodjun 2023 reproduces only the parameter table of Nation 2017 and does not restate that study's baseline demographics.",
-    weight_range   = "Not reported on disk. The colistin model carries no body-weight covariate, so weight does not enter the simulation.",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_simulated = 10000L,
+    n_studies = 1L,
+    age_range = "Not reported on disk. Rodjun 2023 reproduces only the parameter table of Nation 2017 and does not restate that study's baseline demographics.",
+    weight_range = "Not reported on disk. The colistin model carries no body-weight covariate, so weight does not enter the simulation.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported on disk.",
-    disease_state  = "Critically ill adults receiving intravenous colistimethate sodium (the Nation 2017 estimation cohort, described by Rodjun 2023 only as 'critically ill patients with a CrCL of 0-236 mL/min'). The simulation target population is patients with carbapenem-resistant (CRAB), multidrug-resistant (MDR-AB) or colistin-resistant (CoR-AB) Acinetobacter baumannii infection.",
-    dose_range     = "Intravenous loading dose of 300 mg or 450 mg colistin base activity (CBA) infused over 30 min, followed by maintenance doses from 50 mg q48h to 450 mg q12h according to creatinine clearance (Materials and methods, Simulated dosage regimens / Colistin). All doses are expressed in mg of colistin base activity.",
-    regions        = "Thailand (simulation study, Mahidol University, Bangkok); the underlying Nation 2017 PK cohort was multinational.",
+    disease_state = "Critically ill adults receiving intravenous colistimethate sodium (the Nation 2017 estimation cohort, described by Rodjun 2023 only as 'critically ill patients with a CrCL of 0-236 mL/min'). The simulation target population is patients with carbapenem-resistant (CRAB), multidrug-resistant (MDR-AB) or colistin-resistant (CoR-AB) Acinetobacter baumannii infection.",
+    dose_range = "Intravenous loading dose of 300 mg or 450 mg colistin base activity (CBA) infused over 30 min, followed by maintenance doses from 50 mg q48h to 450 mg q12h according to creatinine clearance (Materials and methods, Simulated dosage regimens / Colistin). All doses are expressed in mg of colistin base activity.",
+    regions = "Thailand (simulation study, Mahidol University, Bangkok); the underlying Nation 2017 PK cohort was multinational.",
     renal_function = "Simulated at creatinine clearance 90, 50, 30 and 10 mL/min. The Nation 2017 estimation cohort spanned CrCL 0-236 mL/min.",
-    notes          = "Monte Carlo simulation of 10,000 virtual subjects per dosage regimen (Crystal Ball version 2017, Decisioneering Inc.), with log-normal between-patient variability on every PK parameter except the unbound fraction of colistin, which was drawn from a uniform distribution (Materials and methods, Monte Carlo simulation). Rodjun 2023 does not report the size or demographics of the Nation 2017 estimation cohort, so n_subjects is NA; n_simulated records the virtual cohort size instead. The PK/PD target is fAUC/MIC >= 7.4 (Cheah 2015 murine thigh-infection model), applied to the unbound 24-h colistin AUC. See the validation vignette for the extent to which the published PTA tables reproduce."
+    notes = "Monte Carlo simulation of 10,000 virtual subjects per dosage regimen (Crystal Ball version 2017, Decisioneering Inc.), with log-normal between-patient variability on every PK parameter except the unbound fraction of colistin, which was drawn from a uniform distribution (Materials and methods, Monte Carlo simulation). Rodjun 2023 does not report the size or demographics of the Nation 2017 estimation cohort, so n_subjects is NA; n_simulated records the virtual cohort size instead. The PK/PD target is fAUC/MIC >= 7.4 (Cheah 2015 murine thigh-infection model), applied to the unbound 24-h colistin AUC. See the validation vignette for the extent to which the published PTA tables reproduce."
   )
 
   ini({

@@ -32,21 +32,21 @@ Richardson_2025_camizestrant <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "camizestrant", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "camizestrant", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "camizestrant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "camizestrant", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Administered dose amount of the current dosing record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered dose amount of the current dosing record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a power model on CL and Vc, normalised to a reference dose:",
         "P = TVP * (DOSE / 100)^e_dose_P. The authors' NONMEM data set carried",
         "DOSE and a separate DOSEREF column and the model term was",
@@ -62,17 +62,17 @@ Richardson_2025_camizestrant <- function() {
         "the dose dependence unchanged.",
         sep = " "
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species     = "human",
-    n_subjects  = 184,
-    n_studies   = 1,
+    species = "human",
+    n_subjects = 184,
+    n_studies = 1,
     disease_state = "not reported (Phase 1 oncology study NCT03616587)",
-    dose_range  = "not reported",
-    notes       = paste(
+    dose_range = "not reported",
+    notes = paste(
       "184 participants after filtering to oral administration, contributing",
       "2,709 observation records (Richardson 2025 Table 1 and Supplementary",
       "Table 7). Observed concentrations were modelled on the log scale",

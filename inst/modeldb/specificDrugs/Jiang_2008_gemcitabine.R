@@ -28,26 +28,36 @@ Jiang_2008_gemcitabine <- function() {
     sep = " "
   )
   vignette <- "Jiang_2008_gemcitabine"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "gemcitabine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "gemcitabine", units = "mg", specimen = "plasma", verified = FALSE),
-    central_dfdu     = list(analyte = "2',2'-difluorodeoxyuridine (dFdU)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_dfdu = list(analyte = "2',2'-difluorodeoxyuridine (dFdU)", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "gemcitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "gemcitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dfdu = list(
+      analyte = "2',2'-difluorodeoxyuridine (dFdU)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_dfdu = list(
+      analyte = "2',2'-difluorodeoxyuridine (dFdU)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance (raw Cockcroft-Gault, NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance (raw Cockcroft-Gault, NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear-additive scaling on apparent dFdU clearance:",
         "CL_dFdU/F = 0.04 * (1 + 0.48 * CRCL/70) L/min (Jiang 2008 page 330",
         "covariate equation). The 70 mL/min denominator is a fixed",
@@ -57,14 +67,14 @@ Jiang_2008_gemcitabine <- function() {
         "assay-form precedent as Delattre 2010 amikacin (raw Cockcroft-",
         "Gault mL/min)."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     BSA = list(
-      description        = "Body surface area.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling on apparent dFdU central volume centred at 1.73",
         "m^2: V_C,dFdU/F = 46 * (BSA/1.73)^0.93 ... L (Jiang 2008 page",
         "330 covariate equation). Median BSA in the source cohort was 1.8",
@@ -73,14 +83,14 @@ Jiang_2008_gemcitabine <- function() {
         "page 330 retains BSA only on V_C,dFdU/F (see Table 4 forward-",
         "inclusion sequence)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     GEMOX = list(
-      description        = "Indicator for sequential gemcitabine-then-oxaliplatin combination dosing on the same study day.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for sequential gemcitabine-then-oxaliplatin combination dosing on the same study day.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Gemcitabine alone (GEMOX = 0 AND OXGEM = 0)",
-      notes              = paste(
+      notes = paste(
         "1 = gemcitabine 30-min infusion followed by oxaliplatin 120-min",
         "infusion on the same day; 0 = otherwise. Multiplicative factor",
         "0.65 on V_C,dFdU/F when GEMOX = 1 (Jiang 2008 page 330 covariate",
@@ -89,52 +99,52 @@ Jiang_2008_gemcitabine <- function() {
         "GEMOX=OXGEM=0), gem-then-ox (n=38, GEMOX=1), or ox-then-gem",
         "(n=25, OXGEM=1)."
       ),
-      source_name        = "GEMOX"
+      source_name = "GEMOX"
     ),
     OXGEM = list(
-      description        = "Indicator for sequential oxaliplatin-then-gemcitabine combination dosing on the same study day.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for sequential oxaliplatin-then-gemcitabine combination dosing on the same study day.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Gemcitabine alone (GEMOX = 0 AND OXGEM = 0)",
-      notes              = paste(
+      notes = paste(
         "1 = oxaliplatin 120-min infusion followed by gemcitabine 30-min",
         "infusion on the same day; 0 = otherwise. Multiplicative factor",
         "0.54 on V_C,dFdU/F when OXGEM = 1 (Jiang 2008 page 330 covariate",
         "equation: 0.54^OXGEM). Mutually exclusive with GEMOX (see",
         "covariateData$GEMOX)."
       ),
-      source_name        = "OXGEM"
+      source_name = "OXGEM"
     ),
     TUMTP_NSCLC = list(
-      description        = "Non-small-cell lung cancer tumour-type indicator (1 = NSCLC, 0 = other).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-small-cell lung cancer tumour-type indicator (1 = NSCLC, 0 = other).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Other tumour types (pancreatic and diverse-tumour cohorts pooled).",
-      notes              = paste(
+      notes = paste(
         "Multiplicative factor 1.24 on V_C,dFdU/F when TUMTP_NSCLC = 1",
         "(Jiang 2008 page 330 covariate equation: 1.24^NSCLC). 47/94",
         "patients had NSCLC; the remaining 47 had pancreatic (n=14) or",
         "diverse (n=33) tumour types (Table 2). Same canonical as",
         "Ahamadi 2017 pembrolizumab and Aoyama 2012 sepantronium."
       ),
-      source_name        = "NSCLC"
+      source_name = "NSCLC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 94L,
-    n_studies      = 3L,
-    age_range      = "33-85 years",
-    age_median     = "65 years",
-    weight_range   = "37-120 kg",
-    weight_median  = "73 kg",
-    bsa_range      = "1.2-2.5 m^2",
-    bsa_median     = "1.8 m^2",
-    crcl_range     = "37-150 mL/min",
-    crcl_median    = "83 mL/min",
+    species = "human",
+    n_subjects = 94L,
+    n_studies = 3L,
+    age_range = "33-85 years",
+    age_median = "65 years",
+    weight_range = "37-120 kg",
+    weight_median = "73 kg",
+    bsa_range = "1.2-2.5 m^2",
+    bsa_median = "1.8 m^2",
+    crcl_range = "37-150 mL/min",
+    crcl_median = "83 mL/min",
     sex_female_pct = 27.7,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult patients with cancer pooled from three clinical trials",
       "(Jiang 2008 Table 1). Study 1 (n=21) was an open-label Phase I",
       "dose-escalation in diverse tumour types receiving 30-min",
@@ -145,13 +155,13 @@ Jiang_2008_gemcitabine <- function() {
       "diverse tumour types (no oxaliplatin). Tumour-type split: NSCLC",
       "47, pancreatic 14, diverse 33."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Gemcitabine 750-1500 mg/m^2 as a 30-min IV infusion (or 1000",
       "mg/m^2 as a 100-min IV infusion in Study 3) with optional",
       "oxaliplatin 40-80 mg/m^2 as a 120-min IV infusion, on days 1 and",
       "8 of a 21-day cycle."
     ),
-    regions        = "Australia (multi-centre Phase I/II oncology).",
+    regions = "Australia (multi-centre Phase I/II oncology).",
     n_observations = paste(
       "652 gemcitabine and 1130 dFdU plasma concentrations across 122",
       "concentration-time profiles. Sampling at 0, 10, 25, 40 min and 1,",
@@ -159,7 +169,7 @@ Jiang_2008_gemcitabine <- function() {
       "Limit of quantification 0.2 mg/L for both analytes (HPLC-UV at",
       "272 nm)."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Jiang 2008 Table 2. Software: NONMEM v5 level",
       "1.1 with ADVAN6 TRANS1 TOL5 and the FO estimation method.",
       "Covariate-development criterion DOFV >= 10.83 (P = 0.001, df = 1)",

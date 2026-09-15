@@ -16,54 +16,54 @@ Schipani_2012_lopinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centered at the cohort median 72 kg. Paper covariate equation (p. 1311 Eq. 2): TVCL = theta0 + theta1 * (WT - WTmedian), where theta0 = 5.67 L/h is the typical CL/F at median weight (Table 1 Final Model). Range 45-117 kg.",
-      source_name        = "BW"
+      notes = "Centered at the cohort median 72 kg. Paper covariate equation (p. 1311 Eq. 2): TVCL = theta0 + theta1 * (WT - WTmedian), where theta0 = 5.67 L/h is the typical CL/F at median weight (Table 1 Final Model). Range 45-117 kg.",
+      source_name = "BW"
     ),
     SLCO1B1_HAP15_HET = list(
-      description        = "SLCO1B1 *15 haplotype heterozygote indicator: 1 if subject carries the 521C variant heterozygously (521TC), 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 *15 haplotype heterozygote indicator: 1 if subject carries the 521C variant heterozygously (521TC), 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (521TT homozygous wild-type)",
-      notes              = "Time-fixed germline genotype. Schipani 2012 genotyped only the SLCO1B1 521T>C (rs4149056) SNP and did not phase the 388A>G (rs2306283) variant, so *5 (521T>C alone) and *15 (388A>G + 521T>C) carriers are pooled in this indicator; recorded under SLCO1B1_HAP15_HET per the canonical's documented pooling rule for Ide-style extractions (see inst/references/covariate-columns.md). Paper effect equation (p. 1311): CL = CL0 + theta_HET * HET + theta_HOM * HOM, with HET = 1 for 521TC. Distribution in the Liverpool cohort (Methods p. 863): 73 of 375 (19.5%) heterozygous 521TC.",
-      source_name        = "HET (= 1 for 521TC)"
+      notes = "Time-fixed germline genotype. Schipani 2012 genotyped only the SLCO1B1 521T>C (rs4149056) SNP and did not phase the 388A>G (rs2306283) variant, so *5 (521T>C alone) and *15 (388A>G + 521T>C) carriers are pooled in this indicator; recorded under SLCO1B1_HAP15_HET per the canonical's documented pooling rule for Ide-style extractions (see inst/references/covariate-columns.md). Paper effect equation (p. 1311): CL = CL0 + theta_HET * HET + theta_HOM * HOM, with HET = 1 for 521TC. Distribution in the Liverpool cohort (Methods p. 863): 73 of 375 (19.5%) heterozygous 521TC.",
+      source_name = "HET (= 1 for 521TC)"
     ),
     SLCO1B1_HAP15_HOM = list(
-      description        = "SLCO1B1 *15 haplotype homozygote indicator: 1 if subject carries the 521C variant homozygously (521CC), 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 *15 haplotype homozygote indicator: 1 if subject carries the 521C variant homozygously (521CC), 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (521TT homozygous wild-type)",
-      notes              = "Time-fixed germline genotype. As for SLCO1B1_HAP15_HET, the Schipani 2012 cohort was genotyped at 521T>C only and the indicator pools *5/*5 and *15/*15 (and mixed *5/*15) homozygotes for the 521C allele. Paper effect equation (p. 1311): CL = CL0 + theta_HET * HET + theta_HOM * HOM, with HOM = 1 for 521CC. Distribution in the Liverpool cohort (Methods p. 863): 7 of 375 (1.9%) homozygous 521CC.",
-      source_name        = "HOM (= 1 for 521CC)"
+      notes = "Time-fixed germline genotype. As for SLCO1B1_HAP15_HET, the Schipani 2012 cohort was genotyped at 521T>C only and the indicator pools *5/*5 and *15/*15 (and mixed *5/*15) homozygotes for the 521C allele. Paper effect equation (p. 1311): CL = CL0 + theta_HET * HET + theta_HOM * HOM, with HOM = 1 for 521CC. Distribution in the Liverpool cohort (Methods p. 863): 7 of 375 (1.9%) homozygous 521CC.",
+      source_name = "HOM (= 1 for 521CC)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 375L,
+    species = "human",
+    n_subjects = 375L,
     n_observations = 594L,
-    n_studies      = 1L,
-    age_range      = "19-66 years",
-    age_median     = "40 years",
-    weight_range   = "45-117 kg",
-    weight_median  = "72 kg",
+    n_studies = 1L,
+    age_range = "19-66 years",
+    age_median = "40 years",
+    weight_range = "45-117 kg",
+    weight_median = "72 kg",
     sex_female_pct = 18,
     race_ethnicity = "not collected (Discussion limitation: 'lack of ethnicity data')",
-    disease_state  = "HIV-positive adults on lopinavir/ritonavir 400/100 mg tablets twice daily, all with HIV viral load <50 copies/mL at the time of sampling.",
-    dose_range     = "Lopinavir/ritonavir 400/100 mg tablets twice daily (boosted lopinavir).",
-    regions        = "United Kingdom (Liverpool Therapeutic Drug Monitoring Registry, Liverpool; external validation cohort from the Royal Free NHS Trust, London).",
+    disease_state = "HIV-positive adults on lopinavir/ritonavir 400/100 mg tablets twice daily, all with HIV viral load <50 copies/mL at the time of sampling.",
+    dose_range = "Lopinavir/ritonavir 400/100 mg tablets twice daily (boosted lopinavir).",
+    regions = "United Kingdom (Liverpool Therapeutic Drug Monitoring Registry, Liverpool; external validation cohort from the Royal Free NHS Trust, London).",
     sampling_window = "Sparse TDM sampling at random time points post-dose; only a limited number of samples in the absorption phase. External validation set: 42 observations from 6 patients.",
     genotype_distribution = "SLCO1B1 521T>C (rs4149056), Methods p. 863: 295 of 375 (78%) 521TT homozygous wild-type, 73 (20%) 521TC heterozygous, 7 (2%) 521CC homozygous variant. Minor allele frequency 11%; SNP in Hardy-Weinberg equilibrium.",
-    notes          = "TDM registry data; exclusion criteria were pregnancy, undetectable plasma lopinavir concentrations (suggesting non-adherence), and concomitant use of known enzyme inducers. LLOQ for lopinavir = 95 ng/mL (0.095 mg/L); observed plasma concentration range 0.114-22.432 mg/L. The paper's simulations of dose-reduction scenarios use a ritonavir-effect sequential model carried over from Schipani 2011 (PMID 22128223) and is not part of this packaged model."
+    notes = "TDM registry data; exclusion criteria were pregnancy, undetectable plasma lopinavir concentrations (suggesting non-adherence), and concomitant use of known enzyme inducers. LLOQ for lopinavir = 95 ng/mL (0.095 mg/L); observed plasma concentration range 0.114-22.432 mg/L. The paper's simulations of dose-reduction scenarios use a ritonavir-effect sequential model carried over from Schipani 2011 (PMID 22128223) and is not part of this packaged model."
   )
 
   ini({

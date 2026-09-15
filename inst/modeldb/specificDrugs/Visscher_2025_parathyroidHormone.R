@@ -45,8 +45,10 @@ Visscher_2025_parathyroidHormone <- function() {
   # of the model." Suffixed per analyte following the precedent of
   # Heo_2016_amlodipine_valsartan.R (`c("effect_sbp", "effect_dbp")`).
   paper_specific_compartments <- c(
-    "transfer_phosphate", "effect_phosphate",
-    "transfer_calcium", "effect_calcium"
+    "transfer_phosphate",
+    "effect_phosphate",
+    "transfer_calcium",
+    "effect_calcium"
   )
 
   # The model is encoded natively in the source's own molar units, so no
@@ -57,23 +59,43 @@ Visscher_2025_parathyroidHormone <- function() {
   units <- list(time = "h", dosing = "pmol", concentration = "pmol/L")
 
   compartmentData <- list(
-    depot              = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
-    transit1           = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
-    transit2           = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
-    transit3           = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
-    transit4           = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
-    central            = list(analyte = "parathyroid hormone", units = "pmol", specimen = "plasma", verified = TRUE),
-    transfer_phosphate = list(analyte = "parathyroid hormone", units = "pmol/L", specimen = "not applicable", verified = TRUE),
-    effect_phosphate   = list(analyte = "parathyroid hormone", units = "pmol/L", specimen = "not applicable", verified = TRUE),
-    transfer_calcium   = list(analyte = "parathyroid hormone", units = "pmol/L", specimen = "not applicable", verified = TRUE),
-    effect_calcium     = list(analyte = "parathyroid hormone", units = "pmol/L", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "parathyroid hormone", units = "pmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "parathyroid hormone", units = "pmol", specimen = "plasma", verified = TRUE),
+    transfer_phosphate = list(
+      analyte = "parathyroid hormone",
+      units = "pmol/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_phosphate = list(
+      analyte = "parathyroid hormone",
+      units = "pmol/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transfer_calcium = list(
+      analyte = "parathyroid hormone",
+      units = "pmol/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_calcium = list(
+      analyte = "parathyroid hormone",
+      units = "pmol/L",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     RENALFUNC_REL = list(
-      description        = "Relative renal function (1 = normal)",
-      units             = "(dimensionless)",
-      type              = "continuous",
+      description = "Relative renal function (1 = normal)",
+      units = "(dimensionless)",
+      type = "continuous",
       reference_category = NULL,
       notes = paste(
         "Dimensionless organ-function scalar of the Edsim++ / MwPharm ORG",
@@ -93,12 +115,12 @@ Visscher_2025_parathyroidHormone <- function() {
         "Source name RF; the bare two-letter name is a rejected alias of the",
         "rheumatoid-factor covariate and is deliberately not reused."
       ),
-      source_name        = "RF"
+      source_name = "RF"
     ),
     HEPFUNC_REL = list(
-      description        = "Relative liver function (1 = normal)",
-      units             = "(dimensionless)",
-      type              = "continuous",
+      description = "Relative liver function (1 = normal)",
+      units = "(dimensionless)",
+      type = "continuous",
       reference_category = NULL,
       notes = paste(
         "Dimensionless organ-function scalar multiplying the hepatic",
@@ -110,29 +132,29 @@ Visscher_2025_parathyroidHormone <- function() {
         "clearance into a renal and a hepatic arm stays visible and",
         "user-perturbable."
       ),
-      source_name        = "LF"
+      source_name = "LF"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1,
-    n_studies      = 1,
-    age_median     = "43 years",
+    species = "human",
+    n_subjects = 1,
+    n_studies = 1,
+    age_median = "43 years",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Chronic primary (iatrogenic postsurgical) hypoparathyroidism",
       "following total thyroidectomy for medullary thyroid carcinoma,",
       "complicated by severe hypercalciuria and recurrent nephrolithiasis"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "rhPTH(1-84) subcutaneous: 100 ug QD (days 1-2), 50 ug BID",
       "(days 3-4), 35 ug TID (days 5-6), 25 ug QID (days 7-8), then",
       "continuous subcutaneous infusion 100 ug/day (days 9-10),",
       "75 ug/day (day 11), 50 ug/day (day 12), 25 ug/day (day 13)"
     ),
-    regions        = "the Netherlands (University Medical Center Groningen)",
-    co_medication  = paste(
+    regions = "the Netherlands (University Medical Center Groningen)",
+    co_medication = paste(
       "Alfacalcidol 1.25 ug QD tapered to 0.25 ug QD then stopped",
       "(days 0-2), calcium carbonate 500 mg QD (days 0-3),",
       "chlortalidone 12.5 mg BID throughout (Table S1)"

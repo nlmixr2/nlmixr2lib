@@ -12,20 +12,20 @@ Kawuma_2023_tenofovir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight, used for allometric scaling of all clearance and volume parameters with exponents fixed to 0.75 and 1 relative to a 70 kg reference individual.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight, used for allometric scaling of all clearance and volume parameters with exponents fixed to 0.75 and 1 relative to a 70 kg reference individual.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Kawuma 2023 Methods: 'Allometry with either total body weight or fat-free mass was tested in the model and allometric exponents for clearance and volume were fixed to 0.75 and 1, respectively.' Results: allometric scaling with weight was retained (dOFV = -18 vs no allometry) and applied to CL, Q, Vc and Vp; fat-free mass did not improve the fit (dOFV = -3.80). Table 2 footnote c gives the 70 kg reference. Cohort median (IQR) weight 73.1 (67.2-85.2) kg (Table 1).",
-      source_name        = "WT"
+      notes = "Kawuma 2023 Methods: 'Allometry with either total body weight or fat-free mass was tested in the model and allometric exponents for clearance and volume were fixed to 0.75 and 1, respectively.' Results: allometric scaling with weight was retained (dOFV = -18 vs no allometry) and applied to CL, Q, Vc and Vp; fat-free mass did not improve the fit (dOFV = -3.80). Table 2 footnote c gives the 70 kg reference. Cohort median (IQR) weight 73.1 (67.2-85.2) kg (Table 1).",
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer occasion index for between-occasion variability on the absorption parameters and on TDF bioavailability. 1 = the unobserved dose taken the day before the pharmacokinetic visit (which produces the predose sample); 2 = the observed dose taken on the day of the pharmacokinetic visit (with samples at 1, 2, 4, 6, 8 and 24 h).",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer occasion index for between-occasion variability on the absorption parameters and on TDF bioavailability. 1 = the unobserved dose taken the day before the pharmacokinetic visit (which produces the predose sample); 2 = the observed dose taken on the day of the pharmacokinetic visit (with samples at 1, 2, 4, 6, 8 and 24 h).",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Kawuma 2023 Methods: \"an 'occasion' was defined as a dose with its proceeding sample. For example, the unobserved dose the day before the pharmacokinetic visit (leading to the predose sample) was considered a separate occasion from the observed dose on the day of the pharmacokinetic visit\". The rich-sampling design therefore has exactly two occasions, encoded here as OCC = 1 and OCC = 2 with a shared variance (the NONMEM $OMEGA BLOCK(1) SAME idiom). Records outside those two occasions should carry OCC = 0, which zeroes every indicator and removes the between-occasion contribution; Kawuma 2023 Table 3 footnote a states the published AUC simulations were themselves run 'excluding between-occasion variability on absorption parameters'.",
-      source_name        = "OCC"
+      notes = "Kawuma 2023 Methods: \"an 'occasion' was defined as a dose with its proceeding sample. For example, the unobserved dose the day before the pharmacokinetic visit (leading to the predose sample) was considered a separate occasion from the observed dose on the day of the pharmacokinetic visit\". The rich-sampling design therefore has exactly two occasions, encoded here as OCC = 1 and OCC = 2 with a shared variance (the NONMEM $OMEGA BLOCK(1) SAME idiom). Records outside those two occasions should carry OCC = 0, which zeroes every indicator and removes the between-occasion contribution; Kawuma 2023 Table 3 footnote a states the published AUC simulations were themselves run 'excluding between-occasion variability on absorption parameters'.",
+      source_name = "OCC"
     )
   )
 
@@ -36,67 +36,67 @@ Kawuma_2023_tenofovir <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at screening.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on tenofovir pharmacokinetic parameters by stepwise inclusion (dOFV > 3.84) and not retained; Kawuma 2023 Results. Cohort median (IQR) 31.0 (29.0-36.0) years, Table 1. No coefficient is reported."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on tenofovir pharmacokinetic parameters by stepwise inclusion (dOFV > 3.84) and not retained; Kawuma 2023 Results. Cohort median (IQR) 31.0 (29.0-36.0) years, Table 1. No coefficient is reported."
     ),
     CRCL_BASE = list(
       description = "Baseline creatinine clearance at screening, calculated by Cockcroft and Gault (not BSA-normalized).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested as a covariate on tenofovir clearance and not retained; Kawuma 2023 Results and Discussion attribute the negative finding to the narrow distribution in the cohort (median 120, IQR 96.0-140 mL/min, Table 1) and to creatinine not being measured at the time of drug sampling. No coefficient is reported."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested as a covariate on tenofovir clearance and not retained; Kawuma 2023 Results and Discussion attribute the negative finding to the narrow distribution in the cohort (median 120, IQR 96.0-140 mL/min, Table 1) and to creatinine not being measured at the time of drug sampling. No coefficient is reported."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "tenofovir",
-      units    = "mg",
+      analyte = "tenofovir",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     depot2 = list(
-      analyte  = "tenofovir",
-      units    = "mg",
+      analyte = "tenofovir",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     depot3 = list(
-      analyte  = "tenofovir",
-      units    = "mg",
+      analyte = "tenofovir",
+      units = "mg",
       specimen = "blood cell",
       verified = FALSE
     ),
     central = list(
-      analyte  = "tenofovir",
-      units    = "mg",
+      analyte = "tenofovir",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "tenofovir",
-      units    = "mg",
+      analyte = "tenofovir",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 41,
+    n_studies = 1,
     n_observations = 279,
-    age_median     = "31.0 years (IQR 29.0-36.0)",
-    weight_median  = "73.1 kg (IQR 67.2-85.2)",
-    height_median  = "167 cm (IQR 161-174)",
+    age_median = "31.0 years (IQR 29.0-36.0)",
+    weight_median = "73.1 kg (IQR 67.2-85.2)",
+    height_median = "167 cm (IQR 161-174)",
     sex_female_pct = 65.9,
     race_ethnicity = "South African adults; the source paper reports no race or ethnicity breakdown.",
     renal_function = "Creatinine clearance at screening (Cockcroft-Gault) median 120 mL/min (IQR 96.0-140); no participant had impaired renal function.",
-    disease_state  = "Treatment-naive adults living with HIV, sampled after at least 48 weeks of antiretroviral therapy.",
-    dose_range     = "TDF 300 mg once daily (= 136 mg tenofovir) in 21 participants, or TAF 25 mg once daily (= 15 mg tenofovir) in 20 participants; both co-formulated with emtricitabine 200 mg and given with dolutegravir 50 mg.",
-    co_medication  = "Dolutegravir 50 mg and emtricitabine 200 mg once daily in both arms.",
-    regions        = "South Africa",
-    notes          = "Pharmacokinetic substudy nested within the ADVANCE trial (NCT03122262), an open-label phase III randomized noninferiority trial. Rich sampling predose and at 1, 2, 4, 6, 8 and 24 h postdose. Baseline demographics are in Kawuma 2023 Table 1. None of the 279 samples was below the 0.0005 mg/L limit of quantification."
+    disease_state = "Treatment-naive adults living with HIV, sampled after at least 48 weeks of antiretroviral therapy.",
+    dose_range = "TDF 300 mg once daily (= 136 mg tenofovir) in 21 participants, or TAF 25 mg once daily (= 15 mg tenofovir) in 20 participants; both co-formulated with emtricitabine 200 mg and given with dolutegravir 50 mg.",
+    co_medication = "Dolutegravir 50 mg and emtricitabine 200 mg once daily in both arms.",
+    regions = "South Africa",
+    notes = "Pharmacokinetic substudy nested within the ADVANCE trial (NCT03122262), an open-label phase III randomized noninferiority trial. Rich sampling predose and at 1, 2, 4, 6, 8 and 24 h postdose. Baseline demographics are in Kawuma 2023 Table 1. None of the 279 samples was below the 0.0005 mg/L limit of quantification."
   )
 
   ini({

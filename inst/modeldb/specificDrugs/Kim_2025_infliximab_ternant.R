@@ -26,49 +26,49 @@ Kim_2025_infliximab_ternant <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (antibodies toward infliximab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (antibodies toward infliximab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no reference level: a separate typical clearance is estimated in each ADA stratum",
-      notes              = "This is the only model in the Kim 2025 panel that estimates a wholly separate typical clearance -- and a separate clearance eta -- in each ADA stratum, rather than applying a multiplicative offset to a single typical value: CL = 0.288 L/day when ADA-negative and 0.768 L/day when ADA-positive, a 2.67-fold increase. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset. Kim 2025 showed (Figure 3) that assuming every patient to be ATI-positive improved predictive performance for the five ATI-carrying models, which they attributed to a positive bias inherent in the population PK models.",
-      source_name        = "ATI"
+      notes = "This is the only model in the Kim 2025 panel that estimates a wholly separate typical clearance -- and a separate clearance eta -- in each ADA stratum, rather than applying a multiplicative offset to a single typical value: CL = 0.288 L/day when ADA-negative and 0.768 L/day when ADA-positive, a 2.67-fold increase. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset. Kim 2025 showed (Figure 3) that assuming every patient to be ATI-positive improved predictive performance for the five ATI-carrying models, which they attributed to a positive bias inherent in the population PK models.",
+      source_name = "ATI"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no reference level: a separate sex-specific intercept of the central volume is estimated for each sex",
-      notes              = "Contributes an additive, weight-independent term to the central volume: 1.1 L in females and 2.3 L in males, each carrying its own eta. The source control stream codes SEX = 1 for female and SEX = 0 for male, which matches the canonical SEXF polarity directly (no value inversion needed). Time-invariant.",
-      source_name        = "SEX"
+      notes = "Contributes an additive, weight-independent term to the central volume: 1.1 L in females and 2.3 L in males, each carrying its own eta. The source control stream codes SEX = 1 for female and SEX = 0 for male, which matches the canonical SEXF polarity directly (no value inversion needed). Time-invariant.",
+      source_name = "SEX"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the weight-proportional component of the central volume, normalized to a 67 kg reference: Vc gains 1.7 * (WT/67) L. Note this is a LINEAR proportionality, not the power function used by every other model in the Kim 2025 panel, and it is added to -- not multiplied by -- the sex-specific intercept. Clearance carries no weight effect in this model. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
-      source_name        = "WGT"
+      notes = "Drives the weight-proportional component of the central volume, normalized to a 67 kg reference: Vc gains 1.7 * (WT/67) L. Note this is a LINEAR proportionality, not the power function used by every other model in the Kim 2025 panel, and it is added to -- not multiplied by -- the sex-specific intercept. Clearance carries no weight effect in this model. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
+      source_name = "WGT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "Adults; median age 33 years (Kim 2025 Table S1).",
-    weight_range   = "Not reported; median body weight 67 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "Adults; median age 33 years (Kim 2025 Table S1).",
+    weight_range = "Not reported; median body weight 67 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
     sex_female_pct = 55,
     race_ethnicity = "Not specified; developed in a French IBD cohort.",
-    disease_state  = "Inflammatory bowel disease: Crohn's disease (n = 30) and ulcerative colitis (n = 3).",
-    dose_range     = "Intravenous infliximab during both induction and maintenance phases.",
-    regions        = "France.",
-    notes          = paste(
+    disease_state = "Inflammatory bowel disease: Crohn's disease (n = 30) and ulcerative colitis (n = 3).",
+    dose_range = "Intravenous infliximab during both induction and maintenance phases.",
+    regions = "France.",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Ternant model: Crohn's disease (n = 30) and ulcerative",
       "colitis (n = 3), adults, induction and maintenance phases, peak,",

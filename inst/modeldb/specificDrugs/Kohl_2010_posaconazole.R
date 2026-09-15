@@ -8,43 +8,43 @@ Kohl_2010_posaconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "posaconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; enters apparent V/F via a linear additive deviation from the cohort median (49 years).",
-      source_name        = "Age"
+      notes = "Time-fixed per subject; enters apparent V/F via a linear additive deviation from the cohort median (49 years).",
+      source_name = "Age"
     ),
     DIARRHEA = list(
-      description        = "Concurrent clinical diarrhea indicator (1 = diarrhea, 0 = no diarrhea)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent clinical diarrhea indicator (1 = diarrhea, 0 = no diarrhea)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diarrhea)",
-      notes              = "Time-fixed per subject in Kohl 2010 (each patient carries a single yes/no flag over the TDM window). Enters CL/F and V/F via the shared power-form multiplier e_diarrhea_cl_vc^DIARRHEA; the equal-magnitude effect on both is algebraically equivalent to a 1.7-fold reduction in oral bioavailability F (F_with/F_without ~= 1/1.69 ~= 0.59 per Kohl 2010 Discussion).",
-      source_name        = "Diarrhea"
+      notes = "Time-fixed per subject in Kohl 2010 (each patient carries a single yes/no flag over the TDM window). Enters CL/F and V/F via the shared power-form multiplier e_diarrhea_cl_vc^DIARRHEA; the equal-magnitude effect on both is algebraically equivalent to a 1.7-fold reduction in oral bioavailability F (F_with/F_without ~= 1/1.69 ~= 0.59 per Kohl 2010 Discussion).",
+      source_name = "Diarrhea"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32,
-    n_studies      = 1,
-    age_range      = "17-66 years",
-    age_median     = "49.5 years",
-    weight_range   = "49-115 kg",
-    weight_median  = "68.5 kg",
+    species = "human",
+    n_subjects = 32,
+    n_studies = 1,
+    age_range = "17-66 years",
+    age_median = "49.5 years",
+    weight_range = "49-115 kg",
+    weight_median = "68.5 kg",
     sex_female_pct = 50.0,
     race_ethnicity = c(Caucasian = 93.8, Asian = 6.2),
-    disease_state  = "Adult allogeneic hematopoietic stem cell transplant (SCT) recipients with hematological malignancies (acute myelogenous leukemia 53.1%, lymphoma 18.8%, chronic lymphocytic leukemia 12.5%, chronic myelogenous leukemia 6.2%, acute lymphocytic leukemia / idiopathic thrombocytopenia / plasma cell leukemia 3.1% each), on prophylactic oral posaconazole.",
-    dose_range     = "200 mg oral suspension three times daily (standard prophylactic dose; some dose changes during therapy enabled separate identifiability of CL/F and V/F)",
-    regions        = "Germany (single center: University Hospital of Cologne)",
-    notes          = "Demographics per Kohl 2010 Table 1. 22/32 (68.6%) patients had diarrhea over the TDM observation window; 16/32 (50.0%) had concomitant fever. Concomitant medications: cyclosporine 81.3%, pantoprazole 81.3%, ranitidine 50.0%, tacrolimus 25.0%. 149 trough serum posaconazole concentrations across the cohort (median 5 samples / patient, range 1-12). Patients unable to take oral medication (severe oral mucositis or vomiting) were switched to intravenous antifungals and are not part of the analysis."
+    disease_state = "Adult allogeneic hematopoietic stem cell transplant (SCT) recipients with hematological malignancies (acute myelogenous leukemia 53.1%, lymphoma 18.8%, chronic lymphocytic leukemia 12.5%, chronic myelogenous leukemia 6.2%, acute lymphocytic leukemia / idiopathic thrombocytopenia / plasma cell leukemia 3.1% each), on prophylactic oral posaconazole.",
+    dose_range = "200 mg oral suspension three times daily (standard prophylactic dose; some dose changes during therapy enabled separate identifiability of CL/F and V/F)",
+    regions = "Germany (single center: University Hospital of Cologne)",
+    notes = "Demographics per Kohl 2010 Table 1. 22/32 (68.6%) patients had diarrhea over the TDM observation window; 16/32 (50.0%) had concomitant fever. Concomitant medications: cyclosporine 81.3%, pantoprazole 81.3%, ranitidine 50.0%, tacrolimus 25.0%. 149 trough serum posaconazole concentrations across the cohort (median 5 samples / patient, range 1-12). Patients unable to take oral medication (severe oral mucositis or vomiting) were switched to intravenous antifungals and are not part of the analysis."
   )
 
   ini({

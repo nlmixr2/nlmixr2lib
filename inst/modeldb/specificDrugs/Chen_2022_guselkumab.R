@@ -8,44 +8,44 @@ Chen_2022_guselkumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "guselkumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "guselkumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "guselkumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F and V/F per Chen 2022 Table 1 footnotes f and g; reference value 84 kg (median of pooled DISCOVER-1 + DISCOVER-2 PK analysis population). Time-fixed at baseline.",
-      source_name        = "BWT"
+      notes = "Power effect on CL/F and V/F per Chen 2022 Table 1 footnotes f and g; reference value 84 kg (median of pooled DISCOVER-1 + DISCOVER-2 PK analysis population). Time-fixed at baseline.",
+      source_name = "BWT"
     ),
     DIS_DIAB = list(
-      description        = "Diabetes mellitus comorbidity at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diabetes mellitus comorbidity at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes mellitus comorbidity)",
-      notes              = "Multiplicative effect on CL/F per Chen 2022 Table 1 footnote f: CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIS_DIAB. With DIS_DIAB=1, CL/F is 15% higher than the non-diabetic reference (Results section, page 752, and Table 1). Diabetes-mellitus-positive comorbidity prevalence in the analysis population was approximately 9% (Results section). Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "DIAB"
+      notes = "Multiplicative effect on CL/F per Chen 2022 Table 1 footnote f: CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIS_DIAB. With DIS_DIAB=1, CL/F is 15% higher than the non-diabetic reference (Results section, page 752, and Table 1). Diabetes-mellitus-positive comorbidity prevalence in the analysis population was approximately 9% (Results section). Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "DIAB"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "Adults with active psoriatic arthritis (specific age range in Table S1 supplement, not extractable from main-text trim).",
-    weight_median  = "84 kg (25th-75th percentile 71.0-97.3 kg, per Results page 752)",
-    weight_range   = "25th-75th percentile 71.0-97.3 kg (Results, page 752); full range in Table S1 supplement.",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "Adults with active psoriatic arthritis (specific age range in Table S1 supplement, not extractable from main-text trim).",
+    weight_median = "84 kg (25th-75th percentile 71.0-97.3 kg, per Results page 752)",
+    weight_range = "25th-75th percentile 71.0-97.3 kg (Results, page 752); full range in Table S1 supplement.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Majority White (Table S1 supplement; specific percentages not in main-text trim).",
-    disease_state  = "Active psoriatic arthritis (PsA) with inadequate response to standard nonbiologic disease-modifying therapy and/or anti-tumor necrosis factor alpha therapy. Pooled data from DISCOVER-1 (NCT03162796) and DISCOVER-2 (NCT03158285) phase 3 trials.",
-    dose_range     = "Subcutaneous guselkumab 100 mg q4w or 100 mg at weeks 0 and 4 then q8w (the two phase 3 regimens). Sparse PK sampling.",
-    regions        = "Global (multicenter phase 3 trials).",
-    diabetes_pct   = 9.0,
+    disease_state = "Active psoriatic arthritis (PsA) with inadequate response to standard nonbiologic disease-modifying therapy and/or anti-tumor necrosis factor alpha therapy. Pooled data from DISCOVER-1 (NCT03162796) and DISCOVER-2 (NCT03158285) phase 3 trials.",
+    dose_range = "Subcutaneous guselkumab 100 mg q4w or 100 mg at weeks 0 and 4 then q8w (the two phase 3 regimens). Sparse PK sampling.",
+    regions = "Global (multicenter phase 3 trials).",
+    diabetes_pct = 9.0,
     prior_anti_tnf_pct = 11.0,
-    ada_positive_pct   = 2.0,
-    notes          = "Demographics from Chen 2022 Table S1 (supplement). Median baseline weight 84 kg, ~9% with diabetes comorbidity, majority White, ~11% had prior anti-TNF-alpha therapy, 2.0% positive for antidrug antibodies. Median baseline PASI = 5.8 and DAS28 = 5.1 in the exposure-response analysis datasets (Results, page 752). The longitudinal exposure-response analysis used pooled data through week 24 from 1116 patients (Results, page 754); the size of the population PK analysis dataset itself is reported in Table S1 of the supplement, not in the main-text trim. Estimated terminal half-life for the typical reference subject is approximately 18.1 days (Results, page 752)."
+    ada_positive_pct = 2.0,
+    notes = "Demographics from Chen 2022 Table S1 (supplement). Median baseline weight 84 kg, ~9% with diabetes comorbidity, majority White, ~11% had prior anti-TNF-alpha therapy, 2.0% positive for antidrug antibodies. Median baseline PASI = 5.8 and DAS28 = 5.1 in the exposure-response analysis datasets (Results, page 752). The longitudinal exposure-response analysis used pooled data through week 24 from 1116 patients (Results, page 754); the size of the population PK analysis dataset itself is reported in Table S1 of the supplement, not in the main-text trim. Estimated terminal half-life for the typical reference subject is approximately 18.1 days (Results, page 752)."
   )
 
   ini({

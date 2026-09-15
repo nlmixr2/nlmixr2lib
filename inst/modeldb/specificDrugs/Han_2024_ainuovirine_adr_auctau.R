@@ -40,18 +40,18 @@ Han_2024_ainuovirine_adr_auctau <- function() {
   )
   vignette <- "Han_2024_ainuovirine"
   units <- list(
-    time          = "n/a (static landmark exposure-safety regression at week 48; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUC_ANV covariate column)",
+    time = "n/a (static landmark exposure-safety regression at week 48; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_ANV covariate column)",
     concentration = "prob_adr (probability of an adverse drug reaction, 0-1; also logit_adr)"
   )
 
   covariateData <- list(
     AUC_ANV = list(
-      description        = "Individual steady-state area under the ainuovirine plasma concentration-time curve over the 24 h once-daily dosing interval (AUCtau), per subject. Supplied as data: this model has no PK layer.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Individual steady-state area under the ainuovirine plasma concentration-time curve over the 24 h once-daily dosing interval (AUCtau), per subject. Supplied as data: this model has no PK layer.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma exposure at STEADY STATE, over the",
         "24 h dosing interval of a once-daily regimen (so AUCtau is",
         "AUC(0-24) at steady state, and equals AUCss numerically for this",
@@ -83,23 +83,23 @@ Han_2024_ainuovirine_adr_auctau <- function() {
         "Han 2024 does not tabulate the observed AUCtau distribution; the",
         "quartile boundaries used for Figure 5D are not printed."
       ),
-      source_name        = "AUCtau (area under the steady-state curve)"
+      source_name = "AUCtau (area under the steady-state curve)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 309L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 309L,
+    n_studies = 1L,
     n_observations = "One binary adverse-drug-reaction record per subject. NOTE: Han 2024 never states the exposure-response analysis-set size. 309 is the number of phase 3 ADYY-ACC007-301 participants in the population PK dataset (Table 1, Table 2). Han 2024 also never reports the overall ADR incidence, the reaction types, or their severity grading, so this model cannot be calibrated against a published event rate",
-    age_range      = "mean 31.03 years (SD 9.95) in the phase 3 trial (Han 2024 Table 2)",
-    weight_range   = "mean 67.06 kg (SD 11.42) in the phase 3 trial (Han 2024 Table 2)",
+    age_range = "mean 31.03 years (SD 9.95) in the phase 3 trial (Han 2024 Table 2)",
+    weight_range = "mean 67.06 kg (SD 11.42) in the phase 3 trial (Han 2024 Table 2)",
     sex_female_pct = 5.83,
     race_ethnicity = "Not reported; single Chinese centre (Beijing Youan Hospital, Capital Medical University)",
-    disease_state  = "Antiretroviral-therapy-naive people living with HIV-1, randomised to an ainuovirine-based regimen (the comparator arm received an efavirenz-based regimen and is not part of this exposure-response analysis)",
-    dose_range     = "Ainuovirine 150 mg orally once daily at bedtime on an empty stomach for 48 weeks",
-    regions        = "Single centre, Beijing, China",
-    notes          = paste0(
+    disease_state = "Antiretroviral-therapy-naive people living with HIV-1, randomised to an ainuovirine-based regimen (the comparator arm received an efavirenz-based regimen and is not part of this exposure-response analysis)",
+    dose_range = "Ainuovirine 150 mg orally once daily at bedtime on an empty stomach for 48 weeks",
+    regions = "Single centre, Beijing, China",
+    notes = paste0(
       "The endpoint is a COMPOSITE 'incidence of adverse reactions' with ",
       "no preferred-term breakdown and no severity threshold reported, ",
       "so it is not comparable to a CTCAE-graded endpoint. Because every ",

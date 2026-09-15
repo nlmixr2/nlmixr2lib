@@ -32,38 +32,38 @@ Kovalenko_2020_dupilumab_base <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume Vc with reference 75 kg.  Reference weight is not restated in Kovalenko 2020; the 75 kg value is inherited from Kovalenko 2016 (doi:10.1002/psp4.12136, Eq. 1) and matches the sibling Kovalenko_2020_dupilumab.R (Model 1) file.",
-      source_name        = "WT"
+      notes = "Power effect on central volume Vc with reference 75 kg.  Reference weight is not restated in Kovalenko 2020; the 75 kg value is inherited from Kovalenko 2016 (doi:10.1002/psp4.12136, Eq. 1) and matches the sibling Kovalenko_2020_dupilumab.R (Model 1) file.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = "Phase 3 cohort only.  The article reports the pooled total across all 16 studies as N = 2115 on study and 2041 on active treatment, with 18,243 of 20,809 samples included.  Phase 3 SOLO 1 (R668-AD-1334) N = 447, SOLO 2 (R668-AD-1416) N = 472, CHRONOS (R668-AD-1224) N = 424 per Supplementary Table S1 (PK analysis set).",
-    n_studies      = 3L,
-    age_range      = "Adults with moderate-to-severe atopic dermatitis (detailed age breakdown not reported in the main text).",
-    age_median     = "Not reported in the main text.",
-    weight_range   = "Not reported in the main text.",
-    weight_median  = "Not reported in the main text; reference weight 75 kg is the Kovalenko 2016 inheritance.",
+    n_subjects = "Phase 3 cohort only.  The article reports the pooled total across all 16 studies as N = 2115 on study and 2041 on active treatment, with 18,243 of 20,809 samples included.  Phase 3 SOLO 1 (R668-AD-1334) N = 447, SOLO 2 (R668-AD-1416) N = 472, CHRONOS (R668-AD-1224) N = 424 per Supplementary Table S1 (PK analysis set).",
+    n_studies = 3L,
+    age_range = "Adults with moderate-to-severe atopic dermatitis (detailed age breakdown not reported in the main text).",
+    age_median = "Not reported in the main text.",
+    weight_range = "Not reported in the main text.",
+    weight_median = "Not reported in the main text; reference weight 75 kg is the Kovalenko 2016 inheritance.",
     sex_female_pct = "Not reported in the main text.",
     race_ethnicity = "Race was a tested covariate; detailed breakdown not reported in the main text.  Phase 3 AD trials are predominantly White, with Black, Asian, and Other categories represented.",
-    disease_state  = "Adults with moderate-to-severe atopic dermatitis (SOLO 1, SOLO 2 monotherapy; CHRONOS concomitant topical corticosteroids).",
-    dose_range     = "600 mg SC loading dose on day 1 followed by 300 mg SC qw or q2w for 15 weeks (SOLO 1, SOLO 2) or 51 weeks (CHRONOS).",
-    regions        = "Multi-regional Phase 3 programme; see Supplementary Table S1 for per-study geographic coverage.",
-    notes          = "Base model (Model 3) is the precursor to the primary covariate model (Model 4).  The structural parameters kcp, kpc, ka, MTT, Vm, km, and F are FIXED to values obtained from Models 1 and 2 fits on rich Phase 1/2 data (per the stepwise modelling strategy described in the paper's Methods).  Shrinkage in SD of etas for ke and Vc was 22% and 19%, respectively (Results)."
+    disease_state = "Adults with moderate-to-severe atopic dermatitis (SOLO 1, SOLO 2 monotherapy; CHRONOS concomitant topical corticosteroids).",
+    dose_range = "600 mg SC loading dose on day 1 followed by 300 mg SC qw or q2w for 15 weeks (SOLO 1, SOLO 2) or 51 weeks (CHRONOS).",
+    regions = "Multi-regional Phase 3 programme; see Supplementary Table S1 for per-study geographic coverage.",
+    notes = "Base model (Model 3) is the precursor to the primary covariate model (Model 4).  The structural parameters kcp, kpc, ka, MTT, Vm, km, and F are FIXED to values obtained from Models 1 and 2 fits on rich Phase 1/2 data (per the stepwise modelling strategy described in the paper's Methods).  Shrinkage in SD of etas for ke and Vc was 22% and 19%, respectively (Results)."
   )
 
   ini({

@@ -28,12 +28,16 @@ Nguyen_2026_linezolid <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     # The saliva state is a hypothetical effect compartment (Nguyen 2026
     # Figure 1 caption: "The saliva bio-compartment is a hypothetical effect
@@ -41,18 +45,20 @@ Nguyen_2026_linezolid <- function() {
     # central volume to give the observed salivary concentration. It does not
     # deplete the central compartment -- see the model() note.
     saliva = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "saliva", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "saliva",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled on the apparent central volume only, referenced to the population median",
         "50 kg (Nguyen 2026 Table 1; IQR 45-56 kg). The exponent 1.1 is estimated, not fixed at an",
         "allometric 1, and its 95% CI (0.62-1.46) spans 1; the paper calls it 'the modest",
@@ -62,7 +68,7 @@ Nguyen_2026_linezolid <- function() {
         "Note this cohort is lean by international standards (median BMI 19.1 kg/m^2), so the term",
         "was fitted over a narrow weight range and extrapolates poorly to heavier populations."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -73,7 +79,9 @@ Nguyen_2026_linezolid <- function() {
   # absent from model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age.", units = "years", type = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       notes = paste(
         "Median 42 years (IQR 35-56), Nguyen 2026 Table 1. Screened against the structural",
         "parameters and not retained (Results 3.2, Supplementary Figure S8)."
@@ -81,7 +89,8 @@ Nguyen_2026_linezolid <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance (renal-function marker).",
-      units = "mL/min (raw, NOT BSA-normalized)", type = "continuous",
+      units = "mL/min (raw, NOT BSA-normalized)",
+      type = "continuous",
       notes = paste(
         "Median 68.1 mL/min (IQR 62.8-79.3), Nguyen 2026 Table 1, printed as 'CLCR (mL/min)'.",
         "The estimating equation is not stated in the paper. All patients had normal renal",
@@ -90,7 +99,9 @@ Nguyen_2026_linezolid <- function() {
       )
     ),
     CREAT = list(
-      description = "Serum creatinine.", units = "umol/L", type = "continuous",
+      description = "Serum creatinine.",
+      units = "umol/L",
+      type = "continuous",
       notes = paste(
         "Median 77.9 umol/L (IQR 75.9-84), Nguyen 2026 Table 1. Screened and not retained",
         "(Results 3.2, Supplementary Figure S8)."
@@ -98,7 +109,8 @@ Nguyen_2026_linezolid <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase (hepatic-function marker).",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Median 20 U/L (IQR 12.4-53), Nguyen 2026 Table 1. Screened and not retained",
         "(Results 3.2, Supplementary Figure S8)."
@@ -106,7 +118,8 @@ Nguyen_2026_linezolid <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase (hepatic-function marker).",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Median 24 U/L (IQR 16-46), Nguyen 2026 Table 1. Screened and not retained",
         "(Results 3.2, Supplementary Figure S8)."
@@ -124,22 +137,22 @@ Nguyen_2026_linezolid <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 17,
-    n_studies      = 1,
-    age_median     = "42 years (IQR 35-56)",
-    weight_median  = "50 kg (IQR 45-56)",
-    weight_range   = "IQR 45-56 kg; the full range is not reported",
-    height_median  = "162 cm (IQR 160-165)",
-    bmi_median     = "19.1 kg/m^2 (IQR 16.5-20.5)",
+    species = "human",
+    n_subjects = 17,
+    n_studies = 1,
+    age_median = "42 years (IQR 35-56)",
+    weight_median = "50 kg (IQR 45-56)",
+    weight_range = "IQR 45-56 kg; the full range is not reported",
+    height_median = "162 cm (IQR 160-165)",
+    bmi_median = "19.1 kg/m^2 (IQR 16.5-20.5)",
     sex_female_pct = 17.6,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "multidrug-resistant pulmonary tuberculosis (MDR-TB)",
+    disease_state = "multidrug-resistant pulmonary tuberculosis (MDR-TB)",
     renal_function = "normal in all patients; CLcr median 68.1 mL/min (IQR 62.8-79.3), serum creatinine median 77.9 umol/L (IQR 75.9-84)",
     hepatic_function = "normal in all patients; ALT median 20 U/L (IQR 12.4-53), AST median 24 U/L (IQR 16-46)",
-    dose_range     = "oral linezolid at steady state, median daily dose 600 mg (range 450-600 mg)",
-    regions        = "Vietnam (four provinces)",
-    notes          = paste(
+    dose_range = "oral linezolid at steady state, median daily dose 600 mg (range 450-600 mg)",
+    regions = "Vietnam (four provinces)",
+    notes = paste(
       "Pharmacokinetic sub-study of the V-SMART trial (ACTRN12620000681954), prospective and",
       "observational. Of 28 enrolled patients, 17 had evaluable PK data; 102 paired saliva-plasma",
       "samples were drawn at pre-dose, 2 h and 5 h post-dose after at least 7 days of treatment",

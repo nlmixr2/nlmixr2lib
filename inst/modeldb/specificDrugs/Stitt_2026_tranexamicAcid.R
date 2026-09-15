@@ -1,6 +1,6 @@
 Stitt_2026_tranexamicAcid <- function() {
   description <- "Two-compartment intravenous population PK model for tranexamic acid (TXA) with first-order elimination and allometric body-weight scaling (exponents fixed at 0.75 on the clearances and 1 on the volumes, 70 kg reference), estimated in adults with severe traumatic injury (TAMPITI trial) and extrapolated by Stitt 2026 to children with trauma-related bleeding; platelet count, near-infrared-spectroscopy skeletal-muscle tissue oxygen saturation and interleukin-8 act on clearance (Stitt 2026)."
-  reference   <- paste(
+  reference <- paste(
     "Stitt G, Downes K, Zuppa A, Leeper C, Watt K, Spinella P.",
     "Tranexamic acid dosing in pediatric trauma: dose simulation based on",
     "population pharmacokinetic modeling in adult trauma patients.",
@@ -15,58 +15,58 @@ Stitt_2026_tranexamicAcid <- function() {
     "scaling layer.",
     sep = " "
   )
-  vignette    <- "Stitt_2026_tranexamicAcid"
-  units       <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  vignette <- "Stitt_2026_tranexamicAcid"
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling against a 70 kg reference weight, applied to all four disposition parameters: (WT/70)^0.75 on CL and Q, (WT/70)^1 on V1 and V2 (Stitt 2026 Equations 1-4, and Supporting Information 'Adult Population PK Model' / 'Scaling Adult Population PK Model to Children', which state that theta_allometric was FIXED at 0.75 for clearance parameters and 1 for volume parameters and that the same 70 kg reference weight was used for the paediatric extrapolation). Time-fixed at the admission value. The TAMPITI adults on whom the model was estimated had a median weight of 80.1 kg (Stitt 2026 Table 2); the virtual paediatric cohort spans 17.7-58.2 kg.",
-      source_name        = "WT"
+      notes = "Allometric power scaling against a 70 kg reference weight, applied to all four disposition parameters: (WT/70)^0.75 on CL and Q, (WT/70)^1 on V1 and V2 (Stitt 2026 Equations 1-4, and Supporting Information 'Adult Population PK Model' / 'Scaling Adult Population PK Model to Children', which state that theta_allometric was FIXED at 0.75 for clearance parameters and 1 for volume parameters and that the same 70 kg reference weight was used for the paediatric extrapolation). Time-fixed at the admission value. The TAMPITI adults on whom the model was estimated had a median weight of 80.1 kg (Stitt 2026 Table 2); the virtual paediatric cohort spans 17.7-58.2 kg.",
+      source_name = "WT"
     ),
     PLT = list(
-      description        = "Platelet count at time 0 (admission)",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Platelet count at time 0 (admission)",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance, (PLT/196)^0.468 (Stitt 2026 Equation 1). Stitt 2026 reports platelet count in K/uL, which is numerically identical to the canonical 10^9 cells/L, so no value transformation is needed. Baseline only (the admission value at time 0; Stitt 2026 Table 2 footnote a). The centring constant 196 is the value printed inside Equation 1; Table 2 gives the TAMPITI median admission PLT as 197 K/uL. The 0.5% difference is numerically immaterial and the equation value is used per the standing trust-the-printed-equation policy. Higher platelet count predicts higher TXA clearance.",
-      source_name        = "PLT"
+      notes = "Power effect on clearance, (PLT/196)^0.468 (Stitt 2026 Equation 1). Stitt 2026 reports platelet count in K/uL, which is numerically identical to the canonical 10^9 cells/L, so no value transformation is needed. Baseline only (the admission value at time 0; Stitt 2026 Table 2 footnote a). The centring constant 196 is the value printed inside Equation 1; Table 2 gives the TAMPITI median admission PLT as 197 K/uL. The 0.5% difference is numerically immaterial and the equation value is used per the standing trust-the-printed-equation policy. Higher platelet count predicts higher TXA clearance.",
+      source_name = "PLT"
     ),
     STO2 = list(
-      description        = "Skeletal-muscle tissue oxygen saturation measured by near-infrared spectroscopy (NIRS)",
-      units              = "%",
-      type               = "continuous",
+      description = "Skeletal-muscle tissue oxygen saturation measured by near-infrared spectroscopy (NIRS)",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance, (STO2/88)^-0.29 (Stitt 2026 Equation 1). Baseline only. IMPORTANT non-equivalence that the paper itself flags (Discussion, S262): the adult reference 88% is the median ADMISSION NIRS value in TAMPITI participants, whereas the paediatric range 51-80% used for the virtual cohort is the median LOWEST NIRS value recorded in the paediatric literature sources -- the two are not the same quantity, and the lower paediatric values are part of why the extrapolated paediatric clearance is fast. Lower tissue oxygen saturation predicts higher TXA clearance.",
-      source_name        = "NIRS"
+      notes = "Power effect on clearance, (STO2/88)^-0.29 (Stitt 2026 Equation 1). Baseline only. IMPORTANT non-equivalence that the paper itself flags (Discussion, S262): the adult reference 88% is the median ADMISSION NIRS value in TAMPITI participants, whereas the paediatric range 51-80% used for the virtual cohort is the median LOWEST NIRS value recorded in the paediatric literature sources -- the two are not the same quantity, and the lower paediatric values are part of why the extrapolated paediatric clearance is fast. Lower tissue oxygen saturation predicts higher TXA clearance.",
+      source_name = "NIRS"
     ),
     IL8 = list(
-      description        = "Interleukin-8 (CXCL8) concentration at time 0 (admission)",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Interleukin-8 (CXCL8) concentration at time 0 (admission)",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance, entered UN-NORMALIZED as IL8^-0.0873 (Stitt 2026 Equation 1) -- i.e. with an implicit reference of 1 pg/mL, unlike the PLT and STO2 terms in the same equation, which are median-normalized. This is not a transcription slip: encoding the raw form reproduces the paper's own Table 3 adult AUC0-4h and AUC0-8h to +1.9%, whereas a median-normalized (IL8/20.3) reading raises typical adult clearance from 162 to 211 mL/min and undershoots the published AUCs by roughly 15%. Because the term is un-normalized, the column units must be pg/mL exactly for the published exponent to apply. Baseline only (the admission value at time 0). Higher IL-8 predicts LOWER TXA clearance; note that the Stitt 2026 Discussion prose (S262) states the opposite direction, contradicting both its own Table 1 (-0.0887) and Equation 1 (-0.0873) -- the negative exponent is used here.",
-      source_name        = "IL-8"
+      notes = "Power effect on clearance, entered UN-NORMALIZED as IL8^-0.0873 (Stitt 2026 Equation 1) -- i.e. with an implicit reference of 1 pg/mL, unlike the PLT and STO2 terms in the same equation, which are median-normalized. This is not a transcription slip: encoding the raw form reproduces the paper's own Table 3 adult AUC0-4h and AUC0-8h to +1.9%, whereas a median-normalized (IL8/20.3) reading raises typical adult clearance from 162 to 211 mL/min and undershoots the published AUCs by roughly 15%. Because the term is un-normalized, the column units must be pg/mL exactly for the published exponent to apply. Baseline only (the admission value at time 0). Higher IL-8 predicts LOWER TXA clearance; note that the Stitt 2026 Discussion prose (S262) states the opposite direction, contradicting both its own Table 1 (-0.0887) and Equation 1 (-0.0873) -- the negative exponent is used here.",
+      source_name = "IL-8"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 94L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 94L,
+    n_studies = 1L,
     n_observations = 597L,
-    weight_median  = "80.1 kg (TAMPITI median at time 0)",
-    disease_state  = "Adults with severe traumatic injury enrolled in the Tranexamic Acid Mechanisms and Pharmacokinetics in Traumatic Injury (TAMPITI) trial",
-    dose_range     = "2 g or 4 g intravenous TXA bolus (Stitt 2026 Methods, Adult population PK model)",
-    notes          = "Estimation population: 597 plasma TXA samples from 94 TAMPITI participants (placebo participants excluded), per Stitt 2026 Methods 'Adult population PK model'. Median covariate values at time 0 (Stitt 2026 Table 2): weight 80.1 kg, platelet count 197 K/uL, NIRS 88%, IL-8 20.3 pg/mL. The final estimates are reproduced in Stitt 2026 Table 1 and Equations 1-4; they were first reported in Stitt 2024 (Br J Clin Pharmacol 90:1932-1941, doi:10.1111/bcp.16075). Stitt 2026 itself contains NO new observed pharmacokinetic data: it is a simulation study that allometrically scales this adult model to children. The virtual paediatric population it simulates (Stitt 2026 Table 2 and Supporting Information) covers age 4.7-15.4 years, weight 17.7-58.2 kg, platelet count 205-433 K/uL, NIRS 51-80% and IL-8 6.6-50.2 pg/mL, with each covariate drawn independently and uniformly from its range; paediatric weights were derived from the MATIC-1 trauma-cohort age distribution via CDC 50th-percentile weight-for-age. There are no observed paediatric trauma TXA PK data anywhere in the source, so every paediatric prediction from this model is an extrapolation outside the estimation range and, as the paper states, requires clinical validation."
+    weight_median = "80.1 kg (TAMPITI median at time 0)",
+    disease_state = "Adults with severe traumatic injury enrolled in the Tranexamic Acid Mechanisms and Pharmacokinetics in Traumatic Injury (TAMPITI) trial",
+    dose_range = "2 g or 4 g intravenous TXA bolus (Stitt 2026 Methods, Adult population PK model)",
+    notes = "Estimation population: 597 plasma TXA samples from 94 TAMPITI participants (placebo participants excluded), per Stitt 2026 Methods 'Adult population PK model'. Median covariate values at time 0 (Stitt 2026 Table 2): weight 80.1 kg, platelet count 197 K/uL, NIRS 88%, IL-8 20.3 pg/mL. The final estimates are reproduced in Stitt 2026 Table 1 and Equations 1-4; they were first reported in Stitt 2024 (Br J Clin Pharmacol 90:1932-1941, doi:10.1111/bcp.16075). Stitt 2026 itself contains NO new observed pharmacokinetic data: it is a simulation study that allometrically scales this adult model to children. The virtual paediatric population it simulates (Stitt 2026 Table 2 and Supporting Information) covers age 4.7-15.4 years, weight 17.7-58.2 kg, platelet count 205-433 K/uL, NIRS 51-80% and IL-8 6.6-50.2 pg/mL, with each covariate drawn independently and uniformly from its range; paediatric weights were derived from the MATIC-1 trauma-cohort age distribution via CDC 50th-percentile weight-for-age. There are no observed paediatric trauma TXA PK data anywhere in the source, so every paediatric prediction from this model is an extrapolation outside the estimation range and, as the paper states, requires clinical validation."
   )
 
   ini({

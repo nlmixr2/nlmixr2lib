@@ -8,36 +8,36 @@ Horita_2018_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F and V/F with fixed exponents 0.75 and 1.0 respectively (Horita 2018 Table 2 / Results 'RIF' paragraph 1: 'The fixed exponents were 0.75 for CL/F and 1.0 for V/F'). Reference weight is the cohort median 14.3 kg (Table 1: median weight 14.3 kg, IQR 9.70 to 20.1 kg). The paper does not state the reference weight explicitly; the cohort median was inferred by back-computation of the typical-value CL/F against the published adult value of pyrazinamide (Alsultan 2017 5.06 L/h at 70 kg), which matches Horita's PZA typical value when normalised at 14.3 kg.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL/F and V/F with fixed exponents 0.75 and 1.0 respectively (Horita 2018 Table 2 / Results 'RIF' paragraph 1: 'The fixed exponents were 0.75 for CL/F and 1.0 for V/F'). Reference weight is the cohort median 14.3 kg (Table 1: median weight 14.3 kg, IQR 9.70 to 20.1 kg). The paper does not state the reference weight explicitly; the cohort median was inferred by back-computation of the typical-value CL/F against the published adult value of pyrazinamide (Alsultan 2017 5.06 L/h at 70 kg), which matches Horita's PZA typical value when normalised at 14.3 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 113L,
-    n_studies      = 1L,
-    age_range      = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
-    age_median     = "5.00 years",
-    weight_range   = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
-    weight_median  = "14.3 kg",
+    species = "human",
+    n_subjects = 113L,
+    n_studies = 1L,
+    age_range = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
+    age_median = "5.00 years",
+    weight_range = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
+    weight_median = "14.3 kg",
     sex_female_pct = 44.2,
     hiv_positive_pct = 52.2,
-    nat2_slow_pct  = 45.1,
-    disease_state  = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
-    dose_range     = "Rifampin 10-20 mg/kg orally daily (median 15.8 mg/kg, IQR 13.6-18.8). Administered as part of standard four-drug anti-TB regimen (RIF, INH, PZA, EMB).",
-    regions        = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
-    notes          = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. RIF concentrations 0.117-30 ug/mL by LC-MS/MS. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 2."
+    nat2_slow_pct = 45.1,
+    disease_state = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
+    dose_range = "Rifampin 10-20 mg/kg orally daily (median 15.8 mg/kg, IQR 13.6-18.8). Administered as part of standard four-drug anti-TB regimen (RIF, INH, PZA, EMB).",
+    regions = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
+    notes = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. RIF concentrations 0.117-30 ug/mL by LC-MS/MS. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 2."
   )
 
   ini({

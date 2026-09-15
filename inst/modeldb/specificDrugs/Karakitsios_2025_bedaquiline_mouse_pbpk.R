@@ -31,19 +31,19 @@ Karakitsios_2025_bedaquiline_mouse_pbpk <- function() {
   # a canonical chain prefix -- see inst/references/compartment-names.md.
 
   compartmentData <- list(
-    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
-    lung_ew     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    lung_iw     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    lesion      = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum1     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum2     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum3     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum4     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum5     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum6     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
+    lung_ew = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    lung_iw = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    lesion = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum1 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum2 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum3 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum4 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum5 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum6 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
@@ -51,9 +51,9 @@ Karakitsios_2025_bedaquiline_mouse_pbpk <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Not a model covariate. Every plasma and lung parameter below is the ABSOLUTE value for",
         "a typical 0.025 kg mouse: Table S5 reports the plasma model in absolute L and L/h",
         "alongside a weight-normalised column, and Table S3 tabulates lung blood flow, the four",
@@ -66,13 +66,13 @@ Karakitsios_2025_bedaquiline_mouse_pbpk <- function() {
   )
 
   population <- list(
-    species        = "mouse (BALB/c, C3HeB/FeJ 'Kramnik', and Swiss SPF (CD1))",
-    n_subjects     = NA_integer_,
-    n_studies      = 3L,
+    species = "mouse (BALB/c, C3HeB/FeJ 'Kramnik', and Swiss SPF (CD1))",
+    n_subjects = NA_integer_,
+    n_studies = 3L,
     sex_female_pct = NA_real_,
-    age_range      = "8-10 weeks for the BALB/c and C3HeB/FeJ infection protocols",
-    weight_median  = "0.025 kg (Simcyp reference mouse; Table S3 footnote a)",
-    disease_state  = paste(
+    age_range = "8-10 weeks for the BALB/c and C3HeB/FeJ infection protocols",
+    weight_median = "0.025 kg (Simcyp reference mouse; Table S3 footnote a)",
+    disease_state = paste(
       "Healthy/uninvolved lung was characterised in uninfected and infected animals across three",
       "strains. Infected-lung data come from Mycobacterium tuberculosis-infected mice: BALB/c",
       "develop type III cellular non-necrotising lesions only, whereas C3HeB/FeJ (Kramnik) mice",
@@ -80,13 +80,13 @@ Karakitsios_2025_bedaquiline_mouse_pbpk <- function() {
       "necrotic caseous core.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral gavage. 25 mg/kg single dose (BALB/c and Kramnik, Irwin 2016); 25 mg/kg/day single and",
       "multiple doses (Kramnik, Walter 2023; up to 17 daily doses); 6.25 and 25 mg/kg single and",
       "multiple doses (Swiss SPF (CD1), Janssen R&D). Table S1.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Mean concentrations were modelled rather than individual data because most protocols used",
       "only about 3 animals per sampling time (Methods 2.1). Plasma data were Janssen R&D rich",
       "sampling; lung data pooled Kramnik, BALB/c and Swiss SPF strains with a random effect on",

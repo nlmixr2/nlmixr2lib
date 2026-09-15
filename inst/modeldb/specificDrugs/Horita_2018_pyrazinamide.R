@@ -8,38 +8,38 @@ Horita_2018_pyrazinamide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
     transit3 = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F (estimated exponent 0.735) and V/F (estimated exponent 0.677) per Horita 2018 Table 4. Reference weight is the cohort median 14.3 kg (Table 1); see the vignette Errata for the reference-weight derivation.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL/F (estimated exponent 0.735) and V/F (estimated exponent 0.677) per Horita 2018 Table 4. Reference weight is the cohort median 14.3 kg (Table 1); see the vignette Errata for the reference-weight derivation.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 113L,
-    n_studies      = 1L,
-    age_range      = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
-    age_median     = "5.00 years",
-    weight_range   = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
-    weight_median  = "14.3 kg",
+    species = "human",
+    n_subjects = 113L,
+    n_studies = 1L,
+    age_range = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
+    age_median = "5.00 years",
+    weight_range = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
+    weight_median = "14.3 kg",
     sex_female_pct = 44.2,
     hiv_positive_pct = 52.2,
-    disease_state  = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
-    dose_range     = "Pyrazinamide 30-40 mg/kg orally daily (median 24.7 mg/kg, IQR 22.6-29.7; note: median was below the WHO 2010 recommended range). Administered as part of standard four-drug anti-TB regimen.",
-    regions        = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
-    notes          = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. PZA concentrations 0.20-80 ug/mL by LC-MS/MS. Three children with only-BLQ values (malabsorption group) and one child with no observed peak were excluded from model building. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 4."
+    disease_state = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
+    dose_range = "Pyrazinamide 30-40 mg/kg orally daily (median 24.7 mg/kg, IQR 22.6-29.7; note: median was below the WHO 2010 recommended range). Administered as part of standard four-drug anti-TB regimen.",
+    regions = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
+    notes = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. PZA concentrations 0.20-80 ug/mL by LC-MS/MS. Three children with only-BLQ values (malabsorption group) and one child with no observed peak were excluded from model building. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 4."
   )
 
   ini({

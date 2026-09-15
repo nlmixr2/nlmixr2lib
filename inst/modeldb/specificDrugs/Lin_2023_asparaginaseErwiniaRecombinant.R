@@ -1,114 +1,124 @@
 Lin_2023_asparaginaseErwiniaRecombinant <- function() {
   description <- "One-compartment population PK model for intramuscular recombinant Erwinia chrysanthemi asparaginase (JZP458, marketed as Rylaze) in pediatric and young-adult patients with acute lymphoblastic leukemia or lymphoblastic lymphoma who developed hypersensitivity to E. coli-derived asparaginases (Lin 2023, phase II/III study AALL1931). The measured quantity is serum asparaginase activity (SAA), so all amounts are activity units (IU) rather than mass. Absorption is mixed-order: the dose enters the depot as a zero-order input at a constant rate R1, running simultaneously with first-order absorption Ka out of the depot, which makes the terminal phase absorption rate limited (flip-flop). Ka, R1 and the relative bioavailability F were fixed to values carried over from the phase I intensive-sampling PopPK model (Lin 2021) because the sparse AALL1931 sampling could not characterize the absorption phase. Body surface area is an allometric covariate on both clearance and volume; Black or African American race and T-cell ALL disease subtype are multiplicative fractional-change covariates on clearance. Interindividual variability is exponential on clearance and volume, with a combined proportional and additive residual error."
-  reference   <- "Lin T, Whigham T, Fernando I, Choi MR, Wang Q, Silverman JA. Population pharmacokinetics of intramuscular recombinant Erwinia chrysanthemi asparaginase (JZP458) in patients with acute lymphoblastic leukemia. Clin Transl Sci. 2023;16(5):898-909. doi:10.1111/cts.13499"
-  vignette    <- "Lin_2023_asparaginaseErwiniaRecombinant"
-  units       <- list(time = "h", dosing = "IU", concentration = "IU/mL")
+  reference <- "Lin T, Whigham T, Fernando I, Choi MR, Wang Q, Silverman JA. Population pharmacokinetics of intramuscular recombinant Erwinia chrysanthemi asparaginase (JZP458) in patients with acute lymphoblastic leukemia. Clin Transl Sci. 2023;16(5):898-909. doi:10.1111/cts.13499"
+  vignette <- "Lin_2023_asparaginaseErwiniaRecombinant"
+  units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amounts are asparaginase ACTIVITY units (IU), not mass:
   # the assay reads serum asparaginase activity and the model's zero-order
   # absorption rate R1 is reported in IU/h (Lin 2023 Table 2; Lin 2021 Table 2).
   compartmentData <- list(
-    depot   = list(analyte = "recombinant Erwinia chrysanthemi asparaginase (JZP458)", units = "IU", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "recombinant Erwinia chrysanthemi asparaginase (JZP458)", units = "IU", specimen = "serum", verified = TRUE)
+    depot = list(
+      analyte = "recombinant Erwinia chrysanthemi asparaginase (JZP458)",
+      units = "IU",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "recombinant Erwinia chrysanthemi asparaginase (JZP458)",
+      units = "IU",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric (power) covariate on BOTH clearance (exponent 1.48) and central volume (exponent 1.61), normalized to a 1.2 m^2 reference. Lin 2023 Results, Base model: 'The BSA standard used for scaling was 1.2 m^2 to reflect an average pediatric patient.' The printed final-model equations (Lin 2023 Results, Covariate analysis and final PopPK model selection) are CL [mL/h] = 146 * (BSA/1.2)^1.48 * 0.674^(Black/African American) * 0.771^(T-ALL) and V [mL] = 445 * (BSA/1.2)^1.61. Analysis-set BSA 0.44-2.53 m^2 (mean 1.23, median 1.17; Lin 2023 Table 1). Note both exponents exceed 1, so clearance and volume rise faster than proportionally with BSA; because dose is also BSA-proportional (mg/m^2), trough activity DECREASES with increasing BSA. The dose-regimen simulations spanned BSA 0.25-3.03 m^2 (NHANES virtual population).",
-      source_name        = "BSA"
+      notes = "Allometric (power) covariate on BOTH clearance (exponent 1.48) and central volume (exponent 1.61), normalized to a 1.2 m^2 reference. Lin 2023 Results, Base model: 'The BSA standard used for scaling was 1.2 m^2 to reflect an average pediatric patient.' The printed final-model equations (Lin 2023 Results, Covariate analysis and final PopPK model selection) are CL [mL/h] = 146 * (BSA/1.2)^1.48 * 0.674^(Black/African American) * 0.771^(T-ALL) and V [mL] = 445 * (BSA/1.2)^1.61. Analysis-set BSA 0.44-2.53 m^2 (mean 1.23, median 1.17; Lin 2023 Table 1). Note both exponents exceed 1, so clearance and volume rise faster than proportionally with BSA; because dose is also BSA-proportional (mg/m^2), trough activity DECREASES with increasing BSA. The dose-regimen simulations spanned BSA 0.25-3.03 m^2 (NHANES virtual population).",
+      source_name = "BSA"
     ),
     RACE_BLACK = list(
-      description        = "Black or African American race indicator (1 = Black/African American, 0 = other)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black or African American race indicator (1 = Black/African American, 0 = other)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black/African American; in the AALL1931 analysis set this pools White/Caucasian 68.7%, Declined to state 11.4%, Asian 4.2%, American Indian/Alaska Native 1.8% and Other 0.6%)",
-      notes              = "Time-fixed per subject. Multiplies clearance by 0.674, i.e. a 32.6% LOWER SAA clearance in Black/African American patients (Lin 2023 Table 2, RSE 10.6%, 95% CI 0.534-0.814; Discussion: 'modeled as fractional changes of 0.674'). 22 of 166 patients (13.3%; Lin 2023 Table 1). Race was carried into the model-based simulations deliberately: Lin 2023 Methods, Model-based simulations, notes the NHANES virtual population was constructed so its Black/African American proportion matched real-world ALL epidemiology precisely because race is a significant covariate on JZP458 PK. Despite the covariate being retained, the paper's subgroup simulations concluded no dosage modification is recommended based on race.",
-      source_name        = "Race (Black/African American)"
+      notes = "Time-fixed per subject. Multiplies clearance by 0.674, i.e. a 32.6% LOWER SAA clearance in Black/African American patients (Lin 2023 Table 2, RSE 10.6%, 95% CI 0.534-0.814; Discussion: 'modeled as fractional changes of 0.674'). 22 of 166 patients (13.3%; Lin 2023 Table 1). Race was carried into the model-based simulations deliberately: Lin 2023 Methods, Model-based simulations, notes the NHANES virtual population was constructed so its Black/African American proportion matched real-world ALL epidemiology precisely because race is a significant covariate on JZP458 PK. Despite the covariate being retained, the paper's subgroup simulations concluded no dosage modification is recommended based on race.",
+      source_name = "Race (Black/African American)"
     ),
     DIS_TALL = list(
-      description        = "T-cell acute lymphoblastic leukemia disease-subtype indicator (1 = T-ALL, 0 = other ALL/LBL subtype)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "T-cell acute lymphoblastic leukemia disease-subtype indicator (1 = T-ALL, 0 = other ALL/LBL subtype)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-T-ALL; in the AALL1931 analysis set this pools B-ALL 74.1%, T-LBL 9.6% and B-LBL 0.6%)",
-      notes              = "Time-fixed per subject. Multiplies clearance by 0.771, i.e. a 22.9% LOWER SAA clearance in T-ALL patients (Lin 2023 Table 2, RSE 8.89%, 95% CI 0.637-0.905; Discussion: 'modeled as fractional changes of ... 0.771'). 26 of 166 patients (15.7%; Lin 2023 Table 1). NOTE the indicator is T-ALL specifically and NOT T-lineage: the 16 T-LBL patients (9.6%) sit in the reference group, because Lin 2023 screened primary disease (ALL vs LBL) and disease subtype (B-cell vs T-cell) as separate covariates and retained only the T-ALL cell of that cross-classification (Lin 2023 Methods, Population PK modeling; Results, Covariate analysis).",
-      source_name        = "Disease subtype (T-ALL)"
+      notes = "Time-fixed per subject. Multiplies clearance by 0.771, i.e. a 22.9% LOWER SAA clearance in T-ALL patients (Lin 2023 Table 2, RSE 8.89%, 95% CI 0.637-0.905; Discussion: 'modeled as fractional changes of ... 0.771'). 26 of 166 patients (15.7%; Lin 2023 Table 1). NOTE the indicator is T-ALL specifically and NOT T-lineage: the 16 T-LBL patients (9.6%) sit in the reference group, because Lin 2023 screened primary disease (ALL vs LBL) and disease subtype (B-cell vs T-cell) as separate covariates and retained only the T-ALL cell of that cross-classification (Lin 2023 Methods, Population PK modeling; Results, Covariate analysis).",
+      source_name = "Disease subtype (T-ALL)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as an intrinsic covariate on JZP458 PK but not retained in the final model (Lin 2023 Methods, Population PK modeling; Discussion). Analysis set 1.7-25 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as an intrinsic covariate on JZP458 PK but not retained in the final model (Lin 2023 Methods, Population PK modeling; Discussion). Analysis set 1.7-25 years."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Lin 2023 Discussion). 63 of 166 patients female (38.0%; Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Lin 2023 Discussion). 63 of 166 patients female (38.0%; Table 1)."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Lin 2023 Discussion). Analysis set 74.4-195.0 cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Lin 2023 Discussion). Analysis set 74.4-195.0 cm."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained; BSA was the retained body-size metric (Lin 2023 Discussion). Analysis set 9.33-131.0 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained; BSA was the retained body-size metric (Lin 2023 Discussion). Analysis set 9.33-131.0 kg."
     ),
     RACE_HISPANIC = list(
       description = "Hispanic or Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Ethnicity screened but not retained (Lin 2023 Discussion). 52 of 166 patients Hispanic or Latino (31.3%; Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Ethnicity screened but not retained (Lin 2023 Discussion). 52 of 166 patients Hispanic or Latino (31.3%; Table 1)."
     ),
     DIS_ALL = list(
       description = "Primary disease indicator (ALL vs LBL)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Primary disease (ALL or LBL) screened but not retained; only the disease-SUBTYPE T-ALL effect survived backward elimination (Lin 2023 Discussion). 149 ALL / 17 LBL (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Primary disease (ALL or LBL) screened but not retained; only the disease-SUBTYPE T-ALL effect survived backward elimination (Lin 2023 Discussion). 149 ALL / 17 LBL (Table 1)."
     ),
     ADA_POS = list(
       description = "Antidrug antibody positive indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Lin 2023 Discussion). Exactly 83 of 166 patients (50.0%) were ADA positive (Table 1); neutralizing-antibody positive in only 4 of 166 (2.4%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Lin 2023 Discussion). Exactly 83 of 166 patients (50.0%) were ADA positive (Table 1); neutralizing-antibody positive in only 4 of 166 (2.4%)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 166L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 166L,
+    n_studies = 1L,
     n_observations = 2687L,
-    age_range      = "1.7-25 years",
-    age_median     = "10.0 years",
-    weight_range   = "9.33-131.0 kg",
-    weight_median  = "36.5 kg",
-    bsa_range      = "0.44-2.53 m^2",
-    bsa_median     = "1.17 m^2",
+    age_range = "1.7-25 years",
+    age_median = "10.0 years",
+    weight_range = "9.33-131.0 kg",
+    weight_median = "36.5 kg",
+    bsa_range = "0.44-2.53 m^2",
+    bsa_median = "1.17 m^2",
     sex_female_pct = 38.0,
     race_ethnicity = c(
-      `White/Caucasian`               = 68.7,
-      `Black/African American`        = 13.3,
-      `Asian`                         = 4.2,
+      `White/Caucasian` = 68.7,
+      `Black/African American` = 13.3,
+      `Asian` = 4.2,
       `American Indian/Alaska Native` = 1.8,
-      `Other`                         = 0.6,
-      `Declined to state`             = 11.4
+      `Other` = 0.6,
+      `Declined to state` = 11.4
     ),
-    disease_state  = "Newly diagnosed acute lymphoblastic leukemia (89.8%) or lymphoblastic lymphoma (10.2%) with a grade 3 or greater allergic reaction, or silent inactivation, to a long-acting E. coli-derived asparaginase. Disease subtype B-ALL 74.1%, T-ALL 15.7%, T-LBL 9.6%, B-LBL 0.6%. All 166 patients had received pegaspargase before study entry.",
-    dose_range     = "Intramuscular JZP458 in three Monday/Wednesday/Friday cohorts: 25 mg/m^2 (n = 32), 37.5 mg/m^2 (n = 83) and 25/25/50 mg/m^2 (n = 51), six doses per two-week course. Injection volume at a single site capped at 2 mL.",
-    regions        = "Children's Oncology Group sites (AALL1931; NCT04145531)",
-    notes          = "Lin 2023 Table 1 (baseline demographics of the PopPK analysis set) and Results, Patient demographics. 2687 SAA observations, of which 2145 quantifiable and 542 below the limit of quantitation; BLOQ handled by the Beal M3 method. Assay calibration range 0.0349-0.2096 IU/mL with dilution linearity to 467.72-fold. NOTE Table 1 prints the age range as '(1.7-2.5)', which contradicts the same table's mean of 10.2 years and the Results text 'ranged from 1.7 to 25 years of age'; the range recorded here is the text value 1.7-25 years."
+    disease_state = "Newly diagnosed acute lymphoblastic leukemia (89.8%) or lymphoblastic lymphoma (10.2%) with a grade 3 or greater allergic reaction, or silent inactivation, to a long-acting E. coli-derived asparaginase. Disease subtype B-ALL 74.1%, T-ALL 15.7%, T-LBL 9.6%, B-LBL 0.6%. All 166 patients had received pegaspargase before study entry.",
+    dose_range = "Intramuscular JZP458 in three Monday/Wednesday/Friday cohorts: 25 mg/m^2 (n = 32), 37.5 mg/m^2 (n = 83) and 25/25/50 mg/m^2 (n = 51), six doses per two-week course. Injection volume at a single site capped at 2 mL.",
+    regions = "Children's Oncology Group sites (AALL1931; NCT04145531)",
+    notes = "Lin 2023 Table 1 (baseline demographics of the PopPK analysis set) and Results, Patient demographics. 2687 SAA observations, of which 2145 quantifiable and 542 below the limit of quantitation; BLOQ handled by the Beal M3 method. Assay calibration range 0.0349-0.2096 IU/mL with dilution linearity to 467.72-fold. NOTE Table 1 prints the age range as '(1.7-2.5)', which contradicts the same table's mean of 10.2 years and the Results text 'ranged from 1.7 to 25 years of age'; the range recorded here is the text value 1.7-25 years."
   )
 
   ini({

@@ -27,8 +27,8 @@ Gatti_1996_dapsone <- function() {
   )
   vignette <- "Gatti_1996_dapsone"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -36,21 +36,21 @@ Gatti_1996_dapsone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "dapsone", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "dapsone", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "dapsone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_RIF = list(
-      description        = paste(
+      description = paste(
         "Concomitant rifampin co-administration indicator (1 = on",
         "rifampin for at least 2 weeks at the time of blood sampling,",
         "0 = not on rifampin)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant rifampin)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the Gatti 1996 cohort (7 of 53",
         "patients on rifampin at study entry, having received rifampin",
         "for at least 2 weeks before blood sampling so the chronic",
@@ -63,19 +63,19 @@ Gatti_1996_dapsone <- function() {
         "rejected a non-shared parameterisation (dOFV 1.23, P > 0.05;",
         "Results paragraph 3)."
       ),
-      source_name        = "R (paper Results paragraph 3 covariate equation)"
+      source_name = "R (paper Results paragraph 3 covariate equation)"
     ),
     TBILI = list(
-      description        = paste(
+      description = paste(
         "Total serum bilirubin at the time of pharmacokinetic sampling",
         "(mg/dL). 7 of 53 patients had TBILI > 1.2 mg/dL (the paper's",
         "upper limit of the normal range); the cohort median was 0.7",
         "mg/dL."
       ),
       units = "umol/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the Gatti 1996 cohort. Range 0.3-8.0",
         "mg/dL, median 0.7 mg/dL (Table 1). Multiplicative fractional",
         "effect on Ka analogous to the paper's explicit rifampin",
@@ -88,20 +88,20 @@ Gatti_1996_dapsone <- function() {
         "to 1.04 in Table 3 display. The form was confirmed by operator",
         "sidecar response 2026-05-30 (request-001 q1=A)."
       ),
-      source_name        = "Bilirubin (paper Materials and Methods Table 1)"
+      source_name = "Bilirubin (paper Materials and Methods Table 1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 53L,
-    n_studies      = 1L,
-    age_range      = "27-46 years",
-    age_median     = "33 years",
-    weight_range   = "40-83 kg",
-    weight_median  = "62 kg",
+    species = "human",
+    n_subjects = 53L,
+    n_studies = 1L,
+    age_range = "27-46 years",
+    age_median = "33 years",
+    weight_range = "40-83 kg",
+    weight_median = "62 kg",
     sex_female_pct = 9.4,
-    disease_state  = paste(
+    disease_state = paste(
       "HIV-infected adults receiving dapsone for Pneumocystis carinii",
       "pneumonia (PCP) prophylaxis. CD4 lymphocyte count: median 25",
       "cells/uL (range 0-389); 24 of 53 were p24 antigen negative. 48",
@@ -113,7 +113,7 @@ Gatti_1996_dapsone <- function() {
       "IU/L (range 23-508); total bilirubin median 0.7 mg/dL (range",
       "0.3-8.0)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "100 mg dapsone twice weekly orally (biweekly: alternating 72-h",
       "and 96-h intervals between doses) for at least 1 month before",
       "the PK study. Two formulations: center 1 used commercial",
@@ -122,8 +122,8 @@ Gatti_1996_dapsone <- function() {
       "powder (42 patients). Study site (formulation) was tested as a",
       "covariate and found non-significant on all PK parameters."
     ),
-    regions        = "Italy (Genoa, Verona) -- 2 medical centers",
-    notes          = paste(
+    regions = "Italy (Genoa, Verona) -- 2 medical centers",
+    notes = paste(
       "53 subjects, 218 plasma dapsone concentrations. Sampling target:",
       "random within each of the time intervals 0-3, 3-24, 24-48, 48-96",
       "h after dosing (Materials and Methods). Concentrations measured",

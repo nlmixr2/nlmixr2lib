@@ -27,20 +27,20 @@ Hanberg_2018_meropenem <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated creatinine clearance by the Cockcroft-Gault formula",
         "(raw mL/min, NOT BSA-normalized)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eCLCr. Computed by the Cockcroft-Gault equation in",
         "raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under",
         "the canonical CRCL column per inst/references/covariate-columns.md",
@@ -57,21 +57,21 @@ Hanberg_2018_meropenem <- function() {
         "the published slope e_crcl_cl = 0.0460 already has units L/h per",
         "(mL/min); no in-model unit conversion is needed)."
       ),
-      source_name        = "eCLCr"
+      source_name = "eCLCr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "30-69 years (median 56)",
-    age_median     = "56 years",
-    weight_range   = "55-134 kg (median 100.5)",
-    weight_median  = "100.5 kg",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "30-69 years (median 56)",
+    age_median = "56 years",
+    weight_range = "55-134 kg (median 100.5)",
+    weight_median = "100.5 kg",
     sex_female_pct = 50,
     race_ethnicity = "Not reported (single-centre Danish national VV-ECMO referral hospital, presumed predominantly European)",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults on venovenous or venoarterial ECMO treatment",
       "for severe heart and/or lung failure not responding to conventional",
       "treatment; underlying infections included influenza A virus pneumonia",
@@ -80,14 +80,14 @@ Hanberg_2018_meropenem <- function() {
       "enterococcus, group A streptococcus, and aspergillus galactomannan",
       "co-infection. SOFA scores ranged 4-15 (median 11.5) at inclusion."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Meropenem 1 g (n = 7) or 2 g (n = 3) IV bolus infused over 5 min,",
       "every 8 hours. ECMO and meropenem treatment were initiated less than",
       "96 h prior to inclusion; mean of 7 (range 3-10) prior meropenem doses",
       "before the sampling on day 1, with additional samples on days 2, 4,",
       "and 6."
     ),
-    regions        = paste(
+    regions = paste(
       "Denmark, single-centre (Aarhus University Hospital, national",
       "VV-ECMO centre of Denmark, 25 annual VV-ECMO and 75 VA-ECMO runs).",
       "Study conducted February-May 2016."
@@ -119,7 +119,7 @@ Hanberg_2018_meropenem <- function() {
       "data from that subject were excluded from the SCT-arm fit; plasma",
       "data from all 10 patients were included."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics per Hanberg 2018 Table 1 (per-patient and",
       "medians). Quantification by UHPLC-UV (Agilent 1290 Infinity, C18",
       "column, 304 nm detection); LLOQ 0.5 ug/mL plasma, interrun",

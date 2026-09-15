@@ -31,7 +31,7 @@ Yau_2023_midazolam_monkey_pbpk <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_middle_out_pbpk_translation"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. `central` lumps arterial blood, venous blood and lung
@@ -43,35 +43,35 @@ Yau_2023_midazolam_monkey_pbpk <- function() {
   # of Table 1. verified = TRUE: identities read off the paper's Table 1
   # tissue groupings and the model's own equations.
   compartmentData <- list(
-    central  = list(analyte = "midazolam", units = "mg", specimen = "whole blood", verified = TRUE),
-    adipose  = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "midazolam", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
     pancreas = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach  = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE)
+    skin = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "cynomolgus monkey",
-    n_subjects     = 10L,
-    n_studies      = 3L,
-    age_range      = "adult",
-    weight_range   = "5 kg reference monkey for the physiology (Table S6)",
+    species = "cynomolgus monkey",
+    n_subjects = 10L,
+    n_studies = 3L,
+    age_range = "adult",
+    weight_range = "5 kg reference monkey for the physiology (Table S6)",
     sex_female_pct = 0,
-    disease_state  = "healthy monkeys",
-    dose_range     = "0.3 to 1 mg/kg intravenous, bolus or 15 min infusion (Table S2)",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "healthy monkeys",
+    dose_range = "0.3 to 1 mg/kg intravenous, bolus or 15 min infusion (Table S2)",
+    regions = NA_character_,
+    notes = paste(
       "Three published cynomolgus studies (Yau 2023 Table S2)",
       "contributing average plasma concentration-time profiles from four,",
       "three and three male animals. Observed monkey Vss,b was 8.8 L and",

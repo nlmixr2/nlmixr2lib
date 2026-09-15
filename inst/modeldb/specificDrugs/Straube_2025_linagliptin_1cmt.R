@@ -20,21 +20,21 @@ Straube_2025_linagliptin_1cmt <- function() {
   # molecule inhibitor of dipeptidyl peptidase-4; Straube 2025 section 3.2).
   # specimen is not stated, hence verified = FALSE.
   compartmentData <- list(
-    central = list(analyte = "linagliptin",              units = "nmol", specimen = "plasma", verified = FALSE),
-    target  = list(analyte = "dipeptidyl peptidase-4",   units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "linagliptin", units = "nmol", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "dipeptidyl peptidase-4", units = "nmol", specimen = "plasma", verified = FALSE),
     complex = list(analyte = "linagliptin-DPP-4 complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     disease_state = "Linagliptin is a small molecule inhibitor of dipeptidyl peptidase-4 (DPP-4) used to treat type 2 diabetes (Straube 2025 section 3.2).",
-    dose_range    = "Single intravenous doses of 0.5, 2.5 and 10 mg (Figure 5c).",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Single intravenous doses of 0.5, 2.5 and 10 mg (Figure 5c).",
+    regions = NA_character_,
+    notes = paste(
       "Straube 2025 does not state the species explicitly, but the absolute (not per-kg) mg dose levels and",
       "the fitted Vc of 104.854 L are consistent with adult human intravenous data; nlmixr2lib already",
       "carries human linagliptin popPK as Retlich_2015_linagliptin. Data were digitised by Straube from",

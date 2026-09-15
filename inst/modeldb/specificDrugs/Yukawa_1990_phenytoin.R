@@ -1,74 +1,74 @@
 Yukawa_1990_phenytoin <- function() {
   description <- "Steady-state Michaelis-Menten population PK model for phenytoin in 334 Japanese epilepsy outpatients on chronic oral phenytoin (Yukawa 1990 Model 2). Covariate effects on Vmax (allometric body weight, co-anticonvulsants) and Km (age <15 yr, co-anticonvulsants); dose-dependent powder bioavailability."
-  reference   <- "Yukawa E, Higuchi S, Aoyama T. Population pharmacokinetics of phenytoin from routine clinical data in Japan: an update. Chem Pharm Bull (Tokyo). 1990;38(7):1973-1976. doi:10.1248/cpb.38.1973"
-  vignette    <- "Yukawa_1990_phenytoin"
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  reference <- "Yukawa E, Higuchi S, Aoyama T. Population pharmacokinetics of phenytoin from routine clinical data in Japan: an update. Chem Pharm Bull (Tokyo). 1990;38(7):1973-1976. doi:10.1248/cpb.38.1973"
+  vignette <- "Yukawa_1990_phenytoin"
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 60 kg per Yukawa 1990 Methods (page 1974, Eq. 2: 'Vm and Km are the parameter values for the standard patient (adult, weight 60 kg, PHT alone, tablet)'). Power-form effect on Vmax with exponent 0.737 (Model 2 estimate, Table III).",
-      source_name        = "WT"
+      notes = "Reference 60 kg per Yukawa 1990 Methods (page 1974, Eq. 2: 'Vm and Km are the parameter values for the standard patient (adult, weight 60 kg, PHT alone, tablet)'). Power-form effect on Vmax with exponent 0.737 (Model 2 estimate, Table III).",
+      source_name = "WT"
     ),
     CHILD = list(
-      description        = "Indicator for pediatric subject (age < 15 years)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for pediatric subject (age < 15 years)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult, age >= 15 years)",
-      notes              = "Yukawa 1990 Methods page 1974 (Eq. 3) defines an AGE indicator equal to 1 if the patient is more than 15 years old and theta_AGE otherwise; the canonical CHILD indicator inverts this orientation (CHILD = 1 - AGE_indicator) so 0 is the adult reference. When CHILD = 1, Km is multiplied by theta_AGE = 0.752 (Model 2 estimate, Table III), i.e., Km in <15 yr olds is 24.8 percent less than adults.",
-      source_name        = "AGE_LT15"
+      notes = "Yukawa 1990 Methods page 1974 (Eq. 3) defines an AGE indicator equal to 1 if the patient is more than 15 years old and theta_AGE otherwise; the canonical CHILD indicator inverts this orientation (CHILD = 1 - AGE_indicator) so 0 is the adult reference. When CHILD = 1, Km is multiplied by theta_AGE = 0.752 (Model 2 estimate, Table III), i.e., Km in <15 yr olds is 24.8 percent less than adults.",
+      source_name = "AGE_LT15"
     ),
     CONMED_AED = list(
-      description        = "Indicator for any concomitant antiepileptic drug coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for any concomitant antiepileptic drug coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (PHT alone)",
-      notes              = "Yukawa 1990 Methods page 1974 (Eqs. 2 and 3) defines a CO indicator equal to 1 if the patient takes PHT alone and theta_co otherwise; the canonical CONMED_AED indicator inverts this orientation (CONMED_AED = 1 - CO_indicator) so 0 is the PHT-monotherapy reference. When CONMED_AED = 1, Vmax is multiplied by theta_coVm = 1.08 and Km by theta_coKm = 1.32 (Model 2 estimates, Table III). Co-anticonvulsants in the source dataset (Table I) include phenobarbital, carbamazepine, valproate, primidone, clonazepam, sultiame, ethotoin, ethosuximide, acetazolamide, and diazepam.",
-      source_name        = "CO_AED"
+      notes = "Yukawa 1990 Methods page 1974 (Eqs. 2 and 3) defines a CO indicator equal to 1 if the patient takes PHT alone and theta_co otherwise; the canonical CONMED_AED indicator inverts this orientation (CONMED_AED = 1 - CO_indicator) so 0 is the PHT-monotherapy reference. When CONMED_AED = 1, Vmax is multiplied by theta_coVm = 1.08 and Km by theta_coKm = 1.32 (Model 2 estimates, Table III). Co-anticonvulsants in the source dataset (Table I) include phenobarbital, carbamazepine, valproate, primidone, clonazepam, sultiame, ethotoin, ethosuximide, acetazolamide, and diazepam.",
+      source_name = "CO_AED"
     ),
     FORM_POWDER = list(
-      description        = "Indicator for phenytoin powder oral formulation (1 = powder, 0 = tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for phenytoin powder oral formulation (1 = powder, 0 = tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet)",
-      notes              = "Yukawa 1990 Methods page 1974 (Eq. 4) defines a BA indicator equal to 1 if PHT is prescribed as a tablet and 0 if as a powder; the canonical FORM_POWDER indicator inverts this (FORM_POWDER = 1 - BA_indicator) so 0 is the tablet reference. For tablet (FORM_POWDER = 0) bioavailability F = 1; for powder (FORM_POWDER = 1) Model 2's F = 1 - exp(-9.92 / DOSE_PHT_MGKGD). Both formulations are Aleviatin brand from Dainippon Pharmaceutical Co., Ltd.",
-      source_name        = "FORM_POWDER"
+      notes = "Yukawa 1990 Methods page 1974 (Eq. 4) defines a BA indicator equal to 1 if PHT is prescribed as a tablet and 0 if as a powder; the canonical FORM_POWDER indicator inverts this (FORM_POWDER = 1 - BA_indicator) so 0 is the tablet reference. For tablet (FORM_POWDER = 0) bioavailability F = 1; for powder (FORM_POWDER = 1) Model 2's F = 1 - exp(-9.92 / DOSE_PHT_MGKGD). Both formulations are Aleviatin brand from Dainippon Pharmaceutical Co., Ltd.",
+      source_name = "FORM_POWDER"
     ),
     DOSE_PHT_MGKGD = list(
-      description        = "Patient's own total daily dose of phenytoin per kg body weight",
-      units              = "mg/kg/d",
-      type               = "continuous",
+      description = "Patient's own total daily dose of phenytoin per kg body weight",
+      units = "mg/kg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yukawa 1990 Methods page 1974 (Eq. 4): Dij is the daily dose of PHT for the ith Cpss in the jth patient, expressed in mg/kg/d. Used only in the powder-form bioavailability F = 1 - exp(-9.92 / DOSE_PHT_MGKGD); for tablet doses (FORM_POWDER = 0) the value is multiplied by 0 in the F expression and has no effect, but a non-NA non-zero placeholder must still be supplied. Compute as total daily dose (mg/d, summed across the 2-3 daily doses) divided by current body weight (kg).",
-      source_name        = "Dij"
+      notes = "Yukawa 1990 Methods page 1974 (Eq. 4): Dij is the daily dose of PHT for the ith Cpss in the jth patient, expressed in mg/kg/d. Used only in the powder-form bioavailability F = 1 - exp(-9.92 / DOSE_PHT_MGKGD); for tablet doses (FORM_POWDER = 0) the value is multiplied by 0 in the F expression and has no effect, but a non-NA non-zero placeholder must still be supplied. Compute as total daily dose (mg/d, summed across the 2-3 daily doses) divided by current body weight (kg).",
+      source_name = "Dij"
     )
   )
 
   population <- list(
-    n_subjects       = 334L,
-    n_observations   = 756L,
-    n_studies        = 1L,
-    age_range        = "0.6-71.1 years",
-    age_median       = "mean 24.3 (SD 14.1) years",
-    weight_range     = "9.0-115.0 kg",
-    weight_median    = "mean 49.1 (SD 15.5) kg",
-    sex_female_pct   = 49.1,
-    race_ethnicity   = "Japanese (single-centre cohort at Kyushu University Hospital, Fukuoka)",
-    disease_state    = "Epileptic outpatients on chronic oral phenytoin maintenance therapy. 101 patients on PHT monotherapy; 233 on PHT combined with phenobarbital, carbamazepine, valproate, primidone, clonazepam, sultiame, ethotoin, ethosuximide, acetazolamide, and/or diazepam in various combinations (Yukawa 1990 Table I).",
-    dose_range       = "Daily dose mean 225.8 (SD 73.1) mg/d. Aleviatin brand tablets and powders (Dainippon Pharmaceutical Co., Ltd., Osaka, Japan) prescribed two to three times daily.",
-    regions          = "Japan (Kyushu University Hospital, Fukuoka, single centre).",
-    notes            = "Yukawa 1990 Tables I and II baseline demographics. Steady-state PHT serum concentration mean 9.78 (SD 7.77) ug/mL (target therapeutic range 10-20 ug/mL). 170 male, 164 female. Sample timing: 2-5 hours post-dose at steady state, with concentration determined at least 30 days after any dose change. Concurrent therapy was not altered during the analysis window. All patients had normal renal and hepatic function. Two to four steady-state R-Cpss observations per patient at different daily doses (756 paired records total)."
+    n_subjects = 334L,
+    n_observations = 756L,
+    n_studies = 1L,
+    age_range = "0.6-71.1 years",
+    age_median = "mean 24.3 (SD 14.1) years",
+    weight_range = "9.0-115.0 kg",
+    weight_median = "mean 49.1 (SD 15.5) kg",
+    sex_female_pct = 49.1,
+    race_ethnicity = "Japanese (single-centre cohort at Kyushu University Hospital, Fukuoka)",
+    disease_state = "Epileptic outpatients on chronic oral phenytoin maintenance therapy. 101 patients on PHT monotherapy; 233 on PHT combined with phenobarbital, carbamazepine, valproate, primidone, clonazepam, sultiame, ethotoin, ethosuximide, acetazolamide, and/or diazepam in various combinations (Yukawa 1990 Table I).",
+    dose_range = "Daily dose mean 225.8 (SD 73.1) mg/d. Aleviatin brand tablets and powders (Dainippon Pharmaceutical Co., Ltd., Osaka, Japan) prescribed two to three times daily.",
+    regions = "Japan (Kyushu University Hospital, Fukuoka, single centre).",
+    notes = "Yukawa 1990 Tables I and II baseline demographics. Steady-state PHT serum concentration mean 9.78 (SD 7.77) ug/mL (target therapeutic range 10-20 ug/mL). 170 male, 164 female. Sample timing: 2-5 hours post-dose at steady state, with concentration determined at least 30 days after any dose change. Concurrent therapy was not altered during the analysis window. All patients had normal renal and hepatic function. Two to four steady-state R-Cpss observations per patient at different daily doses (756 paired records total)."
   )
 
   ini({

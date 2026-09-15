@@ -8,75 +8,75 @@ Clegg_2024_nirsevimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "nirsevimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "nirsevimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nirsevimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nirsevimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nirsevimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; used for allometric scaling on CL, Q, V2, V3 with reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Time-varying; used for allometric scaling on CL, Q, V2, V3 with reference weight 70 kg.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the CL maturation function; reference age is term birth (PAGE = 40/4.35 months).",
-      source_name        = "PAGE"
+      notes = "Time-varying. Drives the CL maturation function; reference age is term birth (PAGE = 40/4.35 months).",
+      source_name = "PAGE"
     ),
     RACE_BLACK_OTH = list(
-      description        = "Composite indicator: 1 if Black/African American or Other race, 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite indicator: 1 if Black/African American or Other race, 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White or Native Hawaiian/Pacific Islander",
-      notes              = "Clegg 2024 composite Black/Other group on CL. Renamed from source column BLACK_OTH to the canonical RACE_BLACK_OTH per covariate-columns.md.",
-      source_name        = "BLACK_OTH"
+      notes = "Clegg 2024 composite Black/Other group on CL. Renamed from source column BLACK_OTH to the canonical RACE_BLACK_OTH per covariate-columns.md.",
+      source_name = "BLACK_OTH"
     ),
     RACE_ASIAN_AMIND_MULTI = list(
-      description        = "Composite indicator: 1 if Asian, American Indian/Alaskan Native, or Multiple races, 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite indicator: 1 if Asian, American Indian/Alaskan Native, or Multiple races, 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White, Black/African American, Native Hawaiian/Pacific Islander, or Other",
-      notes              = "Applied to both CL and V2 with different coefficients. Renamed from source column ASIAN_AMIND_MULTI to the canonical RACE_ASIAN_AMIND_MULTI per covariate-columns.md.",
-      source_name        = "ASIAN_AMIND_MULTI"
+      notes = "Applied to both CL and V2 with different coefficients. Renamed from source column ASIAN_AMIND_MULTI to the canonical RACE_ASIAN_AMIND_MULTI per covariate-columns.md.",
+      source_name = "ASIAN_AMIND_MULTI"
     ),
     SEASON2 = list(
-      description        = "Indicator for the second RSV season at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the second RSV season at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (first RSV season)",
-      notes              = "Study-specific exposure indicator; multiplicative effect on CL.",
-      source_name        = "SEASON2"
+      notes = "Study-specific exposure indicator; multiplicative effect on CL.",
+      source_name = "SEASON2"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Multiplicative effect on CL. Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
-      source_name        = "ADA"
+      notes = "Multiplicative effect on CL. Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    age_median     = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
-    weight_median  = "TODO: from source paper",
+    n_subjects = "TODO: from source paper",
+    n_studies = "TODO: from source paper",
+    age_range = "TODO: from source paper",
+    age_median = "TODO: from source paper",
+    weight_range = "TODO: from source paper",
+    weight_median = "TODO: from source paper",
     sex_female_pct = "TODO: from source paper",
     race_ethnicity = "TODO: from source paper",
-    disease_state  = "Preterm and term infants at risk for RSV",
-    dose_range     = "TODO: from source paper",
-    regions        = "TODO: from source paper",
-    notes          = "TODO: from source paper (Clegg 2024 Table 1 baseline demographics)."
+    disease_state = "Preterm and term infants at risk for RSV",
+    dose_range = "TODO: from source paper",
+    regions = "TODO: from source paper",
+    notes = "TODO: from source paper (Clegg 2024 Table 1 baseline demographics)."
   )
 
   ini({

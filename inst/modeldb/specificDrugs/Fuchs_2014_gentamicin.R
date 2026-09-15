@@ -9,48 +9,48 @@ Fuchs_2014_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Fuchs_2014_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the time of blood sampling.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the time of blood sampling.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL and Q (fixed exponent 0.75) and on Vc and Vp",
         "(fixed exponent 1.0). Reference weight is the cohort median 2.170 kg",
         "(Methods 'Model-based pharmacokinetic analysis' and Table 2 footnote).",
         "Source column BW (Table 1)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     GA = list(
-      description        = "Gestational age at birth.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters CL and Vc as a linear effect centred on",
         "the cohort median 34 weeks: f_ga = 1 + theta * (GA/34 - 1). Range in",
         "the model-building cohort 24-42 weeks (Table 1)."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Fuchs 2014 reports postnatal age in DAYS (cohort median 1 day, range",
         "0-94 days; Table 1). The canonical PNA column is in MONTHS, so the",
         "linear-effect equation 1 + theta * (PNA_days/1 - 1) is reparameterised",
@@ -60,14 +60,14 @@ Fuchs_2014_gentamicin <- function() {
         "and cancel, leaving the paper's theta_CL_PNA = 0.054 unchanged.",
         "Users should supply PNA in months in the dataset."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     ),
     CONMED_DOPA = list(
-      description        = "Concomitant dopamine administration indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant dopamine administration indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant dopamine).",
-      notes              = paste(
+      notes = paste(
         "1 = subject is receiving dopamine concomitantly at the PK observation;",
         "0 = no concomitant dopamine. 9.4% of subjects (136/1449) in the",
         "model-building cohort (Table 1). Enters CL as a multiplicative linear",
@@ -75,16 +75,16 @@ Fuchs_2014_gentamicin <- function() {
         "(Table 2). Treated as time-varying per observation in the source paper;",
         "users should supply the appropriate flag per observation record."
       ),
-      source_name        = "DOPA"
+      source_name = "DOPA"
     )
   )
 
   covariatesDataExcluded <- list(
     PMA = list(
       description = "Postmenstrual age (= GA + PNA). Screened during covariate model building.",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained in the final model. The univariate effect on CL",
         "(DeltaOF = -658.1) and on Vc (DeltaOF = -214.6) was strong, but the",
         "paper showed that GA + PNA as two distinct covariates on CL outperformed",
@@ -95,9 +95,9 @@ Fuchs_2014_gentamicin <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male). Screened.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained. Model-building cohort 57.5% male, 42.5% female",
         "(Table 1). Results 'Covariate model': 'No other covariates showed any",
         "significant effect on gentamicin disposition (DeltaOF > -6.1, P > 0.01)'."
@@ -105,9 +105,9 @@ Fuchs_2014_gentamicin <- function() {
     ),
     CONMED_INDOMETH = list(
       description = "Concomitant indomethacin co-administration indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained. Univariate CL reduction of 18% (DeltaOF = -7.8,",
         "P = 0.005) but the bootstrap 95% CI included 0 and the indomethacin",
         "coefficient was omitted from the final model (Results 'Model validation",
@@ -117,9 +117,9 @@ Fuchs_2014_gentamicin <- function() {
     ),
     CONMED_FUROSEMIDE = list(
       description = "Concomitant furosemide co-administration indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained. Univariate CL reduction of 34% but DeltaOF",
         "= -6.3 (P = 0.012), not significant at the P < 0.01 threshold used",
         "during covariate inclusion. Only 5 subjects received furosemide,",
@@ -129,18 +129,18 @@ Fuchs_2014_gentamicin <- function() {
     ),
     PDA = list(
       description = "Patent ductus arteriosus indicator. Screened.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained. 10.6% of subjects (153/1449) in the",
         "model-building cohort (Table 1)."
       )
     ),
     IV_VENT = list(
       description = "Invasive ventilation indicator. Screened.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained. 20.8% of subjects in the model-building cohort.",
         "Results 'Covariate model' and Discussion paragraph on respiratory",
         "support."
@@ -148,36 +148,36 @@ Fuchs_2014_gentamicin <- function() {
     ),
     NIV_VENT = list(
       description = "Non-invasive ventilation indicator. Screened.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained. 59.4% of subjects in the model-building cohort."
       )
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1449L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 1449L,
+    n_studies = 1L,
     n_observations = 3039L,
-    age_range      = "GA 24-42 weeks at birth; PNA 0-94 days (median 1 day) at first sample",
-    age_median     = "GA 34 weeks; PMA 34.4 weeks; PNA 1 day",
-    weight_range   = "0.440-5.510 kg",
-    weight_median  = "2.170 kg",
+    age_range = "GA 24-42 weeks at birth; PNA 0-94 days (median 1 day) at first sample",
+    age_median = "GA 34 weeks; PMA 34.4 weeks; PNA 1 day",
+    weight_range = "0.440-5.510 kg",
+    weight_median = "2.170 kg",
     sex_female_pct = 42.5,
     race_ethnicity = "Not reported (single-centre Swiss cohort).",
-    disease_state  = paste(
+    disease_state = paste(
       "Preterm and term neonates (994 preterm, 455 term) admitted to a Neonatal",
       "Intensive Care Unit and receiving gentamicin for suspected or proven",
       "infection. Within a routine therapeutic drug monitoring (TDM) programme."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "3 mg/kg per dose IV (December 2006-April 2011) and 4 mg/kg per dose IV",
       "(May 2011-October 2011), each given as a 30-minute IV infusion, mostly",
       "in combination with amoxicillin."
     ),
-    regions        = "Switzerland (Centre Hospitalier Universitaire Vaudois, Lausanne; December 2006-October 2011).",
+    regions = "Switzerland (Centre Hospitalier Universitaire Vaudois, Lausanne; December 2006-October 2011).",
     co_medications = paste(
       "9.4% dopamine; 1.9% indomethacin; 0.3% furosemide; 20.8% invasive",
       "ventilation; 59.4% non-invasive ventilation; 10.6% patent ductus",
@@ -188,7 +188,7 @@ Fuchs_2014_gentamicin <- function() {
       "recruited through TDM January-April 2013 (Table 1), used for accuracy /",
       "precision assessment and dosage-adjustment-method comparison."
     ),
-    notes          = paste(
+    notes = paste(
       "Retrospective TDM cohort, December 2006-October 2011. Routine sampling",
       "comprised two concentrations after the first dose: peak (between 0.5",
       "and 1.5 h after the start of infusion) and a 12 h sample (between 11.5",

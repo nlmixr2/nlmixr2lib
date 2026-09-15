@@ -9,7 +9,6 @@ test_that("addEta named parameter", {
   expect_equal(findBlock(modelUpdate, "model")[[2]], str2lang("ka <- exp(lka + etaLka)"))
 
   if (requireNamespace("withr", quietly = TRUE)) {
-
     withr::with_options(list(nlmixr2lib.etaCombineType = "snake"), {
       suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
       expect_equal(findBlock(modelUpdate, "ini")[[10]], str2lang("eta_lka ~ 0.1"))

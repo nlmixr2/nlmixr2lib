@@ -8,66 +8,66 @@ Zhang_2025_nedosiran_uoxcr <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor for the PK layer, reference 70 kg (Zhang 2025 Table 2 covariate-formula footnote). Fixed exponents 0.750 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; estimated exponents -0.221 shared by ka1 and ka2 and 0.492 on Vmax. PK/PD cohort range 11.9-115.9 kg (Supplementary Table S2).",
-      source_name        = "BW"
+      notes = "Allometric size descriptor for the PK layer, reference 70 kg (Zhang 2025 Table 2 covariate-formula footnote). Fixed exponents 0.750 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; estimated exponents -0.221 shared by ka1 and ka2 and 0.492 on Vmax. PK/PD cohort range 11.9-115.9 kg (Supplementary Table S2).",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "BSA-normalized estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "BSA-normalized estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 90 mL/min/1.73 m^2 (Zhang 2025 Table 2 covariate-formula footnote). Power effects on CL/F (0.969) and Vc/F (0.174) in the PK layer. Estimating equation varies by cohort per Supplementary Table S3. PK/PD cohort range 35-197 mL/min/1.73 m^2 (Supplementary Table S2).",
-      source_name        = "eGFR"
+      notes = "Reference 90 mL/min/1.73 m^2 (Zhang 2025 Table 2 covariate-formula footnote). Power effects on CL/F (0.969) and Vc/F (0.174) in the PK layer. Estimating equation varies by cohort per Supplementary Table S3. PK/PD cohort range 35-197 mL/min/1.73 m^2 (Supplementary Table S2).",
+      source_name = "eGFR"
     ),
     DIS_PH1 = list(
-      description        = "Primary hyperoxaluria type 1 disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Primary hyperoxaluria type 1 disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = primary hyperoxaluria type 2 patient or healthy volunteer",
-      notes              = "1 for PH1 subjects, 0 for PH2 subjects and healthy volunteers (Zhang 2025 Table 2 covariate-formula footnote). Enters as the multiplicative factor 1.32^DIS_PH1 on the slow absorption rate ka1 in the PK layer. Every subject contributing spot Uox/Cr data to this model had PH1, so DIS_PH1 = 1 throughout the PD analysis population.",
-      source_name        = "PH"
+      notes = "1 for PH1 subjects, 0 for PH2 subjects and healthy volunteers (Zhang 2025 Table 2 covariate-formula footnote). Enters as the multiplicative factor 1.32^DIS_PH1 on the slow absorption rate ka1 in the PK layer. Every subject contributing spot Uox/Cr data to this model had PH1, so DIS_PH1 = 1 throughout the PD analysis population.",
+      source_name = "PH"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 6 years (Zhang 2025 Table 3 covariate-formula footnote). Power effect -0.450 on the Uox/Cr baseline, so younger patients have higher baseline spot Uox/Cr. PK/PD cohort range 2-46 years (Supplementary Table S2).",
-      source_name        = "AGE"
+      notes = "Reference 6 years (Zhang 2025 Table 3 covariate-formula footnote). Power effect -0.450 on the Uox/Cr baseline, so younger patients have higher baseline spot Uox/Cr. PK/PD cohort range 2-46 years (Supplementary Table S2).",
+      source_name = "AGE"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "nedosiran", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "nedosiran", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "nedosiran", units = "mg", specimen = "plasma", verified = TRUE),
-    effect      = list(analyte = "nedosiran", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    uoxcr       = list(analyte = "oxalate-to-creatinine ratio", units = "mmol/mol", specimen = "urine", verified = TRUE)
+    effect = list(analyte = "nedosiran", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    uoxcr = list(analyte = "oxalate-to-creatinine ratio", units = "mmol/mol", specimen = "urine", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 41,
+    n_studies = 3,
     n_observations = 668,
-    age_range      = "2-46 years",
-    weight_range   = "11.9-115.9 kg",
+    age_range = "2-46 years",
+    weight_range = "11.9-115.9 kg",
     sex_female_pct = 46.3,
     race_ethnicity = c(White = 41.5, Multiple = 22.0, Asian = 19.5, Unknown = 14.6, `Black or African American` = 2.4),
-    disease_state  = "primary hyperoxaluria type 1",
+    disease_state = "primary hyperoxaluria type 1",
     renal_function = "normal 36.6%, mild impairment 41.5%, moderate impairment 22.0%; eGFR 35-197 mL/min/1.73 m^2",
-    dose_range     = "136 or 170 mg SC once-monthly (age >= 12 years) and 3.5 mg/kg SC once-monthly capped at 136 or 170 mg (age < 12 years)",
-    regions        = "multinational",
-    notes          = "Patients with primary hyperoxaluria type 1 and at least one post-baseline spot Uox/Cr value from PHYOX2 (NCT03847909), PHYOX3 (NCT04042402) and PHYOX8 (NCT05001269). Age subgroups: 2 to <6 y (n=8), 6 to <9 y (n=5), 9 to <12 y (n=5), 12 to <18 y (n=6), >=18 y (n=17). The PK layer of this model was estimated on the larger 148-participant PK dataset; see modellib('Zhang_2025_nedosiran'). Baseline demographics are Supplementary Table S2 of Zhang 2025."
+    dose_range = "136 or 170 mg SC once-monthly (age >= 12 years) and 3.5 mg/kg SC once-monthly capped at 136 or 170 mg (age < 12 years)",
+    regions = "multinational",
+    notes = "Patients with primary hyperoxaluria type 1 and at least one post-baseline spot Uox/Cr value from PHYOX2 (NCT03847909), PHYOX3 (NCT04042402) and PHYOX8 (NCT05001269). Age subgroups: 2 to <6 y (n=8), 6 to <9 y (n=5), 9 to <12 y (n=5), 12 to <18 y (n=6), >=18 y (n=17). The PK layer of this model was estimated on the larger 148-participant PK dataset; see modellib('Zhang_2025_nedosiran'). Baseline demographics are Supplementary Table S2 of Zhang 2025."
   )
 
   ini({

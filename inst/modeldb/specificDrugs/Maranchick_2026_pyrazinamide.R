@@ -9,43 +9,43 @@ Maranchick_2026_pyrazinamide <- function() {
   # ('Study design': oral dosing; 'blood samples ... plasma aliquoted' and
   # quantified by LC-MS/MS).
   compartmentData <- list(
-    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with estimated exponents on CL/F (0.70) and V/F (0.79), normalised to a 15 kg reference weight, per Maranchick 2026 Results 'Pyrazinamide' paragraph 1: 'Cl/F*(Weight/15)^0.7' and 'V/F*(Weight/15)^0.79'. The 15 kg normalisation constant is the value printed by the paper; it is close to but not identical to the cohort median weight of 16 kg (Table 1). Cohort weight range 4-60 kg.",
-      source_name        = "Weight"
+      notes = "Allometric scaling with estimated exponents on CL/F (0.70) and V/F (0.79), normalised to a 15 kg reference weight, per Maranchick 2026 Results 'Pyrazinamide' paragraph 1: 'Cl/F*(Weight/15)^0.7' and 'V/F*(Weight/15)^0.79'. The 15 kg normalisation constant is the value printed by the paper; it is close to but not identical to the cohort median weight of 16 kg (Table 1). Cohort weight range 4-60 kg.",
+      source_name = "Weight"
     ),
     HIV_POS = list(
-      description        = "HIV coinfection status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV coinfection status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative; children with TB alone)",
-      notes              = "1 = TB/HIV coinfected (n = 44), 0 = TB only (n = 41). Time-fixed per subject. Applied as an exponential effect on apparent clearance: cl = cl_typ * exp(e_hiv_pos_cl * HIV_POS) with e_hiv_pos_cl = 0.17 (Maranchick 2026 Table 2, row 'Exponent, HIV+ on Cl/F'). exp(0.17) - 1 = 0.185, matching the Results statement that children with TB/HIV had clearance 18.5% faster than children with TB alone. HIV medications (abacavir, dolutegravir, efavirenz, lopinavir/ritonavir) were tested separately as covariates but did not improve model fit.",
-      source_name        = "HIV+"
+      notes = "1 = TB/HIV coinfected (n = 44), 0 = TB only (n = 41). Time-fixed per subject. Applied as an exponential effect on apparent clearance: cl = cl_typ * exp(e_hiv_pos_cl * HIV_POS) with e_hiv_pos_cl = 0.17 (Maranchick 2026 Table 2, row 'Exponent, HIV+ on Cl/F'). exp(0.17) - 1 = 0.185, matching the Results statement that children with TB/HIV had clearance 18.5% faster than children with TB alone. HIV medications (abacavir, dolutegravir, efavirenz, lopinavir/ritonavir) were tested separately as covariates but did not improve model fit.",
+      source_name = "HIV+"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 85L,
-    n_studies        = 1L,
-    age_range        = "0.3-14.5 years (median 5.0); 49.4% under 5 years, 18.8% under 2 years, 7.1% under 1 year",
-    age_median       = "5.0 years",
-    weight_range     = "4-60 kg (median 16)",
-    weight_median    = "16 kg",
-    sex_female_pct   = 38.8,
+    species = "human",
+    n_subjects = 85L,
+    n_studies = 1L,
+    age_range = "0.3-14.5 years (median 5.0); 49.4% under 5 years, 18.8% under 2 years, 7.1% under 1 year",
+    age_median = "5.0 years",
+    weight_range = "4-60 kg (median 16)",
+    weight_median = "16 kg",
+    sex_female_pct = 38.8,
     hiv_positive_pct = 51.8,
-    disease_state    = "Children with drug-susceptible tuberculosis, 41 (48.2%) with TB alone and 44 (51.8%) with TB/HIV coinfection. 24 (28.2%) malnourished (body-mass-index-for-age Z score below -2 SD). Of the TB/HIV participants, 29 (65.9%) received efavirenz-based antiretroviral therapy, 7 (15.9%) abacavir-based, 4 (9.1%) dolutegravir-based and 4 (9.1%) lopinavir/ritonavir-based.",
-    dose_range       = "Pyrazinamide 35 mg/kg once daily (WHO target range 30-40 mg/kg); administered median 31.6 mg/kg (range 21.4-49.7) as part of the first-line HRZE regimen. Children under 25 kg received dispersible HRZ 50/75/150 mg tablets (1, 2, 3 or 4 tablets in the 4-<8, 8-<12, 12-<16 and 16-<25 kg weight bands); children 25 kg and over received adult HRZE 75/150/400/275 mg tablets.",
-    regions          = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
-    notes            = "Two-arm PK study, enrolment February 2019 to June 2021, children 3 months to 14 years. PK sampling on one occasion after at least 4 weeks of HRZE therapy (steady state), with blood drawn at 0 (pre-dose), 1, 2, 4, 8 and 12 h post-dose after an overnight fast. 509 samples from 85 participants entered the final PZA model; 16 samples were below the limit of quantification (14 reported as 0 mg/L, 2 interval-censored). LC-MS/MS quantification range 0.5-100 mg/L. Fitted in Monolix2024R1 by SAEM; a lognormal distribution was assumed for all parameters. A maturation function on clearance, inter-occasion variability and HIV-medication covariates were each tested and did not improve model fit. Demographics from Table 1; parameter estimates from Table 2."
+    disease_state = "Children with drug-susceptible tuberculosis, 41 (48.2%) with TB alone and 44 (51.8%) with TB/HIV coinfection. 24 (28.2%) malnourished (body-mass-index-for-age Z score below -2 SD). Of the TB/HIV participants, 29 (65.9%) received efavirenz-based antiretroviral therapy, 7 (15.9%) abacavir-based, 4 (9.1%) dolutegravir-based and 4 (9.1%) lopinavir/ritonavir-based.",
+    dose_range = "Pyrazinamide 35 mg/kg once daily (WHO target range 30-40 mg/kg); administered median 31.6 mg/kg (range 21.4-49.7) as part of the first-line HRZE regimen. Children under 25 kg received dispersible HRZ 50/75/150 mg tablets (1, 2, 3 or 4 tablets in the 4-<8, 8-<12, 12-<16 and 16-<25 kg weight bands); children 25 kg and over received adult HRZE 75/150/400/275 mg tablets.",
+    regions = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
+    notes = "Two-arm PK study, enrolment February 2019 to June 2021, children 3 months to 14 years. PK sampling on one occasion after at least 4 weeks of HRZE therapy (steady state), with blood drawn at 0 (pre-dose), 1, 2, 4, 8 and 12 h post-dose after an overnight fast. 509 samples from 85 participants entered the final PZA model; 16 samples were below the limit of quantification (14 reported as 0 mg/L, 2 interval-censored). LC-MS/MS quantification range 0.5-100 mg/L. Fitted in Monolix2024R1 by SAEM; a lognormal distribution was assumed for all parameters. A maturation function on clearance, inter-occasion variability and HIV-medication covariates were each tested and did not improve model fit. Demographics from Table 1; parameter estimates from Table 2."
   )
 
   ini({

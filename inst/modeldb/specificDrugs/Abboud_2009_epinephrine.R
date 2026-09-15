@@ -9,8 +9,8 @@ Abboud_2009_epinephrine <- function() {
   )
   vignette <- "Abboud_2009_epinephrine"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
   # Conversion: epinephrine molecular weight 183.2 g/mol, so 1 mg = 5460 nmol
@@ -26,37 +26,37 @@ Abboud_2009_epinephrine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study inclusion",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study inclusion",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL: CL_i = CL * (WT/70)^e_wt_cl with reference 70 kg per Abboud 2009 Table 3 footnote; the body-weight exponent is estimated at 0.60 (not fixed at the canonical allometric 0.75).",
-      source_name        = "BW"
+      notes = "Power effect on CL: CL_i = CL * (WT/70)^e_wt_cl with reference 70 kg per Abboud 2009 Table 3 footnote; the body-weight exponent is estimated at 0.60 (not fixed at the canonical allometric 0.75).",
+      source_name = "BW"
     ),
     SAPS_II = list(
-      description        = "New Simplified Acute Physiology Score II at ICU admission",
-      units              = "points",
-      type               = "continuous",
+      description = "New Simplified Acute Physiology Score II at ICU admission",
+      units = "points",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL: CL_i = CL * (SAPS_II/50)^e_saps_ii_cl with reference 50 units per Abboud 2009 Table 3 footnote; the exponent is -0.67 so higher disease severity is associated with lower epinephrine clearance.",
-      source_name        = "SAPS II"
+      notes = "Power effect on CL: CL_i = CL * (SAPS_II/50)^e_saps_ii_cl with reference 50 units per Abboud 2009 Table 3 footnote; the exponent is -0.67 so higher disease severity is associated with lower epinephrine clearance.",
+      source_name = "SAPS II"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38L,
-    n_studies      = 1L,
-    age_range      = "Adults (mean 64 +/- 15 years)",
-    age_median     = "mean 64 years",
-    weight_range   = "Adults (mean 68 +/- 19 kg)",
-    weight_median  = "mean 68 kg",
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 1L,
+    age_range = "Adults (mean 64 +/- 15 years)",
+    age_median = "mean 64 years",
+    weight_range = "Adults (mean 68 +/- 19 kg)",
+    weight_median = "mean 68 kg",
     sex_female_pct = 34.3,
-    saps_ii_mean   = "64 +/- 23",
-    disease_state  = "Adults with septic shock (mean arterial pressure below 65 mmHg refractory to fluid resuscitation; SAPS II 64 +/- 23) requiring vasopressor therapy in a tertiary medical intensive care unit; epinephrine was the exclusive first-line catecholamine.",
-    dose_range     = "Intravenous epinephrine infusion started at 0.15 ug/kg/min and titrated to mean arterial pressure 65-75 mmHg. Observed infusion rate at the per-protocol C1 sampling time (cumulative dose 0.15 mg/kg) had a median of 2 mg/h (range 0.1-7) = 0.52 ug/kg/min (range 0.026-1.7) per Table 2; expressed in molar units that is ~10,090 nmol/h (range 545-38,208).",
-    regions        = "France (Paris)",
-    notes          = "Single-center prospective study at Hopital Europeen Georges Pompidou, Assistance Publique - Hopitaux de Paris (January-June 2006). 73 plasma epinephrine concentrations across 38 patients: a baseline sample C0 within 15 minutes before infusion onset plus one steady-state sample C1 at cumulative epinephrine dose 0.15 mg/kg (median delay from start 415 minutes, range 90-1260); three C1 samples were lost. Concentrations measured by HPLC with coulometric detection, limit of quantification 0.10 nmol/L. Exclusions: pregnancy, renal replacement therapy during the study, catecholamines in the 24 hours preceding enrolment. Hydrocortisone and recombinant human activated protein C were not used. ICU mortality 65.7%. Causes of septic shock per Table 1: community-acquired pneumonia 10, nosocomial pneumonia 12, mediastinitis 4, intra-abdominal infection 6, other 4, not documented 2. Baseline demographics in Table 1; baseline hemodynamics and plasma hormones in Table 2."
+    saps_ii_mean = "64 +/- 23",
+    disease_state = "Adults with septic shock (mean arterial pressure below 65 mmHg refractory to fluid resuscitation; SAPS II 64 +/- 23) requiring vasopressor therapy in a tertiary medical intensive care unit; epinephrine was the exclusive first-line catecholamine.",
+    dose_range = "Intravenous epinephrine infusion started at 0.15 ug/kg/min and titrated to mean arterial pressure 65-75 mmHg. Observed infusion rate at the per-protocol C1 sampling time (cumulative dose 0.15 mg/kg) had a median of 2 mg/h (range 0.1-7) = 0.52 ug/kg/min (range 0.026-1.7) per Table 2; expressed in molar units that is ~10,090 nmol/h (range 545-38,208).",
+    regions = "France (Paris)",
+    notes = "Single-center prospective study at Hopital Europeen Georges Pompidou, Assistance Publique - Hopitaux de Paris (January-June 2006). 73 plasma epinephrine concentrations across 38 patients: a baseline sample C0 within 15 minutes before infusion onset plus one steady-state sample C1 at cumulative epinephrine dose 0.15 mg/kg (median delay from start 415 minutes, range 90-1260); three C1 samples were lost. Concentrations measured by HPLC with coulometric detection, limit of quantification 0.10 nmol/L. Exclusions: pregnancy, renal replacement therapy during the study, catecholamines in the 24 hours preceding enrolment. Hydrocortisone and recombinant human activated protein C were not used. ICU mortality 65.7%. Causes of septic shock per Table 1: community-acquired pneumonia 10, nosocomial pneumonia 12, mediastinitis 4, intra-abdominal infection 6, other 4, not documented 2. Baseline demographics in Table 1; baseline hemodynamics and plasma hormones in Table 2."
   )
 
   ini({

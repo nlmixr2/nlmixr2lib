@@ -9,74 +9,79 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    mer      = list(analyte = "Meropenem", units = NA_character_, specimen = "plasma", verified = FALSE),
-    bacteria = list(analyte = "Escherichia coli NCTC 12,241", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    mer = list(analyte = "Meropenem", units = NA_character_, specimen = "plasma", verified = FALSE),
+    bacteria = list(
+      analyte = "Escherichia coli NCTC 12,241",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONMED_MER = list(
-      description        = "Indicator that meropenem is present in the experimental regimen",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that meropenem is present in the experimental regimen",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (meropenem absent)",
-      notes              = "1 if the regimen includes meropenem, 0 otherwise. Drives the combination categorical effect on BETA and the proportional MER-presence effect on Cip IC50 (Sadouki 2025 Table 1, Drug interactions section). In-vitro experimental indicator -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
-      source_name        = "Mer regimen flag (paper Methods)"
+      notes = "1 if the regimen includes meropenem, 0 otherwise. Drives the combination categorical effect on BETA and the proportional MER-presence effect on Cip IC50 (Sadouki 2025 Table 1, Drug interactions section). In-vitro experimental indicator -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
+      source_name = "Mer regimen flag (paper Methods)"
     ),
     CONMED_GEN = list(
-      description        = "Indicator that gentamicin is present in the experimental regimen",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that gentamicin is present in the experimental regimen",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (gentamicin absent)",
-      notes              = "1 if the regimen includes gentamicin, 0 otherwise. Drives the combination categorical effect on BETA and the proportional GEN-presence effect on Cip IC50 (Sadouki 2025 Table 1).",
-      source_name        = "Gen regimen flag (paper Methods)"
+      notes = "1 if the regimen includes gentamicin, 0 otherwise. Drives the combination categorical effect on BETA and the proportional GEN-presence effect on Cip IC50 (Sadouki 2025 Table 1).",
+      source_name = "Gen regimen flag (paper Methods)"
     ),
     CONMED_CIP = list(
-      description        = "Indicator that ciprofloxacin is present in the experimental regimen",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that ciprofloxacin is present in the experimental regimen",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ciprofloxacin absent)",
-      notes              = "1 if the regimen includes ciprofloxacin, 0 otherwise. Used together with CONMED_MER and CONMED_GEN to compute the combination indicator that triggers the -1 categorical shift on BETA (Sadouki 2025 Table 1).",
-      source_name        = "Cip regimen flag (paper Methods)"
+      notes = "1 if the regimen includes ciprofloxacin, 0 otherwise. Used together with CONMED_MER and CONMED_GEN to compute the combination indicator that triggers the -1 categorical shift on BETA (Sadouki 2025 Table 1).",
+      source_name = "Cip regimen flag (paper Methods)"
     ),
     CONMED_GEN_CC = list(
-      description        = "Gentamicin concentration applied during the time-kill experiment (constant over the 24-h window)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Gentamicin concentration applied during the time-kill experiment (constant over the 24-h window)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Static concentration in CAMHB. The paper studied multiples of the MIC of 1 mg/L (range 0.25-16x MIC = 0.25-16 mg/L). Set to 0 when gentamicin is absent.",
-      source_name        = "Gen concentration (paper Methods)"
+      notes = "Static concentration in CAMHB. The paper studied multiples of the MIC of 1 mg/L (range 0.25-16x MIC = 0.25-16 mg/L). Set to 0 when gentamicin is absent.",
+      source_name = "Gen concentration (paper Methods)"
     ),
     CONMED_CIP_CC = list(
-      description        = "Ciprofloxacin concentration applied during the time-kill experiment (constant over the 24-h window)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Ciprofloxacin concentration applied during the time-kill experiment (constant over the 24-h window)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Static concentration in CAMHB. The paper studied multiples of the MIC of 0.015 mg/L (range 0.25-16x MIC = 0.00375-0.24 mg/L). Set to 0 when ciprofloxacin is absent.",
-      source_name        = "Cip concentration (paper Methods)"
+      notes = "Static concentration in CAMHB. The paper studied multiples of the MIC of 0.015 mg/L (range 0.25-16x MIC = 0.00375-0.24 mg/L). Set to 0 when ciprofloxacin is absent.",
+      source_name = "Cip concentration (paper Methods)"
     ),
     LOWINOC = list(
-      description        = "Indicator of low-inoculum experiment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator of low-inoculum experiment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (10^5 CFU/mL standard inoculum)",
-      notes              = "1 if the starting inoculum was 10^3 CFU/mL, 0 if 10^5 CFU/mL (the modal experimental setup). Drives the additive shifts on B0 and Bmax (Sadouki 2025 Table 1, Inoculum effect rows).",
-      source_name        = "Inoculum size (paper Methods)"
+      notes = "1 if the starting inoculum was 10^3 CFU/mL, 0 if 10^5 CFU/mL (the modal experimental setup). Drives the additive shifts on B0 and Bmax (Sadouki 2025 Table 1, Inoculum effect rows).",
+      source_name = "Inoculum size (paper Methods)"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    organism       = "Escherichia coli NCTC 12,241 (susceptible laboratory reference strain)",
-    system         = "Static time-kill in 96-well plates, total volume 200 uL, biological duplicates with technical triplicates",
-    medium         = "Cation-adjusted Mueller-Hinton broth (CAMHB)",
-    temperature    = "37.5 C",
-    duration       = "24 h, with hourly sampling for the first 8 h and at 24 h",
-    mic_values     = c(meropenem = "0.03 mg/L", ciprofloxacin = "0.015 mg/L", gentamicin = "1 mg/L"),
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Escherichia coli NCTC 12,241 (susceptible laboratory reference strain)",
+    system = "Static time-kill in 96-well plates, total volume 200 uL, biological duplicates with technical triplicates",
+    medium = "Cation-adjusted Mueller-Hinton broth (CAMHB)",
+    temperature = "37.5 C",
+    duration = "24 h, with hourly sampling for the first 8 h and at 24 h",
+    mic_values = c(meropenem = "0.03 mg/L", ciprofloxacin = "0.015 mg/L", gentamicin = "1 mg/L"),
     concentration_range = "0.25 to 16 x MIC for each drug",
     inoculum_options = c("10^3 CFU/mL (low)", "10^5 CFU/mL (standard)"),
-    regimens        = "Seven antibiotic-containing regimens: monotherapy (Mer, Gen, Cip), two-way combinations (Mer+Gen, Mer+Cip, Gen+Cip), three-way combination (Mer+Gen+Cip), plus antibiotic-free growth controls",
-    notes           = "In-vitro pharmacodynamic study; no human or animal subjects. Random effects (eta) in the structural model represent variability *between experimental replicates*, not between-subject IIV. CFU were enumerated on Mueller-Hinton agar (and on 2x and 8x MIC supplemented agar at 24 h to detect resistant subpopulations). See Sadouki 2025 Methods (page 2) and Figure 1 for the experimental design."
+    regimens = "Seven antibiotic-containing regimens: monotherapy (Mer, Gen, Cip), two-way combinations (Mer+Gen, Mer+Cip, Gen+Cip), three-way combination (Mer+Gen+Cip), plus antibiotic-free growth controls",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. Random effects (eta) in the structural model represent variability *between experimental replicates*, not between-subject IIV. CFU were enumerated on Mueller-Hinton agar (and on 2x and 8x MIC supplemented agar at 24 h to detect resistant subpopulations). See Sadouki 2025 Methods (page 2) and Figure 1 for the experimental design."
   )
 
   ini({

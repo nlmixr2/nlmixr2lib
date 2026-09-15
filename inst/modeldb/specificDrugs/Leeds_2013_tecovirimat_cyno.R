@@ -13,55 +13,55 @@ Leeds_2013_tecovirimat_cyno <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "tecovirimat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tecovirimat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "tecovirimat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tecovirimat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tecovirimat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with theory-based fixed exponents about the cohort median weight of 3.105 kg, which is the normalisation constant printed inside every covariate formula of Leeds 2013 Table 1 (NHP columns). Results 'NHP POP PK model development': 'Body weight was used as an allometric factor [wt/(median wt)^theta_eff] on CL/F, Vc/F, Q/F, and Vp/F, with theta_eff equal to 0.75 for clearance-related parameters and theta_eff equal to 1 for volume-related parameters'.",
-      source_name        = "wt"
+      notes = "Allometric scaling with theory-based fixed exponents about the cohort median weight of 3.105 kg, which is the normalisation constant printed inside every covariate formula of Leeds 2013 Table 1 (NHP columns). Results 'NHP POP PK model development': 'Body weight was used as an allometric factor [wt/(median wt)^theta_eff] on CL/F, Vc/F, Q/F, and Vp/F, with theta_eff equal to 0.75 for clearance-related parameters and theta_eff equal to 1 for volume-related parameters'.",
+      source_name = "wt"
     ),
     DIS_INFECT_ACTIVE = list(
-      description        = "Active monkeypox-virus (MPXV) infection episode indicator (1 = record falls after intravenous MPXV inoculation, 0 = uninfected).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active monkeypox-virus (MPXV) infection episode indicator (1 = record falls after intravenous MPXV inoculation, 0 = uninfected).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (uninfected cynomolgus monkey)",
-      notes              = "Time-varying per record. The paper's clinical criterion is experimental rather than symptom-based: animals were inoculated intravenously with approximately 5e7 PFU of MPXV per animal (Materials and Methods, 'In vivo study summaries (i) NHP studies'), so a record is infected if it follows inoculation. Study 2 is the design that identifies the effect within animal: 'Monkeys were administered a single dose of ST-246 10 days prior to infection to allow intra-animal comparison of the pharmacokinetics according to infection status', with ST-246 dosing then restarted 4 days after infection. Enters as a log-additive shift on Ka and on CL/F: Leeds 2013 Table 1 prints separate Infected and Uninfected rows for exactly those two parameters, and the Table 1 footnote states 'Infection was a covariate for both the Ka and CL/F, but the overall change in exposure was small'.",
-      source_name        = "Status (Infected / Uninfected)"
+      notes = "Time-varying per record. The paper's clinical criterion is experimental rather than symptom-based: animals were inoculated intravenously with approximately 5e7 PFU of MPXV per animal (Materials and Methods, 'In vivo study summaries (i) NHP studies'), so a record is infected if it follows inoculation. Study 2 is the design that identifies the effect within animal: 'Monkeys were administered a single dose of ST-246 10 days prior to infection to allow intra-animal comparison of the pharmacokinetics according to infection status', with ST-246 dosing then restarted 4 days after infection. Enters as a log-additive shift on Ka and on CL/F: Leeds 2013 Table 1 prints separate Infected and Uninfected rows for exactly those two parameters, and the Table 1 footnote states 'Infection was a covariate for both the Ka and CL/F, but the overall change in exposure was small'.",
+      source_name = "Status (Infected / Uninfected)"
     ),
     DOSE_TECOVIRIMAT_MGKG = list(
-      description        = "Administered tecovirimat (ST-246) dose level, expressed per kg body weight.",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered tecovirimat (ST-246) dose level, expressed per kg body weight.",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed within a dosing regimen. Leeds 2013 Table 1 footnote a defines the symbol: 'Dose, dose level in mg/kg'. Enters as a power function normalised to 10 mg/kg on Ka, CL/F and Vc/F, i.e. (dose/10)^theta, matching the printed Table 1 formulae. Study dose levels spanned 0.3 to 300 mg/kg once daily; the population PK dataset covers 0.3-30 mg/kg (study 1, uninfected) and 3-20 mg/kg (studies 2-6, infected). This is the dose LEVEL as a covariate label on the regimen, not the per-record amount: the amount actually administered is the event-table `amt` in mg.",
-      source_name        = "dose"
+      notes = "Time-fixed within a dosing regimen. Leeds 2013 Table 1 footnote a defines the symbol: 'Dose, dose level in mg/kg'. Enters as a power function normalised to 10 mg/kg on Ka, CL/F and Vc/F, i.e. (dose/10)^theta, matching the printed Table 1 formulae. Study dose levels spanned 0.3 to 300 mg/kg once daily; the population PK dataset covers 0.3-30 mg/kg (study 1, uninfected) and 3-20 mg/kg (studies 2-6, infected). This is the dose LEVEL as a covariate label on the regimen, not the per-record amount: the amount actually administered is the event-table `amt` in mg.",
+      source_name = "dose"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Two occasions are encoded: OCC = 1 for the pre-infection (uninfected) dosing occasion and OCC = 2 for the post-infection (infected) dosing occasion. Leeds 2013 does not state an occasion count; the two-occasion reading follows the paper's own attribution of the IOV to infection status -- the Table 1 title reports 'intraoccasion variability for those parameters altered by the infected state', IOV is printed on exactly the two rows (Ka, CL/F) that carry Infected / Uninfected sub-rows, and Results 'NHP POP PK model development' states 'the proposed two-compartment model demonstrated intraoccasion variability (IOV) for infection status'. The design that supplies both occasions within animal is study 2 (single dose 10 days before infection, then dosing from day 4 after infection). Decomposed inside `model()` into binary indicators `oc1` / `oc2` multiplexing the per-occasion IOV etas on log-Ka and log-CL.",
-      source_name        = "OCC"
+      notes = "Two occasions are encoded: OCC = 1 for the pre-infection (uninfected) dosing occasion and OCC = 2 for the post-infection (infected) dosing occasion. Leeds 2013 does not state an occasion count; the two-occasion reading follows the paper's own attribution of the IOV to infection status -- the Table 1 title reports 'intraoccasion variability for those parameters altered by the infected state', IOV is printed on exactly the two rows (Ka, CL/F) that carry Infected / Uninfected sub-rows, and Results 'NHP POP PK model development' states 'the proposed two-compartment model demonstrated intraoccasion variability (IOV) for infection status'. The design that supplies both occasions within animal is study 2 (single dose 10 days before infection, then dosing from day 4 after infection). Decomposed inside `model()` into binary indicators `oc1` / `oc2` multiplexing the per-occasion IOV etas on log-Ka and log-CL.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "cynomolgus monkey (Macaca fascicularis)",
-    n_subjects     = NA,
-    n_studies      = 6L,
-    weight_median  = "3.105 kg",
+    species = "cynomolgus monkey (Macaca fascicularis)",
+    n_subjects = NA,
+    n_studies = 6L,
+    weight_median = "3.105 kg",
     sex_female_pct = NA,
-    disease_state  = "Uninfected cynomolgus monkeys and cynomolgus monkeys with a nearly uniformly lethal systemic monkeypox-virus (MPXV) infection established by intravenous inoculation with approximately 5e7 PFU per animal. Studies 3-6 initiated treatment 3, 4 or 5 days after infection (at lesion onset in study 4).",
-    dose_range     = "Oral ST-246 once daily. Study 1 (uninfected, GLP PK): 0.3, 3, 10, 20 and 30 mg/kg, n = 6 per dose (3 male, 3 female). Study 2 (infection-effect GLP study): 3, 10 or 20 mg/kg or vehicle, n = 6 per group, plus a single dose 10 days before infection. Studies 3-6 (efficacy, sparse PK): 0.3 to 300 mg/kg for 14 consecutive days.",
-    notes          = "Population PK parameters from Leeds 2013 Table 1, NHP columns. The paper does not report the number of animals contributing to the PK analysis; it reports the concentration counts: 21 of 1,579 non-BQL preclinical plasma concentrations were excluded as outliers, and 1,558 plasma concentrations entered the NHP population PK analysis, none with |CWRES| > 4. Sex was not retained as a covariate in the NHP model (Results 'Human POP PK model development': gender affected Vc/F in humans but not in NHPs). Model fit in Phoenix NLME 6.2.0.416 with FOCE-ELS. The separate 96-animal survival / ROC pharmacodynamic analysis in the same paper is a nonparametric Kaplan-Meier and recursive-ROC analysis with no parametric hazard model, so it is not represented here; its exposure cutoffs are reproduced as validation targets in the vignette."
+    disease_state = "Uninfected cynomolgus monkeys and cynomolgus monkeys with a nearly uniformly lethal systemic monkeypox-virus (MPXV) infection established by intravenous inoculation with approximately 5e7 PFU per animal. Studies 3-6 initiated treatment 3, 4 or 5 days after infection (at lesion onset in study 4).",
+    dose_range = "Oral ST-246 once daily. Study 1 (uninfected, GLP PK): 0.3, 3, 10, 20 and 30 mg/kg, n = 6 per dose (3 male, 3 female). Study 2 (infection-effect GLP study): 3, 10 or 20 mg/kg or vehicle, n = 6 per group, plus a single dose 10 days before infection. Studies 3-6 (efficacy, sparse PK): 0.3 to 300 mg/kg for 14 consecutive days.",
+    notes = "Population PK parameters from Leeds 2013 Table 1, NHP columns. The paper does not report the number of animals contributing to the PK analysis; it reports the concentration counts: 21 of 1,579 non-BQL preclinical plasma concentrations were excluded as outliers, and 1,558 plasma concentrations entered the NHP population PK analysis, none with |CWRES| > 4. Sex was not retained as a covariate in the NHP model (Results 'Human POP PK model development': gender affected Vc/F in humans but not in NHPs). Model fit in Phoenix NLME 6.2.0.416 with FOCE-ELS. The separate 96-animal survival / ROC pharmacodynamic analysis in the same paper is a nonparametric Kaplan-Meier and recursive-ROC analysis with no parametric hazard model, so it is not represented here; its exposure cutoffs are reproduced as validation targets in the vignette."
   )
 
   ini({

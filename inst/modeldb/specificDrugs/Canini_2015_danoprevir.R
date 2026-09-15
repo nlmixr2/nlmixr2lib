@@ -31,8 +31,8 @@ Canini_2015_danoprevir <- function() {
   vignette <- "Canini_2015_danoprevir"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -41,38 +41,38 @@ Canini_2015_danoprevir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
-    infected    = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
-    virus       = list(analyte = "HCV-virions", units = "mg", specimen = "plasma", verified = FALSE)
+    infected = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus = list(analyte = "HCV-virions", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   covariatesDataExcluded <- list(
     HCV_GT1B = list(
-      description        = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A. Screened in Canini 2015 as a candidate covariate on PK/VK parameters (Methods, Parameter estimation and statistical methods) but not retained in the final PK/VK model reported in Table 2.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A. Screened in Canini 2015 as a candidate covariate on PK/VK parameters (Methods, Parameter estimation and statistical methods) but not retained in the final PK/VK model reported in Table 2.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCV GT1A; 30 percent of the Canini 2015 cohort, 12 of 40 patients; 55 percent GT1B, 15 percent GT1 with subtype undetermined).",
-      notes              = "Documented in covariatesDataExcluded because the paper explicitly reports that HCV genotype was tested as a covariate ('HCV genotype was tested as a covariate in the model to study its effect on the PK/VK parameters', Methods) but no genotype effect appears in Canini 2015 Table 2. Not referenced in model()."
+      notes = "Documented in covariatesDataExcluded because the paper explicitly reports that HCV genotype was tested as a covariate ('HCV genotype was tested as a covariate in the model to study its effect on the PK/VK parameters', Methods) but no genotype effect appears in Canini 2015 Table 2. Not referenced in model()."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    n_cohorts      = 5L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    n_cohorts = 5L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Adults with chronic HCV infection (30 percent genotype-1a, 55 percent genotype-1b, 15 percent genotype-1 with undetermined subtype; 32 treatment-naive across cohorts 1-4 and 8 prior peginterferon-alpha / ribavirin non-responders in cohort 5, of whom 5-6 non-responders received active drug versus placebo per the 8:2 randomisation).",
-    dose_range     = "Danoprevir oral 100 mg BID (cohort 1), 100 mg TID (cohort 2), 200 mg BID (cohort 3), 200 mg TID (cohort 4), and 300 mg BID (cohort 5); each cohort dosed for 14 days of monotherapy.",
-    dose_regimens  = "100 mg twice daily (cohort 1), 100 mg three times daily (cohort 2), 200 mg twice daily (cohort 3), 200 mg three times daily (cohort 4), 300 mg twice daily (cohort 5). All oral. Cohorts 1-4 were treatment-naive; cohort 5 comprised prior peginterferon-alpha / ribavirin non-responders.",
-    regions        = NA_character_,
-    notes          = paste0(
+    disease_state = "Adults with chronic HCV infection (30 percent genotype-1a, 55 percent genotype-1b, 15 percent genotype-1 with undetermined subtype; 32 treatment-naive across cohorts 1-4 and 8 prior peginterferon-alpha / ribavirin non-responders in cohort 5, of whom 5-6 non-responders received active drug versus placebo per the 8:2 randomisation).",
+    dose_range = "Danoprevir oral 100 mg BID (cohort 1), 100 mg TID (cohort 2), 200 mg BID (cohort 3), 200 mg TID (cohort 4), and 300 mg BID (cohort 5); each cohort dosed for 14 days of monotherapy.",
+    dose_regimens = "100 mg twice daily (cohort 1), 100 mg three times daily (cohort 2), 200 mg twice daily (cohort 3), 200 mg three times daily (cohort 4), 300 mg twice daily (cohort 5). All oral. Cohorts 1-4 were treatment-naive; cohort 5 comprised prior peginterferon-alpha / ribavirin non-responders.",
+    regions = NA_character_,
+    notes = paste0(
       "Data are the 32 active-drug patients from a randomised (8:2 active:placebo per cohort) Phase 1 single-ascending-dose study; placebo patients were excluded from the modelling dataset. Post day-14 the same patients were allowed to start peginterferon-alpha / ribavirin; only days 0-14 of danoprevir monotherapy contribute to the fit. Cohort-specific typical baseline viral loads V0 reported in Canini 2015 Table 2 (5.4e5, 1.9e6, 1.8e6, 2.6e6, 2.7e6 IU/mL for cohorts 1-5 respectively) are subsumed by the paper's very large 118 percent IIV on V0 in this packaged model; the cohort-1 reference value 5.4e5 IU/mL is used as the pooled typical value. See the validation vignette Errata section for the abstract-vs-Methods contradiction over whether the effectiveness driver concentration is plasma C1 or tissue C2 (the packaged model follows the explicit Methods statement C1)."
     )
   )

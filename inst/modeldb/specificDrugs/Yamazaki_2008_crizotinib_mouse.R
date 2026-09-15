@@ -33,23 +33,28 @@ Yamazaki_2008_crizotinib_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot     = list(analyte = "crizotinib", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central   = list(analyte = "crizotinib", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect    = list(analyte = "cMet phosphorylation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    depot = list(analyte = "crizotinib", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "crizotinib", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect = list(
+      analyte = "cMet phosphorylation",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
     tumor_vol = list(analyte = "tumour size", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "mouse (athymic nude; GTL16 human gastric carcinoma or U87MG human glioblastoma subcutaneous xenograft)",
-    n_subjects    = 200L,
-    n_studies     = 3L,
+    species = "mouse (athymic nude; GTL16 human gastric carcinoma or U87MG human glioblastoma subcutaneous xenograft)",
+    n_subjects = 200L,
+    n_studies = 3L,
     sex_female_pct = NA_real_,
     disease_state = "GTL16 gastric-carcinoma or U87MG glioblastoma xenograft tumors",
-    dose_range    = "PF02341066 (crizotinib) 3.13-50 mg/kg PO once daily for 9-11 days; plasma+cMet phosphorylation sampled at 1, 4, 8, 24 h after last dose (n=3/timepoint)",
-    regions       = "Preclinical (Pfizer Global Research and Development, La Jolla, CA)",
-    notes         = paste(
+    dose_range = "PF02341066 (crizotinib) 3.13-50 mg/kg PO once daily for 9-11 days; plasma+cMet phosphorylation sampled at 1, 4, 8, 24 h after last dose (n=3/timepoint)",
+    regions = "Preclinical (Pfizer Global Research and Development, La Jolla, CA)",
+    notes = paste(
       "Three repeated-dose studies: (1) GTL16 xenograft at 8.5, 17, 34 mg/kg;",
       "(2) GTL16 xenograft at 3.13, 6.25, 12.5, 25, 50 mg/kg; (3) U87MG xenograft",
       "at 3.13, 6.25, 12.5, 25, 50 mg/kg. Subjects n=3/timepoint were humanely",

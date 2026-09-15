@@ -4,8 +4,8 @@ Choules_2024_brentuximab <- function() {
   vignette <- "Choules_2024_vedotin_ddi"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -13,40 +13,50 @@ Choules_2024_brentuximab <- function() {
   # figures and tables. Cc_mmae is carried in the SAME mg/L system for internal
   # consistency; the paper reports MMAE in ng/mL, which is 1000 * Cc_mmae.
   compartmentData <- list(
-    central      = list(analyte = "brentuximab vedotin (conjugated antibody)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1  = list(analyte = "brentuximab vedotin (conjugated antibody)", units = "mg", specimen = "plasma", verified = TRUE),
-    central_mmae = list(analyte = "monomethyl auristatin E (MMAE)",            units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(
+      analyte = "brentuximab vedotin (conjugated antibody)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1 = list(
+      analyte = "brentuximab vedotin (conjugated antibody)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central_mmae = list(analyte = "monomethyl auristatin E (MMAE)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_KETOCONAZOLE = list(
-      description        = "Concomitant ketoconazole (combined P-glycoprotein and strong CYP3A4 inhibitor) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ketoconazole (combined P-glycoprotein and strong CYP3A4 inhibitor) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "1 = ketoconazole 400 mg orally once daily coadministered with brentuximab vedotin, 0 = brentuximab vedotin alone. Used here as a step indicator at full inhibition; the source's brentuximab vedotin interaction simulations mirror the clinical study NCT01026415, in which ketoconazole dosing brackets the antibody dose. The effect is applied as a multiplicative factor on MMAE clearance only; the conjugated antibody is unaffected. The magnitude is back-calculated from the published MMAE AUC geometric mean ratio, not from an inhibition constant: because this reduction has MMAE AUC(inf) = payload dose / MMAE CL exactly, a CL multiplier of 1/GMR reproduces the published AUC ratio by construction. Reference category is 'no ketoconazole'.",
-      source_name        = NA_character_
+      notes = "1 = ketoconazole 400 mg orally once daily coadministered with brentuximab vedotin, 0 = brentuximab vedotin alone. Used here as a step indicator at full inhibition; the source's brentuximab vedotin interaction simulations mirror the clinical study NCT01026415, in which ketoconazole dosing brackets the antibody dose. The effect is applied as a multiplicative factor on MMAE clearance only; the conjugated antibody is unaffected. The magnitude is back-calculated from the published MMAE AUC geometric mean ratio, not from an inhibition constant: because this reduction has MMAE AUC(inf) = payload dose / MMAE CL exactly, a CL multiplier of 1/GMR reproduces the published AUC ratio by construction. Reference category is 'no ketoconazole'.",
+      source_name = NA_character_
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampin (rifampicin; combined P-glycoprotein and strong CYP3A4 inducer) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampin (rifampicin; combined P-glycoprotein and strong CYP3A4 inducer) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "1 = rifampin 600 mg orally once daily coadministered with brentuximab vedotin, 0 = brentuximab vedotin alone. Step indicator at the post-induction CYP3A4 equilibrium, matching the chronic-induction semantics of the canonical and the design of the clinical interaction study NCT01026415. The effect is applied as a multiplicative factor on MMAE clearance only. Magnitude back-calculated from the published MMAE AUC geometric mean ratio as described for CONMED_KETOCONAZOLE. Note that the source's rifampin simulations additionally applied a fold increase in the P-gp relative activity factor to MMAE to represent transporter induction, which the platform did not support natively; that mechanism is folded into the single lumped CL multiplier here. Reference category is 'no rifampin'.",
-      source_name        = NA_character_
+      notes = "1 = rifampin 600 mg orally once daily coadministered with brentuximab vedotin, 0 = brentuximab vedotin alone. Step indicator at the post-induction CYP3A4 equilibrium, matching the chronic-induction semantics of the canonical and the design of the clinical interaction study NCT01026415. The effect is applied as a multiplicative factor on MMAE clearance only. Magnitude back-calculated from the published MMAE AUC geometric mean ratio as described for CONMED_KETOCONAZOLE. Note that the source's rifampin simulations additionally applied a fold increase in the P-gp relative activity factor to MMAE to represent transporter induction, which the platform did not support natively; that mechanism is folded into the single lumped CL multiplier here. Reference category is 'no rifampin'.",
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 2L,
-    age_range      = "22-70 years (assumed by the source when constructing the virtual trial)",
-    weight_mean    = "72.0 kg (assumed the same Simcyp cancer population mean as the enfortumab vedotin simulations; see notes)",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 2L,
+    age_range = "22-70 years (assumed by the source when constructing the virtual trial)",
+    weight_mean = "72.0 kg (assumed the same Simcyp cancer population mean as the enfortumab vedotin simulations; see notes)",
     sex_female_pct = 40,
-    disease_state  = "Haematological malignancy (CD30-positive lymphoma); unmodified Simcyp cancer population model.",
-    dose_range     = "1.8 and 2.7 mg/kg as a 30-minute intravenous infusion, single dose; 1.2 and 1.8 mg/kg in the drug-interaction simulations.",
-    notes          = "The simulated virtual trials used 10 trials of 12 participants each over a 504 h study duration (Choules 2024 Supplementary Methods); ages 22-70 years and 40% women were explicitly stated by the source as assumed. Observed comparator data were digitised from the brentuximab vedotin clinical pharmacology submission to the US Food and Drug Administration, and the drug-interaction comparator is the clinical study NCT01026415. The source does not print a body weight for the brentuximab vedotin virtual population; 72.0 kg (the enfortumab vedotin simulated mean from Table S4) is used here because both simulations draw from the Simcyp cancer population, and it is corroborated by the reduction reproducing the published MMAE AUC(inf) at both dose levels to within 1% (see the vignette). All parameters in this file are calibrated at that weight."
+    disease_state = "Haematological malignancy (CD30-positive lymphoma); unmodified Simcyp cancer population model.",
+    dose_range = "1.8 and 2.7 mg/kg as a 30-minute intravenous infusion, single dose; 1.2 and 1.8 mg/kg in the drug-interaction simulations.",
+    notes = "The simulated virtual trials used 10 trials of 12 participants each over a 504 h study duration (Choules 2024 Supplementary Methods); ages 22-70 years and 40% women were explicitly stated by the source as assumed. Observed comparator data were digitised from the brentuximab vedotin clinical pharmacology submission to the US Food and Drug Administration, and the drug-interaction comparator is the clinical study NCT01026415. The source does not print a body weight for the brentuximab vedotin virtual population; 72.0 kg (the enfortumab vedotin simulated mean from Table S4) is used here because both simulations draw from the Simcyp cancer population, and it is corroborated by the reduction reproducing the published MMAE AUC(inf) at both dose levels to within 1% (see the vignette). All parameters in this file are calibrated at that weight."
   )
 
   ini({

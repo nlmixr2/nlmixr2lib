@@ -8,37 +8,37 @@ Delattre_2010_amikacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 55.5 mL/min (population median, Delattre 2010 Table 1). The effect is applied to CL as a divisive normalization (CRCL / 55.5) inside an additive linear covariate term: TVCL = exp(lcl) + e_crcl_cl * (CRCL / 55.5).",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 55.5 mL/min (population median, Delattre 2010 Table 1). The effect is applied to CL as a divisive normalization (CRCL / 55.5) inside an additive linear covariate term: TVCL = exp(lcl) + e_crcl_cl * (CRCL / 55.5).",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    n_subjects     = 88L,
-    n_studies      = 1L,
-    age_range      = "22-89 years",
-    age_median     = "65 years",
-    weight_range   = "38-125 kg",
-    weight_median  = "70 kg",
+    n_subjects = 88L,
+    n_studies = 1L,
+    age_range = "22-89 years",
+    age_median = "65 years",
+    weight_range = "38-125 kg",
+    weight_median = "70 kg",
     sex_female_pct = 35,
     race_ethnicity = "Not reported (Belgian university-hospital ICU population)",
-    disease_state  = "Severe sepsis or septic shock (29% septic shock, 71% severe sepsis); ICU patients during first 24 hours of antibiotic treatment",
-    dose_range     = "25 mg/kg amikacin IV infusion over 30 minutes (single first dose), combined with broad-spectrum beta-lactam (piperacillin, ceftazidime, cefepime, or meropenem)",
-    regions        = "Belgium (4 university-hospital ICUs: Cliniques universitaires St-Luc, Hopital Erasme, Universitair Ziekenhuis Brussel, Clinique St-Pierre)",
-    apache_ii      = "median 20 (range 6-45)",
-    sofa           = "median 8 (range 1-19)",
+    disease_state = "Severe sepsis or septic shock (29% septic shock, 71% severe sepsis); ICU patients during first 24 hours of antibiotic treatment",
+    dose_range = "25 mg/kg amikacin IV infusion over 30 minutes (single first dose), combined with broad-spectrum beta-lactam (piperacillin, ceftazidime, cefepime, or meropenem)",
+    regions = "Belgium (4 university-hospital ICUs: Cliniques universitaires St-Luc, Hopital Erasme, Universitair Ziekenhuis Brussel, Clinique St-Pierre)",
+    apache_ii = "median 20 (range 6-45)",
+    sofa = "median 8 (range 1-19)",
     renal_function = "Cockcroft-Gault creatinine clearance median 55.5 mL/min (range 12.3-408.3); raw mL/min, not BSA-normalized",
-    notes          = "Baseline demographics per Delattre 2010 Table 1. 88 adults enrolled over 20 months in 4 Belgian ICUs. Mechanical ventilation 52%, catecholamine administration 53%. Pregnant / breastfeeding women, dialysis patients, and those with prior allergic reaction to study drugs were excluded. The study captured the early phase of the septic process (first 24 h of treatment), distinguishing it from prior aminoglycoside ICU PK analyses conducted at steady state."
+    notes = "Baseline demographics per Delattre 2010 Table 1. 88 adults enrolled over 20 months in 4 Belgian ICUs. Mechanical ventilation 52%, catecholamine administration 53%. Pregnant / breastfeeding women, dialysis patients, and those with prior allergic reaction to study drugs were excluded. The study captured the early phase of the septic process (first 24 h of treatment), distinguishing it from prior aminoglycoside ICU PK analyses conducted at steady state."
   )
 
   ini({

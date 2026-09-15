@@ -15,37 +15,37 @@ Colin_2014_moxifloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Used for allometric scaling on all clearance terms (CL, Q2, Q3) with exponent 0.75, and on all volume terms (V1, V2, V3) with exponent 1, normalised to a reference LBM of 60 kg (Colin 2014 Table 2 footnote). The absorption rate constant ka is the only structural parameter NOT scaled by LBM (Colin 2014 Table 2 footnote: 'All model parameters except ka were centred for a typical subject with a LBM of 60 kg'). LBM in the source dataset was computed from height, total body weight, and sex using the James 1976 equation; care is recommended when applying the model in subjects with BMI > 30 kg/m^2 because the James equation tends to underestimate true LBM in that range (Colin 2014 Discussion).",
-      source_name        = "LBM"
+      notes = "Time-fixed at baseline. Used for allometric scaling on all clearance terms (CL, Q2, Q3) with exponent 0.75, and on all volume terms (V1, V2, V3) with exponent 1, normalised to a reference LBM of 60 kg (Colin 2014 Table 2 footnote). The absorption rate constant ka is the only structural parameter NOT scaled by LBM (Colin 2014 Table 2 footnote: 'All model parameters except ka were centred for a typical subject with a LBM of 60 kg'). LBM in the source dataset was computed from height, total body weight, and sex using the James 1976 equation; care is recommended when applying the model in subjects with BMI > 30 kg/m^2 because the James equation tends to underestimate true LBM in that range (Colin 2014 Discussion).",
+      source_name = "LBM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "25-57 years (median 41)",
-    age_median     = "41 years",
-    weight_range   = "TBM 57.4-104.0 kg; LBM 41.9-77.6 kg",
-    weight_median  = "TBM 78.1 kg; LBM 51.7 kg (LBM reference 60 kg)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "25-57 years (median 41)",
+    age_median = "41 years",
+    weight_range = "TBM 57.4-104.0 kg; LBM 41.9-77.6 kg",
+    weight_median = "TBM 78.1 kg; LBM 51.7 kg (LBM reference 60 kg)",
     sex_female_pct = 66.7,
     race_ethnicity = "Not reported (single-centre study at Ghent University Hospital, Belgium)",
-    disease_state  = "Post-bariatric (roux-en-y gastric bypass) volunteers at least 6 months after surgery; not actively infected and in generally good condition",
-    dose_range     = "Single 400 mg moxifloxacin administered on two occasions per subject in a randomised crossover with a 1-week washout: once as a tablet (oral) and once as a 1-h intravenous infusion",
-    regions        = "Belgium (Ghent University Hospital)",
-    notes          = "Demographics from Colin 2014 Table 1 (median [range], N=12; 4 male / 8 female). Baseline serum albumin 3.54-4.40 g/dL, height 1.58-1.99 m, CLcr (Cockroft-Gault) 100.4-221.5 mL/min, CLcr (MDRD) 91.9-134.9 mL/min. Source dataset (432 total plasma concentrations from 12 volunteers over a 0-72 h post-dose sampling window per period) originated from De Smet et al. (J Antimicrob Chemother 2012)."
+    disease_state = "Post-bariatric (roux-en-y gastric bypass) volunteers at least 6 months after surgery; not actively infected and in generally good condition",
+    dose_range = "Single 400 mg moxifloxacin administered on two occasions per subject in a randomised crossover with a 1-week washout: once as a tablet (oral) and once as a 1-h intravenous infusion",
+    regions = "Belgium (Ghent University Hospital)",
+    notes = "Demographics from Colin 2014 Table 1 (median [range], N=12; 4 male / 8 female). Baseline serum albumin 3.54-4.40 g/dL, height 1.58-1.99 m, CLcr (Cockroft-Gault) 100.4-221.5 mL/min, CLcr (MDRD) 91.9-134.9 mL/min. Source dataset (432 total plasma concentrations from 12 volunteers over a 0-72 h post-dose sampling window per period) originated from De Smet et al. (J Antimicrob Chemother 2012)."
   )
 
   # Notes on parameter encoding:

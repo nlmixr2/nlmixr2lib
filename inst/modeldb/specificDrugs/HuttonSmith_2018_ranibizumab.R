@@ -4,9 +4,18 @@ HuttonSmith_2018_ranibizumab <- function() {
   vignette <- "HuttonSmith_2018_ranibizumab"
 
   paper_specific_compartments <- c(
-    "vegf_ret",  "ranib_ret",  "vr_ret",  "rvr_ret",
-    "vegf_vit",  "ranib_vit",  "vr_vit",  "rvr_vit",
-    "vegf_aq",   "ranib_aq",   "vr_aq",   "rvr_aq"
+    "vegf_ret",
+    "ranib_ret",
+    "vr_ret",
+    "rvr_ret",
+    "vegf_vit",
+    "ranib_vit",
+    "vr_vit",
+    "rvr_vit",
+    "vegf_aq",
+    "ranib_aq",
+    "vr_aq",
+    "rvr_aq"
   )
 
   units <- list(time = "day", dosing = "mg", concentration = "pM (pmol/L)")
@@ -15,33 +24,48 @@ HuttonSmith_2018_ranibizumab <- function() {
   # comparable with a serum-clearance model. Verified against Hutton-Smith
   # 2018 Figure 1 (three-compartment eye: retina, vitreous, aqueous humour).
   compartmentData <- list(
-    vegf_ret  = list(analyte = "VEGF (free)",               units = "pmol", specimen = "retina",         verified = TRUE),
-    ranib_ret = list(analyte = "ranibizumab (free)",        units = "pmol", specimen = "retina",         verified = TRUE),
-    vr_ret    = list(analyte = "VEGF-ranibizumab complex",  units = "pmol", specimen = "retina",         verified = TRUE),
-    rvr_ret   = list(analyte = "ranibizumab-VEGF-ranibizumab complex", units = "pmol", specimen = "retina", verified = TRUE),
-    vegf_vit  = list(analyte = "VEGF (free)",               units = "pmol", specimen = "vitreous",       verified = TRUE),
-    ranib_vit = list(analyte = "ranibizumab (free)",        units = "pmol", specimen = "vitreous",       verified = TRUE),
-    vr_vit    = list(analyte = "VEGF-ranibizumab complex",  units = "pmol", specimen = "vitreous",       verified = TRUE),
-    rvr_vit   = list(analyte = "ranibizumab-VEGF-ranibizumab complex", units = "pmol", specimen = "vitreous", verified = TRUE),
-    vegf_aq   = list(analyte = "VEGF (free)",               units = "pmol", specimen = "aqueous humour", verified = TRUE),
-    ranib_aq  = list(analyte = "ranibizumab (free)",        units = "pmol", specimen = "aqueous humour", verified = TRUE),
-    vr_aq     = list(analyte = "VEGF-ranibizumab complex",  units = "pmol", specimen = "aqueous humour", verified = TRUE),
-    rvr_aq    = list(analyte = "ranibizumab-VEGF-ranibizumab complex", units = "pmol", specimen = "aqueous humour", verified = TRUE)
+    vegf_ret = list(analyte = "VEGF (free)", units = "pmol", specimen = "retina", verified = TRUE),
+    ranib_ret = list(analyte = "ranibizumab (free)", units = "pmol", specimen = "retina", verified = TRUE),
+    vr_ret = list(analyte = "VEGF-ranibizumab complex", units = "pmol", specimen = "retina", verified = TRUE),
+    rvr_ret = list(
+      analyte = "ranibizumab-VEGF-ranibizumab complex",
+      units = "pmol",
+      specimen = "retina",
+      verified = TRUE
+    ),
+    vegf_vit = list(analyte = "VEGF (free)", units = "pmol", specimen = "vitreous", verified = TRUE),
+    ranib_vit = list(analyte = "ranibizumab (free)", units = "pmol", specimen = "vitreous", verified = TRUE),
+    vr_vit = list(analyte = "VEGF-ranibizumab complex", units = "pmol", specimen = "vitreous", verified = TRUE),
+    rvr_vit = list(
+      analyte = "ranibizumab-VEGF-ranibizumab complex",
+      units = "pmol",
+      specimen = "vitreous",
+      verified = TRUE
+    ),
+    vegf_aq = list(analyte = "VEGF (free)", units = "pmol", specimen = "aqueous humour", verified = TRUE),
+    ranib_aq = list(analyte = "ranibizumab (free)", units = "pmol", specimen = "aqueous humour", verified = TRUE),
+    vr_aq = list(analyte = "VEGF-ranibizumab complex", units = "pmol", specimen = "aqueous humour", verified = TRUE),
+    rvr_aq = list(
+      analyte = "ranibizumab-VEGF-ranibizumab complex",
+      units = "pmol",
+      specimen = "aqueous humour",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human (with rabbit-derived retinal permeabilities carried over from Hutton-Smith 2017)",
-    n_subjects     = 31L,
-    n_studies      = 1L,
-    age_range      = NULL,
-    weight_range   = NULL,
+    species = "human (with rabbit-derived retinal permeabilities carried over from Hutton-Smith 2017)",
+    n_subjects = 31L,
+    n_studies = 1L,
+    age_range = NULL,
+    weight_range = NULL,
     sex_female_pct = NA_real_,
-    disease_state  = "Neovascular (wet) age-related macular degeneration (wet AMD).",
-    dose_range     = "Single intravitreal injection of 0.5 mg ranibizumab (the sensitivity analyses in the paper additionally simulate 1, 2, and 4 mg per Figure 11).",
-    regions        = NULL,
-    notes          = "Data set from Saunders DJ et al., Br J Ophthalmol 2015;99(11):1554-1559 (31 wet-AMD patients with serial aqueous humor free VEGF samples after 0.5 mg IVT ranibizumab). Individual fits used MATLAB lsqnonlin on log-transformed aqueous VEGF; K_D was estimated jointly by finding the value that reproduced the reference ocular half-life of ranibizumab (7.9 +/- 1.74 days, compiled in Hutton-Smith 2016). Retinal permeabilities and hydrodynamic radii are inherited from Hutton-Smith 2017 (rabbit intravitreal PK of therapeutic antibodies)."
+    disease_state = "Neovascular (wet) age-related macular degeneration (wet AMD).",
+    dose_range = "Single intravitreal injection of 0.5 mg ranibizumab (the sensitivity analyses in the paper additionally simulate 1, 2, and 4 mg per Figure 11).",
+    regions = NULL,
+    notes = "Data set from Saunders DJ et al., Br J Ophthalmol 2015;99(11):1554-1559 (31 wet-AMD patients with serial aqueous humor free VEGF samples after 0.5 mg IVT ranibizumab). Individual fits used MATLAB lsqnonlin on log-transformed aqueous VEGF; K_D was estimated jointly by finding the value that reproduced the reference ocular half-life of ranibizumab (7.9 +/- 1.74 days, compiled in Hutton-Smith 2016). Retinal permeabilities and hydrodynamic radii are inherited from Hutton-Smith 2017 (rabbit intravitreal PK of therapeutic antibodies)."
   )
 
   ini({

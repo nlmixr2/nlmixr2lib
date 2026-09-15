@@ -12,51 +12,51 @@ Novakovic_2017_cladribine <- function() {
   paper_specific_etas <- c("etap1", "etap2", "etap3", "etap4", "etap5")
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "mg/(no concentration output - IRT model; primary outputs are unitless EDSS subscore probabilities and a latent disability variable rather than drug concentration)",
-    response      = "EDSS subscore (unitless ordered-categorical; 0-5 for Pyramidal/Cerebellar/Bowel-Bladder, 0-4 for Brainstem/Mental, 0-6 for Sensory/Visual, 0-9 for Ambulation), latent disability (unitless IRT scale)"
+    response = "EDSS subscore (unitless ordered-categorical; 0-5 for Pyramidal/Cerebellar/Bowel-Bladder, 0-4 for Brainstem/Mental, 0-6 for Sensory/Visual, 0-9 for Ambulation), latent disability (unitless IRT scale)"
   )
-  ddmore_id    <- "DDMODEL00000223"
+  ddmore_id <- "DDMODEL00000223"
   replicate_of <- NULL
 
   covariateData <- list(
     TRT = list(
-      description        = "Treatment-cohort indicator. 0 = placebo, 1 = cladribine 3.5 mg/kg cumulative dose cohort, 2 = cladribine 5.25 mg/kg cumulative dose cohort.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Treatment-cohort indicator. 0 = placebo, 1 = cladribine 3.5 mg/kg cumulative dose cohort, 2 = cladribine 5.25 mg/kg cumulative dose cohort.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = 0,
-      notes              = "Gates the symptomatic and protective drug-effect terms via `TRT >= 1` (active treatment) in conjunction with the time > 0 condition. The categorical level (1 vs 2) is informational; the dose-response is driven by the time-varying cumulative-dose covariate CD, not by TRT itself.",
-      source_name        = "TRT"
+      notes = "Gates the symptomatic and protective drug-effect terms via `TRT >= 1` (active treatment) in conjunction with the time > 0 condition. The categorical level (1 vs 2) is informational; the dose-response is driven by the time-varying cumulative-dose covariate CD, not by TRT itself.",
+      source_name = "TRT"
     ),
     CD = list(
-      description        = "Time-varying cumulative cladribine dose administered to date (mg total dose, not body-weight-normalized).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Time-varying cumulative cladribine dose administered to date (mg total dose, not body-weight-normalized).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Substitute for cladribine PK exposure. Rises stepwise across the dosing schedule (CLARITY-style 3.5 or 5.25 mg/kg cumulative-dose regimens delivered as short oral pulses across two years) and stays constant between dosing weeks. Combined with capped creatinine clearance (CRL = min(CRCL, 150)) into the exposure surrogate `EXPS = CD * 104.5 / CRL` that drives the symptomatic Emax effect on disease progression.",
-      source_name        = "CD"
+      notes = "Substitute for cladribine PK exposure. Rises stepwise across the dosing schedule (CLARITY-style 3.5 or 5.25 mg/kg cumulative-dose regimens delivered as short oral pulses across two years) and stays constant between dosing weeks. Combined with capped creatinine clearance (CRL = min(CRCL, 150)) into the exposure surrogate `EXPS = CD * 104.5 / CRL` that drives the symptomatic Emax effect on disease progression.",
+      source_name = "CD"
     ),
     CRCL = list(
-      description        = "Creatinine clearance.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to scale the cumulative-dose-based exposure surrogate via a capped form: CRL = min(CRCL, 150). The constant 104.5 mL/min in the EXPS calculation is the typical-population CRCL anchor. The Novakovic 2017 study did not BSA-normalize CRCL, so this entry stores raw mL/min rather than the BSA-normalized canonical form.",
-      source_name        = "CRCL"
+      notes = "Used to scale the cumulative-dose-based exposure surrogate via a capped form: CRL = min(CRCL, 150). The constant 104.5 mL/min in the EXPS calculation is the typical-population CRCL anchor. The Novakovic 2017 study did not BSA-normalize CRCL, so this entry stores raw mL/min rather than the BSA-normalized canonical form.",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = "FREM-modeled, mean = 38.6 years",
-    weight_range   = NA_character_,
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "FREM-modeled, mean = 38.6 years",
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adults with relapsing-remitting multiple sclerosis (RRMS). The model was developed using pooled data from the CLARITY (cladribine) phase III trial program.",
-    dose_range     = "Two cladribine cumulative-dose cohorts: 3.5 mg/kg and 5.25 mg/kg over two years, plus a placebo arm. Dose is delivered as short oral pulses; the model treats cumulative dose (CD) as the exposure surrogate rather than modelling cladribine PK explicitly.",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "Adults with relapsing-remitting multiple sclerosis (RRMS). The model was developed using pooled data from the CLARITY (cladribine) phase III trial program.",
+    dose_range = "Two cladribine cumulative-dose cohorts: 3.5 mg/kg and 5.25 mg/kg over two years, plus a placebo arm. Dose is delivered as short oral pulses; the model treats cumulative dose (CD) as the exposure surrogate rather than modelling cladribine PK explicitly.",
+    regions = NA_character_,
+    notes = paste(
       "Per-trial demographic detail (n_subjects, weight, sex distribution, geographic mix) is",
       "not reproduced in the DDMORE Foundation Model Repository bundle for DDMODEL00000223,",
       "and the Novakovic 2017 publication is not on disk in this worktree. The model includes",

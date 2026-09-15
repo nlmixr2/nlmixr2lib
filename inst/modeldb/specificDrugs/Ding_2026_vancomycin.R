@@ -31,38 +31,38 @@ Ding_2026_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 65 kg (2.5-97.5 percentiles 41-101). Does not enter CL or V",
         "directly. It is an input to the Janmahasatian fat-free-mass equation (Online Resource",
         "Equation S6), which is what the allometric terms scale on. The control stream reads it as",
         "the `Weight` column and assigns `WT = Weight ;kg`.",
         sep = " "
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 169 cm (2.5-97.5 percentiles 150-181). The control stream divides",
         "by 100 to obtain metres before squaring (`HTM = HTCM/100`), which fixes the unit as cm.",
         "Enters only through fat-free mass.",
         sep = " "
       ),
-      source_name        = "Hight"
+      source_name = "Hight"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: 257 male (80.3%) / 63 female (19.7%). The control stream uses the",
         "OPPOSITE polarity, `M1F0 = Sex` with 1 = male: `IF (M1F0.EQ.0) THEN` selects the female",
         "Janmahasatian constants (WHSmax 37.99, WHS50 35.98) and the ELSE branch selects the male",
@@ -72,14 +72,14 @@ Ding_2026_vancomycin <- function() {
         "so it acts only through fat-free mass.",
         sep = " "
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 65 umol/L (2.5-97.5 percentiles 36-226.6). Power model on CL",
         "centred at 80 umol/L: `FScr_CL = (Scr/80)**FScr_CL1` in the control stream, exponent -0.458",
         "(Table 3). The centring constant 80 umol/L is a rounded normal-range value, not the cohort",
@@ -87,14 +87,14 @@ Ding_2026_vancomycin <- function() {
         "eGFR equations are unreliable in advanced heart failure (Discussion).",
         sep = " "
       ),
-      source_name        = "Serum_creatinine"
+      source_name = "Serum_creatinine"
     ),
     CYSC = list(
-      description        = "Serum cystatin C",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 1.23 mg/L (2.5-97.5 percentiles 0.77-4.01). Enters BOTH CL and V as",
         "separate power models, each centred at 1.5 mg/L: `FCysC_CL = (CysC/1.5)**FCysC_CL1`",
         "(exponent -0.650) and `FCysc_V = (CysC/1.5)**FCysc_V1` (exponent -0.294). A sigmoid form",
@@ -102,14 +102,14 @@ Ding_2026_vancomycin <- function() {
         "inflating the typical CL to 19.9 L/h, so the power model was retained.",
         sep = " "
       ),
-      source_name        = "Cystatin_C"
+      source_name = "Cystatin_C"
     ),
     NTPROBNP = list(
-      description        = "Serum N-terminal pro-B-type natriuretic peptide",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Serum N-terminal pro-B-type natriuretic peptide",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 1.095 ng/mL (2.5-97.5 percentiles 0.117-19.12). Power model on CL",
         "centred at 10 ng/mL: `FBNP_CL = (BNP/10)**FBNP_CL1`, exponent -0.0823 (Table 3). NOTE the",
         "unit: this paper reports NT-proBNP in ng/mL, whereas the common clinical reporting unit is",
@@ -119,14 +119,14 @@ Ding_2026_vancomycin <- function() {
         "index of cardiac stress through which reduced cardiac function lowers vancomycin clearance.",
         sep = " "
       ),
-      source_name        = "NT_proBNP"
+      source_name = "NT_proBNP"
     ),
     NEUT = list(
-      description        = "Absolute neutrophil count",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Absolute neutrophil count",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 7.01 x 10^9/L (2.5-97.5 percentiles 2.06-19.76). Power model on V",
         "centred at 8.0 x 10^9/L: `FNEUT_V = (NEUT/8.0)**FNEUT_V1`, exponent -0.128 (Table 3). The",
         "control stream annotates the column `NEUT = Neutrophil ; 10^9/L`, which fixes the unit; the",
@@ -135,14 +135,14 @@ Ding_2026_vancomycin <- function() {
         "report of neutrophil count as a covariate on vancomycin V (Discussion).",
         sep = " "
       ),
-      source_name        = "Neutrophil"
+      source_name = "Neutrophil"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2026 Table 1: median 56.9 years (2.5-97.5 percentiles 24.9-77.4); 41.3% of the cohort",
         "were elderly. Power model on V centred at 45 years: `FAge_V = (AGEY/45)**FAge_V1`, exponent",
         "+0.768 (Table 3), i.e. V rises with age. 45 years is the age of the paper's virtual standard",
@@ -150,14 +150,14 @@ Ding_2026_vancomycin <- function() {
         "(< 60 vs >= 60 years) and rejected (dOFV 0.77, p = 0.38).",
         sep = " "
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     OCC = list(
-      description        = "Occasion index for inter-occasion variability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for inter-occasion variability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into the indicators occ1..occ4 that select the per-occasion IOV",
         "etas on CL and V. Ding 2026 reports the two IOV magnitudes (Table 3, IOV_CL and IOV_V) and",
         "confirms exactly two IOV variances via the 2-degree-of-freedom OFV drop for Model 8 (Table",
@@ -169,18 +169,18 @@ Ding_2026_vancomycin <- function() {
         "Errata.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     ASSAY_CMIA = list(
-      description        = paste(
+      description = paste(
         "Bioanalytical assay indicator: 1 = chemiluminescent microparticle immunoassay (CMIA,",
         "Abbott Architect i1000), 0 = enzyme-multiplied immunoassay technique (EMIT, Viva-E)",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EMIT)",
-      notes              = paste(
+      notes = paste(
         "Per-observation indicator. Switches BOTH residual-error magnitudes. CMIA: proportional 0.198",
         "and additive 0.898 mg/L; EMIT: proportional FIXED at 0 and additive 1.83 mg/L (Table 3;",
         "control stream `$ERROR` block branching on `TYPE = Concentration_Method`, with the comments",
@@ -191,7 +191,7 @@ Ding_2026_vancomycin <- function() {
         "CMIA, 2.0 mg/L with a 2.0-50 mg/L linear range for EMIT (Methods, Sampling and analysis).",
         sep = " "
       ),
-      source_name        = "Concentration_Method"
+      source_name = "Concentration_Method"
     )
   )
 
@@ -201,9 +201,9 @@ Ding_2026_vancomycin <- function() {
   covariatesDataExcluded <- list(
     LVEF = list(
       description = "Left ventricular ejection fraction (echocardiographic), as a fraction",
-      units       = "(fraction)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(fraction)",
+      type = "continuous",
+      notes = paste(
         "Ding 2026 Table 1: median 0.56 (2.5-97.5 percentiles 0.29-0.69). Tested on CL as a",
         "continuous covariate (dOFV 1.074, df = 1, p = 0.3) and as a categorical covariate at",
         "cut-offs 0.4 (dOFV 0.68, p = 0.410) and 0.3 (no decrease in OFV). Not retained; NT-proBNP",
@@ -215,9 +215,9 @@ Ding_2026_vancomycin <- function() {
     ),
     CRRT = list(
       description = "Continuous renal replacement therapy indicator (1 = receiving CRRT)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Ding 2026 Table 1: 26 of 320 patients (8.1%). Tested as a categorical covariate on CL and",
         "rejected (dOFV 1.403, df = 1, p = 0.236; Online Resource Results, Covariate analysis).",
         sep = " "
@@ -226,19 +226,19 @@ Ding_2026_vancomycin <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 320L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 320L,
+    n_studies = 1L,
     n_concentrations = 1120L,
-    age_range        = "24.9-77.4 years (2.5-97.5 percentiles)",
-    age_median       = "56.9 years",
-    weight_range     = "41-101 kg (2.5-97.5 percentiles)",
-    weight_median    = "65 kg",
-    height_range     = "150-181 cm (2.5-97.5 percentiles)",
-    height_median    = "169 cm",
-    sex_female_pct   = 19.7,
-    race_ethnicity   = "Not reported (single-centre Chinese cohort)",
-    disease_state    = paste(
+    age_range = "24.9-77.4 years (2.5-97.5 percentiles)",
+    age_median = "56.9 years",
+    weight_range = "41-101 kg (2.5-97.5 percentiles)",
+    weight_median = "65 kg",
+    height_range = "150-181 cm (2.5-97.5 percentiles)",
+    height_median = "169 cm",
+    sex_female_pct = 19.7,
+    race_ethnicity = "Not reported (single-centre Chinese cohort)",
+    disease_state = paste(
       "Adults (>= 18 years) hospitalised for cardiac surgery and treated with intravenous vancomycin,",
       "either for infective endocarditis (95 patients, 29.7%, who began vancomycin before surgery) or",
       "for post-surgical infection - pneumonia (62.2%), septicaemia (2.5%), mediastinal infection",
@@ -246,7 +246,7 @@ Ding_2026_vancomycin <- function() {
       "were excluded. 26 patients (8.1%) received continuous renal replacement therapy.",
       sep = " "
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "Serum creatinine median 65 umol/L (2.5-97.5 percentiles 36-226.6); cystatin C median 1.23 mg/L",
       "(0.77-4.01). Renal function spans normal to severely impaired.",
       sep = " "
@@ -256,14 +256,14 @@ Ding_2026_vancomycin <- function() {
       "fraction median 0.56 (0.29-0.69).",
       sep = " "
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Intravenous vancomycin per routine clinical practice, initial dose per the label and adjusted",
       "on concentration where necessary (adjusted in 83 patients, 25.9%). The paper's dosage-strategy",
       "simulations span 250-1000 mg at 8-, 12- and 24-hour intervals as 2-hour infusions.",
       sep = " "
     ),
-    regions          = "China (single centre: The First Affiliated Hospital of Soochow University, Suzhou)",
-    notes            = paste(
+    regions = "China (single centre: The First Affiliated Hospital of Soochow University, Suzhou)",
+    notes = paste(
       "Retrospective analysis of routine therapeutic-drug-monitoring records (Ding 2026 Table 1).",
       "1120 concentrations from 320 patients, median 3 samples per patient; concentration median",
       "13.77 mg/L (range 1.30-60.64). 542 samples (48.4%) were troughs, 566 (50.5%) were drawn between",

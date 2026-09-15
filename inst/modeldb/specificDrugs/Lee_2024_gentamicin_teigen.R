@@ -31,11 +31,11 @@ Lee_2024_gentamicin_teigen <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, Cockcroft-Gault computed on IDEAL body weight, raw (NOT body-surface-area normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, Cockcroft-Gault computed on IDEAL body weight, raw (NOT body-surface-area normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Lee 2024 Methods: 'The CrCL was calculated using the Cockcroft and Gault formula, which used",
         "the ideal body weight.' The source model equation is written with CrCL in L/h --",
         "'CLNHD ... 0.453 x CrCL/0.53 L/h' -- so the reference value 0.53 L/h is 8.833 mL/min and the",
@@ -52,14 +52,14 @@ Lee_2024_gentamicin_teigen <- function() {
         "the Teigen group maximum is exactly the failure mode Lee 2024 was written to demonstrate.",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. Lee 2024 Methods: 'The model contained HD as a covariate for CL",
         "during HD (CLHD)'. Unlike the additive dialysis-arm idiom used by the sibling hemodialysis",
         "models in this library (Veinstein_2013_gentamicin.R, Dohmann_2025_piperacillin.R,",
@@ -72,16 +72,16 @@ Lee_2024_gentamicin_teigen <- function() {
         "to a one-compartment model with the CrCL-scaled CL_NHD alone.",
         sep = " "
       ),
-      source_name        = "HD"
+      source_name = "HD"
     )
   )
 
   covariatesDataExcluded <- list(
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Not a model input. Lee 2024 uses IBW only as an INPUT to the Cockcroft-Gault CrCL that is",
         "supplied as the CRCL column; the model itself never references weight of any kind. Recorded",
         "here so the provenance of the CRCL column is not lost. Lee 2024's patient was 158 cm and",
@@ -93,9 +93,9 @@ Lee_2024_gentamicin_teigen <- function() {
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened but NOT in the model. Lee 2024's Discussion notes that 'both the CL and Vd of",
         "gentamicin increase with total body weight in obese populations' and that the a priori",
         "Teigen model carries NO total-body-weight term -- CrCL enters on ideal body weight only.",
@@ -106,14 +106,14 @@ Lee_2024_gentamicin_teigen <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    age_range        = "53 years (single patient)",
-    weight_range     = "66.9 kg (single patient)",
-    sex_female_pct   = 100,
-    race_ethnicity   = "Korean (single patient)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
+    age_range = "53 years (single patient)",
+    weight_range = "66.9 kg (single patient)",
+    sex_female_pct = 100,
+    race_ethnicity = "Korean (single patient)",
+    disease_state = paste(
       "APPLICATION population, Lee 2024: one 53-year-old obese Korean woman with end-stage renal",
       "disease on thrice-weekly intermittent hemodialysis, treated with gentamicin for a",
       "carbapenem-resistant Pseudomonas aeruginosa surgical-site infection. Height 158 cm, weight",
@@ -126,7 +126,7 @@ Lee_2024_gentamicin_teigen <- function() {
       "the gentamicin course.",
       sep = " "
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Four intravenous infusions over 569 h (Lee 2024 Table 1): 140 mg at 140 mg/h (t = 0 h),",
       "110 mg at 88 mg/h (t = 72.72 h), 100 mg at 100 mg/h (t = 483.53 h), and 100 mg at 100 mg/h",
       "(t = 531.32 h). Three serum samples were drawn, at t = 72.72, 530.78 and 568.80 h; per the",
@@ -135,15 +135,15 @@ Lee_2024_gentamicin_teigen <- function() {
       "redistribution known to affect aminoglycosides in renal failure.",
       sep = " "
     ),
-    regions          = "Republic of Korea (Seoul National University Bundang Hospital)",
-    renal_function   = paste(
+    regions = "Republic of Korea (Seoul National University Bundang Hospital)",
+    renal_function = paste(
       "End-stage renal disease on thrice-weekly intermittent hemodialysis (FX CorDiax 60 high-flux",
       "dialyzer, blood flow 15 L/h, session length 3.7 h, interdialytic interval 18.6-68.5 h).",
       "Cockcroft-Gault CrCL on ideal body weight: mean 2.44 L/h (range 1.87-3.24), i.e. roughly",
       "twice the Teigen development cohort's group maximum of 1.24 L/h.",
       sep = " "
     ),
-    notes            = paste(
+    notes = paste(
       "IMPORTANT -- two distinct populations. The `population` block above describes Lee 2024's",
       "APPLICATION cohort (n = 1), i.e. the patient this model was USED to fit, not the cohort the",
       "model was ESTIMATED from. The DEVELOPMENT population is Teigen 2006 (closed access, not on",

@@ -57,39 +57,39 @@ Benavent_2025_dalbavancin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on the structural model but not retained. Median 75.5 years, interquartile interval 69-79 years (Benavent 2025 Results, first paragraph)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on the structural model but not retained. Median 75.5 years, interquartile interval 69-79 years (Benavent 2025 Results, first paragraph)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Printed as 'gender' in Benavent 2025 Methods; screened but not retained. 70% of the 20 enrolled patients were female (n = 14; Results, first paragraph). Recorded here on the canonical female-indicator convention."
+      units = "(binary)",
+      type = "binary",
+      notes = "Printed as 'gender' in Benavent 2025 Methods; screened but not retained. 70% of the 20 enrolled patients were female (n = 14; Results, first paragraph). Recorded here on the canonical female-indicator convention."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Benavent 2025 Methods). The paper does not print a cohort height summary in the main text."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Benavent 2025 Methods). The paper does not print a cohort height summary in the main text."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained (Benavent 2025 Methods). The paper does not print a cohort weight summary in the main text, and no allometric scaling is applied; the packaged V and CL are absolute values for this elderly cohort."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained (Benavent 2025 Methods). The paper does not print a cohort weight summary in the main text, and no allometric scaling is applied; the packaged V and CL are absolute values for this elderly cohort."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Benavent 2025 Methods). The paper does not print a cohort body-mass-index summary in the main text."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Benavent 2025 Methods). The paper does not print a cohort body-mass-index summary in the main text."
     ),
     CRCL = list(
       description = "Renal function: BSA-normalized glomerular filtration rate and, separately, baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Benavent 2025 screened TWO renal-function covariates as separate",
         "candidates -- glomerular filtration rate (their reference 19) and",
         "baseline creatinine clearance by the Cockcroft-Gault-style equation of",
@@ -109,21 +109,21 @@ Benavent_2025_dalbavancin <- function() {
     ),
     ALB = list(
       description = "Serum albumin on the day of sampling",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Benavent 2025 Methods, which specifies 'albumin serum concentrations on the day of sampling', i.e. a time-varying candidate). The cohort had normal albumin throughout: median 45 g/L, interquartile interval 38-47 g/L (Results, first paragraph). The Discussion attributes part of this cohort's lower clearance to its physiological albumin relative to the comparator populations."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Benavent 2025 Methods, which specifies 'albumin serum concentrations on the day of sampling', i.e. a time-varying candidate). The cohort had normal albumin throughout: median 45 g/L, interquartile interval 38-47 g/L (Results, first paragraph). The Discussion attributes part of this cohort's lower clearance to its physiological albumin relative to the comparator populations."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_median     = "75.5 years",
-    age_range      = "interquartile interval 69-79 years",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_median = "75.5 years",
+    age_range = "interquartile interval 69-79 years",
     sex_female_pct = 70,
     race_ethnicity = "Not reported; two-centre Spanish cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Chronic prosthetic joint infection caused by low-virulence Gram-positive",
       "bacteria susceptible to dalbavancin, managed by two-stage prosthetic",
       "exchange with a vancomycin- plus gentamicin-loaded cement spacer.",
@@ -133,7 +133,7 @@ Benavent_2025_dalbavancin <- function() {
       "S. lugdunensis 4.2%, other CoNS 16.7%), Cutibacterium acnes 25%,",
       "Enterococcus faecalis 4.2%; four polymicrobial infections."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "A single 1500 mg intravenous dose of dalbavancin, given as a 30 min",
       "short infusion at Hospital 12 de Octubre or a 2 h extended infusion at",
       "Hospital Universitari de Bellvitge, after a median 11.5 days",
@@ -141,9 +141,9 @@ Benavent_2025_dalbavancin <- function() {
       "(vancomycin 75%, daptomycin 25%; switched to an oxazolidinone before",
       "dalbavancin in 30% of cases)."
     ),
-    regions        = "Spain (Hospital Universitari de Bellvitge, Barcelona; Hospital Universitario 12 de Octubre, Madrid)",
+    regions = "Spain (Hospital Universitari de Bellvitge, Barcelona; Hospital Universitario 12 de Octubre, Madrid)",
     renal_function = "Uniformly preserved: median glomerular filtration rate 90 mL/min, interquartile interval 75.8-96.3 mL/min (Results, first paragraph). No patient had renal impairment, and no change in renal function occurred during follow-up.",
-    notes          = paste(
+    notes = paste(
       "Retrospective, observational, two-centre clinical and PK study run",
       "1 January 2022 to 31 May 2023 (ethics reference EOM017/23). Twenty",
       "patients were enrolled and reported for the efficacy and safety",

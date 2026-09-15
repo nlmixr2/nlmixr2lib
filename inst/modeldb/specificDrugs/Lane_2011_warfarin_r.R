@@ -21,114 +21,114 @@ Lane_2011_warfarin_r <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "R-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "R-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "R-warfarin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Power scaling on CL with reference weight 70 kg (Lane 2011 final R-warfarin equation; the typical CL of 0.125 L/h is reported for a 70-kg, 69.8-year-old subject with CYP2C19 wild-homozygote and CYP3A4 wild-homozygote). Cohort mean (range) body weight 80.7 (36-172) kg (Lane 2011 Table 1).",
-      source_name        = "WGT"
+      notes = "Time-fixed at baseline. Power scaling on CL with reference weight 70 kg (Lane 2011 final R-warfarin equation; the typical CL of 0.125 L/h is reported for a 70-kg, 69.8-year-old subject with CYP2C19 wild-homozygote and CYP3A4 wild-homozygote). Cohort mean (range) body weight 80.7 (36-172) kg (Lane 2011 Table 1).",
+      source_name = "WGT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Linear fractional effect on CL with reference age 69.8 years (Lane 2011 final R-warfarin equation). Cohort mean (range) age 66.4 (19-95) years (Lane 2011 Table 1); 69.8 y is the equation reference rather than the cohort mean.",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Linear fractional effect on CL with reference age 69.8 years (Lane 2011 final R-warfarin equation). Cohort mean (range) age 66.4 (19-95) years (Lane 2011 Table 1); 69.8 y is the equation reference rather than the cohort mean.",
+      source_name = "AGE"
     ),
     SNP_CYP2C19_RS3814637_VAR_COUNT = list(
-      description        = "CYP2C19 rs3814637 variant-allele count (0 = wild-homozygote, 1 = heterozygote, 2 = variant homozygote)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "CYP2C19 rs3814637 variant-allele count (0 = wild-homozygote, 1 = heterozygote, 2 = variant homozygote)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-invariant germline genotype. Paired with SNP_CYP2C19_RS3814637_MISSING. Cohort distribution (Lane 2011 Table 1, R-warfarin subset n=309): wild-homozygote 70.9%, heterozygote 8.1%, mutant-homozygote 1.3%, missing 19.7%. The rs3814637 SNP is NOT in linkage disequilibrium with the canonical CYP2C19*2 loss-of-function allele (rs4244285) in this patient population per Lane 2011 Discussion paragraph 'R-Warfarin models'.",
-      source_name        = "CYP2C19 (rs3814637) -- coded as wild-type / heterozygote / mutant-homozygote in Lane 2011 Methods"
+      notes = "Time-invariant germline genotype. Paired with SNP_CYP2C19_RS3814637_MISSING. Cohort distribution (Lane 2011 Table 1, R-warfarin subset n=309): wild-homozygote 70.9%, heterozygote 8.1%, mutant-homozygote 1.3%, missing 19.7%. The rs3814637 SNP is NOT in linkage disequilibrium with the canonical CYP2C19*2 loss-of-function allele (rs4244285) in this patient population per Lane 2011 Discussion paragraph 'R-Warfarin models'.",
+      source_name = "CYP2C19 (rs3814637) -- coded as wild-type / heterozygote / mutant-homozygote in Lane 2011 Methods"
     ),
     SNP_CYP2C19_RS3814637_MISSING = list(
-      description        = "Binary indicator: CYP2C19 rs3814637 genotype not measured / not available",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: CYP2C19 rs3814637 genotype not measured / not available",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C19 rs3814637 genotype known)",
-      notes              = "Lane 2011 fits a separate CL multiplier (0.804) for the missing-genotype subgroup (61 of 309 R-warfarin subjects). When SNP_CYP2C19_RS3814637_MISSING == 1 the VAR_COUNT column should be 0 so the genotype-indicator products evaluate to zero.",
-      source_name        = "CYP2C19 (Missing category in Table 3)"
+      notes = "Lane 2011 fits a separate CL multiplier (0.804) for the missing-genotype subgroup (61 of 309 R-warfarin subjects). When SNP_CYP2C19_RS3814637_MISSING == 1 the VAR_COUNT column should be 0 so the genotype-indicator products evaluate to zero.",
+      source_name = "CYP2C19 (Missing category in Table 3)"
     ),
     SNP_CYP3A4_RS2242480_VAR_COUNT = list(
-      description        = "CYP3A4 rs2242480 variant-allele count (0 = wild-homozygote, 1 = heterozygote, 2 = variant homozygote)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "CYP3A4 rs2242480 variant-allele count (0 = wild-homozygote, 1 = heterozygote, 2 = variant homozygote)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-invariant germline genotype. Paired with SNP_CYP3A4_RS2242480_MISSING. Cohort distribution (Lane 2011 Table 1, R-warfarin subset n=309): wild-homozygote 73.1%, heterozygote 13.6%, mutant-homozygote 1.0%, missing 12.3%. rs2242480 contributes to the CYP3A4*1G haplotype; its functional effect remains controversial per Lane 2011 Discussion paragraph 'R-Warfarin models'.",
-      source_name        = "CYP3A4 (rs2242480) -- coded as wild-type / heterozygote / mutant-homozygote in Lane 2011 Methods"
+      notes = "Time-invariant germline genotype. Paired with SNP_CYP3A4_RS2242480_MISSING. Cohort distribution (Lane 2011 Table 1, R-warfarin subset n=309): wild-homozygote 73.1%, heterozygote 13.6%, mutant-homozygote 1.0%, missing 12.3%. rs2242480 contributes to the CYP3A4*1G haplotype; its functional effect remains controversial per Lane 2011 Discussion paragraph 'R-Warfarin models'.",
+      source_name = "CYP3A4 (rs2242480) -- coded as wild-type / heterozygote / mutant-homozygote in Lane 2011 Methods"
     ),
     SNP_CYP3A4_RS2242480_MISSING = list(
-      description        = "Binary indicator: CYP3A4 rs2242480 genotype not measured / not available",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: CYP3A4 rs2242480 genotype not measured / not available",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A4 rs2242480 genotype known)",
-      notes              = "Lane 2011 fits a separate CL multiplier (0.937) for the missing-genotype subgroup (38 of 309 R-warfarin subjects). When SNP_CYP3A4_RS2242480_MISSING == 1 the VAR_COUNT column should be 0 so the genotype-indicator products evaluate to zero.",
-      source_name        = "CYP3A4 (Missing category in Table 3)"
+      notes = "Lane 2011 fits a separate CL multiplier (0.937) for the missing-genotype subgroup (38 of 309 R-warfarin subjects). When SNP_CYP3A4_RS2242480_MISSING == 1 the VAR_COUNT column should be 0 so the genotype-indicator products evaluate to zero.",
+      source_name = "CYP3A4 (Missing category in Table 3)"
     )
   )
 
   covariatesDataExcluded <- list(
     BSA = list(
-      description        = "Body surface area (Mosteller formula)",
-      units              = "m^2",
-      type               = "continuous",
-      notes              = "Screened in the Lane 2011 R-warfarin univariate analysis but not retained in the final model (Methods 'Covariate selection and models')."
+      description = "Body surface area (Mosteller formula)",
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened in the Lane 2011 R-warfarin univariate analysis but not retained in the final model (Methods 'Covariate selection and models')."
     ),
     HEIGHT = list(
-      description        = "Body height",
-      units              = "m",
-      type               = "continuous",
-      notes              = "Screened but not retained in the final R-warfarin model."
+      description = "Body height",
+      units = "m",
+      type = "continuous",
+      notes = "Screened but not retained in the final R-warfarin model."
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = "Screened but not retained as significant in the R-warfarin model (unlike S-warfarin where sex IS retained). See modellib('Lane_2011_warfarin_s') for the S-warfarin extraction that does include SEXF."
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained as significant in the R-warfarin model (unlike S-warfarin where sex IS retained). See modellib('Lane_2011_warfarin_s') for the S-warfarin extraction that does include SEXF."
     ),
     CONMED_AMIO = list(
-      description        = "Concomitant amiodarone use indicator",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = "Screened but not retained in the R-warfarin model."
+      description = "Concomitant amiodarone use indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained in the R-warfarin model."
     ),
     CYP2C9_S1_COUNT = list(
-      description        = "Count of CYP2C9*1 alleles (paired with S2 and S3 counts)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
-      notes              = "CYP2C9 genotype was tested in the R-warfarin model but not retained. CYP2C9 IS retained in the S-warfarin model (modellib('Lane_2011_warfarin_s')); only the S-enantiomer is metabolised primarily by CYP2C9 (Lane 2011 Discussion paragraph 'R-Warfarin models'). CYP1A2 SNPs (three rsids; specific identifiers not enumerated in the Lane 2011 paper) were also screened for R-warfarin and found nonsignificant; they are not registered here because the source does not name them."
+      description = "Count of CYP2C9*1 alleles (paired with S2 and S3 counts)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
+      notes = "CYP2C9 genotype was tested in the R-warfarin model but not retained. CYP2C9 IS retained in the S-warfarin model (modellib('Lane_2011_warfarin_s')); only the S-enantiomer is metabolised primarily by CYP2C9 (Lane 2011 Discussion paragraph 'R-Warfarin models'). CYP1A2 SNPs (three rsids; specific identifiers not enumerated in the Lane 2011 paper) were also screened for R-warfarin and found nonsignificant; they are not registered here because the source does not name them."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 309L,
-    n_studies      = 1L,
-    age_range      = "19-95 years",
-    age_mean       = "66.4 years (Lane 2011 Table 1, total cohort)",
-    age_reference  = "69.8 years (model equation reference; not the cohort mean)",
-    weight_range   = "36-172 kg",
-    weight_mean    = "80.7 kg (Lane 2011 Table 1, total cohort)",
+    species = "human",
+    n_subjects = 309L,
+    n_studies = 1L,
+    age_range = "19-95 years",
+    age_mean = "66.4 years (Lane 2011 Table 1, total cohort)",
+    age_reference = "69.8 years (model equation reference; not the cohort mean)",
+    weight_range = "36-172 kg",
+    weight_mean = "80.7 kg (Lane 2011 Table 1, total cohort)",
     weight_reference = "70 kg (model equation reference)",
     sex_female_pct = 41,
     race_ethnicity = "UK (Liverpool); race not stratified in the source",
-    disease_state  = "Adults on long-term warfarin anticoagulant therapy, indication-unrestricted (Methods 'Patients'): warfarin started for any clinical indication, observational follow-up over 26 weeks",
-    dose_range     = "Loading dose (over 3 days) followed by daily maintenance dose individually titrated per UK NHS in-house guidelines; absolute mg-per-day range not reported",
-    regions        = "United Kingdom (Royal Liverpool & Broadgreen University Hospital NHS Trust and University Hospital Aintree, Liverpool, 2004-2006)",
-    cyp2c19_freq   = "rs3814637 wild-homozygote 70.9%, heterozygote 8.1%, mutant-homozygote 1.3%, missing 19.7% (Lane 2011 Table 1, R-warfarin cohort n=309)",
-    cyp3a4_freq    = "rs2242480 wild-homozygote 73.1%, heterozygote 13.6%, mutant-homozygote 1.0%, missing 12.3% (Lane 2011 Table 1, R-warfarin cohort n=309)",
-    n_pk_records   = "759 R-warfarin plasma concentrations (Lane 2011 Table 1)",
-    sampling       = "Sparse sampling at 1, 8, and 26 weeks post-warfarin initiation; samples drawn ~16 h after the patient's previous dose; assay LLOQ 100 ng/mL; assay range 100-5000 ng/mL (Methods 'Determination of plasma warfarin enantiomer concentrations')",
-    notes          = "354 patients enrolled (irrespective of indication); 309 included in the R-warfarin PK model and 306 in the S-warfarin model. The two enantiomer models use overlapping but not identical patient subsets and report separate IIV and residual-error magnitudes; modellib('Lane_2011_warfarin_s') is the companion S-warfarin entry."
+    disease_state = "Adults on long-term warfarin anticoagulant therapy, indication-unrestricted (Methods 'Patients'): warfarin started for any clinical indication, observational follow-up over 26 weeks",
+    dose_range = "Loading dose (over 3 days) followed by daily maintenance dose individually titrated per UK NHS in-house guidelines; absolute mg-per-day range not reported",
+    regions = "United Kingdom (Royal Liverpool & Broadgreen University Hospital NHS Trust and University Hospital Aintree, Liverpool, 2004-2006)",
+    cyp2c19_freq = "rs3814637 wild-homozygote 70.9%, heterozygote 8.1%, mutant-homozygote 1.3%, missing 19.7% (Lane 2011 Table 1, R-warfarin cohort n=309)",
+    cyp3a4_freq = "rs2242480 wild-homozygote 73.1%, heterozygote 13.6%, mutant-homozygote 1.0%, missing 12.3% (Lane 2011 Table 1, R-warfarin cohort n=309)",
+    n_pk_records = "759 R-warfarin plasma concentrations (Lane 2011 Table 1)",
+    sampling = "Sparse sampling at 1, 8, and 26 weeks post-warfarin initiation; samples drawn ~16 h after the patient's previous dose; assay LLOQ 100 ng/mL; assay range 100-5000 ng/mL (Methods 'Determination of plasma warfarin enantiomer concentrations')",
+    notes = "354 patients enrolled (irrespective of indication); 309 included in the R-warfarin PK model and 306 in the S-warfarin model. The two enantiomer models use overlapping but not identical patient subsets and report separate IIV and residual-error magnitudes; modellib('Lane_2011_warfarin_s') is the companion S-warfarin entry."
   )
 
   ini({

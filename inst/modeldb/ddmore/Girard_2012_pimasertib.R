@@ -12,11 +12,11 @@ Girard_2012_pimasertib <- function() {
   paper_specific_etas <- c("etalogit")
 
   units <- list(
-    time          = "week",
-    dosing        = "(K-PD AUC; AMT column carries the per-week pimasertib AUC, ng*h/mL or paper unit)",
+    time = "week",
+    dosing = "(K-PD AUC; AMT column carries the per-week pimasertib AUC, ng*h/mL or paper unit)",
     concentration = "(K-PD exposure proxy; same AUC units as the AMT dose)"
   )
-  ddmore_id    <- "DDMODEL00000215"
+  ddmore_id <- "DDMODEL00000215"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,61 +25,66 @@ Girard_2012_pimasertib <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "pimasertib", units = NA_character_, specimen = "plasma", verified = FALSE),
-    cumhaz  = list(analyte = "ocular-adverse-event", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "ocular-adverse-event",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     DIS_HYPERT = list(
-      description        = "History of hypertension comorbidity (binary; 1 = prior or current hypertension, 0 = none)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "History of hypertension comorbidity (binary; 1 = prior or current hypertension, 0 = none)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hypertension)",
-      notes              = "Source column MHHY (medical history of hypertension). Time-fixed at study entry. Acts as additive shift on logit(P(AE >= k)) for both cumulative-logit thresholds.",
-      source_name        = "MHHY"
+      notes = "Source column MHHY (medical history of hypertension). Time-fixed at study entry. Acts as additive shift on logit(P(AE >= k)) for both cumulative-logit thresholds.",
+      source_name = "MHHY"
     ),
     REGI_BID = list(
-      description        = "Twice-daily-vs-once-daily dosing-regimen indicator (binary; 1 = BID, 0 = QD)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Twice-daily-vs-once-daily dosing-regimen indicator (binary; 1 = BID, 0 = QD)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (QD or other non-BID schedule)",
-      notes              = "Source column BID. Time-fixed per subject. Acts as additive shift on logit(P(AE >= k)) for both cumulative-logit thresholds. Distinct from the more-granular source REGI column (numeric regimen code) which Girard 2012 reduces to the binary BID indicator before testing it as a covariate.",
-      source_name        = "BID"
+      notes = "Source column BID. Time-fixed per subject. Acts as additive shift on logit(P(AE >= k)) for both cumulative-logit thresholds. Distinct from the more-granular source REGI column (numeric regimen code) which Girard 2012 reduces to the binary BID indicator before testing it as a covariate.",
+      source_name = "BID"
     ),
     CMAX_M1 = list(
-      description        = "Empirical-Bayes maximum plasma pimasertib concentration during the first month of dosing",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Empirical-Bayes maximum plasma pimasertib concentration during the first month of dosing",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CMAXM1. Per-subject summary derived from the upstream Girard 2012 pimasertib popPK model (not in nlmixr2lib at extraction time). Acts as additive shift on logit(P(AE >= k)) centred at 0 ng/mL: source MED17 = 0 sets the reference, so the linear term is theta * (CMAX_M1 - 0) = theta * CMAX_M1 directly.",
-      source_name        = "CMAXM1"
+      notes = "Source column CMAXM1. Per-subject summary derived from the upstream Girard 2012 pimasertib popPK model (not in nlmixr2lib at extraction time). Acts as additive shift on logit(P(AE >= k)) centred at 0 ng/mL: source MED17 = 0 sets the reference, so the linear term is theta * (CMAX_M1 - 0) = theta * CMAX_M1 directly.",
+      source_name = "CMAXM1"
     ),
     DOSE = list(
-      description        = "Per-subject assigned daily dose of pimasertib",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-subject assigned daily dose of pimasertib",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column DOSE. Time-fixed per subject (dose-escalation study; one dose level per cohort). Enters the dropout-hazard Weibull as a multiplicative exponential effect: hazard(t) ~ lambda * alpha * t^(alpha-1) * exp(beta * DOSE). Distinct from the K-PD AMT column, which carries the per-week pimasertib AUC and dosed into the central compartment.",
-      source_name        = "DOSE"
+      notes = "Source column DOSE. Time-fixed per subject (dose-escalation study; one dose level per cohort). Enters the dropout-hazard Weibull as a multiplicative exponential effect: hazard(t) ~ lambda * alpha * t^(alpha-1) * exp(beta * DOSE). Distinct from the K-PD AMT column, which carries the per-week pimasertib AUC and dosed into the central compartment.",
+      source_name = "DOSE"
     ),
     PREV_AE_SCORE = list(
-      description        = "Previous-observation ocular-AE CTCAE grade (Markov-state covariate; integer 0-3)",
-      units              = "(CTCAE ocular-toxicity grade, 0..3)",
-      type               = "count",
+      description = "Previous-observation ocular-AE CTCAE grade (Markov-state covariate; integer 0-3)",
+      units = "(CTCAE ocular-toxicity grade, 0..3)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Source column PREVSCOR -- the lagged-DV column carried via NONMEM's IF (TIME.EQ.0) PREVSCOR=0 / PREVSCOR=DV idiom in $PK / $ERROR. Set to 0 at the first observation per subject; updated each subsequent observation to the previous-step sampled CTCAE grade. The cumulative-logit thresholds (b01/b11/b21 for AE >= 1, b02/b12/b22 for AE >= 2) and the Emax term are conditioned on the FPS group: FPS0 = (PREV == 0), FPS1 = (PREV in {1,2}), FPS2 = (PREV >= 3). Values 1 and 2 collapse into the FPS1 stratum per the source Markov grouping; in the simulated dataset shipped with DDMODEL00000215 the observed DVID == 2 values are 0/1/2/3.",
-      source_name        = "PREVSCOR"
+      notes = "Source column PREVSCOR -- the lagged-DV column carried via NONMEM's IF (TIME.EQ.0) PREVSCOR=0 / PREVSCOR=DV idiom in $PK / $ERROR. Set to 0 at the first observation per subject; updated each subsequent observation to the previous-step sampled CTCAE grade. The cumulative-logit thresholds (b01/b11/b21 for AE >= 1, b02/b12/b22 for AE >= 2) and the Emax term are conditioned on the FPS group: FPS0 = (PREV == 0), FPS1 = (PREV in {1,2}), FPS2 = (PREV >= 3). Values 1 and 2 collapse into the FPS1 stratum per the source Markov grouping; in the simulated dataset shipped with DDMODEL00000215 the observed DVID == 2 values are 0/1/2/3.",
+      source_name = "PREVSCOR"
     )
   )
 
   population <- list(
-    n_subjects     = 199,
-    n_studies      = 2,
-    age_range      = "(adult oncology cohort; specific range not extracted -- the linked PAGE 21 (2012) Abstr 2458 publication is conference-abstract-only and was not on disk for cross-check at extraction time)",
-    weight_range   = "(not extracted)",
+    n_subjects = 199,
+    n_studies = 2,
+    age_range = "(adult oncology cohort; specific range not extracted -- the linked PAGE 21 (2012) Abstr 2458 publication is conference-abstract-only and was not on disk for cross-check at extraction time)",
+    weight_range = "(not extracted)",
     sex_female_pct = "(not extracted)",
-    disease_state  = "Advanced solid tumours and hematological malignancies (two phase I dose-escalation studies)",
-    dose_range     = "1-255 mg/day pimasertib (orally; QD or BID schedules pooled across the two phase I studies; observed daily-dose values in the bundled simulated dataset: 1, 1.5, 2, 2.5, 3.5, 5, 7, 14, 16, 28, 30, 45, 46, 60, 68, 84, 90, 94, 120, 150, 195, 255 mg)",
-    notes          = "n_subjects = 199 and n_observations = 3655 (DVID == 2 ocular-AE-grade rows after IGNORE(DVID.EQ.3)) read from Output_real_Pimasertib_AeDropout.lst run header; the listing reports ESTIMATION-EVALUATION (MAXEVALS=0) on the original-data fit, so the THETA / OMEGA values in the .lst FINAL PARAMETER ESTIMATE block equal the .mod $THETA / $OMEGA initials and are the publication's reported final estimates. Demographic detail (age, weight, sex split, race) is not derivable from the DDMORE bundle; the linked PAGE 21 (2012) abstract (URL www.page-meeting.org/?abstract=2458) is a conference abstract not available as a downloadable PDF and was not on disk for cross-check."
+    disease_state = "Advanced solid tumours and hematological malignancies (two phase I dose-escalation studies)",
+    dose_range = "1-255 mg/day pimasertib (orally; QD or BID schedules pooled across the two phase I studies; observed daily-dose values in the bundled simulated dataset: 1, 1.5, 2, 2.5, 3.5, 5, 7, 14, 16, 28, 30, 45, 46, 60, 68, 84, 90, 94, 120, 150, 195, 255 mg)",
+    notes = "n_subjects = 199 and n_observations = 3655 (DVID == 2 ocular-AE-grade rows after IGNORE(DVID.EQ.3)) read from Output_real_Pimasertib_AeDropout.lst run header; the listing reports ESTIMATION-EVALUATION (MAXEVALS=0) on the original-data fit, so the THETA / OMEGA values in the .lst FINAL PARAMETER ESTIMATE block equal the .mod $THETA / $OMEGA initials and are the publication's reported final estimates. Demographic detail (age, weight, sex split, race) is not derivable from the DDMORE bundle; the linked PAGE 21 (2012) abstract (URL www.page-meeting.org/?abstract=2458) is a conference abstract not available as a downloadable PDF and was not on disk for cross-check."
   )
 
   ini({

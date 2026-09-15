@@ -19,33 +19,33 @@ Barnett_2018_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Time-varying within subject; constant within an occasion. Rifampicin was dosed on OCC1 and OCC3 in the source clinical study (Lai et al. 2016, the n=12 healthy-male SLCO1B1-wildtype cohort that supplied the data for the Barnett 2018 fit). Decomposed inside model() into binary indicators oc1, oc2, oc3 that multiplex the per-occasion IOV etas on log-Ka, log-V, log-MTT (Barnett 2018 Table 1 reports a single shared IOV variance per parameter across occasions; the encoding mirrors the Wilkins_2008_rifampicin OMEGA BLOCK(1) SAME pattern). OCC2 (RSV-only period) has no rifampicin data in the source fit, so its eta is unused for in-paper simulations; it is retained for users who want to simulate at all three study occasions.",
-      source_name        = "OCC"
+      notes = "Time-varying within subject; constant within an occasion. Rifampicin was dosed on OCC1 and OCC3 in the source clinical study (Lai et al. 2016, the n=12 healthy-male SLCO1B1-wildtype cohort that supplied the data for the Barnett 2018 fit). Decomposed inside model() into binary indicators oc1, oc2, oc3 that multiplex the per-occasion IOV etas on log-Ka, log-V, log-MTT (Barnett 2018 Table 1 reports a single shared IOV variance per parameter across occasions; the encoding mirrors the Wilkins_2008_rifampicin OMEGA BLOCK(1) SAME pattern). OCC2 (RSV-only period) has no rifampicin data in the source fit, so its eta is unused for in-paper simulations; it is retained for users who want to simulate at all three study occasions.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 12L,
-    n_studies        = 1L,
-    n_observations   = 276L,
-    age_range        = "Healthy adult males; demographic distribution not tabulated by Barnett 2018 (source dataset Lai et al. 2016, 12 healthy male subjects, SLCO1B1 c.521 T>C wildtype only; no OATP1B1*5 / *15 carriers).",
-    weight_range     = "(not extracted; Barnett 2018 Methods do not tabulate per-subject weights for the n=12 cohort.)",
-    sex_female_pct   = 0,
-    disease_state    = "Healthy adult male volunteers in a three-occasion (7-day washout between OCC1-2 and OCC2-3) drug-drug-interaction crossover study.",
-    dose_range       = "Single 600 mg oral rifampicin dose at the start of OCC1 and at the start of OCC3 (co-administered with 5 mg rosuvastatin on OCC3).",
-    regions          = "(not extracted; the underlying clinical study Lai et al. 2016 region was not explicitly stated in Barnett 2018 Methods.)",
-    notes            = "Demographics inferred from Barnett 2018 Methods (Clinical data section) and the cited source clinical study Lai Y et al., Pharmacol Res Perspect 2016;4(3):e00207. The 276 rifampicin plasma samples for modeling purposes were collected over the 24 h post-dose window on OCC1 (n=144) and OCC3 (n=132). The NONMEM covariance step failed for this model (Table 1 footnote a), so the parameter standard errors are not available."
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    n_observations = 276L,
+    age_range = "Healthy adult males; demographic distribution not tabulated by Barnett 2018 (source dataset Lai et al. 2016, 12 healthy male subjects, SLCO1B1 c.521 T>C wildtype only; no OATP1B1*5 / *15 carriers).",
+    weight_range = "(not extracted; Barnett 2018 Methods do not tabulate per-subject weights for the n=12 cohort.)",
+    sex_female_pct = 0,
+    disease_state = "Healthy adult male volunteers in a three-occasion (7-day washout between OCC1-2 and OCC2-3) drug-drug-interaction crossover study.",
+    dose_range = "Single 600 mg oral rifampicin dose at the start of OCC1 and at the start of OCC3 (co-administered with 5 mg rosuvastatin on OCC3).",
+    regions = "(not extracted; the underlying clinical study Lai et al. 2016 region was not explicitly stated in Barnett 2018 Methods.)",
+    notes = "Demographics inferred from Barnett 2018 Methods (Clinical data section) and the cited source clinical study Lai Y et al., Pharmacol Res Perspect 2016;4(3):e00207. The 276 rifampicin plasma samples for modeling purposes were collected over the 24 h post-dose window on OCC1 (n=144) and OCC3 (n=132). The NONMEM covariance step failed for this model (Table 1 footnote a), so the parameter standard errors are not available."
   )
 
   ini({

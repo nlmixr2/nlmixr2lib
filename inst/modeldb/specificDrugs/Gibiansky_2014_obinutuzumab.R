@@ -8,80 +8,80 @@ Gibiansky_2014_obinutuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "obinutuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "obinutuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "obinutuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Estimated power exponent 0.615 (shared on CL_T and CL_inf) and 0.383 (on V1) per Table 3; fixed allometric exponents 0.75 on Q and 1.0 on V2 per Methods. Reference 75 kg per NONMEM control stream (Supplementary Table S1).",
-      source_name        = "BW"
+      notes = "Time-fixed baseline value. Estimated power exponent 0.615 (shared on CL_T and CL_inf) and 0.383 (on V1) per Table 3; fixed allometric exponents 0.75 on Q and 1.0 on V2 per Methods. Reference 75 kg per NONMEM control stream (Supplementary Table S1).",
+      source_name = "BW"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source column SEX in the NONMEM control stream encodes 1 = male, 0 = female; SEXF = 1 - SEX inverts the encoding to the canonical female-indicator. Paper's typical-value parameters (CL_T, CL_inf, V1) are reported at the female reference, so effects on CL_T, CL_inf, and V1 are applied via (1 - SEXF) to preserve verbatim source values.",
-      source_name        = "SEX"
+      notes = "Source column SEX in the NONMEM control stream encodes 1 = male, 0 = female; SEXF = 1 - SEX inverts the encoding to the canonical female-indicator. Paper's typical-value parameters (CL_T, CL_inf, V1) are reported at the female reference, so effects on CL_T, CL_inf, and V1 are applied via (1 - SEXF) to preserve verbatim source values.",
+      source_name = "SEX"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size, reported as the sum of products of perpendicular diameters of target lesions (SPPD)",
-      units              = "mm^2",
-      type               = "continuous",
+      description = "Baseline tumor size, reported as the sum of products of perpendicular diameters of target lesions (SPPD)",
+      units = "mm^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Source uses BSIZ in mm^2 (SPPD convention typical for B-cell lymphoma and CLL nodal disease, where diameters are paired into products). Used in the model only via the binary stratum indicator (BSIZ <= 1750 mm^2 vs > 1750 mm^2) introduced as CODT in the NONMEM control stream; the threshold was identified by Gibiansky 2014 as providing a better fit than splitting at other values or treating BSIZ as continuous (Methods 'Covariate model development'). The canonical TUMSZ register pools SPPD with sum-of-diameters and sum-of-linear-diameters constructs; for this paper the SPPD convention is in mm^2.",
-      source_name        = "BSIZ"
+      notes = "Time-fixed baseline value. Source uses BSIZ in mm^2 (SPPD convention typical for B-cell lymphoma and CLL nodal disease, where diameters are paired into products). Used in the model only via the binary stratum indicator (BSIZ <= 1750 mm^2 vs > 1750 mm^2) introduced as CODT in the NONMEM control stream; the threshold was identified by Gibiansky 2014 as providing a better fit than splitting at other values or treating BSIZ as continuous (Methods 'Covariate model development'). The canonical TUMSZ register pools SPPD with sum-of-diameters and sum-of-linear-diameters constructs; for this paper the SPPD convention is in mm^2.",
+      source_name = "BSIZ"
     ),
     TUMTP_BCL = list(
-      description        = "B-cell lymphoma (BCL) histology indicator, 1 = BCL, 0 = other histology",
-      units              = "(binary)",
-      type               = "binary",
+      description = "B-cell lymphoma (BCL) histology indicator, 1 = BCL, 0 = other histology",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (other histology; CLL is the typical-value reference category)",
-      notes              = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_BCL = as.integer(DIS == 2). In Gibiansky 2014 the BCL category is a pooled residual B-cell-lymphoma group that includes follicular lymphoma (all GAUDI patients were FL; Table 1). The paper applies a shared effect (theta13, ratio 0.834) to BCL and DLBCL on both CL_T and CL_inf; the BCL effect is therefore implemented as the composite (TUMTP_BCL + TUMTP_DLBCL) inside model().",
-      source_name        = "DIS"
+      notes = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_BCL = as.integer(DIS == 2). In Gibiansky 2014 the BCL category is a pooled residual B-cell-lymphoma group that includes follicular lymphoma (all GAUDI patients were FL; Table 1). The paper applies a shared effect (theta13, ratio 0.834) to BCL and DLBCL on both CL_T and CL_inf; the BCL effect is therefore implemented as the composite (TUMTP_BCL + TUMTP_DLBCL) inside model().",
+      source_name = "DIS"
     ),
     TUMTP_DLBCL = list(
-      description        = "Diffuse large B-cell lymphoma (DLBCL) histology indicator, 1 = DLBCL, 0 = other histology",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diffuse large B-cell lymphoma (DLBCL) histology indicator, 1 = DLBCL, 0 = other histology",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (other histology; CLL is the typical-value reference category)",
-      notes              = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_DLBCL = as.integer(DIS == 3). The paper applies a shared effect (theta13, ratio 0.834) to BCL and DLBCL on both CL_T and CL_inf; see TUMTP_BCL notes.",
-      source_name        = "DIS"
+      notes = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_DLBCL = as.integer(DIS == 3). The paper applies a shared effect (theta13, ratio 0.834) to BCL and DLBCL on both CL_T and CL_inf; see TUMTP_BCL notes.",
+      source_name = "DIS"
     ),
     TUMTP_MCL = list(
-      description        = "Mantle cell lymphoma (MCL) histology indicator, 1 = MCL, 0 = other histology",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mantle cell lymphoma (MCL) histology indicator, 1 = MCL, 0 = other histology",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (other histology; CLL is the typical-value reference category)",
-      notes              = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_MCL = as.integer(DIS == 4). The MCL effect (theta14, ratio 1.75) is applied separately to CL_T and CL_inf. Together with TUMTP_BCL and TUMTP_DLBCL, the indicators define the cl_exp_kdes-NHL composite ((TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL); theta12, ratio 2.08).",
-      source_name        = "DIS"
+      notes = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_MCL = as.integer(DIS == 4). The MCL effect (theta14, ratio 1.75) is applied separately to CL_T and CL_inf. Together with TUMTP_BCL and TUMTP_DLBCL, the indicators define the cl_exp_kdes-NHL composite ((TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL); theta12, ratio 2.08).",
+      source_name = "DIS"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 678L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 678L,
+    n_studies = 4L,
     n_observations = 12634L,
-    age_range      = "22-89 years",
-    age_median     = "65.7 years (mean)",
-    weight_range   = "40-140 kg",
-    weight_median  = "75.6 kg (mean)",
+    age_range = "22-89 years",
+    age_median = "65.7 years (mean)",
+    weight_range = "40-140 kg",
+    weight_median = "75.6 kg (mean)",
     sex_female_pct = 42.9,
-    disease_state  = "CD20+ B-cell malignancies (Gibiansky 2014 Table 2): chronic lymphocytic leukemia 342 / 678 (50.4%); B-cell lymphoma (BCL; predominantly follicular lymphoma in GAUDI) 286 / 678 (42.2%); diffuse large B-cell lymphoma 30 / 678 (4.4%); mantle cell lymphoma 20 / 678 (2.9%).",
-    dose_range     = "Intravenous obinutuzumab 200-2000 mg per infusion (maximum infusion rate 400 mg/h). GAUGUIN NHL: 400 or 1600/800 mg per cycle on day 1 (with day 8 of cycle 1). GAUGUIN CLL: 1000 mg cycle 1 days 1/8/15 and day 1 of subsequent cycles. GAUDI: 400 mg with FC or CHOP, or 1600/800 mg standalone; FL first-line 1000 mg q21-28d. GAUSS phase I dose escalation 200-2000 mg; phase II 1000 mg weekly induction. CLL11: 1000 mg cycle 1 days 1/8/15 and day 1 of cycles 2-6 (28-day cycles).",
-    regimen        = "Intermittent IV infusion across induction and maintenance regimens; CLL11 used the 1000 mg cycle-1 loading (days 1, 8, 15) + 1000 mg q28d maintenance regimen carried forward as the obinutuzumab labelled regimen in CLL.",
-    regions        = "Multi-regional phase I-III programme.",
-    studies        = "GAUGUIN (BO20999, NCT00517530, phase I/II; 131 patients, 3446 samples); GAUDI (BO21000, NCT00825149, phase Ib; 134 patients, 3634 samples); GAUSS (BO21003, NCT00576758, phase I/II; 105 patients, 2327 samples); CLL11 (BO21004, NCT01010061, phase III; 308 patients, 3227 samples).",
-    bsiz_summary   = "Baseline tumor size (sum of products of perpendicular diameters, SPPD) mean (SD) 5390 (19,100) mm^2 across the full cohort; per-study means range 4420-6030 mm^2 (Gibiansky 2014 Table 2). The threshold 1750 mm^2 splits the cohort into 'low' and 'high' strata for the cl_exp_kdes effect.",
-    bcell_summary  = "Baseline B-cell count mean (SD) 37.4 (66.6) x 10^9/L across cohort; CLL11 mean 77.75 x 10^9/L vs 1.62-11.8 x 10^9/L in the NHL studies. Baseline B-cell count and diagnosis were confounded (high counts in CLL) and diagnosis was retained as the primary covariate in lieu of B-cell count.",
-    excluded_obs   = "74 postdose observations (0.6%) below the assay LLOQ of 4.05 ng/mL were excluded from the analysis.",
-    notes          = "Pooled phase I-III population PK dataset. The four trials enrolled previously treated CLL/NHL patients (GAUGUIN, GAUDI, GAUSS) plus previously untreated comorbid CLL patients (CLL11). Age and renal function (creatinine clearance) were tested but did not significantly affect PK parameters; race and antidrug antibody status were not retained as covariates."
+    disease_state = "CD20+ B-cell malignancies (Gibiansky 2014 Table 2): chronic lymphocytic leukemia 342 / 678 (50.4%); B-cell lymphoma (BCL; predominantly follicular lymphoma in GAUDI) 286 / 678 (42.2%); diffuse large B-cell lymphoma 30 / 678 (4.4%); mantle cell lymphoma 20 / 678 (2.9%).",
+    dose_range = "Intravenous obinutuzumab 200-2000 mg per infusion (maximum infusion rate 400 mg/h). GAUGUIN NHL: 400 or 1600/800 mg per cycle on day 1 (with day 8 of cycle 1). GAUGUIN CLL: 1000 mg cycle 1 days 1/8/15 and day 1 of subsequent cycles. GAUDI: 400 mg with FC or CHOP, or 1600/800 mg standalone; FL first-line 1000 mg q21-28d. GAUSS phase I dose escalation 200-2000 mg; phase II 1000 mg weekly induction. CLL11: 1000 mg cycle 1 days 1/8/15 and day 1 of cycles 2-6 (28-day cycles).",
+    regimen = "Intermittent IV infusion across induction and maintenance regimens; CLL11 used the 1000 mg cycle-1 loading (days 1, 8, 15) + 1000 mg q28d maintenance regimen carried forward as the obinutuzumab labelled regimen in CLL.",
+    regions = "Multi-regional phase I-III programme.",
+    studies = "GAUGUIN (BO20999, NCT00517530, phase I/II; 131 patients, 3446 samples); GAUDI (BO21000, NCT00825149, phase Ib; 134 patients, 3634 samples); GAUSS (BO21003, NCT00576758, phase I/II; 105 patients, 2327 samples); CLL11 (BO21004, NCT01010061, phase III; 308 patients, 3227 samples).",
+    bsiz_summary = "Baseline tumor size (sum of products of perpendicular diameters, SPPD) mean (SD) 5390 (19,100) mm^2 across the full cohort; per-study means range 4420-6030 mm^2 (Gibiansky 2014 Table 2). The threshold 1750 mm^2 splits the cohort into 'low' and 'high' strata for the cl_exp_kdes effect.",
+    bcell_summary = "Baseline B-cell count mean (SD) 37.4 (66.6) x 10^9/L across cohort; CLL11 mean 77.75 x 10^9/L vs 1.62-11.8 x 10^9/L in the NHL studies. Baseline B-cell count and diagnosis were confounded (high counts in CLL) and diagnosis was retained as the primary covariate in lieu of B-cell count.",
+    excluded_obs = "74 postdose observations (0.6%) below the assay LLOQ of 4.05 ng/mL were excluded from the analysis.",
+    notes = "Pooled phase I-III population PK dataset. The four trials enrolled previously treated CLL/NHL patients (GAUGUIN, GAUDI, GAUSS) plus previously untreated comorbid CLL patients (CLL11). Age and renal function (creatinine clearance) were tested but did not significantly affect PK parameters; race and antidrug antibody status were not retained as covariates."
   )
 
   ini({

@@ -22,70 +22,70 @@ Bienczak_2016_nevirapine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
     transit3 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying / baseline body weight. Drives the Anderson-Holford allometric scaling of intrinsic clearance CLint (exponent 0.75) and central volume Vc (exponent 1.0), with the structural typical-value parameters reported in Bienczak 2016 Table 3 corresponding to the cohort median 14.5 kg (paper Results 'Population pharmacokinetics' paragraph 4 and Table 3 footnote: 'All clearance and volume parameters scaled allometrically to the median weight of 14.5 kg.'). Hepatic plasma flow QH (50 L/h) and liver volume VH (1 L) are also allometrically scaled (CL-exponent 0.75 on QH, V-exponent 1.0 on VH) but use the 70-kg adult reference of Bienczak 2016 Methods 'Structural model' paragraph 1, not the 14.5-kg child median.",
-      source_name        = "WT"
+      notes = "Time-varying / baseline body weight. Drives the Anderson-Holford allometric scaling of intrinsic clearance CLint (exponent 0.75) and central volume Vc (exponent 1.0), with the structural typical-value parameters reported in Bienczak 2016 Table 3 corresponding to the cohort median 14.5 kg (paper Results 'Population pharmacokinetics' paragraph 4 and Table 3 footnote: 'All clearance and volume parameters scaled allometrically to the median weight of 14.5 kg.'). Hepatic plasma flow QH (50 L/h) and liver volume VH (1 L) are also allometrically scaled (CL-exponent 0.75 on QH, V-exponent 1.0 on VH) but use the 70-kg adult reference of Bienczak 2016 Methods 'Structural model' paragraph 1, not the 14.5-kg child median.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the exponential maturation of pre-hepatic bioavailability FpreH per Bienczak 2016 Results 'Population pharmacokinetics' paragraph 4 / Equation (7) in Appendix S1 (Appendix S1 was not on disk at extraction time; the equation is reconstructed from the paper's narrative as FpreH(AGE) = 1 - (1 - FpreH_birth) * exp(-ln(2) / t_half_FpreH * AGE), with FpreH(0) = 0.583, FpreH(infty) = 1, t_half = 1.54 years from Table 3, and FpreH(3.3 y) ~ 0.906 matching the paper's reported 90%). Treated as time-invariant per subject for steady-state PK simulation; in the source cohort age was the baseline value (Table 1 footnote b).",
-      source_name        = "AGE"
+      notes = "Drives the exponential maturation of pre-hepatic bioavailability FpreH per Bienczak 2016 Results 'Population pharmacokinetics' paragraph 4 / Equation (7) in Appendix S1 (Appendix S1 was not on disk at extraction time; the equation is reconstructed from the paper's narrative as FpreH(AGE) = 1 - (1 - FpreH_birth) * exp(-ln(2) / t_half_FpreH * AGE), with FpreH(0) = 0.583, FpreH(infty) = 1, t_half = 1.54 years from Table 3, and FpreH(3.3 y) ~ 0.906 matching the paper's reported 90%). Treated as time-invariant per subject for steady-state PK simulation; in the source cohort age was the baseline value (Table 1 footnote b).",
+      source_name = "AGE"
     ),
     CYP2B6_IM = list(
-      description        = "CYP2B6 intermediate-metabolizer indicator (1 = 516GT | 983TT or 516GG | 983TC)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2B6 intermediate-metabolizer indicator (1 = 516GT | 983TT or 516GG | 983TC)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-IM phenotype: EM, SM, or USM; EM is the structural reference when CYP2B6_IM = CYP2B6_SM = CYP2B6_USM = 0)",
-      notes              = "First of three sibling binary indicators (CYP2B6_IM / CYP2B6_SM / CYP2B6_USM) encoding the four-level EM / IM / SM / USM CYP2B6 metabolizer phenotype defined by the combined 516G>T (rs3745274) | 983T>C (rs28399499) SNP vector (Bienczak 2016 Methods 'Covariate effects' paragraph 2 phenotype-assignment list). Multiplicative log-additive effect on CLint: -17% relative to EM (Table 3 absolute typical values 3.27 L/h EM vs 2.72 L/h IM; the encoded log-effect coefficient e_cyp2b6_im_cl = log(2.72/3.27) = -0.184). Cohort prevalence 44.6% IM (Bienczak 2016 Table 2; 141 of 319 genotyped CHAPAS-3 children).",
-      source_name        = "metabolizer status (IM)"
+      notes = "First of three sibling binary indicators (CYP2B6_IM / CYP2B6_SM / CYP2B6_USM) encoding the four-level EM / IM / SM / USM CYP2B6 metabolizer phenotype defined by the combined 516G>T (rs3745274) | 983T>C (rs28399499) SNP vector (Bienczak 2016 Methods 'Covariate effects' paragraph 2 phenotype-assignment list). Multiplicative log-additive effect on CLint: -17% relative to EM (Table 3 absolute typical values 3.27 L/h EM vs 2.72 L/h IM; the encoded log-effect coefficient e_cyp2b6_im_cl = log(2.72/3.27) = -0.184). Cohort prevalence 44.6% IM (Bienczak 2016 Table 2; 141 of 319 genotyped CHAPAS-3 children).",
+      source_name = "metabolizer status (IM)"
     ),
     CYP2B6_SM = list(
-      description        = "CYP2B6 slow-metabolizer indicator (1 = 516TT | 983TT or 516GT | 983TC)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2B6 slow-metabolizer indicator (1 = 516TT | 983TT or 516GT | 983TC)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-SM phenotype: EM, IM, or USM; EM is the structural reference when CYP2B6_IM = CYP2B6_SM = CYP2B6_USM = 0)",
-      notes              = "Second of three sibling binary indicators (CYP2B6_IM / CYP2B6_SM / CYP2B6_USM) encoding the four-level EM / IM / SM / USM CYP2B6 metabolizer phenotype. Multiplicative log-additive effect on CLint: -50% relative to EM (Table 3 absolute typical values 3.27 L/h EM vs 1.65 L/h SM; the encoded log-effect coefficient e_cyp2b6_sm_cl = log(1.65/3.27) = -0.684). Cohort prevalence 21.7% SM (Bienczak 2016 Table 2; 70 of 319 genotyped CHAPAS-3 children).",
-      source_name        = "metabolizer status (SM)"
+      notes = "Second of three sibling binary indicators (CYP2B6_IM / CYP2B6_SM / CYP2B6_USM) encoding the four-level EM / IM / SM / USM CYP2B6 metabolizer phenotype. Multiplicative log-additive effect on CLint: -50% relative to EM (Table 3 absolute typical values 3.27 L/h EM vs 1.65 L/h SM; the encoded log-effect coefficient e_cyp2b6_sm_cl = log(1.65/3.27) = -0.684). Cohort prevalence 21.7% SM (Bienczak 2016 Table 2; 70 of 319 genotyped CHAPAS-3 children).",
+      source_name = "metabolizer status (SM)"
     ),
     CYP2B6_USM = list(
-      description        = "CYP2B6 ultra-slow-metabolizer indicator (1 = 516GG | 983CC, 983CC homozygote)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2B6 ultra-slow-metabolizer indicator (1 = 516GG | 983CC, 983CC homozygote)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-USM phenotype: EM, IM, or SM; EM is the structural reference when CYP2B6_IM = CYP2B6_SM = CYP2B6_USM = 0)",
-      notes              = "Third of three sibling binary indicators (CYP2B6_IM / CYP2B6_SM / CYP2B6_USM) encoding the four-level EM / IM / SM / USM CYP2B6 metabolizer phenotype. Multiplicative log-additive effect on CLint: -68% relative to EM (Table 3 absolute typical values 3.27 L/h EM vs 1.04 L/h USM; the encoded log-effect coefficient e_cyp2b6_usm_cl = log(1.04/3.27) = -1.146). Cohort prevalence 0.6% USM (Bienczak 2016 Table 2; 2 of 319 genotyped CHAPAS-3 children). Bienczak 2016 is the first study to quantify the 983CC homozygote (USM) effect on nevirapine clearance; the 983T>C loss-of-function allele is essentially absent from European-ancestry populations and reaches appreciable frequency only in sub-Saharan African cohorts.",
-      source_name        = "metabolizer status (USM)"
+      notes = "Third of three sibling binary indicators (CYP2B6_IM / CYP2B6_SM / CYP2B6_USM) encoding the four-level EM / IM / SM / USM CYP2B6 metabolizer phenotype. Multiplicative log-additive effect on CLint: -68% relative to EM (Table 3 absolute typical values 3.27 L/h EM vs 1.04 L/h USM; the encoded log-effect coefficient e_cyp2b6_usm_cl = log(1.04/3.27) = -1.146). Cohort prevalence 0.6% USM (Bienczak 2016 Table 2; 2 of 319 genotyped CHAPAS-3 children). Bienczak 2016 is the first study to quantify the 983CC homozygote (USM) effect on nevirapine clearance; the 983T>C loss-of-function allele is essentially absent from European-ancestry populations and reaches appreciable frequency only in sub-Saharan African cohorts.",
+      source_name = "metabolizer status (USM)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 414L,
-    n_studies      = 2L,
-    age_range      = "0.3-15.0 years (paediatric)",
-    age_median     = "2.92 years",
-    weight_range   = "3.5-29.6 kg",
-    weight_median  = "12.2 kg (cohort) / 14.5 kg (allometric-scaling reference, Bienczak 2016 Table 3 footnote)",
+    species = "human",
+    n_subjects = 414L,
+    n_studies = 2L,
+    age_range = "0.3-15.0 years (paediatric)",
+    age_median = "2.92 years",
+    weight_range = "3.5-29.6 kg",
+    weight_median = "12.2 kg (cohort) / 14.5 kg (allometric-scaling reference, Bienczak 2016 Table 3 footnote)",
     sex_female_pct = 47.5,
     race_ethnicity = "African (all 414 patients black African; recruited from Uganda and Zambia per Bienczak 2016 Table 1 footnote)",
-    disease_state  = "HIV-1 infection on twice-daily nevirapine-based combination antiretroviral therapy (paediatric). Companion nucleoside reverse-transcriptase inhibitors (NRTI backbone) were abacavir (n = 115), stavudine (n = 191), or zidovudine (n = 114) per Bienczak 2016 Table 1; the NRTI backbone was tested as a covariate on nevirapine PK and was not retained in the final model (Bienczak 2016 Results 'Population pharmacokinetics' paragraph 5: 'No other covariates were identified as significant').",
-    dose_range     = "Twice-daily oral nevirapine dosed by WHO weight-band guidelines (2006 guidelines in CHAPAS-1, 2010 guidelines in CHAPAS-3). Paediatric formulations used in CHAPAS-1: Triomune Baby (50 mg nevirapine FDC) and Triomune Junior (100 mg nevirapine FDC); paediatric and adult formulations used in CHAPAS-3 including Triomune Baby / Junior, Duovir-N Baby (50 mg nevirapine FDC), nevirapine 100 mg single-drug, Duovir-N (200 mg nevirapine FDC), and Triomune30 (200 mg nevirapine FDC). Unequal AM / PM splitting of the daily dose: CHAPAS-1 gave the larger dose at night; CHAPAS-3 gave the larger dose in the morning (Bienczak 2016 Methods 'CHAPAS-1' and 'CHAPAS-3' paragraphs).",
-    regions        = "Uganda and Zambia (sub-Saharan Africa).",
-    notes          = "Pooled cohort from two CHAPAS trials (CHAPAS-1: 84 children with intensive sampling at pre-dose and 1, 2, 4, 6, 8, 12 h after the morning dose; CHAPAS-3: 336 children with sparse sampling at clinic visits, two samples per visit at least 2 h apart). Six patients rolled over from CHAPAS-1 to CHAPAS-3 (414 = 84 + 336 - 6). Final analysis dataset had 3305 plasma nevirapine concentration measurements after exclusion of 246 samples (111 unclear dosage history, 87 visual outliers with |CWRESI| > 3, and 48 below-the-limit-of-quantification samples confirmed by undetectable companion-drug concentrations). Genotypes were available for 324 children (78.3%); the mixture-model imputation for the remaining 96 children (40.7% EM / 49.0% IM / 9.4% SM) is not encoded in this nlmixr2lib model -- this file assumes known genotype and the user supplies the metabolizer indicators directly. Baseline demographics from Bienczak 2016 Table 1; metabolizer-group prevalences from Bienczak 2016 Table 2 row 1."
+    disease_state = "HIV-1 infection on twice-daily nevirapine-based combination antiretroviral therapy (paediatric). Companion nucleoside reverse-transcriptase inhibitors (NRTI backbone) were abacavir (n = 115), stavudine (n = 191), or zidovudine (n = 114) per Bienczak 2016 Table 1; the NRTI backbone was tested as a covariate on nevirapine PK and was not retained in the final model (Bienczak 2016 Results 'Population pharmacokinetics' paragraph 5: 'No other covariates were identified as significant').",
+    dose_range = "Twice-daily oral nevirapine dosed by WHO weight-band guidelines (2006 guidelines in CHAPAS-1, 2010 guidelines in CHAPAS-3). Paediatric formulations used in CHAPAS-1: Triomune Baby (50 mg nevirapine FDC) and Triomune Junior (100 mg nevirapine FDC); paediatric and adult formulations used in CHAPAS-3 including Triomune Baby / Junior, Duovir-N Baby (50 mg nevirapine FDC), nevirapine 100 mg single-drug, Duovir-N (200 mg nevirapine FDC), and Triomune30 (200 mg nevirapine FDC). Unequal AM / PM splitting of the daily dose: CHAPAS-1 gave the larger dose at night; CHAPAS-3 gave the larger dose in the morning (Bienczak 2016 Methods 'CHAPAS-1' and 'CHAPAS-3' paragraphs).",
+    regions = "Uganda and Zambia (sub-Saharan Africa).",
+    notes = "Pooled cohort from two CHAPAS trials (CHAPAS-1: 84 children with intensive sampling at pre-dose and 1, 2, 4, 6, 8, 12 h after the morning dose; CHAPAS-3: 336 children with sparse sampling at clinic visits, two samples per visit at least 2 h apart). Six patients rolled over from CHAPAS-1 to CHAPAS-3 (414 = 84 + 336 - 6). Final analysis dataset had 3305 plasma nevirapine concentration measurements after exclusion of 246 samples (111 unclear dosage history, 87 visual outliers with |CWRESI| > 3, and 48 below-the-limit-of-quantification samples confirmed by undetectable companion-drug concentrations). Genotypes were available for 324 children (78.3%); the mixture-model imputation for the remaining 96 children (40.7% EM / 49.0% IM / 9.4% SM) is not encoded in this nlmixr2lib model -- this file assumes known genotype and the user supplies the metabolizer indicators directly. Baseline demographics from Bienczak 2016 Table 1; metabolizer-group prevalences from Bienczak 2016 Table 2 row 1."
   )
 
   ini({

@@ -26,17 +26,17 @@ Jang_2023_zaltoprofen <- function() {
     sep = " "
   )
   vignette <- "Jang_2023_zaltoprofen"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
     # Oral tablet; the source study administered a single 80 mg zaltoprofen
     # tablet (Methods 4.2 / ref [19] bioequivalence study).
-    depot       = list(analyte = "zaltoprofen", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "zaltoprofen", units = "mg", specimen = "administration site", verified = TRUE),
     # Plasma zaltoprofen was the measured analyte (Methods 4.2 and Table S6:
     # "plasma zaltoprofen concentration-time curves").
-    central     = list(analyte = "zaltoprofen", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "zaltoprofen", units = "mg", specimen = "plasma", verified = TRUE),
     # V2/F is named only as the peripheral-compartment volume (main text after
     # Eq. (5): "V and CL2 indicate volume and clearance in the central and
     # peripheral compartments"). No biological matrix is stated for it, so the
@@ -46,15 +46,15 @@ Jang_2023_zaltoprofen <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated with the Cockcroft-Gault equation,",
         "reported as raw mL/min and NOT normalised to 1.73 m^2 body surface",
         "area."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (calculated from the pre-dose 0 h blank serum",
         "sample; Supplementary Materials Subsection 1). Power effect on CL/F:",
         "CL/F = tvCL/F * (CrCL / mCrCL)^dCL/FdCrCL with dCL/FdCrCL = 0.48 per",
@@ -74,14 +74,14 @@ Jang_2023_zaltoprofen <- function() {
         "measured on the same subjects and screened separately (Figure S3D)",
         "but was not the retained covariate; it is not encoded here."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     ALB = list(
-      description        = "Serum albumin measured in the pre-dose (0 h) blank serum sample by reflectance spectrophotometry.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin measured in the pre-dose (0 h) blank serum sample by reflectance spectrophotometry.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Source reports albumin in US-convention g/dL",
         "(Table S5: 4.92 +/- 0.18 g/dL; centring median 4.90 g/dL), so",
         "model() applies the inline conversion alb_gdL <- ALB * 0.1 required",
@@ -98,7 +98,7 @@ Jang_2023_zaltoprofen <- function() {
         "constant. The paper's own simulations extrapolate the term to 3.5 and",
         "5.5 g/dL (i.e. 35 and 55 g/L)."
       ),
-      source_name        = "Albumin"
+      source_name = "Albumin"
     )
   )
 
@@ -108,11 +108,11 @@ Jang_2023_zaltoprofen <- function() {
   # raising a "declared but not referenced" convention warning.
   covariatesDataExcluded <- list(
     CYP2C9_S3_COUNT = list(
-      description        = "Count of CYP2C9*3 reduced-function alleles (0 for *1/*1, 1 for *1/*3).",
-      units              = "(count)",
-      type               = "count",
+      description = "Count of CYP2C9*3 reduced-function alleles (0 for *1/*1, 1 for *1/*3).",
+      units = "(count)",
+      type = "count",
       reference_category = "0 (CYP2C9*1/*1, wild type)",
-      notes              = paste(
+      notes = paste(
         "Only the *1 and *3 alleles were detected in this cohort",
         "(Supplementary Materials Subsection 2), so the genotype covariate is",
         "the two-level contrast *1/*1 versus *1/*3. Tested on Ka, V2/F and",
@@ -126,14 +126,14 @@ Jang_2023_zaltoprofen <- function() {
         "CL/F and T1/2 did not. No coefficient is reported for it anywhere in",
         "the paper, so it cannot be encoded even optionally."
       ),
-      source_name        = "CYP2C9 genotype"
+      source_name = "CYP2C9 genotype"
     ),
     BSA = list(
-      description        = "Body surface area computed with the Mosteller formula.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area computed with the Mosteller formula.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort 1.76 +/- 0.12 m^2 (Table S5); computed as",
         "sqrt(height (cm) * weight (kg) / 3600) (Supplementary Materials",
         "Subsection 1). Passed the 30% linear-regression screen against",
@@ -142,73 +142,73 @@ Jang_2023_zaltoprofen <- function() {
         "forward-selection threshold and was not retained. No coefficient is",
         "reported."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     BMI = list(
-      description        = "Body mass index (Kaup index).",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index (Kaup index).",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort 21.74 +/- 2.60 kg/m^2 (Table S5). Screened against individual",
         "CL/F and V/F (Figures S4D and S4F) with a linear correlation below",
         "the 30% cutoff, so it was excluded before the formal stepwise",
         "covariate analysis and never entered Table S2. No coefficient is",
         "reported."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort 18.23 +/- 8.28 IU/L (Table S5). Screened against individual",
         "CL/F (Figure S4A) with a linear correlation below the 30% cutoff and",
         "excluded before the stepwise covariate analysis. No coefficient is",
         "reported."
       ),
-      source_name        = "ALT"
+      source_name = "ALT"
     ),
     ALP = list(
-      description        = "Alkaline phosphatase.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alkaline phosphatase.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort 73.23 +/- 15.30 IU/L (Table S5). Screened against individual",
         "CL/F (Figure S4B) with a linear correlation below the 30% cutoff and",
         "excluded before the stepwise covariate analysis. No coefficient is",
         "reported."
       ),
-      source_name        = "ALP"
+      source_name = "ALP"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Blood urea nitrogen.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort 12.93 +/- 2.29 mg/dL (Table S5). Screened against individual",
         "CL/F (Figure S4C) with a linear correlation below the 30% cutoff and",
         "excluded before the stepwise covariate analysis. No coefficient is",
         "reported."
       ),
-      source_name        = "BUN"
+      source_name = "BUN"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 26L,
-    n_studies      = 1L,
-    age_mean       = "23.19 +/- 2.26 years (mean +/- SD; Table S5)",
-    weight_mean    = "64.73 +/- 8.08 kg (mean +/- SD; Table S5)",
-    height_mean    = "172.64 +/- 5.95 cm (mean +/- SD; Table S5)",
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
+    age_mean = "23.19 +/- 2.26 years (mean +/- SD; Table S5)",
+    weight_mean = "64.73 +/- 8.08 kg (mean +/- SD; Table S5)",
+    height_mean = "172.64 +/- 5.95 cm (mean +/- SD; Table S5)",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers. The modelling dataset is the",
       "pharmacokinetic arm of a previously reported bioequivalence study",
       "(Methods 4.2, citing ref [19]), approved by the Institutional Review",
@@ -216,7 +216,7 @@ Jang_2023_zaltoprofen <- function() {
       "National University (Approval No. 060118, 2005-11-25). All",
       "biochemical parameters in Table S5 are within normal limits."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 80 mg oral dose of zaltoprofen. No multiple-dose data were",
       "used to fit the model; the paper's 80 mg q24h and q8h multiple-dose",
       "profiles (Figures 3-5) are simulations from the fitted model, not",
@@ -228,14 +228,14 @@ Jang_2023_zaltoprofen <- function() {
       "0.98 +/- 0.09 mg/dL. The centring median used by the model is",
       "104.38 mL/min. No subject had impaired renal function."
     ),
-    genotype       = paste(
+    genotype = paste(
       "CYP2C9 genotyped by PCR-RFLP on exon 7 (A1075->C); only the *1 and *3",
       "alleles were detected, so subjects are either *1/*1 or *1/*3",
       "(Supplementary Materials Subsection 2). Genotype concordance against",
       "direct sequencing was 100%. Genotype was not retained as a covariate."
     ),
-    regions        = "Republic of Korea (Gwangju; Chonnam National University).",
-    notes          = paste(
+    regions = "Republic of Korea (Gwangju; Chonnam National University).",
+    notes = paste(
       "Baseline demographics from supplementary Table S5. The model was fitted",
       "in Phoenix NLME 8.3 by first-order conditional estimation with extended",
       "least squares and eta-epsilon interaction (Methods 4.2), and evaluated",

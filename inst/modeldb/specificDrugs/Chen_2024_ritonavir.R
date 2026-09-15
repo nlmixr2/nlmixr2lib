@@ -7,7 +7,7 @@ Chen_2024_ritonavir <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -25,104 +25,104 @@ Chen_2024_ritonavir <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model (no significant covariate effects identified)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model (no significant covariate effects identified)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Cohort was 65% male (Table 1)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Cohort was 65% male (Table 1)."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated with the CKD-EPI equation",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Retained on CL/F in the companion nirmatrelvir model (see Chen_2024_nirmatrelvir)."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Retained on CL/F in the companion nirmatrelvir model (see Chen_2024_nirmatrelvir)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     TPRO = list(
       description = "Total protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation (APACHE) II score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Cohort median 14 (IQR 11-21) per Table 1."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Cohort median 14 (IQR 11-21) per Table 1."
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Cohort median 6 (IQR 3-9) per Table 1."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained in the final ritonavir model. Cohort median 6 (IQR 3-9) per Table 1."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
     n_observations = 89L,
-    age_median     = "69 years (IQR 63-77)",
-    weight_median  = "60.6 kg (SD 12.8)",
+    age_median = "69 years (IQR 63-77)",
+    weight_median = "60.6 kg (SD 12.8)",
     sex_female_pct = 35,
-    disease_state  = "Critically ill adults (>=18 years) admitted to the intensive care unit with RT-PCR-confirmed SARS-CoV-2 infection and compatible pulmonary CT findings. Patients receiving continuous renal replacement therapy or extracorporeal membrane oxygenation were excluded. Median APACHE II score 14 (IQR 11-21); median SOFA score 6 (IQR 3-9).",
+    disease_state = "Critically ill adults (>=18 years) admitted to the intensive care unit with RT-PCR-confirmed SARS-CoV-2 infection and compatible pulmonary CT findings. Patients receiving continuous renal replacement therapy or extracorporeal membrane oxygenation were excluded. Median APACHE II score 14 (IQR 11-21); median SOFA score 6 (IQR 3-9).",
     renal_function = "Creatinine clearance (CKD-EPI) 78.5 +/- 34.4 mL/min; serum creatinine 100.2 +/- 79.9 umol/L (Table 1).",
-    dose_range     = "Oral nirmatrelvir/ritonavir 300 mg/100 mg twice daily in 27 of 31 patients (87%) and 150 mg/100 mg twice daily in 4 of 31 (13%); the ritonavir dose was 100 mg twice daily in every patient. 29 of 31 (94%) received the tablets by nasal feeding and 2 (6%) orally, all for more than 5 days.",
-    co_medication  = "Concomitant CYP3A4/5 weak inhibitor in 7 of 31 (22.6%) and weak inducer in 10 of 31 (32.3%) per Table 1; named co-medications in the Discussion include voriconazole, dexamethasone, methylprednisolone and omeprazole.",
-    regions        = "China (The First Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
-    notes          = "Prospective observational study, January-June 2023. Two to three serial plasma samples per patient collected after the second dose; 89 plasma samples from 31 patients. Ritonavir quantified by validated LC-MS/MS over 2.03-961.37 ng/mL. Measured ritonavir concentrations ranged 21.71-4966.72 ng/mL. Model fit in Phoenix NLME 8.1 with FOCE; final OFV 174.5. Baseline demographics in Table 1; final parameter estimates and 1000-sample bootstrap in Table 2."
+    dose_range = "Oral nirmatrelvir/ritonavir 300 mg/100 mg twice daily in 27 of 31 patients (87%) and 150 mg/100 mg twice daily in 4 of 31 (13%); the ritonavir dose was 100 mg twice daily in every patient. 29 of 31 (94%) received the tablets by nasal feeding and 2 (6%) orally, all for more than 5 days.",
+    co_medication = "Concomitant CYP3A4/5 weak inhibitor in 7 of 31 (22.6%) and weak inducer in 10 of 31 (32.3%) per Table 1; named co-medications in the Discussion include voriconazole, dexamethasone, methylprednisolone and omeprazole.",
+    regions = "China (The First Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
+    notes = "Prospective observational study, January-June 2023. Two to three serial plasma samples per patient collected after the second dose; 89 plasma samples from 31 patients. Ritonavir quantified by validated LC-MS/MS over 2.03-961.37 ng/mL. Measured ritonavir concentrations ranged 21.71-4966.72 ng/mL. Model fit in Phoenix NLME 8.1 with FOCE; final OFV 174.5. Baseline demographics in Table 1; final parameter estimates and 1000-sample bootstrap in Table 2."
   )
 
   ini({

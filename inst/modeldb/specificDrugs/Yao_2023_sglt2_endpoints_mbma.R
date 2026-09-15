@@ -31,8 +31,8 @@ Yao_2023_sglt2_endpoints_mbma <- function() {
   )
   vignette <- "Yao_2023_sglt2_inhibitors"
   units <- list(
-    time          = "week",
-    dosing        = "n/a (exposure enters through the AUC_<drug> covariates)",
+    time = "week",
+    dosing = "n/a (exposure enters through the AUC_<drug> covariates)",
     concentration = paste0(
       "FPG in mg/dL; HbA1c in % (NGSP); dUGEc in g/(mg/dL). The AUC_<drug> ",
       "covariates are in ng*h/mL. Output Cc is unused."
@@ -43,16 +43,16 @@ Yao_2023_sglt2_endpoints_mbma <- function() {
 
   covariateData <- list(
     AUC_DAPA = list(
-      description        = paste0(
+      description = paste0(
         "Dapagliflozin area under the plasma concentration-time curve over ",
         "the 24 h dosing interval at steady state. Study-arm-level, not ",
         "individual-level. Set to 0 for placebo arms and for arms treated ",
         "with a different SGLT2 inhibitor."
       ),
-      units              = "ng*h/mL",
-      type               = "continuous",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Yao 2023 PK/PD model section: 'Drug exposure in patients with T2DM ",
         "expressed as area under the concentration-time curve (AUC) was ",
         "simulated using the established population PK model for each ",
@@ -62,36 +62,36 @@ Yao_2023_sglt2_endpoints_mbma <- function() {
         "mg*h/L to ng*h/mL -- exact for a linear model at steady state. ",
         "At the 10 mg label dose this gives 1000 * 10 / 19.5 = 513 ng*h/mL."
       ),
-      source_name        = "AUC0-24h"
+      source_name = "AUC0-24h"
     ),
     AUC_CANA = list(
-      description        = paste0(
+      description = paste0(
         "Canagliflozin area under the plasma concentration-time curve over ",
         "the 24 h dosing interval at steady state. Study-arm-level, not ",
         "individual-level. Set to 0 for placebo arms and for arms treated ",
         "with a different SGLT2 inhibitor."
       ),
-      units              = "ng*h/mL",
-      type               = "continuous",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Compute it from modellib('Yao_2023_canagliflozin_mbma') as total ",
         "daily dose (mg) divided by CL/F (L/h), times 1000. At the 300 mg ",
         "label dose this gives 1000 * 300 / 12.0 = 25000 ng*h/mL."
       ),
-      source_name        = "AUC0-24h"
+      source_name = "AUC0-24h"
     ),
     AUC_EMPA = list(
-      description        = paste0(
+      description = paste0(
         "Empagliflozin area under the plasma concentration-time curve over ",
         "the 24 h dosing interval at steady state. Study-arm-level, not ",
         "individual-level. Set to 0 for placebo arms and for arms treated ",
         "with a different SGLT2 inhibitor."
       ),
-      units              = "ng*h/mL",
-      type               = "continuous",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Compute it from modellib('Yao_2023_empagliflozin_mbma') as total ",
         "daily dose (mg) divided by CL/F (L/h), times 1000. At the 25 mg ",
         "label dose this gives 1000 * 25 / 4.25 = 5882 ng*h/mL. Distinct ",
@@ -99,17 +99,17 @@ Yao_2023_sglt2_endpoints_mbma <- function() {
         "the Baron 2016 and Riggs 2014 empagliflozin exposure-response ",
         "models."
       ),
-      source_name        = "AUC0-24h"
+      source_name = "AUC0-24h"
     ),
     TRT_T2DM_NAIVE = list(
-      description        = paste0(
+      description = paste0(
         "1 = the study arm enrolled patients naive to oral hypoglycemic ",
         "agents; 0 = otherwise."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other treatment-history stratum)",
-      notes              = paste0(
+      notes = paste0(
         "One of four mutually exclusive study-arm treatment-history ",
         "indicators; exactly one of TRT_T2DM_NAIVE, TRT_T2DM_NONNAIVE, ",
         "TRT_T2DM_ADDON and TRT_T2DM_MIXED is 1 on any record. Yao 2023 ",
@@ -124,88 +124,88 @@ Yao_2023_sglt2_endpoints_mbma <- function() {
         "endpoints (Pfmax1-4 and Phmax1-4); every other parameter is shared ",
         "('Treatment type is not significant on other parameters here')."
       ),
-      source_name        = "treatment type = naive"
+      source_name = "treatment type = naive"
     ),
     TRT_T2DM_NONNAIVE = list(
-      description        = paste0(
+      description = paste0(
         "1 = the study arm enrolled patients who had taken hypoglycemic ",
         "agents but had undergone a washout period of more than 2 weeks; ",
         "0 = otherwise."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other treatment-history stratum)",
-      notes              = "See TRT_T2DM_NAIVE. Yao 2023 Model development.",
-      source_name        = "treatment type = non-naive"
+      notes = "See TRT_T2DM_NAIVE. Yao 2023 Model development.",
+      source_name = "treatment type = non-naive"
     ),
     TRT_T2DM_ADDON = list(
-      description        = paste0(
+      description = paste0(
         "1 = the study arm enrolled patients receiving the study drug as ",
         "add-on to ongoing antihyperglycemic combination treatment; ",
         "0 = otherwise."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other treatment-history stratum)",
-      notes              = paste0(
+      notes = paste0(
         "See TRT_T2DM_NAIVE. This is the only stratum in which the placebo ",
         "FPG response is a decrease rather than an increase (Yao 2023 ",
         "Results: 'patients got their FPG under control with the help of ",
         "other agents in combination')."
       ),
-      source_name        = "treatment type = add-on"
+      source_name = "treatment type = add-on"
     ),
     TRT_T2DM_MIXED = list(
-      description        = paste0(
+      description = paste0(
         "1 = the study arm pooled naive and non-naive patients, or the ",
         "treatment history was not reported; 0 = otherwise."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other treatment-history stratum)",
-      notes              = paste0(
+      notes = paste0(
         "See TRT_T2DM_NAIVE. This stratum is a meta-analysis artefact: it ",
         "exists because some published arms do not resolve treatment ",
         "history, so it cannot be reconstructed from prior-therapy and ",
         "concomitant-therapy indicators."
       ),
-      source_name        = "treatment type = mixed"
+      source_name = "treatment type = mixed"
     )
   )
 
   compartmentData <- list(
     hba1c_drug = list(
-      analyte  = "Glycated hemoglobin (drug-attributable deviation from the placebo trajectory)",
-      units    = "% (NGSP)",
+      analyte = "Glycated hemoglobin (drug-attributable deviation from the placebo trajectory)",
+      units = "% (NGSP)",
       specimen = "not applicable",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24817L,
-    n_studies      = 80L,
-    age_range      = paste0(
+    species = "human",
+    n_subjects = 24817L,
+    n_studies = 80L,
+    age_range = paste0(
       "endpoint cohorts: mean 55.8-57.6 years across the placebo and three ",
       "drug groups (Yao 2023 Table S2)"
     ),
-    weight_range   = "endpoint cohorts: mean 79.0-84.9 kg (Yao 2023 Table S2)",
+    weight_range = "endpoint cohorts: mean 79.0-84.9 kg (Yao 2023 Table S2)",
     sex_female_pct = 43.3,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Type 2 diabetes mellitus with normal or mildly impaired renal ",
       "function (glomerular filtration rate above 60 mL/min/1.73 m2). ",
       "Studies in patients with moderate or severe kidney impairment or ",
       "hepatic insufficiency were excluded, as were trials using insulin. ",
       "Baseline FPG about 160 mg/dL and baseline HbA1c about 7.9%."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Placebo plus dapagliflozin 1-50 mg, canagliflozin 50-300 mg and ",
       "empagliflozin 1-100 mg once daily; treatment durations up to 104 ",
       "weeks (Yao 2023 Table S1)"
     ),
-    regions        = "International (published clinical trials indexed on PubMed to July 2016)",
-    notes          = paste0(
+    regions = "International (published clinical trials indexed on PubMed to July 2016)",
+    notes = paste0(
       "Model-based meta-analysis: the unit of observation is a published ",
       "study-arm mean, not an individual measurement. 27 summary-level ",
       "dUGEc, 848 FPG (195 placebo, 653 drug) and 1219 HbA1c (290 placebo, ",

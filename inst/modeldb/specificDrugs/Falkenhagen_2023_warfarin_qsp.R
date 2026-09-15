@@ -36,86 +36,86 @@ Falkenhagen_2023_warfarin_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
-    vkh2       = list(analyte = "vitamin K hydroquinone (VKH2)", units = "mg", specimen = "plasma", verified = FALSE),
-    factor_ii  = list(analyte = "coagulation Factor II", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    vkh2 = list(analyte = "vitamin K hydroquinone (VKH2)", units = "mg", specimen = "plasma", verified = FALSE),
+    factor_ii = list(analyte = "coagulation Factor II", units = "mg", specimen = "plasma", verified = FALSE),
     factor_vii = list(analyte = "coagulation Factor VII", units = "mg", specimen = "plasma", verified = FALSE),
-    factor_x   = list(analyte = "coagulation Factor X", units = "mg", specimen = "plasma", verified = FALSE)
+    factor_x = list(analyte = "coagulation Factor X", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2C9_S1_COUNT = list(
-      description        = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "CYP2C9_S1_COUNT + CYP2C9_S2_COUNT + CYP2C9_S3_COUNT = 2. Each *1 allele contributes",
         "0.1000 L/h to warfarin CL (Falkenhagen 2023 Supplementary Table S1). The per-allele",
         "values are anchored so that the *1/*1 wild-type CL equals the Wajima 2009 reference",
         "CL of 0.2 L/h. Allele frequency in the reduction population: 0.815 (Table S1)."
       ),
-      source_name        = "CYP2C9 genotype (allele pair a/b; CL^{a/b} = CL^a + CL^b, Eq S1)"
+      source_name = "CYP2C9 genotype (allele pair a/b; CL^{a/b} = CL^a + CL^b, Eq S1)"
     ),
     CYP2C9_S2_COUNT = list(
-      description        = "Count of CYP2C9*2 alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*2 alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Each *2 allele contributes 0.0505 L/h to warfarin CL (Falkenhagen 2023 Supplementary",
         "Table S1). Allele frequency in the reduction population: 0.112 (Table S1)."
       ),
-      source_name        = "CYP2C9 genotype (allele pair a/b; CL^{a/b} = CL^a + CL^b, Eq S1)"
+      source_name = "CYP2C9 genotype (allele pair a/b; CL^{a/b} = CL^a + CL^b, Eq S1)"
     ),
     CYP2C9_S3_COUNT = list(
-      description        = "Count of CYP2C9*3 alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*3 alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Each *3 allele contributes 0.0243 L/h to warfarin CL (Falkenhagen 2023 Supplementary",
         "Table S1). Allele frequency in the reduction population: 0.073 (Table S1)."
       ),
-      source_name        = "CYP2C9 genotype (allele pair a/b; CL^{a/b} = CL^a + CL^b, Eq S1)"
+      source_name = "CYP2C9 genotype (allele pair a/b; CL^{a/b} = CL^a + CL^b, Eq S1)"
     ),
     VKORC1_1639G_COUNT = list(
-      description        = paste(
+      description = paste(
         "Count of VKORC1 -1639G alleles per subject (0, 1, or 2).",
         "The complementary -1639A count is 2 - VKORC1_1639G_COUNT."
       ),
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Each -1639G allele contributes 0.1700 mg/L and each -1639A allele 0.0796 mg/L to the",
         "warfarin IC50 (Falkenhagen 2023 Supplementary Table S1, Eq S1). The per-allele values",
         "are anchored so that the GG genotype IC50 equals the Wajima 2009 reference of 0.34 mg/L.",
         "Allele frequencies in the reduction population: G 0.608, A 0.392 (Table S1), matching the",
         "Warfarin Genetics (WARG) study frequencies reported by Hamberg 2010."
       ),
-      source_name        = "VKORC1 genotype (allele pair a/b; IC50^{ab} = IC50^a + IC50^b, Eq S1)"
+      source_name = "VKORC1 genotype (allele pair a/b; IC50^{ab} = IC50^a + IC50^b, Eq S1)"
     )
   )
 
   population <- list(
-    species        = "human (in silico virtual population; no clinical data were fitted)",
-    n_subjects     = 1000L,
-    n_studies      = 0L,
-    disease_state  = paste(
+    species = "human (in silico virtual population; no clinical data were fitted)",
+    n_subjects = 1000L,
+    n_studies = 0L,
+    disease_state = paste(
       "Virtual adults on chronic oral warfarin anticoagulation. The model was NOT fitted to",
       "patient data: it is a systematic mathematical reduction of the Wajima 2009 blood-coagulation",
       "QSP model, and the virtual population exists to define the parameter region over which the",
       "reduction is guaranteed accurate."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "4 mg orally once daily for 30 days; reduced to 1 mg once daily for virtual individuals whose",
       "steady-state INR under the 4 mg regimen would exceed 4, so as to keep INR in a clinically",
       "relevant range (Falkenhagen 2023, Workflow of reducing the scenarios considering IIV)."
     ),
-    cyp2c9_freq    = "CYP2C9 allele frequencies *1 0.815, *2 0.112, *3 0.073 (Supplementary Table S1)",
-    vkorc1_freq    = "VKORC1 -1639 allele frequencies G 0.608, A 0.392 (Supplementary Table S1)",
+    cyp2c9_freq = "CYP2C9 allele frequencies *1 0.815, *2 0.112, *3 0.073 (Supplementary Table S1)",
+    vkorc1_freq = "VKORC1 -1639 allele frequencies G 0.608, A 0.392 (Supplementary Table S1)",
     iiv_assumption = paste(
       "Unexplained random IIV was assumed (not estimated) as an independent log-normal distribution",
       "on every parameter and initial value with a 40% coefficient of variation,",
@@ -123,12 +123,12 @@ Falkenhagen_2023_warfarin_qsp <- function() {
       "was used to draw the 1000 virtual individuals. Parameter variability was assumed uncorrelated",
       "for lack of knowledge on the correlation structure (Discussion)."
     ),
-    validation     = paste(
+    validation = paste(
       "The reduced model reproduced the full QSP model's INR to within 10% relative error for more",
       "than 99% of the 1000 virtual individuals; the 5 excluded individuals had errors between 10%",
       "and 13% (Results / Discussion)."
     ),
-    notes          = paste(
+    notes = paste(
       "Genotypes were assigned deterministically so that allele frequencies matched those reported",
       "for the Warfarin Genetics (WARG) study in Hamberg 2010. The INR range of validity is below 4,",
       "and the model presumes the standard prothrombin-time test (Discussion)."

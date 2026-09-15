@@ -56,32 +56,38 @@ Dvorackova_2026_valganciclovir <- function() {
   # dose (Ctrough) and at least two other times on the same day".
   compartmentData <- list(
     depot = list(
-      analyte = "ganciclovir", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "ganciclovir",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "ganciclovir", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "ganciclovir",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "ganciclovir", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "ganciclovir",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate, body-surface-area-normalised",
         "to 1.73 m^2, calculated with the race-free CKD-EPI 2021",
         "creatinine-based equation (Inker et al. 2021, the paper's",
         "reference [15]). NOT a measured creatinine clearance and NOT a",
         "cystatin-C-based estimate."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Enters clearance",
         "LINEARLY, not as a power term:",
         "CL = CLp + theta_eGFR * (CRCL / 85.2) with CLp = 2.05 L/h and",
@@ -98,7 +104,7 @@ Dvorackova_2026_valganciclovir <- function() {
         "state whether the eGFR column was baseline-only or updated per",
         "sample."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     )
   )
 
@@ -110,11 +116,11 @@ Dvorackova_2026_valganciclovir <- function() {
   # absent from model().
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested as a covariate on CL and on central volume V1 (Methods",
         "'PK Model Development'); not significant. Cohort median 75 kg",
         "(IQR 67-86, Table 2). Discussion: 'Like our study, other studies",
@@ -122,93 +128,93 @@ Dvorackova_2026_valganciclovir <- function() {
         "not identify body weight as a covariate for V1 and V2'. There is",
         "therefore NO allometric term in this model -- do not add one."
       ),
-      source_name        = "body weight"
+      source_name = "body weight"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Tested as a covariate on CL, V1 and F; not significant. Cohort",
         "70 male / 40 female (64% / 36%), Table 2. The source recorded",
         "'sex' without stating its coding direction; the canonical",
         "female-indicator orientation is used here for documentation only."
       ),
-      source_name        = "sex"
+      source_name = "sex"
     ),
     AGE = list(
-      description        = "Age at the time of the PK sampling occasion.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at the time of the PK sampling occasion.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Recorded as a potential covariate (Methods 'Study Design') but not",
         "retained. Cohort median 55 years (IQR 46-62), Table 2. Note that",
         "age also enters the model indirectly through the CKD-EPI 2021",
         "equation used to compute CRCL."
       ),
-      source_name        = "age"
+      source_name = "age"
     ),
     HT = list(
-      description        = "Body height.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Recorded as a potential covariate (Methods 'Study Design') but not",
         "retained and not summarised in Table 2. No point estimate",
         "reported."
       ),
-      source_name        = "height"
+      source_name = "height"
     ),
     CREAT = list(
-      description        = "Serum creatinine.",
-      units              = "not stated by the source",
-      type               = "continuous",
+      description = "Serum creatinine.",
+      units = "not stated by the source",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Recorded as a potential covariate (Methods 'Study Design') but not",
         "retained as a covariate in its own right; it enters the model only",
         "through the CKD-EPI 2021 eGFR carried as CRCL. The source does not",
         "state whether creatinine was recorded in umol/L (the usual Czech",
         "laboratory unit) or mg/dL, and does not summarise it in Table 2."
       ),
-      source_name        = "serum creatinine"
+      source_name = "serum creatinine"
     ),
     DIS_CF = list(
-      description        = "Cystic fibrosis as the indication for transplantation, 1 = yes, 0 = no.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cystic fibrosis as the indication for transplantation, 1 = yes, 0 = no.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cystic fibrosis)",
-      notes              = paste(
+      notes = paste(
         "Tested as a covariate on CL, V1 and F (Methods 'PK Model",
         "Development'); not significant. 9 of 110 patients (8%), Table 2."
       ),
-      source_name        = "cystic fibrosis"
+      source_name = "cystic fibrosis"
     ),
     CONMED_AZOLE = list(
-      description        = paste(
+      description = paste(
         "Co-treatment with an azole antifungal (voriconazole, posaconazole",
         "or fluconazole), 1 = yes, 0 = no."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no azole antifungal co-treatment)",
-      notes              = paste(
+      notes = paste(
         "Tested as a covariate on CL (Methods 'PK Model Development'); not",
         "significant. 31 of 110 patients (28%), Table 2. The three azoles",
         "were pooled into a single indicator by the source; it does not",
         "report per-drug effects."
       ),
-      source_name        = "co-medication with antimycotics"
+      source_name = "co-medication with antimycotics"
     ),
     T_TRANSPLANT = list(
-      description        = "Time elapsed since lung transplantation.",
-      units              = "days",
-      type               = "continuous",
+      description = "Time elapsed since lung transplantation.",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Recorded as a potential covariate (Methods 'Study Design') but not",
         "retained. Median 14.5 days from transplantation to the first drawn",
         "concentration (range 1-1,936), Table 2. This variable also defined",
@@ -216,21 +222,21 @@ Dvorackova_2026_valganciclovir <- function() {
         "rejected (up to month 1, 1-2 months, more than 2 months after",
         "transplantation)."
       ),
-      source_name        = "time after transplantation"
+      source_name = "time after transplantation"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 110L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 110L,
+    n_studies = 1L,
     n_observations = 379L,
-    age_median     = "55 years",
-    age_range      = "IQR 46-62 years (inclusion required age > 18 years)",
-    weight_median  = "75 kg",
-    weight_range   = "IQR 67-86 kg",
+    age_median = "55 years",
+    age_range = "IQR 46-62 years (inclusion required age > 18 years)",
+    weight_median = "75 kg",
+    weight_range = "IQR 67-86 kg",
     sex_female_pct = 36,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult lung transplant recipients receiving ganciclovir or",
       "valganciclovir as prophylaxis against, or treatment of,",
       "cytomegalovirus infection. All received basiliximab or",
@@ -245,8 +251,8 @@ Dvorackova_2026_valganciclovir <- function() {
       "16.8-153 mL/min/1.73 m^2. No patient was on renal replacement",
       "therapy (exclusion criterion)."
     ),
-    co_medication  = "Azole antifungal (voriconazole, posaconazole or fluconazole) in 31 patients (28%).",
-    dose_range     = paste(
+    co_medication = "Azole antifungal (voriconazole, posaconazole or fluconazole) in 31 patients (28%).",
+    dose_range = paste(
       "Standard protocol: intravenous ganciclovir 5 mg/kg every 12 h as a",
       "60-min infusion at concentrations not exceeding 10 mg/mL for the",
       "first 14 days, then oral valganciclovir for at least 90 days to",
@@ -256,8 +262,8 @@ Dvorackova_2026_valganciclovir <- function() {
       "in Table 1 is 500 / 400 / 200 / 100 mg q12h over the same eGFR",
       "strata."
     ),
-    regions        = "Czech Republic (single-centre: Prague Lung Transplant Program, Motol University Hospital and General University Hospital in Prague)",
-    notes          = paste(
+    regions = "Czech Republic (single-centre: Prague Lung Transplant Program, Motol University Hospital and General University Hospital in Prague)",
+    notes = paste(
       "Demographics from Dvorackova 2026 Table 2; values are median",
       "(interquartile range) except eGFR and time since transplantation,",
       "which are median (min-max). Prospective, open-label",

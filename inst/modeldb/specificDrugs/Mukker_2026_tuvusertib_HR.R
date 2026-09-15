@@ -47,76 +47,76 @@ Mukker_2026_tuvusertib_HR <- function() {
   vignette <- "Mukker_2026_tuvusertib_QTc"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; PD-only model fed by an external tuvusertib plasma-concentration covariate)",
+    time = "h",
+    dosing = "(none; PD-only model fed by an external tuvusertib plasma-concentration covariate)",
     concentration = "(observation d_hr is the change from baseline in heart rate, bpm; driving covariate CP_TUVUSERTIB_NGML is in ng/mL)"
   )
 
   covariateData <- list(
     CP_TUVUSERTIB_NGML = list(
-      description        = "Instantaneous tuvusertib plasma concentration at the time of each ECG observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous tuvusertib plasma concentration at the time of each ECG observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the linear concentration-DeltaHR term (theta1 + eta1) * CP_TUVUSERTIB_NGML.",
         "Same time-matched PK-ECG dataset as the companion C-DeltaQTcF model (Mukker 2026 Methods 2.2.2); concentrations measured by validated LC/MS, LLOQ 0.5 ng/mL.",
         "The slope is reported directly in bpm per ng/mL (Mukker 2026 Table S1), so no in-model unit rescaling is needed.",
         "Reference values observed, used as the Table S2 validation grid: median 524 ng/mL, P90 1732 ng/mL, P95 2252 ng/mL, maximum 3290 ng/mL.",
         "Set to 0 outside the drug-exposure window."
       ),
-      source_name        = "tuvusertib plasma concentration"
+      source_name = "tuvusertib plasma concentration"
     ),
     HR = list(
-      description        = "Subject's baseline (pre-dose, time-zero) heart rate, treated as a per-subject time-fixed covariate. Enters the linear-mixed-effects intercept as the centered term e_hr_bl_e0 * (HR - 70). Set HR = 70 bpm for the typical subject -- the centered term then collapses to 0.",
-      units              = "beats/min",
-      type               = "continuous",
+      description = "Subject's baseline (pre-dose, time-zero) heart rate, treated as a per-subject time-fixed covariate. Enters the linear-mixed-effects intercept as the centered term e_hr_bl_e0 * (HR - 70). Set HR = 70 bpm for the typical subject -- the centered term then collapses to 0.",
+      units = "beats/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. This is the BASELINE reading of the canonical HR covariate, not an observation-time vital sign; the HR register entry directs that baseline-versus-time-varying status be documented per-model, which is what this note does.",
         "Centering reference: the paper does NOT report the cohort mean baseline heart rate (Table 1 gives baseline QTcF but no baseline HR, and no HR summary appears in the supplement). Per the standing policy on undefined centering values, the model uses the rounded clinical standard hr_bl_ref = 70 bpm. This is an ASSUMPTION and is recorded in the vignette Errata.",
         "The assumption is low-impact: the coefficient is -0.0214 bpm/bpm with a 95% CI (-0.148, 0.105) that comfortably spans zero, so a mis-specified centering constant shifts the intercept by at most a fraction of a bpm over any plausible cohort mean (e.g. a true mean of 80 bpm would shift the typical-value prediction by 0.214 bpm). None of the paper's reported validation targets (Table S2) depend on this term, because they tabulate the drug effect corrected for intercept, baseline and time.",
         "Note that the model's observable is named d_hr rather than HR precisely so that it does not shadow this covariate column."
       ),
-      source_name        = "Baseline HR"
+      source_name = "Baseline HR"
     ),
     T_LASTDOSE = list(
-      description        = "Nominal (protocol-scheduled) time after the most recent tuvusertib dose at which the triplicate ECG was recorded, in hours. Selects one of the four estimated nominal-timepoint intercept shifts.",
-      units              = "h",
-      type               = "continuous",
+      description = "Nominal (protocol-scheduled) time after the most recent tuvusertib dose at which the triplicate ECG was recorded, in hours. Selects one of the four estimated nominal-timepoint intercept shifts.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Mukker 2026 Table S1 reports four 'Nominal time after dose' estimates (0, 1, 2, 3 h), each footnoted as 'the estimated difference from the population mean intercept' -- mean-centered class effects, not contrasts against an omitted reference level.",
         "Because this is a PD-only model with no dosing records, rxode2's native tad() is unavailable and the post-dose clock is supplied as a covariate column; see the T_LASTDOSE register entry.",
         "Carries the NOMINAL scheduled hour. model() bins the supplied value to its nearest scheduled level (< 0.5 h -> 0 h; 0.5-1.5 h -> 1 h; 1.5-2.5 h -> 2 h; >= 2.5 h -> 3 h).",
         "The nominal-time effects are markedly larger here than in the companion QTcF model (a 7.96 bpm spread from the 1 h to the 3 h timepoint versus a 4.46 ms spread for QTcF), consistent with a real within-day heart-rate rhythm that is independent of drug concentration."
       ),
-      source_name        = "nominal time after dose"
+      source_name = "nominal time after dose"
     ),
     DAY8 = list(
-      description        = "Dosing-day landmark indicator: 1 = the ECG was recorded on day 8 of treatment, 0 = on day 1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dosing-day landmark indicator: 1 = the ECG was recorded on day 8 of treatment, 0 = on day 1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (day 1 of treatment)",
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. Mukker 2026 Table S1 row 'Dosing day (Day 8 versus Day 1), bpm' = 2.84 (95% CI 1.78, 3.91): heart rate is 2.84 bpm higher on day 8 than on day 1 at matched concentration and matched nominal post-dose time.",
         "Day 1 and day 8 are the two intensive PK-ECG sampling days of DDRiver Solid Tumors 301 Part A1 (Mukker 2026 Figure S1).",
         "This term appears ONLY in the C-DeltaHR model; the C-DeltaQTcF model in Table 2 has no dosing-day term, so the companion model file does not declare this covariate.",
         "The CI excludes zero, so the day effect is statistically resolved -- but it is a time-on-study effect, not a concentration effect, and therefore does not bear on the Garnett assumption being tested."
       ),
-      source_name        = "Dosing day (Day 8 versus Day 1)"
+      source_name = "Dosing day (Day 8 versus Day 1)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 55L,
-    n_studies        = 1L,
-    age_range        = "mean (SD) 61.9 (10.9) years",
-    weight_range     = "mean (SD) 78.6 (18.0) kg",
-    sex_female_pct   = 58.2,
-    race_ethnicity   = c(White = 76.4, Asian = 9.1, Black_or_African_American = 3.6, Other = 10.9),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
+    age_range = "mean (SD) 61.9 (10.9) years",
+    weight_range = "mean (SD) 78.6 (18.0) kg",
+    sex_female_pct = 58.2,
+    race_ethnicity = c(White = 76.4, Asian = 9.1, Black_or_African_American = 3.6, Other = 10.9),
+    disease_state = paste(
       "Patients with advanced solid tumors enrolled in Part A1 of DDRiver",
       "Solid Tumors 301 (NCT04170153), an open-label, first-in-human,",
       "multicenter phase I dose-escalation study of tuvusertib monotherapy.",
@@ -125,13 +125,13 @@ Mukker_2026_tuvusertib_HR <- function() {
       "subject count for the C-DeltaHR analysis, which was run on the",
       "same time-matched PK-ECG dataset."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Tuvusertib 5-270 mg orally: 5, 10, 20, 40, 80, 130, 180, 220 and",
       "270 mg once daily continuous; 180 and 220 mg QD 2 weeks on / 1",
       "week off; and 150 mg twice daily 4 days on / 3 days off."
     ),
-    regions          = NA_character_,
-    notes            = paste(
+    regions = NA_character_,
+    notes = paste(
       "This model was developed to test the FIRST Garnett assumption -- 'there is no effect of tuvusertib on HR' -- after an exploratory analysis of the concentration-RR-interval relationship suggested a slightly positive trend in the C-DeltaHR relationship at higher concentrations (Mukker 2026 Supporting Information Results S1, Figure S2a).",
       "The conclusion is a negative result: the slope estimate 0.00111 bpm/(ng/mL) has a 95% CI (-0.000250, 0.00247) that includes zero, 'indicating the lack of a discernible tuvusertib plasma concentration effect on HR' (Results S1).",
       "Validation targets: predicted DeltaHR (90% CI) was 0.581 (-0.0168, 1.18) bpm at the median observed concentration of 524 ng/mL, 1.92 (-0.0554, 3.90) at P90 = 1732 ng/mL, 2.50 (-0.0720, 5.06) at P95 = 2252 ng/mL, and 3.65 (-0.105, 7.40) at the maximum observed 3290 ng/mL -- the upper bound at the maximum concentration being below the 10 bpm threshold of clinical relevance (Mukker 2026 Table S2).",

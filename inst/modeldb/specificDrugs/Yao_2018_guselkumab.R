@@ -8,53 +8,53 @@ Yao_2018_guselkumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "guselkumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "guselkumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "guselkumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F and V/F per Yao 2018 Table 4 footnotes b and c; reference value 87.1 kg (median of pooled X-PLORE + VOYAGE 1 + VOYAGE 2 PopPK analysis population, Table 2). Time-fixed at baseline.",
-      source_name        = "BWT"
+      notes = "Power effect on CL/F and V/F per Yao 2018 Table 4 footnotes b and c; reference value 87.1 kg (median of pooled X-PLORE + VOYAGE 1 + VOYAGE 2 PopPK analysis population, Table 2). Time-fixed at baseline.",
+      source_name = "BWT"
     ),
     DIS_DIAB = list(
-      description        = "Past or current diabetes mellitus comorbidity",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Past or current diabetes mellitus comorbidity",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes mellitus)",
-      notes              = "Multiplicative effect on CL/F per Yao 2018 Table 4 footnote b: CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIS_DIAB * 1.11^RACE. With DIS_DIAB=1, CL/F is 12% higher than the non-diabetic reference (Results section, page 622, and Table 4). Diabetes prevalence in the analysis population was 8.9% (Table 3). Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "DIAB"
+      notes = "Multiplicative effect on CL/F per Yao 2018 Table 4 footnote b: CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIS_DIAB * 1.11^RACE. With DIS_DIAB=1, CL/F is 12% higher than the non-diabetic reference (Results section, page 622, and Table 4). Diabetes prevalence in the analysis population was 8.9% (Table 3). Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "DIAB"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator (1 = White, 0 = non-White)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator (1 = White, 0 = non-White)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-White, pooling Asian, Black, and Other per Table 3 of Yao 2018)",
-      notes              = "Yao 2018 Table 4 footnote b reports the race effect as 1.11^RACE where the source RACE indicator equals 1 for non-White and 0 for White (the 'Race (nonwhite)' row in Table 4). The canonical column in inst/references/covariate-columns.md is RACE_WHITE (1 = White), so values are inverted: RACE_WHITE = 1 - source_RACE. The model applies the 1.11 multiplier when RACE_WHITE = 0 via 1.11^(1 - RACE_WHITE). Non-White subjects (16.2% of the analysis population per Table 3: 12.2% Asian, 1.8% Black, 2.3% Other) had 11% higher CL/F than White subjects.",
-      source_name        = "RACE"
+      notes = "Yao 2018 Table 4 footnote b reports the race effect as 1.11^RACE where the source RACE indicator equals 1 for non-White and 0 for White (the 'Race (nonwhite)' row in Table 4). The canonical column in inst/references/covariate-columns.md is RACE_WHITE (1 = White), so values are inverted: RACE_WHITE = 1 - source_RACE. The model applies the 1.11 multiplier when RACE_WHITE = 0 via 1.11^(1 - RACE_WHITE). Non-White subjects (16.2% of the analysis population per Table 3: 12.2% Asian, 1.8% Black, 2.3% Other) had 11% higher CL/F than White subjects.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    n_subjects     = 1454L,
-    n_studies      = 3L,
-    age_range      = "18-82 years (median 44, IQR 34-53)",
-    age_median     = 44,
-    weight_range   = "45-198 kg (median 87.1, IQR 74.8-100)",
-    weight_median  = 87.1,
+    n_subjects = 1454L,
+    n_studies = 3L,
+    age_range = "18-82 years (median 44, IQR 34-53)",
+    age_median = 44,
+    weight_range = "45-198 kg (median 87.1, IQR 74.8-100)",
+    weight_median = 87.1,
     sex_female_pct = 29.2,
     race_ethnicity = "White 83.8%, Asian 12.2%, Black 1.8%, Other 2.3% (Yao 2018 Table 3)",
-    disease_state  = "Adults with moderate-to-severe plaque psoriasis. Pooled data from X-PLORE (NCT01483599; phase 2 dose-ranging), VOYAGE 1 (NCT02207231; phase 3), and VOYAGE 2 (NCT02207244; phase 3).",
-    dose_range     = "Phase 2 X-PLORE: 5, 15, 50, 100, or 200 mg SC at varying schedules through week 40. Phase 3 VOYAGE 1/2: 100 mg SC at weeks 0 and 4 then every 8 weeks. Sparse PK sampling.",
-    regions        = "Multinational phase 2/3 trials (X-PLORE, VOYAGE 1, VOYAGE 2).",
-    diabetes_pct   = 8.9,
+    disease_state = "Adults with moderate-to-severe plaque psoriasis. Pooled data from X-PLORE (NCT01483599; phase 2 dose-ranging), VOYAGE 1 (NCT02207231; phase 3), and VOYAGE 2 (NCT02207244; phase 3).",
+    dose_range = "Phase 2 X-PLORE: 5, 15, 50, 100, or 200 mg SC at varying schedules through week 40. Phase 3 VOYAGE 1/2: 100 mg SC at weeks 0 and 4 then every 8 weeks. Sparse PK sampling.",
+    regions = "Multinational phase 2/3 trials (X-PLORE, VOYAGE 1, VOYAGE 2).",
+    diabetes_pct = 8.9,
     ada_positive_pct = 5.4,
     ethnicity_hispanic_pct = 6.3,
-    notes          = "Demographics from Yao 2018 Tables 2 and 3. 13,014 PK records from 1454 patients in the final analysis dataset (Table 1). Median age 44 years, median weight 87.1 kg, 70.8% male. Diabetes prevalence 8.9%. ADA-positive prevalence 5.4%. Model-derived elimination half-life is approximately 18.1 days (Results, page 619). Body weight was the primary covariate, accounting for 28% (CL/F) and 32% (V/F) of the proportion of variance for IIV; diabetes and race had marginal but retained effects on CL/F (10% threshold for inclusion in the final reduced model)."
+    notes = "Demographics from Yao 2018 Tables 2 and 3. 13,014 PK records from 1454 patients in the final analysis dataset (Table 1). Median age 44 years, median weight 87.1 kg, 70.8% male. Diabetes prevalence 8.9%. ADA-positive prevalence 5.4%. Model-derived elimination half-life is approximately 18.1 days (Results, page 619). Body weight was the primary covariate, accounting for 28% (CL/F) and 32% (V/F) of the proportion of variance for IIV; diabetes and race had marginal but retained effects on CL/F (10% threshold for inclusion in the final reduced model)."
   )
 
   ini({

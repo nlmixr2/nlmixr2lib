@@ -11,27 +11,57 @@ Landersdorfer_2018_meropenem_tobramycin_PAOmutS <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_intermediate_resistant1  = list(analyte = "Pseudomonus aeruginosa PAOdelta-mutS hypermutable strain (intermediate", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (intermediate", units = NA_character_, specimen = "bile", verified = FALSE),
-    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ctob                          = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible_susceptible1 = list(
+      analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Pseudomonus aeruginosa PAOdelta-mutS hypermutable strain (intermediate",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (intermediate",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    cmem = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ctob = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain; isogenic mutS deletion of PAO1 by Mena et al.)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Hypermutable P. aeruginosa relevant to cystic fibrosis chronic lung infection; baseline MIC meropenem 1 mg/L, MIC tobramycin 0.5 mg/L (identical pre-treatment MICs to PAO1)",
-    model_system     = "96-h static-concentration time-kill (SCTK) experiments; meropenem 2, 8, 16 mg/L and tobramycin 1, 4, 8 mg/L alone and in combination",
+    species = "in vitro (Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain; isogenic mutS deletion of PAO1 by Mena et al.)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Hypermutable P. aeruginosa relevant to cystic fibrosis chronic lung infection; baseline MIC meropenem 1 mg/L, MIC tobramycin 0.5 mg/L (identical pre-treatment MICs to PAO1)",
+    model_system = "96-h static-concentration time-kill (SCTK) experiments; meropenem 2, 8, 16 mg/L and tobramycin 1, 4, 8 mg/L alone and in combination",
     initial_inoculum = "~10^7.8 CFU/mL targeted; 10^7.72 CFU/mL estimated",
-    dose_range       = "Meropenem 2-16 mg/L static concentrations; tobramycin 1-8 mg/L static concentrations; alone and combined",
-    notes            = paste(
+    dose_range = "Meropenem 2-16 mg/L static concentrations; tobramycin 1-8 mg/L static concentrations; alone and combined",
+    notes = paste(
       "Mechanism-based model (S-ADAPT, importance sampling) co-modeled SCTK data for PAOdelta-mutS and its isogenic wild-type sibling PAO1.",
       "Strain-specific parameter estimates for PAOdelta-mutS are reported in Table S3 column 'b'.",
       "PAOdelta-mutS has a defective DNA-mismatch repair system (~1000-fold higher mutation rate than PAO1); resistance emerges via rapid ascent of less-susceptible mutants.",

@@ -33,61 +33,61 @@ Bienczak_2016_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline / time-varying body weight. Drives the Anderson-Holford allometric scaling of apparent oral clearance CL/F and inter-compartmental clearance Q/F (exponent 0.75) and central and peripheral volume Vc/F and Vp/F (exponent 1.0), with the structural typical-value parameters reported in Bienczak 2016 Table 2 corresponding to the cohort median 15.4 kg (Table 2 footnote: 'All clearance and volume parameters scaled allometrically to median weight of 15.4 kg').",
-      source_name        = "WT"
+      notes = "Baseline / time-varying body weight. Drives the Anderson-Holford allometric scaling of apparent oral clearance CL/F and inter-compartmental clearance Q/F (exponent 0.75) and central and peripheral volume Vc/F and Vp/F (exponent 1.0), with the structural typical-value parameters reported in Bienczak 2016 Table 2 corresponding to the cohort median 15.4 kg (Table 2 footnote: 'All clearance and volume parameters scaled allometrically to median weight of 15.4 kg').",
+      source_name = "WT"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Bienczak 2016 Methods 'Genotyping' paragraph 1 -- the rs3745274 variant is jointly tested with rs28399499 (983T>C) to define the six observed composite SNP-vector subgroups on which the final CL/F effect was estimated. Cohort allele-genotype frequencies (n = 162 genotyped of 169 enrolled; Bienczak 2016 Table 1): GG 40%, GT 41%, TT 19%; minor-allele frequency 0.39.",
-      source_name        = "CYP2B6 516G>T (rs3745274)"
+      notes = "Time-fixed (germline genotype). Bienczak 2016 Methods 'Genotyping' paragraph 1 -- the rs3745274 variant is jointly tested with rs28399499 (983T>C) to define the six observed composite SNP-vector subgroups on which the final CL/F effect was estimated. Cohort allele-genotype frequencies (n = 162 genotyped of 169 enrolled; Bienczak 2016 Table 1): GG 40%, GT 41%, TT 19%; minor-allele frequency 0.39.",
+      source_name = "CYP2B6 516G>T (rs3745274)"
     ),
     SNP_CYP2B6_RS28399499_C_COUNT = list(
-      description        = "Count of CYP2B6 c.983T>C (rs28399499, p.I328T) C-alleles per subject (0/1/2). 0 = TT homozygous wild-type, 1 = TC heterozygous, 2 = CC homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.983T>C (rs28399499, p.I328T) C-alleles per subject (0/1/2). 0 = TT homozygous wild-type, 1 = TC heterozygous, 2 = CC homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Bienczak 2016 Methods 'Genotyping' paragraph 1 -- combined with rs3745274 to define the six observed CYP2B6 SNP-vector subgroups. Cohort allele-genotype frequencies (n = 162 genotyped of 169 enrolled; Bienczak 2016 Table 1): TT 86%, TC 14%, CC 1%; minor-allele frequency 0.07. The 983C variant (CYP2B6*18) is virtually absent in European-ancestry populations and reaches appreciable frequency only in sub-Saharan African cohorts; Bienczak 2016 is one of the first paediatric studies to quantify the 983CC homozygote (ultra-slow metabolizer) CL/F effect.",
-      source_name        = "CYP2B6 983T>C (rs28399499)"
+      notes = "Time-fixed (germline genotype). Bienczak 2016 Methods 'Genotyping' paragraph 1 -- combined with rs3745274 to define the six observed CYP2B6 SNP-vector subgroups. Cohort allele-genotype frequencies (n = 162 genotyped of 169 enrolled; Bienczak 2016 Table 1): TT 86%, TC 14%, CC 1%; minor-allele frequency 0.07. The 983C variant (CYP2B6*18) is virtually absent in European-ancestry populations and reaches appreciable frequency only in sub-Saharan African cohorts; Bienczak 2016 is one of the first paediatric studies to quantify the 983CC homozygote (ultra-slow metabolizer) CL/F effect.",
+      source_name = "CYP2B6 983T>C (rs28399499)"
     )
   )
 
   covariatesDataExcluded <- list(
     STUDY_ARROW = list(
       description = "Trial-of-origin indicator (ARROW vs CHAPAS-3 reference)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Bienczak 2016 retained a significant trial-of-origin effect on the absorption rate constant ka (1.6-fold larger in ARROW, dOFV = 37.9, P < 0.001) and mean transit time MTT (1.4-fold longer in ARROW, dOFV = 21.4, P < 0.001), attributed by the paper to formulation differences between trials (CHAPAS-3 used only the double-scored 600 mg paediatric tablet; ARROW used a mix of 50, 100, and 200 mg capsules and half / whole 600 mg tablets). This packaged model encodes the CHAPAS-3 reference absorption parameters (MTT = 0.82 h, ka = 0.79 /h, Bienczak 2016 Table 2 column 'CHAPAS-3') and does NOT carry the trial-of-origin covariate, so the model is faithful to the CHAPAS-3 subset but slightly under-predicts the absorption rate (and slightly over-predicts the absorption transit time) for the ARROW subset. The ARROW typical values (MTT = 1.17 h, ka = 1.27 /h) are reported in Bienczak 2016 Table 2 column 'ARROW' for downstream users who need them. See vignette Assumptions and deviations for the rationale (avoiding a new STUDY_ARROW canonical covariate registration)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Bienczak 2016 retained a significant trial-of-origin effect on the absorption rate constant ka (1.6-fold larger in ARROW, dOFV = 37.9, P < 0.001) and mean transit time MTT (1.4-fold longer in ARROW, dOFV = 21.4, P < 0.001), attributed by the paper to formulation differences between trials (CHAPAS-3 used only the double-scored 600 mg paediatric tablet; ARROW used a mix of 50, 100, and 200 mg capsules and half / whole 600 mg tablets). This packaged model encodes the CHAPAS-3 reference absorption parameters (MTT = 0.82 h, ka = 0.79 /h, Bienczak 2016 Table 2 column 'CHAPAS-3') and does NOT carry the trial-of-origin covariate, so the model is faithful to the CHAPAS-3 subset but slightly under-predicts the absorption rate (and slightly over-predicts the absorption transit time) for the ARROW subset. The ARROW typical values (MTT = 1.17 h, ka = 1.27 /h) are reported in Bienczak 2016 Table 2 column 'ARROW' for downstream users who need them. See vignette Assumptions and deviations for the rationale (avoiding a new STUDY_ARROW canonical covariate registration)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 169L,
-    n_studies      = 2L,
-    age_range      = "2.1-13.8 years (paediatric)",
-    age_median     = "4.7 years",
-    weight_range   = "7.8-30.0 kg",
-    weight_median  = "15.5 kg (cohort) / 15.4 kg (allometric-scaling reference, Bienczak 2016 Table 2 footnote)",
+    species = "human",
+    n_subjects = 169L,
+    n_studies = 2L,
+    age_range = "2.1-13.8 years (paediatric)",
+    age_median = "4.7 years",
+    weight_range = "7.8-30.0 kg",
+    weight_median = "15.5 kg (cohort) / 15.4 kg (allometric-scaling reference, Bienczak 2016 Table 2 footnote)",
     sex_female_pct = 52.7,
     race_ethnicity = "African (all 169 patients black African; recruited from Uganda and Zambia per Bienczak 2016 Table 1 footnote)",
-    disease_state  = "HIV-1 infection on once-daily efavirenz-based combination antiretroviral therapy (paediatric). Companion nucleoside reverse-transcriptase inhibitors (NRTI backbone) and tuberculosis co-treatment status were tested as covariates on efavirenz PK but were not retained in the final model (Bienczak 2016 Results 'Population pharmacokinetics' paragraph 4: 'No other covariate ... was found to significantly improve the model fit').",
-    dose_range     = "Once-daily oral efavirenz dosed by WHO weight-band guidelines. CHAPAS-3 used a new paediatric double-scored 600 mg tablet (provided by Cipla Pharmaceuticals) split to give 200, 300, 400 or 600 mg doses by weight band (Bienczak 2016 Table 4 dosing table). ARROW used 50, 100 and 200 mg capsules and half or whole 600 mg tablets per modified WHO 2006 paediatric recommendations. Drug was taken either in the morning or at night; on intensive PK days observed in the clinic, dosing was advised to be in the morning for 4-6 weeks prior to sampling.",
-    regions        = "Uganda and Zambia (sub-Saharan Africa).",
-    notes          = "Pooled cohort from two paediatric HIV trials: CHAPAS-3 (Children with HIV in Africa - Pharmacokinetics and Adherence/Acceptability of Simple antiretroviral regimens; 128 children with intensive + sparse PK) and ARROW (Anti-Retroviral Research for Watoto; 41 children with intensive PK). Final analysis dataset had 2086 efavirenz concentration measurements (611 intensive ARROW, 474 intensive CHAPAS-3, 1002 sparse CHAPAS-3) after exclusion of 22 samples (Bienczak 2016 Table 1). Genotypes were available for 162 of 169 children (95.9%); the remaining 7 were assigned via mixture-model imputation using cohort frequencies (Bienczak 2016 Results 'Demographic results and samples' paragraph 1). The mixture-model imputation is NOT encoded in this nlmixr2lib model -- this file assumes known genotype and the user supplies the two SNP allele-count covariate columns directly. Six observed CYP2B6 516G>T|983T>C SNP-vector subgroups (Bienczak 2016 Table 2 / Table 3): 516GG|983TT (n = 56, 33%), 516GT|983TT (n = 59, 35%), 516GG|983TC (n = 10, 6%), 516TT|983TT (n = 31, 18%), 516GT|983TC (n = 12, 7%), 516GG|983CC (n = 1, 1%). The remaining three combinations (516GT|983CC, 516TT|983TC, 516TT|983CC) were not observed."
+    disease_state = "HIV-1 infection on once-daily efavirenz-based combination antiretroviral therapy (paediatric). Companion nucleoside reverse-transcriptase inhibitors (NRTI backbone) and tuberculosis co-treatment status were tested as covariates on efavirenz PK but were not retained in the final model (Bienczak 2016 Results 'Population pharmacokinetics' paragraph 4: 'No other covariate ... was found to significantly improve the model fit').",
+    dose_range = "Once-daily oral efavirenz dosed by WHO weight-band guidelines. CHAPAS-3 used a new paediatric double-scored 600 mg tablet (provided by Cipla Pharmaceuticals) split to give 200, 300, 400 or 600 mg doses by weight band (Bienczak 2016 Table 4 dosing table). ARROW used 50, 100 and 200 mg capsules and half or whole 600 mg tablets per modified WHO 2006 paediatric recommendations. Drug was taken either in the morning or at night; on intensive PK days observed in the clinic, dosing was advised to be in the morning for 4-6 weeks prior to sampling.",
+    regions = "Uganda and Zambia (sub-Saharan Africa).",
+    notes = "Pooled cohort from two paediatric HIV trials: CHAPAS-3 (Children with HIV in Africa - Pharmacokinetics and Adherence/Acceptability of Simple antiretroviral regimens; 128 children with intensive + sparse PK) and ARROW (Anti-Retroviral Research for Watoto; 41 children with intensive PK). Final analysis dataset had 2086 efavirenz concentration measurements (611 intensive ARROW, 474 intensive CHAPAS-3, 1002 sparse CHAPAS-3) after exclusion of 22 samples (Bienczak 2016 Table 1). Genotypes were available for 162 of 169 children (95.9%); the remaining 7 were assigned via mixture-model imputation using cohort frequencies (Bienczak 2016 Results 'Demographic results and samples' paragraph 1). The mixture-model imputation is NOT encoded in this nlmixr2lib model -- this file assumes known genotype and the user supplies the two SNP allele-count covariate columns directly. Six observed CYP2B6 516G>T|983T>C SNP-vector subgroups (Bienczak 2016 Table 2 / Table 3): 516GG|983TT (n = 56, 33%), 516GT|983TT (n = 59, 35%), 516GG|983TC (n = 10, 6%), 516TT|983TT (n = 31, 18%), 516GT|983TC (n = 12, 7%), 516GG|983CC (n = 1, 1%). The remaining three combinations (516GT|983CC, 516TT|983TC, 516TT|983CC) were not observed."
   )
 
   ini({

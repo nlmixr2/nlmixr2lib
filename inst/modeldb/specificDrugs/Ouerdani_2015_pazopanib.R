@@ -12,8 +12,8 @@ Ouerdani_2015_pazopanib <- function() {
   )
   vignette <- "Ouerdani_2015_pazopanib"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; pazopanib exposure enters as the per-period AUC_PAZO covariate, not via a PK ODE)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; pazopanib exposure enters as the per-period AUC_PAZO covariate, not via a PK ODE)",
     concentration = "mm (sum of longest diameters of target lesions per RECIST 1.1; not a drug concentration)"
   )
 
@@ -22,42 +22,47 @@ Ouerdani_2015_pazopanib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    tumor_size        = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    carrying_capacity = list(analyte = "vasculature-determined carrying capacity", units = NA_character_, specimen = "tumor", verified = FALSE)
+    tumor_size = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    carrying_capacity = list(
+      analyte = "vasculature-determined carrying capacity",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AUC_PAZO = list(
-      description        = "Per-period mean AUC of pazopanib driving the antiangiogenic and cytotoxic drug-effect rates in the Ouerdani 2015 clinical TGI model.",
-      units              = "ug*h/mL (= mg*h/L)",
-      type               = "continuous",
+      description = "Per-period mean AUC of pazopanib driving the antiangiogenic and cytotoxic drug-effect rates in the Ouerdani 2015 clinical TGI model.",
+      units = "ug*h/mL (= mg*h/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying step-wise. Ouerdani 2015 derives mean AUC at each patient's dose level from an Emax fit to pooled mean AUC values reported in five prior pazopanib trials across the 5 mg to 2000 mg daily-dose range (Methods, clinical-data section). The reported population mean was 771.6 ug*h/mL (range 629.4-802.4) corresponding to a mean dose of 727 mg/day (range 473-800) across the 47 RCC patients. Set to 0 in off-treatment periods; the model() block gates both drug-effect rates on AUC_PAZO > 0 so that off-treatment intervals follow the pure-growth dynamics.",
-      source_name        = "AUC"
+      notes = "Time-varying step-wise. Ouerdani 2015 derives mean AUC at each patient's dose level from an Emax fit to pooled mean AUC values reported in five prior pazopanib trials across the 5 mg to 2000 mg daily-dose range (Methods, clinical-data section). The reported population mean was 771.6 ug*h/mL (range 629.4-802.4) corresponding to a mean dose of 727 mg/day (range 473-800) across the 47 RCC patients. Set to 0 in off-treatment periods; the model() block gates both drug-effect rates on AUC_PAZO > 0 so that off-treatment intervals follow the pure-growth dynamics.",
+      source_name = "AUC"
     ),
     TUM_SLD = list(
-      description        = "Per-patient observed baseline RECIST 1.1 sum of longest diameters of target lesions; used as the per-subject initial condition for the tumor_size ODE state.",
-      units              = "mm",
-      type               = "continuous",
+      description = "Per-patient observed baseline RECIST 1.1 sum of longest diameters of target lesions; used as the per-subject initial condition for the tumor_size ODE state.",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ouerdani 2015 sets P0 to the observed baseline SLD per patient so only six structural parameters are estimated (paper Methods, clinical-data section: 'P0 was set to the observed value'). RECIST 1.1 sum of longest diameters of target lesions, in millimetres.",
-      source_name        = "SLD0"
+      notes = "Ouerdani 2015 sets P0 to the observed baseline SLD per patient so only six structural parameters are estimated (paper Methods, clinical-data section: 'P0 was set to the observed value'). RECIST 1.1 sum of longest diameters of target lesions, in millimetres.",
+      source_name = "SLD0"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 1L,
-    age_range      = "43-79 years",
-    weight_range   = "not reported in the modelling paper",
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
+    age_range = "43-79 years",
+    weight_range = "not reported in the modelling paper",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "advanced and/or metastatic renal-cell carcinoma of predominantly clear-cell histology; measurable disease by RECIST",
-    dose_range     = "800 mg pazopanib once daily, reduced in case of intolerance; mean dose 727 mg/day (range 473-800)",
-    regions        = "multicenter open-label Phase 2 study NCT00244764 (regions not detailed in the modelling paper)",
-    study          = "Subset of 47 patients from the multicenter, open-label Phase 2 trial NCT00244764 (referenced via Ouerdani 2015 citation 16); the modelling paper used this 47-patient subset.",
-    notes          = "Eligibility per Ouerdani 2015 Methods clinical-data section: ECOG PS 0 or 1, adequate haematologic / hepatic / renal function, treatment-naive or single prior systemic immunotherapy with cytokines and/or prior surgery (nephrectomy) and/or radiotherapy. Disease assessments via CT or MRI scheduled at baseline, weeks 8 and 12, then every 8 weeks until progression by RECIST 1.1. No dose interruptions were reported within the analyzed dataset despite the dose-reduction protocol."
+    disease_state = "advanced and/or metastatic renal-cell carcinoma of predominantly clear-cell histology; measurable disease by RECIST",
+    dose_range = "800 mg pazopanib once daily, reduced in case of intolerance; mean dose 727 mg/day (range 473-800)",
+    regions = "multicenter open-label Phase 2 study NCT00244764 (regions not detailed in the modelling paper)",
+    study = "Subset of 47 patients from the multicenter, open-label Phase 2 trial NCT00244764 (referenced via Ouerdani 2015 citation 16); the modelling paper used this 47-patient subset.",
+    notes = "Eligibility per Ouerdani 2015 Methods clinical-data section: ECOG PS 0 or 1, adequate haematologic / hepatic / renal function, treatment-naive or single prior systemic immunotherapy with cytokines and/or prior surgery (nephrectomy) and/or radiotherapy. Disease assessments via CT or MRI scheduled at baseline, weeks 8 and 12, then every 8 weeks until progression by RECIST 1.1. No dose interruptions were reported within the analyzed dataset despite the dose-reduction protocol."
   )
 
   ini({

@@ -25,17 +25,17 @@ DominguezMore_2024_rutin_rabbit <- function() {
   units <- list(time = "h", dosing = "ug/kg", concentration = "ng/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "rutin", units = "ug/kg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "rutin", units = "ug/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rutin", units = "ug/kg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FORM_RUTIN_EXTRACT = list(
-      description        = "Source of the administered rutin: within the Physalis peruviana calyx extract matrix versus the isolated pure compound",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Source of the administered rutin: within the Physalis peruviana calyx extract matrix versus the isolated pure compound",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pure rutin)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal; each rabbit received only one treatment.",
         "Dominguez More 2024 Section 2.3.2 describes it as 'the source of rutin",
         "as categorical covariate (pure compound or extract)'. The intravenous",
@@ -44,26 +44,26 @@ DominguezMore_2024_rutin_rabbit <- function() {
         "dose, so the covariate is confounded with dose level in this study",
         "design; the authors did not fit a separate dose effect."
       ),
-      source_name        = "source of rutin"
+      source_name = "source of rutin"
     )
   )
 
   population <- list(
-    species        = "rabbit (New Zealand White, male)",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "9-10 weeks",
-    weight_range   = "1.8-2.2 kg",
+    species = "rabbit (New Zealand White, male)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "9-10 weeks",
+    weight_range = "1.8-2.2 kg",
     sex_female_pct = 0,
     race_ethnicity = "not applicable",
-    disease_state  = "healthy",
-    dose_range     = paste(
+    disease_state = "healthy",
+    dose_range = paste(
       "Single intravenous marginal-ear-vein dose (0.5 mL/kg): pure rutin",
       "0.37 mg/kg, or P. peruviana calyx extract 100 mg/kg equivalent to",
       "1.48 mg/kg of rutin"
     ),
-    regions        = "Colombia (Universidad Nacional de Colombia, Bogota)",
-    notes          = paste(
+    regions = "Colombia (Universidad Nacional de Colombia, Bogota)",
+    notes = paste(
       "Twenty rabbits in total were split across four arms (n = 5 each):",
       "intravenous pure rutin, intravenous extract, oral pure rutin and oral",
       "extract. Only the two intravenous arms (n = 10) contributed to this",

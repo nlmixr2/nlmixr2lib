@@ -8,43 +8,43 @@ Muller_2007_penicillin_G <- function() {
     sep = " "
   )
   vignette <- "Muller_2007_penicillin_G"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight on the PK sampling day (day 3 of life)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight on the PK sampling day (day 3 of life)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linearly scaled on CL with reference 1.195 kg (cohort mean per Muller 2007 Table 1). The paper retained body weight on CL in the final model (P < 0.01, Results page 3724 and Fig. 3) but did not report the functional form or coefficient; per operator sidecar-001 response Q2=B, a linear-with-weight scaling (exponent 1) at the cohort-mean reference is imputed. CL at reference subject = 0.103 L/h.",
-      source_name        = "WT"
+      notes = "Linearly scaled on CL with reference 1.195 kg (cohort mean per Muller 2007 Table 1). The paper retained body weight on CL in the final model (P < 0.01, Results page 3724 and Fig. 3) but did not report the functional form or coefficient; per operator sidecar-001 response Q2=B, a linear-with-weight scaling (exponent 1) at the cohort-mean reference is imputed. CL at reference subject = 0.103 L/h.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 20L,
-    n_studies       = 1L,
-    age_range       = "Day 3 of life (postnatal age); gestational age range 26 3/7 to 32 0/7 weeks at birth",
-    age_median      = "Gestational age at birth: median 29 5/7 weeks (SD 1 5/7 weeks)",
-    weight_range    = "650 to 2,030 g birth weight",
-    weight_median   = "mean 1,195 g (SD 387 g)",
-    sex_female_pct  = 40,
-    race_ethnicity  = "Not reported (single-centre Dutch cohort; Erasmus MC-Sophia, Rotterdam)",
-    disease_state   = "Preterm neonates with suspected or documented septicemia or invasive infection (no positive blood cultures in this cohort; one positive superficial culture for Streptococcus agalactiae). Hemodynamically stable, normal liver function, no nephrotoxic drugs, no intracranial hemorrhage beyond grade II.",
-    dose_range      = "Penicillin G 50,000 U/kg as IV bolus every 12 h; ~30 mg/kg q12h using the conventional conversion 1 IU = 0.6 mg",
-    regions         = "Netherlands (Erasmus MC-Sophia, Sophia Children's Hospital, Rotterdam)",
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "Day 3 of life (postnatal age); gestational age range 26 3/7 to 32 0/7 weeks at birth",
+    age_median = "Gestational age at birth: median 29 5/7 weeks (SD 1 5/7 weeks)",
+    weight_range = "650 to 2,030 g birth weight",
+    weight_median = "mean 1,195 g (SD 387 g)",
+    sex_female_pct = 40,
+    race_ethnicity = "Not reported (single-centre Dutch cohort; Erasmus MC-Sophia, Rotterdam)",
+    disease_state = "Preterm neonates with suspected or documented septicemia or invasive infection (no positive blood cultures in this cohort; one positive superficial culture for Streptococcus agalactiae). Hemodynamically stable, normal liver function, no nephrotoxic drugs, no intracranial hemorrhage beyond grade II.",
+    dose_range = "Penicillin G 50,000 U/kg as IV bolus every 12 h; ~30 mg/kg q12h using the conventional conversion 1 IU = 0.6 mg",
+    regions = "Netherlands (Erasmus MC-Sophia, Sophia Children's Hospital, Rotterdam)",
     gestational_age_range = "26 3/7 to 32 0/7 weeks at birth (Muller 2007 Table 1)",
-    samples_plasma  = "167 samples; arterial-line draws pre-dose and at 0.03, 0.5, 1, 2.5, 4, 8, and 12 h after a dose, plus a 24 h sample in subjects who skipped the next dose (n = 9 of 20)",
-    notes           = "Hematocrit median 46% (range 33-63), platelets median 203 x10^3/mm3 (range 74-497), creatinine median 46 (range 10-82, units not reported), Apgar 1 min median 6 (range 1-10), Apgar 5 min median 8 (range 6-10). 9 of 20 ventilated. Half of the cohort were born to mothers with preeclampsia or HELLP syndrome. Per Methods 'Estimation of fT>MIC', protein binding was estimated at 40% +/- 2.5% (Ebert 1988 ref. 14) but the paper notes this is likely an overestimate in neonates; protein binding is NOT used inside the structural ODEs (the model is on total drug). PK estimates were obtained with NONMEM v.V ADVAN5 (general linear), FOCE+I; combined additive + proportional residual error."
+    samples_plasma = "167 samples; arterial-line draws pre-dose and at 0.03, 0.5, 1, 2.5, 4, 8, and 12 h after a dose, plus a 24 h sample in subjects who skipped the next dose (n = 9 of 20)",
+    notes = "Hematocrit median 46% (range 33-63), platelets median 203 x10^3/mm3 (range 74-497), creatinine median 46 (range 10-82, units not reported), Apgar 1 min median 6 (range 1-10), Apgar 5 min median 8 (range 6-10). 9 of 20 ventilated. Half of the cohort were born to mothers with preeclampsia or HELLP syndrome. Per Methods 'Estimation of fT>MIC', protein binding was estimated at 40% +/- 2.5% (Ebert 1988 ref. 14) but the paper notes this is likely an overestimate in neonates; protein binding is NOT used inside the structural ODEs (the model is on total drug). PK estimates were obtained with NONMEM v.V ADVAN5 (general linear), FOCE+I; combined additive + proportional residual error."
   )
 
   ini({

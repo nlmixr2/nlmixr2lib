@@ -29,21 +29,21 @@ Cojutti_2024_dalbavancin <- function() {
   # biological matrix. Checked against Cojutti 2024 ESM Figure S1 (schematic of
   # the PK/PD model) and Equation 1.
   compartmentData <- list(
-    central     = list(analyte = "dalbavancin", units = "mg",    specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "dalbavancin", units = "mg",    specimen = "plasma", verified = TRUE),
+    central = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
     # The C-RP turnover state holds a CONCENTRATION, not an amount: Equation 1 is
     # written directly on R = "C-RP concentration in plasma" with no volume term,
     # so kin carries units of mg/dL per h.
-    crp         = list(analyte = "C-reactive protein", units = "mg/dL", specimen = "plasma", verified = TRUE)
+    crp = list(analyte = "C-reactive protein", units = "mg/dL", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "CKD-EPI estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eGFR. Cojutti 2024 Methods 2.1 computed eGFR by three formulas (CKD-EPI,",
         "Cockcroft-Gault, MDRD) and kept 'the formula having the best performance in estimating",
         "dalbavancin clearance'; Results 3.2 reports that the winner was CKD-EPI: 'The only",
@@ -64,14 +64,14 @@ Cojutti_2024_dalbavancin <- function() {
         "uncentered exponential CRCL-on-CL form appears in this group's ceftobiprole model, see",
         "modellib('Cojutti_2023_ceftobiprole')."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     CRP = list(
-      description        = "Pre-treatment (time-zero) plasma C-reactive protein concentration, used as the individual C-RP baseline R0",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Pre-treatment (time-zero) plasma C-reactive protein concentration, used as the individual C-RP baseline R0",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-FIXED per subject, and NOT a covariate on a PK parameter. Cojutti 2024 Methods 2.2:",
         "'C-RP values at time zero (R0), i.e. when starting dalbavancin treatment, were considered",
         "as the baseline values for modeling[.] As C-RP concentration at baseline is independent",
@@ -91,7 +91,7 @@ Cojutti_2024_dalbavancin <- function() {
         "(Methods 2.1); the paper does not name the assay platform. The final model was fit to 211",
         "C-RP observations, a median of 4 (range 1-8) subsequent assessments per patient (Table 1)."
       ),
-      source_name        = "C-RP"
+      source_name = "C-RP"
     )
   )
 
@@ -104,43 +104,43 @@ Cojutti_2024_dalbavancin <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on the PK parameters (Methods 2.2) but not retained. Table 1 reports M/F = 31/14 (68.9%/31.1%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on the PK parameters (Methods 2.2) but not retained. Table 1 reports M/F = 31/14 (68.9%/31.1%)."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on the PK parameters (Methods 2.2) but not retained; the published model applies NO allometric scaling. Table 1 median 78 kg, range 50-110 kg (BMI median 27.4, range 18.8-42.9 kg/m^2)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on the PK parameters (Methods 2.2) but not retained; the published model applies NO allometric scaling. Table 1 median 78 kg, range 50-110 kg (BMI median 27.4, range 18.8-42.9 kg/m^2)."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened on the PK parameters (Methods 2.2) but not retained. Height was collected (Methods 2.1) but Table 1 reports only the derived BMI, not height itself."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened on the PK parameters (Methods 2.2) but not retained. Height was collected (Methods 2.1) but Table 1 reports only the derived BMI, not height itself."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened on the PK parameters (Methods 2.2) but not retained; the renal-function signal entered through the derived CKD-EPI eGFR instead. Collected as laboratory data (Methods 2.1) but not summarised in Table 1."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened on the PK parameters (Methods 2.2) but not retained; the renal-function signal entered through the derived CKD-EPI eGFR instead. Collected as laboratory data (Methods 2.1) but not summarised in Table 1."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
     n_observations = "175 dalbavancin plasma concentrations and 211 C-RP concentrations, fitted simultaneously (Results 3.2)",
-    age_range      = "18-80 years",
-    age_median     = "61 years",
-    weight_range   = "50-110 kg",
-    weight_median  = "78 kg",
-    bmi_range      = "18.8-42.9 kg/m^2 (median 27.4)",
+    age_range = "18-80 years",
+    age_median = "61 years",
+    weight_range = "50-110 kg",
+    weight_median = "78 kg",
+    bmi_range = "18.8-42.9 kg/m^2 (median 27.4)",
     sex_female_pct = 31.1,
     race_ethnicity = "Not reported; single-centre Italian cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with documented or suspected staphylococcal osteoarticular infection treated with",
       "dalbavancin monotherapy after completing an initial 2-week in-hospital daptomycin-based",
       "combination regimen. Infection types (Table 1): prosthetic joint infection 23 (51.1%; 11",
@@ -151,8 +151,8 @@ Cojutti_2024_dalbavancin <- function() {
       "CoNS and 6 MSSA. Test of cure was positive in 41/45 (91.1%)."
     ),
     renal_function = "CKD-EPI eGFR median 93 mL/min/1.73 m^2, range 33-144 (Table 1). The Monte Carlo target-attainment analysis extrapolated to four classes: eGFR 0-29, 30-59, 60-89 and 90-120 mL/min.",
-    baseline_crp   = "Median 2.67 mg/dL, range 1.1-30.6 mg/dL (Table 1). The Conclusion limits the model's applicability to patients with a baseline C-RP below 30.6 mg/dL.",
-    dose_range     = paste(
+    baseline_crp = "Median 2.67 mg/dL, range 1.1-30.6 mg/dL (Table 1). The Conclusion limits the model's applicability to patients with a baseline C-RP below 30.6 mg/dL.",
+    dose_range = paste(
       "All patients started on two 1500 mg intravenous doses one week apart (days 1 and 8);",
       "further TDM-guided 1500 mg doses were added case by case. Median total dose per treatment",
       "course 3000 mg, range 3000-7500 mg (Table 1). 25/45 (55.6%) received exactly two doses,",
@@ -160,8 +160,8 @@ Cojutti_2024_dalbavancin <- function() {
       "per-patient schedule; the later doses fall between day 29 and day 111. The paper does not",
       "state the infusion duration."
     ),
-    regions        = "Italy (IRCCS Azienda Ospedaliero-Universitaria di Bologna)",
-    notes          = paste(
+    regions = "Italy (IRCCS Azienda Ospedaliero-Universitaria di Bologna)",
+    notes = paste(
       "Retrospective single-centre study, January 2021 to August 2023 (Ethics Committee",
       "897/2021/Oss/AOUBo). Inclusion required a bone-and-joint infection diagnosis, prior",
       "daptomycin-based combination therapy, and at least two C-RP concentrations of which one at",

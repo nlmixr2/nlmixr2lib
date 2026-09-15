@@ -39,55 +39,55 @@ Henin_2012_diclofenac <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "diclofenac", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "diclofenac", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "diclofenac", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "diclofenac", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "diclofenac", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "diclofenac", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; used for allometric scaling of the disposition parameters to a 70 kg reference.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; used for allometric scaling of the disposition parameters to a 70 kg reference.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Continuous covariate. Reference weight is 70 kg (Table III uses per-70kg allometric normalization). Adult healthy volunteers in the bioequivalence source study.",
-      source_name        = "WT"
+      notes = "Continuous covariate. Reference weight is 70 kg (Table III uses per-70kg allometric normalization). Adult healthy volunteers in the bioequivalence source study.",
+      source_name = "WT"
     ),
     IP_APSI = list(
-      description        = "Individual inflection-point time (h) for the enteric-coated tablet transit from stomach to proximal small intestine (STEP value 0.5). Population mean stomach transit time ~ 2 h (paper Results, 'Application of GITT Model to Diclofenac Data': range 1.5-3 h across the studied individuals). Fasted-condition MRT was used because the bioequivalence source study was fasted; the paper reports the population MRT for stomach (fundus + antrum) as a single value of about 2 h.",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) for the enteric-coated tablet transit from stomach to proximal small intestine (STEP value 0.5). Population mean stomach transit time ~ 2 h (paper Results, 'Application of GITT Model to Diclofenac Data': range 1.5-3 h across the studied individuals). Fasted-condition MRT was used because the bioequivalence source study was fasted; the paper reports the population MRT for stomach (fundus + antrum) as a single value of about 2 h.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. In the Henin 2012 diclofenac fit the stomach residence variability was estimated from the diclofenac plasma data (paper Results reports 19% shrinkage on the stomach-residence random effect). The published population MRT was 2 h; the vignette shows an example of sampling IP_APSI from a log-normal (MRT_stomach = 2 h, sigma corresponding to ~ 100% CV per Table II combined stomach entry).",
-      source_name        = "IP_APSI"
+      notes = "Per-subject covariate. In the Henin 2012 diclofenac fit the stomach residence variability was estimated from the diclofenac plasma data (paper Results reports 19% shrinkage on the stomach-residence random effect). The published population MRT was 2 h; the vignette shows an example of sampling IP_APSI from a log-normal (MRT_stomach = 2 h, sigma corresponding to ~ 100% CV per Table II combined stomach entry).",
+      source_name = "IP_APSI"
     ),
     IP_PSI_DSI = list(
-      description        = "Individual inflection-point time (h) for tablet transition from proximal to distal small intestine (STEP value 0.5). Sampled as MRT_psi * exp(eta) with MRT_psi = 1.17 h and eta ~ N(0, VRT_psi) with VRT_psi = 1.37 h^2 per Table II (fasted / fixed from Bergstrand 2009 upstream Markov fit).",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) for tablet transition from proximal to distal small intestine (STEP value 0.5). Sampled as MRT_psi * exp(eta) with MRT_psi = 1.17 h and eta ~ N(0, VRT_psi) with VRT_psi = 1.37 h^2 per Table II (fasted / fixed from Bergstrand 2009 upstream Markov fit).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. Note: IP_PSI_DSI is relative to time 0 (dose), so the effective PSI residence time is IP_PSI_DSI - IP_APSI. Table II VRT = 1.37 gives CV = 50% on the residence-time distribution.",
-      source_name        = "IP_PSI_DSI"
+      notes = "Per-subject covariate. Note: IP_PSI_DSI is relative to time 0 (dose), so the effective PSI residence time is IP_PSI_DSI - IP_APSI. Table II VRT = 1.37 gives CV = 50% on the residence-time distribution.",
+      source_name = "IP_PSI_DSI"
     ),
     IP_DSI_C = list(
-      description        = "Individual inflection-point time (h) for tablet transition from distal small intestine to colon (STEP value 0.5). Sampled as MRT_dsi * exp(eta) with MRT_dsi = 1.22 h and eta ~ N(0, VRT_dsi) with VRT_dsi = 1.48 h^2 per Table II.",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) for tablet transition from distal small intestine to colon (STEP value 0.5). Sampled as MRT_dsi * exp(eta) with MRT_dsi = 1.22 h and eta ~ N(0, VRT_dsi) with VRT_dsi = 1.48 h^2 per Table II.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. IP_DSI_C is time 0-referenced; effective DSI residence time is IP_DSI_C - IP_PSI_DSI. Table II CV = 58%.",
-      source_name        = "IP_DSI_C"
+      notes = "Per-subject covariate. IP_DSI_C is time 0-referenced; effective DSI residence time is IP_DSI_C - IP_PSI_DSI. Table II CV = 58%.",
+      source_name = "IP_DSI_C"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = "Single 50 mg oral enteric-coated diclofenac tablet under fasting conditions.",
-    regions        = "Ireland (Irish Medicines Board approved; unpublished study by Rosemont Pharmaceuticals Ltd, UK).",
-    notes          = "Bioequivalence sub-study with three formulations (enteric-coated tablet, soluble tablet, suspension); the GITT model was applied to the enteric-coated arm only. Disposition parameters were fixed from a separate IV pediatric study (Korpela 1990; 10 children age 4-6 y receiving 0.5 mg/kg IV over 5-15 min) with allometric extrapolation to 70 kg adult weight. Absorption parameters (KA_PSI, KA_DSI, KA_Col, FA) were estimated from the adult bioequivalence data using the GITT step-function tablet-transit model. LOQ = 10 ng/mL (33.767 nmol/L); 58% of enteric-coated observations were below LOQ and were handled via the M3 likelihood-based method (paper Methods)."
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    disease_state = "Healthy adult volunteers",
+    dose_range = "Single 50 mg oral enteric-coated diclofenac tablet under fasting conditions.",
+    regions = "Ireland (Irish Medicines Board approved; unpublished study by Rosemont Pharmaceuticals Ltd, UK).",
+    notes = "Bioequivalence sub-study with three formulations (enteric-coated tablet, soluble tablet, suspension); the GITT model was applied to the enteric-coated arm only. Disposition parameters were fixed from a separate IV pediatric study (Korpela 1990; 10 children age 4-6 y receiving 0.5 mg/kg IV over 5-15 min) with allometric extrapolation to 70 kg adult weight. Absorption parameters (KA_PSI, KA_DSI, KA_Col, FA) were estimated from the adult bioequivalence data using the GITT step-function tablet-transit model. LOQ = 10 ng/mL (33.767 nmol/L); 58% of enteric-coated observations were below LOQ and were handled via the M3 likelihood-based method (paper Methods)."
   )
 
   ini({

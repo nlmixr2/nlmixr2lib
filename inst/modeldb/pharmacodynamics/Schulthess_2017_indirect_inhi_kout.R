@@ -34,7 +34,7 @@ Schulthess_2017_indirect_inhi_kout <- function() {
   # the implied central volume is 1 and `central` carries a concentration.
   compartmentData <- list(
     central = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
-    effect  = list(analyte = "voiding volume (biomarker response x)", units = "mL", specimen = "urine", verified = TRUE)
+    effect = list(analyte = "voiding volume (biomarker response x)", units = "mL", specimen = "urine", verified = TRUE)
   )
 
   population <- list(

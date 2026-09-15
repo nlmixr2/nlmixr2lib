@@ -50,13 +50,18 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "haloperidol panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "haloperidol panss subscales",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "haloperidol panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -65,9 +70,9 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
   covariatesDataExcluded <- list(
     DIS = list(
       description = "Disease state at entry (acute vs chronic schizophrenia)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Reported by Part II as a covariate of baseline PANSS positive",
         "(coefficient -0.15) and of Pmax positive (-1.15) on the placebo",
         "Weibull model; not retained in the PANSS subscale model() because",
@@ -78,9 +83,9 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     ),
     USA = list(
       description = "Study geographic origin (USA vs non-USA)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Reported by Part II as a covariate of Pmax negative (+1.34) and",
         "of residual-error magnitude for all three subscales (+0.29 to",
         "+0.64 on log-RUV); not implemented in model() because the",
@@ -90,26 +95,26 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     ),
     REG = list(
       description = "Dosing regimen (qd vs bid)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported by Part II as a covariate of residual error on PANSS negative (-0.20 on log-RUV); not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported by Part II as a covariate of residual error on PANSS negative (-0.20 on log-RUV); not implemented."
     ),
     DUR = list(
       description = "Study duration (short vs long)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported by Part II as a covariate of residual error on PANSS positive (-0.28 on log-RUV); not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported by Part II as a covariate of residual error on PANSS positive (-0.28 on log-RUV); not implemented."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 741L,
-    n_studies       = 12L,
-    age_range       = "Adults with schizophrenia (specific range not tabulated in Part II; pooled from 12 industry-sponsored Phase II / III studies 1989-2009 and one open-label haloperidol study).",
-    weight_range    = "Adult schizophrenia population; specific demographics not tabulated in Part II (cross-reference Part I Table 1 for per-study summaries).",
-    sex_female_pct  = NA_real_,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 741L,
+    n_studies = 12L,
+    age_range = "Adults with schizophrenia (specific range not tabulated in Part II; pooled from 12 industry-sponsored Phase II / III studies 1989-2009 and one open-label haloperidol study).",
+    weight_range = "Adult schizophrenia population; specific demographics not tabulated in Part II (cross-reference Part I Table 1 for per-study summaries).",
+    sex_female_pct = NA_real_,
+    disease_state = paste(
       "Adults with schizophrenia recruited into acute and chronic-stable",
       "Phase II / III double-blind clinical trials and one open-label",
       "haloperidol study (Part II Methods). Baseline PANSS positive typical",
@@ -117,13 +122,13 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
       "PANSS general 45.1 (44.6-45.6) for the haloperidol arm (Part II",
       "Table 2)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral haloperidol 2.5-40 mg/day (Part I Table 1 LMU open-label study);",
       "5-10 mg/day Phase III arms (Part I Table 1, studies INT-2, INT-3,",
       "128-115)."
     ),
-    regions         = "Pooled across multinational schizophrenia trials 1989-2009 (Part II Methods); USA vs non-USA reported as a placebo-effect covariate.",
-    notes           = paste(
+    regions = "Pooled across multinational schizophrenia trials 1989-2009 (Part II Methods); USA vs non-USA reported as a placebo-effect covariate.",
+    notes = paste(
       "The n_subjects field (741) is the placebo-arm count of Part II Methods",
       "for whom PANSS subscale data were available; the active-drug cohort",
       "spans haloperidol, risperidone, olanzapine, ziprasidone, and",

@@ -27,17 +27,17 @@ Jiang_2023_imatinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RBC = list(
-      description        = "Red blood cell (erythrocyte) count",
-      units              = "10^12 cells/L",
-      type               = "continuous",
+      description = "Red blood cell (erythrocyte) count",
+      units = "10^12 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Baseline (per-subject) laboratory value from the electronic ",
         "medical record. Jiang 2023 Table 1 modeling dataset: mean +/- SD ",
         "3.7 +/- 0.6 x 10^12/L (range 2.2-5.6); validation dataset 3.8 +/- ",
@@ -57,14 +57,14 @@ Jiang_2023_imatinib <- function() {
         "correlated covariates, only one was included to avoid ",
         "collinearity')."
       ),
-      source_name        = "RBC"
+      source_name = "RBC"
     ),
     SNP_ABCG2_RS2231142_HET = list(
-      description        = "ABCG2 (BCRP) rs2231142 heterozygote indicator (GT genotype)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCG2 (BCRP) rs2231142 heterozygote indicator (GT genotype)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ABCG2 rs2231142 GG wild-type homozygote, when paired with SNP_ABCG2_RS2231142_HOM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = subject carries ",
         "exactly one rs2231142 variant allele (genotype GT on the reported ",
         "strand, equivalently 421C/A); 0 = otherwise (the union of GG ",
@@ -80,14 +80,14 @@ Jiang_2023_imatinib <- function() {
         "reference (both paired indicators = 0) has a fixed CL/F factor of ",
         "1 (Jiang 2023 Table 3, 'rs2231142 GG: 1 (Fixed)')."
       ),
-      source_name        = "rs2231142 GT"
+      source_name = "rs2231142 GT"
     ),
     SNP_ABCG2_RS2231142_HOM = list(
-      description        = "ABCG2 (BCRP) rs2231142 homozygous-variant indicator (TT genotype)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCG2 (BCRP) rs2231142 homozygous-variant indicator (TT genotype)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ABCG2 rs2231142 GG wild-type homozygote, when paired with SNP_ABCG2_RS2231142_HET = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = subject carries ",
         "two rs2231142 variant alleles (genotype TT on the reported ",
         "strand, equivalently 421A/A); 0 = otherwise (the union of GG ",
@@ -106,7 +106,7 @@ Jiang_2023_imatinib <- function() {
         "is wide and spans 1, so the TT stratum is not distinguishable ",
         "from the GG reference."
       ),
-      source_name        = "rs2231142 TT"
+      source_name = "rs2231142 TT"
     )
   )
 
@@ -119,9 +119,9 @@ Jiang_2023_imatinib <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: 58.6 +/- 9.6 kg (range 40.0-82.5). Carried ",
         "into the stepwise covariate search on CL/F and V/F but not ",
         "significant at the forward-inclusion threshold (dOFV < 3.84); ",
@@ -130,9 +130,9 @@ Jiang_2023_imatinib <- function() {
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: median 4.0 (range 1.4-20.9) x 10^9/L. ",
         "Screened and not retained. Jiang 2023 Discussion explicitly ",
         "revisits this: a prior CML study found a WBC effect on imatinib ",
@@ -143,21 +143,21 @@ Jiang_2023_imatinib <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Jiang 2023 Table 1: median 44.0 g/L (range 30.6-54.8). Screened and not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Jiang 2023 Table 1: median 44.0 g/L (range 30.6-54.8). Screened and not retained."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Jiang 2023 Table 1: median 16.9 U/L (range 2.0-645.0). Screened and not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Jiang 2023 Table 1: median 16.9 U/L (range 2.0-645.0). Screened and not retained."
     ),
     CRCL = list(
       description = "Creatinine clearance rate",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste0(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: median 69.7 mL/min (range 28.5-118.8). ",
         "Significant in UNIVARIATE forward inclusion on CL/F (dOFV = ",
         "-6.56, p < 0.05; Table 4) but dropped in the multifactorial step ",
@@ -169,9 +169,9 @@ Jiang_2023_imatinib <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste0(
+      units = "years",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: median 57 years (range 27-79). Excluded ",
         "BEFORE the stepwise process by the collinearity screen: the ",
         "correlation coefficient between age and CRCL was -0.67 ",
@@ -182,9 +182,9 @@ Jiang_2023_imatinib <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Jiang 2023 modeling cohort: 46 male / 39 female (45.9% female). ",
         "Listed under the investigated categorical covariates (Jiang 2023 ",
         "Covariate Model) but not among the covariates 'introduced into ",
@@ -194,9 +194,9 @@ Jiang_2023_imatinib <- function() {
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "g/L",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: 115.9 +/- 15.8 g/L (range 71.0-156.0). ",
         "Investigated, but not among the covariates carried into the ",
         "stepwise process -- HGB is collinear with the retained RBC ",
@@ -206,9 +206,9 @@ Jiang_2023_imatinib <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "U/L",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: median 23.9 U/L (range 11.0-724.8). ",
         "Investigated, but not among the covariates carried into the ",
         "stepwise process (collinear with ALT under the |r| >= 0.5 ",
@@ -217,9 +217,9 @@ Jiang_2023_imatinib <- function() {
     ),
     PLT = list(
       description = "Platelet count (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: median 178.0 (range 54.0-512.0) x 10^9/L. ",
         "Carried into the stepwise covariate search and not retained. No ",
         "canonical name is registered in ",
@@ -230,9 +230,9 @@ Jiang_2023_imatinib <- function() {
     ),
     GLB = list(
       description = "Serum globulin (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "g/L",
+      type = "continuous",
+      notes = paste0(
         "Jiang 2023 Table 1: 23.9 +/- 4.2 g/L (range 12.6-37.8). Carried ",
         "into the stepwise covariate search and not retained. Distinct ",
         "from the registered TPRO (total protein) canonical -- globulin is ",
@@ -242,9 +242,9 @@ Jiang_2023_imatinib <- function() {
     ),
     SNP_CYP1A2_RS11636419 = list(
       description = "CYP1A2 rs11636419 genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "Jiang 2023 Table 2: GG 6 (0.07), GA 24 (0.28), AA 55 (0.65); ",
         "allele frequency G 0.21 / A 0.79; HWE chi-square 2.02, p = 0.36. ",
         "Screened on CL/F and V/F and not retained (absent from Table 4)."
@@ -252,9 +252,9 @@ Jiang_2023_imatinib <- function() {
     ),
     SNP_SLC22A1_RS1867351 = list(
       description = "SLC22A1 (OCT1) rs1867351 genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "Jiang 2023 Table 2: CC 13 (0.15), CT 40 (0.47), TT 32 (0.38); ",
         "allele frequency C 0.39 / T 0.61; HWE chi-square 0.01, p = 1.00. ",
         "Screened and not retained."
@@ -262,9 +262,9 @@ Jiang_2023_imatinib <- function() {
     ),
     SNP_SLC22A1_RS683369 = list(
       description = "SLC22A1 (OCT1) rs683369 genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "Jiang 2023 Table 2: CC 65 (0.76), CG 19 (0.22), GG 1 (0.01); ",
         "allele frequency C 0.88 / G 0.12; HWE chi-square 0.09, p = 0.96. ",
         "Screened and not retained."
@@ -272,9 +272,9 @@ Jiang_2023_imatinib <- function() {
     ),
     SNP_SLC22A1_RS2282143 = list(
       description = "SLC22A1 (OCT1) rs2282143 genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "Jiang 2023 Table 2: CC 62 (0.73), CT 22 (0.26), TT 1 (0.01); ",
         "allele frequency C 0.86 / T 0.14; HWE chi-square 0.39, p = 0.82. ",
         "Screened and not retained. Note that Jiang 2023 Table 2 typesets ",
@@ -285,9 +285,9 @@ Jiang_2023_imatinib <- function() {
     ),
     SNP_SLCO1A2_RS10841803 = list(
       description = "SLCO1A2 (OATP1A2) rs10841803 genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "Jiang 2023 Table 2: GG 29 (0.34), GA 43 (0.51), AA 13 (0.15); ",
         "allele frequency G 0.59 / A 0.41; HWE chi-square 0.20, p = 0.90. ",
         "Screened and not retained."
@@ -296,18 +296,18 @@ Jiang_2023_imatinib <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 85L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 85L,
+    n_studies = 1L,
     n_subjects_external_validation = 25L,
     n_subjects_enrolled = 110L,
-    age_range        = "27-79 years (Table 1 median 57)",
-    age_median       = "57 years",
-    weight_range     = "40.0-82.5 kg",
-    weight_mean      = "58.6 +/- 9.6 kg (mean +/- SD, Table 1)",
-    sex_female_pct   = 45.9,
-    race_ethnicity   = "Chinese (single-centre cohort, most patients recruited from Jiangxi Province)",
-    disease_state    = paste0(
+    age_range = "27-79 years (Table 1 median 57)",
+    age_median = "57 years",
+    weight_range = "40.0-82.5 kg",
+    weight_mean = "58.6 +/- 9.6 kg (mean +/- SD, Table 1)",
+    sex_female_pct = 45.9,
+    race_ethnicity = "Chinese (single-centre cohort, most patients recruited from Jiangxi Province)",
+    disease_state = paste0(
       "Adults (age >= 18 years at surgery) with histologically confirmed ",
       "gastrointestinal stromal tumor (GIST) who had undergone surgical ",
       "resection and were at intermediate or high risk of recurrence by ",
@@ -317,14 +317,14 @@ Jiang_2023_imatinib <- function() {
       "GIST KIT / PDGFRA mutation status was NOT determined (Jiang 2023 ",
       "Limitations)."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral imatinib 200-600 mg once daily. Initial-dose distribution in ",
       "the modeling dataset (200/300/400/500/600 mg): 1/2/79/2/1 patients ",
       "-- 92.9% received the standard 400 mg daily (Table 1)."
     ),
-    regions          = "China (The First Affiliated Hospital of Nanchang University, Nanchang, Jiangxi Province)",
+    regions = "China (The First Affiliated Hospital of Nanchang University, Nanchang, Jiangxi Province)",
     enrollment_period = "March 2021 to June 2022",
-    sampling_design  = paste0(
+    sampling_design = paste0(
       "Sparse therapeutic drug monitoring during routine care. Most blood ",
       "samples were drawn at steady state (>= 30 days of continuous ",
       "imatinib). Only trough concentrations were collected, which is why ",
@@ -335,7 +335,7 @@ Jiang_2023_imatinib <- function() {
       "ng/mL; inter-/intra-day RSD 0.3-4.0% and 1.1-3.2%."
     ),
     genotype_rs2231142 = c(GG = 40.0, GT = 53.0, TT = 7.0),
-    lab_baseline     = paste0(
+    lab_baseline = paste0(
       "Table 1 modeling dataset: RBC 3.7 +/- 0.6 x 10^12/L (2.2-5.6); WBC ",
       "median 4.0 x 10^9/L (1.4-20.9); platelets median 178.0 x 10^9/L ",
       "(54.0-512.0); hemoglobin 115.9 +/- 15.8 g/L (71.0-156.0); albumin ",
@@ -343,7 +343,7 @@ Jiang_2023_imatinib <- function() {
       "ALT median 16.9 U/L (2.0-645.0); AST median 23.9 U/L (11.0-724.8); ",
       "creatinine clearance median 69.7 mL/min (28.5-118.8)."
     ),
-    notes            = paste0(
+    notes = paste0(
       "Software: NONMEM 7.3 (FOCE with interaction); R 4.0.5 for output ",
       "and diagnostics. Structural model: NONMEM ADVAN2 TRANS2 ",
       "(one-compartment, first-order absorption, CL/V parameterisation). ",

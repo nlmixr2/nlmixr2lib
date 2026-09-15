@@ -13,87 +13,87 @@ Wei_2025_methotrexate_genotype <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed by the 2021 race-free CKD-EPI creatinine equation (Methods 'Study design', Equation 3, citing Inker 2021), NOT by Cockcroft-Gault. Normalized to 101.8 mL/min/1.73 m^2 in Equation 14, matching the Table 3 cohort median exactly. Cohort range 5.4-162.9 mL/min/1.73 m^2. Time-varying, monitored daily for at least three days after each administration. Enters clearance only, as a power term with the estimated exponent `e_crcl_cl` = 0.67 -- numerically identical to the nongene model.",
-      source_name        = "eGFR"
+      notes = "Computed by the 2021 race-free CKD-EPI creatinine equation (Methods 'Study design', Equation 3, citing Inker 2021), NOT by Cockcroft-Gault. Normalized to 101.8 mL/min/1.73 m^2 in Equation 14, matching the Table 3 cohort median exactly. Cohort range 5.4-162.9 mL/min/1.73 m^2. Time-varying, monitored daily for at least three days after each administration. Enters clearance only, as a power term with the estimated exponent `e_crcl_cl` = 0.67 -- numerically identical to the nongene model.",
+      source_name = "eGFR"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "SI units (mmol/L), NOT mg/dL -- the Table 3 median of 4.6 with range 0.5-19 is the mmol/L scale. Normalized to 4.6 mmol/L in Equation 14, matching the Table 3 median exactly. Enters clearance only, as a power term with the estimated exponent `e_bun_cl` = -0.08, identical to the nongene model.",
-      source_name        = "BUN"
+      notes = "SI units (mmol/L), NOT mg/dL -- the Table 3 median of 4.6 with range 0.5-19 is the mmol/L scale. Normalized to 4.6 mmol/L in Equation 14, matching the Table 3 median exactly. Enters clearance only, as a power term with the estimated exponent `e_bun_cl` = -0.08, identical to the nongene model.",
+      source_name = "BUN"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalized to 25 U/L in Equation 14, matching the Table 3 cohort median exactly. Cohort range 2.2-1141.7 U/L. Enters clearance only, as a power term with the estimated exponent `e_alt_cl` = +0.03, identical to the nongene model. The sign is POSITIVE: liver injury raises methotrexate clearance in this cohort, which the authors flag as counterintuitive (Discussion).",
-      source_name        = "ALT"
+      notes = "Normalized to 25 U/L in Equation 14, matching the Table 3 cohort median exactly. Cohort range 2.2-1141.7 U/L. Enters clearance only, as a power term with the estimated exponent `e_alt_cl` = +0.03, identical to the nongene model. The sign is POSITIVE: liver injury raises methotrexate clearance in this cohort, which the authors flag as counterintuitive (Discussion).",
+      source_name = "ALT"
     ),
     TPRO = list(
-      description        = "Total serum protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the inter-compartmental clearance Q1 only, as a power term with the estimated exponent `e_tpro_q` = -1.72. This is the ONE covariate exponent that differs between the two final models (-1.72 here against -1.68 in the nongene model). NOTE the same paper-internal mismatch recorded in the companion file, transcribed as printed: Equation 15 normalizes to 58 g/L while the Table 3 cohort median is 61.8 g/L, despite Methods 'Covariate model' stating that continuous covariates were standardized to their medians. The printed equation constant 58 is used.",
-      source_name        = "TP"
+      notes = "Enters the inter-compartmental clearance Q1 only, as a power term with the estimated exponent `e_tpro_q` = -1.72. This is the ONE covariate exponent that differs between the two final models (-1.72 here against -1.68 in the nongene model). NOTE the same paper-internal mismatch recorded in the companion file, transcribed as printed: Equation 15 normalizes to 58 g/L while the Table 3 cohort median is 61.8 g/L, despite Methods 'Covariate model' stating that continuous covariates were standardized to their medians. The printed equation constant 58 is used.",
+      source_name = "TP"
     ),
     SNP_ABCC4_RS2274407_G_COUNT = list(
-      description        = "ABCC4 rs2274407 (T>G) variant G-allele count",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "ABCC4 rs2274407 (T>G) variant G-allele count",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Germline genotype, time-invariant. 0 = TT wild-type homozygote, 1 = TG heterozygote, 2 = GG variant homozygote. ABCC4 encodes multidrug-resistance protein 4 (MRP4). One of the three variants combined into the composite genotype covariate; the count form is required because the paper's combination rule sums per-variant group scores rather than using carrier indicators. Direction: the Discussion states 'the T allele was associated with increased MTX clearance', so the G variant allele DECREASES clearance, placing this variant on Table 1's 'Decreased' scoring row where the group score is 1 + (variant allele count). Note the paper labels the SNP '(T > G)' in Results 3.2 but discusses it as 'G912T' with 'T allele carriers' in the Discussion, following the cited Mesrian Tanha 2017 nomenclature; the two are opposite strand/orientation conventions for the same variant. This column follows the dbSNP-consistent orientation the paper uses when it defines the variant.",
-      source_name        = "ABCC4 rs2274407"
+      notes = "Germline genotype, time-invariant. 0 = TT wild-type homozygote, 1 = TG heterozygote, 2 = GG variant homozygote. ABCC4 encodes multidrug-resistance protein 4 (MRP4). One of the three variants combined into the composite genotype covariate; the count form is required because the paper's combination rule sums per-variant group scores rather than using carrier indicators. Direction: the Discussion states 'the T allele was associated with increased MTX clearance', so the G variant allele DECREASES clearance, placing this variant on Table 1's 'Decreased' scoring row where the group score is 1 + (variant allele count). Note the paper labels the SNP '(T > G)' in Results 3.2 but discusses it as 'G912T' with 'T allele carriers' in the Discussion, following the cited Mesrian Tanha 2017 nomenclature; the two are opposite strand/orientation conventions for the same variant. This column follows the dbSNP-consistent orientation the paper uses when it defines the variant.",
+      source_name = "ABCC4 rs2274407"
     ),
     SNP_ABCG2_RS2231142_T_COUNT = list(
-      description        = "ABCG2 rs2231142 (G>T, Q141K) variant T-allele count",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "ABCG2 rs2231142 (G>T, Q141K) variant T-allele count",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Germline genotype, time-invariant. 0 = GG wild-type homozygote, 1 = GT heterozygote, 2 = TT variant homozygote. ABCG2 encodes breast cancer resistance protein (BCRP). This is the variant the paper uses as its worked example of the grouping rule (Methods 'Grouping and combination of variants': 'the ABCG2 rs2231142 G > T variant, with the T allele, was associated with decreased MTX clearance. As a result, the genotypes GG, GT, and TT were categorized into groups 1, 2, and 3'), which fixes the scoring convention for the whole composite. Direction: the T variant allele DECREASES clearance (Discussion: 'our research also links the T allele to reduced MTX CL').",
-      source_name        = "ABCG2 rs2231142"
+      notes = "Germline genotype, time-invariant. 0 = GG wild-type homozygote, 1 = GT heterozygote, 2 = TT variant homozygote. ABCG2 encodes breast cancer resistance protein (BCRP). This is the variant the paper uses as its worked example of the grouping rule (Methods 'Grouping and combination of variants': 'the ABCG2 rs2231142 G > T variant, with the T allele, was associated with decreased MTX clearance. As a result, the genotypes GG, GT, and TT were categorized into groups 1, 2, and 3'), which fixes the scoring convention for the whole composite. Direction: the T variant allele DECREASES clearance (Discussion: 'our research also links the T allele to reduced MTX CL').",
+      source_name = "ABCG2 rs2231142"
     ),
     SNP_ADORA2A_RS2298383_T_COUNT = list(
-      description        = "ADORA2A rs2298383 (C>T) variant T-allele count",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "ADORA2A rs2298383 (C>T) variant T-allele count",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Germline genotype, time-invariant. 0 = CC wild-type homozygote, 1 = CT heterozygote, 2 = TT variant homozygote. ADORA2A encodes the adenosine A2A receptor; rs2298383 sits in a putative promoter region and is associated with transcriptional regulation. Direction: the Discussion states 'the C allele was associated with increased MTX clearance', so the T variant allele DECREASES clearance, placing this variant on Table 1's 'Decreased' scoring row alongside the other two.",
-      source_name        = "ADORA2A rs2298383"
+      notes = "Germline genotype, time-invariant. 0 = CC wild-type homozygote, 1 = CT heterozygote, 2 = TT variant homozygote. ADORA2A encodes the adenosine A2A receptor; rs2298383 sits in a putative promoter region and is associated with transcriptional regulation. Direction: the Discussion states 'the C allele was associated with increased MTX clearance', so the T variant allele DECREASES clearance, placing this variant on Table 1's 'Decreased' scoring row alongside the other two.",
+      source_name = "ADORA2A rs2298383"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 752L,
-    n_studies      = 1L,
-    age_range      = "18.12-86.65 years (median 57.445)",
-    age_median     = "57.445 years",
-    weight_range   = "30-115 kg (median 68)",
-    weight_median  = "68 kg",
-    bsa_range      = "1.16-2.39 m^2 (median 1.73)",
-    bsa_median     = "1.73 m^2",
+    species = "human",
+    n_subjects = 752L,
+    n_studies = 1L,
+    age_range = "18.12-86.65 years (median 57.445)",
+    age_median = "57.445 years",
+    weight_range = "30-115 kg (median 68)",
+    weight_median = "68 kg",
+    bsa_range = "1.16-2.39 m^2 (median 1.73)",
+    bsa_median = "1.73 m^2",
     sex_female_pct = 44.1,
     renal_function = "eGFR 5.4-162.9 mL/min/1.73 m^2 (median 101.8) by the 2021 CKD-EPI equation; serum creatinine 24.8-641.7 umol/L (median 64.6); Cockcroft-Gault CLcr 5.9-361.8 mL/min (median 100.1). At least 17.4% of the cohort met the label definition of delayed elimination.",
     hepatic_function = "ALT 2.2-1141.7 U/L (median 25); AST 5-1915.2 U/L (median 20.4); total protein 27.4-95.7 g/L (median 61.8); albumin 19.9-51.8 g/L (median 37.5).",
-    disease_state  = "Adults with primary central nervous system lymphoma (PCNSL) receiving high-dose methotrexate, most commonly combined with rituximab or cytarabine.",
-    dose_range     = "Intravenous methotrexate 3.5 g/m^2, median infusion duration 3.1 h. Median of four infusions per patient (range 1-34).",
-    genotyping     = "Twenty-nine single nucleotide polymorphisms with a minor allele frequency above 0.05 in the Chinese population were genotyped by MassARRAY, spanning MTHFR, MTR, ATIC, ABCG2, MTRR, ABCB1, ABCC2, ABCC4, MTHFD1, SLCO1B1, SLC28A2, TYMS and SLC19A1 (listed in Supplementary Appendix SA1). All but rs10760502, rs11045879, rs2413775 and rs3758149 were in Hardy-Weinberg equilibrium. Only the three-variant ABCC4-ABCG2-ADORA2A composite reached significance; SLCO1B1, ABCC2, ABCB1 and MTHFR did not.",
-    regions        = "China (single center: Beijing Tiantan Hospital, Capital Medical University), September 2016 through August 2023.",
-    notes          = "Retrospective therapeutic-drug-monitoring cohort of 752 adults contributing 6074 methotrexate plasma concentrations. Each methotrexate administration was treated as an INDEPENDENT event in the dataset because dosing intervals exceeded five elimination half-lives (Methods 'Base model'). Concentrations were total drug by UHPLC-MS/MS, lower limit of quantification 0.002 umol/L. Estimation was by first-order conditional estimation extended least squares in Phoenix NLME 8.3, with 200 bootstrap replicates and a 1000-replicate visual predictive check. Adding the composite genotype to the nongene model dropped the objective function by 9.95 units (Table 4, models 5 to 6), the smallest of the five covariate steps. Demographics from Table 3; parameter estimates from Table 5 ('Final gene-model' column)."
+    disease_state = "Adults with primary central nervous system lymphoma (PCNSL) receiving high-dose methotrexate, most commonly combined with rituximab or cytarabine.",
+    dose_range = "Intravenous methotrexate 3.5 g/m^2, median infusion duration 3.1 h. Median of four infusions per patient (range 1-34).",
+    genotyping = "Twenty-nine single nucleotide polymorphisms with a minor allele frequency above 0.05 in the Chinese population were genotyped by MassARRAY, spanning MTHFR, MTR, ATIC, ABCG2, MTRR, ABCB1, ABCC2, ABCC4, MTHFD1, SLCO1B1, SLC28A2, TYMS and SLC19A1 (listed in Supplementary Appendix SA1). All but rs10760502, rs11045879, rs2413775 and rs3758149 were in Hardy-Weinberg equilibrium. Only the three-variant ABCC4-ABCG2-ADORA2A composite reached significance; SLCO1B1, ABCC2, ABCB1 and MTHFR did not.",
+    regions = "China (single center: Beijing Tiantan Hospital, Capital Medical University), September 2016 through August 2023.",
+    notes = "Retrospective therapeutic-drug-monitoring cohort of 752 adults contributing 6074 methotrexate plasma concentrations. Each methotrexate administration was treated as an INDEPENDENT event in the dataset because dosing intervals exceeded five elimination half-lives (Methods 'Base model'). Concentrations were total drug by UHPLC-MS/MS, lower limit of quantification 0.002 umol/L. Estimation was by first-order conditional estimation extended least squares in Phoenix NLME 8.3, with 200 bootstrap replicates and a 1000-replicate visual predictive check. Adding the composite genotype to the nongene model dropped the objective function by 9.95 units (Table 4, models 5 to 6), the smallest of the five covariate steps. Demographics from Table 3; parameter estimates from Table 5 ('Final gene-model' column)."
   )
 
   ini({

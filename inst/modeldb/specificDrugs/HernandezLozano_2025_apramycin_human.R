@@ -14,8 +14,14 @@ HernandezLozano_2025_apramycin_human <- function() {
   # distinction from this model's growing-versus-dormant states, and because
   # that scheme has no organ dimension.
   paper_specific_compartments <- c(
-    "bact_s1k", "bact_d1k", "bact_s2k", "bact_d2k",
-    "bact_s1b", "bact_d1b", "bact_s2b", "bact_d2b"
+    "bact_s1k",
+    "bact_d1k",
+    "bact_s2k",
+    "bact_d2k",
+    "bact_s1b",
+    "bact_d1b",
+    "bact_s2b",
+    "bact_d2b"
   )
 
   compartmentData <- list(
@@ -24,14 +30,54 @@ HernandezLozano_2025_apramycin_human <- function() {
     peripheral2 = list(analyte = "apramycin", units = "mg", specimen = "tissue", verified = TRUE),
     peripheral3 = list(analyte = "apramycin", units = "mg", specimen = "tissue", verified = TRUE),
     urine = list(analyte = "apramycin", units = "mg", specimen = "urine", verified = TRUE),
-    bact_s1k = list(analyte = "Escherichia coli in the kidneys, main apramycin-susceptible subpopulation, growing drug-susceptible (S) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_d1k = list(analyte = "Escherichia coli in the kidneys, main apramycin-susceptible subpopulation, dormant drug-insusceptible (D) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_s2k = list(analyte = "Escherichia coli in the kidneys, subpopulation with decreased apramycin susceptibility, growing drug-susceptible (S) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_d2k = list(analyte = "Escherichia coli in the kidneys, subpopulation with decreased apramycin susceptibility, dormant drug-insusceptible (D) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_s1b = list(analyte = "Escherichia coli in the bladder, main apramycin-susceptible subpopulation, growing drug-susceptible (S) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_d1b = list(analyte = "Escherichia coli in the bladder, main apramycin-susceptible subpopulation, dormant drug-insusceptible (D) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_s2b = list(analyte = "Escherichia coli in the bladder, subpopulation with decreased apramycin susceptibility, growing drug-susceptible (S) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE),
-    bact_d2b = list(analyte = "Escherichia coli in the bladder, subpopulation with decreased apramycin susceptibility, dormant drug-insusceptible (D) state", units = "CFU/organ", specimen = "not applicable", verified = TRUE)
+    bact_s1k = list(
+      analyte = "Escherichia coli in the kidneys, main apramycin-susceptible subpopulation, growing drug-susceptible (S) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_d1k = list(
+      analyte = "Escherichia coli in the kidneys, main apramycin-susceptible subpopulation, dormant drug-insusceptible (D) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s2k = list(
+      analyte = "Escherichia coli in the kidneys, subpopulation with decreased apramycin susceptibility, growing drug-susceptible (S) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_d2k = list(
+      analyte = "Escherichia coli in the kidneys, subpopulation with decreased apramycin susceptibility, dormant drug-insusceptible (D) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s1b = list(
+      analyte = "Escherichia coli in the bladder, main apramycin-susceptible subpopulation, growing drug-susceptible (S) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_d1b = list(
+      analyte = "Escherichia coli in the bladder, main apramycin-susceptible subpopulation, dormant drug-insusceptible (D) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s2b = list(
+      analyte = "Escherichia coli in the bladder, subpopulation with decreased apramycin susceptibility, growing drug-susceptible (S) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_d2b = list(
+      analyte = "Escherichia coli in the bladder, subpopulation with decreased apramycin susceptibility, dormant drug-insusceptible (D) state",
+      units = "CFU/organ",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

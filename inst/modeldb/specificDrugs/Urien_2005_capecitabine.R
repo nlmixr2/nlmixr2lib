@@ -20,10 +20,10 @@ Urien_2005_capecitabine <- function() {
     "static model file (see vignette Errata)."
   )
   reference <- "Urien S, Rezai K, Lokiec F. Pharmacokinetic modelling of 5-FU production from capecitabine--a population study in 40 adult patients with metastatic cancer. J Pharmacokinet Pharmacodyn. 2005;32(5-6):817-833. doi:10.1007/s10928-005-0018-2"
-  vignette  <- "Urien_2005_capecitabine"
-  units     <- list(
-    time          = "h",
-    dosing        = "umol",
+  vignette <- "Urien_2005_capecitabine"
+  units <- list(
+    time = "h",
+    dosing = "umol",
     concentration = "umol/L"
   )
 
@@ -32,42 +32,42 @@ Urien_2005_capecitabine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "capecitabine", units = "umol", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "capecitabine", units = "umol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "capecitabine", units = "umol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "capecitabine", units = "umol", specimen = "plasma", verified = FALSE),
     central_dfcr = list(analyte = "5'-DFCR", units = "umol", specimen = "plasma", verified = FALSE),
     central_dfur = list(analyte = "5'-DFUR", units = "umol", specimen = "plasma", verified = FALSE),
-    central_5fu  = list(analyte = "5-FU", units = "umol", specimen = "plasma", verified = FALSE)
+    central_5fu = list(analyte = "5-FU", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     TBILI = list(
-      description        = "Total serum bilirubin concentration (baseline; constant within an individual in the source dataset).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin concentration (baseline; constant within an individual in the source dataset).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling centred on the median bilirubin of 8.8 umol/L: (TBILI/8.8)^+0.32 on capecitabine non-transformation CL10/F and (TBILI/8.8)^-0.36 on the 5'-DFUR -> 5-FU rate constant K34. SI units in the source paper (Table I lists median 8.8 umol/L, range 3-22 umol/L); convert mg/dL to umol/L by multiplying by 17.1 if the simulation dataset reports US units.",
-      source_name        = "BILT"
+      notes = "Power scaling centred on the median bilirubin of 8.8 umol/L: (TBILI/8.8)^+0.32 on capecitabine non-transformation CL10/F and (TBILI/8.8)^-0.36 on the 5'-DFUR -> 5-FU rate constant K34. SI units in the source paper (Table I lists median 8.8 umol/L, range 3-22 umol/L); convert mg/dL to umol/L by multiplying by 17.1 if the simulation dataset reports US units.",
+      source_name = "BILT"
     )
   )
 
   population <- list(
-    n_subjects     = 40L,
-    n_studies      = 2L,
-    age_range      = "30-73 years",
-    age_median     = "54.5 years",
-    weight_range   = "41.5-95 kg",
-    weight_median  = "68 kg",
-    height_range   = "150-178 cm",
-    height_median  = "169 cm",
-    bsa_range      = "1.40-2.10 m^2",
-    bsa_median     = "1.80 m^2",
+    n_subjects = 40L,
+    n_studies = 2L,
+    age_range = "30-73 years",
+    age_median = "54.5 years",
+    weight_range = "41.5-95 kg",
+    weight_median = "68 kg",
+    height_range = "150-178 cm",
+    height_median = "169 cm",
+    bsa_range = "1.40-2.10 m^2",
+    bsa_median = "1.80 m^2",
     sex_female_pct = 37.5,
-    disease_state  = "Adult patients with metastatic cancer receiving second- or third-line chemotherapy. Capecitabine was combined with either irinotecan 200-250 mg/m^2 (90-min infusion on day 1) or irofulven 0.4 mg/kg (30-min infusion on day 1), depending on the phase I study.",
-    dose_range     = "Oral capecitabine 1400-2300 mg/m^2/day (median 2000 mg/m^2/day; total daily dose 1900 mg/m^2 on average), divided into twice-daily doses every 12 hours within 30 minutes of breakfast or dinner.",
-    regions        = "France (Centre Rene Huguenin, Saint-Cloud).",
+    disease_state = "Adult patients with metastatic cancer receiving second- or third-line chemotherapy. Capecitabine was combined with either irinotecan 200-250 mg/m^2 (90-min infusion on day 1) or irofulven 0.4 mg/kg (30-min infusion on day 1), depending on the phase I study.",
+    dose_range = "Oral capecitabine 1400-2300 mg/m^2/day (median 2000 mg/m^2/day; total daily dose 1900 mg/m^2 on average), divided into twice-daily doses every 12 hours within 30 minutes of breakfast or dinner.",
+    regions = "France (Centre Rene Huguenin, Saint-Cloud).",
     n_observations = "1426 plasma concentrations across 75 PK courses (40 patients): 373 capecitabine, 354 5'-DFCR, 363 5'-DFUR, and 336 5-FU. Limits of quantification 0.03 / 0.05 / 0.05 / 0.05 umol/L respectively. Most subjects had two PK evaluations on days 1 and 15.",
-    baseline_chem  = "Serum albumin median 37 g/L (range 30-46), serum creatinine median 85 umol/L (range 58-113), total bilirubin median 8.8 umol/L (range 3-22).",
-    notes          = "Demographics from Urien 2005 Table I. Modelling software NONMEM V level 1.1, FO method (FOCE produced abnormal terminations on this complex four-compartment chain). Final estimates are the bootstrap means in Table II from 1922 successful runs of 2000 programmed runs."
+    baseline_chem = "Serum albumin median 37 g/L (range 30-46), serum creatinine median 85 umol/L (range 58-113), total bilirubin median 8.8 umol/L (range 3-22).",
+    notes = "Demographics from Urien 2005 Table I. Modelling software NONMEM V level 1.1, FO method (FOCE produced abnormal terminations on this complex four-compartment chain). Final estimates are the bootstrap means in Table II from 1922 successful runs of 2000 programmed runs."
   )
 
   ini({

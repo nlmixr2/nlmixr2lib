@@ -42,8 +42,8 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
   )
   vignette <- "Kleijn_2011_sugammadex_rocuronium"
   units <- list(
-    time          = "min",
-    dosing        = "umol",
+    time = "min",
+    dosing = "umol",
     concentration = "umol/L"
   )
 
@@ -52,22 +52,37 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central             = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
-    central_roc         = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_roc     = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
-    central_complex     = list(analyte = "sugammadex-rocuronium complex", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_complex = list(analyte = "sugammadex-rocuronium complex", units = "umol", specimen = "plasma", verified = FALSE),
-    effect_roc          = list(analyte = "neuromuscular blockade effect", units = "umol", specimen = "not applicable", verified = FALSE)
+    central = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
+    central_roc = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_roc = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
+    central_complex = list(
+      analyte = "sugammadex-rocuronium complex",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_complex = list(
+      analyte = "sugammadex-rocuronium complex",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    effect_roc = list(
+      analyte = "neuromuscular blockade effect",
+      units = "umol",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric reference 70 kg applied to all volumes (exponent 1),",
         "all flows (exponent 0.75) and all rate constants (exponent -0.25)",
         "for the rocuronium PK, the complex PK, the rocuronium effect",
@@ -81,14 +96,14 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
         "(BW - 74.5)' and 'V1_BW = 1 + theta * (BW - 74.5)').",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Affects rocuronium CL (linear shift centred at 43 years; Kleijn",
         "2011 Table 4 'CL_AGE = 1 + theta * (AGE - 43.0)') and rocuronium",
         "V2 (exponential shift centred at 43 years; Table 4 'V2_AGE =",
@@ -101,14 +116,14 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
         "non-size paediatric effects.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (uncorrected, Cockcroft-Gault for adults; Schwartz formula denormalised by Dubois BSA for paediatric subjects)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (uncorrected, Cockcroft-Gault for adults; Schwartz formula denormalised by Dubois BSA for paediatric subjects)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 119 mL/min (Kleijn 2011 Table 4 covariate-centring",
         "value for CR). Drives the sugammadex CL renal-function effect",
         "REN = (2 * CRCL / (CRCL + 119))^1.29 (Methods), the sugammadex",
@@ -124,14 +139,14 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
         "BSA_adult, also raw mL/min.",
         sep = " "
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; Caucasian + Afro-American + Hispanic; the dataset reference category)",
-      notes              = paste(
+      notes = paste(
         "1 = Asian, 0 = non-Asian. Multiplicative effect on rocuronium",
         "inter-compartmental clearance Q2_RAC = 1 + theta_race_q_roc =",
         "0.788 (i.e., -21.2% in Asians, Table 4) and on sugammadex",
@@ -141,14 +156,14 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
         "on rocuronium CL / V1 / V2 or on sugammadex CL / Q2 / V2.",
         sep = " "
       ),
-      source_name        = "RAC"
+      source_name = "RAC"
     ),
     CONMED_SEVO = list(
-      description        = "Sevoflurane volatile-anaesthesia maintenance indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sevoflurane volatile-anaesthesia maintenance indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no sevoflurane; propofol-only TIVA or another agent)",
-      notes              = paste(
+      notes = paste(
         "1 = subject received sevoflurane gas maintenance during the",
         "perioperative observation window; 0 = subject received propofol",
         "without sevoflurane. Kleijn 2011 Methods: 'Typically, patients",
@@ -164,23 +179,23 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
         "retained on the sugammadex-mediated reversal rate ks (Results).",
         sep = " "
       ),
-      source_name        = "SEV"
+      source_name = "SEV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 446L,
-    n_studies      = 8L,
-    age_range      = "1-91 years (paediatric, adolescent, adult, elderly, and old-elderly cohorts)",
-    age_median     = "43 years",
-    weight_range   = "9.60-139 kg (median 74.5 kg)",
+    species = "human",
+    n_subjects = 446L,
+    n_studies = 8L,
+    age_range = "1-91 years (paediatric, adolescent, adult, elderly, and old-elderly cohorts)",
+    age_median = "43 years",
+    weight_range = "9.60-139 kg (median 74.5 kg)",
     sex_female_pct = round(157 / 446 * 100, 1),
     race_ethnicity = c(
       "Non-Asian" = round(393 / 446 * 100, 1),
-      "Asian"     = round(53 / 446 * 100, 1)
+      "Asian" = round(53 / 446 * 100, 1)
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Patients under general anaesthesia for elective surgery requiring",
       "rocuronium-induced neuromuscular blockade and sugammadex reversal",
       "(adults, paediatrics, and elderly), pooled with healthy male",
@@ -188,7 +203,7 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
       "(CrCl < 30 mL/min; n = 14; study 19.4.304).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Rocuronium IV bolus 0.6-1.2 mg/kg (maintenance doses 0.1-0.2",
       "mg/kg in some studies). Sugammadex IV bolus 0.1-16 mg/kg",
       "(placebo in some arms). Sugammadex given either at a fixed",
@@ -196,8 +211,8 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
       "of T2 (moderate-blockade scenario).",
       sep = " "
     ),
-    regions        = "Multi-regional (Japanese sub-cohort, Caucasian, Afro-American, Hispanic)",
-    notes          = paste(
+    regions = "Multi-regional (Japanese sub-cohort, Caucasian, Afro-American, Hispanic)",
+    notes = paste(
       "Pooled across eight model-building clinical trials (Table 1):",
       "19.4.101 part II (healthy male volunteers), 19.4.201 / 19.4.202",
       "/ 19.4.205 (adult patients), 19.4.208 part A (Japanese) and",

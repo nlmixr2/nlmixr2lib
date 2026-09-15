@@ -32,32 +32,32 @@ Snelder_2019_leuprorelin_4m <- function() {
   dosing <- c("depot", "depot2", "depot3")
 
   compartmentData <- list(
-    depot       = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
-    depot3      = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "leuprorelin", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot3 = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "leuprorelin", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "leuprorelin", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 106L,
-    n_studies      = 1L,
-    age_range      = "53-85 years (mean 72.0)",
-    age_median     = "mean 72.0 years",
+    species = "human",
+    n_subjects = 106L,
+    n_studies = 1L,
+    age_range = "53-85 years (mean 72.0)",
+    age_median = "mean 72.0 years",
     sex_female_pct = 0,
     race_ethnicity = c(White = 100),
-    disease_state  = "Advanced prostate cancer requiring chemical castration",
-    dose_range     = "Repeated 15 mg leuprorelin-SR 4-month depot injections",
-    co_medication  = paste(
+    disease_state = "Advanced prostate cancer requiring chemical castration",
+    dose_range = "Repeated 15 mg leuprorelin-SR 4-month depot injections",
+    co_medication = paste(
       "Cyproterone acetate with the first leuprorelin dose (300 mg",
       "intramuscular, or 200 mg orally daily for one month) to avoid the",
       "testosterone flare"
     ),
-    regions        = "not reported",
-    notes          = paste(
+    regions = "not reported",
+    notes = paste(
       "Study EC402, 4-month 15 mg depot arm (Methods 2.1). EC402 was a",
       "randomised, open-label, comparative study of leuprorelin 1M and",
       "leuprorelin-SR 4M in advanced prostate cancer; 106 patients were",

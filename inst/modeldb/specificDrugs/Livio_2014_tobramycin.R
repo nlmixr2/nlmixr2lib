@@ -8,48 +8,48 @@ Livio_2014_tobramycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tobramycin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tobramycin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tobramycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Raw Cockcroft-Gault CrCL in mL/min (NOT BSA-normalized to mL/min/1.73 m^2); computed from each patient's serum creatinine, body weight, and sex per Livio 2014 Methods. Linear interpolation was used for days without a fresh creatinine measurement. CL was equated to CrCL in the structural model under the paper's assumption that tobramycin absorbed from Osteoset T is exclusively eliminated by glomerular filtration. The typical clearance of 7.14 L/h reported in Table 1 corresponds to the population-mean CrCL of 119 mL/min via CL = CrCL x 60/1000. Encoded here as a power-1 effect on (CRCL/119); the reference 119 mL/min is the cohort mean (Livio 2014 Results / Table 1). Stored under canonical CRCL with `CLCR` (raw Cockcroft-Gault mL/min) as the documented source-name alias.",
-      source_name        = "CLcr"
+      notes = "Raw Cockcroft-Gault CrCL in mL/min (NOT BSA-normalized to mL/min/1.73 m^2); computed from each patient's serum creatinine, body weight, and sex per Livio 2014 Methods. Linear interpolation was used for days without a fresh creatinine measurement. CL was equated to CrCL in the structural model under the paper's assumption that tobramycin absorbed from Osteoset T is exclusively eliminated by glomerular filtration. The typical clearance of 7.14 L/h reported in Table 1 corresponds to the population-mean CrCL of 119 mL/min via CL = CrCL x 60/1000. Encoded here as a power-1 effect on (CRCL/119); the reference 119 mL/min is the cohort mean (Livio 2014 Results / Table 1). Stored under canonical CRCL with `CLCR` (raw Cockcroft-Gault mL/min) as the documented source-name alias.",
+      source_name = "CLcr"
     ),
     DOSE = list(
-      description        = "Subject's assigned single Osteoset T tobramycin dose at implantation (262 mg for 10 g Osteoset T cast, 524 mg for 20 g cast)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Subject's assigned single Osteoset T tobramycin dose at implantation (262 mg for 10 g Osteoset T cast, 524 mg for 20 g cast)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a binary indicator for the 20 g cast cohort: f(depot) <- exp(lfdepot + etalfdepot) * (1 + e_dose_524mg_fdepot * (DOSE == 524)) reproduces Livio 2014 Table 1's distinct bioavailability estimates of 0.63 (10 g cast, reference) and 0.32 (20 g cast). Each subject received a single Osteoset T implantation at time 0 so DOSE is constant per subject. The 4 % w/w tobramycin sulfate loading of Osteoset T combined with the tobramycin/tobramycin-sulfate salt factor of 0.655 (Methods) gives 262 mg tobramycin for a 10 g cast and 524 mg for a 20 g cast. Use case (a) of the canonical DOSE register (per-subject assigned dose level used as a stratified covariate); precedent: Castro-Surez 2020 nimotuzumab uses (DOSE == 50) on V1.",
-      source_name        = "(derived from AMT; 262 mg = 10 g cast, 524 mg = 20 g cast)"
+      notes = "Used as a binary indicator for the 20 g cast cohort: f(depot) <- exp(lfdepot + etalfdepot) * (1 + e_dose_524mg_fdepot * (DOSE == 524)) reproduces Livio 2014 Table 1's distinct bioavailability estimates of 0.63 (10 g cast, reference) and 0.32 (20 g cast). Each subject received a single Osteoset T implantation at time 0 so DOSE is constant per subject. The 4 % w/w tobramycin sulfate loading of Osteoset T combined with the tobramycin/tobramycin-sulfate salt factor of 0.655 (Methods) gives 262 mg tobramycin for a 10 g cast and 524 mg for a 20 g cast. Use case (a) of the canonical DOSE register (per-subject assigned dose level used as a stratified covariate); precedent: Castro-Surez 2020 nimotuzumab uses (DOSE == 50) on V1.",
+      source_name = "(derived from AMT; 262 mg = 10 g cast, 524 mg = 20 g cast)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 12L,
-    n_studies       = 1L,
-    age_range       = "19-82 years",
-    age_mean        = "52 years (SD 20)",
-    weight_range    = "53-116 kg",
-    weight_mean     = "73 kg (SD 17)",
-    crcl_range      = "34-288 mL/min (Cockcroft-Gault, raw mL/min)",
-    crcl_mean       = "119 mL/min (SD 55)",
-    sex_female_pct  = 41.7,
-    race_ethnicity  = "Not reported (single-centre Swiss orthopaedic cohort, Fribourg Cantonal Hospital)",
-    disease_state   = "Adults undergoing orthopaedic surgery for established bone / soft-tissue / prosthetic-joint infection (9 patients) or surgical-site infection prophylaxis (3 patients), with Osteoset T (4 % tobramycin sulfate calcium-sulfate bone-graft substitute) implanted as adjunct local antimicrobial therapy.",
-    dose_range      = "Single Osteoset T implantation: 10 g cast containing 262 mg tobramycin (8 patients) or 20 g cast containing 524 mg tobramycin (4 patients).",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "19-82 years",
+    age_mean = "52 years (SD 20)",
+    weight_range = "53-116 kg",
+    weight_mean = "73 kg (SD 17)",
+    crcl_range = "34-288 mL/min (Cockcroft-Gault, raw mL/min)",
+    crcl_mean = "119 mL/min (SD 55)",
+    sex_female_pct = 41.7,
+    race_ethnicity = "Not reported (single-centre Swiss orthopaedic cohort, Fribourg Cantonal Hospital)",
+    disease_state = "Adults undergoing orthopaedic surgery for established bone / soft-tissue / prosthetic-joint infection (9 patients) or surgical-site infection prophylaxis (3 patients), with Osteoset T (4 % tobramycin sulfate calcium-sulfate bone-graft substitute) implanted as adjunct local antimicrobial therapy.",
+    dose_range = "Single Osteoset T implantation: 10 g cast containing 262 mg tobramycin (8 patients) or 20 g cast containing 524 mg tobramycin (4 patients).",
     implantation_sites = c(`tibia/fibula` = 6L, hip = 2L, calcaneum = 2L, femur = 1L, `lumbar spine` = 1L),
-    regions         = "Single centre: Department of Orthopedic Surgery, Cantonal Hospital, Fribourg, Switzerland; data collected October 2006 - March 2008.",
-    clinicaltrials  = "NCT01938417",
-    n_observations  = "9 blood samples per patient at 3, 6, 12, 24, 48 hours and on days 3, 5, 7, 10 post-implantation (concentrations below the LOQ of 0.1 mg/L: first sample below LOQ set to LOQ/2 = 0.05 mg/L, subsequent BLQ samples dropped).",
-    notes           = "Baseline demographics from Livio 2014 Results section first paragraph (paper does not present a dedicated Table 1 of demographics). Tourniquet release-time replaced implantation time as dose-event time when a tourniquet was used during the operation. No intravenous aminoglycoside co-medication. No wound drains."
+    regions = "Single centre: Department of Orthopedic Surgery, Cantonal Hospital, Fribourg, Switzerland; data collected October 2006 - March 2008.",
+    clinicaltrials = "NCT01938417",
+    n_observations = "9 blood samples per patient at 3, 6, 12, 24, 48 hours and on days 3, 5, 7, 10 post-implantation (concentrations below the LOQ of 0.1 mg/L: first sample below LOQ set to LOQ/2 = 0.05 mg/L, subsequent BLQ samples dropped).",
+    notes = "Baseline demographics from Livio 2014 Results section first paragraph (paper does not present a dedicated Table 1 of demographics). Tourniquet release-time replaced implantation time as dose-event time when a tourniquet was used during the operation. No intravenous aminoglycoside co-medication. No wound drains."
   )
 
   ini({

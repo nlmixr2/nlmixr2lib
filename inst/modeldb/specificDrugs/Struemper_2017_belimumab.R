@@ -8,67 +8,67 @@ Struemper_2017_belimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "belimumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "belimumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight (BWT in the source NONMEM code); fixed allometric power effects on CL (0.75), Vc (1.00), Q (0.75), and Vp (0.8) with reference 67 kg (population median).",
-      source_name        = "BWT"
+      notes = "Baseline body weight (BWT in the source NONMEM code); fixed allometric power effects on CL (0.75), Vc (1.00), Q (0.75), and Vp (0.8) with reference 67 kg (population median).",
+      source_name = "BWT"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline BMI (BBMI in the source NONMEM code); estimated power effect on Vc with reference 24.7 kg/m^2 (population median).",
-      source_name        = "BBMI"
+      notes = "Baseline BMI (BBMI in the source NONMEM code); estimated power effect on Vc with reference 24.7 kg/m^2 (population median).",
+      source_name = "BBMI"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline albumin (BALB in the source NONMEM code); estimated power effect on CL with reference 41 g/L (population median). Renamed from source column BALB to canonical ALB per covariate-columns.md.",
-      source_name        = "BALB"
+      notes = "Baseline albumin (BALB in the source NONMEM code); estimated power effect on CL with reference 41 g/L (population median). Renamed from source column BALB to canonical ALB per covariate-columns.md.",
+      source_name = "BALB"
     ),
     IGG = list(
-      description        = "Baseline serum immunoglobulin G",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum immunoglobulin G",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline IgG (BIGG in the source NONMEM code); estimated power effect on CL with reference 13.7 g/L (population median). Renamed from source column BIGG to canonical IGG per covariate-columns.md.",
-      source_name        = "BIGG"
+      notes = "Baseline IgG (BIGG in the source NONMEM code); estimated power effect on CL with reference 13.7 g/L (population median). Renamed from source column BIGG to canonical IGG per covariate-columns.md.",
+      source_name = "BIGG"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 688,
-    n_studies       = 3,
-    n_observations  = 4958,
-    age_range       = "18-77 years",
-    age_median      = "37 years",
-    age_mean        = "37.6 (SD 11.8) years",
-    weight_range    = "34.1-138 kg",
-    weight_median   = "67.0 kg",
-    weight_mean     = "70.0 (SD 17.6) kg",
-    bmi_range       = "14.8-72.7 kg/m^2",
-    bmi_median      = "24.7 kg/m^2",
-    sex_female_pct  = 85,
-    race_ethnicity  = c(White = 61, Asian = 23.5, Black = 11, AIAN = 6, Other = 1.7),
-    disease_state   = "Pooled across 3 studies: 134 healthy volunteers (two phase I studies in Japan and the USA) and 554 adult patients with active autoantibody-positive systemic lupus erythematosus (one phase III global trial).",
-    dose_range      = "Single 200 mg SC, four weekly 200 mg SC doses (phase I), or 200 mg SC weekly for 51 weeks (phase III BLISS-SC).",
-    regions         = "Multinational pooled analysis (Japan, USA, global phase III).",
-    baseline_labs   = "Mean (SD): IgG 14.9 (5.43) g/L; albumin 40.7 (4.47) g/L; creatinine clearance 115 (38.3) mL/min; haemoglobin 126 (15.8) g/L; WBC 6.09 (2.41) Gi/L.",
-    studies         = "BEL114448 (NCT01583530, phase I), BEL116119 (NCT01516450, phase I), BEL112341 (NCT01484496, BLISS-SC phase III).",
-    notes           = "Demographics from Struemper 2017 Table 2 (population-pharmacokinetic analyses: N = 688). Belimumab is an IgG1 monoclonal antibody targeting B-lymphocyte stimulator (BLyS); no evidence for substantial target-mediated disposition was detected at therapeutic exposures."
+    species = "human",
+    n_subjects = 688,
+    n_studies = 3,
+    n_observations = 4958,
+    age_range = "18-77 years",
+    age_median = "37 years",
+    age_mean = "37.6 (SD 11.8) years",
+    weight_range = "34.1-138 kg",
+    weight_median = "67.0 kg",
+    weight_mean = "70.0 (SD 17.6) kg",
+    bmi_range = "14.8-72.7 kg/m^2",
+    bmi_median = "24.7 kg/m^2",
+    sex_female_pct = 85,
+    race_ethnicity = c(White = 61, Asian = 23.5, Black = 11, AIAN = 6, Other = 1.7),
+    disease_state = "Pooled across 3 studies: 134 healthy volunteers (two phase I studies in Japan and the USA) and 554 adult patients with active autoantibody-positive systemic lupus erythematosus (one phase III global trial).",
+    dose_range = "Single 200 mg SC, four weekly 200 mg SC doses (phase I), or 200 mg SC weekly for 51 weeks (phase III BLISS-SC).",
+    regions = "Multinational pooled analysis (Japan, USA, global phase III).",
+    baseline_labs = "Mean (SD): IgG 14.9 (5.43) g/L; albumin 40.7 (4.47) g/L; creatinine clearance 115 (38.3) mL/min; haemoglobin 126 (15.8) g/L; WBC 6.09 (2.41) Gi/L.",
+    studies = "BEL114448 (NCT01583530, phase I), BEL116119 (NCT01516450, phase I), BEL112341 (NCT01484496, BLISS-SC phase III).",
+    notes = "Demographics from Struemper 2017 Table 2 (population-pharmacokinetic analyses: N = 688). Belimumab is an IgG1 monoclonal antibody targeting B-lymphocyte stimulator (BLyS); no evidence for substantial target-mediated disposition was detected at therapeutic exposures."
   )
 
   ini({

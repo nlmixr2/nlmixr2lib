@@ -43,41 +43,41 @@ Bonate_2004_apomine <- function() {
     sep = " "
   )
   vignette <- "Bonate_2004_apomine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "apomine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "apomine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "apomine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "apomine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "apomine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Bonate 2004. Cohort weight range",
         "55-115 kg across the development studies (Table 2; healthy males",
         "55-94 kg, cancer patients 55-115 kg). Reference 75 kg with fixed",
         "allometric exponent 1.0 on Vc per Table 3 ('Power term for weight",
         "on central compartment volume = 1.00 Fixed')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_CANCER = list(
-      description        = paste(
+      description = paste(
         "Advanced solid-tumour patient indicator: 1 = cancer patient,",
         "0 = healthy adult male (reference)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy adult male)",
-      notes              = paste(
+      notes = paste(
         "Encodes the patient-type stratification used in Bonate 2004 for",
         "the two distinct typical CL/F and Vc values reported in Table 3.",
         "Healthy males (reference): CL0 = 40.7 mL/h, Vc = 12.3 L; cancer",
@@ -88,17 +88,17 @@ Bonate_2004_apomine <- function() {
         "are common to both populations per Table 3 (asterisked footnote",
         "'common variability for both cancer patients and healthy males')."
       ),
-      source_name        = "POP (paper used a binary patient-type indicator)"
+      source_name = "POP (paper used a binary patient-type indicator)"
     ),
     FED = list(
-      description        = paste(
+      description = paste(
         "Fed-vs-fasted dose-record indicator: 1 = oral dose administered",
         "with food, 0 = fasted."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Time-varying at the dose-record level. In the Bonate 2004 cohort",
         "Studies 1, 2, and 5 were fasted (FED = 0) and Studies 3, 4, 6, 7",
         "were administered with food (FED = 1). Enters relative",
@@ -106,20 +106,20 @@ Bonate_2004_apomine <- function() {
         "(Dose + D50) * (1 + theta_food * FED) with theta_food = -0.360",
         "(Table 3), i.e. food reduces F1 by 36 %."
       ),
-      source_name        = "Food (Table 1 Food column)"
+      source_name = "Food (Table 1 Food column)"
     ),
     MIX_LAGGED_ABS = list(
-      description        = paste(
+      description = paste(
         "Latent absorption-mixture class indicator: 1 = subject in the",
         "lagged-absorption Group 1 subpopulation (Bonate 2004 dominant",
         "class, ka = 1.77 /h with a 0.821 h lag time); 0 = subject in the",
         "no-lag Group 2 subpopulation (slower ka = 0.361 /h with lag",
         "time fixed at 0)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Group 2, no-lag rare-class minority)",
-      notes              = paste(
+      notes = paste(
         "Per-subject latent class assignment from the published mixture",
         "absorption model (Bonate 2004 equation (1.4) and Results). The",
         "population probability of Group 1 is P(1) = 1 / (1 + exp(P1))",
@@ -133,10 +133,10 @@ Bonate_2004_apomine <- function() {
         "no-lag phenotype. For population simulation, draw",
         "MIX_LAGGED_ABS ~ Bernoulli(0.970) per subject."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment)"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment)"
     ),
     MIX_HIGH_VP = list(
-      description        = paste(
+      description = paste(
         "Latent peripheral-volume-class indicator: 1 = subject in the",
         "high-peripheral-volume subpopulation observed only in Bonate",
         "2004 Study 2 (n = 4 healthy-male multiple-dose subjects with",
@@ -144,10 +144,10 @@ Bonate_2004_apomine <- function() {
         "in the typical Vp subpopulation (the other 34 of 38 model-",
         "development subjects)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (typical low-Vp majority)",
-      notes              = paste(
+      notes = paste(
         "Per-subject latent class assignment from Bonate 2004 Results:",
         "examination of the empirical Bayesian peripheral-volume",
         "estimates showed four subjects in Study 2 (healthy-male",
@@ -161,19 +161,19 @@ Bonate_2004_apomine <- function() {
         "is recommended; set MIX_HIGH_VP = 1 only to reproduce the",
         "Study 2 healthy-male multiple-dose subgroup."
       ),
-      source_name        = "Study indicator combined with the Bayesian Vp histogram"
+      source_name = "Study indicator combined with the Bayesian Vp histogram"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 38L,
-    n_studies       = 4L,
-    age_range       = "18-78 years (development studies; Table 2)",
-    weight_range    = "55-115 kg (development studies; Table 2)",
-    sex_female_pct  = 13.2,
-    race_ethnicity  = "Not reported by race in Bonate 2004 Table 2.",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 4L,
+    age_range = "18-78 years (development studies; Table 2)",
+    weight_range = "55-115 kg (development studies; Table 2)",
+    sex_female_pct = 13.2,
+    race_ethnicity = "Not reported by race in Bonate 2004 Table 2.",
+    disease_state = paste(
       "Healthy adult males (Studies 1 and 2; n = 19) and adult male and",
       "female patients with advanced solid tumours (Studies 5 and 6;",
       "n = 19). Cancer patients received concomitant supportive-care",
@@ -181,20 +181,20 @@ Bonate_2004_apomine <- function() {
       "hormonal cancer therapy, radiation, CYP3A inhibitors, or other",
       "experimental medications."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral apomine 30-2100 mg administered once or twice daily, with or",
       "without food. Study 1: single dose (fasting); Study 2: multiple",
       "dose qd (fasting); Study 5: once weekly (fasting); Study 6:",
       "multiple dose bd (food)."
     ),
-    regions         = paste(
+    regions = paste(
       "United Kingdom (Studies 1, 2: Tayside, Dundee, Scotland), United",
       "States (Studies 3-6: Arizona Cancer Center Tucson AZ; Cancer",
       "Therapy and Research Center San Antonio TX), and United Kingdom",
       "(Study 7: Charing Cross Hospital, London)."
     ),
-    n_observations  = 801L,
-    notes           = paste(
+    n_observations = 801L,
+    notes = paste(
       "Model-development dataset 38 subjects with 801 plasma apomine",
       "concentration measurements (Bonate 2004 Results, paragraph 1).",
       "Demographics by study in Bonate 2004 Table 2; the development",

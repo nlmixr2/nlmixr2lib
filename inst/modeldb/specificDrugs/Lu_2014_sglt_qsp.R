@@ -28,11 +28,35 @@ Lu_2014_sglt_qsp <- function() {
     sep = " "
   )
   vignette <- "Lu_2014_sglt_qsp"
-  paper_specific_compartments <- c("glu_pct1", "glu_pct2", "glu_pct3", "glu_pct4", "glu_pct5", "glu_pct6", "glu_pst1", "glu_pst2", "glu_pst3", "glu_bladder", "glu_urine", "glu_reabs", "drug_pct1", "drug_pct2", "drug_pct3", "drug_pct4", "drug_pct5", "drug_pct6", "drug_pst1", "drug_pst2", "drug_pst3", "drug_bladder", "drug_urine")
+  paper_specific_compartments <- c(
+    "glu_pct1",
+    "glu_pct2",
+    "glu_pct3",
+    "glu_pct4",
+    "glu_pct5",
+    "glu_pct6",
+    "glu_pst1",
+    "glu_pst2",
+    "glu_pst3",
+    "glu_bladder",
+    "glu_urine",
+    "glu_reabs",
+    "drug_pct1",
+    "drug_pct2",
+    "drug_pct3",
+    "drug_pct4",
+    "drug_pct5",
+    "drug_pct6",
+    "drug_pst1",
+    "drug_pst2",
+    "drug_pst3",
+    "drug_bladder",
+    "drug_urine"
+  )
 
   units <- list(
-    time          = "h",
-    dosing        = "mmol",
+    time = "h",
+    dosing = "mmol",
     concentration = "mmol/L"
   )
 
@@ -41,38 +65,38 @@ Lu_2014_sglt_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    glu_pct1     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pct2     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pct3     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pct4     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pct5     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pct6     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pst1     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pst2     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_pst3     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glu_bladder  = list(analyte = "Glucose", units = NA_character_, specimen = "urine", verified = FALSE),
-    glu_urine    = list(analyte = "Glucose", units = NA_character_, specimen = "urine", verified = FALSE),
-    glu_reabs    = list(analyte = "Glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    drug_pct1    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pct2    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pct3    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pct4    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pct5    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pct6    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pst1    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pst2    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
-    drug_pst3    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct1 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct2 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct3 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct4 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct5 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct6 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pst1 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pst2 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pst3 = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_bladder = list(analyte = "Glucose", units = NA_character_, specimen = "urine", verified = FALSE),
+    glu_urine = list(analyte = "Glucose", units = NA_character_, specimen = "urine", verified = FALSE),
+    glu_reabs = list(analyte = "Glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    drug_pct1 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct2 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct3 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct4 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct5 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct6 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pst1 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pst2 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pst3 = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
     drug_bladder = list(analyte = "Inhibitor", units = NA_character_, specimen = "urine", verified = FALSE),
-    drug_urine   = list(analyte = "Inhibitor", units = NA_character_, specimen = "urine", verified = FALSE)
+    drug_urine = list(analyte = "Inhibitor", units = NA_character_, specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     GLU = list(
-      description        = "Plasma glucose concentration (time-varying regressor input)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Plasma glucose concentration (time-varying regressor input)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying regressor; supplied at every observation/event",
         "row in the dataset and linearly interpolated between rows",
         "via the linear(GLU, CINH) declaration in model(). Drives the",
@@ -81,14 +105,14 @@ Lu_2014_sglt_qsp <- function() {
         "studies report plasma glucose in mg/dL; convert to the model's",
         "mmol/L units by dividing by 18.02 (1 mg/dL = 0.0555 mmol/L)."
       ),
-      source_name        = "Plasma glucose"
+      source_name = "Plasma glucose"
     ),
     CINH = list(
-      description        = "Plasma SGLT-inhibitor concentration (time-varying regressor input)",
-      units              = "nmol/L",
-      type               = "continuous",
+      description = "Plasma SGLT-inhibitor concentration (time-varying regressor input)",
+      units = "nmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying regressor; supplied at every observation/event",
         "row in the dataset and linearly interpolated between rows",
         "via the linear(GLU, CINH) declaration in model(). Drives the",
@@ -102,14 +126,14 @@ Lu_2014_sglt_qsp <- function() {
         "2.44 nmol/L; canagliflozin MW = 454 g/mol so 1 ng/mL = 2.20",
         "nmol/L)."
       ),
-      source_name        = "Plasma SGLT-inhibitor concentration"
+      source_name = "Plasma SGLT-inhibitor concentration"
     ),
     DIS_DIAB = list(
-      description        = "Type-2 diabetes mellitus indicator (1 = T2DM, 0 = healthy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type-2 diabetes mellitus indicator (1 = T2DM, 0 = healthy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed at study entry. Multiplicatively shifts the typical",
         "Vmax2 (SGLT2 maximum reabsorption capacity) from the healthy",
         "reference value of 93.5 mmol/h to the diabetic value of 110",
@@ -128,19 +152,19 @@ Lu_2014_sglt_qsp <- function() {
         "classification (Lu 2014 does not distinguish them for the",
         "purpose of Vmax2 scaling)."
       ),
-      source_name        = "Subject category (healthy vs diabetic)"
+      source_name = "Subject category (healthy vs diabetic)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 93L,
-    n_studies      = 4L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 93L,
+    n_studies = 4L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled across four published clinical studies that used",
       "stepped hyperglycemic clamp (SHC) or fixed-elevated-glucose",
       "protocols to characterize SGLT-mediated renal glucose",
@@ -152,7 +176,7 @@ Lu_2014_sglt_qsp <- function() {
       "diabetic, glucose infusion to over 650 mg/dL; (4) Wolf et al.",
       "(2009), 22 T2DM, SHC. Studies 2-4 used for model evaluation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral SGLT2 inhibitors at clinical doses fed to the model as",
       "an exogenous plasma-concentration time course (CINH",
       "regressor): dapagliflozin 10 mg QD (DeFronzo et al. 2013);",
@@ -163,8 +187,8 @@ Lu_2014_sglt_qsp <- function() {
       "two-compartment PK model fitted to Devineni et al. (2013) mean",
       "data, parameters not reported."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Demographics for each study are in the cited primary",
       "publications; the Lu 2014 main text does not reproduce them.",
       "The model fits MEAN per-step data from each study (not",

@@ -14,19 +14,19 @@ Decrane_2023_oxyfluorfen_rat <- function() {
   # inst/references/compartment-names.md); no paper_specific_compartments needed.
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
-      notes              = paste(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Scales cardiac output (allometric exponent 0.75), every tissue volume (linear),",
         "hepatic clearance (exponent 0.75), GFR (linear), the thyroidal and serum",
         "thyroid-hormone production / transfer rate constants (exponent 0.66) and the",
@@ -41,45 +41,45 @@ Decrane_2023_oxyfluorfen_rat <- function() {
         "via the event table or via rxSolve(params = c(WT = ...)). See the vignette Errata.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   compartmentData <- list(
     # --- oxyfluorfen (chemical PBPK layer), amounts in mg ---
-    stomach            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "administration site", verified = TRUE),
-    a_gut              = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_liver            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_kidney           = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_muscle           = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_skin             = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_fat              = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_brain            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_slowly_perfused  = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "Oxyfluorfen", units = "mg", specimen = "administration site", verified = TRUE),
+    a_gut = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_kidney = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_muscle = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_skin = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_fat = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_brain = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_slowly_perfused = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
     a_rapidly_perfused = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_thyroid_blood    = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_thyroid_tissue   = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_blood            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_thyroid_blood = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_thyroid_tissue = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_blood = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
     # --- thyroid hormones (TH kinetics layer), amounts in mg ---
-    t4_thyroid         = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "tissue", verified = TRUE),
-    t3_thyroid         = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "tissue", verified = TRUE),
-    t4_serum           = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "serum", verified = TRUE),
-    t3_serum           = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "serum", verified = TRUE),
-    tsh_serum          = list(analyte = "Thyrotropin (TSH)", units = "mg", specimen = "serum", verified = TRUE)
+    t4_thyroid = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "tissue", verified = TRUE),
+    t3_thyroid = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "tissue", verified = TRUE),
+    t4_serum = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "serum", verified = TRUE),
+    t3_serum = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "serum", verified = TRUE),
+    tsh_serum = list(analyte = "Thyrotropin (TSH)", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "adolescent (exact age not reported)",
-    weight_range   = "not reported; Table 1 lists body weight as 'Varies'",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "adolescent (exact age not reported)",
+    weight_range = "not reported; Table 1 lists body weight as 'Varies'",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "healthy (untreated controls plus oxyfluorfen-exposed groups)",
-    dose_range     = "0.8125, 1.625, 3.25, 7.5, 15, 31.25 and 62.5 mg/kg once daily by oral gavage for 8 days (1% methyl cellulose suspension)",
-    regions        = "United States (US EPA ORD)",
-    notes          = paste(
+    disease_state = "healthy (untreated controls plus oxyfluorfen-exposed groups)",
+    dose_range = "0.8125, 1.625, 3.25, 7.5, 15, 31.25 and 62.5 mg/kg once daily by oral gavage for 8 days (1% methyl cellulose suspension)",
+    regions = "United States (US EPA ORD)",
+    notes = paste(
       "Calibration data (oxyfluorfen in thyroid tissue and serum; serum T4 and T3) were",
       "'provided via personal communication and illustrated in a co-submitted paper'",
       "(Stoker et al.), so the number of animals per dose group, their age and their body",

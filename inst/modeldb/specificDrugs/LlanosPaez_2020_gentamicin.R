@@ -9,75 +9,75 @@ LlanosPaez_2020_gentamicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (TBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (TBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; combined with FFM via NFM = FFM + Ffat * (WT - FFM) for size scaling on CL, V1, Q, V2.",
-      source_name        = "TBW"
+      notes = "Time-varying; combined with FFM via NFM = FFM + Ffat * (WT - FFM) for size scaling on CL, V1, Q, V2.",
+      source_name = "TBW"
     ),
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian 2005 prediction equation in the source paper; equivalent estimators acceptable)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian 2005 prediction equation in the source paper; equivalent estimators acceptable)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Reference adult value 56.1 kg. Combined with WT via NFM = FFM + Ffat * (WT - FFM).",
-      source_name        = "FFM"
+      notes = "Time-varying. Reference adult value 56.1 kg. Combined with WT via NFM = FFM + Ffat * (WT - FFM).",
+      source_name = "FFM"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the GFR maturation Hill function on CL via PMA in weeks (PMA = PAGE * 4.35). Holford 2017 plateau parameters: TM50 = 46.5 weeks PMA, Hill = 3.43, adult GFR = 119 mL/min.",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the GFR maturation Hill function on CL via PMA in weeks (PMA = PAGE * 4.35). Holford 2017 plateau parameters: TM50 = 46.5 weeks PMA, Hill = 3.43, adult GFR = 119 mL/min.",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Individual patient serum creatinine concentration (SCR_i)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Individual patient serum creatinine concentration (SCR_i)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Numerator-vs-denominator role is paired with CREAT_REF: the model uses (CREAT_REF / CREAT)^0.58 as a multiplicative renal-function factor on CL. Source paper replaces values below the 30 umol/L laboratory limit with the Ceriotti 2008 age/sex-matched physiological mean (i.e., CREAT_REF) before fitting.",
-      source_name        = "SCR"
+      notes = "Time-varying. Numerator-vs-denominator role is paired with CREAT_REF: the model uses (CREAT_REF / CREAT)^0.58 as a multiplicative renal-function factor on CL. Source paper replaces values below the 30 umol/L laboratory limit with the Ceriotti 2008 age/sex-matched physiological mean (i.e., CREAT_REF) before fitting.",
+      source_name = "SCR"
     ),
     CREAT_REF = list(
-      description        = "Age- and sex-matched physiological mean serum creatinine (Ceriotti 2008 reference)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Age- and sex-matched physiological mean serum creatinine (Ceriotti 2008 reference)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Population-typical SCR for the patient's age and sex per Ceriotti et al. 2008 Clin Chem 54:559-566. The vignette derives this column from a Ceriotti age-band lookup; for typical-value simulation of a virtual patient with normal renal function, set CREAT_REF = CREAT so the (CREAT_REF / CREAT)^0.58 ratio collapses to 1.",
-      source_name        = "SCR_mean"
+      notes = "Time-varying. Population-typical SCR for the patient's age and sex per Ceriotti et al. 2008 Clin Chem 54:559-566. The vignette derives this column from a Ceriotti age-band lookup; for typical-value simulation of a virtual patient with normal renal function, set CREAT_REF = CREAT so the (CREAT_REF / CREAT)^0.58 ratio collapses to 1.",
+      source_name = "SCR_mean"
     ),
     DIS_CANCER_PED = list(
-      description        = "Pediatric oncology cohort indicator (1 = oncology cohort, 0 = nononcology)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric oncology cohort indicator (1 = oncology cohort, 0 = nononcology)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (nononcology pediatric admission; appendicitis and renal/urinary infection were most common in Llanos-Paez 2020)",
-      notes              = "Time-fixed per subject. Multiplicative cohort shifts on V1 (factor 1 - 0.154 when 1) and Q (factor 1 - 0.321 when 1); CL has no oncology effect. Renamed from source column ONCOLOGY to the canonical DIS_CANCER_PED per covariate-columns.md.",
-      source_name        = "ONCOLOGY"
+      notes = "Time-fixed per subject. Multiplicative cohort shifts on V1 (factor 1 - 0.154 when 1) and Q (factor 1 - 0.321 when 1); CL has no oncology effect. Renamed from source column ONCOLOGY to the canonical DIS_CANCER_PED per covariate-columns.md.",
+      source_name = "ONCOLOGY"
     )
   )
 
   population <- list(
-    n_subjects     = 538,
-    n_studies      = 1,
-    age_range      = "PNA 0.45 to 18.4 years (oncology) and 0.62 to 16.8 years (nononcology); PMA mean 361.9 weeks (SD 241.8 weeks)",
-    age_median     = "PNA 6.19 years pooled; oncology 6.36 years, nononcology 5.53 years",
-    weight_range   = "TBW 4.8 to 102.8 kg (oncology) and 3.4 to 121.0 kg (nononcology); pooled mean 24.6 kg (SD 17.5 kg)",
-    weight_median  = "TBW 25.2 kg (oncology) and 22.3 kg (nononcology)",
+    n_subjects = 538,
+    n_studies = 1,
+    age_range = "PNA 0.45 to 18.4 years (oncology) and 0.62 to 16.8 years (nononcology); PMA mean 361.9 weeks (SD 241.8 weeks)",
+    age_median = "PNA 6.19 years pooled; oncology 6.36 years, nononcology 5.53 years",
+    weight_range = "TBW 4.8 to 102.8 kg (oncology) and 3.4 to 121.0 kg (nononcology); pooled mean 24.6 kg (SD 17.5 kg)",
+    weight_median = "TBW 25.2 kg (oncology) and 22.3 kg (nononcology)",
     sex_female_pct = 45.9,
     race_ethnicity = "Not reported",
-    disease_state  = "Pediatric oncology (n = 423; predominantly leukemia 45% and blastomas 13%) pooled with pediatric nononcology admissions (n = 115; appendicitis 12.2%, kidney disease / urinary tract infection 10.4%, multi-factorial others) at the Children's Hospital of Queensland, Brisbane, Australia.",
-    dose_range     = "30-min IV infusion of 7.5 mg/kg q24h (patients < 10 years old) or 6 mg/kg q24h (patients >= 10 years old) per local clinical guidelines.",
-    regions        = "Australia (single-center retrospective TDM dataset 2008-2013).",
-    notes          = "Pooled 423-patient oncology cohort (Llanos-Paez 2017; 2,422 gentamicin concentrations) plus 115-patient nononcology cohort (487 concentrations) collected by routine TDM. 372 (15.4%) oncology and 60 (12.3%) nononcology samples were below the assay LLOQ and replaced by LLOQ/2 prior to model fitting. Demographics from Llanos-Paez 2020 Table 1.",
-    bsv_caveat     = "Paper Table 2 reports cohort-stratified BSV CV% on V1 (23.8% oncology vs 26.0% nononcology) and Q (29.4% oncology vs 59.8% nononcology). nlmixr2's eta-variance is population-level and cannot be stratified by a covariate without splitting the model file. This implementation uses single eta variances calibrated to the larger oncology cohort (n = 423); see vignette Assumptions and deviations for the impact on stochastic simulation."
+    disease_state = "Pediatric oncology (n = 423; predominantly leukemia 45% and blastomas 13%) pooled with pediatric nononcology admissions (n = 115; appendicitis 12.2%, kidney disease / urinary tract infection 10.4%, multi-factorial others) at the Children's Hospital of Queensland, Brisbane, Australia.",
+    dose_range = "30-min IV infusion of 7.5 mg/kg q24h (patients < 10 years old) or 6 mg/kg q24h (patients >= 10 years old) per local clinical guidelines.",
+    regions = "Australia (single-center retrospective TDM dataset 2008-2013).",
+    notes = "Pooled 423-patient oncology cohort (Llanos-Paez 2017; 2,422 gentamicin concentrations) plus 115-patient nononcology cohort (487 concentrations) collected by routine TDM. 372 (15.4%) oncology and 60 (12.3%) nononcology samples were below the assay LLOQ and replaced by LLOQ/2 prior to model fitting. Demographics from Llanos-Paez 2020 Table 1.",
+    bsv_caveat = "Paper Table 2 reports cohort-stratified BSV CV% on V1 (23.8% oncology vs 26.0% nononcology) and Q (29.4% oncology vs 59.8% nononcology). nlmixr2's eta-variance is population-level and cannot be stratified by a covariate without splitting the model file. This implementation uses single eta variances calibrated to the larger oncology cohort (n = 423); see vignette Assumptions and deviations for the impact on stochastic simulation."
   )
 
   ini({

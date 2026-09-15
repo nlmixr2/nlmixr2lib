@@ -14,9 +14,17 @@ NA_NA_sunitinib <- function() {
     sep = " "
   )
   vignette <- "NA_NA_sunitinib"
-  paper_specific_compartments <- c("biom1", "biom2", "biom3", "biom4", "resistance", "lat_signal", "parent_integ", "lam_feedback")
+  paper_specific_compartments <- c(
+    "biom1",
+    "biom2",
+    "biom3",
+    "biom4",
+    "resistance",
+    "lat_signal",
+    "parent_integ",
+    "lam_feedback"
+  )
   paper_specific_residual_sds <- c("propSd_Cc_metab")
-
 
   units <- list(time = "day", dosing = "mg", concentration = "mg/mL")
   ddmore_id <- "DDMODEL00000231"
@@ -27,21 +35,26 @@ NA_NA_sunitinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_metab       = list(analyte = "sunitinib metabolite", units = "mg", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_metab     = list(analyte = "sunitinib metabolite", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_metab = list(
+      analyte = "sunitinib metabolite",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_metab = list(analyte = "sunitinib metabolite", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_metab = list(analyte = "sunitinib metabolite", units = "mg", specimen = "plasma", verified = FALSE),
-    biom1             = list(analyte = "PD biomarker 1", units = "mg", specimen = "not applicable", verified = FALSE),
-    biom2             = list(analyte = "PD biomarker 2", units = "mg", specimen = "not applicable", verified = FALSE),
-    biom3             = list(analyte = "PD biomarker 3", units = "mg", specimen = "not applicable", verified = FALSE),
-    biom4             = list(analyte = "PD biomarker 4", units = "mg", specimen = "not applicable", verified = FALSE),
-    tumor             = list(analyte = "tumour size", units = "mg", specimen = "tumor", verified = FALSE),
-    resistance        = list(analyte = "drug resistance", units = "mg", specimen = "not applicable", verified = FALSE),
-    lat_signal        = list(analyte = "latent signal", units = "mg", specimen = "not applicable", verified = FALSE),
-    parent_integ      = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
-    lam_feedback      = list(analyte = "feedback loop", units = "mg", specimen = "not applicable", verified = FALSE)
+    biom1 = list(analyte = "PD biomarker 1", units = "mg", specimen = "not applicable", verified = FALSE),
+    biom2 = list(analyte = "PD biomarker 2", units = "mg", specimen = "not applicable", verified = FALSE),
+    biom3 = list(analyte = "PD biomarker 3", units = "mg", specimen = "not applicable", verified = FALSE),
+    biom4 = list(analyte = "PD biomarker 4", units = "mg", specimen = "not applicable", verified = FALSE),
+    tumor = list(analyte = "tumour size", units = "mg", specimen = "tumor", verified = FALSE),
+    resistance = list(analyte = "drug resistance", units = "mg", specimen = "not applicable", verified = FALSE),
+    lat_signal = list(analyte = "latent signal", units = "mg", specimen = "not applicable", verified = FALSE),
+    parent_integ = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    lam_feedback = list(analyte = "feedback loop", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -50,17 +63,17 @@ NA_NA_sunitinib <- function() {
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = "not reported in the DDMORE bundle (no .lst, no Model_Accomodations.text, no linked publication)",
-    weight_range   = "not reported in the DDMORE bundle",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "not reported in the DDMORE bundle (no .lst, no Model_Accomodations.text, no linked publication)",
+    weight_range = "not reported in the DDMORE bundle",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Non-small cell lung cancer (NSCLC), per the DDMORE bundle's RDF model-has-description: 'semi-mechanistic PK/PD model for sunitinib therapy in non-small cell lung cancer patients ... developed and validated using clinical trial data provided by the drug developer.'",
-    dose_range     = "not reported in the DDMORE bundle. Sunitinib's standard oncology regimen at the time of MPD6 deposit was 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (GIST/RCC label) or 37.5 mg PO QD continuously (later label expansion); the MDL is dose-input-agnostic and accepts any AMT.",
-    regions        = "not reported in the DDMORE bundle",
-    biomarkers     = "Four PD biomarker compartments labelled only as A5, A6, A7, A8 in the MDL. Their biological identity is not specified in the bundle; the standard sunitinib biomarker panel reported elsewhere (e.g. Hansson 2013 GIST / DDMODEL00000197) is VEGF, sVEGFR-2, sVEGFR-3, and sKIT, and the index ordering in this MDL is consistent with Kout-modulated biom1 (VEGF-like) and Kin-modulated biom2/3/4 (soluble-receptor-like), but no source-of-truth in the bundle confirms the mapping. Compartments are therefore named generically.",
-    notes          = "DDMORE-source bundle without a linked publication, an Output_real_*.lst, an Output_simulated_*.lst, a Simulated_*.csv, or a Model_Accomodations.text. Subject counts, study counts, age/weight/sex/race distributions, and dose-level breakdowns are all unobtainable from the bundle alone. Population fields can be populated in a follow-up edit if the linked publication is located."
+    disease_state = "Non-small cell lung cancer (NSCLC), per the DDMORE bundle's RDF model-has-description: 'semi-mechanistic PK/PD model for sunitinib therapy in non-small cell lung cancer patients ... developed and validated using clinical trial data provided by the drug developer.'",
+    dose_range = "not reported in the DDMORE bundle. Sunitinib's standard oncology regimen at the time of MPD6 deposit was 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (GIST/RCC label) or 37.5 mg PO QD continuously (later label expansion); the MDL is dose-input-agnostic and accepts any AMT.",
+    regions = "not reported in the DDMORE bundle",
+    biomarkers = "Four PD biomarker compartments labelled only as A5, A6, A7, A8 in the MDL. Their biological identity is not specified in the bundle; the standard sunitinib biomarker panel reported elsewhere (e.g. Hansson 2013 GIST / DDMODEL00000197) is VEGF, sVEGFR-2, sVEGFR-3, and sKIT, and the index ordering in this MDL is consistent with Kout-modulated biom1 (VEGF-like) and Kin-modulated biom2/3/4 (soluble-receptor-like), but no source-of-truth in the bundle confirms the mapping. Compartments are therefore named generically.",
+    notes = "DDMORE-source bundle without a linked publication, an Output_real_*.lst, an Output_simulated_*.lst, a Simulated_*.csv, or a Model_Accomodations.text. Subject counts, study counts, age/weight/sex/race distributions, and dose-level breakdowns are all unobtainable from the bundle alone. Population fields can be populated in a follow-up edit if the linked publication is located."
   )
 
   ini({

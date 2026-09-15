@@ -8,55 +8,55 @@ Savic_2017_cladribine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cladribine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cladribine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (not BSA-normalized). Stored under canonical CRCL per inst/references/covariate-columns.md (CRCL accepts raw Cockcroft-Gault mL/min when the source paper does not BSA-normalize). Reference value 105.2 mL/min corresponds to the paper's typical patient CLCR = 6.31 L/h. Linear effect on renal clearance: cl_renal_typ * CRCL / 105.2.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (not BSA-normalized). Stored under canonical CRCL per inst/references/covariate-columns.md (CRCL accepts raw Cockcroft-Gault mL/min when the source paper does not BSA-normalize). Reference value 105.2 mL/min corresponds to the paper's typical patient CLCR = 6.31 L/h. Linear effect on renal clearance: cl_renal_typ * CRCL / 105.2.",
+      source_name = "CLCR"
     ),
     FED = list(
-      description        = "Fed (or unknown food-state) vs fasted at oral dose administration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed (or unknown food-state) vs fasted at oral dose administration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Source paper Table 4 reports a single set of absorption parameters for the 'unknown/fed state' (Ka = 1.03 1/h, F = 0.4) distinct from the fasted state (Ka = 1.08 1/h, F = 0.456). The 'unknown' category covers dose records in studies 26486 and 25643 that did not record food state; these records share parameters with the fed state. For the packaged model, FED = 1 covers both confirmed-fed and unknown-food-state records.",
-      source_name        = "FED"
+      notes = "Source paper Table 4 reports a single set of absorption parameters for the 'unknown/fed state' (Ka = 1.03 1/h, F = 0.4) distinct from the fasted state (Ka = 1.08 1/h, F = 0.456). The 'unknown' category covers dose records in studies 26486 and 25643 that did not record food state; these records share parameters with the fed state. For the packaged model, FED = 1 covers both confirmed-fed and unknown-food-state records.",
+      source_name = "FED"
     ),
     CONMED_IFNB1A = list(
-      description        = "Concomitant subcutaneous interferon beta-1a (Rebif) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant subcutaneous interferon beta-1a (Rebif) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant IFN beta-1a)",
-      notes              = "Time-varying per subject; Savic 2017 study 26486 alternated between cladribine monotherapy and cladribine + IFN beta-1a periods. Multiplicative effect on non-renal clearance: cl_nonrenal *= (1 + e_ifn_clnr * CONMED_IFNB1A), with e_ifn_clnr = 0.21 (21% increase in non-renal CL during IFN beta-1a coadministration).",
-      source_name        = "IFNB1A"
+      notes = "Time-varying per subject; Savic 2017 study 26486 alternated between cladribine monotherapy and cladribine + IFN beta-1a periods. Multiplicative effect on non-renal clearance: cl_nonrenal *= (1 + e_ifn_clnr * CONMED_IFNB1A), with e_ifn_clnr = 0.21 (21% increase in non-renal CL during IFN beta-1a coadministration).",
+      source_name = "IFNB1A"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 173L,
-    n_studies      = 4L,
-    age_range      = "19-65 years",
-    age_median     = "40 years",
-    weight_range   = "48.5-116.1 kg",
-    weight_median  = "69.2 kg",
+    species = "human",
+    n_subjects = 173L,
+    n_studies = 4L,
+    age_range = "19-65 years",
+    age_median = "40 years",
+    weight_range = "48.5-116.1 kg",
+    weight_median = "69.2 kg",
     sex_female_pct = 65.9,
     race_ethnicity = "Not reported in detail; multinational phase I and phase III studies in patients with relapsing-remitting multiple sclerosis",
-    disease_state  = "Relapsing-remitting multiple sclerosis",
-    dose_range     = "Phase I: 3 mg IV infusion over 1 h, 10 mg single oral tablet, or 1.75 mg/kg orally over 8 weeks +/- subcutaneous IFN beta-1a (8.8/22/44 ug three times weekly). Phase III (CLARITY, study 25643): cumulative oral 3.5 or 5.25 mg/kg over 2 years (one or two 10 mg tablets daily for 4-5 days in weeks 1 and 5 of each year, +/- additional dosing weeks 9 and 13 of year 1).",
-    regions        = "Multinational (CLARITY phase III; NCT00213135)",
+    disease_state = "Relapsing-remitting multiple sclerosis",
+    dose_range = "Phase I: 3 mg IV infusion over 1 h, 10 mg single oral tablet, or 1.75 mg/kg orally over 8 weeks +/- subcutaneous IFN beta-1a (8.8/22/44 ug three times weekly). Phase III (CLARITY, study 25643): cumulative oral 3.5 or 5.25 mg/kg over 2 years (one or two 10 mg tablets daily for 4-5 days in weeks 1 and 5 of each year, +/- additional dosing weeks 9 and 13 of year 1).",
+    regions = "Multinational (CLARITY phase III; NCT00213135)",
     renal_function = "CLCR median 107.9 mL/min, range 49.6-244.4 mL/min (Cockcroft-Gault, raw)",
-    co_medication  = "Phase I drug-drug interaction study (26486) coadministered subcutaneous IFN beta-1a (Rebif); 16 of 173 patients received IFN beta-1a coadministration",
-    notes          = "Pooled analysis of four clinical studies: 25803 (phase I IV+oral crossover, n=16), 26127 (phase I food-effect crossover, n=16), 26486 (phase I cladribine+IFN beta-1a DDI, n=16), and 25643 (CLARITY phase III, n=125). Demographics from Table 3 of the source paper. The original dataset contained 4790 records; 45% were excluded (mostly BLQ, 96.5% of exclusions), leaving 2619 plasma and urine concentration records for population analysis."
+    co_medication = "Phase I drug-drug interaction study (26486) coadministered subcutaneous IFN beta-1a (Rebif); 16 of 173 patients received IFN beta-1a coadministration",
+    notes = "Pooled analysis of four clinical studies: 25803 (phase I IV+oral crossover, n=16), 26127 (phase I food-effect crossover, n=16), 26486 (phase I cladribine+IFN beta-1a DDI, n=16), and 25643 (CLARITY phase III, n=125). Demographics from Table 3 of the source paper. The original dataset contained 4790 records; 45% were excluded (mostly BLQ, 96.5% of exclusions), leaving 2619 plasma and urine concentration records for population analysis."
   )
 
   # Notes on implementation choices (see vignette 'Assumptions and deviations'

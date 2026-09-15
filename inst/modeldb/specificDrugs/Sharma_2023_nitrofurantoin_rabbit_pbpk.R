@@ -16,29 +16,34 @@ Sharma_2023_nitrofurantoin_rabbit_pbpk <- function() {
   vignette <- "Sharma_2023_nitrofurantoin"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   # Every state is an AMOUNT in mg (the MCSim `States` block). Concentrations are
   # derived algebraically in model() as amount / organ volume.
   compartmentData <- list(
-    a_gut_lumen      = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),
-    a_gut            = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_liver          = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_hepatic        = list(analyte = "nitrofurantoin metabolites (lumped)", units = "mg", specimen = "tissue", verified = TRUE),
-    a_bile           = list(analyte = "nitrofurantoin", units = "mg", specimen = "bile",                verified = TRUE),
-    a_feces          = list(analyte = "nitrofurantoin", units = "mg", specimen = "faeces",              verified = TRUE),
-    a_kidney         = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_filtrate       = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE),
-    a_urine_storage  = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE),
-    a_fat            = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_rest_of_body   = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_plasma         = list(analyte = "nitrofurantoin", units = "mg", specimen = "plasma",              verified = TRUE),
-    a_urine          = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE)
+    a_gut_lumen = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),
+    a_gut = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_hepatic = list(
+      analyte = "nitrofurantoin metabolites (lumped)",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    a_bile = list(analyte = "nitrofurantoin", units = "mg", specimen = "bile", verified = TRUE),
+    a_feces = list(analyte = "nitrofurantoin", units = "mg", specimen = "faeces", verified = TRUE),
+    a_kidney = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_filtrate = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE),
+    a_urine_storage = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE),
+    a_fat = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_rest_of_body = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_plasma = list(analyte = "nitrofurantoin", units = "mg", specimen = "plasma", verified = TRUE),
+    a_urine = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   # No covariates. Rabbit physiology is a fixed 2.5 kg reference animal
@@ -49,16 +54,16 @@ Sharma_2023_nitrofurantoin_rabbit_pbpk <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "rabbit",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = "2.5 kg reference rabbit (Supplementary Table S2)",
-    weight_median  = "2.5 kg",
+    species = "rabbit",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = "2.5 kg reference rabbit (Supplementary Table S2)",
+    weight_median = "2.5 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy rabbits (kinetic study, no disease model)",
-    dose_range     = "0.25, 1.25, 2.5, 5, 10 and 15 mg/kg single IV; oral dosing also simulated",
-    notes          = paste(
+    disease_state = "Healthy rabbits (kinetic study, no disease model)",
+    dose_range = "0.25, 1.25, 2.5, 5, 10 and 15 mg/kg single IV; oral dosing also simulated",
+    notes = paste(
       "Calibration data are DIGITISED literature values, not an individual-level dataset:",
       "Sharma 2023 Methods 2.3 states plasma and urine kinetics after single oral or IV",
       "doses of 0.25, 1.25, 2.5, 5, 10 and 15 mg/kg to rabbits were extracted from",

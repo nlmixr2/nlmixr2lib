@@ -8,60 +8,60 @@ Mukai_2019_mogamulizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mogamulizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mogamulizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mogamulizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin concentration",
+      description = "Serum albumin concentration",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline or time-varying. Inversely related to CL and V2. Reference value 4.0 g/dL.",
-      source_name        = "ALB"
+      notes = "Baseline or time-varying. Inversely related to CL and V2. Reference value 4.0 g/dL.",
+      source_name = "ALB"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline or time-varying. Positively related to CL. Reference value 24 U/L.",
-      source_name        = "AST"
+      notes = "Baseline or time-varying. Positively related to CL. Reference value 24 U/L.",
+      source_name = "AST"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed from height and weight (method unspecified in source). Positively related to V1. Reference value 1.82 m^2.",
-      source_name        = "BSA"
+      notes = "Computed from height and weight (method unspecified in source). Positively related to V1. Reference value 1.82 m^2.",
+      source_name = "BSA"
     ),
     HEPIMP = list(
-      description        = "Hepatic impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatic impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function)",
-      notes              = "Mild and moderate hepatic impairment combined (83 patients: 80 mild + 3 moderate) vs normal (361 patients). No severe cases. Mild-to-moderate impairment associated with 14% increase in CL.",
-      source_name        = "HI"
+      notes = "Mild and moderate hepatic impairment combined (83 patients: 80 mild + 3 moderate) vs normal (361 patients). No severe cases. Mild-to-moderate impairment associated with 14% increase in CL.",
+      source_name = "HI"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Female subjects (204, 45.9%) had approximately 23% lower CL than males (240, 54.1%).",
-      source_name        = "SEX"
+      notes = "Female subjects (204, 45.9%) had approximately 23% lower CL than males (240, 54.1%).",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    n_subjects     = 444,
-    n_studies      = 6,
-    age_range      = "22-101 years",
-    age_mean       = "61.4 years (SD 13.0)",
-    weight_range   = "36.0-149.7 kg",
-    weight_mean    = "73.6 kg (SD 18.5)",
+    n_subjects = 444,
+    n_studies = 6,
+    age_range = "22-101 years",
+    age_mean = "61.4 years (SD 13.0)",
+    weight_range = "36.0-149.7 kg",
+    weight_mean = "73.6 kg (SD 18.5)",
     sex_female_pct = 45.9,
     race_ethnicity = c(
       White = 49.5,
@@ -71,10 +71,10 @@ Mukai_2019_mogamulizumab <- function() {
       Other = 1.6,
       Unknown = 11.9
     ),
-    disease_state  = "Relapsed/refractory or previously untreated adult T-cell lymphoma (ATL, 29.1%) or cutaneous T-cell lymphoma (CTCL, 70.9%). ATL subtypes: acute (56.6%), lymphoma (28.7%), chronic (14.7%). CTCL subtypes: mycosis fungoides (54.9%), Sézary syndrome (45.1%).",
-    dose_range     = "0.01-1.0 mg/kg IV; 98% received 1.0 mg/kg",
-    regions        = "Studies 0761-0501, 0761-002, 0761-003, 0761-004 in Japan; 0761-009 (phase 2, global); 0761-010 (phase 3, global including US, Europe, Japan)",
-    notes          = "Pooled from 6 phase 1-3 clinical trials. Dosing regimens varied: once weekly × 4-8 weeks, then every 2 weeks until progression for studies 0761-009 and 0761-010. ECOG PS 0-2. Concomitant mLSG15 chemotherapy in 29 patients (6.5%). Renal impairment: normal 46.2%, mild 35.4%, moderate 18.0%, severe 0.5%. Hepatic impairment: normal 81.3%, mild/moderate 18.7%, severe 0%."
+    disease_state = "Relapsed/refractory or previously untreated adult T-cell lymphoma (ATL, 29.1%) or cutaneous T-cell lymphoma (CTCL, 70.9%). ATL subtypes: acute (56.6%), lymphoma (28.7%), chronic (14.7%). CTCL subtypes: mycosis fungoides (54.9%), Sézary syndrome (45.1%).",
+    dose_range = "0.01-1.0 mg/kg IV; 98% received 1.0 mg/kg",
+    regions = "Studies 0761-0501, 0761-002, 0761-003, 0761-004 in Japan; 0761-009 (phase 2, global); 0761-010 (phase 3, global including US, Europe, Japan)",
+    notes = "Pooled from 6 phase 1-3 clinical trials. Dosing regimens varied: once weekly × 4-8 weeks, then every 2 weeks until progression for studies 0761-009 and 0761-010. ECOG PS 0-2. Concomitant mLSG15 chemotherapy in 29 patients (6.5%). Renal impairment: normal 46.2%, mild 35.4%, moderate 18.0%, severe 0.5%. Hepatic impairment: normal 81.3%, mild/moderate 18.7%, severe 0%."
   )
 
   ini({

@@ -8,45 +8,45 @@ Alsultan_2017_pyrazinamide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight, used in allometric scaling on both CL/F and V/F with fixed exponents 0.75 and 1 respectively, normalised to a 70 kg reference subject (Alsultan 2017 Table 3 footnote a).",
-      source_name        = "WT"
+      notes = "Baseline body weight, used in allometric scaling on both CL/F and V/F with fixed exponents 0.75 and 1 respectively, normalised to a 70 kg reference subject (Alsultan 2017 Table 3 footnote a).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) -- the source paper uses female as the reference category for V/F (V/F = 46.5 L for a 70 kg female).",
-      notes              = "Alsultan 2017 encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Table 3 footnote a: 'female was considered the reference'). To store under the canonical SEXF (1 = female, 0 = male) while preserving Alsultan's female-reference V/F = 46.5 L, the effect is applied in model() as exp(e_sex_vc * (1 - SEXF)), so SEXF = 1 (female) yields factor 1 and SEXF = 0 (male) yields the paper's male-vs-female exp-coefficient (V/F = 46.5 * exp(0.148) ~= 53.9 L for a 70 kg male, matching the paper's quoted 54.2 L within rounding).",
-      source_name        = "SEX"
+      notes = "Alsultan 2017 encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Table 3 footnote a: 'female was considered the reference'). To store under the canonical SEXF (1 = female, 0 = male) while preserving Alsultan's female-reference V/F = 46.5 L, the effect is applied in model() as exp(e_sex_vc * (1 - SEXF)), so SEXF = 1 (female) yields factor 1 and SEXF = 0 (male) yields the paper's male-vs-female exp-coefficient (V/F = 46.5 * exp(0.148) ~= 53.9 L for a 70 kg male, matching the paper's quoted 54.2 L within rounding).",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    n_subjects     = 72L,
-    n_studies      = 2L,
+    n_subjects = 72L,
+    n_studies = 2L,
     n_observations = 499L,
-    age_range      = "19-76 years",
-    age_mean       = "36.7 years",
-    weight_range   = "40-101.9 kg",
-    weight_mean    = "59.8 kg",
+    age_range = "19-76 years",
+    age_mean = "36.7 years",
+    weight_range = "40-101.9 kg",
+    weight_mean = "59.8 kg",
     sex_female_pct = 16.7,
     africa_site_pct = 51.4,
     serum_creatinine_range = "0.5-1.2 mg/dL",
-    serum_creatinine_mean  = "0.75 mg/dL",
-    disease_state  = "Adults with drug-susceptible, smear-positive pulmonary tuberculosis enrolled in the PK substudies of Tuberculosis Trials Consortium (TBTC) studies 27 and 28.",
-    dose_range     = "Oral pyrazinamide given as weight-banded daily doses: 1,000 mg (40-55 kg), 1,500 mg (56-75 kg), 2,000 mg (76-90 kg). Mean dose 1,351 mg (1,000-2,000 mg) corresponding to 22.7 mg/kg on average. PK sampling after the fourth or fifth daily dose (steady state).",
-    regions        = "Uganda, South Africa, and the United States.",
-    notes          = "Phase 2 prospective, placebo-controlled, randomised clinical trials. PZA was given alongside rifampin, isoniazid (or moxifloxacin), and ethambutol (or moxifloxacin). Plasma sampling at predose and 1, 2, 6, 8, 12, and 24 h postdose. PZA quantified by validated GC-MS (LLOQ 0.5 ug/mL, range 0.5-100 ug/mL). Baseline demographics from Alsultan 2017 Table 1; final population PK parameter estimates from Table 3."
+    serum_creatinine_mean = "0.75 mg/dL",
+    disease_state = "Adults with drug-susceptible, smear-positive pulmonary tuberculosis enrolled in the PK substudies of Tuberculosis Trials Consortium (TBTC) studies 27 and 28.",
+    dose_range = "Oral pyrazinamide given as weight-banded daily doses: 1,000 mg (40-55 kg), 1,500 mg (56-75 kg), 2,000 mg (76-90 kg). Mean dose 1,351 mg (1,000-2,000 mg) corresponding to 22.7 mg/kg on average. PK sampling after the fourth or fifth daily dose (steady state).",
+    regions = "Uganda, South Africa, and the United States.",
+    notes = "Phase 2 prospective, placebo-controlled, randomised clinical trials. PZA was given alongside rifampin, isoniazid (or moxifloxacin), and ethambutol (or moxifloxacin). Plasma sampling at predose and 1, 2, 6, 8, 12, and 24 h postdose. PZA quantified by validated GC-MS (LLOQ 0.5 ug/mL, range 0.5-100 ug/mL). Baseline demographics from Alsultan 2017 Table 1; final population PK parameter estimates from Table 3."
   )
 
   ini({

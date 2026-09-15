@@ -42,82 +42,82 @@ Bukkems_2021_raltegravir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on flow parameters (CL, Q) with fixed exponent 0.75 and on volume parameters (Vc, Vp) with fixed exponent 1.0, referenced to 70 kg (Bukkems 2021 Methods 'Development population pharmacokinetic model' paragraph 4). For pregnant women, postpartum weight is used because allometric scaling in pregnant women has not been established and would confound the pregnancy effect; when postpartum weight is unavailable (n = 4 subjects in the source), the source paper imputes it as third-trimester weight * 0.93 (the mean 7% decrease from third trimester to postpartum).",
-      source_name        = "WT"
+      notes = "Allometric scaling on flow parameters (CL, Q) with fixed exponent 0.75 and on volume parameters (Vc, Vp) with fixed exponent 1.0, referenced to 70 kg (Bukkems 2021 Methods 'Development population pharmacokinetic model' paragraph 4). For pregnant women, postpartum weight is used because allometric scaling in pregnant women has not been established and would confound the pregnancy effect; when postpartum weight is unavailable (n = 4 subjects in the source), the source paper imputes it as third-trimester weight * 0.93 (the mean 7% decrease from third trimester to postpartum).",
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-pregnant)",
-      notes              = "Time-fixed per subject. Applied as a linear additive effect on typical bioavailability F: F *= (1 + e_preg_fdepot * PREG) with e_preg_fdepot = -0.487 (Bukkems 2021 Table 2 'Factor change in F pregnancy'). Pregnant subjects (all in the third trimester at the intensive PK sampling, gestational age ~33 weeks) are 22 women from the PANNA study using the 400 mg BID regimen; the paper's sensitivity analysis (Supporting Information S2) showed near-identical primary-endpoint conclusions whether the pregnancy effect was placed on F (dOFV -17.82) or on CL (dOFV -12.62), and the F parameterisation was retained because it was the more significant of the two.",
-      source_name        = "PREG"
+      notes = "Time-fixed per subject. Applied as a linear additive effect on typical bioavailability F: F *= (1 + e_preg_fdepot * PREG) with e_preg_fdepot = -0.487 (Bukkems 2021 Table 2 'Factor change in F pregnancy'). Pregnant subjects (all in the third trimester at the intensive PK sampling, gestational age ~33 weeks) are 22 women from the PANNA study using the 400 mg BID regimen; the paper's sensitivity analysis (Supporting Information S2) showed near-identical primary-endpoint conclusions whether the pregnancy effect was placed on F (dOFV -17.82) or on CL (dOFV -12.62), and the F parameterisation was retained because it was the more significant of the two.",
+      source_name = "PREG"
     ),
     CONMED_ATAZANAVIR = list(
-      description        = "Concomitant atazanavir coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant atazanavir coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant atazanavir)",
-      notes              = "Time-fixed per subject within the analysis window. Applied as a linear additive effect on apparent clearance: CL *= (1 + e_atazanavir_cl * CONMED_ATAZANAVIR) with e_atazanavir_cl = -0.17 (Bukkems 2021 Table 2 'Factor change in CL with atazanavir'). Atazanavir-associated raltegravir CL is 17% lower than non-atazanavir reference, consistent with atazanavir-mediated UGT1A1 inhibition of raltegravir glucuronidation. In the pooled dataset the covariate primarily flags the 18 HIV-infected non-pregnant adults on a 400 mg BID atazanavir-based regimen who are otherwise indistinguishable from the healthy 400 mg BID reference cohort.",
-      source_name        = "ATV"
+      notes = "Time-fixed per subject within the analysis window. Applied as a linear additive effect on apparent clearance: CL *= (1 + e_atazanavir_cl * CONMED_ATAZANAVIR) with e_atazanavir_cl = -0.17 (Bukkems 2021 Table 2 'Factor change in CL with atazanavir'). Atazanavir-associated raltegravir CL is 17% lower than non-atazanavir reference, consistent with atazanavir-mediated UGT1A1 inhibition of raltegravir glucuronidation. In the pooled dataset the covariate primarily flags the 18 HIV-infected non-pregnant adults on a 400 mg BID atazanavir-based regimen who are otherwise indistinguishable from the healthy 400 mg BID reference cohort.",
+      source_name = "ATV"
     ),
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant efavirenz)",
-      notes              = "Time-fixed per subject within the analysis window. Applied as a linear additive effect on typical bioavailability F: F *= (1 + e_efv_fdepot * CONMED_EFV) with e_efv_fdepot = -0.167 (Bukkems 2021 Table 2 'Factor change in F efavirenz co-administration'). Efavirenz-associated raltegravir F is 17% lower than the no-efavirenz reference, consistent with efavirenz-mediated UGT1A1 induction (opposite direction from the atazanavir CL effect). The efavirenz-cohort raltegravir samples come from the 1200 mg QD sub-study reported as Bukkems 2021 reference 20.",
-      source_name        = "EFV"
+      notes = "Time-fixed per subject within the analysis window. Applied as a linear additive effect on typical bioavailability F: F *= (1 + e_efv_fdepot * CONMED_EFV) with e_efv_fdepot = -0.167 (Bukkems 2021 Table 2 'Factor change in F efavirenz co-administration'). Efavirenz-associated raltegravir F is 17% lower than the no-efavirenz reference, consistent with efavirenz-mediated UGT1A1 induction (opposite direction from the atazanavir CL effect). The efavirenz-cohort raltegravir samples come from the 1200 mg QD sub-study reported as Bukkems 2021 reference 20.",
+      source_name = "EFV"
     ),
     FORM_RAL_600 = list(
-      description        = "Raltegravir 600 mg film-coated tablet formulation indicator (Isentress HD)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Raltegravir 600 mg film-coated tablet formulation indicator (Isentress HD)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (400 mg film-coated tablet, Isentress)",
-      notes              = "Per-dose-record indicator. Applied as TWO effects: (1) linear additive on typical bioavailability F: F *= (1 + e_ral_600_fdepot * FORM_RAL_600) with e_ral_600_fdepot = 0.209 (Bukkems 2021 Table 2 'Factor change in F 600 mg formulation'); (2) multiplicative on the inter-occasion variability magnitude on F, which reduces the IOV F standard deviation by 72% for 600 mg records vs 400 mg records (this file omits IOV per convention). The 600 mg tablet is the polymer-based reformulation that disintegrates and dissolves faster than the original 400 mg tablet at physiological gastric pH; the two-tablet 1200 mg QD regimen using the 600 mg tablet is marketed as Isentress HD.",
-      source_name        = "NEW"
+      notes = "Per-dose-record indicator. Applied as TWO effects: (1) linear additive on typical bioavailability F: F *= (1 + e_ral_600_fdepot * FORM_RAL_600) with e_ral_600_fdepot = 0.209 (Bukkems 2021 Table 2 'Factor change in F 600 mg formulation'); (2) multiplicative on the inter-occasion variability magnitude on F, which reduces the IOV F standard deviation by 72% for 600 mg records vs 400 mg records (this file omits IOV per convention). The 600 mg tablet is the polymer-based reformulation that disintegrates and dissolves faster than the original 400 mg tablet at physiological gastric pH; the two-tablet 1200 mg QD regimen using the 600 mg tablet is marketed as Isentress HD.",
+      source_name = "NEW"
     ),
     FED = list(
-      description        = "Fed (any food) vs fasted dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed (any food) vs fasted dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Per-dose-record indicator, irrespective of meal type (low-fat, moderate-fat, high-fat all coded as FED = 1). Applied as a linear additive effect on the mean transit time MAT: MAT *= (1 + e_fed_mat * FED) with e_fed_mat = 1.6 (Bukkems 2021 Table 2 'Factor change in MAT fed'); MAT approximately triples with any food (0.336 h fasted -> 0.874 h fed), delaying absorption. The paper found the moderate-fat-meal effect could not be tested independently (individual meal-type data unavailable) and assumed the same MAT delay for any-food conditions based on prior raltegravir food-effect data.",
-      source_name        = "FED"
+      notes = "Per-dose-record indicator, irrespective of meal type (low-fat, moderate-fat, high-fat all coded as FED = 1). Applied as a linear additive effect on the mean transit time MAT: MAT *= (1 + e_fed_mat * FED) with e_fed_mat = 1.6 (Bukkems 2021 Table 2 'Factor change in MAT fed'); MAT approximately triples with any food (0.336 h fasted -> 0.874 h fed), delaying absorption. The paper found the moderate-fat-meal effect could not be tested independently (individual meal-type data unavailable) and assumed the same MAT delay for any-food conditions based on prior raltegravir food-effect data.",
+      source_name = "FED"
     ),
     FED_LOWFAT = list(
-      description        = "Low-fat meal (389 kcal, 6.9% fat) dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-fat meal (389 kcal, 6.9% fat) dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted, moderate-fat, or high-fat meal)",
-      notes              = "Per-dose-record indicator specific to the low-fat meal condition. Applied as a linear additive effect on typical bioavailability F: F *= (1 + e_lowfat_fdepot * FED_LOWFAT) with e_lowfat_fdepot = -0.459 (Bukkems 2021 Table 2 'Factor change in F low-fat meal'); low-fat-meal raltegravir F is 46% lower than the fasted / moderate-fat reference. The low-fat definition (389 kcal, 6.9% fat) is inherited from Rizk et al. 2012 (Bukkems 2021 reference 8) which studied the low-fat food effect for both the 400 mg and 600 mg raltegravir tablets under identical protocols; the paper assumes the same low-fat food effect applies to both formulations.",
-      source_name        = "LOWFAT"
+      notes = "Per-dose-record indicator specific to the low-fat meal condition. Applied as a linear additive effect on typical bioavailability F: F *= (1 + e_lowfat_fdepot * FED_LOWFAT) with e_lowfat_fdepot = -0.459 (Bukkems 2021 Table 2 'Factor change in F low-fat meal'); low-fat-meal raltegravir F is 46% lower than the fasted / moderate-fat reference. The low-fat definition (389 kcal, 6.9% fat) is inherited from Rizk et al. 2012 (Bukkems 2021 reference 8) which studied the low-fat food effect for both the 400 mg and 600 mg raltegravir tablets under identical protocols; the paper assumes the same low-fat food effect applies to both formulations.",
+      source_name = "LOWFAT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 221L,
-    n_studies      = 11L,
+    species = "human",
+    n_subjects = 221L,
+    n_studies = 11L,
     n_observations = 4016L,
-    age_range      = "18-75 years (pooled across the 11 constituent studies)",
-    weight_range   = "43-111 kg (pooled)",
+    age_range = "18-75 years (pooled across the 11 constituent studies)",
+    weight_range = "43-111 kg (pooled)",
     sex_female_pct = 44,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort of (i) healthy adult volunteers taking raltegravir 400",
       "mg BID or 1200 mg QD (two 600 mg tablets), (ii) HIV-infected adults",
       "taking 400 mg BID (with concomitant atazanavir) or 1200 mg QD, and",
@@ -126,7 +126,7 @@ Bukkems_2021_raltegravir <- function() {
       "for the 11 constituent studies (references 8, 10, 14-21).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Raltegravir 400 mg BID (six studies), 800 mg QD (one study),",
       "and 1200 mg QD (five studies; the 1200 mg dose is administered as",
       "two 600 mg tablets). Both single-dose and steady-state sampling",
@@ -136,7 +136,7 @@ Bukkems_2021_raltegravir <- function() {
       "sampling).",
       sep = " "
     ),
-    regions        = "Europe (Netherlands PANNA multicentre network, other European sites, and healthy-volunteer studies).",
+    regions = "Europe (Netherlands PANNA multicentre network, other European sites, and healthy-volunteer studies).",
     pregnancy_cohort = paste(
       "22 European HIV-infected pregnant women receiving raltegravir 400 mg",
       "BID as part of a boosted or unboosted combination ART regimen.",
@@ -147,7 +147,7 @@ Bukkems_2021_raltegravir <- function() {
       "model-building dataset.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics summarised from Bukkems 2021 Table 1 across",
       "the 11 constituent studies. Data was pooled from 226 individuals",
       "and 5772 sampling points; after exclusions for interacting",

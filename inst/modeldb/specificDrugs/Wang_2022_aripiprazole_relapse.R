@@ -12,41 +12,46 @@ Wang_2022_aripiprazole_relapse <- function() {
   vignette <- "Wang_2022_aripiprazole"
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the exposure driver is supplied as the CMIN_ARI data covariate, in ng/mL)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the exposure driver is supplied as the CMIN_ARI data covariate, in ng/mL)",
     concentration = "probability (the model output `sur` is the relapse-free survival probability, not a drug concentration)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    cumhaz = list(analyte = "cumulative hazard of impending relapse", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    cumhaz = list(
+      analyte = "cumulative hazard of impending relapse",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     CMIN_ARI = list(
-      description        = "Model-predicted minimum aripiprazole plasma concentration proximate to the impending-relapse event or censoring time (ng/mL).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Model-predicted minimum aripiprazole plasma concentration proximate to the impending-relapse event or censoring time (ng/mL).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Time-fixed per subject in the source analysis (one value per subject, taken proximate to the event or censoring time). Derived in Wang 2022 by applying the companion final population PK model -- modellib('Wang_2022_aripiprazole') -- to each subject's recorded dosing history together with that subject's empirical-Bayes PK parameters, by numerical integration in NONMEM (Wang 2022 Methods, 'Definition of PK Exposures'). Two prediction windows are used: if the event fell in the first AOM dose period the predicted concentration 24 h after the oral dose preceding the event is used; if it fell in the second or a later AOM dosing period the predicted concentration 672 h after the AOM dose preceding the event is used. Concentrations were also predicted for placebo subjects because washout of aripiprazole taken before randomisation was incomplete; the minimum model-predicted value over the whole analysis set was 0.000329 ng/mL, not zero (Wang 2022 Figure 5 note). Only the dichotomy at 95 ng/mL enters the model: Wang 2022 first fitted CMIN_ARI as a continuous predictor and found the fit biased above 95 ng/mL, because the observed time to relapse was similar across the three highest concentration quartiles, and therefore replaced the continuous term with the threshold indicator. Observed subject-level means (SD) in the analysis set were 47.8 (65.3) ng/mL for subjects assigned to placebo and 180.9 (83.1) ng/mL for subjects assigned to 400 mg AOM; 101.7 (90.0) ng/mL in subjects who relapsed and 161.5 (93.6) ng/mL in censored subjects. The observed range is 0 to 580 ng/mL (Wang 2022 Figure 6 panel headings), and 154 of the 615 subjects fell below the threshold.",
-      source_name        = "predicted aripiprazole Cmin proximate to the event"
+      notes = "Required input. Time-fixed per subject in the source analysis (one value per subject, taken proximate to the event or censoring time). Derived in Wang 2022 by applying the companion final population PK model -- modellib('Wang_2022_aripiprazole') -- to each subject's recorded dosing history together with that subject's empirical-Bayes PK parameters, by numerical integration in NONMEM (Wang 2022 Methods, 'Definition of PK Exposures'). Two prediction windows are used: if the event fell in the first AOM dose period the predicted concentration 24 h after the oral dose preceding the event is used; if it fell in the second or a later AOM dosing period the predicted concentration 672 h after the AOM dose preceding the event is used. Concentrations were also predicted for placebo subjects because washout of aripiprazole taken before randomisation was incomplete; the minimum model-predicted value over the whole analysis set was 0.000329 ng/mL, not zero (Wang 2022 Figure 5 note). Only the dichotomy at 95 ng/mL enters the model: Wang 2022 first fitted CMIN_ARI as a continuous predictor and found the fit biased above 95 ng/mL, because the observed time to relapse was similar across the three highest concentration quartiles, and therefore replaced the continuous term with the threshold indicator. Observed subject-level means (SD) in the analysis set were 47.8 (65.3) ng/mL for subjects assigned to placebo and 180.9 (83.1) ng/mL for subjects assigned to 400 mg AOM; 101.7 (90.0) ng/mL in subjects who relapsed and 161.5 (93.6) ng/mL in censored subjects. The observed range is 0 to 580 ng/mL (Wang 2022 Figure 6 panel headings), and 154 of the 615 subjects fell below the threshold.",
+      source_name = "predicted aripiprazole Cmin proximate to the event"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 615L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 615L,
+    n_studies = 2L,
     n_observations = "85 impending-relapse events and 530 censored subjects (Wang 2022 Results, 'Exposure-Response Analysis of Time to Relapse').",
-    age_range      = "Adults; per-study demographics are in Wang 2022 Table S1 / S2 (supplement not on disk -- see the vignette Errata).",
-    weight_range   = "Not reported in the main text.",
+    age_range = "Adults; per-study demographics are in Wang 2022 Table S1 / S2 (supplement not on disk -- see the vignette Errata).",
+    weight_range = "Not reported in the main text.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in the main text for the exposure-response analysis set.",
-    disease_state  = "Adults with schizophrenia who had completed the lead-in / stabilisation stages of studies 31-07-246 and 31-07-247 and had at least one documented pharmacodynamic end point plus a model-predicted aripiprazole Cmin proximate to the event.",
-    dose_range     = "120 subjects on oral aripiprazole and 495 subjects on 400/300 mg AOM given every 28 days in the gluteal muscle, plus the placebo arms of the two studies. A further 121 subjects on 50/25 mg AOM were EXCLUDED because the companion population PK model did not adequately describe concentrations at that dose.",
-    regions        = "Multicentre; not further specified in the main text.",
-    notes          = "The end point is exacerbation of psychotic symptoms / impending relapse, defined during the randomised stage of each study by any of: a Clinical Global Impression of Improvement score >= 5 together with a specified worsening on individual Positive and Negative Syndrome Scale items; hospitalisation for worsening psychotic symptoms; a Clinical Global Impression of Severity of Suicide part 1 score of 4-5 or part 2 score of 6-7; or violent behaviour causing clinically significant injury or property damage (Wang 2022 Methods, 'Definition of Time to Relapse'). Time is measured from randomisation (stage 4 of study 31-07-246, stage 3 of study 31-07-247) and follow-up ran to about 365 days (Wang 2022 Figures 5 and 6). Of the 85 events, 48 (56.5%) were in placebo subjects and 37 (43.5%) in the 400/300 mg AOM group. The proportional-hazards assumption was tested and rejected, so a parametric model was used; among the exponential, Weibull, log-logistic and generalized gamma distributions the exponential fitted best. Fitted with the SAS 9.2 LIFEREG procedure."
+    disease_state = "Adults with schizophrenia who had completed the lead-in / stabilisation stages of studies 31-07-246 and 31-07-247 and had at least one documented pharmacodynamic end point plus a model-predicted aripiprazole Cmin proximate to the event.",
+    dose_range = "120 subjects on oral aripiprazole and 495 subjects on 400/300 mg AOM given every 28 days in the gluteal muscle, plus the placebo arms of the two studies. A further 121 subjects on 50/25 mg AOM were EXCLUDED because the companion population PK model did not adequately describe concentrations at that dose.",
+    regions = "Multicentre; not further specified in the main text.",
+    notes = "The end point is exacerbation of psychotic symptoms / impending relapse, defined during the randomised stage of each study by any of: a Clinical Global Impression of Improvement score >= 5 together with a specified worsening on individual Positive and Negative Syndrome Scale items; hospitalisation for worsening psychotic symptoms; a Clinical Global Impression of Severity of Suicide part 1 score of 4-5 or part 2 score of 6-7; or violent behaviour causing clinically significant injury or property damage (Wang 2022 Methods, 'Definition of Time to Relapse'). Time is measured from randomisation (stage 4 of study 31-07-246, stage 3 of study 31-07-247) and follow-up ran to about 365 days (Wang 2022 Figures 5 and 6). Of the 85 events, 48 (56.5%) were in placebo subjects and 37 (43.5%) in the 400/300 mg AOM group. The proportional-hazards assumption was tested and rejected, so a parametric model was used; among the exponential, Weibull, log-logistic and generalized gamma distributions the exponential fitted best. Fitted with the SAS 9.2 LIFEREG procedure."
   )
 
   ini({

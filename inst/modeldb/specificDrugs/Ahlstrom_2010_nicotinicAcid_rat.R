@@ -27,8 +27,8 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
   )
   vignette <- "Ahlstrom_2010_nicotinicAcid_rat"
   units <- list(
-    time          = "min",
-    dosing        = "umol/kg",
+    time = "min",
+    dosing = "umol/kg",
     concentration = "umol/L"
   )
 
@@ -37,37 +37,82 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "nicotinic acid (NiAc)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nicotinic acid (NiAc)", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nicotinic acid (NiAc)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    nefa        = list(analyte = "non-esterified fatty acids (NEFA)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor5  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE),
-    precursor6  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE),
-    precursor7  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE),
-    precursor8  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE)
+    nefa = list(
+      analyte = "non-esterified fatty acids (NEFA)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    precursor1 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor2 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor3 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor4 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor5 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    precursor6 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    precursor7 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    precursor8 = list(
+      analyte = "intermediate metabolite",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (male Sprague-Dawley)",
-    n_subjects     = 63L,
-    n_studies      = 1L,
-    age_range      = "(not reported in the source publication)",
-    weight_range   = "220-367 g",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 63L,
+    n_studies = 1L,
+    age_range = "(not reported in the source publication)",
+    weight_range = "220-367 g",
     sex_female_pct = 0,
-    disease_state  = "healthy; fasted 14 h prior to dosing and throughout the experiment",
-    dose_range     = paste(
+    disease_state = "healthy; fasted 14 h prior to dosing and throughout the experiment",
+    dose_range = paste(
       "NiAc IV constant-rate infusion (jugular vein). 30 min infusion arm:",
       "vehicle (n=10), 1 umol/kg (n=4), 5 umol/kg (n=8), 20 umol/kg (n=9).",
       "300 min infusion arm: vehicle (n=8), 5 umol/kg (n=9), 10 umol/kg",
       "(n=8), 51 umol/kg (n=7). 8 groups total."
     ),
-    regions        = "Sweden (AstraZeneca R&D Molndal)",
-    notes          = paste(
+    regions = "Sweden (AstraZeneca R&D Molndal)",
+    notes = paste(
       "63 male Sprague-Dawley rats from Harlan Nederlands B.V., housed and",
       "acclimatised for at least 1 week prior to surgery. Catheters were",
       "implanted in the left carotid artery for blood sampling and in the",

@@ -32,8 +32,8 @@ Yang_2024_naloxone <- function() {
   )
   vignette <- "Yang_2024_naloxone_opioid_reversal"
   units <- list(
-    time          = "min",
-    dosing        = "ug",
+    time = "min",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
@@ -42,21 +42,21 @@ Yang_2024_naloxone <- function() {
   # $MODEL block, which names each compartment explicitly, and against
   # the "; AMT in ug ... ; PK volumes = L" unit header of the same file.
   compartmentData <- list(
-    depot       = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Only covariate retained in the final model (Appendix S1",
         "Table S3, run 45). Enters as an allometric power on apparent",
         "clearance only: CL/F = 3.26 * (WT/70)^0.538. The reference",
@@ -69,7 +69,7 @@ Yang_2024_naloxone <- function() {
         "in the full model, but was removed in the backward step",
         "(run 45) and is therefore NOT in this model."
       ),
-      source_name        = "Body Weight"
+      source_name = "Body Weight"
     )
   )
 
@@ -81,44 +81,44 @@ Yang_2024_naloxone <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on CL (run 20, dOFV -0.60) and on V2 (run 25, dOFV -0.22); neither reached the p<0.05 inclusion threshold of 3.84. Range 23-54 years (Table S1)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on CL (run 20, dOFV -0.60) and on V2 (run 25, dOFV -0.22); neither reached the p<0.05 inclusion threshold of 3.84. Range 23-54 years (Table S1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL (run 24, dOFV -0.04), V2 (run 27, dOFV -2.96) and KTR (run 31, dOFV -5.90). Sex on KTR entered the full model but was removed in the first backward step (run 43, dOFV +6.04 < 10.828). 47.9 percent female (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL (run 24, dOFV -0.04), V2 (run 27, dOFV -2.96) and KTR (run 31, dOFV -5.90). Sex on KTR entered the full model but was removed in the first backward step (run 43, dOFV +6.04 < 10.828). 47.9 percent female (Table S2)."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL (run 23, dOFV -2.21) and KTR (run 30, dOFV -3.07); neither reached the inclusion threshold. 75 percent of the analysis population was Black or African American (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL (run 23, dOFV -2.21) and KTR (run 30, dOFV -3.07); neither reached the inclusion threshold. 75 percent of the analysis population was Black or African American (Table S2)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48L,
-    n_studies      = 2L,
-    age_range      = "23-54 years (mean 37.9)",
-    weight_range   = "57.2-100.2 kg (mean 78.2)",
+    species = "human",
+    n_subjects = 48L,
+    n_studies = 2L,
+    age_range = "23-54 years (mean 37.9)",
+    weight_range = "57.2-100.2 kg (mean 78.2)",
     sex_female_pct = 47.9,
     race_ethnicity = c(White = 20.8, Black = 75.0, Other = 4.2),
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = paste(
+    disease_state = "Healthy adult volunteers",
+    dose_range = paste(
       "Naloxone auto-injector 0.4 mg, 0.8 mg (two 0.4 mg injections),",
       "2 mg and 10 mg intramuscular / subcutaneous. 24 subjects in a",
       "six-sequence three-period crossover received 0.4 / 0.8 / 2 mg;",
       "24 subjects in a two-sequence two-period crossover received",
       "2 mg and 10 mg."
     ),
-    regions        = NA_character_,
+    regions = NA_character_,
     n_observations = 2063L,
-    bmi_range      = "18.8-31.6 kg/m^2 (mean 26.5)",
-    iov_structure  = paste(
+    bmi_range = "18.8-31.6 kg/m^2 (mean 26.5)",
+    iov_structure = paste(
       "Table S4 additionally reports inter-occasion variability on KTR",
       "(omega^2 = 0.127, 35.6 percent CV, shrinkage 13.9 / 27.9 / 45.2",
       "percent across the three occasions of the crossover design).",
@@ -130,7 +130,7 @@ Yang_2024_naloxone <- function() {
       "streams likewise carry only the three IIV terms and no IOV.",
       "See the vignette Assumptions and deviations section."
     ),
-    notes          = paste(
+    notes = paste(
       "Model selection (Table S3): run 14 base model; weight on CL and",
       "on V2 plus sex on KTR formed the full model (run 40); backward",
       "elimination removed sex on KTR (run 43) then weight on V2",

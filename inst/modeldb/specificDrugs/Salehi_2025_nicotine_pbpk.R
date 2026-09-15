@@ -13,11 +13,11 @@ Salehi_2025_nicotine_pbpk <- function() {
   vignette <- "Salehi_2025_nicotine_pbpk"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   # Nicotine is released from the product into the mouth (`depot`) and is
@@ -28,90 +28,90 @@ Salehi_2025_nicotine_pbpk <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales every tissue volume, blood flow and clearance.",
         "Rostami 2022 Table 1 uses a 73.0 kg reference adult;",
         "Salehi 2025 Figure 2 reports study-matched mean body weights of",
         "~92 kg (TP1 / on! cohort, which also supplied the 2 g MST data) and",
         "~97 kg (TP2 / on! PLUS cohort, which also supplied the 4 g MST data)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   # Every ODE state. `analyte` / `specimen` checked against the Salehi 2025
   # supplementary MCSim listing and Rostami 2022 Tables 1-2.
   compartmentData <- list(
-    depot                  = list(analyte = "nicotine", units = "mg", specimen = "administration site", verified = TRUE),
-    buccal_slab1           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab2           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab3           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab4           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab5           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab6           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab7           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab8           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab9           = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab10          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab11          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab12          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab13          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab14          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab15          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab16          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab17          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab18          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab19          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    buccal_slab20          = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_buccal               = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_conducting_airway    = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_transitional_airway  = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_pulmonary            = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_venous               = list(analyte = "nicotine", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_arterial             = list(analyte = "nicotine", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_heart                = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_brain                = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_liver                = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_skin                 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_muscle               = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_fat                  = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_rapidly_perfused     = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_slowly_perfused      = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_gut                  = list(analyte = "nicotine", units = "mg", specimen = "administration site", verified = TRUE),
-    gut_lumen              = list(analyte = "nicotine", units = "mg", specimen = "faeces", verified = TRUE),
-    a_hepatic              = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_urine                = list(analyte = "nicotine", units = "mg", specimen = "urine", verified = TRUE),
-    effect                 = list(analyte = "nicotine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    a_venous_cot           = list(analyte = "cotinine", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_arterial_cot         = list(analyte = "cotinine", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_liver_cot            = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_muscle_cot           = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_fat_cot              = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
+    depot = list(analyte = "nicotine", units = "mg", specimen = "administration site", verified = TRUE),
+    buccal_slab1 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab2 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab3 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab4 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab5 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab6 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab7 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab8 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab9 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab10 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab11 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab12 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab13 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab14 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab15 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab16 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab17 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab18 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab19 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    buccal_slab20 = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_buccal = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_conducting_airway = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_transitional_airway = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_pulmonary = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_venous = list(analyte = "nicotine", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_arterial = list(analyte = "nicotine", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_heart = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_brain = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_skin = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_muscle = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_fat = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_rapidly_perfused = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_slowly_perfused = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_gut = list(analyte = "nicotine", units = "mg", specimen = "administration site", verified = TRUE),
+    gut_lumen = list(analyte = "nicotine", units = "mg", specimen = "faeces", verified = TRUE),
+    a_hepatic = list(analyte = "nicotine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_urine = list(analyte = "nicotine", units = "mg", specimen = "urine", verified = TRUE),
+    effect = list(analyte = "nicotine", units = "mg/L", specimen = "not applicable", verified = TRUE),
+    a_venous_cot = list(analyte = "cotinine", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_arterial_cot = list(analyte = "cotinine", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_liver_cot = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_muscle_cot = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_fat_cot = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
     a_rapidly_perfused_cot = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_slowly_perfused_cot  = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_hepatic_cot          = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
-    a_urine_cot            = list(analyte = "cotinine", units = "mg", specimen = "urine", verified = TRUE),
-    central_gluc           = list(analyte = "nicotine glucuronide", units = "mg", specimen = "plasma", verified = TRUE),
-    a_urine_gluc           = list(analyte = "nicotine glucuronide", units = "mg", specimen = "urine", verified = TRUE)
+    a_slowly_perfused_cot = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_hepatic_cot = list(analyte = "cotinine", units = "mg", specimen = "tissue", verified = TRUE),
+    a_urine_cot = list(analyte = "cotinine", units = "mg", specimen = "urine", verified = TRUE),
+    central_gluc = list(analyte = "nicotine glucuronide", units = "mg", specimen = "plasma", verified = TRUE),
+    a_urine_gluc = list(analyte = "nicotine glucuronide", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    age_range     = "adults who use tobacco products (21+ years)",
+    species = "human",
+    age_range = "adults who use tobacco products (21+ years)",
     weight_median = "92 kg (on! / TP1 cohort) and 97 kg (on! PLUS / TP2 cohort); Rostami 2022 reference adult 73.0 kg",
     disease_state = "healthy adults who smoke cigarettes or use moist smokeless tobacco",
-    dose_range    = paste(
+    dose_range = paste(
       "on! nicotine pouches 2 / 4 / 8 mg (30 min controlled use);",
       "on! PLUS nicotine pouches 6 / 9 / 12 mg (45 min controlled use);",
       "own-brand MST 2 g (30 min) and 4 g (45 min) at ~10 mg nicotine/g;",
       "intravenous nicotine 2 ug/kg/min over 30 min (Figure S3 validation arm)"
     ),
-    regions       = "United States",
-    notes         = paste(
+    regions = "United States",
+    notes = paste(
       "The PBPK model is not fitted to individual-level data. Clinical PK profiles used",
       "for the base-use-case regressions are cohort means adapted from Liu 2022, Rensch 2021",
       "and associated conference presentations (Salehi 2025 'Clinical Data');",

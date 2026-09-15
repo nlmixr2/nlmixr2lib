@@ -41,39 +41,39 @@ Mukker_2026_tuvusertib_hERG <- function() {
   vignette <- "Mukker_2026_tuvusertib_QTc"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static in vitro concentration-response model fed by an external tuvusertib concentration covariate)",
+    time = "h",
+    dosing = "(none; static in vitro concentration-response model fed by an external tuvusertib concentration covariate)",
     concentration = "(observation herg_inh is the fraction of hERG tail current blocked, dimensionless 0-1; driving covariate CP_TUVUSERTIB_NGML is the nominal bath tuvusertib concentration in ng/mL)"
   )
 
   covariateData <- list(
     CP_TUVUSERTIB_NGML = list(
-      description        = "Nominal tuvusertib concentration in the patch-clamp bath, supplied as a covariate. Reused canonical: in this in-vitro model the column carries a bath concentration rather than a plasma concentration, but the quantity and units are identical.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Nominal tuvusertib concentration in the patch-clamp bath, supplied as a covariate. Reused canonical: in this in-vitro model the column carries a bath concentration rather than a plasma concentration, but the quantity and units are identical.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The assay evaluated nominal tuvusertib concentrations of 0.3, 1, 3 and 10 uM (Mukker 2026 Methods 2.1 and Results 3.1). Converting at the molecular weight implied by the paper's own dual-unit IC50 report (1048 ng/mL / 2.83 uM = 370.3 g/mol) gives 111, 370, 1111 and 3703 ng/mL.",
         "The paper reports the IC50 in both units (2.83 uM and 1048 ng/mL); this file uses the ng/mL form so that the in-vitro potency is directly comparable with the clinical plasma concentrations driving the companion C-QTc models, which are in ng/mL.",
         "The clinically relevant comparator is the UNBOUND steady-state Cmax at 180 mg QD, 415.95 ng/mL (Mukker 2026 Results 3.1), giving the ~2.5-fold exposure margin quoted in the Abstract and Discussion. Comparing against a TOTAL plasma concentration would be a units error -- the patch-clamp bath concentration is a free concentration.",
         "The 10 uM top concentration blocked more than 30% of the tail current, which is what permitted a concentration-response curve to be fitted and an IC50 determined (Results 3.1)."
       ),
-      source_name        = "nominal tuvusertib concentration"
+      source_name = "nominal tuvusertib concentration"
     )
   )
 
   population <- list(
-    species          = "in vitro (HEK-293 cells stably expressing the hERG potassium channel)",
-    n_subjects       = NA_integer_,
-    n_studies        = 1L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Not applicable -- recombinant cell line.",
-    dose_range       = "Nominal tuvusertib bath concentrations 0.3, 1, 3 and 10 uM (approximately 111, 370, 1111 and 3703 ng/mL).",
-    regions          = NA_character_,
-    notes            = paste(
+    species = "in vitro (HEK-293 cells stably expressing the hERG potassium channel)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Not applicable -- recombinant cell line.",
+    dose_range = "Nominal tuvusertib bath concentrations 0.3, 1, 3 and 10 uM (approximately 111, 370, 1111 and 3703 ng/mL).",
+    regions = NA_character_,
+    notes = paste(
       "Good Laboratory Practice (GLP)-compliant whole-cell patch-clamp assay of the hERG potassium channel stably expressed in human embryonic kidney (HEK)-293 cells (Mukker 2026 Methods 2.1). Inhibition of hERG is the principal pharmacodynamic mechanism of ventricular action-potential / QT prolongation in humans.",
       "Assay validity: the test system was validated with the reference item E4031, a selective blocker of the cardiac rapid delayed-rectifier potassium current, which effectively blocked the hERG tail current (Results 3.1).",
       "Fit quality: R^2 = 0.98 for the concentration-response curve (Results 3.1).",

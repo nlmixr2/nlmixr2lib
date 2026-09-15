@@ -43,11 +43,11 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
 
   covariateData <- list(
     OCC = list(
-      description        = "Dosing occasion index (1 = first dose at t = 0 h, 2 = second dose at t = 4 h)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dosing occasion index (1 = first dose at t = 0 h, 2 = second dose at t = 4 h)",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Methods 2.2: 'Variability could be implemented on parameters as",
         "interindividual variability (IIV, or between-subject variability)",
         "and/or interoccasion variability (IOV, or within-subject",
@@ -58,7 +58,7 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
         "per-occasion IOV slots on MTT and CLF. Records before the first dose",
         "should carry OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -75,9 +75,9 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened. Allometric scaling on clearances (exponent 0.75) and",
         "volumes (exponent 1) was explicitly tested and REJECTED: Results 3.2",
         "reports dOFV = -3.31, short of the 3.84 forward-addition threshold",
@@ -87,27 +87,27 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Measured on each trial day (Methods 2.1); Table 1 median 165 (157, 172) cm, range 149-179. Screened via eta-covariate plots, not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Measured on each trial day (Methods 2.1); Table 1 median 165 (157, 172) cm, range 149-179. Screened via eta-covariate plots, not retained."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Table 1 median 21.8 (20.0, 25.0) kg/m^2, range 14.7-27.3. BMI <= 30 was an eligibility criterion (Methods 2.1). Screened, not retained."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Table 1 median 21.8 (20.0, 25.0) kg/m^2, range 14.7-27.3. BMI <= 30 was an eligibility criterion (Methods 2.1). Screened, not retained."
     ),
     BSA = list(
       description = "Body surface area (Du Bois formula)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Table 1 median 1.58 (1.45, 1.85) m^2, range 1.29-1.98; Table 1 footnote cites the Du Bois formula. Screened, not retained."
+      units = "m^2",
+      type = "continuous",
+      notes = "Table 1 median 1.58 (1.45, 1.85) m^2, range 1.29-1.98; Table 1 footnote cites the Du Bois formula. Screened, not retained."
     ),
     BODYFAT_PCT = list(
       description = "Percent total body fat by bioelectrical impedance",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Measured with a portable bedside direct segmental multifrequency",
         "bioelectrical impedance analyser (InBody S10; Biospace), Methods 2.1.",
         "Table 1 median 29.6 (25.6, 33.5) %, range 17.3-41.1. Of particular",
@@ -125,15 +125,15 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
     ),
     FFM = list(
       description = "Fat-free mass by bioelectrical impedance",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Table 1 median 39 (35, 50) kg, range 27-55. Screened, not retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Table 1 median 39 (35, 50) kg, range 27-55. Screened, not retained."
     ),
     CRCL = list(
       description = "BSA-normalised glomerular filtration rate (both the CKD-EPI 2009 creatinine estimate eGFR and the 99m-Tc-DTPA tracer measurement mGFR)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "BOTH renal measures were screened and neither was retained. Table 1:",
         "eGFR 62 (44, 83), range 39-98 (2009 CKD-EPI without race factor,",
         "Methods 2.1); mGFR 62 (47, 83), range 34-121, available in only 14 of",
@@ -145,15 +145,15 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Table 1 median 77 (71, 85) years, range 66-94; age >= 65 years was an eligibility criterion. Screened, not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Table 1 median 77 (71, 85) years, range 66-94; age >= 65 years was an eligibility criterion. Screened, not retained."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1: 14 of 20 female (70%), 6 male (30%). Screened, not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1: 14 of 20 female (70%), 6 male (30%). Screened, not retained."
     )
   )
 
@@ -167,20 +167,28 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
     # depot -> transit1 -> transit2 -> central, which is the same three
     # first-order ktr steps.
     depot = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     # Methods 2.2: 'THC-OH concentrations were normalized using the molecular
     # weight ratio with THC.' The metabolite states are therefore carried in
@@ -188,19 +196,23 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
     # conversion factor; Cc_11oh is likewise a THC-equivalent concentration,
     # which is the scale Table 2, Figure 1 and Figure 5 all report.
     central_11oh = list(
-      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_11oh = list(
-      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = paste(
       "370 observations from the Sativex trial days entered model building:",
       "185 for THC (one excluded as an outlier, leaving 184; 38 [20.5%] below",
@@ -211,20 +223,20 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
       "Table S1); 16 of 20 patients (80%) followed scheme C and two followed",
       "each of the others."
     ),
-    age_median     = "77 years (IQR 71-85)",
-    age_range      = "66-94 years",
-    weight_median  = "56 kg (IQR 48-70)",
-    weight_range   = "38-82 kg",
-    height_median  = "165 cm (IQR 157-172)",
-    bmi_median     = "21.8 kg/m^2 (IQR 20.0-25.0), range 14.7-27.3",
+    age_median = "77 years (IQR 71-85)",
+    age_range = "66-94 years",
+    weight_median = "56 kg (IQR 48-70)",
+    weight_range = "38-82 kg",
+    height_median = "165 cm (IQR 157-172)",
+    bmi_median = "21.8 kg/m^2 (IQR 20.0-25.0), range 14.7-27.3",
     sex_female_pct = 70,
-    body_fat       = "29.6% (IQR 25.6-33.5), range 17.3-41.1; fat mass 16.4 kg (IQR 13.8-22.2); fat-free mass 39 kg (IQR 35-50)",
+    body_fat = "29.6% (IQR 25.6-33.5), range 17.3-41.1; fat mass 16.4 kg (IQR 13.8-22.2); fat-free mass 39 kg (IQR 35-50)",
     renal_function = paste(
       "eGFR 62 mL/min/1.73 m^2 (IQR 44-83), range 39-98, by the 2009 CKD-EPI",
       "creatinine equation without race factor; mGFR 62 (IQR 47-83), range",
       "34-121, by 99m-Tc-DTPA in the 14 patients who joined that sub-study."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Acutely hospitalised older medical patients with poor appetite,",
       "enrolled at an emergency department and studied after discharge.",
       "Eligibility (Methods 2.1) required age >= 65 years, BMI <= 30 and a",
@@ -234,21 +246,21 @@ Storgaard_2026_tetrahydrocannabinol <- function() {
       "weeks prior to baseline was not permitted and a positive morning-urine",
       "cannabinoid immunoassay (cut-off 50 ng/mL) was exclusionary."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Two oromucosal doses 4 h apart on a single trial day. Scheme A gave two",
       "sprays per dose (5.2 mg THC and 5 mg CBD); schemes B and C gave three",
       "sprays per dose (8.1 mg THC and 7.5 mg CBD). 16 of 20 patients (80%)",
       "followed scheme C."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Cannabidiol is co-administered in every Sativex spray (5 or 7.5 mg per",
       "dose) but is not modelled here. The Discussion argues the CYP",
       "inhibition is negligible at these doses: 'the maximum dose used in this",
       "study of 7.5 mg of CBD (with 8.1 mg of THC) is in this context",
       "considered low.'"
     ),
-    regions        = "Denmark (single centre: Copenhagen University Hospital, patients enrolled at Hvidovre and dosed at the Zelo Phase 1 Unit, Bispebjerg)",
-    notes          = paste(
+    regions = "Denmark (single centre: Copenhagen University Hospital, patients enrolled at Hvidovre and dosed at the Zelo Phase 1 Unit, Bispebjerg)",
+    notes = paste(
       "Protocolised sub-study of a triple-blinded, randomised,",
       "placebo-controlled cross-over controlled-feeding trial run February",
       "2022 to January 2024; only the Sativex arm is used here (no cannabinoid",

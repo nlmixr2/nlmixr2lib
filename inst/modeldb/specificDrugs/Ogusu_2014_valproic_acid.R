@@ -46,141 +46,141 @@ Ogusu_2014_valproic_acid <- function() {
   )
   vignette <- "Ogusu_2014_valproic_acid"
   units <- list(
-    time          = "h",
-    dosing        = "mg (single administration of the divided daily dose)",
+    time = "h",
+    dosing = "mg (single administration of the divided daily dose)",
     concentration = "Cc in ug/mL; prob_ggt_elevation is a probability (0-1)"
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "valproic acid", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE_VPA_MGD = list(
-      description        = "Patient's own total daily dose of valproic acid, summed across the daily administrations and NOT normalised by body weight. Drives Vd/F and CL/F as a power term in the PK layer (Ogusu 2014 equations 6 and 7) and the logit slope in the PD layer (equation 9).",
-      units              = "mg/d",
-      type               = "continuous",
+      description = "Patient's own total daily dose of valproic acid, summed across the daily administrations and NOT normalised by body weight. Drives Vd/F and CL/F as a power term in the PK layer (Ogusu 2014 equations 6 and 7) and the logit slope in the PD layer (equation 9).",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters every term as the ratio DOSE_VPA_MGD/1000, i.e. the printed equations normalise the daily dose to 1000 mg/day; that normalisation is written explicitly inside model() rather than folded into the coefficients. PK cohort mean 934.3 +/- 540.2 mg/day, range 100-2600; PK-PD cohort mean 903.8 +/- 502.7 mg/day, range 100-2600 (Ogusu 2014 Table 1). Must be strictly positive. Table 4 tabulates model predictions over 400-1200 mg/day.",
-      source_name        = "Dose (daily VPA dose, mg/day)"
+      notes = "Enters every term as the ratio DOSE_VPA_MGD/1000, i.e. the printed equations normalise the daily dose to 1000 mg/day; that normalisation is written explicitly inside model() rather than folded into the coefficients. PK cohort mean 934.3 +/- 540.2 mg/day, range 100-2600; PK-PD cohort mean 903.8 +/- 502.7 mg/day, range 100-2600 (Ogusu 2014 Table 1). Must be strictly positive. Table 4 tabulates model predictions over 400-1200 mg/day.",
+      source_name = "Dose (daily VPA dose, mg/day)"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; equation 7 states 'female = 1, male = 0')",
-      notes              = "PK cohort 100/237 women (42.2%); PK-PD cohort 67/169 women (39.6%) (Ogusu 2014 Table 1). The 0.917 coefficient makes female CL/F 8.3% lower than male, which Ogusu 2014 Discussion attributes to lower UDP-glucuronosyltransferase activity in women.",
-      source_name        = "Gender"
+      notes = "PK cohort 100/237 women (42.2%); PK-PD cohort 67/169 women (39.6%) (Ogusu 2014 Table 1). The 0.917 coefficient makes female CL/F 8.3% lower than male, which Ogusu 2014 Discussion attributes to lower UDP-glucuronosyltransferase activity in women.",
+      source_name = "Gender"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine indicator; 1 = carbamazepine co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine indicator; 1 = carbamazepine co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = "Carbamazepine induces CYP2C9, CYP2C19 and the UGTs (Ogusu 2014 Discussion), raising VPA CL/F by 19%. 190/827 PK records (23.0%) and 94/472 PK-PD records (19.9%) were on carbamazepine (Table 1; the Table 1 co-administration percentages are per record, not per patient). Retained in the PK layer but deliberately EXCLUDED from the final PK-PD layer for collinearity with intellectual disability -- see the DIS_INTELLDIS_MODSEV notes.",
-      source_name        = "CBZ"
+      notes = "Carbamazepine induces CYP2C9, CYP2C19 and the UGTs (Ogusu 2014 Discussion), raising VPA CL/F by 19%. 190/827 PK records (23.0%) and 94/472 PK-PD records (19.9%) were on carbamazepine (Table 1; the Table 1 co-administration percentages are per record, not per patient). Retained in the PK layer but deliberately EXCLUDED from the final PK-PD layer for collinearity with intellectual disability -- see the DIS_INTELLDIS_MODSEV notes.",
+      source_name = "CBZ"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital indicator; 1 = phenobarbital co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital indicator; 1 = phenobarbital co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital)",
-      notes              = "Enzyme-inducing AED; raises VPA CL/F by 12%. 73/827 PK records (8.8%) and 28/472 PK-PD records (5.9%) (Ogusu 2014 Table 1). Excluded from the final PK-PD layer for the same collinearity reason as carbamazepine.",
-      source_name        = "PB"
+      notes = "Enzyme-inducing AED; raises VPA CL/F by 12%. 73/827 PK records (8.8%) and 28/472 PK-PD records (5.9%) (Ogusu 2014 Table 1). Excluded from the final PK-PD layer for the same collinearity reason as carbamazepine.",
+      source_name = "PB"
     ),
     CONMED_PHT = list(
-      description        = "Concomitant phenytoin indicator; 1 = phenytoin co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenytoin indicator; 1 = phenytoin co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenytoin)",
-      notes              = "The strongest of the three induction effects; raises VPA CL/F by 43%. 88/827 PK records (10.6%) and 45/472 PK-PD records (9.5%) (Ogusu 2014 Table 1). Excluded from the final PK-PD layer for the same collinearity reason as carbamazepine.",
-      source_name        = "PHT"
+      notes = "The strongest of the three induction effects; raises VPA CL/F by 43%. 88/827 PK records (10.6%) and 45/472 PK-PD records (9.5%) (Ogusu 2014 Table 1). Excluded from the final PK-PD layer for the same collinearity reason as carbamazepine.",
+      source_name = "PHT"
     ),
     CONMED_CLB = list(
-      description        = "Concomitant clobazam indicator; 1 = clobazam co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant clobazam indicator; 1 = clobazam co-administered, 0 = not. Multiplies CL/F as a power-of-binary factor (Ogusu 2014 equation 7).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant clobazam)",
-      notes              = "Clobazam is NOT an enzyme inducer, and its coefficient has the opposite sign to the CBZ / PB / PHT terms estimated in the same equation: it LOWERS VPA CL/F by 9.4%. Ogusu 2014 Discussion cites a prior paediatric report of the same direction and states the mechanism 'remains unknown'. 128/827 PK records (15.5%) and 90/472 PK-PD records (19.0%) (Table 1).",
-      source_name        = "CLB"
+      notes = "Clobazam is NOT an enzyme inducer, and its coefficient has the opposite sign to the CBZ / PB / PHT terms estimated in the same equation: it LOWERS VPA CL/F by 9.4%. Ogusu 2014 Discussion cites a prior paediatric report of the same direction and states the mechanism 'remains unknown'. 128/827 PK records (15.5%) and 90/472 PK-PD records (19.0%) (Table 1).",
+      source_name = "CLB"
     ),
     DIS_INTELLDIS_MODSEV = list(
-      description        = "Complication with moderate or severe intellectual disability; 1 = present, 0 = absent. Shifts the logit intercept of the gamma-GT elevation model additively (Ogusu 2014 equation 9).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complication with moderate or severe intellectual disability; 1 = present, 0 = absent. Shifts the logit intercept of the gamma-GT elevation model additively (Ogusu 2014 equation 9).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no intellectual disability; equation 9 states 'intellectual disability = 1 if an intellectual disability was present, and was otherwise 0')",
-      notes              = "The largest single effect in the PD model (+3.62 on the logit). 131/237 (55.3%) of the PK cohort and 97/169 (57.4%) of the PK-PD cohort (Ogusu 2014 Table 1). COLLINEARITY: Ogusu 2014 reports that intellectual disability was significantly associated with an increased number of co-administered CBZ, PB and PHT (P < 0.0001) and therefore removed those three indicators from the final PK-PD model to reduce multicollinearity, so this coefficient is partly a proxy for enzyme-inducing polytherapy. This is why the PD layer carries no CONMED_* terms although the PK layer does.",
-      source_name        = "Intellectual disability"
+      notes = "The largest single effect in the PD model (+3.62 on the logit). 131/237 (55.3%) of the PK cohort and 97/169 (57.4%) of the PK-PD cohort (Ogusu 2014 Table 1). COLLINEARITY: Ogusu 2014 reports that intellectual disability was significantly associated with an increased number of co-administered CBZ, PB and PHT (P < 0.0001) and therefore removed those three indicators from the final PK-PD model to reduce multicollinearity, so this coefficient is partly a proxy for enzyme-inducing polytherapy. This is why the PD layer carries no CONMED_* terms although the PK layer does.",
+      source_name = "Intellectual disability"
     ),
     SNP_SOD2_RS4880_TT = list(
-      description        = "SOD2 Val16Ala (rs4880) homozygous wild-type indicator; 1 = Val/Val, 0 = Val/Ala or Ala/Ala. Shifts the logit intercept of the gamma-GT elevation model additively (Ogusu 2014 equation 9).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SOD2 Val16Ala (rs4880) homozygous wild-type indicator; 1 = Val/Val, 0 = Val/Ala or Ala/Ala. Shifts the logit intercept of the gamma-GT elevation model additively (Ogusu 2014 equation 9).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Val/Ala heterozygotes pooled with Ala/Ala homozygous-variant carriers; equation 9 states 'SOD2 Val/Val genotype = 1, SOD2 Val/Ala or Ala/Ala genotype = 0')",
-      notes              = "NOTE THE INVERTED POLARITY relative to the usual variant-carrier convention: the indicator flags the WILD-TYPE homozygote, which is the higher-risk stratum here. rs4880 is c.47T>C, so the T allele codes Val (wild-type) and C codes Ala (variant). Genotype frequencies in the 169-patient PK-PD cohort: Val/Val 77.6%, Val/Ala 20.7%, Ala/Ala 1.7%; 16Ala allele frequency 12.7%, consistent with Hardy-Weinberg (Ogusu 2014 Results). The two strata were pooled because only 2 patients were Ala/Ala -- a cell-count decision, not a genetic-model claim.",
-      source_name        = "SOD2 Val/Val genotype"
+      notes = "NOTE THE INVERTED POLARITY relative to the usual variant-carrier convention: the indicator flags the WILD-TYPE homozygote, which is the higher-risk stratum here. rs4880 is c.47T>C, so the T allele codes Val (wild-type) and C codes Ala (variant). Genotype frequencies in the 169-patient PK-PD cohort: Val/Val 77.6%, Val/Ala 20.7%, Ala/Ala 1.7%; 16Ala allele frequency 12.7%, consistent with Hardy-Weinberg (Ogusu 2014 Results). The two strata were pooled because only 2 patients were Ala/Ala -- a cell-count decision, not a genetic-model claim.",
+      source_name = "SOD2 Val/Val genotype"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at the observation.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a covariate on the PD SLOPE and found significant during forward inclusion, but removed from the final PK-PD model because age, body weight and daily VPA dose 'significantly correlated with each other (P < 0.05)' and the authors reduced the set to break the multicollinearity (Ogusu 2014 Results, PK-PD Model). No point estimate is printed anywhere on disk. Cohort: 17.2 +/- 8.3 years, range 2.2-52.2 (PK) and 18.0 +/- 7.8, range 3.0-52.2 (PK-PD); 93.3% were 30 years or younger."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a covariate on the PD SLOPE and found significant during forward inclusion, but removed from the final PK-PD model because age, body weight and daily VPA dose 'significantly correlated with each other (P < 0.05)' and the authors reduced the set to break the multicollinearity (Ogusu 2014 Results, PK-PD Model). No point estimate is printed anywhere on disk. Cohort: 17.2 +/- 8.3 years, range 2.2-52.2 (PK) and 18.0 +/- 7.8, range 3.0-52.2 (PK-PD); 93.3% were 30 years or younger."
     ),
     WT = list(
       description = "Body weight at the observation.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on the PD SLOPE (and, per Methods, on Vd/F in the PK layer) but not retained in either final model, for the same age/weight/dose collinearity reason as AGE. No point estimate is printed. Cohort: 48.8 +/- 20.9 kg, range 9.6-120.5 (PK) and 51.0 +/- 20.1, range 13.0-120.5 (PK-PD) (Ogusu 2014 Table 1). Its absence is a genuine feature of this model, not an omission: a paediatric-to-adult VPA model with no weight term is unusual and is noted in the vignette Errata."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on the PD SLOPE (and, per Methods, on Vd/F in the PK layer) but not retained in either final model, for the same age/weight/dose collinearity reason as AGE. No point estimate is printed. Cohort: 48.8 +/- 20.9 kg, range 9.6-120.5 (PK) and 51.0 +/- 20.1, range 13.0-120.5 (PK-PD) (Ogusu 2014 Table 1). Its absence is a genuine feature of this model, not an omission: a paediatric-to-adult VPA model with no weight term is unusual and is noted in the vignette Errata."
     ),
     DUR_VPA_THERAPY = list(
       description = "Duration of valproic acid therapy up to the observation.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on the PD SLOPE, significant during forward inclusion but NOT significant during backward elimination, and therefore removed from the full covariate model (Ogusu 2014 Results, PK-PD Model; Table S2). No point estimate is printed. Mean follow-up 3.2 +/- 4.0 years (PK) and 6.6 +/- 5.1 years (PK-PD)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on the PD SLOPE, significant during forward inclusion but NOT significant during backward elimination, and therefore removed from the full covariate model (Ogusu 2014 Results, PK-PD Model; Table S2). No point estimate is printed. Mean follow-up 3.2 +/- 4.0 years (PK) and 6.6 +/- 5.1 years (PK-PD)."
     ),
     SNP_CYP2C9_STAR3 = list(
       description = "CYP2C9*3 allele carrier indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F in the PK forward-inclusion analysis and found not statistically significant (Ogusu 2014 Results, Table S1). CYP2C9*1/*1 93.7%, *1/*3 6.3%, *3/*3 0%. No point estimate exists."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F in the PK forward-inclusion analysis and found not statistically significant (Ogusu 2014 Results, Table S1). CYP2C9*1/*1 93.7%, *1/*3 6.3%, *3/*3 0%. No point estimate exists."
     ),
     SNP_CYP2C19_PHENOTYPE = list(
       description = "CYP2C19 metabolizer phenotype derived from *2 and *3 (homozygous EM / heterozygous EM / PM).",
-      units       = "(category)",
-      type        = "categorical",
-      notes       = "Tested on CL/F in the PK forward-inclusion analysis and found not statistically significant (Ogusu 2014 Results, Table S1). Homozygous EM 35.9%, heterozygous EM 47.2%, PM 16.9%. No point estimate exists."
+      units = "(category)",
+      type = "categorical",
+      notes = "Tested on CL/F in the PK forward-inclusion analysis and found not statistically significant (Ogusu 2014 Results, Table S1). Homozygous EM 35.9%, heterozygous EM 47.2%, PM 16.9%. No point estimate exists."
     ),
     SNP_GSTM1_NULL = list(
       description = "GSTM1 null-genotype indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on the PD logit and NOT identified as a statistically significant covariate (Ogusu 2014 Table S2, Discussion). 56.8% null among the 169 PK-PD patients. No point estimate exists."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on the PD logit and NOT identified as a statistically significant covariate (Ogusu 2014 Table S2, Discussion). 56.8% null among the 169 PK-PD patients. No point estimate exists."
     ),
     SNP_GSTT1_NULL = list(
       description = "GSTT1 null-genotype indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on the PD logit and NOT identified as a statistically significant covariate (Ogusu 2014 Table S2, Discussion). 47.9% null among the 169 PK-PD patients. No point estimate exists."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on the PD logit and NOT identified as a statistically significant covariate (Ogusu 2014 Table S2, Discussion). 47.9% null among the 169 PK-PD patients. No point estimate exists."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 237L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 237L,
+    n_studies = 1L,
     n_observations = "827 steady-state VPA concentrations from 237 patients (PK layer) and 472 serum gamma-GT measurements from 169 patients (PK-PD layer)",
-    age_range      = "PK 17.2 +/- 8.3 years, range 2.2-52.2; PK-PD 18.0 +/- 7.8 years, range 3.0-52.2; 93.3% were 30 years or younger (Ogusu 2014 Table 1, Figure S2)",
-    weight_range   = "PK 48.8 +/- 20.9 kg, range 9.6-120.5; PK-PD 51.0 +/- 20.1 kg, range 13.0-120.5 (Ogusu 2014 Table 1)",
+    age_range = "PK 17.2 +/- 8.3 years, range 2.2-52.2; PK-PD 18.0 +/- 7.8 years, range 3.0-52.2; 93.3% were 30 years or younger (Ogusu 2014 Table 1, Figure S2)",
+    weight_range = "PK 48.8 +/- 20.9 kg, range 9.6-120.5; PK-PD 51.0 +/- 20.1 kg, range 13.0-120.5 (Ogusu 2014 Table 1)",
     sex_female_pct = 42.2,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = "epilepsy on long-term valproic acid therapy; seizure locus generalized 46.8% / partial 50.2% / unidentified 3.0%; seizure aetiology idiopathic 27.0% / symptomatic 31.7% / cryptogenic 41.3%; 55.3% had a comorbid moderate or severe intellectual disability",
-    dose_range     = "valproic acid 100-2600 mg/day orally (mean 934.3 +/- 540.2 mg/day), given in 1-3 divided doses; 45.7% of PK records were monotherapy",
-    regions        = "Japan (single-centre retrospective therapeutic-drug-monitoring cohort)",
-    notes          = paste0(
+    disease_state = "epilepsy on long-term valproic acid therapy; seizure locus generalized 46.8% / partial 50.2% / unidentified 3.0%; seizure aetiology idiopathic 27.0% / symptomatic 31.7% / cryptogenic 41.3%; 55.3% had a comorbid moderate or severe intellectual disability",
+    dose_range = "valproic acid 100-2600 mg/day orally (mean 934.3 +/- 540.2 mg/day), given in 1-3 divided doses; 45.7% of PK records were monotherapy",
+    regions = "Japan (single-centre retrospective therapeutic-drug-monitoring cohort)",
+    notes = paste0(
       "Retrospective therapeutic-drug-monitoring data, sparsely sampled: ",
       "the interval between the last dose and the sample was distributed ",
       "over the full 24 h. Standard errors could not be determined for the ",

@@ -10,64 +10,64 @@ Simpson_2013_chloroquine <- function() {
   )
   vignette <- "Simpson_2013_chloroquine"
   units <- list(
-    time          = "(unused; each record is one drug-well concentration in a 24+18 h hypoxanthine-uptake-inhibition assay)",
-    dosing        = "(no PK dosing; STIM_CHLOROQUINE_NM is the in vitro applied well concentration in nM)",
+    time = "(unused; each record is one drug-well concentration in a 24+18 h hypoxanthine-uptake-inhibition assay)",
+    dosing = "(no PK dosing; STIM_CHLOROQUINE_NM is the in vitro applied well concentration in nM)",
     concentration = "(observation is normalised hypoxanthine uptake fraction E, range 0-1)"
   )
 
   covariateData <- list(
     STIM_CHLOROQUINE_NM = list(
-      description        = "Applied chloroquine concentration in the in vitro hypoxanthine-uptake-inhibition assay well (nM). Per-record covariate. Doubling-dilution series 10.02 to 10255.9 nM, plus drug-free control well (CONC = 0). Drives the sigmoid Emax inhibition of normalised hypoxanthine uptake.",
-      units              = "nM",
-      type               = "continuous",
+      description = "Applied chloroquine concentration in the in vitro hypoxanthine-uptake-inhibition assay well (nM). Per-record covariate. Doubling-dilution series 10.02 to 10255.9 nM, plus drug-free control well (CONC = 0). Drives the sigmoid Emax inhibition of normalised hypoxanthine uptake.",
+      units = "nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper used a doubling-dilution series from 10255.9 nM down to 10.02 nM (Methods, In vitro Drug Assay), plus drug-free controls. New canonical entry registered alongside this model in inst/references/covariate-columns.md.",
-      source_name        = "C"
+      notes = "Source paper used a doubling-dilution series from 10255.9 nM down to 10.02 nM (Methods, In vitro Drug Assay), plus drug-free controls. New canonical entry registered alongside this model in inst/references/covariate-columns.md.",
+      source_name = "C"
     ),
     PFMDR1_86Y = list(
-      description        = "Plasmodium falciparum pfmdr1 codon-86 tyrosine mutant indicator (1 = single-copy pfmdr1 with 86Y mutation, Simpson 2013 Genotype 2; 0 = otherwise). Time-fixed per isolate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plasmodium falciparum pfmdr1 codon-86 tyrosine mutant indicator (1 = single-copy pfmdr1 with 86Y mutation, Simpson 2013 Genotype 2; 0 = otherwise). Time-fixed per isolate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Simpson 2013 Genotype 1 single-copy WT 86N/1042N (when all four PFMDR1 indicators are 0)",
-      notes              = "Parasite-genome indicator (not host pharmacogenetics). Mutually exclusive with PFMDR1_1042D, PFMDR1_CN2, and PFMDR1_CN3PLUS in the Simpson 2013 cohort (Thai pfmdr1 mutations occur almost exclusively on single-copy parasites; amplifications occur exclusively on WT 86N/1042N parasites). Genotype 2 prevalence in Simpson 2013: 5% of 490 isolates (20 chloroquine isolates per Table 3).",
-      source_name        = "X1"
+      notes = "Parasite-genome indicator (not host pharmacogenetics). Mutually exclusive with PFMDR1_1042D, PFMDR1_CN2, and PFMDR1_CN3PLUS in the Simpson 2013 cohort (Thai pfmdr1 mutations occur almost exclusively on single-copy parasites; amplifications occur exclusively on WT 86N/1042N parasites). Genotype 2 prevalence in Simpson 2013: 5% of 490 isolates (20 chloroquine isolates per Table 3).",
+      source_name = "X1"
     ),
     PFMDR1_1042D = list(
-      description        = "Plasmodium falciparum pfmdr1 codon-1042 aspartate mutant indicator (1 = single-copy pfmdr1 with 1042D mutation, Simpson 2013 Genotype 3; 0 = otherwise). Time-fixed per isolate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plasmodium falciparum pfmdr1 codon-1042 aspartate mutant indicator (1 = single-copy pfmdr1 with 1042D mutation, Simpson 2013 Genotype 3; 0 = otherwise). Time-fixed per isolate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Simpson 2013 Genotype 1 single-copy WT (when all four PFMDR1 indicators are 0)",
-      notes              = "Mutually exclusive with the other three PFMDR1 indicators. Genotype 3 prevalence in Simpson 2013: 5% of 490 isolates (19 chloroquine isolates per Table 3).",
-      source_name        = "X2"
+      notes = "Mutually exclusive with the other three PFMDR1 indicators. Genotype 3 prevalence in Simpson 2013: 5% of 490 isolates (19 chloroquine isolates per Table 3).",
+      source_name = "X2"
     ),
     PFMDR1_CN2 = list(
-      description        = "Plasmodium falciparum pfmdr1 double-copy amplification indicator (1 = two copies of pfmdr1, all WT 86N/1042N, Simpson 2013 Genotype 4; 0 = otherwise). Time-fixed per isolate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plasmodium falciparum pfmdr1 double-copy amplification indicator (1 = two copies of pfmdr1, all WT 86N/1042N, Simpson 2013 Genotype 4; 0 = otherwise). Time-fixed per isolate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Simpson 2013 Genotype 1 single-copy WT (when all four PFMDR1 indicators are 0)",
-      notes              = "Mutually exclusive with the other three PFMDR1 indicators. Genotype 4 prevalence in Simpson 2013: 26% of 490 isolates (113 chloroquine isolates per Table 3).",
-      source_name        = "X3"
+      notes = "Mutually exclusive with the other three PFMDR1 indicators. Genotype 4 prevalence in Simpson 2013: 26% of 490 isolates (113 chloroquine isolates per Table 3).",
+      source_name = "X3"
     ),
     PFMDR1_CN3PLUS = list(
-      description        = "Plasmodium falciparum pfmdr1 triple-or-more-copy amplification indicator (1 = three or more copies of pfmdr1, all WT 86N/1042N, Simpson 2013 Genotype 5; 0 = otherwise). Time-fixed per isolate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plasmodium falciparum pfmdr1 triple-or-more-copy amplification indicator (1 = three or more copies of pfmdr1, all WT 86N/1042N, Simpson 2013 Genotype 5; 0 = otherwise). Time-fixed per isolate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Simpson 2013 Genotype 1 single-copy WT (when all four PFMDR1 indicators are 0)",
-      notes              = "Mutually exclusive with the other three PFMDR1 indicators. Genotype 5 prevalence in Simpson 2013: 15% of 490 isolates (57 chloroquine isolates per Table 3).",
-      source_name        = "X4"
+      notes = "Mutually exclusive with the other three PFMDR1 indicators. Genotype 5 prevalence in Simpson 2013: 15% of 490 isolates (57 chloroquine isolates per Table 3).",
+      source_name = "X4"
     )
   )
 
   population <- list(
-    species        = "in vitro (Plasmodium falciparum clinical isolates from the Shoklo Malaria Research Unit, western Thai-Myanmar border, 1993-2005)",
-    n_subjects     = 421,
-    n_studies      = 1,
-    age_range      = "(not applicable; parasite isolates)",
-    weight_range   = "(not applicable; parasite isolates)",
+    species = "in vitro (Plasmodium falciparum clinical isolates from the Shoklo Malaria Research Unit, western Thai-Myanmar border, 1993-2005)",
+    n_subjects = 421,
+    n_studies = 1,
+    age_range = "(not applicable; parasite isolates)",
+    weight_range = "(not applicable; parasite isolates)",
     sex_female_pct = NA_real_,
-    disease_state  = "acute P. falciparum malaria",
-    dose_range     = "in vitro doubling-dilution series 10.02 to 10255.9 nM chloroquine, plus drug-free control well (Methods, In vitro Drug Assay)",
-    regions        = "western Thai-Myanmar border (Shoklo Malaria Research Unit clinics, Mae Sot, Thailand)",
+    disease_state = "acute P. falciparum malaria",
+    dose_range = "in vitro doubling-dilution series 10.02 to 10255.9 nM chloroquine, plus drug-free control well (Methods, In vitro Drug Assay)",
+    regions = "western Thai-Myanmar border (Shoklo Malaria Research Unit clinics, Mae Sot, Thailand)",
     n_isolates_chloroquine = 421,
     pfmdr1_distribution = "Genotype 1 (single-copy WT 86N/1042N): 212 of 421 (50.4%); Genotype 2 (single-copy 86Y): 20 of 421 (4.8%); Genotype 3 (single-copy 1042D): 19 of 421 (4.5%); Genotype 4 (double-copy WT): 113 of 421 (26.8%); Genotype 5 (triple+ copy WT): 57 of 421 (13.5%). Table 3.",
     observations_per_isolate = "median 22 observations per isolate across all drugs, range 7 to 44 (Results paragraph 1).",

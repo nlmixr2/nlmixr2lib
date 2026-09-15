@@ -23,47 +23,47 @@ Svensson_2016_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
     enz_pool = list(analyte = "Rifampicin metabolites", units = "mg", specimen = "plasma", verified = FALSE),
-    fast     = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE),
-    slow     = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE),
-    nonm     = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE)
+    fast = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE),
+    slow = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE),
+    nonm = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight. Time-fixed per subject in the Svensson 2016 analysis (set to the Smythe 2012 cohort mean of 56 kg for every patient because no individual covariate values were available for the 1966-1977 sputum dataset).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Time-fixed per subject in the Svensson 2016 analysis (set to the Smythe 2012 cohort mean of 56 kg for every patient because no individual covariate values were available for the 1966-1977 sputum dataset).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used together with FFM in the Anderson-Holford normal-fat-mass (NFM) allometric scaling of CL/F and V/F (Smythe 2012 Table 3 model 3): NFM_param = FFM + Ffat_param * (WT - FFM), then CL/F propto NFM_CL^0.75 and V/F propto NFM_V^1.0, both standardized to a 70-kg patient. Reference value 56 kg. Svensson 2016 Methods 'Population pharmacokinetic model' paragraph 2 reports the cohort body weight assumption.",
-      source_name        = "WT"
+      notes = "Used together with FFM in the Anderson-Holford normal-fat-mass (NFM) allometric scaling of CL/F and V/F (Smythe 2012 Table 3 model 3): NFM_param = FFM + Ffat_param * (WT - FFM), then CL/F propto NFM_CL^0.75 and V/F propto NFM_V^1.0, both standardized to a 70-kg patient. Reference value 56 kg. Svensson 2016 Methods 'Population pharmacokinetic model' paragraph 2 reports the cohort body weight assumption.",
+      source_name = "WT"
     ),
     FFM = list(
-      description        = "Fat-free mass. Time-fixed per subject in the Svensson 2016 analysis (set to the Smythe 2012 cohort mean of 45 kg for every patient because no individual covariate values were available for the 1966-1977 sputum dataset).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass. Time-fixed per subject in the Svensson 2016 analysis (set to the Smythe 2012 cohort mean of 45 kg for every patient because no individual covariate values were available for the 1966-1977 sputum dataset).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed from body weight, height, and sex via the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula in the Smythe 2012 cohort; for this PD model, FFM is supplied directly as a covariate column (default 45 kg). Drives the Anderson-Holford NFM allometric scaling alongside WT. Reference value 45 kg. Svensson 2016 Methods 'Population pharmacokinetic model' paragraph 2 reports the cohort FFM assumption.",
-      source_name        = "FFM"
+      notes = "Computed from body weight, height, and sex via the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula in the Smythe 2012 cohort; for this PD model, FFM is supplied directly as a covariate column (default 45 kg). Drives the Anderson-Holford NFM allometric scaling alongside WT. Reference value 45 kg. Svensson 2016 Methods 'Population pharmacokinetic model' paragraph 2 reports the cohort FFM assumption.",
+      source_name = "FFM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 19L,
-    n_studies      = 1L,
-    age_range      = "adult (Jindani et al. 1980 source trial)",
-    weight_range   = "set to the cohort-mean 56 kg for all patients (no individual demographics available)",
-    weight_median  = "56 kg (cohort-mean, fixed for all patients)",
+    species = "human",
+    n_subjects = 19L,
+    n_studies = 1L,
+    age_range = "adult (Jindani et al. 1980 source trial)",
+    weight_range = "set to the cohort-mean 56 kg for all patients (no individual demographics available)",
+    weight_median = "56 kg (cohort-mean, fixed for all patients)",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported in the source paper (Kenyan patients)",
-    disease_state  = "Treatment-naive drug-susceptible pulmonary tuberculosis (Mycobacterium tuberculosis); all patients assumed HIV-negative and in stationary phase of infection at trial entry.",
-    dose_range     = "Rifampicin oral monotherapy at 5 mg/kg (n=3), 10 mg/kg (n=8), or 20 mg/kg (n=8) once daily for 14 days at 08:00, plus a no-treatment negative control arm (n=4) for the structural disease model fit (the negative-control 4 patients are not counted in n_subjects=19).",
-    regions        = "Kenya (1966-1977 trial reanalysed by Svensson 2016).",
-    notes          = "Baseline demographics from Svensson 2016 Methods 'Patients and study design'. Sputum CFU sampled every 2 days during the 12-hour overnight window 8 PM-8 AM, including two baseline measurements before the first rifampicin dose. The original trial pre-dated formal IRB review; data reuse was approved by the UK National Research Ethics Service via the PreDiCT-TB consortium. The PD model also performs external validation against three retrospective rifampicin-monotherapy trials (Sirgel 2005 n=14-16 per arm at 300 / 600 mg / 20 mg/kg in South Africa; Diacon 2007 n=13 at 20 mg/kg in South Africa; Rustomjee 2008 n=15 at 600 mg in South Africa; Svensson 2016 Table 1)."
+    disease_state = "Treatment-naive drug-susceptible pulmonary tuberculosis (Mycobacterium tuberculosis); all patients assumed HIV-negative and in stationary phase of infection at trial entry.",
+    dose_range = "Rifampicin oral monotherapy at 5 mg/kg (n=3), 10 mg/kg (n=8), or 20 mg/kg (n=8) once daily for 14 days at 08:00, plus a no-treatment negative control arm (n=4) for the structural disease model fit (the negative-control 4 patients are not counted in n_subjects=19).",
+    regions = "Kenya (1966-1977 trial reanalysed by Svensson 2016).",
+    notes = "Baseline demographics from Svensson 2016 Methods 'Patients and study design'. Sputum CFU sampled every 2 days during the 12-hour overnight window 8 PM-8 AM, including two baseline measurements before the first rifampicin dose. The original trial pre-dated formal IRB review; data reuse was approved by the UK National Research Ethics Service via the PreDiCT-TB consortium. The PD model also performs external validation against three retrospective rifampicin-monotherapy trials (Sirgel 2005 n=14-16 per arm at 300 / 600 mg / 20 mg/kg in South Africa; Diacon 2007 n=13 at 20 mg/kg in South Africa; Rustomjee 2008 n=15 at 600 mg in South Africa; Svensson 2016 Table 1)."
   )
 
   ini({

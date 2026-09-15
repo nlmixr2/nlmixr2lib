@@ -43,22 +43,22 @@ Thorsted_2016_somatropin_human <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
-    igf1        = list(analyte = "insulin-like growth factor 1", units = "ug", specimen = "plasma", verified = FALSE)
+    igf1 = list(analyte = "insulin-like growth factor 1", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling around a reference adult body weight of 70",
         "kg per Thorsted 2016 Table 3 footnote 'a' (70 kg man).",
         "Clearance terms (CL, Q) and the Michaelis-Menten maximum",
@@ -72,25 +72,25 @@ Thorsted_2016_somatropin_human <- function() {
         "Thorsted 2016 Methods (Prediction of human PKPD).",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "Adult males (Laursen 1996 validation cohort)",
-    weight_range   = "approximately 70 kg (Table 3 reference)",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "Adult males (Laursen 1996 validation cohort)",
+    weight_range = "approximately 70 kg (Table 3 reference)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Growth hormone deficient adult males withdrawn from rhGH",
       "treatment for 1 week to washout IGF-1 prior to study (Laursen",
       "1996); model validated against 5 ug/kg i.v. and 33.5 ug/kg s.c.",
       "rhGH single-dose data."
     ),
-    dose_range     = "5 ug/kg i.v. bolus and 33.5 ug/kg s.c. single doses (Laursen 1996 validation)",
-    notes          = paste(
+    dose_range = "5 ug/kg i.v. bolus and 33.5 ug/kg s.c. single doses (Laursen 1996 validation)",
+    notes = paste(
       "Translational forward-simulation construct rather than a fit to",
       "human data: parameter values are obtained by allometrically",
       "scaling the Thorsted 2016 hypophysectomized-rat fit (Table 2",

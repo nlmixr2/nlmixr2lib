@@ -36,32 +36,38 @@ Abouelhassan_2024_sulbactam_human <- function() {
     sep = " "
   )
   vignette <- "Abouelhassan_2024_sulbactam_elf_pneumonia"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
     central = list(
-      analyte = "sulbactam", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "sulbactam",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "sulbactam", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "sulbactam",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     ),
     elf = list(
-      analyte = "sulbactam", units = "mg",
-      specimen = "epithelial lining fluid", verified = TRUE
+      analyte = "sulbactam",
+      units = "mg",
+      specimen = "epithelial lining fluid",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30,
-    n_studies      = 1,
-    disease_state  = "healthy adult volunteers",
-    dose_range     = "sulbactam 1 g IV q6h as a 3 h infusion",
-    notes          = paste(
+    species = "human",
+    n_subjects = 30,
+    n_studies = 1,
+    disease_state = "healthy adult volunteers",
+    dose_range = "sulbactam 1 g IV q6h as a 3 h infusion",
+    notes = paste(
       "Methods, 'Population pharmacokinetics modelling in healthy volunteers':",
       "mean sulbactam plasma and ELF concentrations at 1, 2.5, 3.25, 4 and 6 h",
       "from 30 healthy volunteers (Rodvold 2018) were co-modelled. Because a",

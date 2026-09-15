@@ -37,30 +37,30 @@ Fan_2025_iron_mouse_irondeficient_pbpk <- function() {
   dosing <- "plasma"
 
   compartmentData <- list(
-    plasma   = list(analyte = "iron-59", units = "nmol", specimen = "plasma", verified = TRUE),
-    bone     = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    lung     = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    plasma = list(analyte = "iron-59", units = "nmol", specimen = "plasma", verified = TRUE),
+    bone = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
     rbc_iron = list(analyte = "iron-59", units = "nmol", specimen = "blood cell", verified = TRUE),
-    brain    = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    adipose  = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = FALSE)
+    brain = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "iron-59", units = "nmol", specimen = "tissue", verified = FALSE)
   )
 
   population <- list(
-    species       = "mouse (iron-deficient diet)",
-    n_subjects    = "not reported; digitised group mean data only",
-    n_studies     = 1,
-    weight_range  = "25 g (single body weight used for all physiology)",
+    species = "mouse (iron-deficient diet)",
+    n_subjects = "not reported; digitised group mean data only",
+    n_studies = 1,
+    weight_range = "25 g (single body weight used for all physiology)",
     disease_state = "Iron-deficient dietary iron status induced by diet",
-    dose_range    = "single 0.2 umol/kg 59Fe intravenous bolus (5 nmol in a 25 g mouse)",
-    notes         = paste(
+    dose_range = "single 0.2 umol/kg 59Fe intravenous bolus (5 nmol in a 25 g mouse)",
+    notes = paste(
       "Source PK / biodistribution study is reference [23] of the paper;",
       "mice were killed and dissected at 15 min, 12 h, 24 h and days 4, 7,",
       "14 and 28. Only group means were available, so a naive pooled data",

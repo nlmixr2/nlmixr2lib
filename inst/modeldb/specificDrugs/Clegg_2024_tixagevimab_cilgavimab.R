@@ -33,99 +33,109 @@ Clegg_2024_tixagevimab_cilgavimab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "AZD7442 (tixagevimab + cilgavimab)", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "AZD7442 (tixagevimab + cilgavimab)", units = "mg", specimen = "serum", verified = TRUE),
-    peripheral1 = list(analyte = "AZD7442 (tixagevimab + cilgavimab)", units = "mg", specimen = "serum", verified = TRUE)
+    depot = list(
+      analyte = "AZD7442 (tixagevimab + cilgavimab)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(analyte = "AZD7442 (tixagevimab + cilgavimab)", units = "mg", specimen = "serum", verified = TRUE),
+    peripheral1 = list(
+      analyte = "AZD7442 (tixagevimab + cilgavimab)",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight, normalised to a 70 kg reference. Supplementary Table S3 records every body-weight row as 'Baseline weight in kg on <parameter> (centered around: 70 kg)'; the exponents were fixed at 0.75 on the clearance-like parameters (CL, Q) and 1 on the volume-like parameters (Vc, Vp) rather than estimated (supplementary Table S2 'Covariates included in the base model'). Note that the 70 kg allometric reference is NOT the cohort median: the Figure 4 comparator subject weighs 80.6 kg and the cohort mean is 83.9 kg (supplementary Table S1).",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline weight, normalised to a 70 kg reference. Supplementary Table S3 records every body-weight row as 'Baseline weight in kg on <parameter> (centered around: 70 kg)'; the exponents were fixed at 0.75 on the clearance-like parameters (CL, Q) and 1 on the volume-like parameters (Vc, Vp) rather than estimated (supplementary Table S2 'Covariates included in the base model'). Note that the 70 kg allometric reference is NOT the cohort median: the Figure 4 comparator subject weighs 80.6 kg and the cohort mean is 83.9 kg (supplementary Table S1).",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female). NOTE: the source model's reference sex is FEMALE, not the canonical column's 0 group -- see notes.",
-      notes              = "Clegg 2024 codes sex as SEXM (1 = male) and reports beta_ka(SEXM_1) = 0.543 as a log-additive term on ka, so the typical ka = 0.11 /day belongs to a FEMALE subject. This file carries the canonical SEXF orientation (1 = female, 0 = male) and forms the paper's male indicator inside model() as (1 - SEXF), the same construction used by Bajaj_2017_nivolumab.R and Wada_2023_sparsentan.R. exp(0.543) - 1 = 72.1% faster absorption in males, matching the Results text.",
-      source_name        = "SEXM"
+      notes = "Clegg 2024 codes sex as SEXM (1 = male) and reports beta_ka(SEXM_1) = 0.543 as a log-additive term on ka, so the typical ka = 0.11 /day belongs to a FEMALE subject. This file carries the canonical SEXF orientation (1 = female, 0 = male) and forms the paper's male indicator inside model() as (1 - SEXF), the same construction used by Bajaj_2017_nivolumab.R and Wada_2023_sparsentan.R. exp(0.543) - 1 = 72.1% faster absorption in males, matching the Results text.",
+      source_name = "SEXM"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the model only through the paper's dichotomised AGECAT indicator (AGECAT_1 = age > 65 years, reference age <= 65 years), which model() forms as (AGE > 65). The continuous canonical column is carried rather than a pre-dichotomised one so that a user simulating the model supplies the demographic value itself and the cut point stays visible in model(). Cohort mean 50.5 years (SD 15.8, range 18.0-98.0); 871 of 4,940 participants (17.6%) were > 65 years (supplementary Table S1).",
-      source_name        = "AGECAT"
+      notes = "Enters the model only through the paper's dichotomised AGECAT indicator (AGECAT_1 = age > 65 years, reference age <= 65 years), which model() forms as (AGE > 65). The continuous canonical column is carried rather than a pre-dichotomised one so that a user simulating the model supplies the demographic value itself and the cut point stays visible in model(). Cohort mean 50.5 years (SD 15.8, range 18.0-98.0); 871 of 4,940 participants (17.6%) were > 65 years (supplementary Table S1).",
+      source_name = "AGECAT"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the model only through the paper's dichotomised BMICAT indicator (BMICAT_1 = BMI >= 30 kg/m2, reference BMI < 30 kg/m2), which model() forms as (BMI >= 30). Cohort mean 29.2 kg/m2 (SD 6.7, range 13.6-72.6); 1,959 of 4,940 participants (39.7%) had BMI >= 30 kg/m2 (supplementary Table S1). BMI is carried alongside WT because the paper fits both: WT drives the allometric scaling of the disposition parameters and BMI drives a separate absorption-rate effect.",
-      source_name        = "BMICAT"
+      notes = "Enters the model only through the paper's dichotomised BMICAT indicator (BMICAT_1 = BMI >= 30 kg/m2, reference BMI < 30 kg/m2), which model() forms as (BMI >= 30). Cohort mean 29.2 kg/m2 (SD 6.7, range 13.6-72.6); 1,959 of 4,940 participants (39.7%) had BMI >= 30 kg/m2 (supplementary Table S1). BMI is carried alongside WT because the paper fits both: WT drives the allometric scaling of the disposition parameters and BMI drives a separate absorption-rate effect.",
+      source_name = "BMICAT"
     ),
     DIS_DIAB = list(
-      description        = "Diabetes-mellitus comorbidity indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diabetes-mellitus comorbidity indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes)",
-      notes              = "Time-fixed at study entry. Two log-additive effects: beta_ka(DIAB_1) = -0.318 on ka (exp(-0.318) - 1 = 27.2% slower absorption) and beta_CL(DIAB_1) = 0.198 on CL (exp(0.198) - 1 = 21.9% higher clearance), both matching the Results text. 638 of 4,940 participants (12.9%) had diabetes (supplementary Table S1).",
-      source_name        = "DIAB"
+      notes = "Time-fixed at study entry. Two log-additive effects: beta_ka(DIAB_1) = -0.318 on ka (exp(-0.318) - 1 = 27.2% slower absorption) and beta_CL(DIAB_1) = 0.198 on CL (exp(0.198) - 1 = 21.9% higher clearance), both matching the Results text. 638 of 4,940 participants (12.9%) had diabetes (supplementary Table S1).",
+      source_name = "DIAB"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black race: White, Asian, Other, not reported or unknown)",
-      notes              = "Log-additive effect on the central volume of distribution: beta_Vc(RACEB_1) = -0.251, i.e. exp(-0.251) - 1 = 22.2% lower Vc in Black participants, matching the Results text. 668 of 4,940 participants (13.5%) were Black (supplementary Table S1). Kept as the plain RACE_BLACK dichotomy rather than the composite RACE_BLACK_OTH used in Clegg_2024_nirsevimab.R -- this paper's covariate is Black versus all other race groups, with no pooling.",
-      source_name        = "RACEB"
+      notes = "Log-additive effect on the central volume of distribution: beta_Vc(RACEB_1) = -0.251, i.e. exp(-0.251) - 1 = 22.2% lower Vc in Black participants, matching the Results text. 668 of 4,940 participants (13.5%) were Black (supplementary Table S1). Kept as the plain RACE_BLACK dichotomy rather than the composite RACE_BLACK_OTH used in Clegg_2024_nirsevimab.R -- this paper's covariate is Black versus all other race groups, with no pooling.",
+      source_name = "RACEB"
     ),
     INJSITE_THIGH = list(
-      description        = "Intramuscular injection into the anterolateral thigh",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intramuscular injection into the anterolateral thigh",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (gluteal region)",
-      notes              = "Per-dose-record indicator. Clegg 2024 carries this covariate under the study name ACTIV2 because the thigh was used only in ACTIV-2 while every other study injected into the gluteal region; supplementary Table S2 states explicitly that 'the covariate ACTIV-2 in this context is used to distinguish the site of IM administrations'. It is therefore registered here as the anatomical-site covariate rather than as a study indicator. Log-additive effect on bioavailability: beta_FIM(ACTIV2_1) = 0.416, i.e. exp(0.416) - 1 = 51.6% higher bioavailability for thigh injection, matching the Results text. Because the effect is log-additive and the gluteal FIM is already 0.671, the implied thigh bioavailability is 0.671 * exp(0.416) = 1.017, marginally above unity -- see the vignette Errata. Applies only to intramuscular doses (records routed through the depot); it has no effect on intravenous doses, which are placed directly into the central compartment.",
-      source_name        = "ACTIV2"
+      notes = "Per-dose-record indicator. Clegg 2024 carries this covariate under the study name ACTIV2 because the thigh was used only in ACTIV-2 while every other study injected into the gluteal region; supplementary Table S2 states explicitly that 'the covariate ACTIV-2 in this context is used to distinguish the site of IM administrations'. It is therefore registered here as the anatomical-site covariate rather than as a study indicator. Log-additive effect on bioavailability: beta_FIM(ACTIV2_1) = 0.416, i.e. exp(0.416) - 1 = 51.6% higher bioavailability for thigh injection, matching the Results text. Because the effect is log-additive and the gluteal FIM is already 0.671, the implied thigh bioavailability is 0.671 * exp(0.416) = 1.017, marginally above unity -- see the vignette Errata. Applies only to intramuscular doses (records routed through the depot); it has no effect on intravenous doses, which are placed directly into the central compartment.",
+      source_name = "ACTIV2"
     ),
     ROUTE_IV = list(
-      description        = "Indicator for intravenous administration of AZD7442",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for intravenous administration of AZD7442",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intramuscular). NOTE: the non-IV reference in this paper is IM, not the SC reference given in the register's general ROUTE_IV description.",
-      notes              = "Per-dose-record dosing-route indicator (1 = IV infusion, 0 = IM injection) used to switch the log-scale additive residual SD between the IV value (expSdIv = 0.104) and the IM value (expSdIm = 0.24) per Table 1 / supplementary Table S3 rows error_ADD2 and error_ADD1. Distinct from the rxode2 cmt event column, which routes the dose (cmt = central for IV, cmt = depot for IM); ROUTE_IV is the covariate that picks the residual-error term. 342 of 4,940 participants (6.9%) received IV infusions and 4,598 (93.1%) received IM injections (supplementary Table S1). Same role as in Zierhut_2008_osteoprotegerin.R and Wang_2021_pertuzumab.R.",
-      source_name        = "route of administration"
+      notes = "Per-dose-record dosing-route indicator (1 = IV infusion, 0 = IM injection) used to switch the log-scale additive residual SD between the IV value (expSdIv = 0.104) and the IM value (expSdIm = 0.24) per Table 1 / supplementary Table S3 rows error_ADD2 and error_ADD1. Distinct from the rxode2 cmt event column, which routes the dose (cmt = central for IV, cmt = depot for IM); ROUTE_IV is the covariate that picks the residual-error term. 342 of 4,940 participants (6.9%) received IV infusions and 4,598 (93.1%) received IM injections (supplementary Table S1). Same role as in Zierhut_2008_osteoprotegerin.R and Wang_2021_pertuzumab.R.",
+      source_name = "route of administration"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4940L,
+    species = "human",
+    n_subjects = 4940L,
     n_observations = 31895L,
-    n_studies      = 8L,
-    age_range      = "18.0-98.0 years",
-    age_median     = "mean 50.5 years (SD 15.8); 17.6% were > 65 years",
-    weight_range   = "36.0-216.0 kg",
-    weight_median  = "mean 83.9 kg (SD 21.3); the Figure 4 typical-subject weight is the cohort median of 80.6 kg",
-    bmi_range      = "13.6-72.6 kg/m^2 (mean 29.2, SD 6.7); 39.7% had BMI >= 30 kg/m^2",
-    height_range   = "122.0-204.0 cm (mean 169, SD 10.1)",
+    n_studies = 8L,
+    age_range = "18.0-98.0 years",
+    age_median = "mean 50.5 years (SD 15.8); 17.6% were > 65 years",
+    weight_range = "36.0-216.0 kg",
+    weight_median = "mean 83.9 kg (SD 21.3); the Figure 4 typical-subject weight is the cohort median of 80.6 kg",
+    bmi_range = "13.6-72.6 kg/m^2 (mean 29.2, SD 6.7); 39.7% had BMI >= 30 kg/m^2",
+    height_range = "122.0-204.0 cm (mean 169, SD 10.1)",
     sex_female_pct = 46.9,
     race_ethnicity = c(White = 70.7, Black = 13.5, Asian = 8.7, `Other / not reported / unknown` = 7.0),
-    ethnicity      = c(`Not Hispanic or Latino` = 71.4, `Hispanic or Latino` = 24.8, `Not reported / unknown` = 3.8),
-    disease_state  = "Mixed prophylaxis and treatment populations: healthy adults (three phase I studies and one Chinese phase II study), adults at increased risk of inadequate response to COVID-19 vaccination or of SARS-CoV-2 exposure (PROVENT), adults exposed to SARS-CoV-2 within 8 days (STORM CHASER), and outpatients with mild-to-moderate COVID-19 (TACKLE, ACTIV-2). Comorbidities: cardiovascular disease 33.3%, diabetes 12.9%, chronic obstructive pulmonary disease 5.1%, chronic kidney disease 4.5%, chronic liver disease 4.1%, immunocompromised 0.8%.",
-    dose_range     = "Single doses of 300 mg or 600 mg intramuscularly, and 300, 600, 1,000 or 3,000 mg intravenously. Some PROVENT participants received a second 300 mg IM dose 10-14 months after the first as part of a sub-study.",
-    route          = "IM 4,598 participants (93.1%; gluteal region except ACTIV-2, which used the anterolateral thigh) and IV 342 participants (6.9%).",
-    regions        = "North America, South America, Europe and Asia (including dedicated phase I studies in healthy Japanese and healthy Chinese adults and a phase II study in Chinese adults).",
-    studies        = "Global phase I first-in-human NCT04507256 (n=50); PROVENT phase III pre-exposure prophylaxis NCT04625725 (n=3,288); STORM CHASER phase III post-exposure prophylaxis NCT04625972 (n=722); TACKLE phase III outpatient treatment NCT04723394 (n=442); ACTIV-2 phase II outpatient treatment NCT04518410 (n=157); Japanese phase I NCT04896541 (n=30); Chinese phase I NCT05437289 (n=49); Chinese phase II NCT05184062 (n=202).",
+    ethnicity = c(`Not Hispanic or Latino` = 71.4, `Hispanic or Latino` = 24.8, `Not reported / unknown` = 3.8),
+    disease_state = "Mixed prophylaxis and treatment populations: healthy adults (three phase I studies and one Chinese phase II study), adults at increased risk of inadequate response to COVID-19 vaccination or of SARS-CoV-2 exposure (PROVENT), adults exposed to SARS-CoV-2 within 8 days (STORM CHASER), and outpatients with mild-to-moderate COVID-19 (TACKLE, ACTIV-2). Comorbidities: cardiovascular disease 33.3%, diabetes 12.9%, chronic obstructive pulmonary disease 5.1%, chronic kidney disease 4.5%, chronic liver disease 4.1%, immunocompromised 0.8%.",
+    dose_range = "Single doses of 300 mg or 600 mg intramuscularly, and 300, 600, 1,000 or 3,000 mg intravenously. Some PROVENT participants received a second 300 mg IM dose 10-14 months after the first as part of a sub-study.",
+    route = "IM 4,598 participants (93.1%; gluteal region except ACTIV-2, which used the anterolateral thigh) and IV 342 participants (6.9%).",
+    regions = "North America, South America, Europe and Asia (including dedicated phase I studies in healthy Japanese and healthy Chinese adults and a phase II study in Chinese adults).",
+    studies = "Global phase I first-in-human NCT04507256 (n=50); PROVENT phase III pre-exposure prophylaxis NCT04625725 (n=3,288); STORM CHASER phase III post-exposure prophylaxis NCT04625972 (n=722); TACKLE phase III outpatient treatment NCT04723394 (n=442); ACTIV-2 phase II outpatient treatment NCT04518410 (n=157); Japanese phase I NCT04896541 (n=30); Chinese phase I NCT05437289 (n=49); Chinese phase II NCT05184062 (n=202).",
     reference_subject = "The typical values in Table 1 belong to a 70 kg FEMALE with age <= 65 years, BMI < 30 kg/m^2, non-Black race, no diabetes and a gluteal intramuscular injection. This is not the same as the Figure 4 covariate-comparison comparator, which is an 80.6 kg MALE with otherwise the same covariate levels.",
-    notes          = "Baseline demographics from Clegg 2024 supplementary Table S1; study descriptions and sampling schemes from supplementary Table S6. Serum tixagevimab and cilgavimab were assayed by a validated hybrid ligand-binding LC-MS/MS method (LLOQ 0.3 ug/mL) and AZD7442 concentrations were computed as the sum of the two. Data below the limit of quantitation were handled with the NONMEM M3 method. Excluded from the analysis dataset: two ACTIV-2 participants injected at the wrong site, 170 participants with no observation records, 45 participants whose observations were all BLQ or missing, 13 implausibly high (> 100 ug/mL) STORM CHASER observations, and physiologically implausible intermittent BLQ observations from 79 participants."
+    notes = "Baseline demographics from Clegg 2024 supplementary Table S1; study descriptions and sampling schemes from supplementary Table S6. Serum tixagevimab and cilgavimab were assayed by a validated hybrid ligand-binding LC-MS/MS method (LLOQ 0.3 ug/mL) and AZD7442 concentrations were computed as the sum of the two. Data below the limit of quantitation were handled with the NONMEM M3 method. Excluded from the analysis dataset: two ACTIV-2 participants injected at the wrong site, 170 participants with no observation records, 45 participants whose observations were all BLQ or missing, 13 implausibly high (> 100 ug/mL) STORM CHASER observations, and physiologically implausible intermittent BLQ observations from 79 participants."
   )
 
   ini({

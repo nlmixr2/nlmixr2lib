@@ -35,8 +35,8 @@ Syvanen_2011_verapamil_rat <- function() {
   paper_specific_residual_sds <- c("propSd_Cbrain")
 
   units <- list(
-    time          = "min",
-    dosing        = "MBq",
+    time = "min",
+    dosing = "MBq",
     concentration = "MBq/mL"
   )
 
@@ -45,20 +45,20 @@ Syvanen_2011_verapamil_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
-    brain_csf   = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_deep  = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "tissue", verified = FALSE)
+    brain_csf = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_deep = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the time of PET scanning.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the time of PET scanning.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per rat in the source study (one body-weight value per",
         "animal recorded on the experimental day, Table 1). Used for",
         "allometric scaling of plasma clearance with reference weight",
@@ -69,20 +69,20 @@ Syvanen_2011_verapamil_rat <- function() {
         "as the model's reference. Allometric form: CL * (WT / 0.3084)^1.98",
         "(paper Equation 4)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_TARIQUIDAR = list(
-      description        = paste(
+      description = paste(
         "Indicator for tariquidar (P-glycoprotein inhibitor) pre-",
         "co-administration: 1 = animal received a single 15 mg/kg IV bolus",
         "of tariquidar 20-30 minutes prior to the (R)-[11C]verapamil",
         "injection; 0 = animal received only vehicle (3 mL/kg of 5%",
         "glucose in saline)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (vehicle co-administration; no tariquidar)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal in the source study (each rat is allocated",
         "to either the tariquidar or vehicle arm; 21 of the 42 successfully",
         "scanned rats received tariquidar). Tariquidar plasma concentrations",
@@ -96,10 +96,10 @@ Syvanen_2011_verapamil_rat <- function() {
         "the three retained effects are encoded here (paper Table 3 and",
         "Equation 5)."
       ),
-      source_name        = "tariquidar (categorical 0/1)"
+      source_name = "tariquidar (categorical 0/1)"
     ),
     DIS_POSTSE_KAINATE = list(
-      description        = paste(
+      description = paste(
         "Indicator for the post-status-epilepticus state induced by kainic",
         "acid 7 days prior to PET scanning: 1 = animal received repeated",
         "IP injections of kainic acid (10 mg/kg followed by 5 mg/kg every",
@@ -107,10 +107,10 @@ Syvanen_2011_verapamil_rat <- function() {
         "total) 7 days before scanning; 0 = animal received an equivalent",
         "volume of saline (control)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (saline control; no kainate-induced status epilepticus)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal in the source study (each rat is allocated",
         "to either the kainate or saline arm; 22 of the 42 successfully",
         "scanned rats were kainate-treated). The 7-day post-induction time",
@@ -125,19 +125,19 @@ Syvanen_2011_verapamil_rat <- function() {
         "increase reflects increased intracellular brain distribution",
         "rather than altered BBB transport)."
       ),
-      source_name        = "rat group (kainate vs saline; categorical 0/1)"
+      source_name = "rat group (kainate vs saline; categorical 0/1)"
     )
   )
 
   population <- list(
-    species        = "rat (male Sprague-Dawley, Harlan, Horst, The Netherlands)",
-    n_subjects     = 42L,
-    n_studies      = 1L,
-    age_range      = "Adult; specific age not reported (animals housed for ~1 week of habituation after arrival, then 7 days of post-SE / post-saline observation before scanning)",
-    weight_range   = "200-224 g at arrival; 308 +/- 31 g (mean +/- SD) on the experimental day across all 42 successfully scanned rats (Table 1)",
+    species = "rat (male Sprague-Dawley, Harlan, Horst, The Netherlands)",
+    n_subjects = 42L,
+    n_studies = 1L,
+    age_range = "Adult; specific age not reported (animals housed for ~1 week of habituation after arrival, then 7 days of post-SE / post-saline observation before scanning)",
+    weight_range = "200-224 g at arrival; 308 +/- 31 g (mean +/- SD) on the experimental day across all 42 successfully scanned rats (Table 1)",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Four treatment arms: saline + vehicle (n = 10), kainate + vehicle",
       "(n = 11), saline + tariquidar (n = 10), kainate + tariquidar",
       "(n = 11). Kainate-treated rats had received repeated IP kainic acid",
@@ -147,7 +147,7 @@ Syvanen_2011_verapamil_rat <- function() {
       "immunohistochemistry showed only a small non-significant trend",
       "toward higher P-gp expression in kainate-treated rats vs controls."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intravenous bolus injection of no-carrier-added",
       "(R)-[11C]verapamil, 20.8 +/- 4.5 MBq (0.15-0.3 mL) at PET scan",
       "start; specific activity 56 +/- 26 GBq/umol (Table 1).",
@@ -155,8 +155,8 @@ Syvanen_2011_verapamil_rat <- function() {
       "mL/kg vehicle (5% glucose in saline), administered 20-30 min",
       "before the (R)-[11C]verapamil injection."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden University, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden University, The Netherlands",
+    notes = paste(
       "Of an original 50 animals, 8 were excluded (4 died from kainate",
       "treatment, 1 did not respond to kainate, 3 had technical issues",
       "such as scanner movement or extravascular tracer injection),",

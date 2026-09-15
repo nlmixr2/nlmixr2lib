@@ -25,12 +25,12 @@ Karakitsios_2025_bedaquiline_dog_pbpk <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
-    lung_ew     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    lung_iw     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
+    lung_ew = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    lung_iw = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
@@ -38,9 +38,9 @@ Karakitsios_2025_bedaquiline_dog_pbpk <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Not a model covariate. Table S7 reports the dog plasma model per kilogram, and this file",
         "multiplies those values by the fixed 10 kg Simcyp reference dog of Table S3 footnote a,",
         "because the Table S3 lung blood flow, sub-volumes and cell surface area are fixed",
@@ -52,19 +52,19 @@ Karakitsios_2025_bedaquiline_dog_pbpk <- function() {
   )
 
   population <- list(
-    species        = "beagle dog",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
+    species = "beagle dog",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     sex_female_pct = NA_real_,
-    weight_median  = "10 kg (Simcyp reference dog; Table S3 footnote a)",
-    disease_state  = "Healthy (uninfected) dogs; uninvolved lung tissue only.",
-    dose_range     = paste(
+    weight_median = "10 kg (Simcyp reference dog; Table S3 footnote a)",
+    disease_state = "Healthy (uninfected) dogs; uninvolved lung tissue only.",
+    dose_range = paste(
       "Oral. 2.5 mg/kg/day and 10 mg/kg/day multiple doses (male and female beagles).",
       "Janssen R&D data, Table S1. Only single-timepoint lung tissue homogenate concentrations",
       "were available in dogs.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Mean concentrations were modelled rather than individual data because of the small number",
       "of animals per sampling time (Methods 2.1). Dogs served as a validation species for the",
       "mouse-to-larger-species extrapolation of healthy-lung disposition; Figure 3 shows the",

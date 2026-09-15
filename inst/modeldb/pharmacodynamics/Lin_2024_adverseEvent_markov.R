@@ -42,25 +42,31 @@ Lin_2024_adverseEvent_markov <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "de-identified study drug", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "de-identified study drug",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "de-identified study drug", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "de-identified study drug",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     auc = list(
-      analyte = "de-identified study drug", units = "ng/mL*h",
-      specimen = "plasma", verified = TRUE
+      analyte = "de-identified study drug",
+      units = "ng/mL*h",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 200L,
-    n_studies     = 1L,
-    age_range     = "not reported (source cohort is de-identified and modified)",
-    weight_range  = "not reported (source cohort is de-identified and modified)",
+    species = "human",
+    n_subjects = 200L,
+    n_studies = 1L,
+    age_range = "not reported (source cohort is de-identified and modified)",
+    weight_range = "not reported (source cohort is de-identified and modified)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = paste(
@@ -70,9 +76,9 @@ Lin_2024_adverseEvent_markov <- function() {
       "indication nor the baseline demographics are reported.",
       sep = " "
     ),
-    dose_range    = "60 mg orally once daily for four 28-day cycles (112 days total).",
-    regions       = "not reported",
-    biomarkers    = paste(
+    dose_range = "60 mg orally once daily for four 28-day cycles (112 days total).",
+    regions = "not reported",
+    biomarkers = paste(
       "Adverse-event grade (0 = no event, 1, 2). Grades 1 and 2 are pooled",
       "into an 'Any Grade' category and only the first event per subject is",
       "retained for the exposure-response analysis; Grade 0 subjects are",

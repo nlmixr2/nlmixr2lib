@@ -30,23 +30,23 @@ Tang_2023_tenecteplase <- function() {
     sep = " "
   )
   vignette <- "Tang_2023_tenecteplase"
-  units    <- list(time = "min", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tenecteplase", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tenecteplase", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tenecteplase", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives allometric scaling of CL and Q (exponent 0.750) and of Vc",
         "and Vp (exponent 1.00) on a 70 kg reference weight, per Eq. 6",
         "'CovEff_WT = (WT/70)^theta_WT' and Eq. 9. Both exponents are fixed",
@@ -63,14 +63,14 @@ Tang_2023_tenecteplase <- function() {
         "81.8 kg, the cohort median (Results 'Evaluation of Covariate",
         "Effect by Simulation')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, Cockcroft-Gault, normalized to 70 kg body weight",
-      units              = "mL/min/70 kg",
-      type               = "continuous",
+      description = "Creatinine clearance, Cockcroft-Gault, normalized to 70 kg body weight",
+      units = "mL/min/70 kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CRCL-NM. Methods 'Covariate Model': 'creatinine",
         "clearance (estimated using the Cockroft-Gault equation and",
         "normalized to 70 kg [CRCL-NM])'. NOTE the normalization basis:",
@@ -94,7 +94,7 @@ Tang_2023_tenecteplase <- function() {
         "a renal contribution to CL, statistical significance of CRCL-NM",
         "needs to be interpreted with caution.'"
       ),
-      source_name        = "CRCL-NM"
+      source_name = "CRCL-NM"
     )
   )
 
@@ -106,7 +106,9 @@ Tang_2023_tenecteplase <- function() {
   # encoded here; see the vignette's Assumptions and deviations section.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = paste(
         "Cohort 56.4 +/- 11.4 years (Table S1); median 56 years (Table S4",
         "footnote a). Tested on CL and Vc as a prespecified structural",
@@ -120,7 +122,9 @@ Tang_2023_tenecteplase <- function() {
       )
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "unitless", type = "categorical",
+      description = "Female sex indicator",
+      units = "unitless",
+      type = "categorical",
       notes = paste(
         "75 of 103 patients (72.8%) were male, i.e. 27.2% female (Table",
         "S1). Tested on CL and Vc as a prespecified structural covariate;",
@@ -128,7 +132,9 @@ Tang_2023_tenecteplase <- function() {
       )
     ),
     RACE_BLACK = list(
-      description = "Black / African American race indicator", units = "unitless", type = "categorical",
+      description = "Black / African American race indicator",
+      units = "unitless",
+      type = "categorical",
       notes = paste(
         "14 of 103 patients (13.6%) (Table S1). Tested on CL and Vc; not",
         "selected in the final model. Selected in the alternative covariate",
@@ -141,7 +147,9 @@ Tang_2023_tenecteplase <- function() {
       )
     ),
     RACE_HISPANIC = list(
-      description = "Hispanic / Latino ethnicity indicator", units = "unitless", type = "categorical",
+      description = "Hispanic / Latino ethnicity indicator",
+      units = "unitless",
+      type = "categorical",
       notes = paste(
         "14 of 103 patients (13.6%) (Table S1). Not selected in the final",
         "model; effect -0.0542 on CL in the alternative covariate analysis",
@@ -149,15 +157,21 @@ Tang_2023_tenecteplase <- function() {
       )
     ),
     RACE_ASIAN = list(
-      description = "Asian race indicator", units = "unitless", type = "categorical",
+      description = "Asian race indicator",
+      units = "unitless",
+      type = "categorical",
       notes = "1 of 103 patients (1.0%) (Table S1); pooled into the White reference category for the SCM."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Cohort 38.9 +/- 42.1 U/L (Table S1). Tested on CL as a prespecified structural covariate; not selected."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Cohort 53.7 +/- 33.5 U/L (Table S1). Tested on CL; not selected.",
         "Uniquely among the covariates, ALT was entered as the per-patient",
@@ -169,7 +183,9 @@ Tang_2023_tenecteplase <- function() {
       )
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "mg/dL", type = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       notes = paste(
         "Cohort 1.08 +/- 0.956 mg/dL (Table S1). Tested on CL; not",
         "selected, and removed from the structural covariate set entirely",
@@ -180,16 +196,20 @@ Tang_2023_tenecteplase <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 103L,
-    n_studies      = 1L,
-    age_median     = "56 years (mean 56.4 +/- 11.4)",
-    weight_median  = "81.8 kg (mean 84.1 +/- 20.0)",
+    species = "human",
+    n_subjects = 103L,
+    n_studies = 1L,
+    age_median = "56 years (mean 56.4 +/- 11.4)",
+    weight_median = "81.8 kg (mean 84.1 +/- 20.0)",
     sex_female_pct = 100 * (103 - 75) / 103,
-    race_ethnicity = c(White = 100 * 72 / 103, Black = 100 * 14 / 103,
-                       Hispanic = 100 * 14 / 103, Other = 100 * 2 / 103,
-                       Asian = 100 * 1 / 103),
-    disease_state  = paste(
+    race_ethnicity = c(
+      White = 100 * 72 / 103,
+      Black = 100 * 14 / 103,
+      Hispanic = 100 * 14 / 103,
+      Other = 100 * 2 / 103,
+      Asian = 100 * 1 / 103
+    ),
+    disease_state = paste(
       "Adults with acute myocardial infarction enrolled in the phase II",
       "TIMI 10B study. All patients received 150-325 mg of oral or",
       "intravenous aspirin daily, and heparin before or as soon as",
@@ -209,7 +229,7 @@ Tang_2023_tenecteplase <- function() {
       "(>= 120) mL/min/70 kg; Figure S2 footnote notes four patients with",
       "extreme creatinine values."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intravenous bolus tenecteplase 30 mg (n = 52), 40 mg",
       "(n = 31) or 50 mg (n = 20). The 50 mg dose was suspended on 22",
       "August 1996 and replaced by 40 mg as a conservative safety measure",
@@ -218,7 +238,7 @@ Tang_2023_tenecteplase <- function() {
       "reference weight of 81.8 kg; the dose anticipated for acute",
       "ischemic stroke is 0.25 mg/kg."
     ),
-    notes          = paste(
+    notes = paste(
       "785 PK observations from 103 tenecteplase-treated patients in TIMI",
       "10B. Samples at baseline and 2, 30, 60, 90, 120, 180 and 360",
       "minutes after the start of study drug administration; all samples",

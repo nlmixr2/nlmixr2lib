@@ -16,71 +16,71 @@ Wu_2012_modafinil <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "modafinil", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "modafinil", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "modafinil", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "modafinil", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "modafinil", units = "mg", specimen = "plasma", verified = FALSE),
     central_mfa = list(analyte = "modafinil acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Acts multiplicatively on CL/F, Q/F, and Vp/F of modafinil. Source paper reports sex-specific typical values in Wu 2012 Table 2 ('Male' / 'Female' rows for CL1/F1, CL2/F1, V2/F1); the canonical SEXF encoding is sex = female = 1, so the log-ratio effect e_sexf_<param> equals log(female-typical / male-typical).",
-      source_name        = "Sex (male/female)"
+      notes = "Acts multiplicatively on CL/F, Q/F, and Vp/F of modafinil. Source paper reports sex-specific typical values in Wu 2012 Table 2 ('Male' / 'Female' rows for CL1/F1, CL2/F1, V2/F1); the canonical SEXF encoding is sex = female = 1, so the log-ratio effect e_sexf_<param> equals log(female-typical / male-typical).",
+      source_name = "Sex (male/female)"
     ),
     RACE_CN_MONGOLIAN = list(
-      description        = "PRC-internal Mongolian ethnic-minority indicator, 1 = Mongolian (one of the 56 officially recognised PRC ethnic groups), 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PRC-internal Mongolian ethnic-minority indicator, 1 = Mongolian (one of the 56 officially recognised PRC ethnic groups), 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Han is the typical-value reference for V1; Han + Mongolian are the joint typical-value reference for CL3, encoded by setting both RACE_CN_MONGOLIAN = 0 and the four other indicators = 0 = Han)",
-      notes              = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Mongolian as 2. Acts multiplicatively on Vc/F of modafinil (factor 1.65 vs Han reference; Wu 2012 Table 2 'theta_COV-V1: Mongolian = 1.65'). Does NOT affect CL3/F1F2 of modafinil acid (Mongolian shares the Han reference for the acid clearance per Wu 2012 Table 2 footnote 'theta_COV-CL3 is 1 for Han and Mongolian groups').",
-      source_name        = "Ethnicity (integer 2 = Mongolian)"
+      notes = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Mongolian as 2. Acts multiplicatively on Vc/F of modafinil (factor 1.65 vs Han reference; Wu 2012 Table 2 'theta_COV-V1: Mongolian = 1.65'). Does NOT affect CL3/F1F2 of modafinil acid (Mongolian shares the Han reference for the acid clearance per Wu 2012 Table 2 footnote 'theta_COV-CL3 is 1 for Han and Mongolian groups').",
+      source_name = "Ethnicity (integer 2 = Mongolian)"
     ),
     RACE_CN_KOREAN = list(
-      description        = "PRC-internal Korean ethnic-minority indicator, 1 = Chinese-Korean (one of the 56 officially recognised PRC ethnic groups; primarily resident in northeast China), 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PRC-internal Korean ethnic-minority indicator, 1 = Chinese-Korean (one of the 56 officially recognised PRC ethnic groups; primarily resident in northeast China), 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Han is the typical-value reference for V1; Han + Mongolian for CL3)",
-      notes              = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Korean as 3. Korean shares the Vc/F composite multiplier (0.86 vs Han) with Hui per Wu 2012 Table 2 ('theta_COV-V1: Korean or Hui = 0.86'); the model() block forms the composite via OR-logic (RACE_CN_KOREAN + RACE_CN_HUI). Korean has its own CL3/F1F2 multiplier (1.25 vs Han / Mongolian) per Wu 2012 Table 2 ('theta_COV-CL3: Korean = 1.25').",
-      source_name        = "Ethnicity (integer 3 = Korean)"
+      notes = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Korean as 3. Korean shares the Vc/F composite multiplier (0.86 vs Han) with Hui per Wu 2012 Table 2 ('theta_COV-V1: Korean or Hui = 0.86'); the model() block forms the composite via OR-logic (RACE_CN_KOREAN + RACE_CN_HUI). Korean has its own CL3/F1F2 multiplier (1.25 vs Han / Mongolian) per Wu 2012 Table 2 ('theta_COV-CL3: Korean = 1.25').",
+      source_name = "Ethnicity (integer 3 = Korean)"
     ),
     RACE_CN_UYGUR = list(
-      description        = "PRC-internal Uygur (Uyghur) ethnic-minority indicator, 1 = Uygur (a Turkic Muslim ethnic group primarily resident in the Xinjiang Uygur Autonomous Region; one of the 56 officially recognised PRC ethnic groups), 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PRC-internal Uygur (Uyghur) ethnic-minority indicator, 1 = Uygur (a Turkic Muslim ethnic group primarily resident in the Xinjiang Uygur Autonomous Region; one of the 56 officially recognised PRC ethnic groups), 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Han is the typical-value reference for V1; Han + Mongolian for CL3)",
-      notes              = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Uygur as 4. Uygur has its own Vc/F multiplier (1.33 vs Han) per Wu 2012 Table 2 ('theta_COV-V1: Uygur = 1.33'). Uygur shares the CL3/F1F2 composite multiplier (1.15 vs Han / Mongolian) with Hui per Wu 2012 Table 2 ('theta_COV-CL3: Uygur or Hui = 1.15'); the model() block forms the composite via OR-logic (RACE_CN_UYGUR + RACE_CN_HUI).",
-      source_name        = "Ethnicity (integer 4 = Uygur)"
+      notes = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Uygur as 4. Uygur has its own Vc/F multiplier (1.33 vs Han) per Wu 2012 Table 2 ('theta_COV-V1: Uygur = 1.33'). Uygur shares the CL3/F1F2 composite multiplier (1.15 vs Han / Mongolian) with Hui per Wu 2012 Table 2 ('theta_COV-CL3: Uygur or Hui = 1.15'); the model() block forms the composite via OR-logic (RACE_CN_UYGUR + RACE_CN_HUI).",
+      source_name = "Ethnicity (integer 4 = Uygur)"
     ),
     RACE_CN_HUI = list(
-      description        = "PRC-internal Hui ethnic-minority indicator, 1 = Hui (a Sinophone Muslim ethnic group widely distributed across northwestern China with the largest concentration in the Ningxia Hui Autonomous Region; one of the 56 officially recognised PRC ethnic groups), 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PRC-internal Hui ethnic-minority indicator, 1 = Hui (a Sinophone Muslim ethnic group widely distributed across northwestern China with the largest concentration in the Ningxia Hui Autonomous Region; one of the 56 officially recognised PRC ethnic groups), 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Han is the typical-value reference for V1; Han + Mongolian for CL3)",
-      notes              = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Hui as 5. Hui shares the Vc/F composite multiplier (0.86 vs Han) with Korean per Wu 2012 Table 2 ('theta_COV-V1: Korean or Hui = 0.86') and the CL3/F1F2 composite multiplier (1.15 vs Han / Mongolian) with Uygur per Wu 2012 Table 2 ('theta_COV-CL3: Uygur or Hui = 1.15'); both composites are formed via OR-logic in model().",
-      source_name        = "Ethnicity (integer 5 = Hui)"
+      notes = "Wu 2012 Table 1 'Ethnicity (male/female) [classification]' column codes Hui as 5. Hui shares the Vc/F composite multiplier (0.86 vs Han) with Korean per Wu 2012 Table 2 ('theta_COV-V1: Korean or Hui = 0.86') and the CL3/F1F2 composite multiplier (1.15 vs Han / Mongolian) with Uygur per Wu 2012 Table 2 ('theta_COV-CL3: Uygur or Hui = 1.15'); both composites are formed via OR-logic in model().",
+      source_name = "Ethnicity (integer 5 = Hui)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 49L,
-    n_studies      = 1L,
-    age_range      = "18-26 years (mean 22.4, SD 1.7)",
-    age_median     = "approximately 22 years (mean)",
-    weight_range   = "44-88 kg (mean 60.9, SD 10.6)",
-    weight_median  = "60.9 kg (mean)",
-    height_range   = "150-184 cm (mean 166.6, SD 8.3)",
-    bmi_range      = "16.9-31.6 kg/m^2 (mean 21.9, SD 3.1)",
+    species = "human",
+    n_subjects = 49L,
+    n_studies = 1L,
+    age_range = "18-26 years (mean 22.4, SD 1.7)",
+    age_median = "approximately 22 years (mean)",
+    weight_range = "44-88 kg (mean 60.9, SD 10.6)",
+    weight_median = "60.9 kg (mean)",
+    height_range = "150-184 cm (mean 166.6, SD 8.3)",
+    bmi_range = "16.9-31.6 kg/m^2 (mean 21.9, SD 3.1)",
     sex_female_pct = 51.0,
     race_ethnicity = c(Han = 20.4, Mongolian = 20.4, Korean = 18.4, Uygur = 20.4, Hui = 20.4),
-    disease_state  = "Healthy young volunteers; hepatic function and routine blood / biochemical parameters within normal range; no medications for at least 72 h before dosing; alcohol and smoking forbidden for at least 72 h before dosing and during sampling; females studied during luteal phase of the menstrual cycle.",
-    dose_range     = "Single 200 mg oral modafinil dose (two 100 mg tablets, Jiangzhong Pharmaceutical Co Ltd, China) with 200 mL of water, after at least 8 h fasting.",
-    regions        = "China (single-centre study, Shenyang Northern Hospital).",
-    notes          = "Ethnicity counts (Table 1): Han 10 (5 male / 5 female), Mongolian 10 (5/5), Korean 9 (4/5), Uygur 10 (5/5), Hui 10 (5/5); minority families were single-ethnicity for three generations. Demographics from Wu 2012 Table 1; PK parameter estimates from Wu 2012 Table 2 'Final model'. The 49 subjects contributed 637 plasma concentration observations for each analyte. PopPK fitted with NONMEM VII (ICON) FOCE-I with interaction, ADVAN6 differential-equation system, L2 option for paired modafinil and acid observations."
+    disease_state = "Healthy young volunteers; hepatic function and routine blood / biochemical parameters within normal range; no medications for at least 72 h before dosing; alcohol and smoking forbidden for at least 72 h before dosing and during sampling; females studied during luteal phase of the menstrual cycle.",
+    dose_range = "Single 200 mg oral modafinil dose (two 100 mg tablets, Jiangzhong Pharmaceutical Co Ltd, China) with 200 mL of water, after at least 8 h fasting.",
+    regions = "China (single-centre study, Shenyang Northern Hospital).",
+    notes = "Ethnicity counts (Table 1): Han 10 (5 male / 5 female), Mongolian 10 (5/5), Korean 9 (4/5), Uygur 10 (5/5), Hui 10 (5/5); minority families were single-ethnicity for three generations. Demographics from Wu 2012 Table 1; PK parameter estimates from Wu 2012 Table 2 'Final model'. The 49 subjects contributed 637 plasma concentration observations for each analyte. PopPK fitted with NONMEM VII (ICON) FOCE-I with interaction, ADVAN6 differential-equation system, L2 option for paired modafinil and acid observations."
   )
 
   # Implementation notes (see vignette 'Assumptions and deviations' for the

@@ -23,7 +23,8 @@ Vonk_2025_ivacaftor <- function() {
     "spots. Because the paediatric data were sparse, the model was fitted",
     "with the NONMEM PRIOR subroutine using adolescent/adult priors from",
     "the Symdeko registration document; CL and its IIV were estimated",
-    "without a prior.")
+    "without a prior."
+  )
   reference <- "Vonk SEM, Terheggen-Lagro SWJ, Haarman EG, Janssens HM, Maitland-van der Zee AH, Kemper EM, Mathot RAA. Real-world population pharmacokinetics of tezacaftor-ivacaftor in children with cystic fibrosis: The SYM-CF study. Br J Clin Pharmacol. 2025;91(10):2969-2978. doi:10.1002/bcp.70131"
   vignette <- "Vonk_2025_tezacaftor_ivacaftor"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
@@ -33,53 +34,55 @@ Vonk_2025_ivacaftor <- function() {
   # metabolite per collection matrix; the canonical propSd_<output>
   # matcher recognises only the single-token metabolite form.
   paper_specific_residual_sds <- c(
-    "propSd_m1_plasma", "propSd_m1_dbs",
-    "propSd_m6_plasma", "propSd_m6_dbs"
+    "propSd_m1_plasma",
+    "propSd_m1_dbs",
+    "propSd_m6_plasma",
+    "propSd_m6_dbs"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only structural covariate retained in the final model. Applied as fixed allometric scaling to the parent and to both metabolites: CL and Q scale with (WT/70)^0.75 and Vc and Vp with (WT/70)^1 (Vonk 2025 Table 2 footnote a). Weight scaling was predefined rather than selected by the covariate search; the covariates actually screened on CL (age, adherence, CF mutation) showed no relationship (Vonk 2025 Section 3.2.2). Study weight range 23.6-69.8 kg, median 43.5 kg (Table 1).",
-      source_name        = "BW"
+      notes = "The only structural covariate retained in the final model. Applied as fixed allometric scaling to the parent and to both metabolites: CL and Q scale with (WT/70)^0.75 and Vc and Vp with (WT/70)^1 (Vonk 2025 Table 2 footnote a). Weight scaling was predefined rather than selected by the covariate search; the covariates actually screened on CL (age, adherence, CF mutation) showed no relationship (Vonk 2025 Section 3.2.2). Study weight range 23.6-69.8 kg, median 43.5 kg (Table 1).",
+      source_name = "BW"
     ),
     SAMPLE_CAPILLARY = list(
-      description        = "Dried blood spot (capillary) sampling indicator for the observation record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dried blood spot (capillary) sampling indicator for the observation record",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (venous plasma sample)",
-      notes              = "1 = the ivacaftor-M1 / ivacaftor-M6 concentration came from a finger-prick dried blood spot (converted to an estimated plasma concentration by the Passing-Bablok regression of Vonk's earlier method paper); 0 = the concentration was measured directly in venous plasma. Per-observation indicator; a subject contributes both kinds of record. Used only to switch the proportional residual-error magnitude for the two metabolite outputs (Vonk 2025 Section 2.3: 'For ivacaftor-M1 and M6 separate proportional error models for plasma and DBS samples were implemented'); the parent ivacaftor observation has a single residual error covering both matrices. Of the 97 study samples, 13 (13%) were plasma and 84 (87%) were DBS (Table 1). Set to 1 for the whole simulation when reproducing the paper's DBS-dominated real-world design.",
-      source_name        = "DBS"
+      notes = "1 = the ivacaftor-M1 / ivacaftor-M6 concentration came from a finger-prick dried blood spot (converted to an estimated plasma concentration by the Passing-Bablok regression of Vonk's earlier method paper); 0 = the concentration was measured directly in venous plasma. Per-observation indicator; a subject contributes both kinds of record. Used only to switch the proportional residual-error magnitude for the two metabolite outputs (Vonk 2025 Section 2.3: 'For ivacaftor-M1 and M6 separate proportional error models for plasma and DBS samples were implemented'); the parent ivacaftor observation has a single residual error covering both matrices. Of the 97 study samples, 13 (13%) were plasma and 84 (87%) were DBS (Table 1). Set to 1 for the whole simulation when reproducing the paper's DBS-dominated real-world design.",
+      source_name = "DBS"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "ivacaftor",    units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ivacaftor",    units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "ivacaftor",    units = "mg", specimen = "plasma", verified = TRUE),
-    central_m1  = list(analyte = "ivacaftor-M1", units = "mg", specimen = "plasma", verified = TRUE),
-    central_m6  = list(analyte = "ivacaftor-M6", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "ivacaftor", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ivacaftor", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "ivacaftor", units = "mg", specimen = "plasma", verified = TRUE),
+    central_m1 = list(analyte = "ivacaftor-M1", units = "mg", specimen = "plasma", verified = TRUE),
+    central_m6 = list(analyte = "ivacaftor-M6", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    age_range      = "6 to 17 years; median 12 years (Vonk 2025 Table 1)",
-    age_median     = "12 years",
-    weight_range   = "23.6 to 69.8 kg (Vonk 2025 Table 1)",
-    weight_median  = "43.5 kg",
-    height_range   = "122 to 191 cm; median 153 cm (Vonk 2025 Table 1)",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "6 to 17 years; median 12 years (Vonk 2025 Table 1)",
+    age_median = "12 years",
+    weight_range = "23.6 to 69.8 kg (Vonk 2025 Table 1)",
+    weight_median = "43.5 kg",
+    height_range = "122 to 191 cm; median 153 cm (Vonk 2025 Table 1)",
     sex_female_pct = 52,
-    disease_state  = "Children with cystic fibrosis carrying at least one F508del mutation: 16 (76%) homozygous F508del, 5 (24%) heterozygous F508del (4 with A455E, 1 with 3849+10kbC>T). Exocrine pancreatic insufficiency in 20 (95%), distal intestinal obstruction syndrome in 4 (19%), no CF-related diabetes.",
-    dose_range     = "Ivacaftor 75 mg twice daily (6-11 years, <30 kg; 150 mg/day) or 150 mg twice daily (6-11 years >=30 kg, and 12-17 years; 300 mg/day), per the Symkevi product information; given with the once-daily tezacaftor component.",
-    regions        = "The Netherlands (three Dutch hospitals; enrolment May 2021 to August 2022)",
-    dosing_groups  = "6-11 years <30 kg, n = 3 (14%); 6-11 years >=30 kg, n = 7 (33%); 12-17 years, n = 11 (52%) (Vonk 2025 Table 1)",
+    disease_state = "Children with cystic fibrosis carrying at least one F508del mutation: 16 (76%) homozygous F508del, 5 (24%) heterozygous F508del (4 with A455E, 1 with 3849+10kbC>T). Exocrine pancreatic insufficiency in 20 (95%), distal intestinal obstruction syndrome in 4 (19%), no CF-related diabetes.",
+    dose_range = "Ivacaftor 75 mg twice daily (6-11 years, <30 kg; 150 mg/day) or 150 mg twice daily (6-11 years >=30 kg, and 12-17 years; 300 mg/day), per the Symkevi product information; given with the once-daily tezacaftor component.",
+    regions = "The Netherlands (three Dutch hospitals; enrolment May 2021 to August 2022)",
+    dosing_groups = "6-11 years <30 kg, n = 3 (14%); 6-11 years >=30 kg, n = 7 (33%); 12-17 years, n = 11 (52%) (Vonk 2025 Table 1)",
     n_observations = "97 PK samples in total across all five analytes (13 plasma, 84 dried blood spot); median 5 samples per patient (range 2-7). Three samples (3%) were excluded for incorrect DBS sampling or missing dosing information, and three ivacaftor-M6 samples (3%) were below the LLOQ and excluded.",
-    notes          = "Prospective, observational, multicentre real-world PK study (SYM-CF), METC Amsterdam UMC ABR NL75811.018.21. Concentrations were quantified by LC-MS/MS (LLOQ 0.01 mg/L, ULOQ 10 mg/L). Dried blood spot concentrations were converted to estimated plasma concentrations by a Passing-Bablok regression. Fitted in NONMEM 7.5.1 with FOCE-I using the PRIOR subroutine; adolescent/adult prior information came from the Symdeko registration document, which contained no ivacaftor metabolite model. Patients had used tezacaftor-ivacaftor for at least two weeks before inclusion, so all data are at steady state."
+    notes = "Prospective, observational, multicentre real-world PK study (SYM-CF), METC Amsterdam UMC ABR NL75811.018.21. Concentrations were quantified by LC-MS/MS (LLOQ 0.01 mg/L, ULOQ 10 mg/L). Dried blood spot concentrations were converted to estimated plasma concentrations by a Passing-Bablok regression. Fitted in NONMEM 7.5.1 with FOCE-I using the PRIOR subroutine; adolescent/adult prior information came from the Symdeko registration document, which contained no ivacaftor metabolite model. Patients had used tezacaftor-ivacaftor for at least two weeks before inclusion, so all data are at steady state."
   )
 
   ini({

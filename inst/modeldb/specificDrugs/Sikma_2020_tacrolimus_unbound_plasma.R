@@ -8,41 +8,46 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "tacrolimus unbound plasma",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HCT = list(
-      description        = "Hematocrit, expressed as a fraction of total blood volume",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Hematocrit, expressed as a fraction of total blood volume",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate. Last-observation-carried-forward per Sikma 2020 Methods (Mixed-Effects Modeling): hematocrit was introduced into the model by multiplying Bmax (and Nplasma in a sensitivity branch) with the observed hematocrit. Study-population medians by day were 0.31, 0.28, 0.27, 0.27, 0.27, 0.28 across days 1-6 post-transplant (Sikma 2020 Table 1). Source paper reports HCT as a fraction (0-1) directly in the binding equation, not as percent; the canonical-register HCT entry's units (%) are explicitly overridden here so that the published values for Bmax (2700) and Kd (0.142) reproduce the paper's UPC equation directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model.",
-      source_name        = "Ht"
+      notes = "Time-varying covariate. Last-observation-carried-forward per Sikma 2020 Methods (Mixed-Effects Modeling): hematocrit was introduced into the model by multiplying Bmax (and Nplasma in a sensitivity branch) with the observed hematocrit. Study-population medians by day were 0.31, 0.28, 0.27, 0.27, 0.27, 0.28 across days 1-6 post-transplant (Sikma 2020 Table 1). Source paper reports HCT as a fraction (0-1) directly in the binding equation, not as percent; the canonical-register HCT entry's units (%) are explicitly overridden here so that the published values for Bmax (2700) and Kd (0.142) reproduce the paper's UPC equation directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model.",
+      source_name = "Ht"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 30L,
-    n_studies       = 1L,
-    n_observations  = "1180 tacrolimus concentrations across whole-blood, total plasma, and unbound plasma matrices; 119 whole-blood 0-12 h profiles (median 5 per patient, range 1-6) and 90 total-and-unbound plasma profiles (median 3 per patient, range 0-6); 46 of 1180 (3.9%) below the lower limit of quantification were discarded.",
-    age_range       = "34-60 years (Q1-Q3 of 30 patients)",
-    age_median      = "43 years",
-    weight_range    = "61-86 kg (Q1-Q3)",
-    weight_median   = "73.5 kg",
-    height_median   = "173.5 cm",
-    sex_female_pct  = 50.0,
-    race_ethnicity  = "Not reported in source paper (single-centre Utrecht, Netherlands cohort).",
-    disease_state   = "Adult thoracic organ transplant recipients (10 heart, 20 lung; 18 of 20 lung were double-lung transplantations) admitted to the intensive care unit during the first 6 postoperative days. Heart indications: 5 ischemic and 5 non-ischemic dilated cardiomyopathy. Lung indications: cystic fibrosis (10), chronic obstructive pulmonary disease (3), idiopathic pulmonary arterial hypertension (2), idiopathic pulmonary fibrosis (2), bronchiectasis (1), Langerhans cell histiocytosis (1), sarcoidosis (1).",
-    dose_range      = "Oral tacrolimus (Prograft) twice daily, starting at 0.1 mg/kg/dose for lung recipients and 2 mg/dose for heart recipients on the day of transplantation; thereafter titrated to a target whole-blood trough of 9-15 ng/mL (12-hour post-dose, 6 a.m.).",
-    regions         = "Netherlands (University Medical Center Utrecht).",
-    ecmo_frequency  = "8 of 30 patients (27%) received postoperative ECMO with a median duration of 4 days (Q1-Q3 2-6).",
-    baseline_labs   = "Median (Q1-Q3) day-1 hematocrit 0.31 (0.28-0.35); day-1 albumin 26.2 g/L (22.5-29.3); day-1 HDL 0.84 mmol/L (0.70-1.06); day-1 alpha-1-acid glycoprotein 0.89 g/L (0.76-1.18); day-1 pH 7.39 (7.33-7.43); day-1 packed-red-blood-cell transfusion volume 275 mL (275-550). Hematocrit fell from a day-1 median of 0.31 to 0.27-0.28 by days 3-6 (Sikma 2020 Table 1).",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    n_observations = "1180 tacrolimus concentrations across whole-blood, total plasma, and unbound plasma matrices; 119 whole-blood 0-12 h profiles (median 5 per patient, range 1-6) and 90 total-and-unbound plasma profiles (median 3 per patient, range 0-6); 46 of 1180 (3.9%) below the lower limit of quantification were discarded.",
+    age_range = "34-60 years (Q1-Q3 of 30 patients)",
+    age_median = "43 years",
+    weight_range = "61-86 kg (Q1-Q3)",
+    weight_median = "73.5 kg",
+    height_median = "173.5 cm",
+    sex_female_pct = 50.0,
+    race_ethnicity = "Not reported in source paper (single-centre Utrecht, Netherlands cohort).",
+    disease_state = "Adult thoracic organ transplant recipients (10 heart, 20 lung; 18 of 20 lung were double-lung transplantations) admitted to the intensive care unit during the first 6 postoperative days. Heart indications: 5 ischemic and 5 non-ischemic dilated cardiomyopathy. Lung indications: cystic fibrosis (10), chronic obstructive pulmonary disease (3), idiopathic pulmonary arterial hypertension (2), idiopathic pulmonary fibrosis (2), bronchiectasis (1), Langerhans cell histiocytosis (1), sarcoidosis (1).",
+    dose_range = "Oral tacrolimus (Prograft) twice daily, starting at 0.1 mg/kg/dose for lung recipients and 2 mg/dose for heart recipients on the day of transplantation; thereafter titrated to a target whole-blood trough of 9-15 ng/mL (12-hour post-dose, 6 a.m.).",
+    regions = "Netherlands (University Medical Center Utrecht).",
+    ecmo_frequency = "8 of 30 patients (27%) received postoperative ECMO with a median duration of 4 days (Q1-Q3 2-6).",
+    baseline_labs = "Median (Q1-Q3) day-1 hematocrit 0.31 (0.28-0.35); day-1 albumin 26.2 g/L (22.5-29.3); day-1 HDL 0.84 mmol/L (0.70-1.06); day-1 alpha-1-acid glycoprotein 0.89 g/L (0.76-1.18); day-1 pH 7.39 (7.33-7.43); day-1 packed-red-blood-cell transfusion volume 275 mL (275-550). Hematocrit fell from a day-1 median of 0.31 to 0.27-0.28 by days 3-6 (Sikma 2020 Table 1).",
     immunosuppression = "Triple therapy with tacrolimus + a cell-cycle blocker + an interleukin-2 inhibitor + corticosteroids per institutional protocol.",
-    notes           = "All thoracic organ recipients admitted to the Utrecht ICU between June 2013 and March 2015 (NTR 3912 / EudraCT 2012-001909-24). Blood samples taken at 0, 2 (or 3 in cystic fibrosis), 6, and 12 hours after administration; collected between 6 p.m. and 6 a.m. Unbound tacrolimus quantified by LC-MS/MS (Stienstra method) with assay range 1.00-200 pg/mL (LLOQ 1 pg/mL in ultrafiltrate, 100 pg/mL in plasma); whole-blood tacrolimus by HPLC-MS/MS with LLOQ 0.5 ng/mL (assay range 1-50 ng/mL)."
+    notes = "All thoracic organ recipients admitted to the Utrecht ICU between June 2013 and March 2015 (NTR 3912 / EudraCT 2012-001909-24). Blood samples taken at 0, 2 (or 3 in cystic fibrosis), 6, and 12 hours after administration; collected between 6 p.m. and 6 a.m. Unbound tacrolimus quantified by LC-MS/MS (Stienstra method) with assay range 1.00-200 pg/mL (LLOQ 1 pg/mL in ultrafiltrate, 100 pg/mL in plasma); whole-blood tacrolimus by HPLC-MS/MS with LLOQ 0.5 ng/mL (assay range 1-50 ng/mL)."
   )
 
   ini({

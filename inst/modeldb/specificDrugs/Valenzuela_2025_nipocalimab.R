@@ -9,72 +9,72 @@ Valenzuela_2025_nipocalimab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "nipocalimab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "nipocalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nipocalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nipocalimab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "target antigen", units = "mg", specimen = "not applicable", verified = FALSE),
-    total_igg    = list(analyte = "IgG", units = "mg", specimen = "plasma", verified = FALSE),
-    effect       = list(analyte = "myasthenia gravis effect", units = "mg", specimen = "not applicable", verified = FALSE)
+    total_igg = list(analyte = "IgG", units = "mg", specimen = "plasma", verified = FALSE),
+    effect = list(analyte = "myasthenia gravis effect", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline); allometric scaling (WT/75)^exponent on CL, Q, Vc, Vp with exponents fixed at 0.75 (CL, Q) and 1 (Vc, Vp).",
-      source_name        = "WT"
+      notes = "Time-fixed (baseline); allometric scaling (WT/75)^exponent on CL, Q, Vc, Vp with exponents fixed at 0.75 (CL, Q) and 1 (Vc, Vp).",
+      source_name = "WT"
     ),
     ELISA = list(
-      description        = "Bioanalytical assay indicator: 1 = ELISA (LLOQ 0.150 ug/mL), 0 = ECLIA (LLOQ 0.010 ug/mL)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Bioanalytical assay indicator: 1 = ELISA (LLOQ 0.150 ug/mL), 0 = ECLIA (LLOQ 0.010 ug/mL)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECLIA)",
-      notes              = "Switches the additive PK residual magnitude. Assay is study-fixed: ELISA for studies MOM-M281-001, MOM-M281-007, MOM-M281-010; ECLIA for studies EDI1001, EDI1002, and MOM-M281-004 (Vivacity-MG).",
-      source_name        = "ELISA"
+      notes = "Switches the additive PK residual magnitude. Assay is study-fixed: ELISA for studies MOM-M281-001, MOM-M281-007, MOM-M281-010; ECLIA for studies EDI1001, EDI1002, and MOM-M281-004 (Vivacity-MG).",
+      source_name = "ELISA"
     ),
     STUDY_NIPOCALIMAB_PHASE1 = list(
-      description        = "Study-phase indicator: 1 = Phase 1 study (healthy participants), 0 = Phase 2 Vivacity-MG study in gMG",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-phase indicator: 1 = Phase 1 study (healthy participants), 0 = Phase 2 Vivacity-MG study in gMG",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 2 MOM-M281-004 / Vivacity-MG)",
-      notes              = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2). Renamed from generic canonical PHASE1 to paper-specific STUDY_NIPOCALIMAB_PHASE1 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE1 token collided with Farrell 2012's PHASE2 canonical that picks the opposite reference category).",
-      source_name        = "PHASE1"
+      notes = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2). Renamed from generic canonical PHASE1 to paper-specific STUDY_NIPOCALIMAB_PHASE1 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE1 token collided with Farrell 2012's PHASE2 canonical that picks the opposite reference category).",
+      source_name = "PHASE1"
     ),
     STUDY_M281_004 = list(
-      description        = "Vivacity-MG study indicator: 1 = subject enrolled in MOM-M281-004 (NCT03772587), 0 = other study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Vivacity-MG study indicator: 1 = subject enrolled in MOM-M281-004 (NCT03772587), 0 = other study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Vivacity-MG studies)",
-      notes              = "Scales IgG baseline by FRIgG0_M281_004 = 0.777 for MOM-M281-004 participants; IgG baseline is equal to IgG0 (typical 11.4 g/L) for other studies.",
-      source_name        = "M281_004"
+      notes = "Scales IgG baseline by FRIgG0_M281_004 = 0.777 for MOM-M281-004 participants; IgG baseline is equal to IgG0 (typical 11.4 g/L) for other studies.",
+      source_name = "M281_004"
     ),
     SCORE_MGADL = list(
-      description        = "Baseline Myasthenia Gravis Activities of Daily Living score (0-24; higher = more severe)",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Baseline Myasthenia Gravis Activities of Daily Living score (0-24; higher = more severe)",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline); power-form effect (SCORE_MGADL/7)^E_IgG on sigg and (SCORE_MGADL/7)^E_ADL on IDec_placebo. Set SCORE_MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
-      source_name        = "SCORE_MGADL"
+      notes = "Time-fixed (baseline); power-form effect (SCORE_MGADL/7)^E_IgG on sigg and (SCORE_MGADL/7)^E_ADL on IDec_placebo. Set SCORE_MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
+      source_name = "SCORE_MGADL"
     )
   )
 
   population <- list(
-    n_subjects     = 228L,
-    n_studies      = 6L,
-    age_range      = "18-83 years",
-    age_median     = "41.3 years (mean; SD 16.2)",
-    weight_range   = "45-188 kg",
-    weight_median  = "75.9 kg (mean; SD 19.2)",
+    n_subjects = 228L,
+    n_studies = 6L,
+    age_range = "18-83 years",
+    age_median = "41.3 years (mean; SD 16.2)",
+    weight_range = "45-188 kg",
+    weight_median = "75.9 kg (mean; SD 19.2)",
     sex_female_pct = 52.6,
     race_ethnicity = c(White = 68.0, Black = 3.51, Asian = 25.0, Other = 3.51),
-    disease_state  = "Pooled healthy adult participants (160) and adult participants with generalized myasthenia gravis (68, from Vivacity-MG / MOM-M281-004)",
-    dose_range     = "0.3-60 mg/kg single IV dose; 5-60 mg/kg IV Q4W or Q2W (gMG cohort)",
-    regions        = "Pooled phase 1 (healthy) and phase 2 (gMG) studies; populations include Japanese (study MOM-M281-010) and Chinese (study EDI1002) healthy participants",
+    disease_state = "Pooled healthy adult participants (160) and adult participants with generalized myasthenia gravis (68, from Vivacity-MG / MOM-M281-004)",
+    dose_range = "0.3-60 mg/kg single IV dose; 5-60 mg/kg IV Q4W or Q2W (gMG cohort)",
+    regions = "Pooled phase 1 (healthy) and phase 2 (gMG) studies; populations include Japanese (study MOM-M281-010) and Chinese (study EDI1002) healthy participants",
     n_subjects_healthy = 160L,
-    n_subjects_gmg     = 68L,
-    mgadl_range_gmg    = "6-24 points (mean 9.8; Vivacity-MG baseline)",
-    notes              = "Demographics from Valenzuela 2025 Table 2. Trials: NCT02828046 (MOM-M281-001), sequential-dose phase 1 (MOM-M281-007), dose-ranging Japanese phase 1 (MOM-M281-010), NCT04848558 (EDI1001), NCT05151692 (EDI1002), NCT03772587 (MOM-M281-004 / Vivacity-MG)."
+    n_subjects_gmg = 68L,
+    mgadl_range_gmg = "6-24 points (mean 9.8; Vivacity-MG baseline)",
+    notes = "Demographics from Valenzuela 2025 Table 2. Trials: NCT02828046 (MOM-M281-001), sequential-dose phase 1 (MOM-M281-007), dose-ranging Japanese phase 1 (MOM-M281-010), NCT04848558 (EDI1001), NCT05151692 (EDI1002), NCT03772587 (MOM-M281-004 / Vivacity-MG)."
   )
 
   ini({

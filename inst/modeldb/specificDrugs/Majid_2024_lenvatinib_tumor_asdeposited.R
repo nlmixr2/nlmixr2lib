@@ -17,74 +17,74 @@ Majid_2024_lenvatinib_tumor_asdeposited <- function() {
   paper_specific_compartments <- c("tie2", "ang2")
   paper_specific_etas <- c("etaibase_prop", "etaibase_add")
   units <- list(
-    time          = "week",
-    dosing        = "n/a (no drug-dosing events; lenvatinib exposure enters as the AUC_LEN covariate, not via a PK ODE)",
+    time = "week",
+    dosing = "n/a (no drug-dosing events; lenvatinib exposure enters as the AUC_LEN covariate, not via a PK ODE)",
     concentration = "mm (RECIST 1.1 sum of longest diameters of target lesions; not a drug concentration)"
   )
 
   covariateData <- list(
     AUC_LEN = list(
-      description        = "Lenvatinib average steady-state daily AUC over the interval between two tumor assessments, driving the Emax tumor-shrinkage term and the Tie-2 / Ang-2 turnover sub-models.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Lenvatinib average steady-state daily AUC over the interval between two tumor assessments, driving the Emax tumor-shrinkage term and the Tie-2 / Ang-2 turnover sub-models.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, step-wise between tumor assessments. Majid 2024 Methods: 'Exposure is lenvatinib AUC calculated based on the average dose between two tumor assessments.' In the source sequential fit it is the NONMEM data column LEVAVAUC, derived from the upstream population PK run (Text S1: AUC = 1000 * F1 * DGRP / CL). This model carries AUC_LEN on the register's ng*h/mL scale so it is interchangeable with the value used by Majid_2024_lenvatinib_biomarkers.R, and reproduces the Text S3 rescaling internally as auc_ug <- AUC_LEN / 1000. That internal rescaling is load-bearing here: it is what creates the 1000-fold mismatch against the unscaled Tie-2 EC50 that this as-deposited variant exists to preserve. Set to 0 for placebo subjects and off-treatment periods.",
-      source_name        = "LEVAVAUC"
+      notes = "Time-varying, step-wise between tumor assessments. Majid 2024 Methods: 'Exposure is lenvatinib AUC calculated based on the average dose between two tumor assessments.' In the source sequential fit it is the NONMEM data column LEVAVAUC, derived from the upstream population PK run (Text S1: AUC = 1000 * F1 * DGRP / CL). This model carries AUC_LEN on the register's ng*h/mL scale so it is interchangeable with the value used by Majid_2024_lenvatinib_biomarkers.R, and reproduces the Text S3 rescaling internally as auc_ug <- AUC_LEN / 1000. That internal rescaling is load-bearing here: it is what creates the 1000-fold mismatch against the unscaled Tie-2 EC50 that this as-deposited variant exists to preserve. Set to 0 for placebo subjects and off-treatment periods.",
+      source_name = "LEVAVAUC"
     ),
     TUM_SLD = list(
-      description        = "Observed baseline RECIST 1.1 sum of longest diameters of target lesions at study entry; per-subject, time-fixed. Used as the deterministic component of the tumor ODE initial condition.",
-      units              = "mm",
-      type               = "continuous",
+      description = "Observed baseline RECIST 1.1 sum of longest diameters of target lesions at study entry; per-subject, time-fixed. Used as the deterministic component of the tumor ODE initial condition.",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Text S3 sets BAS = BTM (the baseline tumor measurement data column) at TIME = 0 and forms the individual initial condition as IBASE = BAS + ETA(5)*THETA(5)*BAS + ETA(6)*THETA(6) with OMEGA(5,5) = OMEGA(6,6) = 1 FIX -- i.e. the observed baseline perturbed by the model's own combined residual error, the IPP-style baseline-residual construction also used in Hansson_2013b_sunitinib.R. Tumor-size PK/PD population baseline: mean 70.2 mm, median 59.5 mm, range 10.2-331.0 mm (Table S2).",
-      source_name        = "BTM"
+      notes = "Text S3 sets BAS = BTM (the baseline tumor measurement data column) at TIME = 0 and forms the individual initial condition as IBASE = BAS + ETA(5)*THETA(5)*BAS + ETA(6)*THETA(6) with OMEGA(5,5) = OMEGA(6,6) = 1 FIX -- i.e. the observed baseline perturbed by the model's own combined residual error, the IPP-style baseline-residual construction also used in Hansson_2013b_sunitinib.R. Tumor-size PK/PD population baseline: mean 70.2 mm, median 59.5 mm, range 10.2-331.0 mm (Table S2).",
+      source_name = "BTM"
     )
   )
 
   compartmentData <- list(
     tie2 = list(
-      analyte  = "soluble TEK tyrosine kinase 2 (Tie-2)",
-      units    = "ng/mL",
+      analyte = "soluble TEK tyrosine kinase 2 (Tie-2)",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     ),
     ang2 = list(
-      analyte  = "angiopoietin 2 (Ang-2)",
-      units    = "ng/mL",
+      analyte = "angiopoietin 2 (Ang-2)",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     ),
     tumor = list(
-      analyte  = "tumor burden (RECIST 1.1 sum of longest diameters of target lesions)",
-      units    = "mm",
+      analyte = "tumor burden (RECIST 1.1 sum of longest diameters of target lesions)",
+      units = "mm",
       specimen = "not applicable",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 558L,
-    n_studies      = 2L,
-    age_range      = "not reported as a range; 299 of 558 subjects were < 65 years and 258 were >= 65 years (Table S2)",
-    weight_range   = "31.0-190 kg",
-    weight_median  = "75 kg",
+    species = "human",
+    n_subjects = 558L,
+    n_studies = 2L,
+    age_range = "not reported as a range; 299 of 558 subjects were < 65 years and 258 were >= 65 years (Table S2)",
+    weight_range = "31.0-190 kg",
+    weight_median = "75 kg",
     sex_female_pct = 48.6,
     race_ethnicity = c(
-      White                             = 74.0,
+      White = 74.0,
       Asian_other_than_Chinese_Japanese = 9.3,
-      Japanese                          = 7.3,
-      Missing                           = 5.0,
-      Black_African_American            = 2.2,
-      Others                            = 2.0,
-      Chinese                           = 0.2
+      Japanese = 7.3,
+      Missing = 5.0,
+      Black_African_American = 2.2,
+      Others = 2.0,
+      Chinese = 0.2
     ),
-    disease_state  = "Radioiodine-refractory differentiated thyroid cancer (RR-DTC), with measurable target lesions by RECIST 1.1.",
-    dose_range     = "Lenvatinib 18 or 24 mg orally once daily starting dose with protocol-driven reductions, or placebo.",
-    regions        = "Multicenter: phase 3 study E7080-G000-303 and phase 2 post-marketing study E7080-G000-211.",
+    disease_state = "Radioiodine-refractory differentiated thyroid cancer (RR-DTC), with measurable target lesions by RECIST 1.1.",
+    dose_range = "Lenvatinib 18 or 24 mg orally once daily starting dose with protocol-driven reductions, or placebo.",
+    regions = "Multicenter: phase 3 study E7080-G000-303 and phase 2 post-marketing study E7080-G000-211.",
     n_observations = "3413 tumor-size observations from 558 RR-DTC patients.",
-    tumor_burden   = "Baseline tumor size (sum of longest diameters of target lesions): mean 70.2 mm (SD 44.1), median 59.5 mm, range 10.2-331.0 mm (Table S2).",
-    notes          = "Demographics from Majid 2024 Table S2 (tumor-size PK/PD population, N = 558). Sex 287 male / 271 female gives 48.6 percent female. Tumor assessments were performed every 8 weeks during the randomization phase (28-day cycles) and every 12 weeks in the extension phase, by independent reviewer for study 303 and by investigator for study 211. Two subjects (IDs 3266 and 3261) were excluded in Text S3 $DATA IGNORE."
+    tumor_burden = "Baseline tumor size (sum of longest diameters of target lesions): mean 70.2 mm (SD 44.1), median 59.5 mm, range 10.2-331.0 mm (Table S2).",
+    notes = "Demographics from Majid 2024 Table S2 (tumor-size PK/PD population, N = 558). Sex 287 male / 271 female gives 48.6 percent female. Tumor assessments were performed every 8 weeks during the randomization phase (28-day cycles) and every 12 weeks in the extension phase, by independent reviewer for study 303 and by investigator for study 211. Two subjects (IDs 3266 and 3261) were excluded in Text S3 $DATA IGNORE."
   )
 
   ini({

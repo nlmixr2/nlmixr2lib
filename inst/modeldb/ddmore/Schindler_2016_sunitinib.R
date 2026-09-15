@@ -9,11 +9,11 @@ Schindler_2016_sunitinib <- function() {
     "DDMORE Foundation Model Repository: DDMODEL00000221.",
     sep = " "
   )
-  vignette     <- "Schindler_2016_sunitinib"
+  vignette <- "Schindler_2016_sunitinib"
   paper_specific_compartments <- c("suv1", "suv2", "suv3", "suv4", "suv5")
 
-  units        <- list(time = "h", dosing = "mg", concentration = "n/a (non-PK outputs only: SUVmax unitless and SLD in mm)")
-  ddmore_id    <- "DDMODEL00000221"
+  units <- list(time = "h", dosing = "mg", concentration = "n/a (non-PK outputs only: SUVmax unitless and SLD in mm)")
+  ddmore_id <- "DDMODEL00000221"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -21,57 +21,57 @@ Schindler_2016_sunitinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    effect      = list(analyte = "sunitinib", units = "mg", specimen = "not applicable", verified = FALSE),
-    suv1        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
-    suv2        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
-    suv3        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
-    suv4        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
-    suv5        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
-    sld         = list(analyte = "tumour-size", units = "mg", specimen = "tissue", verified = FALSE),
-    cumhaz_os   = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect = list(analyte = "sunitinib", units = "mg", specimen = "not applicable", verified = FALSE),
+    suv1 = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv2 = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv3 = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv4 = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv5 = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    sld = list(analyte = "tumour-size", units = "mg", specimen = "tissue", verified = FALSE),
+    cumhaz_os = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE),
     cumhaz_drop = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CLI = list(
-      description        = "Per-subject post-hoc apparent oral clearance of sunitinib carried in from a previously-developed sunitinib popPK model.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Per-subject post-hoc apparent oral clearance of sunitinib carried in from a previously-developed sunitinib popPK model.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Used together with `DOSE` to drive the effect-compartment AUC = DOSE / CLI. The original Schindler 2016 NONMEM dataset supplies this column as `CL` (`$INPUT` comment: 'post-hoc clearance from previously-developed PK model'); the upstream sunitinib popPK model is not part of the DDMODEL00000221 bundle and is not currently in nlmixr2lib. The vignette virtual cohort uses a single literature-typical adult sunitinib CL of 50 L/h, consistent with Houk et al. (2010) J Clin Pharmacol 50:843-858, and references Houk 2010 narratively rather than reproducing its popPK structure inline.",
-      source_name        = "CL"
+      notes = "Time-fixed per subject. Used together with `DOSE` to drive the effect-compartment AUC = DOSE / CLI. The original Schindler 2016 NONMEM dataset supplies this column as `CL` (`$INPUT` comment: 'post-hoc clearance from previously-developed PK model'); the upstream sunitinib popPK model is not part of the DDMODEL00000221 bundle and is not currently in nlmixr2lib. The vignette virtual cohort uses a single literature-typical adult sunitinib CL of 50 L/h, consistent with Houk et al. (2010) J Clin Pharmacol 50:843-858, and references Houk 2010 narratively rather than reproducing its popPK structure inline.",
+      source_name = "CL"
     ),
     DOSE = list(
-      description        = "Time-varying daily sunitinib dose in mg, switching between the prescribed dose level on dosing-cycle records and 0 on off-cycle / dose-holiday records.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Time-varying daily sunitinib dose in mg, switching between the prescribed dose level on dosing-cycle records and 0 on off-cycle / dose-holiday records.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. The Schindler 2016 NONMEM dataset supplies this column as `DOS` (`$INPUT` comment: 'daily dose in mg'); for a sunitinib 4-weeks-on / 2-weeks-off schedule the column toggles between the prescribed daily-dose level (e.g., 50 mg/day) and 0 at each cycle boundary. Drives the per-day AUC fed to the effect compartment.",
-      source_name        = "DOS"
+      notes = "Time-varying. The Schindler 2016 NONMEM dataset supplies this column as `DOS` (`$INPUT` comment: 'daily dose in mg'); for a sunitinib 4-weeks-on / 2-weeks-off schedule the column toggles between the prescribed daily-dose level (e.g., 50 mg/day) and 0 at each cycle boundary. Drives the per-day AUC fed to the effect compartment.",
+      source_name = "DOS"
     ),
     RCFB1MAX = list(
-      description        = "Per-subject scalar predictor for the overall-survival Weibull hazard, defined as the maximum (across the up-to-five tracked target lesions) of the relative change in SUVmax at one week of sunitinib therapy: max((SUVmax(t = 168 h) - SUVmax(0)) / SUVmax(0)).",
-      units              = "(unitless)",
-      type               = "continuous",
+      description = "Per-subject scalar predictor for the overall-survival Weibull hazard, defined as the maximum (across the up-to-five tracked target lesions) of the relative change in SUVmax at one week of sunitinib therapy: max((SUVmax(t = 168 h) - SUVmax(0)) / SUVmax(0)).",
+      units = "(unitless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Sign convention: more negative `RCFB1MAX` (greater week-1 SUVmax suppression) reduces the OS hazard. In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h from the running SUVmax compartment values and reused on subsequent records -- a NONMEM record-loop construct without an idiomatic rxode2 / nlmixr2 equivalent. The model file therefore consumes `RCFB1MAX` as a per-subject input covariate; reproducing the source's behavior requires a two-stage simulation (run the SUVmax + SLD ODEs first, compute `RCFB1MAX` per subject from the t = 168 h SUVmax values, then run the OS / dropout TTE arms with `RCFB1MAX` bound). The vignette virtual cohort follows this pattern.",
-      source_name        = "RCFB1MAX"
+      notes = "Time-fixed per subject. Sign convention: more negative `RCFB1MAX` (greater week-1 SUVmax suppression) reduces the OS hazard. In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h from the running SUVmax compartment values and reused on subsequent records -- a NONMEM record-loop construct without an idiomatic rxode2 / nlmixr2 equivalent. The model file therefore consumes `RCFB1MAX` as a per-subject input covariate; reproducing the source's behavior requires a two-stage simulation (run the SUVmax + SLD ODEs first, compute `RCFB1MAX` per subject from the t = 168 h SUVmax values, then run the OS / dropout TTE arms with `RCFB1MAX` bound). The vignette virtual cohort follows this pattern.",
+      source_name = "RCFB1MAX"
     )
   )
 
   population <- list(
-    n_subjects     = 66L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    n_subjects = 66L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Imatinib-resistant or imatinib-intolerant advanced gastrointestinal stromal tumor (GIST) on second-line oral sunitinib therapy. The Schindler 2016 dataset comprises 66 GIST patients pooled from a Phase I/II program (Demetri et al. 2009; Casali et al. 2008-style cohort) who underwent serial [18F]FDG-PET SUVmax assessments and target-lesion sum-of-longest-diameters (SLD) measurements over the sunitinib 4-weeks-on / 2-weeks-off cycle, with overall survival followed to event or right-censoring.",
-    dose_range     = "Oral sunitinib 50 mg/day on a 4-weeks-on / 2-weeks-off schedule (the standard GIST regimen). The DDMODEL00000221 simulated dataset uses 50 mg/day during dose-on weeks and 0 mg/day during the off-cycle.",
-    regions        = NA_character_,
-    notes          = "Detailed baseline demographics (age, weight, sex, race / ethnicity distribution, prior-line distribution) for the 66-patient cohort are reported in Schindler 2016 Table 1 of the linked publication; this publication is not on disk in the worktree, so the per-field values are not reproduced here. The DDMODEL00000221 bundle's `Simulated_SLD_SUV_OS_GIST.csv` ships a single virtual subject with the standard 50 mg/day 4-on/2-off schedule as a regression-style smoke test rather than a representative cohort. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    disease_state = "Imatinib-resistant or imatinib-intolerant advanced gastrointestinal stromal tumor (GIST) on second-line oral sunitinib therapy. The Schindler 2016 dataset comprises 66 GIST patients pooled from a Phase I/II program (Demetri et al. 2009; Casali et al. 2008-style cohort) who underwent serial [18F]FDG-PET SUVmax assessments and target-lesion sum-of-longest-diameters (SLD) measurements over the sunitinib 4-weeks-on / 2-weeks-off cycle, with overall survival followed to event or right-censoring.",
+    dose_range = "Oral sunitinib 50 mg/day on a 4-weeks-on / 2-weeks-off schedule (the standard GIST regimen). The DDMODEL00000221 simulated dataset uses 50 mg/day during dose-on weeks and 0 mg/day during the off-cycle.",
+    regions = NA_character_,
+    notes = "Detailed baseline demographics (age, weight, sex, race / ethnicity distribution, prior-line distribution) for the 66-patient cohort are reported in Schindler 2016 Table 1 of the linked publication; this publication is not on disk in the worktree, so the per-field values are not reproduced here. The DDMODEL00000221 bundle's `Simulated_SLD_SUV_OS_GIST.csv` ships a single virtual subject with the standard 50 mg/day 4-on/2-off schedule as a regression-style smoke test rather than a representative cohort. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

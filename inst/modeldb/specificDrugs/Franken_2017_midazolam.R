@@ -33,8 +33,8 @@ Franken_2017_midazolam <- function() {
   )
   vignette <- "Franken_2017_midazolam"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -43,20 +43,20 @@ Franken_2017_midazolam <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2        = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = FALSE),
-    central_1ohm  = list(analyte = "1-OH-midazolam", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_1ohm = list(analyte = "1-OH-midazolam", units = "mg", specimen = "plasma", verified = FALSE),
     central_1ohmg = list(analyte = "1-OH-midazolam-glucuronide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying serum albumin. Used with power scaling",
         "(ALB / 25)^1.08 on midazolam clearance, normalised to the",
         "population median of 25 g/L (Table 1; range 13-39). Same",
@@ -68,19 +68,19 @@ Franken_2017_midazolam <- function() {
         "selection because it is more clinically stable). Units: g/L",
         "(multiply g/dL values by 10)."
       ),
-      source_name        = "albumin (g/L)"
+      source_name = "albumin (g/L)"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate computed from the",
         "four-variable Modification of Diet in Renal Disease (MDRD)",
         "formula (age, sex, race, serum creatinine; the standard",
         "abbreviated MDRD equation)."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying renal-function covariate. Used with power scaling",
         "(CRCL / 104)^0.53 on 1-OH-MG clearance, normalised to the",
         "population median of 104 mL/min/1.73 m^2 (Table 1; standard",
@@ -92,21 +92,21 @@ Franken_2017_midazolam <- function() {
         "covariate. Source column 'eGFR' in the paper text and table;",
         "canonical register name CRCL covers MDRD-derived eGFR."
       ),
-      source_name        = "eGFR (standard four-variable MDRD)"
+      source_name = "eGFR (standard four-variable MDRD)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45,
-    n_studies      = 1,
-    age_range      = "43-93 years",
-    age_median     = "71 years",
-    weight_range   = "not reported (weight available for ~53% of subjects, baseline-only)",
-    weight_median  = "not reported",
+    species = "human",
+    n_subjects = 45,
+    n_studies = 1,
+    age_range = "43-93 years",
+    age_median = "71 years",
+    weight_range = "not reported (weight available for ~53% of subjects, baseline-only)",
+    weight_median = "not reported",
     sex_female_pct = 51.1,
     race_ethnicity = c(Caucasian = 91.1, AfroCaribbean = 6.7, Unknown = 2.2),
-    disease_state  = paste(
+    disease_state = paste(
       "Terminally ill adult palliative-care patients admitted to a",
       "Dutch hospice with prognosis of 2 days to 3 months and",
       "advanced malignancy as primary diagnosis in 97.8% (one",
@@ -116,15 +116,15 @@ Franken_2017_midazolam <- function() {
       "take oral medication). Median duration of admittance 29 days",
       "(range 7-457)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Midazolam 7.5 mg oral up to four times daily, or subcutaneous",
       "bolus / infusion 2.5-180 mg/day. Administered per Dutch",
       "national palliative guidelines for insomnia or palliative",
       "sedation. Intravenous route not used (typical of palliative",
       "care)."
     ),
-    regions        = "The Netherlands (Laurens Cadenza palliative care centre, Rotterdam)",
-    notes          = paste(
+    regions = "The Netherlands (Laurens Cadenza palliative care centre, Rotterdam)",
+    notes = paste(
       "Demographics from Franken 2017 Table 1. NONMEM 7.2 + PsN 4.4.8",
       "with FOCE-I; ADVAN7 subroutine; data were log-transformed",
       "before fitting. 192 blood samples collected for parent and",

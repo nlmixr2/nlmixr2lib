@@ -26,7 +26,7 @@ Rolsma_2025_cefepime <- function() {
     sep = " "
   )
   vignette <- "Rolsma_2025_betalactams_cysticfibrosis"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE)
@@ -34,11 +34,11 @@ Rolsma_2025_cefepime <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance computed on lean body weight (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance computed on lean body weight (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source name CLCR,LBW. Supplemental Table 6 abbreviation list:",
         "'CL_CR,LBW, creatinine clearance calculated according to the",
         "Cockcroft-Gault equation using lean body weight (subjects > 12 years",
@@ -62,14 +62,14 @@ Rolsma_2025_cefepime <- function() {
         "CLCR adjusted for LBW, best described the elimination clearance of",
         "cefepime and meropenem')."
       ),
-      source_name        = "CLCR,LBW"
+      source_name = "CLCR,LBW"
     ),
     FFM = list(
-      description        = "Fat-free mass by the Janmahasatian formula (reported by the source as lean body weight)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass by the Janmahasatian formula (reported by the source as lean body weight)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source name LBW. The source labels this covariate 'lean body",
         "weight' but computes it with the Janmahasatian equations",
         "(Supplemental Methods: 'lean body weight based on the equations",
@@ -91,16 +91,16 @@ Rolsma_2025_cefepime <- function() {
         "34.74 +/- 13.44 kg (median 33.45, range 11.1 to 69.5) per",
         "Supplemental Table 3."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate size descriptor but not retained in the",
         "final cefepime model, where lean body weight described the volume of",
         "distribution instead (Results 'PopPK Modeling': 'LBW was identified",
@@ -112,9 +112,9 @@ Rolsma_2025_cefepime <- function() {
     ),
     CFTRMOD = list(
       description = "CFTR modulator use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and explicitly rejected. Results 'PopPK Modeling': 'Other",
         "covariates, such as sample acquisition site, CFTR mutation, use of",
         "CFTR modulators (including highly effective CFTR modulators",
@@ -130,9 +130,9 @@ Rolsma_2025_cefepime <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods 'PopPK Model Development' covariate list) but not",
         "retained; the body-size and renal-function covariates absorbed the",
         "age trend across the 3 to 54 year range (Results 'PopPK Modeling':",
@@ -146,9 +146,9 @@ Rolsma_2025_cefepime <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained for cefepime (Results 'Patient",
         "Demographics': 'body surface area and BMI did not differ among",
         "antibiotic groups'). BMI does appear as a band-defining covariate in",
@@ -160,18 +160,18 @@ Rolsma_2025_cefepime <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 1.38 +/-",
         "0.37 m^2 (median 1.40, range 0.6 to 2.3) per Supplemental Table 3."
       )
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 150.44",
         "+/- 21.73 cm (median 155.70, range 95.0 to 185.0) per Supplemental",
         "Table 3."
@@ -179,9 +179,9 @@ Rolsma_2025_cefepime <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. 54% female among",
         "cefepime enrollments (52 of 96) per Supplemental Table 2. Sex",
         "nevertheless enters the model indirectly, as an input to both the",
@@ -192,17 +192,22 @@ Rolsma_2025_cefepime <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 82L,
-    n_studies      = 1L,
-    n_enrollments  = 96L,
-    age_range      = "3 to 54 years",
-    age_median     = "15.0 years (mean 17.9 +/- 11.8)",
-    weight_range   = "13.6 to 102.5 kg total body weight",
-    weight_median  = "46.86 kg total body weight (mean 46.71 +/- 18.68); lean body weight median 33.45 kg (mean 34.74 +/- 13.44)",
+    species = "human",
+    n_subjects = 82L,
+    n_studies = 1L,
+    n_enrollments = 96L,
+    age_range = "3 to 54 years",
+    age_median = "15.0 years (mean 17.9 +/- 11.8)",
+    weight_range = "13.6 to 102.5 kg total body weight",
+    weight_median = "46.86 kg total body weight (mean 46.71 +/- 18.68); lean body weight median 33.45 kg (mean 34.74 +/- 13.44)",
     sex_female_pct = 100 * 52 / 96,
-    race_ethnicity = c(White = 97, `Black or African American` = 2, `Multi-Racial` = 1, `Hispanic or Latino (ethnicity)` = 3),
-    disease_state  = paste(
+    race_ethnicity = c(
+      White = 97,
+      `Black or African American` = 2,
+      `Multi-Racial` = 1,
+      `Hispanic or Latino (ethnicity)` = 3
+    ),
+    disease_state = paste(
       "Cystic fibrosis, admitted for a pulmonary exacerbation or for",
       "microbial eradication therapy. 95% of the cefepime group carried at",
       "least one copy of the DF508 mutation. 35% reported any CFTR modulator",
@@ -219,7 +224,7 @@ Rolsma_2025_cefepime <- function() {
       "string and footnote a. The cohort distribution of CLCR,LBW is not",
       "tabulated in the paper or supplement."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous infusion, standard of care as ordered by the treating",
       "team. All adult doses were 2000 mg (n = 626). Most doses in",
       "participants under 17 years were 45 to 51 mg/kg (n = 1046); 1 dose was",
@@ -227,8 +232,8 @@ Rolsma_2025_cefepime <- function() {
       "durations in hours were 0.083 (24 doses), 0.167 (12 doses), 0.5 (1788",
       "doses), 3 (344 doses) and 6 (1 dose)."
     ),
-    regions        = "United States (Vanderbilt University Medical Center, Nashville TN; University of Iowa Hospital, Iowa City IA).",
-    notes          = paste(
+    regions = "United States (Vanderbilt University Medical Center, Nashville TN; University of Iowa Hospital, Iowa City IA).",
+    notes = paste(
       "Opportunistic sampling during hospitalization, January 2018 to March",
       "2020. 368 of the 667 total plasma samples in the study were cefepime.",
       "Assay LC-MS/MS, linear 0.5 to 150 mg/L for cefepime. NONMEM 7.4.3 with",

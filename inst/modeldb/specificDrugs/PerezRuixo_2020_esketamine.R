@@ -1,6 +1,6 @@
 PerezRuixo_2020_esketamine <- function() {
   description <- "Joint three-compartment esketamine + two-compartment apparent noresketamine population PK model with a hepato-portal first-pass compartment (well-stirred model) and three parallel absorption routes (intranasal direct, intranasal-swallowed via PO depot, and PO solution via PO depot) developed from 9784/9397 esketamine/noresketamine plasma observations in 820 healthy volunteers and patients with treatment-resistant depression receiving intranasal, intravenous, and oral esketamine (Perez-Ruixo 2020). Asian race decreases esketamine kel (x0.36) and noresketamine apparent CLn/F (x0.81); Japanese race increases the nasal-cavity-absorbed fraction FRn (x1.34); and hepatic blood flow Qh declines linearly by 2.19 L/h per year of age above 60."
-  reference   <- paste(
+  reference <- paste(
     "Perez-Ruixo C, Rossenu S, Zannikos P, Nandy P, Singh J, Drevets WC,",
     "Perez-Ruixo JJ. Population Pharmacokinetics of Esketamine Nasal Spray",
     "and its Metabolite Noresketamine in Healthy Subjects and Patients with",
@@ -8,128 +8,128 @@ PerezRuixo_2020_esketamine <- function() {
     "doi:10.1007/s40262-020-00953-4",
     sep = " "
   )
-  vignette    <- "PerezRuixo_2020_esketamine"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  vignette <- "PerezRuixo_2020_esketamine"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "esketamine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2          = list(analyte = "noresketamine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot3          = list(analyte = "esketamine", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "esketamine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2     = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE),
-    liver           = list(analyte = "esketamine", units = "mg", specimen = "tissue", verified = FALSE),
-    central_snk     = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "esketamine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "noresketamine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot3 = list(analyte = "esketamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "esketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    liver = list(analyte = "esketamine", units = "mg", specimen = "tissue", verified = FALSE),
+    central_snk = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_snk = list(analyte = "noresketamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RACE_ASIAN = list(
-      description        = "Asian race indicator (1 = Asian, 0 = non-Asian).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (1 = Asian, 0 = non-Asian).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Multiplicative factor e_asian_kel = 0.36 on the esketamine hepatic elimination rate constant kel (Table 3: 'Asian on kel = 0.36'; 64.0% decrease in kel for Asian subjects), and a separate multiplicative factor e_asian_CLn = 0.81 on the noresketamine apparent clearance CLn/F (Table 3: 'Asian on CLn/F = 0.81'; 19.4% decrease). Both effects are multiplicative on the linear parameter scale. Per Table 2, 112 of 820 subjects (13.7%) were Asian (72 Japanese + 40 non-Japanese Asian).",
-      source_name        = "RACE_ASIAN"
+      notes = "Multiplicative factor e_asian_kel = 0.36 on the esketamine hepatic elimination rate constant kel (Table 3: 'Asian on kel = 0.36'; 64.0% decrease in kel for Asian subjects), and a separate multiplicative factor e_asian_CLn = 0.81 on the noresketamine apparent clearance CLn/F (Table 3: 'Asian on CLn/F = 0.81'; 19.4% decrease). Both effects are multiplicative on the linear parameter scale. Per Table 2, 112 of 820 subjects (13.7%) were Asian (72 Japanese + 40 non-Japanese Asian).",
+      source_name = "RACE_ASIAN"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage race indicator (1 = Japanese, 0 = non-Japanese).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage race indicator (1 = Japanese, 0 = non-Japanese).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese, including Asian non-Japanese)",
-      notes              = "Multiplicative factor e_japanese_FRn = 1.34 on the per-spray fraction of nasal dose absorbed via the nasal cavity (Table 3: 'Japanese on FRn = 1.34'; 34% increase). Applied on the linear FRn scale per the abstract text and Results Section. Per Table 2, 72 of 820 subjects (8.8%) were Japanese (out of 112 Asian subjects). Distinct from RACE_ASIAN: a Japanese subject has both RACE_ASIAN = 1 AND RACE_JAPANESE = 1.",
-      source_name        = "RACE_JAPANESE"
+      notes = "Multiplicative factor e_japanese_FRn = 1.34 on the per-spray fraction of nasal dose absorbed via the nasal cavity (Table 3: 'Japanese on FRn = 1.34'; 34% increase). Applied on the linear FRn scale per the abstract text and Results Section. Per Table 2, 72 of 820 subjects (8.8%) were Japanese (out of 112 Asian subjects). Distinct from RACE_ASIAN: a Japanese subject has both RACE_ASIAN = 1 AND RACE_JAPANESE = 1.",
+      source_name = "RACE_JAPANESE"
     ),
     AGE = list(
-      description        = "Subject age in years.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Piecewise-linear additive effect on hepatic blood flow Qh: Qh decreases by 2.19 L/h per year of age above 60 (Table 3: 'Age on Qh = -2.19 L/year'; equivalent to 21.9 L/h per decade). For AGE <= 60 the effect is zero. Encoded as Qh = exp(lqh + etalqh) - e_age_qh * max(0, AGE - 60). Per Table 2, AGE range 18-86 years, median 45.",
-      source_name        = "AGE"
+      notes = "Piecewise-linear additive effect on hepatic blood flow Qh: Qh decreases by 2.19 L/h per year of age above 60 (Table 3: 'Age on Qh = -2.19 L/year'; equivalent to 21.9 L/h per decade). For AGE <= 60 the effect is zero. Encoded as Qh = exp(lqh + etalqh) - e_age_qh * max(0, AGE - 60). Per Table 2, AGE range 18-86 years, median 45.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 820L,
-    n_studies      = 13L,
-    age_range      = "18-86 years (median 45)",
-    age_median     = "45 years",
-    weight_range   = "39-170 kg (median 74)",
-    weight_median  = "74 kg",
+    species = "human",
+    n_subjects = 820L,
+    n_studies = 13L,
+    age_range = "18-86 years (median 45)",
+    age_median = "45 years",
+    weight_range = "39-170 kg (median 74)",
+    weight_median = "74 kg",
     sex_female_pct = 58.4,
     race_ethnicity = c(White = 72.4, Black = 6.82, Asian = 13.7, Other = 7.07),
-    disease_state  = "256 (31.2%) healthy volunteers from Phase I single-dose / multi-dose studies; 564 (68.8%) patients with treatment-resistant depression (TRD) enrolled in Phase II and Phase III studies receiving twice-weekly intranasal esketamine 28-112 mg.",
-    dose_range     = "Intranasal 14-112 mg single or multiple dose; intravenous 28 mg (study ESKETINTRD1009); oral 84 mg (study ESKETINTRD1009).",
-    regions        = "Multi-regional (Phase I: USA, Belgium, Japan; Phase II/III: USA, Europe, Asia).",
-    notes          = "Pooled analysis of 13 clinical studies (ESKETINTRD1001-1012, 54135419TRD1015, ESKETINTRD2003, ESKETINSUI2001, ESKETINTRD3001-3005). 9784 esketamine and 9397 noresketamine plasma concentrations. Demographics: Table 2; final parameter estimates: Table 3; covariate-stratified Cmax/AUC: Table 4. Hepatic function biomarkers (ALT, AST, ALP, GGT, LDH, total bilirubin), serum albumin, total protein, eGFR, sex, body weight, and disease state (healthy vs TRD) had no clinically relevant impact on PK (Results Section, r-squared <= 10%, p-value > 0.001) and are not in covariateData; see covariatesDataExcluded for the screened-but-not-retained set."
+    disease_state = "256 (31.2%) healthy volunteers from Phase I single-dose / multi-dose studies; 564 (68.8%) patients with treatment-resistant depression (TRD) enrolled in Phase II and Phase III studies receiving twice-weekly intranasal esketamine 28-112 mg.",
+    dose_range = "Intranasal 14-112 mg single or multiple dose; intravenous 28 mg (study ESKETINTRD1009); oral 84 mg (study ESKETINTRD1009).",
+    regions = "Multi-regional (Phase I: USA, Belgium, Japan; Phase II/III: USA, Europe, Asia).",
+    notes = "Pooled analysis of 13 clinical studies (ESKETINTRD1001-1012, 54135419TRD1015, ESKETINTRD2003, ESKETINSUI2001, ESKETINTRD3001-3005). 9784 esketamine and 9397 noresketamine plasma concentrations. Demographics: Table 2; final parameter estimates: Table 3; covariate-stratified Cmax/AUC: Table 4. Hepatic function biomarkers (ALT, AST, ALP, GGT, LDH, total bilirubin), serum albumin, total protein, eGFR, sex, body weight, and disease state (healthy vs TRD) had no clinically relevant impact on PK (Results Section, r-squared <= 10%, p-value > 0.001) and are not in covariateData; see covariatesDataExcluded for the screened-but-not-retained set."
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model (Results Section: 'Sex, body weight, ALT, AST, ALP, gamma glutamyl transpeptidase, TB, albumin, TP, estimated glomerular filtration rate, and disease state had no discernable impact on the PK parameters of esketamine and noresketamine')."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained in the final model (Results Section: 'Sex, body weight, ALT, AST, ALP, gamma glutamyl transpeptidase, TB, albumin, TP, estimated glomerular filtration rate, and disease state had no discernable impact on the PK parameters of esketamine and noresketamine')."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Results Section)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Results Section)."
     ),
     ALT = list(
       description = "Alanine transaminase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     AST = list(
       description = "Aspartate transaminase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     GGT = list(
       description = "Gamma-glutamyl transpeptidase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     LDH = list(
       description = "Lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results Section)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Results Section)."
     )
   )
 

@@ -59,15 +59,15 @@ Chetty_2014_efalizumab_pasi <- function() {
   vignette <- "Chetty_2014_efalizumab_cd11a_pasi"
 
   units <- list(
-    time          = "h",
-    dosing        = "(not applicable; no drug term is published, so the model carries no dosing events)",
+    time = "h",
+    dosing = "(not applicable; no drug term is published, so the model carries no dosing events)",
     concentration = "(not applicable; the PASI score is a unitless clinical index on a 0-72 scale)"
   )
 
   compartmentData <- list(
     pasi = list(
-      analyte  = "Psoriasis Area and Severity Index score",
-      units    = "(unitless score, 0-72 scale)",
+      analyte = "Psoriasis Area and Severity Index score",
+      units = "(unitless score, 0-72 scale)",
       specimen = "not applicable",
       verified = TRUE
     )
@@ -76,12 +76,12 @@ Chetty_2014_efalizumab_pasi <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 500L,
-    n_studies      = 2L,
-    age_range      = "25-50 years (simulated cohort)",
+    species = "human",
+    n_subjects = 500L,
+    n_studies = 2L,
+    age_range = "25-50 years (simulated cohort)",
     sex_female_pct = 50,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with moderate-to-severe plaque psoriasis. Model-building cohort",
       "(Gottlieb 2002, Chetty 2014 reference 15): mean baseline PASI 24.8",
       "(CV% 10.8), falling to a mean of approximately 14.8 (CV% 22) over the",
@@ -90,15 +90,15 @@ Chetty_2014_efalizumab_pasi <- function() {
       "on the basis that 1 mg/kg/week intravenously 'usually produces a change",
       "in PASI score from baseline of about 45-50%'."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Model-building arm: efalizumab escalating 0.3 mg/kg in week 1, 0.4 in",
       "week 2, 0.6 in week 3 and 1 mg/kg/week for the following 4 weeks, each",
       "as a 1 h intravenous infusion. Application arm: 1 mg/kg/week",
       "intravenously. Dose does not enter this model: it acts only through the",
       "user-supplied Yss."
     ),
-    regions        = "north European Caucasian virtual population",
-    notes          = paste(
+    regions = "north European Caucasian virtual population",
+    notes = paste(
       "Chetty 2014 Simulations section: 'Predictive studies used 5 trials with",
       "100 virtual north European Caucasian Healthy Volunteers each, aged",
       "between 25 and 50 years, with an equal proportion of males and females',",

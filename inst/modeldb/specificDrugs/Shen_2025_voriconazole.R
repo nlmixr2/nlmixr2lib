@@ -8,58 +8,64 @@ Shen_2025_voriconazole <- function() {
   # biological matrix. Both states verified against Shen 2025 section 2.1
   # (oral voriconazole) and section 2.2 (plasma HPLC assay).
   compartmentData <- list(
-    depot   = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sole retained covariate. Enters CL/F as (WT/70)^0.75 and V/F as (WT/70)^1 with a 70 kg reference weight (Shen 2025 Equations 1 and 2). Both exponents were fixed at the canonical allometric values rather than estimated: Supplementary Table S3 reports no RSE, no bootstrap median, and no confidence interval for either exponent, and the Methods state only that 'Using allometric scaling, we examined the effects of body weight on PK parameters.' The 70 kg reference and the two exponents are confirmed exactly by the paper's own individual empirical-Bayes estimates: an 8.00 kg subject gives 788 * (8/70) = 90.06 L against the reported median V of 90.07 L/70kg (Supplementary Table S1), and an 11 kg subject gives 17.9 * (11/70)^0.75 = 4.47 L/h and 788 * (11/70) = 123.8 L against the reported CL/F 4.46 L/h and V/F 123.83 L in the section 3.5 worked example.",
-      source_name        = "WT"
+      notes = "Sole retained covariate. Enters CL/F as (WT/70)^0.75 and V/F as (WT/70)^1 with a 70 kg reference weight (Shen 2025 Equations 1 and 2). Both exponents were fixed at the canonical allometric values rather than estimated: Supplementary Table S3 reports no RSE, no bootstrap median, and no confidence interval for either exponent, and the Methods state only that 'Using allometric scaling, we examined the effects of body weight on PK parameters.' The 70 kg reference and the two exponents are confirmed exactly by the paper's own individual empirical-Bayes estimates: an 8.00 kg subject gives 788 * (8/70) = 90.06 L against the reported median V of 90.07 L/70kg (Supplementary Table S1), and an 11 kg subject gives 17.9 * (11/70)^0.75 = 4.47 L/h and 788 * (11/70) = 123.8 L against the reported CL/F 4.46 L/h and V/F 123.83 L in the section 3.5 worked example.",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Postnatal age",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened in the stepwise forward-addition / backward-elimination covariate search (Shen 2025 section 2.3) but not retained in the final PopPK model; age was retained only as an input feature of the downstream XGBoost machine-learning layer, which is not part of this pharmacokinetic model."
+      units = "months",
+      type = "continuous",
+      notes = "Screened in the stepwise forward-addition / backward-elimination covariate search (Shen 2025 section 2.3) but not retained in the final PopPK model; age was retained only as an input feature of the downstream XGBoost machine-learning layer, which is not part of this pharmacokinetic model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected as part of the laboratory panel (Shen 2025 Table 1) and screened during covariate selection, but not retained in the final PopPK model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected as part of the laboratory panel (Shen 2025 Table 1) and screened during covariate selection, but not retained in the final PopPK model."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (Schwartz formula, k = 0.45 for age < 1 year and k = 0.413 for age 1-2 years)",
-      units       = "mL/min/1.73m2",
-      type        = "continuous",
-      notes       = "Derived and reported for the study population (Shen 2025 Table 1 and section 2.1) and screened during covariate selection, but not retained in the final PopPK model. Voriconazole is hepatically cleared, so no renal-function effect on CL/F was expected or found."
+      units = "mL/min/1.73m2",
+      type = "continuous",
+      notes = "Derived and reported for the study population (Shen 2025 Table 1 and section 2.1) and screened during covariate selection, but not retained in the final PopPK model. Voriconazole is hepatically cleared, so no renal-function effect on CL/F was expected or found."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 76L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 76L,
+    n_studies = 1L,
     n_observations = 110L,
-    age_range      = "under 24 months (newborns and preterm infants excluded)",
-    age_median     = "11.0 months (IQR 7.38-17.00; mean 12.08, SD 5.94)",
-    weight_range   = "IQR 6.95-9.00 kg (full range not reported)",
-    weight_median  = "8.05 kg (mean 8.00, SD 1.91)",
+    age_range = "under 24 months (newborns and preterm infants excluded)",
+    age_median = "11.0 months (IQR 7.38-17.00; mean 12.08, SD 5.94)",
+    weight_range = "IQR 6.95-9.00 kg (full range not reported)",
+    weight_median = "8.05 kg (mean 8.00, SD 1.91)",
     sex_female_pct = 23.7,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Immunocompromised hospitalized infants and toddlers (haematologic malignancy or post-haematopoietic stem cell transplantation) receiving oral voriconazole for suspected or documented invasive fungal infection.",
-    dose_range     = "Oral voriconazole 4-10 mg/kg every 12 h, individualized by the treating physician against the 9 mg/kg q12h regimen recommended for children 2 to <12 years. Median total daily dose 100.00 mg (IQR 100.00-133.25); median therapy duration at TDM 9.50 days (IQR 5.00-17.75).",
-    regions        = "Single center: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai, China.",
-    co_medication  = c(glucocorticoids_pct = 61.8, proton_pump_inhibitor_pct = 44.7, tacrolimus_pct = 32.9, cyclosporine_A_pct = 13.3, sirolimus_pct = 2.6),
-    notes          = "Retrospective observational single-center study, January 2020 - June 2025. 110 steady-state trough therapeutic drug monitoring (TDM) samples drawn within the 30 min immediately preceding the next scheduled dose. HPLC-UV assay, linear range 0.25-10 mg/L; concentrations below the 0.25 mg/L LLOQ (<4% of observations) were imputed at LLOQ/2 = 0.125 mg/L. Baseline demographics per Shen 2025 Table 1; final PopPK parameter estimates and bootstrap validation per Shen 2025 Supplementary Table S3. A separate cohort of 10 patients sampled July-August 2025 was used for external validation of the downstream machine-learning layer only. The paper's XGBoost concentration-prediction model, which consumes the empirical-Bayes CL and V produced by this PopPK model as input features, is not a pharmacokinetic structural model and is not represented here."
+    disease_state = "Immunocompromised hospitalized infants and toddlers (haematologic malignancy or post-haematopoietic stem cell transplantation) receiving oral voriconazole for suspected or documented invasive fungal infection.",
+    dose_range = "Oral voriconazole 4-10 mg/kg every 12 h, individualized by the treating physician against the 9 mg/kg q12h regimen recommended for children 2 to <12 years. Median total daily dose 100.00 mg (IQR 100.00-133.25); median therapy duration at TDM 9.50 days (IQR 5.00-17.75).",
+    regions = "Single center: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai, China.",
+    co_medication = c(
+      glucocorticoids_pct = 61.8,
+      proton_pump_inhibitor_pct = 44.7,
+      tacrolimus_pct = 32.9,
+      cyclosporine_A_pct = 13.3,
+      sirolimus_pct = 2.6
+    ),
+    notes = "Retrospective observational single-center study, January 2020 - June 2025. 110 steady-state trough therapeutic drug monitoring (TDM) samples drawn within the 30 min immediately preceding the next scheduled dose. HPLC-UV assay, linear range 0.25-10 mg/L; concentrations below the 0.25 mg/L LLOQ (<4% of observations) were imputed at LLOQ/2 = 0.125 mg/L. Baseline demographics per Shen 2025 Table 1; final PopPK parameter estimates and bootstrap validation per Shen 2025 Supplementary Table S3. A separate cohort of 10 patients sampled July-August 2025 was used for external validation of the downstream machine-learning layer only. The paper's XGBoost concentration-prediction model, which consumes the empirical-Bayes CL and V produced by this PopPK model as input features, is not a pharmacokinetic structural model and is not represented here."
   )
 
   ini({

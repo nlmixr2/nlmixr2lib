@@ -31,11 +31,11 @@ Passey_2011_tacrolimus <- function() {
 
   covariateData <- list(
     POD = list(
-      description        = "Post-operative day (days post-transplant)",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-operative day (days post-transplant)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-varying. Days elapsed since kidney transplantation. Passey 2011 ",
         "Methods / Population modelling: 'days post transplant were converted ",
         "to an ordered categorical covariate and classified as: immediate ",
@@ -51,14 +51,14 @@ Passey_2011_tacrolimus <- function() {
         "first 6 months post-transplant). Mean 17 trough concentrations per ",
         "patient (range 1-24); Table 1 cohort summary."
       ),
-      source_name        = "days post transplant"
+      source_name = "days post transplant"
     ),
     AGE = list(
-      description        = "Recipient age at the time of transplantation",
-      units              = "years",
-      type               = "continuous",
+      description = "Recipient age at the time of transplantation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (baseline) per subject. Passey 2011 Table 1: ",
         "mean +/- SD 50.2 +/- 12.2 years across all 681 subjects (non-AA ",
         "50.1 +/- 12.2; AA 46.9 +/- 11.5). Centred at the cohort median ",
@@ -66,14 +66,14 @@ Passey_2011_tacrolimus <- function() {
         "2011 Results: 'CL/F increased until the median age of 50 years and ",
         "then decreased thereafter')."
       ),
-      source_name        = "age"
+      source_name = "age"
     ),
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser, when paired with CYP3A5_STAR1_HOM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = subject is ",
         "CYP3A5*1/*3 heterozygote (one functional *1 allele at rs776746); ",
         "0 = otherwise (the union of *3/*3 nonexpressers and *1/*1 ",
@@ -83,14 +83,14 @@ Passey_2011_tacrolimus <- function() {
         "paired indicators (CYP3A5_STAR1_HET = 0 AND CYP3A5_STAR1_HOM = 0) ",
         "is the *3/*3 nonexpresser group (476/681 subjects, 70%)."
       ),
-      source_name        = "CYP3A5*1/*3"
+      source_name = "CYP3A5*1/*3"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser, when paired with CYP3A5_STAR1_HET = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = subject is ",
         "CYP3A5*1/*1 homozygote (two functional *1 alleles at rs776746); ",
         "0 = otherwise (the union of *3/*3 nonexpressers and *1/*3 ",
@@ -101,14 +101,14 @@ Passey_2011_tacrolimus <- function() {
         "Discussion: 'these data demonstrate for the first time that the ",
         "three CYP3A5 genotypes have distinctive CL/F estimates')."
       ),
-      source_name        = "CYP3A5*1/*1"
+      source_name = "CYP3A5*1/*1"
     ),
     CONMED_STEROID_SPARING = list(
-      description        = "Steroid-sparing immunosuppressive protocol indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Steroid-sparing immunosuppressive protocol indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-steroid-sparing centre; continuous corticosteroid use)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (assigned by transplantation centre). 1 = ",
         "subject was transplanted at a centre using a steroid-sparing ",
         "immunosuppressive protocol (corticosteroids administered for <= 7 ",
@@ -121,14 +121,14 @@ Passey_2011_tacrolimus <- function() {
         "hypothesized to reflect reduced CYP3A induction in the absence of ",
         "ongoing corticosteroid therapy."
       ),
-      source_name        = "steroid sparing centre"
+      source_name = "steroid sparing centre"
     ),
     CONMED_CCB = list(
-      description        = "Concomitant calcium channel blocker indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant calcium channel blocker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant CCB)",
-      notes              = paste0(
+      notes = paste0(
         "Time-varying. 1 = subject coadministered any calcium channel ",
         "blocker (CCB) at the time of the trough measurement; 0 = no CCB ",
         "coadministered. Passey 2011 cohort: 5082/11823 (43%) of trough ",
@@ -140,21 +140,21 @@ Passey_2011_tacrolimus <- function() {
         "over-represents amlodipine-specific inhibition (Passey 2011 ",
         "Discussion)."
       ),
-      source_name        = "calcium channel blocker use"
+      source_name = "calcium channel blocker use"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 681L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 681L,
+    n_studies = 1L,
     n_concentrations = 11823L,
-    age_range        = ">= 18 years (Table 1 mean +/- SD: 50.2 +/- 12.2 years; non-AA 50.1 +/- 12.2; AA 46.9 +/- 11.5)",
-    age_median       = "50 years (used as the reference age in the (Age/50)^-0.40 covariate effect)",
-    weight_range     = "Table 1 mean +/- SD 81.3 +/- 18.7 kg (non-AA 81.1 +/- 18.8; AA 81.9 +/- 17.9). Weight was tested as a covariate on CL/F but was NOT significant and is NOT in the final model.",
-    sex_female_pct   = 37.0,
-    race_ethnicity   = c(`non-African American` = 79.3, `African American` = 20.7),
-    disease_state    = paste0(
+    age_range = ">= 18 years (Table 1 mean +/- SD: 50.2 +/- 12.2 years; non-AA 50.1 +/- 12.2; AA 46.9 +/- 11.5)",
+    age_median = "50 years (used as the reference age in the (Age/50)^-0.40 covariate effect)",
+    weight_range = "Table 1 mean +/- SD 81.3 +/- 18.7 kg (non-AA 81.1 +/- 18.8; AA 81.9 +/- 17.9). Weight was tested as a covariate on CL/F but was NOT significant and is NOT in the final model.",
+    sex_female_pct = 37.0,
+    race_ethnicity = c(`non-African American` = 79.3, `African American` = 20.7),
+    disease_state = paste0(
       "Adult kidney transplant recipients enrolled in the multicentre ",
       "Deterioration of Kidney Allograft Function (DeKAF) Genomics study ",
       "(NCT00270712) between 2006 and 2008. All recipients had end-stage ",
@@ -162,7 +162,7 @@ Passey_2011_tacrolimus <- function() {
       "Living donor 59% (non-AA 66%, AA 31%); first transplant 81% (non-AA ",
       "77%, AA 94%). 30% transplanted at a steroid-sparing centre."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral tacrolimus (Prograf), administered once or twice daily during ",
       "the first 6 months post-transplant. Initial dose based on body weight; ",
       "subsequent doses titrated to target trough concentrations (institution-",
@@ -170,8 +170,8 @@ Passey_2011_tacrolimus <- function() {
       "in months 3-6 post-transplant). Mean +/- SD daily dose 0.08 +/- 0.05 ",
       "mg/kg/day (non-AA 0.07 +/- 0.05; AA 0.09 +/- 0.04)."
     ),
-    regions          = "United States and Canada (multicentre observational trial)",
-    sampling_design  = paste0(
+    regions = "United States and Canada (multicentre observational trial)",
+    sampling_design = paste0(
       "Sparse trough sampling during routine clinical care: twice weekly in ",
       "weeks 1-8 post-transplant and twice in each of months 3, 4, 5, and 6 ",
       "post-transplant. Mean 17 troughs per patient (range 1-24). Only ",
@@ -180,8 +180,8 @@ Passey_2011_tacrolimus <- function() {
       "state. 97.1% of trough assays were liquid chromatography-mass ",
       "spectrometry; all assays were CLIA-certified or CLIA-quality."
     ),
-    cyp3a5_genotype  = c(`*3/*3` = 70.0, `*1/*3` = 19.0, `*1/*1` = 11.0),
-    notes            = paste0(
+    cyp3a5_genotype = c(`*3/*3` = 70.0, `*1/*3` = 19.0, `*1/*1` = 11.0),
+    notes = paste0(
       "Software: NONMEM v7.1 (FOCE-I); R 2.4.1 for diagnostics; PdxPop ",
       "v4.0. Baseline demographics and CYP3A5 genotype counts per Passey ",
       "2011 Tables 1 and 2; final-model parameter estimates per Passey ",

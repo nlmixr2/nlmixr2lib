@@ -8,58 +8,58 @@ Ogungbenro_2009_penciclovir <- function() {
     sep = " "
   )
   vignette <- "Ogungbenro_2009_penciclovir"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "penciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "penciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "penciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "penciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "penciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with reference 70 kg: exponent 0.75 (shared) on CL and Q, exponent 1.0 (shared) on V1 and V2 (Ogungbenro 2009 Methods, allometric-model paragraph: 'F_WT_CL = (WT/WTSTD)^(3/4)' and 'F_WT_V = (WT/WTSTD)^1' with WTSTD = 70 kg). Cohort range 13.9-94.6 kg (Table 2 Combined column: mean 59.3, SD 23.7; children mean 29.5, SD 12.2; adults mean 74.1, SD 9.7).",
-      source_name        = "WT"
+      notes = "Allometric scaling with reference 70 kg: exponent 0.75 (shared) on CL and Q, exponent 1.0 (shared) on V1 and V2 (Ogungbenro 2009 Methods, allometric-model paragraph: 'F_WT_CL = (WT/WTSTD)^(3/4)' and 'F_WT_V = (WT/WTSTD)^1' with WTSTD = 70 kg). Cohort range 13.9-94.6 kg (Table 2 Combined column: mean 59.3, SD 23.7; children mean 29.5, SD 12.2; adults mean 74.1, SD 9.7).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Empirical piecewise age effect on CL with reference age 40 years (Ogungbenro 2009 Methods, age-model paragraph): F_AGE_CL = (K_AGE - AGE)/(K_AGE - 40), with K_AGE = 159 for AGE < 40 years and K_AGE = 113 for AGE >= 40 years. Both limbs equal 1 at AGE = 40 so the covariate is continuous at the boundary. Cohort range 2-63 years (Table 2 Combined column: mean 26.5, SD 15.8; children 8.1 +/- 3.4 years, adults 35.8 +/- 10.6 years).",
-      source_name        = "AGE"
+      notes = "Empirical piecewise age effect on CL with reference age 40 years (Ogungbenro 2009 Methods, age-model paragraph): F_AGE_CL = (K_AGE - AGE)/(K_AGE - 40), with K_AGE = 159 for AGE < 40 years and K_AGE = 113 for AGE >= 40 years. Both limbs equal 1 at AGE = 40 so the covariate is continuous at the boundary. Cohort range 2-63 years (Table 2 Combined column: mean 26.5, SD 15.8; children 8.1 +/- 3.4 years, adults 35.8 +/- 10.6 years).",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation (raw mL/min, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation (raw mL/min, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ogungbenro 2009 Methods computes individual creatinine clearance using the Cockcroft-Gault equation; values are raw mL/min and NOT BSA-normalized to mL/min/1.73 m^2. The covariate-columns register permits raw Cockcroft-Gault under the canonical CRCL name when the per-model description records the assay form (Delattre 2010 amikacin precedent). The covariate effect is a power function `(CRCL/100)^e_crcl_cl` with reference 100 mL/min (Methods, creatinine-clearance paragraph). Cohort range 27.6-175.6 mL/min (Table 2 Combined column: mean 87.9, SD 34.5; children 58.2 +/- 19.9, adults 102.8 +/- 30.4).",
-      source_name        = "CLCR"
+      notes = "Ogungbenro 2009 Methods computes individual creatinine clearance using the Cockcroft-Gault equation; values are raw mL/min and NOT BSA-normalized to mL/min/1.73 m^2. The covariate-columns register permits raw Cockcroft-Gault under the canonical CRCL name when the per-model description records the assay form (Delattre 2010 amikacin precedent). The covariate effect is a power function `(CRCL/100)^e_crcl_cl` with reference 100 mL/min (Methods, creatinine-clearance paragraph). Cohort range 27.6-175.6 mL/min (Table 2 Combined column: mean 87.9, SD 34.5; children 58.2 +/- 19.9, adults 102.8 +/- 30.4).",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 69L,
-    n_studies      = 6L,
-    age_range      = "2-63 years",
-    age_median     = "mean 26.5 years (SD 15.8); children 8.1 +/- 3.4 years, adults 35.8 +/- 10.6 years",
-    weight_range   = "13.9-94.6 kg",
-    weight_median  = "mean 59.3 kg (SD 23.7); children 29.5 +/- 12.2 kg, adults 74.1 +/- 9.7 kg",
+    species = "human",
+    n_subjects = 69L,
+    n_studies = 6L,
+    age_range = "2-63 years",
+    age_median = "mean 26.5 years (SD 15.8); children 8.1 +/- 3.4 years, adults 35.8 +/- 10.6 years",
+    weight_range = "13.9-94.6 kg",
+    weight_median = "mean 59.3 kg (SD 23.7); children 29.5 +/- 12.2 kg, adults 74.1 +/- 9.7 kg",
     sex_female_pct = 10.1,
     race_ethnicity = "Not reported in source paper",
-    disease_state  = "Pooled adult and paediatric cohorts across six clinical trials supplied by Novartis: (1) single ascending oral dose in healthy adults, (2) IV-oral bioavailability crossover in healthy adults, (3) single oral dose in adults with renal impairment, (4) single IV infusion in immunocompromised paediatric patients (2-17 years) with two subjects re-dosed orally after washout, (5) multiple oral doses in paediatric chronic hepatitis B patients (6-11 years), and (6) multiple IV infusion in adults.",
-    dose_range     = "Oral famciclovir (prodrug; single or multiple doses) and intravenous penciclovir (single or multiple-infusion doses). Adult reference dose was 500 mg famciclovir orally; paediatric simulations targeted a 10 mg/kg oral dose. F = 0.598 represents the bioavailability of systemic penciclovir delivered via oral famciclovir (combining prodrug conversion plus absorption efficiency).",
-    regions        = "Not specified (data supplied by Novartis AG, Basel, Switzerland)",
-    notes          = "Baseline demographics from Ogungbenro 2009 Table 2; study details from Table 1. 23 children (39 occasions, 322 concentrations) and 46 adults (121 occasions, 1354 concentrations) contributed 1676 plasma penciclovir observations in total. Sex distribution 62 M / 7 F across the combined cohort (Table 2). The covariates Age, Weight, Sex, Serum creatinine, and Creatinine clearance were available; Sex was not retained in the final model. Final model selection used a 3.84-point reduction in NONMEM VI objective function value per added parameter, supplemented by visual diagnostics. Bootstrap analysis (1000 replicates, 923 successful) confirmed parameter estimates and standard errors."
+    disease_state = "Pooled adult and paediatric cohorts across six clinical trials supplied by Novartis: (1) single ascending oral dose in healthy adults, (2) IV-oral bioavailability crossover in healthy adults, (3) single oral dose in adults with renal impairment, (4) single IV infusion in immunocompromised paediatric patients (2-17 years) with two subjects re-dosed orally after washout, (5) multiple oral doses in paediatric chronic hepatitis B patients (6-11 years), and (6) multiple IV infusion in adults.",
+    dose_range = "Oral famciclovir (prodrug; single or multiple doses) and intravenous penciclovir (single or multiple-infusion doses). Adult reference dose was 500 mg famciclovir orally; paediatric simulations targeted a 10 mg/kg oral dose. F = 0.598 represents the bioavailability of systemic penciclovir delivered via oral famciclovir (combining prodrug conversion plus absorption efficiency).",
+    regions = "Not specified (data supplied by Novartis AG, Basel, Switzerland)",
+    notes = "Baseline demographics from Ogungbenro 2009 Table 2; study details from Table 1. 23 children (39 occasions, 322 concentrations) and 46 adults (121 occasions, 1354 concentrations) contributed 1676 plasma penciclovir observations in total. Sex distribution 62 M / 7 F across the combined cohort (Table 2). The covariates Age, Weight, Sex, Serum creatinine, and Creatinine clearance were available; Sex was not retained in the final model. Final model selection used a 3.84-point reduction in NONMEM VI objective function value per added parameter, supplemented by visual diagnostics. Bootstrap analysis (1000 replicates, 923 successful) confirmed parameter estimates and standard errors."
   )
 
   ini({

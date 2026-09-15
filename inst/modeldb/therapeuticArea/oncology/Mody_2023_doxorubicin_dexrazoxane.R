@@ -12,8 +12,8 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
   vignette <- "Mody_2023_doxorubicin_dexrazoxane"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg (IV; for a 1.8 m^2 body-surface-area typical subject, mg/m^2 doses are pre-multiplied by 1.8 in the event table)",
+    time = "h",
+    dosing = "mg (IV; for a 1.8 m^2 body-surface-area typical subject, mg/m^2 doses are pre-multiplied by 1.8 in the event table)",
     concentration = "mg/L (plasma, both drugs); uM (TD driver, derived); % (cell viability, TD readout)"
   )
 
@@ -22,15 +22,15 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral2     = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_dex     = list(analyte = "dexrazoxane", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_dex = list(analyte = "dexrazoxane", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1_dex = list(analyte = "dexrazoxane", units = NA_character_, specimen = "plasma", verified = FALSE),
-    transit1        = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit2        = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit3        = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    viability       = list(analyte = "cell viability", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    transit1 = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    viability = list(analyte = "cell viability", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
@@ -42,15 +42,15 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
   paper_specific_compartments <- c("viability")
 
   population <- list(
-    species         = "human + in vitro (AC16 immortalized human cardiomyocyte cell line)",
-    n_subjects      = 500L,
-    n_studies       = 1L,
-    disease_state   = "In vitro cardiomyocyte cell viability under DOX (0.5-10 uM), DEX (5-100 uM), or DOX (0.5 uM) + DEX (5-100 uM) exposures over 72 h; clinical PK simulations for a body-surface-area of 1.8 m^2 typical adult receiving DOX and DEX by 15-min IV infusion.",
-    dose_range      = "DOX 20-60 mg/m^2 Q3W IV; DEX 500 mg/m^2 (10:1 DEX:DOX at 50 mg/m^2 DOX) up to 2500 mg/m^2 Q3W IV; DOX 16.67 mg/m^2 Q1W dose-fractionation regimen.",
-    cell_line       = "AC16, immortalized adult human ventricular cardiomyocyte cell line (Millipore Sigma-EMD), derived from primary human ventricular myocytes; retains key transcriptional factors and myogenic markers.",
-    culture         = "DMEM + non-essential amino acids + sodium bicarbonate + penicillin/streptomycin + PBS; incubator 37 C. Cells seeded at 10x10^3 cells/well (100 uL) of a 96-well plate; adhesion 12 h; drug exposure 0-72 h; CCK-8 colorimetric viability assay (OD 450 nm) at 0, 12, 24, 48, 72 h.",
+    species = "human + in vitro (AC16 immortalized human cardiomyocyte cell line)",
+    n_subjects = 500L,
+    n_studies = 1L,
+    disease_state = "In vitro cardiomyocyte cell viability under DOX (0.5-10 uM), DEX (5-100 uM), or DOX (0.5 uM) + DEX (5-100 uM) exposures over 72 h; clinical PK simulations for a body-surface-area of 1.8 m^2 typical adult receiving DOX and DEX by 15-min IV infusion.",
+    dose_range = "DOX 20-60 mg/m^2 Q3W IV; DEX 500 mg/m^2 (10:1 DEX:DOX at 50 mg/m^2 DOX) up to 2500 mg/m^2 Q3W IV; DOX 16.67 mg/m^2 Q1W dose-fractionation regimen.",
+    cell_line = "AC16, immortalized adult human ventricular cardiomyocyte cell line (Millipore Sigma-EMD), derived from primary human ventricular myocytes; retains key transcriptional factors and myogenic markers.",
+    culture = "DMEM + non-essential amino acids + sodium bicarbonate + penicillin/streptomycin + PBS; incubator 37 C. Cells seeded at 10x10^3 cells/well (100 uL) of a 96-well plate; adhesion 12 h; drug exposure 0-72 h; CCK-8 colorimetric viability assay (OD 450 nm) at 0, 12, 24, 48, 72 h.",
     dosing_frequency = "Q3W (once every 3 weeks) preferred regimen; Q1W (once every 1 week) dose-fractionation alternative; both drugs given as 15-min IV infusions simultaneously; three cycles simulated (9 weeks total).",
-    notes           = "Simulation cohort of n=500 subjects with an arbitrary 10% CV IIV on TD parameters (Methods: 'introducing an arbitrary inter-individual variability (IIV) of 10% on the TD parameters'). No demographic covariates modelled; the clinical PK parameters are per 1.8 m^2 typical body-surface-area subject. Table 1 (TD parameters, in vitro AC16 data) is the paper's core deliverable; Table 2 (clinical PK parameters) is plumbing to drive the in vivo TD simulation. Third author (Sihem Ait-Oudhia) affiliation is Merck & Co Quantitative Pharmacology and Pharmacometrics (QP2); first two authors (Hardik Mody and Tanaya R. Vaidya) contributed equally."
+    notes = "Simulation cohort of n=500 subjects with an arbitrary 10% CV IIV on TD parameters (Methods: 'introducing an arbitrary inter-individual variability (IIV) of 10% on the TD parameters'). No demographic covariates modelled; the clinical PK parameters are per 1.8 m^2 typical body-surface-area subject. Table 1 (TD parameters, in vitro AC16 data) is the paper's core deliverable; Table 2 (clinical PK parameters) is plumbing to drive the in vivo TD simulation. Third author (Sihem Ait-Oudhia) affiliation is Merck & Co Quantitative Pharmacology and Pharmacometrics (QP2); first two authors (Hardik Mody and Tanaya R. Vaidya) contributed equally."
   )
 
   ini({

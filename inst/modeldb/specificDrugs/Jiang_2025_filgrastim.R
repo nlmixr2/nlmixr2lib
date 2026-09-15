@@ -32,11 +32,11 @@ Jiang_2025_filgrastim <- function() {
   vignette <- "Jiang_2025_filgrastim"
 
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL",
-    CD34          = "cells/uL",
-    notes         = paste(
+    CD34 = "cells/uL",
+    notes = paste(
       "Filgrastim dose in ug enters compartment 'depot' (the paper's dosing",
       "was 5 or 10 ug/kg subcutaneously, i.e. about 350 or 700 ug at the",
       "70 kg reference weight). Drug amounts are in ug and V is in L, so",
@@ -51,21 +51,21 @@ Jiang_2025_filgrastim <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "filgrastim", units = "ug", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "filgrastim", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "filgrastim", units = "ug", specimen = "plasma", verified = TRUE),
-    precursor1  = list(analyte = "CD34+ cells", units = "cells/uL", specimen = "not applicable", verified = TRUE),
-    precursor2  = list(analyte = "CD34+ cells", units = "cells/uL", specimen = "not applicable", verified = TRUE),
-    circ        = list(analyte = "CD34+ cells", units = "cells/uL", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "filgrastim", units = "ug", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "filgrastim", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "filgrastim", units = "ug", specimen = "plasma", verified = TRUE),
+    precursor1 = list(analyte = "CD34+ cells", units = "cells/uL", specimen = "not applicable", verified = TRUE),
+    precursor2 = list(analyte = "CD34+ cells", units = "cells/uL", specimen = "not applicable", verified = TRUE),
+    circ = list(analyte = "CD34+ cells", units = "cells/uL", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model (Jiang 2025",
         "Results 3.4). Theory-based allometry on CL (exponent 0.75 FIX) and",
         "V (exponent 1 FIX), Formulas (4) and (5) and Table 2. IMPORTANT:",
@@ -81,14 +81,14 @@ Jiang_2025_filgrastim <- function() {
         "median weight of 70.40 kg (Table 1). See the vignette Errata.",
         "Observed range 60.80-85.50 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer-valued crossover-period indicator for inter-occasion variability multiplexing.",
-      units              = "(count)",
-      type               = "count",
+      description = "Integer-valued crossover-period indicator for inter-occasion variability multiplexing.",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Values 1 and 2 identify the treatment period within subject. The",
         "study was a randomised, open-label, two-way crossover single-dose",
         "bioequivalence trial in which each subject received Neupogen in one",
@@ -101,84 +101,84 @@ Jiang_2025_filgrastim <- function() {
         "formulations and pooled them, so OCC carries period only and is not",
         "a formulation effect."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis (Jiang 2025 Methods 2.3, Table 1) but not retained; body weight was the only significant covariate. Observed range 20-44 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis (Jiang 2025 Methods 2.3, Table 1) but not retained; body weight was the only significant covariate. Observed range 20-44 years."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 163.60-189.00 cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 163.60-189.00 cm."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 19.00-24.90 kg/m^2 (an inclusion criterion restricted BMI to 18.5-25.0)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 19.00-24.90 kg/m^2 (an inclusion criterion restricted BMI to 18.5-25.0)."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^3 cells/uL",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 3.62-9.98 x 10^3/uL."
+      units = "10^3 cells/uL",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 3.62-9.98 x 10^3/uL."
     ),
     RBC = list(
       description = "Red blood cell count",
-      units       = "10^6 cells/uL",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 4.53-5.94 x 10^6/uL."
+      units = "10^6 cells/uL",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 4.53-5.94 x 10^6/uL."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 12.60-17.30 g/dL."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 12.60-17.30 g/dL."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 39.50-50.10%."
+      units = "%",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1). Observed range 39.50-50.10%."
     ),
     NEUT = list(
       description = "Absolute neutrophil count at baseline",
-      units       = "10^3 cells/uL",
-      type        = "continuous",
-      notes       = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1, reported as ANC). Observed range 2.20-5.87 x 10^3/uL; an inclusion criterion required 2-7 x 10^3/uL."
+      units = "10^3 cells/uL",
+      type = "continuous",
+      notes = "Screened but not retained (Jiang 2025 Methods 2.3, Table 1, reported as ANC). Observed range 2.20-5.87 x 10^3/uL; an inclusion criterion required 2-7 x 10^3/uL."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 53L,
-    n_studies      = 1L,
-    age_range      = "20-44 years (median 31; Table 1)",
-    age_median     = "31 years",
-    weight_range   = "60.80-85.50 kg (median 70.40; Table 1)",
-    weight_median  = "70.40 kg",
+    species = "human",
+    n_subjects = 53L,
+    n_studies = 1L,
+    age_range = "20-44 years (median 31; Table 1)",
+    age_median = "31 years",
+    weight_range = "60.80-85.50 kg (median 70.40; Table 1)",
+    weight_median = "70.40 kg",
     sex_female_pct = 0,
     race_ethnicity = "Korean",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult male volunteers; no history of recombinant G-CSF",
       "administration, baseline absolute neutrophil count within",
       "2-7 x 10^3/uL, body weight at least 60 kg and BMI 18.5-25.0 kg/m^2."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single subcutaneous dose of 5 ug/kg (Part A, n = 26) or 10 ug/kg",
       "(Part B, n = 27). Each subject received Neupogen in one period and",
       "the biosimilar Leucostim in the other; the two formulations were",
       "pooled."
     ),
-    regions        = "Republic of Korea (Severance Hospital, Seoul)",
-    notes          = paste(
+    regions = "Republic of Korea (Severance Hospital, Seoul)",
+    notes = paste(
       "Trial registration NCT02725086; a randomised, open-label, two-way",
       "crossover, single-dose Phase I bioequivalence study of Neupogen",
       "(Amgen) versus the biosimilar Leucostim (Dong-A Pharmaceutical).",

@@ -38,39 +38,39 @@ Babel_2026_telisotuzumab_teae <- function() {
   vignette <- "Babel_2026_telisotuzumab"
 
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CAV covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CAV covariate column)",
     concentration = "prob_teae_grade3 (probability of any grade 3 or worse treatment-emergent adverse event, 0-1)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average plasma concentration of the UNCONJUGATED MMAE payload, computed up to the time of the event or up to the end of treatment if no event occurred. Supplied as data: this model has no PK layer.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average plasma concentration of the UNCONJUGATED MMAE payload, computed up to the time of the event or up to the end of treatment if no event occurred. Supplied as data: this model has no PK layer.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "PAYLOAD, not conjugate - the unit and the analyte both differ from the three companion conjugate-driven models (Babel_2026_telisotuzumab_orr, _neuropathy, _corneal), which carry CAV in ug/mL of conjugate. Supplying a conjugate Cavg here would overstate the predicted event rate enormously. Babel 2026 Methods: post hoc estimates from the payload population PK model using actual doses received. Reproduce the column with modellib('Babel_2026_telisotuzumab_mmae'), remembering that that model returns Cc in ug/mL, so multiply by 1000. Enters LINEARLY and UNCENTRED, so the intercept is interpretable directly as the logit at zero payload exposure. Babel 2026 Figure 5 shows the analysis-set range spanning roughly 0 to 4 ng/mL with binned quartile medians near 0.85, 1.35, 2.0 and 3.0 ng/mL.",
-      source_name        = "CavgMMAE"
+      notes = "PAYLOAD, not conjugate - the unit and the analyte both differ from the three companion conjugate-driven models (Babel_2026_telisotuzumab_orr, _neuropathy, _corneal), which carry CAV in ug/mL of conjugate. Supplying a conjugate Cavg here would overstate the predicted event rate enormously. Babel 2026 Methods: post hoc estimates from the payload population PK model using actual doses received. Reproduce the column with modellib('Babel_2026_telisotuzumab_mmae'), remembering that that model returns Cc in ug/mL, so multiply by 1000. Enters LINEARLY and UNCENTRED, so the intercept is interpretable directly as the logit at zero payload exposure. Babel 2026 Figure 5 shows the analysis-set range spanning roughly 0 to 4 ng/mL with binned quartile medians near 0.85, 1.35, 2.0 and 3.0 ng/mL.",
+      source_name = "CavgMMAE"
     )
   )
 
   covariatesDataExcluded <- list(
     ECOG_GE1 = list(
       description = "Baseline Eastern Cooperative Oncology Group performance status indicator; 1 = ECOG PS at least 1, 0 = ECOG PS 0.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Babel 2026 Table S2 lists baseline ECOG status as a covariate of interest for the exposure-EFFICACY regressions only, not for safety; it is recorded here because it is the covariate most often retained in oncology composite-tolerability models and its absence is a deliberate feature of this one. No point estimate exists on disk. Babel 2026 reports that 'no covariates were found to have a significant effect on efficacy or safety', so the Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, liver metastasis at baseline, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped."
+      units = "(binary)",
+      type = "binary",
+      notes = "Babel 2026 Table S2 lists baseline ECOG status as a covariate of interest for the exposure-EFFICACY regressions only, not for safety; it is recorded here because it is the covariate most often retained in oncology composite-tolerability models and its absence is a deliberate feature of this one. No point estimate exists on disk. Babel 2026 reports that 'no covariates were found to have a significant effect on efficacy or safety', so the Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, liver metastasis at baseline, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 284L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 284L,
+    n_studies = 2L,
     n_observations = "284 binary event records (one per patient; landmark analysis, no repeated measures)",
-    disease_state  = "Advanced solid tumours, predominantly c-Met protein overexpressing non-small cell lung cancer; the phase 1 contribution is restricted to patients with NSCLC receiving monotherapy",
-    dose_range     = "telisotuzumab vedotin 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks (phase 1) and 1.6 or 1.9 mg/kg every 2 weeks (LUMINOSITY)",
-    notes          = paste0(
+    disease_state = "Advanced solid tumours, predominantly c-Met protein overexpressing non-small cell lung cancer; the phase 1 contribution is restricted to patients with NSCLC receiving monotherapy",
+    dose_range = "telisotuzumab vedotin 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks (phase 1) and 1.6 or 1.9 mg/kg every 2 weeks (LUMINOSITY)",
+    notes = paste0(
       "Baseline demographics of this analysis set are in Babel 2026 ",
       "Table S6. This composite endpoint is not mutually exclusive ",
       "with the companion grade-threshold endpoints: a grade 3 or ",

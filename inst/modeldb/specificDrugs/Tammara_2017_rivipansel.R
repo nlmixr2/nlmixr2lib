@@ -30,37 +30,37 @@ Tammara_2017_rivipansel <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rivipansel", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rivipansel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rivipansel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "rivipansel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed body weight in kg. Shared power-form covariate on",
         "central volume V1, first peripheral V2, and second peripheral",
         "V3, all normalised to a reference of 70 kg",
         "(Table 1 footnote c: V1,2,3 = theta_V1,2,3 * (WT/70)^0.569)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance in raw (NOT BSA-normalised) mL/min.",
         "Estimated in adults by the Cockcroft-Gault formula and in",
         "children by the Schwartz formula with body-surface-area",
         "adjustment so that both yield absolute mL/min on a common",
         "scale across the age range."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Reference value 150 mL/min",
         "(Table 1 footnote b: CL = 1.25 * (CRCL/150)^0.468 * (1 + 0.234 * STUD)).",
         "NOT BSA-normalised: the per-model unit is raw mL/min, matching",
@@ -69,20 +69,20 @@ Tammara_2017_rivipansel <- function() {
         "explicitly in covariateData[[CRCL]]$units so downstream users",
         "do not silently feed mL/min/1.73 m^2 into the power form."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     STUDY_RIV201 = list(
-      description        = paste(
+      description = paste(
         "Phase II rivipansel SCD study (NCT01119833) indicator.",
         "1 = subject is from the phase II study in SCD patients with",
         "vaso-occlusive crisis; 0 = subject is from one of the three",
         "phase I studies (studies 101, 102, 103) pooled into the",
         "integrated population PK analysis."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (rivipansel phase I studies 101, 102, 103)",
-      notes              = paste(
+      notes = paste(
         "Subject-level / time-fixed. Used both as an additive shift on",
         "typical clearance (1 + 0.234 * STUDY_RIV201) -- interpreted by",
         "the authors as the SCD-hyperfiltration component -- and to",
@@ -92,21 +92,21 @@ Tammara_2017_rivipansel <- function() {
         "targeting the SCD population (the paper's stated goal), set",
         "STUDY_RIV201 = 1 for every subject."
       ),
-      source_name        = "STUD"
+      source_name = "STUD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 109,
-    n_studies      = 4,
-    age_range      = "12-51 years (pooled phase I + phase II)",
-    age_median     = "not reported in main text",
-    weight_range   = "not reported in main text",
-    weight_median  = "70 kg (reference value used in the allometric covariate form, Table 1 footnote c)",
+    species = "human",
+    n_subjects = 109,
+    n_studies = 4,
+    age_range = "12-51 years (pooled phase I + phase II)",
+    age_median = "not reported in main text",
+    weight_range = "not reported in main text",
+    weight_median = "70 kg (reference value used in the allometric covariate form, Table 1 footnote c)",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort across three rivipansel phase I studies (studies",
       "101 and 102 in healthy adult volunteers, study 103 NCT00911495",
       "in adults with SCD not in vaso-occlusive crisis) and the",
@@ -115,7 +115,7 @@ Tammara_2017_rivipansel <- function() {
       "for vaso-occlusive crisis. 12 children aged 12-17 years were",
       "enrolled in the phase II study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Rivipansel 2-40 mg/kg IV (20-minute infusion). Phase I single",
       "dose 2-40 mg/kg (study 101); phase I multiple dose 2-20 mg/kg",
       "q8h with a 40 mg/kg loading dose followed by 20 mg/kg q8h",
@@ -125,8 +125,8 @@ Tammara_2017_rivipansel <- function() {
       "dose). Renal clearance is the primary elimination mechanism",
       "(> 90% of dose recovered unchanged in urine)."
     ),
-    regions        = "United States (Pfizer-sponsored development program)",
-    notes          = paste(
+    regions = "United States (Pfizer-sponsored development program)",
+    notes = paste(
       "Demographics summarized in Tammara 2017 Methods / Study design",
       "and data sources. NONMEM 7.3.0 with FOCE-INTER; precision of",
       "parameter estimates obtained via Sampling Importance Resampling",

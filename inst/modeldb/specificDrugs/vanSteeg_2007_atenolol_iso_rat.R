@@ -42,32 +42,32 @@ vanSteeg_2007_atenolol_iso_rat <- function() {
   covariateData <- list()
 
   compartmentData <- list(
-    central     = list(analyte = "S(-)-atenolol", units = "ng", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "S(-)-atenolol", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "S(-)-atenolol", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "S(-)-atenolol", units = "ng", specimen = "plasma", verified = TRUE),
-    effect      = list(analyte = "S(-)-atenolol", units = "ng/mL", specimen = "not applicable", verified = TRUE)
+    effect = list(analyte = "S(-)-atenolol", units = "ng/mL", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Wistar-Kyoto, WKY; male)",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    age_range      = "not reported; acclimatised at least 5 days, instrumented 7 days before the experiment",
-    weight_range   = "294 g +/- 49 (mean +/- SD across the 39 WKY rats of this study)",
+    species = "rat (Wistar-Kyoto, WKY; male)",
+    n_subjects = 9L,
+    n_studies = 1L,
+    age_range = "not reported; acclimatised at least 5 days, instrumented 7 days before the experiment",
+    weight_range = "294 g +/- 49 (mean +/- SD across the 39 WKY rats of this study)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Normotensive (WKY) conscious rats under pharmacologically induced tachycardia:",
       "a continuous IV infusion of isoprenaline 5 ug/kg/h begun at least 30 min before the",
       "S(-)-atenolol infusion and maintained throughout. No disease model.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "S(-)-atenolol 5 mg/kg as a 15-minute IV infusion (single dose), on a background of",
       "continuous IV isoprenaline 5 ug/kg/h.",
       sep = " "
     ),
-    regions        = "The Netherlands (Leiden University)",
-    biomarkers     = paste(
+    regions = "The Netherlands (Leiden University)",
+    biomarkers = paste(
       "Heart rate captured continuously from a femoral-artery pressure signal (P10EZ-1 transducer,",
       "Spike 2 acquisition) throughout the 8-hour experiment and used directly as the PD endpoint.",
       "Plasma S(-)-atenolol by reversed-phase HPLC with fluorescence detection (ex 235 nm,",

@@ -46,57 +46,57 @@ ncaParamLabel <- function(code, units = NULL) {
 
 .ncaParamLabelTable <- function() {
   c(
-    cmax           = "Cmax",
-    cmin           = "Cmin",
-    tmax           = "Tmax",
-    tlast          = "Tlast",
-    clast.obs      = "Clast",
-    aucinf.obs     = "AUC0-\u221e (obs)",
-    aucinf.pred    = "AUC0-\u221e (pred)",
-    auclast        = "AUClast",
-    aucall         = "AUCall",
-    half.life      = "t\u00bd",
-    lambda.z       = "\u03bbz",
+    cmax = "Cmax",
+    cmin = "Cmin",
+    tmax = "Tmax",
+    tlast = "Tlast",
+    clast.obs = "Clast",
+    aucinf.obs = "AUC0-\u221e (obs)",
+    aucinf.pred = "AUC0-\u221e (pred)",
+    auclast = "AUClast",
+    aucall = "AUCall",
+    half.life = "t\u00bd",
+    lambda.z = "\u03bbz",
     lambda.z.n.points = "\u03bbz n points",
-    cl.obs         = "CL/F",
-    cl.pred        = "CL/F",
-    vss.obs        = "Vss/F",
-    vss.pred       = "Vss/F",
+    cl.obs = "CL/F",
+    cl.pred = "CL/F",
+    vss.obs = "Vss/F",
+    vss.pred = "Vss/F",
     # IV-infusion variants: PKNCA's *.iv.* parameters subtract half the
     # infusion duration from MRT, so Vss is not inflated by dur/2.
-    mrt.obs        = "MRT",
-    mrt.pred       = "MRT",
-    mrt.iv.obs     = "MRT (IV)",
-    mrt.iv.pred    = "MRT (IV)",
-    vss.iv.obs     = "Vss (IV)",
-    vss.iv.pred    = "Vss (IV)",
-    vz.obs         = "Vz/F",
-    vz.pred        = "Vz/F",
-    cav            = "Cavg",
-    ctau           = "C\u03c4",
-    ctrough        = "Ctrough",
-    accumulation   = "Rac",
-    swing          = "Swing",
-    swing_over     = "Swing",
-    fluctuation    = "Fluctuation",
+    mrt.obs = "MRT",
+    mrt.pred = "MRT",
+    mrt.iv.obs = "MRT (IV)",
+    mrt.iv.pred = "MRT (IV)",
+    vss.iv.obs = "Vss (IV)",
+    vss.iv.pred = "Vss (IV)",
+    vz.obs = "Vz/F",
+    vz.pred = "Vz/F",
+    cav = "Cavg",
+    ctau = "C\u03c4",
+    ctrough = "Ctrough",
+    accumulation = "Rac",
+    swing = "Swing",
+    swing_over = "Swing",
+    fluctuation = "Fluctuation",
     fluctuation_pct = "Fluctuation (%)",
-    ptr            = "PTR",
-    aumcinf.obs    = "AUMC0-\u221e (obs)",
-    aumcinf.pred   = "AUMC0-\u221e (pred)",
-    aumclast       = "AUMC0-t",
-    mrtinf.obs     = "MRT0-\u221e (obs)",
-    mrtinf.pred    = "MRT0-\u221e (pred)",
-    mrtlast        = "MRT0-t",
-    mrt.iv.obs     = "MRTiv (obs)",
-    mrt.iv.pred    = "MRTiv (pred)",
-    thalf.eff.obs  = "t\u00bd,eff",
-    f              = "F",
-    n.samples      = "N samples",
-    ae             = "Ae (amount excreted)",
-    fe             = "Fe (fraction excreted)",
-    clr.last       = "CLr (last)",
-    clr.obs        = "CLr (obs)",
-    clr.pred       = "CLr (pred)"
+    ptr = "PTR",
+    aumcinf.obs = "AUMC0-\u221e (obs)",
+    aumcinf.pred = "AUMC0-\u221e (pred)",
+    aumclast = "AUMC0-t",
+    mrtinf.obs = "MRT0-\u221e (obs)",
+    mrtinf.pred = "MRT0-\u221e (pred)",
+    mrtlast = "MRT0-t",
+    mrt.iv.obs = "MRTiv (obs)",
+    mrt.iv.pred = "MRTiv (pred)",
+    thalf.eff.obs = "t\u00bd,eff",
+    f = "F",
+    n.samples = "N samples",
+    ae = "Ae (amount excreted)",
+    fe = "Fe (fraction excreted)",
+    clr.last = "CLr (last)",
+    clr.obs = "CLr (obs)",
+    clr.pred = "CLr (pred)"
   )
 }
 
@@ -169,14 +169,20 @@ ncaParamLabel <- function(code, units = NULL) {
 #' )
 #' tbl
 #' attr(tbl, "footnote")
-ncaComparisonTable <- function(simulated, reference,
-                               by = NULL,
-                               params = NULL,
-                               tolerance_pct = 20,
-                               units = NULL,
-                               label_first_column = "NCA parameter") {
+ncaComparisonTable <- function(
+  simulated,
+  reference,
+  by = NULL,
+  params = NULL,
+  tolerance_pct = 20,
+  units = NULL,
+  label_first_column = "NCA parameter"
+) {
   checkmate::assertNumeric(
-    tolerance_pct, len = 1L, lower = 0, any.missing = FALSE
+    tolerance_pct,
+    len = 1L,
+    lower = 0,
+    any.missing = FALSE
   )
   checkmate::assertCharacter(label_first_column, len = 1L, any.missing = FALSE)
   if (!is.null(by)) {
@@ -208,8 +214,11 @@ ncaComparisonTable <- function(simulated, reference,
   ref_long <- .aggregateMedian(ref_long, group_cols, value_col = "Reference")
 
   joined <- merge(
-    ref_long, sim_long,
-    by = group_cols, all = FALSE, sort = FALSE
+    ref_long,
+    sim_long,
+    by = group_cols,
+    all = FALSE,
+    sort = FALSE
   )
   if (nrow(joined) == 0L) {
     stop(
@@ -234,12 +243,20 @@ ncaComparisonTable <- function(simulated, reference,
   sort_idx <- match(joined$PPTESTCD, canon)
   sort_idx[is.na(sort_idx)] <- length(canon) + 1L
   if (!is.null(by)) {
-    group_idx <- vapply(seq_len(nrow(joined)), function(i) {
-      sum(vapply(seq_along(by), function(j) {
-        match(joined[[by[j]]][i], group_order[[by[j]]]) *
-          10L^(length(by) - j)
-      }, numeric(1L)))
-    }, numeric(1L))
+    group_idx <- vapply(
+      seq_len(nrow(joined)),
+      function(i) {
+        sum(vapply(
+          seq_along(by),
+          function(j) {
+            match(joined[[by[j]]][i], group_order[[by[j]]]) *
+              10L^(length(by) - j)
+          },
+          numeric(1L)
+        ))
+      },
+      numeric(1L)
+    )
     ord <- order(sort_idx, joined$PPTESTCD, group_idx)
   } else {
     ord <- order(sort_idx, joined$PPTESTCD)
@@ -251,11 +268,13 @@ ncaComparisonTable <- function(simulated, reference,
   )
   names(out) <- label_first_column
   if (!is.null(by)) {
-    for (bcol in by) out[[bcol]] <- joined[[bcol]]
+    for (bcol in by) {
+      out[[bcol]] <- joined[[bcol]]
+    }
   }
   out$Reference <- ref_fmt
   out$Simulated <- sim_fmt
-  out$`% diff`  <- pct_fmt
+  out$`% diff` <- pct_fmt
   out <- out[ord, , drop = FALSE]
   rownames(out) <- NULL
 
@@ -274,7 +293,8 @@ ncaComparisonTable <- function(simulated, reference,
   }
   if (!is.data.frame(x)) {
     stop(
-      "`", value_name,
+      "`",
+      value_name,
       "` must be a data.frame, tibble, or PKNCAresults.",
       call. = FALSE
     )
@@ -291,7 +311,9 @@ ncaComparisonTable <- function(simulated, reference,
   miss_by <- setdiff(by, names(x))
   if (length(miss_by) > 0L) {
     stop(
-      "`", value_name, "` is missing grouping column(s): ",
+      "`",
+      value_name,
+      "` is missing grouping column(s): ",
       paste(miss_by, collapse = ", "),
       call. = FALSE
     )
@@ -299,7 +321,9 @@ ncaComparisonTable <- function(simulated, reference,
   value_cols <- setdiff(names(x), by_present)
   if (length(value_cols) == 0L) {
     stop(
-      "`", value_name, "` (wide form) has no parameter columns.",
+      "`",
+      value_name,
+      "` (wide form) has no parameter columns.",
       call. = FALSE
     )
   }
@@ -313,39 +337,49 @@ ncaComparisonTable <- function(simulated, reference,
 }
 
 .aggregateMedian <- function(df, group_cols, value_col) {
-  if (nrow(df) == 0L) return(df)
+  if (nrow(df) == 0L) {
+    return(df)
+  }
   if (anyDuplicated(df[, group_cols, drop = FALSE]) == 0L) {
     return(df)
   }
   agg_fmla <- stats::as.formula(
-    paste0("`", value_col, "` ~ ",
-           paste0("`", group_cols, "`", collapse = " + "))
+    paste0("`", value_col, "` ~ ", paste0("`", group_cols, "`", collapse = " + "))
   )
   out <- stats::aggregate(
-    agg_fmla, data = df,
+    agg_fmla,
+    data = df,
     FUN = function(v) stats::median(v, na.rm = TRUE)
   )
   out
 }
 
 .fmtNcaValue <- function(x) {
-  vapply(x, function(v) {
-    if (is.na(v)) {
-      "\u2014"
-    } else {
-      format(signif(v, 3), scientific = FALSE, trim = TRUE)
-    }
-  }, character(1L))
+  vapply(
+    x,
+    function(v) {
+      if (is.na(v)) {
+        "\u2014"
+      } else {
+        format(signif(v, 3), scientific = FALSE, trim = TRUE)
+      }
+    },
+    character(1L)
+  )
 }
 
 .fmtNcaPct <- function(x, flagged) {
-  out <- vapply(x, function(v) {
-    if (is.na(v)) {
-      "\u2014"
-    } else {
-      sprintf("%+0.1f%%", v)
-    }
-  }, character(1L))
+  out <- vapply(
+    x,
+    function(v) {
+      if (is.na(v)) {
+        "\u2014"
+      } else {
+        sprintf("%+0.1f%%", v)
+      }
+    },
+    character(1L)
+  )
   out[flagged] <- paste0(out[flagged], "*")
   out
 }

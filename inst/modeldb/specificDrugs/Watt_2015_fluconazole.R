@@ -38,11 +38,11 @@ Watt_2015_fluconazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at the value on the day of the first study dose",
         "(Watt 2015 Methods, 'Population PK analysis': 'PNA and weight",
         "were calculated on the day of the first dose of study drug, and",
@@ -58,14 +58,14 @@ Watt_2015_fluconazole <- function() {
         "Consequently, weight was scaled to the power of 1 for both CL and",
         "V.'). Cohort median 3.4 kg, range 1.9-77 kg (Table 1)."
       ),
-      source_name        = "wt"
+      source_name = "wt"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject (Watt 2015 Methods, 'Population PK",
         "analysis': 'For children with multiple measurements of SCR,",
         "albumin, AST, or ALT, values were allowed to change with time.').",
@@ -84,14 +84,14 @@ Watt_2015_fluconazole <- function() {
         "transcription typo and the model is encoded with the consistent",
         "0.4 mg/dL reference. See vignette Errata."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     ),
     ECMO_STATUS = list(
-      description        = "Extracorporeal membrane oxygenation (ECMO) support indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extracorporeal membrane oxygenation (ECMO) support indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = the subject was receiving ECMO support during the modelled",
         "period; 0 = no ECMO support. Per-subject in the source data;",
         "time-fixed at the subject level (Watt 2015 Methods 'Population PK",
@@ -111,21 +111,21 @@ Watt_2015_fluconazole <- function() {
         "alternatives to the binary indicator but did not improve fit",
         "more than the binary ECMO_STATUS."
       ),
-      source_name        = "ECMO"
+      source_name = "ECMO"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 3L,
-    age_range      = "1 day - 17 years",
-    age_median     = "22 days",
-    weight_range   = "1.9-77 kg",
-    weight_median  = "3.4 kg",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 3L,
+    age_range = "1 day - 17 years",
+    age_median = "22 days",
+    weight_range = "1.9-77 kg",
+    weight_median = "3.4 kg",
     sex_female_pct = 35.0,
     race_ethnicity = c(White = 43, Black = 45, Other = 12),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children at high risk for invasive candidiasis, with",
       "or without ECMO support. 23 of 40 (57%) received fluconazole for",
       "prophylaxis and 17 of 40 (43%) for treatment of suspected fungal",
@@ -138,7 +138,7 @@ Watt_2015_fluconazole <- function() {
       "higher max SCR than non-ECMO (0.7 vs 0.5 mg/dL, p = 0.03) but the",
       "initial SCR difference was not significant (0.5 vs 0.3, p = 0.13)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous fluconazole; first dose 2.7-26.5 mg/kg (cohort median",
       "25 mg/kg). Three constituent prospective trials: study 1 (n=20",
       "ECMO subjects who received 25 mg/kg once weekly for prophylaxis or",
@@ -149,16 +149,16 @@ Watt_2015_fluconazole <- function() {
       "gestational age at birth and <120 days of age; only the >=36 weeks",
       "GA subset was included to limit PK variability from prematurity)."
     ),
-    pma_range      = "35-76 weeks postmenstrual age (median 41; reported for n=33 infants <1 year)",
-    ga_range       = "24-41 weeks gestational age (reported for n=33 infants <1 year)",
-    regions        = paste(
+    pma_range = "35-76 weeks postmenstrual age (median 41; reported for n=33 infants <1 year)",
+    ga_range = "24-41 weeks gestational age (reported for n=33 infants <1 year)",
+    regions = paste(
       "United States. Constituent studies were enrolled at Duke",
       "University Medical Center (study 1, single-center ECMO study), at",
       "a single-center pediatric ICU (study 2, infant fluconazole loading",
       "dose), and at a multicenter neonatal network (study 3, infant",
       "antifungal PK)."
     ),
-    notes          = paste(
+    notes = paste(
       "Pooled cohort from three prospective fluconazole PK trials. PK",
       "samples: 360 plasma concentrations included in the population PK",
       "analysis (Watt 2015 Results, 'Study infants and PK specimens';",

@@ -31,7 +31,7 @@ Knibbe_2009_morphine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
     central_m3g = list(analyte = "M3G", units = "ug", specimen = "plasma", verified = FALSE),
     central_m6g = list(analyte = "M6G", units = "ug", specimen = "plasma", verified = FALSE)
@@ -39,46 +39,46 @@ Knibbe_2009_morphine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, time-varying",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, time-varying",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying body weight at the time of each dose / observation.",
         "Source NONMEM column BWS reports body weight in grams; convert to canonical WT (kg) via WT = BWS / 1000.",
         "The source model uses the un-normalised expression WT^e_wt_cl on each clearance and WT^e_wt_vc on each volume,",
         "i.e. an implicit reference weight of 1 kg (the typical-value parameters are the per-kg^exponent constants)."
       ),
-      source_name        = "BWS"
+      source_name = "BWS"
     ),
     PNA = list(
-      description        = "Postnatal age, time-varying",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age, time-varying",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying postnatal age. Source NONMEM column PNA reports age in days; canonical unit is months.",
         "The Knibbe 2009 maturation step is at PNA = 10 days = 10/30.4375 months ~= 0.32855 months:",
         "morphine -> M3G and morphine -> M6G formation clearances increase from THETA(1)/THETA(6)",
         "(PNA <= 10 days) to THETA(10)/THETA(11) (PNA > 10 days)."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    n_subjects     = 248,
-    n_studies      = "pooled (multi-study) cohort; exact study count not stated in the available abstract",
-    age_range      = "preterm newborns to <3 years (postnatal age range covers neonatal day 0 through ~36 months)",
-    age_median     = "TODO: full Knibbe 2009 publication not on disk during DDMORE extraction",
-    weight_range   = "TODO: see age_median note",
-    weight_median  = "TODO: see age_median note",
+    n_subjects = 248,
+    n_studies = "pooled (multi-study) cohort; exact study count not stated in the available abstract",
+    age_range = "preterm newborns to <3 years (postnatal age range covers neonatal day 0 through ~36 months)",
+    age_median = "TODO: full Knibbe 2009 publication not on disk during DDMORE extraction",
+    weight_range = "TODO: see age_median note",
+    weight_median = "TODO: see age_median note",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
-    disease_state  = "Postoperative neonates / infants / toddlers (preterm + term) receiving IV morphine for analgesia",
-    dose_range     = "IV bolus + continuous infusion; doses and infusion rates not captured (full text not on disk)",
-    regions        = "Pooled European paediatric cohorts (ICU and postoperative settings; original studies span the Netherlands and France per author affiliations)",
-    notes          = paste(
+    disease_state = "Postoperative neonates / infants / toddlers (preterm + term) receiving IV morphine for analgesia",
+    dose_range = "IV bolus + continuous infusion; doses and infusion rates not captured (full text not on disk)",
+    regions = "Pooled European paediatric cohorts (ICU and postoperative settings; original studies span the Netherlands and France per author affiliations)",
+    notes = paste(
       "Per the publication abstract (PMID 19650676): 248 infants contributing 2,159 morphine concentrations.",
       "The DDMORE-shipped Output_real_run4.lst was fit to a pooled `Combined_InternalExternalData.csv` covering",
       "338 individuals / 2,809 observations / 5,302 records (likely an extended-cohort post-publication re-run).",

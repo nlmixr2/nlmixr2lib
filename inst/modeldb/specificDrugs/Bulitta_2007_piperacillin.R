@@ -8,37 +8,37 @@ Bulitta_2007_piperacillin <- function() {
     "2007;51(7):2497-2507. doi:10.1128/AAC.01477-06."
   )
   vignette <- "Bulitta_2007_piperacillin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Computed by the Cheymol / James formulas",
         "(Bulitta 2007 Materials and Methods 'Subjects', citing refs 9 and 33).",
         "Allometric scaling on CL and Q (exponent 0.75 fixed) and on V1 and V2",
         "(exponent 1.0 fixed) with reference LBM_STD = 53 kg (Bulitta 2007",
         "Materials and Methods 'Size models')."
       ),
-      source_name        = "LBM"
+      source_name = "LBM"
     ),
     DIS_CF = list(
-      description        = "Cystic-fibrosis disease-state indicator (1 = CF patient, 0 = healthy participant)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cystic-fibrosis disease-state indicator (1 = CF patient, 0 = healthy participant)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Multiplicative power-form effect on V1 and V2",
         "via fcyf_vss^DIS_CF (Bulitta 2007 Table 4 LBM-allometric row:",
         "FCYF_VSS = 0.926, 90% CI 0.82-1.02) and on CL via fcyf_cl^DIS_CF",
@@ -46,27 +46,27 @@ Bulitta_2007_piperacillin <- function() {
         "0.92-1.09; estimated at the model boundary, retained for model-form",
         "traceability with no numerical effect at the published point estimate)."
       ),
-      source_name        = "CF"
+      source_name = "CF"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "CF patients 21 +/- 4 years (mean +/- SD); healthy participants 25 +/- 4 years",
-    weight_range   = "CF patients 43.1 +/- 7.8 kg total body weight; healthy participants 71.1 +/- 11.8 kg",
-    weight_median  = NULL,
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "CF patients 21 +/- 4 years (mean +/- SD); healthy participants 25 +/- 4 years",
+    weight_range = "CF patients 43.1 +/- 7.8 kg total body weight; healthy participants 71.1 +/- 11.8 kg",
+    weight_median = NULL,
     sex_female_pct = 47.1,
     race_ethnicity = "Caucasian (all 34 subjects)",
-    disease_state  = "8 adult cystic-fibrosis patients (CFTR-confirmed by sweat test and clinical history; studied during an infection-free period) and 26 adult healthy volunteers (control group)",
-    dose_range     = "Single 4 g piperacillin as a 5-min IV infusion (one CF patient received 3 g)",
-    regions        = "Germany (single centre, Nurnberg-Heroldsberg)",
-    lbm_range      = "CF patients 37.2 +/- 6.9 kg LBM; healthy participants 56.4 +/- 7.2 kg LBM",
-    bsa_range      = "CF patients 1.38 +/- 0.18 m^2; healthy participants 1.85 +/- 0.18 m^2",
-    bmi_range      = "CF patients 16.7 +/- 1.1 kg/m^2; healthy participants 23.6 +/- 3.7 kg/m^2",
-    height_range   = "CF patients 160 +/- 11.9 cm; healthy participants 174 +/- 8.4 cm",
-    notes          = paste(
+    disease_state = "8 adult cystic-fibrosis patients (CFTR-confirmed by sweat test and clinical history; studied during an infection-free period) and 26 adult healthy volunteers (control group)",
+    dose_range = "Single 4 g piperacillin as a 5-min IV infusion (one CF patient received 3 g)",
+    regions = "Germany (single centre, Nurnberg-Heroldsberg)",
+    lbm_range = "CF patients 37.2 +/- 6.9 kg LBM; healthy participants 56.4 +/- 7.2 kg LBM",
+    bsa_range = "CF patients 1.38 +/- 0.18 m^2; healthy participants 1.85 +/- 0.18 m^2",
+    bmi_range = "CF patients 16.7 +/- 1.1 kg/m^2; healthy participants 23.6 +/- 3.7 kg/m^2",
+    height_range = "CF patients 160 +/- 11.9 cm; healthy participants 174 +/- 8.4 cm",
+    notes = paste(
       "Open-label single-dose parallel-group study. Plasma samples collected",
       "before infusion, at end of infusion (5 min), and at frequent intervals",
       "to 24 h post-infusion (21 nominal time points). Piperacillin assayed by",

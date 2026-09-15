@@ -22,57 +22,57 @@ Frymoyer_2017_infliximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, Vc, and Vp; the source equations are written on per-kilogram CL/V values with reference 65 kg. After conversion to total CL (L/day) and total V (L), the implicit allometric exponents on WT are 1 + 0.313 = 1.313 on CL, 1 + 0.233 = 1.233 on Vc, and 1 + 0.588 = 1.588 on Vp; Q is a constant per-kg value, giving a total-Q exponent of 1.0. The published exponents (0.313, 0.233, 0.588) are preserved in the parameter labels as 'e_wt_<param>'; the +1 conversion is applied in model() and called out in the in-file comments.",
-      source_name        = "WT"
+      notes = "Power effect on CL, Vc, and Vp; the source equations are written on per-kilogram CL/V values with reference 65 kg. After conversion to total CL (L/day) and total V (L), the implicit allometric exponents on WT are 1 + 0.313 = 1.313 on CL, 1 + 0.233 = 1.233 on Vc, and 1 + 0.588 = 1.588 on Vp; Q is a constant per-kg value, giving a total-Q exponent of 1.0. The published exponents (0.313, 0.233, 0.588) are preserved in the parameter labels as 'e_wt_<param>'; the +1 conversion is applied in model() and called out in the in-file comments.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin (baseline; treated as static covariate in Frymoyer 2017)",
+      description = "Serum albumin (baseline; treated as static covariate in Frymoyer 2017)",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALB/4.1 per Frymoyer 2017 Methods equation. Reference value 4.1 g/dL. Unit g/dL (US convention) -- distinct from g/L used by other infliximab popPK papers (Hanzel 2021).",
-      source_name        = "ALB"
+      notes = "Power effect on CL; normalized as ALB/4.1 per Frymoyer 2017 Methods equation. Reference value 4.1 g/dL. Unit g/dL (US convention) -- distinct from g/L used by other infliximab popPK papers (Hanzel 2021).",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (antibodies to infliximab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (antibodies to infliximab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Power-of-coefficient effect on CL: CL_typ * 1.292^ADA_POS (i.e. +29.2% when ADA-positive). Source paper labels this covariate 'ATI' (antibodies to infliximab); renamed to canonical ADA_POS per covariate-columns.md.",
-      source_name        = "ATI"
+      notes = "Power-of-coefficient effect on CL: CL_typ * 1.292^ADA_POS (i.e. +29.2% when ADA-positive). Source paper labels this covariate 'ATI' (antibodies to infliximab); renamed to canonical ADA_POS per covariate-columns.md.",
+      source_name = "ATI"
     ),
     CONMED_IMMUNOMOD = list(
-      description        = "Concomitant immunomodulator therapy (any of: purine analogue (azathioprine, 6-mercaptopurine) or methotrexate)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant immunomodulator therapy (any of: purine analogue (azathioprine, 6-mercaptopurine) or methotrexate)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant immunomodulator)",
-      notes              = "Power-of-coefficient effect on CL: CL_typ * 0.863^CONMED_IMMUNOMOD (i.e. -13.7% when on an immunomodulator). Composite of CONMED_AZA, CONMED_MP, and CONMED_MTX -- the source paper pools all three under the single 'IMM' indicator (Table 1 footnote: 'Concomitant immunomodulation refers to purine-analogue or methotrexate.'). Source paper labels this covariate 'IMM'; renamed to canonical CONMED_IMMUNOMOD per covariate-columns.md.",
-      source_name        = "IMM"
+      notes = "Power-of-coefficient effect on CL: CL_typ * 0.863^CONMED_IMMUNOMOD (i.e. -13.7% when on an immunomodulator). Composite of CONMED_AZA, CONMED_MP, and CONMED_MTX -- the source paper pools all three under the single 'IMM' indicator (Table 1 footnote: 'Concomitant immunomodulation refers to purine-analogue or methotrexate.'). Source paper labels this covariate 'IMM'; renamed to canonical CONMED_IMMUNOMOD per covariate-columns.md.",
+      source_name = "IMM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 692L,
-    n_studies      = 2L,
-    age_range      = "Pediatric (REACH, n = 112) and adult (ACCENT I, n = 580); REACH enrolled subjects 6-17 years and ACCENT I enrolled adults 18-65 years.",
-    weight_range   = "Not reported in Frymoyer 2017; reference value used by the model is 65 kg.",
+    species = "human",
+    n_subjects = 692L,
+    n_studies = 2L,
+    age_range = "Pediatric (REACH, n = 112) and adult (ACCENT I, n = 580); REACH enrolled subjects 6-17 years and ACCENT I enrolled adults 18-65 years.",
+    weight_range = "Not reported in Frymoyer 2017; reference value used by the model is 65 kg.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in Frymoyer 2017 for the model-development cohort.",
-    disease_state  = "Moderate-to-severe Crohn's disease (pooled REACH pediatric and ACCENT I adult trials).",
-    dose_range     = "5-10 mg/kg IV infusion at induction (weeks 0, 2, 6) followed by maintenance every 8 weeks (ACCENT I and REACH design).",
-    regions        = "Multi-regional pivotal trials of infliximab in Crohn's disease.",
-    notes          = paste(
+    disease_state = "Moderate-to-severe Crohn's disease (pooled REACH pediatric and ACCENT I adult trials).",
+    dose_range = "5-10 mg/kg IV infusion at induction (weeks 0, 2, 6) followed by maintenance every 8 weeks (ACCENT I and REACH design).",
+    regions = "Multi-regional pivotal trials of infliximab in Crohn's disease.",
+    notes = paste(
       "The structural PK model and parameter values were originally developed by",
       "Fasanmade et al. (reference 3 of Frymoyer 2017) by pooling 112 children",
       "from the REACH trial (Moderate-to-Severe Crohn's Disease in Pediatric",

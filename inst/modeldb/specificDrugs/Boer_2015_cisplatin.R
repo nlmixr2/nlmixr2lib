@@ -8,7 +8,7 @@ Boer_2015_cisplatin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -17,38 +17,38 @@ Boer_2015_cisplatin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at start of chemotherapy",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested in covariate screening (Boer 2015 Results); did not significantly improve OFV and was not retained in the final population PK model. Univariate correlation between age and Pt AUC(1-3 yr) disappeared after adjustment for renal function."
+      units = "years",
+      type = "continuous",
+      notes = "Tested in covariate screening (Boer 2015 Results); did not significantly improve OFV and was not retained in the final population PK model. Univariate correlation between age and Pt AUC(1-3 yr) disappeared after adjustment for renal function."
     ),
     WT = list(
       description = "Body weight at start of chemotherapy",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested in covariate screening (Boer 2015 Results); did not significantly improve OFV and was not retained in the final population PK model. No correlation with Pt AUC(1-3 yr)."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested in covariate screening (Boer 2015 Results); did not significantly improve OFV and was not retained in the final population PK model. No correlation with Pt AUC(1-3 yr)."
     ),
     HT = list(
       description = "Body height at start of chemotherapy",
-      units       = "m",
-      type        = "continuous",
-      notes       = "Tested in covariate screening (Boer 2015 Results); did not significantly improve OFV and was not retained in the final population PK model."
+      units = "m",
+      type = "continuous",
+      notes = "Tested in covariate screening (Boer 2015 Results); did not significantly improve OFV and was not retained in the final population PK model."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 99L,
-    n_studies       = 1L,
-    n_observations  = 240L,
-    age_range       = "17-53 years (at start of chemotherapy)",
-    age_median      = "29 years (at start of chemotherapy); 39 years (range 23-64) at follow-up assessment",
-    weight_range    = "not reported as range; demographic Table 1 covers cohort baseline",
-    sex_female_pct  = 0,
-    race_ethnicity  = "not reported; single-centre Dutch cohort (University Medical Centre Groningen)",
-    disease_state   = "Non-seminomatous testicular cancer survivors treated with cisplatin-based chemotherapy (BEP, EP, 3xBEP/1xEP, or other cisplatin-based regimen) between 1988 and 2000. Stage II 53%, stage III 5%, stage IV 42%; IGCCCG risk 'good' 56%, 'intermediate' 34%, 'poor' 9%.",
-    dose_range      = "Cumulative cisplatin 554-1713 mg (median 809 mg); 275-800 mg/m^2 (median 400 mg/m^2); standard testicular-cancer cisplatin regimens delivered over 9-12 weeks. The model dose is the elemental-Pt equivalent (multiply cumulative cisplatin in mg by 195.08/300.05 = 0.6502).",
-    regions         = "Netherlands (single-centre, University Medical Centre Groningen)",
-    notes           = "240 serum Pt measurements from 98 patients (one to three samples per patient) collected 0.9-13.2 years post-start-of-chemotherapy (median 5.0 years); one 24-h urine sample from 91 patients (median 6.6 years post-chemotherapy). Serum and urinary excretion rate were fit simultaneously. Pt assayed by adsorptive voltammetry after high-pressure decomposition; LLOQ 6 pg/g serum; intra/inter-assay CVs 6%/5%. Cohort follow-up assessment at median 9 years (range 3-15) post-chemotherapy. Baseline demographics per Table 1 of Boer 2015."
+    species = "human",
+    n_subjects = 99L,
+    n_studies = 1L,
+    n_observations = 240L,
+    age_range = "17-53 years (at start of chemotherapy)",
+    age_median = "29 years (at start of chemotherapy); 39 years (range 23-64) at follow-up assessment",
+    weight_range = "not reported as range; demographic Table 1 covers cohort baseline",
+    sex_female_pct = 0,
+    race_ethnicity = "not reported; single-centre Dutch cohort (University Medical Centre Groningen)",
+    disease_state = "Non-seminomatous testicular cancer survivors treated with cisplatin-based chemotherapy (BEP, EP, 3xBEP/1xEP, or other cisplatin-based regimen) between 1988 and 2000. Stage II 53%, stage III 5%, stage IV 42%; IGCCCG risk 'good' 56%, 'intermediate' 34%, 'poor' 9%.",
+    dose_range = "Cumulative cisplatin 554-1713 mg (median 809 mg); 275-800 mg/m^2 (median 400 mg/m^2); standard testicular-cancer cisplatin regimens delivered over 9-12 weeks. The model dose is the elemental-Pt equivalent (multiply cumulative cisplatin in mg by 195.08/300.05 = 0.6502).",
+    regions = "Netherlands (single-centre, University Medical Centre Groningen)",
+    notes = "240 serum Pt measurements from 98 patients (one to three samples per patient) collected 0.9-13.2 years post-start-of-chemotherapy (median 5.0 years); one 24-h urine sample from 91 patients (median 6.6 years post-chemotherapy). Serum and urinary excretion rate were fit simultaneously. Pt assayed by adsorptive voltammetry after high-pressure decomposition; LLOQ 6 pg/g serum; intra/inter-assay CVs 6%/5%. Cohort follow-up assessment at median 9 years (range 3-15) post-chemotherapy. Baseline demographics per Table 1 of Boer 2015."
   )
 
   ini({

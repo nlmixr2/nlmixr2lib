@@ -8,91 +8,91 @@ Frey_2010_tocilizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL with reference 1.8 m^2 per Frey 2010 Table III equation CL = 0.3 * (BSA/1.8)^0.7. Frey 2010 does not state which BSA formula was used; assume DuBois unless the source data dictionary states otherwise. BSA, BMI, and body weight were highly correlated in the dataset (Discussion p763); BSA was the body-size descriptor retained.",
-      source_name        = "BSA"
+      notes = "Power effect on linear CL with reference 1.8 m^2 per Frey 2010 Table III equation CL = 0.3 * (BSA/1.8)^0.7. Frey 2010 does not state which BSA formula was used; assume DuBois unless the source data dictionary states otherwise. BSA, BMI, and body weight were highly correlated in the dataset (Discussion p763); BSA was the body-size descriptor retained.",
+      source_name = "BSA"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Frey 2010 Methods (p757) parameterizes sex with male as reference (TVP = theta_P for males; TVP = theta_P * (1 + theta_SEX) for females) and reports theta_SEX = -0.16, i.e. CL is 16% lower in women than in men (Table III, p760). Maps directly to the canonical SEXF column.",
-      source_name        = "SEX"
+      notes = "Frey 2010 Methods (p757) parameterizes sex with male as reference (TVP = theta_P for males; TVP = theta_P * (1 + theta_SEX) for females) and reports theta_SEX = -0.16, i.e. CL is 16% lower in women than in men (Table III, p760). Maps directly to the canonical SEXF column.",
+      source_name = "SEX"
     ),
     HDLC = list(
-      description        = "Baseline serum high-density lipoprotein cholesterol",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum high-density lipoprotein cholesterol",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL with reference 54 mg/dL per Frey 2010 Table III equation CL = 0.3 * (HDL-C/54)^-0.2. Time-fixed at baseline. The paper interprets the HDLC effect on CL as a body-size surrogate (Discussion p763) rather than mechanistic.",
-      source_name        = "HDL-C"
+      notes = "Power effect on linear CL with reference 54 mg/dL per Frey 2010 Table III equation CL = 0.3 * (HDL-C/54)^-0.2. Time-fixed at baseline. The paper interprets the HDLC effect on CL as a body-size surrogate (Discussion p763) rather than mechanistic.",
+      source_name = "HDL-C"
     ),
     RHEUMATOID_FACTOR = list(
-      description        = "Baseline serum rheumatoid factor (autoantibody against the Fc portion of IgG)",
-      units              = "U/mL",
-      type               = "continuous",
+      description = "Baseline serum rheumatoid factor (autoantibody against the Fc portion of IgG)",
+      units = "U/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Frey 2010 fits the covariate on the natural-log scale: CL = 0.3 * (LRF/4.7)^0.1, where LRF = log(RHEUMATOID_FACTOR) and the reference LRF = 4.7 corresponds to RF = exp(4.7) ~= 110 U/mL (Table III, p760). The canonical column carries the raw RF value in U/mL; the log transform is applied inside model() as (log(RHEUMATOID_FACTOR) / log(110))^e_lrf_cl, which is algebraically identical to the paper's (LRF/4.7)^0.1 form.",
-      source_name        = "RF"
+      notes = "Frey 2010 fits the covariate on the natural-log scale: CL = 0.3 * (LRF/4.7)^0.1, where LRF = log(RHEUMATOID_FACTOR) and the reference LRF = 4.7 corresponds to RF = exp(4.7) ~= 110 U/mL (Table III, p760). The canonical column carries the raw RF value in U/mL; the log transform is applied inside model() as (log(RHEUMATOID_FACTOR) / log(110))^e_lrf_cl, which is algebraically identical to the paper's (LRF/4.7)^0.1 form.",
+      source_name = "RF"
     ),
     TPRO = list(
-      description        = "Baseline total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on V1 with reference 74 g/L per Frey 2010 Table III equation V1 = 3.5 * (PROT/74)^-1.1. Frey 2010 retains both TPRO (negative exponent) and ALB (positive exponent) on V1 and notes there is no clear mechanistic explanation; the joint effect may reflect serum-volume modifications (Discussion p763).",
-      source_name        = "PROT"
+      notes = "Power effect on V1 with reference 74 g/L per Frey 2010 Table III equation V1 = 3.5 * (PROT/74)^-1.1. Frey 2010 retains both TPRO (negative exponent) and ALB (positive exponent) on V1 and notes there is no clear mechanistic explanation; the joint effect may reflect serum-volume modifications (Discussion p763).",
+      source_name = "PROT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on both V1 (positive exponent) and Vm (negative exponent) with reference 38 g/L per Frey 2010 Table III equations V1 = 3.5 * (ALBU/38)^0.7 and VM = 7.5 * (ALBU/38)^-0.4.",
-      source_name        = "ALBU"
+      notes = "Power effects on both V1 (positive exponent) and Vm (negative exponent) with reference 38 g/L per Frey 2010 Table III equations V1 = 3.5 * (ALBU/38)^0.7 and VM = 7.5 * (ALBU/38)^-0.4.",
+      source_name = "ALBU"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (measured Cockcroft-Gault method per the source paper's clinical-chemistry panel)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (measured Cockcroft-Gault method per the source paper's clinical-chemistry panel)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Vm with reference 106 mL/min per Frey 2010 Table III equation VM = 7.5 * (CRCL/106)^0.2. Frey 2010 does not BSA-normalize the creatinine clearance; the column carries the raw CrCl in mL/min, NOT the canonical BSA-normalized mL/min/1.73 m^2 form. Documented here so downstream simulation does not double-correct for body size (BSA already enters CL separately).",
-      source_name        = "CRCL"
+      notes = "Power effect on Vm with reference 106 mL/min per Frey 2010 Table III equation VM = 7.5 * (CRCL/106)^0.2. Frey 2010 does not BSA-normalize the creatinine clearance; the column carries the raw CrCl in mL/min, NOT the canonical BSA-normalized mL/min/1.73 m^2 form. Documented here so downstream simulation does not double-correct for body size (BSA already enters CL separately).",
+      source_name = "CRCL"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator at baseline, 1 = smoker, 0 = non-smoker",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator at baseline, 1 = smoker, 0 = non-smoker",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-smoker)",
-      notes              = "Multiplicative fractional effect on Vm: VM_smoker = VM * (1 + 0.11) per Frey 2010 Table III row 'Smoking on VM' (effect +11%, p760). About 18% of the pooled cohort were smokers (Frey 2010 Results p759).",
-      source_name        = "Smoking"
+      notes = "Multiplicative fractional effect on Vm: VM_smoker = VM * (1 + 0.11) per Frey 2010 Table III row 'Smoking on VM' (effect +11%, p760). About 18% of the pooled cohort were smokers (Frey 2010 Results p759).",
+      source_name = "Smoking"
     )
   )
 
   population <- list(
-    n_subjects     = 1793L,
+    n_subjects = 1793L,
     n_observations = 7415L,
-    n_studies      = 4L,
-    age_range      = "18-89 years",
-    age_median     = "52 years",
-    weight_range   = "38-150 kg",
-    weight_median  = "70 kg",
+    n_studies = 4L,
+    age_range = "18-89 years",
+    age_median = "52 years",
+    weight_range = "38-150 kg",
+    weight_median = "70 kg",
     sex_female_pct = 82,
     race_ethnicity = c(White = 77, Asian = 8, "American Indian or Alaskan native" = 7, Black = 4, Other = 4),
-    disease_state  = "Moderate-to-severe rheumatoid arthritis (adults). Patients with inadequate response to methotrexate (OPTION), inadequate response to traditional DMARDs (TOWARD), inadequate response to anti-TNF therapy (RADIATE), or as monotherapy (AMBITION).",
-    dose_range     = "4 or 8 mg/kg by 1-hour intravenous infusion every 4 weeks for 24 weeks (per body weight).",
-    regions        = "International multi-regional (4 phase III studies pooled).",
-    notes          = "Baseline demographics from Frey 2010 Table I (4 phase III studies: OPTION N=396, TOWARD N=718, RADIATE N=341, AMBITION N=338; total 1793 subjects, 7415 PK samples). Smoking status: ~82% non-smokers / ~18% smokers across the pooled cohort. Concomitant medications: methotrexate (1227 patients), folic acid (1512), corticosteroids (879), NSAIDs (1010), other DMARDs / immunosuppressants in smaller subgroups (Frey 2010 Results p757-758); none of these concomitant drugs were retained as PK covariates."
+    disease_state = "Moderate-to-severe rheumatoid arthritis (adults). Patients with inadequate response to methotrexate (OPTION), inadequate response to traditional DMARDs (TOWARD), inadequate response to anti-TNF therapy (RADIATE), or as monotherapy (AMBITION).",
+    dose_range = "4 or 8 mg/kg by 1-hour intravenous infusion every 4 weeks for 24 weeks (per body weight).",
+    regions = "International multi-regional (4 phase III studies pooled).",
+    notes = "Baseline demographics from Frey 2010 Table I (4 phase III studies: OPTION N=396, TOWARD N=718, RADIATE N=341, AMBITION N=338; total 1793 subjects, 7415 PK samples). Smoking status: ~82% non-smokers / ~18% smokers across the pooled cohort. Concomitant medications: methotrexate (1227 patients), folic acid (1512), corticosteroids (879), NSAIDs (1010), other DMARDs / immunosuppressants in smaller subgroups (Frey 2010 Results p757-758); none of these concomitant drugs were retained as PK covariates."
   )
 
   ini({

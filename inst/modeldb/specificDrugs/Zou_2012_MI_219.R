@@ -9,30 +9,30 @@ Zou_2012_MI_219 <- function() {
     sep = " "
   )
   vignette <- "Zou_2012_MI_219"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "MI 219", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "MI 219", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "MI 219", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "human (predicted from preclinical interspecies allometric scaling using rat, dog, and monkey IV PK)",
-    n_subjects       = NA_integer_,
-    n_studies        = 0L,
-    age_range        = NA_character_,
-    weight_range     = "70 kg reference body weight",
-    weight_median    = "70 kg",
-    sex_female_pct   = NA_real_,
-    disease_state    = "Predicted first-in-human PK for the HDM2 / p53 small-molecule inhibitor MI-219; no human subjects were dosed in Zou 2012.",
-    dose_range       = "5 mg/kg IV bolus (Zou 2012 Figure 5 and Figure 7 simulation dose used for the human-PK projection).",
-    regions          = NA_character_,
-    notes            = "Predicted human PK parameters were obtained by joint NONMEM (Version VII) allometric fit of single-dose IV plasma profiles in rat (Sprague-Dawley, n = 3, 5 mg/kg, 195 +/- 15 g), beagle dog (n = 3, 2 mg/kg, 8.0 +/- 1.1 kg), and cynomolgus monkey (n = 6, 10 mg/kg, 2.5 +/- 0.26 kg). The structural model is two-compartment with linear elimination from the central compartment and body-weight allometry P = PTV * WT^b applied to every PK parameter. Per-species PTV and exponent b are reported in Zou 2012 Table S1 of the supplement; the supplement is not on disk for this extraction. Mouse data (CD-1, n = 33, 10 mg/kg, 18 +/- 1.7 g) were collected but excluded from the joint NONMEM fit because the mouse plasma profile was not superimposable on rat / dog / monkey curves under Wajima or Dedrick normalisation (Zou 2012 Results, page 274). The parameter encoding below is the predicted human PK at 70 kg from Zou 2012 Table 5, NONMEM column."
+    species = "human (predicted from preclinical interspecies allometric scaling using rat, dog, and monkey IV PK)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = NA_character_,
+    weight_range = "70 kg reference body weight",
+    weight_median = "70 kg",
+    sex_female_pct = NA_real_,
+    disease_state = "Predicted first-in-human PK for the HDM2 / p53 small-molecule inhibitor MI-219; no human subjects were dosed in Zou 2012.",
+    dose_range = "5 mg/kg IV bolus (Zou 2012 Figure 5 and Figure 7 simulation dose used for the human-PK projection).",
+    regions = NA_character_,
+    notes = "Predicted human PK parameters were obtained by joint NONMEM (Version VII) allometric fit of single-dose IV plasma profiles in rat (Sprague-Dawley, n = 3, 5 mg/kg, 195 +/- 15 g), beagle dog (n = 3, 2 mg/kg, 8.0 +/- 1.1 kg), and cynomolgus monkey (n = 6, 10 mg/kg, 2.5 +/- 0.26 kg). The structural model is two-compartment with linear elimination from the central compartment and body-weight allometry P = PTV * WT^b applied to every PK parameter. Per-species PTV and exponent b are reported in Zou 2012 Table S1 of the supplement; the supplement is not on disk for this extraction. Mouse data (CD-1, n = 33, 10 mg/kg, 18 +/- 1.7 g) were collected but excluded from the joint NONMEM fit because the mouse plasma profile was not superimposable on rat / dog / monkey curves under Wajima or Dedrick normalisation (Zou 2012 Results, page 274). The parameter encoding below is the predicted human PK at 70 kg from Zou 2012 Table 5, NONMEM column."
   )
 
   ini({

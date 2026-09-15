@@ -34,23 +34,23 @@ Mosha_2014_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Mosha_2014_artemether_lumefantrine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester), 0 = non-pregnant.",
         "Time-fixed per subject. Mosha 2014 enrolled 33 pregnant and 22",
         "non-pregnant women (Table 1). The paper applies pregnancy as a",
@@ -67,16 +67,16 @@ Mosha_2014_lumefantrine <- function() {
         "(vignette Errata).",
         sep = " "
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     )
   )
 
   covariatesDataExcluded <- list(
     DIARR = list(
       description = "Acute diarrhoea on treatment indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Mosha 2014 reports a categorical diarrhoea effect on F1 of",
         "-84% (linear deviation, theta_diarrF1 = -0.84 with 95% CI",
         "-0.95 to -0.44). Only 2 women in the cohort had diarrhoea on",
@@ -96,30 +96,30 @@ Mosha_2014_lumefantrine <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 55L,
-    n_studies       = 1L,
-    n_pregnant      = 33L,
-    n_nonpregnant   = 22L,
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
+    n_pregnant = 33L,
+    n_nonpregnant = 22L,
     n_observations_lf = 265L,
-    age_range       = "18-41 years (pregnant median 25; non-pregnant median 21.5; Table 1)",
-    weight_range    = "40-80 kg (pregnant median 52; non-pregnant median 48.5; Table 1)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    age_range = "18-41 years (pregnant median 25; non-pregnant median 21.5; Table 1)",
+    weight_range = "40-80 kg (pregnant median 52; non-pregnant median 48.5; Table 1)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; pregnant women in",
       "the second or third trimester (median gestational age 27 weeks,",
       "range 14-37) compared concurrently with non-pregnant women",
       "(controls) recruited from the same clinic during the same period."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per",
       "tablet; four tablets per dose (480 mg lumefantrine) given twice",
       "daily for 3 days (oral; dose times 0, 8, 24, 36, 48, 60 hours)",
       "with 200 mL milk containing 4.5 g fat to optimise lumefantrine",
       "bioavailability."
     ),
-    regions         = "Tanzania (Rufiji district, Kibiti health center; April-September 2012)",
-    notes           = paste(
+    regions = "Tanzania (Rufiji district, Kibiti health center; April-September 2012)",
+    notes = paste(
       "Demographics from Mosha 2014 Table 1. 89.5% (51 / 57) of recruited",
       "patients had detectable residual lumefantrine at baseline (mean",
       "37.3 ng/mL); the published joint model estimates a residual",

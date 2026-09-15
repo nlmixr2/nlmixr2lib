@@ -18,21 +18,21 @@ Li_2026_alvespimycin_nep9 <- function() {
     sep = " "
   )
   vignette <- "Li_2026_alvespimycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion indicator for between-occasion variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for between-occasion variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3 identify the dosing occasion within subject. The deposited pyDarwin control stream for this data set (Li 2024 Supplementary Material 4, `$PK`) writes the BOV blocks as `IF(OCC.EQ.1) ... IF(OCC.EQ.2) ... IF(OCC.EQ.3)`, so three occasions are carried. Decomposed inside `model()` into binary indicators `oc1`, `oc2`, `oc3` that multiplex the BOV etas.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3 identify the dosing occasion within subject. The deposited pyDarwin control stream for this data set (Li 2024 Supplementary Material 4, `$PK`) writes the BOV blocks as `IF(OCC.EQ.1) ... IF(OCC.EQ.2) ... IF(OCC.EQ.3)`, so three occasions are carried. Decomposed inside `model()` into binary indicators `oc1`, `oc2`, `oc3` that multiplex the BOV etas.",
+      source_name = "OCC"
     )
   )
 
@@ -41,43 +41,43 @@ Li_2026_alvespimycin_nep9 <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "In the search space as a power function of weight centred on 81 kg on Vc, CL, Q, V2, V3; not retained at NEP = 9."
+      units = "kg",
+      type = "continuous",
+      notes = "In the search space as a power function of weight centred on 81 kg on Vc, CL, Q, V2, V3; not retained at NEP = 9."
     ),
     AGE = list(
       description = "Age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "In the search space as a power function of age centred on 60 years on Vc and CL; not retained at NEP = 9."
+      units = "years",
+      type = "continuous",
+      notes = "In the search space as a power function of age centred on 60 years on Vc and CL; not retained at NEP = 9."
     ),
     SEXF = list(
       description = "Sex indicator.",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "In the search space as an exponential effect of the NONMEM SEX column on Vc and CL; not retained at NEP = 9. The Li 2024 control stream codes the column as SEX with a 0/1 encoding whose reference level is not stated in either publication."
+      units = "(binary)",
+      type = "categorical",
+      notes = "In the search space as an exponential effect of the NONMEM SEX column on Vc and CL; not retained at NEP = 9. The Li 2024 control stream codes the column as SEX with a 0/1 encoding whose reference level is not stated in either publication."
     ),
     CREAT = list(
       description = "Serum creatinine.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "In the search space as a power function of serum creatinine centred on 0.9 mg/dL on CL (Li 2024 control stream `CSCR = SCR/0.9`); not retained at NEP = 9."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "In the search space as a power function of serum creatinine centred on 0.9 mg/dL on CL (Li 2024 control stream `CSCR = SCR/0.9`); not retained at NEP = 9."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66L,
+    species = "human",
+    n_subjects = 66L,
     n_observations = 951L,
-    n_studies      = 1L,
-    age_range      = "28-82 years (median 63)",
-    age_median     = "63 years",
-    weight_range   = "48.2-136.5 kg (median 80.3)",
-    weight_median  = "80.3 kg",
+    n_studies = 1L,
+    age_range = "28-82 years (median 63)",
+    age_median = "63 years",
+    weight_range = "48.2-136.5 kg (median 80.3)",
+    weight_median = "80.3 kg",
     sex_female_pct = 38,
-    disease_state  = "Adult patients with advanced solid tumors.",
-    dose_range     = "IV infusion of 17-DMAG; median 33, range 2.2-413 per the dose column of Li 2026 Table 1 (see notes on the unit of that column).",
-    notes          = "Demographics from Li 2026 Supplementary Table S1 (DMAG panel): age 63 (28-82) years, weight 80.3 (48.2-136.5) kg, blood urea nitrogen 15 (5-70) mg/dL, creatinine 1 (0.6-1.8) mg/dL, 41 (62%) male and 25 (38%) female. Sampling was relatively rich, averaging more than 15 samples per participant over up to 102 h. This is the same 17-DMAG data set analysed by the stepwise model of Aregbe 2012 (registered here as `Aregbe_2012_alvespimycin`), which reports the per-dose range as 2.2-413 mg/m^2; Li 2026 Table 1 prints the same two numbers labelled 'mg'."
+    disease_state = "Adult patients with advanced solid tumors.",
+    dose_range = "IV infusion of 17-DMAG; median 33, range 2.2-413 per the dose column of Li 2026 Table 1 (see notes on the unit of that column).",
+    notes = "Demographics from Li 2026 Supplementary Table S1 (DMAG panel): age 63 (28-82) years, weight 80.3 (48.2-136.5) kg, blood urea nitrogen 15 (5-70) mg/dL, creatinine 1 (0.6-1.8) mg/dL, 41 (62%) male and 25 (38%) female. Sampling was relatively rich, averaging more than 15 samples per participant over up to 102 h. This is the same 17-DMAG data set analysed by the stepwise model of Aregbe 2012 (registered here as `Aregbe_2012_alvespimycin`), which reports the per-dose range as 2.2-413 mg/m^2; Li 2026 Table 1 prints the same two numbers labelled 'mg'."
   )
 
   ini({

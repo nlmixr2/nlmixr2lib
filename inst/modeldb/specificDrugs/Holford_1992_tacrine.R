@@ -16,8 +16,8 @@ Holford_1992_tacrine <- function() {
   )
   vignette <- "Holford_1992_tacrine"
   units <- list(
-    time          = "day",
-    dosing        = "mg/day (tacrine daily dose rate supplied as a time-varying covariate column DOSE; no PK ODE)",
+    time = "day",
+    dosing = "mg/day (tacrine daily dose rate supplied as a time-varying covariate column DOSE; no PK ODE)",
     concentration = "(ADAS-cog total cognitive subscale score, 0-70, unitless)"
   )
 
@@ -26,61 +26,76 @@ Holford_1992_tacrine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    effect1 = list(analyte = "tacrine effect", units = NA_character_, specimen = "administration site", verified = FALSE),
-    effect2 = list(analyte = "tacrine effect", units = NA_character_, specimen = "administration site", verified = FALSE),
-    effect3 = list(analyte = "tacrine effect", units = NA_character_, specimen = "administration site", verified = FALSE)
+    effect1 = list(
+      analyte = "tacrine effect",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    effect2 = list(
+      analyte = "tacrine effect",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    effect3 = list(
+      analyte = "tacrine effect",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     IBW = list(
-      description        = "Ideal body weight (Holford-Peace 1992 Devine variant: men IBW (kg) = 52 + 0.75 * (height_cm - 152); women IBW (kg) = 49 + 0.67 * (height_cm - 152)). Used to size-normalise the tacrine dose-rate input to the effect compartment.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight (Holford-Peace 1992 Devine variant: men IBW (kg) = 52 + 0.75 * (height_cm - 152); women IBW (kg) = 49 + 0.67 * (height_cm - 152)). Used to size-normalise the tacrine dose-rate input to the effect compartment.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline per subject. Reference value 60 kg is the population mean IBW from the source paper Data section. Users without IBW pre-computed should derive it from HT and SEXF using the Holford-Peace 1992 formula above before passing the column to the model.",
-      source_name        = "IBW"
+      notes = "Time-fixed at baseline per subject. Reference value 60 kg is the population mean IBW from the source paper Data section. Users without IBW pre-computed should derive it from HT and SEXF using the Holford-Peace 1992 formula above before passing the column to the model.",
+      source_name = "IBW"
     ),
     DOSE = list(
-      description        = "Time-varying tacrine daily dose rate (mg/day). The source paper used dose rate, not a PK ODE, because tacrine clearance could not be estimated directly from the cognitive-endpoint data (the ADAS-cog response is slow relative to the ~2-hour plasma tacrine half-life). Set to 0 during placebo arms, run-in, and washout phases.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Time-varying tacrine daily dose rate (mg/day). The source paper used dose rate, not a PK ODE, because tacrine clearance could not be estimated directly from the cognitive-endpoint data (the ADAS-cog response is slow relative to the ~2-hour plasma tacrine half-life). Set to 0 during placebo arms, run-in, and washout phases.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-record covariate updated step-wise across treatment phases (e.g., 0 -> 40 -> 80 -> 0 across a titration sequence). Reference value 80 mg/day is the highest active dose in the source trials; the tacrine potency parameter beta_a is reported per 80 mg/day so the model uses `DOSE / 80` as the relative dose multiplier. The use case matches the canonical DOSE entry's (b) interpretation (time-varying current administered dose feeding a derived exposure term without an explicit PK compartment).",
-      source_name        = "DOSE"
+      notes = "Per-record covariate updated step-wise across treatment phases (e.g., 0 -> 40 -> 80 -> 0 across a titration sequence). Reference value 80 mg/day is the highest active dose in the source trials; the tacrine potency parameter beta_a is reported per 80 mg/day so the model uses `DOSE / 80` as the relative dose multiplier. The use case matches the canonical DOSE entry's (b) interpretation (time-varying current administered dose feeding a derived exposure term without an explicit PK compartment).",
+      source_name = "DOSE"
     ),
     TRT_PHASE = list(
-      description        = "Active double-blind treatment-phase indicator (1 = on placebo or active treatment, 0 = baseline / run-in / washout / off-treatment). Gates both the placebo build-up and the placebo tolerance development.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active double-blind treatment-phase indicator (1 = on placebo or active treatment, 0 = baseline / run-in / washout / off-treatment). Gates both the placebo build-up and the placebo tolerance development.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (off-treatment / baseline)",
-      notes              = "Holford 1992 explicitly states the placebo response is the same magnitude during active treatment and during placebo treatment ('the placebo efficacy of active drug is the same as placebo alone'); both treatment phases drive the placebo effect compartment. TRT_PHASE = 1 during any time the subject is on either placebo or active tacrine; 0 during pre-randomisation baseline and post-washout follow-up.",
-      source_name        = "TRT_PHASE"
+      notes = "Holford 1992 explicitly states the placebo response is the same magnitude during active treatment and during placebo treatment ('the placebo efficacy of active drug is the same as placebo alone'); both treatment phases drive the placebo effect compartment. TRT_PHASE = 1 during any time the subject is on either placebo or active tacrine; 0 during pre-randomisation baseline and post-washout follow-up.",
+      source_name = "TRT_PHASE"
     ),
     REGION_FRANCE = list(
-      description        = "Protocol indicator: 1 = French protocol 970-04, 0 = US protocol 970-01. Drives multiplicative scale factors on baseline ADAS-cog (FS04 = 1.08), placebo potency (Fpp4 = 1.76), and placebo elimination half-time (Ft1/2el-p4 = 2.78).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Protocol indicator: 1 = French protocol 970-04, 0 = US protocol 970-01. Drives multiplicative scale factors on baseline ADAS-cog (FS04 = 1.08), placebo potency (Fpp4 = 1.76), and placebo elimination half-time (Ft1/2el-p4 = 2.78).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (US protocol 970-01)",
-      notes              = "Time-fixed per subject. The source-paper indicator was the protocol number (PROT in 1, 4); REGION_FRANCE = as.integer(PROT == 4). The paper attributes the France-vs-US placebo-response difference to 'cultural milieu, which modify the behavioural response to drugs but are independent of pharmacological activity' (Discussion).",
-      source_name        = "PROT"
+      notes = "Time-fixed per subject. The source-paper indicator was the protocol number (PROT in 1, 4); REGION_FRANCE = as.integer(PROT == 4). The paper attributes the France-vs-US placebo-response difference to 'cultural milieu, which modify the behavioural response to drugs but are independent of pharmacological activity' (Discussion).",
+      source_name = "PROT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 909L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 909L,
+    n_studies = 2L,
     n_observations = 5253L,
-    age_range      = "Adults / elderly with probable Alzheimer's disease (specific age range not tabulated in the source 'Results and validation' paper; demographic detail lives in the companion methodology paper Holford and Peace 1992 PNAS 89:11466-11470 which was not on disk at extraction time).",
-    age_median     = "(not reported in the on-disk source paper)",
-    weight_range   = "(not tabulated; ideal body weight mean across the cohort was 60 kg per source paper Data section)",
-    weight_median  = "(not reported; population mean IBW = 60 kg)",
+    age_range = "Adults / elderly with probable Alzheimer's disease (specific age range not tabulated in the source 'Results and validation' paper; demographic detail lives in the companion methodology paper Holford and Peace 1992 PNAS 89:11466-11470 which was not on disk at extraction time).",
+    age_median = "(not reported in the on-disk source paper)",
+    weight_range = "(not tabulated; ideal body weight mean across the cohort was 60 kg per source paper Data section)",
+    weight_median = "(not reported; population mean IBW = 60 kg)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Probable Alzheimer's disease (Methods refers to the standard NINCDS-ADRDA 'probable AD' diagnostic criteria implied by the 970-01 / 970-04 protocol designs).",
-    dose_range     = "0 mg/day (placebo), 40 mg/day, and 80 mg/day oral tacrine (the 970-01 and 970-04 trials used titration sequences across these three dose levels with placebo intervals).",
-    regions        = "United States (protocol 970-01, n = 632) and France (protocol 970-04, n = 277).",
-    notes          = "Pooled analysis of two clinical trials of identical design conducted under Parke-Davis sponsorship (US trial 970-01 led by Davis / Thal and the Tacrine Collaborative Study group; French trial 970-04 led by Forette and the French Tacrine Study group). Outcome was ADAS-cog (cognitive subscale of Alzheimer's Disease Assessment Scale, 0-70). The model accommodates titration sequences (placebo / 40 / 80 mg/day in three orderings labeled tacseq114, tacseq214, tacseq314) and does not require all patients to complete all phases; the full tacalll4 analysis dataset pools all phases and protocols. Observation period up to 5 months per subject."
+    disease_state = "Probable Alzheimer's disease (Methods refers to the standard NINCDS-ADRDA 'probable AD' diagnostic criteria implied by the 970-01 / 970-04 protocol designs).",
+    dose_range = "0 mg/day (placebo), 40 mg/day, and 80 mg/day oral tacrine (the 970-01 and 970-04 trials used titration sequences across these three dose levels with placebo intervals).",
+    regions = "United States (protocol 970-01, n = 632) and France (protocol 970-04, n = 277).",
+    notes = "Pooled analysis of two clinical trials of identical design conducted under Parke-Davis sponsorship (US trial 970-01 led by Davis / Thal and the Tacrine Collaborative Study group; French trial 970-04 led by Forette and the French Tacrine Study group). Outcome was ADAS-cog (cognitive subscale of Alzheimer's Disease Assessment Scale, 0-70). The model accommodates titration sequences (placebo / 40 / 80 mg/day in three orderings labeled tacseq114, tacseq214, tacseq314) and does not require all patients to complete all phases; the full tacalll4 analysis dataset pools all phases and protocols. Observation period up to 5 months per subject."
   )
 
   ini({

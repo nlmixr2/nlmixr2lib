@@ -14,65 +14,65 @@ Vet_2016_midazolam <- function() {
   vignette <- "Vet_2016_midazolam"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
-  ddmore_id    <- "DDMODEL00000249"
+  ddmore_id <- "DDMODEL00000249"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL and V1 with paper-estimated exponents (THETA(5) = 1.02 on CL, THETA(6) = 1.34 on V1) and a 5 kg reference weight (Vet 2016 .mod $PK lines 51-58). Time-varying within subject is permitted by the source code, but the bundled simulated dataset uses a single per-subject baseline value.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL and V1 with paper-estimated exponents (THETA(5) = 1.02 on CL, THETA(6) = 1.34 on V1) and a 5 kg reference weight (Vet 2016 .mod $PK lines 51-58). Time-varying within subject is permitted by the source code, but the bundled simulated dataset uses a single per-subject baseline value.",
+      source_name = "WT"
     ),
     CRP = list(
-      description        = "C-reactive protein concentration; standard (non-hs) assay used in Vet 2016 to quantify systemic inflammation in critically ill children.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein concentration; standard (non-hs) assay used in Vet 2016 to quantify systemic inflammation in critically ill children.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL with paper-estimated exponent THETA(11) = -0.312 and reference 32 mg/L (Vet 2016 .mod $PK line 51). Time-varying within subject (re-evaluated each ICU day in the source dataset).",
-      source_name        = "CRP"
+      notes = "Power effect on CL with paper-estimated exponent THETA(11) = -0.312 and reference 32 mg/L (Vet 2016 .mod $PK line 51). Time-varying within subject (re-evaluated each ICU day in the source dataset).",
+      source_name = "CRP"
     ),
     ORG_FAIL_COUNT = list(
-      description        = "Number of organs failing in the critically ill child on the observation day, ascertained per-day and reported as the worst-of-day count.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Number of organs failing in the critically ill child on the observation day, ascertained per-day and reported as the worst-of-day count.",
+      units = "(count)",
+      type = "categorical",
       reference_category = "0 (no organs failing)",
-      notes              = "Decomposed inside `model()` into mutually exclusive binary indicators `orgf1`, `orgf2`, `orgf3`, `orgf_ge4` that select per-stratum typical CL values (Vet 2016 .mod $PK lines 51-55: `IF (ORGF.EQ.0) TVCL = THETA(1) * ...`, `IF (ORGF.EQ.1) TVCL = THETA(7) * ...`, etc., with a final `IF (ORGF.GT.3.5) TVCL = THETA(10) * ...` collapsing the 4-and-5-organ strata). The Vet 2016 source dataset records this column as `ORGF` with values in {0, 1, 2, 3, 4, 5}; the canonical column name in nlmixr2lib is `ORG_FAIL_COUNT` and the canonical decomposition treats >=4 as a single combined stratum to match the source's parameterization.",
-      source_name        = "ORGF"
+      notes = "Decomposed inside `model()` into mutually exclusive binary indicators `orgf1`, `orgf2`, `orgf3`, `orgf_ge4` that select per-stratum typical CL values (Vet 2016 .mod $PK lines 51-55: `IF (ORGF.EQ.0) TVCL = THETA(1) * ...`, `IF (ORGF.EQ.1) TVCL = THETA(7) * ...`, etc., with a final `IF (ORGF.GT.3.5) TVCL = THETA(10) * ...` collapsing the 4-and-5-organ strata). The Vet 2016 source dataset records this column as `ORGF` with values in {0, 1, 2, 3, 4, 5}; the canonical column name in nlmixr2lib is `ORG_FAIL_COUNT` and the canonical decomposition treats >=4 as a single combined stratum to match the source's parameterization.",
+      source_name = "ORGF"
     ),
     OCC = list(
-      description        = "Integer-valued ICU-day occasion indicator for inter-occasion-variability multiplexing (1 = day 1, 2 = day 2, ..., 6 = day 6 or later).",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued ICU-day occasion indicator for inter-occasion-variability multiplexing (1 = day 1, 2 = day 2, ..., 6 = day 6 or later).",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "The Vet 2016 .mod derives OCC from cumulative TIME (hours since first dose) within subject: OCC = 1 + floor(TIME / 24) capped at 6, matching .mod $PK lines 24-29 (`OCC=1; IF(TIME.GE.24)OCC=2; ... ; IF(TIME.GE.120)OCC=6`). The DDMORE-bundled simulated dataset (Simulated_MidaCriticallyIll.csv) does not carry an OCC column; it is derived from the cumulative TIME by the same rule when assembling the simulation event table for the vignette. Decomposed inside `model()` into binary indicators `oc1` .. `oc6` that multiplex the six IOV etas on log-CL.",
-      source_name        = "OCC"
+      notes = "The Vet 2016 .mod derives OCC from cumulative TIME (hours since first dose) within subject: OCC = 1 + floor(TIME / 24) capped at 6, matching .mod $PK lines 24-29 (`OCC=1; IF(TIME.GE.24)OCC=2; ... ; IF(TIME.GE.120)OCC=6`). The DDMORE-bundled simulated dataset (Simulated_MidaCriticallyIll.csv) does not carry an OCC column; it is derived from the cumulative TIME by the same rule when assembling the simulation event table for the vignette. Decomposed inside `model()` into binary indicators `oc1` .. `oc6` that multiplex the six IOV etas on log-CL.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    n_subjects     = 83L,
-    n_studies      = 1L,
-    age_range      = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
-    weight_range   = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
+    n_subjects = 83L,
+    n_studies = 1L,
+    age_range = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
+    weight_range = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
     weight_reference = "5 kg (allometric reference per .mod $PK)",
     sex_female_pct = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
     race_ethnicity = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
-    disease_state  = "Critically ill paediatric patients receiving continuous IV midazolam in the paediatric intensive care unit (PICU). Inflammation (CRP) and number of failing organs (ORG_FAIL_COUNT, source-data column `ORGF`, 0..>=4) are the two retained covariates.",
-    dose_range     = "Continuous IV infusion at clinically titrated rates; the bundled simulated dataset spans 300-22500 ug/h infusions over 1-3 day infusion durations following an initial bolus.",
-    crp_reference  = "32 mg/L (CRP power-effect reference per .mod $PK)",
-    regions        = "Netherlands (SKIC paediatric ICU research network).",
-    notes          = "Population descriptors are derived from the DDMODEL00000249 RDF `model-has-description` (`Midazolam PK in critically ill pediatric patients, using inflammation (quantified as CRP concentrations) and number of organs failing are most important covariates`) and the .mod / .lst FINAL PARAMETER ESTIMATE block. The Vet 2016 publication itself (Am J Respir Crit Care Med 194(1):58-66, doi:10.1164/rccm.201510-2114OC) is not on disk in this worktree, so demographics here come from the DDMORE bundle metadata rather than the paper's Table 1; the absence of a paper cross-check is documented in the validation vignette's Errata."
+    disease_state = "Critically ill paediatric patients receiving continuous IV midazolam in the paediatric intensive care unit (PICU). Inflammation (CRP) and number of failing organs (ORG_FAIL_COUNT, source-data column `ORGF`, 0..>=4) are the two retained covariates.",
+    dose_range = "Continuous IV infusion at clinically titrated rates; the bundled simulated dataset spans 300-22500 ug/h infusions over 1-3 day infusion durations following an initial bolus.",
+    crp_reference = "32 mg/L (CRP power-effect reference per .mod $PK)",
+    regions = "Netherlands (SKIC paediatric ICU research network).",
+    notes = "Population descriptors are derived from the DDMODEL00000249 RDF `model-has-description` (`Midazolam PK in critically ill pediatric patients, using inflammation (quantified as CRP concentrations) and number of organs failing are most important covariates`) and the .mod / .lst FINAL PARAMETER ESTIMATE block. The Vet 2016 publication itself (Am J Respir Crit Care Med 194(1):58-66, doi:10.1164/rccm.201510-2114OC) is not on disk in this worktree, so demographics here come from the DDMORE bundle metadata rather than the paper's Table 1; the absence of a paper cross-check is documented in the validation vignette's Errata."
   )
 
   ini({

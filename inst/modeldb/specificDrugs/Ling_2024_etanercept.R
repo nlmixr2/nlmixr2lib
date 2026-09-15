@@ -13,7 +13,7 @@ Ling_2024_etanercept <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "etanercept", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "etanercept", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "etanercept", units = "mg", specimen = "serum", verified = TRUE)
   )
 
@@ -24,54 +24,54 @@ Ling_2024_etanercept <- function() {
   # is published for any of them, so none can be carried into model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at treatment initiation",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at treatment initiation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F; not retained. Cohort median 57.5 years (IQR 56-59), Ling 2024 Table 2.",
-      source_name        = "age"
+      notes = "Screened on CL/F and V/F; not retained. Cohort median 57.5 years (IQR 56-59), Ling 2024 Table 2.",
+      source_name = "age"
     ),
     WT = list(
-      description        = "Body weight at treatment initiation",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at treatment initiation",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F; not retained. Cohort median 70.5 kg (IQR 69-84), Ling 2024 Table 2.",
-      source_name        = "body weight"
+      notes = "Screened on CL/F and V/F; not retained. Cohort median 70.5 kg (IQR 69-84), Ling 2024 Table 2.",
+      source_name = "body weight"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened; not retained. 4 of 6 subjects were female (Ling 2024 Table 2).",
-      source_name        = "sex"
+      notes = "Screened; not retained. 4 of 6 subjects were female (Ling 2024 Table 2).",
+      source_name = "sex"
     ),
     CONMED_CSDMARD = list(
-      description        = "Concurrent conventional synthetic DMARD therapy indicator, 1 = on a csDMARD, 0 = not",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent conventional synthetic DMARD therapy indicator, 1 = on a csDMARD, 0 = not",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concurrent csDMARD)",
-      notes              = "Screened; not retained. Ling 2024 Table 2 reports 4 (100.00%) with 2 missing observations, i.e. all four subjects with a recorded value were on a csDMARD, leaving the covariate with no contrast in this cohort. Documentation-only label; see the note in Ling_2024_adalimumab.R for why no canonical was registered.",
-      source_name        = "concurrent csDMARD"
+      notes = "Screened; not retained. Ling 2024 Table 2 reports 4 (100.00%) with 2 missing observations, i.e. all four subjects with a recorded value were on a csDMARD, leaving the covariate with no contrast in this cohort. Documentation-only label; see the note in Ling_2024_adalimumab.R for why no canonical was registered.",
+      source_name = "concurrent csDMARD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 6L,                                                 # Ling 2024 Section 3.1: six RA patients commencing Benepali
-    n_observations = 40L,                                                # Ling 2024 Section 3.2: 40 serum samples available for analysis
-    n_studies      = 1L,                                                 # BRAGGSS-PD sub-study, single prospective cohort
-    age_range      = "median 57.5 years (IQR 56-59); inclusion required age >= 18 years",  # Ling 2024 Table 2
-    age_median     = "57.5 years",                                       # Ling 2024 Table 2
-    weight_range   = "median 70.5 kg (IQR 69-84)",                       # Ling 2024 Table 2
-    weight_median  = "70.5 kg",                                          # Ling 2024 Table 2
-    sex_female_pct = 66.67,                                              # Ling 2024 Table 2: 4 of 6 female
-    race_ethnicity = "5 of 6 White, 1 of 6 West African",                # Ling 2024 Section 3.1
-    disease_state  = "Rheumatoid arthritis by the 1987 American College of Rheumatology criteria; bDMARD-naive; pre-treatment DAS28 >= 5.1 required for entry (cohort median DAS28 5.33, IQR 4.96-5.58).",
-    dose_range     = "50 mg subcutaneously every 7 days (licensed Benepali regimen), self-administered by pre-filled auto-injector; followed for 12 weeks.",
-    regions        = "United Kingdom (three rheumatology centres in Greater Manchester)",
-    notes          = "Baseline demographics are Ling 2024 Table 2. Real-world NHS patients recruited to the Personalised Dosing sub-study of BRAGGSS (BRAGGSS-PD) between January 2019 and August 2021; recruitment was curtailed by the COVID-19 pandemic below the planned sample size. Serum etanercept was measured by Promonitor-ETN-1DV ELISA (Grifols). Optimal sampling times (baseline, 1 h, 6 days, then 2, 4, 6 and 12 weeks) were designed in PopDes; the 6-day sample is the extra timepoint relative to the adalimumab schedule. The paper notes this is the first published popPK analysis of Benepali and the first at the licensed 50 mg weekly subcutaneous regimen."
+    species = "human",
+    n_subjects = 6L, # Ling 2024 Section 3.1: six RA patients commencing Benepali
+    n_observations = 40L, # Ling 2024 Section 3.2: 40 serum samples available for analysis
+    n_studies = 1L, # BRAGGSS-PD sub-study, single prospective cohort
+    age_range = "median 57.5 years (IQR 56-59); inclusion required age >= 18 years", # Ling 2024 Table 2
+    age_median = "57.5 years", # Ling 2024 Table 2
+    weight_range = "median 70.5 kg (IQR 69-84)", # Ling 2024 Table 2
+    weight_median = "70.5 kg", # Ling 2024 Table 2
+    sex_female_pct = 66.67, # Ling 2024 Table 2: 4 of 6 female
+    race_ethnicity = "5 of 6 White, 1 of 6 West African", # Ling 2024 Section 3.1
+    disease_state = "Rheumatoid arthritis by the 1987 American College of Rheumatology criteria; bDMARD-naive; pre-treatment DAS28 >= 5.1 required for entry (cohort median DAS28 5.33, IQR 4.96-5.58).",
+    dose_range = "50 mg subcutaneously every 7 days (licensed Benepali regimen), self-administered by pre-filled auto-injector; followed for 12 weeks.",
+    regions = "United Kingdom (three rheumatology centres in Greater Manchester)",
+    notes = "Baseline demographics are Ling 2024 Table 2. Real-world NHS patients recruited to the Personalised Dosing sub-study of BRAGGSS (BRAGGSS-PD) between January 2019 and August 2021; recruitment was curtailed by the COVID-19 pandemic below the planned sample size. Serum etanercept was measured by Promonitor-ETN-1DV ELISA (Grifols). Optimal sampling times (baseline, 1 h, 6 days, then 2, 4, 6 and 12 weeks) were designed in PopDes; the 6-day sample is the extra timepoint relative to the adalimumab schedule. The paper notes this is the first published popPK analysis of Benepali and the first at the licensed 50 mg weekly subcutaneous regimen."
   )
 
   ini({

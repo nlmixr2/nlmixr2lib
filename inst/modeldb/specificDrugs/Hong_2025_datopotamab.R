@@ -3,8 +3,8 @@ Hong_2025_datopotamab <- function() {
   reference <- "Hong Y, Peigne S, Pan Y, Friberg Hietala S, McLaughlin A, Tajima N, Uema D, Zebger-Gong H, Tang Z, Zhou D, Abutarif M, Garimella T. Population Pharmacokinetic Analysis of Datopotamab Deruxtecan (Dato-DXd), a TROP2-Directed Antibody-Drug Conjugate, in Patients With Advanced Solid Tumors. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2149-2160. doi:10.1002/psp4.70118. PMID 41035281."
   vignette <- "Hong_2025_datopotamab"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -13,117 +13,122 @@ Hong_2025_datopotamab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "datopotamab deruxtecan (Dato-DXd)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "datopotamab deruxtecan (Dato-DXd)", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "datopotamab deruxtecan (Dato-DXd)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(
+      analyte = "datopotamab deruxtecan (Dato-DXd)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
     central_dxd = list(analyte = "DXd", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect with fixed exponent 0.75 on Dato-DXd CL_lin (Eq. 8); estimated exponents on Dato-DXd Vc (0.415, Eq. 9), Vp (0.311, Eq. 10), DXd CL (0.298, Eq. 14), and DXd Vc (0.530, Eq. 15). Reference 66 kg (Hong 2025 Table 1 / 2 reference subject).",
-      source_name        = "WT"
+      notes = "Time-fixed baseline value. Power effect with fixed exponent 0.75 on Dato-DXd CL_lin (Eq. 8); estimated exponents on Dato-DXd Vc (0.415, Eq. 9), Vp (0.311, Eq. 10), DXd CL (0.298, Eq. 14), and DXd Vc (0.530, Eq. 15). Reference 66 kg (Hong 2025 Table 1 / 2 reference subject).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "year",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on Dato-DXd CL_lin (exponent -0.306; Hong 2025 Table 1, Eq. 8). Reference 62 years (Hong 2025 reference subject).",
-      source_name        = "AGE"
+      notes = "Time-fixed baseline value. Power effect on Dato-DXd CL_lin (exponent -0.306; Hong 2025 Table 1, Eq. 8). Reference 62 years (Hong 2025 reference subject).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effect on Dato-DXd CL_lin (1 + (-0.263) = 0.737 for females; Hong 2025 Table 1, Eq. 8) and Dato-DXd Vc (1 + (-0.160) = 0.840 for females; Eq. 9). Multiplicative effect on DXd Vc (1 + (-0.185) = 0.815 for females; Eq. 15). Males are the reference category.",
-      source_name        = "SEX"
+      notes = "Time-fixed. Multiplicative effect on Dato-DXd CL_lin (1 + (-0.263) = 0.737 for females; Hong 2025 Table 1, Eq. 8) and Dato-DXd Vc (1 + (-0.160) = 0.840 for females; Eq. 9). Multiplicative effect on DXd Vc (1 + (-0.185) = 0.815 for females; Eq. 15). Males are the reference category.",
+      source_name = "SEX"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (SI units; not g/dL). Power effect on Dato-DXd CL_lin (exponent -0.788, Hong 2025 Table 1 / Eq. 8) and DXd CL (exponent 0.343, Table 2 / Eq. 14). Reference 38 g/L (Hong 2025 reference subject).",
-      source_name        = "ALB"
+      notes = "Time-fixed baseline value (SI units; not g/dL). Power effect on Dato-DXd CL_lin (exponent -0.788, Hong 2025 Table 1 / Eq. 8) and DXd CL (exponent 0.343, Table 2 / Eq. 14). Reference 38 g/L (Hong 2025 reference subject).",
+      source_name = "ALB"
     ),
     AST = list(
-      description        = "Baseline serum aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on DXd CL (exponent -0.154; Hong 2025 Table 2 / Eq. 14). Reference 22 U/L (Hong 2025 reference subject). Note: paper text labels the unit 'g/L' which is implausible for AST; the equation form, the reference value 22, and the canonical clinical-PK convention all imply U/L (= IU/L) and that is what we use.",
-      source_name        = "AST"
+      notes = "Time-fixed baseline value. Power effect on DXd CL (exponent -0.154; Hong 2025 Table 2 / Eq. 14). Reference 22 U/L (Hong 2025 reference subject). Note: paper text labels the unit 'g/L' which is implausible for AST; the equation form, the reference value 22, and the canonical clinical-PK convention all imply U/L (= IU/L) and that is what we use.",
+      source_name = "AST"
     ),
     TBILI = list(
-      description        = "Baseline total serum bilirubin",
+      description = "Baseline total serum bilirubin",
       units = "umol/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (US units; 1 mg/dL ~= 17.1 umol/L). Power effect on DXd CL (exponent -0.139; Hong 2025 Table 2 / Eq. 14). Reference 0.4 mg/dL (Hong 2025 reference subject).",
-      source_name        = "TBIL"
+      notes = "Time-fixed baseline value (US units; 1 mg/dL ~= 17.1 umol/L). Power effect on DXd CL (exponent -0.139; Hong 2025 Table 2 / Eq. 14). Reference 0.4 mg/dL (Hong 2025 reference subject).",
+      source_name = "TBIL"
     ),
     TUMSZ = list(
-      description        = "Baseline sum of the longest dimension of target lesions (RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline sum of the longest dimension of target lesions (RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on Dato-DXd Vmax (exponent 0.125; Hong 2025 Table 1 / Eq. 12). Reference 66 mm (Hong 2025 reference subject).",
-      source_name        = "TUMSIZE"
+      notes = "Time-fixed baseline value. Power effect on Dato-DXd Vmax (exponent 0.125; Hong 2025 Table 1 / Eq. 12). Reference 66 mm (Hong 2025 reference subject).",
+      source_name = "TUMSIZE"
     ),
     REGION_JAPAN = list(
-      description        = "Study-site region indicator: 1 = Japan, 0 = otherwise (US, Europe, or Rest of World)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-site region indicator: 1 = Japan, 0 = otherwise (US, Europe, or Rest of World)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effect on Dato-DXd CL_lin only: 1 + (-0.219) = 0.781 for region Japan (Hong 2025 Table 1, Eq. 8). NOT used on DXd CL: Hong 2025 groups Japan with US into the DXd CL reference category, so REGION_JAPAN = 1 subjects fall into the DXd CL reference (REGION_EUROPE = 0 AND REGION_ROW = 0) regardless of REGION_JAPAN. Distinct from `RACE_JAPANESE` (subject ancestry).",
-      source_name        = "REGJP"
+      notes = "Time-fixed. Multiplicative effect on Dato-DXd CL_lin only: 1 + (-0.219) = 0.781 for region Japan (Hong 2025 Table 1, Eq. 8). NOT used on DXd CL: Hong 2025 groups Japan with US into the DXd CL reference category, so REGION_JAPAN = 1 subjects fall into the DXd CL reference (REGION_EUROPE = 0 AND REGION_ROW = 0) regardless of REGION_JAPAN. Distinct from `RACE_JAPANESE` (subject ancestry).",
+      source_name = "REGJP"
     ),
     REGION_EUROPE = list(
-      description        = "Study-site region indicator: 1 = Europe, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-site region indicator: 1 = Europe, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effect on DXd CL only: 1 + 0.240 = 1.240 for region Europe vs the US/Japan reference (Hong 2025 Table 2, Eq. 14). Not used on Dato-DXd parameters.",
-      source_name        = "REGEU"
+      notes = "Time-fixed. Multiplicative effect on DXd CL only: 1 + 0.240 = 1.240 for region Europe vs the US/Japan reference (Hong 2025 Table 2, Eq. 14). Not used on Dato-DXd parameters.",
+      source_name = "REGEU"
     ),
     REGION_ROW = list(
-      description        = "Study-site region indicator: 1 = Rest of World (i.e., not US, Japan, or Europe), 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-site region indicator: 1 = Rest of World (i.e., not US, Japan, or Europe), 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effect on DXd CL only: 1 + 0.196 = 1.196 for Rest of World vs the US/Japan reference (Hong 2025 Table 2, Eq. 14). Not used on Dato-DXd parameters.",
-      source_name        = "REGRW"
+      notes = "Time-fixed. Multiplicative effect on DXd CL only: 1 + 0.196 = 1.196 for Rest of World vs the US/Japan reference (Hong 2025 Table 2, Eq. 14). Not used on Dato-DXd parameters.",
+      source_name = "REGRW"
     ),
     CYCLE = list(
-      description        = "Treatment cycle number (1 = first dosing cycle, 2 = second, ..., integer count, time-varying across a multi-cycle Q3W treatment course)",
-      units              = "(count)",
-      type               = "count",
+      description = "Treatment cycle number (1 = first dosing cycle, 2 = second, ..., integer count, time-varying across a multi-cycle Q3W treatment course)",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Required for the DXd-formation DAR equation (Hong 2025 Eq. 13). DAR(tad, CYCLE) = 4 * (0.25 + 0.75 * exp(-beta * tad)) * (1 if CYCLE = 1, else Factor1 = 0.696). Increment CYCLE at the start of each new dosing cycle. Does not affect Dato-DXd disposition or DXd elimination.",
-      source_name        = "CYCLE"
+      notes = "Required for the DXd-formation DAR equation (Hong 2025 Eq. 13). DAR(tad, CYCLE) = 4 * (0.25 + 0.75 * exp(-beta * tad)) * (1 if CYCLE = 1, else Factor1 = 0.696). Increment CYCLE at the start of each new dosing cycle. Does not affect Dato-DXd disposition or DXd elimination.",
+      source_name = "CYCLE"
     )
   )
 
   population <- list(
-    n_subjects     = 729L,
-    n_studies      = 3L,
-    age_range      = "Adults with advanced or metastatic solid tumors (NSCLC and breast cancer); reference subject 62 years per Hong 2025 covariate analysis.",
-    weight_range   = "37.0 - 156 kg analysis range (Hong 2025 Methods / Body Weight-Based Dosing); reference 66 kg.",
+    n_subjects = 729L,
+    n_studies = 3L,
+    age_range = "Adults with advanced or metastatic solid tumors (NSCLC and breast cancer); reference subject 62 years per Hong 2025 covariate analysis.",
+    weight_range = "37.0 - 156 kg analysis range (Hong 2025 Methods / Body Weight-Based Dosing); reference 66 kg.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Multi-regional enrollment including Japan, US, Europe, and Rest of the World; race per se was not retained as a covariate in the final model.",
-    disease_state  = "Advanced or metastatic non-small-cell lung cancer (NSCLC) and breast cancer (BC).",
-    dose_range     = "Dato-DXd IV every 3 weeks. Phase 1 TROPION-PanTumor01 (TP01) dose range 0.27 - 10 mg/kg; Phase 2 TL05 and Phase 3 TL01 used the labeled 6 mg/kg Q3W regimen. Approved labeled dosing is 6 mg/kg Q3W with a flat dose cap of 540 mg for body weight >= 90 kg (Datroway US prescribing information; Hong 2025 Body Weight-Based Dosing section).",
-    regions        = "Multi-regional: Japan, US, Europe, and Rest of the World.",
+    disease_state = "Advanced or metastatic non-small-cell lung cancer (NSCLC) and breast cancer (BC).",
+    dose_range = "Dato-DXd IV every 3 weeks. Phase 1 TROPION-PanTumor01 (TP01) dose range 0.27 - 10 mg/kg; Phase 2 TL05 and Phase 3 TL01 used the labeled 6 mg/kg Q3W regimen. Approved labeled dosing is 6 mg/kg Q3W with a flat dose cap of 540 mg for body weight >= 90 kg (Datroway US prescribing information; Hong 2025 Body Weight-Based Dosing section).",
+    regions = "Multi-regional: Japan, US, Europe, and Rest of the World.",
     n_observations = "9036 Dato-DXd PK observations + 9012 DXd PK observations from 729 patients across three studies (Hong 2025 Methods).",
-    studies        = "Phase 1 TROPION-PanTumor01 (TP01), Phase 2 TL05, and Phase 3 TL01.",
+    studies = "Phase 1 TROPION-PanTumor01 (TP01), Phase 2 TL05, and Phase 3 TL01.",
     reference_subject_dato_dxd = "66 kg male, age 62 years, albumin 38 g/L, tumor size 66 mm, region != Japan (Hong 2025 Figure 4 caption / Table 1 reference).",
-    reference_subject_dxd      = "66 kg male, region US, albumin 38 g/L, AST 22 U/L, total bilirubin 0.4 mg/dL (Hong 2025 Figure 4 caption / Table 2 reference).",
-    notes          = "Pooled analysis dataset (Hong 2025 Methods). Final model fit jointly to all 729 subjects across the 3 studies, excluding observations before the first Dato-DXd administration. Anti-drug antibodies were tested but had only a small (6.9%) effect on CL_lin and were dropped from the final model. Renal-impairment (creatinine clearance) and broad hepatic-impairment (HI) classifications were not statistically significant covariates on Dato-DXd disposition; AST and total bilirubin were retained on DXd CL only."
+    reference_subject_dxd = "66 kg male, region US, albumin 38 g/L, AST 22 U/L, total bilirubin 0.4 mg/dL (Hong 2025 Figure 4 caption / Table 2 reference).",
+    notes = "Pooled analysis dataset (Hong 2025 Methods). Final model fit jointly to all 729 subjects across the 3 studies, excluding observations before the first Dato-DXd administration. Anti-drug antibodies were tested but had only a small (6.9%) effect on CL_lin and were dropped from the final model. Renal-impairment (creatinine clearance) and broad hepatic-impairment (HI) classifications were not statistically significant covariates on Dato-DXd disposition; AST and total bilirubin were retained on DXd CL only."
   )
 
   ini({

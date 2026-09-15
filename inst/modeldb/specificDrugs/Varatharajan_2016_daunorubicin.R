@@ -17,8 +17,8 @@ Varatharajan_2016_daunorubicin <- function() {
   reference <- "Varatharajan S, Panetta JC, Abraham A, Karathedath S, Mohanan E, Lakshmi KM, Arthur N, Srivastava VM, Nemani S, George B, Srivastava A, Mathews V, Balasubramanian P. Population pharmacokinetics of Daunorubicin in adult patients with acute myeloid leukemia. Cancer Chemother Pharmacol. 2016;78(5):1051-1058. doi:10.1007/s00280-016-3166-8"
   vignette <- "Varatharajan_2016_daunorubicin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -27,27 +27,27 @@ Varatharajan_2016_daunorubicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE),
-    central_dol     = list(analyte = "daunorubicinol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dol = list(analyte = "daunorubicinol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_dol = list(analyte = "daunorubicinol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 70,
-    n_studies      = 1,
-    age_range      = "16-60 years (median 38)",
-    age_median     = "38 years",
+    n_subjects = 70,
+    n_studies = 1,
+    age_range = "16-60 years (median 38)",
+    age_median = "38 years",
     sex_female_pct = 47.1,
-    species        = "Human (adult AML)",
-    disease_state  = "Adult de novo acute myeloid leukaemia (excluding AML-M3) treated with standard induction chemotherapy comprising cytarabine + daunorubicin.",
-    dose_range     = "Daunorubicin 60 mg/m^2/day as 1-hour IV infusion on days 1-3 (PK sampling on day 1 only).",
-    regions        = "Christian Medical College, Vellore, Tamil Nadu, India.",
+    species = "Human (adult AML)",
+    disease_state = "Adult de novo acute myeloid leukaemia (excluding AML-M3) treated with standard induction chemotherapy comprising cytarabine + daunorubicin.",
+    dose_range = "Daunorubicin 60 mg/m^2/day as 1-hour IV infusion on days 1-3 (PK sampling on day 1 only).",
+    regions = "Christian Medical College, Vellore, Tamil Nadu, India.",
     enrollment_period = "2009-2014",
     cytogenetic_risk_pct = c(Favorable = 12, Intermediate = 68, Adverse = 20),
-    notes          = paste(
+    notes = paste(
       "Patient demographics from Table 1. Plasma sampling on day 1 of",
       "induction at 0, 0.25, 1, 2, 4, 6, and 24 h. Plasma Dnr and DOL were",
       "quantified in all 70 patients by HPLC with fluorescence detection",

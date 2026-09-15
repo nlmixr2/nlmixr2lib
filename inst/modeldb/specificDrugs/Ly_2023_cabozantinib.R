@@ -20,28 +20,28 @@ Ly_2023_cabozantinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on CL/F (exponent 0.144) and Vc/F (exponent 2.03), each centered on 70 kg. The 70 kg reference is stated explicitly in the printed covariate equations (Supplementary Material Eq. 5 and Eq. 6) and in Results ('The reference patient was a 70-kg male with DTC receiving 60 mg cabozantinib QD'). Weight had minimal impact on exposure (< 6% change in AUC0-24,ss, < 14% in Cmax,ss, < 4% in Cmin,ss) but a marked impact on Vc/F.",
-      source_name        = "WT"
+      notes = "Time-fixed baseline. Power effect on CL/F (exponent 0.144) and Vc/F (exponent 2.03), each centered on 70 kg. The 70 kg reference is stated explicitly in the printed covariate equations (Supplementary Material Eq. 5 and Eq. 6) and in Results ('The reference patient was a 70-kg male with DTC receiving 60 mg cabozantinib QD'). Weight had minimal impact on exposure (< 6% change in AUC0-24,ss, < 14% in Cmax,ss, < 4% in Cmin,ss) but a marked impact on Vc/F.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male, the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F: CL/F = theta_CL * (WT/70)^theta_WT,CL * (1 + SEX * theta_SEX) with theta_SEX = -0.214 (Supplementary Material Eq. 5). The supplement defines SEX as 'an indicator variable (1 for females and 0 for males)' and theta_SEX as 'the fractional change in cabozantinib oral clearance for females', so females have 21.4% lower CL/F; Results rounds this to 'approximately 20% lower'.",
-      source_name        = "SEX"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F: CL/F = theta_CL * (WT/70)^theta_WT,CL * (1 + SEX * theta_SEX) with theta_SEX = -0.214 (Supplementary Material Eq. 5). The supplement defines SEX as 'an indicator variable (1 for females and 0 for males)' and theta_SEX as 'the fractional change in cabozantinib oral clearance for females', so females have 21.4% lower CL/F; Results rounds this to 'approximately 20% lower'.",
+      source_name = "SEX"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer indicator, used only to select the residual-error magnitude",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer indicator, used only to select the residual-error magnitude",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cancer patient; the pooled DTC / RCC / CRPC / HCC group)",
-      notes              = "Time-fixed. Ly 2023 Results section 3.1.1: 'the structure of the residual error (RE) component of the PK model was best described by a RE term for healthy volunteers and a separate RE term for patients with various cancer types.' Selects propSd_hv = 0.266 (Table 2 'Healthy subjects' 26.6%) when 1 and propSd_pt = 0.363 (Table 2 'Patients' 36.3%) when 0. It has no effect on the structural PK parameters. Healthy volunteers are the 63 subjects of Study XL184-020; the remaining 1682 subjects are cancer patients.",
-      source_name        = "POP"
+      notes = "Time-fixed. Ly 2023 Results section 3.1.1: 'the structure of the residual error (RE) component of the PK model was best described by a RE term for healthy volunteers and a separate RE term for patients with various cancer types.' Selects propSd_hv = 0.266 (Table 2 'Healthy subjects' 26.6%) when 1 and propSd_pt = 0.363 (Table 2 'Patients' 36.3%) when 0. It has no effect on the structural PK parameters. Healthy volunteers are the 63 subjects of Study XL184-020; the remaining 1682 subjects are cancer patients.",
+      source_name = "POP"
     )
   )
 
@@ -56,75 +56,75 @@ Ly_2023_cabozantinib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tabulated in Table 1 (COSMIC-311 median 66 y, range 32-85) and Supplementary Table S2 (pooled median 65 y, range 19-90). No age effect is estimated; Discussion concludes 'there is no need for dose adjustment for cabozantinib based on body weight, sex, race, age, ALT, AST, total bilirubin, or creatinine clearance'."
+      units = "years",
+      type = "continuous",
+      notes = "Tabulated in Table 1 (COSMIC-311 median 66 y, range 32-85) and Supplementary Table S2 (pooled median 65 y, range 19-90). No age effect is estimated; Discussion concludes 'there is no need for dose adjustment for cabozantinib based on body weight, sex, race, age, ALT, AST, total bilirubin, or creatinine clearance'."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tabulated in Table 1 (COSMIC-311 median 16 U/L) and Supplementary Table S2 (pooled mean 27.57 U/L). No effect estimated; see the Discussion no-dose-adjustment conclusion."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tabulated in Table 1 (COSMIC-311 median 16 U/L) and Supplementary Table S2 (pooled mean 27.57 U/L). No effect estimated; see the Discussion no-dose-adjustment conclusion."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tabulated in Table 1 (COSMIC-311 median 20 U/L) and Supplementary Table S2 (pooled mean 33.92 U/L). No effect estimated; see the Discussion no-dose-adjustment conclusion."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tabulated in Table 1 (COSMIC-311 median 20 U/L) and Supplementary Table S2 (pooled mean 33.92 U/L). No effect estimated; see the Discussion no-dose-adjustment conclusion."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tabulated in Table 1 (COSMIC-311 median 7 umol/L, range 3-21) and Supplementary Table S2 (pooled mean 9.05 umol/L). No effect estimated; see the Discussion no-dose-adjustment conclusion."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tabulated in Table 1 (COSMIC-311 median 7 umol/L, range 3-21) and Supplementary Table S2 (pooled mean 9.05 umol/L). No effect estimated; see the Discussion no-dose-adjustment conclusion."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated by the Cockcroft-Gault equation",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Reported as an absolute (NOT BSA-normalized) Cockcroft-Gault estimate per Supplementary Table S2 footnote b. Tabulated in Table 1 (COSMIC-311 median 83.4 mL/min, range 26.6-182.1) and Supplementary Table S2 (pooled median 85.95 mL/min). No effect estimated; see the Discussion no-dose-adjustment conclusion."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Reported as an absolute (NOT BSA-normalized) Cockcroft-Gault estimate per Supplementary Table S2 footnote b. Tabulated in Table 1 (COSMIC-311 median 83.4 mL/min, range 26.6-182.1) and Supplementary Table S2 (pooled median 85.95 mL/min). No effect estimated; see the Discussion no-dose-adjustment conclusion."
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Race (White vs Black vs Asian) was 'evaluated using individual post hoc estimates from the final (full) model' (Methods 2.3), i.e. by inspection of post hoc CL/F and Vc/F rather than as an estimated covariate effect. White is the comparator group (1287/1745 = 73.8%, Supplementary Table S2). No coefficient is reported, so no effect can be encoded."
+      units = "(binary)",
+      type = "binary",
+      notes = "Race (White vs Black vs Asian) was 'evaluated using individual post hoc estimates from the final (full) model' (Methods 2.3), i.e. by inspection of post hoc CL/F and Vc/F rather than as an estimated covariate effect. White is the comparator group (1287/1745 = 73.8%, Supplementary Table S2). No coefficient is reported, so no effect can be encoded."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Assessed post hoc only (Methods 2.3). Results: 'There was a lower (not clinically significant) CL/F and Vc/F in the Asian population compared to the White population', which the Discussion attributes to lower body weight in the Asian subgroup and to its small size (216/1745 = 12.4%). No coefficient is reported, so no effect can be encoded."
+      units = "(binary)",
+      type = "binary",
+      notes = "Assessed post hoc only (Methods 2.3). Results: 'There was a lower (not clinically significant) CL/F and Vc/F in the Asian population compared to the White population', which the Discussion attributes to lower body weight in the Asian subgroup and to its small size (216/1745 = 12.4%). No coefficient is reported, so no effect can be encoded."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Assessed post hoc only (Methods 2.3). Only 28/1745 (1.6%) subjects overall and 0/101 in COSMIC-311 were Black (Table 1, Supplementary Table S2). No coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Assessed post hoc only (Methods 2.3). Only 28/1745 (1.6%) subjects overall and 0/101 in COSMIC-311 were Black (Table 1, Supplementary Table S2). No coefficient is reported."
     ),
     TUMTP_DTC = list(
       description = "Differentiated thyroid cancer indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Patient population (healthy volunteer vs CRPC / HCC / RCC / DTC) was evaluated post hoc from final-model individual estimates (Methods 2.3). Results: 'The CL/F and Vc/F range was overlapping in DTC patients and other cancer types', and Discussion: 'There was no marked difference between cabozantinib PK of patients with DTC and that of patients with other cancer types.' DTC n = 101 (5.8%). No coefficient is reported. Note that the separate DIS_HEALTHY covariate IS used, but only to select the residual-error magnitude, not to scale any structural parameter."
+      units = "(binary)",
+      type = "binary",
+      notes = "Patient population (healthy volunteer vs CRPC / HCC / RCC / DTC) was evaluated post hoc from final-model individual estimates (Methods 2.3). Results: 'The CL/F and Vc/F range was overlapping in DTC patients and other cancer types', and Discussion: 'There was no marked difference between cabozantinib PK of patients with DTC and that of patients with other cancer types.' DTC n = 101 (5.8%). No coefficient is reported. Note that the separate DIS_HEALTHY covariate IS used, but only to select the residual-error magnitude, not to scale any structural parameter."
     ),
     TUMTP_RCC = list(
       description = "Renal cell carcinoma indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Assessed post hoc only (Methods 2.3). RCC n = 590 (33.8%) from Studies XL184-308 and CheckMate 9ER. No coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Assessed post hoc only (Methods 2.3). RCC n = 590 (33.8%) from Studies XL184-308 and CheckMate 9ER. No coefficient is reported."
     ),
     TUMTP_HRPC = list(
       description = "Castration-resistant prostate cancer indicator (paper writes CRPC; canonical column TUMTP_HRPC covers both HRPC and CRPC wordings)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Assessed post hoc only (Methods 2.3). CRPC n = 539 (30.9%) from Studies XL184-306 and XL184-307. No coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Assessed post hoc only (Methods 2.3). CRPC n = 539 (30.9%) from Studies XL184-306 and XL184-307. No coefficient is reported."
     ),
     TUMTP_HCC = list(
       description = "Hepatocellular carcinoma indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Assessed post hoc only (Methods 2.3). HCC n = 452 (25.9%) from Study XL184-309. No coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Assessed post hoc only (Methods 2.3). HCC n = 452 (25.9%) from Study XL184-309. No coefficient is reported."
     )
   )
 
@@ -134,39 +134,41 @@ Ly_2023_cabozantinib <- function() {
   # plasma (Table 2 reports apparent oral CL/F and Vc/F; Table S3 reports plasma
   # concentrations in ng/mL).
   compartmentData <- list(
-    depot       = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1745L,
+    species = "human",
+    n_subjects = 1745L,
     n_observations = 4746L,
-    n_studies      = 7L,
-    age_range      = "19-90 years",
-    age_median     = "65 years (pooled across the seven studies; 66 years in COSMIC-311)",
-    weight_range   = "35-190.7 kg",
-    weight_median  = "77.55 kg (pooled across the seven studies; 70.0 kg in COSMIC-311)",
+    n_studies = 7L,
+    age_range = "19-90 years",
+    age_median = "65 years (pooled across the seven studies; 66 years in COSMIC-311)",
+    weight_range = "35-190.7 kg",
+    weight_median = "77.55 kg (pooled across the seven studies; 70.0 kg in COSMIC-311)",
     sex_female_pct = 17.4,
     race_ethnicity = "White 73.8%, Asian 12.4%, Black 1.6%, Native American/Alaskan 0.3%, Other 3.2%, Unknown 8.8% (Supplementary Table S2)",
-    disease_state  = "Pooled population: healthy volunteers (63, 3.6%); renal cell carcinoma (590, 33.8%); castration-resistant prostate cancer (539, 30.9%); hepatocellular carcinoma (452, 25.9%); radioiodine-refractory differentiated thyroid cancer (101, 5.8%, the COSMIC-311 cabozantinib arm).",
-    dose_range     = "Single 20, 40 or 60 mg oral tablet (healthy volunteers, Study XL184-020); 60 mg once daily (Studies XL184-306, -307, -308, -309, -311); 40 mg once daily in combination with nivolumab (CheckMate 9ER). Dose interruptions and reductions (60 -> 40 -> 20 mg QD) were permitted in COSMIC-311 to manage adverse events.",
-    regions        = "Multinational (Supplementary Table S1 enumerates the seven studies; no regional breakdown is reported)",
-    formulations   = "Cabozantinib tablet (Cabometyx) only. The capsule formulation and the medullary-thyroid-cancer population of the earlier Lacy 2018 analysis were deliberately excluded; see Discussion.",
-    studies        = c("XL184-020 (Phase 1, healthy volunteers, single 20 / 40 / 60 mg tablet, serial PK, n=63)",
-                       "XL184-306 (Phase 3, CRPC, 60 mg QD, n=41)",
-                       "XL184-307 (Phase 3, CRPC, 60 mg QD, n=498)",
-                       "XL184-308 (Phase 3, RCC, 60 mg QD, n=282)",
-                       "XL184-309 (Phase 3, HCC, 60 mg QD, n=452)",
-                       "XL184-311 / COSMIC-311 (Phase 3, radioiodine-refractory DTC, 60 mg QD, n=101)",
-                       "CheckMate 9ER (Phase 3, RCC, 40 mg QD + nivolumab, n=308)"),
-    notes          = "Baseline demographics from Table 1 (COSMIC-311) and Supplementary Table S2 (all seven studies). 4746 quantifiable PK samples from 1745 subjects, of which 205 samples from 101 COSMIC-311 patients. Fourteen subjects were excluded from the PopPK analysis for missing information. XL184-020 was the only study with morning dosing and serial PK sampling; the other six used evening dosing and sparse sampling. The exposure-response component of Ly 2023 used only log-rank tests of Kaplan-Meier curves across exposure tertiles (Table 3) and fitted no parametric exposure-response model, so no exposure-response parameters are extractable from this paper; see the vignette."
+    disease_state = "Pooled population: healthy volunteers (63, 3.6%); renal cell carcinoma (590, 33.8%); castration-resistant prostate cancer (539, 30.9%); hepatocellular carcinoma (452, 25.9%); radioiodine-refractory differentiated thyroid cancer (101, 5.8%, the COSMIC-311 cabozantinib arm).",
+    dose_range = "Single 20, 40 or 60 mg oral tablet (healthy volunteers, Study XL184-020); 60 mg once daily (Studies XL184-306, -307, -308, -309, -311); 40 mg once daily in combination with nivolumab (CheckMate 9ER). Dose interruptions and reductions (60 -> 40 -> 20 mg QD) were permitted in COSMIC-311 to manage adverse events.",
+    regions = "Multinational (Supplementary Table S1 enumerates the seven studies; no regional breakdown is reported)",
+    formulations = "Cabozantinib tablet (Cabometyx) only. The capsule formulation and the medullary-thyroid-cancer population of the earlier Lacy 2018 analysis were deliberately excluded; see Discussion.",
+    studies = c(
+      "XL184-020 (Phase 1, healthy volunteers, single 20 / 40 / 60 mg tablet, serial PK, n=63)",
+      "XL184-306 (Phase 3, CRPC, 60 mg QD, n=41)",
+      "XL184-307 (Phase 3, CRPC, 60 mg QD, n=498)",
+      "XL184-308 (Phase 3, RCC, 60 mg QD, n=282)",
+      "XL184-309 (Phase 3, HCC, 60 mg QD, n=452)",
+      "XL184-311 / COSMIC-311 (Phase 3, radioiodine-refractory DTC, 60 mg QD, n=101)",
+      "CheckMate 9ER (Phase 3, RCC, 40 mg QD + nivolumab, n=308)"
+    ),
+    notes = "Baseline demographics from Table 1 (COSMIC-311) and Supplementary Table S2 (all seven studies). 4746 quantifiable PK samples from 1745 subjects, of which 205 samples from 101 COSMIC-311 patients. Fourteen subjects were excluded from the PopPK analysis for missing information. XL184-020 was the only study with morning dosing and serial PK sampling; the other six used evening dosing and sparse sampling. The exposure-response component of Ly 2023 used only log-rank tests of Kaplan-Meier curves across exposure tertiles (Table 3) and fitted no parametric exposure-response model, so no exposure-response parameters are extractable from this paper; see the vignette."
   )
 
   ini({

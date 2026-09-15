@@ -48,7 +48,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
     sep = " "
   )
   vignette <- "Larson_2026_sulbactam_durlobactam_pediatric"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Durlobactam plasma residual variability is stratified by study phase in the
   # adult parent model. The poster's second approach removed covariate
@@ -56,23 +56,26 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
   # residual-error model, so the adult phase-stratified residual structure is
   # carried over unchanged, exactly as in the sibling model.
   paper_specific_residual_sds <- c(
-    "propSdPhase1", "propSdPhase2", "propSdPhase3", "addSdPhase1"
+    "propSdPhase1",
+    "propSdPhase2",
+    "propSdPhase3",
+    "addSdPhase1"
   )
 
   compartmentData <- list(
-    central         = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = TRUE),
-    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "One of the only two covariates this model retains. Poster P-444",
         "Methods: 'The second approach removed all covariate relationships",
         "from the Adult Allometry model except for body weight (on all",
@@ -90,16 +93,16 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
         "Pediatric applicability range: birth (28 weeks of gestation) to",
         "< 18 years of age."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Baseline creatinine clearance, normalized to body surface area"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The other retained covariate, and the one this model is named for.",
         "Poster P-444 Methods keeps 'renal function (on renal clearance",
         "only)', so the CLcr power function on the RENAL clearance arm is",
@@ -116,14 +119,14 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
         "simulation input rather than part of this model - see the vignette",
         "Errata."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     STUDY_SULDUR_PHASE2 = list(
-      description        = "Phase 2 study cohort indicator (1 = Study CS2514-2017-0003)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 2 study cohort indicator (1 = Study CS2514-2017-0003)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 1 studies, when STUDY_SULDUR_PHASE3 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the durlobactam Phase 2 proportional residual magnitude,",
         "carried over unchanged from the adult parent model. The poster's",
         "second approach removed covariate relationships on the PK",
@@ -131,28 +134,28 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
         "adult phase-stratified residual structure is retained. Paired with",
         "STUDY_SULDUR_PHASE3; both 0 selects Phase 1."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     ),
     STUDY_SULDUR_PHASE3 = list(
-      description        = "Phase 3 study cohort indicator (1 = Study CS2514-2017-0004)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 3 study cohort indicator (1 = Study CS2514-2017-0004)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 1 studies, when STUDY_SULDUR_PHASE2 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the durlobactam Phase 3 proportional residual magnitude,",
         "carried over unchanged from the adult parent model. See the",
         "STUDY_SULDUR_PHASE2 notes."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     )
   )
 
   covariatesDataExcluded <- list(
     REGION_EASTASIA = list(
       description = "East Asian region of origin indicator (1 = China, Taiwan, or South Korea)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Present in the adult parent model and in the sibling Adult with",
         "Allometry model, but deliberately removed here: poster P-444 Methods",
         "state that this approach 'removed all covariate relationships from",
@@ -162,9 +165,9 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
     ),
     RENALIMP_SEV = list(
       description = "Severe renal impairment indicator (1 = baseline CLcr < 30 mL/min/1.73 m^2)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Removed here. It is a renal-function covariate, but it acts as a",
         "proportional shift on TOTAL clearance, whereas poster P-444 retains",
         "renal function 'on renal clearance only'. The continuous CRCL power",
@@ -173,9 +176,9 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
     ),
     RRT_HEMODIAL_ACTIVE = list(
       description = "Hemodialysis-session gate (1 while a session is running)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Removed here along with the other non-retained covariate",
         "relationships. The simulated pediatric cohort had normal renal",
         "function and no dialysis, so the term would have been inert in any",
@@ -184,27 +187,27 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
     ),
     DIS_HABP = list(
       description = "Hospital-acquired bacterial pneumonia cohort indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Infection-type shift removed per poster P-444 Methods, second approach."
+      units = "(binary)",
+      type = "binary",
+      notes = "Infection-type shift removed per poster P-444 Methods, second approach."
     ),
     DIS_VABP = list(
       description = "Ventilator-associated bacterial pneumonia cohort indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Infection-type shift removed per poster P-444 Methods, second approach."
+      units = "(binary)",
+      type = "binary",
+      notes = "Infection-type shift removed per poster P-444 Methods, second approach."
     ),
     DIS_CUTI = list(
       description = "Complicated urinary tract infection cohort indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Infection-type shift removed per poster P-444 Methods, second approach."
+      units = "(binary)",
+      type = "binary",
+      notes = "Infection-type shift removed per poster P-444 Methods, second approach."
     ),
     DIS_BACTEREMIA = list(
       description = "Bacteremia / bloodstream-infection cohort indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Infection-type shift removed per poster P-444 Methods, second",
         "approach. Note that the sibling Adult with Allometry model was",
         "simulated with infection type set to bacteremia, whose large",
@@ -214,19 +217,19 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
     ),
     DIS_AP = list(
       description = "Acute pyelonephritis cohort indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Infection-type shift removed per poster P-444 Methods, second approach."
+      units = "(binary)",
+      type = "binary",
+      notes = "Infection-type shift removed per poster P-444 Methods, second approach."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 8000L,
-    n_studies        = 0L,
-    age_range        = "birth (28 weeks of gestation) to < 18 years",
-    weight_range     = "not reported; CDC growth-chart body size by age and sex",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 8000L,
+    n_studies = 0L,
+    age_range = "birth (28 weeks of gestation) to < 18 years",
+    weight_range = "not reported; CDC growth-chart body size by age and sex",
+    disease_state = paste(
       "Simulated pediatric patients with Acinetobacter",
       "baumannii-calcoaceticus complex infection. This is a SIMULATION",
       "population, not an estimation data set: no pediatric clinical trial",
@@ -237,7 +240,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
       "this model predicts the exposure of a body-size- and",
       "renal-function-matched subject with no infection-related shift."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Simulations supporting the Phase 1b regimens of poster P-444 Table 2:",
       "25 mg/kg sulbactam with 25 mg/kg durlobactam q6h (12 to < 18 y, 6 to",
       "< 12 y, 1 to < 6 y, 3 mo to < 1 y, and term infants 2 to < 3 mo, with",
@@ -247,7 +250,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
       "The sulbactam-durlobactam ratio is 1:1 and every regimen is a 3-hour",
       "intravenous infusion. Birth is defined as 7 days post-natal."
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "Normal renal function was assumed throughout. Poster P-444 Methods:",
       "the simulated dataset incorporated 'age- and sex-specific body size",
       "distributions based on the published Centers for Disease Control and",
@@ -256,7 +259,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
       "function was estimated using the Rhodin formula from fat-free mass;",
       "that formula's constants are not reported in either source."
     ),
-    notes            = paste(
+    notes = paste(
       "8,000 hypothetical pediatric patients, 1,000 per cohort across the",
       "eight age / maturity cohorts of poster P-444 Table 2. Poster P-444",
       "Results: 'Compared to the adult with allometry model, the adult with",

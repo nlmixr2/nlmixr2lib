@@ -34,46 +34,46 @@ Mosha_2014_artemether <- function() {
     sep = " "
   )
   vignette <- "Mosha_2014_artemether_lumefantrine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "Artemether (AM)", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "Artemether (AM)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "Artemether (AM)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Artemether (AM)", units = "mg", specimen = "plasma", verified = FALSE),
     central_dihydroart = list(analyte = "Dihydroartemisinin (DHA)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 55L,
-    n_studies       = 1L,
-    n_pregnant      = 33L,
-    n_nonpregnant   = 22L,
-    n_observations_am  = 146L,
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
+    n_pregnant = 33L,
+    n_nonpregnant = 22L,
+    n_observations_am = 146L,
     n_observations_dihydroart = 98L,
-    age_range       = "18-41 years (pregnant median 25; non-pregnant median 21.5; Table 1)",
-    weight_range    = "40-80 kg (pregnant median 52; non-pregnant median 48.5; Table 1)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    age_range = "18-41 years (pregnant median 25; non-pregnant median 21.5; Table 1)",
+    weight_range = "40-80 kg (pregnant median 52; non-pregnant median 48.5; Table 1)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; pregnant women in",
       "the second or third trimester (median gestational age 27 weeks,",
       "range 14-37) compared concurrently with non-pregnant women",
       "(controls) recruited from the same clinic during the same period."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per",
       "tablet; four tablets per dose (80 mg artemether) given twice daily",
       "for 3 days (oral; dose times 0, 8, 24, 36, 48, 60 hours) with",
       "200 mL milk containing 4.5 g fat to optimise lumefantrine",
       "bioavailability."
     ),
-    regions         = "Tanzania (Rufiji district, Kibiti health center; April-September 2012)",
-    notes           = paste(
+    regions = "Tanzania (Rufiji district, Kibiti health center; April-September 2012)",
+    notes = paste(
       "Demographics from Mosha 2014 Table 1. 25% (n = 37) of AM and 7%",
       "(n = 7) of DHA concentrations were below the limit of quantification",
       "and handled via the M3 method (Beal). Companion lumefantrine",

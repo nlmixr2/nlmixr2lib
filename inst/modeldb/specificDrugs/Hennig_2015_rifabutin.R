@@ -9,58 +9,68 @@ Hennig_2015_rifabutin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot                    = list(analyte = "Rifabutin", units = "mg", specimen = "administration site", verified = FALSE),
-    central                  = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1              = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
-    central_desacetylrbn     = list(analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_desacetylrbn = list(analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "Rifabutin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_desacetylrbn = list(
+      analyte = "25-O-desacetyl rifabutin",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_desacetylrbn = list(
+      analyte = "25-O-desacetyl rifabutin",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling of rifabutin apparent CL/F, Q/F, Cle/F, V/F, and Vp/F at reference 70 kg. Hennig 2015 Methods paragraph 3 (lines 100-102): allometric scaling fixed a priori per Anderson and Holford (Annu Rev Pharmacol Toxicol 2008;48:303-32; reference 20). Clearance exponent 0.75; volume exponent 1.0. Des-rifabutin parameters are NOT weight-scaled (Methods restricts scaling to rifabutin parameters; Table 2 metabolite-row units omit /70 kg).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling of rifabutin apparent CL/F, Q/F, Cle/F, V/F, and Vp/F at reference 70 kg. Hennig 2015 Methods paragraph 3 (lines 100-102): allometric scaling fixed a priori per Anderson and Holford (Annu Rev Pharmacol Toxicol 2008;48:303-32; reference 20). Clearance exponent 0.75; volume exponent 1.0. Des-rifabutin parameters are NOT weight-scaled (Methods restricts scaling to rifabutin parameters; Table 2 metabolite-row units omit /70 kg).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = "Hennig 2015 Discussion (lines 130-131; line 175-179) and Table 2 covariate-effects block: males have a 1.84-fold higher rifabutin central V/F than females. Cohort: 27 male / 17 female (61 percent male) per Results paragraph 1 (lines 114-115). Effect coded as `(1 + e_sex_vc * (1 - SEXF))` so the female-baseline V/F equals exp(lvc) and males get the 1.84x factor.",
-      source_name        = "SEX (paper text uses a male-deviation factor; the source NONMEM column name is in the unrecovered AAC supplement)"
+      notes = "Hennig 2015 Discussion (lines 130-131; line 175-179) and Table 2 covariate-effects block: males have a 1.84-fold higher rifabutin central V/F than females. Cohort: 27 male / 17 female (61 percent male) per Results paragraph 1 (lines 114-115). Effect coded as `(1 + e_sex_vc * (1 - SEXF))` so the female-baseline V/F equals exp(lvc) and males get the 1.84x factor.",
+      source_name = "SEX (paper text uses a male-deviation factor; the source NONMEM column name is in the unrecovered AAC supplement)"
     ),
     SNP_SLCO1B1_RS11045819 = list(
-      description        = "SLCO1B1 rs11045819 binary genotype indicator (1 = at least one mutant A allele; 0 = homozygous CC reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 rs11045819 binary genotype indicator (1 = at least one mutant A allele; 0 = homozygous CC reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type CC)",
-      notes              = "Hennig 2015 Table 1: 5 of 35 successfully genotyped patients are AC heterozygotes; 30 of 35 are CC homozygotes; no AA homozygotes were observed. Effect on rifabutin bioavailability F: AC carriers have 30.4 percent higher F than CC reference (Hennig 2015 Table 2; Results paragraph 4 lines 137-138; dOFV = -6.5).",
-      source_name        = "SLCO1B1 rs11045819 genotype (paper text)"
+      notes = "Hennig 2015 Table 1: 5 of 35 successfully genotyped patients are AC heterozygotes; 30 of 35 are CC homozygotes; no AA homozygotes were observed. Effect on rifabutin bioavailability F: AC carriers have 30.4 percent higher F than CC reference (Hennig 2015 Table 2; Results paragraph 4 lines 137-138; dOFV = -6.5).",
+      source_name = "SLCO1B1 rs11045819 genotype (paper text)"
     )
   )
 
   population <- list(
-    n_subjects     = 44,
-    n_studies      = 1,
-    age_range      = "32.7 (5.9) years (mean (SD))",
-    age_median     = NULL,
-    weight_range   = "60.7 (8.7) kg (mean (SD))",
-    weight_median  = NULL,
+    n_subjects = 44,
+    n_studies = 1,
+    age_range = "32.7 (5.9) years (mean (SD))",
+    age_median = NULL,
+    weight_range = "60.7 (8.7) kg (mean (SD))",
+    weight_median = NULL,
     sex_female_pct = 39,
     race_ethnicity = c(Black_African = 100),
-    disease_state  = "HIV-infected adults with microbiologically confirmed pulmonary tuberculosis (CD4 lymphocyte count 50-200 cells/mm^3; Karnofsky score 100; no grade 3-4 clinical or laboratory findings).",
-    dose_range     = "Rifabutin 300 mg orally once daily, given for the last 2 weeks of the intensive phase of antituberculosis treatment and the first 2 weeks of the continuation phase, with concomitant standard doses of isoniazid, pyrazinamide, and ethambutol (no antiretroviral therapy at the time of PK sampling).",
-    regions        = "South Africa (Durban; ANRS 12150a trial, ClinicalTrials.gov NCT00640887)",
+    disease_state = "HIV-infected adults with microbiologically confirmed pulmonary tuberculosis (CD4 lymphocyte count 50-200 cells/mm^3; Karnofsky score 100; no grade 3-4 clinical or laboratory findings).",
+    dose_range = "Rifabutin 300 mg orally once daily, given for the last 2 weeks of the intensive phase of antituberculosis treatment and the first 2 weeks of the continuation phase, with concomitant standard doses of isoniazid, pyrazinamide, and ethambutol (no antiretroviral therapy at the time of PK sampling).",
+    regions = "South Africa (Durban; ANRS 12150a trial, ClinicalTrials.gov NCT00640887)",
     sampling_design = "After 4 weeks of daily rifabutin without ART, blood samples drawn following an overnight fast at predose (24 h after the previous dose) and at 2, 3, 4, 5, 6, 8, 12, and 24 h after the dose of interest. Standard hospital breakfast served > 2 h post dose. Total of 780 PK observations across 44 patients.",
-    assay          = "LC-MS/MS for both rifabutin and 25-desacetyl rifabutin (calibration ranges 3.91-1000 ng/mL for rifabutin and 0.780-200 ng/mL for des-rifabutin). Inter-batch accuracy 99.1-109.0 percent; precision CV < 9.2 percent.",
-    height_mean    = "159.6 (7.7) cm",
-    bmi_mean       = "22.8 (3.3) kg/m^2",
-    cd4_mean       = "126.1 (44.0) cells/mm^3",
-    notes          = "All patients were of Black African ethnicity. Genetic samples were unavailable for 7 of 44 patients; rs4149032 genotyping was unsuccessful in 2 further patients. The full SLCO1B1 panel (rs4149032, rs2306283, rs4149056, rs11045819) was tested for covariate effects; only rs11045819 entered the final model (rs4149056 was excluded a priori because only 1 patient was a carrier). The AAC paper supplement (referenced as 'Supplementary material' for Fig. S1, S2, S3 and Table S1) was not available on disk during extraction; structural-model and parameter values were taken from the main paper Methods and Table 2."
+    assay = "LC-MS/MS for both rifabutin and 25-desacetyl rifabutin (calibration ranges 3.91-1000 ng/mL for rifabutin and 0.780-200 ng/mL for des-rifabutin). Inter-batch accuracy 99.1-109.0 percent; precision CV < 9.2 percent.",
+    height_mean = "159.6 (7.7) cm",
+    bmi_mean = "22.8 (3.3) kg/m^2",
+    cd4_mean = "126.1 (44.0) cells/mm^3",
+    notes = "All patients were of Black African ethnicity. Genetic samples were unavailable for 7 of 44 patients; rs4149032 genotyping was unsuccessful in 2 further patients. The full SLCO1B1 panel (rs4149032, rs2306283, rs4149056, rs11045819) was tested for covariate effects; only rs11045819 entered the final model (rs4149056 was excluded a priori because only 1 patient was a carrier). The AAC paper supplement (referenced as 'Supplementary material' for Fig. S1, S2, S3 and Table S1) was not available on disk during extraction; structural-model and parameter values were taken from the main paper Methods and Table 2."
   )
 
   ini({

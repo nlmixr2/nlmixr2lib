@@ -12,17 +12,17 @@ Huppe_2023_fosfomycin <- function() {
   # and sample collection). Both states hold amounts of unchanged fosfomycin;
   # the drug does not undergo metabolization (Introduction).
   compartmentData <- list(
-    central     = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Urinary creatinine clearance, measured from a 12-hour urine collection",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Urinary creatinine clearance, measured from a 12-hour urine collection",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MEASURED urinary creatinine clearance, NOT a creatinine-based estimate and NOT",
         "BSA-normalized. Huppe 2023 Methods Eq. 2 computes it as",
         "(urine creatinine [mg/dL] * urine volume [mL]) / (plasma creatinine [mg/dL] * collection time [min]),",
@@ -35,14 +35,14 @@ Huppe_2023_fosfomycin <- function() {
         "Enters the renal clearance arm as a linear, uncentered effect. Anuric patients have",
         "CRCL = 0 by construction (no urine collected)."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     URINE_VOL_24H = list(
-      description        = "Residual diuresis: total urine volume collected over 24 hours",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "Residual diuresis: total urine volume collected over 24 hours",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used ONLY as the preserved-diuresis gate on the renal clearance arm. Huppe 2023",
         "Methods, Population pharmacokinetic modeling: 'In patients without preserved diuresis,",
         "intrinsic fosfomycin elimination was fixed to zero. Preserved diuresis was defined as a",
@@ -51,14 +51,14 @@ Huppe_2023_fosfomycin <- function() {
         "6 of 15 patients were anuric. The 100 mL/24h cutoff coincides with the anuria cutoff",
         "already documented in this canonical's register entry."
       ),
-      source_name        = "residual diuresis"
+      source_name = "residual diuresis"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = "CVVHD-active indicator (1 while continuous venovenous hemodialysis is running, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CVVHD-active indicator (1 while continuous venovenous hemodialysis is running, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CVVHD not running)",
-      notes              = paste(
+      notes = paste(
         "Time-varying WITHIN subject: every patient contributed one PK profile with CVVHD",
         "running and one after CVVHD was interrupted for tubing-system replacement",
         "(Huppe 2023 Methods, Protocol and sample collection). Gates the Michaels-equation",
@@ -67,28 +67,28 @@ Huppe_2023_fosfomycin <- function() {
         "CONTINUOUS venovenous hemodialysis, hence the CRRT rather than the intermittent-",
         "hemodialysis member of the RRT_<modality>_<kind> canonical family."
       ),
-      source_name        = "CVVHD"
+      source_name = "CVVHD"
     ),
     BFR = list(
-      description        = "Blood flow rate through the CVVHD extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate through the CVVHD extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject; an individual input variable to the Michaels equation",
         "(Huppe 2023 Results: 'Individual BFR and DFR values were input variables for Eq. 1').",
         "Protocol start value 100 mL/min, subsequently adjusted per patient (Methods, CVVHD);",
         "cohort mean 110 +/- 25 mL/min (Table 1), per-patient values 100-200 mL/min.",
         "Meaningful only while RRT_CRRT_ACTIVE = 1; the Michaels term is gated off otherwise."
       ),
-      source_name        = "BFR"
+      source_name = "BFR"
     ),
     DFR = list(
-      description        = "Dialysate flow rate through the CVVHD extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Dialysate flow rate through the CVVHD extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject; the second individual input variable to the Michaels",
         "equation. Stored in the canonical mL/min and converted inside model() to the L/h in",
         "which Huppe 2023 recorded it (protocol start 2 L/h = 33.33 mL/min; cohort mean",
@@ -97,71 +97,71 @@ Huppe_2023_fosfomycin <- function() {
         "lkoa source-trace comment in ini() and the vignette Errata.",
         "Meaningful only while RRT_CRRT_ACTIVE = 1."
       ),
-      source_name        = "DFR"
+      source_name = "DFR"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a covariate on central volume and not retained (Huppe 2023 Results: 'Variations in weight, creatinine clearance and serum levels of creatinine, albumin, total protein, urea, potassium, and sodium failed to adequately account for changes in central compartment volume over time'). Cohort mean 88.5 +/- 20.5 kg. Fosfomycin dosing in this study was not weight-adjusted (Limitations)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a covariate on central volume and not retained (Huppe 2023 Results: 'Variations in weight, creatinine clearance and serum levels of creatinine, albumin, total protein, urea, potassium, and sodium failed to adequately account for changes in central compartment volume over time'). Cohort mean 88.5 +/- 20.5 kg. Fosfomycin dosing in this study was not weight-adjusted (Limitations)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (Huppe 2023 Methods: 'Time after first dose, age, weight, creatinine clearance and serum levels of creatinine, albumin, total protein, urea, potassium, and sodium were tested as covariates') and not retained. Cohort mean 60 +/- 8 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (Huppe 2023 Methods: 'Time after first dose, age, weight, creatinine clearance and serum levels of creatinine, albumin, total protein, urea, potassium, and sodium were tested as covariates') and not retained. Cohort mean 60 +/- 8 years."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort mean 1.7 +/- 0.9 mg/dL (Table 1). Distinct from the retained CRCL, which is a measured urinary clearance rather than a serum concentration."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort mean 1.7 +/- 0.9 mg/dL (Table 1). Distinct from the retained CRCL, which is a measured urinary clearance rather than a serum concentration."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort mean 24 +/- 3.5 g/L (Table 1). The Limitations note that fosfomycin albumin binding is low, so total-concentration modelling was considered acceptable."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort mean 24 +/- 3.5 g/L (Table 1). The Limitations note that fosfomycin albumin binding is low, so total-concentration modelling was considered acceptable."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort mean 54 +/- 7.6 g/L (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort mean 54 +/- 7.6 g/L (Table 1)."
     ),
     UREA = list(
       description = "Serum urea",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort mean 44 +/- 27 mg/dL (Table 1)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort mean 44 +/- 27 mg/dL (Table 1)."
     ),
     POTASSIUM = list(
       description = "Serum potassium",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort mean 4.3 +/- 0.4 mmol/L (Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort mean 4.3 +/- 0.4 mmol/L (Table 1)."
     ),
     SODIUM = list(
       description = "Serum sodium",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort mean 144 +/- 3.8 mmol/L (Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort mean 144 +/- 3.8 mmol/L (Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
     n_observations = 300L,
-    age_range      = "49-80 years (mean 60 +/- 8)",
-    weight_range   = "55-122 kg (mean 88.5 +/- 20.5)",
+    age_range = "49-80 years (mean 60 +/- 8)",
+    weight_range = "55-122 kg (mean 88.5 +/- 20.5)",
     sex_female_pct = 13,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill ICU adults with infection caused by fosfomycin-susceptible bacteria AND",
       "renal insufficiency requiring continuous venovenous hemodialysis. Indications for CVVHD",
       "were acute renal failure, acute-on-chronic renal failure, chronic renal failure with",
@@ -174,7 +174,7 @@ Huppe_2023_fosfomycin <- function() {
       "Serum creatinine 1.7 +/- 0.9 mg/dL; measured urinary creatinine clearance from 12-h urine",
       "20.7 +/- 44.9 mL/min; 12-h urine output 250 +/- 430 mL; 24-h urine output 480 +/- 740 mL."
     ),
-    rrt_settings   = paste(
+    rrt_settings = paste(
       "CVVHD with a multiFiltrate Ci-Ca system and Ultraflux AV 1000S polysulfone membrane",
       "hemofilters (Fresenius Medical Care), calcium- and phosphate-free dialysate (Ci-Ca Dialysate",
       "K4, potassium 4 mmol/L), regional citrate anticoagulation with calcium re-substitution.",
@@ -182,10 +182,10 @@ Huppe_2023_fosfomycin <- function() {
       "88 +/- 83 mL/h. Protocol start values were BFR 100 mL/min and DFR 2 L/h, then individually",
       "adjusted."
     ),
-    co_medication  = "Concomitant antimicrobials in 11 of 15 patients: meropenem, piperacillin/tazobactam, vancomycin, clindamycin, tigecycline, linezolid, cotrimoxazole (Table 1).",
-    dose_range     = "5 g fosfomycin (InfectoFos) intravenously over 120 min every 8 h (multiple dosing).",
-    regions        = "Single-centre observational study, Saarland University Medical Center, Homburg (Saar), Germany.",
-    notes          = paste(
+    co_medication = "Concomitant antimicrobials in 11 of 15 patients: meropenem, piperacillin/tazobactam, vancomycin, clindamycin, tigecycline, linezolid, cotrimoxazole (Table 1).",
+    dose_range = "5 g fosfomycin (InfectoFos) intravenously over 120 min every 8 h (multiple dosing).",
+    regions = "Single-centre observational study, Saarland University Medical Center, Homburg (Saar), Germany.",
+    notes = paste(
       "Baseline demographics from Huppe 2023 Table 1. 13 of 15 patients were male (87%).",
       "Each patient contributed two PK series, one during CVVHD and one after CVVHD was",
       "interrupted, separated on average by 41.5 +/- 40.3 h; for 60% of patients the CVVHD series",

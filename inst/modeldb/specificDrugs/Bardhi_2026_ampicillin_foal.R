@@ -37,17 +37,17 @@ Bardhi_2026_ampicillin_foal <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     PNA = list(
-      description        = "Postnatal age (chronological age since birth) at enrolment",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological age since birth) at enrolment",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed at enrolment. Bardhi 2026 reports foal age in HOURS ",
         "(cohort median 78.0 h, IQR 19.7-180.0 h, range 9-194.5 h) and centres the ",
         "covariate on the weighted-mean age of 61.8 h. The canonical PNA column carries ",
@@ -58,7 +58,7 @@ Bardhi_2026_ampicillin_foal <- function() {
         "Bardhi 2026 prints '61.8 years'; that is a typographical slip for hours -- the ",
         "entire cohort is under 8 days old and both the Methods and Table 1 give age in h."
       ),
-      source_name        = "Age (h)"
+      source_name = "Age (h)"
     )
   )
 
@@ -68,35 +68,35 @@ Bardhi_2026_ampicillin_foal <- function() {
   # convention warning.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 48.5 kg (IQR 38.0-60.0), Bardhi 2026 Table 1. Tested one at a time ",
         "on every PK parameter and not retained; the published clearances and volumes are ",
         "absolute (L/h, L) rather than weight-normalised or allometrically scaled."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     ALB = list(
-      description        = "Serum albumin measured before the first ampicillin dose",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin measured before the first ampicillin dose",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 28.9 g/L (IQR 26.5-30.7), Bardhi 2026 Table 1. Tested and not ",
         "retained. The Discussion notes that no sampled foal was hypoalbuminaemic, so a ",
         "protein-binding effect on distribution was considered unlikely."
       ),
-      source_name        = "serum albumin"
+      source_name = "serum albumin"
     ),
     CREAT = list(
-      description        = "Serum creatinine measured before the first ampicillin dose",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum creatinine measured before the first ampicillin dose",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 12.8 mg/L (IQR 9.5-14.7), Bardhi 2026 Table 1. Per the Discussion, ",
         "serum creatinine showed a STRONGER association with clearance than age ",
         "(Figure S1), but a single 63.8 mg/L value in the youngest foal -- probable ",
@@ -104,22 +104,22 @@ Bardhi_2026_ampicillin_foal <- function() {
         "association non-robust under bootstrapping, so the authors deliberately chose ",
         "age instead. Note the unit: mg/L, not the mg/dL common in human popPK."
       ),
-      source_name        = "Scr"
+      source_name = "Scr"
     )
   )
 
   population <- list(
-    species        = "horse (hospitalized neonatal foal)",
-    n_subjects     = 12L,
-    n_studies      = 1L,
+    species = "horse (hospitalized neonatal foal)",
+    n_subjects = 12L,
+    n_studies = 1L,
     n_observations = 205L,
-    age_range      = "9-194.5 h of life",
-    age_median     = "78.0 h (IQR 19.7-180.0 h); mean 92.8 +/- 75.8 h; weighted mean 61.8 h",
-    weight_range   = "IQR 38.0-60.0 kg",
-    weight_median  = "48.5 kg",
+    age_range = "9-194.5 h of life",
+    age_median = "78.0 h (IQR 19.7-180.0 h); mean 92.8 +/- 75.8 h; weighted mean 61.8 h",
+    weight_range = "IQR 38.0-60.0 kg",
+    weight_median = "48.5 kg",
     sex_female_pct = 50,
-    breed          = "Standardbred (n = 6), Quarter horse (n = 3), Arabian horse (n = 2), mixed breed (n = 1)",
-    disease_state  = paste0(
+    breed = "Standardbred (n = 6), Quarter horse (n = 3), Arabian horse (n = 2), mixed breed (n = 1)",
+    disease_state = paste0(
       "Critically ill hospitalized neonates. Diagnoses: omphalitis (n = 5), dysmaturity ",
       "(n = 1), neonatal isoerythrolysis (n = 1), umbilical cord haematoma (n = 1), total ",
       "failure of transfer of passive immunity with flexural deformity (n = 1), perinatal ",
@@ -127,16 +127,16 @@ Bardhi_2026_ampicillin_foal <- function() {
       "(n = 1). All foals survived. Most had some degree of dehydration or hypovolaemia and ",
       "received isotonic crystalloids."
     ),
-    dose_range     = "20 mg/kg ampicillin sodium (Vetamplius, Fatro S.p.A.) intravenously every 6 h, dose expressed as ampicillin base",
-    sampling       = paste0(
+    dose_range = "20 mg/kg ampicillin sodium (Vetamplius, Fatro S.p.A.) intravenously every 6 h, dose expressed as ampicillin base",
+    sampling = paste0(
       "Blood drawn from a long-term jugular catheter by the push-pull technique at multiple ",
       "timepoints over the first 48 h of treatment; median 13 samples per foal (IQR 12-24). ",
       "Plasma assayed by UHPLC-MS/MS (Bardhi 2025), linear 0.3-100.0 mg/L, inter- and ",
       "intra-assay CV < 13%. One aberrantly high sample was excluded as probable ",
       "contamination and 17 below-LLOQ samples were treated as censored between 0 and LLOQ."
     ),
-    regions        = "Italy (Veterinary Teaching Hospital, University of Bologna)",
-    notes          = paste0(
+    regions = "Italy (Veterinary Teaching Hospital, University of Bologna)",
+    notes = paste0(
       "Ethics: Animal Welfare Committee of the University of Bologna, Protocol No. 358467, ",
       "ID No. 4626. Cohort characteristics are Bardhi 2026 Table 1. Model selection favoured ",
       "2 compartments (BICc 1202.40 for the final model) over 1 compartment (1280.38) and ",

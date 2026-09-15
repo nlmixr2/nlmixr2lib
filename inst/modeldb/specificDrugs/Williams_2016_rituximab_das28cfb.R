@@ -55,18 +55,18 @@ Williams_2016_rituximab_das28cfb <- function() {
   paper_specific_residual_sds <- c("addSd_das28")
 
   units <- list(
-    time          = "week",
-    dosing        = "(none; PD-only model fed by an external rituximab plasma-concentration covariate)",
+    time = "week",
+    dosing = "(none; PD-only model fed by an external rituximab plasma-concentration covariate)",
     concentration = "(observation DAS28cfb is the DAS28-CRP change from baseline in DAS28 units; driving covariate CP_RITUXIMAB_UGML is in ug/mL)"
   )
 
   covariateData <- list(
     CP_RITUXIMAB_UGML = list(
-      description        = "Instantaneous rituximab (or biosimilar PF-05280586) plasma concentration at each PD observation, supplied as a time-varying covariate from observed serum samples or an upstream popPK source.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Instantaneous rituximab (or biosimilar PF-05280586) plasma concentration at each PD observation, supplied as a time-varying covariate from observed serum samples or an upstream popPK source.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the concentration-effect Emax term",
         "fC(C) = Emax_i * C / (C + exp(lec50)) inside model(). Williams 2016",
         "used individual predicted concentrations Cij from a two-compartment",
@@ -81,14 +81,14 @@ Williams_2016_rituximab_das28cfb <- function() {
         "Emax term then collapses to 0.",
         sep = " "
       ),
-      source_name        = "CONC"
+      source_name = "CONC"
     ),
     TEND_28JOINT = list(
-      description        = "Baseline tender joint count on the 28-joint DAS28 scale (integer 0-28).",
-      units              = "count (0-28)",
-      type               = "continuous",
+      description = "Baseline tender joint count on the 28-joint DAS28 scale (integer 0-28).",
+      units = "count (0-28)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the covariate model as an additive",
         "log-scale effect (TEND_28JOINT - 16) on each of PMAX, kp, and Emax",
         "(Williams 2016 Supplemental Methods; reference value 16 = paper's",
@@ -96,28 +96,28 @@ Williams_2016_rituximab_das28cfb <- function() {
         "composite score.",
         sep = " "
       ),
-      source_name        = "TJ28"
+      source_name = "TJ28"
     ),
     SWOL_28JOINT = list(
-      description        = "Baseline swollen joint count on the 28-joint DAS28 scale (integer 0-28).",
-      units              = "count (0-28)",
-      type               = "continuous",
+      description = "Baseline swollen joint count on the 28-joint DAS28 scale (integer 0-28).",
+      units = "count (0-28)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the covariate model as an additive",
         "log-scale effect (SWOL_28JOINT - 12) on each of PMAX, kp, and Emax",
         "(Williams 2016 Supplemental Methods; reference value 12 = paper's",
         "declared median of the DAS28cfb dataset).",
         sep = " "
       ),
-      source_name        = "SJ28"
+      source_name = "SJ28"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein (BCRP).",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein (BCRP).",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline value). Enters the covariate model",
         "on the log(CRP + 1) scale to accommodate the highly skewed",
         "distribution and BCRP = 0 observations (Williams 2016 Supplemental",
@@ -127,14 +127,14 @@ Williams_2016_rituximab_das28cfb <- function() {
         "as (log(CRP + 1) - 2.2) additively on PMAX, kp, and Emax.",
         sep = " "
       ),
-      source_name        = "BCRP"
+      source_name = "BCRP"
     ),
     PGA_PT = list(
-      description        = "Baseline patient's global assessment of arthritis (100-mm visual analogue scale).",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline patient's global assessment of arthritis (100-mm visual analogue scale).",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Additive log-scale effect (PGA_PT - 70) on",
         "each of PMAX, kp, and Emax; reference 70 mm is the paper's declared",
         "median of the DAS28cfb dataset (Williams 2016 Supplemental Methods).",
@@ -143,14 +143,14 @@ Williams_2016_rituximab_das28cfb <- function() {
         "rating of arthritis disease activity.",
         sep = " "
       ),
-      source_name        = "PGA"
+      source_name = "PGA"
     ),
     TRT = list(
-      description        = "Treatment-arm integer indicator: 0 = rituximab-EU (reference), 1 = PF-05280586 (proposed biosimilar), 2 = rituximab-US.",
-      units              = "(categorical / integer-coded)",
-      type               = "categorical",
+      description = "Treatment-arm integer indicator: 0 = rituximab-EU (reference), 1 = PF-05280586 (proposed biosimilar), 2 = rituximab-US.",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       reference_category = "0 (rituximab-EU)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Encodes the trial's three treatment arms.",
         "The paper's covariate model estimates one indicator effect per arm",
         "on each of PMAX, kp, and Emax with rituximab-EU as the reference",
@@ -160,30 +160,30 @@ Williams_2016_rituximab_das28cfb <- function() {
         "additively on the log scale.",
         sep = " "
       ),
-      source_name        = "TRT"
+      source_name = "TRT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 214L,
-    n_studies        = 1L,
-    n_observations   = 1382L,
-    age_range        = "adults (>=18 years); mean (SD) 54.8 (11.7) years (PF-05280586), 55.7 (10.2) years (rituximab-EU), 53.8 (11.8) years (rituximab-US)",
-    weight_range     = "mean (SD) 86.2 (22.0) kg (PF-05280586), 82.6 (19.8) kg (rituximab-EU), 80.4 (21.6) kg (rituximab-US)",
-    sex_female_pct   = 77.6,
-    disease_state    = "Active rheumatoid arthritis on background methotrexate with inadequate response to one or more TNF-antagonist therapies. Baseline DAS28-CRP mean (SD): 5.64 (0.85) PF-05280586, 5.80 (0.96) rituximab-EU, 6.2 (0.89) rituximab-US.",
-    dose_range       = "1000 mg IV on days 1 and 15 (standard rituximab RA induction course). All subjects received 100 mg IV methylprednisolone premedication.",
-    regions          = "Multi-regional biosimilar development trial (ClinicalTrials.gov NCT01526057).",
+    species = "human",
+    n_subjects = 214L,
+    n_studies = 1L,
+    n_observations = 1382L,
+    age_range = "adults (>=18 years); mean (SD) 54.8 (11.7) years (PF-05280586), 55.7 (10.2) years (rituximab-EU), 53.8 (11.8) years (rituximab-US)",
+    weight_range = "mean (SD) 86.2 (22.0) kg (PF-05280586), 82.6 (19.8) kg (rituximab-EU), 80.4 (21.6) kg (rituximab-US)",
+    sex_female_pct = 77.6,
+    disease_state = "Active rheumatoid arthritis on background methotrexate with inadequate response to one or more TNF-antagonist therapies. Baseline DAS28-CRP mean (SD): 5.64 (0.85) PF-05280586, 5.80 (0.96) rituximab-EU, 6.2 (0.89) rituximab-US.",
+    dose_range = "1000 mg IV on days 1 and 15 (standard rituximab RA induction course). All subjects received 100 mg IV methylprednisolone premedication.",
+    regions = "Multi-regional biosimilar development trial (ClinicalTrials.gov NCT01526057).",
     baseline_disease = list(
       DAS28_CRP_by_arm = "PF-05280586 5.64 (0.85); rituximab-EU 5.80 (0.96); rituximab-US 6.2 (0.89)",
       SWOL_28JOINT_by_arm = "PF-05280586 11.4 (5.0); rituximab-EU 13.0 (6.6); rituximab-US 14.0 (6.0)",
       TEND_28JOINT_by_arm = "PF-05280586 14.3 (6.5); rituximab-EU 15.1 (6.8); rituximab-US 18.0 (6.5)",
-      CRP_by_arm_mg_L    = "PF-05280586 12.4 (14.9); rituximab-EU 14.7 (17.6); rituximab-US 18.2 (25.1)",
-      PGA_by_arm         = "PF-05280586 67.4 (16.8); rituximab-EU 67.7 (20.9); rituximab-US 74.8 (16.0)"
+      CRP_by_arm_mg_L = "PF-05280586 12.4 (14.9); rituximab-EU 14.7 (17.6); rituximab-US 18.2 (25.1)",
+      PGA_by_arm = "PF-05280586 67.4 (16.8); rituximab-EU 67.7 (20.9); rituximab-US 74.8 (16.0)"
     ),
     disease_duration = "Mean (SD) since first RA diagnosis: 12.7 (8.4), 11.8 (8.3), 10.6 (8.1) years for PF-05280586, rituximab-EU, rituximab-US arms respectively.",
-    notes            = paste(
+    notes = paste(
       "Baseline demographics from Williams 2016 Table 1. The DAS28cfb dataset",
       "included 214 baseline and 1382 postbaseline observations",
       "(Williams 2016 Results 'Population PK/PD models'). Rituximab-US arm",

@@ -53,11 +53,11 @@ Echterhof_2026_phage_mouse_pbpk <- function() {
   dosing <- "venous"
 
   units <- list(
-    time          = "h",
-    dosing        = "%ID",
+    time = "h",
+    dosing = "%ID",
     concentration = "%ID/g",
-    amount        = "%ID",
-    weight        = "kg"
+    amount = "%ID",
+    weight = "kg"
   )
 
   # `gut_lumen` here is the "GI Elimination" box of Figure 1 -- the luminal
@@ -71,55 +71,55 @@ Echterhof_2026_phage_mouse_pbpk <- function() {
   # destined for excretion; the paper measured it in the stomach, not the
   # faeces, so read the label as "GI lumen".
   compartmentData <- list(
-    venous                = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    int_venous            = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    arterial              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    vp_lung               = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_lung               = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_lung              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_muscle             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_muscle             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_muscle            = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_bone               = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_bone               = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_bone              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_liver              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_liver              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_liver             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_stomach            = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_stomach            = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_stomach           = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_spleen             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_spleen             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_spleen            = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_small_intestine    = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_small_intestine    = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_small_intestine   = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_large_intestine    = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_large_intestine    = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_large_intestine   = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_brain              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_brain              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    vp_skin               = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_skin               = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_skin              = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_remainder          = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_remainder          = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_remainder         = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    vp_kidney             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
-    is_kidney             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
-    int_kidney            = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
-    urine                 = list(analyte = "125I-labelled phage", units = "%ID", specimen = "urine", verified = TRUE),
-    gut_lumen             = list(analyte = "125I-labelled phage", units = "%ID", specimen = "faeces", verified = TRUE)
+    venous = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    int_venous = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    arterial = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    vp_lung = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_lung = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_lung = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_muscle = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_muscle = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_muscle = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_bone = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_bone = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_bone = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_liver = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_liver = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_liver = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_stomach = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_stomach = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_stomach = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_spleen = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_spleen = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_spleen = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_small_intestine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_small_intestine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_small_intestine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_large_intestine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_large_intestine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_large_intestine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_brain = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_brain = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    vp_skin = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_skin = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_skin = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_remainder = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_remainder = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_remainder = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    vp_kidney = list(analyte = "125I-labelled phage", units = "%ID", specimen = "plasma", verified = TRUE),
+    is_kidney = list(analyte = "125I-labelled phage", units = "%ID", specimen = "tissue", verified = TRUE),
+    int_kidney = list(analyte = "125I-labelled phage", units = "%ID", specimen = "endosome", verified = TRUE),
+    urine = list(analyte = "125I-labelled phage", units = "%ID", specimen = "urine", verified = TRUE),
+    gut_lumen = list(analyte = "125I-labelled phage", units = "%ID", specimen = "faeces", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales cardiac output allometrically (CO = CO_C * WT^0.75), every organ",
         "and blood volume linearly (V = fv * WT), and the active surface",
         "clearance linearly (CL = CL_C * WT, the L/h/kg unit of Table 1).",
@@ -128,14 +128,14 @@ Echterhof_2026_phage_mouse_pbpk <- function() {
         "the cohort range as 22-30 g. Table S3 tabulates 0.02 kg as the generic",
         "mouse. Time-invariant."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     DOSE_PHAGE_PFU = list(
-      description        = "Administered phage dose, in plaque-forming units",
-      units              = "PFU",
-      type               = "continuous",
+      description = "Administered phage dose, in plaque-forming units",
+      units = "PFU",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Does NOT set the mass of the dose event -- the state system is in %ID,",
         "so every dose record carries amt = 100. DOSE_PHAGE_PFU enters ONLY the",
         "MPS carrying capacity, converting the literature capacity",
@@ -152,14 +152,14 @@ Echterhof_2026_phage_mouse_pbpk <- function() {
         "Table S1 mean doses: 10^10.7 PFU (Luz24), 10^10.1 PFU (OMKO1),",
         "10^11.9 PFU (PAML-31-1)."
       ),
-      source_name        = "Mean Phage Dose (Log10 PFU)"
+      source_name = "Mean Phage Dose (Log10 PFU)"
     ),
     STUDY_PAML31 = list(
-      description        = "1 = PAML-31-1 phage study arm; 0 = Luz24 or OMKO1 arm",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = PAML-31-1 phage study arm; 0 = Luz24 or OMKO1 arm",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Luz24 and OMKO1 arms, which share one CL_Active)",
-      notes              = paste(
+      notes = paste(
         "Selects the covariate-adjusted active clearance CL_Active,PAML of",
         "Table 1 in place of the population CL_Active. The paper identified this",
         "as a categorical covariate after a single expectation step with",
@@ -173,26 +173,26 @@ Echterhof_2026_phage_mouse_pbpk <- function() {
         "reported clearance under any standard transform -- see the vignette",
         "Errata."
       ),
-      source_name        = "PAML-31"
+      source_name = "PAML-31"
     )
   )
 
   population <- list(
-    species        = "mouse (Swiss-Webster CD-1, male)",
-    n_subjects     = 139L,
-    n_studies      = 3L,
-    age_range      = "5-7 weeks",
-    weight_range   = "22-30 g (Methods); per-phage means 27.2 g Luz24, 34.5 g OMKO1, 34.4 g PAML-31-1 (Table S1)",
-    weight_median  = "0.02 kg (the generic mouse tabulated in Table S3)",
+    species = "mouse (Swiss-Webster CD-1, male)",
+    n_subjects = 139L,
+    n_studies = 3L,
+    age_range = "5-7 weeks",
+    weight_range = "22-30 g (Methods); per-phage means 27.2 g Luz24, 34.5 g OMKO1, 34.4 g PAML-31-1 (Table S1)",
+    weight_median = "0.02 kg (the generic mouse tabulated in Table S3)",
     sex_female_pct = 0,
-    disease_state  = "Healthy, uninfected mice (baseline biodistribution; no bacterial challenge, so no phage self-replication)",
-    dose_range     = paste(
+    disease_state = "Healthy, uninfected mice (baseline biodistribution; no bacterial challenge, so no phage self-replication)",
+    dose_range = paste(
       "Single intravenous bolus into the penile vein, 50 uL of phage stock.",
       "Mean dose 10^10.7 PFU (Luz24, n = 54), 10^10.1 PFU (OMKO1, n = 30),",
       "10^11.9 PFU (PAML-31-1, n = 55) -- Table S1."
     ),
-    regions        = "USA (Stanford University; mice from Charles River)",
-    notes          = paste(
+    regions = "USA (Stanford University; mice from Charles River)",
+    notes = paste(
       "n = 5 mice per group per time point, euthanised terminally. Sampling at",
       "30 min, 1, 2, 4, 8 and 24 h for OMKO1 and Luz24; 30 min, 1, 2, 4, 24 and",
       "72 h for PAML-31-1. Separate sedated animals gave retro-orbital blood at",

@@ -20,54 +20,54 @@ Stroh_2013_rolofylline <- function() {
     "was confirmed via the DAISY software tool (Bellu et al.).",
     sep = " "
   )
-  reference   <- paste(
+  reference <- paste(
     "Stroh M, Hutmacher MM, Pang J, Lutz R, Magara H, Stone J.",
     "Simultaneous Pharmacokinetic Model for Rolofylline and both M1-trans",
     "and M1-cis Metabolites. AAPS J. 2013;15(2):498-504.",
     "doi:10.1208/s12248-012-9443-5",
     sep = " "
   )
-  vignette    <- "Stroh_2013_rolofylline"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  vignette <- "Stroh_2013_rolofylline"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central             = list(analyte = "rolofylline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "rolofylline", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m1trans     = list(analyte = "M1-trans", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rolofylline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rolofylline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m1trans = list(analyte = "M1-trans", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m1trans = list(analyte = "M1-trans", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m1cis       = list(analyte = "M1-cis", units = "mg", specimen = "plasma", verified = FALSE)
+    central_m1cis = list(analyte = "M1-cis", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 36L,
-    n_studies       = 1L,
-    age_range       = "18-42 years (mean 29 years)",
-    weight_range    = "60.2-90.0 kg (mean 73.3 kg)",
-    height_range    = "161-191 cm (mean 175 cm)",
-    sex_female_pct  = 0,
-    race_ethnicity  = c(White = 100),
-    disease_state   = "Healthy adult male volunteers",
-    dose_range      = paste(
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "18-42 years (mean 29 years)",
+    weight_range = "60.2-90.0 kg (mean 73.3 kg)",
+    height_range = "161-191 cm (mean 175 cm)",
+    sex_female_pct = 0,
+    race_ethnicity = c(White = 100),
+    disease_state = "Healthy adult male volunteers",
+    dose_range = paste(
       "Single-dose IV infusion of rolofylline at 1, 2.5, 5, 10, 20, 30,",
       "40, 50, or 60 mg. Infusion duration 1 h for doses up to 30 mg and",
       "2 h for 40-60 mg; volumetric rate fixed at 1 mL/min.",
       sep = " "
     ),
-    regions         = "Europe (study KW-3902 IV-EU01, Hoechst Marion Roussel bioanalysis)",
-    n_observations  = paste(
+    regions = "Europe (study KW-3902 IV-EU01, Hoechst Marion Roussel bioanalysis)",
+    n_observations = paste(
       "1,914 post-dose plasma concentrations across rolofylline, M1-trans,",
       "and M1-cis combined; 223 BLQ observations (rolofylline 65,",
       "M1-trans 52, M1-cis 106) treated as missing.",
       sep = " "
     ),
-    notes           = paste(
+    notes = paste(
       "37 white male subjects were enrolled; 36 received study medication",
       "across the dose-escalation cohort. Estimation in NONMEM Version VI",
       "level 2.0 using ADVAN 7 (general linear model) and FOCE-I. Below-LOQ",

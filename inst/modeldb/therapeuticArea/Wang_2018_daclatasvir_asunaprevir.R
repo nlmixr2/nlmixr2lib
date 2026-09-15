@@ -18,8 +18,8 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
   # time-consistent on a single day scale. The `units$time = "day"` field
   # therefore declares the time axis the consumer should use.
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -28,63 +28,63 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "daclatasvir", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_asv       = list(analyte = "asunaprevir", units = "mg", specimen = "administration site", verified = FALSE),
-    central_asv     = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "daclatasvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_asv = list(analyte = "asunaprevir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_asv = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_asv = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
-    effect          = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect_asv      = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
-    target          = list(analyte = "HCV NS5A protein", units = "mg", specimen = "plasma", verified = FALSE),
-    infected        = list(analyte = "HCV-infected cells", units = "mg", specimen = "tissue", verified = FALSE),
-    virus           = list(analyte = "HCV RNA", units = "mg", specimen = "plasma", verified = FALSE)
+    effect = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_asv = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
+    target = list(analyte = "HCV NS5A protein", units = "mg", specimen = "plasma", verified = FALSE),
+    infected = list(analyte = "HCV-infected cells", units = "mg", specimen = "tissue", verified = FALSE),
+    virus = list(analyte = "HCV RNA", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HCV_GT1B = list(
-      description        = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype for the IC50 estimates).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype for the IC50 estimates).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCV GT1A; 77 percent of the Wang 2018 VD-cohort, 55 of 72 patients).",
-      notes              = "Time-fixed per subject (HCV subtype is determined at the time of infection and does not change over the modelled treatment window). Switches IC50,DCV from 0.041 to 0.0074 ug/L via the fixed scaling factor SCL_IC50_DCV = 0.18; switches IC50,ASV from 2.45 to 0.74 ug/L via SCL_IC50_ASV = 0.30; switches the DCV resistance coefficient Kr_DCV from 0.43 to 0.13 per day. Kr_ASV is the same for both subtypes. Encoding inside model(): ic50_dcv_t0 = exp(lic50_dcv_gt1a + etalic50_dcv) * scl_ic50_dcv^HCV_GT1B; kr_dcv = exp(lkr_dcv_gt1a + etalkr_dcv) * (1 - HCV_GT1B) + exp(lkr_dcv_gt1b + etalkr_dcv) * HCV_GT1B.",
-      source_name        = "Genotype 1A (%) in Table 2; the indicator encodes the complement (GT1B = 1 - GT1A) so the canonical reference category matches the source-paper IC50,GT1A estimates."
+      notes = "Time-fixed per subject (HCV subtype is determined at the time of infection and does not change over the modelled treatment window). Switches IC50,DCV from 0.041 to 0.0074 ug/L via the fixed scaling factor SCL_IC50_DCV = 0.18; switches IC50,ASV from 2.45 to 0.74 ug/L via SCL_IC50_ASV = 0.30; switches the DCV resistance coefficient Kr_DCV from 0.43 to 0.13 per day. Kr_ASV is the same for both subtypes. Encoding inside model(): ic50_dcv_t0 = exp(lic50_dcv_gt1a + etalic50_dcv) * scl_ic50_dcv^HCV_GT1B; kr_dcv = exp(lkr_dcv_gt1a + etalkr_dcv) * (1 - HCV_GT1B) + exp(lkr_dcv_gt1b + etalkr_dcv) * HCV_GT1B.",
+      source_name = "Genotype 1A (%) in Table 2; the indicator encodes the complement (GT1B = 1 - GT1A) so the canonical reference category matches the source-paper IC50,GT1A estimates."
     ),
     FORM_ASV_LIQUID = list(
-      description        = "Asunaprevir formulation indicator. 1 = ASV given as a suspension or oral solution (high-fraction zero-order absorption route, FK = 0.334); 0 = ASV given as a capsule or tablet (low-fraction zero-order absorption, FK = 0.184). The covariate has no effect when no ASV dose is administered.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asunaprevir formulation indicator. 1 = ASV given as a suspension or oral solution (high-fraction zero-order absorption route, FK = 0.334); 0 = ASV given as a capsule or tablet (low-fraction zero-order absorption, FK = 0.184). The covariate has no effect when no ASV dose is administered.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capsule or tablet; the reference formulation in the Wang 2018 ASV PK fit).",
-      notes              = "Per-dose-occasion covariate in principle (a participant could in principle receive both formulations across study occasions), but in the Wang 2018 trials each subject received a single ASV formulation. Switches the structural absorption fraction-via-zero-order route FK between fk_cap_asv (0.184) and fk_sol_asv (0.334). Both values were estimated with a SHARED IAV CV of 65.0 percent (Table 3); the shared variance is encoded as a single eta `eta_study_lfk_asv` on the logit of FK so the same study-arm random effect applies regardless of formulation. Reference: Wang 2018 Table 3 footnote (FK Cap/Tab and FK Sus/Sol IAV both 65.0 percent).",
-      source_name        = "Formulation column in Table 1 (values 'Suspension' / 'Solution' map to FORM_ASV_LIQUID = 1; 'Capsule' / 'Tablet' map to 0). Registered as a specific-scope canonical in inst/references/covariate-columns.md alongside this extraction."
+      notes = "Per-dose-occasion covariate in principle (a participant could in principle receive both formulations across study occasions), but in the Wang 2018 trials each subject received a single ASV formulation. Switches the structural absorption fraction-via-zero-order route FK between fk_cap_asv (0.184) and fk_sol_asv (0.334). Both values were estimated with a SHARED IAV CV of 65.0 percent (Table 3); the shared variance is encoded as a single eta `eta_study_lfk_asv` on the logit of FK so the same study-arm random effect applies regardless of formulation. Reference: Wang 2018 Table 3 footnote (FK Cap/Tab and FK Sus/Sol IAV both 65.0 percent).",
+      source_name = "Formulation column in Table 1 (values 'Suspension' / 'Solution' map to FORM_ASV_LIQUID = 1; 'Capsule' / 'Tablet' map to 0). Registered as a specific-scope canonical in inst/references/covariate-columns.md alongside this extraction."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 1730L,
-    n_studies       = 26L,
-    n_arms          = 72L,
+    species = "human",
+    n_subjects = 1730L,
+    n_studies = 26L,
+    n_arms = 72L,
     pk_dcv_subjects = 198L,
-    pk_dcv_arms     = 30L,
-    pk_dcv_trials   = 7L,
-    pk_dcv_records  = 465L,
+    pk_dcv_arms = 30L,
+    pk_dcv_trials = 7L,
+    pk_dcv_records = 465L,
     pk_asv_subjects = 290L,
-    pk_asv_arms     = 35L,
-    pk_asv_trials   = 11L,
-    pk_asv_records  = 602L,
-    vd_subjects     = 72L,
-    vd_trials       = 4L,
-    vd_records      = 952L,
-    age_range       = "20-83 years across the meta-database (per-arm medians in Wang 2018 Table 2 ranged 30 to 65 years; range 19 to 83)",
-    weight_range    = "BMI 19-35 kg/m^2 across the meta-database (Wang 2018 Table 2; body weight not tabulated separately and not used as a covariate in the final model)",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "Caucasian arm percentages ranged 0 to 90 percent across the included trials (Wang 2018 Table 2); Japanese / Asian sub-cohorts in studies AI444007, AI447005, AI447015, AI447028, AI447031, AI447036. Race not retained as a covariate in the final model.",
-    disease_state   = "Adults with chronic HCV genotype-1 infection (77 percent GT1A, 23 percent GT1B in the VD cohort) plus healthy volunteer cohorts from the Phase 1 PK studies. The VD-modelling cohort was 82.6 percent treatment-naive for prior peg-interferon-alpha plus ribavirin (PR) therapy. Median baseline viral load 6.76 x 10^6 IU/mL.",
-    dose_range      = "DCV: single-ascending and multiple-ascending dose ranges 1-200 mg in Phase 1; 30-60 mg QD in Phase 2/3. ASV: 10-1200 mg single dose, 10-600 mg BID in Phase 1, 100-600 mg BID in Phase 2/3. Combination Phase 3 regimens: DCV 60 mg QD plus ASV 100-200 mg BID (capsule), or DCV 60 mg QD plus ASV 200-600 mg BID (tablet).",
-    regimens        = "Once-daily for DCV; twice-daily (BID) for ASV in nearly all Phase 2/3 dual-therapy regimens. Treatment durations 1 day (single-dose), 14 days (multiple-dose Phase 1), to 24 weeks (Phase 3 combination therapy).",
-    regions         = "Global; trials included North American, European, Japanese, and Asian centres (Wang 2018 Table 1 indicates Japanese ethnicity sub-cohorts in 4 studies and Asian sub-cohort in 1 Phase 3 study).",
-    notes           = "Population sourced from a model-based meta-analysis (MBMA) of 26 published or registered clinical trials covering DCV monotherapy, ASV monotherapy, and DCV+ASV combination therapy. The packaged model is parameterised at the study-arm level (inter-arm variability replaces between-subject variability for PK); the VD layer has genuine inter-individual variability because the underlying viral-load fits used individual patient data from 4 trials (AI444002, AI444004, AI447002, AI447004). Suitable simulation scope: study-arm-mean PK profiles and individual viral-load trajectories. Per Wang 2018 Materials and methods, all viral-load measurements were either supplied directly or back-derived by adding the per-arm mean baseline viral load to a published change-from-baseline value. See Wang 2018 Table 1 for the per-trial breakdown and Table 2 for baseline demographics."
+    pk_asv_arms = 35L,
+    pk_asv_trials = 11L,
+    pk_asv_records = 602L,
+    vd_subjects = 72L,
+    vd_trials = 4L,
+    vd_records = 952L,
+    age_range = "20-83 years across the meta-database (per-arm medians in Wang 2018 Table 2 ranged 30 to 65 years; range 19 to 83)",
+    weight_range = "BMI 19-35 kg/m^2 across the meta-database (Wang 2018 Table 2; body weight not tabulated separately and not used as a covariate in the final model)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Caucasian arm percentages ranged 0 to 90 percent across the included trials (Wang 2018 Table 2); Japanese / Asian sub-cohorts in studies AI444007, AI447005, AI447015, AI447028, AI447031, AI447036. Race not retained as a covariate in the final model.",
+    disease_state = "Adults with chronic HCV genotype-1 infection (77 percent GT1A, 23 percent GT1B in the VD cohort) plus healthy volunteer cohorts from the Phase 1 PK studies. The VD-modelling cohort was 82.6 percent treatment-naive for prior peg-interferon-alpha plus ribavirin (PR) therapy. Median baseline viral load 6.76 x 10^6 IU/mL.",
+    dose_range = "DCV: single-ascending and multiple-ascending dose ranges 1-200 mg in Phase 1; 30-60 mg QD in Phase 2/3. ASV: 10-1200 mg single dose, 10-600 mg BID in Phase 1, 100-600 mg BID in Phase 2/3. Combination Phase 3 regimens: DCV 60 mg QD plus ASV 100-200 mg BID (capsule), or DCV 60 mg QD plus ASV 200-600 mg BID (tablet).",
+    regimens = "Once-daily for DCV; twice-daily (BID) for ASV in nearly all Phase 2/3 dual-therapy regimens. Treatment durations 1 day (single-dose), 14 days (multiple-dose Phase 1), to 24 weeks (Phase 3 combination therapy).",
+    regions = "Global; trials included North American, European, Japanese, and Asian centres (Wang 2018 Table 1 indicates Japanese ethnicity sub-cohorts in 4 studies and Asian sub-cohort in 1 Phase 3 study).",
+    notes = "Population sourced from a model-based meta-analysis (MBMA) of 26 published or registered clinical trials covering DCV monotherapy, ASV monotherapy, and DCV+ASV combination therapy. The packaged model is parameterised at the study-arm level (inter-arm variability replaces between-subject variability for PK); the VD layer has genuine inter-individual variability because the underlying viral-load fits used individual patient data from 4 trials (AI444002, AI444004, AI447002, AI447004). Suitable simulation scope: study-arm-mean PK profiles and individual viral-load trajectories. Per Wang 2018 Materials and methods, all viral-load measurements were either supplied directly or back-derived by adding the per-arm mean baseline viral load to a published change-from-baseline value. See Wang 2018 Table 1 for the per-trial breakdown and Table 2 for baseline demographics."
   )
 
   ini({

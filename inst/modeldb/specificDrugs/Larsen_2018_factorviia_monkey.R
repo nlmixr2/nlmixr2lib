@@ -25,8 +25,8 @@ Larsen_2018_factorviia_monkey <- function() {
   )
   vignette <- "Larsen_2018_haemophilia_animal_popPK"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -34,36 +34,36 @@ Larsen_2018_factorviia_monkey <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (cynomolgus monkey)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (cynomolgus monkey)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-animal body weight. Used for within-species",
         "allometric scaling around the monkey median weight of",
         "2.78 kg (Larsen 2018 Table 1). Range 2.2-5.2 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "monkey (cynomolgus)",
-    n_subjects     = 27L,
-    n_studies      = NA_integer_,
-    weight_range   = "2.2-5.2 kg",
-    weight_median  = "2.78 kg",
+    species = "monkey (cynomolgus)",
+    n_subjects = 27L,
+    n_studies = NA_integer_,
+    weight_range = "2.2-5.2 kg",
+    weight_median = "2.78 kg",
     sex_female_pct = 40.7,
-    disease_state  = "healthy (non-haemophilic)",
-    dose_range     = "single IV bolus, vehicle, 90, 270, or 3000 ug/kg rFVIIa (mass dose; user supplies the corresponding IU dose)",
-    regions        = "Denmark (Novo Nordisk in-house)",
-    notes          = paste(
+    disease_state = "healthy (non-haemophilic)",
+    dose_range = "single IV bolus, vehicle, 90, 270, or 3000 ug/kg rFVIIa (mass dose; user supplies the corresponding IU dose)",
+    regions = "Denmark (Novo Nordisk in-house)",
+    notes = paste(
       "27 cynomolgus monkeys (16 M, 11 F). Sampling up to 13",
       "h post-dose. Endogenous rFVIIa was detectable in the",
       "monkey and is modelled as an additive baseline of 0.287",

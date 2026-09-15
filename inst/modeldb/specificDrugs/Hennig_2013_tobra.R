@@ -8,69 +8,69 @@ Hennig_2013_tobra <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tobra", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tobra", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tobra", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated via the Janmahasatian formula (paper reference 20). Reference 70 kg. Allometric exponent on CL and Q is estimated (theta_FFM = 0.952); on V1 and V2 the exponent is fixed at 1 (linear scaling).",
-      source_name        = "FFM"
+      notes = "Estimated via the Janmahasatian formula (paper reference 20). Reference 70 kg. Allometric exponent on CL and Q is estimated (theta_FFM = 0.952); on V1 and V2 the exponent is fixed at 1 (linear scaling).",
+      source_name = "FFM"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at study entry. Piecewise-linear effect on CL with breakpoint at 18 years: slope theta_AGE = -0.021 per year for AGE <= 18 and -0.010 per year for AGE > 18. Reference age is 18 years (f_age = 1 at AGE = 18).",
-      source_name        = "AGE"
+      notes = "Time-fixed at study entry. Piecewise-linear effect on CL with breakpoint at 18 years: slope theta_AGE = -0.021 per year for AGE <= 18 and -0.010 per year for AGE > 18. Reference age is 18 years (f_age = 1 at AGE = 18).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Hennig 2013 reports separate typical population values for CL and V1 in females (8.1 L/h/70 kg, 20.1 L/70 kg) and males (9.4 L/h/70 kg, 25.1 L/70 kg). The model selects the sex-specific reference value based on SEXF; the canonical SEXF (1 = female) maps directly to the paper's 'female sex' indicator (Table 2 footnote 'F female').",
-      source_name        = "SEXF"
+      notes = "Hennig 2013 reports separate typical population values for CL and V1 in females (8.1 L/h/70 kg, 20.1 L/70 kg) and males (9.4 L/h/70 kg, 25.1 L/70 kg). The model selects the sex-specific reference value based on SEXF; the canonical SEXF (1 = female) maps directly to the paper's 'female sex' indicator (Table 2 footnote 'F female').",
+      source_name = "SEXF"
     ),
     CREAT = list(
-      description        = "Measured serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Measured serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patient's measured SCR. Per Hennig 2013 Methods 'Covariate Models', SCR was floored at 60 umol/L during covariate building (CREAT < 60 was set to 60 to avoid overestimating CL in patients with sub-reference SCR). Missing SCR was set to the dataset average 62.1 umol/L (4.2 % of patients). The effect on CL is f_scr = (CREAT_REF / CREAT)^theta_SCR.",
-      source_name        = "SCR"
+      notes = "Patient's measured SCR. Per Hennig 2013 Methods 'Covariate Models', SCR was floored at 60 umol/L during covariate building (CREAT < 60 was set to 60 to avoid overestimating CL in patients with sub-reference SCR). Missing SCR was set to the dataset average 62.1 umol/L (4.2 % of patients). The effect on CL is f_scr = (CREAT_REF / CREAT)^theta_SCR.",
+      source_name = "SCR"
     ),
     CREAT_REF = list(
-      description        = "Sex-, age- and size-adjusted normal-mean serum creatinine for the individual",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Sex-, age- and size-adjusted normal-mean serum creatinine for the individual",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Externally-computed reference SCR for the patient (denoted SCR_mean in Hennig 2013 Eq. 5 / Eq. 6). Per the paper this was 'derived according to the relationships previously described' citing Ceriotti 2008 (Clin Chem) and Junge 2004 (Clin Chim Acta) for paediatrics/adults plus Johansson 2011 (Ther Drug Monit) for the algorithmic aggregation; the paper does not state the exact formula. Users must compute CREAT_REF from age, sex and (where the chosen formula uses it) body size before passing to the model. When no covariate value can be derived, set CREAT_REF = CREAT so the renal-function factor f_scr = 1 (matches the paper's 'covariate set to 1 for missing data' rule).",
-      source_name        = "SCR_mean"
+      notes = "Externally-computed reference SCR for the patient (denoted SCR_mean in Hennig 2013 Eq. 5 / Eq. 6). Per the paper this was 'derived according to the relationships previously described' citing Ceriotti 2008 (Clin Chem) and Junge 2004 (Clin Chim Acta) for paediatrics/adults plus Johansson 2011 (Ther Drug Monit) for the algorithmic aggregation; the paper does not state the exact formula. Users must compute CREAT_REF from age, sex and (where the chosen formula uses it) body size before passing to the model. When no covariate value can be derived, set CREAT_REF = CREAT so the renal-function factor f_scr = 1 (matches the paper's 'covariate set to 1 for missing data' rule).",
+      source_name = "SCR_mean"
     )
   )
 
   population <- list(
-    n_subjects     = 732L,
-    n_studies      = "8 centres pooled (5 prior published tobramycin studies plus retrospective TDM data from Royal Children's Hospital Brisbane, Cincinnati Children's Hospital, and Gartnavel General Hospital Glasgow)",
+    n_subjects = 732L,
+    n_studies = "8 centres pooled (5 prior published tobramycin studies plus retrospective TDM data from Royal Children's Hospital Brisbane, Cincinnati Children's Hospital, and Gartnavel General Hospital Glasgow)",
     n_observations = 5605L,
-    age_range      = "0.01-85 years (paediatric 0.5 weeks to 17.9 years; adults 18-85 years)",
-    age_median     = "paediatric 7.68 years (CF 11.1, non-CF 5.0); adult 31.7 years (CF 24.3, non-CF 52.0)",
-    weight_range   = "3.3-120.0 kg",
-    weight_median  = "paediatric 25.5 kg (CF 31.8, non-CF 18.6); adult 58.0 kg (CF 53.9, non-CF 67.0)",
-    ffm_range      = "3.0-65.1 kg",
-    ffm_median     = "paediatric 19.8 kg; adult 43.5 kg",
+    age_range = "0.01-85 years (paediatric 0.5 weeks to 17.9 years; adults 18-85 years)",
+    age_median = "paediatric 7.68 years (CF 11.1, non-CF 5.0); adult 31.7 years (CF 24.3, non-CF 52.0)",
+    weight_range = "3.3-120.0 kg",
+    weight_median = "paediatric 25.5 kg (CF 31.8, non-CF 18.6); adult 58.0 kg (CF 53.9, non-CF 67.0)",
+    ffm_range = "3.0-65.1 kg",
+    ffm_median = "paediatric 19.8 kg; adult 43.5 kg",
     sex_female_pct = "paediatric 53 % (207/391 known); adult 48 % (99/208)",
-    disease_state  = "Mixed: 465 patients with cystic fibrosis (351 children, 114 adults) and 267 without cystic fibrosis (173 children including febrile-neutropenia oncology patients, 94 adults from a heterogeneous adult cohort)",
-    dose_range     = "Paediatric median 10.0 mg/kg/day (range 1.7-28.8); adult median 5.2 mg/kg/day (range 0.9-12.0). Mixed once-daily, twice-daily and three-times-daily regimens (Table 1).",
+    disease_state = "Mixed: 465 patients with cystic fibrosis (351 children, 114 adults) and 267 without cystic fibrosis (173 children including febrile-neutropenia oncology patients, 94 adults from a heterogeneous adult cohort)",
+    dose_range = "Paediatric median 10.0 mg/kg/day (range 1.7-28.8); adult median 5.2 mg/kg/day (range 0.9-12.0). Mixed once-daily, twice-daily and three-times-daily regimens (Table 1).",
     administration = "Intravenous bolus injection (97 patients) or short intravenous infusion (635 patients); paediatric infusions via burette include a fixed lag time representing transit through the administration device (paper Methods 2.3.2).",
-    regions        = "Australia, USA, UK",
-    notes          = "Demographics from Hennig 2013 Table 1. SCR_CR median (mL/min) varies by sub-cohort (paediatric 84.1, adult 71.5); SCR median (umol/L) paediatric 44.7, adult 68.3 (Table 1)."
+    regions = "Australia, USA, UK",
+    notes = "Demographics from Hennig 2013 Table 1. SCR_CR median (mL/min) varies by sub-cohort (paediatric 84.1, adult 71.5); SCR median (umol/L) paediatric 44.7, adult 68.3 (Table 1)."
   )
 
   ini({

@@ -39,21 +39,21 @@ Juma_2026_lumefantrine <- function() {
   # -> three transit-absorption compartments -> central -> peripheral) and
   # Methods 2.6 (venous plasma sampling).
   compartmentData <- list(
-    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at enrolment. Juma 2026 Methods 2.11:",
         "'Body weight was added as an allometric function on all clearance",
         "and volume parameters a priori, considering the strong biological",
@@ -72,14 +72,14 @@ Juma_2026_lumefantrine <- function() {
         "dose-saturable bioavailability term through DOSE / WT.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester), 0 = non-pregnant.",
         "Time-fixed per subject. Juma 2026 enrolled 50 pregnant women (30",
         "second trimester, 20 third trimester; gestational age median 26",
@@ -96,14 +96,14 @@ Juma_2026_lumefantrine <- function() {
         "(Results 3.1.2). Reference category 0 = non-pregnant.",
         sep = " "
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     DOSE = list(
-      description        = "Per-dose lumefantrine amount administered (mg)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-dose lumefantrine amount administered (mg)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose lumefantrine amount in milligrams, supplied as a",
         "per-dose-record covariate aligned with the corresponding event-table",
         "dosing row (use case (b) of the canonical DOSE entry, applied per",
@@ -123,14 +123,14 @@ Juma_2026_lumefantrine <- function() {
         "Chotsiri_2019_lumefantrine.R.",
         sep = " "
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     OCC = list(
-      description        = "Dose-occasion index for the inter-occasion random effects",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dose-occasion index for the inter-occasion random effects",
+      units = "(count)",
+      type = "categorical",
       reference_category = 1,
-      notes              = paste(
+      notes = paste(
         "1 or 2. Juma 2026 Methods 2.10: 'Few PK samples were available from",
         "second to fifth dose, and dose occasions were therefore pooled",
         "together and evaluated as two separate dose occasions (i.e. first to",
@@ -146,7 +146,7 @@ Juma_2026_lumefantrine <- function() {
         "convenient way to simulate an IOV-free typical profile.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -156,9 +156,9 @@ Juma_2026_lumefantrine <- function() {
   covariatesDataExcluded <- list(
     GA = list(
       description = "Gestational age",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Median 26 weeks (range 13-40) in the 50 pregnant participants",
         "(Table 1), determined from the date of the last monthly period",
         "(Methods 2.4). Evaluated as a continuous covariate on all PK",
@@ -174,9 +174,9 @@ Juma_2026_lumefantrine <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Median 20.2 years (18.0-35.3) in pregnant and 25.2 years",
         "(18.1-35.6) in non-pregnant participants (Table 1). Screened on all",
         "PK parameters by forward selection / backward elimination and not",
@@ -188,9 +188,9 @@ Juma_2026_lumefantrine <- function() {
     ),
     BODYTEMP = list(
       description = "Baseline body temperature",
-      units       = "degC",
-      type        = "continuous",
-      notes       = paste(
+      units = "degC",
+      type = "continuous",
+      notes = paste(
         "Median 36.8 degC (35.6-39.4) in pregnant and 37.6 degC (36.3-39.4)",
         "in non-pregnant participants (Table 1). Evaluated on all PK",
         "parameters in the stepwise covariate screen (Methods 2.11) and not",
@@ -200,9 +200,9 @@ Juma_2026_lumefantrine <- function() {
     ),
     PARA = list(
       description = "Plasmodium falciparum parasitaemia at enrolment",
-      units       = "parasites/uL",
-      type        = "continuous",
-      notes       = paste(
+      units = "parasites/uL",
+      type = "continuous",
+      notes = paste(
         "Median 10 960/uL (1000-199 360) in pregnant and 24 320/uL",
         "(2560-152 960) in non-pregnant participants (Table 1). Screened and",
         "not retained. The Discussion notes this is inconsistent with the",
@@ -217,17 +217,17 @@ Juma_2026_lumefantrine <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 75L,
-    n_studies       = 1L,
-    n_pregnant      = 50L,
-    age_range       = "18.0-35.3 years (pregnant) and 18.1-35.6 years (non-pregnant) (Table 1)",
-    age_median      = "20.2 years (pregnant) and 25.2 years (non-pregnant) (Table 1)",
-    weight_range    = "40.0-86.6 kg (pregnant) and 45.0-89.0 kg (non-pregnant) (Table 1)",
-    weight_median   = "62.0 kg (pregnant) and 59.5 kg (non-pregnant) (Table 1); model centred at 70 kg",
-    sex_female_pct  = 100,
-    ga_range        = "13-40 weeks, median 26 weeks (Table 1); 30 women in the second and 20 in the third trimester",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 75L,
+    n_studies = 1L,
+    n_pregnant = 50L,
+    age_range = "18.0-35.3 years (pregnant) and 18.1-35.6 years (non-pregnant) (Table 1)",
+    age_median = "20.2 years (pregnant) and 25.2 years (non-pregnant) (Table 1)",
+    weight_range = "40.0-86.6 kg (pregnant) and 45.0-89.0 kg (non-pregnant) (Table 1)",
+    weight_median = "62.0 kg (pregnant) and 59.5 kg (non-pregnant) (Table 1); model centred at 70 kg",
+    sex_female_pct = 100,
+    ga_range = "13-40 weeks, median 26 weeks (Table 1); 30 women in the second and 20 in the third trimester",
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria. Eligibility required",
       "fever >= 37.5 degC or a history of fever in the preceding 24 h or",
       "other malaria symptoms, P. falciparum mono-infection with a parasite",
@@ -238,7 +238,7 @@ Juma_2026_lumefantrine <- function() {
       "re-infections.",
       sep = " "
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Directly observed oral artemether/lumefantrine 20/120 mg (Coartem,",
       "Novartis AG), four tablets per dose (480 mg lumefantrine) at hours 0,",
       "8, 24, 36, 48 and 60, for a total of 2880 mg lumefantrine. Doses were",
@@ -246,8 +246,8 @@ Juma_2026_lumefantrine <- function() {
       "(Methods 2.3).",
       sep = " "
     ),
-    regions         = "Kenya (Ahero County Hospital, Kisumu County, western Kenya; area of high perennial malaria transmission)",
-    notes           = paste(
+    regions = "Kenya (Ahero County Hospital, Kisumu County, western Kenya; area of high perennial malaria transmission)",
+    notes = paste(
       "Enrolled August 2013 to April 2014; Pan African Clinical Trial",
       "Registry PACTR201211000451437. A total of 1151 venous plasma",
       "lumefantrine concentrations were available from all 75 participants",

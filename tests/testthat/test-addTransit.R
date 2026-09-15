@@ -42,7 +42,6 @@ test_that("addTransit does not add transit compartments  without 'depot'", {
 })
 
 test_that("extreme model cases", {
-
   f <- function() {
     model({
       d / dt(depot) <- -ka * depot
@@ -78,13 +77,13 @@ test_that("extreme model cases", {
   tmp <- f |> addTransit(4)
 
   expect_equal(omega, tmp$omega)
-
 })
 
 # Remove transit ----
 
 test_that("removeTransit throws error in model with no transit compartment", {
-  expect_error( # nolint: line_length_linter.
+  expect_error(
+    # nolint: line_length_linter.
     removeTransit(readModelDb("PK_2cmt_des"), "central", transit = "transit"),
     "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'"
   )
@@ -163,7 +162,7 @@ test_that("remove some but not all compartments", {
   }
 
   f <- as.function(removeTransit(modelTest, ntransit = 1))
-  expect_equal(findBlock(f, "ini"),   findBlock(expected, "ini"))
+  expect_equal(findBlock(f, "ini"), findBlock(expected, "ini"))
   expect_equal(findBlock(f, "model"), findBlock(expected, "model"))
   expect_warning(
     removeTransit(modelTest, ntransit = 4),
@@ -310,8 +309,7 @@ test_that("addTransit preserves endpoint placement when d/dt(central) is the las
   res <- addTransit(m, 2)
   expect_s3_class(res, "rxUi")
   expect_true("lktr" %in% res$iniDf$name)
-  lines <- vapply(res$lstExpr, function(e) paste(deparse(e), collapse = " "),
-                  character(1))
+  lines <- vapply(res$lstExpr, function(e) paste(deparse(e), collapse = " "), character(1))
   normalized <- gsub("\\s+", " ", trimws(lines))
   # Original endpoint must stay at its original position (first line).
   expect_true(grepl("^central ~ prop", normalized[[1]]))
@@ -345,15 +343,12 @@ test_that("addTransit preserves source order when an assignment line sits above 
   }
   res <- addTransit(m, 2)
   expect_s3_class(res, "rxUi")
-  lines <- vapply(res$lstExpr, function(e) paste(deparse(e), collapse = " "),
-                  character(1))
+  lines <- vapply(res$lstExpr, function(e) paste(deparse(e), collapse = " "), character(1))
   normalized <- gsub("\\s+", " ", trimws(lines))
   # Every pre-existing line (except d/dt(depot) whose RHS was rewritten and
   # d/dt(central) which the first splice modifies) stays in its original
   # relative order.
-  kept <- c("kel <- exp(lcl)/exp(lvc)",
-            "Cc <- central/exp(lvc)",
-            "Cc ~ prop(propSd)")
+  kept <- c("kel <- exp(lcl)/exp(lvc)", "Cc <- central/exp(lvc)", "Cc ~ prop(propSd)")
   pos <- vapply(kept, function(k) match(TRUE, normalized == k), integer(1))
   expect_false(any(is.na(pos)))
   expect_true(all(diff(pos) > 0))

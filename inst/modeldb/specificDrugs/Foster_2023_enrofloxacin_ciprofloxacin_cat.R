@@ -45,20 +45,26 @@ Foster_2023_enrofloxacin_ciprofloxacin_cat <- function() {
   # as states because no urine data were collected.
   compartmentData <- list(
     central = list(
-      analyte = "enrofloxacin", units = "ug", specimen = "plasma", verified = TRUE
+      analyte = "enrofloxacin",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_cipro = list(
-      analyte = "ciprofloxacin", units = "ug", specimen = "plasma", verified = TRUE
+      analyte = "ciprofloxacin",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight. Retained on the enrofloxacin volume of",
         "distribution only (Table 3 dVd Enrofloxacin-Weight; Figure 5 row 'nVparent,",
         "Weight' shows the positive trend). Foster 2023 states the centring value",
@@ -70,14 +76,14 @@ Foster_2023_enrofloxacin_ciprofloxacin_cat <- function() {
         "Cohort median 3.8 kg, range 1.8-8.8 kg.",
         sep = " "
       ),
-      source_name        = "weight (Foster 2023 Table 3 covariate name dVd Enrofloxacin-Weight)"
+      source_name = "weight (Foster 2023 Table 3 covariate name dVd Enrofloxacin-Weight)"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Blood urea nitrogen concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline BUN. Retained on the metabolic formation clearance of",
         "ciprofloxacin from enrofloxacin (Table 3 'dCl Enrofloxacin metabolism to",
         "ciprofloxacin BUN'; Figure 5 row 'nCl_EnroCipro, BUN' shows the positive",
@@ -91,7 +97,7 @@ Foster_2023_enrofloxacin_ciprofloxacin_cat <- function() {
         "parameter.",
         sep = " "
       ),
-      source_name        = "BUN (Foster 2023 Table 3)"
+      source_name = "BUN (Foster 2023 Table 3)"
     )
   )
 
@@ -102,28 +108,34 @@ Foster_2023_enrofloxacin_ciprofloxacin_cat <- function() {
   # list because they ARE retained (see covariateData above).
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened against all five etas (Figure 5 column 1); not retained. Cohort mean 11.4 +/- 4.3 years."
     ),
     CREAT = list(
-      description = "Serum creatinine concentration", units = "mg/dL", type = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Screened against all five etas (Figure 5 column 3); not retained. Cohort mean 7.5 +/- 6.0 mg/dL. The Discussion leans on this non-significance to argue the BUN effect on metabolism is not GFR-mediated."
     ),
     SDMA = list(
-      description = "Symmetric dimethylarginine concentration", units = "ug/dL", type = "continuous",
+      description = "Symmetric dimethylarginine concentration",
+      units = "ug/dL",
+      type = "continuous",
       notes = "Screened against all five etas (Figure 5 column 4); not retained. Cohort mean 39.8 +/- 27.0 ug/dL. SDMA has no canonical entry in inst/references/covariate-columns.md; none is proposed here because the covariate is documentation only and carries no published point estimate."
     )
   )
 
   population <- list(
-    species        = "cat (domestic, client-owned)",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "mean 11.4 +/- 4.3 years",
-    weight_range   = "1.8-8.8 kg (median 3.8 kg)",
-    weight_median  = "3.8 kg",
+    species = "cat (domestic, client-owned)",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "mean 11.4 +/- 4.3 years",
+    weight_range = "1.8-8.8 kg (median 3.8 kg)",
+    weight_median = "3.8 kg",
     sex_female_pct = 52.9,
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalised for clinical illness with suspected bacterial infection and",
       "variable kidney function: 9 cats with normal kidney function (median serum",
       "creatinine 1.6 mg/dL), 15 with moderate kidney dysfunction (median 5.6) and",
@@ -131,10 +143,10 @@ Foster_2023_enrofloxacin_ciprofloxacin_cat <- function() {
       sep = " "
     ),
     renal_function = "Serum creatinine mean 7.5 +/- 6.0 mg/dL; BUN mean 137.6 +/- 103.0 mg/dL; SDMA mean 39.8 +/- 27.0 ug/dL",
-    dose_range     = "Single 5 mg/kg enrofloxacin (Baytril 2.27%, Elanco) diluted 1:1 with sterile saline and infused intravenously over 30 minutes; mean total dose 20.5 +/- 7.4 mg",
-    sampling       = "Sparse: 3 plasma samples per cat in the 24 h after dosing (98 samples from 34 cats); enrofloxacin and ciprofloxacin quantified separately by validated HPLC, which is what makes this parent + metabolite fit possible.",
-    regions        = "United States (single referral hospital, enrolment 2019-01-01 to 2021-09-01)",
-    notes          = paste(
+    dose_range = "Single 5 mg/kg enrofloxacin (Baytril 2.27%, Elanco) diluted 1:1 with sterile saline and infused intravenously over 30 minutes; mean total dose 20.5 +/- 7.4 mg",
+    sampling = "Sparse: 3 plasma samples per cat in the 24 h after dosing (98 samples from 34 cats); enrofloxacin and ciprofloxacin quantified separately by validated HPLC, which is what makes this parent + metabolite fit possible.",
+    regions = "United States (single referral hospital, enrolment 2019-01-01 to 2021-09-01)",
+    notes = paste(
       "Foster 2023 Results 3.4. Table 2 is the base model of this structure and",
       "Table 3 the final covariate model; the two differ only in the two added",
       "covariates and in rounding. This model was fitted to the separately measured",

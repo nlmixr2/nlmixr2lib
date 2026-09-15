@@ -27,26 +27,26 @@ Chandorkar_2015_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Chandorkar_2015_ceftolozane_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Doses are in mg and the paper reports plasma
   # concentrations in ug/mL, numerically identical to mg/L.
   compartmentData <- list(
-    central     = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Baseline creatinine clearance estimated by the Cockcroft-Gault",
         "formula; raw mL/min, NOT body-surface-area normalized"
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chandorkar 2015 Table 3B: 'CL (L/h), 18.0 (3.39)*(CrCL/115)^0.67",
         "(11.1)'. Reference value 115 mL/min; power exponent 0.67 (RSE",
         "11.1%). The Results restate it -- 'the effect of baseline CrCL on CL",
@@ -67,14 +67,14 @@ Chandorkar_2015_tazobactam <- function() {
         "renal-impairment categories quoted in the paper are descriptive",
         "strata only -- the model uses the continuous column."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     DIS_CIAI = list(
-      description        = "Complicated intra-abdominal infection cohort indicator (1 = cIAI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated intra-abdominal infection cohort indicator (1 = cIAI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer or renal-impairment subject with no infection)",
-      notes              = paste(
+      notes = paste(
         "Chandorkar 2015 Table 3B row 'Vc (L), With cIAI, x1.47 (21.9)'.",
         "Printed as an exp(beta) factor under the paper's stated",
         "parameterisation for categorical covariates, so the ini()",
@@ -94,7 +94,7 @@ Chandorkar_2015_tazobactam <- function() {
         "77 of the 243 tazobactam subjects had cIAI (Table 2), receiving",
         "ceftolozane/tazobactam 1000/500 mg q8h."
       ),
-      source_name        = "cIAI"
+      source_name = "cIAI"
     )
   )
 
@@ -104,9 +104,9 @@ Chandorkar_2015_tazobactam <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Actual total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "SCREENED, REACHED THE STEPWISE PROCEDURE, BUT NOT RETAINED IN THE",
         "FINAL MODEL. The Results report the forward-addition trace 'The",
         "dMOF2 was -103.02 (P = .001) when the effect of cIAI infection was",
@@ -133,9 +133,9 @@ Chandorkar_2015_tazobactam <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as an intrinsic covariate (Methods) and rejected. Results:",
         "'No trends were noted between other covariates tested and tazobactam",
         "PK.' Cohort range 18-86 years."
@@ -143,9 +143,9 @@ Chandorkar_2015_tazobactam <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and rejected. Sex nonetheless enters the model INDIRECTLY",
         "through the Cockcroft-Gault CRCL column, which multiplies by 0.85",
         "for female subjects."
@@ -153,9 +153,9 @@ Chandorkar_2015_tazobactam <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and rejected. The tazobactam cohort was 81.9% white without",
         "infection and 98.7% with cIAI (Table 2), so the analysis had little",
         "power to resolve a race effect."
@@ -163,9 +163,9 @@ Chandorkar_2015_tazobactam <- function() {
     ),
     DOSE_TAZOBACTAM_MG = list(
       description = "Administered tazobactam dose",
-      units       = "mg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg",
+      type = "continuous",
+      notes = paste(
         "Screened as an extrinsic covariate to test for dose-dependent",
         "(nonlinear) PK and rejected, supporting the linear structural model.",
         "Doses spanned 250-1500 mg tazobactam (Table 1). Discussion: 'the PK",
@@ -174,9 +174,9 @@ Chandorkar_2015_tazobactam <- function() {
     ),
     CONMED_CEFTOLOZANE = list(
       description = "Co-administration of ceftolozane indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as the drug-drug-interaction covariate and rejected.",
         "Discussion: 'no drug-drug interaction was observed between",
         "ceftolozane and tazobactam'. This is the finding that licenses",
@@ -189,24 +189,24 @@ Chandorkar_2015_tazobactam <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 243L,
-    n_studies        = 10L,
+    species = "human",
+    n_subjects = 243L,
+    n_studies = 10L,
     n_concentrations = 4249L,
-    age_range        = "18-86 years",
-    age_median       = "means 43.7 years (no infection) and 47.0 years (cIAI); medians not reported",
-    weight_range     = "50-145 kg",
-    weight_median    = "means 74.1 kg (no infection) and 78.0 kg (cIAI); medians not reported",
-    sex_female_pct   = 42.8,
-    race_ethnicity   = c(White = 87.2, Other = 12.8),
-    disease_state    = paste(
+    age_range = "18-86 years",
+    age_median = "means 43.7 years (no infection) and 47.0 years (cIAI); medians not reported",
+    weight_range = "50-145 kg",
+    weight_median = "means 74.1 kg (no infection) and 78.0 kg (cIAI); medians not reported",
+    sex_female_pct = 42.8,
+    race_ethnicity = c(White = 87.2, Other = 12.8),
+    disease_state = paste(
       "Pooled healthy adults, adults with mild to severe renal impairment,",
       "and hospitalized patients with complicated intra-abdominal infection.",
       "Table 2: 166 of 243 subjects had no infection and 77 had cIAI. NO cUTI",
       "PATIENTS contributed tazobactam data, because the Phase 2 cUTI study",
       "dosed ceftolozane alone."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "All doses given as 1-hour intravenous infusions of the fixed 2:1",
       "ceftolozane:tazobactam combination. Healthy volunteers received single",
       "or multiple (q8h or q12h) doses of ceftolozane/tazobactam 500/250,",
@@ -215,7 +215,7 @@ Chandorkar_2015_tazobactam <- function() {
       "(severe) dose. cIAI patients received 1000/500 mg q8h (Table 1). The",
       "tazobactam component is therefore 250-1500 mg."
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "Spans severe renal impairment to augmented clearance. Estimated CrCL",
       "means 100.4 mL/min (range 19-238) without infection and 105 mL/min",
       "(range 41-309) with cIAI; Figure 1B gives the observed range as",
@@ -223,15 +223,15 @@ Chandorkar_2015_tazobactam <- function() {
       "normal 137/48, mild 17/26, moderate 6/3, severe 6/0. No",
       "end-stage-renal-disease or dialysis subjects were enrolled."
     ),
-    bmi_range        = "18-51 kg/m^2 (means 26.0 without infection, 26.6 with cIAI)",
-    pkpd_target      = paste(
+    bmi_range = "18-51 kg/m^2 (means 26.0 without infection, 26.6 with cIAI)",
+    pkpd_target = paste(
       "Not fitted in this paper. Discussion: 'the PD driver for tazobactam is",
       "thought to be the percentage of time above a threshold concentration",
       "(%T>threshold)'. The paper positions this PK model as the input to a",
       "later probability-of-target-attainment analysis rather than performing",
       "one."
     ),
-    notes            = paste(
+    notes = paste(
       "sex_female_pct is the pooled tazobactam data set: (70 + 34) / 243 =",
       "42.8% (Table 2). race_ethnicity is likewise pooled white (136 + 76) /",
       "243 = 87.2%; the paper reports only the white percentage, so the",

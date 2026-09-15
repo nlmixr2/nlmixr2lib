@@ -16,7 +16,7 @@ Birgersson_2016_artemisinin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit3 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
@@ -24,26 +24,26 @@ Birgersson_2016_artemisinin <- function() {
     transit5 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit6 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit7 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
     n_observations = 786L,
-    age_range      = "19-41 years",
-    age_median     = "23 years",
-    weight_range   = "43-80 kg",
-    weight_median  = "58 kg",
-    height_range   = "158-180 cm",
-    height_median  = "167 cm",
+    age_range = "19-41 years",
+    age_median = "23 years",
+    weight_range = "43-80 kg",
+    weight_median = "58 kg",
+    height_range = "158-180 cm",
+    height_median = "167 cm",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy adult male volunteers",
-    dose_range     = paste(
+    disease_state = "healthy adult male volunteers",
+    dose_range = paste(
       "Four-way single-dose oral crossover with three-week washout:",
       "T1 = 160 mg artemisinin (micronized, 2 x 80 mg capsules);",
       "T2 = 160 mg artemisinin (reference Vietnamese low-dose formulation,",
@@ -53,8 +53,8 @@ Birgersson_2016_artemisinin <- function() {
       "T4 = 160 mg artemisinin (micronized) + 720 mg piperaquine phosphate",
       "(2 x [80 mg artemisinin + 360 mg piperaquine phosphate] tablets)."
     ),
-    regions        = "Vietnam (Hospital for Tropical Diseases, Ho Chi Minh City)",
-    notes          = paste(
+    regions = "Vietnam (Hospital for Tropical Diseases, Ho Chi Minh City)",
+    notes = paste(
       "Demographics from Birgersson 2016 Table 1.",
       "All 15 subjects completed all four treatment periods.",
       "Blood samples (n = 786) were drawn pre-dose and at 0.25, 0.5, 1, 1.5,",

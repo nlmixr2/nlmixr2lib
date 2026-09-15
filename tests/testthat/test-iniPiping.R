@@ -13,8 +13,7 @@ test_that(".iniAddTheta sets the estimate, bounds and label", {
   # before ini(), an undefined parameter is only a covariate
   expect_true("lnewp" %in% ui$allCovs)
 
-  out <- .iniAddTheta(ui, "lnewp", est = 0.25, lower = 0, upper = 10,
-                      label = "a new parameter")
+  out <- .iniAddTheta(ui, "lnewp", est = 0.25, lower = 0, upper = 10, label = "a new parameter")
   row <- out$iniDf[out$iniDf$name == "lnewp", ]
   expect_equal(nrow(row), 1L)
   expect_equal(row$est, 0.25)

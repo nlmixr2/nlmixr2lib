@@ -42,18 +42,18 @@ Han_2024_ainuovirine <- function() {
   # dosing; venous plasma ANV concentrations by the study bioanalytical
   # assay) and Table 3 (Vc/F and Vp/F reported in L).
   compartmentData <- list(
-    depot       = list(analyte = "ainuovirine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ainuovirine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ainuovirine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ainuovirine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ainuovirine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE_ANV_MG = list(
-      description        = "Administered ainuovirine dose level for the record's dosing event, in mg.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered ainuovirine dose level for the record's dosing event, in mg.",
+      units = "mg",
+      type = "continuous",
       reference_category = "75 mg (the dose level at which relative bioavailability is anchored to 1)",
-      notes              = paste(
+      notes = paste(
         "Used ONLY to select which of the three studied dose levels the",
         "record belongs to; it is not a continuous regressor. Han 2024",
         "estimates relative bioavailability as a piecewise (categorical)",
@@ -79,14 +79,14 @@ Han_2024_ainuovirine <- function() {
         "first-dose-vs-steady-state contrast). The two are orthogonal and",
         "both apply to the phase 1 records."
       ),
-      source_name        = "Dose group (75 mg / 150 mg / 300 mg)"
+      source_name = "Dose group (75 mg / 150 mg / 300 mg)"
     ),
     MULTI_DOSE_PT = list(
-      description        = "Multiple-dose (steady-state) record indicator: 1 = the record was collected after repeated once-daily ainuovirine dosing had reached steady state; 0 = the record was collected after the first dose.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiple-dose (steady-state) record indicator: 1 = the record was collected after repeated once-daily ainuovirine dosing had reached steady state; 0 = the record was collected after the first dose.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (first-dose records)",
-      notes              = paste(
+      notes = paste(
         "Per-record indicator switching apparent clearance via the",
         "multiplicative form cl * (1 + 1.47 * MULTI_DOSE_PT), i.e. CL/F at",
         "steady state is 2.47-fold the first-dose value. Han 2024 Table 3",
@@ -111,16 +111,16 @@ Han_2024_ainuovirine <- function() {
         "Record-level, not subject-level: a phase 1 subject contributes",
         "both levels."
       ),
-      source_name        = "Drugno (dose number; first dose vs steady state)"
+      source_name = "Drugno (dose number; first dose vs steady state)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "The ONLY screened covariate that produced a significant OFV drop,",
         "and it was still rejected. Han 2024 Results: 'The inclusion of age",
         "as a covariate resulted in a significant decrease in the OFV of",
@@ -135,87 +135,87 @@ Han_2024_ainuovirine <- function() {
     ),
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and rejected (Han 2024 Results: 'sex, weight, BMI, ALT, AST, TB, ALB, CRE, CrCL, CHOL, and COMB were not influential covariates'). Cohort mean 66.86 kg (SD 11.17) (Table 2). Note that no allometric scaling is applied in the final model -- CL/F and the volumes are population typical values, not weight-normalised."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and rejected (Han 2024 Results: 'sex, weight, BMI, ALT, AST, TB, ALB, CRE, CrCL, CHOL, and COMB were not influential covariates'). Cohort mean 66.86 kg (SD 11.17) (Table 2). Note that no allometric scaling is applied in the final model -- CL/F and the volumes are population typical values, not weight-normalised."
     ),
     SEXF = list(
       description = "Female sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and rejected. The Discussion flags the limitation directly: only 18 of 337 subjects (5.34%) were female, so the analysis had little power to detect a sex effect (Table 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and rejected. The Discussion flags the limitation directly: only 18 of 337 subjects (5.34%) were female, so the analysis had little power to detect a sex effect (Table 2)."
     ),
     BMI = list(
       description = "Body mass index at baseline.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 22.56 kg/m^2 (SD 3.19) (Table 2)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 22.56 kg/m^2 (SD 3.19) (Table 2)."
     ),
     ALT = list(
       description = "Alanine aminotransferase at baseline.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 26.50 IU/L (SD 16.59) (Table 2). The Discussion cautions that few participants with hepatic impairment were enrolled, so the null result does not license extrapolation to hepatic impairment."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 26.50 IU/L (SD 16.59) (Table 2). The Discussion cautions that few participants with hepatic impairment were enrolled, so the null result does not license extrapolation to hepatic impairment."
     ),
     AST = list(
       description = "Aspartate aminotransferase at baseline.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 23.61 IU/L (SD 8.46) (Table 2)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 23.61 IU/L (SD 8.46) (Table 2)."
     ),
     TBIL = list(
       description = "Total bilirubin at baseline.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 12.34 umol/L (SD 4.99) (Table 2). Source abbreviation TB."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 12.34 umol/L (SD 4.99) (Table 2). Source abbreviation TB."
     ),
     ALB = list(
       description = "Serum albumin at baseline.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 47.08 g/L (SD 2.96) (Table 2)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 47.08 g/L (SD 2.96) (Table 2)."
     ),
     CREAT = list(
       description = "Serum creatinine at baseline.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 68.11 umol/L (SD 10.49) (Table 2). Source abbreviation CRE."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 68.11 umol/L (SD 10.49) (Table 2). Source abbreviation CRE."
     ),
     CRCL = list(
       description = "Creatinine clearance at baseline.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 78.12 mL/min (SD 21.86) (Table 2). As with ALT/AST, the Discussion notes that few participants with renal impairment were enrolled, so this null result does not license extrapolation to renal impairment -- especially given that the Discussion elsewhere offers reduced renal plasma clearance as a partial explanation for the steady-state CL/F increase."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 78.12 mL/min (SD 21.86) (Table 2). As with ALT/AST, the Discussion notes that few participants with renal impairment were enrolled, so this null result does not license extrapolation to renal impairment -- especially given that the Discussion elsewhere offers reduced renal plasma clearance as a partial explanation for the steady-state CL/F increase."
     ),
     TCHOL = list(
       description = "Total cholesterol at baseline.",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened and rejected. Cohort mean 4.20 mmol/L (SD 0.74) (Table 2). Source abbreviation CHOL."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened and rejected. Cohort mean 4.20 mmol/L (SD 0.74) (Table 2). Source abbreviation CHOL."
     ),
     CONMED_ANY = list(
       description = "Any concomitant medication indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and rejected. Han 2024 lists 'combination medication (COMB)' among the tested covariates but does not report which drugs it covered, how many subjects carried it, or its coding, so it cannot be reconstructed as a usable model term."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and rejected. Han 2024 lists 'combination medication (COMB)' among the tested covariates but does not report which drugs it covered, how many subjects carried it, or its coding, so it cannot be reconstructed as a usable model term."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 337L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 337L,
+    n_studies = 2L,
     n_observations = "1947 plasma ainuovirine concentrations. 341 participants took ANV orally; 4 whose plasma concentrations were all below the lower limit of quantification were treated as missing, leaving 337 in the PopPK dataset (28 from ADYY-ACC007-103, 309 from ADYY-ACC007-301)",
-    age_range      = "18-61 years (range quoted in the Discussion); mean 31.18 years (SD 9.84) overall, by group 29.63 (6.37) at 75 mg, 34.70 (8.43) at phase 1 150 mg, 33.40 (9.90) at 300 mg, 31.03 (9.95) in phase 3 (Han 2024 Table 2)",
-    weight_range   = "mean 66.86 kg (SD 11.17) overall; by group 62.13 (9.61), 64.96 (6.97), 66.20 (7.42) and 67.06 (11.42) kg (Han 2024 Table 2). Range not reported",
+    age_range = "18-61 years (range quoted in the Discussion); mean 31.18 years (SD 9.84) overall, by group 29.63 (6.37) at 75 mg, 34.70 (8.43) at phase 1 150 mg, 33.40 (9.90) at 300 mg, 31.03 (9.95) in phase 3 (Han 2024 Table 2)",
+    weight_range = "mean 66.86 kg (SD 11.17) overall; by group 62.13 (9.61), 64.96 (6.97), 66.20 (7.42) and 67.06 (11.42) kg (Han 2024 Table 2). Range not reported",
     sex_female_pct = 5.34,
     race_ethnicity = "Not reported. Both trials were conducted at a single Chinese centre (Beijing Youan Hospital, Capital Medical University), so the cohort is effectively Chinese Han-majority, but Han 2024 tabulates no race or ethnicity data",
-    disease_state  = "Antiretroviral-therapy-naive people living with HIV-1 (PLWH). Baseline HIV-RNA and CD4 counts are not tabulated in Han 2024; the phase 3 efficacy endpoint was HIV-RNA < 50 copies/mL at week 48",
-    dose_range     = "Phase 1 (ADYY-ACC007-103): 75 mg (n = 8), 150 mg (n = 10) or 300 mg (n = 10) orally once daily for 10 days. Phase 3 (ADYY-ACC007-301): 150 mg once daily at bedtime on an empty stomach for 48 weeks (n = 309), as part of an ANV-based regimen compared against an efavirenz-based regimen",
-    regions        = "Single centre, Beijing, China",
-    baseline_labs  = "ALT 26.50 IU/L (SD 16.59); AST 23.61 (8.46) IU/L; total bilirubin 12.34 (4.99) umol/L; albumin 47.08 (2.96) g/L; creatinine 68.11 (10.49) umol/L; creatinine clearance 78.12 (21.86) mL/min; total cholesterol 4.20 (0.74) mmol/L; BMI 22.56 (3.19) kg/m^2 (Han 2024 Table 2)",
-    sampling       = "Phase 1: pre-dose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 168 and 192 h after the FIRST dose, then pre-dose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36, 72 and 120 h after the LAST (day 10) dose. Phase 3: sparse sampling at weeks 12, 24, 36 and 48 (Han 2024 Table 1)",
-    notes          = paste0(
+    disease_state = "Antiretroviral-therapy-naive people living with HIV-1 (PLWH). Baseline HIV-RNA and CD4 counts are not tabulated in Han 2024; the phase 3 efficacy endpoint was HIV-RNA < 50 copies/mL at week 48",
+    dose_range = "Phase 1 (ADYY-ACC007-103): 75 mg (n = 8), 150 mg (n = 10) or 300 mg (n = 10) orally once daily for 10 days. Phase 3 (ADYY-ACC007-301): 150 mg once daily at bedtime on an empty stomach for 48 weeks (n = 309), as part of an ANV-based regimen compared against an efavirenz-based regimen",
+    regions = "Single centre, Beijing, China",
+    baseline_labs = "ALT 26.50 IU/L (SD 16.59); AST 23.61 (8.46) IU/L; total bilirubin 12.34 (4.99) umol/L; albumin 47.08 (2.96) g/L; creatinine 68.11 (10.49) umol/L; creatinine clearance 78.12 (21.86) mL/min; total cholesterol 4.20 (0.74) mmol/L; BMI 22.56 (3.19) kg/m^2 (Han 2024 Table 2)",
+    sampling = "Phase 1: pre-dose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 168 and 192 h after the FIRST dose, then pre-dose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36, 72 and 120 h after the LAST (day 10) dose. Phase 3: sparse sampling at weeks 12, 24, 36 and 48 (Han 2024 Table 1)",
+    notes = paste0(
       "The Discussion names two limitations that bound reuse: (1) the ",
       "narrow age range and the very low proportion of female ",
       "participants limited the power of the covariate screen, so the ",

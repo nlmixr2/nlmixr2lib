@@ -5,8 +5,8 @@ Zhou_2025_brentuximab <- function() {
   paper_specific_compartments <- c("lag")
 
   units <- list(
-    time          = "h",
-    dosing        = "umol",
+    time = "h",
+    dosing = "umol",
     concentration = "umol/L"
   )
 
@@ -15,92 +15,112 @@ Zhou_2025_brentuximab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral2      = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
-    target           = list(analyte = "monomethyl auristatin E (MMAE)", units = "umol", specimen = "not applicable", verified = FALSE),
-    lag              = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "administration site", verified = FALSE),
-    central_mmae     = list(analyte = "monomethyl auristatin E (MMAE)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_mmae = list(analyte = "monomethyl auristatin E (MMAE)", units = "umol", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
+    target = list(
+      analyte = "monomethyl auristatin E (MMAE)",
+      units = "umol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    lag = list(
+      analyte = "brentuximab vedotin (ADC)",
+      units = "umol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central_mmae = list(
+      analyte = "monomethyl auristatin E (MMAE)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_mmae = list(
+      analyte = "monomethyl auristatin E (MMAE)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Baseline body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Baseline body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effects on ADC CL (exponent 1.38), ADC V3 = vp2 (exponent 1.96), MMAE CL (exponent 0.772), and MMAE central volume VM (exponent 0.546). Reference 1.8 m^2 (NONMEM normalization NBSA = BSA / 1.8 from Zhou 2025 supplement control stream). Pediatric study median BSA 1.52 m^2; range 0.79-2.03 m^2.",
-      source_name        = "BSA"
+      notes = "Time-fixed baseline. Power effects on ADC CL (exponent 1.38), ADC V3 = vp2 (exponent 1.96), MMAE CL (exponent 0.772), and MMAE central volume VM (exponent 0.546). Reference 1.8 m^2 (NONMEM normalization NBSA = BSA / 1.8 from Zhou 2025 supplement control stream). Pediatric study median BSA 1.52 m^2; range 0.79-2.03 m^2.",
+      source_name = "BSA"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effects on ADC CL (exponent -0.776), MMAE CL (exponent -0.0805), and MMAE Kd binding rate (exponent -4.11). Reference 40 g/L (NONMEM normalization NALB = ALB / 40 from Zhou 2025 supplement control stream).",
-      source_name        = "ALB"
+      notes = "Time-fixed baseline. Power effects on ADC CL (exponent -0.776), MMAE CL (exponent -0.0805), and MMAE Kd binding rate (exponent -4.11). Reference 40 g/L (NONMEM normalization NALB = ALB / 40 from Zhou 2025 supplement control stream).",
+      source_name = "ALB"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on MMAE CL only (exponent -0.0952). Reference 45.689 umol/L (NONMEM normalization NCREAT = CREAT / 45.689 from Zhou 2025 supplement control stream). Bilirubin column in Zhou 2025 Table 1 reports umol/L; the supplement control stream uses the same 'umol/L' convention for CREAT.",
-      source_name        = "CREAT"
+      notes = "Time-fixed baseline. Power effect on MMAE CL only (exponent -0.0952). Reference 45.689 umol/L (NONMEM normalization NCREAT = CREAT / 45.689 from Zhou 2025 supplement control stream). Bilirubin column in Zhou 2025 Table 1 reports umol/L; the supplement control stream uses the same 'umol/L' convention for CREAT.",
+      source_name = "CREAT"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor linear diameter (sum of linear diameters of target lesions)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor linear diameter (sum of linear diameters of target lesions)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on ADC CL only (exponent 0.12). Reference 41 mm (NONMEM normalization NLDIAM = LDIAM / 41 from Zhou 2025 supplement control stream). Distinct from the 'sum of tumor area, mm^2' column in Zhou 2025 Table 1 (median 1581-1639 mm^2 for the sum-of-areas convention).",
-      source_name        = "LDIAM"
+      notes = "Time-fixed baseline. Power effect on ADC CL only (exponent 0.12). Reference 41 mm (NONMEM normalization NLDIAM = LDIAM / 41 from Zhou 2025 supplement control stream). Distinct from the 'sum of tumor area, mm^2' column in Zhou 2025 Table 1 (median 1581-1639 mm^2 for the sum-of-areas convention).",
+      source_name = "LDIAM"
     ),
     TUMTP_HODGKIN_CLASSICAL = list(
-      description        = "Classical Hodgkin lymphoma tumor-type indicator (1 = HL, 0 = non-HL)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Classical Hodgkin lymphoma tumor-type indicator (1 = HL, 0 = non-HL)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 1,
-      notes              = "Time-fixed. Used via the derived NONHL = 1 - TUMTP_HODGKIN_CLASSICAL indicator in the model: multiplicative effect 0.509 on ADC Q2 for non-HL patients (~50% reduction relative to HL); multiplicative effect 0.296 on MMAE central volume VM for non-HL; multiplicative effect 0.884 on the ADC->MMAE conversion-decay rate ALFM for non-HL. Reference category here is HL (TUMTP_HODGKIN_CLASSICAL = 1) because that is the more common group in this pediatric cohort and the paper anchors typical-value parameters to HL patients. Non-HL in Zhou 2025 = systemic anaplastic large-cell lymphoma (sALCL).",
-      source_name        = "DIS"
+      notes = "Time-fixed. Used via the derived NONHL = 1 - TUMTP_HODGKIN_CLASSICAL indicator in the model: multiplicative effect 0.509 on ADC Q2 for non-HL patients (~50% reduction relative to HL); multiplicative effect 0.296 on MMAE central volume VM for non-HL; multiplicative effect 0.884 on the ADC->MMAE conversion-decay rate ALFM for non-HL. Reference category here is HL (TUMTP_HODGKIN_CLASSICAL = 1) because that is the more common group in this pediatric cohort and the paper anchors typical-value parameters to HL patients. Non-HL in Zhou 2025 = systemic anaplastic large-cell lymphoma (sALCL).",
+      source_name = "DIS"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity indicator (ever positive)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity indicator (ever positive)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed once positive (Zhou 2025 supplement: 'ATAPOS and ADA are filled as once positive then positive for the rest of the study'). Multiplicative effect 2.6 on ADC CL (~2.6-fold higher CL for ADA-positive subjects) and 0.696 on MMAE CL (~30% lower MMAE CL for ADA-positive subjects). Pediatric ADA incidence was low in these two studies, so the effect estimate is informed by a small subgroup.",
-      source_name        = "ATAPOS"
+      notes = "Time-fixed once positive (Zhou 2025 supplement: 'ATAPOS and ADA are filled as once positive then positive for the rest of the study'). Multiplicative effect 2.6 on ADC CL (~2.6-fold higher CL for ADA-positive subjects) and 0.696 on MMAE CL (~30% lower MMAE CL for ADA-positive subjects). Pediatric ADA incidence was low in these two studies, so the effect estimate is informed by a small subgroup.",
+      source_name = "ATAPOS"
     ),
     CONMED_AVD = list(
-      description        = "Brentuximab vedotin + AVD chemotherapy combination indicator (1 = A+AVD, 0 = single-agent BV)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Brentuximab vedotin + AVD chemotherapy combination indicator (1 = A+AVD, 0 = single-agent BV)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed per study (Study 1 = single-agent BV, CONMED_AVD = 0; Study 2 = BV + AVD, CONMED_AVD = 1). Multiplicative effect 2.12 on ADC CL — patients on the A+AVD regimen have ~2.1-fold higher ADC CL relative to single-agent BV. The Zhou 2025 NONMEM dataset encodes this as DOX (doxorubicin / adriamycin administration flag); doxorubicin is given on the same days as vinblastine and dacarbazine in the AVD backbone, so the DOX column is equivalent to the A+AVD regimen indicator.",
-      source_name        = "DOX"
+      notes = "Time-fixed per study (Study 1 = single-agent BV, CONMED_AVD = 0; Study 2 = BV + AVD, CONMED_AVD = 1). Multiplicative effect 2.12 on ADC CL — patients on the A+AVD regimen have ~2.1-fold higher ADC CL relative to single-agent BV. The Zhou 2025 NONMEM dataset encodes this as DOX (doxorubicin / adriamycin administration flag); doxorubicin is given on the same days as vinblastine and dacarbazine in the AVD backbone, so the DOX column is equivalent to the A+AVD regimen indicator.",
+      source_name = "DOX"
     )
   )
 
   population <- list(
-    n_subjects     = 95L,
-    n_studies      = 2L,
-    age_range      = "5-18 years (study 1: 7-18; study 2: 5 to <18)",
-    age_median     = "14 years (both studies)",
-    weight_range   = "18.8-87.0 kg",
-    weight_median  = "49 kg (study 2) / 49.9 kg (study 1)",
-    bsa_range      = "0.79-2.03 m^2",
-    bsa_median     = "1.52 m^2",
+    n_subjects = 95L,
+    n_studies = 2L,
+    age_range = "5-18 years (study 1: 7-18; study 2: 5 to <18)",
+    age_median = "14 years (both studies)",
+    weight_range = "18.8-87.0 kg",
+    weight_median = "49 kg (study 2) / 49.9 kg (study 1)",
+    bsa_range = "0.79-2.03 m^2",
+    bsa_median = "1.52 m^2",
     sex_female_pct = 41.1,
     race_ethnicity = c(White = 68.4, Black = 12.6, Asian = 5.3, Other = 13.7),
-    disease_state  = "Pediatric (study 1) relapsed/refractory systemic anaplastic large-cell lymphoma (sALCL) or Hodgkin lymphoma (HL); (study 2) advanced-stage CD30+ newly diagnosed classical HL.",
-    dose_range     = "Study 1 (C25002): single-agent BV 1.4-1.8 mg/kg IV every 3 weeks. Study 2 (C25004): BV 48 mg/m^2 IV every 2 weeks combined with doxorubicin 25 mg/m^2 + vinblastine 6 mg/m^2 + dacarbazine 375 mg/m^2.",
-    regions        = "United States (children's hospital network).",
-    study_phase    = "Two open-label phase I/II studies (NCT01492088 single-agent dose escalation; NCT02979522 BSA-based BV + AVD).",
+    disease_state = "Pediatric (study 1) relapsed/refractory systemic anaplastic large-cell lymphoma (sALCL) or Hodgkin lymphoma (HL); (study 2) advanced-stage CD30+ newly diagnosed classical HL.",
+    dose_range = "Study 1 (C25002): single-agent BV 1.4-1.8 mg/kg IV every 3 weeks. Study 2 (C25004): BV 48 mg/m^2 IV every 2 weeks combined with doxorubicin 25 mg/m^2 + vinblastine 6 mg/m^2 + dacarbazine 375 mg/m^2.",
+    regions = "United States (children's hospital network).",
+    study_phase = "Two open-label phase I/II studies (NCT01492088 single-agent dose escalation; NCT02979522 BSA-based BV + AVD).",
     n_observations = "9479 ADC + MMAE concentration records (2608 from study 1, 6871 from study 2).",
     reference_subject = "BSA 1.8 m^2, ALB 40 g/L, CREAT 45.689 umol/L, LDIAM 41 mm, TUMTP_HODGKIN_CLASSICAL 1 (HL), ADA_POS 0, CONMED_AVD 0.",
-    notes          = "Baseline characteristics from Zhou 2025 Table 1 (per-study); pooled n = 95 patients. Albumin range 23-51 g/L (median 39-40); creatinine clearance Cockcroft 85.5-301.4 mL/min (median 132.3-165.3); sum-of-tumor-area median 1581-1639 mm^2. The NONMEM reference values 1.8 m^2 (BSA) and 40 g/L (ALB) are adult/normal-range anchors rather than pediatric medians."
+    notes = "Baseline characteristics from Zhou 2025 Table 1 (per-study); pooled n = 95 patients. Albumin range 23-51 g/L (median 39-40); creatinine clearance Cockcroft 85.5-301.4 mL/min (median 132.3-165.3); sum-of-tumor-area median 1581-1639 mm^2. The NONMEM reference values 1.8 m^2 (BSA) and 40 g/L (ALB) are adult/normal-range anchors rather than pediatric medians."
   )
 
   ini({

@@ -40,23 +40,23 @@ Saleh_2023_cefadroxil_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    central              = list(analyte = "cefadroxil", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "cefadroxil", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "cefadroxil", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "cefadroxil", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "cefadroxil", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "cefadroxil", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE)
+    central = list(analyte = "cefadroxil", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "cefadroxil", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "cefadroxil", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "cefadroxil", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "cefadroxil", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "cefadroxil", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "cefadroxil", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (C57BL/6 Pept2+/+)",
+    species = "mouse (C57BL/6 Pept2+/+)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "36 mg/kg IV (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "36 mg/kg IV (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for cefadroxil came from ref [21]",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -253,4 +253,3 @@ Saleh_2023_cefadroxil_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

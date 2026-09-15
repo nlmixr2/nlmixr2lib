@@ -10,23 +10,23 @@ Shoji_2016_cefepime <- function() {
     sep = " "
   )
   vignette <- "Shoji_2016_cefepime"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Allometric scaling on CL and Q (exponent 0.75, fixed)",
         "and on Vss (exponent 1, fixed) per Shoji 2016 Methods 'Pharmacokinetic",
         "analysis' paragraph ('TVCL was scaled allometrically by the subject",
@@ -34,14 +34,14 @@ Shoji_2016_cefepime <- function() {
         "(weight^1.0) before evaluation of other covariates'). No reference",
         "weight is centred -- the scaling enters as wt^exponent absolute."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the nonlinear maturation factor on CL via",
         "[-0.09 + 1.09 * (1 - exp(-0.00958 * PMA_weeks))] (Shoji 2016",
         "Table 3). The source paper reports PMA in weeks; this model",
@@ -52,14 +52,14 @@ Shoji_2016_cefepime <- function() {
         "(where the factor turns negative); minimum observed PMA in the",
         "model-development cohort was GA 22.1 weeks (Table 1)."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power-form effect on Vss:",
         "(GA / 30)^theta_9 with theta_9 = -0.548 (Shoji 2016 Table 3 / 5).",
         "Reference 30 weeks GA is the cohort median for infants under",
@@ -69,40 +69,40 @@ Shoji_2016_cefepime <- function() {
         "must supply GA for every subject (set GA = 40 weeks for term",
         "older children to apply the formula at the term-birth reference)."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Power-form effect on CL: (CREAT / 0.6)^theta_8",
         "with theta_8 = -0.392 (Shoji 2016 Table 3 / 5). Reference 0.6 mg/dL",
         "is the cohort median (Table 1). Source paper column SCR."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 91L,
-    n_studies      = 2L,
-    age_range      = "Postnatal age 0.03-197.30 months (median 0.99, IQR 0.23-11.19); oldest patient 16 years",
-    age_median     = "0.99 months",
-    weight_range   = "0.58-75.00 kg (median 3.10, IQR 1.44-8.28)",
-    weight_median  = "3.10 kg",
+    species = "human",
+    n_subjects = 91L,
+    n_studies = 2L,
+    age_range = "Postnatal age 0.03-197.30 months (median 0.99, IQR 0.23-11.19); oldest patient 16 years",
+    age_median = "0.99 months",
+    weight_range = "0.58-75.00 kg (median 3.10, IQR 1.44-8.28)",
+    weight_median = "3.10 kg",
     sex_female_pct = 34.1,
     race_ethnicity = c(Caucasian = 40.7, `African American` = 34.1, Asian = 3.3, Hispanic = 22.0),
-    disease_state  = "Neonates, infants, and children with suspected or proven bacterial infection receiving IV cefepime; data pooled from two previously published pediatric cefepime PK studies (Shoji 2016 refs 22 and 23)",
-    dose_range     = "Varied across the pooled studies; typical dose-interval estimates assumed q12h with mean actual doses 48.8 +/- 4.7 mg/kg (all patients), 48.2 +/- 5.9 mg/kg (>= 30 days), 49.9 +/- 0.2 mg/kg (term neonates), 49.2 +/- 3.3 mg/kg (preterm neonates). 30-minute IV infusions in the source studies; intramuscular and BLQ samples excluded",
-    regions        = "United States (single-center cohorts pooled from two prior pediatric cefepime PK studies, refs 22 and 23 of Shoji 2016)",
-    ga_range       = "22.10-42.29 weeks (median 29, IQR 26.05-33) for infants under 2 months of age; 78.2% of those infants were preterm (GA < 36 weeks)",
-    pna_range      = "0-7 days (25 subjects, 27.5%); 8-29 days (19, 20.9%); 30 days-1 year (26, 28.6%); >= 1 year (21, 23.1%)",
-    creat_range    = "0.10-1.50 mg/dL (median 0.60, IQR 0.40-0.85)",
+    disease_state = "Neonates, infants, and children with suspected or proven bacterial infection receiving IV cefepime; data pooled from two previously published pediatric cefepime PK studies (Shoji 2016 refs 22 and 23)",
+    dose_range = "Varied across the pooled studies; typical dose-interval estimates assumed q12h with mean actual doses 48.8 +/- 4.7 mg/kg (all patients), 48.2 +/- 5.9 mg/kg (>= 30 days), 49.9 +/- 0.2 mg/kg (term neonates), 49.2 +/- 3.3 mg/kg (preterm neonates). 30-minute IV infusions in the source studies; intramuscular and BLQ samples excluded",
+    regions = "United States (single-center cohorts pooled from two prior pediatric cefepime PK studies, refs 22 and 23 of Shoji 2016)",
+    ga_range = "22.10-42.29 weeks (median 29, IQR 26.05-33) for infants under 2 months of age; 78.2% of those infants were preterm (GA < 36 weeks)",
+    pna_range = "0-7 days (25 subjects, 27.5%); 8-29 days (19, 20.9%); 30 days-1 year (26, 28.6%); >= 1 year (21, 23.1%)",
+    creat_range = "0.10-1.50 mg/dL (median 0.60, IQR 0.40-0.85)",
     n_observations = 664L,
-    notes          = paste(
+    notes = paste(
       "Baseline demographics per Shoji 2016 Table 1. 91 subjects with 664",
       "cefepime plasma concentrations (725 collected; 48 IM samples, 4 BQL,",
       "and 9 transcription / sampling / assay errors excluded). Final model",

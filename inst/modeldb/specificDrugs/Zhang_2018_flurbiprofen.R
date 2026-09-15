@@ -10,47 +10,47 @@ Zhang_2018_flurbiprofen <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "flurbiprofen", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "flurbiprofen", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centered on population median 68.5 kg (Zhang 2018 Table 1) inside Eq. 3 linear-multiplicative form on Ke.",
-      source_name        = "WT"
+      notes = "Time-fixed per subject. Centered on population median 68.5 kg (Zhang 2018 Table 1) inside Eq. 3 linear-multiplicative form on Ke.",
+      source_name = "WT"
     ),
     HT = list(
-      description        = "Body height at baseline",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at baseline",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centered on population median 165 cm (Zhang 2018 Table 1) inside Eq. 3 linear-multiplicative form on Ke.",
-      source_name        = "HT"
+      notes = "Time-fixed per subject. Centered on population median 165 cm (Zhang 2018 Table 1) inside Eq. 3 linear-multiplicative form on Ke.",
+      source_name = "HT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 72L,
-    n_studies      = 1L,
-    age_range      = "18-72 years",
-    age_median     = "50 years (mean 50.50, SD 13.63)",
-    weight_range   = "45-96 kg",
-    weight_median  = "68.50 kg (mean 67.47, SD 11.46)",
-    height_range   = "149-185 cm",
-    height_median  = "165 cm (mean 164.50, SD 9.08)",
-    bmi_range      = "16.94-34.08 kg/m^2",
-    bmi_median     = "24.33 kg/m^2 (mean 24.89, SD 3.49)",
+    species = "human",
+    n_subjects = 72L,
+    n_studies = 1L,
+    age_range = "18-72 years",
+    age_median = "50 years (mean 50.50, SD 13.63)",
+    weight_range = "45-96 kg",
+    weight_median = "68.50 kg (mean 67.47, SD 11.46)",
+    height_range = "149-185 cm",
+    height_median = "165 cm (mean 164.50, SD 9.08)",
+    bmi_range = "16.94-34.08 kg/m^2",
+    bmi_median = "24.33 kg/m^2 (mean 24.89, SD 3.49)",
     sex_female_pct = 62.5,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Adults undergoing surgery under subarachnoid anesthesia with postoperative pain. Approved by Peking University People's Hospital Medical Ethics Committee (ChiCTR-TRC-11001791).",
-    dose_range     = "Single IV injection of 1 mg/kg flurbiprofen axetil (5050E; Tide Pharmaceutical) -- observed dose range 45-96 mg.",
-    regions        = "China (single centre, Peking University People's Hospital, Beijing).",
+    disease_state = "Adults undergoing surgery under subarachnoid anesthesia with postoperative pain. Approved by Peking University People's Hospital Medical Ethics Committee (ChiCTR-TRC-11001791).",
+    dose_range = "Single IV injection of 1 mg/kg flurbiprofen axetil (5050E; Tide Pharmaceutical) -- observed dose range 45-96 mg.",
+    regions = "China (single centre, Peking University People's Hospital, Beijing).",
     n_observations = "144 therapeutic drug-monitoring samples (72 plasma + 72 CSF) from the same 72 patients; each subject contributed one plasma sample and one CSF sample drawn simultaneously at a single time point. Patients were randomised into nine groups of 8 patients, and each group sampled at a fixed nominal time (5, 10, 15, 20, 25, 30, 35, 40, or 45 minutes after dose). Plasma concentrations 3.48-14.56 ug/mL; CSF concentrations 0-20.80 ng/mL.",
-    notes          = "Sparse single-time-point joint plasma+CSF sampling design with stratified allocation across nine post-dose times. Sex 45 female / 27 male. CYP2C9 genotype was not collected; the authors note *1/*1 is the dominant Chinese genotype with *1/*3 and *1/*13 each <10%."
+    notes = "Sparse single-time-point joint plasma+CSF sampling design with stratified allocation across nine post-dose times. Sex 45 female / 27 male. CYP2C9 genotype was not collected; the authors note *1/*1 is the dominant Chinese genotype with *1/*3 and *1/*13 each <10%."
   )
 
   ini({

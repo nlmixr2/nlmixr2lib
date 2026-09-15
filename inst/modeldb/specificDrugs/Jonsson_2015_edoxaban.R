@@ -25,20 +25,20 @@ Jonsson_2015_edoxaban <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "edoxaban", units = "nmol", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "edoxaban", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
-    central_m4  = list(analyte = "M4", units = "nmol", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "edoxaban", units = "nmol", specimen = "urine", verified = FALSE)
+    central_m4 = list(analyte = "M4", units = "nmol", specimen = "plasma", verified = FALSE),
+    urine = list(analyte = "edoxaban", units = "nmol", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, used for fixed allometric scaling around a 70 kg reference subject",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, used for fixed allometric scaling around a 70 kg reference subject",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed body weight. Jonsson 2015 Results 'Final Population PK Model':",
         "'Introduction of allometrically scaled body weight on disposition parameters",
         "(CLNR, central and peripheral volume of distribution for edoxaban [Vc, Vp],",
@@ -53,14 +53,14 @@ Jonsson_2015_edoxaban <- function() {
         "76.5 (60.3-91.0), 78.6 (58.0-90.0) and 71.7 (56.0-95.0) kg (Jonsson 2015",
         "Results 'Data'); study eligibility required 55-110 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault formula, NOT body-surface-area normalised",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault formula, NOT body-surface-area normalised",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw (non-BSA-normalised) Cockcroft-Gault creatinine clearance in mL/min, the",
         "single kidney-function covariate of the model and the variable used to allocate",
         "subjects to renal-function groups. Jonsson 2015 Methods 'Data': 'Subjects",
@@ -83,21 +83,21 @@ Jonsson_2015_edoxaban <- function() {
         "Cockcroft-Gault usage is already registered for CRCL via the CLCR source alias",
         "(precedent: Delattre_2010_amikacin.R)."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "30.0-67.0 years across the four renal-function groups (study eligibility 18-75 years)",
-    age_median     = "group means 50.1, 56.8, 50.8 and 53.1 years for normal, mild, moderate and severe renal impairment",
-    weight_range   = "56.0-95.0 kg across the four renal-function groups (study eligibility 55-110 kg)",
-    weight_median  = "group means 74.4, 76.5, 78.6 and 71.7 kg for normal, mild, moderate and severe renal impairment",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "30.0-67.0 years across the four renal-function groups (study eligibility 18-75 years)",
+    age_median = "group means 50.1, 56.8, 50.8 and 53.1 years for normal, mild, moderate and severe renal impairment",
+    weight_range = "56.0-95.0 kg across the four renal-function groups (study eligibility 55-110 kg)",
+    weight_median = "group means 74.4, 76.5, 78.6 and 71.7 kg for normal, mild, moderate and severe renal impairment",
     sex_female_pct = 43.8,
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Open-label, parallel-group, single-dose dedicated renal impairment study in",
       "subjects with varying degrees of kidney function, allocated by Cockcroft-Gault",
       "creatinine clearance to normal kidney function (CLcr > 80 mL/min, n = 8), mild",
@@ -106,8 +106,8 @@ Jonsson_2015_edoxaban <- function() {
       "not on dialysis, n = 8). Subjects were otherwise free of medical conditions",
       "affecting study-drug PK."
     ),
-    dose_range     = "Single oral 15 mg edoxaban tablet (27372 nmol) taken after a light breakfast with 240 mL water",
-    regions        = "Not stated in the publication",
+    dose_range = "Single oral 15 mg edoxaban tablet (27372 nmol) taken after a light breakfast with 240 mL water",
+    regions = "Not stated in the publication",
     renal_function = paste(
       "Full spectrum from normal kidney function to severe renal impairment. A fifth",
       "study group of subjects with end-stage renal disease undergoing peritoneal",
@@ -116,7 +116,7 @@ Jonsson_2015_edoxaban <- function() {
       "excludes them with IGNORE=(CRCL.EQ.0). The model therefore should not be",
       "extrapolated to dialysis patients."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Jonsson 2015 Results 'Data'. Sex distribution",
       "(male/female) was 6/2, 4/4, 5/3 and 3/5 in the normal, mild, moderate and severe",
       "groups respectively, i.e. 18 male / 14 female overall (43.8% female). All",

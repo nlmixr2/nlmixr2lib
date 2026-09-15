@@ -13,30 +13,55 @@ Vasalou_2023_dendriticNanoparticle_human <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    blood_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    liver_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_np = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    blood     = list(analyte = "released-API (free API)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    liver     = list(analyte = "released-API (free API)", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen    = list(analyte = "released-API (free API)", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other     = list(analyte = "released-API (free API)", units = NA_character_, specimen = "administration site", verified = FALSE)
+    blood_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    liver_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    spleen_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    other_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    blood = list(analyte = "released-API (free API)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    liver = list(analyte = "released-API (free API)", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "released-API (free API)", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other = list(
+      analyte = "released-API (free API)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 0,
-    n_studies      = 0,
-    age_range      = "not applicable (simulation only)",
-    weight_range   = "70 kg (reference body weight, Tables 3 and 4)",
+    species = "human",
+    n_subjects = 0,
+    n_studies = 0,
+    age_range = "not applicable (simulation only)",
+    weight_range = "70 kg (reference body weight, Tables 3 and 4)",
     sex_female_pct = NA_real_,
-    disease_state  = "Not applicable. No human subjects were studied; this is a prospective clinical projection built by scaling the preclinical model.",
-    dose_range     = "Simulated 10 mg/kg of the nanoparticle; the authors' S3 File administers it as a 3-hour IV infusion. Model-derived profiles were dose-normalised for comparison against preclinical data (Fig 9).",
-    regions        = "Not applicable (in silico).",
-    notes          = "IMPORTANT: this file contains NO fitted human parameters and NO human observations exist to validate it. Physiological inputs (liver and spleen volumes, hepatic and splenic blood flows, blood volume, hepatocellularity, liver weight) come from Tables 3-5 and Davies et al [5]. The released-API clearance is the only species-specific non-physiological input and was predicted from in-vitro human hepatocyte Clint = 15.5 uL/min/1e6 cells via Eqs 1-2 (well-stirred model with a regression offset of 3), giving 0.32 L/h/kg -- roughly 5-7-fold lower than the preclinical in-vivo values. Because the paper showed released API in plasma was already underpredicted 3-5-fold in rat and dog at their nominal CL, treat simulated human released-API concentrations as a lower bound and run a CL sensitivity analysis as the paper recommends.",
-    scope_note     = "Mechanistic PBPK simulator intended for typical-value simulation and clinical translation only: no inter-individual variability and no residual-error model are reported by the source paper, and no human data were fitted. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
+    disease_state = "Not applicable. No human subjects were studied; this is a prospective clinical projection built by scaling the preclinical model.",
+    dose_range = "Simulated 10 mg/kg of the nanoparticle; the authors' S3 File administers it as a 3-hour IV infusion. Model-derived profiles were dose-normalised for comparison against preclinical data (Fig 9).",
+    regions = "Not applicable (in silico).",
+    notes = "IMPORTANT: this file contains NO fitted human parameters and NO human observations exist to validate it. Physiological inputs (liver and spleen volumes, hepatic and splenic blood flows, blood volume, hepatocellularity, liver weight) come from Tables 3-5 and Davies et al [5]. The released-API clearance is the only species-specific non-physiological input and was predicted from in-vitro human hepatocyte Clint = 15.5 uL/min/1e6 cells via Eqs 1-2 (well-stirred model with a regression offset of 3), giving 0.32 L/h/kg -- roughly 5-7-fold lower than the preclinical in-vivo values. Because the paper showed released API in plasma was already underpredicted 3-5-fold in rat and dog at their nominal CL, treat simulated human released-API concentrations as a lower bound and run a CL sensitivity analysis as the paper recommends.",
+    scope_note = "Mechanistic PBPK simulator intended for typical-value simulation and clinical translation only: no inter-individual variability and no residual-error model are reported by the source paper, and no human data were fitted. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
   )
 
   ini({

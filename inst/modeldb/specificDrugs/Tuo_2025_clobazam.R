@@ -1,19 +1,19 @@
 Tuo_2025_clobazam <- function() {
   description <- "Joint parent-plus-metabolite population PK model for oral clobazam and its active metabolite N-desmethylclobazam (norclobazam) in Chinese children with refractory epilepsy (Tuo 2025). Tandem one-compartment disposition: a first-order absorption depot feeds a one-compartment parent, whose entire elimination is routed into a one-compartment metabolite that is then cleared. Absorption was not identifiable from the opportunistic trough-dominated sampling, so Ka is fixed at 1.99 1/h from Jullien 2015; the dosage conversion fraction Fm from clobazam to N-desmethylclobazam was likewise not estimable, so the metabolite clearance and volume are apparent with respect to Fm. Fixed allometric body-weight exponents (0.75 on both clearances, 1 on both volumes, 70 kg reference) scale all four disposition parameters, and CYP2C19 metabolizer phenotype shifts the metabolite clearance only (intermediate and poor metabolizers relative to a normal-metabolizer reference), which is why CYP2C19 poor metabolizers accumulate N-desmethylclobazam without a matching rise in parent exposure. Between-subject variability was estimated on the two clearances only."
-  reference   <- "Tuo Y, Yu X, Li S, Wang J, Liu M, Song X, Ma J, Wang Y, Liu Z, Sun D. Population Pharmacokinetics and Model-Informed Precision Dosing of Clobazam Based on the Developmental and Genetic Characteristics of Children with Epilepsy. Pharmaceutics. 2025;17(7):813. doi:10.3390/pharmaceutics17070813"
-  vignette    <- "Tuo_2025_clobazam"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Tuo Y, Yu X, Li S, Wang J, Liu M, Song X, Ma J, Wang Y, Liu Z, Sun D. Population Pharmacokinetics and Model-Informed Precision Dosing of Clobazam Based on the Developmental and Genetic Characteristics of Children with Epilepsy. Pharmaceutics. 2025;17(7):813. doi:10.3390/pharmaceutics17070813"
+  vignette <- "Tuo_2025_clobazam"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     depot = list(
-      analyte  = "clobazam",
-      units    = "mg",
+      analyte = "clobazam",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "clobazam",
-      units    = "mg",
+      analyte = "clobazam",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
@@ -24,8 +24,8 @@ Tuo_2025_clobazam <- function() {
       # with respect to Fm. The predicted metabolite CONCENTRATION is
       # nonetheless the true one, because the same Fm divides the state and
       # the volume it is divided by. See the model() block for the algebra.
-      analyte  = "N-desmethylclobazam",
-      units    = "mg",
+      analyte = "N-desmethylclobazam",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
@@ -33,116 +33,116 @@ Tuo_2025_clobazam <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling of all four disposition parameters against a 70 kg reference with exponents FIXED at 0.75 (both clearances) and 1 (both volumes); Tuo 2025 Equations (9)-(12) print the exponents inline and Table 2 reports no exponent parameter, so they were not estimated. The cohort weight range is 6.60-73.00 kg (median 20.00 kg), so the 70 kg reference sits at the extreme upper edge of the observed data and the reported typical values are extrapolated adult-standardised values rather than values observed at 70 kg.",
-      source_name        = "Weight"
+      notes = "Allometric scaling of all four disposition parameters against a 70 kg reference with exponents FIXED at 0.75 (both clearances) and 1 (both volumes); Tuo 2025 Equations (9)-(12) print the exponents inline and Table 2 reports no exponent parameter, so they were not estimated. The cohort weight range is 6.60-73.00 kg (median 20.00 kg), so the 70 kg reference sits at the extreme upper edge of the observed data and the reported typical values are extrapolated adult-standardised values rather than values observed at 70 kg.",
+      source_name = "Weight"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal metabolizer; *1/*1 -- both CYP2C19_IM = 0 and CYP2C19_PM = 0)",
-      notes              = "1 = subject has CYP2C19 IM phenotype (*1/*2, *1/*3, *2/*17 or *3/*17 in Tuo 2025); 0 = otherwise. Cohort distribution: NM 39.81% (41/103), IM 43.69% (45/103), PM 14.56% (15/103), RM 1.94% (2/103). Affects the metabolite clearance only. The two CYP2C19 rapid metabolizers (*1/*17) were excluded from the covariate analysis for lack of sample size (Tuo 2025 Results 3.1) and no ultrarapid metabolizers (*17/*17) were observed, so neither phenotype has an estimated effect and both fall into the CYP2C19_IM = 0, CYP2C19_PM = 0 reference cell by default; users simulating RM or UM subjects should treat them as an explicit extrapolation.",
-      source_name        = "CYP2C19 genotype (NMs / IMs / PMs)"
+      notes = "1 = subject has CYP2C19 IM phenotype (*1/*2, *1/*3, *2/*17 or *3/*17 in Tuo 2025); 0 = otherwise. Cohort distribution: NM 39.81% (41/103), IM 43.69% (45/103), PM 14.56% (15/103), RM 1.94% (2/103). Affects the metabolite clearance only. The two CYP2C19 rapid metabolizers (*1/*17) were excluded from the covariate analysis for lack of sample size (Tuo 2025 Results 3.1) and no ultrarapid metabolizers (*17/*17) were observed, so neither phenotype has an estimated effect and both fall into the CYP2C19_IM = 0, CYP2C19_PM = 0 reference cell by default; users simulating RM or UM subjects should treat them as an explicit extrapolation.",
+      source_name = "CYP2C19 genotype (NMs / IMs / PMs)"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal, intermediate, or rapid metabolizer)",
-      notes              = "1 = subject has CYP2C19 PM phenotype (*2/*2, *2/*3 or *3/*3 in Tuo 2025); 0 = otherwise. Paired with `CYP2C19_IM` to encode the three-level NM (reference) / IM / PM phenotype with two binary indicators. Affects the metabolite clearance only: the paper reports mean post-hoc CL_N-CLB/Fm of 0.46, 0.34 and 0.13 L/h in NMs, IMs and PMs (a 71.7% reduction in PMs vs NMs) against no significant difference in parent CL/F across the three groups.",
-      source_name        = "CYP2C19 genotype (NMs / IMs / PMs)"
+      notes = "1 = subject has CYP2C19 PM phenotype (*2/*2, *2/*3 or *3/*3 in Tuo 2025); 0 = otherwise. Paired with `CYP2C19_IM` to encode the three-level NM (reference) / IM / PM phenotype with two binary indicators. Affects the metabolite clearance only: the paper reports mean post-hoc CL_N-CLB/Fm of 0.46, 0.34 and 0.13 L/h in NMs, IMs and PMs (a 71.7% reduction in PMs vs NMs) against no significant difference in parent CL/F across the three groups.",
+      source_name = "CYP2C19 genotype (NMs / IMs / PMs)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis and not retained; Tuo 2025 Results 3.2 reports that age had no significant impact on the PK parameters of clobazam or N-desmethylclobazam, which the Discussion attributes to the cohort being purely pediatric (0.85-16.75 years) rather than the combined pediatric-plus-adult range of Tolbert 2016."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis and not retained; Tuo 2025 Results 3.2 reports that age had no significant impact on the PK parameters of clobazam or N-desmethylclobazam, which the Discussion attributes to the cohort being purely pediatric (0.85-16.75 years) rather than the combined pediatric-plus-adult range of Tolbert 2016."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (Tuo 2025 Results 3.2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (Tuo 2025 Results 3.2)."
     ),
     BSA = list(
       description = "Body surface area.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained (Tuo 2025 Results 3.2); body weight was the size descriptor carried into the final model."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened and not retained (Tuo 2025 Results 3.2); body weight was the size descriptor carried into the final model."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (modified Schwartz formula).",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Screened as part of the renal-function panel and not retained (Tuo 2025 Results 3.2). The Discussion notes the number of patients with impaired renal function was too small to draw firm conclusions."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Screened as part of the renal-function panel and not retained (Tuo 2025 Results 3.2). The Discussion notes the number of patients with impaired renal function was too small to draw firm conclusions."
     ),
     ALB = list(
       description = "Serum albumin.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as part of the hepatic-function panel and not retained (Tuo 2025 Results 3.2)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as part of the hepatic-function panel and not retained (Tuo 2025 Results 3.2)."
     ),
     ALT = list(
       description = "Alanine aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as part of the hepatic-function panel and not retained (Tuo 2025 Results 3.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as part of the hepatic-function panel and not retained (Tuo 2025 Results 3.2)."
     ),
     AST = list(
       description = "Aspartate aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as part of the hepatic-function panel and not retained (Tuo 2025 Results 3.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as part of the hepatic-function panel and not retained (Tuo 2025 Results 3.2)."
     ),
     CONMED_VALPROIC_ACID = list(
       description = "Concomitant valproic acid indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (Tuo 2025 Results 3.2 and Supplementary Figure S1); 80.58% of the cohort received valproic acid. The Discussion notes this agrees with prior modelling analyses that found no clinically relevant antiepileptic drug-drug interaction with clobazam."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (Tuo 2025 Results 3.2 and Supplementary Figure S1); 80.58% of the cohort received valproic acid. The Discussion notes this agrees with prior modelling analyses that found no clinically relevant antiepileptic drug-drug interaction with clobazam."
     ),
     CONMED_LAMOTRIGINE = list(
       description = "Concomitant lamotrigine indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (Tuo 2025 Results 3.2 and Supplementary Figure S1); 28.16% of the cohort."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (Tuo 2025 Results 3.2 and Supplementary Figure S1); 28.16% of the cohort."
     ),
     DIET_KETOGENIC = list(
       description = "Adherence to a ketogenic diet.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (Tuo 2025 Results 3.2 and Discussion); only 6.80% of the cohort adhered to a ketogenic diet, which the authors judged too few to resolve an effect despite a published case report of a 42% fall in clobazam and N-desmethylclobazam concentrations on diet initiation."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (Tuo 2025 Results 3.2 and Discussion); only 6.80% of the cohort adhered to a ketogenic diet, which the authors judged too few to resolve an effect despite a published case report of a 42% fall in clobazam and N-desmethylclobazam concentrations on diet initiation."
     ),
     SNP_ABCB1_RS1045642 = list(
       description = "ABCB1 3435C>T (rs1045642) genotype.",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Genotyped and screened; no significant effect on clobazam or N-desmethylclobazam PK (Tuo 2025 Results 3.2 and Supplementary Figure S2). Two further ABCB1 SNPs (rs1128503 1236C>T, rs2032582 2677G>T/A), two CYP3A4 SNPs (rs2740574 *1B, rs2242480 *1G) and six GABA-receptor SNPs (rs2279020, rs279858, rs11503014, rs2229944, rs211014, rs211037) were screened with the same negative result; they are represented here by this single entry rather than one entry each because none carries an estimated coefficient."
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Genotyped and screened; no significant effect on clobazam or N-desmethylclobazam PK (Tuo 2025 Results 3.2 and Supplementary Figure S2). Two further ABCB1 SNPs (rs1128503 1236C>T, rs2032582 2677G>T/A), two CYP3A4 SNPs (rs2740574 *1B, rs2242480 *1G) and six GABA-receptor SNPs (rs2279020, rs279858, rs11503014, rs2229944, rs211014, rs211037) were screened with the same negative result; they are represented here by this single entry rather than one entry each because none carries an estimated coefficient."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 103L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 103L,
+    n_studies = 1L,
     n_observations = "156 plasma samples yielding 302 analyte concentrations (154 clobazam + 148 N-desmethylclobazam). Sampling depth per patient: 68 sampled once, 21 twice, 12 three times, 1 four times and 1 six times. Assay quantitative ranges 3-1200 ug/L (clobazam) and 40-16000 ug/L (N-desmethylclobazam) by HPLC-MS/MS.",
-    age_range      = "0.85-16.75 years",
-    age_median     = "5.46 years (mean 5.94, SD 3.15)",
-    weight_range   = "6.60-73.00 kg",
-    weight_median  = "20.00 kg (mean 22.94, SD 10.48)",
+    age_range = "0.85-16.75 years",
+    age_median = "5.46 years (mean 5.94, SD 3.15)",
+    weight_range = "6.60-73.00 kg",
+    weight_median = "20.00 kg (mean 22.94, SD 10.48)",
     sex_female_pct = 43.7,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Pediatric refractory epilepsy: Lennox-Gastaut syndrome, Dravet syndrome, infantile spasms and other refractory epilepsies. 75.73% of patients were taking three or more antiepileptic drugs; 80.58% received concomitant valproic acid, 28.16% lamotrigine, 24.27% perampanel, 18.45% levetiracetam and 17.48% topiramate, and 6.80% adhered to a ketogenic diet.",
-    dose_range     = "Oral clobazam tablets, dosed twice daily when the total dose exceeded 5 mg. Starting dose 5 mg for patients weighing 30 kg or less and 10 mg above 30 kg, then individually titrated on efficacy and tolerability.",
-    regions        = "China (single centre: Wuhan Children's Hospital, Tongji Medical College, Huazhong University of Science and Technology; enrolment December 2022 to March 2024).",
-    genotype       = "CYP2C19 phenotype: normal metabolizers 41 (39.81%), intermediate 45 (43.69%), poor 15 (14.56%), rapid 2 (1.94%). No ultrarapid metabolizers were observed. All genotype frequencies were consistent with Hardy-Weinberg equilibrium.",
-    notes          = "Demographics from Tuo 2025 Table 1. Prospective single-centre opportunistic-sampling study using scavenged residual blood drawn for routine biochemistry during safety follow-up, so the sampling is trough-dominated and carries essentially no information on the absorption or distribution phases -- the reason Ka was fixed and a one-compartment rather than two-compartment parent disposition was selected. Reported therapeutic trough ranges applied by the authors are 30-300 ug/L for clobazam and 300-3000 ug/L for N-desmethylclobazam, with laboratory alert levels of 500 ug/L and 5000 ug/L respectively; these are adult-derived targets carried over to the pediatric setting because no pediatric-specific ranges exist."
+    disease_state = "Pediatric refractory epilepsy: Lennox-Gastaut syndrome, Dravet syndrome, infantile spasms and other refractory epilepsies. 75.73% of patients were taking three or more antiepileptic drugs; 80.58% received concomitant valproic acid, 28.16% lamotrigine, 24.27% perampanel, 18.45% levetiracetam and 17.48% topiramate, and 6.80% adhered to a ketogenic diet.",
+    dose_range = "Oral clobazam tablets, dosed twice daily when the total dose exceeded 5 mg. Starting dose 5 mg for patients weighing 30 kg or less and 10 mg above 30 kg, then individually titrated on efficacy and tolerability.",
+    regions = "China (single centre: Wuhan Children's Hospital, Tongji Medical College, Huazhong University of Science and Technology; enrolment December 2022 to March 2024).",
+    genotype = "CYP2C19 phenotype: normal metabolizers 41 (39.81%), intermediate 45 (43.69%), poor 15 (14.56%), rapid 2 (1.94%). No ultrarapid metabolizers were observed. All genotype frequencies were consistent with Hardy-Weinberg equilibrium.",
+    notes = "Demographics from Tuo 2025 Table 1. Prospective single-centre opportunistic-sampling study using scavenged residual blood drawn for routine biochemistry during safety follow-up, so the sampling is trough-dominated and carries essentially no information on the absorption or distribution phases -- the reason Ka was fixed and a one-compartment rather than two-compartment parent disposition was selected. Reported therapeutic trough ranges applied by the authors are 30-300 ug/L for clobazam and 300-3000 ug/L for N-desmethylclobazam, with laboratory alert levels of 500 ug/L and 5000 ug/L respectively; these are adult-derived targets carried over to the pediatric setting because no pediatric-specific ranges exist."
   )
 
   ini({

@@ -44,13 +44,15 @@ Kapitanov_2025_dupilumab_qsp <- function() {
   # piPKRO framework tracks free target and drug-target complex in each
   # PK compartment, so these are declared paper-specific.
   paper_specific_compartments <- c(
-    "target_central", "complex_central",
-    "target_peripheral1", "complex_peripheral1"
+    "target_central",
+    "complex_central",
+    "target_peripheral1",
+    "complex_peripheral1"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "Dupilumab dose into the central compartment must be in mg.",
       "The bioavailability multiplier converts amt (mg) to nmol using",
       "the standard IgG4 antibody molecular weight (assumed 147 kDa;",
@@ -80,39 +82,49 @@ Kapitanov_2025_dupilumab_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central             = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    target_central      = list(analyte = "IL4R receptor", units = NA_character_, specimen = "plasma", verified = FALSE),
-    target_peripheral1  = list(analyte = "IL4R receptor", units = NA_character_, specimen = "plasma", verified = FALSE),
-    complex_central     = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    complex_peripheral1 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+    central = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_central = list(analyte = "IL4R receptor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral1 = list(analyte = "IL4R receptor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_central = list(
+      analyte = "dupilumab-IL4R complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex_peripheral1 = list(
+      analyte = "dupilumab-IL4R complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "healthy adult volunteers",
-    weight_range   = "assumed 70 kg for the deterministic simulation",
-    weight_median  = "70 kg (Kapitanov 2025 Section 2.4 standard human)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "healthy adult volunteers",
+    weight_range = "assumed 70 kg for the deterministic simulation",
+    weight_median = "70 kg (Kapitanov 2025 Section 2.4 standard human)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers from the dupilumab first-in-human",
       "single-ascending-dose IV study reported in Li E et al. 2015",
       "(Kapitanov 2025 ref 35). Mean PK profiles at 1, 3, 8, and 12",
       "mg/kg were digitised from Li 2015 for the Case Study 2 fit.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single IV bolus at 1, 3, 8, and 12 mg/kg (70, 210, 560, 840 mg",
       "at 70 kg).",
       sep = " "
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Kapitanov 2025 does not perform a per-subject fit for Case",
       "Study 2; the paper reports only typical values of the linear",
       "PK-related parameters after calibration to digitised mean PK",

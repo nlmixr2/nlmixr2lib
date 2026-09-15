@@ -20,8 +20,8 @@ Mazzocco_2015_temozolomide <- function() {
   paper_specific_compartments <- c("prolif", "quiesc", "quiescDam")
 
   units <- list(
-    time          = "month",
-    dosing        = "arbitrary unit per TMZ cycle (K-PD bolus to the depot_kpd virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
+    time = "month",
+    dosing = "arbitrary unit per TMZ cycle (K-PD bolus to the depot_kpd virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
     concentration = "mm (mean tumour diameter MTD = P + Q + Qp; not a drug concentration)"
   )
 
@@ -30,42 +30,62 @@ Mazzocco_2015_temozolomide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_kpd = list(analyte = "temozolomide", units = NA_character_, specimen = "administration site", verified = FALSE),
-    prolif    = list(analyte = "tumour cells (proliferative)", units = NA_character_, specimen = "tumor", verified = FALSE),
-    quiesc    = list(analyte = "tumour cells (non-damaged quiescent)", units = NA_character_, specimen = "tumor", verified = FALSE),
-    quiescDam = list(analyte = "tumour cells (damaged quiescent)", units = NA_character_, specimen = "tumor", verified = FALSE)
+    depot_kpd = list(
+      analyte = "temozolomide",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    prolif = list(
+      analyte = "tumour cells (proliferative)",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    quiesc = list(
+      analyte = "tumour cells (non-damaged quiescent)",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    quiescDam = list(
+      analyte = "tumour cells (damaged quiescent)",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     TUM_TP53_MUT = list(
-      description        = "Tumour TP53 mutation indicator (1 = TP53 mutant tumour, 0 = TP53 wild-type tumour). p53 protein overexpression by IHC is used by the source paper as a surrogate marker for TP53 missense mutations (Gillet et al. J Neurooncol 2014).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumour TP53 mutation indicator (1 = TP53 mutant tumour, 0 = TP53 wild-type tumour). p53 protein overexpression by IHC is used by the source paper as a surrogate marker for TP53 missense mutations (Gillet et al. J Neurooncol 2014).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed per subject (somatic tumour genotype call at diagnosis). Acts on the TMZ tumour-cell death-rate constant gamma: gamma_mut / gamma_wt = 0.143 / 0.254 = 0.563 (44% lower TMZ efficacy in TP53-mutant LGG, per Mazzocco 2015 Table 2 and Results). Cohort frequency: 24 mutant / 59 with p53 status known = 41% mutant.",
-      source_name        = "p53 mutation"
+      notes = "Time-fixed per subject (somatic tumour genotype call at diagnosis). Acts on the TMZ tumour-cell death-rate constant gamma: gamma_mut / gamma_wt = 0.143 / 0.254 = 0.563 (44% lower TMZ efficacy in TP53-mutant LGG, per Mazzocco 2015 Table 2 and Results). Cohort frequency: 24 mutant / 59 with p53 status known = 41% mutant.",
+      source_name = "p53 mutation"
     ),
     TUM_1P19Q_CODEL = list(
-      description        = "Tumour 1p/19q chromosomal codeletion indicator (1 = combined 1p and 19q loss, 0 = non-codeleted).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumour 1p/19q chromosomal codeletion indicator (1 = combined 1p and 19q loss, 0 = non-codeleted).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed per subject (somatic tumour genotype call at diagnosis). Acts on the damaged-quiescent-to-proliferative repair rate constant kQpP: kQpP_codel / kQpP_noncodel = 0.00807 / 0.00947 = 0.852 (15% lower DNA-damage-repair rate in 1p/19q-codeleted tumours, consistent with the longer duration of response reported in codeleted LGG patients; Ricard 2007). Mutually exclusive with TP53 mutation in this cohort. Cohort frequency: 23 codeleted / 70 with 1p/19q status known = 33% codeleted.",
-      source_name        = "1p/19q codeletion"
+      notes = "Time-fixed per subject (somatic tumour genotype call at diagnosis). Acts on the damaged-quiescent-to-proliferative repair rate constant kQpP: kQpP_codel / kQpP_noncodel = 0.00807 / 0.00947 = 0.852 (15% lower DNA-damage-repair rate in 1p/19q-codeleted tumours, consistent with the longer duration of response reported in codeleted LGG patients; Ricard 2007). Mutually exclusive with TP53 mutation in this cohort. Cohort frequency: 23 codeleted / 70 with 1p/19q status known = 33% codeleted.",
+      source_name = "1p/19q codeletion"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 77L,
-    n_studies           = 1L,
-    age_range           = "25-71 years",
-    age_median          = "40 years",
-    sex_female_pct      = 45.5,
-    disease_state       = "WHO grade II low-grade glioma (oligodendroglioma 73%, oligoastrocytoma 21%, astrocytoma 6%) at first-line chemotherapy onset",
-    dose_range          = "Temozolomide 200 mg/m^2/day orally on days 1-5 of each 28-day cycle (median 18 cycles, range 2-24)",
-    regions             = "France",
-    notes               = "77 patients with at least one molecular characteristic known (1p/19q codeletion, TP53 / p53 mutation, or IDH mutation) from a 120-patient single-centre French cohort treated 1999-2007 (Ricard 2007, Ann Neurol). Used for population-parameter estimation. The remaining 43 patients lacked molecular characterisation and were held out as an external evaluation cohort (not used for the parameters extracted here). Tumour size was measured as mean tumour diameter (MTD) from printed MRI scans via MTD = (2V)^(1/3) where V = (D1 * D2 * D3) / 2 with D1, D2, D3 the three largest perpendicular tumour diameters. 952 MTD observations total (mean 12 per patient, range 4-28). Median post-treatment follow-up 21 months (range 5 months to 9.5 years). 1p/19q codeletion and TP53 missense mutation were mutually exclusive in this cohort."
+    species = "human",
+    n_subjects = 77L,
+    n_studies = 1L,
+    age_range = "25-71 years",
+    age_median = "40 years",
+    sex_female_pct = 45.5,
+    disease_state = "WHO grade II low-grade glioma (oligodendroglioma 73%, oligoastrocytoma 21%, astrocytoma 6%) at first-line chemotherapy onset",
+    dose_range = "Temozolomide 200 mg/m^2/day orally on days 1-5 of each 28-day cycle (median 18 cycles, range 2-24)",
+    regions = "France",
+    notes = "77 patients with at least one molecular characteristic known (1p/19q codeletion, TP53 / p53 mutation, or IDH mutation) from a 120-patient single-centre French cohort treated 1999-2007 (Ricard 2007, Ann Neurol). Used for population-parameter estimation. The remaining 43 patients lacked molecular characterisation and were held out as an external evaluation cohort (not used for the parameters extracted here). Tumour size was measured as mean tumour diameter (MTD) from printed MRI scans via MTD = (2V)^(1/3) where V = (D1 * D2 * D3) / 2 with D1, D2, D3 the three largest perpendicular tumour diameters. 952 MTD observations total (mean 12 per patient, range 4-28). Median post-treatment follow-up 21 months (range 5 months to 9.5 years). 1p/19q codeletion and TP53 missense mutation were mutually exclusive in this cohort."
   )
 
   ini({

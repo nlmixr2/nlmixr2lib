@@ -27,8 +27,8 @@ Schmidt_2009_linezolid <- function() {
   )
   vignette <- "Schmidt_2009_oxazolidinones"
   units <- list(
-    time          = "h",
-    dosing        = "ug/mL (initial antibiotic concentration in MHB)",
+    time = "h",
+    dosing = "ug/mL (initial antibiotic concentration in MHB)",
     concentration = "log10 CFU/mL (bacterial log_cfu output); ug/mL (antibiotic central state)"
   )
 
@@ -44,31 +44,41 @@ Schmidt_2009_linezolid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible = list(analyte = "Staphylococcus aureus MRSA strain OC2878", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_persister   = list(analyte = "Staphylococcus aureus MRSA strain OC2878", units = NA_character_, specimen = "bile", verified = FALSE),
-    central          = list(analyte = "linezolid", units = NA_character_, specimen = "plasma", verified = FALSE)
+    bact_susceptible = list(
+      analyte = "Staphylococcus aureus MRSA strain OC2878",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_persister = list(
+      analyte = "Staphylococcus aureus MRSA strain OC2878",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    central = list(analyte = "linezolid", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Staphylococcus aureus, MRSA strain OC2878)",
-    n_subjects       = NA_integer_,
-    n_studies        = 1L,
-    organism         = "Methicillin-resistant Staphylococcus aureus, strain OC2878 (Johnson & Johnson Pharmaceutical R&D)",
-    mic_values       = c(rwj416457 = "0.5 ug/mL", linezolid = "1.0 ug/mL"),
-    system           = paste(
+    species = "in vitro (Staphylococcus aureus, MRSA strain OC2878)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Methicillin-resistant Staphylococcus aureus, strain OC2878 (Johnson & Johnson Pharmaceutical R&D)",
+    mic_values = c(rwj416457 = "0.5 ug/mL", linezolid = "1.0 ug/mL"),
+    system = paste(
       "Two in vitro models simultaneously fit: (i) static time-kill curves",
       "in 50-mL cell-culture flasks at constant concentrations 0.25-16x MIC",
       "for 24 h; (ii) dynamic time-kill curves in the same flasks coupled to",
       "syringe systems that replaced 4.8 mL of broth every 2 h to simulate",
       "the linezolid human elimination half-life of ~5 h."
     ),
-    medium           = "Mueller-Hinton broth (MHB), Difco; 20 mL per flask; 37 degC",
-    inoculum         = "~5e5 CFU/mL after a 2-h pre-incubation with no antibiotic",
-    dose_range       = "0.25-16x MIC, i.e. 0.25-16 ug/mL linezolid",
-    drug_stability   = "Linezolid was completely stable over 24 h (Results 'Drug stability'); kdeg = 0",
-    notes            = paste(
+    medium = "Mueller-Hinton broth (MHB), Difco; 20 mL per flask; 37 degC",
+    inoculum = "~5e5 CFU/mL after a 2-h pre-incubation with no antibiotic",
+    dose_range = "0.25-16x MIC, i.e. 0.25-16 ug/mL linezolid",
+    drug_stability = "Linezolid was completely stable over 24 h (Results 'Drug stability'); kdeg = 0",
+    notes = paste(
       "Triplicate static and dynamic experiments per drug per concentration.",
       "Parameters were estimated by a simultaneous fit of the same",
       "susceptibility-based model to RWJ-416457 and linezolid data with one",

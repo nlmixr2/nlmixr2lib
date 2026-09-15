@@ -1,140 +1,144 @@
 CarlssonPetri_2018_semaglutide <- function() {
   description <- "One-compartment population PK model for once-weekly subcutaneous semaglutide (GLP-1 receptor agonist) in adults with type 2 diabetes, pooled across five SUSTAIN phase III trials (Carlsson Petri 2018)."
-  reference   <- "Carlsson Petri KC, Ingwersen SH, Flint A, Zacho J, Overgaard RV. Semaglutide s.c. once-weekly in type 2 diabetes: a population pharmacokinetic analysis. Diabetes Therapy. 2018;9(4):1533-1547. doi:10.1007/s13300-018-0458-5"
-  vignette    <- "CarlssonPetri_2018_semaglutide"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  reference <- "Carlsson Petri KC, Ingwersen SH, Flint A, Zacho J, Overgaard RV. Semaglutide s.c. once-weekly in type 2 diabetes: a population pharmacokinetic analysis. Diabetes Therapy. 2018;9(4):1533-1547. doi:10.1007/s13300-018-0458-5"
+  vignette <- "CarlssonPetri_2018_semaglutide"
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "semaglutide", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "semaglutide", units = "nmol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F with reference weight 85 kg (Table S3 exponent 0.774; Methods 'reference subject profile ... body weight of 85 kg'). Time-fixed at baseline. No covariate effect on V/F (Discussion: 'Covariate effects were not included for V/F').",
-      source_name        = "WT"
+      notes = "Power effect on CL/F with reference weight 85 kg (Table S3 exponent 0.774; Methods 'reference subject profile ... body weight of 85 kg'). Time-fixed at baseline. No covariate effect on V/F (Discussion: 'Covariate effects were not included for V/F').",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = "Reference subject profile is female (Methods). Male-vs-female CL/F ratio 1.04 (Table S3) applied as e_sexm_cl^(1 - SEXF): multiplier 1.04 when male (SEXF=0) and 1 when female (SEXF=1).",
-      source_name        = "SEX (male=1)"
+      notes = "Reference subject profile is female (Methods). Male-vs-female CL/F ratio 1.04 (Table S3) applied as e_sexm_cl^(1 - SEXF): multiplier 1.04 when male (SEXF=0) and 1 when female (SEXF=1).",
+      source_name = "SEX (male=1)"
     ),
     AGE = list(
-      description        = "Baseline subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Encoded categorically per the paper as <65 (reference), 65-74, and >=75 years (Methods). The two indicators AGE_65_74 = (AGE >= 65 & AGE < 75) and AGE_GE_75 = (AGE >= 75) are derived inline in model() from the continuous AGE column; effects on CL/F are 0.988 for AGE_65_74 and 0.961 for AGE_GE_75 (Table S3).",
-      source_name        = "AGE"
+      notes = "Encoded categorically per the paper as <65 (reference), 65-74, and >=75 years (Methods). The two indicators AGE_65_74 = (AGE >= 65 & AGE < 75) and AGE_GE_75 = (AGE >= 75) are derived inline in model() from the continuous AGE column; effects on CL/F are 0.988 for AGE_65_74 and 0.961 for AGE_GE_75 (Table S3).",
+      source_name = "AGE"
     ),
     RACE_BLACK = list(
-      description        = "1 = Black or African American, 0 = other race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Black or African American, 0 = other race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White, with the small 'American Indian or Alaska Native' [n=2] and 'Unknown' [n=41] subgroups merged into the White reference per Methods 'Groups that contained < 20 subjects were merged with the largest covariate group')",
-      notes              = "Black-vs-White CL/F ratio 0.974 (Table S3). Reference includes merged AIAN + Unknown subgroups.",
-      source_name        = "RACE"
+      notes = "Black-vs-White CL/F ratio 0.974 (Table S3). Reference includes merged AIAN + Unknown subgroups.",
+      source_name = "RACE"
     ),
     RACE_ASIAN = list(
-      description        = "1 = Asian, 0 = other race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Asian, 0 = other race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White, with merged AIAN + Unknown subgroups per RACE_BLACK notes)",
-      notes              = "Asian-vs-White CL/F ratio 0.989 (Table S3).",
-      source_name        = "RACE"
+      notes = "Asian-vs-White CL/F ratio 0.989 (Table S3).",
+      source_name = "RACE"
     ),
     RACE_HISPANIC = list(
-      description        = "1 = Hispanic or Latino, 0 = non-Hispanic",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Hispanic or Latino, 0 = non-Hispanic",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Non-Hispanic or Non-Latino)",
-      notes              = "The source paper treats Hispanic/Latino status as an ethnicity covariate orthogonal to race (Methods) rather than as a race indicator. The canonical RACE_HISPANIC (1 = Hispanic/Latino, 0 = non-Hispanic) is reused here because the indicator semantics are identical; the ethnicity-vs-race distinction affects population classification rather than the covariate encoding. Hispanic-vs-non-Hispanic CL/F ratio 1.06 (Table S3). SUSTAIN-Japan subjects had no ethnicity reported (Table S1) and are treated as non-Hispanic reference per the paper's analysis.",
-      source_name        = "ETHNIC"
+      notes = "The source paper treats Hispanic/Latino status as an ethnicity covariate orthogonal to race (Methods) rather than as a race indicator. The canonical RACE_HISPANIC (1 = Hispanic/Latino, 0 = non-Hispanic) is reused here because the indicator semantics are identical; the ethnicity-vs-race distinction affects population classification rather than the covariate encoding. Hispanic-vs-non-Hispanic CL/F ratio 1.06 (Table S3). SUSTAIN-Japan subjects had no ethnicity reported (Table S1) and are treated as non-Hispanic reference per the paper's analysis.",
+      source_name = "ETHNIC"
     ),
     INJSITE_ARM = list(
-      description        = "1 = subject's dominant SC injection site is upper arm, 0 = abdomen (reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject's dominant SC injection site is upper arm, 0 = abdomen (reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen)",
-      notes              = "Per-subject indicator: 'the most frequently used injection site for an individual patient was used as the covariate value' (Methods). Upper-arm-vs-abdomen CL/F ratio 1.08 (Table S3).",
-      source_name        = "INJSITE"
+      notes = "Per-subject indicator: 'the most frequently used injection site for an individual patient was used as the covariate value' (Methods). Upper-arm-vs-abdomen CL/F ratio 1.08 (Table S3).",
+      source_name = "INJSITE"
     ),
     INJSITE_THIGH = list(
-      description        = "1 = subject's dominant SC injection site is thigh, 0 = abdomen (reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject's dominant SC injection site is thigh, 0 = abdomen (reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen)",
-      notes              = "Per-subject indicator: 'the most frequently used injection site for an individual patient was used as the covariate value' (Methods). Thigh-vs-abdomen CL/F ratio 1.04 (Table S3).",
-      source_name        = "INJSITE"
+      notes = "Per-subject indicator: 'the most frequently used injection site for an individual patient was used as the covariate value' (Methods). Thigh-vs-abdomen CL/F ratio 1.04 (Table S3).",
+      source_name = "INJSITE"
     ),
     RENALIMP_MILD = list(
-      description        = "1 = mild renal impairment (eGFR 60-89 mL/min/1.73 m^2), 0 = normal or non-mild category",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = mild renal impairment (eGFR 60-89 mL/min/1.73 m^2), 0 = normal or non-mild category",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function; eGFR >= 90 mL/min/1.73 m^2)",
-      notes              = "eGFR-based classification per Methods. Mild-vs-normal CL/F ratio 0.948 (Table S3). Paired with RENALIMP_MOD and RENALIMP_SEV.",
-      source_name        = "RENAL"
+      notes = "eGFR-based classification per Methods. Mild-vs-normal CL/F ratio 0.948 (Table S3). Paired with RENALIMP_MOD and RENALIMP_SEV.",
+      source_name = "RENAL"
     ),
     RENALIMP_MOD = list(
-      description        = "1 = moderate renal impairment (eGFR 30-59 mL/min/1.73 m^2), 0 = other category",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = moderate renal impairment (eGFR 30-59 mL/min/1.73 m^2), 0 = other category",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function; eGFR >= 90 mL/min/1.73 m^2)",
-      notes              = "eGFR-based classification per Methods. Moderate-vs-normal CL/F ratio 0.955 (Table S3).",
-      source_name        = "RENAL"
+      notes = "eGFR-based classification per Methods. Moderate-vs-normal CL/F ratio 0.955 (Table S3).",
+      source_name = "RENAL"
     ),
     RENALIMP_SEV = list(
-      description        = "1 = severe renal impairment (eGFR < 30 mL/min/1.73 m^2), 0 = other category",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = severe renal impairment (eGFR < 30 mL/min/1.73 m^2), 0 = other category",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function; eGFR >= 90 mL/min/1.73 m^2)",
-      notes              = "eGFR-based classification per Methods. Severe-vs-normal CL/F ratio 0.920 (Table S3). Discussion notes the severe stratum came only from SUSTAIN 6 (n=33) and might be confounded by trial effect; a dedicated renal-impairment clinical pharmacology trial (Marbury 2017) found no clinically relevant effect.",
-      source_name        = "RENAL"
+      notes = "eGFR-based classification per Methods. Severe-vs-normal CL/F ratio 0.920 (Table S3). Discussion notes the severe stratum came only from SUSTAIN 6 (n=33) and might be confounded by trial effect; a dedicated renal-impairment clinical pharmacology trial (Marbury 2017) found no clinically relevant effect.",
+      source_name = "RENAL"
     ),
     DOSE_SEMAGLUTIDE_MG = list(
-      description        = "Per-subject maintenance semaglutide dose",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-subject maintenance semaglutide dose",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Values 0.5 or 1.0 mg once weekly (Methods). The paper tested a binary indicator for 0.5-vs-1.0 mg maintenance dose on CL/F to assess dose proportionality; the effect ratio is 1.00 (Table S3), confirming dose proportionality across 0.5 and 1.0 mg. The binary indicator DOSE_LOW_MAINT = (DOSE_SEMAGLUTIDE_MG < 0.75) is derived inline in model() and the CL/F multiplier is fixed at 1.00.",
-      source_name        = "DOSE"
+      notes = "Values 0.5 or 1.0 mg once weekly (Methods). The paper tested a binary indicator for 0.5-vs-1.0 mg maintenance dose on CL/F to assess dose proportionality; the effect ratio is 1.00 (Table S3), confirming dose proportionality across 0.5 and 1.0 mg. The binary indicator DOSE_LOW_MAINT = (DOSE_SEMAGLUTIDE_MG < 0.75) is derived inline in model() and the CL/F multiplier is fixed at 1.00.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1612L,                                                              # Carlsson Petri 2018 Results 'Demographics'
-    n_studies      = 5L,                                                                 # SUSTAIN 1, 2, 3, 6, and SUSTAIN-Japan (Methods 'Data Sources')
-    age_range      = "20-86 years (Japanese subjects >=20; global >=18)",                # Carlsson Petri 2018 Results
-    age_mean       = "57 years (SD 10.6)",                                               # Table 2
-    weight_range   = "39.7-198.3 kg",                                                    # Table 2
-    weight_mean    = "86.2 kg (SD 22.5)",                                                # Table 2
-    bmi_range      = "16.3-72.8 kg/m^2",                                                 # Table 2
-    bmi_mean       = "31.1 kg/m^2 (SD 7.1)",                                             # Table 2
-    sex_female_pct = 42.5,                                                               # Table 2 (685 / 1612)
-    race_ethnicity = c(White = 52.0, Asian = 40.8, Black_or_African_American = 4.5,
-                       American_Indian_or_Alaska_Native = 0.1, Unknown = 2.5),          # Table 2
-    ethnicity_hispanic_pct = 15.0,                                                       # Table 2 (241 / 1612)
-    disease_state  = "Adults with type 2 diabetes mellitus (HbA1c >= 7.0% at entry)",   # Methods
-    diabetes_duration_mean = "8.1 years (SD 6.6; range 0-48.9)",                         # Table 2
-    hba1c_mean     = "8.2% (SD 1; range 5.9-13.1)",                                      # Table 2
-    dose_range     = "0.5 or 1.0 mg semaglutide once weekly SC after 4 weeks of 0.25 mg then 4 weeks of 0.5 mg escalation (Methods).",
-    regions        = "Multinational (SUSTAIN 1-3 and 6 global; SUSTAIN-Japan is Japan-only).",
-    trials         = c("NCT02054897", "NCT01930188", "NCT01885208",
-                       "NCT01720446", "NCT02207374"),
+    species = "human",
+    n_subjects = 1612L, # Carlsson Petri 2018 Results 'Demographics'
+    n_studies = 5L, # SUSTAIN 1, 2, 3, 6, and SUSTAIN-Japan (Methods 'Data Sources')
+    age_range = "20-86 years (Japanese subjects >=20; global >=18)", # Carlsson Petri 2018 Results
+    age_mean = "57 years (SD 10.6)", # Table 2
+    weight_range = "39.7-198.3 kg", # Table 2
+    weight_mean = "86.2 kg (SD 22.5)", # Table 2
+    bmi_range = "16.3-72.8 kg/m^2", # Table 2
+    bmi_mean = "31.1 kg/m^2 (SD 7.1)", # Table 2
+    sex_female_pct = 42.5, # Table 2 (685 / 1612)
+    race_ethnicity = c(
+      White = 52.0,
+      Asian = 40.8,
+      Black_or_African_American = 4.5,
+      American_Indian_or_Alaska_Native = 0.1,
+      Unknown = 2.5
+    ), # Table 2
+    ethnicity_hispanic_pct = 15.0, # Table 2 (241 / 1612)
+    disease_state = "Adults with type 2 diabetes mellitus (HbA1c >= 7.0% at entry)", # Methods
+    diabetes_duration_mean = "8.1 years (SD 6.6; range 0-48.9)", # Table 2
+    hba1c_mean = "8.2% (SD 1; range 5.9-13.1)", # Table 2
+    dose_range = "0.5 or 1.0 mg semaglutide once weekly SC after 4 weeks of 0.25 mg then 4 weeks of 0.5 mg escalation (Methods).",
+    regions = "Multinational (SUSTAIN 1-3 and 6 global; SUSTAIN-Japan is Japan-only).",
+    trials = c("NCT02054897", "NCT01930188", "NCT01885208", "NCT01720446", "NCT02207374"),
     renal_function = "Normal (61.8%), mild (33.1%), moderate (3%), and severe (2.0%) renal impairment; severe only in SUSTAIN 6 (Table 2).",
-    n_observations = 6781L,                                                              # Results 'Demographics' (mean 4.2 samples per subject)
-    notes          = "Reference subject profile for the full-model typical values: non-Hispanic or non-Latino white female <65 years, body weight 85 kg (pre-specified as approximate median), normal renal function, dosed in abdomen with 1.0 mg semaglutide once weekly (Methods). Table 2 gives global demographics; Table S1 (ESM) gives per-trial breakdowns. American Indian or Alaska Native (n=2) and Unknown (n=41) subjects were merged with the White group for the covariate analysis (Table 2 footnote a)."
+    n_observations = 6781L, # Results 'Demographics' (mean 4.2 samples per subject)
+    notes = "Reference subject profile for the full-model typical values: non-Hispanic or non-Latino white female <65 years, body weight 85 kg (pre-specified as approximate median), normal renal function, dosed in abdomen with 1.0 mg semaglutide once weekly (Methods). Table 2 gives global demographics; Table S1 (ESM) gives per-trial breakdowns. American Indian or Alaska Native (n=2) and Unknown (n=41) subjects were merged with the White group for the covariate analysis (Table 2 footnote a)."
   )
 
   ini({

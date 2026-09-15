@@ -14,7 +14,7 @@ Cook_2016_paracetamol <- function() {
   vignette <- "Cook_2016_paracetamol"
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
-  ddmore_id    <- "DDMODEL00000271"
+  ddmore_id <- "DDMODEL00000271"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -22,21 +22,36 @@ Cook_2016_paracetamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central       = list(analyte = "paracetamol (APAP)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_apapg = list(analyte = "paracetamol glucuronide conjugate", units = "mg", specimen = "plasma", verified = FALSE),
-    central_apaps = list(analyte = "paracetamol sulphate conjugate", units = "mg", specimen = "plasma", verified = FALSE),
-    urine_apapg   = list(analyte = "paracetamol glucuronide conjugate", units = "mg", specimen = "urine", verified = FALSE),
-    urine_apap    = list(analyte = "paracetamol", units = "mg", specimen = "urine", verified = FALSE),
-    urine_apaps   = list(analyte = "paracetamol sulphate conjugate", units = "mg", specimen = "urine", verified = FALSE)
+    central = list(analyte = "paracetamol (APAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_apapg = list(
+      analyte = "paracetamol glucuronide conjugate",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    central_apaps = list(
+      analyte = "paracetamol sulphate conjugate",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    urine_apapg = list(
+      analyte = "paracetamol glucuronide conjugate",
+      units = "mg",
+      specimen = "urine",
+      verified = FALSE
+    ),
+    urine_apap = list(analyte = "paracetamol", units = "mg", specimen = "urine", verified = FALSE),
+    urine_apaps = list(analyte = "paracetamol sulphate conjugate", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at time of study",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at time of study",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying weight at the time of each PK sample.",
         "Source column 'BWS' (body weight at study) is mapped to the",
         "canonical 'WT' on input. Used as a multiplicative scaler with no",
@@ -44,21 +59,21 @@ Cook_2016_paracetamol <- function() {
         "parameters multiplied by BWS (with a fitted exponent of 1.40 on",
         "BWS for cl_apaps only)."
       ),
-      source_name        = "BWS"
+      source_name = "BWS"
     )
   )
 
   population <- list(
-    n_subjects     = 54,
-    n_studies      = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    age_range      = "Term and preterm newborns. Specific postnatal-age range not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    weight_range   = "Newborn body weights. The bundle's simulated dataset (Simulated_ParacetamolPKnewborns.csv) contains BWS values 0.5-4 kg for 9 of 10 subjects plus one outlier at 6.5 kg; the simulated dataset is a smoke-test cohort and does not represent the publication's reported demographics.",
+    n_subjects = 54,
+    n_studies = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
+    age_range = "Term and preterm newborns. Specific postnatal-age range not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
+    weight_range = "Newborn body weights. The bundle's simulated dataset (Simulated_ParacetamolPKnewborns.csv) contains BWS values 0.5-4 kg for 9 of 10 subjects plus one outlier at 6.5 kg; the simulated dataset is a smoke-test cohort and does not represent the publication's reported demographics.",
     sex_female_pct = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
     race_ethnicity = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    disease_state  = "Term and preterm newborns receiving IV paracetamol. Specific clinical setting not extractable from DDMORE bundle alone; Cook 2016 reports a parent-metabolite population PK analysis describing the maturation of paracetamol glucuronidation, sulfation, and oxidation in newborns.",
-    dose_range     = "IV paracetamol given as a short infusion. Bundle's simulated dataset uses ~10 mg/kg single doses (5, 10, 20, 35 mg paired with BWS 0.5, 1, 2, 3.5 kg respectively) infused over approximately 15 minutes (RATE=AMT/15 mg/min).",
-    regions        = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    notes          = "N=54 subjects taken from the .lst FINAL ETABAR / shrinkage block ('N: 54 54 54 54'). Full demographics, study design, and inclusion criteria could not be cross-checked because the Cook 2016 publication PDF is not on disk. The DDMORE Model_Accommodations.txt note states only that the publication reported additive errors on urine recoveries while the deposited code uses (correct) proportional errors."
+    disease_state = "Term and preterm newborns receiving IV paracetamol. Specific clinical setting not extractable from DDMORE bundle alone; Cook 2016 reports a parent-metabolite population PK analysis describing the maturation of paracetamol glucuronidation, sulfation, and oxidation in newborns.",
+    dose_range = "IV paracetamol given as a short infusion. Bundle's simulated dataset uses ~10 mg/kg single doses (5, 10, 20, 35 mg paired with BWS 0.5, 1, 2, 3.5 kg respectively) infused over approximately 15 minutes (RATE=AMT/15 mg/min).",
+    regions = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
+    notes = "N=54 subjects taken from the .lst FINAL ETABAR / shrinkage block ('N: 54 54 54 54'). Full demographics, study design, and inclusion criteria could not be cross-checked because the Cook 2016 publication PDF is not on disk. The DDMORE Model_Accommodations.txt note states only that the publication reported additive errors on urine recoveries while the deposited code uses (correct) proportional errors."
   )
 
   ini({

@@ -1,8 +1,8 @@
 LongBoyle_2015_busulfan <- function() {
   description <- "One-compartment IV PK model with Michaelis-Menten elimination for busulfan in pediatric and young adult patients (0.1-24 yrs) undergoing hematopoietic cell transplant. Allometric body-weight scaling on intrinsic clearance (CLin, exponent fixed 0.75) and central volume (Vc, exponent fixed 1) with reference weight 22 kg; hockey-stick age effect on CLin (linear increase below the 12-yr breakpoint applied to AGE directly, multiplicative linear decrease above). Correlated IIV on CLin and Vc; combined proportional + additive residual error (Long-Boyle 2015)."
-  reference   <- "Long-Boyle JR, Savic R, Yan S, Bartelink I, Musick L, French D, Law J, Horn B, Cowan MJ, Dvorak CC. Population Pharmacokinetics of Busulfan in Pediatric and Young Adult Patients Undergoing Hematopoietic Cell Transplant: A Model-Based Dosing Algorithm for Personalized Therapy and Implementation Into Routine Clinical Use. Ther Drug Monit. 2015;37(2):236-245. doi:10.1097/FTD.0000000000000131"
-  vignette    <- "LongBoyle_2015_busulfan"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Long-Boyle JR, Savic R, Yan S, Bartelink I, Musick L, French D, Law J, Horn B, Cowan MJ, Dvorak CC. Population Pharmacokinetics of Busulfan in Pediatric and Young Adult Patients Undergoing Hematopoietic Cell Transplant: A Model-Based Dosing Algorithm for Personalized Therapy and Implementation Into Routine Clinical Use. Ther Drug Monit. 2015;37(2):236-245. doi:10.1097/FTD.0000000000000131"
+  vignette <- "LongBoyle_2015_busulfan"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
@@ -14,36 +14,36 @@ LongBoyle_2015_busulfan <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CLin (exponent 0.75, fixed) and Vc (exponent 1, fixed) with reference weight 22 kg (cohort median). Treated as baseline (4-day busulfan course). Source range 3-101 kg (Long-Boyle 2015 Table 2).",
-      source_name        = "WT"
+      notes = "Allometric scaling on CLin (exponent 0.75, fixed) and Vc (exponent 1, fixed) with reference weight 22 kg (cohort median). Treated as baseline (4-day busulfan course). Source range 3-101 kg (Long-Boyle 2015 Table 2).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age in years",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hockey-stick effect on CLin with breakpoint fixed at 12 yrs (Long-Boyle 2015 p. 240 CLin equations). Below the breakpoint the multiplier is (1 + SL,bp * AGE) with SL,bp = 0.032 per yr applied to AGE directly (structural reference AGE = 0; the peak multiplier 1 + 0.032 * 12 = 1.384 occurs at the breakpoint). Above the breakpoint the multiplier is (1 + SL,bp * 12) * (1 + SL>bp * (AGE - 12)) with SL>bp = -0.0138 per yr, giving a slow decline back toward the structural baseline at higher ages. Source range 0.1-24 yrs (Long-Boyle 2015 Table 2).",
-      source_name        = "AGE"
+      notes = "Hockey-stick effect on CLin with breakpoint fixed at 12 yrs (Long-Boyle 2015 p. 240 CLin equations). Below the breakpoint the multiplier is (1 + SL,bp * AGE) with SL,bp = 0.032 per yr applied to AGE directly (structural reference AGE = 0; the peak multiplier 1 + 0.032 * 12 = 1.384 occurs at the breakpoint). Above the breakpoint the multiplier is (1 + SL,bp * 12) * (1 + SL>bp * (AGE - 12)) with SL>bp = -0.0138 per yr, giving a slow decline back toward the structural baseline at higher ages. Source range 0.1-24 yrs (Long-Boyle 2015 Table 2).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 90L,
-    n_studies      = 1L,
-    age_range      = "0.1-24 years",
-    age_median     = "7 years",
-    weight_range   = "3-101 kg",
-    weight_median  = "22 kg",
+    species = "human",
+    n_subjects = 90L,
+    n_studies = 1L,
+    age_range = "0.1-24 years",
+    age_median = "7 years",
+    weight_range = "3-101 kg",
+    weight_median = "22 kg",
     sex_female_pct = 41,
-    disease_state  = "Pediatric and young adult patients undergoing autologous or allogeneic hematopoietic cell transplantation (HCT) for malignant and nonmalignant pediatric disorders. Conditioning chemotherapy included busulfan plus one of: fludarabine + serotherapy (ATG or alemtuzumab); fludarabine + thiotepa + serotherapy; fludarabine + clofarabine + serotherapy; or melphalan + serotherapy. Seizure prophylaxis with lorazepam or levetiracetam.",
-    dose_range     = "Intravenous busulfan over a 2-hour infusion every 6 hours for 16 doses. Initial doses for 79 of 90 patients used the conventional weight-band nomogram: 1.1 mg/kg/dose for patients <=12 kg and 0.8 mg/kg/dose for patients >12 kg. In 11 patients a 0.5 mg/kg test dose 3-4 days before conditioning was used to estimate individual CL and select the first dose.",
-    regions        = "USA (single center: UCSF Benioff Children's Hospital, San Francisco)",
-    notes          = "Retrospective routine-TDM data collected at UCSF Benioff between January 2007 and April 2013 (Long-Boyle 2015 Methods and Table 2). 1165 quantifiable plasma busulfan concentrations in 90 subjects analyzed with NONMEM v7 FOCE-I. Baseline laboratory values (medians, Long-Boyle 2015 Table 2): serum creatinine 0.3 mg/dL (0.3-0.95), creatinine clearance 169 mL/min/m^2 (70-286), alkaline phosphatase 159 IU/L (46-1760), AST 30 IU/L (10-265), ALT 28 IU/L (5-525), total bilirubin 0.6 mg/dL (0.1-3.7). Therapeutic Css target 600-900 ng/mL (midpoint 750 ng/mL; AUC 4.5 mg.h/L over the 6-h interval)."
+    disease_state = "Pediatric and young adult patients undergoing autologous or allogeneic hematopoietic cell transplantation (HCT) for malignant and nonmalignant pediatric disorders. Conditioning chemotherapy included busulfan plus one of: fludarabine + serotherapy (ATG or alemtuzumab); fludarabine + thiotepa + serotherapy; fludarabine + clofarabine + serotherapy; or melphalan + serotherapy. Seizure prophylaxis with lorazepam or levetiracetam.",
+    dose_range = "Intravenous busulfan over a 2-hour infusion every 6 hours for 16 doses. Initial doses for 79 of 90 patients used the conventional weight-band nomogram: 1.1 mg/kg/dose for patients <=12 kg and 0.8 mg/kg/dose for patients >12 kg. In 11 patients a 0.5 mg/kg test dose 3-4 days before conditioning was used to estimate individual CL and select the first dose.",
+    regions = "USA (single center: UCSF Benioff Children's Hospital, San Francisco)",
+    notes = "Retrospective routine-TDM data collected at UCSF Benioff between January 2007 and April 2013 (Long-Boyle 2015 Methods and Table 2). 1165 quantifiable plasma busulfan concentrations in 90 subjects analyzed with NONMEM v7 FOCE-I. Baseline laboratory values (medians, Long-Boyle 2015 Table 2): serum creatinine 0.3 mg/dL (0.3-0.95), creatinine clearance 169 mL/min/m^2 (70-286), alkaline phosphatase 159 IU/L (46-1760), AST 30 IU/L (10-265), ALT 28 IU/L (5-525), total bilirubin 0.6 mg/dL (0.1-3.7). Therapeutic Css target 600-900 ng/mL (midpoint 750 ng/mL; AUC 4.5 mg.h/L over the 6-h interval)."
   )
 
   ini({

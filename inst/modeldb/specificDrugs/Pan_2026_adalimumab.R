@@ -41,18 +41,18 @@ Pan_2026_adalimumab <- function() {
   vignette <- "Pan_2026_adalimumab"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on both CL/F and V/F, normalised to 70 kg, with",
         "both exponents fixed a priori (0.75 on CL, 1 on V) rather than",
         "estimated (Pan 2026 Methods 2.2; Table 2 footnote b). Allowing the",
@@ -63,14 +63,14 @@ Pan_2026_adalimumab <- function() {
         "patient therefore has CL/F about 19% above the reference value.",
         "2.1% missing in the source cohort."
       ),
-      source_name        = "WEIGHT"
+      source_name = "WEIGHT"
     ),
     SEXF = list(
-      description        = "1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "The source dataset codes the opposite orientation: its GENDER column",
         "is 1 = male / 0 = female, and the Code S1 $PK block makes GENDER == 1",
         "the reference ('Most common') with the coefficient applied to",
@@ -83,14 +83,14 @@ Pan_2026_adalimumab <- function() {
         "opposite direction to the rheumatoid-arthritis study of Ternant 2015",
         "and is flagged as such in Pan 2026 Discussion 4.2."
       ),
-      source_name        = "GENDER"
+      source_name = "GENDER"
     ),
     WAIST = list(
-      description        = "Waist circumference measured at baseline.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Waist circumference measured at baseline.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL/F normalised to 101 cm: (WAIST/101)^0.888",
         "(Code S1 CLWAIST block; Table 2 'coeff waist on CL' = 0.888).",
         "101 cm is the cohort median (Table 1, range 46-165 cm), so this is a",
@@ -102,18 +102,18 @@ Pan_2026_adalimumab <- function() {
         "than a sentinel -- this model has no -99 branch, and a literal -99",
         "would raise a negative number to a fractional power."
       ),
-      source_name        = "WAIST"
+      source_name = "WAIST"
     ),
     CONC_ADA_AUML = list(
-      description        = paste(
+      description = paste(
         "Anti-drug-antibody level against adalimumab, measured by",
         "antigen-binding radioimmunoassay and reported on the assay's",
         "arbitrary-unit concentration scale."
       ),
-      units              = "AU/mL",
-      type               = "continuous",
+      units = "AU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL/F normalised to 76.03 AU/mL:",
         "(CONC_ADA_AUML/76.03)^0.368 (Code S1 CLARIA block; Table 2 'coeff",
         "ADA on CL' = 0.368). This is a quantitative concentration, NOT a",
@@ -132,14 +132,14 @@ Pan_2026_adalimumab <- function() {
         "Assay units are specific to this radioimmunoassay and are NOT",
         "convertible to ng/mL without the assay's own standard."
       ),
-      source_name        = "ARIA"
+      source_name = "ARIA"
     ),
     DIS_HYPERT = list(
-      description        = "1 = hypertension recorded in the medical history, 0 = not recorded.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = hypertension recorded in the medical history, 0 = not recorded.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hypertension)",
-      notes              = paste(
+      notes = paste(
         "Proportional increase in CL/F of 17.7% (Code S1 CLHYPE block, which",
         "makes HYPE == 0 the reference 'Most common'; Table 2 'coeff",
         "hypertension on CL' = 0.177). 23.2% of the cohort was hypertensive",
@@ -148,7 +148,7 @@ Pan_2026_adalimumab <- function() {
         "per se, noting that it survived backward elimination alongside both",
         "body weight and waist circumference."
       ),
-      source_name        = "HYPE"
+      source_name = "HYPE"
     )
   )
 
@@ -172,15 +172,21 @@ Pan_2026_adalimumab <- function() {
   # PALMS=DROP), and ethnicity (89.5% white, ETHNICITY=DROP).
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age at baseline", units = "year", type = "continuous",
+      description = "Age at baseline",
+      units = "year",
+      type = "continuous",
       notes = "Screened (Methods 2.2.1 demographics); not retained. Median 44.3 years, range 17.4-80.4 (Table 1). Marked AGE=DROP in the Code S1 $INPUT."
     ),
     BMI = list(
-      description = "Body mass index at baseline", units = "kg/m^2", type = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Screened (Methods 2.2.1 anthropometrics); not retained. Median 29.7, range 16.6-63, 13.4% missing (Table 1). Marked BMI=DROP in the Code S1 $INPUT. Correlated with WAIST, but the stepwise covariate model retained waist circumference on CL and rejected BMI -- which is why this model carries WAIST and not BMI."
     ),
     HT = list(
-      description = "Body height at baseline", units = "cm", type = "continuous",
+      description = "Body height at baseline",
+      units = "cm",
+      type = "continuous",
       notes = paste(
         "Read into the Code S1 $INPUT as HEIGHT but not used in any $PK",
         "expression; not retained. NOTE THE TOKEN COLLISION: this is the",
@@ -191,64 +197,72 @@ Pan_2026_adalimumab <- function() {
       )
     ),
     CREAT = list(
-      description = "Serum creatinine at baseline", units = "umol/L", type = "continuous",
+      description = "Serum creatinine at baseline",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened (Methods 2.2.1); not retained. Median 76 umol/L, range 42-149, 2.7% missing (Table 1). Marked CREATININE=DROP in the Code S1 $INPUT. The source quantity is serum creatinine, not a computed clearance, hence CREAT rather than CRCL."
     ),
     SMOKE = list(
-      description = "Current smoker", units = "(binary)", type = "binary",
+      description = "Current smoker",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened (Methods 2.2.1 lifestyle); not retained. 56.3% smokers, 2.5% missing (Table 1)."
     ),
     DIS_DIAB = list(
-      description = "Diabetes mellitus comorbidity", units = "(binary)", type = "binary",
+      description = "Diabetes mellitus comorbidity",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened (Methods 2.2.1 comorbidities); not retained. 17% of cohort (Table 1, 'DM'). Marked DIAB=DROP in the Code S1 $INPUT."
     ),
     PRIOR_BIO = list(
-      description = "Prior biologic exposure before adalimumab initiation", units = "(binary)", type = "binary",
+      description = "Prior biologic exposure before adalimumab initiation",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not retained. Table 1 reports the complement, 69.2% biologic-naive, so PRIOR_BIO = 1 for the remaining 30.8%. Marked BIO_NAIVE=DROP in the Code S1 $INPUT."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "adalimumab",
-      units    = "mg",
+      analyte = "adalimumab",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "adalimumab",
-      units    = "mg",
+      analyte = "adalimumab",
+      units = "mg",
       specimen = "serum",
       verified = TRUE
     ),
     pasi = list(
-      analyte  = "none",
-      units    = "PASI units (0-72 clinical score)",
+      analyte = "none",
+      units = "PASI units (0-72 clinical score)",
       specimen = "not applicable",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 543L,
-    n_studies      = 2L,
-    age_range      = "17.4-80.4 years",
-    age_median     = "44.3 years",
-    weight_range   = "42.6-170 kg",
-    weight_median  = "88.7 kg",
+    species = "human",
+    n_subjects = 543L,
+    n_studies = 2L,
+    age_range = "17.4-80.4 years",
+    age_median = "44.3 years",
+    weight_range = "42.6-170 kg",
+    weight_median = "88.7 kg",
     sex_female_pct = 36.8,
     race_ethnicity = c(White = 89.5, Other = 10.5),
-    disease_state  = "moderate-to-severe chronic plaque psoriasis",
-    dose_range     = paste(
+    disease_state = "moderate-to-severe chronic plaque psoriasis",
+    dose_range = paste(
       "Adalimumab 40 mg subcutaneously. Where administration dates were",
       "missing the standard label regimen was assumed: 80 mg loading dose,",
       "then 40 mg every 2 weeks starting 1 week after loading, with full",
       "adherence. No patient changed dose or dosing interval during the",
       "first treatment year."
     ),
-    regions        = "United Kingdom (60 participating centers)",
-    notes          = paste(
+    regions = "United Kingdom (60 participating centers)",
+    notes = paste(
       "Baseline demographics from Pan 2026 Table 1 (n = 544 met the",
       "inclusion criteria; 543 provided 946 PK samples and 539 provided",
       "1700 PASI measurements within the first treatment year).",

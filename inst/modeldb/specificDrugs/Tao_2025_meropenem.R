@@ -15,69 +15,69 @@ Tao_2025_meropenem <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Patient age at ICU admission",
-      units              = "years",
-      type               = "continuous",
+      description = "Patient age at ICU admission",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tao 2025 Table 1: median (IQR) 63.50 (46.50, 76.0) years; Results section 3.1 additionally reports mean (SD) 60.63 (18.37) years. Patients under 18 years were excluded. The centering constant 63.5 in the structural equation V = 4.47 * (AGE/63.5)^0.19 is exactly the Table 1 median age, which confirms the covariate is median-normalized rather than referenced to a rounded standard. Age was the ONLY covariate retained in the final model (Results section 3.3) and acts on volume of distribution only; it entered the base model on both CL and V for a 10.36-point OFV drop but was retained on V alone. Dosing simulations were run at 20, 40, 60, and 90 years (Methods section 2.5).",
-      source_name        = "Age"
+      notes = "Tao 2025 Table 1: median (IQR) 63.50 (46.50, 76.0) years; Results section 3.1 additionally reports mean (SD) 60.63 (18.37) years. Patients under 18 years were excluded. The centering constant 63.5 in the structural equation V = 4.47 * (AGE/63.5)^0.19 is exactly the Table 1 median age, which confirms the covariate is median-normalized rather than referenced to a rounded standard. Age was the ONLY covariate retained in the final model (Results section 3.3) and acts on volume of distribution only; it entered the base model on both CL and V for a 10.36-point OFV drop but was retained on V alone. Dosing simulations were run at 20, 40, 60, and 90 years (Methods section 2.5).",
+      source_name = "Age"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL and V; not retained. Tao 2025 Results section 3.3: 'potential clinical and demographic factors, including age, body weight, sex, serum creatinine, and renal function, were systematically evaluated for their impact on meropenem clearance and volume of distribution.' No weight summary is reported anywhere in the paper (Table 1 omits it), so no distribution is available."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL and V; not retained. Tao 2025 Results section 3.3: 'potential clinical and demographic factors, including age, body weight, sex, serum creatinine, and renal function, were systematically evaluated for their impact on meropenem clearance and volume of distribution.' No weight summary is reported anywhere in the paper (Table 1 omits it), so no distribution is available."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened on CL and V; not retained. Tao 2025 Results section 3.3. Table 1 reports 86 males (59.72%) and 58 females (40.28%) of n = 144."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened on CL and V; not retained. Tao 2025 Results section 3.3. Table 1 reports 86 males (59.72%) and 58 females (40.28%) of n = 144."
     ),
     CREAT = list(
       description = "Serum creatinine concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened on CL and V; not retained. Tao 2025 Results section 3.3. Table 1: median (IQR) 40.00 (22.00, 62.75) umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened on CL and V; not retained. Tao 2025 Results section 3.3. Table 1: median (IQR) 40.00 (22.00, 62.75) umol/L."
     ),
     CRCL = list(
       description = "Renal function (creatinine clearance / estimated glomerular filtration rate)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened and eliminated. Tao 2025 Results section 3.3: eGFR entered forward selection but 'during the backward elimination step, estimated glomerular filtration rate (eGFR) was excluded from the model.' Discussion notes the absence of a CrCL effect is attributable to the confounded age trend ('A notable trend of decreasing CrCL was observed as the age of patients increased'). Clinical dosing in the study was nevertheless adjusted by measured CrCL (Methods section 2.1), so CrCL influenced the observed data through the dosing regimen rather than through a model parameter."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened and eliminated. Tao 2025 Results section 3.3: eGFR entered forward selection but 'during the backward elimination step, estimated glomerular filtration rate (eGFR) was excluded from the model.' Discussion notes the absence of a CrCL effect is attributable to the confounded age trend ('A notable trend of decreasing CrCL was observed as the age of patients increased'). Clinical dosing in the study was nevertheless adjusted by measured CrCL (Methods section 2.1), so CrCL influenced the observed data through the dosing regimen rather than through a model parameter."
     ),
     GLU = list(
       description = "Serum glucose concentration",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened and eliminated. Tao 2025 Results section 3.3: 'The inclusion of estimated glucose (GLU) also resulted in a modest, but statistically significant, decrease of 2.16 points in the OFV', but age was 'the only covariate retained'. No glucose summary statistics are reported in the paper."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened and eliminated. Tao 2025 Results section 3.3: 'The inclusion of estimated glucose (GLU) also resulted in a modest, but statistically significant, decrease of 2.16 points in the OFV', but age was 'the only covariate retained'. No glucose summary statistics are reported in the paper."
     ),
     ALB = list(
       description = "Serum albumin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Recorded at baseline and at sampling (Methods section 2.1) but not reported as retained on any parameter. Tao 2025 Table 1 gives median (IQR) 32.00 (17.90, 39.80) with the unit printed as 'mg/L'; 32 mg/L is not a physiologic serum albumin concentration and the values are consistent with g/L, so the printed unit is taken to be a typographical error (see the vignette Errata)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Recorded at baseline and at sampling (Methods section 2.1) but not reported as retained on any parameter. Tao 2025 Table 1 gives median (IQR) 32.00 (17.90, 39.80) with the unit printed as 'mg/L'; 32 mg/L is not a physiologic serum albumin concentration and the values are consistent with g/L, so the printed unit is taken to be a typographical error (see the vignette Errata)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 144L,
-    n_studies        = 1L,
-    age_range        = "18 years and older (lower bound set by the exclusion criterion; no upper bound reported)",
-    age_median       = "63.50 years (IQR 46.50-76.0); mean (SD) 60.63 (18.37) years",
-    weight_range     = "Not reported (body weight was screened as a covariate but no summary statistics are given)",
-    sex_female_pct   = 40.28,
-    race_ethnicity   = "Not reported (single-center Chinese surgical ICU cohort)",
-    disease_state    = "Critically ill adults and elderly patients admitted to a surgical intensive care unit with Pseudomonas aeruginosa infections. SOFA and APACHE II scores were recorded at admission and at sampling but are not reported numerically. Patients receiving renal replacement therapy or extracorporeal membrane oxygenation during meropenem administration were excluded, as were patients under 18 years.",
-    dose_range       = "Meropenem 2000 mg IV loading dose over 30 min in all 144 patients (Table 1), immediately followed by 24-hour continuous infusion reconstituted three times per day. Maintenance dose 0.5 g in 45 patients (31.25%) and 1.0 g in 99 patients (68.75%); dosing interval q8h in 85 patients (59.03%) and q12h in 59 patients (40.97%). Clinical regimens were adjusted according to measured creatinine clearance.",
-    regions          = "China (single center: The Second Affiliated Hospital of Guizhou Medical University, Kaili, Guizhou). Surgical ICU admissions between 1 March 2023 and 1 October 2024.",
-    renal_function   = "Renal replacement therapy was an exclusion criterion. Serum creatinine median (IQR) 40.00 (22.00, 62.75) umol/L. eGFR was screened as a covariate and eliminated during backward elimination.",
+    species = "human",
+    n_subjects = 144L,
+    n_studies = 1L,
+    age_range = "18 years and older (lower bound set by the exclusion criterion; no upper bound reported)",
+    age_median = "63.50 years (IQR 46.50-76.0); mean (SD) 60.63 (18.37) years",
+    weight_range = "Not reported (body weight was screened as a covariate but no summary statistics are given)",
+    sex_female_pct = 40.28,
+    race_ethnicity = "Not reported (single-center Chinese surgical ICU cohort)",
+    disease_state = "Critically ill adults and elderly patients admitted to a surgical intensive care unit with Pseudomonas aeruginosa infections. SOFA and APACHE II scores were recorded at admission and at sampling but are not reported numerically. Patients receiving renal replacement therapy or extracorporeal membrane oxygenation during meropenem administration were excluded, as were patients under 18 years.",
+    dose_range = "Meropenem 2000 mg IV loading dose over 30 min in all 144 patients (Table 1), immediately followed by 24-hour continuous infusion reconstituted three times per day. Maintenance dose 0.5 g in 45 patients (31.25%) and 1.0 g in 99 patients (68.75%); dosing interval q8h in 85 patients (59.03%) and q12h in 59 patients (40.97%). Clinical regimens were adjusted according to measured creatinine clearance.",
+    regions = "China (single center: The Second Affiliated Hospital of Guizhou Medical University, Kaili, Guizhou). Surgical ICU admissions between 1 March 2023 and 1 October 2024.",
+    renal_function = "Renal replacement therapy was an exclusion criterion. Serum creatinine median (IQR) 40.00 (22.00, 62.75) umol/L. eGFR was screened as a covariate and eliminated during backward elimination.",
     n_concentrations = 144L,
-    notes            = "Limited PK sampling plus therapeutic drug monitoring data; 144 blood samples from 144 patients (approximately one sample per patient), drawn after a minimum of 6 h of meropenem therapy. Observed meropenem concentration median (IQR) 10.40 (3.39, 22.53) mg/L. Five samples (3.47%) were below the 0.1 mg/L LOQ and were handled by the M3 method. Assay LC-MS/MS, linear 0.1-100 mg/L. Estimation in Phoenix NLME 7.0 using FOCE with interaction; final-model OFV 873.81 for the one-compartment model versus 928.18 for the two-compartment model. Shrinkage 0.35 (Vd) and 0.12 (CL); condition number 10.93. Validated by 1000-replicate nonparametric bootstrap (Table 2) and prediction-corrected VPC (Figure 3)."
+    notes = "Limited PK sampling plus therapeutic drug monitoring data; 144 blood samples from 144 patients (approximately one sample per patient), drawn after a minimum of 6 h of meropenem therapy. Observed meropenem concentration median (IQR) 10.40 (3.39, 22.53) mg/L. Five samples (3.47%) were below the 0.1 mg/L LOQ and were handled by the M3 method. Assay LC-MS/MS, linear 0.1-100 mg/L. Estimation in Phoenix NLME 7.0 using FOCE with interaction; final-model OFV 873.81 for the one-compartment model versus 928.18 for the two-compartment model. Shrinkage 0.35 (Vd) and 0.12 (CL); condition number 10.93. Validated by 1000-replicate nonparametric bootstrap (Table 2) and prediction-corrected VPC (Figure 3)."
   )
 
   ini({

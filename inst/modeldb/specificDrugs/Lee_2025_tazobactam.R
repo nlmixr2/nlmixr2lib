@@ -19,23 +19,23 @@ Lee_2025_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Lee_2025_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Lee 2025 Section 4.2 (plasma samples
   # assayed by LC-MS/MS) and Section 2.2 (two-compartment structural model).
   compartmentData <- list(
-    central     = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the 2021 CKD-EPI creatinine equation, adjusted to the individual's body surface area (the source paper's 'CE' / 'BSA adjusted eGFR CKD-EPI_CR')",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the 2021 CKD-EPI creatinine equation, adjusted to the individual's body surface area (the source paper's 'CE' / 'BSA adjusted eGFR CKD-EPI_CR')",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL: (CRCL / 108.25)^theta2 with theta2 = 0.857",
         "(Lee 2025 Table 3). The reference 108.25 mL/min is the cohort median",
         "(Table 1 reports 108 mL/min, range 86.2-136). NOT normalised to",
@@ -47,14 +47,14 @@ Lee_2025_tazobactam <- function() {
         "creatinine eGFR; the printed equation is taken as authoritative.",
         "Removing it inflated IIV on CL from 17.6% to 6.95%."
       ),
-      source_name        = "CE (CKD-EPI_CR eGFR, BSA adjusted)"
+      source_name = "CE (CKD-EPI_CR eGFR, BSA adjusted)"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential effect on the peripheral volume V2:",
         "V2 = theta5 * exp(theta6 * (WT - 61.7)) with theta6 = 0.0145 per kg",
         "(Lee 2025 Table 3). The centering constant 61.7 kg is the cohort median",
@@ -63,28 +63,28 @@ Lee_2025_tazobactam <- function() {
         "form: it beat the power form by delta OFV = -0.539 at forward step 3",
         "(Table A2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "26-50 years (inclusion criteria 19-55 years)",
-    age_median     = "36.0 years",
-    weight_range   = "45.8-88.5 kg",
-    weight_median  = "61.7 kg",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "26-50 years (inclusion criteria 19-55 years)",
+    age_median = "36.0 years",
+    weight_range = "45.8-88.5 kg",
+    weight_median = "61.7 kg",
     sex_female_pct = 33.3,
     race_ethnicity = "Korean (all participants)",
-    disease_state  = "Healthy adults with no congenital or chronic health conditions; all baseline laboratory values within normal clinical ranges",
-    dose_range     = "Single 4 g piperacillin / 0.5 g tazobactam intravenous dose in 100 mL saline, infused over 30 min",
-    regions        = "Republic of Korea (Clinical Trial Center, Hallym University Sacred Heart Hospital, Anyang)",
+    disease_state = "Healthy adults with no congenital or chronic health conditions; all baseline laboratory values within normal clinical ranges",
+    dose_range = "Single 4 g piperacillin / 0.5 g tazobactam intravenous dose in 100 mL saline, infused over 30 min",
+    regions = "Republic of Korea (Clinical Trial Center, Hallym University Sacred Heart Hospital, Anyang)",
     renal_function = "Normal; CrCl (Cockcroft-Gault) 105 mL/min (76.2-146), BSA-adjusted CKD-EPI creatinine eGFR 108 mL/min (86.2-136)",
-    height_range   = "158-182 cm (median 168)",
-    lbm_range      = "36.6-65.9 kg (median 50.1)",
-    bsa_range      = "1.44-2.07 m^2 (median 1.71)",
-    notes          = paste(
+    height_range = "158-182 cm (median 168)",
+    lbm_range = "36.6-65.9 kg (median 50.1)",
+    bsa_range = "1.44-2.07 m^2 (median 1.71)",
+    notes = paste(
       "12 healthy Korean adults (8 male, 4 female) studied in January 2023;",
       "IRB 2022-08-006, trial registration KCT0009855. Rich sampling: pre-dose",
       "and 0.5, 0.75, 1, 2, 3 and 6 h after the start of the infusion, giving 84",

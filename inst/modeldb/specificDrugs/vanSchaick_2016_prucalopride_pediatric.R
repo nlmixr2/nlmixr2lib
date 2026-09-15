@@ -1,8 +1,8 @@
 vanSchaick_2016_prucalopride_pediatric <- function() {
   description <- "Two-compartment oral population PK model for prucalopride in children with functional constipation (van Schaick 2016), jointly fit to a richly sampled single-dose phase 1 study (PRU-USA-12) and a sparsely sampled multiple-dose phase 3 study (SPD555-303). Absorption is a dual sequential first-order process: a slow rate applies before a fixed cut-off time after each dose and a fast rate applies after it. CL and Q are allometrically scaled to body weight (fixed exponent 0.75) with a fixed Rhodin 2009 postmenstrual-age renal-maturation function on CL; Vc and Vp are allometrically scaled (fixed exponent 1.0). Typical CL, CL interindividual variability and residual error are study-specific."
-  reference   <- "van Schaick E, Benninga MA, Levine A, Magnusson M, Troy S. Development of a population pharmacokinetic model of prucalopride in children with functional constipation. Pharmacol Res Perspect. 2016;4(4):e00236. doi:10.1002/prp2.236"
-  vignette    <- "vanSchaick_2016_prucalopride_pediatric"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "van Schaick E, Benninga MA, Levine A, Magnusson M, Troy S. Development of a population pharmacokinetic model of prucalopride in children with functional constipation. Pharmacol Res Perspect. 2016;4(4):e00236. doi:10.1002/prp2.236"
+  vignette <- "vanSchaick_2016_prucalopride_pediatric"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Non-canonical IIV and residual-error names declared so
   # checkModelConventions() can distinguish deliberate study-specific
@@ -10,41 +10,41 @@ vanSchaick_2016_prucalopride_pediatric <- function() {
   # and the residual error are estimated separately per source study
   # (van Schaick 2016 Table 3), and the two absorption rate constants
   # carry separate fixed IIVs inherited from the adult model.
-  paper_specific_etas         <- c("etalcl_pru", "etalcl_spd", "etalka_early", "etalka_late")
+  paper_specific_etas <- c("etalcl_pru", "etalcl_spd", "etalka_early", "etalka_late")
   paper_specific_residual_sds <- c("expSdPRU", "expSdSPD")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "prucalopride", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "prucalopride", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "prucalopride", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "prucalopride", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "prucalopride", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for standard allometric scaling on CL and Q (fixed exponent 3/4, van Schaick 2016 equation 2) and on Vc and Vp (fixed exponent 1, equation 3), reference 70 kg. Cohort medians 27.9 kg (PRU-USA-12) and 24.0 kg (SPD555-303); pooled range 11.0-110.0 kg (Table 2).",
-      source_name        = "WT"
+      notes = "Used for standard allometric scaling on CL and Q (fixed exponent 3/4, van Schaick 2016 equation 2) and on Vc and Vp (fixed exponent 1, equation 3), reference 70 kg. Cohort medians 27.9 kg (PRU-USA-12) and 24.0 kg (SPD555-303); pooled range 11.0-110.0 kg (Table 2).",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "van Schaick 2016 defines postmenstrual age as calculated age in weeks at start of treatment plus 40 weeks gestational age (Methods 'Structural model components', Table 2 footnote). Drives the fixed Rhodin 2009 renal-maturation Hill function on CL (equation 4), which is defined in WEEKS of PMA; the canonical PAGE unit is months, so model() converts as PMA_weeks = PAGE * 4.35 (same handling as LlanosPaez_2020_gentamicin.R). Cohort medians 9.3 years (PRU-USA-12) and 8.6 years (SPD555-303); pooled range approximately 2.4-18.8 years PMA (Table 2).",
-      source_name        = "PMA"
+      notes = "van Schaick 2016 defines postmenstrual age as calculated age in weeks at start of treatment plus 40 weeks gestational age (Methods 'Structural model components', Table 2 footnote). Drives the fixed Rhodin 2009 renal-maturation Hill function on CL (equation 4), which is defined in WEEKS of PMA; the canonical PAGE unit is months, so model() converts as PMA_weeks = PAGE * 4.35 (same handling as LlanosPaez_2020_gentamicin.R). Cohort medians 9.3 years (PRU-USA-12) and 8.6 years (SPD555-303); pooled range approximately 2.4-18.8 years PMA (Table 2).",
+      source_name = "PMA"
     ),
     STUDY_SPD555303 = list(
-      description        = "Source-study cohort indicator (1 = SPD555-303 phase 3 multiple-dose study, 0 = PRU-USA-12 phase 1 single-dose study)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Source-study cohort indicator (1 = SPD555-303 phase 3 multiple-dose study, 0 = PRU-USA-12 phase 1 single-dose study)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (PRU-USA-12 phase 1 single-dose study)",
-      notes              = "Switches between the study-specific typical clearances (CL_PRU-USA-12 = 22.9 vs CL_SPD555-303 = 20.1 L/h/70 kg), their study-specific IIVs (omega^2 0.0151 vs 0.1191) and the study-specific log-scale residual SDs (0.142 vs 0.35); see van Schaick 2016 Table 3. Set STUDY_SPD555303 = 1 to reproduce the paper's own dosing simulations, which the paper states were 'performed with clearance based on SPD555-303' (Results, 'Simulated plasma concentration-time profiles').",
-      source_name        = "derived"
+      notes = "Switches between the study-specific typical clearances (CL_PRU-USA-12 = 22.9 vs CL_SPD555-303 = 20.1 L/h/70 kg), their study-specific IIVs (omega^2 0.0151 vs 0.1191) and the study-specific log-scale residual SDs (0.142 vs 0.35); see van Schaick 2016 Table 3. Set STUDY_SPD555303 = 1 to reproduce the paper's own dosing simulations, which the paper states were 'performed with clearance based on SPD555-303' (Results, 'Simulated plasma concentration-time profiles').",
+      source_name = "derived"
     )
   )
 
@@ -55,34 +55,34 @@ vanSchaick_2016_prucalopride_pediatric <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Calculated (chronological) age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Listed in Methods 'Structural model components' among the covariates 'considered in the analysis because they were expected to impact the pharmacokinetics of prucalopride', and plotted against the random effects in Figure 4A / Figure S2. Not retained: the paper concludes 'the allometric relationships between CL, V2, and V3 and body weight adequately accounted for body size and age in this pediatric population'. Age enters the final model only indirectly, through PAGE in the maturation term."
+      units = "years",
+      type = "continuous",
+      notes = "Listed in Methods 'Structural model components' among the covariates 'considered in the analysis because they were expected to impact the pharmacokinetics of prucalopride', and plotted against the random effects in Figure 4A / Figure S2. Not retained: the paper concludes 'the allometric relationships between CL, V2, and V3 and body weight adequately accounted for body size and age in this pediatric population'. Age enters the final model only indirectly, through PAGE in the maturation term."
     ),
     CRCL = list(
       description = "Creatinine clearance (Schwartz 1976 as adjusted for body weight by Rowland and Tozer 2010)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened via van Schaick 2016 equation 1, CrCL[mL/min] = 42.5 * Height[cm] / SerumCreatinine[umol/L] * (WT[kg]/70)^0.7 -- raw, NOT BSA-normalized. Cohort means 82.8 (PRU-USA-12) and 71.9 mL/min (SPD555-303), pooled range 27.9-180.0 (Table 2). Plotted against the random effects in Figure 4C / Figure S2 but not retained in the final model; no point estimate for a CrCL effect is reported anywhere in the paper."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened via van Schaick 2016 equation 1, CrCL[mL/min] = 42.5 * Height[cm] / SerumCreatinine[umol/L] * (WT[kg]/70)^0.7 -- raw, NOT BSA-normalized. Cohort means 82.8 (PRU-USA-12) and 71.9 mL/min (SPD555-303), pooled range 27.9-180.0 (Table 2). Plotted against the random effects in Figure 4C / Figure S2 but not retained in the final model; no point estimate for a CrCL effect is reported anywhere in the paper."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 175L,
-    n_studies      = 2L,
-    age_range      = "4.0-12.0 years (PRU-USA-12); 1.7-18.0 years (SPD555-303)",
-    age_median     = "8.5 years (PRU-USA-12); 7.9 years (SPD555-303)",
-    weight_range   = "15.0-61.0 kg (PRU-USA-12); 11.0-110.0 kg (SPD555-303)",
-    weight_median  = "27.9 kg (PRU-USA-12); 24.0 kg (SPD555-303)",
+    species = "human",
+    n_subjects = 175L,
+    n_studies = 2L,
+    age_range = "4.0-12.0 years (PRU-USA-12); 1.7-18.0 years (SPD555-303)",
+    age_median = "8.5 years (PRU-USA-12); 7.9 years (SPD555-303)",
+    weight_range = "15.0-61.0 kg (PRU-USA-12); 11.0-110.0 kg (SPD555-303)",
+    weight_median = "27.9 kg (PRU-USA-12); 24.0 kg (SPD555-303)",
     sex_female_pct = 52.6,
     race_ethnicity = "Not reported",
-    disease_state  = "Functional constipation",
-    dose_range     = "PRU-USA-12: single oral dose of prucalopride 0.03 mg/kg (0.02 mg/kg in one patient) as a 0.2 mg/mL oral solution. SPD555-303: prucalopride 0.04 mg/kg once daily for body weight <= 50 kg (maximum 2 mg), titratable to 0.06 mg/kg for insufficient response or down to 0.02 mg/kg for tolerability, as a 0.4 mg/mL oral solution or 2 mg tablet.",
-    regions        = "Not reported (PRU-USA-12 conducted in the USA; SPD555-303 was a multinational phase 3 trial, NCT01330381)",
+    disease_state = "Functional constipation",
+    dose_range = "PRU-USA-12: single oral dose of prucalopride 0.03 mg/kg (0.02 mg/kg in one patient) as a 0.2 mg/mL oral solution. SPD555-303: prucalopride 0.04 mg/kg once daily for body weight <= 50 kg (maximum 2 mg), titratable to 0.06 mg/kg for insufficient response or down to 0.02 mg/kg for tolerability, as a 0.4 mg/mL oral solution or 2 mg tablet.",
+    regions = "Not reported (PRU-USA-12 conducted in the USA; SPD555-303 was a multinational phase 3 trial, NCT01330381)",
     postmenstrual_age_range = "Approximately 2.4-18.8 years PMA across both studies (calculated age plus 40 weeks gestational age; Table 2)",
     samples_plasma = "PRU-USA-12: 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 18, 24, 48 and 72 h post-dose, mean 12.6 samples per patient. SPD555-303: one sample 1-3 h after the first dose plus two steady-state samples 14-26 h post-dose at weeks 8 and 24.",
-    notes          = "Demographics from van Schaick 2016 Table 2. n_subjects is the pooled PK dataset (38 in PRU-USA-12 + 137 in SPD555-303) per Table 1 'Number of patients in PK dataset', Table 2 and Table 4; note that the Results section 'Available data' instead describes the final analysis dataset as '481 records from 38 of 38 patients in PRU-USA-12, and 244 records from 106 of 107 randomized patients in SPD555-303', an internal inconsistency in the paper that is not resolved by any other reported figure. sex_female_pct is the pooled value (13 of 38 = 34.2% in PRU-USA-12 and 79 of 137 = 57.7% in SPD555-303; 92 of 175 = 52.6% pooled). Assay was radioimmunoassay with LLOQ 0.1 ng/mL in PRU-USA-12 and LC-MS/MS with LLOQ 0.2 ng/mL in SPD555-303; below-LLOQ observations were excluded rather than modelled. Estimation by FOCE with interaction. The absorption parameters (Ka1, Ka2, MTIME, their IIVs) and the relative bioavailability F1 = 0.858 were fixed to previously estimated adult values ('data on file'), not estimated here."
+    notes = "Demographics from van Schaick 2016 Table 2. n_subjects is the pooled PK dataset (38 in PRU-USA-12 + 137 in SPD555-303) per Table 1 'Number of patients in PK dataset', Table 2 and Table 4; note that the Results section 'Available data' instead describes the final analysis dataset as '481 records from 38 of 38 patients in PRU-USA-12, and 244 records from 106 of 107 randomized patients in SPD555-303', an internal inconsistency in the paper that is not resolved by any other reported figure. sex_female_pct is the pooled value (13 of 38 = 34.2% in PRU-USA-12 and 79 of 137 = 57.7% in SPD555-303; 92 of 175 = 52.6% pooled). Assay was radioimmunoassay with LLOQ 0.1 ng/mL in PRU-USA-12 and LC-MS/MS with LLOQ 0.2 ng/mL in SPD555-303; below-LLOQ observations were excluded rather than modelled. Estimation by FOCE with interaction. The absorption parameters (Ka1, Ka2, MTIME, their IIVs) and the relative bioavailability F1 = 0.858 were fixed to previously estimated adult values ('data on file'), not estimated here."
   )
 
   ini({

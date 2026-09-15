@@ -17,85 +17,100 @@ Jiao_2008_mycophenolic_acid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "mycophenolate mofetil (MMF)", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_mpag     = list(analyte = "7-O-glucuronide metabolite (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
-    gallbladder_mpag = list(analyte = "7-O-glucuronide metabolite (MPAG)", units = "mg", specimen = "bile", verified = FALSE)
+    depot = list(
+      analyte = "mycophenolate mofetil (MMF)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mpag = list(
+      analyte = "7-O-glucuronide metabolite (MPAG)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    gallbladder_mpag = list(
+      analyte = "7-O-glucuronide metabolite (MPAG)",
+      units = "mg",
+      specimen = "bile",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a linear-proportional ('slope without intercept') scalar on CL_MPA/F, Q/F, and V_3/F per Jiao 2008 Methods Eq 5: P_i = theta1 * (WT_i / WT_m), with reference WT_m = 65.5 kg (cohort median; Table 1). Encoded with a fixed allometric exponent of 1, i.e. exponent fixed at the value implied by Eq 5. The paper screened a linear-with-intercept form (Eq 6) and a power form (Eq 7); Results: 'the slope linear model without intercept was selected according to the OFV value'. Inclusion of WT reduced IIV on Q/F, V_3/F and CL_MPA/F by 26.5%, 34.8% and 15.9% respectively (Results).",
-      source_name        = "WT"
+      notes = "Used as a linear-proportional ('slope without intercept') scalar on CL_MPA/F, Q/F, and V_3/F per Jiao 2008 Methods Eq 5: P_i = theta1 * (WT_i / WT_m), with reference WT_m = 65.5 kg (cohort median; Table 1). Encoded with a fixed allometric exponent of 1, i.e. exponent fixed at the value implied by Eq 5. The paper screened a linear-with-intercept form (Eq 6) and a power form (Eq 7); Results: 'the slope linear model without intercept was selected according to the OFV value'. Inclusion of WT reduced IIV on Q/F, V_3/F and CL_MPA/F by 26.5%, 34.8% and 15.9% respectively (Results).",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the GAM and stepwise covariate analysis (Methods) but not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the GAM and stepwise covariate analysis (Methods) but not retained in the final model."
     ),
     HT = list(
       description = "Height (m).",
-      units       = "m",
-      type        = "continuous",
-      notes       = "Screened in the GAM and stepwise covariate analysis (Methods) but not retained in the final model."
+      units = "m",
+      type = "continuous",
+      notes = "Screened in the GAM and stepwise covariate analysis (Methods) but not retained in the final model."
     ),
     CREAT = list(
       description = "Serum creatinine (umol/L).",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened in the GAM analysis; only CRCL (derived from CREAT) was carried into the stepwise procedure, and CRCL was rejected in the final model (effect on CLMPAG/F was not retained)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened in the GAM analysis; only CRCL (derived from CREAT) was carried into the stepwise procedure, and CRCL was rejected in the final model (effect on CLMPAG/F was not retained)."
     ),
     ALB = list(
       description = "Serum albumin (g/L).",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened in the GAM and stepwise covariate analysis but not retained in the final model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened in the GAM and stepwise covariate analysis but not retained in the final model."
     ),
     HGB = list(
       description = "Haemoglobin (g/L).",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened in the GAM and stepwise covariate analysis but not retained in the final model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened in the GAM and stepwise covariate analysis but not retained in the final model."
     ),
     CRCL = list(
       description = "Creatinine clearance by Cockcroft-Gault (mL/min).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened in the GAM (identified as influential on CLMPAG/F) but not retained in the final stepwise / backwards-elimination model; weight on CL_MPA/F, Q/F and V_3/F dominated the OFV reduction (Results)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened in the GAM (identified as influential on CLMPAG/F) but not retained in the final stepwise / backwards-elimination model; weight on CL_MPA/F, Q/F and V_3/F dominated the OFV reduction (Results)."
     ),
     UGT1A9 = list(
       description = "UGT1A9 promoter / coding-region single-nucleotide polymorphism panel: -2208C/T, -2152C/T, -2141C/T, -1887T/G, -1818T/C, -665C/T, -440T/C, -331C/T, -275T/A, -109_-98 T(n) insertion, -87G/A, +98T/C (UGT1A9*3).",
-      units       = "categorical (per-SNP allele)",
-      type        = "categorical",
-      notes       = "Genotyped per Methods and tested for an effect on CLMPA/F via Eq 8 (paper notation). Polymorphisms of UGT1A9 did not show any influence on CLMPA/F (Results: '-275T/A and -2152C/T polymorphisms were not found in this study cohort and only one individual was identified as a carrier of a functional UGT1A9*3 allele'). Not retained in the final model."
+      units = "categorical (per-SNP allele)",
+      type = "categorical",
+      notes = "Genotyped per Methods and tested for an effect on CLMPA/F via Eq 8 (paper notation). Polymorphisms of UGT1A9 did not show any influence on CLMPA/F (Results: '-275T/A and -2152C/T polymorphisms were not found in this study cohort and only one individual was identified as a carrier of a functional UGT1A9*3 allele'). Not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 2L,
     n_observations = "590 MPA + 589 MPAG plasma concentrations (Results).",
-    age_range      = "19-26 years",
-    age_median     = "21 years (Table 1)",
-    weight_range   = "56.5-89.0 kg",
-    weight_median  = "65.5 kg (Table 1)",
+    age_range = "19-26 years",
+    age_median = "21 years (Table 1)",
+    weight_range = "56.5-89.0 kg",
+    weight_median = "65.5 kg (Table 1)",
     sex_female_pct = 0,
     race_ethnicity = "Chinese (100%)",
-    disease_state  = "Healthy adult male volunteers.",
-    dose_range     = "Single 0.5 g (500 mg) oral dose of mycophenolate mofetil (MMF, Cellcept 0.25 g capsules, Shanghai Roche) given as two 0.25 g test or two 0.25 g reference formulations after an overnight (>= 10 h) fast.",
-    regions        = "China (Huashan Hospital, Fudan University, Shanghai).",
-    sampling_window= "Predose and 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36, 48 h postdose (study 1); predose and 0.17, 0.33, 0.5, 0.75, 1, 2, 3, 4, 5, 6, 8, 10, 12, 24, 36, 48 h postdose (study 2). Standardized lunch at 4 h post-dose in both studies; standardized dinner at 10 h (study 1) or 9.5 h (study 2); next-day breakfast at 24.25 h.",
-    notes          = "Pharmacokinetic data pooled across two open-label, single-dose, randomized crossover bioequivalence studies (20 + 22 healthy volunteers). Only the Cellcept reference-formulation concentration-time data were used for the population EHC model. UGT1A9 genotype distribution given in Table 2: -2208, -2152, -2141, -665, -275 were monomorphic; -1818 T/T 23.8%, T/C 47.6%, C/C 28.6%; -1887 T/T 83.3%, T/G 14.3%, G/G 2.4%; -440/-331 in linkage with -440 T/C 4.8%, C/C 95.2% / -331 C/T 4.8%, T/T 95.2%; -109_-98 T(n) 9/9 47.6%, 9/10 4.8%, 10/10 47.6%; -87 G/G 97.6%, G/A 2.4%; +98 (UGT1A9*3) T/T 97.6%, T/C 2.4%. Estimation: first-order conditional with interaction (FOCE-I) for the final-model estimates reported in Table 3."
+    disease_state = "Healthy adult male volunteers.",
+    dose_range = "Single 0.5 g (500 mg) oral dose of mycophenolate mofetil (MMF, Cellcept 0.25 g capsules, Shanghai Roche) given as two 0.25 g test or two 0.25 g reference formulations after an overnight (>= 10 h) fast.",
+    regions = "China (Huashan Hospital, Fudan University, Shanghai).",
+    sampling_window = "Predose and 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36, 48 h postdose (study 1); predose and 0.17, 0.33, 0.5, 0.75, 1, 2, 3, 4, 5, 6, 8, 10, 12, 24, 36, 48 h postdose (study 2). Standardized lunch at 4 h post-dose in both studies; standardized dinner at 10 h (study 1) or 9.5 h (study 2); next-day breakfast at 24.25 h.",
+    notes = "Pharmacokinetic data pooled across two open-label, single-dose, randomized crossover bioequivalence studies (20 + 22 healthy volunteers). Only the Cellcept reference-formulation concentration-time data were used for the population EHC model. UGT1A9 genotype distribution given in Table 2: -2208, -2152, -2141, -665, -275 were monomorphic; -1818 T/T 23.8%, T/C 47.6%, C/C 28.6%; -1887 T/T 83.3%, T/G 14.3%, G/G 2.4%; -440/-331 in linkage with -440 T/C 4.8%, C/C 95.2% / -331 C/T 4.8%, T/T 95.2%; -109_-98 T(n) 9/9 47.6%, 9/10 4.8%, 10/10 47.6%; -87 G/G 97.6%, G/A 2.4%; +98 (UGT1A9*3) T/T 97.6%, T/C 2.4%. Estimation: first-order conditional with interaction (FOCE-I) for the final-model estimates reported in Table 3."
   )
 
   # Implementation notes (see vignette Assumptions and deviations for the

@@ -28,17 +28,17 @@ Keij_2023_amoxicillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "amoxicillin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "amoxicillin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current (not birth) body weight of the neonate.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current (not birth) body weight of the neonate.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BW ('current bodyweight'). Enters both clearance and",
         "central volume as an allometric power term normalized to 70 kg",
         "(Keij 2023 Table 2 equations and Table 2 footnote: 'Current",
@@ -55,14 +55,14 @@ Keij_2023_amoxicillin <- function() {
         "The neonatal cohort range is 0.5-5.0 kg, so simulations far above",
         "that range are extrapolation."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PNA = list(
-      description        = "Postnatal (chronological) age since birth.",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal (chronological) age since birth.",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Keij 2023 reports postnatal age in DAYS (Table 2 clearance equation",
         "uses (PNA / 6.8) with PNA in days; the 6.8-day reference is the",
         "pooled dataset median per the Table 2 footnote 'Both postnatal age",
@@ -80,14 +80,14 @@ Keij_2023_amoxicillin <- function() {
         "(0.0329 months) when simulating. Studied range was PNA 0-59 days",
         "(pooled median 1 day, IQR 0-4; the SATT cohort extends to 59 days)."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     ),
     GA = list(
-      description        = "Gestational age at birth. Time-fixed per subject.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth. Time-fixed per subject.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance as (GA / 35.8)^2.37, where 35.8 weeks is the",
         "pooled dataset median gestational age quoted in the Keij 2023",
         "abstract and used as the centering value in the Table 2 clearance",
@@ -100,7 +100,7 @@ Keij_2023_amoxicillin <- function() {
         "a 25-week neonate has roughly one fifth the size-normalized",
         "clearance of a 41-week neonate."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     )
   )
 
@@ -109,11 +109,11 @@ Keij_2023_amoxicillin <- function() {
   # estimates exist for these, so they carry no effect in model().
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Tested as a categorical covariate (proportional model) during",
         "stepwise forward inclusion / backward elimination and not retained",
         "in the final model (Keij 2023 Results, 'Final Population",
@@ -121,14 +121,14 @@ Keij_2023_amoxicillin <- function() {
         "ETACL boxplots). Cohort was 42.9% female (Table 1). No point",
         "estimate is published, so no effect is encoded."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested as a continuous covariate and not retained: the authors",
         "found that GA and PNA entered SEPARATELY described maturation of",
         "amoxicillin clearance better than the combined postmenstrual-age",
@@ -137,26 +137,26 @@ Keij_2023_amoxicillin <- function() {
         "weeks [IQR 31.9-40.71] (Table 1). No point estimate is published,",
         "so no effect is encoded."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 261,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 261,
+    n_studies = 3,
     n_observations = 938,
-    age_range      = "postnatal age 0-59 days (pooled median 1 day, IQR 0-4)",
-    ga_range       = "gestational age 24.9-42.4 weeks (median 35.8 weeks per the abstract; Table 1 reports median 37.4 weeks, IQR 31.7-39.86)",
-    pma_range      = "postmenstrual age median 38.29 weeks (IQR 31.9-40.71)",
-    weight_range   = "0.5-5.0 kg",
-    weight_median  = "2.6 kg (IQR 1.6-3.5)",
+    age_range = "postnatal age 0-59 days (pooled median 1 day, IQR 0-4)",
+    ga_range = "gestational age 24.9-42.4 weeks (median 35.8 weeks per the abstract; Table 1 reports median 37.4 weeks, IQR 31.7-39.86)",
+    pma_range = "postmenstrual age median 38.29 weeks (IQR 31.9-40.71)",
+    weight_range = "0.5-5.0 kg",
+    weight_median = "2.6 kg (IQR 1.6-3.5)",
     sex_female_pct = 42.9,
-    disease_state  = "preterm and term neonates treated for possible serious bacterial infection (pSBI)",
-    dose_range     = "intravenous median 50 mg/kg/dose (range 9.4-112.9); oral median 78.9 mg/kg/dose (range 23.4-100)",
-    routes         = "oral (79 neonates, 123 concentrations) and intravenous (182 neonates, 815 concentrations); 7 patients switched IV to oral",
-    regions        = "The Netherlands (RAIN and Maastricht cohorts) and Pakistan (SATT cohort, Karachi)",
-    notes          = paste(
+    disease_state = "preterm and term neonates treated for possible serious bacterial infection (pSBI)",
+    dose_range = "intravenous median 50 mg/kg/dose (range 9.4-112.9); oral median 78.9 mg/kg/dose (range 23.4-100)",
+    routes = "oral (79 neonates, 123 concentrations) and intravenous (182 neonates, 815 concentrations); 7 patients switched IV to oral",
+    regions = "The Netherlands (RAIN and Maastricht cohorts) and Pakistan (SATT cohort, Karachi)",
+    notes = paste(
       "Pooled analysis of three datasets (Keij 2023 Table 1): (1) RAIN",
       "(Reduction of intravenous Antibiotics In Neonates), n = 39, oral,",
       "PMA >= 35 weeks and weight >= 2 kg, all co-administered",

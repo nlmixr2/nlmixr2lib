@@ -15,42 +15,42 @@ Schoenmakers_2025_betamethasone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "betamethasone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "betamethasone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "betamethasone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "betamethasone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "betamethasone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DIS_EOPE = list(
-      description        = "Binary indicator of early-onset pre-eclampsia (eoPE; diagnosed before 34 weeks gestation); 1 = eoPE present, 0 = not eoPE.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator of early-onset pre-eclampsia (eoPE; diagnosed before 34 weeks gestation); 1 = eoPE present, 0 = not eoPE.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no eoPE; pregnant woman with imminent preterm birth and no pre-eclampsia at the time of betamethasone administration)",
-      notes              = "Time-fixed per subject. The Schoenmakers 2025 final model multiplies CL/F by ThetaPE = 0.617 (Eq 2 with the categorical-indicator form) when eoPE is present, giving a 38% reduction in apparent clearance (non-eoPE CL/F = 15.6 L/h; eoPE CL/F = 15.6 x 0.617 ~= 9.6 L/h, matching the abstract's reported 9.35 L/h vs 15.78 L/h median individual estimates). The source dataset cohort was 23 non-eoPE women + 5 eoPE women drawn from a single Dutch obstetric centre between January and October 2021.",
-      source_name        = "DIS_EOPE"
+      notes = "Time-fixed per subject. The Schoenmakers 2025 final model multiplies CL/F by ThetaPE = 0.617 (Eq 2 with the categorical-indicator form) when eoPE is present, giving a 38% reduction in apparent clearance (non-eoPE CL/F = 15.6 L/h; eoPE CL/F = 15.6 x 0.617 ~= 9.6 L/h, matching the abstract's reported 9.35 L/h vs 15.78 L/h median individual estimates). The source dataset cohort was 23 non-eoPE women + 5 eoPE women drawn from a single Dutch obstetric centre between January and October 2021.",
+      source_name = "DIS_EOPE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
     n_observations = 194L,
-    age_range      = "21-41 years",
-    age_median     = "31 years",
-    weight_range   = "50-121 kg",
-    weight_median  = "68 kg",
+    age_range = "21-41 years",
+    age_median = "31 years",
+    weight_range = "50-121 kg",
+    weight_median = "68 kg",
     sex_female_pct = 100,
     race_ethnicity = NULL,
-    ga_range       = "23+5 to 33+6 weeks (gestational age at first betamethasone dose)",
-    ga_median      = "27+4 weeks",
-    disease_state  = paste(
+    ga_range = "23+5 to 33+6 weeks (gestational age at first betamethasone dose)",
+    ga_median = "27+4 weeks",
+    disease_state = paste(
       "Pregnant women admitted with imminent preterm birth and treated with",
       "intramuscular betamethasone for foetal lung maturation. Subgroups:",
       "23 women without pre-eclampsia and 5 women with early-onset",
       "pre-eclampsia (eoPE; pre-eclampsia diagnosed < 34 weeks gestation)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Celestone Chronodose 11.4 mg intramuscular betamethasone (6 mg betamethasone",
       "sodium phosphate + 5.4 mg betamethasone acetate, an instant-release plus",
       "depot-prodrug combination) given once daily for 2 consecutive days (2 doses",
@@ -58,8 +58,8 @@ Schoenmakers_2025_betamethasone <- function() {
       "absorption Ka because active betamethasone, not the prodrug esters, was",
       "measured."
     ),
-    regions        = "Netherlands (Erasmus University Medical Center, Rotterdam; single-centre study, MEC-2019-0650)",
-    notes          = paste(
+    regions = "Netherlands (Erasmus University Medical Center, Rotterdam; single-centre study, MEC-2019-0650)",
+    notes = paste(
       "Demographics from Schoenmakers 2025 Table 1 (n = 28 women contributing",
       "194 maternal serum samples; samples taken pre-dose and at 0-0.5, 1-3,",
       "5-8, 10-12, and 20-24 h after each of the two doses). 8 samples were",

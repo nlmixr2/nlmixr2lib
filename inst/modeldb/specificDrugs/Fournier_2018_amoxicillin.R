@@ -21,20 +21,20 @@ Fournier_2018_amoxicillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Cockcroft-Gault creatinine clearance (raw mL/min, NOT",
         "BSA-normalized)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CL_CR. Computed by the Cockcroft-Gault equation in",
         "raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under",
         "the canonical CRCL column per inst/references/covariate-columns.md",
@@ -53,16 +53,16 @@ Fournier_2018_amoxicillin <- function() {
         "65-150) with augmented CRCL (>150 mL/min) in 25% of patients",
         "(Fournier 2018 Table 1 and Results paragraph 1)."
       ),
-      source_name        = "CL_CR"
+      source_name = "CL_CR"
     ),
     WT = list(
-      description        = paste(
+      description = paste(
         "Actual body weight at the time of amoxicillin sampling."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BW. Time-varying within the amoxicillin therapy",
         "window in principle, but Fournier 2018 reports limited",
         "intraindividual change (median -2.3%; minimum -11.4%, maximum",
@@ -72,16 +72,16 @@ Fournier_2018_amoxicillin <- function() {
         "V1 only. Body weight on admission ranged from 60 to 132 kg",
         "(Results paragraph 1; Table 1 median 72.4 kg, IQR 67.0-83.6)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex (binary; 1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Cohort 16 male / 5 female (Fournier 2018 Table 1: 76.2% male).",
         "Screened in the stepwise covariate analysis (Methods 'Population",
         "PK model building'); not retained in the final model."
@@ -89,18 +89,18 @@ Fournier_2018_amoxicillin <- function() {
     ),
     BSA_BURN = list(
       description = "Total burnt body surface area (percentage of TBSA).",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Cohort median TBSA 23% (IQR 12.5-44; Fournier 2018 Table 1).",
         "Screened, not retained in the final model."
       )
     ),
     ALBUMIN = list(
       description = "Serum albumin concentration.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened in the stepwise covariate analysis (Methods 'Population",
         "PK model building'); not retained in the final model. Concentration",
         "value not tabulated in the paper."
@@ -108,9 +108,9 @@ Fournier_2018_amoxicillin <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine concentration.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened in the stepwise covariate analysis (Methods 'Population",
         "PK model building'); not retained in the final model (CRCL was",
         "retained instead)."
@@ -118,9 +118,9 @@ Fournier_2018_amoxicillin <- function() {
     ),
     WT_ADM = list(
       description = "Body weight on admission to the burn ICU.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Median admission BW 72.4 kg (IQR 67.0-83.6; range 60-132;",
         "Fournier 2018 Table 1 and Results paragraph 1). Screened",
         "alongside time-varying actual BW (used as WT); not retained as",
@@ -131,9 +131,9 @@ Fournier_2018_amoxicillin <- function() {
       description = paste(
         "Body weight gain since admission, defined as max(0, BW - BW_ADM)."
       ),
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Hinge-style covariate tested in the forward selection (Methods",
         "'Population PK model building'); not retained in the final model."
       )
@@ -142,9 +142,9 @@ Fournier_2018_amoxicillin <- function() {
       description = paste(
         "Body weight loss since admission, defined as max(0, BW_ADM - BW)."
       ),
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Hinge-style covariate tested in the forward selection (Methods",
         "'Population PK model building'); not retained in the final model."
       )
@@ -152,13 +152,13 @@ Fournier_2018_amoxicillin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    age_range      = "16-93 years (mean 50.1, SD 24.3)",
-    weight_range   = "60-132 kg admission (median 72.4, IQR 67.0-83.6)",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "16-93 years (mean 50.1, SD 24.3)",
+    weight_range = "60-132 kg admission (median 72.4, IQR 67.0-83.6)",
     sex_female_pct = 23.8,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult patients with severe burns hospitalized at the Burn Centre",
       "of a Swiss tertiary-care intensive care unit (Centre Hospitalier",
       "Universitaire Vaudois, Lausanne). All patients received a course",
@@ -174,7 +174,7 @@ Fournier_2018_amoxicillin <- function() {
       "65-150); 25% of patients had CRCL > 150 mL/min (augmented renal",
       "clearance)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous amoxicillin 1 to 2 g every 6 to 8 hours per",
       "manufacturer recommendations in patients with normal renal",
       "function; infusion duration 30 min for the first dose and 2 h",
@@ -183,10 +183,10 @@ Fournier_2018_amoxicillin <- function() {
       "insufficiency (eGFR < 30 mL/min: 500 mg-2 g q8-12h; eGFR < 15",
       "mL/min: 750 mg-2 g q24h)."
     ),
-    regions        = "Switzerland (single centre, CHUV Lausanne Burn Centre)",
-    enrollment     = "Prospective consecutive enrollment, October 2013-October 2016",
-    trial_id       = "ClinicalTrials.gov NCT01965340",
-    notes          = paste(
+    regions = "Switzerland (single centre, CHUV Lausanne Burn Centre)",
+    enrollment = "Prospective consecutive enrollment, October 2013-October 2016",
+    trial_id = "ClinicalTrials.gov NCT01965340",
+    notes = paste(
       "Baseline demographics per Fournier 2018 Table 1. 185 amoxicillin",
       "plasma concentrations from 21 burn patients; a rich kinetic",
       "profile (samples at 0, 1, 2, 3, 4, 5 h after end of infusion) was",

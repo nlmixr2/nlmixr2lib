@@ -10,8 +10,8 @@ Harrold_2020_radiation_neutropenia <- function() {
   )
   vignette <- "Harrold_2020_radiation_neutropenia"
   units <- list(
-    time          = "day",
-    dosing        = "K-PD radiation amount, numerical magnitude in cGy (the published 750 cGy pivotal dose enters the depot_kpd compartment as a 750-unit bolus at t = 0; Table II reports k_PD,kill = 2.14 d^-1 'KPD^-1' where KPD = cGy^gamma. Simulating with `amt = 7.5` (Gy units) produces an ANC nadir that is too shallow and too early to match the paper's Fig 2 / Fig 3 placebo VPC; `amt = 750` reproduces the deep nadir at ~14-15 days reported in the Discussion. See vignette Assumptions and deviations.)",
+    time = "day",
+    dosing = "K-PD radiation amount, numerical magnitude in cGy (the published 750 cGy pivotal dose enters the depot_kpd compartment as a 750-unit bolus at t = 0; Table II reports k_PD,kill = 2.14 d^-1 'KPD^-1' where KPD = cGy^gamma. Simulating with `amt = 7.5` (Gy units) produces an ANC nadir that is too shallow and too early to match the paper's Fig 2 / Fig 3 placebo VPC; `amt = 750` reproduces the deep nadir at ~14-15 days reported in the Discussion. See vignette Assumptions and deviations.)",
     concentration = "10^9 cells/L (ANC)"
   )
 
@@ -20,48 +20,58 @@ Harrold_2020_radiation_neutropenia <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_kpd  = list(analyte = "K-PD radiation amount", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_kpd = list(
+      analyte = "K-PD radiation amount",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
     precursor1 = list(analyte = "N_SM stem cell", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "N_MT mitotic", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "N_PM1", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor4 = list(analyte = "N_PM2", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    circ       = list(analyte = "ANC", units = NA_character_, specimen = "whole blood", verified = FALSE),
-    effect     = list(analyte = "mitotic-cell killing", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cumhaz     = list(analyte = "cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    circ = list(analyte = "ANC", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    effect = list(
+      analyte = "mitotic-cell killing",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    cumhaz = list(analyte = "cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric-like power effect on the maturation rate constant k_tr (Eq. 14 form), with reference body weight 5.9 kg (combined-studies median baseline weight from Harrold 2020 Table I). Fixed exponent e_wt_ktr = 0.629 (Table II: 'gamma_wt' Fixed).",
-      source_name        = "BWT"
+      notes = "Allometric-like power effect on the maturation rate constant k_tr (Eq. 14 form), with reference body weight 5.9 kg (combined-studies median baseline weight from Harrold 2020 Table I). Fixed exponent e_wt_ktr = 0.629 (Table II: 'gamma_wt' Fixed).",
+      source_name = "BWT"
     ),
     STUDY_HARROLD_PEG = list(
-      description        = "Binary indicator selecting the pegfilgrastim pivotal study OS parameter set",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator selecting the pegfilgrastim pivotal study OS parameter set",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (filgrastim pivotal study)",
-      notes              = "1 = subject from the pegfilgrastim pivotal study (reference 13 in Harrold 2020; pegfilgrastim 300 ug/kg on days 1 and 8, SC); 0 = subject from the filgrastim pivotal study (reference 14 in Harrold 2020; filgrastim 10 ug/kg QD SC starting on day 1). Used only by the OS time-to-event sub-model (Eqs. 9-11) to select between the two parameter sets in Table III (lambda_ANC, lambda_BC, k_e0). The ANC response sub-model (Table II) does not depend on this indicator -- those parameters were fit jointly on the combined placebo cohorts of both studies.",
-      source_name        = "STUDY"
+      notes = "1 = subject from the pegfilgrastim pivotal study (reference 13 in Harrold 2020; pegfilgrastim 300 ug/kg on days 1 and 8, SC); 0 = subject from the filgrastim pivotal study (reference 14 in Harrold 2020; filgrastim 10 ug/kg QD SC starting on day 1). Used only by the OS time-to-event sub-model (Eqs. 9-11) to select between the two parameter sets in Table III (lambda_ANC, lambda_BC, k_e0). The ANC response sub-model (Table II) does not depend on this indicator -- those parameters were fit jointly on the combined placebo cohorts of both studies.",
+      source_name = "STUDY"
     )
   )
 
   population <- list(
-    species        = "nonhuman primate (rhesus macaque, Macaca mulatta)",
-    n_subjects     = 92L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = "5.9 kg (combined studies; SD 0.86)",
+    species = "nonhuman primate (rhesus macaque, Macaca mulatta)",
+    n_subjects = 92L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    weight_median = "5.9 kg (combined studies; SD 0.86)",
     sex_female_pct = 8.7,
-    disease_state  = "Hematopoietic syndrome of acute radiation syndrome (HS-ARS) following 750 cGy whole-body irradiation at 80 cGy/min on day 0.",
-    dose_range     = "Whole-body irradiation 750 cGy (7.5 Gy) at 80 cGy/min on day 0 (administered to the radiation K-PD compartment as a 1 KPD-unit bolus at t = 0); placebo or filgrastim 10 ug/kg QD SC starting day 1 (until ANC recovered >= 1 x 10^9 cells/L for 3 consecutive days; median dosing days 1-19) or pegfilgrastim 300 ug/kg SC on days 1 and 8. Drug PK is not modelled here; the drug-treated cohorts are modelled implicitly through the OS sub-model's per-study parameter set.",
+    disease_state = "Hematopoietic syndrome of acute radiation syndrome (HS-ARS) following 750 cGy whole-body irradiation at 80 cGy/min on day 0.",
+    dose_range = "Whole-body irradiation 750 cGy (7.5 Gy) at 80 cGy/min on day 0 (administered to the radiation K-PD compartment as a 1 KPD-unit bolus at t = 0); placebo or filgrastim 10 ug/kg QD SC starting day 1 (until ANC recovered >= 1 x 10^9 cells/L for 3 consecutive days; median dosing days 1-19) or pegfilgrastim 300 ug/kg SC on days 1 and 8. Drug PK is not modelled here; the drug-treated cohorts are modelled implicitly through the OS sub-model's per-study parameter set.",
     n_observations = 1346L,
-    follow_up      = "60 days; ANC measured every 1-2 days",
-    notes          = "Two pivotal NHP studies: filgrastim pivotal (n = 22 placebo + n = 24 drug = 46; reference 14) and pegfilgrastim pivotal (n = 23 placebo + n = 23 drug = 46; reference 13). Median baseline ANC differs between studies (filgrastim 4.78, pegfilgrastim 1.77 x 10^9 cells/L; Table I and Results). Only the filgrastim pivotal study had female subjects (n = 4 per cohort). The ANC response model was fit to the combined 1346 placebo measurements; the OS model was fit separately per study (5000 bootstrap draws for the OS model)."
+    follow_up = "60 days; ANC measured every 1-2 days",
+    notes = "Two pivotal NHP studies: filgrastim pivotal (n = 22 placebo + n = 24 drug = 46; reference 14) and pegfilgrastim pivotal (n = 23 placebo + n = 23 drug = 46; reference 13). Median baseline ANC differs between studies (filgrastim 4.78, pegfilgrastim 1.77 x 10^9 cells/L; Table I and Results). Only the filgrastim pivotal study had female subjects (n = 4 per cohort). The ANC response model was fit to the combined 1346 placebo measurements; the OS model was fit separately per study (5000 bootstrap draws for the OS model)."
   )
 
   ini({

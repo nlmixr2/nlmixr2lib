@@ -31,8 +31,8 @@ Wang_2024_ionizableLipid_hela_qsp <- function() {
   )
   vignette <- "Wang_2024_rnaLipidNanoparticle"
   units <- list(
-    time          = "h",
-    dosing        = "ng",
+    time = "h",
+    dosing = "ng",
     concentration = "fraction of internalised siRNA (dimensionless)"
   )
 
@@ -43,68 +43,89 @@ Wang_2024_ionizableLipid_hela_qsp <- function() {
   # with an intact LNP and the bare prefix marks material that has been
   # released or egressed.
   paper_specific_compartments <- c(
-    "lnp_lipid_ee", "lnp_rna_ee",
-    "lnp_lipid_le", "lnp_rna_le",
-    "lnp_lipid_ly", "lnp_rna_ly",
-    "lipid_ap", "rna_ap",
-    "lipid_al", "rna_al",
+    "lnp_lipid_ee",
+    "lnp_rna_ee",
+    "lnp_lipid_le",
+    "lnp_rna_le",
+    "lnp_lipid_ly",
+    "lnp_rna_ly",
+    "lipid_ap",
+    "rna_ap",
+    "lipid_al",
+    "rna_al",
     "rna_cyto",
-    "lipid_med", "rna_med"
+    "lipid_med",
+    "rna_med"
   )
 
   compartmentData <- list(
     lnp_lipid_ee = list(analyte = "ionizable lipid (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
-    lnp_rna_ee   = list(analyte = "siRNA (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
+    lnp_rna_ee = list(analyte = "siRNA (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
     lnp_lipid_le = list(analyte = "ionizable lipid (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
-    lnp_rna_le   = list(analyte = "siRNA (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
+    lnp_rna_le = list(analyte = "siRNA (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
     lnp_lipid_ly = list(analyte = "ionizable lipid (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
-    lnp_rna_ly   = list(analyte = "siRNA (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
-    lipid_ap     = list(analyte = "ionizable lipid (released vesicle)", units = "ng", specimen = "endosome", verified = TRUE),
-    rna_ap       = list(analyte = "siRNA (released vesicle)", units = "ng", specimen = "endosome", verified = TRUE),
-    lipid_al     = list(analyte = "ionizable lipid (released vesicle)", units = "ng", specimen = "endosome", verified = TRUE),
-    rna_al       = list(analyte = "siRNA (released vesicle)", units = "ng", specimen = "endosome", verified = TRUE),
-    rna_cyto     = list(analyte = "siRNA (free, cytoplasmic)", units = "ng", specimen = "not applicable", verified = TRUE),
-    lipid_med    = list(analyte = "ionizable lipid (egressed)", units = "ng", specimen = "not applicable", verified = TRUE),
-    rna_med      = list(analyte = "siRNA (egressed)", units = "ng", specimen = "not applicable", verified = TRUE)
+    lnp_rna_ly = list(analyte = "siRNA (in LNP)", units = "ng", specimen = "endosome", verified = TRUE),
+    lipid_ap = list(
+      analyte = "ionizable lipid (released vesicle)",
+      units = "ng",
+      specimen = "endosome",
+      verified = TRUE
+    ),
+    rna_ap = list(analyte = "siRNA (released vesicle)", units = "ng", specimen = "endosome", verified = TRUE),
+    lipid_al = list(
+      analyte = "ionizable lipid (released vesicle)",
+      units = "ng",
+      specimen = "endosome",
+      verified = TRUE
+    ),
+    rna_al = list(analyte = "siRNA (released vesicle)", units = "ng", specimen = "endosome", verified = TRUE),
+    rna_cyto = list(analyte = "siRNA (free, cytoplasmic)", units = "ng", specimen = "not applicable", verified = TRUE),
+    lipid_med = list(
+      analyte = "ionizable lipid (egressed)",
+      units = "ng",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    rna_med = list(analyte = "siRNA (egressed)", units = "ng", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     FORM_LNP_MC3 = list(
-      description        = "1 = LNP formulated with the ionizable lipid DLin-MC3-DMA (MC3); 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = LNP formulated with the ionizable lipid DLin-MC3-DMA (MC3); 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C12-200, the formulation used to fit the shared trafficking rates)",
-      notes              = paste(
+      notes = paste(
         "Selects the MC3 column of Wang 2024 Figure 9D (krel = 0.0058 1/h).",
         "MC3's own frel was not measured; the paper assumes it equals the",
         "L319 value of 0.5 because the two lipids are structurally similar",
         "(Figure 9D footnote #, and section 3.2.2). Mutually exclusive with",
         "FORM_LNP_L319."
       ),
-      source_name        = "MC3"
+      source_name = "MC3"
     ),
     FORM_LNP_L319 = list(
-      description        = "1 = LNP formulated with the ionizable lipid L319; 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = LNP formulated with the ionizable lipid L319; 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C12-200, the formulation used to fit the shared trafficking rates)",
-      notes              = paste(
+      notes = paste(
         "Selects the L319 column of Wang 2024 Figure 9D (krel = 0.0157 1/h).",
         "L319 is the only formulation for which frel was measured directly",
         "(0.5, from the fraction of galectin-8-positive vesicles that yielded",
         "a detectable cytoplasmic signal). Mutually exclusive with",
         "FORM_LNP_MC3."
       ),
-      source_name        = "L319"
+      source_name = "L319"
     )
   )
 
   population <- list(
-    species       = "in vitro (HeLa cell line)",
-    n_subjects    = NA_integer_,
-    n_studies     = 3L,
+    species = "in vitro (HeLa cell line)",
+    n_subjects = NA_integer_,
+    n_studies = 3L,
     disease_state = "not applicable (cell culture)",
-    dose_range    = paste(
+    dose_range = paste(
       "LNP incubated with HeLa cells; 3 h exposure followed by a wash and 25 h",
       "of monitoring for C12-200, 6 h continuous exposure for MC3, and an",
       "uptake time course for L319"

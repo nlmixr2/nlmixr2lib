@@ -16,46 +16,48 @@ Rosenborg_2025_fluticasone_1500ug <- function() {
     "without random effects because of shrinkage. Fitted separately by",
     "study/dose - see Rosenborg_2025_fluticasone_300ug and",
     "Rosenborg_2025_fluticasone_750ug for the other two FP doses and",
-    "Rosenborg_2025_salmeterol for the co-administered salmeterol.")
+    "Rosenborg_2025_salmeterol for the co-administered salmeterol."
+  )
   reference <- paste(
     "Rosenborg J, Backman P, Bengtsson T, Haughie S.",
     "Relative Bioavailability of Inhaled Fluticasone Propionate and Salmeterol",
     "- is Population Pharmacokinetic Modelling a Relevant Alternative to a",
     "Non-Compartmental Approach?",
-    "Drug Des Devel Ther. 2025;19:9653-9670. doi:10.2147/DDDT.S480189")
+    "Drug Des Devel Ther. 2025;19:9653-9670. doi:10.2147/DDDT.S480189"
+  )
   vignette <- "Rosenborg_2025_fluticasone_salmeterol"
-  units    <- list(time = "h", dosing = "ug", concentration = "ng/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "fluticasone propionate", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "fluticasone propionate", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FORM_WIXELA_INHUB = list(
-      description        = "Indicator that the inhalation was taken from the Wixela Inhub dry powder inhaler (test product), 1 = Wixela Inhub, 0 = Advair Diskus.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the inhalation was taken from the Wixela Inhub dry powder inhaler (test product), 1 = Wixela Inhub, 0 = Advair Diskus.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Advair Diskus, the reference product; its relative extent of bioavailability is the anchor F = 1).",
-      notes              = "Per-dose-record indicator. In this two-way crossover the same subject carries 1 on one period's dose row and 0 on the other's. The supplement's NONMEM code writes TREA = 1 for test and TREA = 2 for reference and derives TREA1 / TREA2 indicators from it; FORM_WIXELA_INHUB = TREA1. It gates two parameters (Rosenborg 2025 Figure 1): the monophasic absorption rate constant, K41 = EXP(TREA1*MU_7 + TREA2*MU_10 + ETA(7)), i.e. a separate typical value per product sharing one eta; and relative bioavailability, F4 = EXP(TREA1*(MU_11 + ETA(8)) + TREA2*0), so reference doses get F = 1 exactly while test doses get F4_rel carrying its own inter-individual variability.",
-      source_name        = "TREA (supplement Sect. 1: 'Treatment alternative, test (TREA=1) and reference (TREA=2) formulation')"
+      notes = "Per-dose-record indicator. In this two-way crossover the same subject carries 1 on one period's dose row and 0 on the other's. The supplement's NONMEM code writes TREA = 1 for test and TREA = 2 for reference and derives TREA1 / TREA2 indicators from it; FORM_WIXELA_INHUB = TREA1. It gates two parameters (Rosenborg 2025 Figure 1): the monophasic absorption rate constant, K41 = EXP(TREA1*MU_7 + TREA2*MU_10 + ETA(7)), i.e. a separate typical value per product sharing one eta; and relative bioavailability, F4 = EXP(TREA1*(MU_11 + ETA(8)) + TREA2*0), so reference doses get F = 1 exactly while test doses get F4_rel carrying its own inter-individual variability.",
+      source_name = "TREA (supplement Sect. 1: 'Treatment alternative, test (TREA=1) and reference (TREA=2) formulation')"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66L,
-    n_studies      = 1L,
-    age_range      = "mean age 35.7 years (study 3; Rosenborg 2025 Materials and Methods)",
+    species = "human",
+    n_subjects = 66L,
+    n_studies = 1L,
+    age_range = "mean age 35.7 years (study 3; Rosenborg 2025 Materials and Methods)",
     sex_female_pct = 63.6,
     race_ethnicity = c(White = NA_real_, Black = NA_real_, Asian = NA_real_, Other = NA_real_),
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = "Three inhalations of fluticasone propionate 500 ug (1500 ug total) plus salmeterol 50 ug (150 ug total), single dose per period, two periods with a 7-day washout.",
-    regions        = "USA",
+    disease_state = "Healthy adult volunteers.",
+    dose_range = "Three inhalations of fluticasone propionate 500 ug (1500 ug total) plus salmeterol 50 ug (150 ug total), single dose per period, two periods with a 7-day washout.",
+    regions = "USA",
     n_observations = "7184 fluticasone propionate plasma concentrations across all three studies (Rosenborg 2025 Results); study 3 contributes the data for this model.",
-    notes          = "Two-way crossover: each subject received both the test (Wixela Inhub) and the reference (Advair Diskus) product. 66 subjects were recruited, of whom 61 to 65 completed both treatment periods. Panels were homogeneous, black and white, mean BMI approximately 26. Rosenborg 2025 states that 'neither demographic nor other covariates were considered in the evaluation of NCA-based results and therefore not in this alternative model analysis either', so product is the only covariate in the model. Four subjects in this study had low but measurable pre-dose fluticasone propionate concentrations, which were set to zero for the analysis (Rosenborg 2025 Results). Sampling: pre-dose and 2, 5, 10, 15, 20, 30 and 45 min, and 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36 and 48 h post-dose; LLOQ 1 ng/L, with below-LLOQ values retained via the M3-style likelihood of Bauer 2019."
+    notes = "Two-way crossover: each subject received both the test (Wixela Inhub) and the reference (Advair Diskus) product. 66 subjects were recruited, of whom 61 to 65 completed both treatment periods. Panels were homogeneous, black and white, mean BMI approximately 26. Rosenborg 2025 states that 'neither demographic nor other covariates were considered in the evaluation of NCA-based results and therefore not in this alternative model analysis either', so product is the only covariate in the model. Four subjects in this study had low but measurable pre-dose fluticasone propionate concentrations, which were set to zero for the analysis (Rosenborg 2025 Results). Sampling: pre-dose and 2, 5, 10, 15, 20, 30 and 45 min, and 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36 and 48 h post-dose; LLOQ 1 ng/L, with below-LLOQ values retained via the M3-style likelihood of Bauer 2019."
   )
 
   ini({

@@ -13,7 +13,7 @@ Kumta_2025_tazobactam <- function() {
   # model with first order elimination best described the PK of tazobactam in
   # plasma") and the Table 3 parameter definitions.
   compartmentData <- list(
-    central     = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -26,80 +26,80 @@ Kumta_2025_tazobactam <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by stepwise forward inclusion / backward elimination (Methods, 'Population pharmacokinetic model development') and not retained. Cohort median 59 years, range 42-75 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by stepwise forward inclusion / backward elimination (Methods, 'Population pharmacokinetic model development') and not retained. Cohort median 59 years, range 42-75 (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened and not retained. 5 of 8 patients (62.5%) were female (Table 1)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened and not retained. 5 of 8 patients (62.5%) were female (Table 1)."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained; the final model carries no allometric term. Cohort median 70 kg, range 47-110 (Table 1). The Discussion nevertheless attributes the low tazobactam V1 of 7.6 L (against 19 L in healthy volunteers) to the cohort's lower mean weight of 71.5 kg, so body size is invoked narratively even though no weight term survived the covariate screen."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained; the final model carries no allometric term. Cohort median 70 kg, range 47-110 (Table 1). The Discussion nevertheless attributes the low tazobactam V1 of 7.6 L (against 19 L in healthy volunteers) to the cohort's lower mean weight of 71.5 kg, so body size is invoked narratively even though no weight term survived the covariate screen."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained. Recorded prospectively (Methods, 'Patient population') but no summary value is tabulated."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained. Recorded prospectively (Methods, 'Patient population') but no summary value is tabulated."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained. Recorded prospectively but no summary value is tabulated."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and not retained. Recorded prospectively but no summary value is tabulated."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation score at ICU admission",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Screened and not retained. Table 1 reports a median of 18 (range 12-27) under the label 'APACHE scores'; the paper does not state the APACHE version, and the score is mapped here to the APACHE_II canonical because that is the version in routine adult ICU use and the observed range is consistent with it. Because the covariate is documentation-only, the mapping carries no modelling consequence."
+      units = "points",
+      type = "continuous",
+      notes = "Screened and not retained. Table 1 reports a median of 18 (range 12-27) under the label 'APACHE scores'; the paper does not state the APACHE version, and the score is mapped here to the APACHE_II canonical because that is the version in routine adult ICU use and the observed range is consistent with it. Because the covariate is documentation-only, the mapping carries no modelling consequence."
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort median 7.5, range 2-12 (Table 1). No SOFA canonical exists in inst/references/covariate-columns.md; because this entry is documentation-only and the column is never referenced in model(), no register entry was created."
+      units = "points",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort median 7.5, range 2-12 (Table 1). No SOFA canonical exists in inst/references/covariate-columns.md; because this entry is documentation-only and the column is never referenced in model(), no register entry was created."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort median 25.5 g/L, range 22-32 (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort median 25.5 g/L, range 22-32 (Table 1)."
     ),
     CRCL = list(
       description = "Creatinine clearance, Cockcroft-Gault on total body weight, BSA-normalized",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained. Methods: 'creatinine clearance (calculated using the Cockcroft-Gault equation using total body weight and expressed in mL/min/1.73 m^2)'. Cohort median 84, range 52-163 (Table 1 / Table 2). Discussion: 'clearance of piperacillin or tazobactam was not influenced by creatinine clearance or any other covariates'. The cohort excluded renal replacement therapy and plasma creatinine above 200 umol/L."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened and not retained. Methods: 'creatinine clearance (calculated using the Cockcroft-Gault equation using total body weight and expressed in mL/min/1.73 m^2)'. Cohort median 84, range 52-163 (Table 1 / Table 2). Discussion: 'clearance of piperacillin or tazobactam was not influenced by creatinine clearance or any other covariates'. The cohort excluded renal replacement therapy and plasma creatinine above 200 umol/L."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. No summary value is tabulated; the cohort excluded pre-existing hepatic dysfunction defined as gamma-glutamyl transferase above 200 IU/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened and not retained. No summary value is tabulated; the cohort excluded pre-existing hepatic dysfunction defined as gamma-glutamyl transferase above 200 IU/L."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "42-75 years",
-    age_median     = "59 years",
-    weight_range   = "47-110 kg",
-    weight_median  = "70 kg",
+    species = "human",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "42-75 years",
+    age_median = "59 years",
+    weight_range = "47-110 kg",
+    weight_median = "70 kg",
     sex_female_pct = 62.5,
-    disease_state  = "Critically ill neurosurgical ICU adults with an external ventricular drain in situ and either a ventriculostomy-associated infection (n = 1, 12.5%) or an extracranial infection (pneumonia, n = 7, 87.5%)",
+    disease_state = "Critically ill neurosurgical ICU adults with an external ventricular drain in situ and either a ventriculostomy-associated infection (n = 1, 12.5%) or an extracranial infection (pneumonia, n = 7, 87.5%)",
     renal_function = "Creatinine clearance median 84 mL/min/1.73 m^2 (range 52-163); 1 patient (12.5%) with augmented renal clearance (>= 130 mL/min/1.73 m^2). Renal replacement therapy and plasma creatinine > 200 umol/L were exclusion criteria.",
-    dose_range     = "Piperacillin-tazobactam 4.5 g every 6 h by intermittent intravenous infusion (7 of 8 patients; 0.5 g tazobactam per dose); one patient received a continuous infusion totalling 13.1 g of the combination over the sampling period",
-    regions        = "Two university-associated tertiary ICUs: Royal Brisbane and Women's Hospital (Australia) and the Chinese University of Hong Kong (Hong Kong, China)",
-    notes          = "45 plasma and 30 CSF samples from 8 patients (Results, 'Study population'); the plasma samples supported this model. CSF tazobactam was below the 0.625 mg/L limit of quantification in 14 of 30 samples (47%) and showed no change across the dosing interval, so Methods state that 'these data were not used for population PK analysis' and Results that it was 'not possible to model CSF exposures'. Total (not unbound) tazobactam was assayed by UHPLC-MS/MS. Estimation used SAEM in Monolix 2023R1; accuracy was assessed by a 1,000-run bootstrap (Rsmlx 2023.1.1)."
+    dose_range = "Piperacillin-tazobactam 4.5 g every 6 h by intermittent intravenous infusion (7 of 8 patients; 0.5 g tazobactam per dose); one patient received a continuous infusion totalling 13.1 g of the combination over the sampling period",
+    regions = "Two university-associated tertiary ICUs: Royal Brisbane and Women's Hospital (Australia) and the Chinese University of Hong Kong (Hong Kong, China)",
+    notes = "45 plasma and 30 CSF samples from 8 patients (Results, 'Study population'); the plasma samples supported this model. CSF tazobactam was below the 0.625 mg/L limit of quantification in 14 of 30 samples (47%) and showed no change across the dosing interval, so Methods state that 'these data were not used for population PK analysis' and Results that it was 'not possible to model CSF exposures'. Total (not unbound) tazobactam was assayed by UHPLC-MS/MS. Estimation used SAEM in Monolix 2023R1; accuracy was assessed by a 1,000-run bootstrap (Rsmlx 2023.1.1)."
   )
 
   ini({

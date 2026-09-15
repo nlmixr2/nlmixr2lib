@@ -5,18 +5,18 @@ Liu_2024_deutenzalutamide <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "deutenzalutamide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "deutenzalutamide", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "deutenzalutamide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "deutenzalutamide", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "deutenzalutamide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. The only covariate retained in the final model.",
         "Enters V2/F as the power form of Liu 2024 Equation 3,",
         "theta_i = theta_TV * (COV_i / COV_bar)^theta_2, with COV_bar = 64.0 kg",
@@ -26,98 +26,98 @@ Liu_2024_deutenzalutamide <- function() {
         "the printed equation governs.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 005: dOFV = -3.484, short of the 3.84 forward-inclusion criterion) and in the general covariate screen; not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 005: dOFV = -3.484, short of the 3.84 forward-inclusion criterion) and in the general covariate screen; not retained in the final model."
     ),
     HT = list(
       description = "Baseline height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 006: dOFV = -3.573, short of 3.84); not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 006: dOFV = -3.573, short of 3.84); not retained."
     ),
     CREAT = list(
       description = "Baseline serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 008: dOFV = -0.052) and discussed in Liu 2024 Discussion as a renal-function marker; not retained. Cohort values were all within the normal range, so the final model should not be extrapolated to renal impairment."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 008: dOFV = -0.052) and discussed in Liu 2024 Discussion as a renal-function marker; not retained. Cohort values were all within the normal range, so the final model should not be extrapolated to renal impairment."
     ),
     WBC = list(
       description = "Baseline leukocyte count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 009: dOFV = -0.036); not retained."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 009: dOFV = -0.036); not retained."
     ),
     NEUT = list(
       description = "Baseline neutrophil count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 010: dOFV = -0.046); not retained."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 010: dOFV = -0.046); not retained."
     ),
     PLT = list(
       description = "Baseline platelet count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 011: dOFV = -0.059); not retained."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 011: dOFV = -0.059); not retained."
     ),
     TBIL = list(
       description = "Baseline total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 012: dOFV = -1.419); not retained."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 012: dOFV = -1.419); not retained."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 013: dOFV = 0); not retained. Cohort values were within the normal range, so the final model should not be extrapolated to hepatic impairment."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 013: dOFV = 0); not retained. Cohort values were within the normal range, so the final model should not be extrapolated to hepatic impairment."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 014: dOFV = -0.040); not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 014: dOFV = -0.040); not retained."
     ),
     HGB = list(
       description = "Baseline hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened on ka (Table S4, run 047: dOFV = -0.124); not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened on ka (Table S4, run 047: dOFV = -0.124); not retained."
     ),
     ECOG = list(
       description = "Eastern Cooperative Oncology Group performance status grade",
-      units       = "(grade)",
-      type        = "categorical",
-      notes       = "Listed in Liu 2024 Methods (Covariate Model) among the screened covariates; not retained in the final model. Cohort was ECOG 0 (n = 5) or 1 (n = 19) only (Table S3)."
+      units = "(grade)",
+      type = "categorical",
+      notes = "Listed in Liu 2024 Methods (Covariate Model) among the screened covariates; not retained in the final model. Cohort was ECOG 0 (n = 5) or 1 (n = 19) only (Table S3)."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 24,
-    n_studies       = 1,
-    n_observations  = 543,
-    age_range       = "55-80 years",
-    age_median      = "69.5 years",
-    weight_range    = "46-81 kg",
-    weight_median   = "64 kg",
-    height_range    = "149-178 cm",
-    height_median   = "165 cm",
-    sex_female_pct  = 0,
-    disease_state   = "metastatic castration-resistant prostate cancer (mCRPC)",
-    dose_range      = "40 mg (n = 3), 80 mg (n = 9), 160 mg (n = 9), or 200 mg (n = 3) oral soft capsules once daily for 12 weeks",
-    regions         = "China",
+    species = "human",
+    n_subjects = 24,
+    n_studies = 1,
+    n_observations = 543,
+    age_range = "55-80 years",
+    age_median = "69.5 years",
+    weight_range = "46-81 kg",
+    weight_median = "64 kg",
+    height_range = "149-178 cm",
+    height_median = "165 cm",
+    sex_female_pct = 0,
+    disease_state = "metastatic castration-resistant prostate cancer (mCRPC)",
+    dose_range = "40 mg (n = 3), 80 mg (n = 9), 160 mg (n = 9), or 200 mg (n = 3) oral soft capsules once daily for 12 weeks",
+    regions = "China",
     performance_status = "ECOG 0 in 5 subjects (20.8%), ECOG 1 in 19 subjects (79.2%)",
-    renal_function  = "Serum creatinine 0.41-1.56 mg/dL (median 0.81); all subjects within the normal range",
+    renal_function = "Serum creatinine 0.41-1.56 mg/dL (median 0.81); all subjects within the normal range",
     hepatic_function = "Total bilirubin 0.33-1.18 mg/dL (median 0.60); ALT 9-34 U/L (median 19); all subjects within the normal range",
-    notes           = paste(
+    notes = paste(
       "Open-label 3 + 3 dose-escalation Phase Ia trial NCT03774056 (Liu 2024 Methods,",
       "Study Design and Population). Baseline demographics from Liu 2024 Table S3.",
       "4% of deutenzalutamide concentrations were below the 40 ng/mL lower limit of",

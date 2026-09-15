@@ -11,67 +11,67 @@ Wahlby_2004_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Wahlby_2004_time_varying_covariates"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, time-varying within an individual (raw mL/min, NOT BSA-normalized; reflects Wahlby 2004's CLC measurement convention).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, time-varying within an individual (raw mL/min, NOT BSA-normalized; reflects Wahlby 2004's CLC measurement convention).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wahlby 2004 reports CLC as raw mL/min (Table 1). The canonical CRCL register entry is for BSA-normalized mL/min/1.73 m^2; this model preserves the source unit (mL/min) and documents it here. Population median (overall) = 76.9 mL/min, mean = 81.9, range 14.8-183 (Table 1). Centering value in Eq 4: 81 mL/min.",
-      source_name        = "CLC"
+      notes = "Wahlby 2004 reports CLC as raw mL/min (Table 1). The canonical CRCL register entry is for BSA-normalized mL/min/1.73 m^2; this model preserves the source unit (mL/min) and documents it here. Population median (overall) = 76.9 mL/min, mean = 81.9, range 14.8-183 (Table 1). Centering value in Eq 4: 81 mL/min.",
+      source_name = "CLC"
     ),
     CRCL_BASE = list(
-      description        = "Per-subject baseline creatinine clearance, time-fixed (= CRCL value at the first observation per subject).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Per-subject baseline creatinine clearance, time-fixed (= CRCL value at the first observation per subject).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject constant across time. Median across 210 subjects = 71.7 mL/min (Table 1, BCLC row). Centering value for the BCLC effect on CL is the BCLC median (71.7 mL/min). The Wahlby 2004 final-model paper estimate theta_BCLC = 0.0098 per mL/min was reported relative to centering at the BCLC median per their Methods description ('BCOV - BCOV_median').",
-      source_name        = "BCLC"
+      notes = "Per-subject constant across time. Median across 210 subjects = 71.7 mL/min (Table 1, BCLC row). Centering value for the BCLC effect on CL is the BCLC median (71.7 mL/min). The Wahlby 2004 final-model paper estimate theta_BCLC = 0.0098 per mL/min was reported relative to centering at the BCLC median per their Methods description ('BCOV - BCOV_median').",
+      source_name = "BCLC"
     ),
     BSA_BASE = list(
-      description        = "Per-subject baseline body surface area, time-fixed (BBSA in the source paper).",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Per-subject baseline body surface area, time-fixed (BBSA in the source paper).",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject constant. Median across 210 subjects = 1.7 m^2 (Table 1, BBSA row). Replaces time-varying BSA in the final-model V1 equation because BBSA was the better predictor (delta-BSA was imprecisely estimated, RSE 110%, per Results section).",
-      source_name        = "BBSA"
+      notes = "Per-subject constant. Median across 210 subjects = 1.7 m^2 (Table 1, BBSA row). Replaces time-varying BSA in the final-model V1 equation because BBSA was the better predictor (delta-BSA was imprecisely estimated, RSE 110%, per Results section).",
+      source_name = "BBSA"
     ),
     ALB = list(
-      description        = "Serum albumin, time-varying within an individual.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin, time-varying within an individual.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wahlby 2004 reports albumin in g/L (Table 1: mean 33.5, median 34.0, range 14-53). Centering value in the V1 model: ALB_ref = 34 g/L (Table 5 footnote a). The final model uses the time-varying ALB directly (not BALB / DALB) because the BCOV/DCOV split for ALB did not improve fit (Results section).",
-      source_name        = "ALB"
+      notes = "Wahlby 2004 reports albumin in g/L (Table 1: mean 33.5, median 34.0, range 14-53). Centering value in the V1 model: ALB_ref = 34 g/L (Table 5 footnote a). The final model uses the time-varying ALB directly (not BALB / DALB) because the BCOV/DCOV split for ALB did not improve fit (Results section).",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 210L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 210L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adult cancer patients receiving intravenous gentamicin. Wahlby 2004 re-analyses the gentamicin cohort originally reported by Rosario MC, Thomson AH, Jodrell DI, Sharp CA, Elliott HL (Br J Clin Pharmacol 1998;46(3):229-236).",
-    dose_range     = "Intravenous gentamicin; specific dose ranges and administration details are reported by Rosario 1998 and are not reproduced in Wahlby 2004.",
+    disease_state = "Adult cancer patients receiving intravenous gentamicin. Wahlby 2004 re-analyses the gentamicin cohort originally reported by Rosario MC, Thomson AH, Jodrell DI, Sharp CA, Elliott HL (Br J Clin Pharmacol 1998;46(3):229-236).",
+    dose_range = "Intravenous gentamicin; specific dose ranges and administration details are reported by Rosario 1998 and are not reproduced in Wahlby 2004.",
     n_observations = 574L,
     n_covariate_measurements_clc = 576L,
     n_covariate_measurements_alb = 439L,
     n_covariate_measurements_bsa = 248L,
-    follow_up      = "Patients followed for one to five courses (median one), over a maximum of 25 months; on average data were available for the first 2 days per course, with 1-9 samples per patient per occasion.",
-    regions        = NA_character_,
-    notes          = "Demographic detail (age, weight, sex, race) is not reported in Wahlby 2004; consult Rosario 1998 for the underlying cohort description."
+    follow_up = "Patients followed for one to five courses (median one), over a maximum of 25 months; on average data were available for the first 2 days per course, with 1-9 samples per patient per occasion.",
+    regions = NA_character_,
+    notes = "Demographic detail (age, weight, sex, race) is not reported in Wahlby 2004; consult Rosario 1998 for the underlying cohort description."
   )
 
   ini({

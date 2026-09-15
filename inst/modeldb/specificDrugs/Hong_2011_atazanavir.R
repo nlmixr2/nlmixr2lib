@@ -8,76 +8,76 @@ Hong_2011_atazanavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at the steady-state PK assessment; used in allometric power scaling on CL/F (exponent 0.600) and V/F (exponent 0.706) with reference 70 kg (Hong 2011 Materials and Methods page 5747).",
-      source_name        = "Body wt"
+      notes = "Time-fixed at the steady-state PK assessment; used in allometric power scaling on CL/F (exponent 0.600) and V/F (exponent 0.706) with reference 70 kg (Hong 2011 Materials and Methods page 5747).",
+      source_name = "Body wt"
     ),
     AGE = list(
-      description        = "Age at PK sampling",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at PK sampling",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used in power scaling on ka (exponent -0.822) with reference 18 years; the negative exponent encodes faster apparent absorption in younger pediatric subjects relative to adults (Hong 2011 Table 4 and Results page 5749).",
-      source_name        = "Age"
+      notes = "Used in power scaling on ka (exponent -0.822) with reference 18 years; the negative exponent encodes faster apparent absorption in younger pediatric subjects relative to adults (Hong 2011 Table 4 and Results page 5749).",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Hong 2011 Table 3 reports 104 of 227 subjects female (45.8%). Multiplicative linear-deviation effect on CL/F: cl *= (1 + e_sexf_cl * SEXF) with e_sexf_cl = -0.115 (Table 4), i.e. CL/F is 11.5% lower in females than males. Source paper categorical encoding was Sex (female), which directly maps to canonical SEXF without inversion.",
-      source_name        = "Sex (female)"
+      notes = "Hong 2011 Table 3 reports 104 of 227 subjects female (45.8%). Multiplicative linear-deviation effect on CL/F: cl *= (1 + e_sexf_cl * SEXF) with e_sexf_cl = -0.115 (Table 4), i.e. CL/F is 11.5% lower in females than males. Source paper categorical encoding was Sex (female), which directly maps to canonical SEXF without inversion.",
+      source_name = "Sex (female)"
     ),
     REGION_AFRICA = list(
-      description        = "Study-site region indicator: 1 = Africa, 0 = otherwise (pooled North America + Europe in Hong 2011)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-site region indicator: 1 = Africa, 0 = otherwise (pooled North America + Europe in Hong 2011)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled North America + Europe study sites)",
-      notes              = "Hong 2011 Table 3 reports 91 of 227 subjects from African study sites; the remaining 136 are from North America (n = 127) and Europe (n = 9), pooled as the reference. Multiplicative linear-deviation effect on CL/F: cl *= (1 + e_region_africa_cl * REGION_AFRICA) with e_region_africa_cl = 0.145 (Table 4), i.e. CL/F is 14.5% higher at African sites than at the pooled North America / Europe reference.",
-      source_name        = "Region (Africa)"
+      notes = "Hong 2011 Table 3 reports 91 of 227 subjects from African study sites; the remaining 136 are from North America (n = 127) and Europe (n = 9), pooled as the reference. Multiplicative linear-deviation effect on CL/F: cl *= (1 + e_region_africa_cl * REGION_AFRICA) with e_region_africa_cl = 0.145 (Table 4), i.e. CL/F is 14.5% higher at African sites than at the pooled North America / Europe reference.",
+      source_name = "Region (Africa)"
     ),
     CONMED_RTV = list(
-      description        = "Concomitant low-dose ritonavir (RTV) coadministration indicator (pharmacokinetic booster)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant low-dose ritonavir (RTV) coadministration indicator (pharmacokinetic booster)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (unboosted atazanavir regimen)",
-      notes              = "Hong 2011 Table 3 reports 117 of 227 subjects (52%) on RTV (typically 100 mg QD adult, body-surface-area-scaled in pediatrics). Multiplicative linear-deviation effects: cl *= (1 + e_rtv_cl * CONMED_RTV) with e_rtv_cl = -0.409 (Table 4 -- 40.9% reduction in CL/F when RTV is coadministered, matching paper abstract); fdepot *= (1 + e_rtv_frel * CONMED_RTV) with e_rtv_frel = 1.32 (Table 4 -- 132% higher relative bioavailability with RTV).",
-      source_name        = "RTV comedication"
+      notes = "Hong 2011 Table 3 reports 117 of 227 subjects (52%) on RTV (typically 100 mg QD adult, body-surface-area-scaled in pediatrics). Multiplicative linear-deviation effects: cl *= (1 + e_rtv_cl * CONMED_RTV) with e_rtv_cl = -0.409 (Table 4 -- 40.9% reduction in CL/F when RTV is coadministered, matching paper abstract); fdepot *= (1 + e_rtv_frel * CONMED_RTV) with e_rtv_frel = 1.32 (Table 4 -- 132% higher relative bioavailability with RTV).",
+      source_name = "RTV comedication"
     ),
     FORM_POWDER = list(
-      description        = "Atazanavir oral powder formulation indicator (1 = powder, 0 = capsule reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Atazanavir oral powder formulation indicator (1 = powder, 0 = capsule reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (atazanavir capsule reference)",
-      notes              = "Hong 2011 Table 3 reports 64 of 227 subjects (28%) on the pediatric powder formulation (all in PACTG1020 groups 1, 2, 5, 6); the remaining 163 are on capsules (Hong 2011 Table 2 stratification). Multiplicative linear-deviation effect on relative bioavailability: fdepot *= (1 + e_form_powder_frel * FORM_POWDER) with e_form_powder_frel = -0.355 (Table 4 -- 35.5% lower bioavailability for the powder relative to the capsule reference).",
-      source_name        = "Formulation (powder)"
+      notes = "Hong 2011 Table 3 reports 64 of 227 subjects (28%) on the pediatric powder formulation (all in PACTG1020 groups 1, 2, 5, 6); the remaining 163 are on capsules (Hong 2011 Table 2 stratification). Multiplicative linear-deviation effect on relative bioavailability: fdepot *= (1 + e_form_powder_frel * FORM_POWDER) with e_form_powder_frel = -0.355 (Table 4 -- 35.5% lower bioavailability for the powder relative to the capsule reference).",
+      source_name = "Formulation (powder)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 227L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 227L,
+    n_studies = 4L,
     n_observations = 3939L,
-    age_range      = "0.33-64 years (adults 22-64, pediatric 0.33-21)",
-    age_median     = "9.17 years (pediatric mean) / 36.3 years (adult mean)",
-    weight_range   = "2.6-122 kg (adults 49.7-97.1, pediatric 2.6-122)",
-    weight_median  = "33.5 kg (pediatric mean) / 70.7 kg (adult mean)",
+    age_range = "0.33-64 years (adults 22-64, pediatric 0.33-21)",
+    age_median = "9.17 years (pediatric mean) / 36.3 years (adult mean)",
+    weight_range = "2.6-122 kg (adults 49.7-97.1, pediatric 2.6-122)",
+    weight_median = "33.5 kg (pediatric mean) / 70.7 kg (adult mean)",
     sex_female_pct = 45.8,
     race_ethnicity = c(White = 22.9, Black = 66.1, Other = 11.0),
-    disease_state  = "HIV infection on antiretroviral therapy; pooled antiretroviral-treatment-naive and -experienced subjects.",
-    dose_range     = "ATV 48-1200 mg QD (pediatric 48-600 mg QD on the BSA-titrated PACTG1020 protocol; adults 300, 400, or 600 mg QD) with or without RTV 26-100 mg QD.",
-    regions        = "Africa (n = 91), North America (n = 127), Europe (n = 9)",
-    notes          = "Pooled adult (3 studies: AI424008 n = 13, AI424089 n = 27, AI424137 n = 11) and pediatric (PACTG1020 n = 176) data. 3,939 ATV plasma concentrations (620 adult, 3,319 pediatric) collected at steady state from 4 clinical studies. The pediatric data span 8 stratification groups by age (infants 3 mo - 2 yr, children 2-13 yr, adolescents 13-21 yr), formulation (capsule vs powder), and RTV comedication (with vs without). See Hong 2011 Tables 1, 2, and 3 for the full demographic and dose-regimen breakdown."
+    disease_state = "HIV infection on antiretroviral therapy; pooled antiretroviral-treatment-naive and -experienced subjects.",
+    dose_range = "ATV 48-1200 mg QD (pediatric 48-600 mg QD on the BSA-titrated PACTG1020 protocol; adults 300, 400, or 600 mg QD) with or without RTV 26-100 mg QD.",
+    regions = "Africa (n = 91), North America (n = 127), Europe (n = 9)",
+    notes = "Pooled adult (3 studies: AI424008 n = 13, AI424089 n = 27, AI424137 n = 11) and pediatric (PACTG1020 n = 176) data. 3,939 ATV plasma concentrations (620 adult, 3,319 pediatric) collected at steady state from 4 clinical studies. The pediatric data span 8 stratification groups by age (infants 3 mo - 2 yr, children 2-13 yr, adolescents 13-21 yr), formulation (capsule vs powder), and RTV comedication (with vs without). See Hong 2011 Tables 1, 2, and 3 for the full demographic and dose-regimen breakdown."
   )
 
   ini({

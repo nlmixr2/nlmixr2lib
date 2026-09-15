@@ -3,8 +3,8 @@ Philippe_2015_cyclosporine <- function() {
   reference <- "Philippe M, Henin E, Bertrand Y, Plantaz D, Goutelle S, Bleyzac N. Model-based determination of effective blood concentrations of cyclosporine for neutrophil response in the treatment of severe aplastic anemia in children. AAPS J. 2015;17(5):1157-1166. doi:10.1208/s12248-015-9779-8"
   vignette <- "Philippe_2015_cyclosporine"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L (= ug/mL); the pharmacodynamic bounds gamma1 and gamma2 are in ng/mL and Cc is rescaled inside model() by a factor of 1000 to compare with them"
   )
 
@@ -13,37 +13,37 @@ Philippe_2015_cyclosporine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cyclosporine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cyclosporine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cyclosporine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cyclosporine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cyclosporine", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "effective concentration", units = "mg", specimen = "not applicable", verified = FALSE),
-    cumhaz      = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "effective concentration", units = "mg", specimen = "not applicable", verified = FALSE),
+    cumhaz = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Time-fixed in the source paper (baseline weight only); WT is the canonical column for body weight (baseline or time-varying).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Time-fixed in the source paper (baseline weight only); WT is the canonical column for body weight (baseline or time-varying).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 34 kg, equal to the pooled-cohort mean of the 23 included treatment courses (Table I). Allometric scaling per Methods Eq. 4 with fixed exponents 0.75 on Cl and Q and 1 on V1 and V2 (no estimated uncertainty was reported on these exponents; they were held at standard physiological values). The pooled-cohort weight range is 9.8-79.3 kg (Table I).",
-      source_name        = "BW"
+      notes = "Reference value 34 kg, equal to the pooled-cohort mean of the 23 included treatment courses (Table I). Allometric scaling per Methods Eq. 4 with fixed exponents 0.75 on Cl and Q and 1 on V1 and V2 (no estimated uncertainty was reported on these exponents; they were held at standard physiological values). The pooled-cohort weight range is 9.8-79.3 kg (Table I).",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    age_range      = "1-15 years (mean 8.5)",
-    weight_range   = "9.8-79.3 kg (mean 34.0)",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "1-15 years (mean 8.5)",
+    weight_range = "9.8-79.3 kg (mean 34.0)",
     sex_female_pct = 43.5,
     race_ethnicity = "Not reported (French pediatric centres)",
-    disease_state  = "Pediatric severe aplastic anemia (SAA) defined by two of: absolute neutrophil count < 0.5e9/L, platelets < 20e9/L, hemoglobin < 80 g/L with reticulocytes < 20e9/L. Patients received immunosuppressive therapy with anti-thymocyte globulin (160 mg/kg horse ATG or 18.75 mg/kg rabbit ATG) plus oral cyclosporine.",
-    dose_range     = "Oral cyclosporine 5 mg/kg every 12 h (initial regimen); trough concentrations subsequently adjusted to an initial target of 150 ng/mL.",
+    disease_state = "Pediatric severe aplastic anemia (SAA) defined by two of: absolute neutrophil count < 0.5e9/L, platelets < 20e9/L, hemoglobin < 80 g/L with reticulocytes < 20e9/L. Patients received immunosuppressive therapy with anti-thymocyte globulin (160 mg/kg horse ATG or 18.75 mg/kg rabbit ATG) plus oral cyclosporine.",
+    dose_range = "Oral cyclosporine 5 mg/kg every 12 h (initial regimen); trough concentrations subsequently adjusted to an initial target of 150 ng/mL.",
     administration = "Oral, twice daily (per os)",
-    regions        = "France (single-centre Lyon n = 22 courses + Grenoble n = 1 course; pediatric hematology/oncology units, retrospective 1998-2013)",
-    notes          = "21 patients corresponding to 23 treatment courses (three patients received a second IST course after first-course failure and were modelled as independent individuals). 341 trough blood concentrations with median 14 measurements per patient (range 7-27). 15/23 courses (65.2%) achieved neutrophil response (ANC > 0.5e9/L on two consecutive occasions) with mean time-to-response 69 days (range 19-182). Three additional prospectively followed patients were used as the external validation cohort (Table III)."
+    regions = "France (single-centre Lyon n = 22 courses + Grenoble n = 1 course; pediatric hematology/oncology units, retrospective 1998-2013)",
+    notes = "21 patients corresponding to 23 treatment courses (three patients received a second IST course after first-course failure and were modelled as independent individuals). 341 trough blood concentrations with median 14 measurements per patient (range 7-27). 15/23 courses (65.2%) achieved neutrophil response (ANC > 0.5e9/L on two consecutive occasions) with mean time-to-response 69 days (range 19-182). Three additional prospectively followed patients were used as the external validation cohort (Table III)."
   )
 
   ini({

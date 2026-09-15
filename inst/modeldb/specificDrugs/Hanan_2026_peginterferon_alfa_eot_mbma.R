@@ -44,8 +44,8 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
   paper_specific_etas <- c("eta_study")
 
   units <- list(
-    time          = "week",
-    dosing        = paste(
+    time = "week",
+    dosing = paste(
       "(no rxode2 dose events; the Peg-IFNalpha regimen enters only as",
       "the binary CONMED_NUC combination indicator selecting the",
       "regimen intercept, and as the T_PEGIFN planned treatment",
@@ -61,15 +61,15 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
 
   covariateData <- list(
     HBSAG_BL_LOG10 = list(
-      description        = paste(
+      description = paste(
         "Study-strata-arm baseline (pre-treatment) hepatitis B surface",
         "antigen concentration on the log10 IU/mL scale. Enters the",
         "logit-scale response centered at 3 log10 IU/mL."
       ),
-      units              = "log10 IU/mL",
-      type               = "continuous",
+      units = "log10 IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-strata-arm-level covariate: the aggregate baseline",
         "HBsAg summary for the arm, not an individual measurement.",
         "Hanan 2026 Section 2.2 derivation: the reported MEDIAN log10",
@@ -93,19 +93,19 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
         "log10 = 3.395 and 3.318. Same discipline as the",
         "BACT_PTT_LOG10CFU register entry."
       ),
-      source_name        = "Baseline HBsAg (log10 IU/mL)"
+      source_name = "Baseline HBsAg (log10 IU/mL)"
     ),
     HBEAG_POS = list(
-      description        = paste(
+      description = paste(
         "1 = baseline hepatitis B e-antigen (HBeAg) positive,",
         "0 = HBeAg negative. For a study-strata-arm this is the",
         "stratum's HBeAg status (studies not reporting baseline HBeAg",
         "status were excluded from the analysis set)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HBeAg negative)",
-      notes              = paste(
+      notes = paste(
         "MBMA study-strata-arm-level covariate. Hanan 2026 Table 2",
         "reports the effect as 'HBeAg status (ref=negative)' with a",
         "logit-scale coefficient of 0.863, i.e. OR 2.37 (95% PI",
@@ -134,18 +134,18 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
         "probabilities, NOT the probability evaluated at the mean",
         "indicator value. See the vignette."
       ),
-      source_name        = "Baseline HBeAg status"
+      source_name = "Baseline HBeAg status"
     ),
     T_PEGIFN = list(
-      description        = paste(
+      description = paste(
         "Planned duration of the Peg-IFNalpha treatment course for the",
         "study-strata-arm, in weeks. Enters the logit-scale response",
         "centered at 48 weeks."
       ),
-      units              = "week",
-      type               = "continuous",
+      units = "week",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-strata-arm-level covariate. Centering value 48",
         "weeks is the standard Peg-IFNalpha regimen and the reference",
         "used in Hanan 2026 Table 2 ('Peg-IFNalpha treatment duration",
@@ -166,19 +166,19 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
         "(cardiopulmonary bypass duration) and T_PUMP (breast-milk",
         "expression session duration)."
       ),
-      source_name        = "Peg-IFNalpha treatment duration (weeks)"
+      source_name = "Peg-IFNalpha treatment duration (weeks)"
     ),
     CONMED_NUC = list(
-      description        = paste(
+      description = paste(
         "1 = the arm received Peg-IFNalpha PLUS a nucleos(t)ide",
         "analogue (NA) as combination therapy, 0 = Peg-IFNalpha",
         "monotherapy. Selects which of the two regimen-specific",
         "logit-scale intercepts applies."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Peg-IFNalpha monotherapy)",
-      notes              = paste(
+      notes = paste(
         "MBMA study-strata-arm-level covariate. Hanan 2026 Section",
         "2.3.2 extends the base model to a regimen-specific fixed",
         "effect drug.eff_d distinguishing Peg-IFNalpha monotherapy from",
@@ -202,7 +202,7 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
         "covariatesDataExcluded in",
         "Hanan_2026_peginterferon_alfa_24wk_mbma."
       ),
-      source_name        = "Treatment group (Peg-IFNalpha vs Peg-IFNalpha + NA)"
+      source_name = "Treatment group (Peg-IFNalpha vs Peg-IFNalpha + NA)"
     )
   )
 
@@ -216,42 +216,42 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
   # convention warning.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Study-strata-arm mean or median age.",
-      units              = "year",
-      type               = "continuous",
+      description = "Study-strata-arm mean or median age.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as one of the eight candidate covariates (Hanan 2026",
         "Results Section 3.3) and not retained; no point estimate",
         "reported. Centered to the across-arm population median per",
         "Section 2.2, but that median is not published."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Study-strata-arm proportion female.",
-      units              = "(proportion, 0-1)",
-      type               = "continuous",
+      description = "Study-strata-arm proportion female.",
+      units = "(proportion, 0-1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The paper's 'gender' covariate, screened and not retained;",
         "no point estimate reported. Hanan 2026 Section 2.2 lists",
         "gender among the binary covariates, which at the",
         "study-strata-arm level is the arm's sex composition."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     RACE_ASIAN_PCT = list(
-      description        = paste(
+      description = paste(
         "Study-strata-arm racial composition. Hanan 2026 Section 2.2",
         "defines its 'race' covariate as the proportion of NON-Asian",
         "participants, ranging from 0 (100% Asian) to 1 (100%",
         "non-Asian) - the complement of this canonical."
       ),
-      units              = "%",
-      type               = "continuous",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained; no point estimate reported. NOTE",
         "THE ORIENTATION: the source column is the proportion",
         "NON-Asian, so RACE_ASIAN_PCT = 100 * (1 - source value). The",
@@ -259,17 +259,17 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
         "Asian studies in the analysis set, where HBV genotypes B and",
         "C are most common, leaving little contrast to estimate."
       ),
-      source_name        = "Race (proportion non-Asian)"
+      source_name = "Race (proportion non-Asian)"
     ),
     DESIGN_RCT = list(
-      description        = paste(
+      description = paste(
         "1 = randomized controlled trial, 0 = non-RCT (prospective",
         "cohort, retrospective cohort, or single-arm trial)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-RCT)",
-      notes              = paste(
+      notes = paste(
         "Trial-design covariate screened and not retained; no point",
         "estimate reported. 63 of the 83 EOT study-strata-arms were",
         "from RCTs (Hanan 2026 Results Section 3.1). DESIGN_RCT is a",
@@ -277,30 +277,30 @@ Hanan_2026_peginterferon_alfa_eot_mbma <- function() {
         "ratified entry in inst/references/covariate-columns.md,",
         "because the covariate is never referenced in model()."
       ),
-      source_name        = "Study design (RCT vs non-RCT)"
+      source_name = "Study design (RCT vs non-RCT)"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 11493L,
-    n_studies            = 45L,
-    n_study_strata       = 52L,
-    n_study_strata_arms  = 83L,
-    age_range            = "adults (Hanan 2026 Table S1 PICOS: age group 'Adults')",
-    disease_state        = "chronic hepatitis B virus (HBV) infection",
-    dose_range           = paste(
+    species = "human",
+    n_subjects = 11493L,
+    n_studies = 45L,
+    n_study_strata = 52L,
+    n_study_strata_arms = 83L,
+    age_range = "adults (Hanan 2026 Table S1 PICOS: age group 'Adults')",
+    disease_state = "chronic hepatitis B virus (HBV) infection",
+    dose_range = paste(
       "standard Peg-IFNalpha regimens only (studies investigating",
       "non-standard Peg-IFNalpha dosing were excluded); Peg-IFNalpha",
       "monotherapy or Peg-IFNalpha + nucleos(t)ide analogue",
       "combination therapy"
     ),
-    regions              = paste(
+    regions = paste(
       "not tabulated per arm; the Discussion states the analysis set is",
       "predominantly Asian studies, where HBV genotypes B and C",
       "predominate"
     ),
-    notes                = paste(
+    notes = paste(
       "Aggregate published data, not individual patient data. The",
       "observation unit is the STUDY-STRATA-ARM: a treatment arm within",
       "a study, optionally stratified by HBeAg status, baseline HBsAg",

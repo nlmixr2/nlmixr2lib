@@ -12,19 +12,19 @@ Pitsiu_2023_atacicept <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight. Allometric power effect on CL/F and Vc/F with reference weight 70 kg; both exponents were fixed (0.75 and 1.00), not estimated. Cohort median 65.0 kg, range 37.0-135 kg (Table S1).",
-      source_name        = "WEIGHT"
+      notes = "Time-fixed baseline weight. Allometric power effect on CL/F and Vc/F with reference weight 70 kg; both exponents were fixed (0.75 and 1.00), not estimated. Cohort median 65.0 kg, range 37.0-135 kg (Table S1).",
+      source_name = "WEIGHT"
     ),
     SBLYS = list(
-      description        = "Baseline serum B lymphocyte stimulator (BLyS / BAFF / TNFSF13B) concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum B lymphocyte stimulator (BLyS / BAFF / TNFSF13B) concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value. Power effect on the baseline total-target concentration Rmax,",
         "normalised to 2.56 ng/mL -- the median of the QUANTIFIABLE values only, not the overall",
         "cohort median (which is 1.79 ng/mL including BLQ subjects; Table S1). The control stream",
@@ -33,21 +33,21 @@ Pitsiu_2023_atacicept <- function() {
         "imputation is reproduced inside model() so a 0 or negative input behaves as the paper",
         "intends. 235 of 540 subjects (44%) were BLQ (Table S1 footnotes d, e, f)."
       ),
-      source_name        = "BLYS (imputed to BLYSB in $PK)"
+      source_name = "BLYS (imputed to BLYSB in $PK)"
     ),
     DIS_SLE = list(
-      description        = "Systemic lupus erythematosus disease-state indicator (1 = SLE patient, 0 = healthy volunteer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Systemic lupus erythematosus disease-state indicator (1 = SLE patient, 0 = healthy volunteer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer; the 37 phase I subjects)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Affects the RESIDUAL ERROR ONLY -- it selects between the two",
         "proportional error terms in $ERROR (IF (SLE.EQ.1) W=SQRT(IPRED**2*PROPSLE**2)). SLE was",
         "also tested as a structural covariate and on relative bioavailability, and was NOT",
         "retained: the paper reports no significant PK difference between healthy volunteers and",
         "patients with SLE. 503 of 540 subjects (93.1%) were SLE patients."
       ),
-      source_name        = "SLE"
+      source_name = "SLE"
     )
   )
 
@@ -57,21 +57,21 @@ Pitsiu_2023_atacicept <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "The previously published model carried an age effect on Ka. Adding IIV on Ka in the present analysis made that effect non-significant, so it was dropped (Results, 'Final population PK model'). Median 37 y, range 16-75 y (Table S1)."
+      units = "years",
+      type = "continuous",
+      notes = "The previously published model carried an age effect on Ka. Adding IIV on Ka in the present analysis made that effect non-significant, so it was dropped (Results, 'Final population PK model'). Median 37 y, range 16-75 y (Table S1)."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened in the covariate search, not retained. Reported as raw mL/min in Table S1 (median 110, range 39.0-270), i.e. NOT BSA-normalised as the CRCL register entry's canonical definition assumes."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened in the covariate search, not retained. Reported as raw mL/min in Table S1 (median 110, range 39.0-270), i.e. NOT BSA-normalised as the CRCL register entry's canonical definition assumes."
     ),
     SAPRIL = list(
       description = "Baseline serum a proliferation-inducing ligand (APRIL / TNFSF13) concentration",
-      units       = "pg/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "pg/mL",
+      type = "continuous",
+      notes = paste(
         "Atacicept's second soluble target. Screened in the covariate search alongside BLyS but",
         "NOT retained. Median 2011 pg/mL, range 0.00-5699 (Table S1); note the unit is pg/mL,",
         "unlike BLyS in ng/mL. DOCUMENTATION-ONLY KEY: `SAPRIL` is deliberately NOT registered in",
@@ -82,21 +82,21 @@ Pitsiu_2023_atacicept <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened ('gender'), not retained. 89.6% female (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened ('gender'), not retained. 89.6% female (Table S1)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened, not retained: 'no significant differences in PKs were detected ... between different racial groups'. 20.0% Asian (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained: 'no significant differences in PKs were detected ... between different racial groups'. 20.0% Asian (Table S1)."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened, not retained (see RACE_ASIAN). 4.1% African/African American (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (see RACE_ASIAN). 4.1% African/African American (Table S1)."
     )
   )
 
@@ -105,42 +105,50 @@ Pitsiu_2023_atacicept <- function() {
   # $DES, supplement s001.txt) and the Figure S1 schematic.
   compartmentData <- list(
     depot = list(
-      analyte = "atacicept", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "atacicept",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "atacicept (total: unbound plus BLyS/APRIL-bound)", units = "ug",
-      specimen = "serum", verified = TRUE
+      analyte = "atacicept (total: unbound plus BLyS/APRIL-bound)",
+      units = "ug",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "atacicept (unbound)", units = "ug",
-      specimen = "serum", verified = TRUE
+      analyte = "atacicept (unbound)",
+      units = "ug",
+      specimen = "serum",
+      verified = TRUE
     ),
     # Unlike the three drug states, this state holds a CONCENTRATION, not an
     # amount: the control stream sets A_0(4)=RMAX with RMAX in ng/mL and
     # KSYN = RMAX*KDEG, and $DES divides no volume into it.
     total_target = list(
-      analyte = "BLyS + APRIL (total target: unbound plus atacicept-bound)", units = "ng/mL",
-      specimen = "serum", verified = TRUE
+      analyte = "BLyS + APRIL (total target: unbound plus atacicept-bound)",
+      units = "ng/mL",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 540,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 540,
+    n_studies = 3,
     n_observations = 3640,
-    age_range      = "16-75 years",
-    age_median     = "37 years",
-    weight_range   = "37.0-135 kg",
-    weight_median  = "65.0 kg",
+    age_range = "16-75 years",
+    age_median = "37 years",
+    weight_range = "37.0-135 kg",
+    weight_median = "65.0 kg",
     sex_female_pct = 89.6,
     race_ethnicity = c(White = 69.1, `African/African American` = 4.1, Asian = 20.0, Other = 6.9),
-    disease_state  = "503 patients (93.1%) with moderate-to-severe or active autoantibody-positive systemic lupus erythematosus; 37 healthy volunteers (6.9%).",
-    dose_range     = "25, 75, or 150 mg subcutaneous: single dose (phase I), or bi-weekly for 4 weeks then once weekly to week 52 (APRIL-SLE), or once weekly for 24 weeks (ADDRESS II).",
-    regions        = "Multinational; the phase I study enrolled Japanese and White healthy volunteers, ADDRESS II 46.8% Hispanic/Latino.",
+    disease_state = "503 patients (93.1%) with moderate-to-severe or active autoantibody-positive systemic lupus erythematosus; 37 healthy volunteers (6.9%).",
+    dose_range = "25, 75, or 150 mg subcutaneous: single dose (phase I), or bi-weekly for 4 weeks then once weekly to week 52 (APRIL-SLE), or once weekly for 24 weeks (ADDRESS II).",
+    regions = "Multinational; the phase I study enrolled Japanese and White healthy volunteers, ADDRESS II 46.8% Hispanic/Latino.",
     renal_function = "CrCL median 110 mL/min, range 39.0-270 mL/min.",
-    notes          = "Pooled analysis of EMR700461-022 (phase I, n = 37, 533 observations), APRIL-SLE / NCT00624338 (phase II, n = 298, 1728 observations), and ADDRESS II / NCT01972568 (phase IIb, n = 205, 1379 observations). Baseline demographics from supplementary Table S1. Total atacicept was measured by acid-dissociation ELISA (LLOQ 100 ng/mL); post-dose BLQ records were under 2% of the data set and were excluded from the fit."
+    notes = "Pooled analysis of EMR700461-022 (phase I, n = 37, 533 observations), APRIL-SLE / NCT00624338 (phase II, n = 298, 1728 observations), and ADDRESS II / NCT01972568 (phase IIb, n = 205, 1379 observations). Baseline demographics from supplementary Table S1. Total atacicept was measured by acid-dissociation ELISA (LLOQ 100 ng/mL); post-dose BLQ records were under 2% of the data set and were excluded from the fit."
   )
 
   # The paper's two proportional residual SDs are cohort-stratified rather than

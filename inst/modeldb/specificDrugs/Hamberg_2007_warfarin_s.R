@@ -11,7 +11,12 @@ Hamberg_2007_warfarin_s <- function() {
   )
   vignette <- "Hamberg_2007_warfarin_pkpd_pgx"
   paper_specific_compartments <- c(
-    "coag_s1", "coag_s2", "coag_s3", "coag_s4", "coag_s5", "coag_s6",
+    "coag_s1",
+    "coag_s2",
+    "coag_s3",
+    "coag_s4",
+    "coag_s5",
+    "coag_s6",
     "coag_l1"
   )
 
@@ -22,88 +27,88 @@ Hamberg_2007_warfarin_s <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "S-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "S-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = FALSE),
-    coag_s1     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
-    coag_s2     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
-    coag_s3     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
-    coag_s4     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
-    coag_s5     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
-    coag_s6     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
-    coag_l1     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE)
+    coag_s1 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s2 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s3 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s4 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s5 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s6 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_l1 = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Linear scale on CL_S with reference age 71 years (cohort median); Hamberg 2007 Appendix Eq 4. CL_S decreases approximately 0.91% per year of age above 71.",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Linear scale on CL_S with reference age 71 years (cohort median); Hamberg 2007 Appendix Eq 4. CL_S decreases approximately 0.91% per year of age above 71.",
+      source_name = "AGE"
     ),
     CYP2C9_S1_COUNT = list(
-      description        = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = "*1/*1 (S1_COUNT == 2) is the model's reference category; CL_S for *1/*1 is 0.314 L/h.",
-      notes              = "Sum of CYP2C9_S1_COUNT + CYP2C9_S2_COUNT + CYP2C9_S3_COUNT = 2 per subject. Six diplotypes (*1/*1, *1/*2, *1/*3, *2/*2, *2/*3, *3/*3) map to the counts. Hamberg 2007 Table 2 reports per-diplotype CL_S reduction (vs *1/*1) which the model selects via diplotype indicator built from the three count covariates.",
-      source_name        = "CYP2C9 genotype"
+      notes = "Sum of CYP2C9_S1_COUNT + CYP2C9_S2_COUNT + CYP2C9_S3_COUNT = 2 per subject. Six diplotypes (*1/*1, *1/*2, *1/*3, *2/*2, *2/*3, *3/*3) map to the counts. Hamberg 2007 Table 2 reports per-diplotype CL_S reduction (vs *1/*1) which the model selects via diplotype indicator built from the three count covariates.",
+      source_name = "CYP2C9 genotype"
     ),
     CYP2C9_S2_COUNT = list(
-      description        = "Count of CYP2C9*2 reduced-function alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*2 reduced-function alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "See CYP2C9_S1_COUNT. Hamberg 2007 cohort distribution (Table 1, n=150): *1/*2 17.3%, *2/*2 3.3%, *2/*3 2.7%.",
-      source_name        = "CYP2C9 genotype"
+      notes = "See CYP2C9_S1_COUNT. Hamberg 2007 cohort distribution (Table 1, n=150): *1/*2 17.3%, *2/*2 3.3%, *2/*3 2.7%.",
+      source_name = "CYP2C9 genotype"
     ),
     CYP2C9_S3_COUNT = list(
-      description        = "Count of CYP2C9*3 reduced-function alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*3 reduced-function alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "See CYP2C9_S1_COUNT. Hamberg 2007 cohort distribution (Table 1, n=150): *1/*3 16.7%, *2/*3 2.7%, *3/*3 1.3%. *3 is the dominant reduced-function allele in this Italian cohort.",
-      source_name        = "CYP2C9 genotype"
+      notes = "See CYP2C9_S1_COUNT. Hamberg 2007 cohort distribution (Table 1, n=150): *1/*3 16.7%, *2/*3 2.7%, *3/*3 1.3%. *3 is the dominant reduced-function allele in this Italian cohort.",
+      source_name = "CYP2C9 genotype"
     ),
     VKORC1_1639G_COUNT = list(
-      description        = "Count of VKORC1 -1639G alleles per subject (0, 1, or 2). The complementary -1639A count is 2 - VKORC1_1639G_COUNT.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of VKORC1 -1639G alleles per subject (0, 1, or 2). The complementary -1639A count is 2 - VKORC1_1639G_COUNT.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = "GG (G_COUNT == 2) is the EC50 reference category in the per-diplotype Hamberg parameterisation; typical EC50 = 4.61 mg/L.",
-      notes              = "Hamberg 2007 cohort distribution (Table 1, Study I, n=56 with VKORC1 data): GG 39%, AG 41%, AA 20%. Per-diplotype EC50 (Table 4): GG 4.61, AG 3.02, AA 2.20 mg/L. The model uses diplotype indicators rather than a continuous per-allele dosage because the original paper reported three categorical EC50 values rather than two per-allele coefficients.",
-      source_name        = "VKORC1 -1639G>A genotype"
+      notes = "Hamberg 2007 cohort distribution (Table 1, Study I, n=56 with VKORC1 data): GG 39%, AG 41%, AA 20%. Per-diplotype EC50 (Table 4): GG 4.61, AG 3.02, AA 2.20 mg/L. The model uses diplotype indicators rather than a continuous per-allele dosage because the original paper reported three categorical EC50 values rather than two per-allele coefficients.",
+      source_name = "VKORC1 -1639G>A genotype"
     ),
     INR_BASE = list(
-      description        = "Subject-specific baseline INR measured before warfarin administration",
-      units              = "(unitless)",
-      type               = "continuous",
+      description = "Subject-specific baseline INR measured before warfarin administration",
+      units = "(unitless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (pre-medication INR). Added as an additive constant in the INR observation so the simulated INR returns to the subject's baseline when warfarin is withdrawn. Healthy untreated baseline is ~1.0; the Hamberg 2007 cohort had no centrally reported INR baseline distribution, so the default simulation value used here is 1.0.",
-      source_name        = "BASE (Appendix Eq 11)"
+      notes = "Time-fixed per subject (pre-medication INR). Added as an additive constant in the INR observation so the simulated INR returns to the subject's baseline when warfarin is withdrawn. Healthy untreated baseline is ~1.0; the Hamberg 2007 cohort had no centrally reported INR baseline distribution, so the default simulation value used here is 1.0.",
+      source_name = "BASE (Appendix Eq 11)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 150L,
-    n_studies      = 2L,
-    age_range      = "22-87 years",
-    age_median     = "71 years",
-    weight_range   = "45-120 kg",
-    weight_median  = "80 kg",
+    species = "human",
+    n_subjects = 150L,
+    n_studies = 2L,
+    age_range = "22-87 years",
+    age_median = "71 years",
+    weight_range = "45-120 kg",
+    weight_median = "80 kg",
     sex_female_pct = 34,
     race_ethnicity = "Italian (not stratified by race in source)",
-    disease_state  = "Adults on long-term warfarin anticoagulant therapy for thromboembolic prophylaxis",
-    dose_range     = "Single 10 mg racemic dose (Study I) and 6.25-78.75 mg/week maintenance (median 29.375 mg/week)",
-    regions        = "Italy (Thrombosis Center, University of Padova)",
-    cyp2c9_freq    = "*1/*1 58.7%, *1/*2 17.3%, *1/*3 16.7%, *2/*2 3.3%, *2/*3 2.7%, *3/*3 1.3% (n=150 total cohort; Hamberg 2007 Table 1)",
-    vkorc1_freq    = "GG 39%, AG 41%, AA 20% (n=56 with VKORC1 typing; Study I only; Hamberg 2007 Table 1)",
-    inr_steady     = "INR at steady state median 2.28 (range 1.36-4.37; Hamberg 2007 Table 1, total cohort)",
-    n_pk_records   = "171 S-warfarin observations after single-dose + 150 after stable maintenance dosing (Study I + Study II)",
-    n_pd_records   = "228 INR observations after single-dose + 56 at steady state (Study I only, n=57)",
-    notes          = paste(
+    disease_state = "Adults on long-term warfarin anticoagulant therapy for thromboembolic prophylaxis",
+    dose_range = "Single 10 mg racemic dose (Study I) and 6.25-78.75 mg/week maintenance (median 29.375 mg/week)",
+    regions = "Italy (Thrombosis Center, University of Padova)",
+    cyp2c9_freq = "*1/*1 58.7%, *1/*2 17.3%, *1/*3 16.7%, *2/*2 3.3%, *2/*3 2.7%, *3/*3 1.3% (n=150 total cohort; Hamberg 2007 Table 1)",
+    vkorc1_freq = "GG 39%, AG 41%, AA 20% (n=56 with VKORC1 typing; Study I only; Hamberg 2007 Table 1)",
+    inr_steady = "INR at steady state median 2.28 (range 1.36-4.37; Hamberg 2007 Table 1, total cohort)",
+    n_pk_records = "171 S-warfarin observations after single-dose + 150 after stable maintenance dosing (Study I + Study II)",
+    n_pd_records = "228 INR observations after single-dose + 56 at steady state (Study I only, n=57)",
+    notes = paste(
       "Pooled across Italian Studies I (n=57) and II (n=93). PK developed on the full 150-patient cohort;",
       "PD developed only on Study I (n=57) for which both single-dose plus steady-state INR and VKORC1 typing",
       "were available. See Hamberg 2007 Table 1."

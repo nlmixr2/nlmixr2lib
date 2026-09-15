@@ -20,8 +20,8 @@ Marcantonio_2022_omalizumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Omalizumab dose amount into depot (SC) in nmol; MW = 149000 Da so 225 mg = 1510 nmol.",
+    time = "day",
+    dosing = "Omalizumab dose amount into depot (SC) in nmol; MW = 149000 Da so 225 mg = 1510 nmol.",
     concentration = "Free omalizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
@@ -35,22 +35,32 @@ Marcantonio_2022_omalizumab <- function() {
     Ab_0L = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_L0 = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_LL = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1    = list(analyte = "IgE", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1    = list(analyte = "FcepsilonRI", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    L1R1  = list(analyte = "IgE-FcepsilonRI complex", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    S1    = list(analyte = "omalizumab-IgE-FcepsilonRI ternary complex", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    L1 = list(analyte = "IgE", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1 = list(analyte = "FcepsilonRI", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    L1R1 = list(
+      analyte = "IgE-FcepsilonRI complex",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    S1 = list(
+      analyte = "omalizumab-IgE-FcepsilonRI ternary complex",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with moderate-to-severe persistent allergic asthma; the IgE concentration used here (40 nmols total = 8 nM at V = 5 L) corresponds to a patient with serum IgE 222 IU/mL = 533 ng/mL per Table S6.",
-    dose_range     = "150 mg or 300 mg SC every 2 or 4 weeks per body weight and serum IgE (Xolair USPI). Model prediction targets 225 mg Q2W SC.",
-    regions        = NA_character_,
-    notes          = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with moderate-to-severe persistent allergic asthma; the IgE concentration used here (40 nmols total = 8 nM at V = 5 L) corresponds to a patient with serum IgE 222 IU/mL = 533 ng/mL per Table S6.",
+    dose_range = "150 mg or 300 mg SC every 2 or 4 weeks per body weight and serum IgE (Xolair USPI). Model prediction targets 225 mg Q2W SC.",
+    regions = NA_character_,
+    notes = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
   )
 
   ini({

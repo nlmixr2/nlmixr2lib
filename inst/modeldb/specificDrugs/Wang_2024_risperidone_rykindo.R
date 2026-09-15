@@ -12,52 +12,67 @@ Wang_2024_risperidone_rykindo <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed. Wang 2024 Table 2 reports separate apparent-clearance estimates for males (186.7 L/day) and females (153.4 L/day) in trial CT-1S01; the model encodes the male value as the reference and the female/male ratio as a log-multiplicative coefficient. The paper's Results describe the effect as 'about 15% lower clearance' in females; the ratio implied by the Table 2 point estimates is 153.4/186.7 = 0.822, i.e. 17.8% lower. Table 2 is used because it carries the final model estimates. The authors judged the sex effect 'unlikely clinically relevant'. No sex effect was retained for Consta.",
-      source_name        = "gender"
+      notes = "Time-fixed. Wang 2024 Table 2 reports separate apparent-clearance estimates for males (186.7 L/day) and females (153.4 L/day) in trial CT-1S01; the model encodes the male value as the reference and the female/male ratio as a log-multiplicative coefficient. The paper's Results describe the effect as 'about 15% lower clearance' in females; the ratio implied by the Table 2 point estimates is 153.4/186.7 = 0.822, i.e. 17.8% lower. Table 2 is used because it carries the final model estimates. The authors judged the sex effect 'unlikely clinically relevant'. No sex effect was retained for Consta.",
+      source_name = "gender"
     ),
     STUDY_CT_USA = list(
-      description        = "1 = subject enrolled in one of the two US relative-bioavailability trials of the Wang 2024 Rykindo programme (CT-USA-104, NCT02186769, single dose 25/50 mg; or CT-USA-102, NCT02091388, 25 mg every 2 weeks x 5); 0 = subject enrolled in the single-ascending-dose trial CT-1S01 (NCT02055287)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in one of the two US relative-bioavailability trials of the Wang 2024 Rykindo programme (CT-USA-104, NCT02186769, single dose 25/50 mg; or CT-USA-102, NCT02091388, 25 mg every 2 weeks x 5); 0 = subject enrolled in the single-ascending-dose trial CT-1S01 (NCT02055287)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CT-1S01, the single-ascending-dose trial, which anchors the reference apparent clearance)",
-      notes              = "Time-fixed; set from the trial identifier. Switches apparent clearance of the active moiety by a factor of 0.675 relative to CT-1S01 (Wang 2024 Table 2 row 'CL ratio for CT-USA-104 and 102 to CT-1S01'). Applies to the Rykindo model only; the Consta model has a single clearance across trials. Note that Wang 2024 Results paragraph 'Population Pharmacokinetic Modeling of Rykindo' describes the clearance reduction as applying to 'the multiple-dose study' only, which conflicts with the Table 2 row label that names both CT-USA-104 and CT-USA-102; the table label is used here because it is the final-model parameter definition and because the resulting AUC prediction matches the observed CT-USA-104 exposures far better (see the vignette source-trace section). Follows the auto-approved STUDY_<id> canonical family; a group-level indicator over two trials, directly analogous to STUDY_DORZA_EARLY.",
-      source_name        = "study"
+      notes = "Time-fixed; set from the trial identifier. Switches apparent clearance of the active moiety by a factor of 0.675 relative to CT-1S01 (Wang 2024 Table 2 row 'CL ratio for CT-USA-104 and 102 to CT-1S01'). Applies to the Rykindo model only; the Consta model has a single clearance across trials. Note that Wang 2024 Results paragraph 'Population Pharmacokinetic Modeling of Rykindo' describes the clearance reduction as applying to 'the multiple-dose study' only, which conflicts with the Table 2 row label that names both CT-USA-104 and CT-USA-102; the table label is used here because it is the final-model parameter definition and because the resulting AUC prediction matches the observed CT-USA-104 exposures far better (see the vignette source-trace section). Follows the auto-approved STUDY_<id> canonical family; a group-level indicator over two trials, directly analogous to STUDY_DORZA_EARLY.",
+      source_name = "study"
     ),
     STUDY_CT_USA_102 = list(
-      description        = "1 = subject enrolled in trial CT-USA-102 (NCT02091388), the multiple-dose relative-bioavailability trial in which either Rykindo or Consta 25 mg was given every 2 weeks for five injections; 0 = subject enrolled in CT-1S01 or CT-USA-104",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in trial CT-USA-102 (NCT02091388), the multiple-dose relative-bioavailability trial in which either Rykindo or Consta 25 mg was given every 2 weeks for five injections; 0 = subject enrolled in CT-1S01 or CT-USA-104",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the single-dose trials CT-1S01 and CT-USA-104)",
-      notes              = "Time-fixed; set from the trial identifier. Switches the first-order absorption rate constant KA of the main release: 0.288 -> 0.380 /day for Rykindo and 0.179 -> 0.271 /day for Consta (Wang 2024 Table 2, rows 'KA_CT-1S01 and CT-USA-104' and 'KA_CT-USA-102'). The authors attribute the faster apparent absorption in the multiple-dose trial to its sparser PK sampling scheme rather than to a formulation difference (Wang 2024 Discussion). Because the model sets the elimination rate constant equal to KA (flip-flop kinetics), this indicator also shifts the apparent central volume V = CL/KA. Used by both Wang 2024 models. Follows the auto-approved STUDY_<id> canonical family.",
-      source_name        = "study"
+      notes = "Time-fixed; set from the trial identifier. Switches the first-order absorption rate constant KA of the main release: 0.288 -> 0.380 /day for Rykindo and 0.179 -> 0.271 /day for Consta (Wang 2024 Table 2, rows 'KA_CT-1S01 and CT-USA-104' and 'KA_CT-USA-102'). The authors attribute the faster apparent absorption in the multiple-dose trial to its sparser PK sampling scheme rather than to a formulation difference (Wang 2024 Discussion). Because the model sets the elimination rate constant equal to KA (flip-flop kinetics), this indicator also shifts the apparent central volume V = CL/KA. Used by both Wang 2024 models. Follows the auto-approved STUDY_<id> canonical family.",
+      source_name = "study"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2  = list(analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(
+      analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    depot2 = list(
+      analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 97L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 97L,
+    n_studies = 3L,
     n_observations = "2216 plasma concentration records of risperidone and 9-OH-risperidone (Wang 2024 Results, 'Population Pharmacokinetic Modeling of Rykindo').",
-    age_range      = "medians 51.0 / 52.0 / 54.0 years and means 48.0 (SD 9.9) / 48.0 (9.2) / 45.6 (9.6) years in CT-1S01 / CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
-    weight_range   = "medians 84.4 / 89.7 / 88.9 kg and means 85.1 (SD 14.5) / 85.8 (14.8) / 89.4 (16.7) kg in CT-1S01 / CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
-    bmi_range      = "medians 27.9 / 29.6 / 29.3 kg/m^2 and means 28.0 (SD 4.1) / 27.9 (4.9) / 29.6 (5.1) kg/m^2 (Wang 2024 Table 1)",
+    age_range = "medians 51.0 / 52.0 / 54.0 years and means 48.0 (SD 9.9) / 48.0 (9.2) / 45.6 (9.6) years in CT-1S01 / CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
+    weight_range = "medians 84.4 / 89.7 / 88.9 kg and means 85.1 (SD 14.5) / 85.8 (14.8) / 89.4 (16.7) kg in CT-1S01 / CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
+    bmi_range = "medians 27.9 / 29.6 / 29.3 kg/m^2 and means 28.0 (SD 4.1) / 27.9 (4.9) / 29.6 (5.1) kg/m^2 (Wang 2024 Table 1)",
     sex_female_pct = 24.5,
     race_ethnicity = "Not reported in Wang 2024. Race was screened as a covariate but no race effect was retained in the final model.",
-    disease_state  = "Stable adults with schizophrenia or schizoaffective disorder",
-    dose_range     = "12.5, 25, 37.5 and 50 mg single intramuscular gluteal injection (CT-1S01); 25 and 50 mg single injection (CT-USA-104); 25 mg every 2 weeks for five injections (CT-USA-102)",
-    regions        = "United States (CT-USA-104, CT-USA-102) and the CT-1S01 single-ascending-dose trial",
-    cyp2d6_status  = "Across the three Rykindo cohorts (Wang 2024 Table 1): 4 poor, 41 intermediate, 53 extensive and 1 ultra-rapid metabolizer, 3 unknown. CYP2D6 genotype was not retained as a covariate because the active moiety (risperidone + 9-OH-risperidone) is insensitive to CYP2D6 status.",
-    notes          = "Pooled from three phase 1 trials: CT-1S01 (NCT02055287), CT-USA-104 (NCT02186769) and CT-USA-102 (NCT02091388). Wang 2024 Table 1 lists 32 + 16 + 54 = 102 enrolled subjects across the three Rykindo cohorts, while the Results text states that 97 subjects contributed the 2216 PK records; the difference is not explained in the paper. Age, weight, body mass index, sex and race were screened as covariates; only sex (on clearance) and trial (on clearance and on the main-release absorption rate constant) were retained."
+    disease_state = "Stable adults with schizophrenia or schizoaffective disorder",
+    dose_range = "12.5, 25, 37.5 and 50 mg single intramuscular gluteal injection (CT-1S01); 25 and 50 mg single injection (CT-USA-104); 25 mg every 2 weeks for five injections (CT-USA-102)",
+    regions = "United States (CT-USA-104, CT-USA-102) and the CT-1S01 single-ascending-dose trial",
+    cyp2d6_status = "Across the three Rykindo cohorts (Wang 2024 Table 1): 4 poor, 41 intermediate, 53 extensive and 1 ultra-rapid metabolizer, 3 unknown. CYP2D6 genotype was not retained as a covariate because the active moiety (risperidone + 9-OH-risperidone) is insensitive to CYP2D6 status.",
+    notes = "Pooled from three phase 1 trials: CT-1S01 (NCT02055287), CT-USA-104 (NCT02186769) and CT-USA-102 (NCT02091388). Wang 2024 Table 1 lists 32 + 16 + 54 = 102 enrolled subjects across the three Rykindo cohorts, while the Results text states that 97 subjects contributed the 2216 PK records; the difference is not explained in the paper. Age, weight, body mass index, sex and race were screened as covariates; only sex (on clearance) and trial (on clearance and on the main-release absorption rate constant) were retained."
   )
 
   ini({

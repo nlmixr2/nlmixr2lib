@@ -8,52 +8,52 @@ Archary_2019_abacavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; used for allometric scaling on CL/F (exponent 0.75) and Vc/F (exponent 1) with reference weight 7 kg (population median).",
-      source_name        = "WT"
+      notes = "Time-varying; used for allometric scaling on CL/F (exponent 0.75) and Vc/F (exponent 1) with reference weight 7 kg (population median).",
+      source_name = "WT"
     ),
     DAY14 = list(
-      description        = "Day-14-post-ART landmark indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Day-14-post-ART landmark indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (day 1 / pre-rehabilitation)",
-      notes              = "Within-subject step indicator: 0 on day 1 of antiretroviral treatment (acute malnutrition baseline), 1 on day 14 (post-nutritional-rehabilitation steady state). Gates the day-1 (3.33) vs day-14 (5.86) typical CL/F per 7 kg step reported in Table 3 of the source.",
-      source_name        = "DAY14"
+      notes = "Within-subject step indicator: 0 on day 1 of antiretroviral treatment (acute malnutrition baseline), 1 on day 14 (post-nutritional-rehabilitation steady state). Gates the day-1 (3.33) vs day-14 (5.86) typical CL/F per 7 kg step reported in Table 3 of the source.",
+      source_name = "DAY14"
     ),
     EARLY_ART = list(
-      description        = "Early-vs-delayed antiretroviral-treatment-initiation arm indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Early-vs-delayed antiretroviral-treatment-initiation arm indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (delayed-ART arm; F = 1 typical-value reference)",
-      notes              = "Time-fixed per subject (MATCH-trial randomization). 1 = early ART (initiated within 14 days of admission); 0 = delayed ART (initiated after nutritional recovery, > 14 days). Adds +31% to bioavailability F per Table 3.",
-      source_name        = "EARLY"
+      notes = "Time-fixed per subject (MATCH-trial randomization). 1 = early ART (initiated within 14 days of admission); 0 = delayed ART (initiated after nutritional recovery, > 14 days). Adds +31% to bioavailability F per Table 3.",
+      source_name = "EARLY"
     )
   )
 
   population <- list(
-    n_subjects     = 75,
-    n_studies      = 1,
-    age_range      = "0.1-10.8 years (median 1.4)",
-    age_median     = "1.4 years",
-    weight_range   = "1.88-19.6 kg",
-    weight_median  = "7 kg",
+    n_subjects = 75,
+    n_studies = 1,
+    age_range = "0.1-10.8 years (median 1.4)",
+    age_median = "1.4 years",
+    weight_range = "1.88-19.6 kg",
+    weight_median = "7 kg",
     sex_female_pct = 41,
     race_ethnicity = "South African paediatric cohort (race not stratified in source).",
-    disease_state  = "Severely malnourished HIV-infected children (weight-for-length Z-scores < -3, mid-upper arm circumference < 115 mm, or peripheral oedema) initiating antiretroviral treatment.",
-    dose_range     = "WHO weight-band paediatric oral abacavir + lamivudine + LPV/r dosing; liquid formulation for children < 14 kg, solid formulation > 14 kg (only 2 patients received solid formulations).",
-    regions        = "South Africa (King Edward VIII Hospital, Durban).",
+    disease_state = "Severely malnourished HIV-infected children (weight-for-length Z-scores < -3, mid-upper arm circumference < 115 mm, or peripheral oedema) initiating antiretroviral treatment.",
+    dose_range = "WHO weight-band paediatric oral abacavir + lamivudine + LPV/r dosing; liquid formulation for children < 14 kg, solid formulation > 14 kg (only 2 patients received solid formulations).",
+    regions = "South Africa (King Edward VIII Hospital, Durban).",
     n_observations = 623,
-    notes          = "MATCH (Malnutrition and ART Timing in Children with HIV) trial, PACTR201609001751384; 75 patients with day-1 abacavir + lamivudine concentrations, 69 of whom had day-14 samples; 623 abacavir concentrations sampled 0.4-12.4 h post-dose. Demographics summarised in Table 1 of the source."
+    notes = "MATCH (Malnutrition and ART Timing in Children with HIV) trial, PACTR201609001751384; 75 patients with day-1 abacavir + lamivudine concentrations, 69 of whom had day-14 samples; 623 abacavir concentrations sampled 0.4-12.4 h post-dose. Demographics summarised in Table 1 of the source."
   )
 
   ini({

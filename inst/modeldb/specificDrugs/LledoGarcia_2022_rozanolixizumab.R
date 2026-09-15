@@ -5,18 +5,18 @@ LledoGarcia_2022_rozanolixizumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "rozanolixizumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "rozanolixizumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rozanolixizumab", units = "mg", specimen = "tissue", verified = TRUE),
-    total_igg   = list(analyte = "endogenous immunoglobulin G", units = "g/L", specimen = "plasma", verified = TRUE)
+    total_igg = list(analyte = "endogenous immunoglobulin G", units = "g/L", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 18L,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
     disease_state = "healthy adult volunteers",
-    dose_range    = "1, 4 and 7 mg/kg single intravenous infusion (6 subjects per dose cohort)",
-    notes         = paste(
+    dose_range = "1, 4 and 7 mg/kg single intravenous infusion (6 subjects per dose cohort)",
+    notes = paste(
       "First-in-human study NCT02220153 (Kiessling et al. 2017 Sci Transl Med 9:eaan1208; reference 11 of the",
       "source paper). That study randomised 49 subjects to rozanolixizumab (n = 36) or placebo (n = 13) across",
       "six cohorts; the first three cohorts were intravenous at 1, 4 and 7 mg/kg (n = 6 each) and the last three",

@@ -8,60 +8,60 @@ Sano_2023_fesoterodine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fesoterodine", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fesoterodine", units = "ug", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fesoterodine", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometrically scaled onto CL/F and Vd/F as (WT/35)^exponent, referenced to 35 kg (Sano 2023 Methods section 2.3 and Online Resource 8a). Both exponents were FIXED a priori (0.75 on CL/F, 1 on Vd/F) rather than estimated, per Sano 2023 Table 2. Observed range in the pharmacokinetic analysis population is 11.7-85.0 kg (median 33.6 kg).",
-      source_name        = "BWT"
+      notes = "Allometrically scaled onto CL/F and Vd/F as (WT/35)^exponent, referenced to 35 kg (Sano 2023 Methods section 2.3 and Online Resource 8a). Both exponents were FIXED a priori (0.75 on CL/F, 1 on Vd/F) rather than estimated, per Sano 2023 Table 2. Observed range in the pharmacokinetic analysis population is 11.7-85.0 kg (median 33.6 kg).",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) -- the most common category in the analysis population (52.1% male) and the typical-value reference in Sano 2023 Eqs. 1-2",
-      notes              = "Multiplicative effect on both CL/F (0.862-fold) and Vd/F (0.634-fold) for female relative to the male reference (Sano 2023 Table 2). The source NM-TRAN column SEX is coded 0 = male, 1 = female (Online Resource 4 variable list), which matches the SEXF canonical orientation directly with no value inversion. Note that the original clinical datasets used 1 = male, 2 = female and were recoded before modeling. Neither 95% CI excluded the null value of 1.0 (CL/F 0.716-1.02; Vd/F 0.161-1.26), so both sex effects are imprecise; they are retained here because the authors carried them into the final model.",
-      source_name        = "SEX"
+      notes = "Multiplicative effect on both CL/F (0.862-fold) and Vd/F (0.634-fold) for female relative to the male reference (Sano 2023 Table 2). The source NM-TRAN column SEX is coded 0 = male, 1 = female (Online Resource 4 variable list), which matches the SEXF canonical orientation directly with no value inversion. Note that the original clinical datasets used 1 = male, 2 = female and were recoded before modeling. Neither 95% CI excluded the null value of 1.0 (CL/F 0.716-1.02; Vd/F 0.161-1.26), so both sex effects are imprecise; they are retained here because the authors carried them into the final model.",
+      source_name = "SEX"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6 extensive metabolizer) -- the reference scenario in Sano 2023 Table 2",
-      notes              = "Multiplicative 0.546-fold effect on CL/F for poor metabolizers relative to the extensive-metabolizer reference (Sano 2023 Table 2; 95% CI 0.343-0.721 excludes the null value of 1.0). Sano 2023 Table 2 footnote a states that intermediate metabolizers (IM) and ultra-rapid metabolizers (UM) were pooled with extensive metabolizers, so this column is a two-level PM-vs-everyone-else indicator rather than a four-level phenotype. The source NM-TRAN column CYPbi is coded 1 = extensive metabolizer, 0 = poor metabolizer (Online Resource 4), i.e. the INVERSE of this canonical: derive CYP2D6_PM = 1 - CYPbi. Only 3 of 142 patients (2.1%) were poor metabolizers.",
-      source_name        = "CYPbi (inverted: CYP2D6_PM = 1 - CYPbi)"
+      notes = "Multiplicative 0.546-fold effect on CL/F for poor metabolizers relative to the extensive-metabolizer reference (Sano 2023 Table 2; 95% CI 0.343-0.721 excludes the null value of 1.0). Sano 2023 Table 2 footnote a states that intermediate metabolizers (IM) and ultra-rapid metabolizers (UM) were pooled with extensive metabolizers, so this column is a two-level PM-vs-everyone-else indicator rather than a four-level phenotype. The source NM-TRAN column CYPbi is coded 1 = extensive metabolizer, 0 = poor metabolizer (Online Resource 4), i.e. the INVERSE of this canonical: derive CYP2D6_PM = 1 - CYPbi. Only 3 of 142 patients (2.1%) were poor metabolizers.",
+      source_name = "CYPbi (inverted: CYP2D6_PM = 1 - CYPbi)"
     ),
     FORM_CAPSULE = list(
-      description        = "Fesoterodine beads-in-capsule (BIC) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fesoterodine beads-in-capsule (BIC) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fesoterodine tablet) -- the tablet is the structural bioavailability anchor with F fixed at 1",
-      notes              = "1 = beads-in-capsule (BIC), 0 = tablet. Multiplicative 0.648-fold effect on the extent of absorption (relative bioavailability) for BIC relative to the tablet reference (Sano 2023 Table 2; 95% CI 0.546-0.787 excludes the null value of 1.0). Same orientation as Gupta 2016 lenvatinib: F is fixed at 1 on the non-capsule (tablet) arm and the capsule arm carries the estimated relative bioavailability. In the source studies BIC was given only to study 1047 cohort 2 (patients weighing 25 kg or less, 2 and 4 mg QD) and tablets only to study 1047 cohort 1 and study 1066 (4 and 8 mg QD), so formulation is strongly confounded with body weight and dose in this dataset. The authors also tested a formulation effect on ka instead of on F; it worsened the objective function value and was not retained (Sano 2023 Results section 3.1). The model-predicted relative bioavailability of 64.8% is lower than the 79.9-87.9% observed by non-compartmental analysis in healthy adults (NCT02160158); Sano 2023 Discussion attributes the discrepancy to design differences and to unknown fed/fasted state in study 1047.",
-      source_name        = "BIC"
+      notes = "1 = beads-in-capsule (BIC), 0 = tablet. Multiplicative 0.648-fold effect on the extent of absorption (relative bioavailability) for BIC relative to the tablet reference (Sano 2023 Table 2; 95% CI 0.546-0.787 excludes the null value of 1.0). Same orientation as Gupta 2016 lenvatinib: F is fixed at 1 on the non-capsule (tablet) arm and the capsule arm carries the estimated relative bioavailability. In the source studies BIC was given only to study 1047 cohort 2 (patients weighing 25 kg or less, 2 and 4 mg QD) and tablets only to study 1047 cohort 1 and study 1066 (4 and 8 mg QD), so formulation is strongly confounded with body weight and dose in this dataset. The authors also tested a formulation effect on ka instead of on F; it worsened the objective function value and was not retained (Sano 2023 Results section 3.1). The model-predicted relative bioavailability of 64.8% is lower than the 79.9-87.9% observed by non-compartmental analysis in healthy adults (NCT02160158); Sano 2023 Discussion attributes the discrepancy to design differences and to unknown fed/fasted state in study 1047.",
+      source_name = "BIC"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 142L,
-    n_observations    = 428L,
-    n_studies         = 2L,
-    age_range         = "6-17 years (median 10, mean 10.1, SD 3.00)",
-    weight_range      = "11.7-85.0 kg (median 33.6, mean 36.2, SD 16.1)",
-    sex_female_pct    = 47.9,
-    race_ethnicity    = c(White = 50.7, Black = 3.5, Asian = 44.4, Other = 1.4),
-    cyp2d6_pm_pct     = 2.1,
-    formulation_pct   = c(Tablet = 64.8, BIC = 35.2),
-    disease_state     = "Pediatric patients with overactive bladder (OAB) or neurogenic detrusor overactivity (NDO). Study 1066 enrolled OAB patients aged 8-17 years with approximately half having NDO; study 1047 enrolled patients aged 6-17 years with symptoms of NDO.",
-    dose_range        = "Fesoterodine 4 mg tablet QD then 8 mg tablet QD (study 1066, 4-week periods); fesoterodine 4 or 8 mg tablet QD (study 1047 cohort 1, patients over 25 kg); fesoterodine 2 or 4 mg beads-in-capsule QD (study 1047 cohort 2, patients 25 kg or less). Study 1047 also had an oxybutynin extended-release comparator arm that contributed no 5-HMT data.",
-    regions           = "Multinational (NCT00857896 phase II study 1066; NCT01557244 phase III study 1047).",
-    notes             = "Demographics from Sano 2023 Table 1 (pharmacokinetic analysis population). Sampling was sparse: study 1066 collected pre-dose and 0.5-2, 2-4, 4-6 h post-dose samples at week 4 plus 8-10, 10-14, 14-16 and 16-20 h post-dose samples at week 8; study 1047 collected up to three samples per patient at week 4. The sparse design and lack of information on the absorption phase produced moderate eta shrinkage on Vd/F (42.1%) and ka (45.0%), which the authors flag as a caveat for empirical-Bayes-based diagnostics and exposure metrics."
+    species = "human",
+    n_subjects = 142L,
+    n_observations = 428L,
+    n_studies = 2L,
+    age_range = "6-17 years (median 10, mean 10.1, SD 3.00)",
+    weight_range = "11.7-85.0 kg (median 33.6, mean 36.2, SD 16.1)",
+    sex_female_pct = 47.9,
+    race_ethnicity = c(White = 50.7, Black = 3.5, Asian = 44.4, Other = 1.4),
+    cyp2d6_pm_pct = 2.1,
+    formulation_pct = c(Tablet = 64.8, BIC = 35.2),
+    disease_state = "Pediatric patients with overactive bladder (OAB) or neurogenic detrusor overactivity (NDO). Study 1066 enrolled OAB patients aged 8-17 years with approximately half having NDO; study 1047 enrolled patients aged 6-17 years with symptoms of NDO.",
+    dose_range = "Fesoterodine 4 mg tablet QD then 8 mg tablet QD (study 1066, 4-week periods); fesoterodine 4 or 8 mg tablet QD (study 1047 cohort 1, patients over 25 kg); fesoterodine 2 or 4 mg beads-in-capsule QD (study 1047 cohort 2, patients 25 kg or less). Study 1047 also had an oxybutynin extended-release comparator arm that contributed no 5-HMT data.",
+    regions = "Multinational (NCT00857896 phase II study 1066; NCT01557244 phase III study 1047).",
+    notes = "Demographics from Sano 2023 Table 1 (pharmacokinetic analysis population). Sampling was sparse: study 1066 collected pre-dose and 0.5-2, 2-4, 4-6 h post-dose samples at week 4 plus 8-10, 10-14, 14-16 and 16-20 h post-dose samples at week 8; study 1047 collected up to three samples per patient at week 4. The sparse design and lack of information on the absorption phase produced moderate eta shrinkage on Vd/F (42.1%) and ka (45.0%), which the authors flag as a caveat for empirical-Bayes-based diagnostics and exposure metrics."
   )
 
   ini({

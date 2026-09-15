@@ -40,36 +40,36 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_pyra       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
-    central_pyra     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling at the population median 60 kg applied to all",
         "apparent volumes (Vc, Vp, Vp2) with exponent 1.0 and to all",
         "apparent flows (CL, Q, Q2) with exponent 0.75, for both",
         "sulfadoxine and pyrimethamine. Height was not collected so",
         "fat-free mass was not testable."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HCT = list(
-      description        = "Hematocrit (volume fraction)",
-      units              = "fraction (0-1)",
-      type               = "continuous",
+      description = "Hematocrit (volume fraction)",
+      units = "fraction (0-1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-visit hematocrit expressed as a fraction of 1. The source",
         "data column was baseline hemoglobin (HGB in g/dL); the paper",
         "converts to hematocrit using the Lee 2008 formula for",
@@ -82,14 +82,14 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
         "drug-specific RBC-to-plasma partition ratio estimated in",
         "ini()."
       ),
-      source_name        = "HCT"
+      source_name = "HCT"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnancy visit (second or third trimester); 0 = postpartum",
         "visit. Encoded per occasion. Pyrimethamine apparent CL is",
         "modelled as a step contrast on PREG so that postpartum CL is",
@@ -99,14 +99,14 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
         "model captures the gradual postpartum recovery; PREG itself",
         "does not enter the sulfadoxine CL equation."
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     TPP = list(
-      description        = "Time after delivery",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Time after delivery",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Weeks since delivery for postpartum visits. Set to 0 for",
         "pregnancy visits so the sigmoidal postpartum-recovery effect",
         "on sulfadoxine CL evaluates to 0 during pregnancy. The",
@@ -114,14 +114,14 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
         "weeks and gamma = 4.90 reaches its asymptote near 13 weeks",
         "postpartum (Figure 3 of the paper)."
       ),
-      source_name        = "TPP"
+      source_name = "TPP"
     ),
     REGION_MOZAMBIQUE = list(
-      description        = "Mozambique study-site indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mozambique study-site indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Mozambique; Mali is the reference site)",
-      notes              = paste(
+      notes = paste(
         "1 = Mozambique site (31 pregnant / 22 postpartum subjects);",
         "0 otherwise. Multiplicatively reduces pyrimethamine apparent",
         "CL by 20.2% (Table 2 \"Difference in clearance in",
@@ -129,62 +129,62 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
         "by +21.2% and observed pyrimethamine concentrations by +57.6%",
         "(Table 2 \"Site effect (scaling on observations)\")."
       ),
-      source_name        = "SITE = 'Mozambique'"
+      source_name = "SITE = 'Mozambique'"
     ),
     REGION_SUDAN = list(
-      description        = "Sudan study-site indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sudan study-site indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Sudan; Mali is the reference site)",
-      notes              = paste(
+      notes = paste(
         "1 = Sudan site (24 pregnant / 9 postpartum subjects); 0",
         "otherwise. Scales observed sulfadoxine concentrations by",
         "+15.5% and observed pyrimethamine concentrations by +33.2%",
         "(Table 2 \"Site effect (scaling on observations)\")."
       ),
-      source_name        = "SITE = 'Sudan'"
+      source_name = "SITE = 'Sudan'"
     ),
     REGION_ZAMBIA = list(
-      description        = "Zambia study-site indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Zambia study-site indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Zambia; Mali is the reference site)",
-      notes              = paste(
+      notes = paste(
         "1 = Zambia site (25 pregnant / 18 postpartum subjects); 0",
         "otherwise. Scales observed sulfadoxine concentrations by",
         "-24.8% and observed pyrimethamine concentrations by -5.40%",
         "(Table 2 \"Site effect (scaling on observations)\")."
       ),
-      source_name        = "SITE = 'Zambia'"
+      source_name = "SITE = 'Zambia'"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 98,
+    species = "human",
+    n_subjects = 98,
     n_subjects_postpartum = 77,
-    n_studies      = 1,
-    n_sites        = 4,
-    age_range      = "Adult women of reproductive age (per-site median 24-31 years; Table 1)",
-    weight_range   = "Adult women (population median 60 kg, the allometric reference; per-site median 60-66 kg, Table 1)",
+    n_studies = 1,
+    n_sites = 4,
+    age_range = "Adult women of reproductive age (per-site median 24-31 years; Table 1)",
+    weight_range = "Adult women (population median 60 kg, the allometric reference; per-site median 60-66 kg, Table 1)",
     sex_female_pct = 100,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Pregnant women in the second or third trimester (median",
       "gestational age 27-28 weeks across sites) and the same women",
       "after delivery (postpartum sampling 6.4 to 46 weeks after",
       "delivery, depending on site); no concurrent Plasmodium",
       "falciparum infection required for enrolment."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral fixed-dose combination tablet containing 1,500 mg",
       "sulfadoxine and 75 mg pyrimethamine, administered as part of",
       "intermittent preventive treatment of malaria in pregnancy",
       "(IPTp). One pregnancy dose plus one matched ad-hoc postpartum",
       "dose per subject."
     ),
-    regions        = "Sub-Saharan Africa: Mali, Mozambique, Sudan, Zambia",
-    notes          = paste(
+    regions = "Sub-Saharan Africa: Mali, Mozambique, Sudan, Zambia",
+    notes = paste(
       "Demographics from de Kock 2017 Table 1 (per-site medians of",
       "age, weight, hemoglobin, and gestational age / time after",
       "delivery). Whole-blood samples collected from a single dried",

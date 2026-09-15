@@ -17,57 +17,62 @@ Bayoumy_2025_thioguanine <- function() {
     # absorption, intracellular anabolism to 6-TGN, and 6-TGN elimination.
     # Amounts are nanomoles: f(depot) converts the mg dose to nmol using the
     # thioguanine molecular weight (ESM 1 $PK, F1 = 1E6/167.19).
-    depot   = list(analyte = "thioguanine", units = "nmol", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "6-thioguanine nucleotides (6-TGN)", units = "nmol", specimen = "blood cell", verified = TRUE)
+    depot = list(analyte = "thioguanine", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "6-thioguanine nucleotides (6-TGN)",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Fixed allometric scaling on both disposition parameters, reference 70 kg: exponent 0.75 on CL/F and 1.0 on V/F (Bayoumy 2025 Results 3.3 and the final model equations; ESM 1 $THETA 5 and 6, both FIX). Median 60 kg (IQR 56-74.25) in the analysis population (Table 1). Height was not recorded, so fat-free mass and other body-size descriptors could not be evaluated.",
-      source_name        = "WT"
+      notes = "Fixed allometric scaling on both disposition parameters, reference 70 kg: exponent 0.75 on CL/F and 1.0 on V/F (Bayoumy 2025 Results 3.3 and the final model equations; ESM 1 $THETA 5 and 6, both FIX). Median 60 kg (IQR 56-74.25) in the analysis population (Table 1). Height was not recorded, so fat-free mass and other body-size descriptors could not be evaluated.",
+      source_name = "WT"
     ),
     CONMED_AMINO = list(
-      description        = "Concomitant aminosalicylate (5-ASA) use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant aminosalicylate (5-ASA) use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant aminosalicylate)",
-      notes              = "Power-form multiplier on CL/F: CL/F * 1.58165^CONMED_AMINO, i.e. 58% higher apparent clearance on concomitant 5-ASA (Bayoumy 2025 Results 3.3; ESM 1 $THETA 7 and $PK MU_3 = ... + LOG(THETA(7))*USEASA). Source column name USEASA. Binary only: the paper could not estimate a relationship between 5-ASA dose level and CL/F given the available data. 23/28 patients (82%) were on concomitant 5-ASA (Table 1).",
-      source_name        = "USEASA"
+      notes = "Power-form multiplier on CL/F: CL/F * 1.58165^CONMED_AMINO, i.e. 58% higher apparent clearance on concomitant 5-ASA (Bayoumy 2025 Results 3.3; ESM 1 $THETA 7 and $PK MU_3 = ... + LOG(THETA(7))*USEASA). Source column name USEASA. Binary only: the paper could not estimate a relationship between 5-ASA dose level and CL/F given the available data. 23/28 patients (82%) were on concomitant 5-ASA (Table 1).",
+      source_name = "USEASA"
     )
   )
 
   covariatesDataExcluded <- list(
     SNP_TPMT = list(
       description = "Thiopurine S-methyltransferase (TPMT) genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Genotyped in 17/28 patients (61%), all of whom were TPMT *1/*1 wild type, so a TPMT effect could not be estimated (Bayoumy 2025 Table 1 and Limitations 4.2). The authors name TPMT genotype as the leading candidate covariate for a future refinement of this model."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Genotyped in 17/28 patients (61%), all of whom were TPMT *1/*1 wild type, so a TPMT effect could not be estimated (Bayoumy 2025 Table 1 and Limitations 4.2). The authors name TPMT genotype as the leading candidate covariate for a future refinement of this model."
     ),
     CONMED_AMINO_DOSE = list(
       description = "Daily dose of concomitant aminosalicylate (5-ASA)",
-      units       = "mg",
-      type        = "continuous",
-      notes       = "Recorded (median 3000 mg, range 1500-3200 mg; Bayoumy 2025 Table 1) but not modelled: 'It was not possible to estimate a relationship (linear or otherwise) between 5-ASA dose level and CL due to the limited amount of data' (Results 3.3). The retained covariate is the binary CONMED_AMINO indicator."
+      units = "mg",
+      type = "continuous",
+      notes = "Recorded (median 3000 mg, range 1500-3200 mg; Bayoumy 2025 Table 1) but not modelled: 'It was not possible to estimate a relationship (linear or otherwise) between 5-ASA dose level and CL due to the limited amount of data' (Results 3.3). The retained covariate is the binary CONMED_AMINO indicator."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
     n_observations = 131L,
-    age_range      = "19-70 years (mean 38)",
-    weight_median  = "60 kg (IQR 56-74.25)",
+    age_range = "19-70 years (mean 38)",
+    weight_median = "60 kg (IQR 56-74.25)",
     sex_female_pct = 78.6,
-    disease_state  = "Inflammatory bowel disease: Crohn's disease (n = 16) or ulcerative colitis (n = 12). Thioguanine was started for azathioprine intolerance (n = 9), mercaptopurine intolerance (n = 8), both (n = 8), disease activity (n = 1) or other reasons (n = 2).",
-    dose_range     = "Oral thioguanine once daily; mean 0.32 mg/kg/day (95% CI 0.29-0.34), i.e. roughly 20 mg/day at the 60 kg population median weight.",
-    regions        = "The Netherlands",
-    co_medication  = "Concomitant aminosalicylate (5-ASA) in 23/28 patients (82%), median 5-ASA dose 3000 mg/day (range 1500-3200).",
-    notes          = "Re-analysis of the cohort of Derijks et al. (Aliment Pharmacol Ther 2004), reference [9] of the source paper. Two data sets were pooled: (i) 28 patients sampled for trough 6-TGN at days 7, 14, 21, 28 and 56 of daily dosing, and (ii) three patients with a densely sampled 24-h steady-state profile (duplicate samples at 0, 2, 4, 8, 12 and 24 h). Because a joint fit destabilised the model and between-occasion variability could not be estimated from three subjects, the 24-h profiles were entered as separate subjects (Limitations 4.2). 131 measurements were available and 7 (5.0%) were removed as outliers -- 3 for |CWRES| > 3 and 4 for suspected non-adherence. 6-TGN was measured in erythrocytes by reversed-phase HPLC with UV detection (run-to-run CV 6.6%, LLOQ 30 pmol per 8e8 RBC). Estimation used SAEM followed by importance sampling in NONMEM 7.4. This is the first published population PK model of thioguanine in IBD; it was developed to support model-informed precision dosing."
+    disease_state = "Inflammatory bowel disease: Crohn's disease (n = 16) or ulcerative colitis (n = 12). Thioguanine was started for azathioprine intolerance (n = 9), mercaptopurine intolerance (n = 8), both (n = 8), disease activity (n = 1) or other reasons (n = 2).",
+    dose_range = "Oral thioguanine once daily; mean 0.32 mg/kg/day (95% CI 0.29-0.34), i.e. roughly 20 mg/day at the 60 kg population median weight.",
+    regions = "The Netherlands",
+    co_medication = "Concomitant aminosalicylate (5-ASA) in 23/28 patients (82%), median 5-ASA dose 3000 mg/day (range 1500-3200).",
+    notes = "Re-analysis of the cohort of Derijks et al. (Aliment Pharmacol Ther 2004), reference [9] of the source paper. Two data sets were pooled: (i) 28 patients sampled for trough 6-TGN at days 7, 14, 21, 28 and 56 of daily dosing, and (ii) three patients with a densely sampled 24-h steady-state profile (duplicate samples at 0, 2, 4, 8, 12 and 24 h). Because a joint fit destabilised the model and between-occasion variability could not be estimated from three subjects, the 24-h profiles were entered as separate subjects (Limitations 4.2). 131 measurements were available and 7 (5.0%) were removed as outliers -- 3 for |CWRES| > 3 and 4 for suspected non-adherence. 6-TGN was measured in erythrocytes by reversed-phase HPLC with UV detection (run-to-run CV 6.6%, LLOQ 30 pmol per 8e8 RBC). Estimation used SAEM followed by importance sampling in NONMEM 7.4. This is the first published population PK model of thioguanine in IBD; it was developed to support model-informed precision dosing."
   )
 
   ini({

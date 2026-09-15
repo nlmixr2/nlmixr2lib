@@ -43,29 +43,39 @@ Almquist_2015_Mig1_exp4 <- function() {
   # biological matrix. Both states are latent / non-matrix quantities in a
   # single yeast cell, so `specimen` is "not applicable" for both.
   compartmentData <- list(
-    mig1  = list(analyte = "nuclear Mig1-GFP", units = "fluorescence light intensity (a.u.)", specimen = "not applicable", verified = TRUE),
-    adapt = list(analyte = "lumped adaptation component X (unidentified)", units = "dimensionless", specimen = "not applicable", verified = TRUE)
+    mig1 = list(
+      analyte = "nuclear Mig1-GFP",
+      units = "fluorescence light intensity (a.u.)",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    adapt = list(
+      analyte = "lumped adaptation component X (unidentified)",
+      units = "dimensionless",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "in vitro (yeast, Saccharomyces cerevisiae)",
-    n_subjects     = 46L,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "in vitro (yeast, Saccharomyces cerevisiae)",
+    n_subjects = 46L,
+    n_studies = 1L,
+    disease_state = paste(
       "Glucose-grown Mig1-GFP expressing S. cerevisiae cells, held in a",
       "microfluidic device by optical tweezers and imaged by fluorescence",
       "microscopy (Almquist 2015 Methods; experimental setup previously",
       "published as reference 39 of the source paper, Bendrioua 2014",
       "J Biol Chem 289:12863)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "No drug. Extracellular glucose is stepped instantaneously from 4% to",
       "0.5% at time 0 (Almquist 2015 Table 1, Exp Nr 4). Up to 15",
       "fluorescence observations per cell."
     ),
-    notes          = paste(
+    notes = paste(
       "Almquist 2015 Table 1: experiment 4 used 46 cells shifted from 4% to",
       "0.5% glucose. This experiment is kinetically distinct from the other",
       "three: k4 is roughly double and k2 slightly larger (Table 2), which",

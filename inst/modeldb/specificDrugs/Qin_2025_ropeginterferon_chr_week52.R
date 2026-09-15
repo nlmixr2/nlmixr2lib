@@ -34,18 +34,18 @@ Qin_2025_ropeginterferon_chr_week52 <- function() {
   )
   vignette <- "Qin_2025_ropeginterferon"
   units <- list(
-    time          = "n/a (static week-52 landmark regression; no time dimension)",
-    dosing        = "n/a (no dose events; the dosing history enters only through the CAV exposure column)",
+    time = "n/a (static week-52 landmark regression; no time dimension)",
+    dosing = "n/a (no dose events; the dosing history enters only through the CAV exposure column)",
     concentration = "prob_chr (probability of complete hematologic response at week 52, 0-1; also logit_chr)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average total serum ropeginterferon alfa-2b concentration over weeks 0 to 52.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average total serum ropeginterferon alfa-2b concentration over weeks 0 to 52.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (free plus target-bound) serum ropeg. Averaging window is",
         "weeks 0-52, i.e. from the FIRST DOSE to the landmark, so it",
         "includes the titration period and is NOT a steady-state",
@@ -65,39 +65,39 @@ Qin_2025_ropeginterferon_chr_week52 <- function() {
         "throughout and the model predicts a nearly constant",
         "probability."
       ),
-      source_name        = "Cavg,0-52W (average concentration of participants from 0 to 52 weeks)"
+      source_name = "Cavg,0-52W (average concentration of participants from 0 to 52 weeks)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion at p < 0.05 and not retained (Qin 2025 Results 3.3: 'After covariate screening, no significant covariates were included in either model')."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened by forward inclusion at p < 0.05 and not retained (Qin 2025 Results 3.3: 'After covariate screening, no significant covariates were included in either model')."
     ),
     BMI = list(
       description = "Baseline body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained for this endpoint."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and not retained for this endpoint."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 73L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 73L,
+    n_studies = 2L,
     n_observations = "73 evaluable binary CHR records, one per patient (Qin 2025 Results 3.3: 'In two Phase II studies, 77 and 73 patients underwent CHR assessments at Weeks 24 and 52, respectively')",
-    age_range      = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
-    weight_range   = "median 56.0 kg, range 43.6-76.5 (A19-201) and median 67.9 kg, range 44.0-91.0 (A20-202) (Qin 2025 Table 1)",
+    age_range = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
+    weight_range = "median 56.0 kg, range 43.6-76.5 (A19-201) and median 67.9 kg, range 44.0-91.0 (A20-202) (Qin 2025 Table 1)",
     sex_female_pct = 43.6,
     race_ethnicity = "Japanese (A19-201, n = 29) and Chinese (A20-202, n = 49)",
-    disease_state  = "polycythaemia vera; A20-202 enrolled patients resistant to or intolerant of hydroxyurea",
-    dose_range     = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
-    regions        = "Japan (A19-201) and China (A20-202)",
+    disease_state = "polycythaemia vera; A20-202 enrolled patients resistant to or intolerant of hydroxyurea",
+    dose_range = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
+    regions = "Japan (A19-201) and China (A20-202)",
     endpoint_definition = "Complete hematologic response: hematocrit < 45% without phlebotomy in the previous 3 months, AND white blood cell count < 10 x 10^9/L, AND platelet count <= 400 x 10^9/L (Qin 2025 Methods 2.3)",
-    notes          = paste0(
+    notes = paste0(
       "The Emax form was chosen because the exploratory analysis found ",
       "no monotone trend at this landmark: Qin 2025 Results 3.3 reports ",
       "'a flat trend between exposure and CHR rate was observed ",

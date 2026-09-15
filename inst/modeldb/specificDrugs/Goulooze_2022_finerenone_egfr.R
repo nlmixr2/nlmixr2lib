@@ -19,116 +19,121 @@ Goulooze_2022_finerenone_egfr <- function() {
   )
   vignette <- "Goulooze_2022_finerenone_uacr_egfr"
   units <- list(
-    time          = "h",
-    dosing        = "(oral finerenone, mg)",
+    time = "h",
+    dosing = "(oral finerenone, mg)",
     concentration = "mL/min/1.73 m^2 (eGFR; the PD output is an endogenous renal-function measure rather than the dosed finerenone, so the dosing-vs-concentration dimensional check is not applicable and the dosing string is parenthesised to skip it)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = TRUE),
-    egfr    = list(analyte = "glomerular filtration rate", units = "mL/min/1.73 m^2", specimen = "not applicable", verified = TRUE),
+    depot = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = TRUE),
+    egfr = list(
+      analyte = "glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
     effect1 = list(analyte = "finerenone", units = "mg*h/L", specimen = "not applicable", verified = TRUE),
-    uacr    = list(analyte = "albumin/creatinine ratio", units = "mg/g", specimen = "urine", verified = TRUE),
+    uacr = list(analyte = "albumin/creatinine ratio", units = "mg/g", specimen = "urine", verified = TRUE),
     effect2 = list(analyte = "finerenone", units = "mg*h/L", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     UACR = list(
-      description        = "Observed baseline urine albumin-to-creatinine ratio",
-      units              = "mg/g",
-      type               = "continuous",
+      description = "Observed baseline urine albumin-to-creatinine ratio",
+      units = "mg/g",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Source column UACR0. Enters twice: as a power scaling (UACR / 850)^0.877 on the baseline of the embedded UACR sub-model state, and as a power scaling (UACR / 850)^0.306 on the magnitude of the inter-individual variability of the eGFR decline rate. Note the second use is a covariate on a VARIANCE term, not on a typical value.",
-      source_name        = "UACR0"
+      notes = "Time-fixed (baseline). Source column UACR0. Enters twice: as a power scaling (UACR / 850)^0.877 on the baseline of the embedded UACR sub-model state, and as a power scaling (UACR / 850)^0.306 on the magnitude of the inter-individual variability of the eGFR decline rate. Note the second use is a covariate on a VARIANCE term, not on a typical value.",
+      source_name = "UACR0"
     ),
     CRCL = list(
-      description        = "Observed baseline CKD-EPI estimated glomerular filtration rate, BSA-normalised to 1.73 m^2",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Observed baseline CKD-EPI estimated glomerular filtration rate, BSA-normalised to 1.73 m^2",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Source column EGFREPI0. Enters four times: power scalings (CRCL / 43)^0.882 on the baseline eGFR state, (CRCL / 43)^0.387 on the chronic decline rate, and (CRCL / 43)^-0.560 on the interaction between model-predicted UACR and the decline rate; plus (CRCL / 43)^-0.124 on the baseline of the embedded UACR sub-model. The reference 43 mL/min/1.73 m^2 is the FIDELIO-DKD cohort median.",
-      source_name        = "EGFREPI0"
+      notes = "Time-fixed (baseline). Source column EGFREPI0. Enters four times: power scalings (CRCL / 43)^0.882 on the baseline eGFR state, (CRCL / 43)^0.387 on the chronic decline rate, and (CRCL / 43)^-0.560 on the interaction between model-predicted UACR and the decline rate; plus (CRCL / 43)^-0.124 on the baseline of the embedded UACR sub-model. The reference 43 mL/min/1.73 m^2 is the FIDELIO-DKD cohort median.",
+      source_name = "EGFREPI0"
     ),
     POT = list(
-      description        = "Observed baseline serum potassium concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Observed baseline serum potassium concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Source column K0. Enters as a power scaling (POT / 4.4)^-1.38 on DSLOPE, the slope of the acute finerenone effect on eGFR; 4.4 mmol/L is the FIDELIO-DKD cohort median. Subjects with lower baseline potassium have a larger acute eGFR decline.",
-      source_name        = "K0"
+      notes = "Time-fixed (baseline). Source column K0. Enters as a power scaling (POT / 4.4)^-1.38 on DSLOPE, the slope of the acute finerenone effect on eGFR; 4.4 mmol/L is the FIDELIO-DKD cohort median. Subjects with lower baseline potassium have a larger acute eGFR decline.",
+      source_name = "K0"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = likely or certain Child-Pugh B, 0 = likely Child-Pugh A or healthy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = likely or certain Child-Pugh B, 0 = likely Child-Pugh A or healthy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (likely Child-Pugh A or healthy)",
-      notes              = "Classification scheme is Child-Pugh Class B, derived in FIDELIO-DKD from laboratory surrogates rather than a full Child-Pugh score: subjects with total bilirubin < 2 mg/dL AND serum albumin > 3.5 g/dL were categorised as likely Child-Pugh A or healthy, all others as likely or certain Child-Pugh B (Goulooze 2022 Table 1 footnote b). Source column CHILDPSC, with values 2 or 3 mapping to HEPIMP_MOD = 1 and values 1 or 5 to 0. Enters as a power-form multiplier 1.18^HEPIMP_MOD on the chronic eGFR decline rate, and as a proportional shift (1 + 0.0943 * HEPIMP_MOD) on the baseline of the embedded UACR sub-model.",
-      source_name        = "(CHILDPSC %in% c(2, 3))"
+      notes = "Classification scheme is Child-Pugh Class B, derived in FIDELIO-DKD from laboratory surrogates rather than a full Child-Pugh score: subjects with total bilirubin < 2 mg/dL AND serum albumin > 3.5 g/dL were categorised as likely Child-Pugh A or healthy, all others as likely or certain Child-Pugh B (Goulooze 2022 Table 1 footnote b). Source column CHILDPSC, with values 2 or 3 mapping to HEPIMP_MOD = 1 and values 1 or 5 to 0. Enters as a power-form multiplier 1.18^HEPIMP_MOD on the chronic eGFR decline rate, and as a proportional shift (1 + 0.0943 * HEPIMP_MOD) on the baseline of the embedded UACR sub-model.",
+      source_name = "(CHILDPSC %in% c(2, 3))"
     ),
     RACE_BLACK = list(
-      description        = "Black or African American race indicator (1 = Black or African American, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black or African American race indicator (1 = Black or African American, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Black or African American)",
-      notes              = "Source column RACEASIA = 2 codes Black or African American. Enters as a power-form multiplier 1.24^RACE_BLACK on the chronic eGFR decline rate.",
-      source_name        = "(RACEASIA == 2)"
+      notes = "Source column RACEASIA = 2 codes Black or African American. Enters as a power-form multiplier 1.24^RACE_BLACK on the chronic eGFR decline rate.",
+      source_name = "(RACEASIA == 2)"
     ),
     RACE_ASIAN = list(
-      description        = "Asian-race indicator (1 = any Asian race category, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian-race indicator (1 = any Asian race category, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Source column RACEASIA, a decimal-coded race variable; values in [3.0, 3.9] denote Asian race categories. Used only by the embedded UACR sub-model, as an additive shift +0.0634 /year on the UACR progression rate; it has no direct effect on eGFR.",
-      source_name        = "(RACEASIA >= 3 & RACEASIA <= 3.9)"
+      notes = "Source column RACEASIA, a decimal-coded race variable; values in [3.0, 3.9] denote Asian race categories. Used only by the embedded UACR sub-model, as an additive shift +0.0634 /year on the UACR progression rate; it has no direct effect on eGFR.",
+      source_name = "(RACEASIA >= 3 & RACEASIA <= 3.9)"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage race indicator (1 = Japanese, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage race indicator (1 = Japanese, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = "Source column RACEASIA = 3.2 codes Japanese heritage. Used only by the embedded UACR sub-model, as a proportional shift (1 - 0.261 * RACE_JAPANESE) on the finerenone UACR drug-effect slope; that reduced UACR effect then propagates to the chronic eGFR slope. Japanese subjects are a subset of RACE_ASIAN, so both indicators are 1 for a Japanese subject.",
-      source_name        = "(RACEASIA == 3.2)"
+      notes = "Source column RACEASIA = 3.2 codes Japanese heritage. Used only by the embedded UACR sub-model, as a proportional shift (1 - 0.261 * RACE_JAPANESE) on the finerenone UACR drug-effect slope; that reduced UACR effect then propagates to the chronic eGFR slope. Japanese subjects are a subset of RACE_ASIAN, so both indicators are 1 for a Japanese subject.",
+      source_name = "(RACEASIA == 3.2)"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Used only by the embedded UACR sub-model, as a power scaling (AGE / 63)^0.864 on the finerenone UACR drug-effect slope; that effect then propagates to the chronic eGFR slope.",
-      source_name        = "AGE"
+      notes = "Time-fixed (baseline). Used only by the embedded UACR sub-model, as a power scaling (AGE / 63)^0.864 on the finerenone UACR drug-effect slope; that effect then propagates to the chronic eGFR slope.",
+      source_name = "AGE"
     ),
     CONMED_SGLT2I = list(
-      description        = "Current concomitant SGLT2 inhibitor use indicator (1 = in use, 0 = not in use)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current concomitant SGLT2 inhibitor use indicator (1 = in use, 0 = not in use)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant SGLT2 inhibitor)",
-      notes              = "TIME-VARYING within subject. FIDELIO-DKD recorded SGLT2 inhibitor use as a binary variable over time defined as use / no use in the last 5 days, without regard to the specific agent or its dosing schedule (Goulooze 2022 Sect. 2.2.3). Enters three times: a proportional effect (1 - 0.457 * CONMED_SGLT2I) on the chronic eGFR decline rate, an acute direct effect (1 - 0.0558 * (CONMED_SGLT2I - CONMED_SGLT2I_BASE)) on the observed eGFR, and a proportional effect on the UACR driver of the chronic slope. The dynamics of the onset of the SGLT2 inhibitor effect could not be estimated from these data, so all three are instantaneous.",
-      source_name        = "FLAGSGLT"
+      notes = "TIME-VARYING within subject. FIDELIO-DKD recorded SGLT2 inhibitor use as a binary variable over time defined as use / no use in the last 5 days, without regard to the specific agent or its dosing schedule (Goulooze 2022 Sect. 2.2.3). Enters three times: a proportional effect (1 - 0.457 * CONMED_SGLT2I) on the chronic eGFR decline rate, an acute direct effect (1 - 0.0558 * (CONMED_SGLT2I - CONMED_SGLT2I_BASE)) on the observed eGFR, and a proportional effect on the UACR driver of the chronic slope. The dynamics of the onset of the SGLT2 inhibitor effect could not be estimated from these data, so all three are instantaneous.",
+      source_name = "FLAGSGLT"
     ),
     CONMED_SGLT2I_BASE = list(
-      description        = "Concomitant SGLT2 inhibitor use at treatment start (1 = in use at randomisation, 0 = not in use)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant SGLT2 inhibitor use at treatment start (1 = in use at randomisation, 0 = not in use)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no SGLT2 inhibitor at treatment start)",
-      notes              = "Time-fixed per subject. The control stream applies the acute SGLT2 inhibitor effects to the CHANGE from the treatment-start value, as theta * (FLAGSGLT - SGLTSTART), because the estimated baseline eGFR and baseline UACR of a subject already on an SGLT2 inhibitor at randomisation already reflect that drug's effect. Note the chronic-slope effect (1 - 0.457 * CONMED_SGLT2I) is NOT centred this way in the source and is applied to the raw current-use flag. Set to 0 for a subject who is SGLT2i-naive at randomisation.",
-      source_name        = "SGLTSTART"
+      notes = "Time-fixed per subject. The control stream applies the acute SGLT2 inhibitor effects to the CHANGE from the treatment-start value, as theta * (FLAGSGLT - SGLTSTART), because the estimated baseline eGFR and baseline UACR of a subject already on an SGLT2 inhibitor at randomisation already reflect that drug's effect. Note the chronic-slope effect (1 - 0.457 * CONMED_SGLT2I) is NOT centred this way in the source and is applied to the raw current-use flag. Set to 0 for a subject who is SGLT2i-naive at randomisation.",
+      source_name = "SGLTSTART"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 5674L,
-    n_studies      = 1L,
-    age_range      = "adults; median 66-67 years (IQR approximately 57-72) across treatment groups",
-    weight_range   = "median 84.6-87.6 kg (IQR approximately 72.6-99.4) across treatment groups",
+    species = "human",
+    n_subjects = 5674L,
+    n_studies = 1L,
+    age_range = "adults; median 66-67 years (IQR approximately 57-72) across treatment groups",
+    weight_range = "median 84.6-87.6 kg (IQR approximately 72.6-99.4) across treatment groups",
     sex_female_pct = 29.4,
     race_ethnicity = c(White = 63.2, Black = 4.6, Japanese = 7.3, Chinese = 10.3, Other = 14.4),
-    disease_state  = "Chronic kidney disease with type 2 diabetes mellitus; baseline eGFR median 42.1-51.3 mL/min/1.73 m^2 and baseline UACR median 661-887 mg/g across treatment groups",
-    dose_range     = "Oral finerenone 10 mg or 20 mg once daily (starting dose 10 mg if screening eGFR 25 to < 60 mL/min/1.73 m^2, 20 mg if >= 60), up- and down-titrated per eGFR and serum potassium, versus matching placebo; all in addition to standard of care with a maximally tolerated labelled dose of a renin-angiotensin system inhibitor",
-    regions        = "Multi-regional Phase III (FIDELIO-DKD, NCT02540993)",
-    notes          = "78,132 eGFR observations from 5,674 patients (full analysis set). 528 patients used an SGLT2 inhibitor at some point during the treatment period. Baseline demographics from Goulooze 2022 Table 1; the four columns of that table are placebo without SGLT2i (N = 2553), placebo with SGLT2i (N = 288), finerenone without SGLT2i (N = 2593) and finerenone with SGLT2i (N = 240), and the ranges quoted here span those four groups. The final eGFR model was estimated with SAEM followed by an importance-sampling expectation-only step, rather than FOCE, to avoid rounding errors."
+    disease_state = "Chronic kidney disease with type 2 diabetes mellitus; baseline eGFR median 42.1-51.3 mL/min/1.73 m^2 and baseline UACR median 661-887 mg/g across treatment groups",
+    dose_range = "Oral finerenone 10 mg or 20 mg once daily (starting dose 10 mg if screening eGFR 25 to < 60 mL/min/1.73 m^2, 20 mg if >= 60), up- and down-titrated per eGFR and serum potassium, versus matching placebo; all in addition to standard of care with a maximally tolerated labelled dose of a renin-angiotensin system inhibitor",
+    regions = "Multi-regional Phase III (FIDELIO-DKD, NCT02540993)",
+    notes = "78,132 eGFR observations from 5,674 patients (full analysis set). 528 patients used an SGLT2 inhibitor at some point during the treatment period. Baseline demographics from Goulooze 2022 Table 1; the four columns of that table are placebo without SGLT2i (N = 2553), placebo with SGLT2i (N = 288), finerenone without SGLT2i (N = 2593) and finerenone with SGLT2i (N = 240), and the ranges quoted here span those four groups. The final eGFR model was estimated with SAEM followed by an importance-sampling expectation-only step, rather than FOCE, to avoid rounding errors."
   )
 
   ini({

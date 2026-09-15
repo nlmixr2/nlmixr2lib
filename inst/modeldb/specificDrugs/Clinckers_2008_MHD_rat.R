@@ -10,16 +10,18 @@ Clinckers_2008_MHD_rat <- function() {
     "rate constants k23 and k32. Acute focal pilocarpine-induced seizure",
     "activity and local intrahippocampal verapamil (efflux-transporter",
     "blockade) each shrink the biophase volume (V3a -> V3b under seizure;",
-    "V3a -> V3c under verapamil); plasma kinetics are unaffected.")
+    "V3a -> V3c under verapamil); plasma kinetics are unaffected."
+  )
   reference <- paste(
     "Clinckers R, Smolders I, Michotte Y, Ebinger G, Danhof M, Voskuyl RA,",
     "Della Pasqua O. Impact of efflux transporters and of seizures on the",
     "pharmacokinetics of oxcarbazepine metabolite in the rat brain.",
-    "Br J Pharmacol. 2008;155(7):1127-1138. doi:10.1038/bjp.2008.366")
+    "Br J Pharmacol. 2008;155(7):1127-1138. doi:10.1038/bjp.2008.366"
+  )
   vignette <- "Clinckers_2008_MHD_rat"
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -28,51 +30,66 @@ Clinckers_2008_MHD_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)", units = "mg", specimen = "administration site", verified = FALSE),
-    central = list(analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)", units = "mg", specimen = "not applicable", verified = FALSE)
+    depot = list(
+      analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(
+      analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    effect = list(
+      analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     SEIZURE_ACUTE = list(
-      description        = "Acute focal pilocarpine-induced seizure activity indicator: 1 = animal is undergoing intrahippocampal pilocarpine-evoked limbic seizures during the modelled observation window; 0 = no seizures.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute focal pilocarpine-induced seizure activity indicator: 1 = animal is undergoing intrahippocampal pilocarpine-evoked limbic seizures during the modelled observation window; 0 = no seizures.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no acute seizure activity)",
-      notes              = "Time-fixed per animal in the source study (each rat is allocated to a single treatment arm; transient seizures are induced 30 min post-dose and subside before the end of sampling). Selects V3b (biophase volume during seizures) over V3a in the model. Mutually exclusive with EFFLUX_INHIB in the original Clinckers 2008 design.",
-      source_name        = "A"
+      notes = "Time-fixed per animal in the source study (each rat is allocated to a single treatment arm; transient seizures are induced 30 min post-dose and subside before the end of sampling). Selects V3b (biophase volume during seizures) over V3a in the model. Mutually exclusive with EFFLUX_INHIB in the original Clinckers 2008 design.",
+      source_name = "A"
     ),
     EFFLUX_INHIB = list(
-      description        = "Local intrahippocampal efflux-transporter inhibitor co-perfusion indicator: 1 = the brain microdialysis probe is co-perfused with verapamil (5 mM, P-glycoprotein inhibitor); 0 = no inhibitor.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Local intrahippocampal efflux-transporter inhibitor co-perfusion indicator: 1 = the brain microdialysis probe is co-perfused with verapamil (5 mM, P-glycoprotein inhibitor); 0 = no inhibitor.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no local efflux-transporter blockade)",
-      notes              = "Time-fixed per animal in the source study. Selects V3c (biophase volume during efflux blockade) over V3a in the model. Mutually exclusive with SEIZURE_ACUTE in the original Clinckers 2008 design.",
-      source_name        = "B"
+      notes = "Time-fixed per animal in the source study. Selects V3c (biophase volume during efflux blockade) over V3a in the model. Mutually exclusive with SEIZURE_ACUTE in the original Clinckers 2008 design.",
+      source_name = "B"
     )
   )
 
   population <- list(
-    species        = "rat (Wistar, male)",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "Adult; specific age not reported",
-    weight_range   = "260-320 g",
+    species = "rat (Wistar, male)",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "Adult; specific age not reported",
+    weight_range = "260-320 g",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Male Wistar albino rats (Iffa Credo). Subgroups: control",
       "(intrahippocampal vehicle); acute focal pilocarpine-induced limbic",
       "seizures (10 mM pilocarpine perfused 30-70 min post-dose); local",
       "efflux-transporter blockade (5 mM intrahippocampal verapamil)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "20, 40, 60, 80, 100, 150 mg/kg single intraperitoneal bolus of",
       "MHD (suspension in propylene glycol/ethanol/saline 6:2:2). Doses",
       "20-60 mg/kg are sub-therapeutic; 80-150 mg/kg are anticonvulsant."
     ),
-    regions        = "Brussels, Belgium (single laboratory)",
-    notes          = paste(
+    regions = "Brussels, Belgium (single laboratory)",
+    notes = paste(
       "Demographics from Clinckers 2008 Methods (Animals; Study design)",
       "and Table 1 (per-dose-group N). Plasma and hippocampal microdialysate",
       "MHD concentrations were quantified by LC-UV (LOQ 5 ng/mL).",

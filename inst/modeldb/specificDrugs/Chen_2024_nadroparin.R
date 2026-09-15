@@ -12,18 +12,18 @@ Chen_2024_nadroparin <- function() {
   vignette <- "Chen_2024_nadroparin"
 
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the pediatric Schwartz formula, CLcr (mL/min/1.73 m^2) = k * HT (cm) / SCr (mg/dL), with k = 0.33 for preterm infants and k = 0.45 for term infants throughout the first year of life (Schwartz 1984)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the pediatric Schwartz formula, CLcr (mL/min/1.73 m^2) = k * HT (cm) / SCr (mg/dL), with k = 0.33 for preterm infants and k = 0.45 for term infants throughout the first year of life (Schwartz 1984)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Chen 2024 Methods 'Model development'",
         "equation (5) specifies the median-normalised power (exponential) covariate model",
         "P_i = P_p * (Cov_i / Cov_median)^theta; Table 2 gives the exponent theta = 0.238",
@@ -40,17 +40,17 @@ Chen_2024_nadroparin <- function() {
         "is the registered CRCL alias used by MedellinGaribay_2015_gentamicin.R.",
         sep = " "
       ),
-      source_name        = "CLCR (Chen 2024 Table 1 and Table 2 row 'CL/F_CLCR')"
+      source_name = "CLCR (Chen 2024 Table 1 and Table 2 row 'CL/F_CLCR')"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight at the time of the anti-Xa sample",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the time of the anti-Xa sample",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chen 2024 Methods 'Model development' states that weight was selected a priori as a",
         "size descriptor and that clearance was scaled allometrically to a 70 kg adult with a",
         "fixed exponent of 0.75 (equation (3), CL/F = CLstd * (BW/70)^0.75). The Discussion",
@@ -64,14 +64,14 @@ Chen_2024_nadroparin <- function() {
         "model. Table 1 cohort weight: mean (SD) 3.7 (2.0) kg, median 3.1 kg, range 1.2-9.3 kg.",
         sep = " "
       ),
-      source_name        = "BW (Chen 2024 Table 1)"
+      source_name = "BW (Chen 2024 Table 1)"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age)",
-      units              = "months (canonical); Chen 2024 reports postmenstrual age in weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age)",
+      units = "months (canonical); Chen 2024 reports postmenstrual age in weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chen 2024 Methods 'Model development' equation (4) tested a sigmoid Emax maturation",
         "function of postmenstrual age on clearance, parameterised by TM50 (the postmenstrual",
         "age at which clearance is 50% of the mature value) and the Hill coefficient gamma.",
@@ -84,14 +84,14 @@ Chen_2024_nadroparin <- function() {
         "median 40.4 weeks, range 30.7-69.0 weeks.",
         sep = " "
       ),
-      source_name        = "PMA (Chen 2024 Table 1)"
+      source_name = "PMA (Chen 2024 Table 1)"
     ),
     PNA = list(
-      description        = "Postnatal (chronological) age since birth",
-      units              = "months (canonical); Chen 2024 reports postnatal age in days",
-      type               = "continuous",
+      description = "Postnatal (chronological) age since birth",
+      units = "months (canonical); Chen 2024 reports postnatal age in days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a candidate covariate on clearance. Chen 2024 Discussion reports that",
         "postnatal age was statistically significant when tested individually but showed no",
         "significant effect once creatinine clearance was included. No point estimate is",
@@ -99,14 +99,14 @@ Chen_2024_nadroparin <- function() {
         "range 3.0-224.0 days.",
         sep = " "
       ),
-      source_name        = "PNA (Chen 2024 Table 1)"
+      source_name = "PNA (Chen 2024 Table 1)"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the covariate analysis (Chen 2024 Methods 'Model development') and not",
         "retained; no point estimate is reported. Table 1 cohort GA: mean (SD) 35.2 (4.3)",
         "weeks, median 36.8 weeks, range 25.0-41.3 weeks, with 1 subject (2.5%) below 28",
@@ -114,137 +114,137 @@ Chen_2024_nadroparin <- function() {
         "or above.",
         sep = " "
       ),
-      source_name        = "GA (Chen 2024 Table 1)"
+      source_name = "GA (Chen 2024 Table 1)"
     ),
     WT_BIRTH = list(
-      description        = "Birth body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the covariate analysis and not retained; no point estimate is reported. Table 1 cohort BBW: mean (SD) 2.6 (1.1) kg, median 2.9 kg, range 0.6-4.6 kg.",
-      source_name        = "BBW (Chen 2024 Table 1)"
+      notes = "Screened in the covariate analysis and not retained; no point estimate is reported. Table 1 cohort BBW: mean (SD) 2.6 (1.1) kg, median 2.9 kg, range 0.6-4.6 kg.",
+      source_name = "BBW (Chen 2024 Table 1)"
     ),
     HT = list(
-      description        = "Body length / height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body length / height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the covariate analysis and not retained as a covariate in its own right; height nevertheless enters the model indirectly because the Schwartz creatinine clearance CRCL is computed as k * HT / SCr. Table 1 cohort HT: mean (SD) 49.0 (9.9) cm, median 50.0 cm, range 28.0-70.0 cm.",
-      source_name        = "HT (Chen 2024 Table 1)"
+      notes = "Screened in the covariate analysis and not retained as a covariate in its own right; height nevertheless enters the model indirectly because the Schwartz creatinine clearance CRCL is computed as k * HT / SCr. Table 1 cohort HT: mean (SD) 49.0 (9.9) cm, median 50.0 cm, range 28.0-70.0 cm.",
+      source_name = "HT (Chen 2024 Table 1)"
     ),
     BSA = list(
-      description        = "Body surface area, computed as sqrt(HT (cm) * BW (kg) / 3600)",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area, computed as sqrt(HT (cm) * BW (kg) / 3600)",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the covariate analysis and not retained; no point estimate is reported. Table 1 cohort BSA: mean (SD) 0.2 (0.1) m^2, median 0.2 m^2, range 0.1-0.4 m^2.",
-      source_name        = "BSA (Chen 2024 Table 1)"
+      notes = "Screened in the covariate analysis and not retained; no point estimate is reported. Table 1 cohort BSA: mean (SD) 0.2 (0.1) m^2, median 0.2 m^2, range 0.1-0.4 m^2.",
+      source_name = "BSA (Chen 2024 Table 1)"
     ),
     SEXF = list(
-      description        = "Sex; 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex; 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened as 'gender' in the covariate analysis via the dichotomous-covariate model of Chen 2024 equation (6) and not retained; no point estimate is reported. Table 1 cohort: 23 boys and 17 girls (42.5% female).",
-      source_name        = "Gender (Chen 2024 Table 1)"
+      notes = "Screened as 'gender' in the covariate analysis via the dichotomous-covariate model of Chen 2024 equation (6) and not retained; no point estimate is reported. Table 1 cohort: 23 boys and 17 girls (42.5% female).",
+      source_name = "Gender (Chen 2024 Table 1)"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the covariate analysis and not retained as a covariate in its own right; serum creatinine nevertheless enters the model indirectly because the Schwartz creatinine clearance CRCL is computed as k * HT / SCr. Table 1 cohort SCR: mean (SD) 42.4 (58.1) umol/L, median 29.7 umol/L, range 6.7-374.8 umol/L. Note that the Schwartz formula as printed in Chen 2024 Methods requires SCr in mg/dL, whereas Table 1 tabulates SCR in umol/L (1 mg/dL = 88.4 umol/L).",
-      source_name        = "SCR (Chen 2024 Table 1)"
+      notes = "Screened in the covariate analysis and not retained as a covariate in its own right; serum creatinine nevertheless enters the model indirectly because the Schwartz creatinine clearance CRCL is computed as k * HT / SCr. Table 1 cohort SCR: mean (SD) 42.4 (58.1) umol/L, median 29.7 umol/L, range 6.7-374.8 umol/L. Note that the Schwartz formula as printed in Chen 2024 Methods requires SCr in mg/dL, whereas Table 1 tabulates SCR in umol/L (1 mg/dL = 88.4 umol/L).",
+      source_name = "SCR (Chen 2024 Table 1)"
     ),
     CYSC = list(
-      description        = "Serum cystatin C",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as an alternative renal-function marker and not retained; creatinine clearance produced the larger objective-function reduction. Table 1 cohort CysC: mean (SD) 1.2 (0.4) mg/L, median 1.1 mg/L, range 0.7-3.0 mg/L.",
-      source_name        = "CysC (Chen 2024 Table 1)"
+      notes = "Screened as an alternative renal-function marker and not retained; creatinine clearance produced the larger objective-function reduction. Table 1 cohort CysC: mean (SD) 1.2 (0.4) mg/L, median 1.1 mg/L, range 0.7-3.0 mg/L.",
+      source_name = "CysC (Chen 2024 Table 1)"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the covariate analysis and not retained; no point estimate is reported. Table 1 cohort ALB: mean (SD) 32.3 (5.0) g/L, median 33.4 g/L, range 21.8-44.1 g/L.",
-      source_name        = "ALB (Chen 2024 Table 1)"
+      notes = "Screened in the covariate analysis and not retained; no point estimate is reported. Table 1 cohort ALB: mean (SD) 32.3 (5.0) g/L, median 33.4 g/L, range 21.8-44.1 g/L.",
+      source_name = "ALB (Chen 2024 Table 1)"
     ),
     ALT = list(
-      description        = "Alanine transaminase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine transaminase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a hepatic-function marker and not retained; no point estimate is reported. Table 1 cohort ALT: mean (SD) 61.9 (120.5) U/L, median 17.7 U/L, range 3.2-429.3 U/L.",
-      source_name        = "ALT (Chen 2024 Table 1)"
+      notes = "Screened as a hepatic-function marker and not retained; no point estimate is reported. Table 1 cohort ALT: mean (SD) 61.9 (120.5) U/L, median 17.7 U/L, range 3.2-429.3 U/L.",
+      source_name = "ALT (Chen 2024 Table 1)"
     ),
     AST = list(
-      description        = "Aspartate transaminase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate transaminase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a hepatic-function marker and not retained; no point estimate is reported. Table 1 cohort AST: mean (SD) 71.8 (68.4) U/L, median 41.7 U/L, range 16.1-277.1 U/L.",
-      source_name        = "AST (Chen 2024 Table 1)"
+      notes = "Screened as a hepatic-function marker and not retained; no point estimate is reported. Table 1 cohort AST: mean (SD) 71.8 (68.4) U/L, median 41.7 U/L, range 16.1-277.1 U/L.",
+      source_name = "AST (Chen 2024 Table 1)"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a hepatic-function marker and not retained; no point estimate is reported. Table 1 cohort TBIL: mean (SD) 53.2 (65.3) umol/L, median 24.6 umol/L, range 1.8-299.6 umol/L.",
-      source_name        = "TBIL (Chen 2024 Table 1)"
+      notes = "Screened as a hepatic-function marker and not retained; no point estimate is reported. Table 1 cohort TBIL: mean (SD) 53.2 (65.3) umol/L, median 24.6 umol/L, range 1.8-299.6 umol/L.",
+      source_name = "TBIL (Chen 2024 Table 1)"
     ),
     DBIL = list(
-      description        = "Direct (conjugated) serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Direct (conjugated) serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a cholestasis marker alongside total bilirubin and not retained; no point estimate is reported. Table 1 cohort DBIL: mean (SD) 14.6 (39.8) umol/L, median 7.0 umol/L, range 0.5-250.2 umol/L.",
-      source_name        = "DBIL (Chen 2024 Table 1)"
+      notes = "Screened as a cholestasis marker alongside total bilirubin and not retained; no point estimate is reported. Table 1 cohort DBIL: mean (SD) 14.6 (39.8) umol/L, median 7.0 umol/L, range 0.5-250.2 umol/L.",
+      source_name = "DBIL (Chen 2024 Table 1)"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a renal-function marker and not retained; creatinine clearance produced the larger objective-function reduction. Table 1 cohort BUN: mean (SD) 3.2 (2.7) mmol/L, median 2.2 mmol/L, range 0.4-12.0 mmol/L.",
-      source_name        = "BUN (Chen 2024 Table 1)"
+      notes = "Screened as a renal-function marker and not retained; creatinine clearance produced the larger objective-function reduction. Table 1 cohort BUN: mean (SD) 3.2 (2.7) mmol/L, median 2.2 mmol/L, range 0.4-12.0 mmol/L.",
+      source_name = "BUN (Chen 2024 Table 1)"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "nadroparin",
-      units    = "IU (anti-Xa activity)",
+      analyte = "nadroparin",
+      units = "IU (anti-Xa activity)",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "nadroparin",
-      units    = "IU (anti-Xa activity)",
+      analyte = "nadroparin",
+      units = "IU (anti-Xa activity)",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
     n_observations = "56 anti-Xa samples from 40 patients (Chen 2024 Table 1). 51 patients were enrolled; 11 were excluded because every one of their samples was below the limit of quantification.",
-    age_range      = "postnatal age 3-224 days (median 40 days); postmenstrual age 30.7-69.0 weeks (median 40.4 weeks); gestational age at birth 25.0-41.3 weeks (median 36.8 weeks)",
-    age_median     = "postnatal age 40 days (postmenstrual age 40.4 weeks)",
-    weight_range   = "1.2-9.3 kg",
-    weight_median  = "3.1 kg",
+    age_range = "postnatal age 3-224 days (median 40 days); postmenstrual age 30.7-69.0 weeks (median 40.4 weeks); gestational age at birth 25.0-41.3 weeks (median 36.8 weeks)",
+    age_median = "postnatal age 40 days (postmenstrual age 40.4 weeks)",
+    weight_range = "1.2-9.3 kg",
+    weight_median = "3.1 kg",
     sex_female_pct = 42.5,
     race_ethnicity = "Chinese (single centre in Shanghai, China; race and ethnicity are not tabulated in the paper)",
-    disease_state  = "Preterm or term neonates and infants under 8 months of age with suspected or diagnosed arterial or venous thrombosis. Table 1: 23 patients had venous thrombosis (lower limb 7, external iliac vein 5, inferior vena cava 4, femoral vein 2, portal vein 2, jugular vein 2, umbilical vein 1) and 17 had arterial thrombosis (neonatal cerebral infarction 10, arterial thromboembolism 6, thrombosis of the abdominal aorta 1).",
-    dose_range     = "Nadroparin (Fraxiparine) 150-200 IU/kg subcutaneously every 12 h per the local treatment protocol",
-    regions        = "China (Children's Hospital of Fudan University, National Children's Medical Center, Shanghai; single centre)",
+    disease_state = "Preterm or term neonates and infants under 8 months of age with suspected or diagnosed arterial or venous thrombosis. Table 1: 23 patients had venous thrombosis (lower limb 7, external iliac vein 5, inferior vena cava 4, femoral vein 2, portal vein 2, jugular vein 2, umbilical vein 1) and 17 had arterial thrombosis (neonatal cerebral infarction 10, arterial thromboembolism 6, thrombosis of the abdominal aorta 1).",
+    dose_range = "Nadroparin (Fraxiparine) 150-200 IU/kg subcutaneously every 12 h per the local treatment protocol",
+    regions = "China (Children's Hospital of Fudan University, National Children's Medical Center, Shanghai; single centre)",
     renal_function = "Schwartz creatinine clearance 5.3-314.7 mL/min/1.73 m^2 (median 51.1, mean 73.8, SD 62.8)",
-    notes          = paste(
+    notes = paste(
       "Retrospective single-centre chart review of patients treated between July 2021 and",
       "December 2023 (Chen 2024 Methods 'Patients and data collection'). Anti-Xa activity was",
       "measured with an anti-Xa clotting assay (STA-liquid ANTI-Xa, Diagnostica Stago) with a",

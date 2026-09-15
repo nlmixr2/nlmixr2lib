@@ -11,7 +11,7 @@ Freyer_2000_ifosfamide <- function() {
     sep = " "
   )
   vignette <- "Freyer_2000_AVI_regimen"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -23,33 +23,33 @@ Freyer_2000_ifosfamide <- function() {
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 24L,
-    n_studies        = 1L,
-    n_courses        = 47L,
-    age_range        = "45-70 years",
-    age_median       = "57 years",
-    weight_range     = "54-93 kg",
-    weight_median    = "69 kg",
-    height_range     = "159-179 cm",
-    height_median    = "170 cm",
-    bsa_range        = "1.54-2.10 m^2",
-    bsa_median       = "1.79 m^2",
-    sex_female_pct   = "not reported",
-    race_ethnicity   = "not reported (French multicentre study)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    n_courses = 47L,
+    age_range = "45-70 years",
+    age_median = "57 years",
+    weight_range = "54-93 kg",
+    weight_median = "69 kg",
+    height_range = "159-179 cm",
+    height_median = "170 cm",
+    bsa_range = "1.54-2.10 m^2",
+    bsa_median = "1.79 m^2",
+    sex_female_pct = "not reported",
+    race_ethnicity = "not reported (French multicentre study)",
+    disease_state = paste(
       "Small cell lung cancer (SCLC), either limited to the thorax or",
       "extensive; no severe hepatic or renal impairment (patients with",
       "ASAT/ALAT/alkaline phosphatase > 2x upper limit of normal and/or",
       "serum creatinine > 1.5x upper limit of normal were excluded from",
       "the primary therapeutic trials)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "AVI regimen: ifosfamide 2000 mg/m^2 IV over 2 h on days 1 and 2.",
       "Total ifosfamide dose per course = 4000 mg/m^2. At the 1.79 m^2",
       "median BSA that is ~3580 mg per day-1 infusion."
     ),
-    regions          = "France (Lyon Saint-Etienne Thoracic Oncology Group, GLOT; multicentre)",
+    regions = "France (Lyon Saint-Etienne Thoracic Oncology Group, GLOT; multicentre)",
     covariates_tested = paste(
       "Screened but not retained in the final ifosfamide model: age, sex,",
       "stage of disease, body weight, height, body surface area, serum",
@@ -57,7 +57,7 @@ Freyer_2000_ifosfamide <- function() {
       "bilirubin, LDH, total protein (Freyer 2000 Methods; Results",
       "Ifosfamide). No covariate reached significance."
     ),
-    notes            = paste(
+    notes = paste(
       "Baseline characteristics from Freyer 2000 Table 1. Ifosfamide",
       "assayed by GC-NPD with trofosfamide internal standard (LOQ 0.5",
       "ug/mL, linear 0.5-30 ug/mL, CV 3.1-10%). Freyer 2000 fitted",

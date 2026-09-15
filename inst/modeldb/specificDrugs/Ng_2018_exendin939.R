@@ -8,38 +8,38 @@ Ng_2018_exendin939 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "exendin939", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "exendin939", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "exendin939", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject for this dataset (single-occasion analyses). Allometric scaling with reference weight 70 kg; exponents fixed at 0.75 on CL and Q and 1.0 on Vc and Vp. Ng 2018 Table 1: paediatric weight median 6.25 kg (neonates, range 3.92-6.60) and 21.0 kg (children, range 11.8-69.2); adult median 69.1 kg (range 58.2-130).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject for this dataset (single-occasion analyses). Allometric scaling with reference weight 70 kg; exponents fixed at 0.75 on CL and Q and 1.0 on Vc and Vp. Ng 2018 Table 1: paediatric weight median 6.25 kg (neonates, range 3.92-6.60) and 21.0 kg (children, range 11.8-69.2); adult median 69.1 kg (range 58.2-130).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 26L,
-    n_studies        = 3L,
-    age_range        = "0.06-47 years",
-    age_median       = "Neonates 0.11 years; children 5 years; adults 19 years (Table 1)",
-    weight_range     = "3.92-130 kg",
-    weight_median    = "Neonates 6.25 kg; children 21.0 kg; adults 69.1 kg (Table 1)",
-    sex_female_pct   = 53.8,
-    race_ethnicity   = "Caucasian 92%; unknown 8% (Ng 2018 Table 1: 24/26 Caucasian, 2 unknown across the three cohorts)",
-    disease_state    = "Congenital hyperinsulinism (KATP-HI subtype predominantly), spanning neonates (<12 months), children (6 months to 18 years), and older adolescents / adults (>=15 years).",
-    dose_range       = "Intravenous infusion 0.02-0.1 mg/kg/h; cohorts received 2 h infusions per dose level for 6 h total (adults, children) or 6-12 h single-rate infusions (neonates).",
-    regions          = "USA (Children's Hospital of Philadelphia)",
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 3L,
+    age_range = "0.06-47 years",
+    age_median = "Neonates 0.11 years; children 5 years; adults 19 years (Table 1)",
+    weight_range = "3.92-130 kg",
+    weight_median = "Neonates 6.25 kg; children 21.0 kg; adults 69.1 kg (Table 1)",
+    sex_female_pct = 53.8,
+    race_ethnicity = "Caucasian 92%; unknown 8% (Ng 2018 Table 1: 24/26 Caucasian, 2 unknown across the three cohorts)",
+    disease_state = "Congenital hyperinsulinism (KATP-HI subtype predominantly), spanning neonates (<12 months), children (6 months to 18 years), and older adolescents / adults (>=15 years).",
+    dose_range = "Intravenous infusion 0.02-0.1 mg/kg/h; cohorts received 2 h infusions per dose level for 6 h total (adults, children) or 6-12 h single-rate infusions (neonates).",
+    regions = "USA (Children's Hospital of Philadelphia)",
     n_concentrations = 182L,
-    n_below_lloq     = 16L,
-    studies          = "NCT00571324 (Adult Study); NCT00897676 (Children Study); NCT00835328 (Neonate Study)",
-    notes            = "Baseline demographics from Ng 2018 Table 1. Bioanalytical: LC-MS/MS, linear range 10-1390 ng/mL, LLOQ 10 ng/mL (limit of detection 1.3 ng/mL). Below-LLOQ samples (16/182) were retained via the Beal M3 method during the original NONMEM 7.3 fit (FOCE-I). PopPK is human-only; preclinical TK in rats (Sprague-Dawley) and beagle dogs was used for NOAEL / dose-selection only and is not part of this model."
+    n_below_lloq = 16L,
+    studies = "NCT00571324 (Adult Study); NCT00897676 (Children Study); NCT00835328 (Neonate Study)",
+    notes = "Baseline demographics from Ng 2018 Table 1. Bioanalytical: LC-MS/MS, linear range 10-1390 ng/mL, LLOQ 10 ng/mL (limit of detection 1.3 ng/mL). Below-LLOQ samples (16/182) were retained via the Beal M3 method during the original NONMEM 7.3 fit (FOCE-I). PopPK is human-only; preclinical TK in rats (Sprague-Dawley) and beagle dogs was used for NOAEL / dose-selection only and is not part of this model."
   )
 
   ini({

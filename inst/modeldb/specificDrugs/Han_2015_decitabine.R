@@ -24,11 +24,11 @@ Han_2015_decitabine <- function() {
   )
   vignette <- "Han_2015_decitabine"
   units <- list(
-    time          = "h",
-    dosing        = "mg/m^2",
+    time = "h",
+    dosing = "mg/m^2",
     concentration = "mg/L",
-    anc           = "10^9 cells/L",
-    plt           = "10^9 cells/L"
+    anc = "10^9 cells/L",
+    plt = "10^9 cells/L"
   )
 
   # No model-referenced covariates. PK parameters are reported on a per-m^2
@@ -45,31 +45,51 @@ Han_2015_decitabine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central        = list(analyte = "decitabine", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "decitabine", units = NA_character_, specimen = "plasma", verified = FALSE),
-    precursor1_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor2_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor3_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor4_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    circ_anc       = list(analyte = "neutrophils", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    central = list(analyte = "decitabine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "decitabine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1_anc = list(
+      analyte = "neutrophils",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor2_anc = list(
+      analyte = "neutrophils",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor3_anc = list(
+      analyte = "neutrophils",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor4_anc = list(
+      analyte = "neutrophils",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    circ_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "whole blood", verified = FALSE),
     precursor1_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor2_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor3_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor4_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    circ_plt       = list(analyte = "platelets", units = NA_character_, specimen = "whole blood", verified = FALSE)
+    circ_plt = list(analyte = "platelets", units = NA_character_, specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = "19-64 years",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "19-64 years",
+    weight_range = NA_character_,
     sex_female_pct = 40,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Adult Korean patients with higher-risk myelodysplastic syndrome ",
       "(MDS; intermediate-2 or high IPSS risk) or secondary acute myeloid ",
       "leukemia (sAML) evolving from MDS, receiving decitabine maintenance ",
@@ -79,7 +99,7 @@ Han_2015_decitabine <- function() {
       "grade III/IV acute GVHD; ECOG 0-2; no renal or hepatic impairment. ",
       "Decitabine started on days 42-90 post-transplant (median 86 days)."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Decitabine 4-12 mg/m^2/day (Cycle 2-4 range 1.5-12 mg/m^2/day from ",
       "Table 2) as a 60-minute IV infusion for 5 consecutive days, cycles ",
       "repeated every 4 weeks up to Cycle 12. Initial Cycle-1 dose ",
@@ -90,15 +110,15 @@ Han_2015_decitabine <- function() {
       "for all subsequent cycles. The actual dosing interval was 34.5 ",
       "+/- 8.7 days (mean +/- SD)."
     ),
-    regions        = "Republic of Korea (Seoul St. Mary's Hospital, The Catholic University of Korea).",
-    co_medication  = paste0(
+    regions = "Republic of Korea (Seoul St. Mary's Hospital, The Catholic University of Korea).",
+    co_medication = paste0(
       "GVHD prophylaxis: calcineurin inhibitor (cyclosporine for related ",
       "donors, tacrolimus for unrelated donors) plus short-course ",
       "methotrexate. Antithymocyte globulin given to all patients prior ",
       "to transplant. At decitabine initiation: acute GVHD grade 0-2 in ",
       "all patients, mild chronic GVHD in 1 patient."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Baseline demographics from Han 2015 Tables 1 and 2. 16 patients ",
       "were enrolled (9 male / 7 female); the popPK-PD analysis excluded ",
       "1 female patient whose dose-limiting toxicity factor was platelet ",

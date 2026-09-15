@@ -20,23 +20,23 @@ DelFrari_2018_propranolol <- function() {
     sep = " "
   )
   vignette <- "DelFrari_2018_propranolol"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "propranolol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "propranolol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "propranolol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying body weight in kg. Drives fixed-exponent allometric",
         "scaling on CL/F (exponent 0.75) with reference weight 6.3 kg (the",
         "median weight observed across the pooled cohort from D1 to D84,",
@@ -45,27 +45,27 @@ DelFrari_2018_propranolol <- function() {
         "retain it; V/F is therefore weight-independent here.",
         sep = " "
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "50-243 days (postnatal age at PK assessment); 35-150 days at study inclusion",
-    age_median     = "104 days at inclusion (range 50-151)",
-    weight_range   = "3.6-9.7 kg across visits D1-D84",
-    weight_median  = "6.3 kg (pooled median across visits D1-D84; reference weight for allometric scaling)",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "50-243 days (postnatal age at PK assessment); 35-150 days at study inclusion",
+    age_median = "104 days at inclusion (range 50-151)",
+    weight_range = "3.6-9.7 kg across visits D1-D84",
+    weight_median = "6.3 kg (pooled median across visits D1-D84; reference weight for allometric scaling)",
     sex_female_pct = 27.3,
-    disease_state  = paste(
+    disease_state = paste(
       "Infants with proliferating Infantile Hemangiomas (IH) requiring",
       "systemic therapy. Patients were stratified into two groups by age at",
       "inclusion (Group 1: 35-90 days, n = 10, PK at week 4; Group 2:",
       "91-150 days, n = 12, PK at week 12). EudraCT 2009-018102-22.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral solution of propranolol hydrochloride dosed twice daily (BID).",
       "Titration: 1 mg/kg/day in week 1, 2 mg/kg/day in week 2, then target",
       "3 mg/kg/day BID (1.5 mg/kg per dose) for weeks 3-12.",
@@ -73,8 +73,8 @@ DelFrari_2018_propranolol <- function() {
       "regular 12-hour dosing interval on the assessment day.",
       sep = " "
     ),
-    regions        = "France (4 hospitals: Bordeaux, Lyon, Nantes, Nice)",
-    notes          = paste(
+    regions = "France (4 hospitals: Bordeaux, Lyon, Nantes, Nice)",
+    notes = paste(
       "23 infants enrolled; 22 were evaluable for popPK (6 females, 16 males).",
       "167 plasma concentrations contributed to the analysis (21 trough at D7",
       "+ 18 trough at D14 + 60 + 68 across full PK profiles at D28 / D84).",

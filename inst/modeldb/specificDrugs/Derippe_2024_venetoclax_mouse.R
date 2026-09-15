@@ -17,40 +17,40 @@ Derippe_2024_venetoclax_mouse <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = "Female is the REFERENCE here, which is the reverse of the usual nlmixr2lib pattern: the Supplement's 'Mice PK modeling' table lists Female first with the un-flagged V (6.54 L/kg) and reports the male value as a covariate effect (14.6% RSE). Applies only to the Eisenmann 2020 cohort (n = 10 male, n = 5 female); sex was not reported for the Salem 2021 cohort, which the paper treats as its own 'unknown' level. Set SEXF = 0 for Salem rows -- the STUDY_SALEM term neutralises the sex term there. Subject-level (time-fixed).",
-      source_name        = "Sex"
+      notes = "Female is the REFERENCE here, which is the reverse of the usual nlmixr2lib pattern: the Supplement's 'Mice PK modeling' table lists Female first with the un-flagged V (6.54 L/kg) and reports the male value as a covariate effect (14.6% RSE). Applies only to the Eisenmann 2020 cohort (n = 10 male, n = 5 female); sex was not reported for the Salem 2021 cohort, which the paper treats as its own 'unknown' level. Set SEXF = 0 for Salem rows -- the STUDY_SALEM term neutralises the sex term there. Subject-level (time-fixed).",
+      source_name = "Sex"
     ),
     STUDY_SALEM = list(
-      description        = "Salem 2021 ABBV-167 prodrug study indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Salem 2021 ABBV-167 prodrug study indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Eisenmann 2020 oral venetoclax study)",
-      notes              = "1 = mouse from Salem 2021 (5 mg/kg ABBV-167 prodrug IV, venetoclax measured as the biotransformation product); 0 = mouse from Eisenmann 2020 (10 mg/kg venetoclax PO). The parameters change meaning across the two studies: for Eisenmann, ka is first-order oral absorption and V is the volume of distribution; for Salem, ka is the prodrug-to-venetoclax biotransformation rate constant and V additionally absorbs the fraction biotransformed. Subject-level (time-fixed).",
-      source_name        = "Study"
+      notes = "1 = mouse from Salem 2021 (5 mg/kg ABBV-167 prodrug IV, venetoclax measured as the biotransformation product); 0 = mouse from Eisenmann 2020 (10 mg/kg venetoclax PO). The parameters change meaning across the two studies: for Eisenmann, ka is first-order oral absorption and V is the volume of distribution; for Salem, ka is the prodrug-to-venetoclax biotransformation rate constant and V additionally absorbs the fraction biotransformed. Subject-level (time-fixed).",
+      source_name = "Study"
     )
   )
 
   covariatesDataExcluded <- list()
 
   compartmentData <- list(
-    depot   = list(analyte = "venetoclax", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "venetoclax", units = "mg/kg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "venetoclax", units = "mg/kg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "mouse",
-    n_subjects     = 15L,
-    n_studies      = 2L,
+    species = "mouse",
+    n_subjects = 15L,
+    n_studies = 2L,
     sex_female_pct = 33.3,
-    weight_range   = "20-30 g (Eisenmann 2020 cohort; not reported for Salem 2021)",
-    disease_state  = "Non-tumor-bearing mice",
-    dose_range     = "10 mg/kg venetoclax PO single dose (Eisenmann 2020); 5 mg/kg ABBV-167 prodrug IV single dose (Salem 2021), from which only the venetoclax profile was used",
-    regions        = "Preclinical (literature-digitized)",
-    notes          = "n_subjects = 15 counts the Eisenmann 2020 cohort (10 male, 5 female); the Salem 2021 cohort size is not reported, so sex_female_pct is computed over the Eisenmann cohort only. Three profiles in total were fit jointly. The Eisenmann profiles cover only 0-6 h and were still at a plateau at 6 h, so the terminal phase is informed almost entirely by the Salem profile (0-24 h); the paper notes the terminal half-life is overpredicted. Absence of xenografted tumors means any target-mediated disposition would be invisible in these data (Supplement, 'Mice PK modeling')."
+    weight_range = "20-30 g (Eisenmann 2020 cohort; not reported for Salem 2021)",
+    disease_state = "Non-tumor-bearing mice",
+    dose_range = "10 mg/kg venetoclax PO single dose (Eisenmann 2020); 5 mg/kg ABBV-167 prodrug IV single dose (Salem 2021), from which only the venetoclax profile was used",
+    regions = "Preclinical (literature-digitized)",
+    notes = "n_subjects = 15 counts the Eisenmann 2020 cohort (10 male, 5 female); the Salem 2021 cohort size is not reported, so sex_female_pct is computed over the Eisenmann cohort only. Three profiles in total were fit jointly. The Eisenmann profiles cover only 0-6 h and were still at a plateau at 6 h, so the terminal phase is informed almost entirely by the Salem profile (0-24 h); the paper notes the terminal half-life is overpredicted. Absence of xenografted tumors means any target-mediated disposition would be invisible in these data (Supplement, 'Mice PK modeling')."
   )
 
   ini({

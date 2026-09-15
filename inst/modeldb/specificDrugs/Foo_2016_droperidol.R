@@ -20,8 +20,8 @@ Foo_2016_droperidol <- function() {
   )
   vignette <- "Foo_2016_droperidol"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -29,24 +29,24 @@ Foo_2016_droperidol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "droperidol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "droperidol", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "droperidol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "droperidol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "droperidol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "16-62 years",
-    age_median     = "33 years",
-    weight_range   = "not recorded",
-    weight_median  = "not recorded",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "16-62 years",
+    age_median = "33 years",
+    weight_range = "not recorded",
+    weight_median = "not recorded",
     sex_female_pct = 65.9,
     race_ethnicity = c(Unreported = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (one 16-year-old recruited inadvertently) presenting to",
       "the emergency department with acute behavioural disturbance",
       "requiring physical restraint and parenteral sedation. Primary",
@@ -56,13 +56,13 @@ Foo_2016_droperidol <- function() {
       "levels recorded in 32 of 41 (median 0.24, range 0.01-0.39",
       "mg/dL)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intramuscular dose of 5 mg (n = 17) or 10 mg (n = 24);",
       "5 of 41 patients received additional droperidol after the",
       "index dose."
     ),
-    regions        = "Australia (Calvary Mater Newcastle emergency department, New South Wales)",
-    notes          = paste(
+    regions = "Australia (Calvary Mater Newcastle emergency department, New South Wales)",
+    notes = paste(
       "Subgroup of the randomised controlled trial ACTRN12607000527460",
       "comparing droperidol vs midazolam for sedation of acute",
       "behavioural disturbance. 128 plasma samples in total (median 3",

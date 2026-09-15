@@ -9,8 +9,8 @@ Venisse_2008_fluconazole <- function() {
   )
   vignette <- "Venisse_2008_candida_albicans"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L (drug central; numerically equal to ug/mL used in the paper); CFU/mL (Candida count); log CFU/mL (log_cfu observation)"
   )
 
@@ -22,24 +22,29 @@ Venisse_2008_fluconazole <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
-    candida = list(analyte = "Candida albicans cells", units = "mg", specimen = "bronchoalveolar lavage", verified = FALSE)
+    candida = list(
+      analyte = "Candida albicans cells",
+      units = "mg",
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species                = "in vitro (Candida albicans, ATCC 3153 reference strain)",
-    n_subjects             = NA_integer_,
-    n_studies              = 1L,
-    organism               = "Candida albicans ATCC 3153 (NCCLS-susceptible reference strain)",
-    system                 = "Dynamic in vitro infection model: one-compartment glass flask (400 mL working volume) with a peristaltic pump (Masterflex L/S) continuously supplying and removing RPMI 1640 + 2% sorbitol at a flow rate adjusted to simulate a drug elimination half-life of 3 h",
-    medium                 = "RPMI 1640 + 2% sorbitol",
-    temperature            = "37 C",
-    duration               = "31 h post-inoculation (4 h pre-drug control growth + 27 h post-drug observation)",
-    mic                    = "fluconazole MIC = 1.56 ug/mL on this isolate (NCCLS-susceptible)",
-    concentration_range    = "fluconazole initial concentrations 0.01-100 ug/mL across three experiments (Table 1)",
-    regimens               = "Three fluconazole-monotherapy experiments + three caspofungin-monotherapy experiments (six experiments total); each experiment includes a drug-free growth control and three drug-treated arms differing by initial concentration",
-    notes                  = "Initial Candida inoculum 5e3 CFU/mL introduced at t = 0 h; fluconazole introduced 4 h later as a bolus to the bath. Sampling at 4 h (before drug) and approximately 4, 6, 8, 15, 18, 22, 27 h after drug introduction. The joint Nonmem run pooled all 6 experiments to estimate Candida-specific parameters (Kg, Kd, Nmax) shared across drugs and drug-specific parameters (IC50, Imax for fluconazole) per experiment set."
+    species = "in vitro (Candida albicans, ATCC 3153 reference strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Candida albicans ATCC 3153 (NCCLS-susceptible reference strain)",
+    system = "Dynamic in vitro infection model: one-compartment glass flask (400 mL working volume) with a peristaltic pump (Masterflex L/S) continuously supplying and removing RPMI 1640 + 2% sorbitol at a flow rate adjusted to simulate a drug elimination half-life of 3 h",
+    medium = "RPMI 1640 + 2% sorbitol",
+    temperature = "37 C",
+    duration = "31 h post-inoculation (4 h pre-drug control growth + 27 h post-drug observation)",
+    mic = "fluconazole MIC = 1.56 ug/mL on this isolate (NCCLS-susceptible)",
+    concentration_range = "fluconazole initial concentrations 0.01-100 ug/mL across three experiments (Table 1)",
+    regimens = "Three fluconazole-monotherapy experiments + three caspofungin-monotherapy experiments (six experiments total); each experiment includes a drug-free growth control and three drug-treated arms differing by initial concentration",
+    notes = "Initial Candida inoculum 5e3 CFU/mL introduced at t = 0 h; fluconazole introduced 4 h later as a bolus to the bath. Sampling at 4 h (before drug) and approximately 4, 6, 8, 15, 18, 22, 27 h after drug introduction. The joint Nonmem run pooled all 6 experiments to estimate Candida-specific parameters (Kg, Kd, Nmax) shared across drugs and drug-specific parameters (IC50, Imax for fluconazole) per experiment set."
   )
 
   ini({

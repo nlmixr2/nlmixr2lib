@@ -1,59 +1,59 @@
 Yukawa_2002_clonazepam_pediatric <- function() {
   description <- "Steady-state population PK model for clonazepam relative clearance (CL/F) in 137 Japanese pediatric and adult epileptic patients (Yukawa 2002 Table III row 4). CL/F is a body-weight power function with a 3-tier drug-interaction factor for concomitant antiepileptic drugs (monotherapy, +1 AED (CBZ or VPA), +>=2 AEDs)."
-  reference   <- "Yukawa E, Satou M, Nonaka T, Yukawa M, Ohdo S, Higuchi S, Kuroda T, Goto Y. Pharmacoepidemiologic investigation of clonazepam relative clearance by mixed-effect modeling using routine clinical pharmacokinetic data in Japanese patients. J Clin Pharmacol. 2002;42(1):81-88."
-  vignette    <- "Yukawa_2002_clonazepam_pediatric"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Yukawa E, Satou M, Nonaka T, Yukawa M, Ohdo S, Higuchi S, Kuroda T, Goto Y. Pharmacoepidemiologic investigation of clonazepam relative clearance by mixed-effect modeling using routine clinical pharmacokinetic data in Japanese patients. J Clin Pharmacol. 2002;42(1):81-88."
+  vignette <- "Yukawa_2002_clonazepam_pediatric"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "clonazepam", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "clonazepam", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "clonazepam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yukawa 2002 Methods Eq. 'CL = theta1 * TBW^theta2' (Table III, page 84 row 'CL = theta1 * TBW^theta2'). The paper does not state an explicit reference weight; the canonical (WT/1 kg) parameterisation is used inside model() to preserve the paper's reported theta1 = 152 ml/kg/h and theta2 = -0.181 verbatim. Cohort total-body-weight range 5.5-75 kg (Table II, page 83).",
-      source_name        = "TBW"
+      notes = "Yukawa 2002 Methods Eq. 'CL = theta1 * TBW^theta2' (Table III, page 84 row 'CL = theta1 * TBW^theta2'). The paper does not state an explicit reference weight; the canonical (WT/1 kg) parameterisation is used inside model() to preserve the paper's reported theta1 = 152 ml/kg/h and theta2 = -0.181 verbatim. Cohort total-body-weight range 5.5-75 kg (Table II, page 83).",
+      source_name = "TBW"
     ),
     CONMED_AED = list(
-      description        = "Indicator for any concomitant antiepileptic drug coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for any concomitant antiepileptic drug coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (clonazepam monotherapy)",
-      notes              = "Yukawa 2002 Results page 84: DIF = 1 (CONMED_AED = 0; monotherapy reference), DIF = 1.18 (CONMED_AED = 1 and CONMED_AED_GE2 = 0; concomitant carbamazepine OR valproate alone), DIF = 2.12 * TBW^(-0.119) (CONMED_AED = 1 and CONMED_AED_GE2 = 1; >=2 AEDs alongside clonazepam). Paired with CONMED_AED_GE2 inside model() to recover the paper's 3-tier comed factor. Qualifying AEDs in the source cohort (Table I): carbamazepine (CBZ), valproate (VPA), phenobarbital (PB), phenytoin (PHT), zonisamide (ZSM), ethosuximide (ETOX).",
-      source_name        = "CONMED_AED"
+      notes = "Yukawa 2002 Results page 84: DIF = 1 (CONMED_AED = 0; monotherapy reference), DIF = 1.18 (CONMED_AED = 1 and CONMED_AED_GE2 = 0; concomitant carbamazepine OR valproate alone), DIF = 2.12 * TBW^(-0.119) (CONMED_AED = 1 and CONMED_AED_GE2 = 1; >=2 AEDs alongside clonazepam). Paired with CONMED_AED_GE2 inside model() to recover the paper's 3-tier comed factor. Qualifying AEDs in the source cohort (Table I): carbamazepine (CBZ), valproate (VPA), phenobarbital (PB), phenytoin (PHT), zonisamide (ZSM), ethosuximide (ETOX).",
+      source_name = "CONMED_AED"
     ),
     CONMED_AED_GE2 = list(
-      description        = "Indicator for >=2 concomitant antiepileptic drugs",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for >=2 concomitant antiepileptic drugs",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (zero or one concomitant AED)",
-      notes              = "Yukawa 2002 Results page 84: the >=2-AEDs tier carries a weight-dependent DIF = 2.12 * TBW^(-0.119). CONMED_AED_GE2 = 1 must imply CONMED_AED = 1 (data assemblers must enforce this consistency: a record with CONMED_AED_GE2 = 1 and CONMED_AED = 0 is malformed). The paper's prose 'more than two antiepileptic drugs' is a translation artifact; Table I unambiguously bins Polytherapy (B) as >=2 AEDs alongside clonazepam (e.g. CZP+VPA+CBZ has exactly 2 AEDs and is grouped in Polytherapy B).",
-      source_name        = "CONMED_AED_GE2"
+      notes = "Yukawa 2002 Results page 84: the >=2-AEDs tier carries a weight-dependent DIF = 2.12 * TBW^(-0.119). CONMED_AED_GE2 = 1 must imply CONMED_AED = 1 (data assemblers must enforce this consistency: a record with CONMED_AED_GE2 = 1 and CONMED_AED = 0 is malformed). The paper's prose 'more than two antiepileptic drugs' is a translation artifact; Table I unambiguously bins Polytherapy (B) as >=2 AEDs alongside clonazepam (e.g. CZP+VPA+CBZ has exactly 2 AEDs and is grouped in Polytherapy B).",
+      source_name = "CONMED_AED_GE2"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 137L,
-    n_observations   = 259L,
-    n_studies        = 1L,
-    age_range        = "0.3-28 years",
-    age_median       = "monotherapy mean 10.4 (SD 4.9) yr; polytherapy A mean 8.1 (SD 4.6) yr; polytherapy B mean 12.6 (SD 6.3) yr",
-    weight_range     = "5.5-75 kg",
-    weight_median    = "monotherapy mean 31.3 (SD 16.9) kg; polytherapy A mean 24.5 (SD 13.8) kg; polytherapy B mean 34.7 (SD 17) kg",
-    sex_female_pct   = 41.3,
-    race_ethnicity   = "Japanese",
-    disease_state    = "Epileptic patients (pediatric + adult) on chronic oral clonazepam maintenance therapy. 31 patient-periods on clonazepam monotherapy; 62 on clonazepam + 1 of {carbamazepine, valproate}; 67 on clonazepam + >=2 AEDs (Table II, page 83). 160 patient-periods total across 137 unique patients (some patients contributed to multiple comed tiers as regimens changed).",
-    dose_range       = "Daily clonazepam dose 5.5-128.2 ug/kg/day across the three tiers (Table II); two or three divided doses per day as tablet or fine-granule preparation. Sampling at 2-6 hours after the morning dose at steady state (Methods page 82).",
-    regions          = "Japan",
-    notes            = "Yukawa 2002 Tables I-II baseline demographics (page 83). 66 female and 94 male patient-periods (parentheses in Table II indicate female counts: 16 + 23 + 27). All patients had normal renal and hepatic function and had been on clonazepam for >1 month before the analysis window. Serum concentrations measured by HPLC (Nonaka et al. method, CV <10%) as part of routine TDM care. The model is a steady-state CL/F regression: Css_ij = D_ij / (CL_ij * tau_ij). Bioavailability (F) and clearance are not separable; the estimated CL is a relative clearance because Css_ij is sampled at 2-6 h post-morning-dose rather than as a time-averaged Css (Methods page 83)."
+    species = "human",
+    n_subjects = 137L,
+    n_observations = 259L,
+    n_studies = 1L,
+    age_range = "0.3-28 years",
+    age_median = "monotherapy mean 10.4 (SD 4.9) yr; polytherapy A mean 8.1 (SD 4.6) yr; polytherapy B mean 12.6 (SD 6.3) yr",
+    weight_range = "5.5-75 kg",
+    weight_median = "monotherapy mean 31.3 (SD 16.9) kg; polytherapy A mean 24.5 (SD 13.8) kg; polytherapy B mean 34.7 (SD 17) kg",
+    sex_female_pct = 41.3,
+    race_ethnicity = "Japanese",
+    disease_state = "Epileptic patients (pediatric + adult) on chronic oral clonazepam maintenance therapy. 31 patient-periods on clonazepam monotherapy; 62 on clonazepam + 1 of {carbamazepine, valproate}; 67 on clonazepam + >=2 AEDs (Table II, page 83). 160 patient-periods total across 137 unique patients (some patients contributed to multiple comed tiers as regimens changed).",
+    dose_range = "Daily clonazepam dose 5.5-128.2 ug/kg/day across the three tiers (Table II); two or three divided doses per day as tablet or fine-granule preparation. Sampling at 2-6 hours after the morning dose at steady state (Methods page 82).",
+    regions = "Japan",
+    notes = "Yukawa 2002 Tables I-II baseline demographics (page 83). 66 female and 94 male patient-periods (parentheses in Table II indicate female counts: 16 + 23 + 27). All patients had normal renal and hepatic function and had been on clonazepam for >1 month before the analysis window. Serum concentrations measured by HPLC (Nonaka et al. method, CV <10%) as part of routine TDM care. The model is a steady-state CL/F regression: Css_ij = D_ij / (CL_ij * tau_ij). Bioavailability (F) and clearance are not separable; the estimated CL is a relative clearance because Css_ij is sampled at 2-6 h post-morning-dose rather than as a time-averaged Css (Methods page 83)."
   )
 
   ini({

@@ -8,44 +8,44 @@ Zhao_2012_abacavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Body weight on the day of pharmacokinetic sampling (Table 1 footnote). The covariate effect is an estimated power model on CL/F with reference weight 12 kg (population median): CL/F = 13.4 * (WT/12)^1.14. Cohort range 7.4-15.9 kg (mean 11.6 kg).",
-      source_name        = "WT"
+      notes = "Body weight on the day of pharmacokinetic sampling (Table 1 footnote). The covariate effect is an estimated power model on CL/F with reference weight 12 kg (population median): CL/F = 13.4 * (WT/12)^1.14. Cohort range 7.4-15.9 kg (mean 11.6 kg).",
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing across the PENTA 15 crossover phases.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing across the PENTA 15 crossover phases.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1 and 2 identify the two PENTA 15 crossover phases within subject: 1 = abacavir 8 mg/kg twice daily (BID, weeks 0-4), 2 = abacavir 16 mg/kg once daily (QD, weeks 4-8). Decomposed inside `model()` into binary indicators `oc1` and `oc2` that multiplex the two IOV etas on log-CL (NONMEM `$OMEGA BLOCK(1)` + `SAME` translation; both etas share the same variance per Zhao 2012 Table 3).",
-      source_name        = "OCC"
+      notes = "Values 1 and 2 identify the two PENTA 15 crossover phases within subject: 1 = abacavir 8 mg/kg twice daily (BID, weeks 0-4), 2 = abacavir 16 mg/kg once daily (QD, weeks 4-8). Decomposed inside `model()` into binary indicators `oc1` and `oc2` that multiplex the two IOV etas on log-CL (NONMEM `$OMEGA BLOCK(1)` + `SAME` translation; both etas share the same variance per Zhao 2012 Table 3).",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,
-    n_studies      = 1L,
-    age_range      = "0.43-2.89 years (mean 1.8)",
-    age_median     = "1.8 years (mean reported)",
-    weight_range   = "7.4-15.9 kg (mean 11.6)",
-    weight_median  = "12 kg",
+    species = "human",
+    n_subjects = 23L,
+    n_studies = 1L,
+    age_range = "0.43-2.89 years (mean 1.8)",
+    age_median = "1.8 years (mean reported)",
+    weight_range = "7.4-15.9 kg (mean 11.6)",
+    weight_median = "12 kg",
     sex_female_pct = 47.8,
-    disease_state  = "HIV type-1-infected infants and toddlers aged 3-36 months on antiretroviral therapy, enrolled in the PENTA 15 open-label crossover study comparing once- and twice-daily abacavir + lamivudine dosing.",
-    dose_range     = "Oral abacavir 8 mg/kg BID (weeks 0-4) then 16 mg/kg QD (weeks 4-8) per the PENTA 15 crossover schedule; intensive PK sampling at steady state in each phase.",
-    regions        = "France, Germany, Italy, Spain, United Kingdom",
+    disease_state = "HIV type-1-infected infants and toddlers aged 3-36 months on antiretroviral therapy, enrolled in the PENTA 15 open-label crossover study comparing once- and twice-daily abacavir + lamivudine dosing.",
+    dose_range = "Oral abacavir 8 mg/kg BID (weeks 0-4) then 16 mg/kg QD (weeks 4-8) per the PENTA 15 crossover schedule; intensive PK sampling at steady state in each phase.",
+    regions = "France, Germany, Italy, Spain, United Kingdom",
     n_observations = 347L,
-    notes          = "Baseline demographics from Zhao 2012 Table 1. 12 male and 11 female (47.8% female). Height (cm) mean 81 (range 62-98, n=22). Body mass index (kg/m^2) mean 17.8 (range 15.0-24.2, n=22). Serum creatinine (mg/L) mean 34.7 (range 22.1-53.9, n=21). 347 plasma abacavir concentrations were available for population modelling; 13.5% were below the lower limit of quantification (LLQ 0.015 mg/L) and were imputed as LLQ/2. 18 of 23 patients had a full PK profile; 5 had incomplete profiles. The covariate screen tested age, gender, weight, height, body mass index, serum creatinine, and drug administration frequency; only WT on CL/F was retained in the final model (Tables 2-3)."
+    notes = "Baseline demographics from Zhao 2012 Table 1. 12 male and 11 female (47.8% female). Height (cm) mean 81 (range 62-98, n=22). Body mass index (kg/m^2) mean 17.8 (range 15.0-24.2, n=22). Serum creatinine (mg/L) mean 34.7 (range 22.1-53.9, n=21). 347 plasma abacavir concentrations were available for population modelling; 13.5% were below the lower limit of quantification (LLQ 0.015 mg/L) and were imputed as LLQ/2. 18 of 23 patients had a full PK profile; 5 had incomplete profiles. The covariate screen tested age, gender, weight, height, body mass index, serum creatinine, and drug administration frequency; only WT on CL/F was retained in the final model (Tables 2-3)."
   )
 
   ini({

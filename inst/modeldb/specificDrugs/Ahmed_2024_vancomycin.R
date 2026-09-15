@@ -1,8 +1,8 @@
 Ahmed_2024_vancomycin <- function() {
   description <- "One-compartment intravenous population PK model for vancomycin in Sudanese adult inpatients, developed from routine therapeutic-drug-monitoring peak and trough concentrations at a single hospital in Khartoum. Clearance is a median-centered power function of creatinine clearance; volume of distribution carries no covariates. IMPORTANT: the CRCL column is NOT a conventional creatinine clearance in mL/min -- the source computes it as Bjornson's creatinine production rate divided by serum creatinine with the body-weight and 14.4 unit factors omitted, which deflates it about five-fold relative to a Cockcroft-Gault value; see covariateData$CRCL."
-  reference   <- "Ahmed KA, Ibrahim A, Gonzalez D, Nur AO. Population Pharmacokinetics and Model-Based Dose Optimization of Vancomycin in Sudanese Adult Patients with Renal Impairment. Drug Des Devel Ther. 2024;18:81-95. doi:10.2147/DDDT.S432439"
-  vignette    <- "Ahmed_2024_vancomycin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Ahmed KA, Ibrahim A, Gonzalez D, Nur AO. Population Pharmacokinetics and Model-Based Dose Optimization of Vancomycin in Sudanese Adult Patients with Renal Impairment. Drug Des Devel Ther. 2024;18:81-95. doi:10.2147/DDDT.S432439"
+  vignette <- "Ahmed_2024_vancomycin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the source: the single disposition
@@ -16,11 +16,11 @@ Ahmed_2024_vancomycin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance as computed by Ahmed 2024 -- Bjornson creatinine production rate divided by serum creatinine, WITHOUT the body-weight multiplier or the 14.4 unit-conversion divisor of the published Bjornson method",
-      units              = "mL/min as labelled by the source; dimensionally (mg/kg/24 h)/(mg/dL) as actually computed",
-      type               = "continuous",
+      description = "Creatinine clearance as computed by Ahmed 2024 -- Bjornson creatinine production rate divided by serum creatinine, WITHOUT the body-weight multiplier or the 14.4 unit-conversion divisor of the published Bjornson method",
+      units = "mL/min as labelled by the source; dimensionally (mg/kg/24 h)/(mg/dL) as actually computed",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "READ THIS BEFORE SUPPLYING A CRCL VALUE TO THIS MODEL. Ahmed 2024 Methods, 'Patients and Data Collection',",
         "Equations 1-3: CLcr = Rcr / SCR, with Rcr(males) = 27 - 0.173 * age and Rcr(females) = 25 - 0.175 * age, both in",
         "mg/kg/24 h, and SCR in mg/dL. The published Bjornson method (Bjornsson TD, Clin Pharmacokinet 1979) completes the",
@@ -37,16 +37,16 @@ Ahmed_2024_vancomycin <- function() {
         "(CRCL / 12.7)^0.49 -- see the model() block for why 12.7 is used and what the source does and does not print.",
         sep = " "
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at the time of the therapeutic-drug-monitoring episode",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and significant in univariate forward inclusion (Table 2 model 4, dOFV -16.9, p < 0.05) but not",
         "retained: once CLcr was in the model, adding age gave dOFV -0.06 (Table 2 model 8, p > 0.05). Age nonetheless enters",
         "the model indirectly, because it is an input to the Bjornson Rcr equations that generate CRCL.",
@@ -55,9 +55,9 @@ Ahmed_2024_vancomycin <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened on CL as log-transformed SCr and significant (Table 2 model 2, dOFV -43.73, p < 0.05), but CLcr gave the",
         "larger drop in both OFV (-49.69) and BSV on CL (omega 0.46 versus 0.49), so the CLcr model was selected as final",
         "(Results, 'Model Development'). The two are not independent -- SCr is the denominator of the CRCL calculation.",
@@ -67,9 +67,9 @@ Ahmed_2024_vancomycin <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Screened on both V (Table 2 model 6, dOFV -0.86) and CL (model 7, dOFV -0.30) and rejected at p > 0.05 in each case;",
         "also rejected when added to the CLcr model (model 10, dOFV -1.07). Cohort median 2.5 g/dL (IQR 2.1-2.9,",
         "range 1.4-4.1; Table 1). Reported here in the source's g/dL, not the canonical register unit g/L.",
@@ -78,9 +78,9 @@ Ahmed_2024_vancomycin <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and significant in univariate forward inclusion (Table 2 model 5, dOFV -28.84, p < 0.05) but not",
         "retained once CLcr was in the model (Table 2 model 9, dOFV -0.34, p > 0.05). Cohort median 52 mg/dL",
         "(IQR 26.1-89, range 5-215; Table 1, where it is headed 'Blood urea').",
@@ -89,9 +89,9 @@ Ahmed_2024_vancomycin <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = NULL,
-      type        = "categorical",
-      notes       = paste(
+      units = NULL,
+      type = "categorical",
+      notes = paste(
         "Screened on CL. The Discussion reports that adding sex to CL reduced the OFV by 6.03 points (p > 0.05) at the forward",
         "step and that it was removed at backward elimination, so it does not appear in Table 2 at all and no coefficient is",
         "published. Cohort 66 male / 33 female (Table 1). As with age, sex enters indirectly: it selects between the two",
@@ -102,20 +102,20 @@ Ahmed_2024_vancomycin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 99L,
+    species = "human",
+    n_subjects = 99L,
     n_observations = 194L,
-    n_studies      = 1L,
-    age_range      = "18-90 years; median 65 (IQR 50-75) (Table 1)",
-    age_median     = "65 years",
-    weight_range   = "NOT RECORDED. Ahmed 2024 states that patient weight and height were absent from the medical records, which is why the Cockcroft-Gault equation could not be used and why the CRCL column omits its weight factor.",
+    n_studies = 1L,
+    age_range = "18-90 years; median 65 (IQR 50-75) (Table 1)",
+    age_median = "65 years",
+    weight_range = "NOT RECORDED. Ahmed 2024 states that patient weight and height were absent from the medical records, which is why the Cockcroft-Gault equation could not be used and why the CRCL column omits its weight factor.",
     sex_female_pct = 33,
     race_ethnicity = "Not reported beyond nationality; single-country cohort of Sudanese adults. The paper motivates the study by noting that no vancomycin population PK information existed for Sudanese patients.",
-    disease_state  = "Adult inpatients receiving intravenous vancomycin at a single hospital. Patients under 18 years, pregnant patients, and patients on renal replacement therapy were excluded, so the model carries no information about dialysis. As reported by the source the cohort is dominated by renal impairment (median CLcr 12.7), but see covariateData$CRCL: the renal-function column is computed without its weight and unit factors and is therefore about five-fold deflated relative to a conventional creatinine clearance, so the apparent severity of impairment is partly an artefact of the covariate definition.",
+    disease_state = "Adult inpatients receiving intravenous vancomycin at a single hospital. Patients under 18 years, pregnant patients, and patients on renal replacement therapy were excluded, so the model carries no information about dialysis. As reported by the source the cohort is dominated by renal impairment (median CLcr 12.7), but see covariateData$CRCL: the renal-function column is computed without its weight and unit factors and is therefore about five-fold deflated relative to a conventional creatinine clearance, so the apparent severity of impairment is partly an artefact of the covariate definition.",
     renal_function = "CLcr median 12.7 (IQR 5.52-25.78, range 1.4-107.5) in the source's own units (Table 1); serum creatinine median 1.2 mg/dL (IQR 0.7-2.5, range 0.2-9.5)",
-    dose_range     = "500-1000 mg intravenously every 12 h, infused over 60 min (Methods, 'Dosing and Sample Collection'); administered one to two times per day (Results, 'Patient Characteristics')",
-    regions        = "Sudan (Aliaa Specialist Hospital, Khartoum)",
-    notes          = "Retrospective single-centre observational cohort of patients treated between August 2016 and January 2019. 194 concentrations from 99 patients: 129 troughs (median 16.22 mg/L, IQR 11.1-26.53) drawn 30 min before the next dose and 65 peaks (median 29.55 mg/L, IQR 22.38-37.36) drawn 1 h after the dose, all from the fourth dose onwards. No samples were below the limit of quantitation. Assay: enzyme-multiplied immunoassay (EMIT), calibration range 2-50 mg/L. Fitted in MonolixSuite 2020R1 by SAEM. Baseline demographics are Table 1 of Ahmed 2024."
+    dose_range = "500-1000 mg intravenously every 12 h, infused over 60 min (Methods, 'Dosing and Sample Collection'); administered one to two times per day (Results, 'Patient Characteristics')",
+    regions = "Sudan (Aliaa Specialist Hospital, Khartoum)",
+    notes = "Retrospective single-centre observational cohort of patients treated between August 2016 and January 2019. 194 concentrations from 99 patients: 129 troughs (median 16.22 mg/L, IQR 11.1-26.53) drawn 30 min before the next dose and 65 peaks (median 29.55 mg/L, IQR 22.38-37.36) drawn 1 h after the dose, all from the fourth dose onwards. No samples were below the limit of quantitation. Assay: enzyme-multiplied immunoassay (EMIT), calibration range 2-50 mg/L. Fitted in MonolixSuite 2020R1 by SAEM. Baseline demographics are Table 1 of Ahmed 2024."
   )
 
   ini({

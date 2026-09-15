@@ -36,11 +36,11 @@ Pfaffendorf_2026_fosmidomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Pfaffendorf 2026 Table 1",
         "reports mean (SD) 37.5 (20.2) kg and median [min, max]",
         "29.1 [12.0, 86.0] kg across the 40-patient cohort. Applied as",
@@ -56,14 +56,14 @@ Pfaffendorf_2026_fosmidomycin <- function() {
         "to three significant figures.",
         sep = " "
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     BODYTEMP = list(
-      description        = "Body temperature at admission",
-      units              = "degC",
-      type               = "continuous",
+      description = "Body temperature at admission",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission (screening) body temperature, treated as time-fixed",
         "per subject in this implementation. Pfaffendorf 2026 Table 1",
         "reports mean (SD) 37.1 (1.06) degC and median [min, max]",
@@ -85,25 +85,25 @@ Pfaffendorf_2026_fosmidomycin <- function() {
         "40 degC.",
         sep = " "
       ),
-      source_name        = "BT"
+      source_name = "BT"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "fosmidomycin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "fosmidomycin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "fosmidomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 40L,
-    n_studies       = 1L,
-    age_range       = "3.50-57.2 years (Table 1)",
-    age_median      = "10.8 years (Table 1)",
-    weight_range    = "12.0-86.0 kg (Table 1)",
-    weight_median   = "29.1 kg (Table 1)",
-    sex_female_pct  = 42.5,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "3.50-57.2 years (Table 1)",
+    age_median = "10.8 years (Table 1)",
+    weight_range = "12.0-86.0 kg (Table 1)",
+    weight_median = "29.1 kg (Table 1)",
+    sex_female_pct = 42.5,
+    disease_state = paste(
       "Microscopically confirmed uncomplicated Plasmodium falciparum",
       "mono-infection with admission parasitaemia 1000-100,000 asexual",
       "parasites per microlitre and a history of fever within the",
@@ -114,7 +114,7 @@ Pfaffendorf_2026_fosmidomycin <- function() {
       "126 (34.9) mL/min/1.73m2, haematocrit 32.7 (3.96) %,",
       "haemoglobin 10.9 (1.39) g/dL, albumin 36.0 (5.49) g/L."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral fosmidomycin 30 mg/kg every 12 h for three days (six doses",
       "total), co-administered with clindamycin 10 mg/kg and artesunate",
       "2 mg/kg on the same schedule. Doses were rounded to the closest",
@@ -122,9 +122,9 @@ Pfaffendorf_2026_fosmidomycin <- function() {
       "capsules (Nextpharma, Goettingen, Germany). The reference",
       "-corrected VPC used a 900 mg reference dose at 29.05 kg."
     ),
-    regions         = "Gabon (Centre de Recherches Medicales de Lambarene)",
+    regions = "Gabon (Centre de Recherches Medicales de Lambarene)",
     trial_registration = "PACTR202008909968293 (pactr.samrc.ac.za)",
-    notes           = paste(
+    notes = paste(
       "Recruitment was stratified into three age groups: 20 patients",
       "aged 6 months-10 years, 10 aged 11-17 years, and 10 aged",
       "18-65 years. A total of 242 fosmidomycin plasma samples entered",

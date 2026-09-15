@@ -9,8 +9,8 @@ Li_2021_daratumumab_qsstmdd <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "CD38", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
@@ -24,52 +24,52 @@ Li_2021_daratumumab_qsstmdd <- function() {
   # eventually published.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported by Li 2021 as a statistically significant covariate on both linear CL and on V1; the abstract does not report the functional form or coefficient values. Effect omitted from model() pending publication of the full parameter table. See vignette Errata.",
-      source_name        = "body weight"
+      notes = "Reported by Li 2021 as a statistically significant covariate on both linear CL and on V1; the abstract does not report the functional form or coefficient values. Effect omitted from model() pending publication of the full parameter table. See vignette Errata.",
+      source_name = "body weight"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported by Li 2021 as a statistically significant covariate on linear CL; functional form and coefficient value are NOT in the abstract. Effect omitted from model() pending publication of the full parameter table. See vignette Errata.",
-      source_name        = "albumin concentration"
+      notes = "Reported by Li 2021 as a statistically significant covariate on linear CL; functional form and coefficient value are NOT in the abstract. Effect omitted from model() pending publication of the full parameter table. See vignette Errata.",
+      source_name = "albumin concentration"
     ),
     MM_NIGG = list(
-      description        = "Multiple-myeloma immunoglobulin type indicator: 1 = non-IgG MM, 0 = IgG MM",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiple-myeloma immunoglobulin type indicator: 1 = non-IgG MM, 0 = IgG MM",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IgG MM)",
-      notes              = "Reported by Li 2021 as a statistically significant covariate on linear CL (described as 'type of myeloma [IgG versus non-IgG]'). Coefficient value and reference orientation are NOT in the abstract. Effect omitted from model() pending publication of the full parameter table. See vignette Errata. The canonical MM_NIGG column orientation (1 = non-IgG, 0 = IgG) is preserved.",
-      source_name        = "type of myeloma (IgG vs non-IgG)"
+      notes = "Reported by Li 2021 as a statistically significant covariate on linear CL (described as 'type of myeloma [IgG versus non-IgG]'). Coefficient value and reference orientation are NOT in the abstract. Effect omitted from model() pending publication of the full parameter table. See vignette Errata. The canonical MM_NIGG column orientation (1 = non-IgG, 0 = IgG) is preserved.",
+      source_name = "type of myeloma (IgG vs non-IgG)"
     ),
     SEXF = list(
-      description        = "Biological sex indicator: 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator: 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Reported by Li 2021 as a statistically significant covariate on V1. Coefficient value is NOT in the abstract. Effect omitted from model() pending publication of the full parameter table. See vignette Errata.",
-      source_name        = "sex"
+      notes = "Reported by Li 2021 as a statistically significant covariate on V1. Coefficient value is NOT in the abstract. Effect omitted from model() pending publication of the full parameter table. See vignette Errata.",
+      source_name = "sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 223L,
+    species = "human",
+    n_subjects = 223L,
     n_observations = 2572L,
-    n_studies      = 2L,
-    age_range      = "not reported in abstract",
-    weight_range   = "not reported in abstract",
+    n_studies = 2L,
+    age_range = "not reported in abstract",
+    weight_range = "not reported in abstract",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported in abstract",
-    disease_state  = "Multiple myeloma. Pooled GEN501 + MMY2002 daratumumab monotherapy populations: GEN501 was a Phase 1/2 dose-escalation (0.005-24 mg/kg) + single-arm (8 or 16 mg/kg) study; MMY2002 (SIRIUS) was a Phase 2 study of heavily pretreated MM. Patients in both studies received daratumumab monotherapy with no other background therapies.",
-    dose_range     = "0.005-24 mg/kg IV. Maintenance schedules included 8 mg/kg or 16 mg/kg IV once weekly (QW) for 8-16 weeks, every 2 weeks (Q2W) for 16 weeks, then every 4 weeks (Q4W) thereafter (GEN501 single-arm and MMY2002).",
-    regions        = "Multinational (GEN501 + MMY2002 / SIRIUS clinical trial sites).",
-    notes          = "Pooled GEN501 + MMY2002 daratumumab-monotherapy populations. 2,572 PK samples from 223 subjects (PAGE 29 abstract Results section). Demographic detail (age, weight distribution, sex split, race) is not reported in the abstract; the abstract names body weight, albumin, myeloma type (IgG vs non-IgG), and sex as statistically significant covariates without reporting coefficient values. The TMDD/QSS structural form replaces the previous empirical 2-cmt parallel-linear + Michaelis-Menten model with time-dependent Vmax (Xu 2017 / Xu 2020 lineage; see modellib('Xu_2020_daratumumab') for the empirical parameterisation)."
+    disease_state = "Multiple myeloma. Pooled GEN501 + MMY2002 daratumumab monotherapy populations: GEN501 was a Phase 1/2 dose-escalation (0.005-24 mg/kg) + single-arm (8 or 16 mg/kg) study; MMY2002 (SIRIUS) was a Phase 2 study of heavily pretreated MM. Patients in both studies received daratumumab monotherapy with no other background therapies.",
+    dose_range = "0.005-24 mg/kg IV. Maintenance schedules included 8 mg/kg or 16 mg/kg IV once weekly (QW) for 8-16 weeks, every 2 weeks (Q2W) for 16 weeks, then every 4 weeks (Q4W) thereafter (GEN501 single-arm and MMY2002).",
+    regions = "Multinational (GEN501 + MMY2002 / SIRIUS clinical trial sites).",
+    notes = "Pooled GEN501 + MMY2002 daratumumab-monotherapy populations. 2,572 PK samples from 223 subjects (PAGE 29 abstract Results section). Demographic detail (age, weight distribution, sex split, race) is not reported in the abstract; the abstract names body weight, albumin, myeloma type (IgG vs non-IgG), and sex as statistically significant covariates without reporting coefficient values. The TMDD/QSS structural form replaces the previous empirical 2-cmt parallel-linear + Michaelis-Menten model with time-dependent Vmax (Xu 2017 / Xu 2020 lineage; see modellib('Xu_2020_daratumumab') for the empirical parameterisation)."
   )
 
   ini({

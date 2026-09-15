@@ -13,30 +13,50 @@ Vasalou_2023_dendriticNanoparticle_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    blood_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    liver_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_np = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    blood     = list(analyte = "free API", units = NA_character_, specimen = "plasma", verified = FALSE),
-    liver     = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen    = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other     = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE)
+    blood_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    liver_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    spleen_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    other_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    blood = list(analyte = "free API", units = NA_character_, specimen = "plasma", verified = FALSE),
+    liver = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (SCID CB-17)",
-    n_subjects     = 21,
-    n_studies      = 1,
-    age_range      = "not reported",
-    weight_range   = "0.02 kg (reference body weight, Tables 3 and 4)",
+    species = "mouse (SCID CB-17)",
+    n_subjects = 21,
+    n_studies = 1,
+    age_range = "not reported",
+    weight_range = "0.02 kg (reference body weight, Tables 3 and 4)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy immunodeficient (SCID CB-17) mice; no tumour was implanted in the biodistribution study reported here.",
-    dose_range     = "Single 10 mg/kg IV bolus of the nanoparticle (dose expressed as mg of API per kg body weight; dose volume 5 mL/kg).",
-    regions        = "Single-centre preclinical (AstraZeneca R&D Boston; animals from Charles River Laboratories).",
-    notes          = "Blood sampled from 3 mice at each of 20 min, 1, 6, 24, 48, 72 and 96 h post dose (21 mice total). Plasma, liver and spleen concentrations of total and released API were measured by LC-MS/MS; observed values are tabulated in Table S5 of S1 File. The mouse model was originally developed in reference [12] of the source paper and is re-used here without re-fitting, so every parameter is fixed().",
-    scope_note     = "Mechanistic PBPK simulator intended for typical-value simulation: no inter-individual variability and no residual-error model are reported by the source paper. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
+    disease_state = "Healthy immunodeficient (SCID CB-17) mice; no tumour was implanted in the biodistribution study reported here.",
+    dose_range = "Single 10 mg/kg IV bolus of the nanoparticle (dose expressed as mg of API per kg body weight; dose volume 5 mL/kg).",
+    regions = "Single-centre preclinical (AstraZeneca R&D Boston; animals from Charles River Laboratories).",
+    notes = "Blood sampled from 3 mice at each of 20 min, 1, 6, 24, 48, 72 and 96 h post dose (21 mice total). Plasma, liver and spleen concentrations of total and released API were measured by LC-MS/MS; observed values are tabulated in Table S5 of S1 File. The mouse model was originally developed in reference [12] of the source paper and is re-used here without re-fitting, so every parameter is fixed().",
+    scope_note = "Mechanistic PBPK simulator intended for typical-value simulation: no inter-individual variability and no residual-error model are reported by the source paper. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
   )
 
   ini({

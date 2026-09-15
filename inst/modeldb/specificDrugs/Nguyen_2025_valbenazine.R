@@ -46,73 +46,78 @@ Nguyen_2025_valbenazine <- function() {
   # [+]-alpha-HTBZ and transit compartment absorption for valbenazine") and
   # Figure S3 (final joint parent-metabolite model structure).
   compartmentData <- list(
-    depot                = list(analyte = "valbenazine",                        units = "mg", specimen = "administration site", verified = TRUE),
-    transit1             = list(analyte = "valbenazine",                        units = "mg", specimen = "administration site", verified = TRUE),
-    transit2             = list(analyte = "valbenazine",                        units = "mg", specimen = "administration site", verified = TRUE),
-    transit3             = list(analyte = "valbenazine",                        units = "mg", specimen = "administration site", verified = TRUE),
-    transit4             = list(analyte = "valbenazine",                        units = "mg", specimen = "administration site", verified = TRUE),
-    central              = list(analyte = "valbenazine",                        units = "mg", specimen = "plasma",               verified = TRUE),
-    peripheral1          = list(analyte = "valbenazine",                        units = "mg", specimen = "plasma",               verified = TRUE),
-    central_htbz         = list(analyte = "[+]-alpha-dihydrotetrabenazine",     units = "mg", specimen = "plasma",               verified = TRUE),
-    peripheral1_htbz     = list(analyte = "[+]-alpha-dihydrotetrabenazine",     units = "mg", specimen = "plasma",               verified = TRUE)
+    depot = list(analyte = "valbenazine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "valbenazine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "valbenazine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "valbenazine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "valbenazine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "valbenazine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "valbenazine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_htbz = list(analyte = "[+]-alpha-dihydrotetrabenazine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_htbz = list(
+      analyte = "[+]-alpha-dihydrotetrabenazine",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight. Power (allometric) effect on the valbenazine apparent clearance CLP/F and on the shared apparent central volume VC/F.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight. Power (allometric) effect on the valbenazine apparent clearance CLP/F and on the shared apparent central volume VC/F.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight. Reference weight is 70 kg, stated explicitly in Nguyen 2025 Supplemental Table S2 ('centered on a reference weight of 70 kg') for both equations (1) and (2) -- NOT the cohort mean of 77.8 kg. CLP/F = 23.2 * (WT/70)^0.602; VC/F = 226 * (WT/70)^1.04. Because VC/F is shared between valbenazine and [+]-alpha-HTBZ, the weight effect on VC/F propagates to the metabolite central volume as well. No weight effect on QP/F, VPP/F, CLM, QM or VPM. Nguyen 2025 Results: the relative difference in predicted valbenazine AUC across the observed weight range versus the median weight was below 30%.",
-      source_name        = "WT"
+      notes = "Time-fixed baseline weight. Reference weight is 70 kg, stated explicitly in Nguyen 2025 Supplemental Table S2 ('centered on a reference weight of 70 kg') for both equations (1) and (2) -- NOT the cohort mean of 77.8 kg. CLP/F = 23.2 * (WT/70)^0.602; VC/F = 226 * (WT/70)^1.04. Because VC/F is shared between valbenazine and [+]-alpha-HTBZ, the weight effect on VC/F propagates to the metabolite central volume as well. No weight effect on QP/F, VPP/F, CLM, QM or VPM. Nguyen 2025 Results: the relative difference in predicted valbenazine AUC across the observed weight range versus the median weight was below 30%.",
+      source_name = "WT"
     ),
     DOSE = list(
-      description        = "Administered valbenazine dose for the current dose record, in mg. Drives the saturable (Emax) increase in relative oral bioavailability F1 above the 1 mg anchor dose.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered valbenazine dose for the current dose record, in mg. Drives the saturable (Emax) increase in relative oral bioavailability F1 above the 1 mg anchor dose.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-record administered dose (use case (a) of the DOSE canonical: dose drives a dose-dependent relative bioavailability applied through f(depot); the same shape as Wada 2023 sparsentan). Nguyen 2025 Supplemental Table S2 equation (4): F1 = [1 + FMAX * (DOSE - 1 mg) / (ED50 + DOSE - 1 mg)] * (1 + theta10 * FED), with F1 defined as 1 for a 1 mg dose in the fasted state. Studied dose range 1-150 mg. The model clamps (DOSE - 1) at 0 so a sub-1-mg dose cannot drive F1 below the anchor; the paper never dosed below 1 mg. At clinically relevant doses the effect is modest: 1.09-fold at 60 mg and 1.16-fold at 80 mg relative to 40 mg (Nguyen 2025 Discussion).",
-      source_name        = "DOSE"
+      notes = "Per-record administered dose (use case (a) of the DOSE canonical: dose drives a dose-dependent relative bioavailability applied through f(depot); the same shape as Wada 2023 sparsentan). Nguyen 2025 Supplemental Table S2 equation (4): F1 = [1 + FMAX * (DOSE - 1 mg) / (ED50 + DOSE - 1 mg)] * (1 + theta10 * FED), with F1 defined as 1 for a 1 mg dose in the fasted state. Studied dose range 1-150 mg. The model clamps (DOSE - 1) at 0 so a sub-1-mg dose cannot drive F1 below the anchor; the paper never dosed below 1 mg. At clinically relevant doses the effect is modest: 1.09-fold at 60 mg and 1.16-fold at 80 mg relative to 40 mg (Nguyen 2025 Discussion).",
+      source_name = "DOSE"
     ),
     FED = list(
-      description        = "Fed-versus-fasted status of the dose record. Proportional reductions in both the transit absorption rate constant KTR and the relative bioavailability F1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted status of the dose record. Proportional reductions in both the transit absorption rate constant KTR and the relative bioavailability F1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Per-dose-record indicator. Nguyen 2025 Supplemental Table S2 equations (3) and (4), with proportional-shift coefficients theta9 = -0.685 on KTR (68.5% slower absorption when fed) and theta10 = -0.0646 on F1 (6.5% lower bioavailability when fed) from Table 1. Nguyen 2025 Results describes the re-evaluated clinical impact of food status as minimal. In KINECT-HD the capsule was taken 'without regard to food' (Supplemental Table S1), so a KINECT-HD simulation may reasonably use either level; the fasted reference (FED = 0) reproduces the typical-value parameters of Table 1 directly.",
-      source_name        = "FED"
+      notes = "Per-dose-record indicator. Nguyen 2025 Supplemental Table S2 equations (3) and (4), with proportional-shift coefficients theta9 = -0.685 on KTR (68.5% slower absorption when fed) and theta10 = -0.0646 on F1 (6.5% lower bioavailability when fed) from Table 1. Nguyen 2025 Results describes the re-evaluated clinical impact of food status as minimal. In KINECT-HD the capsule was taken 'without regard to food' (Supplemental Table S1), so a KINECT-HD simulation may reasonably use either level; the fasted reference (FED = 0) reproduces the typical-value parameters of Table 1 directly.",
+      source_name = "FED"
     ),
     FORM_SOLUTION = list(
-      description        = "Oral-solution formulation indicator for the dose record. Proportional increase in the transit absorption rate constant KTR relative to the capsule reference.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral-solution formulation indicator for the dose record. Proportional increase in the transit absorption rate constant KTR relative to the capsule reference.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capsule; the formulation used in both phase 3 studies, KINECT-HD and KINECT 3)",
-      notes              = "Per-dose-record indicator. Nguyen 2025 Supplemental Table S2 equation (3): theta8 = 1.51 is the PROPORTIONAL shift for the solution, entering as KTR * (1 + 1.51 * FORM_SOLUTION), i.e. a 2.51-fold higher absorption rate constant for the oral solution than for the capsule -- not a 1.51-fold multiplier. Table S2 states this explicitly ('the proportional shift in KA for the solution formulation (SOLN = 1) relative to capsule formulations (SOLN = 0)'). The oral solution appeared only in the six phase 1 studies; both phase 3 studies used capsules (Supplemental Table S1), so FORM_SOLUTION = 0 for any KINECT-HD or KINECT 3 simulation.",
-      source_name        = "SOLN"
+      notes = "Per-dose-record indicator. Nguyen 2025 Supplemental Table S2 equation (3): theta8 = 1.51 is the PROPORTIONAL shift for the solution, entering as KTR * (1 + 1.51 * FORM_SOLUTION), i.e. a 2.51-fold higher absorption rate constant for the oral solution than for the capsule -- not a 1.51-fold multiplier. Table S2 states this explicitly ('the proportional shift in KA for the solution formulation (SOLN = 1) relative to capsule formulations (SOLN = 0)'). The oral solution appeared only in the six phase 1 studies; both phase 3 studies used capsules (Supplemental Table S1), so FORM_SOLUTION = 0 for any KINECT-HD or KINECT 3 simulation.",
+      source_name = "SOLN"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator. Proportional reduction in the [+]-alpha-HTBZ systemic clearance CLM.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator. Proportional reduction in the [+]-alpha-HTBZ systemic clearance CLM.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6 extensive or ultra-rapid metabolizer, when CYP2D6_IM is also 0)",
-      notes              = "Time-fixed germline-genotype-derived phenotype, determined by PCR-based assay on a baseline whole-blood sample (Nguyen 2025 Bioanalytical Methods). Nguyen 2025 Supplemental Table S2 equation (5): CLM = 31.0 * (1 + theta17 * PM) * (1 + theta18 * IM), theta17 = -0.516, so poor metabolizers have 51.6% lower metabolite clearance and a 2.06-fold higher steady-state [+]-alpha-HTBZ AUC (1 / (1 - 0.516) = 2.07; Nguyen 2025 Results reports AUC ratio 2.06 [90% CI 1.7-2.62] and Cmax ratio 1.83 [90% CI 1.55-2.25]). Paired with CYP2D6_IM so that both indicators = 0 selects the pooled extensive-or-ultra-rapid reference. Cohort: 5.6% poor metabolizers among the 425 pooled subjects.",
-      source_name        = "PM"
+      notes = "Time-fixed germline-genotype-derived phenotype, determined by PCR-based assay on a baseline whole-blood sample (Nguyen 2025 Bioanalytical Methods). Nguyen 2025 Supplemental Table S2 equation (5): CLM = 31.0 * (1 + theta17 * PM) * (1 + theta18 * IM), theta17 = -0.516, so poor metabolizers have 51.6% lower metabolite clearance and a 2.06-fold higher steady-state [+]-alpha-HTBZ AUC (1 / (1 - 0.516) = 2.07; Nguyen 2025 Results reports AUC ratio 2.06 [90% CI 1.7-2.62] and Cmax ratio 1.83 [90% CI 1.55-2.25]). Paired with CYP2D6_IM so that both indicators = 0 selects the pooled extensive-or-ultra-rapid reference. Cohort: 5.6% poor metabolizers among the 425 pooled subjects.",
+      source_name = "PM"
     ),
     CYP2D6_IM = list(
-      description        = "CYP2D6 intermediate-metabolizer phenotype indicator. Proportional reduction in the [+]-alpha-HTBZ systemic clearance CLM.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 intermediate-metabolizer phenotype indicator. Proportional reduction in the [+]-alpha-HTBZ systemic clearance CLM.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6 extensive or ultra-rapid metabolizer, when CYP2D6_PM is also 0)",
-      notes              = "Time-fixed germline-genotype-derived phenotype. Nguyen 2025 Supplemental Table S2 equation (5): theta18 = -0.281, so intermediate metabolizers have 28.1% lower metabolite clearance and a 1.39-fold higher steady-state [+]-alpha-HTBZ AUC. Paired with CYP2D6_PM; the reference (both indicators = 0) is the POOLED extensive-plus-ultra-rapid group, which is why an intermediate-metabolizer indicator is required rather than reusing CYP2D6_EM (whose 0 level would also capture ultra-rapid metabolizers and would therefore apply the intermediate-metabolizer reduction to them). Table 1 footnote a: subjects whose CYP2D6 status was inconclusive and reported as either intermediate or extensive were assigned to the intermediate-metabolizer category. Cohort: 30.5% intermediate metabolizers among the 425 pooled subjects (58.2% extensive, 3.2% ultra-rapid).",
-      source_name        = "IM"
+      notes = "Time-fixed germline-genotype-derived phenotype. Nguyen 2025 Supplemental Table S2 equation (5): theta18 = -0.281, so intermediate metabolizers have 28.1% lower metabolite clearance and a 1.39-fold higher steady-state [+]-alpha-HTBZ AUC. Paired with CYP2D6_PM; the reference (both indicators = 0) is the POOLED extensive-plus-ultra-rapid group, which is why an intermediate-metabolizer indicator is required rather than reusing CYP2D6_EM (whose 0 level would also capture ultra-rapid metabolizers and would therefore apply the intermediate-metabolizer reduction to them). Table 1 footnote a: subjects whose CYP2D6 status was inconclusive and reported as either intermediate or extensive were assigned to the intermediate-metabolizer category. Cohort: 30.5% intermediate metabolizers among the 425 pooled subjects (58.2% extensive, 3.2% ultra-rapid).",
+      source_name = "IM"
     ),
     SAMPLE_INTENSIVE = list(
-      description        = "Per-observation sampling-intensity indicator selecting between the intensive (rich) and sparse log-additive residual-error magnitudes, separately for each analyte.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation sampling-intensity indicator selecting between the intensive (rich) and sparse log-additive residual-error magnitudes, separately for each analyte.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sparse sampling)",
-      notes              = "Per-observation-record indicator. Nguyen 2025 Methods: 'Residual unexplained variability was investigated for refinement by distinguishing errors between parent and metabolite, as well as between sparse and rich sampling data', and Results reports that stratifying the residual error by sampling design reduced the OFV from -7341.67 to -10154.80. Table 1 thetas 11/12 (parent rich/sparse: 0.402 / 0.678) and 19/20 (metabolite rich/sparse: 0.264 / 0.720). The six phase 1 studies contributed rich profiles (SAMPLE_INTENSIVE = 1); the two phase 3 studies (KINECT-HD, KINECT 3) contributed sparse samples (SAMPLE_INTENSIVE = 0) -- Nguyen 2025 attributes the wider phase 3 residual to 'high residual error from sparse sampling and limited dose timing information'. A single subject may carry both levels.",
-      source_name        = "sampling design (rich vs sparse)"
+      notes = "Per-observation-record indicator. Nguyen 2025 Methods: 'Residual unexplained variability was investigated for refinement by distinguishing errors between parent and metabolite, as well as between sparse and rich sampling data', and Results reports that stratifying the residual error by sampling design reduced the OFV from -7341.67 to -10154.80. Table 1 thetas 11/12 (parent rich/sparse: 0.402 / 0.678) and 19/20 (metabolite rich/sparse: 0.264 / 0.720). The six phase 1 studies contributed rich profiles (SAMPLE_INTENSIVE = 1); the two phase 3 studies (KINECT-HD, KINECT 3) contributed sparse samples (SAMPLE_INTENSIVE = 0) -- Nguyen 2025 attributes the wider phase 3 residual to 'high residual error from sparse sampling and limited dose timing information'. A single subject may carry both levels.",
+      source_name = "sampling design (rich vs sparse)"
     )
   )
 
@@ -122,44 +127,44 @@ Nguyen_2025_valbenazine <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex. Screened as an intrinsic factor on valbenazine and [+]-alpha-HTBZ PK.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Nguyen 2025 Results: 'valbenazine and [+]-alpha-HTBZ exposure remained unaffected by other intrinsic patient factors, including sex, age, race, and kidney and liver function markers, confirming that dose adjustment is not necessary for these subgroups.' No point estimate reported; not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Nguyen 2025 Results: 'valbenazine and [+]-alpha-HTBZ exposure remained unaffected by other intrinsic patient factors, including sex, age, race, and kidney and liver function markers, confirming that dose adjustment is not necessary for these subgroups.' No point estimate reported; not retained."
     ),
     AGE = list(
       description = "Age. Screened as an intrinsic factor on valbenazine and [+]-alpha-HTBZ PK.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Nguyen 2025 Results: not retained (see SEXF note). Cohort mean (SD) age 48.3 (14.3) years."
+      units = "years",
+      type = "continuous",
+      notes = "Nguyen 2025 Results: not retained (see SEXF note). Cohort mean (SD) age 48.3 (14.3) years."
     ),
     RACE_WHITE = list(
       description = "Race. Screened as an intrinsic factor on valbenazine and [+]-alpha-HTBZ PK.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Nguyen 2025 Results: not retained (see SEXF note). The KINECT-HD efficacy cohort was 96.0% White (Supplemental Table S5), so race was poorly identifiable in the HD subgroup."
+      units = "(binary)",
+      type = "binary",
+      notes = "Nguyen 2025 Results: not retained (see SEXF note). The KINECT-HD efficacy cohort was 96.0% White (Supplemental Table S5), so race was poorly identifiable in the HD subgroup."
     ),
     CRCL = list(
       description = "Kidney function marker. Screened as an intrinsic factor on valbenazine and [+]-alpha-HTBZ PK.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Nguyen 2025 Results: 'kidney and liver function markers' were screened and not retained. The paper does not name the specific marker or report a point estimate."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Nguyen 2025 Results: 'kidney and liver function markers' were screened and not retained. The paper does not name the specific marker or report a point estimate."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 425L,
-    n_studies      = 8L,
+    species = "human",
+    n_subjects = 425L,
+    n_studies = 8L,
     n_observations = 14371L,
-    age_range      = "mean (SD) 48.3 (14.3) years across the pooled PK dataset; KINECT-HD enrolled adults 18-75 years",
-    weight_range   = "mean (SD) 77.8 (15.7) kg across the pooled PK dataset; KINECT-HD 41.0-134 kg (median 75.8)",
-    weight_median  = "75.8 kg (KINECT-HD full analysis set, Supplemental Table S6)",
+    age_range = "mean (SD) 48.3 (14.3) years across the pooled PK dataset; KINECT-HD enrolled adults 18-75 years",
+    weight_range = "mean (SD) 77.8 (15.7) kg across the pooled PK dataset; KINECT-HD 41.0-134 kg (median 75.8)",
+    weight_median = "75.8 kg (KINECT-HD full analysis set, Supplemental Table S6)",
     sex_female_pct = 43.3,
     race_ethnicity = c(White = 96.0, Black = 0.8, Asian = 0.8, Other = 2.4),
-    disease_state  = "Pooled: healthy adults (six phase 1 studies), patients with tardive dyskinesia (KINECT 3, NCT02274558), and patients with Huntington's-disease-associated chorea (KINECT-HD, protocol HD3005)",
-    dose_range     = "1-150 mg valbenazine orally in the phase 1 studies; 40-80 mg once daily in KINECT-HD; 40 or 80 mg once daily in KINECT 3",
-    cyp2d6_status  = c(extensive = 58.2, intermediate = 30.5, poor = 5.6, ultrarapid = 3.2),
-    notes          = paste(
+    disease_state = "Pooled: healthy adults (six phase 1 studies), patients with tardive dyskinesia (KINECT 3, NCT02274558), and patients with Huntington's-disease-associated chorea (KINECT-HD, protocol HD3005)",
+    dose_range = "1-150 mg valbenazine orally in the phase 1 studies; 40-80 mg once daily in KINECT-HD; 40 or 80 mg once daily in KINECT 3",
+    cyp2d6_status = c(extensive = 58.2, intermediate = 30.5, poor = 5.6, ultrarapid = 3.2),
+    notes = paste(
       "Pooled PK analysis dataset: 7279 valbenazine and 7092",
       "[+]-alpha-HTBZ plasma concentration records from 425 patients and",
       "healthy participants (Nguyen 2025 Results). Demographics from the",

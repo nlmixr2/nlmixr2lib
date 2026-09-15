@@ -13,38 +13,38 @@ Bastida_2018_tocilizumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL with reference 62 kg per the Bastida 2018 final-model equation CL = 0.0104 * (WT/62)^0.360 * (1 + 0.131 * (CRP - 0.484)) (Results, p719). The reference 62 kg is close to the cohort mean weight of 63.5 kg (Table 1). Treated as baseline-fixed; the source paper does not describe time-varying weight handling.",
-      source_name        = "WT"
+      notes = "Power effect on linear CL with reference 62 kg per the Bastida 2018 final-model equation CL = 0.0104 * (WT/62)^0.360 * (1 + 0.131 * (CRP - 0.484)) (Results, p719). The reference 62 kg is close to the cohort mean weight of 63.5 kg (Table 1). Treated as baseline-fixed; the source paper does not describe time-varying weight handling.",
+      source_name = "WT"
     ),
     CRP = list(
-      description        = "C-reactive protein concentration (time-varying)",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "C-reactive protein concentration (time-varying)",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive-offset effect on linear CL with reference 0.484 mg/dL per the Bastida 2018 final-model equation CL = 0.0104 * (WT/62)^0.360 * (1 + 0.131 * (CRP - 0.484)) (Results, p719; equation in paper uses the Spanish abbreviation PCR for C-reactive protein, identical to CRP in the English text). The paper assesses CRP as a time-varying covariate (Methods, p717; Discussion, p722) so this column is intended to be supplied at every observation time. Assay type is standard CRP (not high-sensitivity). The reference value 0.484 mg/dL is the cohort median; the cohort baseline mean from Table 1 is 0.29 mg/dL (this lower mean reflects that most patients in the cohort were already in remission at inclusion). The canonical CRP register entry documents the unit as mg/L; this model carries the source unit mg/dL (1 mg/dL = 10 mg/L) to match the paper's equation exactly without unit conversion, consistent with the Wang_2020_ontamalimab.R precedent.",
-      source_name        = "PCR"
+      notes = "Linear additive-offset effect on linear CL with reference 0.484 mg/dL per the Bastida 2018 final-model equation CL = 0.0104 * (WT/62)^0.360 * (1 + 0.131 * (CRP - 0.484)) (Results, p719; equation in paper uses the Spanish abbreviation PCR for C-reactive protein, identical to CRP in the English text). The paper assesses CRP as a time-varying covariate (Methods, p717; Discussion, p722) so this column is intended to be supplied at every observation time. Assay type is standard CRP (not high-sensitivity). The reference value 0.484 mg/dL is the cohort median; the cohort baseline mean from Table 1 is 0.29 mg/dL (this lower mean reflects that most patients in the cohort were already in remission at inclusion). The canonical CRP register entry documents the unit as mg/L; this model carries the source unit mg/dL (1 mg/dL = 10 mg/L) to match the paper's equation exactly without unit conversion, consistent with the Wang_2020_ontamalimab.R precedent.",
+      source_name = "PCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35L,
+    species = "human",
+    n_subjects = 35L,
     n_observations = 109L,
-    n_studies      = 1L,
-    age_range      = "18 years and older",
-    age_mean_sd    = "54.1 +/- 12.3 years",
-    weight_range   = "estimated 40-120 kg (simulated dose-range; cohort mean 63.5 +/- 13.8 kg)",
+    n_studies = 1L,
+    age_range = "18 years and older",
+    age_mean_sd = "54.1 +/- 12.3 years",
+    weight_range = "estimated 40-120 kg (simulated dose-range; cohort mean 63.5 +/- 13.8 kg)",
     weight_mean_sd = "63.5 +/- 13.8 kg",
     sex_female_pct = 88.6,
     race_ethnicity = c("White/Caucasian" = 80.0, Hispanic = 17.1, "Afro-American" = 2.9),
-    disease_state  = "Adult rheumatoid arthritis (74% in DAS28 remission, 11% low and 14% moderate disease activity at inclusion). Erosive RA in 82.9% of subjects; 71.4% RF-positive; 77.1% anti-CCP-positive.",
-    dose_range     = "4, 6, or 8 mg/kg by 1-hour intravenous infusion every 28 days at the discretion of the treating rheumatologist.",
-    regions        = "Single-center prospective observational study, Hospital Clinic Barcelona, Spain (protocol HCB/2015/0533).",
-    notes          = paste(
+    disease_state = "Adult rheumatoid arthritis (74% in DAS28 remission, 11% low and 14% moderate disease activity at inclusion). Erosive RA in 82.9% of subjects; 71.4% RF-positive; 77.1% anti-CCP-positive.",
+    dose_range = "4, 6, or 8 mg/kg by 1-hour intravenous infusion every 28 days at the discretion of the treating rheumatologist.",
+    regions = "Single-center prospective observational study, Hospital Clinic Barcelona, Spain (protocol HCB/2015/0533).",
+    notes = paste(
       "Baseline demographics from Bastida 2018 Table 1 (p718-719).",
       "Sample distribution: 54/109 trough concentrations and 55/109 intermediate samples (approximately 7, 14, 21 days post-infusion).",
       "16/35 patients contributed a single sample; the remaining 19 contributed an average of five samples each.",

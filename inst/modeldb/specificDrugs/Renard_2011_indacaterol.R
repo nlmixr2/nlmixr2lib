@@ -13,35 +13,35 @@ Renard_2011_indacaterol <- function() {
   vignette <- "Renard_2011_indacaterol"
 
   units <- list(
-    time          = "day (placeholder; the dose-response is steady-state and time-independent)",
-    dosing        = "ug/day (per-arm once-daily inhaled indacaterol dose supplied as DOSE_IND covariate; the model is an MBMA dose-response and does not consume rxode2 dose events)",
+    time = "day (placeholder; the dose-response is steady-state and time-independent)",
+    dosing = "ug/day (per-arm once-daily inhaled indacaterol dose supplied as DOSE_IND covariate; the model is an MBMA dose-response and does not consume rxode2 dose events)",
     concentration = "mL/mL (placebo-corrected trough FEV1 improvement in mL; the slash in the unit string is to satisfy checkModelConventions parsing -- the output Cc is NOT a drug concentration but a respiratory-function delta in mL)"
   )
 
   covariateData <- list(
     DOSE_IND = list(
-      description        = "Per-arm once-daily inhaled indacaterol dose (ug; 0 for placebo).",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm once-daily inhaled indacaterol dose (ug; 0 for placebo).",
+      units = "ug/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate (per-arm constant dose). The canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm-level dose columns; this column mirrors the Vargo 2014 MBMA precedent (drug-specific dose columns documented inline rather than registered). Indacaterol dose range across the 11 trials was 18.75 to 600 ug once daily (Renard 2011 Table 1); the six discrete reported doses are 18.75, 37.5, 75, 150, 300, and 600 ug.",
-      source_name        = "Indacaterol dose (Renard 2011 Table 1)"
+      notes = "MBMA study-arm-level covariate (per-arm constant dose). The canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm-level dose columns; this column mirrors the Vargo 2014 MBMA precedent (drug-specific dose columns documented inline rather than registered). Indacaterol dose range across the 11 trials was 18.75 to 600 ug once daily (Renard 2011 Table 1); the six discrete reported doses are 18.75, 37.5, 75, 150, 300, and 600 ug.",
+      source_name = "Indacaterol dose (Renard 2011 Table 1)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 7476L,
-    n_studies       = 11L,
-    age_range       = "adults with moderate-to-severe COPD; specific age ranges per study not tabulated in Renard 2011 Table 1",
-    disease_state   = "moderate-to-severe chronic obstructive pulmonary disease (COPD), GOLD 2007 classification",
-    dose_range      = "indacaterol 18.75-600 ug once daily",
-    regimens        = "once-daily inhaled indacaterol via single-dose dry-powder inhaler",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "predominantly Caucasian (>88 percent in the patient-level subset, per Renard 2011 Methods); one trial in Asian patients (Renard 2011 Table 1 footnote *)",
-    regions         = "International; 11 placebo-controlled trials including parallel-group and cross-over designs of 2 to 52 week duration",
-    comparators     = "Three active comparators were collected in the pooled dataset for benchmarking against indacaterol (not part of this nlmixr2lib structural model): formoterol 12 ug bid, salmeterol 50 ug bid, and tiotropium 18 ug qd. The Renard 2011 supplement gives the comparator structural form (FOR_ij*mu_F + SAL_ij*(mu_S + gamma_Si) + TIO_ij*mu_T) but no posterior numerical estimates for mu_F, mu_S, mu_T, or sigma_S,A, so the comparator arm is omitted here.",
-    notes           = "MBMA at the study-arm level: each modelled data point is a least-squares-mean contrast-to-placebo for trough FEV1 (mL) at a steady-state study visit between Week 2 and Month 6. The original Bayesian analysis (WinBUGS 1.4.3 from R 2.10.1 via R2WinBUGS, three Markov chains of 32,000 iterations with thinning 10 and burn-in 2,000) used SE_ijk taken from the upstream per-study LSM analyses as known/fixed within-arm noise (the SE_ijk are not reported here) and included between-study (delta_i, SD sigma_m,T) and between-arm-within-study (gamma_ij, SD sigma_m,A) random effects on Emax with unif(0, 0.25) priors. The paper reports only the structural Emax and ED50 posterior means and the dose-effect percentages in Table 2; the random-effect SD posteriors, comparator mean effects, and a per-observation residual sigma are not reported. This model encodes the indacaterol-only structural Emax curve with between-study and between-arm variances fixed to zero following the Vargo 2014 MBMA precedent; the residual addSd is derived from the paper's published +/-60 mL 95 percent prediction interval (Results, page 7). See the vignette's Assumptions and deviations section for the full list of source gaps and design choices. Patient-level NLME analysis on the subset (1,835 patients, two dose-ranging studies B2335S and B2356) confirmed similar typical-curve estimates (Emax = 185 mL, ED50 = 19 ug) and identified baseline FEV1 as the dominant covariate, but the patient-level covariate coefficients, IIV magnitudes, and residual error were not reported and that submodel is not extracted here."
+    species = "human",
+    n_subjects = 7476L,
+    n_studies = 11L,
+    age_range = "adults with moderate-to-severe COPD; specific age ranges per study not tabulated in Renard 2011 Table 1",
+    disease_state = "moderate-to-severe chronic obstructive pulmonary disease (COPD), GOLD 2007 classification",
+    dose_range = "indacaterol 18.75-600 ug once daily",
+    regimens = "once-daily inhaled indacaterol via single-dose dry-powder inhaler",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "predominantly Caucasian (>88 percent in the patient-level subset, per Renard 2011 Methods); one trial in Asian patients (Renard 2011 Table 1 footnote *)",
+    regions = "International; 11 placebo-controlled trials including parallel-group and cross-over designs of 2 to 52 week duration",
+    comparators = "Three active comparators were collected in the pooled dataset for benchmarking against indacaterol (not part of this nlmixr2lib structural model): formoterol 12 ug bid, salmeterol 50 ug bid, and tiotropium 18 ug qd. The Renard 2011 supplement gives the comparator structural form (FOR_ij*mu_F + SAL_ij*(mu_S + gamma_Si) + TIO_ij*mu_T) but no posterior numerical estimates for mu_F, mu_S, mu_T, or sigma_S,A, so the comparator arm is omitted here.",
+    notes = "MBMA at the study-arm level: each modelled data point is a least-squares-mean contrast-to-placebo for trough FEV1 (mL) at a steady-state study visit between Week 2 and Month 6. The original Bayesian analysis (WinBUGS 1.4.3 from R 2.10.1 via R2WinBUGS, three Markov chains of 32,000 iterations with thinning 10 and burn-in 2,000) used SE_ijk taken from the upstream per-study LSM analyses as known/fixed within-arm noise (the SE_ijk are not reported here) and included between-study (delta_i, SD sigma_m,T) and between-arm-within-study (gamma_ij, SD sigma_m,A) random effects on Emax with unif(0, 0.25) priors. The paper reports only the structural Emax and ED50 posterior means and the dose-effect percentages in Table 2; the random-effect SD posteriors, comparator mean effects, and a per-observation residual sigma are not reported. This model encodes the indacaterol-only structural Emax curve with between-study and between-arm variances fixed to zero following the Vargo 2014 MBMA precedent; the residual addSd is derived from the paper's published +/-60 mL 95 percent prediction interval (Results, page 7). See the vignette's Assumptions and deviations section for the full list of source gaps and design choices. Patient-level NLME analysis on the subset (1,835 patients, two dose-ranging studies B2335S and B2356) confirmed similar typical-curve estimates (Emax = 185 mL, ED50 = 19 ug) and identified baseline FEV1 as the dominant covariate, but the patient-level covariate coefficients, IIV magnitudes, and residual error were not reported and that submodel is not extracted here."
   )
 
   ini({

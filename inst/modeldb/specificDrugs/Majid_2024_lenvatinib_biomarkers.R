@@ -16,73 +16,73 @@ Majid_2024_lenvatinib_biomarkers <- function() {
   vignette <- "Majid_2024_lenvatinib"
   paper_specific_compartments <- c("tie2", "ang2", "fgf23")
   units <- list(
-    time          = "h",
-    dosing        = "n/a (no drug-dosing events; lenvatinib exposure enters as the AUC_LEN covariate, not via a PK ODE)",
+    time = "h",
+    dosing = "n/a (no drug-dosing events; lenvatinib exposure enters as the AUC_LEN covariate, not via a PK ODE)",
     concentration = "ng/mL (serum biomarker concentration)"
   )
 
   covariateData <- list(
     AUC_LEN = list(
-      description        = "Lenvatinib steady-state daily AUC at the time of the biomarker assessment, driving the sigmoid Emax drug effect on every biomarker turnover pool.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Lenvatinib steady-state daily AUC at the time of the biomarker assessment, driving the sigmoid Emax drug effect on every biomarker turnover pool.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, step-wise: held constant between assessments and updated when the dose level changes. In the source sequential fit the value is carried as the NONMEM data column LENAUC, computed in the upstream population PK run (Text S1 $PK) as AUC = 1000 * F1 * DGRP / CL, i.e. 1000 x relative bioavailability x current daily dose (mg) divided by the individual apparent clearance (L/h). Set to 0 for placebo subjects and off-treatment periods, which makes the drug-effect term vanish exactly and leaves only the linear disease-progression model -- the behaviour the paper describes for the placebo arm. Records with LENAUC > 10000 ng*h/mL were excluded from the source fit (Text S2 $DATA IGNORE).",
-      source_name        = "LENAUC"
+      notes = "Time-varying, step-wise: held constant between assessments and updated when the dose level changes. In the source sequential fit the value is carried as the NONMEM data column LENAUC, computed in the upstream population PK run (Text S1 $PK) as AUC = 1000 * F1 * DGRP / CL, i.e. 1000 x relative bioavailability x current daily dose (mg) divided by the individual apparent clearance (L/h). Set to 0 for placebo subjects and off-treatment periods, which makes the drug-effect term vanish exactly and leaves only the linear disease-progression model -- the behaviour the paper describes for the placebo arm. Records with LENAUC > 10000 ng*h/mL were excluded from the source fit (Text S2 $DATA IGNORE).",
+      source_name = "LENAUC"
     )
   )
 
   compartmentData <- list(
     vegf = list(
-      analyte  = "vascular endothelial growth factor (VEGF)",
-      units    = "ng/mL",
+      analyte = "vascular endothelial growth factor (VEGF)",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     ),
     tie2 = list(
-      analyte  = "soluble TEK tyrosine kinase 2 (Tie-2)",
-      units    = "ng/mL",
+      analyte = "soluble TEK tyrosine kinase 2 (Tie-2)",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     ),
     ang2 = list(
-      analyte  = "angiopoietin 2 (Ang-2)",
-      units    = "ng/mL",
+      analyte = "angiopoietin 2 (Ang-2)",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     ),
     fgf23 = list(
-      analyte  = "fibroblast growth factor 23 (FGF-23)",
-      units    = "ng/mL",
+      analyte = "fibroblast growth factor 23 (FGF-23)",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 560L,
-    n_studies      = 2L,
-    age_range      = "not reported as a range; 300 of 560 subjects (54 percent) were < 65 years and 260 (46 percent) were >= 65 years (Table S2)",
-    weight_range   = "31.0-190.0 kg",
-    weight_median  = "75.1 kg",
+    species = "human",
+    n_subjects = 560L,
+    n_studies = 2L,
+    age_range = "not reported as a range; 300 of 560 subjects (54 percent) were < 65 years and 260 (46 percent) were >= 65 years (Table S2)",
+    weight_range = "31.0-190.0 kg",
+    weight_median = "75.1 kg",
     sex_female_pct = 48.8,
     race_ethnicity = c(
-      White                          = 74.1,
-      Other_Asian                    = 9.3,
-      Japanese                       = 7.3,
-      Missing                        = 4.8,
-      Black_African_American         = 2.1,
-      Others                         = 2.0,
-      Chinese                        = 0.2,
-      Asian_not_Japanese_or_Chinese  = 0.2
+      White = 74.1,
+      Other_Asian = 9.3,
+      Japanese = 7.3,
+      Missing = 4.8,
+      Black_African_American = 2.1,
+      Others = 2.0,
+      Chinese = 0.2,
+      Asian_not_Japanese_or_Chinese = 0.2
     ),
-    disease_state  = "Radioiodine-refractory differentiated thyroid cancer (RR-DTC).",
-    dose_range     = "Lenvatinib 18 or 24 mg orally once daily starting dose, with protocol-driven reductions to 20, 14, 10, 8 or 4 mg for grade 2-4 adverse events; 131 of 560 subjects received placebo.",
-    regions        = "Multicenter: phase 3 study E7080-G000-303 and phase 2 post-marketing study E7080-G000-211.",
+    disease_state = "Radioiodine-refractory differentiated thyroid cancer (RR-DTC).",
+    dose_range = "Lenvatinib 18 or 24 mg orally once daily starting dose, with protocol-driven reductions to 20, 14, 10, 8 or 4 mg for grade 2-4 adverse events; 131 of 560 subjects received placebo.",
+    regions = "Multicenter: phase 3 study E7080-G000-303 and phase 2 post-marketing study E7080-G000-211.",
     n_observations = "5132 biomarker observations from 560 RR-DTC patients.",
-    biomarkers     = "Serum VEGF, soluble Tie-2, Ang-2 and FGF-23 by ELISA (R&D Systems DVE00, DTE200, DANG20; Kainos CY-4000 for FGF-23; an in-house Eisai ELISA for Ang-2 in study 211). Baseline medians: VEGF 0.42, Ang-2 3.21, Tie-2 15.11, FGF-23 0.100 ng/mL (Table S2). Thyroglobulin and thyroid stimulating hormone were measured but not modelled because of extreme variability.",
-    notes          = "Demographics from Majid 2024 Table S2 (biomarkers PK/PD population, N = 560; baseline FGF-23 available for 541). Sex 287 male / 273 female gives 48.8 percent female. Race percentages computed from the Table S2 overall counts over N = 560. The paper's Results text quotes 560 patients for the biomarker dataset while the abstract quotes 558 patients for the tumor dataset."
+    biomarkers = "Serum VEGF, soluble Tie-2, Ang-2 and FGF-23 by ELISA (R&D Systems DVE00, DTE200, DANG20; Kainos CY-4000 for FGF-23; an in-house Eisai ELISA for Ang-2 in study 211). Baseline medians: VEGF 0.42, Ang-2 3.21, Tie-2 15.11, FGF-23 0.100 ng/mL (Table S2). Thyroglobulin and thyroid stimulating hormone were measured but not modelled because of extreme variability.",
+    notes = "Demographics from Majid 2024 Table S2 (biomarkers PK/PD population, N = 560; baseline FGF-23 available for 541). Sex 287 male / 273 female gives 48.8 percent female. Race percentages computed from the Table S2 overall counts over N = 560. The paper's Results text quotes 560 patients for the biomarker dataset while the abstract quotes 558 patients for the tumor dataset."
   )
 
   ini({

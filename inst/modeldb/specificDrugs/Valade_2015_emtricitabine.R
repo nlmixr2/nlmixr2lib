@@ -9,66 +9,66 @@ Valade_2015_emtricitabine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "emtricitabine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "emtricitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "emtricitabine", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "emtricitabine", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 113 mL/min (population median, Valade 2015 Table 1). Applied as a power-scaling covariate on CL/F: CL/F = 14.8 * (CRCL / 113)^0.178.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 113 mL/min (population median, Valade 2015 Table 1). Applied as a power-scaling covariate on CL/F: CL/F = 14.8 * (CRCL / 113)^0.178.",
+      source_name = "CLCR"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested as a continuous covariate on CL/F, Vc/F, Q/F, Vp/F, k1e, and ke1 (Valade 2015 Methods; equation `param = theta * (CO / median_CO)^beta_CO`). Not retained in the final model: after inclusion of CRCL on CL/F, no further covariate decreased OFV by >= 3.84 (Results, paragraph following Table 2)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested as a continuous covariate on CL/F, Vc/F, Q/F, Vp/F, k1e, and ke1 (Valade 2015 Methods; equation `param = theta * (CO / median_CO)^beta_CO`). Not retained in the final model: after inclusion of CRCL on CL/F, no further covariate decreased OFV by >= 3.84 (Results, paragraph following Table 2)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested as a continuous covariate on CL/F, Vc/F, Q/F, Vp/F, k1e, and ke1 (Valade 2015 Methods). Not retained in the final model (Results)."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested as a continuous covariate on CL/F, Vc/F, Q/F, Vp/F, k1e, and ke1 (Valade 2015 Methods). Not retained in the final model (Results)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested as a continuous covariate on FTC PK parameters (Valade 2015 Methods). Not retained in the final model; CRCL (Cockcroft-Gault) was retained instead on CL/F (Results)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested as a continuous covariate on FTC PK parameters (Valade 2015 Methods). Not retained in the final model; CRCL (Cockcroft-Gault) was retained instead on CL/F (Results)."
     ),
     CONMED_ARV = list(
       description = "Associated antiretroviral drug regimen (binary indicators for EFV, NVP, ETR, RAL, DRV/r, ATZ/r, LPV/r, IP/r, other combination)",
-      units       = "(binary set)",
-      type        = "categorical",
-      notes       = "Binary co-medication covariates tested per the equation `param = theta * beta_CO^CO` (Valade 2015 Methods). None retained in the final model; in particular, no co-medication explained the IIV on k1e (Results paragraph on FTC distribution variability)."
+      units = "(binary set)",
+      type = "categorical",
+      notes = "Binary co-medication covariates tested per the equation `param = theta * beta_CO^CO` (Valade 2015 Methods). None retained in the final model; in particular, no co-medication explained the IIV on k1e (Results paragraph on FTC distribution variability)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 122L,
-    n_studies      = 1L,
-    age_range      = "27-63 years",
-    age_median     = "43 years",
-    weight_range   = "46-108 kg",
-    weight_median  = "73 kg",
+    species = "human",
+    n_subjects = 122L,
+    n_studies = 1L,
+    age_range = "27-63 years",
+    age_median = "43 years",
+    weight_range = "46-108 kg",
+    weight_median = "73 kg",
     sex_female_pct = 0,
     race_ethnicity = "Not reported (Paris-region MSM cohort recruited at 6 clinical centres)",
-    disease_state  = "HIV-1-infected men who have sex with men, stable combined antiretroviral therapy for >= 3 months, suppressed blood-plasma HIV RNA load (< 50 copies/mL) for >= 6 months",
-    dose_range     = "Daily 200 mg oral emtricitabine combined with tenofovir disoproxil fumarate (TDF) plus one of: EFV, NVP, ETR, RAL, DRV/r, ATZ/r, LPV/r, IP/r, or other combination",
-    regions        = "France (6 clinical centres in Paris and nearby suburbs: Hopital Hotel Dieu, Hopital Bichat, Hopital Bicetre, Hopital Foch, Hopital Saint-Louis, Hopital Lariboisiere)",
+    disease_state = "HIV-1-infected men who have sex with men, stable combined antiretroviral therapy for >= 3 months, suppressed blood-plasma HIV RNA load (< 50 copies/mL) for >= 6 months",
+    dose_range = "Daily 200 mg oral emtricitabine combined with tenofovir disoproxil fumarate (TDF) plus one of: EFV, NVP, ETR, RAL, DRV/r, ATZ/r, LPV/r, IP/r, or other combination",
+    regions = "France (6 clinical centres in Paris and nearby suburbs: Hopital Hotel Dieu, Hopital Bichat, Hopital Bicetre, Hopital Foch, Hopital Saint-Louis, Hopital Lariboisiere)",
     creatinine_range = "Serum creatinine median 78 umol/L (range 28-113); Cockcroft-Gault CrCl median 113 mL/min (range 67-368)",
-    n_observations   = "236 blood-plasma FTC concentrations + 209 seminal-plasma FTC concentrations at steady state; one BP concentration < LLOQ (0.00625 mg/L) was set to half-LLOQ (Valade 2015 Results).",
-    notes          = "EVARIST ANRS EP 49 study (Ghosn et al.). All-male cohort (HIV-1-infected MSM), so sex_female_pct is 0. Baseline demographics per Valade 2015 Table 1. Two visits per patient (inclusion and 1 month after) at varied time intervals between FTC intake and sampling."
+    n_observations = "236 blood-plasma FTC concentrations + 209 seminal-plasma FTC concentrations at steady state; one BP concentration < LLOQ (0.00625 mg/L) was set to half-LLOQ (Valade 2015 Results).",
+    notes = "EVARIST ANRS EP 49 study (Ghosn et al.). All-male cohort (HIV-1-infected MSM), so sex_female_pct is 0. Baseline demographics per Valade 2015 Table 1. Two visits per patient (inclusion and 1 month after) at varied time intervals between FTC intake and sampling."
   )
 
   ini({

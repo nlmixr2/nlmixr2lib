@@ -6,45 +6,45 @@ Steffens_2025_amikacin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Estimated by the Cockcroft-Gault equation in raw mL/min (Steffens 2025 Section 4.3), NOT BSA-normalized to mL/min/1.73 m^2. Stored under the canonical CRCL column per inst/references/covariate-columns.md, which admits raw mL/min when the source paper applies no BSA normalization; the same convention is used by the sibling amikacin model Delattre_2010_amikacin.R. Entered UNCENTERED on the log scale: log(CL) = log(1.49) + 0.004 * CRCL, so exp(lcl) is CL extrapolated to CRCL = 0 rather than CL at a typical patient. See the ini() comment on e_crcl_cl for the reconciliation that establishes the uncentered form. Population median 79.01 mL/min, range 12.97-517.97 (Steffens 2025 Table 1).",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Estimated by the Cockcroft-Gault equation in raw mL/min (Steffens 2025 Section 4.3), NOT BSA-normalized to mL/min/1.73 m^2. Stored under the canonical CRCL column per inst/references/covariate-columns.md, which admits raw mL/min when the source paper applies no BSA normalization; the same convention is used by the sibling amikacin model Delattre_2010_amikacin.R. Entered UNCENTERED on the log scale: log(CL) = log(1.49) + 0.004 * CRCL, so exp(lcl) is CL extrapolated to CRCL = 0 rather than CL at a typical patient. See the ini() comment on e_crcl_cl for the reconciliation that establishes the uncentered form. Population median 79.01 mL/min, range 12.97-517.97 (Steffens 2025 Table 1).",
+      source_name = "CLCR"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate by forward-inclusion / backward-elimination (Steffens 2025 Section 4.4.1) but NOT retained in the final model; only CRCL improved the fit (Steffens 2025 Section 2.2). Median 69.40 kg, range 15.60-143.80."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a continuous covariate by forward-inclusion / backward-elimination (Steffens 2025 Section 4.4.1) but NOT retained in the final model; only CRCL improved the fit (Steffens 2025 Section 2.2). Median 69.40 kg, range 15.60-143.80."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (Steffens 2025 Section 2.2). Median 51 years, range 4-75. The authors note likely collinearity between age and creatinine clearance (Steffens 2025 Discussion)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (Steffens 2025 Section 2.2). Median 51 years, range 4-75. The authors note likely collinearity between age and creatinine clearance (Steffens 2025 Discussion)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Steffens 2025 Section 2.2). Median 23.20 kg/m^2, range 10.60-50.70. The authors note likely collinearity between weight and BMI (Steffens 2025 Discussion)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Steffens 2025 Section 2.2). Median 23.20 kg/m^2, range 10.60-50.70. The authors note likely collinearity between weight and BMI (Steffens 2025 Discussion)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened as a categorical covariate but not retained (Steffens 2025 Sections 2.2 and 4.4.1). 6 of 39 patients (15.4%) were female."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened as a categorical covariate but not retained (Steffens 2025 Sections 2.2 and 4.4.1). 6 of 39 patients (15.4%) were female."
     ),
     DIALYSIS = list(
       description = "Dialysis status indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened as a categorical covariate but not retained (Steffens 2025 Section 4.4.1). No per-patient counts are reported."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened as a categorical covariate but not retained (Steffens 2025 Section 4.4.1). No per-patient counts are reported."
     )
   )
 
@@ -53,20 +53,20 @@ Steffens_2025_amikacin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "4-75 years",
-    age_median     = "51 years",
-    weight_range   = "15.60-143.80 kg",
-    weight_median  = "69.40 kg",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "4-75 years",
+    age_median = "51 years",
+    weight_range = "15.60-143.80 kg",
+    weight_median = "69.40 kg",
     sex_female_pct = 15.4,
     race_ethnicity = "Not reported (Brazilian teaching-hospital population)",
-    disease_state  = "Critically and non-critically ill hospitalized patients treated with amikacin for at least three days for Gram-negative and multidrug-resistant infections; most commonly Klebsiella pneumoniae (n = 20) and Pseudomonas aeruginosa (n = 7)",
-    dose_range     = "225-1500 mg amikacin IV, administered every 12, 24, 48 or 72 h; most common regimen 1000 mg q24h (n = 15, 35.7%)",
-    regions        = "Brazil (Hospital Universitario de Santa Maria, Rio Grande do Sul)",
+    disease_state = "Critically and non-critically ill hospitalized patients treated with amikacin for at least three days for Gram-negative and multidrug-resistant infections; most commonly Klebsiella pneumoniae (n = 20) and Pseudomonas aeruginosa (n = 7)",
+    dose_range = "225-1500 mg amikacin IV, administered every 12, 24, 48 or 72 h; most common regimen 1000 mg q24h (n = 15, 35.7%)",
+    regions = "Brazil (Hospital Universitario de Santa Maria, Rio Grande do Sul)",
     renal_function = "Cockcroft-Gault creatinine clearance median 79.01 mL/min (range 12.97-517.97), raw mL/min and not BSA-normalized; 7 patients below 30 mL/min and 10 above 120 mL/min",
-    notes          = "Baseline demographics per Steffens 2025 Table 1. Single-center prospective observational study, May 2018 - February 2020; 43 patients enrolled and 4 excluded for inappropriate collection time or missing data. Cohort is predominantly adult (28 adults, 9 elderly) but includes 2 pediatric patients, so the age range extends to 4 years. Burns, pregnancy and refusal of consent were exclusion criteria. A total of 113 amikacin concentrations (53 peak, 60 trough; 2-6 samples per subject) were collected by non-routine therapeutic drug monitoring at steady state after at least three days of therapy: trough 30 min before a dose and peak 30 min after the end of infusion. Mean +/- SD concentrations were 41.96 +/- 20.20 ug/mL (peak) and 8.75 +/- 15.38 ug/mL (trough). Fit in Monolix 2024R1 by SAEM; final estimates confirmed by a 500-sample nonparametric bootstrap."
+    notes = "Baseline demographics per Steffens 2025 Table 1. Single-center prospective observational study, May 2018 - February 2020; 43 patients enrolled and 4 excluded for inappropriate collection time or missing data. Cohort is predominantly adult (28 adults, 9 elderly) but includes 2 pediatric patients, so the age range extends to 4 years. Burns, pregnancy and refusal of consent were exclusion criteria. A total of 113 amikacin concentrations (53 peak, 60 trough; 2-6 samples per subject) were collected by non-routine therapeutic drug monitoring at steady state after at least three days of therapy: trough 30 min before a dose and peak 30 min after the end of infusion. Mean +/- SD concentrations were 41.96 +/- 20.20 ug/mL (peak) and 8.75 +/- 15.38 ug/mL (trough). Fit in Monolix 2024R1 by SAEM; final estimates confirmed by a 500-sample nonparametric bootstrap."
   )
 
   ini({

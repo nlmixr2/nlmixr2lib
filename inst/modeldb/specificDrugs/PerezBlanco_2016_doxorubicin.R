@@ -29,8 +29,8 @@ PerezBlanco_2016_doxorubicin <- function() {
   vignette <- "PerezBlanco_2016_doxorubicin"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -39,10 +39,10 @@ PerezBlanco_2016_doxorubicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central           = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2       = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
-    central_doxol     = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    central_doxol = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_doxol = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -50,114 +50,114 @@ PerezBlanco_2016_doxorubicin <- function() {
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age in years (mean 66, range 26-84).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age in years (mean 66, range 26-84).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the stepwise covariate model on PK parameters but not retained -- did not show a significant influence on DOX CL (Perez-Blanco 2016 Discussion). Tabulated in Table 1."
+      notes = "Screened in the stepwise covariate model on PK parameters but not retained -- did not show a significant influence on DOX CL (Perez-Blanco 2016 Discussion). Tabulated in Table 1."
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened on PK parameters but not retained. Cohort split 22F / 23M."
+      notes = "Screened on PK parameters but not retained. Cohort split 22F / 23M."
     ),
     WT = list(
-      description        = "Body weight in kg (mean 71, range 43-110).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight in kg (mean 71, range 43-110).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained. Standard allometric scaling on CL/V was not preserved in the final model -- the paper attributes the lack of WT effect to the high homogeneity of the adult NHL population."
+      notes = "Screened on PK parameters but not retained. Standard allometric scaling on CL/V was not preserved in the final model -- the paper attributes the lack of WT effect to the high homogeneity of the adult NHL population."
     ),
     HT = list(
-      description        = "Height in m (mean 1.64, range 1.43-1.92).",
-      units              = "m",
-      type               = "continuous",
+      description = "Height in m (mean 1.64, range 1.43-1.92).",
+      units = "m",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained."
+      notes = "Screened on PK parameters but not retained."
     ),
     BSA = list(
-      description        = "Body surface area in m^2 (mean 1.8, range 1.3-2.3).",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area in m^2 (mean 1.8, range 1.3-2.3).",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained. Used clinically for dose calculation (50 mg/m^2) but did not enter the structural model."
+      notes = "Screened on PK parameters but not retained. Used clinically for dose calculation (50 mg/m^2) but did not enter the structural model."
     ),
     BMI = list(
-      description        = "Body mass index in kg/m^2 (mean 26.5, range 19.9-37.6).",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index in kg/m^2 (mean 26.5, range 19.9-37.6).",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained."
+      notes = "Screened on PK parameters but not retained."
     ),
     LBW = list(
-      description        = "Lean body weight in kg (mean 47.9, range 28.7-69.5).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight in kg (mean 47.9, range 28.7-69.5).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed using the Janmahasatian formula; screened on PK parameters but not retained."
+      notes = "Computed using the Janmahasatian formula; screened on PK parameters but not retained."
     ),
     CLCR = list(
-      description        = "Creatinine clearance in mL/min (mean 91, range 40-201).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance in mL/min (mean 91, range 40-201).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated using the Cockcroft-Gault formula; screened on PK parameters but not retained."
+      notes = "Estimated using the Cockcroft-Gault formula; screened on PK parameters but not retained."
     ),
     AST = list(
-      description        = "Aspartate aminotransferase in IU/L (mean 25, range 12-64).",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase in IU/L (mean 25, range 12-64).",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested on CL and CLm; showed an influence on both, but the OFV decrease was not statistically significant and AST was not retained in the final model (Perez-Blanco 2016 Results, 'Final popPK model')."
+      notes = "Tested on CL and CLm; showed an influence on both, but the OFV decrease was not statistically significant and AST was not retained in the final model (Perez-Blanco 2016 Results, 'Final popPK model')."
     ),
     ALT = list(
-      description        = "Alanine aminotransferase in IU/L (mean 23, range 7-88).",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase in IU/L (mean 23, range 7-88).",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained."
+      notes = "Screened on PK parameters but not retained."
     ),
     TBILI = list(
-      description        = "Total bilirubin (source mean 0.44 mg/dL, range 0.10-0.70 mg/dL).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin (source mean 0.44 mg/dL, range 0.10-0.70 mg/dL).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested on CL and CLm; showed an influence on both, but the OFV decrease was not statistically significant and bilirubin was not retained in the final model. Renamed from the working covariate name BILI to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
-      source_alias       = "BILI (working column name prior to the 2026-06-19 canonical rename)"
+      notes = "Tested on CL and CLm; showed an influence on both, but the OFV decrease was not statistically significant and bilirubin was not retained in the final model. Renamed from the working covariate name BILI to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
+      source_alias = "BILI (working column name prior to the 2026-06-19 canonical rename)"
     ),
     ECOG = list(
-      description        = "Eastern Cooperative Oncology Group performance status.",
-      units              = "(ordinal)",
-      type               = "categorical",
+      description = "Eastern Cooperative Oncology Group performance status.",
+      units = "(ordinal)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained."
+      notes = "Screened on PK parameters but not retained."
     ),
     IPI = list(
-      description        = "International Prognostic Index for NHL.",
-      units              = "(ordinal)",
-      type               = "categorical",
+      description = "International Prognostic Index for NHL.",
+      units = "(ordinal)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened on PK parameters but not retained."
+      notes = "Screened on PK parameters but not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 2L,
     n_observations = "125 DOX and 120 DOXol plasma concentrations; one outlier subject (|CWRES| > 4) was removed from the final n = 44 fit.",
-    age_range      = "26-84 years (mean 66, SD 15; Table 1).",
-    weight_range   = "43-110 kg (mean 71, SD 12; Table 1).",
-    height_range   = "1.43-1.92 m (mean 1.64; Table 1).",
-    bsa_range      = "1.3-2.3 m^2 (mean 1.8; Table 1).",
+    age_range = "26-84 years (mean 66, SD 15; Table 1).",
+    weight_range = "43-110 kg (mean 71, SD 12; Table 1).",
+    height_range = "1.43-1.92 m (mean 1.64; Table 1).",
+    bsa_range = "1.3-2.3 m^2 (mean 1.8; Table 1).",
     sex_female_pct = 48.9,
     race_ethnicity = c(White = 100),
-    disease_state  = "Adults with non-Hodgkin's lymphoma (diffuse large B-cell lymphoma n = 36, Burkitt-like lymphoma n = 2, follicular lymphoma n = 2, other n = 5) receiving R-CHOP every 21 days for six cycles. All patients had normal hepatic, renal, and cardiac function.",
-    dose_range     = "Doxorubicin 50 mg/m^2 protocol; administered as a 0.5-h IV infusion (range 0.2-1.3 h; Table 1). Per-subject dose 53-130 mg (mean 89 mg).",
-    regions        = "Six Spanish hospitals; 30 patients from the University Hospital of Salamanca, 15 patients from the GEL-R-COMP-2013 multi-centre trial (NCT02012088).",
-    notes          = "Sparse PK sampling at 0, 30, 90 and 180 min after the end of the DOX infusion, selected by D-optimal design in WinNonlin 5.3. UHPLC-fluorescence assay with DOX LLOQ 8 ng/mL and DOXol LLOQ 3 ng/mL. Population PK fit in NONMEM 7.3 with FOCE, supported by PsN 4.4.0 and Xpose 4.5.0. Patients treated between June 2009 and June 2015."
+    disease_state = "Adults with non-Hodgkin's lymphoma (diffuse large B-cell lymphoma n = 36, Burkitt-like lymphoma n = 2, follicular lymphoma n = 2, other n = 5) receiving R-CHOP every 21 days for six cycles. All patients had normal hepatic, renal, and cardiac function.",
+    dose_range = "Doxorubicin 50 mg/m^2 protocol; administered as a 0.5-h IV infusion (range 0.2-1.3 h; Table 1). Per-subject dose 53-130 mg (mean 89 mg).",
+    regions = "Six Spanish hospitals; 30 patients from the University Hospital of Salamanca, 15 patients from the GEL-R-COMP-2013 multi-centre trial (NCT02012088).",
+    notes = "Sparse PK sampling at 0, 30, 90 and 180 min after the end of the DOX infusion, selected by D-optimal design in WinNonlin 5.3. UHPLC-fluorescence assay with DOX LLOQ 8 ng/mL and DOXol LLOQ 3 ng/mL. Population PK fit in NONMEM 7.3 with FOCE, supported by PsN 4.4.0 and Xpose 4.5.0. Patients treated between June 2009 and June 2015."
   )
 
   ini({

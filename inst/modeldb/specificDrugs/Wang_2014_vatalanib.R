@@ -8,7 +8,7 @@ Wang_2014_vatalanib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "vatalanib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "vatalanib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "vatalanib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -17,81 +17,81 @@ Wang_2014_vatalanib <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Actual body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL_induced/F and on Vd/F; not retained (Wang 2014 Results 'Model development': 'none of the covariate effects was significant after the stepwise covariate model-building process'). Cohort median 80 kg (range 48-128)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL_induced/F and on Vd/F; not retained (Wang 2014 Results 'Model development': 'none of the covariate effects was significant after the stepwise covariate model-building process'). Cohort median 80 kg (range 48-128)."
     ),
     IBW = list(
       description = "Ideal body weight (calculated using a standard equation)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL_induced/F; not retained. Wang 2014 Methods 'Covariate model development': 'Ideal bodyweight and dosing weight were calculated using standard equations.'"
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL_induced/F; not retained. Wang 2014 Methods 'Covariate model development': 'Ideal bodyweight and dosing weight were calculated using standard equations.'"
     ),
     DOSEWT = list(
       description = "Dosing weight (calculated using a standard equation)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL_induced/F; not retained. Wang 2014 Methods 'Covariate model development'."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL_induced/F; not retained. Wang 2014 Methods 'Covariate model development'."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Patient demographic characteristic assessed during covariate screening (Wang 2014 Methods 'Covariate model development'); cohort median 170 cm (range 149-193). Not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Patient demographic characteristic assessed during covariate screening (Wang 2014 Methods 'Covariate model development'); cohort median 170 cm (range 149-193). Not retained."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Patient demographic characteristic assessed during covariate screening. Highly correlated with body weight; selected against based on physiological plausibility per Wang 2014 Methods. Cohort median 1.91 m^2 (range 1.46-2.46). Not retained."
+      units = "m^2",
+      type = "continuous",
+      notes = "Patient demographic characteristic assessed during covariate screening. Highly correlated with body weight; selected against based on physiological plausibility per Wang 2014 Methods. Cohort median 1.91 m^2 (range 1.46-2.46). Not retained."
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL_induced/F; not retained. 86 males / 51 females (62.8% / 37.2%) in the analysis cohort."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL_induced/F; not retained. 86 males / 51 females (62.8% / 37.2%) in the analysis cohort."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL_induced/F; not retained. Cohort median 70 years (range 20-91). Wang 2014 Discussion notes that the relatively narrow age range likely limited the power to detect a covariate effect."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL_induced/F; not retained. Cohort median 70 years (range 20-91). Wang 2014 Discussion notes that the relatively narrow age range likely limited the power to detect a covariate effect."
     ),
     RACE = list(
       description = "Race (Caucasian vs. Other)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Patient demographic characteristic assessed during covariate screening; not retained. 128 Caucasian / 9 Other (93.4% / 6.6%) in the analysis cohort."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Patient demographic characteristic assessed during covariate screening; not retained. 128 Caucasian / 9 Other (93.4% / 6.6%) in the analysis cohort."
     ),
     TBILI = list(
       description = "Total bilirubin (liver function test)",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened on CL_induced/F; not retained. Renamed from the working covariate name TBIL to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (cohort median 0.7 mg/dL, range 0.2-2.0; 1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened on CL_induced/F; not retained. Renamed from the working covariate name TBIL to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (cohort median 0.7 mg/dL, range 0.2-2.0; 1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
       source_alias = "TBIL (working column name prior to the 2026-06-19 canonical rename)"
     ),
     AST = list(
       description = "Aspartate aminotransferase (liver function test)",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened on CL_induced/F; not retained. Cohort median 23 IU/L (range 7-92)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened on CL_induced/F; not retained. Cohort median 23 IU/L (range 7-92)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 137L,
-    n_studies      = 1L,
-    age_range      = "20-91 years",
-    age_median     = "70 years",
-    weight_range   = "48-128 kg",
-    weight_median  = "80 kg",
+    species = "human",
+    n_subjects = 137L,
+    n_studies = 1L,
+    age_range = "20-91 years",
+    age_median = "70 years",
+    weight_range = "48-128 kg",
+    weight_median = "80 kg",
     sex_female_pct = 37.2,
     race_ethnicity = c(Caucasian = 93.4, Other = 6.6),
-    disease_state  = "Adult patients with primary or therapy-related (secondary) myelodysplastic syndrome (MDS) enrolled in the Cancer and Leukemia Group B (CALGB) 10105 study (Alliance), a multicentre open-label phase II study.",
-    dose_range     = "Oral vatalanib 750 or 1250 mg once daily in 28-day cycles; the protocol was amended after enrolment began to allow a 750 mg starting dose.",
-    regions        = "United States (multicentre Alliance / CALGB sites).",
-    notes          = "564 vatalanib plasma concentration measurements across 137 patients (Wang 2014 Results 'Database description', Table 1). Sampling clusters: 66.5% within 24 h of the first dose (predose, 15-45 min, 1-3 h, 4-6 h), 26.6% between days 7 and 14 (two samples at least 1 h apart), 6.9% on day 28 (pre-cycle-2 trough). Patients dosed on an empty stomach or at least 30 min after breakfast; grapefruit and grapefruit juice avoided. NONMEM 7.2 with FO estimation (FOCE failed). Final model: 1-compartment with lagged first-order absorption and first-order auto-induction of oral clearance."
+    disease_state = "Adult patients with primary or therapy-related (secondary) myelodysplastic syndrome (MDS) enrolled in the Cancer and Leukemia Group B (CALGB) 10105 study (Alliance), a multicentre open-label phase II study.",
+    dose_range = "Oral vatalanib 750 or 1250 mg once daily in 28-day cycles; the protocol was amended after enrolment began to allow a 750 mg starting dose.",
+    regions = "United States (multicentre Alliance / CALGB sites).",
+    notes = "564 vatalanib plasma concentration measurements across 137 patients (Wang 2014 Results 'Database description', Table 1). Sampling clusters: 66.5% within 24 h of the first dose (predose, 15-45 min, 1-3 h, 4-6 h), 26.6% between days 7 and 14 (two samples at least 1 h apart), 6.9% on day 28 (pre-cycle-2 trough). Patients dosed on an empty stomach or at least 30 min after breakfast; grapefruit and grapefruit juice avoided. NONMEM 7.2 with FO estimation (FOCE failed). Final model: 1-compartment with lagged first-order absorption and first-order auto-induction of oral clearance."
   )
 
   ini({

@@ -13,54 +13,54 @@ Wade_2008_fluconazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; missing weights carried forward up to 7 days per Wade 2008 Methods. Allometric scaling on CL (fixed exponent 0.75) and V (fixed exponent 1.0) with reference 1 kg (Wade 2008 Table 2 Base model row and abstract).",
-      source_name        = "WT"
+      notes = "Time-varying; missing weights carried forward up to 7 days per Wade 2008 Methods. Allometric scaling on CL (fixed exponent 0.75) and V (fixed exponent 1.0) with reference 1 kg (Wade 2008 Table 2 Base model row and abstract).",
+      source_name = "WT"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; Wade 2008 uses notation BGA. Power covariate on CL with reference 26 weeks (the cohort median).",
-      source_name        = "BGA"
+      notes = "Time-fixed per subject; Wade 2008 uses notation BGA. Power covariate on CL with reference 26 weeks (the cohort median).",
+      source_name = "BGA"
     ),
     PNA = list(
-      description        = "Postnatal age (time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Wade 2008 expresses PNA as weeks of life (day-of-life divided by 7) with reference 2 weeks; the canonical PNA carries months, so the reference is reparameterised inside model() as 2 * 7 / 30.4375 = 0.460 months (the conversion uses 30.4375 days/month per the Zhao 2018 PNA precedent). Cohort PNA at enrolment ranged from 0.14 to 12.6 weeks (Wade 2008 abstract).",
-      source_name        = "PNA"
+      notes = "Time-varying. Wade 2008 expresses PNA as weeks of life (day-of-life divided by 7) with reference 2 weeks; the canonical PNA carries months, so the reference is reparameterised inside model() as 2 * 7 / 30.4375 = 0.460 months (the conversion uses 30.4375 days/month per the Zhao 2018 PNA precedent). Cohort PNA at enrolment ranged from 0.14 to 12.6 weeks (Wade 2008 abstract).",
+      source_name = "PNA"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; Wade 2008 notation SCRT. Per Wade 2008 Methods, infants without a measured value were assumed to have SCR <= 1.0 mg/dL, and measured SCR > 1.0 mg/dL was carried forward for up to 7 days. Inside model() the dichotomous renal-impairment flag CR is derived from CREAT > 1, so values <= 1 (including imputed 1.0 for missing) make the SCR term collapse to 1.",
-      source_name        = "SCRT"
+      notes = "Time-varying; Wade 2008 notation SCRT. Per Wade 2008 Methods, infants without a measured value were assumed to have SCR <= 1.0 mg/dL, and measured SCR > 1.0 mg/dL was carried forward for up to 7 days. Inside model() the dichotomous renal-impairment flag CR is derived from CREAT > 1, so values <= 1 (including imputed 1.0 for missing) make the SCR term collapse to 1.",
+      source_name = "SCRT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 2L,
-    age_range      = "PNA at enrolment 1-88 days (cohort median 16 days); BGA 23-40 weeks",
-    age_median     = "PNA 16 days; BGA 26 weeks",
-    weight_range   = "0.451-7.125 kg (Wade 2008 Table 1)",
-    weight_median  = "1.020 kg (Wade 2008 Table 1)",
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 2L,
+    age_range = "PNA at enrolment 1-88 days (cohort median 16 days); BGA 23-40 weeks",
+    age_median = "PNA 16 days; BGA 26 weeks",
+    weight_range = "0.451-7.125 kg (Wade 2008 Table 1)",
+    weight_median = "1.020 kg (Wade 2008 Table 1)",
     sex_female_pct = 44,
     race_ethnicity = c(Caucasian = 50, Black = 40, Other = 10, Hispanic = 9),
-    disease_state  = "Preterm and term infants <120 days of age receiving intravenous fluconazole for prevention or treatment of invasive candidiasis (NICHD Pediatric Pharmacology Research Unit Network).",
-    dose_range     = "3-12 mg/kg/dose intravenous fluconazole (clinical-care dosing, not protocolised).",
-    regions        = "United States plus Helsinki, Finland (multicentre PPRU network).",
-    samples        = "357 plasma fluconazole observations (217 prospectively timed, 140 scavenged from discarded clinical specimens); median 6.5 samples per infant (range 1-16).",
-    notes          = "Demographics from Wade 2008 Table 1. Hispanic ethnicity overlaps with race categories (9% Hispanic of any race). The sex_female_pct value is computed as 100 - 56 (% male)."
+    disease_state = "Preterm and term infants <120 days of age receiving intravenous fluconazole for prevention or treatment of invasive candidiasis (NICHD Pediatric Pharmacology Research Unit Network).",
+    dose_range = "3-12 mg/kg/dose intravenous fluconazole (clinical-care dosing, not protocolised).",
+    regions = "United States plus Helsinki, Finland (multicentre PPRU network).",
+    samples = "357 plasma fluconazole observations (217 prospectively timed, 140 scavenged from discarded clinical specimens); median 6.5 samples per infant (range 1-16).",
+    notes = "Demographics from Wade 2008 Table 1. Hispanic ethnicity overlaps with race categories (9% Hispanic of any race). The sex_female_pct value is computed as 100 - 56 (% male)."
   )
 
   ini({

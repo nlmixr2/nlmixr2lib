@@ -37,34 +37,42 @@ Shen_2026_shikimicAcid_broiler_sod <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "shikimic acid", units = "ug", specimen = "administration site",
+      analyte = "shikimic acid",
+      units = "ug",
+      specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte = "shikimic acid", units = "ug", specimen = "plasma",
+      analyte = "shikimic acid",
+      units = "ug",
+      specimen = "plasma",
       verified = TRUE
     ),
     effect = list(
-      analyte = "shikimic acid", units = "ug/mL", specimen = "not applicable",
+      analyte = "shikimic acid",
+      units = "ug/mL",
+      specimen = "not applicable",
       verified = TRUE
     ),
     sod = list(
-      analyte = "superoxide dismutase (SOD) activity", units = "U/mL", specimen = "serum",
+      analyte = "superoxide dismutase (SOD) activity",
+      units = "U/mL",
+      specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species       = "chicken (yellow-feathered broiler)",
-    n_subjects    = 8,
-    n_studies     = 1,
-    age_median    = "5 weeks",
-    weight_range  = "mean initial body weight 1.98 +/- 0.11 kg (all 16 birds)",
-    sex           = "equal numbers of males and females",
+    species = "chicken (yellow-feathered broiler)",
+    n_subjects = 8,
+    n_studies = 1,
+    age_median = "5 weeks",
+    weight_range = "mean initial body weight 1.98 +/- 0.11 kg (all 16 birds)",
+    sex = "equal numbers of males and females",
     disease_state = "healthy broilers; no oxidative-stress challenge was applied",
-    dose_range    = "shikimic acid 50 mg/kg as a single oral (gavage) dose",
-    regions       = "China",
-    notes         = paste(
+    dose_range = "shikimic acid 50 mg/kg as a single oral (gavage) dose",
+    regions = "China",
+    notes = paste(
       "Shen 2026 'Animals' and 'Dosing and sample collection': sixteen healthy",
       "5-week-old yellow-feathered broilers, acclimated for 1 week, housed four",
       "per cage, fasted 12 h before dosing, randomised by SAS to an intravenous",

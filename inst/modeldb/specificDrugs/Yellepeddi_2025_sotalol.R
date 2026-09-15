@@ -41,8 +41,8 @@ Yellepeddi_2025_sotalol <- function() {
   vignette <- "Yellepeddi_2025_sotalol"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -52,18 +52,18 @@ Yellepeddi_2025_sotalol <- function() {
   # F1, central = plasma-sampled compartment scaled S2 = V2/1000, peripheral
   # = the distribution compartment scaled S3 = V3/1000).
   compartmentData <- list(
-    depot       = list(analyte = "sotalol", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "sotalol", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "sotalol", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sotalol", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "sotalol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (a single admission weight was recorded).",
         "Enters the central volume as the power term (WT / 104)^e_wt_vc.",
         "The reference 104 kg is the cohort median body weight",
@@ -77,18 +77,18 @@ Yellepeddi_2025_sotalol <- function() {
         "typical 70 kg reference, so supplying weights from a leaner",
         "population extrapolates below the observed range."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated with the Cockcroft-Gault formula",
         "and reported WITHOUT body-surface-area normalization, i.e. in raw",
         "mL/min, not mL/min/1.73 m^2."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; serum creatinine was required within 24 h",
         "prior to dosing (Yellepeddi 2025 Methods 2.1).",
         "SIZE NORMALIZATION - this model uses the raw un-normalized",
@@ -111,7 +111,7 @@ Yellepeddi_2025_sotalol <- function() {
         "even though sotalol labelling reduces the dose in renal",
         "impairment."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     )
   )
 
@@ -122,114 +122,114 @@ Yellepeddi_2025_sotalol <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at enrollment",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a power model on CL (Table S2 model 7, TVCL = theta1 * [Age/69]^theta2); delta OFV 0, not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a power model on CL (Table S2 model 7, TVCL = theta1 * [Age/69]^theta2); delta OFV 0, not retained."
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model on CL (Table S2 model 2); delta OFV 0, not retained. Cohort was 19 male / 3 female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model on CL (Table S2 model 2); delta OFV 0, not retained. Cohort was 19 male / 3 female."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Carried in the analysis dataset ($INPUT HTCM of Datafile S1) to compute body surface area; never tested as a covariate in its own right."
+      units = "cm",
+      type = "continuous",
+      notes = "Carried in the analysis dataset ($INPUT HTCM of Datafile S1) to compute body surface area; never tested as a covariate in its own right."
     ),
     BSA = list(
       description = "Body surface area (DuBois and DuBois)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Carried in the analysis dataset ($INPUT BSA) solely to normalize creatinine clearance; never tested as a covariate in its own right."
+      units = "m^2",
+      type = "continuous",
+      notes = "Carried in the analysis dataset ($INPUT BSA) solely to normalize creatinine clearance; never tested as a covariate in its own right."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Carried in the analysis dataset ($INPUT SCR) as the input to the Cockcroft-Gault calculation; the renal covariate that was tested is the derived CRCL, not SCR itself."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Carried in the analysis dataset ($INPUT SCR) as the input to the Cockcroft-Gault calculation; the renal covariate that was tested is the derived CRCL, not SCR itself."
     ),
     CRCL_BSA = list(
       description = "Body-surface-area-normalized creatinine clearance (1.73 x Cockcroft-Gault CrCl / BSA)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened as an alternative renal covariate on CL ($INPUT BSACRCL). 'Adding BSA-normalized CrCl on CL did not show any influence on the model' (Results 3.2); the raw mL/min CRCL was retained instead. Table 1 reports 87.9 +/- 32, median 75.3, range 59.6-188 mL/min/1.73 m^2."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened as an alternative renal covariate on CL ($INPUT BSACRCL). 'Adding BSA-normalized CrCl on CL did not show any influence on the model' (Results 3.2); the raw mL/min CRCL was retained instead. Table 1 reports 87.9 +/- 32, median 75.3, range 59.6-188 mL/min/1.73 m^2."
     ),
     POT = list(
       description = "Serum potassium",
-      units       = "mg/dL as reported by the source (Table 1); values 3.7-5 are on the mmol/L scale",
-      type        = "continuous",
-      notes       = "Carried in the analysis dataset ($INPUT Potassium); not reported as a tested covariate in Table S2. Table 1 reports 4.2 +/- 0.3, median 4.1, range 3.7-5."
+      units = "mg/dL as reported by the source (Table 1); values 3.7-5 are on the mmol/L scale",
+      type = "continuous",
+      notes = "Carried in the analysis dataset ($INPUT Potassium); not reported as a tested covariate in Table S2. Table 1 reports 4.2 +/- 0.3, median 4.1, range 3.7-5."
     ),
     MAGNESIUM = list(
       description = "Serum magnesium",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Carried in the analysis dataset ($INPUT Magnesium); not reported as a tested covariate in Table S2. Table 1 reports 2 +/- 0.2, median 2, range 1.7-2.5."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Carried in the analysis dataset ($INPUT Magnesium); not reported as a tested covariate in Table S2. Table 1 reports 2 +/- 0.2, median 2, range 1.7-2.5."
     ),
     CONMED_NSAID = list(
       description = "Concomitant non-steroidal anti-inflammatory drug use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model on CL (Table S2 model 3); delta OFV 0, not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model on CL (Table S2 model 3); delta OFV 0, not retained."
     ),
     CONMED_BETABLOCKER = list(
       description = "Concomitant beta-blocker use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model on CL (Table S2 model 5); delta OFV 0, not retained. 19 of 22 patients (86.4%) were on a beta-blocker."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model on CL (Table S2 model 5); delta OFV 0, not retained. 19 of 22 patients (86.4%) were on a beta-blocker."
     ),
     CONMED_CCB = list(
       description = "Concomitant calcium channel blocker use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model on CL (Table S2 model 6); delta OFV 0, not retained. 3 of 22 patients (13.6%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model on CL (Table S2 model 6); delta OFV 0, not retained. 3 of 22 patients (13.6%)."
     ),
     CONMED_ANTIPLATELET = list(
       description = "Concomitant antiplatelet agent use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed among the screened concomitant medications (Methods 2.5.2) and carried in the dataset ($INPUT Antiplatelet); not retained. 2 of 22 patients (9%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed among the screened concomitant medications (Methods 2.5.2) and carried in the dataset ($INPUT Antiplatelet); not retained. 2 of 22 patients (9%)."
     ),
     CONMED_ANTICOAGULANT = list(
       description = "Concomitant anticoagulant use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed among the screened concomitant medications (Methods 2.5.2) and carried in the dataset ($INPUT Anticoagulant); not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed among the screened concomitant medications (Methods 2.5.2) and carried in the dataset ($INPUT Anticoagulant); not retained."
     ),
     DIS_CHF = list(
       description = "History of heart failure indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model on CL (Table S2 model 4); delta OFV 0, not retained. 7 of 22 patients (31.8%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model on CL (Table S2 model 4); delta OFV 0, not retained. 7 of 22 patients (31.8%)."
     ),
     DIS_CAD = list(
       description = "History of coronary artery disease indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model on CL (Table S2 model 8); delta OFV 0, not retained. 12 of 22 patients (54.5%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model on CL (Table S2 model 8); delta OFV 0, not retained. 12 of 22 patients (54.5%)."
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Named in Methods 2.5.2 as a planned categorical covariate but not testable: 'Race was not included in the covariate analysis as all patients in the dataset were white' (20 of 22 white, 2 unknown)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Named in Methods 2.5.2 as a planned categorical covariate but not testable: 'Race was not included in the covariate analysis as all patients in the dataset were white' (20 of 22 white, 2 unknown)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 22L,
-    n_studies        = 1L,
-    n_observations   = 99L,
-    age_range        = "48-79 years",
-    age_median       = "69 years (mean 67.8 +/- 8.13)",
-    weight_range     = "68.7-185 kg",
-    weight_median    = "104 kg (mean 107 +/- 29.9)",
-    sex_female_pct   = 13.6,
-    race_ethnicity   = c(White = 91, Unknown = 9),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    n_observations = 99L,
+    age_range = "48-79 years",
+    age_median = "69 years (mean 67.8 +/- 8.13)",
+    weight_range = "68.7-185 kg",
+    weight_median = "104 kg (mean 107 +/- 29.9)",
+    sex_female_pct = 13.6,
+    race_ethnicity = c(White = 91, Unknown = 9),
+    disease_state = paste(
       "Adults (18 years or older) admitted primarily for intravenous",
       "sotalol loading -- initiation or dose titration -- to treat atrial",
       "fibrillation or atrial flutter, with no other planned procedure",
@@ -244,7 +244,7 @@ Yellepeddi_2025_sotalol <- function() {
       "dosing, 4 of 22 with baseline QRS above 120 ms, 7 with heart",
       "failure history, 12 with coronary artery disease history."
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "Cockcroft-Gault creatinine clearance 116 +/- 57.4 mL/min (median",
       "92.4, range 64.3-306); BSA-normalized 87.9 +/- 32 mL/min/1.73 m^2",
       "(median 75.3, range 59.6-188); serum creatinine 0.96 +/- 0.16",
@@ -252,7 +252,7 @@ Yellepeddi_2025_sotalol <- function() {
       "function (CrCl above 60 mL/min), so no patient with clinically",
       "significant renal impairment contributed data."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "One intravenous loading dose infused over 1 h, then at least a 4 h",
       "delay to the first oral dose and a 12 h delay to the second oral",
       "dose. IV doses 45.6-150 mg (median 92.3); oral doses 80 mg (50% of",
@@ -261,8 +261,8 @@ Yellepeddi_2025_sotalol <- function() {
       "oral). The parent PEAKS registry evaluated IV doses of 60-125 mg",
       "followed by two oral doses of 40-160 mg."
     ),
-    regions          = "United States; 10 academic, private and hybrid health systems.",
-    notes            = paste(
+    regions = "United States; 10 academic, private and hybrid health systems.",
+    notes = paste(
       "PK/PD substudy of the prospective PEAKS Registry (Prospective",
       "Evaluation Analysis and Kinetics of IV Sotalol), enrolled",
       "4 February 2022 to 13 June 2023; 210 screened, 167 in the parent",

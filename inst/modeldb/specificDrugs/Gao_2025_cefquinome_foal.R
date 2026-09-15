@@ -43,22 +43,22 @@ Gao_2025_cefquinome_foal <- function() {
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "cefquinome", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "cefquinome", units = "mg/kg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "cefquinome", units = "mg/kg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "horse (Ili foal)",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "7 months to 1 year",
-    weight_range   = "191 +/- 21.7 kg (mean +/- SD)",
-    disease_state  = "Healthy. Foals were acclimatised for 2 weeks, passed a fitness assessment (physical examination, heart rate, rectal temperature) and had received no medical treatment for at least 2 weeks before enrolment",
-    dose_range     = "Single 1 mg/kg dose of cefquinome sulphate injection, the label-recommended foal dose",
-    design         = "Two-phase crossover. Ten foals randomised to two groups of five; in phase 1 one group received 1 mg/kg intramuscularly in the cervical region and the other 1 mg/kg intravenously via the jugular vein, and after a 2-week washout the routes were reversed",
-    sampling       = "Left jugular vein blood at 0.083, 0.167, 0.25, 0.5, 0.75, 1, 2, 3, 6, 9, 12 and 24 h after dosing; serum assayed by HPLC with diode-array detection at 268 nm (LLOQ 0.01 ug/mL, LOD 0.005 ug/mL, linear 0.02-5 ug/mL, recovery >80%, CV <10%)",
-    regions        = "China (Zhaosu County, Yili, Xinjiang; animals supplied by Zhaosu County Xiyu Horse Industry Co., Ltd.)",
-    notes          = "Ethics approval XY20230322 (Animal Ethics Committee of Zhaosu County Xiyu Horse Industry Co., Ltd.); the study reports compliance with the ARRIVE guidelines. Gao 2025 Table 1 reports the non-compartmental results as mean +/- SD over the 10 foals. Intravenous: T1/2beta 2.35 +/- 0.38 h, AUC0-last 12.33 +/- 0.69 h*ug/mL, MRT0-last 2.67 +/- 0.13 h, CL 0.09 +/- 0.01 L/h/kg. Intramuscular: Cmax 0.89 +/- 0.14 ug/mL, Tmax 2.16 +/- 0.75 h, T1/2beta 4.16 +/- 0.21 h, AUC0-last 5.41 +/- 0.81 h*ug/mL, MRT0-last 4.92 +/- 0.15 h, CL 0.15 +/- 0.02 L/h/kg, F 43.86 +/- 5.62%. Although blood was drawn through 24 h, Figure 2 stops at 12 h, so the last quantifiable sample -- and hence the '0-last' window -- is 12 h; with a 2.35 h terminal half-life the 12-24 h contribution is below the 0.01 ug/mL limit of quantification and AUC0-last is numerically interchangeable with AUC0-24h. The intramuscular CL of 0.15 L/h/kg is an apparent CL/F, and is not mutually consistent with the intravenous CL of 0.09 L/h/kg and F of 43.86% (which imply CL/F = 0.205 L/h/kg); this is the usual mean-of-ratios versus ratio-of-means gap across separately averaged per-foal estimates and it propagates into the paper's dose equation, as discussed in the vignette Errata."
+    species = "horse (Ili foal)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "7 months to 1 year",
+    weight_range = "191 +/- 21.7 kg (mean +/- SD)",
+    disease_state = "Healthy. Foals were acclimatised for 2 weeks, passed a fitness assessment (physical examination, heart rate, rectal temperature) and had received no medical treatment for at least 2 weeks before enrolment",
+    dose_range = "Single 1 mg/kg dose of cefquinome sulphate injection, the label-recommended foal dose",
+    design = "Two-phase crossover. Ten foals randomised to two groups of five; in phase 1 one group received 1 mg/kg intramuscularly in the cervical region and the other 1 mg/kg intravenously via the jugular vein, and after a 2-week washout the routes were reversed",
+    sampling = "Left jugular vein blood at 0.083, 0.167, 0.25, 0.5, 0.75, 1, 2, 3, 6, 9, 12 and 24 h after dosing; serum assayed by HPLC with diode-array detection at 268 nm (LLOQ 0.01 ug/mL, LOD 0.005 ug/mL, linear 0.02-5 ug/mL, recovery >80%, CV <10%)",
+    regions = "China (Zhaosu County, Yili, Xinjiang; animals supplied by Zhaosu County Xiyu Horse Industry Co., Ltd.)",
+    notes = "Ethics approval XY20230322 (Animal Ethics Committee of Zhaosu County Xiyu Horse Industry Co., Ltd.); the study reports compliance with the ARRIVE guidelines. Gao 2025 Table 1 reports the non-compartmental results as mean +/- SD over the 10 foals. Intravenous: T1/2beta 2.35 +/- 0.38 h, AUC0-last 12.33 +/- 0.69 h*ug/mL, MRT0-last 2.67 +/- 0.13 h, CL 0.09 +/- 0.01 L/h/kg. Intramuscular: Cmax 0.89 +/- 0.14 ug/mL, Tmax 2.16 +/- 0.75 h, T1/2beta 4.16 +/- 0.21 h, AUC0-last 5.41 +/- 0.81 h*ug/mL, MRT0-last 4.92 +/- 0.15 h, CL 0.15 +/- 0.02 L/h/kg, F 43.86 +/- 5.62%. Although blood was drawn through 24 h, Figure 2 stops at 12 h, so the last quantifiable sample -- and hence the '0-last' window -- is 12 h; with a 2.35 h terminal half-life the 12-24 h contribution is below the 0.01 ug/mL limit of quantification and AUC0-last is numerically interchangeable with AUC0-24h. The intramuscular CL of 0.15 L/h/kg is an apparent CL/F, and is not mutually consistent with the intravenous CL of 0.09 L/h/kg and F of 43.86% (which imply CL/F = 0.205 L/h/kg); this is the usual mean-of-ratios versus ratio-of-means gap across separately averaged per-foal estimates and it propagates into the paper's dose equation, as discussed in the vignette Errata."
   )
 
   ini({

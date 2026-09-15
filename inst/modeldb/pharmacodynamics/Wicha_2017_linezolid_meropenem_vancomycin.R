@@ -2,7 +2,11 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
   description <- "In vitro (MSSA ATCC 29213). Semimechanistic time-kill pharmacodynamic model of linezolid, meropenem, and vancomycin against methicillin-susceptible Staphylococcus aureus. Bacterial life cycle has three states: growing (gro), replicating (repl), and persisting (pers). LZD inhibits the GRO->REP transition (bacteriostatic via krep) and induces a replication-independent killing rate kdeath_lzd on growing bacteria. MER and VAN, as cell wall-active antibiotics, impair successful doubling at the REP->GRO transition; the joint MER+VAN action is encoded as a modified Bliss-independence term that includes the paradoxical Eagle-effect self-inhibition of MER at high concentrations and the VAN Emax cap. Drug-unsusceptible persisters are generated during replication at rates kper_mer * E_MER and kper_van * E_VAN, then die at kdeath_per. An adaptive-resistance submodel (Tam 2005) inflates the effective EC50 of MER and of VAN over time via fractional ARon states; subinhibitory VAN concentrations inhibit the MER-adaption rate (monodirectional VAN-on-MER PD interaction). MER and VAN solution concentrations decay first-order due to chemical degradation in growth medium (rates fixed from HPLC measurement); LZD is stable. The model is in-vitro PD only -- there is no human PK component; drug exposures are static dosing at t = 0. Random effects (eta) are NOT present: the paper reports replicate-only experimental variability and uses an additive residual error on log10(CFU/mL)."
   reference <- "Wicha SG, Huisinga W, Kloft C. Translational pharmacometric evaluation of typical antibiotic broad-spectrum combination therapies against Staphylococcus aureus exploiting in vitro information. CPT Pharmacometrics Syst Pharmacol. 2017;6(8):512-522. doi:10.1002/psp4.12197."
   vignette <- "Wicha_2017_linezolid_meropenem_vancomycin"
-  units <- list(time = "h", dosing = "mg/L (initial concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug states)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (initial concentration)",
+    concentration = "log10 CFU/mL (observation); mg/L (drug states)"
+  )
 
   # The model has no covariates -- it is a typical-value in-vitro PD model with
   # static drug exposures. Drug initial concentrations are applied via dosing
@@ -17,33 +21,53 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
   # scheme; units are not derivable from its units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    lzd       = list(analyte = "linezolid", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    mer       = list(analyte = "meropenem", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    van       = list(analyte = "vancomycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    aroff_mer = list(analyte = "adaptive-resistance OFF subpopulation (meropenem)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    aron_mer  = list(analyte = "adaptive-resistance ON subpopulation (meropenem)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    aroff_van = list(analyte = "adaptive-resistance OFF subpopulation (vancomycin)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    aron_van  = list(analyte = "adaptive-resistance ON subpopulation (vancomycin)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    gro       = list(analyte = "growing bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    repl      = list(analyte = "replicating bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    pers      = list(analyte = "persister bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    lzd = list(analyte = "linezolid", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    mer = list(analyte = "meropenem", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    van = list(analyte = "vancomycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aroff_mer = list(
+      analyte = "adaptive-resistance OFF subpopulation (meropenem)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    aron_mer = list(
+      analyte = "adaptive-resistance ON subpopulation (meropenem)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    aroff_van = list(
+      analyte = "adaptive-resistance OFF subpopulation (vancomycin)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    aron_van = list(
+      analyte = "adaptive-resistance ON subpopulation (vancomycin)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    gro = list(analyte = "growing bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    repl = list(analyte = "replicating bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    pers = list(analyte = "persister bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species             = "in vitro (Staphylococcus aureus, ATCC 29213 reference strain)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Staphylococcus aureus ATCC 29213 (methicillin-susceptible reference strain); model also externally evaluated against clinical MSSA isolates MV13391 and MV13488",
-    system              = "Static time-kill experiments, 24-hour exposure, replicates >= 2 per concentration tier, dense sampling (>= 8 timepoints)",
-    medium              = "Cation-adjusted Mueller-Hinton broth (per Wicha 2015 upstream dataset, ref 6 in the paper)",
-    temperature         = "37 C (standard bacteriology incubation)",
-    duration            = "24 h",
-    mic_values          = c(LZD = "2.0 mg/L", MER = "0.125 mg/L", VAN = "1.0 mg/L"),
+    species = "in vitro (Staphylococcus aureus, ATCC 29213 reference strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Staphylococcus aureus ATCC 29213 (methicillin-susceptible reference strain); model also externally evaluated against clinical MSSA isolates MV13391 and MV13488",
+    system = "Static time-kill experiments, 24-hour exposure, replicates >= 2 per concentration tier, dense sampling (>= 8 timepoints)",
+    medium = "Cation-adjusted Mueller-Hinton broth (per Wicha 2015 upstream dataset, ref 6 in the paper)",
+    temperature = "37 C (standard bacteriology incubation)",
+    duration = "24 h",
+    mic_values = c(LZD = "2.0 mg/L", MER = "0.125 mg/L", VAN = "1.0 mg/L"),
     concentration_range = c(LZD = "0.5-32 mg/L", MER = "0.015-8 mg/L", VAN = "0.06-16 mg/L"),
-    regimens            = "Monotherapy of LZD, MER, or VAN; dual combinations of LZD+MER and VAN+MER spanning the clinically relevant concentration range; plus antibiotic-free growth controls.",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. n = 1,617 timed CFU data points were available for model building. Final fit reported additive residual variability on log10(CFU/mL) only -- no IIV / between-experiment etas were required. Bootstrap n = 1,198 was used for 95% CIs. See Wicha 2017 Table 1 footnote and Methods (page 2-3)."
+    regimens = "Monotherapy of LZD, MER, or VAN; dual combinations of LZD+MER and VAN+MER spanning the clinically relevant concentration range; plus antibiotic-free growth controls.",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. n = 1,617 timed CFU data points were available for model building. Final fit reported additive residual variability on log10(CFU/mL) only -- no IIV / between-experiment etas were required. Bootstrap n = 1,198 was used for 95% CIs. See Wicha 2017 Table 1 footnote and Methods (page 2-3)."
   )
 
   ini({

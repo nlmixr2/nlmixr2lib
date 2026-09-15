@@ -15,15 +15,45 @@ Campagne_2019_cyclophosphamide_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central            = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    ecf                = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "brain ISF", verified = FALSE),
-    central_4ohctx     = list(analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_4ohctx = list(analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    ecf_4ohctx         = list(analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)", units = "umol", specimen = "brain ISF", verified = FALSE),
-    central_cepm       = list(analyte = "carboxyethylphosphoramide mustard (CEPM)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_cepm   = list(analyte = "carboxyethylphosphoramide mustard (CEPM)", units = "umol", specimen = "plasma", verified = FALSE),
-    ecf_cepm           = list(analyte = "carboxyethylphosphoramide mustard (CEPM)", units = "umol", specimen = "brain ISF", verified = FALSE)
+    central = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    ecf = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "brain ISF", verified = FALSE),
+    central_4ohctx = list(
+      analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_4ohctx = list(
+      analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    ecf_4ohctx = list(
+      analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)",
+      units = "umol",
+      specimen = "brain ISF",
+      verified = FALSE
+    ),
+    central_cepm = list(
+      analyte = "carboxyethylphosphoramide mustard (CEPM)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_cepm = list(
+      analyte = "carboxyethylphosphoramide mustard (CEPM)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    ecf_cepm = list(
+      analyte = "carboxyethylphosphoramide mustard (CEPM)",
+      units = "umol",
+      specimen = "brain ISF",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
@@ -36,16 +66,16 @@ Campagne_2019_cyclophosphamide_mouse <- function() {
   )
 
   population <- list(
-    species        = "mouse (CD-1 nude, female)",
-    n_subjects     = 41L,
-    n_studies      = 5L,
+    species = "mouse (CD-1 nude, female)",
+    n_subjects = 41L,
+    n_studies = 5L,
     sex_female_pct = 100,
-    disease_state  = "Non-tumor-bearing (NTB) and orthotopic Group 3 medulloblastoma (G3MB, 1e5 luciferase-transduced cells stereotactically implanted) mouse model of pediatric medulloblastoma.",
-    dose_range     = "130 mg/kg cyclophosphamide IP single dose (498 umol/kg using MW = 261.09 g/mol).",
-    regions        = "USA (St. Jude Children's Research Hospital).",
+    disease_state = "Non-tumor-bearing (NTB) and orthotopic Group 3 medulloblastoma (G3MB, 1e5 luciferase-transduced cells stereotactically implanted) mouse model of pediatric medulloblastoma.",
+    dose_range = "130 mg/kg cyclophosphamide IP single dose (498 umol/kg using MW = 261.09 g/mol).",
+    regions = "USA (St. Jude Children's Research Hospital).",
     n_observations = "Plasma: 30 samples in the plasma-only study + 14 + 23 + 27 + 21 = 115 samples across the four microdialysis studies. ECF: 25 + 38 + 45 + 35 = 143 dialysate intervals across the four microdialysis studies; only the M3 (NTB, n=9) and M4 (G3MB, n=7) ECF data contributed to the final ECF fit (M1 and M2 ECF data were excluded because the derivatizing solution in the perfusate caused brain hemorrhage and probe-site contamination; see Results 'Impact of different methods to collect 4OH-CTX samples in ECF').",
-    cohorts        = "Plasma-only PK study: 12 NTB mice with sparse sampling at 5 min, 0.25, 0.5, 1, 1.5, 2, 4, 6 h. Microdialysis study M1: 5 NTB, derivatizing solution in perfusate (ECF excluded). M2: 8 G3MB, derivatizing solution in perfusate (ECF excluded). M3: 9 NTB, derivatizing solution in collection tubes. M4: 7 G3MB, derivatizing solution in collection tubes. Plasma sampling during microdialysis used a limited-sampling design at 0.25, 1, 2 h.",
-    notes          = "Plasma model parameters (Campagne 2019 Table 2 upper block) were estimated from pooled plasma data from all five studies; ECF model parameters (Table 2 lower block) from M3 + M4 ECF data fit simultaneously with each mouse's plasma posterior. Modelling in Monolix v2018R1 with SAEM; log-normal IIV, proportional residual error. Plasma protein binding (median FU): CTX 0.26, 4OH-CTX 0.39, CEPM 0.31 (Results 'Plasma protein binding studies'). Fraction-of-metabolite-formed Fm fixed to 1.0 for CTX -> 4OH-CTX and 4OH-CTX -> CEPM for identifiability (Results 'Plasma pharmacokinetics'); so the metabolite CL and V are apparent (CL/Fm and V/Fm). MW values for the dose-unit conversion: cyclophosphamide 261.09 g/mol, 4-hydroxy-cyclophosphamide 277.09 g/mol, carboxyethylphosphoramide mustard 293.08 g/mol -- but molar (1:1) conversion is preserved through the metabolic cascade in the model, so the same umol/kg amount carries through CTX, 4OH-CTX, and CEPM compartments without MW scaling."
+    cohorts = "Plasma-only PK study: 12 NTB mice with sparse sampling at 5 min, 0.25, 0.5, 1, 1.5, 2, 4, 6 h. Microdialysis study M1: 5 NTB, derivatizing solution in perfusate (ECF excluded). M2: 8 G3MB, derivatizing solution in perfusate (ECF excluded). M3: 9 NTB, derivatizing solution in collection tubes. M4: 7 G3MB, derivatizing solution in collection tubes. Plasma sampling during microdialysis used a limited-sampling design at 0.25, 1, 2 h.",
+    notes = "Plasma model parameters (Campagne 2019 Table 2 upper block) were estimated from pooled plasma data from all five studies; ECF model parameters (Table 2 lower block) from M3 + M4 ECF data fit simultaneously with each mouse's plasma posterior. Modelling in Monolix v2018R1 with SAEM; log-normal IIV, proportional residual error. Plasma protein binding (median FU): CTX 0.26, 4OH-CTX 0.39, CEPM 0.31 (Results 'Plasma protein binding studies'). Fraction-of-metabolite-formed Fm fixed to 1.0 for CTX -> 4OH-CTX and 4OH-CTX -> CEPM for identifiability (Results 'Plasma pharmacokinetics'); so the metabolite CL and V are apparent (CL/Fm and V/Fm). MW values for the dose-unit conversion: cyclophosphamide 261.09 g/mol, 4-hydroxy-cyclophosphamide 277.09 g/mol, carboxyethylphosphoramide mustard 293.08 g/mol -- but molar (1:1) conversion is preserved through the metabolic cascade in the model, so the same umol/kg amount carries through CTX, 4OH-CTX, and CEPM compartments without MW scaling."
   )
 
   ini({

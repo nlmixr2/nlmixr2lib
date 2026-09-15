@@ -38,16 +38,16 @@ Golabchifar_2014_imatinib <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 61L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 61L,
+    n_studies = 1L,
     n_observations = "533 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "17-67 years",
-    disease_state  = "Adults with chronic-phase chronic myeloid leukemia (CML)",
-    dose_range     = "Oral imatinib 300-800 mg total daily dose",
-    regions        = "Iran",
-    bioanalytical  = "HPLC, limit of quantification 62.5 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "17-67 years",
+    disease_state = "Adults with chronic-phase chronic myeloid leukemia (CML)",
+    dose_range = "Oral imatinib 300-800 mg total daily dose",
+    regions = "Iran",
+    bioanalytical = "HPLC, limit of quantification 62.5 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "With standard allometric scaling applied by Yang 2025, this model ",
       "was one of the two best overall performers on their external ",
       "dataset, meeting the bias criterion (median prediction error ",

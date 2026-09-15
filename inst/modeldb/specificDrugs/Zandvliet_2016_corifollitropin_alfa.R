@@ -40,18 +40,23 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "corifollitropin alfa", units = "ug", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "corifollitropin alfa", units = "ug", specimen = "plasma", verified = FALSE),
-    endo_fsh = list(analyte = "follicle-stimulating hormone (FSH)", units = "ug", specimen = "not applicable", verified = FALSE)
+    depot = list(analyte = "corifollitropin alfa", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "corifollitropin alfa", units = "ug", specimen = "plasma", verified = FALSE),
+    endo_fsh = list(
+      analyte = "follicle-stimulating hormone (FSH)",
+      units = "ug",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Subject baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Subject baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Allometric power scaling on apparent CL",
         "((WT/60)^1.20) and apparent V ((WT/60)^1.23) with reference",
         "weight 60 kg (Zandvliet 2016 Table 3 theta_12 and theta_13).",
@@ -60,14 +65,14 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
         "Cohort medians by trial range 54.0 to 68.8 kg",
         "(Table 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Subject baseline body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Subject baseline body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power scaling (BMI/23.3)^-0.245 on",
         "apparent bioavailability F",
         "(Zandvliet 2016 Table 3 theta_16; reference 23.3 kg/m^2 from",
@@ -76,14 +81,14 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
         "as ~14% higher dose-normalised exposure at BMI 18 vs 32",
         "(at matched body weight)."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Subject age in years.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power scaling (AGE/34)^-0.815 on the",
         "endogenous-FSH elimination rate KeFSH and",
         "(AGE/34)^0.423 on FSHbaseline",
@@ -92,14 +97,14 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
         "power form). AGE was not retained as a covariate on",
         "corifollitropin alfa CL, V, or F."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator (1 = Asian, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (1 = Asian, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; Caucasian is the typical-value reference category in the source model)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Two effects:",
         "(i) multiplicative factor 0.843 on apparent bioavailability F",
         "for Asian vs non-Asian",
@@ -111,34 +116,34 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
         "Cohort fractions ranged from 1.3% (phase II) to 45.1%",
         "(trial 107012 in Korea and Taiwan)."
       ),
-      source_name        = "ASIAN"
+      source_name = "ASIAN"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator (1 = Black, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator (1 = Black, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; Caucasian is the typical-value reference category in the source model)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Multiplicative factor 1.13 on apparent",
         "bioavailability F for Black vs non-Black",
         "(Zandvliet 2016 Table 3 theta_18; 13% higher exposure in Black",
         "subjects per Results / Race section).",
         "Cohort fractions ranged from 0.4% to 10%."
       ),
-      source_name        = "BLACK"
+      source_name = "BLACK"
     ),
     STUDY_06029 = list(
-      description        = paste(
+      description = paste(
         "Trial 06029 (NCT01144416) indicator.",
         "1 = subject is from trial 06029 of the Zandvliet 2016",
         "integrated population PK analysis (phase III multiple-cycles",
         "non-inferiority trial; single 150 ug SC dose per cycle);",
         "0 = otherwise."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-06029 trial)",
-      notes              = paste(
+      notes = paste(
         "Subject-level / time-fixed. Multiplicative factor 1.26 on the",
         "total FSH immunoreactivity prediction in trial 06029",
         "(Zandvliet 2016 Table 3 theta_14). The trial effect was",
@@ -148,20 +153,20 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
         "Default 0 for general simulation use; set to 1 only when",
         "replicating Zandvliet 2016 trial 06029."
       ),
-      source_name        = "STUD06029"
+      source_name = "STUD06029"
     ),
     STUDY_38825 = list(
-      description        = paste(
+      description = paste(
         "Trial 38825 (NCT00696878) indicator.",
         "1 = subject is from trial 38825 of the Zandvliet 2016",
         "integrated population PK analysis (phase III open-label",
         "uncontrolled repeated-cycle trial; up to 3 cycles of 150 ug",
         "SC corifollitropin alfa); 0 = otherwise."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-38825 trial)",
-      notes              = paste(
+      notes = paste(
         "Subject-level / time-fixed. Multiplicative factor 1.12 on the",
         "total FSH immunoreactivity prediction in trial 38825",
         "(Zandvliet 2016 Table 3 theta_15). The trial effect was",
@@ -171,23 +176,23 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
         "Default 0 for general simulation use; set to 1 only when",
         "replicating Zandvliet 2016 trial 38825."
       ),
-      source_name        = "STUD38825"
+      source_name = "STUD38825"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 2557L,
-    n_studies       = 5L,
-    age_range       = "phase II / III subjects undergoing controlled ovarian stimulation; cohort means 30.9 to 38.0 years (Table 2)",
-    weight_range    = "cohort means 54.0 to 68.8 kg; population range broadly 50-90 kg per Results / Body weight section (Table 2)",
-    sex_female_pct  = 100,
-    race_ethnicity  = c(Caucasian = 84.5, Asian = 8.0, Black = 4.8, Other = 2.7),
-    disease_state   = "Subfertility undergoing controlled ovarian stimulation in a GnRH antagonist protocol; switched to daily recombinant FSH (rFSH) from day 8 onwards.",
-    dose_range      = "Single SC injection of 60, 100, 120, 150, or 180 ug corifollitropin alfa (Table 1). Dose 100 ug for body weight <= 60 kg and 150 ug for body weight > 60 kg in women aged <= 36 years; 150 ug irrespective of body weight in women > 36 years.",
-    regions         = "Multinational (Europe, North America, Asia including Korea and Taiwan for trial 107012).",
-    n_observations  = "Serum corifollitropin alfa concentrations (DVID = 3) and total FSH immunoreactivity levels (DVID = 4) measured at trial-specific visit schedules (Table 1).",
-    notes           = paste(
+    species = "human",
+    n_subjects = 2557L,
+    n_studies = 5L,
+    age_range = "phase II / III subjects undergoing controlled ovarian stimulation; cohort means 30.9 to 38.0 years (Table 2)",
+    weight_range = "cohort means 54.0 to 68.8 kg; population range broadly 50-90 kg per Results / Body weight section (Table 2)",
+    sex_female_pct = 100,
+    race_ethnicity = c(Caucasian = 84.5, Asian = 8.0, Black = 4.8, Other = 2.7),
+    disease_state = "Subfertility undergoing controlled ovarian stimulation in a GnRH antagonist protocol; switched to daily recombinant FSH (rFSH) from day 8 onwards.",
+    dose_range = "Single SC injection of 60, 100, 120, 150, or 180 ug corifollitropin alfa (Table 1). Dose 100 ug for body weight <= 60 kg and 150 ug for body weight > 60 kg in women aged <= 36 years; 150 ug irrespective of body weight in women > 36 years.",
+    regions = "Multinational (Europe, North America, Asia including Korea and Taiwan for trial 107012).",
+    n_observations = "Serum corifollitropin alfa concentrations (DVID = 3) and total FSH immunoreactivity levels (DVID = 4) measured at trial-specific visit schedules (Table 1).",
+    notes = paste(
       "Demographics from Zandvliet 2016 Table 2 (per-trial dose groups).",
       "Race-fraction aggregates above are coarse weighted averages",
       "across trials and dose groups; per-trial distributions vary",

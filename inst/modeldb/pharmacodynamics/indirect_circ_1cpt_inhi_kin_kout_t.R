@@ -1,4 +1,4 @@
-indirect_circ_1cpt_inhi_kin_kout_t  <- function() {
+indirect_circ_1cpt_inhi_kin_kout_t <- function() {
   description <- "One compartment indirect response model with inhibition of kin and circadian kin_t."
   depends <- c("vc")
   reference <- "nlmixr2lib template"
@@ -8,9 +8,9 @@ indirect_circ_1cpt_inhi_kin_kout_t  <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
     central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "response", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "response", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   ini({

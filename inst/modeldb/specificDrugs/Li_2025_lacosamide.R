@@ -13,11 +13,11 @@ Li_2025_lacosamide <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters apparent clearance as a power function normalized to the cohort",
         "median of 30 kg: CL/F = 1.51 * (WT/30)^0.294 (Results Eq. 1; Table 2",
         "'Covariate model structure'). The 30 kg reference is the median body",
@@ -33,7 +33,7 @@ Li_2025_lacosamide <- function() {
         "subject; supply the weight in effect at the time of the dose.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
@@ -41,11 +41,11 @@ Li_2025_lacosamide <- function() {
   # here for provenance only; none is referenced in model().
   covariatesDataExcluded <- list(
     SNP_CYP2C19_RS12769205_GA = list(
-      description        = "CYP2C19*2 rs12769205 heterozygous GA genotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19*2 rs12769205 heterozygous GA genotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AA genotype), jointly with SNP_CYP2C19_RS12769205_GG = 0",
-      notes              = paste(
+      notes = paste(
         "DELIBERATELY excluded from Model I. Li 2025 built two final models for",
         "the two real-world clinical scenarios defined by genotype availability",
         "(Methods, 'Simulation of dosing regimen'): Model I uses body weight",
@@ -56,39 +56,39 @@ Li_2025_lacosamide <- function() {
         "intended use case, not a failed covariate screen.",
         sep = " "
       ),
-      source_name        = "rs12769205"
+      source_name = "rs12769205"
     ),
     SNP_CYP2C19_RS12769205_GG = list(
-      description        = "CYP2C19*2 rs12769205 homozygous GG genotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19*2 rs12769205 homozygous GG genotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AA genotype), jointly with SNP_CYP2C19_RS12769205_GA = 0",
-      notes              = paste(
+      notes = paste(
         "DELIBERATELY excluded from Model I; see the",
         "SNP_CYP2C19_RS12769205_GA notes and Li_2025_lacosamide_cyp2c19.R.",
         sep = " "
       ),
-      source_name        = "rs12769205"
+      source_name = "rs12769205"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened on CL/F with a proportional model (Supplementary Eq. 16) and",
         "rejected at forward inclusion: dOFV -0.173, p > 0.05 (Supplementary",
         "Table S4). Cohort was 52 of 133 female (Table 1).",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Listed among the demographics offered to covariate screening (Methods,",
         "'Covariate model') and not retained on any parameter. Median 7.5 years,",
         "range 1-18 years (Table 1). Age enters the model only indirectly,",
@@ -100,14 +100,14 @@ Li_2025_lacosamide <- function() {
         "Supplementary S.4.4), so the final model carries no maturation term.",
         sep = " "
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Three separate eGFR formulations were screened on CL/F -- Shull's",
         "creatinine equation and two cystatin-C equations (Supplementary",
         "Eqs. 18-20; Table 1 rows eGFR a/b/c) -- and all three were rejected at",
@@ -118,14 +118,14 @@ Li_2025_lacosamide <- function() {
         "elimination.",
         sep = " "
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     RBC = list(
-      description        = "Red blood cell (erythrocyte) count",
-      units              = "10^12/L",
-      type               = "continuous",
+      description = "Red blood cell (erythrocyte) count",
+      units = "10^12/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "One of five covariates that reached the forward-inclusion threshold on",
         "CL/F (dOFV > 3.84, p < 0.05) -- with sodium channel blockers, serum",
         "creatinine, potassium and mean corpuscular hemoglobin concentration --",
@@ -136,32 +136,32 @@ Li_2025_lacosamide <- function() {
         "Table S4 and listed in the vignette rather than enumerated here.",
         sep = " "
       ),
-      source_name        = "RBC"
+      source_name = "RBC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "lacosamide", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "lacosamide", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "lacosamide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 133,
-    n_observations   = 347,
-    n_studies        = 1,
-    age_range        = "1-18 years",
-    age_median       = "7.5 years",
-    weight_range     = "10-80 kg",
-    weight_median    = "30 kg",
-    sex_female_pct   = 39.1,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = "epilepsy diagnosed by ILAE criteria; focal or generalized seizures",
-    dose_range       = "oral tablet twice daily; per-dose 2.0-8 mg/kg in children under 50 kg and 75-200 mg in children 50 kg and over",
+    species = "human",
+    n_subjects = 133,
+    n_observations = 347,
+    n_studies = 1,
+    age_range = "1-18 years",
+    age_median = "7.5 years",
+    weight_range = "10-80 kg",
+    weight_median = "30 kg",
+    sex_female_pct = 39.1,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "epilepsy diagnosed by ILAE criteria; focal or generalized seizures",
+    dose_range = "oral tablet twice daily; per-dose 2.0-8 mg/kg in children under 50 kg and 75-200 mg in children 50 kg and over",
     concentration_range = "0.70-11.90 mg/L (steady-state trough)",
-    target_range     = "2-7 mg/L steady-state trough",
-    regions          = "China (single centre, Children's Hospital of Nanjing Medical University)",
-    notes            = paste(
+    target_range = "2-7 mg/L steady-state trough",
+    regions = "China (single centre, Children's Hospital of Nanjing Medical University)",
+    notes = paste(
       "Retrospective real-world therapeutic-drug-monitoring cohort collected",
       "between June 2021 and March 2023. 190 children contributing 493",
       "concentrations were randomly split 70/30 into a model-development group",

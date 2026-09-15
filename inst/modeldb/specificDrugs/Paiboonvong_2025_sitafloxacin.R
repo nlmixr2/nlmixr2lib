@@ -46,19 +46,19 @@ Paiboonvong_2025_sitafloxacin <- function() {
   # biological matrix. The control stream numbers these 1 = gut, 3 = transit,
   # 2 = blood, 4 = ELF; the canonical names below carry the same roles.
   compartmentData <- list(
-    depot    = list(analyte = "sitafloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "sitafloxacin", units = "mg", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "sitafloxacin", units = "mg", specimen = "administration site", verified = TRUE),
-    central  = list(analyte = "sitafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
-    elf      = list(analyte = "sitafloxacin", units = "mg", specimen = "epithelial lining fluid", verified = TRUE)
+    central = list(analyte = "sitafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
+    elf = list(analyte = "sitafloxacin", units = "mg", specimen = "epithelial lining fluid", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Added a priori as an allometric function on CL/F (exponent fixed to 0.75), V/F (exponent fixed to 1)",
         "and Q/F_ELF (exponent fixed to 0.75), normalized to the cohort MEDIAN weight of 52 kg rather than the",
         "usual 70 kg reference (Methods 2.2 'Body weight was added as an allometric function a priori'; Table 2",
@@ -67,14 +67,14 @@ Paiboonvong_2025_sitafloxacin <- function() {
         "comment ('Add allometric function on QELF'); Table 2 reports Q/F_ELF per 52 kg consistently with it.",
         "Observed range in the 12-patient cohort: median 52 kg, IQR 44-68 kg (Results 3.1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Enters relative bioavailability LINEARLY and centered",
         "on the cohort median age of 57 years: F = 1 + 0.0258 * (AGE - 57), i.e. every 1-year increase in age",
         "raises F by 2.58 percentage points of the reference value (Results 3.3; Data S1 Run59",
@@ -85,7 +85,7 @@ Paiboonvong_2025_sitafloxacin <- function() {
         "must not be extrapolated to children or young adults. NONMEM bounded THETA(8) to (-0.056, 0.032).",
         "Observed range in the cohort: median 57 years, IQR 40-65 years (Results 3.1)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
@@ -96,9 +96,9 @@ Paiboonvong_2025_sitafloxacin <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened for an effect on the PK parameters by forward selection / backward elimination and not",
         "retained (Methods 2.2; Results 3.3 reports only age as significant). Six of the 12 patients were male",
         "(Results 3.1). The dataset column is SEX with 0 = male and 1 = female (Data S1 Run56 $INPUT),",
@@ -108,9 +108,9 @@ Paiboonvong_2025_sitafloxacin <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance by the Cockcroft-Gault equation (raw, NOT BSA-normalized)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened and not retained. The authors flag this explicitly as a surprise, since creatinine clearance",
         "is a known covariate on sitafloxacin CL/F in non-critically-ill patients, and attribute the negative",
         "finding to the narrow renal-function range of the 12-patient cohort (66.7% mild-to-moderate impairment)",
@@ -121,9 +121,9 @@ Paiboonvong_2025_sitafloxacin <- function() {
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(score)",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous illness-severity covariate and not retained (Methods 2.2).",
         "Median 21, IQR 18-33 (Results 3.1)."
       ),
@@ -132,21 +132,21 @@ Paiboonvong_2025_sitafloxacin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_median     = "57 years (IQR 40-65)",
-    weight_median  = "52 kg (IQR 44-68)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_median = "57 years (IQR 40-65)",
+    weight_median = "52 kg (IQR 44-68)",
     sex_female_pct = 50,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill patients with pneumonia admitted to an intensive care unit.",
       "Median APACHE II score 21 (IQR 18-33), median serum albumin 2.0 g/dL (IQR 1.8-2.2),",
       "median creatinine clearance 68 mL/min (IQR 30-96); 66.7% had mild-to-moderate renal",
       "impairment and one patient had augmented renal clearance (CLcr 235 mL/min)."
     ),
-    dose_range     = "Sitafloxacin 200 mg orally as a single dose under fasting conditions",
-    regions        = "Thailand",
-    notes          = paste(
+    dose_range = "Sitafloxacin 200 mg orally as a single dose under fasting conditions",
+    regions = "Thailand",
+    notes = paste(
       "Baseline demographics: Results 3.1. The model was built on 83 plasma and 12 ELF concentrations;",
       "one plasma concentration below the 0.025 mg/L LLOQ was excluded (Results 3.3).",
       "Plasma sampling at pre-dose, 0.5, 1, 2, 3, 8 and 12 h; one bronchoalveolar-lavage sample per",

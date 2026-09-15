@@ -32,44 +32,44 @@ Tan_2024_cabozantinib <- function() {
   # rxode2 exposes the concentration directly, so the vignette integrates the
   # AUC outside the model.
   compartmentData <- list(
-    depot       = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Administered cabozantinib dose level on the current dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered cabozantinib dose level on the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-dose-record. Power covariate on the fast-depot absorption rate constant: ka1(DOSE) = ka1_ref * (DOSE / 60 mg)^-0.5. The reference dose of 60 mg is explicit in the Supplementary Material control stream ($PK: KA1 = TVKA1*EXP(ETA(3))*EXP(ALPHA*LOG(DOS/60))), not inferred. The control stream derives DOS from a DOSEFLAG column restricted to the three marketed tablet strengths (20, 40, 60 mg); this model takes the dose in mg directly. Use case (a) of the DOSE canonical.",
-      source_name        = "DOSEFLAG"
+      notes = "Per-dose-record. Power covariate on the fast-depot absorption rate constant: ka1(DOSE) = ka1_ref * (DOSE / 60 mg)^-0.5. The reference dose of 60 mg is explicit in the Supplementary Material control stream ($PK: KA1 = TVKA1*EXP(ETA(3))*EXP(ALPHA*LOG(DOS/60))), not inferred. The control stream derives DOS from a DOSEFLAG column restricted to the three marketed tablet strengths (20, 40, 60 mg); this model takes the dose in mg directly. Use case (a) of the DOSE canonical.",
+      source_name = "DOSEFLAG"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male, the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative effect on CL/F: females have 21% lower CL/F (multiplier 0.79). Tan 2024 Table 2 reports the transformed multiplier 0.79; the Supplementary Material control stream stores the fractional form, THETA(12) = 0.21 with GEND = 1 - THETA(12) when SEX == 0. NOTE THE ORIENTATION: in the Tan 2024 dataset SEX == 0 denotes FEMALE (the control-stream branch that applies the 0.79 multiplier), which is the inverse of the more common 1 = male / 0 = female coding. This model uses the canonical SEXF orientation (1 = female), so SEXF = 1 - SEX relative to the paper's own column. Fixed to the FDA registration value; not re-estimated by Tan 2024.",
-      source_name        = "SEX"
+      notes = "Time-fixed. Multiplicative effect on CL/F: females have 21% lower CL/F (multiplier 0.79). Tan 2024 Table 2 reports the transformed multiplier 0.79; the Supplementary Material control stream stores the fractional form, THETA(12) = 0.21 with GEND = 1 - THETA(12) when SEX == 0. NOTE THE ORIENTATION: in the Tan 2024 dataset SEX == 0 denotes FEMALE (the control-stream branch that applies the 0.79 multiplier), which is the inverse of the more common 1 = male / 0 = female coding. This model uses the canonical SEXF orientation (1 = female), so SEXF = 1 - SEX relative to the paper's own column. Fixed to the FDA registration value; not re-estimated by Tan 2024.",
+      source_name = "SEX"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative effect on CL/F: Asian subjects have 27% lower CL/F (multiplier 0.73; Tan 2024 Table 2 and section 2.4.1). Fixed to the FDA registration value. Tan 2024's own analysis could not exercise this covariate: section 2.4.2 states that because ethnicity was not recorded in the TDM dataset, all patients were assumed Caucasian, and the control stream correspondingly hardcodes RACE = 1 (i.e. RACE_ASIAN = 0 for every subject). The term is retained here because it is part of the model Tan 2024 Table 2 publishes; set RACE_ASIAN = 0 to reproduce every simulation in the paper.",
-      source_name        = "RACE"
+      notes = "Time-fixed. Multiplicative effect on CL/F: Asian subjects have 27% lower CL/F (multiplier 0.73; Tan 2024 Table 2 and section 2.4.1). Fixed to the FDA registration value. Tan 2024's own analysis could not exercise this covariate: section 2.4.2 states that because ethnicity was not recorded in the TDM dataset, all patients were assumed Caucasian, and the control stream correspondingly hardcodes RACE = 1 (i.e. RACE_ASIAN = 0 for every subject). The term is retained here because it is part of the model Tan 2024 Table 2 publishes; set RACE_ASIAN = 0 to reproduce every simulation in the paper.",
+      source_name = "RACE"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal indicator for the current dose record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal indicator for the current dose record",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted; the reference condition and the state in which the model was fitted)",
-      notes              = "Per-dose-record. Multiplies overall bioavailability by 1.5 (a 50% increase). This is a stated simulation ASSUMPTION, not an estimated parameter: Tan 2024 section 2.6 says 'it was assumed that the bioavailability of the drug will increase by 50% when taken with high-fat meals', citing a phase I food-effect study (Tan 2024 reference 18) in which a high-fat high-calorie meal raised cabozantinib Cmax by 41% and AUC by 57%. The term does not appear in either Supplementary Material control stream, both of which simulate the fasted state only. Set FED_HIGHFAT = 0 to recover the fitted model exactly. The food-effect study used the capsule formulation whereas the TDM cohort took tablets; Tan 2024 section 4 flags this as a limitation (the two formulations are similar but not bioequivalent).",
-      source_name        = NULL
+      notes = "Per-dose-record. Multiplies overall bioavailability by 1.5 (a 50% increase). This is a stated simulation ASSUMPTION, not an estimated parameter: Tan 2024 section 2.6 says 'it was assumed that the bioavailability of the drug will increase by 50% when taken with high-fat meals', citing a phase I food-effect study (Tan 2024 reference 18) in which a high-fat high-calorie meal raised cabozantinib Cmax by 41% and AUC by 57%. The term does not appear in either Supplementary Material control stream, both of which simulate the fasted state only. Set FED_HIGHFAT = 0 to recover the fitted model exactly. The food-effect study used the capsule formulation whereas the TDM cohort took tablets; Tan 2024 section 4 flags this as a limitation (the two formulations are similar but not bioequivalent).",
+      source_name = NULL
     )
   )
 
@@ -82,66 +82,66 @@ Tan_2024_cabozantinib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at start of cabozantinib treatment",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Tan 2024 Table 1, mean 65 y, range 39-85 y) but no covariate effect was estimated; new-covariate exploration was skipped for sample-size reasons (section 2.4.3)."
+      units = "years",
+      type = "continuous",
+      notes = "Collected and tabulated (Tan 2024 Table 1, mean 65 y, range 39-85 y) but no covariate effect was estimated; new-covariate exploration was skipped for sample-size reasons (section 2.4.3)."
     ),
     WT = list(
       description = "Body weight at start of cabozantinib treatment",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Tan 2024 Table 1, mean 78 kg, range 49-105 kg) but no covariate effect was estimated. The FDA registration model this one reproduces carries no allometric term either."
+      units = "kg",
+      type = "continuous",
+      notes = "Collected and tabulated (Tan 2024 Table 1, mean 78 kg, range 49-105 kg) but no covariate effect was estimated. The FDA registration model this one reproduces carries no allometric term either."
     ),
     HT = list(
       description = "Height at start of cabozantinib treatment",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Present in the control stream $INPUT list and tabulated (Tan 2024 Table 1, mean 178 cm, range 160-196 cm) but unused in $PK."
+      units = "cm",
+      type = "continuous",
+      notes = "Present in the control stream $INPUT list and tabulated (Tan 2024 Table 1, mean 178 cm, range 160-196 cm) but unused in $PK."
     ),
     CRCL = list(
       description = "Creatinine clearance by the CKD-EPI equation, normalised to 1.73 m^2 body surface area",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Tan 2024 Table 1, mean 70 mL/min, range 31-121 mL/min) and present in the control stream $INPUT list, but unused in $PK. Section 2.2 specifies the CKD-EPI equation."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Collected and tabulated (Tan 2024 Table 1, mean 70 mL/min, range 31-121 mL/min) and present in the control stream $INPUT list, but unused in $PK. Section 2.2 specifies the CKD-EPI equation."
     ),
     ALT = list(
       description = "Alanine aminotransferase at start of cabozantinib treatment",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Tan 2024 Table 1, mean 46 U/L, range 14-202 U/L) and present in the control stream $INPUT list as ALAT, but unused in $PK."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected and tabulated (Tan 2024 Table 1, mean 46 U/L, range 14-202 U/L) and present in the control stream $INPUT list as ALAT, but unused in $PK."
     ),
     AST = list(
       description = "Aspartate aminotransferase at start of cabozantinib treatment",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Tan 2024 Table 1, mean 51 U/L, range 14-449 U/L) and present in the control stream $INPUT list as ASAT, but unused in $PK."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected and tabulated (Tan 2024 Table 1, mean 51 U/L, range 14-449 U/L) and present in the control stream $INPUT list as ASAT, but unused in $PK."
     ),
     BILI = list(
       description = "Total bilirubin at start of cabozantinib treatment",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Tan 2024 Table 1, mean 8 umol/L, range 3-21 umol/L) and present in the control stream $INPUT list as Bil, but unused in $PK."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected and tabulated (Tan 2024 Table 1, mean 8 umol/L, range 3-21 umol/L) and present in the control stream $INPUT list as Bil, but unused in $PK."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27L,
+    species = "human",
+    n_subjects = 27L,
     n_observations = 75L,
-    n_studies      = 1L,
-    age_range      = "39-85 years",
-    age_median     = "68 years (mean 65 years)",
-    weight_range   = "49-105 kg",
-    weight_median  = "79 kg (mean 78 kg)",
-    height_range   = "160-196 cm",
-    bmi_range      = "18-32 kg/m^2 (mean 25 kg/m^2)",
+    n_studies = 1L,
+    age_range = "39-85 years",
+    age_median = "68 years (mean 65 years)",
+    weight_range = "49-105 kg",
+    weight_median = "79 kg (mean 78 kg)",
+    height_range = "160-196 cm",
+    bmi_range = "18-32 kg/m^2 (mean 25 kg/m^2)",
     sex_female_pct = 29.7,
     race_ethnicity = "Not recorded. Section 2.4.2: because ethnicity data were absent from the TDM dataset, all patients were assumed Caucasian on the grounds that roughly 90% of the Leiden University Medical Center population is Caucasian.",
-    disease_state  = "Metastatic renal cell carcinoma. IMDC prognosis group favorable 7.4%, intermediate 63.0%, poor 18.5%, unknown 11.1%. WHO performance score 0 in 33.3%, 1 in 40.7%, >1 in 26.0%. Most patients had prior systemic therapy (pazopanib 42.9%, nivolumab +/- ipilimumab 34.3%, sunitinib 11.4%, everolimus 2.9%); 8.5% were treatment-naive.",
+    disease_state = "Metastatic renal cell carcinoma. IMDC prognosis group favorable 7.4%, intermediate 63.0%, poor 18.5%, unknown 11.1%. WHO performance score 0 in 33.3%, 1 in 40.7%, >1 in 26.0%. Most patients had prior systemic therapy (pazopanib 42.9%, nivolumab +/- ipilimumab 34.3%, sunitinib 11.4%, everolimus 2.9%); 8.5% were treatment-naive.",
     renal_function = "Mean baseline creatinine clearance 70 mL/min/1.73m^2 (range 31-121) by CKD-EPI",
-    dose_range     = "20-60 mg once-daily oral cabozantinib tablets (median 40 mg). Starting dose 20 mg in 15%, 40 mg in 37%, 60 mg in 48%; last recorded dose 20 mg in 19%, 40 mg in 60%, 60 mg in 21%. Median treatment duration 75 days (range 11-552).",
-    regions        = "Single center, the Netherlands (Leiden University Medical Center)",
-    notes          = "Retrospective therapeutic-drug-monitoring cohort treated between August 2018 and December 2021, one routine TDM observation minimum per patient. Baseline demographics from Tan 2024 Table 1; a side-by-side comparison against the 318 mRCC patients of the FDA registration phase III study is in Supplementary Table S1. Median 2 observations per patient (range 1-10); 36 of 75 observations (48%) were troughs. Median time after last dose 25.30 h (range 1.25-267.15 h). Steady state was NOT assumed; all administered doses were carried in the dataset via the NONMEM ADDL and II columns. Observed concentrations median 603 ng/mL (range 135-1471); trough concentrations median 632 ng/mL (range 308-1134). Assay: UPLC-MS/MS validated over 10-4000 ng/mL. IMPORTANT -- this 27-patient cohort was used only to EVALUATE and partially re-estimate the FDA registration model, which was itself developed on 63 healthy participants (phase I) plus 325 mRCC patients (phase III); every parameter other than CL/F and the proportional residual error is inherited from that much larger analysis."
+    dose_range = "20-60 mg once-daily oral cabozantinib tablets (median 40 mg). Starting dose 20 mg in 15%, 40 mg in 37%, 60 mg in 48%; last recorded dose 20 mg in 19%, 40 mg in 60%, 60 mg in 21%. Median treatment duration 75 days (range 11-552).",
+    regions = "Single center, the Netherlands (Leiden University Medical Center)",
+    notes = "Retrospective therapeutic-drug-monitoring cohort treated between August 2018 and December 2021, one routine TDM observation minimum per patient. Baseline demographics from Tan 2024 Table 1; a side-by-side comparison against the 318 mRCC patients of the FDA registration phase III study is in Supplementary Table S1. Median 2 observations per patient (range 1-10); 36 of 75 observations (48%) were troughs. Median time after last dose 25.30 h (range 1.25-267.15 h). Steady state was NOT assumed; all administered doses were carried in the dataset via the NONMEM ADDL and II columns. Observed concentrations median 603 ng/mL (range 135-1471); trough concentrations median 632 ng/mL (range 308-1134). Assay: UPLC-MS/MS validated over 10-4000 ng/mL. IMPORTANT -- this 27-patient cohort was used only to EVALUATE and partially re-estimate the FDA registration model, which was itself developed on 63 healthy participants (phase I) plus 325 mRCC patients (phase III); every parameter other than CL/F and the proportional residual error is inherited from that much larger analysis."
   )
 
   ini({

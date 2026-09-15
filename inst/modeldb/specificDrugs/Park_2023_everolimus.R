@@ -16,17 +16,17 @@ Park_2023_everolimus <- function() {
   # the whole-blood assay as their reason for rejecting RBC count as a
   # covariate in Results 3.2), so `central` is a whole-blood compartment.
   compartmentData <- list(
-    depot   = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "everolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model (Results 3.2:",
         "forward selection dOFV = -6.356; backward elimination dOFV = +6.92,",
         "above the 6.63 retention threshold). Enters apparent oral clearance",
@@ -41,7 +41,7 @@ Park_2023_everolimus <- function() {
         "pharmacology review (CDER 2009), in which everolimus clearance also",
         "increases linearly with BSA."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
@@ -53,12 +53,16 @@ Park_2023_everolimus <- function() {
   # inst/references/covariate-columns.md and mint no canonical name.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age.", units = "years", type = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 13.5 y, range 4-32 y (Table 1).",
       source_name = "age"
     ),
     SEXF = list(
-      description = "Female sex indicator.", units = "(binary)", type = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
       notes = paste(
         "Screened (Methods 2.4); not retained. The paper codes sex as",
@@ -69,12 +73,16 @@ Park_2023_everolimus <- function() {
       source_name = "sex"
     ),
     WT = list(
-      description = "Body weight.", units = "kg", type = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 50 kg, range 13-86 kg (Table 1).",
       source_name = "weight"
     ),
     ALB = list(
-      description = "Serum albumin.", units = "g/dL", type = "continuous",
+      description = "Serum albumin.",
+      units = "g/dL",
+      type = "continuous",
       notes = paste(
         "Screened (Methods 2.4). Selected in the SECOND forward-selection step",
         "as a proportional effect on clearance (dOFV = -4.941) and carried in",
@@ -89,32 +97,44 @@ Park_2023_everolimus <- function() {
       source_name = "albumin"
     ),
     CREAT = list(
-      description = "Serum creatinine.", units = "mg/dL", type = "continuous",
+      description = "Serum creatinine.",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 0.67 mg/dL, range 0.33-0.92 mg/dL (Table 1).",
       source_name = "serum creatinine"
     ),
     ALT = list(
-      description = "Alanine aminotransferase.", units = "IU/L", type = "continuous",
+      description = "Alanine aminotransferase.",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 11 IU/L, range 5-67 IU/L (Table 1).",
       source_name = "ALT"
     ),
     AST = list(
-      description = "Aspartate aminotransferase.", units = "IU/L", type = "continuous",
+      description = "Aspartate aminotransferase.",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 16 IU/L, range 10-44 IU/L (Table 1).",
       source_name = "AST"
     ),
     HGB = list(
-      description = "Blood hemoglobin concentration.", units = "g/dL", type = "continuous",
+      description = "Blood hemoglobin concentration.",
+      units = "g/dL",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 13.15 g/dL, range 10.3-16.5 g/dL (Table 1).",
       source_name = "hemoglobin"
     ),
     HCT = list(
-      description = "Hematocrit.", units = "%", type = "continuous",
+      description = "Hematocrit.",
+      units = "%",
+      type = "continuous",
       notes = "Screened (Methods 2.4); not retained. Median 38.95%, range 35-47.8% (Table 1).",
       source_name = "hematocrit"
     ),
     RBC = list(
-      description = "Red blood cell count.", units = "10^6 cells/uL", type = "continuous",
+      description = "Red blood cell count.",
+      units = "10^6 cells/uL",
+      type = "continuous",
       notes = paste(
         "Screened (Methods 2.4). A proportional effect of RBC on clearance",
         "(dOFV = -5.6) and a power effect of RBC on volume (dOFV = -4.095)",
@@ -128,7 +148,9 @@ Park_2023_everolimus <- function() {
     ),
     CYP3A4_STRONG_INDUCER = list(
       description = "Presence of at least one concomitant strong CYP3A4 inducer (carbamazepine, phenytoin).",
-      units = "(binary)", type = "binary", reference_category = "0 (absent)",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (absent)",
       notes = paste(
         "Screened (Methods 2.4); not retained. Only 1 of 22 patients (4.5%)",
         "took a strong inducer, and the one patient on a moderate inducer",
@@ -140,32 +162,36 @@ Park_2023_everolimus <- function() {
     ),
     CYP3A4_WEAK_INDUCER = list(
       description = "Presence of at least one concomitant weak CYP3A4 inducer (rufinamide, topiramate, clobazam, perampanel, oxcarbazepine).",
-      units = "(binary)", type = "binary", reference_category = "0 (absent)",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (absent)",
       notes = "Screened (Methods 2.4); not retained. 14 of 22 (63.6%) exposed (Table 1); list in Supplementary Table S1.",
       source_name = "CYP3A4 weak inducer"
     ),
     CYP3A4_WEAK_INHIBITOR = list(
       description = "Presence of at least one concomitant weak CYP3A4 inhibitor (valproic acid, perampanel, ranitidine).",
-      units = "(binary)", type = "binary", reference_category = "0 (absent)",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (absent)",
       notes = "Screened (Methods 2.4); not retained. 14 of 22 (63.6%) exposed (Table 1); list in Supplementary Table S1.",
       source_name = "CYP3A4 weak inhibitor"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
     n_observations = "152 everolimus whole-blood concentrations (Results 3.2).",
-    age_range      = "4-32 years",
-    age_median     = "13.5 years (IQR 12-17.75; Table 1)",
-    weight_range   = "13-86 kg",
-    weight_median  = "50 kg (IQR 35.5-60; Table 1)",
-    bsa_range      = "0.6-2 m^2",
-    bsa_median     = "1.5 m^2 (IQR 1.23-1.7; Table 1)",
+    age_range = "4-32 years",
+    age_median = "13.5 years (IQR 12-17.75; Table 1)",
+    weight_range = "13-86 kg",
+    weight_median = "50 kg (IQR 35.5-60; Table 1)",
+    bsa_range = "0.6-2 m^2",
+    bsa_median = "1.5 m^2 (IQR 1.23-1.7; Table 1)",
     sex_female_pct = 59.1,
     race_ethnicity = "Not reported. Single-centre Korean cohort (Severance Hospital, Seoul).",
-    disease_state  = paste(
+    disease_state = paste(
       "Focal cortical dysplasia (FCD) type II with refractory seizures",
       "despite more than two antiepileptic drugs; at least three seizures per",
       "month over two months, and no response to vagus nerve stimulation or",
@@ -173,13 +199,13 @@ Park_2023_everolimus <- function() {
       "All patients continued at least one concomitant antiepileptic drug,",
       "unchanged through the baseline and core phases."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Everolimus (Afinitor disperz, tablet for oral suspension) once daily.",
       "Initial dose 4.5 mg/m2/day, then TDM-guided adjustment in 2 mg steps",
       "to a target trough of 5-15 ng/mL (Methods 2.2)."
     ),
-    regions        = "Republic of Korea (Severance Hospital, Seoul).",
-    notes          = paste(
+    regions = "Republic of Korea (Severance Hospital, Seoul).",
+    notes = paste(
       "Data from a double-blinded, placebo-controlled, crossover randomised",
       "clinical trial (IRB 4-2017-0299; additional post-dose sampling under",
       "IRB 4-2019-1232), September 2017 to May 2020. Phases: 4-week baseline,",

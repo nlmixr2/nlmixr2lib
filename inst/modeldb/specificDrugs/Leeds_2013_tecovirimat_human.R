@@ -13,40 +13,40 @@ Leeds_2013_tecovirimat_human <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "tecovirimat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tecovirimat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "tecovirimat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tecovirimat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tecovirimat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with theory-based fixed exponents about 78.4 kg, the normalisation constant printed inside every human covariate formula of Leeds 2013 Table 1. Results 'Human POP PK model development' names it explicitly: 'For a healthy human with a body weight equivalent to the mean weight from the clinical study used in development of the POP PK model, 78.4 kg, the typical values of CL/F would be 41.15 liters/h ... and Vc/F in females and males would be 281.51 liters and 217.44 liters, respectively'. The exponents are the same theory-based 0.75 / 1 pair used in the companion NHP model.",
-      source_name        = "wt"
+      notes = "Allometric scaling with theory-based fixed exponents about 78.4 kg, the normalisation constant printed inside every human covariate formula of Leeds 2013 Table 1. Results 'Human POP PK model development' names it explicitly: 'For a healthy human with a body weight equivalent to the mean weight from the clinical study used in development of the POP PK model, 78.4 kg, the typical values of CL/F would be 41.15 liters/h ... and Vc/F in females and males would be 281.51 liters and 217.44 liters, respectively'. The exponents are the same theory-based 0.75 / 1 pair used in the companion NHP model.",
+      source_name = "wt"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Leeds 2013 Table 1 prints the human Vc/F row as two parallel typical values, '281.51 * (wt/78.4)^1 (female); 217.44 * (wt/78.4)^1 (male)', so the effect is recovered here as the log ratio of the two, with male taken as the reference. Table 1 footnote a: 'in humans, gender was a covariate for Vc/F, but not in NHPs'. The clinical study enrolled approximately equal numbers of male and female subjects. The paper judges the effect clinically unimportant because it barely moves the terminal half-life -- Results 'Human POP PK model development': 'The terminal elimination half-lives in male and female subjects were similar (16.7 h in males versus 17.4 h in females). Consequently, no clinically significant sex effect was predicted for ST-246 exposure or the terminal elimination half-life.' Sex was not retained in the companion NHP model.",
-      source_name        = "gender"
+      notes = "Time-fixed per subject. Leeds 2013 Table 1 prints the human Vc/F row as two parallel typical values, '281.51 * (wt/78.4)^1 (female); 217.44 * (wt/78.4)^1 (male)', so the effect is recovered here as the log ratio of the two, with male taken as the reference. Table 1 footnote a: 'in humans, gender was a covariate for Vc/F, but not in NHPs'. The clinical study enrolled approximately equal numbers of male and female subjects. The paper judges the effect clinically unimportant because it barely moves the terminal half-life -- Results 'Human POP PK model development': 'The terminal elimination half-lives in male and female subjects were similar (16.7 h in males versus 17.4 h in females). Consequently, no clinically significant sex effect was predicted for ST-246 exposure or the terminal elimination half-life.' Sex was not retained in the companion NHP model.",
+      source_name = "gender"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 91L,
-    n_studies      = 1L,
-    age_range      = "19-74 years",
-    weight_mean    = "78.4 kg",
+    species = "human",
+    n_subjects = 91L,
+    n_studies = 1L,
+    age_range = "19-74 years",
+    weight_mean = "78.4 kg",
     sex_female_pct = 50,
-    disease_state  = "Healthy volunteers.",
-    dose_range     = "Oral ST-246 400 mg (45 subjects) or 600 mg (46 subjects) once daily for 14 days, administered in the nonfasted state.",
-    notes          = "Double-blind, randomised, placebo-controlled, multicenter phase 1 safety / tolerability / PK trial; 107 volunteers were randomised in three cohorts, of whom 91 received ST-246 and 16 received placebo, so only the 91 active-treated subjects contribute concentrations. Subjects with fewer than two concentration-time data were excluded (3 subjects in total), as were outlier concentrations showing high troughs or double peaks at 24 h postdose; 1,395 plasma concentrations of ST-246 entered the human population PK analysis, none with |CWRES| > 4. Sex distribution is given as 'approximately equal numbers of male and female subjects'; the exact percentage is not tabulated. Below-quantitation-limit values were handled by Beal's method M6. Model fit in Phoenix NLME 6.2.0.416 with FOCE-ELS. Parameters from Leeds 2013 Table 1, human columns; population description from Materials and Methods 'In vivo study summaries (ii) Human clinical PK study'."
+    disease_state = "Healthy volunteers.",
+    dose_range = "Oral ST-246 400 mg (45 subjects) or 600 mg (46 subjects) once daily for 14 days, administered in the nonfasted state.",
+    notes = "Double-blind, randomised, placebo-controlled, multicenter phase 1 safety / tolerability / PK trial; 107 volunteers were randomised in three cohorts, of whom 91 received ST-246 and 16 received placebo, so only the 91 active-treated subjects contribute concentrations. Subjects with fewer than two concentration-time data were excluded (3 subjects in total), as were outlier concentrations showing high troughs or double peaks at 24 h postdose; 1,395 plasma concentrations of ST-246 entered the human population PK analysis, none with |CWRES| > 4. Sex distribution is given as 'approximately equal numbers of male and female subjects'; the exact percentage is not tabulated. Below-quantitation-limit values were handled by Beal's method M6. Model fit in Phoenix NLME 6.2.0.416 with FOCE-ELS. Parameters from Leeds 2013 Table 1, human columns; population description from Materials and Methods 'In vivo study summaries (ii) Human clinical PK study'."
   )
 
   ini({

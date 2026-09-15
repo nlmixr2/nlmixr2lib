@@ -27,22 +27,26 @@ Stoschus_2025_phenobarbital <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "phenobarbital", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "phenobarbital",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "phenobarbital", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "phenobarbital",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     IBW = list(
-      description        = "Ideal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. The only covariate retained in the final",
         "model (Stoschus 2025 Results 3.2): it enters as allometric scaling",
         "on V (exponent 1, Equation 1) and on CL (exponent 0.75, Equation",
@@ -58,14 +62,14 @@ Stoschus_2025_phenobarbital <- function() {
         "within the observed cohort range of 52.4-82.4 kg; the paper warns",
         "that extrapolation beyond this range could mislead."
       ),
-      source_name        = "IBW"
+      source_name = "IBW"
     ),
     OCC = list(
-      description        = "Integer-valued sampling-occasion indicator for interoccasion variability on clearance",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued sampling-occasion indicator for interoccasion variability on clearance",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Stoschus 2025 Methods 2.2 defines an occasion as the interval",
         "between consecutive TDM samples, with a cohort median interval of",
         "48 h. The paper reports a single IOV magnitude on CL (Table 2,",
@@ -80,108 +84,108 @@ Stoschus_2025_phenobarbital <- function() {
         "Records with OCC outside 1..8 carry no IOV. For a single-occasion",
         "simulation pass OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search (Stoschus 2025 Methods 2.2 'patient characteristics') but not retained; Results 3.2 states that apart from IBW 'other covariates did not significantly reduce the OFV'."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search (Stoschus 2025 Methods 2.2 'patient characteristics') but not retained; Results 3.2 states that apart from IBW 'other covariates did not significantly reduce the OFV'."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a patient characteristic (Stoschus 2025 Methods 2.2) but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a patient characteristic (Stoschus 2025 Methods 2.2) but not retained in the final model."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened alongside height and IBW (Stoschus 2025 Methods 2.2). Ideal body weight was the size descriptor retained; the paper's Discussion argues IBW 'might better reflect physiological factors like organ function and distribution, which do not always correlate with changes in total body weight'."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened alongside height and IBW (Stoschus 2025 Methods 2.2). Ideal body weight was the size descriptor retained; the paper's Discussion argues IBW 'might better reflect physiological factors like organ function and distribution, which do not always correlate with changes in total body weight'."
     ),
     HT = list(
       description = "Body height at baseline",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a patient characteristic (Stoschus 2025 Methods 2.2) but not retained; it enters the model only indirectly through the derivation of IBW."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a patient characteristic (Stoschus 2025 Methods 2.2) but not retained; it enters the model only indirectly through the derivation of IBW."
     ),
     RRT = list(
       description = "Renal replacement therapy indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a clinical parameter (Stoschus 2025 Methods 2.2); 3 of 37 patients (8%) received renal replacement therapy (Table 1). Not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a clinical parameter (Stoschus 2025 Methods 2.2); 3 of 37 patients (8%) received renal replacement therapy (Table 1). Not retained in the final model."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as laboratory data (Stoschus 2025 Methods 2.2); cohort median 0.7 mg/dL (Table 1). Not retained in the final model."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as laboratory data (Stoschus 2025 Methods 2.2); cohort median 0.7 mg/dL (Table 1). Not retained in the final model."
     ),
     BILI = list(
       description = "Total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as laboratory data (Stoschus 2025 Methods 2.2) but not retained in the final model; the paper does not tabulate its cohort distribution."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as laboratory data (Stoschus 2025 Methods 2.2) but not retained in the final model; the paper does not tabulate its cohort distribution."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened as laboratory data (Stoschus 2025 Methods 2.2) but not retained in the final model; the paper does not tabulate its cohort distribution."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened as laboratory data (Stoschus 2025 Methods 2.2) but not retained in the final model; the paper does not tabulate its cohort distribution."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as laboratory data (Stoschus 2025 Methods 2.2); cohort median 27 U/L (Table 1). Not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as laboratory data (Stoschus 2025 Methods 2.2); cohort median 27 U/L (Table 1). Not retained in the final model."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as laboratory data (Stoschus 2025 Methods 2.2); cohort median 28 U/L (Table 1). Not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as laboratory data (Stoschus 2025 Methods 2.2); cohort median 28 U/L (Table 1). Not retained in the final model."
     ),
     CONMED_VALPROATE = list(
       description = "Concomitant valproate indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as time-varying comedication recorded per day of phenobarbital treatment (Stoschus 2025 Methods 2.2) but not retained. The Discussion notes that earlier studies reported reduced CL with concomitant valproic acid and that, given the common coadministration of other antiepileptics in this cohort, such an effect 'cannot be ruled out and might be included in the estimated CL parameter'."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as time-varying comedication recorded per day of phenobarbital treatment (Stoschus 2025 Methods 2.2) but not retained. The Discussion notes that earlier studies reported reduced CL with concomitant valproic acid and that, given the common coadministration of other antiepileptics in this cohort, such an effect 'cannot be ruled out and might be included in the estimated CL parameter'."
     ),
     CONMED_PHENYTOIN = list(
       description = "Concomitant phenytoin indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as time-varying comedication (Stoschus 2025 Methods 2.2) but not retained; see the CONMED_VALPROATE note on the possibility that such effects are absorbed into the estimated CL."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as time-varying comedication (Stoschus 2025 Methods 2.2) but not retained; see the CONMED_VALPROATE note on the possibility that such effects are absorbed into the estimated CL."
     ),
     CONMED_METAMIZOLE = list(
       description = "Concomitant metamizole indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as time-varying comedication (Stoschus 2025 Methods 2.2) but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as time-varying comedication (Stoschus 2025 Methods 2.2) but not retained in the final model."
     ),
     CONMED_CENOBAMATE = list(
       description = "Concomitant cenobamate indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as time-varying comedication (Stoschus 2025 Methods 2.2) but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as time-varying comedication (Stoschus 2025 Methods 2.2) but not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 37L,
-    n_studies      = 1L,
-    age_range      = "24.0-83.0 years (5th-95th percentile); all patients >= 18 years by inclusion criterion",
-    age_median     = "63.0 years",
-    weight_range   = "51.7-93.3 kg total body weight (5th-95th percentile)",
-    weight_median  = "78.5 kg total body weight; 68.8 kg ideal body weight (the allometric-scaling reference)",
+    species = "human",
+    n_subjects = 37L,
+    n_studies = 1L,
+    age_range = "24.0-83.0 years (5th-95th percentile); all patients >= 18 years by inclusion criterion",
+    age_median = "63.0 years",
+    weight_range = "51.7-93.3 kg total body weight (5th-95th percentile)",
+    weight_median = "78.5 kg total body weight; 68.8 kg ideal body weight (the allometric-scaling reference)",
     sex_female_pct = 35.1,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Refractory (2 patients, 5%) and superrefractory (35 patients, 95%)",
       "status epilepticus in a neurointensive care unit. Median Status",
       "Epilepticus Severity Score 5. Patients with a history of",
@@ -189,7 +193,7 @@ Stoschus_2025_phenobarbital <- function() {
       "therapy in 3 patients (8%); median estimated glomerular filtration",
       "rate 102 mL/min by CKD-EPI, median serum creatinine 0.7 mg/dL."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Guideline-directed phenobarbital: loading doses 10-20 mg/kg and",
       "maintenance doses 1-4 mg/kg, median administered dose 200 mg (5th-95th",
       "percentile 100-600 mg) across 1242 doses. 824 doses (66%) were oral",
@@ -197,8 +201,8 @@ Stoschus_2025_phenobarbital <- function() {
       "(34%) intravenous as 5-min infusions. Median treatment duration 16",
       "days."
     ),
-    regions        = "Germany (single center: LMU University Hospital, Munich).",
-    notes          = paste(
+    regions = "Germany (single center: LMU University Hospital, Munich).",
+    notes = paste(
       "Retrospective single-center cohort of patients treated 2015-2024,",
       "contributing 301 therapeutic-drug-monitoring samples (median 6 per",
       "patient, 5th-95th percentile 1-26) with a median phenobarbital",

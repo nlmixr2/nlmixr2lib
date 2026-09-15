@@ -1,68 +1,68 @@
 Schoemaker_2017_brivaracetam <- function() {
   description <- "One-compartment population PK model for oral brivaracetam in paediatric patients with epilepsy aged 1 month to 16 years (Schoemaker 2017). First-order absorption, single-compartment distribution, and first-order elimination, with allometric scaling of CL/F (exponent 0.750 fixed) and V/F (exponent 1.00 fixed) on lean body weight normalised to a 50 kg adult typical value. Co-administration of phenobarbital (PB; pooled with primidone), carbamazepine (CBZ), or valproate (VPA) modify apparent oral clearance via linear-additive multiplicative factors."
-  reference   <- "Schoemaker R, Wade JR, Stockis A. Brivaracetam population pharmacokinetics in children with epilepsy aged 1 month to 16 years. Eur J Clin Pharmacol. 2017 Jun;73(6):727-733. doi:10.1007/s00228-017-2230-6"
-  vignette    <- "Schoemaker_2017_brivaracetam"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Schoemaker R, Wade JR, Stockis A. Brivaracetam population pharmacokinetics in children with epilepsy aged 1 month to 16 years. Eur J Clin Pharmacol. 2017 Jun;73(6):727-733. doi:10.1007/s00228-017-2230-6"
+  vignette <- "Schoemaker_2017_brivaracetam"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "brivaracetam", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "brivaracetam", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "brivaracetam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body weight (paper notation LBW), calculated from total body weight and body mass index per Janmahasatian et al.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight (paper notation LBW), calculated from total body weight and body mass index per Janmahasatian et al.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Paper computes LBW from total body weight and BMI (Schoemaker 2017 Methods, page 2 / Data paragraph, citing Janmahasatian 2005). Allometric scaling exponents are fixed at the theoretical values (0.750 on CL/F and 1.00 on V/F) per Anderson & Holford. Reference value 50 kg corresponds to a typical adult lean body weight, chosen so the typical-CL / typical-V estimates match adult-cohort comparisons (Schoemaker 2017 Methods page 2).",
-      source_name        = "LBW"
+      notes = "Paper computes LBW from total body weight and BMI (Schoemaker 2017 Methods, page 2 / Data paragraph, citing Janmahasatian 2005). Allometric scaling exponents are fixed at the theoretical values (0.750 on CL/F and 1.00 on V/F) per Anderson & Holford. Reference value 50 kg corresponds to a typical adult lean body weight, chosen so the typical-CL / typical-V estimates match adult-cohort comparisons (Schoemaker 2017 Methods page 2).",
+      source_name = "LBW"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital (PB) coadministration indicator: 1 = patient is on phenobarbital or primidone, 0 = neither.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital (PB) coadministration indicator: 1 = patient is on phenobarbital or primidone, 0 = neither.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital or primidone)",
-      notes              = "Source paper pools primidone with phenobarbital because primidone is metabolised to phenobarbital. Linear-additive multiplicative effect on CL/F: cl *= (1 + 0.408 * CONMED_PB); +40.8% in clearance translates to ~29% lower brivaracetam exposure relative to PB-naive patients (Schoemaker 2017 Table 1 and Results paragraph 4).",
-      source_name        = "PB"
+      notes = "Source paper pools primidone with phenobarbital because primidone is metabolised to phenobarbital. Linear-additive multiplicative effect on CL/F: cl *= (1 + 0.408 * CONMED_PB); +40.8% in clearance translates to ~29% lower brivaracetam exposure relative to PB-naive patients (Schoemaker 2017 Table 1 and Results paragraph 4).",
+      source_name = "PB"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine (CBZ) coadministration indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine (CBZ) coadministration indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = "Linear-additive multiplicative effect on CL/F: cl *= (1 + 0.479 * CONMED_CBZ); +47.9% in clearance translates to ~32% lower brivaracetam exposure relative to CBZ-naive patients (Schoemaker 2017 Table 1 and Results paragraph 4).",
-      source_name        = "CBZ"
+      notes = "Linear-additive multiplicative effect on CL/F: cl *= (1 + 0.479 * CONMED_CBZ); +47.9% in clearance translates to ~32% lower brivaracetam exposure relative to CBZ-naive patients (Schoemaker 2017 Table 1 and Results paragraph 4).",
+      source_name = "CBZ"
     ),
     CONMED_VPA = list(
-      description        = "Concomitant valproate (VPA) coadministration indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant valproate (VPA) coadministration indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant valproate)",
-      notes              = "Linear-additive multiplicative effect on CL/F: cl *= (1 - 0.101 * CONMED_VPA); -10.1% in clearance translates to ~11% higher brivaracetam exposure relative to VPA-naive patients (Schoemaker 2017 Table 1). The authors retained the VPA effect in the final model for informational reporting although it did not strictly meet the SCM forward-selection p < 0.01 criterion; they note the apparent VPA-driven exposure rise may be confounded with VPA-associated weight / fat gain (Discussion paragraph 4).",
-      source_name        = "VPA"
+      notes = "Linear-additive multiplicative effect on CL/F: cl *= (1 - 0.101 * CONMED_VPA); -10.1% in clearance translates to ~11% higher brivaracetam exposure relative to VPA-naive patients (Schoemaker 2017 Table 1). The authors retained the VPA effect in the final model for informational reporting although it did not strictly meet the SCM forward-selection p < 0.01 criterion; they note the apparent VPA-driven exposure rise may be confounded with VPA-associated weight / fat gain (Discussion paragraph 4).",
+      source_name = "VPA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96,
-    n_studies      = 1,
-    age_range      = "1 month to <16 years",
-    age_strata     = "29 patients 1 month to <2 years; 26 patients 2 to <6 years; 24 patients 6 to <12 years; 17 patients 12 to <16 years",
-    weight_range   = "Paediatric range across the 1 month - 16 years cohort (full demographics in Schoemaker 2017 Supplemental Table 1).",
-    weight_median  = "Not reported in the main text; per Supplemental Table 1.",
+    species = "human",
+    n_subjects = 96,
+    n_studies = 1,
+    age_range = "1 month to <16 years",
+    age_strata = "29 patients 1 month to <2 years; 26 patients 2 to <6 years; 24 patients 6 to <12 years; 17 patients 12 to <16 years",
+    weight_range = "Paediatric range across the 1 month - 16 years cohort (full demographics in Schoemaker 2017 Supplemental Table 1).",
+    weight_median = "Not reported in the main text; per Supplemental Table 1.",
     sex_female_pct = NA,
     race_ethnicity = "Not detected as significant covariate (race and ethnicity were tested and excluded during SCM).",
-    disease_state  = "Paediatric epilepsy (localisation-related, generalised, or undetermined focal / generalised epileptic syndrome per ILAE classification). Patients were receiving 1 to 3 concomitant antiepileptic drugs other than levetiracetam.",
-    dose_range     = "Brivaracetam oral solution as weekly increasing doses: 0.4 / 0.8 / 1.6 mg/kg bid for subjects >=8 years, 0.5 / 1.0 / 2.0 mg/kg bid for subjects <8 years. Doses capped at adult 25 / 50 / 100 mg bid for WT >= 50 kg.",
-    regions        = "Multicentre (approximately 50 sites planned; specific regions not enumerated in the main text).",
+    disease_state = "Paediatric epilepsy (localisation-related, generalised, or undetermined focal / generalised epileptic syndrome per ILAE classification). Patients were receiving 1 to 3 concomitant antiepileptic drugs other than levetiracetam.",
+    dose_range = "Brivaracetam oral solution as weekly increasing doses: 0.4 / 0.8 / 1.6 mg/kg bid for subjects >=8 years, 0.5 / 1.0 / 2.0 mg/kg bid for subjects <8 years. Doses capped at adult 25 / 50 / 100 mg bid for WT >= 50 kg.",
+    regions = "Multicentre (approximately 50 sites planned; specific regions not enumerated in the main text).",
     n_observations = "600 brivaracetam plasma concentrations across 3 sampling occasions (day 7, 14, 21) per subject in early-morning, late-morning, or afternoon brackets plus one optional sample.",
-    co_medication  = "Concomitant AEDs: phenobarbital (PB; pooled with primidone), carbamazepine (CBZ), valproate (VPA), phenytoin (PHT; only 1 patient, excluded from SCM testing). Other tested covariates with no detected effect: race, ethnicity, sex, eGFR, non-AED CYP3A inhibitors, non-AED CYP2C19 inhibitors, age, postconceptional age (PCA).",
-    notes          = "Trial N01263 (NCT00422422). Hepatic impairment was an exclusion criterion. Demographics from Schoemaker 2017 Results paragraph 1 and Supplemental Table 1. Bootstrap-based parameter uncertainty (n = 1000 replicates, 23 non-converged excluded) is reported alongside the NONMEM estimates in Table 1."
+    co_medication = "Concomitant AEDs: phenobarbital (PB; pooled with primidone), carbamazepine (CBZ), valproate (VPA), phenytoin (PHT; only 1 patient, excluded from SCM testing). Other tested covariates with no detected effect: race, ethnicity, sex, eGFR, non-AED CYP3A inhibitors, non-AED CYP2C19 inhibitors, age, postconceptional age (PCA).",
+    notes = "Trial N01263 (NCT00422422). Hepatic impairment was an exclusion criterion. Demographics from Schoemaker 2017 Results paragraph 1 and Supplemental Table 1. Bootstrap-based parameter uncertainty (n = 1000 replicates, 23 non-converged excluded) is reported alongside the NONMEM estimates in Table 1."
   )
 
   ini({

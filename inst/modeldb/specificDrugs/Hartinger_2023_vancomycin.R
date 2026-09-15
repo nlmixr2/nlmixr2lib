@@ -54,124 +54,124 @@ Hartinger_2023_vancomycin <- function() {
   # Royer_2011_cisplatin.R precedent for the same anatomical state.
   compartmentData <- list(
     peritoneum = list(analyte = "vancomycin", units = "mg", specimen = "administration site", verified = TRUE),
-    central    = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort median 75 kg (IQR 70-84) per Hartinger 2023 Table 1. Enters the central volume as a linear-on-the-natural-scale ratio term, V2i = V2p + theta_BWV * (BW / 75) (Hartinger 2023 Table 2 row 'V2i [L] = V2p + theta BWV x (BW/75)'). Note this is a through-origin RATIO, not a centred difference: at the median 75 kg the typical V2 is 23.6 + 50.9 = 74.5 L, not 23.6 L. The Results text quotes '23.6 L (78%)' as the typical V2 for a 75 kg patient, but that number is the Table 2 population intercept V2p together with its RSE, and the additive-ratio equation is the one that reproduces the paper's own simulations (see the vignette source-trace: the day-1 plasma level of ~16 mg/L after a 25 mg/kg intraperitoneal loading dose in Figure 3E/3F requires V2 near 75 L, and would be ~50 mg/L at 23.6 L). The blow-up of the V2p RSE from 9% to 78% on adding this covariate, which the paper reports and retains deliberately, is itself the signature of an intercept that carries only a third of the typical volume. Simulated range 50-100 kg (Hartinger 2023 Figures 3, 4, S6, S7).",
-      source_name        = "BW"
+      notes = "Cohort median 75 kg (IQR 70-84) per Hartinger 2023 Table 1. Enters the central volume as a linear-on-the-natural-scale ratio term, V2i = V2p + theta_BWV * (BW / 75) (Hartinger 2023 Table 2 row 'V2i [L] = V2p + theta BWV x (BW/75)'). Note this is a through-origin RATIO, not a centred difference: at the median 75 kg the typical V2 is 23.6 + 50.9 = 74.5 L, not 23.6 L. The Results text quotes '23.6 L (78%)' as the typical V2 for a 75 kg patient, but that number is the Table 2 population intercept V2p together with its RSE, and the additive-ratio equation is the one that reproduces the paper's own simulations (see the vignette source-trace: the day-1 plasma level of ~16 mg/L after a 25 mg/kg intraperitoneal loading dose in Figure 3E/3F requires V2 near 75 L, and would be ~50 mg/L at 23.6 L). The blow-up of the V2p RSE from 9% to 78% on adding this covariate, which the paper reports and retains deliberately, is itself the signature of an intercept that carries only a third of the typical volume. Simulated range 50-100 kg (Hartinger 2023 Figures 3, 4, S6, S7).",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Residual estimated glomerular filtration rate, CKD-EPI 2009 equation",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Residual estimated glomerular filtration rate, CKD-EPI 2009 equation",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort median 6.76 mL/min/1.73 m^2 (IQR 5.07-7.92) per Hartinger 2023 Table 1, which states the value is 'Calculated according to CKD-EPI 2009 formula, only in patients with preserved diuresis.' Enters clearance as the through-origin ratio (CRCL / 6.76) INSIDE the preserved-diuresis bracket, so it acts only when URINE_VOL_24H > 500 mL/day (Hartinger 2023 Table 2: CLi = CLp * ((1 + theta_RESDIU) * (CRCL/6.76))^(RESDIU>500)); this is the categorical-gates-a-continuous interaction the paper describes as 'eGFR was included as a covariate on CL in a linear relationship FOR PATIENTS WITH PRESERVED DIURESIS'. Because the exponent is 0 in oliguric subjects the column is unused there and any positive placeholder (e.g. the median 6.76) reproduces the model exactly. Hartinger 2023 Table 2 writes the column 'CRCL' while the abbreviation list and Methods both define it as CKD-EPI eGFR; the eGFR reading is authoritative.",
-      source_name        = "CRCL"
+      notes = "Cohort median 6.76 mL/min/1.73 m^2 (IQR 5.07-7.92) per Hartinger 2023 Table 1, which states the value is 'Calculated according to CKD-EPI 2009 formula, only in patients with preserved diuresis.' Enters clearance as the through-origin ratio (CRCL / 6.76) INSIDE the preserved-diuresis bracket, so it acts only when URINE_VOL_24H > 500 mL/day (Hartinger 2023 Table 2: CLi = CLp * ((1 + theta_RESDIU) * (CRCL/6.76))^(RESDIU>500)); this is the categorical-gates-a-continuous interaction the paper describes as 'eGFR was included as a covariate on CL in a linear relationship FOR PATIENTS WITH PRESERVED DIURESIS'. Because the exponent is 0 in oliguric subjects the column is unused there and any positive placeholder (e.g. the median 6.76) reproduces the model exactly. Hartinger 2023 Table 2 writes the column 'CRCL' while the abbreviation list and Methods both define it as CKD-EPI eGFR; the eGFR reading is authoritative.",
+      source_name = "CRCL"
     ),
     URINE_VOL_24H = list(
-      description        = "Residual diuresis, total 24-hour urine volume",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "Residual diuresis, total 24-hour urine volume",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = "n/a -- used as the binary preserved-diuresis gate (URINE_VOL_24H > 500)",
-      notes              = "Hartinger 2023 Methods 'Covariate analysis' defines the categorical covariate as 'Preserved diuresis (yes = over 500 mL urine daily or no = less than 500 mL urine daily)'; Table 2 calls the resulting indicator RESDIU>500. Cohort: 31/41 (75.6%) with preserved diuresis > 500 mL/day, 10/41 (24.4%) oliguric < 500 mL/day; median residual diuresis 1000 mL/day (IQR 350-1450) per Table 1. The indicator is the EXPONENT on the whole bracket ((1 + theta_RESDIU) * (CRCL/6.76)), so it simultaneously switches on the 2.26-fold clearance increase and the eGFR ratio. The 500 mL/24h threshold is the preserved-diuresis cutoff already named in this register entry's reference-category note; Huppe 2023 uses the same column at the 100 mL/24h anuria cutoff instead.",
-      source_name        = "RESDIU"
+      notes = "Hartinger 2023 Methods 'Covariate analysis' defines the categorical covariate as 'Preserved diuresis (yes = over 500 mL urine daily or no = less than 500 mL urine daily)'; Table 2 calls the resulting indicator RESDIU>500. Cohort: 31/41 (75.6%) with preserved diuresis > 500 mL/day, 10/41 (24.4%) oliguric < 500 mL/day; median residual diuresis 1000 mL/day (IQR 350-1450) per Table 1. The indicator is the EXPONENT on the whole bracket ((1 + theta_RESDIU) * (CRCL/6.76)), so it simultaneously switches on the 2.26-fold clearance increase and the eGFR ratio. The 500 mL/24h threshold is the preserved-diuresis cutoff already named in this register entry's reference-category note; Huppe 2023 uses the same column at the 100 mL/24h anuria cutoff instead.",
+      source_name = "RESDIU"
     ),
     RRT_PERIT_DIAL_FILL_VOLUME = list(
-      description        = "Volume of peritoneal dialysate instilled at the start of the dwell",
-      units              = "L",
-      type               = "continuous",
+      description = "Volume of peritoneal dialysate instilled at the start of the dwell",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hartinger 2023 Table 2 fixes V1, the volume of the peritoneal compartment, to 'the actual volume of peritoneal solution used (range 1-2 L)' rather than estimating it, so this column IS the peritoneal compartment volume and appears directly in model() as v1. Observed exchange volumes (Table 1): 2000 mL in 23/41 patients (56%), 1500 mL in 16/41 (39%), 1200 mL and 1000 mL in one patient each (2% each). The paper's simulations use 2 L for 75 kg and 100 kg patients and 1.5 L for 50 kg patients 'due to the smaller peritoneal cavity' (Results 3.2). Confirmed against the paper's own figure axes: a 20 mg/kg intraperitoneal loading dose in a 75 kg patient (1500 mg) reads exactly 750 mg/L on the Figure 4 peritoneal-concentration axis, i.e. dose / 2 L.",
-      source_name        = "V1"
+      notes = "Hartinger 2023 Table 2 fixes V1, the volume of the peritoneal compartment, to 'the actual volume of peritoneal solution used (range 1-2 L)' rather than estimating it, so this column IS the peritoneal compartment volume and appears directly in model() as v1. Observed exchange volumes (Table 1): 2000 mL in 23/41 patients (56%), 1500 mL in 16/41 (39%), 1200 mL and 1000 mL in one patient each (2% each). The paper's simulations use 2 L for 75 kg and 100 kg patients and 1.5 L for 50 kg patients 'due to the smaller peritoneal cavity' (Results 3.2). Confirmed against the paper's own figure axes: a 20 mg/kg intraperitoneal loading dose in a 75 kg patient (1500 mg) reads exactly 750 mg/L on the Figure 4 peritoneal-concentration axis, i.e. dose / 2 L.",
+      source_name = "V1"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator for inter-occasion-variability multiplexing",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for inter-occasion-variability multiplexing",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Hartinger 2023 Methods defines an occasion as 'a particular vancomycin treatment course that ended up with vancomycin withdrawal due to the cure of the infection, switch to a different antibiotic when ineffective, or the removal of the PD catheter' -- i.e. one peritonitis episode. The data comprise 57 treatment occasions in 41 patients. The paper reports one shared IOV magnitude on Q (31% CV) and never states a maximum occasion count, so three occasions are encoded here (as with Ding 2026 vancomycin and Stoschus 2025 phenobarbital, where the source likewise gives the IOV magnitude without an occasion count); occasions 2 and 3 are fix()'d to the occasion-1 variance to reproduce NONMEM $OMEGA BLOCK(1) SAME. A single-episode simulation uses OCC = 1 throughout.",
-      source_name        = "OCC"
+      notes = "Hartinger 2023 Methods defines an occasion as 'a particular vancomycin treatment course that ended up with vancomycin withdrawal due to the cure of the infection, switch to a different antibiotic when ineffective, or the removal of the PD catheter' -- i.e. one peritonitis episode. The data comprise 57 treatment occasions in 41 patients. The paper reports one shared IOV magnitude on Q (31% CV) and never states a maximum occasion count, so three occasions are encoded here (as with Ding 2026 vancomycin and Stoschus 2025 phenobarbital, where the source likewise gives the IOV magnitude without an occasion count); occasions 2 and 3 are fix()'d to the occasion-1 variance to reproduce NONMEM $OMEGA BLOCK(1) SAME. A single-episode simulation uses OCC = 1 throughout.",
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     LBM = list(
       description = "Lean body mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on both V2 and CL in the stepwise covariate search (Hartinger 2023 Methods 'Covariate analysis'); not retained. Cohort median 54.31 kg (IQR 46.18-59.89) per Table 1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on both V2 and CL in the stepwise covariate search (Hartinger 2023 Methods 'Covariate analysis'); not retained. Cohort median 54.31 kg (IQR 46.18-59.89) per Table 1."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on both V2 and CL; not retained. Cohort median 68 years (IQR 53-74)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on both V2 and CL; not retained. Cohort median 68 years (IQR 53-74)."
     ),
     ALB = list(
       description = "Serum albumin at the start of vancomycin treatment",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened on both V2 and CL; not retained. Cohort median 28 g/L (IQR 26-31)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened on both V2 and CL; not retained. Cohort median 28 g/L (IQR 26-31)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on V2, CL and Q; not retained. Cohort 17 female / 24 male."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on V2, CL and Q; not retained. Cohort 17 female / 24 male."
     ),
     UREA = list(
       description = "Serum urea at the start of vancomycin treatment",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained. Cohort median 18 mmol/L (IQR 14.9-22.3)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened on CL; not retained. Cohort median 18 mmol/L (IQR 14.9-22.3)."
     ),
     SCR = list(
       description = "Serum creatinine at the start of vancomycin treatment",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained. Cohort median 694 umol/L (IQR 564-849). Used upstream to compute CRCL via CKD-EPI 2009."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened on CL; not retained. Cohort median 694 umol/L (IQR 564-849). Used upstream to compute CRCL via CKD-EPI 2009."
     ),
     CRP = list(
       description = "C-reactive protein at the start of the peritonitis treatment",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened on Q as a marker of peritoneal inflammation; not retained. Cohort median 31.7 mg/L (IQR 10.9-96.5). Hartinger 2023 Discussion notes that a more sensitive inflammation marker such as procalcitonin might have correlated with intercompartmental clearance where CRP did not."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened on Q as a marker of peritoneal inflammation; not retained. Cohort median 31.7 mg/L (IQR 10.9-96.5). Hartinger 2023 Discussion notes that a more sensitive inflammation marker such as procalcitonin might have correlated with intercompartmental clearance where CRP did not."
     ),
     POTASSIUM = list(
       description = "Serum potassium at the start of vancomycin treatment",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened on Q; not retained. Cohort median 4.1 mmol/L (IQR 3.8-4.6)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened on Q; not retained. Cohort median 4.1 mmol/L (IQR 3.8-4.6)."
     ),
     PERIT_DIAL_SOLUTION = list(
       description = "Type of peritoneal dialysis solution (low / medium / high glucose content, or icodextrin-based)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on Q as a categorical covariate; not retained. Not registered as a canonical column because no model in the library retains it; the solution type does matter analytically -- glucose-based solutions depressed the nephelometric vancomycin assay by ~20%, and all dialysate concentrations were multiplied by 1.2885 before modelling (Hartinger 2023 Methods 2.2 and Figure S1)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on Q as a categorical covariate; not retained. Not registered as a canonical column because no model in the library retains it; the solution type does matter analytically -- glucose-based solutions depressed the nephelometric vancomycin assay by ~20%, and all dialysate concentrations were multiplied by 1.2885 before modelling (Hartinger 2023 Methods 2.2 and Figure S1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    n_occasions    = "57 treatment occasions (hospitalizations), including recurrent and relapsing peritonitis episodes",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    n_occasions = "57 treatment occasions (hospitalizations), including recurrent and relapsing peritonitis episodes",
     n_observations = "373 vancomycin concentrations (132 peritoneal dialysate + 241 plasma)",
-    age_range      = "median 68 years (IQR 53-74)",
-    weight_range   = "median 75 kg (IQR 70-84); BMI median 26.67 kg/m^2 (IQR 21.6-28.34); lean body weight median 54.31 kg (IQR 46.18-59.89)",
+    age_range = "median 68 years (IQR 53-74)",
+    weight_range = "median 75 kg (IQR 70-84); BMI median 26.67 kg/m^2 (IQR 21.6-28.34); lean body weight median 54.31 kg (IQR 46.18-59.89)",
     sex_female_pct = 41.5,
     race_ethnicity = "All but one patient were Caucasian; the paper states ethnic origin could not be tested as a covariate for this reason.",
-    disease_state  = "End-stage renal disease treated by peritoneal dialysis, with suspected or culture-confirmed PD-associated peritonitis. Cultivations from peritoneal dialysate: G+ 36 (63%), culture-negative 13 (23%), G- 4 (7%), mixed 3 (5%), G+ with candida 1 (2%). Concomitant exit-site infection in 27 (47%). Median time on PD 22.5 months (IQR 9-46.75).",
+    disease_state = "End-stage renal disease treated by peritoneal dialysis, with suspected or culture-confirmed PD-associated peritonitis. Cultivations from peritoneal dialysate: G+ 36 (63%), culture-negative 13 (23%), G- 4 (7%), mixed 3 (5%), G+ with candida 1 (2%). Concomitant exit-site infection in 27 (47%). Median time on PD 22.5 months (IQR 9-46.75).",
     renal_function = "Residual diuresis > 500 mL/day (preserved) in 31/41 (75.6%) and < 500 mL/day (oliguria) in 10/41 (24.4%); median residual diuresis 1000 mL/day (IQR 350-1450). Residual eGFR (CKD-EPI 2009, computed only in patients with preserved diuresis) median 6.76 mL/min/1.73 m^2 (IQR 5.07-7.92). Serum creatinine median 694 umol/L (IQR 564-849).",
-    dose_range     = "Intraperitoneal vancomycin per ISPD guidance, predominantly a 15-30 mg/kg loading dose followed by 25 mg per litre of instilled dialysate in every subsequent exchange, with maintenance doses adjusted by therapeutic drug monitoring to a plasma AUC24 of 400-600 mg*h/L. Intravenous dosing was combined with intraperitoneal dosing when systemic infection was present; 3 patients received intravenous vancomycin only and contributed peritoneal concentrations. On admission all patients were switched to CAPD with 4-5 manual exchanges per day; exchange volumes 2000 mL (56%), 1500 mL (39%), 1200 mL (2%), 1000 mL (2%).",
-    regions        = "Czech Republic (two nephrology departments of the General University Hospital in Prague), June 2016 - August 2022",
-    notes          = "Open-label retrospective observational therapeutic-drug-monitoring study. Vancomycin assayed by nephelometry (Beckman Coulter); the plasma analytical range was 3.5-40 mg/L with dilution above it. The method was validated for dialysate over 10-250 mg/L: icodextrin did not interfere but glucose-based solutions depressed the measured value by ~20% independent of glucose or vancomycin concentration, so all dialysate concentrations were multiplied by 1.2885 before modelling (Methods 2.2, Figure S1). NONMEM 7.4.0 with PsN 3.4.2 under Pirana 2.9.0, FOCE-I. Model validated by a 500-replicate nonparametric bootstrap (all medians except V2p within 10% of the final estimates) and by normalized prediction distribution errors from 1000 simulated datasets (plasma NPDE mean 0.1027 / variance 0.848; peritoneal 0.1228 / 0.8438; neither significantly different from 0 and 1)."
+    dose_range = "Intraperitoneal vancomycin per ISPD guidance, predominantly a 15-30 mg/kg loading dose followed by 25 mg per litre of instilled dialysate in every subsequent exchange, with maintenance doses adjusted by therapeutic drug monitoring to a plasma AUC24 of 400-600 mg*h/L. Intravenous dosing was combined with intraperitoneal dosing when systemic infection was present; 3 patients received intravenous vancomycin only and contributed peritoneal concentrations. On admission all patients were switched to CAPD with 4-5 manual exchanges per day; exchange volumes 2000 mL (56%), 1500 mL (39%), 1200 mL (2%), 1000 mL (2%).",
+    regions = "Czech Republic (two nephrology departments of the General University Hospital in Prague), June 2016 - August 2022",
+    notes = "Open-label retrospective observational therapeutic-drug-monitoring study. Vancomycin assayed by nephelometry (Beckman Coulter); the plasma analytical range was 3.5-40 mg/L with dilution above it. The method was validated for dialysate over 10-250 mg/L: icodextrin did not interfere but glucose-based solutions depressed the measured value by ~20% independent of glucose or vancomycin concentration, so all dialysate concentrations were multiplied by 1.2885 before modelling (Methods 2.2, Figure S1). NONMEM 7.4.0 with PsN 3.4.2 under Pirana 2.9.0, FOCE-I. Model validated by a 500-replicate nonparametric bootstrap (all medians except V2p within 10% of the final estimates) and by normalized prediction distribution errors from 1000 simulated datasets (plasma NPDE mean 0.1027 / variance 0.848; peritoneal 0.1228 / 0.8438; neither significantly different from 0 and 1)."
   )
 
   ini({

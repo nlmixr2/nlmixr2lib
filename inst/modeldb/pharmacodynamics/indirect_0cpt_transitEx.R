@@ -7,18 +7,18 @@ indirect_0cpt_transitEx <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit6    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit7    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit8    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit9    = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit10   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit7 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit8 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit9 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit10 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

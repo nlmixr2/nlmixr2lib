@@ -24,40 +24,40 @@ Knibbe_2005_propofol_rat <- function() {
     sep = " "
   )
   vignette <- "Knibbe_2005_propofol"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (male Wistar)",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "adult",
-    weight_range   = "0.25-0.30 kg (reference weight 0.25 kg)",
+    species = "rat (male Wistar)",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "adult",
+    weight_range = "0.25-0.30 kg (reference weight 0.25 kg)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy chronically instrumented animals (jugular catheter for",
       "drug administration, arterial catheter for sampling);",
       "non-ventilated, experimental setting. Body temperature",
       "36.5-37.5 C; renal, hepatic, and cardiac function normal",
       "(Knibbe 2005 Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single propofol bolus of 30 mg/kg administered over 5 minutes",
       "through the jugular catheter (Methods, Animals and patients).",
       "19 whole-blood samples per rat were drawn for HPLC-fluorescence",
       "assay over the concentration range 0.05-40 mg/L."
     ),
-    regions        = "the Netherlands",
-    notes          = paste(
+    regions = "the Netherlands",
+    notes = paste(
       "The rat parameter values were originally fit in reference 11",
       "of Knibbe 2005 (the Knibbe et al. preclinical propofol popPK",
       "publication). Knibbe 2005 reproduces them in Table 3 as the",

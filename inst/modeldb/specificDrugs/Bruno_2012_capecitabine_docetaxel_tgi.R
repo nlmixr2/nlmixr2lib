@@ -31,27 +31,27 @@ Bruno_2012_capecitabine_docetaxel_tgi <- function() {
   vignette <- "Bruno_2012_capecitabine_docetaxel_mbc"
 
   units <- list(
-    time          = "week",
-    dosing        = "mg",
+    time = "week",
+    dosing = "mg",
     concentration = "mm (the observed variable is tumor size, the sum of the longest diameters, not a drug concentration)"
   )
 
   compartmentData <- list(
     depot_kpd_docetaxel = list(
-      analyte  = "docetaxel",
-      units    = "mg",
+      analyte = "docetaxel",
+      units = "mg",
       specimen = "not applicable",
       verified = TRUE
     ),
     depot_kpd_capecitabine = list(
-      analyte  = "capecitabine",
-      units    = "mg",
+      analyte = "capecitabine",
+      units = "mg",
       specimen = "not applicable",
       verified = TRUE
     ),
     tumor_size = list(
-      analyte  = "tumor size (sum of the longest diameters of measurable / target lesions)",
-      units    = "mm",
+      analyte = "tumor size (sum of the longest diameters of measurable / target lesions)",
+      units = "mm",
       specimen = "not applicable",
       verified = TRUE
     )
@@ -59,31 +59,31 @@ Bruno_2012_capecitabine_docetaxel_tgi <- function() {
 
   covariateData <- list(
     TUM_SLD = list(
-      description        = "Observed baseline tumor size: the sum of the longest diameters of all measurable lesions (WHO criteria, study SO14999) or of the target lesions (RECIST, study NO16853).",
-      units              = "mm",
-      type               = "continuous",
+      description = "Observed baseline tumor size: the sum of the longest diameters of all measurable lesions (WHO criteria, study SO14999) or of the target lesions (RECIST, study NO16853).",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Sets the per-subject initial condition of the tumor-size ODE (`tumor_size(0) <- TUM_SLD`), reproducing the source NONMEM `A_0(3) = BASE`. Bruno 2012 explicitly kept the observed baseline out of the dataset as an observation and supplied it as a covariate instead (Supplementary Information). Observed range in the pooled 888-patient dataset: 10 to 520 mm (Bruno 2012 Results, TGI model).",
-      source_name        = "BASE"
+      notes = "Time-fixed per subject. Sets the per-subject initial condition of the tumor-size ODE (`tumor_size(0) <- TUM_SLD`), reproducing the source NONMEM `A_0(3) = BASE`. Bruno 2012 explicitly kept the observed baseline out of the dataset as an observation and supplied it as a covariate instead (Supplementary Information). Observed range in the pooled 888-patient dataset: 10 to 520 mm (Bruno 2012 Results, TGI model).",
+      source_name = "BASE"
     ),
     STUDY_NO16853 = list(
-      description        = "Study indicator for the randomized phase II noninferiority study NO16853: 1 = NO16853, 0 = the pivotal phase III study SO14999.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study indicator for the randomized phase II noninferiority study NO16853: 1 = NO16853, 0 = the pivotal phase III study SO14999.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (study SO14999)",
-      notes              = "Time-fixed per subject. Selects the study-specific additive residual error variance: 332 mm^2 in SO14999 versus 112 mm^2 in NO16853 (Supplementary Table S1). The source NONMEM control stream codes this as `IF(STUD.EQ.2) REE = SQRT(THETA(9))`, i.e. STUD = 2 is NO16853. Bruno 2012 attributes the higher residual variance in SO14999 to that study's older WHO response criteria and measurement practice. Distinct from the `1 / 2`-coded study effect on survival and PFS time, which is carried by the same indicator in the companion models `Bruno_2012_capecitabine_docetaxel_os` and `Bruno_2012_capecitabine_docetaxel_pfs`.",
-      source_name        = "STUD"
+      notes = "Time-fixed per subject. Selects the study-specific additive residual error variance: 332 mm^2 in SO14999 versus 112 mm^2 in NO16853 (Supplementary Table S1). The source NONMEM control stream codes this as `IF(STUD.EQ.2) REE = SQRT(THETA(9))`, i.e. STUD = 2 is NO16853. Bruno 2012 attributes the higher residual variance in SO14999 to that study's older WHO response criteria and measurement practice. Distinct from the `1 / 2`-coded study effect on survival and PFS time, which is carried by the same indicator in the companion models `Bruno_2012_capecitabine_docetaxel_os` and `Bruno_2012_capecitabine_docetaxel_pfs`.",
+      source_name = "STUD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 888L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 888L,
+    n_studies = 2L,
     n_observations = 2988L,
-    disease_state  = "locally advanced / metastatic breast cancer, second line after anthracycline pretreatment",
-    dose_range     = "capecitabine 825 or 1,250 mg/m^2 twice daily on days 1-14 of each 3-week cycle plus docetaxel 75 mg/m^2 on day 1 of each cycle; study SO14999 additionally contributed a single-agent docetaxel every-3-weeks arm (Bruno 2012 does not state that arm's docetaxel dose)",
-    notes          = "Pooled longitudinal tumor-size database of 888 patients (463 from the pivotal phase III study SO14999, 425 from the randomized phase II noninferiority study NO16853) contributing 2,988 tumor-size observations, a mean of 3.4 measurements per patient (Bruno 2012 Results, TGI model). Baseline tumor size ranged from 10 to 520 mm. Tumor response was assessed with WHO criteria in SO14999 and with RECIST in NO16853; the sum of the longest diameters of all measurable lesions (WHO) or of the target lesions (RECIST) is the modelled variable. Bruno 2012 does not tabulate age, weight, sex or race for this cohort."
+    disease_state = "locally advanced / metastatic breast cancer, second line after anthracycline pretreatment",
+    dose_range = "capecitabine 825 or 1,250 mg/m^2 twice daily on days 1-14 of each 3-week cycle plus docetaxel 75 mg/m^2 on day 1 of each cycle; study SO14999 additionally contributed a single-agent docetaxel every-3-weeks arm (Bruno 2012 does not state that arm's docetaxel dose)",
+    notes = "Pooled longitudinal tumor-size database of 888 patients (463 from the pivotal phase III study SO14999, 425 from the randomized phase II noninferiority study NO16853) contributing 2,988 tumor-size observations, a mean of 3.4 measurements per patient (Bruno 2012 Results, TGI model). Baseline tumor size ranged from 10 to 520 mm. Tumor response was assessed with WHO criteria in SO14999 and with RECIST in NO16853; the sum of the longest diameters of all measurable lesions (WHO) or of the target lesions (RECIST) is the modelled variable. Bruno 2012 does not tabulate age, weight, sex or race for this cohort."
   )
 
   ini({

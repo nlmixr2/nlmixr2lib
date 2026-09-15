@@ -28,38 +28,38 @@ Reif_2013_ethinylestradiol <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL/F as a linear fractional deviation from the cohort median",
         "of 62 kg: CO2 = 1 + CL_BW * (BW - 62). Recorded at both the Week 3",
         "and Week 27 visits; the paper reports only minor within-subject",
         "change between visits. Cohort median 62 kg, 5th-95th percentile",
         "51-79.8 kg (Table 2)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL/F on the natural-log scale as a linear fractional",
         "deviation from the cohort median of 24 years:",
         "CO1 = 1 + CL_AGE * (LOG(AGE) - LOG(24)). Cohort median 24 years,",
         "5th-95th percentile 19-34 years (Table 2)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     OCC = list(
-      description        = "Sampling occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (Week 3, days 15-21 of the first cycle)",
-      notes              = paste(
+      notes = paste(
         "Two occasions: OCC = 1 is the Week 3 visit and OCC = 2 is the",
         "Week 27 visit after about 6 months of treatment. Decomposed inside",
         "model() into the binary indicator oc2, which is the paper's OCA",
@@ -67,49 +67,57 @@ Reif_2013_ethinylestradiol <- function() {
         "It gates a typical-value step in relative bioavailability, not an",
         "inter-occasion random effect; the EE model has no IOV."
       ),
-      source_name        = "OCA"
+      source_name = "OCA"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "ethinylestradiol", units = "ng",
-      specimen = "administration site", verified = TRUE
+      analyte = "ethinylestradiol",
+      units = "ng",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "ethinylestradiol", units = "ng",
-      specimen = "serum", verified = TRUE
+      analyte = "ethinylestradiol",
+      units = "ng",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "ethinylestradiol", units = "ng",
-      specimen = "serum", verified = TRUE
+      analyte = "ethinylestradiol",
+      units = "ng",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "ethinylestradiol", units = "ng",
-      specimen = "serum", verified = TRUE
+      analyte = "ethinylestradiol",
+      units = "ng",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1109,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 1109,
+    n_studies = 1,
     n_observations = 4218,
-    age_range      = "19-34 years (5th-95th percentile)",
-    age_median     = "24 years",
-    weight_range   = "51-79.8 kg (5th-95th percentile)",
-    weight_median  = "62 kg",
-    bmi_median     = "22 kg/m^2",
+    age_range = "19-34 years (5th-95th percentile)",
+    age_median = "24 years",
+    weight_range = "51-79.8 kg (5th-95th percentile)",
+    weight_median = "62 kg",
+    bmi_median = "22 kg/m^2",
     sex_female_pct = 100,
     race_ethnicity = c(Caucasian = 98),
-    disease_state  = "healthy young women using combined oral contraception",
-    dose_range     = paste(
+    disease_state = "healthy young women using combined oral contraception",
+    dose_range = paste(
       "ethinylestradiol 20 ug / drospirenone 3 mg once daily by mouth;",
       "conventional 24/4-day, fixed extended 120/4-day, or flexible extended",
       "24-120/4-day regimens over 1 year"
     ),
-    regions        = "multicentre (study 308683 / NCT00266032)",
-    notes          = paste(
+    regions = "multicentre (study 308683 / NCT00266032)",
+    notes = paste(
       "Baseline demographics are Table 2 of Reif 2013 (the ethinylestradiol",
       "PK dataset, n = 1109 of the 1134 subjects who received study drug).",
       "Sparse sampling: two serum samples 45-120 minutes apart on each of two",
@@ -124,9 +132,9 @@ Reif_2013_ethinylestradiol <- function() {
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Pre-selected for the covariate analysis but not retained in the",
         "final model; strongly correlated with body weight, which was",
         "retained instead."
@@ -134,9 +142,9 @@ Reif_2013_ethinylestradiol <- function() {
     ),
     ALCOHOL = list(
       description = "Alcohol consumption category",
-      units       = "(category)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(category)",
+      type = "categorical",
+      notes = paste(
         "Pre-selected for the covariate analysis (never 12.1%, seldom 51.7%,",
         "occasionally 30.2%, regularly 6.0%; Table 2) but not retained in the",
         "final ethinylestradiol model."

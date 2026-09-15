@@ -20,27 +20,27 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     "5(11):617-624. doi:10.1002/psp4.12136.",
     "DDMORE Foundation Model Repository: DDMODEL00000273."
   )
-  vignette     <- "Kovalenko_2016_dupilumab_ddmore"
-  ddmore_id    <- "DDMODEL00000273"
+  vignette <- "Kovalenko_2016_dupilumab_ddmore"
+  ddmore_id <- "DDMODEL00000273"
   replicate_of <- "inst/modeldb/specificDrugs/Kovalenko_2016_dupilumab.R"
-  units        <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Bundle covariate equation (Executable_Simulated_Dupilumab.ctl $PK):",
         "C1 = exp((LWT - log(75)) * 0.75) = (WT/75)^0.75, then",
         "V2 = exp((MU_1 + ETA(1)) * C1). This makes log(V2) proportional to",
@@ -48,23 +48,23 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
         "Eq. 1, V2 = THETA1 * (WT/75)^THETA2. The reference weight (75 kg) is",
         "encoded in the .ctl as the constant log(75) = 4.317488."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 197L,
-    n_studies      = 6L,
-    age_range      = "Adults; study-wide mean age 37 years (publication)",
-    age_median     = "Mean 37 years (Results, Data section of Kovalenko 2016)",
-    weight_range   = "Adults; study-wide mean weight 76 kg (publication)",
-    weight_median  = "Mean 76 kg (Results, Data section of Kovalenko 2016)",
+    n_subjects = 197L,
+    n_studies = 6L,
+    age_range = "Adults; study-wide mean age 37 years (publication)",
+    age_median = "Mean 37 years (Results, Data section of Kovalenko 2016)",
+    weight_range = "Adults; study-wide mean weight 76 kg (publication)",
+    weight_median = "Mean 76 kg (Results, Data section of Kovalenko 2016)",
     sex_female_pct = 49,
     race_ethnicity = "Not reported in the article",
-    disease_state  = "Pooled healthy volunteers and patients with moderate-to-severe atopic dermatitis (publication)",
-    dose_range     = "IV 1, 3, 8, 12 mg/kg single infusions; SC 75-300 mg single or weekly up to 12 doses (publication)",
-    regions        = "Not specified in the article",
-    notes          = paste(
+    disease_state = "Pooled healthy volunteers and patients with moderate-to-severe atopic dermatitis (publication)",
+    dose_range = "IV 1, 3, 8, 12 mg/kg single infusions; SC 75-300 mg single or weekly up to 12 doses (publication)",
+    regions = "Not specified in the article",
+    notes = paste(
       "Population demographics taken from Kovalenko 2016 (Table 1 + Results).",
       "The DDMORE bundle ships only Simulated_Dupilumab.CSV (a single-subject",
       "placeholder with WT=1 across all rows) and Output_simulated_*.lst (a",

@@ -8,53 +8,53 @@ Leroux_2016_cefotaxime <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used in allometric scaling (WT / 1.665)^exponent on CL, V1, V2 and Q. Reference weight 1.665 kg from Leroux 2016 Table 4 (close to the cohort median current weight of 1.6475 kg).",
-      source_name        = "CW"
+      notes = "Time-varying. Used in allometric scaling (WT / 1.665)^exponent on CL, V1, V2 and Q. Reference weight 1.665 kg from Leroux 2016 Table 4 (close to the cohort median current weight of 1.6475 kg).",
+      source_name = "CW"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters the cefotaxime CL maturation factor FGA = (GA / 30)^2.27 (Leroux 2016 Table 4). Cohort range 23.0 to 42.0 weeks (Table 2).",
-      source_name        = "GA"
+      notes = "Time-fixed per subject. Enters the cefotaxime CL maturation factor FGA = (GA / 30)^2.27 (Leroux 2016 Table 4). Cohort range 23.0 to 42.0 weeks (Table 2).",
+      source_name = "GA"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Leroux 2016 Table 4 expresses PNA in days with reference 12 days; the canonical PNA carries months, so the in-model term is reparameterised as FPNA = (PNA / 0.3943)^0.28 with reference 0.3943 months = 12 / 30.4375 days. Cohort range 0 to 69 days (Table 2).",
-      source_name        = "PNA"
+      notes = "Time-varying. Leroux 2016 Table 4 expresses PNA in days with reference 12 days; the canonical PNA carries months, so the in-model term is reparameterised as FPNA = (PNA / 0.3943)^0.28 with reference 0.3943 months = 12 / 30.4375 days. Cohort range 0 to 69 days (Table 2).",
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 100L,
-    n_studies       = 1L,
-    age_range       = "GA 23.0-42.0 weeks at birth; PNA 0-69 days; PMA 25-44 weeks",
-    age_median      = "GA 31.5 weeks; PNA 9 days; PMA 33 weeks",
-    weight_range    = "current weight 0.530-4.200 kg; birth weight 0.512-3.990 kg",
-    weight_median   = "current weight 1.6475 kg; birth weight 1.415 kg",
-    sex_female_pct  = 60.0,
-    race_ethnicity  = "Not reported (three French neonatal intensive care units)",
-    disease_state   = "Neonates and young infants (postmenstrual age <= 44 weeks) receiving intravenous cefotaxime as part of routine clinical care for suspected or proven neonatal sepsis. Twenty-five subjects had positive blood cultures (2 early-onset: Streptococcus agalactiae, Escherichia coli; 23 late-onset, predominantly coagulase-negative staphylococci). 53 of 100 subjects required invasive ventilation; 21 received vasopressors; 74 received an aminoglycoside.",
-    dose_range      = "Cefotaxime 50 mg/kg per dose (mean 47.7 mg/kg, SD 8.2) given as a direct IV injection or 15-30 min IV infusion two, three, or four times daily; one patient received a single 100 mg/kg dose.",
-    regions         = "France (multicentre: Robert Debre Paris, Brest, Saint Pierre de la Reunion University Hospitals).",
-    n_observations  = 185L,
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
+    age_range = "GA 23.0-42.0 weeks at birth; PNA 0-69 days; PMA 25-44 weeks",
+    age_median = "GA 31.5 weeks; PNA 9 days; PMA 33 weeks",
+    weight_range = "current weight 0.530-4.200 kg; birth weight 0.512-3.990 kg",
+    weight_median = "current weight 1.6475 kg; birth weight 1.415 kg",
+    sex_female_pct = 60.0,
+    race_ethnicity = "Not reported (three French neonatal intensive care units)",
+    disease_state = "Neonates and young infants (postmenstrual age <= 44 weeks) receiving intravenous cefotaxime as part of routine clinical care for suspected or proven neonatal sepsis. Twenty-five subjects had positive blood cultures (2 early-onset: Streptococcus agalactiae, Escherichia coli; 23 late-onset, predominantly coagulase-negative staphylococci). 53 of 100 subjects required invasive ventilation; 21 received vasopressors; 74 received an aminoglycoside.",
+    dose_range = "Cefotaxime 50 mg/kg per dose (mean 47.7 mg/kg, SD 8.2) given as a direct IV injection or 15-30 min IV infusion two, three, or four times daily; one patient received a single 100 mg/kg dose.",
+    regions = "France (multicentre: Robert Debre Paris, Brest, Saint Pierre de la Reunion University Hospitals).",
+    n_observations = 185L,
     samples_per_subject = "median 1.0 (range 1-6); mean 1.8 samples per patient",
-    notes           = "Open-label opportunistic-sampling popPK study; cefotaxime concentrations measured by HPLC-MS/MS with LLOQ 0.05 mg/L. Demographics from Table 2; pharmacokinetic estimates from Table 4. Forward and backward covariate selection retained CW (allometric, exponents fixed), GA, and PNA on CL; serum creatinine did not survive backward elimination."
+    notes = "Open-label opportunistic-sampling popPK study; cefotaxime concentrations measured by HPLC-MS/MS with LLOQ 0.05 mg/L. Demographics from Table 2; pharmacokinetic estimates from Table 4. Forward and backward covariate selection retained CW (allometric, exponents fixed), GA, and PNA on CL; serum creatinine did not survive backward elimination."
   )
 
   ini({

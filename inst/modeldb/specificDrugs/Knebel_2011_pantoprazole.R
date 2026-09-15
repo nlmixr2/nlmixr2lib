@@ -1,6 +1,6 @@
 Knebel_2011_pantoprazole <- function() {
   description <- "Two-compartment population PK model with first-order absorption for pantoprazole in 202 pediatric patients from birth to 16 years, pooled across six clinical trials of an intravenous formulation, a delayed-release tablet, and a delayed-release granule (spheroid) formulation (Knebel 2011). Body-weight allometric scaling is fixed (0.75 on CL and Q, 1 on Vc and Vp, reference 10 kg). Allometrically scaled clearance carries a sigmoid Emax maturation function of postnatal age with the maximum effect fixed at 1, a Hill coefficient of 1.48, and an age at 50% of mature CL of 0.153 years in full-term infants and 1.38-fold higher (0.211 years) in preterm infants; three multiplicative categorical effects also act on CL (male sex 1.06, CYP2C19 poor metabolizer 0.0716, African American race 1.29). The tablet is the oral bioavailability anchor (F1 = 1) and the granule has F1 = 0.295 with 56.7% inter-occasion variability and a slower absorption rate constant (0.613 vs 1.32 per hour); both oral forms share a 0.444 hour absorption lag. Residual error is proportional-only for intravenous data and proportional plus a shared additive term for the two oral formulations. The reference subject is a female, full-term, 10 kg, extensive or unknown CYP2C19 metabolizer, non-African American patient receiving the intravenous or tablet formulation."
-  reference   <- paste(
+  reference <- paste(
     "Knebel W, Tammara B, Udata C, Comer G, Gastonguay MR, Meng X.",
     "Population pharmacokinetic modeling of pantoprazole in pediatric",
     "patients from birth to 16 years.",
@@ -8,24 +8,24 @@ Knebel_2011_pantoprazole <- function() {
     "doi:10.1177/0091270010366146.",
     sep = " "
   )
-  vignette    <- "Knebel_2011_pantoprazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  vignette <- "Knebel_2011_pantoprazole"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "pantoprazole", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "pantoprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling fixed a priori at 0.75 on clearances (CL, Q) and",
         "1 on volumes (V2, V3), normalised to a reference weight of 10 kg",
         "(Knebel 2011 Methods equation 3 and Results equation 6). Cohort",
@@ -34,14 +34,14 @@ Knebel_2011_pantoprazole <- function() {
         "body weight was carried into the final model; see",
         "covariatesDataExcluded."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Postnatal age",
-      units              = "years",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the sigmoid Emax maturation function on allometrically",
         "scaled CL in Knebel 2011 equation 6:",
         "AGE^HILL / (AGE^HILL + AG50^HILL), with the maximum effect fixed at",
@@ -53,14 +53,14 @@ Knebel_2011_pantoprazole <- function() {
         "postnatal, not postmenstrual, age -- the preterm adjustment is",
         "carried by TERM_BIRTH rather than by shifting the age axis."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     TERM_BIRTH = list(
-      description        = "Term-vs-preterm birth indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Term-vs-preterm birth indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (full-term birth) is the typical-value reference in Knebel 2011; the preterm stratum (0) multiplies AG50 by 1.38",
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 defines preterm as gestational age less than 38 weeks",
         "(Results, Analysis Population). NOTE this is the 38-week cutoff used",
         "by the paper, not the 37-week cutoff named in the TERM_BIRTH",
@@ -72,14 +72,14 @@ Knebel_2011_pantoprazole <- function() {
         "Enters as a multiplicative factor on AG50 raised to (1 -",
         "TERM_BIRTH), i.e. the factor applies only to preterm subjects."
       ),
-      source_name        = "gestational age < 38 weeks (preterm indicator; canonical orientation is inverted)"
+      source_name = "gestational age < 38 weeks (preterm indicator; canonical orientation is inverted)"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) is the Knebel 2011 typical-value reference; the estimated 1.06 factor applies to males",
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 Table II codes sex as 0 = female / 1 = male and the",
         "abstract names female as a reference covariate, so the published",
         "THETA15 = 1.06 is the MALE multiplier. The canonical SEXF column is",
@@ -90,14 +90,14 @@ Knebel_2011_pantoprazole <- function() {
         "Knebel 2011 classes this effect as clinically unimportant: the 95%",
         "CI (0.832, 1.34) sits inside the prespecified +/- 25% window."
       ),
-      source_name        = "SEX (0 = female, 1 = male; SEXF = 1 - SEX)"
+      source_name = "SEX (0 = female, 1 = male; SEXF = 1 - SEX)"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-African American: White, Asian, Hispanic, and Other pooled)",
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 Table II codes ethnic origin as 1 = White, 2 = African",
         "American, 3 = Asian, 4 = Hispanic, 5 = Other, and equation 6 carries",
         "only the RACE2 (African American) contrast, so all four non-African",
@@ -106,14 +106,14 @@ Knebel_2011_pantoprazole <- function() {
         "with respect to clinical relevance: the 95% CI (0.995, 1.63)",
         "straddles the +25% boundary."
       ),
-      source_name        = "RACE (RACE2 = African American; RACE_BLACK = as.integer(RACE == 2))"
+      source_name = "RACE (RACE2 = African American; RACE_BLACK = as.integer(RACE == 2))"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive metabolizer OR unknown / not-determined phenotype, pooled)",
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 Table III codes CYP2C19 phenotype as 0 = unknown / not",
         "determined, 1 = poor metabolizer, 2 = extensive metabolizer, and",
         "equation 6 carries only the CPH = 1 (poor metabolizer) contrast, so",
@@ -124,14 +124,14 @@ Knebel_2011_pantoprazole <- function() {
         "four were under 7 months old, so this estimate is confounded with",
         "the maturation term and rests on very few subjects."
       ),
-      source_name        = "CPH (CYP2C19 phenotype; CYP2C19_PM = as.integer(CPH == 1))"
+      source_name = "CPH (CYP2C19 phenotype; CYP2C19_PM = as.integer(CPH == 1))"
     ),
     FORM_TABLET = list(
-      description        = "Delayed-release tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Delayed-release tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not the tablet). Paired with FORM_GRANULE so that both = 0 selects the INTRAVENOUS route; see notes",
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 pooled three administration modes: intravenous,",
         "delayed-release tablet, and delayed-release granule (called",
         "'spheroid' in the paper's equations). They are encoded here as the",
@@ -148,14 +148,14 @@ Knebel_2011_pantoprazole <- function() {
         "intravenous, proportional plus a shared additive term for both oral",
         "formulations."
       ),
-      source_name        = "formulation ('tablet' branch of Knebel 2011 equation 6)"
+      source_name = "formulation ('tablet' branch of Knebel 2011 equation 6)"
     ),
     FORM_GRANULE = list(
-      description        = "Delayed-release granule (spheroid) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Delayed-release granule (spheroid) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not the granule). Paired with FORM_TABLET so that both = 0 selects the INTRAVENOUS route; see FORM_TABLET notes",
-      notes              = paste(
+      notes = paste(
         "Knebel 2011's 'spheroid' formulation: delayed-release granules to be",
         "sprinkled on applesauce, mixed with apple juice, or blended into a",
         "suspension, developed for pediatric patients unable to swallow a",
@@ -171,14 +171,14 @@ Knebel_2011_pantoprazole <- function() {
         "tablet named as the default reference in the FORM_GRANULE register",
         "entry."
       ),
-      source_name        = "formulation ('spheroid' branch of Knebel 2011 equation 6)"
+      source_name = "formulation ('spheroid' branch of Knebel 2011 equation 6)"
     ),
     OCC = list(
-      description        = "Occasion index for inter-occasion variability on granule bioavailability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for inter-occasion variability on granule bioavailability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 Table IV footnote: 'IOV-spheroid, interoccasion",
         "variability for spheroid (occasion defined as first dose vs all",
         "others)'. Two occasions only: OCC = 1 for the first granule dose,",
@@ -192,17 +192,17 @@ Knebel_2011_pantoprazole <- function() {
         "applies to the granule only; intravenous and tablet records may pass",
         "any OCC value because the term is multiplied by FORM_GRANULE."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Knebel 2011 Covariate Model: 'a measure of body size (weight or body",
         "surface area [BSA]) on CL, central volume of distribution (V2),",
         "intercompartmental clearance (Q), and peripheral volume of",
@@ -211,14 +211,14 @@ Knebel_2011_pantoprazole <- function() {
         "coefficient is reported. Cohort range 0.13-2.5 m^2, median 0.39,",
         "mean 0.636 (Table I). Recorded here for provenance only."
       ),
-      source_name        = "Body surface area"
+      source_name = "Body surface area"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported for the 119 patients aged birth to 11 months (Table I:",
         "range 23-41 weeks, median 34, mean 33.6). Knebel 2011 does NOT use",
         "gestational age as a continuous covariate; it enters the final model",
@@ -226,18 +226,18 @@ Knebel_2011_pantoprazole <- function() {
         "which is carried by TERM_BIRTH. Recorded here so the derivation rule",
         "for TERM_BIRTH is auditable."
       ),
-      source_name        = "Gestational age"
+      source_name = "Gestational age"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 202L,
-    n_studies        = 6L,
-    n_observations   = 922L,
-    age_range        = "0.025-16 years (Table I row 'Age, y'); birth to 16 years",
-    age_median       = "0.65 years (Table I row 'Age, y'; mean 3.69 years)",
-    age_notes        = paste(
+    species = "human",
+    n_subjects = 202L,
+    n_studies = 6L,
+    n_observations = 922L,
+    age_range = "0.025-16 years (Table I row 'Age, y'); birth to 16 years",
+    age_median = "0.65 years (Table I row 'Age, y'; mean 3.69 years)",
+    age_notes = paste(
       "Table I reports two age rows for the same 202 patients and they are",
       "NOT unit conversions of each other: 'Age, y' = 0.025-16, median 0.65,",
       "mean 3.69, while 'Age, wks' = 0.3-192, median 7.8, mean 44.3. Sixteen",
@@ -247,13 +247,13 @@ Knebel_2011_pantoprazole <- function() {
       "so the years row is the one quoted here and is the row that",
       "corresponds to the AGE covariate driving the maturation function."
     ),
-    weight_range     = "1.57-127 kg",
-    weight_median    = "7.93 kg (mean 19.2 kg)",
-    bsa_range        = "0.13-2.5 m^2 (median 0.39, mean 0.636)",
-    ga_range         = "23-41 weeks in the 119 patients with gestational age recorded (median 34, mean 33.6)",
-    sex_female_pct   = 40,
-    race_ethnicity   = c(White = 72, Black = 19, Asian = 2, Hispanic = 2, Other = 5),
-    disease_state    = paste(
+    weight_range = "1.57-127 kg",
+    weight_median = "7.93 kg (mean 19.2 kg)",
+    bsa_range = "0.13-2.5 m^2 (median 0.39, mean 0.636)",
+    ga_range = "23-41 weeks in the 119 patients with gestational age recorded (median 34, mean 33.6)",
+    sex_female_pct = 40,
+    race_ethnicity = c(White = 72, Black = 19, Asian = 2, Hispanic = 2, Other = 5),
+    disease_state = paste(
       "Gastroesophageal reflux disease (GERD) in the four oral single- and",
       "multiple-dose trials; the two intravenous single-dose trials enrolled",
       "pediatric patients aged 1 to 16 years. 77 of 202 patients were preterm",
@@ -262,15 +262,15 @@ Knebel_2011_pantoprazole <- function() {
       "or not determined; three of the four poor metabolizers were preterm",
       "infants and all four were under 7 months old."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Intravenous 0.8 or 1.6 mg/kg single dose (22 patients aged 1-16",
       "years); oral single and multiple doses of 1.25, 2.5, 20, or 40 mg",
       "fixed or 0.6 or 1.2 mg/kg (119 patients from birth to 11 months and",
       "61 patients aged 1-16 years)."
     ),
-    regions          = "Not reported",
-    nonmem_method    = "NONMEM VI (ICON Development Solutions), FOCE with interaction, installed and patch-tracked via NMQual 6.3",
-    sampling_schema  = paste(
+    regions = "Not reported",
+    nonmem_method = "NONMEM VI (ICON Development Solutions), FOCE with interaction, installed and patch-tracked via NMQual 6.3",
+    sampling_schema = paste(
       "Plasma sampled at various times across the 24-hour dosing interval;",
       "922 quantifiable concentrations from 202 patients. Assay LC-MS/MS",
       "(AAI Pharma, Shawnee KS) with a lower limit of quantification of 10",
@@ -278,7 +278,7 @@ Knebel_2011_pantoprazole <- function() {
       "and observations without a corresponding dosing time were excluded",
       "from the analysis (no BLQ likelihood method was applied)."
     ),
-    notes            = paste(
+    notes = paste(
       "Demographics from Knebel 2011 Tables I, II, and III; six pooled",
       "clinical trials (2 single-dose intravenous, 4 single- and",
       "multiple-dose oral). Model evaluated by a 500-replicate predictive",

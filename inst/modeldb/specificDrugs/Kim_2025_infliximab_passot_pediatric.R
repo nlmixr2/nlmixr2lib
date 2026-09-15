@@ -30,51 +30,51 @@ Kim_2025_infliximab_passot_pediatric <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on both CL and Vc, normalized to a 67 kg reference: CL *= (WT/67)^0.603 and Vc *= (WT/67)^0.277. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement) and identified this as a probable contributor to the poor predictive performance of the paediatric models, because weight changes materially over a long paediatric follow-up.",
-      source_name        = "WGT"
+      notes = "Power effect on both CL and Vc, normalized to a 67 kg reference: CL *= (WT/67)^0.603 and Vc *= (WT/67)^0.277. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement) and identified this as a probable contributor to the poor predictive performance of the paediatric models, because weight changes materially over a long paediatric follow-up.",
+      source_name = "WGT"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = "Exponential effect on CL and Vc with female as the reference level: the multiplier is 1 for females and exp(0.181) = 1.198 on CL and exp(0.209) = 1.232 on Vc for males. The source control stream codes SEX = 1 for female and SEX = 0 for male, matching the canonical SEXF polarity directly (no value inversion needed). Time-invariant.",
-      source_name        = "SEX"
+      notes = "Exponential effect on CL and Vc with female as the reference level: the multiplier is 1 for females and exp(0.181) = 1.198 on CL and exp(0.209) = 1.232 on Vc for males. The source control stream codes SEX = 1 for female and SEX = 0 for male, matching the canonical SEXF polarity directly (no value inversion needed). Time-invariant.",
+      source_name = "SEX"
     ),
     IBD_CD = list(
-      description        = "Inflammatory bowel disease subtype (1 = Crohn's disease, 0 = ulcerative colitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Inflammatory bowel disease subtype (1 = Crohn's disease, 0 = ulcerative colitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no reference level within IBD: Crohn's disease and ulcerative colitis each carry their own multiplier",
-      notes              = "The source paper (Passot 2016) fitted infliximab PK across several chronic inflammatory diseases, so neither IBD subtype is the model's global reference category; both Crohn's disease and ulcerative colitis receive an explicit exponential multiplier on CL and on Vc, applied on top of the typical values THETA1 / THETA2. On CL: exp(0.384) = 1.468 for Crohn's disease and exp(0.472) = 1.603 for ulcerative colitis. On Vc: exp(0.399) = 1.490 for Crohn's disease and exp(0.417) = 1.517 for ulcerative colitis. The source control stream codes DX = 0 for Crohn's disease and DX = 1 for ulcerative colitis, which is the inverse of the canonical IBD_CD polarity; derive IBD_CD = 1 - DX. Time-invariant.",
-      source_name        = "DX"
+      notes = "The source paper (Passot 2016) fitted infliximab PK across several chronic inflammatory diseases, so neither IBD subtype is the model's global reference category; both Crohn's disease and ulcerative colitis receive an explicit exponential multiplier on CL and on Vc, applied on top of the typical values THETA1 / THETA2. On CL: exp(0.384) = 1.468 for Crohn's disease and exp(0.472) = 1.603 for ulcerative colitis. On Vc: exp(0.399) = 1.490 for Crohn's disease and exp(0.417) = 1.517 for ulcerative colitis. The source control stream codes DX = 0 for Crohn's disease and DX = 1 for ulcerative colitis, which is the inverse of the canonical IBD_CD polarity; derive IBD_CD = 1 - DX. Time-invariant.",
+      source_name = "DX"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = "age >= 15 years (multiplier 1)",
-      notes              = "Entered as a dichotomy at 15 years rather than as a continuous effect, and only on Vc: the multiplier is 1 for age >= 15 years and exp(-0.396) = 0.673 for age < 15 years. This is the only covariate that distinguishes the paediatric variant of the Passot model from the adult variant. Time-invariant in the Kim 2025 validation dataset.",
-      source_name        = "AGE"
+      notes = "Entered as a dichotomy at 15 years rather than as a continuous effect, and only on Vc: the multiplier is 1 for age >= 15 years and exp(-0.396) = 0.673 for age < 15 years. This is the only covariate that distinguishes the paediatric variant of the Passot model from the adult variant. Time-invariant in the Kim 2025 validation dataset.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 79L,
-    n_studies      = 1L,
-    age_range      = "Pooled paediatric and adult cohort; age not specified in Kim 2025 Table S1 for this model.",
-    weight_range   = "Not specified in Kim 2025 Table S1; the model's reference weight is 67 kg.",
+    species = "human",
+    n_subjects = 79L,
+    n_studies = 1L,
+    age_range = "Pooled paediatric and adult cohort; age not specified in Kim 2025 Table S1 for this model.",
+    weight_range = "Not specified in Kim 2025 Table S1; the model's reference weight is 67 kg.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not specified; developed in a French cohort.",
-    disease_state  = "Inflammatory bowel disease: Crohn's disease (n = 63) and ulcerative colitis (n = 16).",
-    dose_range     = "Intravenous infliximab during both induction and maintenance phases.",
-    regions        = "France.",
-    notes          = paste(
+    disease_state = "Inflammatory bowel disease: Crohn's disease (n = 63) and ulcerative colitis (n = 16).",
+    dose_range = "Intravenous infliximab during both induction and maintenance phases.",
+    regions = "France.",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Passot model: Crohn's disease (n = 63) and ulcerative",
       "colitis (n = 16), pooled paediatric and adult patients, induction and",

@@ -13,8 +13,18 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible = list(analyte = "Escherichia coli (susceptible bacteria)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant   = list(analyte = "Escherichia coli (resistant bacteria)", units = NA_character_, specimen = "bile", verified = FALSE)
+    bact_susceptible = list(
+      analyte = "Escherichia coli (susceptible bacteria)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant = list(
+      analyte = "Escherichia coli (resistant bacteria)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(

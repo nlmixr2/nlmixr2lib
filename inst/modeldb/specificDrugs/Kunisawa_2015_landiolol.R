@@ -15,38 +15,38 @@ Kunisawa_2015_landiolol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "landiolol", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "landiolol", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "landiolol", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear body-weight normalization (per-kg reporting in Table 2). Parameters reported in mL/min/kg (CL, Q) and mL/kg (V1, V2); the underlying NONMEM model scales individual CL/Vc/Q/Vp linearly by WT and the published typical values are the per-kg coefficients. Implemented as (WT/70)^1 with reference weight 70 kg; cohort mean weight 58.9 kg (range 40.4-71.8 kg, Table 1). Body weight was also tested as an additional covariate via forward selection but no significant effect was retained beyond the built-in linear normalization (Results).",
-      source_name        = "WT"
+      notes = "Linear body-weight normalization (per-kg reporting in Table 2). Parameters reported in mL/min/kg (CL, Q) and mL/kg (V1, V2); the underlying NONMEM model scales individual CL/Vc/Q/Vp linearly by WT and the published typical values are the per-kg coefficients. Implemented as (WT/70)^1 with reference weight 70 kg; cohort mean weight 58.9 kg (range 40.4-71.8 kg, Table 1). Body weight was also tested as an additional covariate via forward selection but no significant effect was retained beyond the built-in linear normalization (Results).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",                              # Methods: adult patients undergoing peripheral arterial surgery
-    n_subjects     = 8L,                                   # Methods + Table 1: eight patients with peripheral arterial disease
-    n_studies      = 1L,                                   # Single-centre prospective TCI study (UMIN000015077)
-    age_range      = "64-84 years",                        # Table 1
-    age_median     = "73 years",                           # Table 1 (mean 73, SD 7)
-    weight_range   = "40.4-71.8 kg",                       # Table 1
-    weight_median  = "58.9 kg",                            # Table 1 (mean 58.9, SD 10.9)
-    sex_female_pct = 25,                                   # Table 1: 6 male / 2 female (8 total)
-    race_ethnicity = c(Asian = 100),                       # Asahikawa Medical University Hospital, Japan
-    disease_state  = "Adult patients scheduled for peripheral arterial surgery (peripheral arterial disease, PAD); ASA physical status 2 or 3; excluded if pre-existing arrhythmia (atrial fibrillation, conduction-system disturbance) or recent treatment with alpha-methyldopa, clonidine, or beta-blockers (Methods).",
-    dose_range     = "Target-controlled IV infusion (Harvard pump under STANPUMP control using Honda et al's two-compartment parameters) of landiolol hydrochloride at target plasma concentrations of 500 ng/mL and 1,000 ng/mL for 30 min each (~50% and 100% of the highest clinical dose range 10-40 ug/kg/min from the package insert).",
-    regions        = "Japan (Asahikawa Medical University, Hokkaido)",
-    sampling       = "112 plasma concentrations across 8 subjects (rich). Samples drawn at 1, 2, 5, and 25 min after starting each TCI segment; at the target-concentration change; and at 1, 2, 5, 10, 15, and 20 min after the end of infusion (Methods + Figure 1).",
-    co_medication  = "General anaesthesia maintained with TCI propofol (Diprifusor, BIS-titrated 40-60) and remifentanil (Minto TCI to effect-site 2 ng/mL pre-incision, raised to 8 ng/mL pre-surgical-stimulus). Rocuronium 0.6 mg/kg for intubation. Dopamine 3 ug/kg/min for haemodynamic stability starting 20 min before skin incision. Rescue: atropine 0.5 mg IV for HR <= 45 bpm (none required); ephedrine 5 mg IV for hypotension with HR <= 60 bpm; phenylephrine 0.05 mg IV for hypotension without bradycardia. No co-administration of beta-blockers, alpha-methyldopa, or clonidine.",
-    assay          = "HPLC with fluorescence detection per Suno et al. (J Chromatogr B 2008/2009); samples collected in chilled ethanol/EDTA-2Na/neostigmine to prevent pseudocholinesterase-mediated hydrolysis of the ester.",
-    notes          = "Baseline laboratory values (Table 1) were mostly within normal range; mildly abnormal albumin, cholinesterase, BUN, and serum creatinine were not retained as covariates because of the limited frequency and extent of abnormalities. Body weight, lean body mass, and age were the demographic covariates tested via forward selection; none were retained. PAD-cohort V1 and CL were approximately 64% and 84% of the matched healthy-volunteer values (Conclusion). Estimation method: FOCE-I in NONMEM VII level 1.2 (ICON Development Solutions). Final model selected by Akaike information criterion (AIC of 2-cmt + lag = 1,247.171); 1- and 3-compartment models did not converge."
+    species = "human", # Methods: adult patients undergoing peripheral arterial surgery
+    n_subjects = 8L, # Methods + Table 1: eight patients with peripheral arterial disease
+    n_studies = 1L, # Single-centre prospective TCI study (UMIN000015077)
+    age_range = "64-84 years", # Table 1
+    age_median = "73 years", # Table 1 (mean 73, SD 7)
+    weight_range = "40.4-71.8 kg", # Table 1
+    weight_median = "58.9 kg", # Table 1 (mean 58.9, SD 10.9)
+    sex_female_pct = 25, # Table 1: 6 male / 2 female (8 total)
+    race_ethnicity = c(Asian = 100), # Asahikawa Medical University Hospital, Japan
+    disease_state = "Adult patients scheduled for peripheral arterial surgery (peripheral arterial disease, PAD); ASA physical status 2 or 3; excluded if pre-existing arrhythmia (atrial fibrillation, conduction-system disturbance) or recent treatment with alpha-methyldopa, clonidine, or beta-blockers (Methods).",
+    dose_range = "Target-controlled IV infusion (Harvard pump under STANPUMP control using Honda et al's two-compartment parameters) of landiolol hydrochloride at target plasma concentrations of 500 ng/mL and 1,000 ng/mL for 30 min each (~50% and 100% of the highest clinical dose range 10-40 ug/kg/min from the package insert).",
+    regions = "Japan (Asahikawa Medical University, Hokkaido)",
+    sampling = "112 plasma concentrations across 8 subjects (rich). Samples drawn at 1, 2, 5, and 25 min after starting each TCI segment; at the target-concentration change; and at 1, 2, 5, 10, 15, and 20 min after the end of infusion (Methods + Figure 1).",
+    co_medication = "General anaesthesia maintained with TCI propofol (Diprifusor, BIS-titrated 40-60) and remifentanil (Minto TCI to effect-site 2 ng/mL pre-incision, raised to 8 ng/mL pre-surgical-stimulus). Rocuronium 0.6 mg/kg for intubation. Dopamine 3 ug/kg/min for haemodynamic stability starting 20 min before skin incision. Rescue: atropine 0.5 mg IV for HR <= 45 bpm (none required); ephedrine 5 mg IV for hypotension with HR <= 60 bpm; phenylephrine 0.05 mg IV for hypotension without bradycardia. No co-administration of beta-blockers, alpha-methyldopa, or clonidine.",
+    assay = "HPLC with fluorescence detection per Suno et al. (J Chromatogr B 2008/2009); samples collected in chilled ethanol/EDTA-2Na/neostigmine to prevent pseudocholinesterase-mediated hydrolysis of the ester.",
+    notes = "Baseline laboratory values (Table 1) were mostly within normal range; mildly abnormal albumin, cholinesterase, BUN, and serum creatinine were not retained as covariates because of the limited frequency and extent of abnormalities. Body weight, lean body mass, and age were the demographic covariates tested via forward selection; none were retained. PAD-cohort V1 and CL were approximately 64% and 84% of the matched healthy-volunteer values (Conclusion). Estimation method: FOCE-I in NONMEM VII level 1.2 (ICON Development Solutions). Final model selected by Akaike information criterion (AIC of 2-cmt + lag = 1,247.171); 1- and 3-compartment models did not converge."
   )
 
   ini({

@@ -10,37 +10,42 @@ Przybylowski_2015_propofol <- function() {
     sep = " "
   )
   vignette <- "Przybylowski_2015_propofol"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "AAI auditory-evoked-potential depth-of-anesthesia index", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(
+      analyte = "AAI auditory-evoked-potential depth-of-anesthesia index",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
-  covariateData <- list()  # No covariates retained in the final model (Przybylowski 2015 Results: no statistically significant (p < 0.01) relationships identified across body weight, gender, age, blood pressure, heart rate, laboratory blood tests, and stage of lung cancer).
+  covariateData <- list() # No covariates retained in the final model (Przybylowski 2015 Results: no statistically significant (p < 0.01) relationships identified across body weight, gender, age, blood pressure, heart rate, laboratory blood tests, and stage of lung cancer).
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,                                        # Przybylowski 2015 Methods + Table 1
-    n_studies      = 1L,                                         # single-centre, Poznan + Gdansk
-    age_range      = "51-75 years",                              # Przybylowski 2015 Table 1 (median 60)
-    age_median     = "60 years",                                 # Przybylowski 2015 Table 1
-    weight_range   = "44-125 kg",                                # Przybylowski 2015 Table 1 (median 77)
-    weight_median  = "77 kg",                                    # Przybylowski 2015 Table 1
-    height_range   = "152-183 cm (median 172)",                  # Przybylowski 2015 Table 1
-    lbm_range      = "34.7-77.1 kg (lean body mass; median 56.4)", # Przybylowski 2015 Table 1
-    sex_female_pct = 34.8,                                       # Przybylowski 2015 Table 1: 8 F / 15 M (8/23 = 34.8%)
-    disease_state  = "ASA III patients scheduled for a major lung surgery due to lung cancer between December 2010 and September 2011. Comorbidities observed in the cohort: hypertension, diabetes, major depression, obesity, chronic obstructive pulmonary disease, renal failure, gastritis, hyperthyroidism, atrial fibrillation, coronary artery disease and post-myocardial infarction. Some patients had hypoalbuminemia and increased leukocytes.",
-    dose_range     = "Oral premedication: 7.5 mg midazolam. Induction: fentanyl 3 ug/kg IV + propofol 2 mg/kg IV bolus. Maintenance: propofol continuous IV infusion at 8 mg/kg/h, adjusted to maintain AAI 15-25. Median propofol infusion duration 140 min (range 67-214). Thoracic epidural at T5 (6 mL bolus with 0.1 mg fentanyl + 20 mg bupivacaine, then 0.125 % bupivacaine at 4-6 mL/h). Rocuronium 0.6 mg/kg IV to facilitate intubation.",
-    regions        = "Poland (single-centre; surgery in Poznan, modelling at Medical University of Gdansk).",
+    species = "human",
+    n_subjects = 23L, # Przybylowski 2015 Methods + Table 1
+    n_studies = 1L, # single-centre, Poznan + Gdansk
+    age_range = "51-75 years", # Przybylowski 2015 Table 1 (median 60)
+    age_median = "60 years", # Przybylowski 2015 Table 1
+    weight_range = "44-125 kg", # Przybylowski 2015 Table 1 (median 77)
+    weight_median = "77 kg", # Przybylowski 2015 Table 1
+    height_range = "152-183 cm (median 172)", # Przybylowski 2015 Table 1
+    lbm_range = "34.7-77.1 kg (lean body mass; median 56.4)", # Przybylowski 2015 Table 1
+    sex_female_pct = 34.8, # Przybylowski 2015 Table 1: 8 F / 15 M (8/23 = 34.8%)
+    disease_state = "ASA III patients scheduled for a major lung surgery due to lung cancer between December 2010 and September 2011. Comorbidities observed in the cohort: hypertension, diabetes, major depression, obesity, chronic obstructive pulmonary disease, renal failure, gastritis, hyperthyroidism, atrial fibrillation, coronary artery disease and post-myocardial infarction. Some patients had hypoalbuminemia and increased leukocytes.",
+    dose_range = "Oral premedication: 7.5 mg midazolam. Induction: fentanyl 3 ug/kg IV + propofol 2 mg/kg IV bolus. Maintenance: propofol continuous IV infusion at 8 mg/kg/h, adjusted to maintain AAI 15-25. Median propofol infusion duration 140 min (range 67-214). Thoracic epidural at T5 (6 mL bolus with 0.1 mg fentanyl + 20 mg bupivacaine, then 0.125 % bupivacaine at 4-6 mL/h). Rocuronium 0.6 mg/kg IV to facilitate intubation.",
+    regions = "Poland (single-centre; surgery in Poznan, modelling at Medical University of Gdansk).",
     n_observations = "423 propofol plasma concentrations and 462 AAI index measurements.",
-    notes          = "Plasma propofol assayed by HPLC-fluorescence within 8 weeks; LLOQ 0.01 mg/L. AAI measured with the AEP/2 Monitor (Danmeter, software 1.6); AAI scaled per Vereecke et al. with a hard upper limit of 60. AAI values above 60 were handled in NONMEM using the Beal M3 method with the F-FLAG option (Methods 'Handling the AAI index measurements with upper limit')."
+    notes = "Plasma propofol assayed by HPLC-fluorescence within 8 weeks; LLOQ 0.01 mg/L. AAI measured with the AEP/2 Monitor (Danmeter, software 1.6); AAI scaled per Vereecke et al. with a hard upper limit of 60. AAI values above 60 were handled in NONMEM using the Beal M3 method with the F-FLAG option (Methods 'Handling the AAI index measurements with upper limit')."
   )
 
   ini({

@@ -43,8 +43,8 @@ Bauer_2023_vwfFviii_humateP <- function() {
   paper_specific_compartments <- c("fviii")
 
   units <- list(
-    time          = "h",
-    dosing        = "IU (VWF:RCo activity into central; FVIII:C activity into fviii)",
+    time = "h",
+    dosing = "IU (VWF:RCo activity into central; FVIII:C activity into fviii)",
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
   )
 
@@ -53,18 +53,28 @@ Bauer_2023_vwfFviii_humateP <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "von Willebrand factor:ristocetin cofactor activity", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "von Willebrand factor:ristocetin cofactor activity", units = NA_character_, specimen = "plasma", verified = FALSE),
-    fviii       = list(analyte = "factor VIII activity", units = NA_character_, specimen = "plasma", verified = FALSE)
+    central = list(
+      analyte = "von Willebrand factor:ristocetin cofactor activity",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1 = list(
+      analyte = "von Willebrand factor:ristocetin cofactor activity",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    fviii = list(analyte = "factor VIII activity", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight. Allometric structural covariate with fixed",
         "exponents and a 75 kg reference: CL and Q scale as (WT/75)^0.75,",
         "Vc and Vp as (WT/75)^1 (Bauer 2023 Supplementary Results, PK Model",
@@ -75,14 +85,14 @@ Bauer_2023_vwfFviii_humateP <- function() {
         "(Bauer 2023 Discussion). Median (range) 66.3 (43.8-132) kg",
         "(Bauer 2023 Table 3)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HCT = list(
-      description        = "Hematocrit -- packed red blood cell volume fraction.",
-      units              = "% (volume fraction x 100)",
-      type               = "continuous",
+      description = "Hematocrit -- packed red blood cell volume fraction.",
+      units = "% (volume fraction x 100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline hematocrit. Two effects, both power functions and both",
         "fixed to the rVWF model estimates. (1) On the central volume of",
         "distribution, (HCT/40)^-0.334: a higher red-cell volume fraction",
@@ -98,7 +108,7 @@ Bauer_2023_vwfFviii_humateP <- function() {
         "column and the reference share a unit. Median (range) 0.406",
         "(0.334-0.483) L/L, i.e. 40.6 (33.4-48.3) % (Bauer 2023 Table 3)."
       ),
-      source_name        = "Hematocrit"
+      source_name = "Hematocrit"
     )
   )
 
@@ -110,9 +120,9 @@ Bauer_2023_vwfFviii_humateP <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the rVWF model on CL, Vc, Vp and on FVIII0, IC50",
         "(Supplementary Table 1); not retained, and not testable in the",
         "pdVWF/FVIII model. Median (range) 30 (18-60) years (Table 3)."
@@ -120,9 +130,9 @@ Bauer_2023_vwfFviii_humateP <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the rVWF model on CL, Vc, Vp and on FVIII0, IC50",
         "(Supplementary Table 1); not retained. 11/20 (55 %) female",
         "(Table 3)."
@@ -130,9 +140,9 @@ Bauer_2023_vwfFviii_humateP <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was screened on CL in the rVWF model (Supplementary Table 1)",
         "and not retained. The pdVWF/FVIII cohort was 20/20 (100 %) White",
         "(Table 3), so the covariate is not estimable here."
@@ -140,9 +150,9 @@ Bauer_2023_vwfFviii_humateP <- function() {
     ),
     BLOOD_GROUP_O = list(
       description = "ABO blood group O indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the rVWF model on CL, Vc, Vp and on FVIII0, IC50",
         "(Supplementary Table 1); not retained. Blood-group composition of",
         "the analysis population is not reported in Bauer 2023."
@@ -151,27 +161,27 @@ Bauer_2023_vwfFviii_humateP <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "18-60 years",
-    age_median     = "30 years",
-    weight_range   = "43.8-132 kg",
-    weight_median  = "66.3 kg",
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "18-60 years",
+    age_median = "30 years",
+    weight_range = "43.8-132 kg",
+    weight_median = "66.3 kg",
     sex_female_pct = 55,
     race_ethnicity = c(White = 100),
-    disease_state  = "Adults with von Willebrand disease type 3 (20/20, 100 %)",
-    dose_range     = paste(
+    disease_state = "Adults with von Willebrand disease type 3 (20/20, 100 %)",
+    dose_range = paste(
       "Single dose of 50 IU/kg VWF:RCo pdVWF/FVIII (Humate-P), which at a",
       "VWF:RCo/FVIII:C ratio of 2.4:1 delivers about 20.8 IU/kg FVIII:C"
     ),
-    regions        = "Europe, North America",
+    regions = "Europe, North America",
     n_observations = 281L,
-    biomarkers     = c(
+    biomarkers = c(
       "VWF:RCo -- von Willebrand factor:ristocetin cofactor activity (IU/dL)",
       "FVIII:C -- factor VIII activity by one-stage clotting assay (IU/dL)"
     ),
-    notes          = paste(
+    notes = paste(
       "Single crossover cohort (n=22 randomised) of the phase 1 dose-escalation",
       "study NCT00816660, in which patients with VWD type 3 received either",
       "rVWF plus recombinant FVIII (octocog alfa, 50 IU/kg VWF:RCo /",

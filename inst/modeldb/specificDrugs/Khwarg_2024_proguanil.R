@@ -38,14 +38,14 @@ Khwarg_2024_proguanil <- function() {
   vignette <- "Khwarg_2024_proguanil"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
   compartmentData <- list(
-    depot                 = list(analyte = "proguanil",   units = "mg", specimen = "administration site", verified = TRUE),
-    liver                 = list(analyte = "proguanil",   units = "mg", specimen = "tissue",              verified = TRUE),
-    central               = list(analyte = "proguanil",   units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1           = list(analyte = "proguanil",   units = "mg", specimen = "plasma",              verified = TRUE),
-    liver_cycloguanil     = list(analyte = "cycloguanil", units = "mg", specimen = "tissue",              verified = TRUE),
-    transit1_cycloguanil  = list(analyte = "cycloguanil", units = "mg", specimen = "tissue",              verified = TRUE),
-    transit2_cycloguanil  = list(analyte = "cycloguanil", units = "mg", specimen = "tissue",              verified = TRUE),
-    central_cycloguanil   = list(analyte = "cycloguanil", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "proguanil", units = "mg", specimen = "administration site", verified = TRUE),
+    liver = list(analyte = "proguanil", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "proguanil", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "proguanil", units = "mg", specimen = "plasma", verified = TRUE),
+    liver_cycloguanil = list(analyte = "cycloguanil", units = "mg", specimen = "tissue", verified = TRUE),
+    transit1_cycloguanil = list(analyte = "cycloguanil", units = "mg", specimen = "tissue", verified = TRUE),
+    transit2_cycloguanil = list(analyte = "cycloguanil", units = "mg", specimen = "tissue", verified = TRUE),
+    central_cycloguanil = list(analyte = "cycloguanil", units = "mg", specimen = "plasma", verified = TRUE)
   )
   covariateData <- list(
     WT = list(

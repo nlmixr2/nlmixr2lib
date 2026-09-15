@@ -52,22 +52,22 @@ Snelder_2019_leuprorelin <- function() {
   paper_specific_compartments <- c("RT")
 
   compartmentData <- list(
-    depot       = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "leuprorelin", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "leuprorelin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "leuprorelin", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "leuprorelin", units = "mg", specimen = "serum", verified = TRUE),
-    TT          = list(analyte = "testosterone", units = "ng/dL", specimen = "serum", verified = TRUE),
-    RT          = list(analyte = "GnRH receptor", units = "unitless", specimen = "not applicable", verified = TRUE),
-    PSA         = list(analyte = "prostate-specific antigen", units = "ng/mL", specimen = "serum", verified = TRUE)
+    TT = list(analyte = "testosterone", units = "ng/dL", specimen = "serum", verified = TRUE),
+    RT = list(analyte = "GnRH receptor", units = "unitless", specimen = "not applicable", verified = TRUE),
+    PSA = list(analyte = "prostate-specific antigen", units = "ng/mL", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_CYPROTERONE = list(
-      description        = "Cyproterone acetate flare-prophylaxis co-medication in effect",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cyproterone acetate flare-prophylaxis co-medication in effect",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cyproterone acetate effect in force)",
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING. Set to 1 only while the cyproterone acetate (CPA)",
         "effect is assumed to be in force and 0 elsewhere. Study EC403 gave",
         "CPA to at-risk subjects 7 to 3 days before the first leuprorelin",
@@ -81,14 +81,14 @@ Snelder_2019_leuprorelin <- function() {
         "hard-coded so that a user can reproduce a different prophylaxis",
         "schedule; set the column to 0 throughout for a CPA-free subject."
       ),
-      source_name        = "ICPA / CPA"
+      source_name = "ICPA / CPA"
     ),
     MIX_RAMP_REL = list(
-      description        = "Slow-release mixture class: linearly time-ramping release rate",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Slow-release mixture class: linearly time-ramping release rate",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (constant first-order slow release, Ka2)",
-      notes              = paste(
+      notes = paste(
         "NONMEM $MIXTURE subpopulation indicator (Methods 2.4). 1 = the slow",
         "release depot empties with a rate constant that grows linearly with",
         "time after the first dose (Ka3_SLP * t); 0 = the slow release depot",
@@ -107,29 +107,29 @@ Snelder_2019_leuprorelin <- function() {
         "data item with run-local numbering; the mechanism-to-fraction",
         "mapping in the main text is explicit and self-consistent."
       ),
-      source_name        = "POP / IPOP"
+      source_name = "POP / IPOP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 62L,
-    n_studies      = 1L,
-    age_range      = "not reported; mean 70.5 years",
-    age_median     = "mean 70.5 years",
+    species = "human",
+    n_subjects = 62L,
+    n_studies = 1L,
+    age_range = "not reported; mean 70.5 years",
+    age_median = "mean 70.5 years",
     sex_female_pct = 0,
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Prostate cancer; 83.9% newly diagnosed, the remainder enrolled for",
       "PSA relapse after radical prostatectomy or radiotherapy"
     ),
-    dose_range     = "Single 22.5 mg or 30 mg leuprorelin-SR 6-month depot (31 subjects each)",
-    co_medication  = paste(
+    dose_range = "Single 22.5 mg or 30 mg leuprorelin-SR 6-month depot (31 subjects each)",
+    co_medication = paste(
       "Cyproterone acetate (injection or oral) 7 to 3 days before the first",
       "leuprorelin dose in at-risk subjects; 90% of subjects received it"
     ),
-    regions        = "not reported",
-    notes          = paste(
+    regions = "not reported",
+    notes = paste(
       "Study EC403: randomised, open-label, multicentre, parallel-group PK/PD",
       "study of two leuprorelin-SR 6-month depot doses (Methods 2.1 and",
       "Table 1). 62 Caucasian men randomised from 71 screened; 59 completed",

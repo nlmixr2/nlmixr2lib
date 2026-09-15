@@ -30,8 +30,8 @@ Biliouris_2018_nusinersen <- function() {
   )
   vignette <- "Biliouris_2018_nusinersen"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -47,24 +47,34 @@ Biliouris_2018_nusinersen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    csf                  = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
-    central              = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
-    spinal_cord_cervical = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
-    brain                = list(analyte = "nusinersen", units = "mg", specimen = "tissue", verified = FALSE),
-    peripheral1          = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
-    spinal_cord_lumbar   = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
-    brain_deep           = list(analyte = "nusinersen", units = "mg", specimen = "tissue", verified = FALSE),
-    spinal_cord_thoracic = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
-    pons                 = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE)
+    csf = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
+    central = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
+    spinal_cord_cervical = list(
+      analyte = "nusinersen",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    brain = list(analyte = "nusinersen", units = "mg", specimen = "tissue", verified = FALSE),
+    peripheral1 = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
+    spinal_cord_lumbar = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
+    brain_deep = list(analyte = "nusinersen", units = "mg", specimen = "tissue", verified = FALSE),
+    spinal_cord_thoracic = list(
+      analyte = "nusinersen",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pons = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (used with LOCF for time-varying body weight in the paediatric extrapolation)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (used with LOCF for time-varying body weight in the paediatric extrapolation)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference weight 2.8 kg per Biliouris 2018 simulation control stream",
         "($PK: `(WT/2.8)`). Volumes are scaled linearly with (WT/2.8) EXCEPT",
         "V_CSF, whose WT-scaling term is commented out in the control stream",
@@ -73,35 +83,35 @@ Biliouris_2018_nusinersen <- function() {
         "scaled as (WT/2.8)^(-0.08). LOCF is applied to WT in the source",
         "dataset (`Description: All St3 IDs with LOCF WT`)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age in years, used to select the physiological CSF volume V_CSF for paediatric extrapolation",
-      units              = "years",
-      type               = "continuous",
+      description = "Age in years, used to select the physiological CSF volume V_CSF for paediatric extrapolation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "V_CSF is set by a stepwise physiological table (Biliouris 2018",
         "simulation control stream $PK): AGE < 0.25 y -> 120 mL; 0.25 <= AGE",
         "< 0.5 -> 130 mL; 0.5 <= AGE < 1 -> 135 mL; 1 <= AGE < 2 -> 140 mL;",
         "otherwise the THETA1 default 150 mL (adult reference). AGE is used",
         "only for this V_CSF selection; it does NOT enter any rate constant."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "cynomolgus monkey (juvenile) with paediatric-human physiological scaling",
-    n_subjects     = NA,
-    n_studies      = NA,
-    age_range      = "monkey fit + paediatric-human simulation window of 0-2 years for the V_CSF table",
-    weight_range   = "reference body weight 2.8 kg (monkey / newborn-scale)",
-    disease_state  = "Spinal muscular atrophy (SMA) target indication; monkey $PROBLEM tag 'SMA MONKEY'",
-    dose_range     = "Intrathecal lumbar-puncture bolus (simulated at 1-12 mg per paediatric-clinic protocol)",
+    species = "cynomolgus monkey (juvenile) with paediatric-human physiological scaling",
+    n_subjects = NA,
+    n_studies = NA,
+    age_range = "monkey fit + paediatric-human simulation window of 0-2 years for the V_CSF table",
+    weight_range = "reference body weight 2.8 kg (monkey / newborn-scale)",
+    disease_state = "Spinal muscular atrophy (SMA) target indication; monkey $PROBLEM tag 'SMA MONKEY'",
+    dose_range = "Intrathecal lumbar-puncture bolus (simulated at 1-12 mg per paediatric-clinic protocol)",
     administration_routes = "Intrathecal bolus into CSF",
-    regions        = "Preclinical / translational (cynomolgus-monkey fit extrapolated to paediatric SMA patients)",
-    notes          = paste(
+    regions = "Preclinical / translational (cynomolgus-monkey fit extrapolated to paediatric SMA patients)",
+    notes = paste(
       "The on-disk source is the paper's simulation NONMEM control stream",
       "(`$PROBLEM SMA MONKEY`, `$SIMULATION (12345678) ONLYSIM",
       "SUBPROBLEM=1000`) with all $THETA / $OMEGA / $SIGMA values held",

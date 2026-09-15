@@ -8,62 +8,62 @@ Charles_2007_tafenoquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tafenoquine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tafenoquine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tafenoquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (study baseline). Enters CL/F and V/F as a centered linear effect, parameterized as (1 + theta * WT/80.9) with the cohort-mean weight of 80.9 kg as the centering constant (Charles 2007 Table 1 footnote d, Table 2 footnote a).",
-      source_name        = "WT"
+      notes = "Time-fixed (study baseline). Enters CL/F and V/F as a centered linear effect, parameterized as (1 + theta * WT/80.9) with the cohort-mean weight of 80.9 kg as the centering constant (Charles 2007 Table 1 footnote d, Table 2 footnote a).",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a centered linear effect (AGE/25.4) on CL/F and V/F. Age on V/F was significant (delta-OFV = -9) but positively correlated with weight and therefore not retained in the final model (Charles 2007 Table 1 models 2-3; Results)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a centered linear effect (AGE/25.4) on CL/F and V/F. Age on V/F was significant (delta-OFV = -9) but positively correlated with weight and therefore not retained in the final model (Charles 2007 Table 1 models 2-3; Results)."
     ),
     CRCL = list(
       description = "Estimated creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened as a centered linear effect (CLCR/121) on CL/F; not significant (delta-OFV = -4) and not retained (Charles 2007 Table 1 model 4)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as a centered linear effect (CLCR/121) on CL/F; not significant (delta-OFV = -4) and not retained (Charles 2007 Table 1 model 4)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL/F (delta-OFV = -3) and V/F (delta-OFV = -12) but not retained in the final model (Charles 2007 Table 1 models 7-8; Results). Cohort was 476 male / 14 female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL/F (delta-OFV = -3) and V/F (delta-OFV = -12) but not retained in the final model (Charles 2007 Table 1 models 7-8; Results). Cohort was 476 male / 14 female."
     ),
     PHOS = list(
       description = "Phospholipidosis-present indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the 77-subject phospholipidosis substudy; not significant on CL/F or V/F (Charles 2007 Table 1 models 5-6). Not a registered canonical covariate; recorded here for source-trace completeness only."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the 77-subject phospholipidosis substudy; not significant on CL/F or V/F (Charles 2007 Table 1 models 5-6). Not a registered canonical covariate; recorded here for source-trace completeness only."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 490,
-    n_studies      = 1,
-    age_range      = "18-47 years",
-    age_median     = "25.4 years (mean +/- 5.3 SD)",
-    weight_range   = "50-135 kg",
-    weight_median  = "80.9 kg (mean +/- 11.9 SD)",
+    species = "human",
+    n_subjects = 490,
+    n_studies = 1,
+    age_range = "18-47 years",
+    age_median = "25.4 years (mean +/- 5.3 SD)",
+    weight_range = "50-135 kg",
+    weight_median = "80.9 kg (mean +/- 11.9 SD)",
     sex_female_pct = 14 / 490 * 100,
     race_ethnicity = c(White = (490 - 8) / 490 * 100, Other = 8 / 490 * 100),
-    disease_state  = "Healthy adult Australian soldiers on malaria prophylaxis during 6-month deployment to East Timor",
-    dose_range     = "200 mg PO once daily for 3 days (loading) then 200 mg PO once weekly for ~6 months",
-    regions        = "Australia (deployed to East Timor)",
-    notes          = "Phase III prospective randomised double-blind trial of weekly tafenoquine for malaria prophylaxis. Baseline demographics in Charles 2007 Results paragraph 1: 476 males and 14 females; 482 / 490 subjects of Caucasian background. 1,925 plasma concentration-time points contributed to the popPK fit. Glucose-6-phosphate dehydrogenase-normal subjects only."
+    disease_state = "Healthy adult Australian soldiers on malaria prophylaxis during 6-month deployment to East Timor",
+    dose_range = "200 mg PO once daily for 3 days (loading) then 200 mg PO once weekly for ~6 months",
+    regions = "Australia (deployed to East Timor)",
+    notes = "Phase III prospective randomised double-blind trial of weekly tafenoquine for malaria prophylaxis. Baseline demographics in Charles 2007 Results paragraph 1: 476 males and 14 females; 482 / 490 subjects of Caucasian background. 1,925 plasma concentration-time points contributed to the popPK fit. Glucose-6-phosphate dehydrogenase-normal subjects only."
   )
 
   ini({

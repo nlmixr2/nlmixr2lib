@@ -38,21 +38,21 @@ Ding_2024_piperaquine <- function() {
   # "Concentration quantification": venous plasma piperaquine by LC/MS-MS)
   # and Table 3.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Ding 2024 Methods ('Covariates model',",
         "Equations 2 and 3): 'body weight was added on all clearance and",
         "volume parameters using an allometric function with a fixed",
@@ -70,14 +70,14 @@ Ding_2024_piperaquine <- function() {
         "hypothetical patients.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PARA = list(
-      description        = "Baseline (enrolment) asexual Plasmodium falciparum parasitaemia",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Baseline (enrolment) asexual Plasmodium falciparum parasitaemia",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission-only / time-fixed. Enters relative oral bioavailability",
         "with the log10 transform applied inside model(), in the linear",
         "deviation form given in the Table 3 footnote: 'Baseline parasite",
@@ -95,14 +95,14 @@ Ding_2024_piperaquine <- function() {
         "log10 = 0 rather than diverging.",
         sep = " "
       ),
-      source_name        = "PARA"
+      source_name = "PARA"
     ),
     OCC = list(
-      description        = "Dose-occasion counter (1 = first daily dose, 2 = second, 3 = third)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dose-occasion counter (1 = first daily dose, 2 = second, 3 = third)",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ding 2024 did not estimate a dose-occasion effect because 'most",
         "PK samples were collected after the last dose' (Discussion);",
         "instead Methods ('Population PK analysis') states that 'for",
@@ -119,29 +119,29 @@ Ding_2024_piperaquine <- function() {
         "administration.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 755L,
-    n_studies       = 1L,
-    n_observations  = "976 piperaquine plasma concentrations included (982 measured, 6 (0.6%) below the LLOQ omitted; Abstract, Results)",
-    age_range       = "20 (15-43) years, median (min-max) (Table 1)",
-    weight_range    = "54 (35-115) kg, median (min-max) (Table 1)",
-    height_range    = "155 (138-178) cm, median (min-max) (Table 1)",
-    ega_range       = "24 (16-36) weeks gestational age, median (min-max) (Table 1)",
-    trimester       = "519/755 (69.1%) in the second trimester, remainder in the third (Table 1)",
-    sex_female_pct  = 100,
-    pregnant_pct    = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 755L,
+    n_studies = 1L,
+    n_observations = "976 piperaquine plasma concentrations included (982 measured, 6 (0.6%) below the LLOQ omitted; Abstract, Results)",
+    age_range = "20 (15-43) years, median (min-max) (Table 1)",
+    weight_range = "54 (35-115) kg, median (min-max) (Table 1)",
+    height_range = "155 (138-178) cm, median (min-max) (Table 1)",
+    ega_range = "24 (16-36) weeks gestational age, median (min-max) (Table 1)",
+    trimester = "519/755 (69.1%) in the second trimester, remainder in the third (Table 1)",
+    sex_female_pct = 100,
+    pregnant_pct = 100,
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum mono-infection in pregnant",
       "women in the second or third trimester. Median parasitaemia at",
       "enrolment 680 (5-355,400) parasites/uL; median gametocytaemia 0",
       "(0-1200) parasites/uL (Table 1)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Dihydroartemisinin-piperaquine (Sigma-Tau) 3 tablets once daily for",
       "3 consecutive days under direct observation. One tablet contains",
       "40 mg dihydroartemisinin and 320 mg piperaquine tetraphosphate =",
@@ -149,8 +149,8 @@ Ding_2024_piperaquine <- function() {
       "base (Methods, 'Drug regimen'). Median daily dose 17.8 (8.3-27.4)",
       "mg/kg of piperaquine tetraphosphate (Table 1)."
     ),
-    regions         = "Burkina Faso (2 sites), Ghana (3 sites), Malawi (1 site), Zambia (1 site)",
-    notes           = paste(
+    regions = "Burkina Faso (2 sites), Ghana (3 sites), Malawi (1 site), Zambia (1 site)",
+    notes = paste(
       "PREGACT trial (NCT00852423), a non-inferiority, multi-centre,",
       "randomised, open-label phase 3 trial of 4 artemisinin-based",
       "combination therapies conducted June 2010 to August 2013. Of 763",

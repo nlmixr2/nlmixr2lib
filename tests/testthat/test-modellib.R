@@ -28,6 +28,6 @@ test_that("modellib", {
     })
   }
 
-  expect_equal(findBlock(as.function(modelTest), "ini"),   findBlock(expected, "ini"))
+  expect_equal(findBlock(as.function(modelTest), "ini"), findBlock(expected, "ini"))
   expect_equal(findBlock(as.function(modelTest), "model"), findBlock(expected, "model"))
 })

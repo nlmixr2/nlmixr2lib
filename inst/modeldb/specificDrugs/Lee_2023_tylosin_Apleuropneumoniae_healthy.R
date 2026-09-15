@@ -50,11 +50,11 @@ Lee_2023_tylosin_Apleuropneumoniae_healthy <- function() {
 
   covariateData <- list(
     AUCMIC_TYLO = list(
-      description        = "Tylosin PK/PD index: plasma area under the concentration-time curve over 24 h divided by the MIC of the challenge isolate (AUC24h/MIC)",
-      units              = "h",
-      type               = "continuous",
+      description = "Tylosin PK/PD index: plasma area under the concentration-time curve over 24 h divided by the MIC of the challenge isolate (AUC24h/MIC)",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Lee 2023 Section 2.8 defines the sigmoid Emax driver C as the AUC24h/MIC ratio, and Table 3 ",
         "reports the model's outputs (EC50 and the bacteriostatic / bactericidal thresholds) in those ",
         "same ratio units (h). The ratio is carried directly rather than as an absolute AUC divided by ",
@@ -66,24 +66,24 @@ Lee_2023_tylosin_Apleuropneumoniae_healthy <- function() {
         "other. Set to 0 for drug-free control records so the sigmoid term vanishes and the predicted ",
         "24 h change reduces to E0. See the vignette Assumptions and deviations section."
       ),
-      source_name        = "AUC24 h/MIC (Lee 2023 Section 2.8 equation; Table 3 rows 'AUC 24 h /MIC for bacteriostatic activity' and 'AUC 24 h /MIC for bactericidal activity')"
+      source_name = "AUC24 h/MIC (Lee 2023 Section 2.8 equation; Table 3 rows 'AUC 24 h /MIC for bacteriostatic activity' and 'AUC 24 h /MIC for bactericidal activity')"
     )
   )
 
   population <- list(
-    species             = "pig (crossbred Duroc x (Landrace x Yorkshire), male)",
-    n_subjects          = 3L,
-    n_studies           = 1L,
-    age_range           = "5-6 weeks",
-    weight_median       = "9.5 kg",
-    weight_range        = "9.5 +/- 1.1 kg (mean +/- SD)",
-    sex_female_pct      = 0,
-    organism            = "Actinobacillus pleuropneumoniae challenge isolate BA2000013 (Animal and Plant Quarantine Agency, Kimchen, Korea), selected in Section 3.1 as a strain 'with MIC values similar to the MIC90'; the isolate's own MIC is NOT reported. Collection-wide tylosin MIC50/MIC90 were 16/16 ug/mL for A. pleuropneumoniae (89 isolates) and 16/32 ug/mL for P. multocida (363 isolates); MBC was 32 ug/mL for both species; the EUCAST ECOFFinder ECOFF was 64 ug/mL for both",
-    system              = "Ex vivo time-kill assay. Plasma collected from dosed pigs at 0, 0.25, 0.5, 0.75, 1, 2, 4, 6, 8, 12 and 24 h post-dose, pre-filtered through a 0.22 um membrane, then inoculated to a final density of 1 x 10^6 CFU/mL and incubated at 37 C with plate counts at 1, 2, 4, 8, 12 and 24 h (Section 2.6)",
-    disease_state       = "Clinically healthy and PCR-negative on nasal swab for A. pleuropneumoniae apxIVA and P. multocida kmt1 (Section 2.3)",
-    dose_range          = "20 mg/kg tylosin (50 mg/mL injectable solution) as a single intramuscular dose (Section 2.3)",
-    regions             = "Republic of Korea (Kyungpook National University; Gyeongsangbuk-do Veterinary Service Laboratory, Daegu)",
-    notes               = paste0(
+    species = "pig (crossbred Duroc x (Landrace x Yorkshire), male)",
+    n_subjects = 3L,
+    n_studies = 1L,
+    age_range = "5-6 weeks",
+    weight_median = "9.5 kg",
+    weight_range = "9.5 +/- 1.1 kg (mean +/- SD)",
+    sex_female_pct = 0,
+    organism = "Actinobacillus pleuropneumoniae challenge isolate BA2000013 (Animal and Plant Quarantine Agency, Kimchen, Korea), selected in Section 3.1 as a strain 'with MIC values similar to the MIC90'; the isolate's own MIC is NOT reported. Collection-wide tylosin MIC50/MIC90 were 16/16 ug/mL for A. pleuropneumoniae (89 isolates) and 16/32 ug/mL for P. multocida (363 isolates); MBC was 32 ug/mL for both species; the EUCAST ECOFFinder ECOFF was 64 ug/mL for both",
+    system = "Ex vivo time-kill assay. Plasma collected from dosed pigs at 0, 0.25, 0.5, 0.75, 1, 2, 4, 6, 8, 12 and 24 h post-dose, pre-filtered through a 0.22 um membrane, then inoculated to a final density of 1 x 10^6 CFU/mL and incubated at 37 C with plate counts at 1, 2, 4, 8, 12 and 24 h (Section 2.6)",
+    disease_state = "Clinically healthy and PCR-negative on nasal swab for A. pleuropneumoniae apxIVA and P. multocida kmt1 (Section 2.3)",
+    dose_range = "20 mg/kg tylosin (50 mg/mL injectable solution) as a single intramuscular dose (Section 2.3)",
+    regions = "Republic of Korea (Kyungpook National University; Gyeongsangbuk-do Veterinary Service Laboratory, Daegu)",
+    notes = paste0(
       "The parent PK study enrolled 14 pigs, randomised 7 to the healthy (non-infected) group and 7 to ",
       "the co-infected group; the ex vivo PD assay used plasma from n = 3 pigs per group (Section 2.6). ",
       "Ethics approval PTB-2022-IACUC013-A (Petobio Clinical Institute). Group-level ",

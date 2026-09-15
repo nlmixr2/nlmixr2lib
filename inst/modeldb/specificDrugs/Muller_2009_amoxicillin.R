@@ -31,21 +31,29 @@ Muller_2009_amoxicillin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "amoxicillin", units = "mg", specimen = "serum",
+      analyte = "amoxicillin",
+      units = "mg",
+      specimen = "serum",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "amoxicillin", units = "mg", specimen = "serum",
+      analyte = "amoxicillin",
+      units = "mg",
+      specimen = "serum",
       verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "amoxicillin", units = "mg", specimen = "serum",
+      analyte = "amoxicillin",
+      units = "mg",
+      specimen = "serum",
       verified = TRUE
     ),
     # V4 in Muller 2009 Fig. 2. Fitted to the 28 venous umbilical cord
     # serum samples (Results paragraph 1; Fig. 3 middle panel).
     cord_venous = list(
-      analyte = "amoxicillin", units = "mg", specimen = "serum",
+      analyte = "amoxicillin",
+      units = "mg",
+      specimen = "serum",
       verified = TRUE
     ),
     # V5 in Muller 2009 Fig. 2. Fitted jointly to the 25 ARTERIAL
@@ -56,23 +64,25 @@ Muller_2009_amoxicillin <- function() {
     # placed in the same compartment", Discussion paragraph 3;
     # Fig. 3 bottom panel legend).
     neonate = list(
-      analyte = "amoxicillin", units = "mg", specimen = "serum",
+      analyte = "amoxicillin",
+      units = "mg",
+      specimen = "serum",
       verified = TRUE
     )
   )
 
   covariateData <- list(
     GA = list(
-      description        = paste(
+      description = paste(
         "Gestational age. The only covariate retained in the final",
         "model; it acts on the maternal central volume V1 through the",
         "linear-fractional relationship of Muller 2009 Results",
         "paragraph 4."
       ),
-      units              = "weeks",
-      type               = "continuous",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Centred on the study-population median of 36.8 weeks, stated",
         "verbatim in the covariate equation ('GA is the gestational age",
         "centered by its median value in the study population (36.8",
@@ -83,16 +93,16 @@ Muller_2009_amoxicillin <- function() {
         "gestational age (dOFV = -10.5) because the two are correlated",
         "and adding both gave no further improvement (dOFV = -3.3)."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Maternal body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Table 1: 29.4 +/- 5.3 kg/m^2 (n = 43). Screened on V and found",
         "significant on its own (dOFV = -8.5) but not retained: it is",
         "correlated with gestational age, which gave the larger drop",
@@ -104,18 +114,18 @@ Muller_2009_amoxicillin <- function() {
     ),
     WT = list(
       description = "Maternal body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Table 1: 79.4 +/- 13.9 kg (n = 43). Screened; maximum dOFV",
         "-0.5 (Results paragraph 4), not retained."
       )
     ),
     SBP = list(
       description = "Maternal blood pressure.",
-      units       = "mmHg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mmHg",
+      type = "continuous",
+      notes = paste(
         "Screened; maximum dOFV -0.3 (Results paragraph 4), not",
         "retained. The paper reports 'blood pressure' without stating",
         "systolic or diastolic; recorded in the standard workup",
@@ -124,15 +134,15 @@ Muller_2009_amoxicillin <- function() {
     ),
     HR = list(
       description = "Maternal pulse rate.",
-      units       = "beats/min",
-      type        = "continuous",
-      notes       = "Screened; maximum dOFV -0.2 (Results paragraph 4), not retained."
+      units = "beats/min",
+      type = "continuous",
+      notes = "Screened; maximum dOFV -0.2 (Results paragraph 4), not retained."
     ),
     TEMP = list(
       description = "Maternal oral temperature.",
-      units       = "degC",
-      type        = "continuous",
-      notes       = paste(
+      units = "degC",
+      type = "continuous",
+      notes = paste(
         "Screened but not evaluable: 'All models in which the",
         "temperature was incorporated resulted in running errors'",
         "(Results paragraph 4)."
@@ -140,9 +150,9 @@ Muller_2009_amoxicillin <- function() {
     ),
     OEDEMA = list(
       description = "Semi-quantitative oedema score, 0 (none) to 3 (above the knee).",
-      units       = "(ordinal 0-3)",
-      type        = "count",
-      notes       = paste(
+      units = "(ordinal 0-3)",
+      type = "count",
+      notes = paste(
         "Table 1 reports the cohort distribution 29 / 12 / 3 across",
         "scores 0 / 1 / 2 (no patient scored 3). Screened on the",
         "parameters carrying interindividual variability (Methods 'PK",
@@ -151,9 +161,9 @@ Muller_2009_amoxicillin <- function() {
     ),
     WT_BIRTH = list(
       description = "Birth weight of the neonate.",
-      units       = "g",
-      type        = "continuous",
-      notes       = paste(
+      units = "g",
+      type = "continuous",
+      notes = paste(
         "Table 1: 2887.4 +/- 627.9 g (n = 46); range 1340-4470 g",
         "(Results paragraph 1). Screened on the maternal and neonatal",
         "parameters, including k45; not retained."
@@ -161,15 +171,15 @@ Muller_2009_amoxicillin <- function() {
     ),
     TWIN = list(
       description = "Twin versus singleton pregnancy indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1: 3 twin pregnancies out of 44. Screened, not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1: 3 twin pregnancies out of 44. Screened, not retained."
     ),
     DELIVERY_CESAREAN = list(
       description = "Mode of delivery: emergency caesarean section versus vaginal delivery.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Table 1 reports 23 vaginal / 1 vacuum extraction / 3 emergency",
         "caesarean among the patients from whom umbilical cord serum was",
         "obtained. Screened, not retained."
@@ -178,16 +188,16 @@ Muller_2009_amoxicillin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
     n_observations = 971L,
-    age_range      = "mean 30.0 +/- 6.85 years (maternal age, n = 44)",
-    weight_range   = "mean 79.4 +/- 13.9 kg (n = 43)",
+    age_range = "mean 30.0 +/- 6.85 years (maternal age, n = 44)",
+    weight_range = "mean 79.4 +/- 13.9 kg (n = 43)",
     sex_female_pct = 100,
     race_ethnicity = "not reported in the source paper",
-    ga_range       = "30.0-42.4 weeks at delivery; cohort mean amenorrhoea 36 6/7 weeks (SD 2.7)",
-    disease_state  = paste(
+    ga_range = "30.0-42.4 weeks at delivery; cohort mean amenorrhoea 36 6/7 weeks (SD 2.7)",
+    disease_state = paste(
       "Women requiring intravenous amoxicillin or amoxicillin-clavulanic",
       "acid shortly before or during labour, for prevention of neonatal",
       "group B streptococcal disease (proven or unknown Streptococcus",
@@ -197,13 +207,13 @@ Muller_2009_amoxicillin <- function() {
       "samples); no umbilical cord or neonatal sample was used in that",
       "earlier analysis."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Amoxicillin 2 g IV over 30 min followed after 4 h by 1 g IV over",
       "15 min; or co-amoxiclav (1 g amoxicillin with 200 mg clavulanic",
       "acid) IV over 15 min every 8 h. All infusions at 50 mg/mL."
     ),
-    regions        = "Netherlands (single centre, Medical Centre Haaglanden, The Hague)",
-    notes          = paste(
+    regions = "Netherlands (single centre, Medical Centre Haaglanden, The Hague)",
+    notes = paste(
       "904 maternal serum samples (3-41 per patient), 25 arterial and 28",
       "venous umbilical cord samples (53 total, from 44 women; both",
       "arterial and venous from 23 women; 4 cord samples from one twin",

@@ -75,11 +75,11 @@ Kemal_2026_nemtabrutinib_ae <- function() {
 
   covariateData <- list(
     CSS_NEMTA = list(
-      description        = "Individual average on-treatment plasma concentration of nemtabrutinib (Cavg).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average on-treatment plasma concentration of nemtabrutinib (Cavg).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "A post-hoc exposure metric, not an observation. Kemal 2026 (Methods 2.3 and 2.4) simulated each participant's concentration-time profile from the companion population PK model using that participant's own dosing history - including dose interruptions and dose reductions - and their individual post hoc PK parameter estimates, then computed Cavg as the cumulative on-treatment AUC divided by the treatment duration. Generate it for simulation with modellib('Kemal_2026_nemtabrutinib'). Enters UNCENTRED, so the intercept is the log-odds at Cavg = 0. Observed distribution in the 578-patient safety cohort (Figure 4 reference boxplots): median about 600 ng/mL at 45 mg (n = 17), about 750 ng/mL at 65 mg (n = 434) and about 850 ng/mL at 80 mg (n = 106), with the pooled range extending to about 2160 ng/mL. Kemal 2026 also computed a per-patient Cmax and reports that Cavg and Cmax were significantly correlated, but used Cavg as the predictor for safety, tolerability and efficacy (Results 3.4); do not substitute a Cmax column here."
+      notes = "A post-hoc exposure metric, not an observation. Kemal 2026 (Methods 2.3 and 2.4) simulated each participant's concentration-time profile from the companion population PK model using that participant's own dosing history - including dose interruptions and dose reductions - and their individual post hoc PK parameter estimates, then computed Cavg as the cumulative on-treatment AUC divided by the treatment duration. Generate it for simulation with modellib('Kemal_2026_nemtabrutinib'). Enters UNCENTRED, so the intercept is the log-odds at Cavg = 0. Observed distribution in the 578-patient safety cohort (Figure 4 reference boxplots): median about 600 ng/mL at 45 mg (n = 17), about 750 ng/mL at 65 mg (n = 434) and about 850 ng/mL at 80 mg (n = 106), with the pooled range extending to about 2160 ng/mL. Kemal 2026 also computed a per-patient Cmax and reports that Cavg and Cmax were significantly correlated, but used Cavg as the predictor for safety, tolerability and efficacy (Results 3.4); do not substitute a Cmax column here."
     )
   )
 
@@ -88,26 +88,26 @@ Kemal_2026_nemtabrutinib_ae <- function() {
   # does not require these to be referenced in model().
   covariatesDataExcluded <- list(
     T_TRT = list(
-      description        = "Time on nemtabrutinib treatment (the paper's 'time on therapy').",
-      units              = "days",
-      type               = "continuous",
+      description = "Time on nemtabrutinib treatment (the paper's 'time on therapy').",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "SCREENED AND REJECTED for this endpoint. Kemal 2026 Methods 2.4 states that time on treatment was investigated as a covariate for the safety endpoints, and Results 3.5 reports that 'Time on therapy was not found to be a significant covariate for these exposure-safety relationships'. It is therefore absent from this model, in deliberate contrast to the sister exposure-efficacy model modellib('Kemal_2026_nemtabrutinib_bor'), where the same covariate carries the single largest coefficient through a saturable term with ET50 = 200 days. The digitized Figure 4 curve is consistent with the exclusion: a single curve is drawn (rather than one per follow-up time as in Figure 3), and the traced points are straight on the logit scale.",
-      source_name        = "time on treatment"
+      notes = "SCREENED AND REJECTED for this endpoint. Kemal 2026 Methods 2.4 states that time on treatment was investigated as a covariate for the safety endpoints, and Results 3.5 reports that 'Time on therapy was not found to be a significant covariate for these exposure-safety relationships'. It is therefore absent from this model, in deliberate contrast to the sister exposure-efficacy model modellib('Kemal_2026_nemtabrutinib_bor'), where the same covariate carries the single largest coefficient through a saturable term with ET50 = 200 days. The digitized Figure 4 curve is consistent with the exclusion: a single curve is drawn (rather than one per follow-up time as in Figure 3), and the traced points are straight on the logit scale.",
+      source_name = "time on treatment"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 578L,
-    n_studies      = 2L,
-    age_range      = "25-89 years",
-    weight_range   = "41.2-147 kg",
+    species = "human",
+    n_subjects = 578L,
+    n_studies = 2L,
+    age_range = "25-89 years",
+    weight_range = "41.2-147 kg",
     sex_female_pct = 34.1,
-    disease_state  = "Hematologic malignancies, all primary diagnoses pooled: CLL/SLL (49.8%), other hematologic malignancy (30.6%), B-cell non-Hodgkin lymphoma (9.7%) and Waldenstrom's macroglobulinemia (9.7%). Unlike the sister exposure-efficacy model, which is restricted to the CLL/SLL subset, the exposure-safety analysis used every treated patient in the population PK analysis set regardless of indication.",
-    dose_range     = "5-80 mg nemtabrutinib once daily orally; the doses drawn as reference boxplots in Figure 4 are 45, 65 and 80 mg (n = 17, 434 and 106 respectively).",
-    endpoint       = "At least one any-grade drug-related adverse event during nemtabrutinib monotherapy, as assessed by the investigator. Observed rates by exposure quartile (printed in the left panel of Figure 4): 108/145, 109/145, 107/144 and 124/144.",
-    notes          = "Kemal 2026 found a significant exposure trend for this endpoint and for any-grade hypertension only. No trend was found between exposure and Grade 3+ drug-related AEs, Grade 3+ hypertension, any-grade or Grade 3+ neutropenia, thrombocytopenia, anemia, infection, arrhythmia, diarrhea, rash or hemorrhage, nor between exposure and any tolerability endpoint (dose interruption, reduction, discontinuation, dose-limiting toxicity). Those negative endpoints have no fitted curve published and so are not packaged."
+    disease_state = "Hematologic malignancies, all primary diagnoses pooled: CLL/SLL (49.8%), other hematologic malignancy (30.6%), B-cell non-Hodgkin lymphoma (9.7%) and Waldenstrom's macroglobulinemia (9.7%). Unlike the sister exposure-efficacy model, which is restricted to the CLL/SLL subset, the exposure-safety analysis used every treated patient in the population PK analysis set regardless of indication.",
+    dose_range = "5-80 mg nemtabrutinib once daily orally; the doses drawn as reference boxplots in Figure 4 are 45, 65 and 80 mg (n = 17, 434 and 106 respectively).",
+    endpoint = "At least one any-grade drug-related adverse event during nemtabrutinib monotherapy, as assessed by the investigator. Observed rates by exposure quartile (printed in the left panel of Figure 4): 108/145, 109/145, 107/144 and 124/144.",
+    notes = "Kemal 2026 found a significant exposure trend for this endpoint and for any-grade hypertension only. No trend was found between exposure and Grade 3+ drug-related AEs, Grade 3+ hypertension, any-grade or Grade 3+ neutropenia, thrombocytopenia, anemia, infection, arrhythmia, diarrhea, rash or hemorrhage, nor between exposure and any tolerability endpoint (dose interruption, reduction, discontinuation, dose-limiting toxicity). Those negative endpoints have no fitted curve published and so are not packaged."
   )
 
   ini({

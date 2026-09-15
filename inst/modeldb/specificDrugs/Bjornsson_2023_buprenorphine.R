@@ -53,9 +53,12 @@ Bjornsson_2023_buprenorphine <- function() {
   # to tell which depot pair belongs to which formulation, and which member
   # of a pair is the fast versus the slow pathway.
   paper_specific_compartments <- c(
-    "depot_sl1", "depot_sl2",
-    "depot_q1w1", "depot_q1w2",
-    "depot_q4w1", "depot_q4w2"
+    "depot_sl1",
+    "depot_sl2",
+    "depot_q1w1",
+    "depot_q1w2",
+    "depot_q4w1",
+    "depot_q4w2"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -69,9 +72,12 @@ Bjornsson_2023_buprenorphine <- function() {
   # rate = -2 so rxode2 applies the modelled zero-order duration dur().
   dosing <- c(
     "central",
-    "depot_sl1", "depot_sl2",
-    "depot_q1w1", "depot_q1w2",
-    "depot_q4w1", "depot_q4w2"
+    "depot_sl1",
+    "depot_sl2",
+    "depot_q1w1",
+    "depot_q1w2",
+    "depot_q4w1",
+    "depot_q4w2"
   )
 
   # Every ODE state holds an amount of buprenorphine in mg (doses are in mg and
@@ -82,38 +88,38 @@ Bjornsson_2023_buprenorphine <- function() {
   # sampled. Only the plasma concentration derived from `central` was assayed
   # (Methods 2.1, LC-MS/MS, LLOQ 0.0250 ng/mL).
   compartmentData <- list(
-    depot_sl1   = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_sl2   = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_q1w1  = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_q1w2  = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_q4w1  = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_q4w2  = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "BPN", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_sl1 = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_sl2 = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_q1w1 = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_q1w2 = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_q4w1 = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_q4w2 = list(analyte = "BPN", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "BPN", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "BPN", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "BPN", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL normalised to the pooled cohort median of 35",
         "years (Table 1, All N = 236 column): CL = 52.1 * (AGE / 35)^-0.233.",
         "Bjornsson 2023 Results 3.1.3 verifies the effect size: CL is 60.8 L/h",
         "for an 18-year-old and 45.1 L/h for a 65-year-old (a 26 percent",
         "decrease). Observed range 18-65 years."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL normalised to the pooled cohort median of",
         "72.4 kg: CL = 52.1 * (WT / 72.4)^0.413. The reference value 72.4 kg",
         "is the body weight of the typical individual used for the paper's",
@@ -124,14 +130,14 @@ Bjornsson_2023_buprenorphine <- function() {
         "was also tested on F_SL and Vc but was removed from the final model",
         "for poor precision (RSE > 50 percent)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the most common category at 61 percent of the pooled cohort, and therefore the paper's reference for the fractional-difference categorical covariate model of Eq. 5)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Additive effect of +0.576 on the logit of the",
         "CAM2038 Q1W fast-pathway dose fraction Fq1w1 (Table 3, 'Sex covariate",
         "on Fq1w1', footnote b 'Females versus males'), giving Fq1w1 = 59.8",
@@ -140,14 +146,14 @@ Bjornsson_2023_buprenorphine <- function() {
         "in men'. Overall BPN exposure (AUC) is unaffected because Fq1w1 only",
         "redistributes dose between the fast and slow absorption pathways."
       ),
-      source_name        = "Sex (Table 1)"
+      source_name = "Sex (Table 1)"
     ),
     DIS_OUD = list(
-      description        = "Opioid use disorder patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Opioid use disorder patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant; the most common category at 62 percent of the pooled cohort, and therefore the paper's reference for the fractional-difference categorical covariate model of Eq. 5)",
-      notes              = paste(
+      notes = paste(
         "1 = participant with opioid use disorder (the Phase 2 cohorts),",
         "0 = healthy participant (the Phase 1 cohorts). The paper calls this",
         "covariate 'population' and reports both coefficients as 'Patients",
@@ -160,14 +166,14 @@ Bjornsson_2023_buprenorphine <- function() {
         "percent in participants with OUD). Population was also tested on",
         "Fq4w1 but removed for poor precision (RSE > 50 percent)."
       ),
-      source_name        = "Population (healthy participants vs participants with OUD)"
+      source_name = "Population (healthy participants vs participants with OUD)"
     ),
     INJSITE_THIGH = list(
-      description        = "Thigh subcutaneous injection-site indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Thigh subcutaneous injection-site indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (buttock, abdomen, or upper arm; Bjornsson 2023 Discussion 4.1 reports no differences in absorption parameters between these three sites, and the paper's simulations presume buttock injection)",
-      notes              = paste(
+      notes = paste(
         "1 = the CAM2038 Q1W dose was injected into the thigh. Bjornsson 2023",
         "Results 3.1.1 reports that for thigh injections the estimated fast",
         "pathway dose fraction Fq1w1 was close to 0 and was 'subsequently",
@@ -181,14 +187,14 @@ Bjornsson_2023_buprenorphine <- function() {
         "in overall exposure are expected for CAM2038 Q4W. Per-dose-record",
         "covariate."
       ),
-      source_name        = "Injection site (buttock / abdomen / thigh / upper arm)"
+      source_name = "Injection site (buttock / abdomen / thigh / upper arm)"
     ),
     DOSE_BPN_SL_MG = list(
-      description        = "Administered sublingual buprenorphine dose",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered sublingual buprenorphine dose",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sublingual BPN dose in mg, supplied as a data column so the",
         "dose-dependent SL bioavailability can be evaluated inside model():",
         "F_SL = 0.14 * (DOSE_BPN_SL_MG / 16)^-0.371 (Bjornsson 2023 Results",
@@ -201,16 +207,16 @@ Bjornsson_2023_buprenorphine <- function() {
         "Not a covariate on any CAM2038 parameter -- BPN PK was",
         "dose-proportional for CAM2038 Q1W (8-32 mg) and Q4W (64-192 mg)."
       ),
-      source_name        = "SL BPN dose (mg)"
+      source_name = "SL BPN dose (mg)"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Not tested. Bjornsson 2023 Results 3.1.2: 'Given the strong",
         "correlation between body weight and body mass index, only body weight",
         "was included in the covariate analysis.' Pooled median 24.4 kg/m^2",
@@ -219,9 +225,9 @@ Bjornsson_2023_buprenorphine <- function() {
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the stepwise covariate model but not retained. Race was",
         "collapsed to Black or African American versus all other races",
         "combined because few participants were Asian, Mixed, or Other",
@@ -233,9 +239,9 @@ Bjornsson_2023_buprenorphine <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained (Results 3.1.3). Discussion 4.1: 'CLCR was",
         "not identified as a predictor for CL in individuals with normal or",
         "mild renal function impairment.' Approximately 85 percent of",
@@ -248,22 +254,22 @@ Bjornsson_2023_buprenorphine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 252L,
-    n_studies      = 4L,
-    age_range      = "18-65 years",
-    age_median     = "35 years (initial model dataset, N = 236); 39 years (CAM2038 Q4W model-update dataset, N = 96)",
-    weight_range   = "50.4-127 kg",
-    weight_median  = "72.2 kg (initial model dataset); 75.6 kg (CAM2038 Q4W model-update dataset)",
+    species = "human",
+    n_subjects = 252L,
+    n_studies = 4L,
+    age_range = "18-65 years",
+    age_median = "35 years (initial model dataset, N = 236); 39 years (CAM2038 Q4W model-update dataset, N = 96)",
+    weight_range = "50.4-127 kg",
+    weight_median = "72.2 kg (initial model dataset); 75.6 kg (CAM2038 Q4W model-update dataset)",
     sex_female_pct = 39.0,
     race_ethnicity = c(
-      White                       = 66,
+      White = 66,
       `Black or African American` = 22,
-      Asian                       = 6,
-      Mixed                       = 2,
-      Other                       = 5
+      Asian = 6,
+      Mixed = 2,
+      Other = 5
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort of healthy participants (147 / 236 = 62 percent of the",
       "initial-model dataset; Phase 1 Trials 1 and 2) and participants with",
       "opioid use disorder (89 / 236 = 38 percent; Phase 2 Trials 3 and 4)."
@@ -274,16 +280,16 @@ Bjornsson_2023_buprenorphine <- function() {
       "mL/min). No participant had moderate or severe renal impairment",
       "(Methods 2.1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous BPN; sublingual BPN tablets (2-32 mg daily); subcutaneous",
       "CAM2038 Q1W 8, 16, 24, or 32 mg weekly; subcutaneous CAM2038 Q4W 64,",
       "96, 128, 160, or 192 mg monthly. Both single-dose and repeat-dose",
       "regimens (Methods 2.1, Supplementary Appendix A)."
     ),
-    bmi_range      = "16.8-34.9 kg/m^2 (median 24.4)",
-    crcl_range     = "65.1-237 mL/min (median 112-113)",
-    regions        = "Not reported by region; four company-sponsored trials (ISRCTN41550730, ISRCTN24987553, NCT02611752, NCT02710526)",
-    notes          = paste(
+    bmi_range = "16.8-34.9 kg/m^2 (median 24.4)",
+    crcl_range = "65.1-237 mL/min (median 112-113)",
+    regions = "Not reported by region; four company-sponsored trials (ISRCTN41550730, ISRCTN24987553, NCT02611752, NCT02710526)",
+    notes = paste(
       "The final model analysis included 252 individuals and 10,658 BPN plasma",
       "concentration observations (Results 3.1.1). This is the union of the",
       "initial population PK model dataset (236 participants, 10,260",

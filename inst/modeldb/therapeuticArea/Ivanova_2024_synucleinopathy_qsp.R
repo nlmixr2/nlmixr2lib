@@ -45,14 +45,29 @@ Ivanova_2024_synucleinopathy_qsp <- function() {
   # The antibody states DO map onto canonicals and use them
   # (depot / central / peripheral1 / isf).
   paper_specific_compartments <- c(
-    "aSyn_CSF", "aSynO_CSF",
-    "aSyn_BIF", "aSynO_BIF", "aSynFm_BIF",
-    "aSyn_BIFstr", "aSynO_BIFstr", "aSynFm_BIFstr",
-    "aSyn_BC", "aSynO_BC", "aSynFm_BC",
-    "aSyn_STR", "aSynO_STR", "aSynFm_STR",
-    "aSyn_MG", "aSynO_MG", "aSynFm_MG",
-    "aSyn_MGstr", "aSynO_MGstr", "aSynFm_MGstr",
-    "IM_BIF", "IM_BIFstr", "l_prob"
+    "aSyn_CSF",
+    "aSynO_CSF",
+    "aSyn_BIF",
+    "aSynO_BIF",
+    "aSynFm_BIF",
+    "aSyn_BIFstr",
+    "aSynO_BIFstr",
+    "aSynFm_BIFstr",
+    "aSyn_BC",
+    "aSynO_BC",
+    "aSynFm_BC",
+    "aSyn_STR",
+    "aSynO_STR",
+    "aSynFm_STR",
+    "aSyn_MG",
+    "aSynO_MG",
+    "aSynFm_MG",
+    "aSyn_MGstr",
+    "aSynO_MGstr",
+    "aSynFm_MGstr",
+    "IM_BIF",
+    "IM_BIFstr",
+    "l_prob"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "nM")
@@ -71,33 +86,43 @@ Ivanova_2024_synucleinopathy_qsp <- function() {
   # analyte + specimen verified against the Species sheet `notes` column of
   # PSP4-13-1798-s001.xlsx and against supplementary equations S1-S28.
   compartmentData <- list(
-    aSyn_CSF       = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "CSF",        verified = TRUE),
-    aSynO_CSF      = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "CSF",        verified = TRUE),
-    aSyn_BIF       = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "brain ISF",  verified = TRUE),
-    aSynO_BIF      = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "brain ISF",  verified = TRUE),
-    aSynFm_BIF     = list(analyte = "alpha-synuclein (fibril)",    units = "nM", specimen = "brain ISF",  verified = TRUE),
-    aSyn_BIFstr    = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "brain ISF",  verified = TRUE),
-    aSynO_BIFstr   = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "brain ISF",  verified = TRUE),
-    aSynFm_BIFstr  = list(analyte = "alpha-synuclein (fibril)",    units = "nM", specimen = "brain ISF",  verified = TRUE),
-    aSyn_BC        = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynO_BC       = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynFm_BC      = list(analyte = "alpha-synuclein (fibril)",    units = "nM", specimen = "tissue",     verified = TRUE),
-    aSyn_STR       = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynO_STR      = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynFm_STR     = list(analyte = "alpha-synuclein (fibril)",    units = "nM", specimen = "tissue",     verified = TRUE),
-    aSyn_MG        = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynO_MG       = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynFm_MG      = list(analyte = "alpha-synuclein (fibril)",    units = "nM", specimen = "tissue",     verified = TRUE),
-    aSyn_MGstr     = list(analyte = "alpha-synuclein (monomer)",   units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynO_MGstr    = list(analyte = "alpha-synuclein (oligomer)",  units = "nM", specimen = "tissue",     verified = TRUE),
-    aSynFm_MGstr   = list(analyte = "alpha-synuclein (fibril)",    units = "nM", specimen = "tissue",     verified = TRUE),
-    IM_BIF         = list(analyte = "inflammatory mediators (composite)", units = "dimensionless", specimen = "brain ISF", verified = TRUE),
-    IM_BIFstr      = list(analyte = "inflammatory mediators (composite)", units = "dimensionless", specimen = "brain ISF", verified = TRUE),
-    l_prob         = list(analyte = "not applicable",              units = "dimensionless", specimen = "not applicable", verified = TRUE),
-    depot          = list(analyte = "MEDI1341",                    units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "MEDI1341",                    units = "mg", specimen = "plasma",     verified = TRUE),
-    peripheral1    = list(analyte = "MEDI1341",                    units = "mg", specimen = "plasma",     verified = TRUE),
-    isf            = list(analyte = "MEDI1341",                    units = "mg", specimen = "brain ISF",  verified = TRUE)
+    aSyn_CSF = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "CSF", verified = TRUE),
+    aSynO_CSF = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "CSF", verified = TRUE),
+    aSyn_BIF = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "brain ISF", verified = TRUE),
+    aSynO_BIF = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "brain ISF", verified = TRUE),
+    aSynFm_BIF = list(analyte = "alpha-synuclein (fibril)", units = "nM", specimen = "brain ISF", verified = TRUE),
+    aSyn_BIFstr = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "brain ISF", verified = TRUE),
+    aSynO_BIFstr = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "brain ISF", verified = TRUE),
+    aSynFm_BIFstr = list(analyte = "alpha-synuclein (fibril)", units = "nM", specimen = "brain ISF", verified = TRUE),
+    aSyn_BC = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynO_BC = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynFm_BC = list(analyte = "alpha-synuclein (fibril)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSyn_STR = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynO_STR = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynFm_STR = list(analyte = "alpha-synuclein (fibril)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSyn_MG = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynO_MG = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynFm_MG = list(analyte = "alpha-synuclein (fibril)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSyn_MGstr = list(analyte = "alpha-synuclein (monomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynO_MGstr = list(analyte = "alpha-synuclein (oligomer)", units = "nM", specimen = "tissue", verified = TRUE),
+    aSynFm_MGstr = list(analyte = "alpha-synuclein (fibril)", units = "nM", specimen = "tissue", verified = TRUE),
+    IM_BIF = list(
+      analyte = "inflammatory mediators (composite)",
+      units = "dimensionless",
+      specimen = "brain ISF",
+      verified = TRUE
+    ),
+    IM_BIFstr = list(
+      analyte = "inflammatory mediators (composite)",
+      units = "dimensionless",
+      specimen = "brain ISF",
+      verified = TRUE
+    ),
+    l_prob = list(analyte = "not applicable", units = "dimensionless", specimen = "not applicable", verified = TRUE),
+    depot = list(analyte = "MEDI1341", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "MEDI1341", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "MEDI1341", units = "mg", specimen = "plasma", verified = TRUE),
+    isf = list(analyte = "MEDI1341", units = "mg", specimen = "brain ISF", verified = TRUE)
   )
 
   covariateData <- list()
@@ -105,9 +130,9 @@ Ivanova_2024_synucleinopathy_qsp <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species       = "mouse (C57BL/6 wild-type; Thy1/line-61 and A53T-M83 transgenic; rAAV2/7 and lentiviral A53T vector; TLR2 knockout)",
-    n_subjects    = NA_integer_,
-    n_studies     = 6L,
+    species = "mouse (C57BL/6 wild-type; Thy1/line-61 and A53T-M83 transgenic; rAAV2/7 and lentiviral A53T vector; TLR2 knockout)",
+    n_subjects = NA_integer_,
+    n_studies = 6L,
     disease_state = paste(
       "Parkinson's-disease-like alpha-synucleinopathy induced by transgenic or",
       "viral-vector aSyn overexpression, intrastriatal preformed-fibril (PFF)",

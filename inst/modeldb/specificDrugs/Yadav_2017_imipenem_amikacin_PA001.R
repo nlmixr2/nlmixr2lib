@@ -11,28 +11,58 @@ Yadav_2017_imipenem_amikacin_PA001 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
-    csig                          = list(analyte = "signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cipm                          = list(analyte = "imipenem", units = NA_character_, specimen = "plasma", verified = FALSE),
-    cags                          = list(analyte = "amikacin", units = NA_character_, specimen = "plasma", verified = FALSE)
+    bact_susceptible_susceptible1 = list(
+      analyte = "Pseudomonas aeruginosa susceptible bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Pseudomonas aeruginosa susceptible bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    csig = list(analyte = "signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cipm = list(analyte = "imipenem", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cags = list(analyte = "amikacin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Pseudomonas aeruginosa FADDI-PA001, carbapenem- and amikacin-resistant clinical isolate)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Carbapenem-resistant, amikacin-resistant P. aeruginosa bacteremia (MIC_IPM 32 mg/L; MIC_AMK 32 mg/L)",
-    model_system     = "48-h static-concentration time-kill (SCTK) assay in cation-adjusted Mueller-Hinton II broth",
+    species = "in vitro (Pseudomonas aeruginosa FADDI-PA001, carbapenem- and amikacin-resistant clinical isolate)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Carbapenem-resistant, amikacin-resistant P. aeruginosa bacteremia (MIC_IPM 32 mg/L; MIC_AMK 32 mg/L)",
+    model_system = "48-h static-concentration time-kill (SCTK) assay in cation-adjusted Mueller-Hinton II broth",
     initial_inoculum = "~10^7.8 CFU/mL",
-    dose_range       = "Imipenem 8-36 mg/L, amikacin 4-64 mg/L, monotherapies and combinations",
-    notes            = paste(
+    dose_range = "Imipenem 8-36 mg/L, amikacin 4-64 mg/L, monotherapies and combinations",
+    notes = paste(
       "Mechanism-based model fit jointly to total viable counts for all imipenem + tobramycin and imipenem + amikacin monotherapies and combinations against FADDI-PA001; this file uses the amikacin-specific parameter estimates (Table 3 footnote b).",
       "FADDI-PA001 harboured a preexisting imipenem-resistant subpopulation (3.1 log10 CFU/mL at 0 h) before therapy.",
       "Signal-molecule turnover ODE structure follows Bulitta 2010 (ref 61): d/dt(csig) = (1/mtt_sig) * (CFU_all - csig); csig(0) = cfu0.",

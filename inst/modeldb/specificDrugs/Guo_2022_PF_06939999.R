@@ -10,11 +10,11 @@ Guo_2022_PF_06939999 <- function() {
   )
   vignette <- "Guo_2022_PF_06939999"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL",
-    sdma          = "ng/mL",
-    platelet      = "10^9/L"
+    sdma = "ng/mL",
+    platelet = "10^9/L"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -22,29 +22,29 @@ Guo_2022_PF_06939999 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "PF-06939999", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "PF-06939999", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "PF-06939999", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF-06939999", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF-06939999", units = "mg", specimen = "plasma", verified = FALSE),
-    sdma        = list(analyte = "SDMA", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "platelets", units = "mg", specimen = "whole blood", verified = FALSE)
+    sdma = list(analyte = "SDMA", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "SDMA precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "platelets", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 28L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adults with advanced or metastatic solid tumors enrolled in the dose-escalation part (Part 1) of the first-in-patient study NCT03854227 of PF-06939999, a PRMT5 inhibitor. Two confirmed partial responses were observed (one each in the 2 mg b.i.d. and 4 mg b.i.d. cohorts). Four subjects experienced dose-limiting toxicities: thrombocytopenia (n = 2) in the 6 mg b.i.d. cohort, anemia (n = 1) in the 8 mg q.d. cohort, and neutropenia (n = 1) in the 6 mg q.d. cohort.",
-    dose_range     = "Oral PF-06939999 once daily (q.d.) at 0.5 mg (n = 1), 4 mg (n = 5), 6 mg (n = 6), or 8 mg (n = 3); or twice daily (b.i.d.) at 0.5 mg (n = 1), 1 mg (n = 2), 2 mg (n = 3), 4 mg (n = 3), or 6 mg (n = 4). Recommended dose for expansion (RDE) selected from the simulations is 6 mg q.d.",
-    regions        = NA_character_,
-    notes          = "Baseline body weight, age, and hepatic function were tested as PK covariates and were not retained in the final model (drop in objective function value < 3.84). Demographic detail (age, weight, sex, race) is summarised in Appendix Table S1, which is not on disk in this worktree; the population fields above therefore record disease state, dosing, and dose-limiting toxicities verbatim from the main text (Analysis Plan and Results). Trial registration: NCT03854227."
+    disease_state = "Adults with advanced or metastatic solid tumors enrolled in the dose-escalation part (Part 1) of the first-in-patient study NCT03854227 of PF-06939999, a PRMT5 inhibitor. Two confirmed partial responses were observed (one each in the 2 mg b.i.d. and 4 mg b.i.d. cohorts). Four subjects experienced dose-limiting toxicities: thrombocytopenia (n = 2) in the 6 mg b.i.d. cohort, anemia (n = 1) in the 8 mg q.d. cohort, and neutropenia (n = 1) in the 6 mg q.d. cohort.",
+    dose_range = "Oral PF-06939999 once daily (q.d.) at 0.5 mg (n = 1), 4 mg (n = 5), 6 mg (n = 6), or 8 mg (n = 3); or twice daily (b.i.d.) at 0.5 mg (n = 1), 1 mg (n = 2), 2 mg (n = 3), 4 mg (n = 3), or 6 mg (n = 4). Recommended dose for expansion (RDE) selected from the simulations is 6 mg q.d.",
+    regions = NA_character_,
+    notes = "Baseline body weight, age, and hepatic function were tested as PK covariates and were not retained in the final model (drop in objective function value < 3.84). Demographic detail (age, weight, sex, race) is summarised in Appendix Table S1, which is not on disk in this worktree; the population fields above therefore record disease state, dosing, and dose-limiting toxicities verbatim from the main text (Analysis Plan and Results). Trial registration: NCT03854227."
   )
 
   ini({

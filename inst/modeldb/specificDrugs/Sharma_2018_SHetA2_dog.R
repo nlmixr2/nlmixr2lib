@@ -29,8 +29,8 @@ Sharma_2018_SHetA2_dog <- function() {
   )
   vignette <- "Sharma_2018_SHetA2"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -38,35 +38,35 @@ Sharma_2018_SHetA2_dog <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    transit6    = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "beagle dog",
-    n_subjects     = 14L,
-    n_studies      = 1L,
-    age_range      = "(not reported in the source publication)",
-    weight_range   = "6.4-11.2 kg",
+    species = "beagle dog",
+    n_subjects = 14L,
+    n_studies = 1L,
+    age_range = "(not reported in the source publication)",
+    weight_range = "6.4-11.2 kg",
     sex_female_pct = NA,
-    disease_state  = "healthy; not fasted",
-    dose_range     = paste(
+    disease_state = "healthy; not fasted",
+    dose_range = paste(
       "IV: 5 mg/kg (n=2; formulation not reported). PO: 100, 400, or",
       "1500 mg/kg in 30% aqueous Solutol HS 15 by gavage at 5 mL/kg/day",
       "(n=4 per oral dose). IV data from NCI PREVENT report",
       "N01-CN-43306 work assignment 21 (pilot PK / tolerability)."
     ),
-    regions        = "USA (NCI / University of Oklahoma Health Sciences Center)",
-    notes          = paste(
+    regions = "USA (NCI / University of Oklahoma Health Sciences Center)",
+    notes = paste(
       "Beagle dogs (males 9.0-11.2 kg; females 6.9-8.4 kg for the oral",
       "arms; IV arm 6.4-7.0 kg). Blood from jugular vein at pre-dose and",
       "1, 2, 3, 4, 6, 9, 24 h after oral administration; pre-dose and",

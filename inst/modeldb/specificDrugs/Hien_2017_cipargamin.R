@@ -43,36 +43,46 @@ Hien_2017_cipargamin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1            = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2            = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3            = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "cipargamin", units = "mg", specimen = "plasma", verified = FALSE),
-    parasite_sensitive  = list(analyte = "Plasmodium falciparum parasites", units = "mg", specimen = "blood cell", verified = FALSE),
-    parasite_refractory = list(analyte = "Plasmodium falciparum parasites refractory to cipargamin", units = "mg", specimen = "blood cell", verified = FALSE)
+    depot = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cipargamin", units = "mg", specimen = "plasma", verified = FALSE),
+    parasite_sensitive = list(
+      analyte = "Plasmodium falciparum parasites",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    parasite_refractory = list(
+      analyte = "Plasmodium falciparum parasites refractory to cipargamin",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at enrolment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at enrolment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at enrolment. Fixed allometric scaling on CL/F (exponent",
         "0.75) and V/F (exponent 1.0) referenced at the population typical",
         "weight of 59 kg (Table 3 footnote a: 'Population mean parameter",
         "estimates were calculated for a typical patient with a body weight",
         "of 59 kg receiving a study drug dose of 10 mg')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PARA = list(
-      description        = "Baseline asexual Plasmodium falciparum parasitaemia at enrolment",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Baseline asexual Plasmodium falciparum parasitaemia at enrolment",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; measured by microscopy and validated qPCR",
         "of the P. falciparum 18S rRNA gene (limit of detection 22",
         "parasites/mL = 0.022 parasites/uL). Enrolment inclusion required",
@@ -84,14 +94,14 @@ Hien_2017_cipargamin <- function() {
         "units of parasites/uL, matching the source paper's Fig 3",
         "individually predicted clearance-profile scale."
       ),
-      source_name        = "PARA"
+      source_name = "PARA"
     ),
     DOSE_CIPARGAMIN_MG = list(
-      description        = "Administered cipargamin dose",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered cipargamin dose",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject cipargamin dose (single oral administration on day 1;",
         "values 10, 15, 20, 21 (one patient administered 21 mg in error;",
         "analysed in the 20-mg cohort per Table 1 footnote a), or 30 mg).",
@@ -101,37 +111,37 @@ Hien_2017_cipargamin <- function() {
         "single-dose study design; must still be carried as a data column",
         "because the PD term evaluates at simulation time."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 25L,
-    n_studies      = 1L,
-    age_range      = "20-52 years",
-    age_median     = "31 years (median across all cohorts; Table 1)",
-    weight_range   = "42-78 kg",
-    weight_median  = "59 kg (typical value used for parameter estimates; Table 3 footnote a)",
+    species = "human",
+    n_subjects = 25L,
+    n_studies = 1L,
+    age_range = "20-52 years",
+    age_median = "31 years (median across all cohorts; Table 1)",
+    weight_range = "42-78 kg",
+    weight_median = "59 kg (typical value used for parameter estimates; Table 3 footnote a)",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum monoinfection confirmed",
       "by microscopy (asexual parasite count 5,000-50,000 / uL); axillary",
       "temperature >= 37.5 degC or oral / tympanic / rectal temperature",
       ">= 38 degC at screening or within the previous 24 h (Methods",
       "'Patients')."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral doses of cipargamin (formerly KAE609): 30 mg (n = 6),",
       "20 mg (n = 5; includes one patient in the 30-mg cohort who received",
       "21 mg in error per Table 1 footnote a), 15 mg (n = 7), or 10 mg",
       "(n = 7). Capsules supplied at doses of 1, 10, and 25 mg; combined",
       "under direct observation on day 1."
     ),
-    regions        = "Vietnam (single-centre, Hospital for Tropical Diseases, Ho Chi Minh City)",
+    regions = "Vietnam (single-centre, Hospital for Tropical Diseases, Ho Chi Minh City)",
     trial_registration = "ClinicalTrials.gov NCT01836458",
-    notes          = paste(
+    notes = paste(
       "Adaptive single-dose de-escalation design (Methods 'Study design').",
       "Rescue treatment (dihydroartemisinin-piperaquine + primaquine) was",
       "given at day 42 or earlier upon early treatment failure or rising",

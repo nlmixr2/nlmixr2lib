@@ -8,67 +8,67 @@ Lin_2018_voriconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on V centered at the Lin 2018 cohort-median 56.1 kg (Table 1) with estimated exponent 1.30: V = TVV * (WT/56.1)^1.30. The reference is the dataset median rather than a canonical 70 kg adult value; the exponent is data-estimated, not the allometric-theory 1.0.",
-      source_name        = "WT"
+      notes = "Power-form effect on V centered at the Lin 2018 cohort-median 56.1 kg (Table 1) with estimated exponent 1.30: V = TVV * (WT/56.1)^1.30. The reference is the dataset median rather than a canonical 70 kg adult value; the exponent is data-estimated, not the allometric-theory 1.0.",
+      source_name = "WT"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EM/UM phenotype; the implicit reference when both CYP2C19_IM and CYP2C19_PM are 0)",
-      notes              = "Lin 2018 Table 3 uses PM as the source-paper reference category and reports IM and EM as multiplicative log-scale shifts on CL relative to PM (theta_2 = 0.45 for IM vs PM, theta_3 = 0.80 for EM vs PM). The model file is reparameterized to the canonical convention where EM/UM (both CYP2C19_IM and CYP2C19_PM = 0) is the implicit reference; the equivalent EM/UM-referenced shifts are e_im_cl = theta_2 - theta_3 = -0.35 and e_pm_cl = -theta_3 = -0.80. See the in-file source-trace comments for the derivation. Lin 2018 enrolled 49 IM subjects (46.7%); IM genotypes pooled by Lin 2018 were *1/*2, *1/*3, *2/*17 (per Methods 'DNA purification and CYP2C19 genotyping').",
-      source_name        = "CYP2C19 IM phenotype"
+      notes = "Lin 2018 Table 3 uses PM as the source-paper reference category and reports IM and EM as multiplicative log-scale shifts on CL relative to PM (theta_2 = 0.45 for IM vs PM, theta_3 = 0.80 for EM vs PM). The model file is reparameterized to the canonical convention where EM/UM (both CYP2C19_IM and CYP2C19_PM = 0) is the implicit reference; the equivalent EM/UM-referenced shifts are e_im_cl = theta_2 - theta_3 = -0.35 and e_pm_cl = -theta_3 = -0.80. See the in-file source-trace comments for the derivation. Lin 2018 enrolled 49 IM subjects (46.7%); IM genotypes pooled by Lin 2018 were *1/*2, *1/*3, *2/*17 (per Methods 'DNA purification and CYP2C19 genotyping').",
+      source_name = "CYP2C19 IM phenotype"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EM/UM phenotype; the implicit reference when both CYP2C19_IM and CYP2C19_PM are 0)",
-      notes              = "Companion to CYP2C19_IM. See CYP2C19_IM notes for the reparameterization rationale (Lin 2018 reports PM as the source-paper reference; the model file uses EM/UM as the canonical implicit reference). Lin 2018 enrolled 12 PM subjects (11.4%); PM genotypes pooled by Lin 2018 were *2/*2, *2/*3, *3/*3.",
-      source_name        = "CYP2C19 PM phenotype"
+      notes = "Companion to CYP2C19_IM. See CYP2C19_IM notes for the reparameterization rationale (Lin 2018 reports PM as the source-paper reference; the model file uses EM/UM as the canonical implicit reference). Lin 2018 enrolled 12 PM subjects (11.4%); PM genotypes pooled by Lin 2018 were *2/*2, *2/*3, *3/*3.",
+      source_name = "CYP2C19 PM phenotype"
     ),
     POD = list(
-      description        = "Post-operative day (days since renal transplantation)",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-operative day (days since renal transplantation)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Lin 2018 parameterizes the postoperative-time effect on F as four mutually-exclusive categorical bins (POT1, POT2, POT3, POT4) defined by month boundaries: <= 1 month (reference), 1-6 months, 6-12 months, > 1 year. The exact day-cutpoint values are not stated in Lin 2018. The model file uses the conventional 30 / 180 / 365 day boundaries to derive binary bin indicators from POD inside model(). The POT effect multiplies F = exp(lfdepot) and therefore applies only when the dose enters via the depot compartment (oral route).",
-      source_name        = "POT (categorical 1/2/3/4 in Lin 2018; reconstructed from POD via 30/180/365 day cutpoints)"
+      notes = "Lin 2018 parameterizes the postoperative-time effect on F as four mutually-exclusive categorical bins (POT1, POT2, POT3, POT4) defined by month boundaries: <= 1 month (reference), 1-6 months, 6-12 months, > 1 year. The exact day-cutpoint values are not stated in Lin 2018. The model file uses the conventional 30 / 180 / 365 day boundaries to derive binary bin indicators from POD inside model(). The POT effect multiplies F = exp(lfdepot) and therefore applies only when the dose enters via the depot compartment (oral route).",
+      source_name = "POT (categorical 1/2/3/4 in Lin 2018; reconstructed from POD via 30/180/365 day cutpoints)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 105L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 105L,
+    n_studies = 1L,
     n_observations = 342L,
-    age_range      = "18-58 years",
-    age_mean       = "36 +/- 9 years (median 36)",
-    weight_range   = "38.9-87.5 kg",
-    weight_median  = "56.1 kg",
+    age_range = "18-58 years",
+    age_mean = "36 +/- 9 years (median 36)",
+    weight_range = "38.9-87.5 kg",
+    weight_median = "56.1 kg",
     sex_female_pct = 20.0,
     race_ethnicity = c(Chinese = 100),
     cyp2c19_phenotype = c(EM_pct = 41.5, IM_pct = 46.2, PM_pct = 11.3, RM_pct = 0.9),
     postoperative_time_distribution = c(
-      WithinOneMonth_pct      = 31.4,
-      OneToSixMonths_pct      = 33.3,
-      SixToTwelveMonths_pct   = 21.0,
-      OverOneYear_pct         = 14.3
+      WithinOneMonth_pct = 31.4,
+      OneToSixMonths_pct = 33.3,
+      SixToTwelveMonths_pct = 21.0,
+      OverOneYear_pct = 14.3
     ),
-    disease_state  = "Adult renal transplant recipients receiving voriconazole (intravenous or oral) for prevention or treatment of invasive fungal infections after kidney transplantation. All patients received tacrolimus or cyclosporine as primary immunosuppression. CYP2C19 genotyping and routine therapeutic drug monitoring were performed.",
-    dose_range     = "Intravenous and oral voriconazole administered twice daily after a loading dose, with maintenance dose adjusted by surgeons per clinical response and TDM. Initial dose per voriconazole manufacturer package insert. 28 (26.7%) of patients received oral dosing only and 77 (73.3%) switched from intravenous to oral after stabilization. Trough samples (Cmin) collected 30 min before the next dose at steady state (day 5 or later, or day 2 with loading doses).",
-    regions        = "Single center: Second Xiangya Hospital, Central South University, Changsha, Hunan, China.",
-    notes          = "Prospective single-center clinical study, March 2016 - January 2017, Chinese Clinical Trial Registry ChiCTR-IPR-16008277. 129 patients screened, 106 included in the dataset (105 retained in the PPK analysis; one rapid metabolizer was excluded due to insufficient sample size). 342 voriconazole plasma concentrations measured by automated two-dimensional HPLC. CYP2C19 alleles tested: *2, *3, *17 (allele frequencies 29.2%, 5.2%, 0.5%). Baseline demographics per Lin 2018 Table 1; final-model parameter estimates per Lin 2018 Table 3."
+    disease_state = "Adult renal transplant recipients receiving voriconazole (intravenous or oral) for prevention or treatment of invasive fungal infections after kidney transplantation. All patients received tacrolimus or cyclosporine as primary immunosuppression. CYP2C19 genotyping and routine therapeutic drug monitoring were performed.",
+    dose_range = "Intravenous and oral voriconazole administered twice daily after a loading dose, with maintenance dose adjusted by surgeons per clinical response and TDM. Initial dose per voriconazole manufacturer package insert. 28 (26.7%) of patients received oral dosing only and 77 (73.3%) switched from intravenous to oral after stabilization. Trough samples (Cmin) collected 30 min before the next dose at steady state (day 5 or later, or day 2 with loading doses).",
+    regions = "Single center: Second Xiangya Hospital, Central South University, Changsha, Hunan, China.",
+    notes = "Prospective single-center clinical study, March 2016 - January 2017, Chinese Clinical Trial Registry ChiCTR-IPR-16008277. 129 patients screened, 106 included in the dataset (105 retained in the PPK analysis; one rapid metabolizer was excluded due to insufficient sample size). 342 voriconazole plasma concentrations measured by automated two-dimensional HPLC. CYP2C19 alleles tested: *2, *3, *17 (allele frequencies 29.2%, 5.2%, 0.5%). Baseline demographics per Lin 2018 Table 1; final-model parameter estimates per Lin 2018 Table 3."
   )
 
   ini({

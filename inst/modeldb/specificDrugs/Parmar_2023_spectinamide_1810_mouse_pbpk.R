@@ -34,8 +34,8 @@ Parmar_2023_spectinamide_1810_mouse_pbpk <- function() {
   )
   vignette <- "Parmar_2023_spectinamides_pbpk"
   units <- list(
-    time          = "h",
-    dosing        = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
+    time = "h",
+    dosing = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )
 
@@ -49,32 +49,62 @@ Parmar_2023_spectinamide_1810_mouse_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    venous               = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    arterial             = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    lung_extracellular   = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    lung_cellular        = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_extracellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_cellular      = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    liver_extracellular  = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    liver_cellular       = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    kidney_extracellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    kidney_cellular      = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_extracellular  = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_cellular       = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
-    depot                = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "administration site", verified = FALSE)
+    venous = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    arterial = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    lung_extracellular = list(
+      analyte = "Spectinamide 1810",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    lung_cellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen_extracellular = list(
+      analyte = "Spectinamide 1810",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    spleen_cellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver_extracellular = list(
+      analyte = "Spectinamide 1810",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    liver_cellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    kidney_extracellular = list(
+      analyte = "Spectinamide 1810",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    kidney_cellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_extracellular = list(
+      analyte = "Spectinamide 1810",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    other_cellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    depot = list(
+      analyte = "Spectinamide 1810",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (BALB/c, 20 g)",
-    n_subjects     = 303L,
-    n_studies      = 3L,
-    age_range      = NA_character_,
-    weight_range   = "20 g reference body weight (Parmar 2023 Table 2)",
+    species = "mouse (BALB/c, 20 g)",
+    n_subjects = 303L,
+    n_studies = 3L,
+    age_range = NA_character_,
+    weight_range = "20 g reference body weight (Parmar 2023 Table 2)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy BALB/c mice for the model-parameterisation and",
       "model-qualification data (plasma for all routes; lung, liver and",
       "spleen for the intravenous studies).",
@@ -84,14 +114,14 @@ Parmar_2023_spectinamide_1810_mouse_pbpk <- function() {
       "predicted the infected-animal profiles, so no disease-status effect",
       "is encoded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous 10 mg/kg single dose and QD5; subcutaneous 46, 50 and",
       "200 mg/kg single dose and 50 / 200 mg/kg QD5 (Parmar 2023 Table 1).",
       "Infected-mouse subcutaneous regimens spanned 10-500 mg/kg per dose",
       "at BID / QD / TIW / BIW / QW for 4 weeks."
     ),
-    regions        = "USA (University of Tennessee Health Science Center; Colorado State University BSL-3 for infected animals)",
-    notes          = paste(
+    regions = "USA (University of Tennessee Health Science Center; Colorado State University BSL-3 for infected animals)",
+    notes = paste(
       "n_subjects counts the BALB/c mice in Parmar 2023 Table 1 that",
       "contributed spectinamide 1810 data: 153 healthy mice (IV single dose",
       "24, IV QD5 24, SC 46 mg/kg 21, SC 50 / 200 mg/kg 48, SC QD5 36) plus",

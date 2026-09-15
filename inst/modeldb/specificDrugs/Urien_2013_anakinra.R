@@ -31,45 +31,45 @@ Urien_2013_anakinra <- function() {
     sep = " "
   )
   vignette <- "Urien_2013_anakinra"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "anakinra", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "anakinra", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "anakinra", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Urien 2013. Used for allometric",
         "scaling of CL/F and V/F with estimated power exponents 0.47",
         "and 0.76 respectively, reference 70 kg (Urien 2013 Table 1",
         "and prose: CL/F = 0.847 * BW^0.47, V/F = 2.581 * BW^0.76,",
         "equivalent to the 70 kg-normalized form in Table 1)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 87L,
-    n_observations  = 148L,
-    n_studies       = 2L,
-    age_range       = "0.73-21 years (8 months to 21 years; SJIA cohort 2.26-16.8 y, autoinflammatory cohort 0.73-21 y)",
-    age_median      = "SJIA cohort 7.6 years; autoinflammatory cohort 8 years (overall median not reported)",
-    weight_range    = "4.3-83 kg (SJIA cohort 10-83 kg, autoinflammatory cohort 4.3-60 kg)",
-    weight_median   = "21 kg (both cohorts; Results)",
-    sex_female_pct  = 36.8,
-    race_ethnicity  = NA,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 87L,
+    n_observations = 148L,
+    n_studies = 2L,
+    age_range = "0.73-21 years (8 months to 21 years; SJIA cohort 2.26-16.8 y, autoinflammatory cohort 0.73-21 y)",
+    age_median = "SJIA cohort 7.6 years; autoinflammatory cohort 8 years (overall median not reported)",
+    weight_range = "4.3-83 kg (SJIA cohort 10-83 kg, autoinflammatory cohort 4.3-60 kg)",
+    weight_median = "21 kg (both cohorts; Results)",
+    sex_female_pct = 36.8,
+    race_ethnicity = NA,
+    disease_state = paste(
       "22 patients with systemic-onset juvenile idiopathic arthritis",
       "(SJIA, from the ANAJIS phase IIB trial) plus 65 patients with",
       "diverse autoinflammatory conditions (20 cryopyrin-associated",
@@ -78,14 +78,14 @@ Urien_2013_anakinra <- function() {
       "associated periodic syndromes; 1 familial mediterranean fever;",
       "remaining genetically undetermined autoinflammatory conditions)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Subcutaneous anakinra once daily. ANAJIS-trial SJIA patients",
       "received 2 mg/kg/day (maximum 100 mg). Autoinflammatory patients",
       "received 2-10 mg/kg/day, with the highest doses in low-weight",
       "CAPS patients who had failed lower doses."
     ),
-    regions         = "France (multicentre, Necker-Cochin Inserm CIC and partner sites)",
-    notes           = paste(
+    regions = "France (multicentre, Necker-Cochin Inserm CIC and partner sites)",
+    notes = paste(
       "Combined PK dataset from the ANAJIS phase IIB SJIA trial (Quartier",
       "2011 Ann Rheum Dis 70:747-754) and patients with diverse",
       "autoinflammatory conditions subsequently treated at the same",

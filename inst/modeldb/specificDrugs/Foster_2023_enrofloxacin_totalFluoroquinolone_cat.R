@@ -46,21 +46,25 @@ Foster_2023_enrofloxacin_totalFluoroquinolone_cat <- function() {
   compartmentData <- list(
     central = list(
       analyte = "enrofloxacin + ciprofloxacin (total fluoroquinolone)",
-      units = "ug", specimen = "plasma", verified = TRUE
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
       analyte = "enrofloxacin + ciprofloxacin (total fluoroquinolone)",
-      units = "ug", specimen = "plasma", verified = TRUE
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight. Foster 2023 Results section 3.2: 'In this",
         "model body weight was centered around the mean population body weight, 3.8",
         "kg.' Enters as a power-of-ratio effect (WT / 3.8)^exponent on both the",
@@ -74,7 +78,7 @@ Foster_2023_enrofloxacin_totalFluoroquinolone_cat <- function() {
         "range 1.8-8.8 kg (Results section 3).",
         sep = " "
       ),
-      source_name        = "weight (Foster 2023 Table 1 covariate names dVd1weight / dCl1weight)"
+      source_name = "weight (Foster 2023 Table 1 covariate names dVd1weight / dCl1weight)"
     )
   )
 
@@ -85,37 +89,47 @@ Foster_2023_enrofloxacin_totalFluoroquinolone_cat <- function() {
   # published for any of them, so they are documented here rather than encoded.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened as a continuous covariate on Cl1, Cl2, V1 and V2 (Figure 3); not retained. Cohort mean 11.4 +/- 4.3 years."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (castrated)",
       notes = "Foster 2023 coded sex as female = 0 and male = 1 (Methods paragraph 8, the inverse of the canonical SEXF orientation); screened on Cl1, Cl2, V1 and V2 (Figure 2) and not retained. Cohort 18 spayed females / 16 castrated males."
     ),
     CREAT = list(
-      description = "Serum creatinine concentration", units = "mg/dL", type = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Screened as a marker of kidney function; not retained. Cohort mean 7.5 +/- 6.0 mg/dL. Also used to stratify cats into normal (<= 2.4), moderate (2.5-10) and severe (> 10) kidney dysfunction for the noncompartmental comparison."
     ),
     BUN = list(
-      description = "Blood urea nitrogen concentration", units = "mg/dL", type = "continuous",
+      description = "Blood urea nitrogen concentration",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Screened as a marker of kidney function; not retained in THIS (total fluoroquinolone) model. Cohort mean 137.6 +/- 103.0 mg/dL. BUN IS retained on the metabolic formation clearance in the companion parent + metabolite model, Foster_2023_enrofloxacin_ciprofloxacin_cat."
     ),
     SDMA = list(
-      description = "Symmetric dimethylarginine concentration", units = "ug/dL", type = "continuous",
+      description = "Symmetric dimethylarginine concentration",
+      units = "ug/dL",
+      type = "continuous",
       notes = "Screened as a marker of glomerular filtration rate; not retained. Cohort mean 39.8 +/- 27.0 ug/dL. SDMA has no canonical entry in inst/references/covariate-columns.md; none is proposed here because the covariate is documentation only and carries no published point estimate."
     )
   )
 
   population <- list(
-    species        = "cat (domestic, client-owned)",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "mean 11.4 +/- 4.3 years",
-    weight_range   = "1.8-8.8 kg (median 3.8 kg)",
-    weight_median  = "3.8 kg",
+    species = "cat (domestic, client-owned)",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "mean 11.4 +/- 4.3 years",
+    weight_range = "1.8-8.8 kg (median 3.8 kg)",
+    weight_median = "3.8 kg",
     sex_female_pct = 52.9,
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalised for clinical illness with suspected bacterial infection and",
       "variable kidney function: 9 cats with normal kidney function (median serum",
       "creatinine 1.6 mg/dL, range 0.9-2.2), 15 with moderate kidney dysfunction",
@@ -127,10 +141,10 @@ Foster_2023_enrofloxacin_totalFluoroquinolone_cat <- function() {
       sep = " "
     ),
     renal_function = "Serum creatinine mean 7.5 +/- 6.0 mg/dL; BUN mean 137.6 +/- 103.0 mg/dL; SDMA mean 39.8 +/- 27.0 ug/dL",
-    dose_range     = "Single 5 mg/kg enrofloxacin (Baytril 2.27%, Elanco) diluted 1:1 with sterile saline and infused intravenously over 30 minutes through a peripheral catheter; mean total dose 20.5 +/- 7.4 mg",
-    sampling       = "Sparse: each cat scheduled for 3 plasma samples in the 24 h after dosing, randomly assigned to one of 7 optimised schedules (Table S1); 98 samples analysed from 34 cats (4 cats contributed only 2 usable samples). Plasma enrofloxacin and ciprofloxacin by validated HPLC.",
-    regions        = "United States (single referral hospital, enrolment 2019-01-01 to 2021-09-01)",
-    notes          = paste(
+    dose_range = "Single 5 mg/kg enrofloxacin (Baytril 2.27%, Elanco) diluted 1:1 with sterile saline and infused intravenously over 30 minutes through a peripheral catheter; mean total dose 20.5 +/- 7.4 mg",
+    sampling = "Sparse: each cat scheduled for 3 plasma samples in the 24 h after dosing, randomly assigned to one of 7 optimised schedules (Table S1); 98 samples analysed from 34 cats (4 cats contributed only 2 usable samples). Plasma enrofloxacin and ciprofloxacin by validated HPLC.",
+    regions = "United States (single referral hospital, enrolment 2019-01-01 to 2021-09-01)",
+    notes = paste(
       "Baseline demographics are in Foster 2023 Results section 3 (first paragraph).",
       "The 2-compartment structure was selected over 1-compartment on mean AIC",
       "(-23.61 vs -8.97) and the multiplicative residual model over proportional and",

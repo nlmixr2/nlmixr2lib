@@ -11,32 +11,32 @@ Jonsson_2005_disufenton <- function() {
   )
   vignette <- "Jonsson_2005_disufenton"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000245"
+  ddmore_id <- "DDMODEL00000245"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "disufenton", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "disufenton", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "disufenton", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Linear-deviation effect on the central volume of distribution centered at 76 kg: vc = vc * (1 + e_wt_vc * (WT - 76)). The 76 kg reference is encoded directly in the DDMODEL00000245 .mod $PK block (line 37: `V1WT = THETA(7)*(WT-76.00)`); the rerun comment `;Rerun to estimate parameters at CLCR 70 and WT 75` describes the pop-typical patient discussed in the publication, not the parameterisation reference. Source data column WT is missing-coded as -99 in the bundle's NMTRAN dataset; for those rows the .mod sets V1WT = 0 (i.e., V1 falls back to the 76 kg typical value).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline. Linear-deviation effect on the central volume of distribution centered at 76 kg: vc = vc * (1 + e_wt_vc * (WT - 76)). The 76 kg reference is encoded directly in the DDMODEL00000245 .mod $PK block (line 37: `V1WT = THETA(7)*(WT-76.00)`); the rerun comment `;Rerun to estimate parameters at CLCR 70 and WT 75` describes the pop-typical patient discussed in the publication, not the parameterisation reference. Source data column WT is missing-coded as -99 in the bundle's NMTRAN dataset; for those rows the .mod sets V1WT = 0 (i.e., V1 falls back to the 76 kg typical value).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw, measured; not BSA-normalised)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, measured; not BSA-normalised)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying (CRCL is updated within-subject across the maintenance",
         "infusion in the bundle's NMTRAN dataset). Piecewise-linear effect on",
         "CL with breakpoint at 40 mL/min: cl = cl * (1 + e_crcl_cl * max(0, CRCL - 40)).",
@@ -51,23 +51,23 @@ Jonsson_2005_disufenton <- function() {
         "rows (and 34.55 mL/min for ID 10, 124.22 mL/min for ID 21). When",
         "supplying CRCL on input, do not include the -99 sentinel."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    n_subjects     = 179L,
-    n_studies      = 2L,
-    age_range      = "34-92 years",
-    weight_range   = NA_character_,
-    weight_median  = "76 kg (parameterisation reference; close to the population mean)",
+    n_subjects = 179L,
+    n_studies = 2L,
+    age_range = "34-92 years",
+    weight_range = NA_character_,
+    weight_median = "76 kg (parameterisation reference; close to the population mean)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Adults with acute ischaemic or haemorrhagic stroke. Renal function ranges from severe impairment to normal (estimated CRCL 20-143 mL/min).",
-    dose_range     = "Continuous intravenous infusion of NXY-059 over 72 hours, comprising a 1-hour loading infusion followed by a 71-hour maintenance infusion. Maintenance infusion rate was individualised to the subject's baseline creatinine clearance.",
-    crcl_range     = "20-143 mL/min (raw, measured)",
-    regions        = NA_character_,
-    notes          = "Demographics summarised from the DDMODEL00000245 RDF model-has-description-long abstract, which mirrors Jonsson 2005's Methods. Pooled across the SA-NXY-0003 and SA-NXY-0004 stroke trials; .lst reports 177 individuals contributing observations after EVID filtering of the bundle's 179-subject simulated dataset. The Jonsson 2005 paper itself is not on disk in this worktree, so weight, sex, and race breakdowns could not be cross-checked against the publication's Table 1; see the validation vignette's Errata for the full caveat list."
+    disease_state = "Adults with acute ischaemic or haemorrhagic stroke. Renal function ranges from severe impairment to normal (estimated CRCL 20-143 mL/min).",
+    dose_range = "Continuous intravenous infusion of NXY-059 over 72 hours, comprising a 1-hour loading infusion followed by a 71-hour maintenance infusion. Maintenance infusion rate was individualised to the subject's baseline creatinine clearance.",
+    crcl_range = "20-143 mL/min (raw, measured)",
+    regions = NA_character_,
+    notes = "Demographics summarised from the DDMODEL00000245 RDF model-has-description-long abstract, which mirrors Jonsson 2005's Methods. Pooled across the SA-NXY-0003 and SA-NXY-0004 stroke trials; .lst reports 177 individuals contributing observations after EVID filtering of the bundle's 179-subject simulated dataset. The Jonsson 2005 paper itself is not on disk in this worktree, so weight, sex, and race breakdowns could not be cross-checked against the publication's Table 1; see the validation vignette's Errata for the full caveat list."
   )
 
   ini({

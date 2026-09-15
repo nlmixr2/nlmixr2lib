@@ -8,66 +8,66 @@ Bienczak_2025_ligelizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ligelizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ligelizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ligelizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ligelizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ligelizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL/F, Q/F (exponent 0.993, fixed) and Vc/F, Vp/F (exponent 0.597, fixed), centered at 70 kg.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling on CL/F, Q/F (exponent 0.993, fixed) and Vc/F, Vp/F (exponent 0.597, fixed), centered at 70 kg.",
+      source_name = "WT"
     ),
     IGE = list(
-      description        = "Baseline serum total immunoglobulin E concentration",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Baseline serum total immunoglobulin E concentration",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL/F (exponent 0.106) and Vp/F (exponent -0.0816), centered on 90 IU/mL. Source paper reports IgE in IU/mL (Table S6 footnote a); the per-model units are kept as IU/mL to preserve the source reference value rather than converting to the canonical ng/mL convention.",
-      source_name        = "IgE"
+      notes = "Power covariate on CL/F (exponent 0.106) and Vp/F (exponent -0.0816), centered on 90 IU/mL. Source paper reports IgE in IU/mL (Table S6 footnote a); the per-model units are kept as IU/mL to preserve the source reference value rather than converting to the canonical ng/mL convention.",
+      source_name = "IgE"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody status (1 if subject had at least one ADA-positive sample at any time in the study, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody status (1 if subject had at least one ADA-positive sample at any time in the study, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative throughout)",
-      notes              = "Time-fixed (ever-positive); multiplicative effect on CL/F (+27.5%, exp(0.243)) and Vp/F (-40.9%, exp(-0.526)). Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
-      source_name        = "ADA"
+      notes = "Time-fixed (ever-positive); multiplicative effect on CL/F (+27.5%, exp(0.243)) and Vp/F (-40.9%, exp(-0.526)). Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
+      source_name = "ADA"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with chronic spontaneous urticaria)",
-      notes              = "1 = pooled healthy-volunteer cohort from studies A2103 and C2101; 0 = CSU patient. Multiplicative effect on CL/F (exp(-0.087); ~8.3% lower).",
-      source_name        = "healthy_volunteer"
+      notes = "1 = pooled healthy-volunteer cohort from studies A2103 and C2101; 0 = CSU patient. Multiplicative effect on CL/F (exp(-0.087); ~8.3% lower).",
+      source_name = "healthy_volunteer"
     ),
     STUDY_C2201 = list(
-      description        = "Study C2201 cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study C2201 cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other study in the Bienczak 2025 pooled PopPK analysis: A2103, C2101, C2202, C2302, or C2303)",
-      notes              = "1 = subject enrolled in study C2201 (NCT02477332; Phase 2b ligelizumab in adult CSU patients). Multiplicative effect on CL/F (exp(0.176); ~19.2% higher). Time-fixed (subject-level).",
-      source_name        = "C2201"
+      notes = "1 = subject enrolled in study C2201 (NCT02477332; Phase 2b ligelizumab in adult CSU patients). Multiplicative effect on CL/F (exp(0.176); ~19.2% higher). Time-fixed (subject-level).",
+      source_name = "C2201"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1907,
-    n_studies      = 6,
-    age_range      = "12-80 years (adolescent and adult)",
-    weight_range   = "31.0-181.3 kg",
+    species = "human",
+    n_subjects = 1907,
+    n_studies = 6,
+    age_range = "12-80 years (adolescent and adult)",
+    weight_range = "31.0-181.3 kg",
     sex_female_pct = 65.6,
     race_ethnicity = c(White = 73, Asian = 21, Black = 2, Other = 4),
-    disease_state  = "Adolescent and adult patients with chronic spontaneous urticaria (n=1706: 113 adolescent + 1593 adult); pooled with adult healthy volunteers (n=201) for absorption and disposition.",
-    dose_range     = "0.2-4.0 mg/kg q2w sc, 24-240 mg q4w sc, and 120 mg single dose sc across studies A2103, C2101, C2201, C2202, C2302, and C2303.",
-    regions        = "Global (multi-region Phase 1, 2b, and 3 program)",
-    notes          = "Baseline demographics from Supplementary Information S1, Tables S4 and S5 of Bienczak 2025."
+    disease_state = "Adolescent and adult patients with chronic spontaneous urticaria (n=1706: 113 adolescent + 1593 adult); pooled with adult healthy volunteers (n=201) for absorption and disposition.",
+    dose_range = "0.2-4.0 mg/kg q2w sc, 24-240 mg q4w sc, and 120 mg single dose sc across studies A2103, C2101, C2201, C2202, C2302, and C2303.",
+    regions = "Global (multi-region Phase 1, 2b, and 3 program)",
+    notes = "Baseline demographics from Supplementary Information S1, Tables S4 and S5 of Bienczak 2025."
   )
 
   ini({

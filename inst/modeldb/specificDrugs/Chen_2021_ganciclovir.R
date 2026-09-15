@@ -8,36 +8,36 @@ Chen_2021_ganciclovir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper computes CrCl with the Cockcroft-Gault equation in raw mL/min and does NOT divide by BSA. Dataset values must therefore be raw Cockcroft-Gault CrCl, not the BSA-normalized form normally implied by the canonical CRCL register entry. Linear-deviation effect on CL/F as `(1 + e_crcl_cl * CRCL / 68.3)`; the centring value 68.3 mL/min is the value the source equation uses (close to but not equal to the modeling-group median CrCl of 64.5 mL/min reported in Table 1).",
-      source_name        = "CLcr"
+      notes = "Source paper computes CrCl with the Cockcroft-Gault equation in raw mL/min and does NOT divide by BSA. Dataset values must therefore be raw Cockcroft-Gault CrCl, not the BSA-normalized form normally implied by the canonical CRCL register entry. Linear-deviation effect on CL/F as `(1 + e_crcl_cl * CRCL / 68.3)`; the centring value 68.3 mL/min is the value the source equation uses (close to but not equal to the modeling-group median CrCl of 64.5 mL/min reported in Table 1).",
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    n_subjects        = 70L,
-    n_studies         = 1L,
-    age_range         = "17-61 years",
-    age_mean          = "42.3 years (SD 9.95)",
-    weight_range      = "40-85 kg",
-    weight_mean       = "61.1 kg (SD 11.0)",
-    sex_female_pct    = 34.3,
-    race_ethnicity    = "Chinese (Han presumed; not specified in source).",
-    disease_state     = "Adult kidney transplant recipients on triple immunosuppression (cyclosporin or tacrolimus + mycophenolate mofetil or sodium + prednisone) with valganciclovir CMV prophylaxis started 3 weeks post-transplant.",
-    dose_range        = "Oral valganciclovir 450 mg or 900 mg once daily for 5-7 days (steady state).",
-    regions           = "China (Ruijin Hospital, Shanghai Jiaotong University School of Medicine).",
-    crcl_range        = "32.4-118.4 mL/min (modeling group, range); median 64.5 mL/min.",
-    notes             = "Demographics from Chen 2021 Table 1. 70 patients split into a modeling group (n = 40, 23 received 450 mg, 17 received 900 mg) and a validation group (n = 30, 18 received 450 mg, 12 received 900 mg). Plasma ganciclovir was measured at predose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, and 24 h after dosing on day 5-7. Induction therapy was rabbit anti-thymocyte globulin (ATG, n = 39) or basiliximab (Simulect, n = 25); not modeled as a covariate."
+    n_subjects = 70L,
+    n_studies = 1L,
+    age_range = "17-61 years",
+    age_mean = "42.3 years (SD 9.95)",
+    weight_range = "40-85 kg",
+    weight_mean = "61.1 kg (SD 11.0)",
+    sex_female_pct = 34.3,
+    race_ethnicity = "Chinese (Han presumed; not specified in source).",
+    disease_state = "Adult kidney transplant recipients on triple immunosuppression (cyclosporin or tacrolimus + mycophenolate mofetil or sodium + prednisone) with valganciclovir CMV prophylaxis started 3 weeks post-transplant.",
+    dose_range = "Oral valganciclovir 450 mg or 900 mg once daily for 5-7 days (steady state).",
+    regions = "China (Ruijin Hospital, Shanghai Jiaotong University School of Medicine).",
+    crcl_range = "32.4-118.4 mL/min (modeling group, range); median 64.5 mL/min.",
+    notes = "Demographics from Chen 2021 Table 1. 70 patients split into a modeling group (n = 40, 23 received 450 mg, 17 received 900 mg) and a validation group (n = 30, 18 received 450 mg, 12 received 900 mg). Plasma ganciclovir was measured at predose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, and 24 h after dosing on day 5-7. Induction therapy was rabbit anti-thymocyte globulin (ATG, n = 39) or basiliximab (Simulect, n = 25); not modeled as a covariate."
   )
 
   ini({

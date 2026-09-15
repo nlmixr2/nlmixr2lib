@@ -8,34 +8,34 @@ Rovei_1982_theophylline <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "theophylline", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "theophylline", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "theophylline", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear scaling on CL and Vc; reference 70 kg. Source paper reports CL and Vd per kg of body weight (Table 3); the per-kg parameterization implies a linear (exponent = 1) weight effect, which is reproduced here by (WT/70)^1 with reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Linear scaling on CL and Vc; reference 70 kg. Source paper reports CL and Vd per kg of body weight (Table 3); the per-kg parameterization implies a linear (exponent = 1) weight effect, which is reproduced here by (WT/70)^1 with reference weight 70 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "22-35 years",
-    age_mean       = "29 years (SD 4)",
-    weight_range   = "48-77 kg",
-    weight_mean    = "62 kg (SD 9)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "22-35 years",
+    age_mean = "29 years (SD 4)",
+    weight_range = "48-77 kg",
+    weight_mean = "62 kg (SD 9)",
     sex_female_pct = 50,
     race_ethnicity = c(White = 100),
-    disease_state  = "Healthy adult Caucasian non-smokers on a xanthine-free diet; normal hepatic and renal function (Rovei 1982 Table 1, Results page 772).",
-    dose_range     = "Single oral 125, 250, 375, 500 mg theophylline tablets (Theodel) in a 4-period cross-over (Rovei 1982 Methods, page 770).",
-    regions        = "France / Switzerland (study conducted at Hopital Cantonal of Geneva).",
-    notes          = "Plasma sampled 0-48 h post-dose at 13 timepoints; urine collected 0-72 h. Data fitted to a one-compartment open model with first-order absorption and lag time using a Gauss-Newton iterative procedure (G-PHARM, Gomeni & Gomeni 1978)."
+    disease_state = "Healthy adult Caucasian non-smokers on a xanthine-free diet; normal hepatic and renal function (Rovei 1982 Table 1, Results page 772).",
+    dose_range = "Single oral 125, 250, 375, 500 mg theophylline tablets (Theodel) in a 4-period cross-over (Rovei 1982 Methods, page 770).",
+    regions = "France / Switzerland (study conducted at Hopital Cantonal of Geneva).",
+    notes = "Plasma sampled 0-48 h post-dose at 13 timepoints; urine collected 0-72 h. Data fitted to a one-compartment open model with first-order absorption and lag time using a Gauss-Newton iterative procedure (G-PHARM, Gomeni & Gomeni 1978)."
   )
 
   ini({

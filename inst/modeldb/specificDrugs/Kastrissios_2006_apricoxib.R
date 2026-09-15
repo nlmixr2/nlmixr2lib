@@ -40,29 +40,29 @@ Kastrissios_2006_apricoxib <- function() {
   )
   vignette <- "Kastrissios_2006_apricoxib"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "apricoxib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "apricoxib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "apricoxib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "apricoxib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "apricoxib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = paste(
+      description = paste(
         "Body weight. Enters the apparent central volume as a power",
         "term normalised to 73.3 kg, the development-cohort median",
         "weight, which Kastrissios 2006 prints literally inside its",
         "equation 8: Vc/F = (Vc/F)_Typ * (Weight / 73.3)^K_Vc/F-WT."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference (normalising) value 73.3 kg is both the printed",
         "denominator of equation 8 and the Table II development-set",
         "median weight (range 49.5 to 104 kg), so the two agree and",
@@ -76,19 +76,19 @@ Kastrissios_2006_apricoxib <- function() {
         "explained by differences in body weight'), so WT acts on Vc/F",
         "only."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     SEXF = list(
-      description        = paste(
+      description = paste(
         "Biological sex, 1 = female, 0 = male. Kastrissios 2006 uses",
         "the opposite orientation: its equation 7 indicator 'Gender'",
         "is 1 for MALE and 0 for female, so the canonical column is",
         "the value inversion SEXF = 1 - Gender."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "VALUE INVERSION, sign confirmed by the operator (sidecar",
         "request-001 q4, option A). The published coefficient",
         "K_CL/F-SEX = +0.325 multiplies the paper's MALE indicator, so",
@@ -110,18 +110,18 @@ Kastrissios_2006_apricoxib <- function() {
         "reference. This file encodes the estimate, not the prose;",
         "see the vignette Assumptions and deviations section."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     CYP2D6_PM_IM = list(
-      description        = paste(
+      description = paste(
         "Pooled CYP2D6 poor-or-intermediate-metabolizer phenotype",
         "indicator. 1 = poor OR intermediate metabolizer, 0 =",
         "extensive OR ultrafast metabolizer."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 7 indicator 'CYPD', defined in the",
         "paragraph following equation 8: 'CYPD is an indicator",
         "variable taking the value 0 for subjects with the",
@@ -144,18 +144,18 @@ Kastrissios_2006_apricoxib <- function() {
         "group, this single pooled column is used rather than the",
         "CYP2D6_PM + CYP2D6_IM pair sharing a coefficient."
       ),
-      source_name        = "CYPD"
+      source_name = "CYPD"
     ),
     CYP2C9_RH = list(
-      description        = paste(
+      description = paste(
         "CYP2C9 reduced-hydroxylator phenotype indicator. 1 = reduced",
         "hydroxylator, 0 = intermediate metabolizer OR normal",
         "hydroxylator."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 7 indicator 'CYPC', defined in the",
         "paragraph following equation 8: 'CYPC is an indicator",
         "variable taking the value 0 for subjects with the",
@@ -182,18 +182,18 @@ Kastrissios_2006_apricoxib <- function() {
         "retained by the authors 'because of its pharmacologic",
         "significance'."
       ),
-      source_name        = "CYPC"
+      source_name = "CYPC"
     ),
     DOSE_HIGH = list(
-      description        = paste(
+      description = paste(
         "Supratherapeutic-dose-cohort indicator. 1 = the subject",
         "received a 400 mg or 800 mg dose of apricoxib, 0 = the",
         "subject received a dose in the 2 to 200 mg range."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 7 indicator 'D_hi': 'Dhi is an",
         "indicator variable that took the value 0 for doses in the",
         "range 2 to 200 mg and 1 for doses of 400 or 800 mg.' Gates",
@@ -220,7 +220,7 @@ Kastrissios_2006_apricoxib <- function() {
         "these 2 effects' but retained both because each improved the",
         "fit."
       ),
-      source_name        = "Dhi"
+      source_name = "Dhi"
     )
   )
 
@@ -228,11 +228,11 @@ Kastrissios_2006_apricoxib <- function() {
   # documented for provenance only and are deliberately absent from model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested as a candidate covariate (Methods, 'Age, gender, race,",
         "body weight, height, body mass index, and phenotypes of CYP",
         "2D6, CYP 2C9, and CYP 2C19 were considered as possible",
@@ -243,37 +243,37 @@ Kastrissios_2006_apricoxib <- function() {
         "may not be adequately addressed by this study population.'",
         "No point estimate is reported, so no effect can be encoded."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     HT = list(
-      description        = "Height.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened per Methods and not retained; no point estimate",
         "reported. Table II development-set median 173 cm (150-191)."
       ),
-      source_name        = "Height"
+      source_name = "Height"
     ),
     BMI = list(
-      description        = "Body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened per Methods and not retained; no point estimate",
         "reported. Table II development-set median 25.3 kg/m^2",
         "(19.3-29.3)."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Race was screened as a categorical covariate on CL/F",
         "(Methods: 'indicator variables were used to evaluate the",
         "effects of gender, race, and cytochrome P450 phenotype on",
@@ -288,35 +288,35 @@ Kastrissios_2006_apricoxib <- function() {
         "Japanese-versus-Western simulation (Table I), not through a",
         "direct effect on any PK parameter."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "CYP2C19 phenotype was genotyped and screened (Methods) but",
         "no CYP2C19 effect was retained. Table II reports 'CYP 2C19,",
         "1/3 = 103/1' - a single poor metabolizer in 104 subjects,",
         "which cannot support an estimate. No point estimate reported."
       ),
-      source_name        = "CYP 2C19"
+      source_name = "CYP 2C19"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 104L,
-    n_studies      = 3L,
-    age_range      = "19-46 years",
-    age_median     = "27.0 years",
-    weight_range   = "49.5-104 kg",
-    weight_median  = "73.3 kg",
+    species = "human",
+    n_subjects = 104L,
+    n_studies = 3L,
+    age_range = "19-46 years",
+    age_median = "27.0 years",
+    weight_range = "49.5-104 kg",
+    weight_median = "73.3 kg",
     sex_female_pct = 50,
     race_ethnicity = c(White = 88.5, Black = 2.9, Asian = 1.9, Hispanic = 3.8, Other = 2.9),
-    disease_state  = "healthy adult volunteers",
-    dose_range     = paste(
+    disease_state = "healthy adult volunteers",
+    dose_range = paste(
       "Oral apricoxib (CS-706). Study 1: single doses of 2, 5, 10,",
       "25, 50, 100 or 200 mg (n = 56 active), serial sampling to 72 h.",
       "Study 2: single doses of 400 or 800 mg (n = 16 active), serial",
@@ -326,8 +326,8 @@ Kastrissios_2006_apricoxib <- function() {
       "troughs on days 2-13 and to 72 h after the last dose. All doses",
       "administered under fasted conditions."
     ),
-    regions        = "United States (single phase 1 site: MDS Pharma Services, Lincoln, Nebraska)",
-    notes          = paste(
+    regions = "United States (single phase 1 site: MDS Pharma Services, Lincoln, Nebraska)",
+    notes = paste(
       "Baseline characteristics from Table II, development data set",
       "column. n_subjects = 104 counts only apricoxib-treated",
       "subjects (8 per dose level, except 16 subjects at 100 mg twice",

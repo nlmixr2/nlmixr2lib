@@ -15,11 +15,11 @@ Royston_2025_letermovir <- function() {
 
   covariateData <- list(
     CONMED_CSA = list(
-      description        = "Concomitant cyclosporine (ciclosporin) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cyclosporine (ciclosporin) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant cyclosporine)",
-      notes              = paste(
+      notes = paste(
         "Royston 2025 Table 1: fCSA = -0.38 (RSE 69.5%) on log CL/F.",
         "Six of the 40 patients received cyclosporine and were dosed at 240 mg",
         "once daily rather than 480 mg once daily. The effect is multiplicative",
@@ -35,14 +35,14 @@ Royston_2025_letermovir <- function() {
         "Cyclosporine inhibits OATP1B1-mediated hepatic uptake of letermovir.",
         sep = " "
       ),
-      source_name        = "CSA"
+      source_name = "CSA"
     ),
     OCC = list(
-      description        = "Integer-valued occasion index for inter-occasion variability on CL/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion index for inter-occasion variability on CL/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Royston 2025 Methods: 'each patient visit was treated as an occasion at",
         "steady state'. IOV on CL/F was estimated at SD 0.62 (RSE 7%) on the log",
         "scale (Table 1), which exceeds the IIV of 0.58 and is therefore the",
@@ -56,7 +56,7 @@ Royston_2025_letermovir <- function() {
         "requires adding further etaiov_cl_<n> blocks.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -80,116 +80,116 @@ Royston_2025_letermovir <- function() {
   # cyclosporine-treated patients.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Higher weight associated with increased CL/F (allometric scaling) in univariable analysis; no coefficient reported, not retained in the final model.",
-      source_name        = "weight"
+      notes = "Higher weight associated with increased CL/F (allometric scaling) in univariable analysis; no coefficient reported, not retained in the final model.",
+      source_name = "weight"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Younger age associated with increased CL/F in univariable analysis; no coefficient reported, not retained in the final model.",
-      source_name        = "age"
+      notes = "Younger age associated with increased CL/F in univariable analysis; no coefficient reported, not retained in the final model.",
+      source_name = "age"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Higher serum albumin associated with increased CL/F in univariable analysis (albumin-mediated hepatic uptake of OATP substrates); no coefficient reported, not retained in the final model.",
-      source_name        = "albumin"
+      notes = "Higher serum albumin associated with increased CL/F in univariable analysis (albumin-mediated hepatic uptake of OATP substrates); no coefficient reported, not retained in the final model.",
+      source_name = "albumin"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened; no association with CL/F found. Not retained.",
-      source_name        = "gender"
+      notes = "Screened; no association with CL/F found. Not retained.",
+      source_name = "gender"
     ),
     CRCL = list(
-      description        = "Creatinine clearance / glomerular filtration rate",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance / glomerular filtration rate",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as glomerular filtration rate; no association with CL/F found. Not retained.",
-      source_name        = "glomerular filtration rate"
+      notes = "Screened as glomerular filtration rate; no association with CL/F found. Not retained.",
+      source_name = "glomerular filtration rate"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened (reported as ALAT); no association with CL/F found. Not retained.",
-      source_name        = "ALAT"
+      notes = "Screened (reported as ALAT); no association with CL/F found. Not retained.",
+      source_name = "ALAT"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened (reported as ASAT); no association with CL/F found. Not retained.",
-      source_name        = "ASAT"
+      notes = "Screened (reported as ASAT); no association with CL/F found. Not retained.",
+      source_name = "ASAT"
     ),
     CRP = list(
-      description        = "C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened; no association with CL/F found. Not retained.",
-      source_name        = "C-reactive protein"
+      notes = "Screened; no association with CL/F found. Not retained.",
+      source_name = "C-reactive protein"
     ),
     WBC = list(
-      description        = "White blood cell (leukocyte) count",
-      units              = "10^9/L",
-      type               = "continuous",
+      description = "White blood cell (leukocyte) count",
+      units = "10^9/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as absolute leukocyte count; no association with CL/F found. Not retained.",
-      source_name        = "leukocyte count"
+      notes = "Screened as absolute leukocyte count; no association with CL/F found. Not retained.",
+      source_name = "leukocyte count"
     ),
     NEUT = list(
-      description        = "Absolute neutrophil count",
-      units              = "cells/mm^3",
-      type               = "continuous",
+      description = "Absolute neutrophil count",
+      units = "cells/mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as absolute neutrophil count; no association with CL/F found. Not retained. The paper reports no unit for this covariate; the canonical unit is given here.",
-      source_name        = "absolute neutrophil count"
+      notes = "Screened as absolute neutrophil count; no association with CL/F found. Not retained. The paper reports no unit for this covariate; the canonical unit is given here.",
+      source_name = "absolute neutrophil count"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as one of the liver enzymes/function tests (ALAT, ASAT, and bilirubin); no association with CL/F found. Not retained. The paper reports no unit for this covariate.",
-      source_name        = "bilirubin"
+      notes = "Screened as one of the liver enzymes/function tests (ALAT, ASAT, and bilirubin); no association with CL/F found. Not retained. The paper reports no unit for this covariate.",
+      source_name = "bilirubin"
     ),
     CONMED_STEROID = list(
-      description        = "Systemic corticosteroid (prednisone) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Systemic corticosteroid (prednisone) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no systemic corticosteroid)",
-      notes              = "Screened as prednisone use and associated with DECREASED CL/F in univariable analysis; no coefficient reported, not retained in the final model. The paper's Discussion groups steroid use with acute GvHD as a marker of later time after HCT.",
-      source_name        = "prednisone"
+      notes = "Screened as prednisone use and associated with DECREASED CL/F in univariable analysis; no coefficient reported, not retained in the final model. The paper's Discussion groups steroid use with acute GvHD as a marker of later time after HCT.",
+      source_name = "prednisone"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 40,
-    n_studies     = 1,
+    species = "human",
+    n_subjects = 40,
+    n_studies = 1,
     disease_state = "adult CMV-seropositive allogeneic hematopoietic cell transplant recipients receiving primary CMV prophylaxis",
-    dose_range    = "480 mg orally once daily, or 240 mg orally once daily when coadministered with cyclosporine",
-    regions       = "Switzerland (University Hospitals of Geneva)",
-    notes         = paste(
+    dose_range = "480 mg orally once daily, or 240 mg orally once daily when coadministered with cyclosporine",
+    regions = "Switzerland (University Hospitals of Geneva)",
+    notes = paste(
       "Post hoc pharmacometric analysis of a prospective observational therapeutic",
       "drug monitoring study conducted between 1 March 2020 and 20 April 2021",
       "(Royston 2022, Antimicrob Agents Chemother 66:e0065722,",

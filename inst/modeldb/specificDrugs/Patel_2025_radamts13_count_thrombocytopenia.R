@@ -19,34 +19,34 @@ Patel_2025_radamts13_count_thrombocytopenia <- function() {
   paper_specific_etas <- c("etab1")
 
   units <- list(
-    time          = "n/a (the count is accumulated over a whole prophylaxis period, roughly 6 months; the model has no time argument and no ODE states)",
-    dosing        = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
+    time = "n/a (the count is accumulated over a whole prophylaxis period, roughly 6 months; the model has no time argument and no ODE states)",
+    dosing = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
     concentration = "IU/mL (the CAV covariate; 1 IU/mL = 100% of normal plasma ADAMTS13 activity)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Mean average plasma ADAMTS13 activity over a dosing interval for the patient in the prophylaxis period being scored (IU/mL).",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Mean average plasma ADAMTS13 activity over a dosing interval for the patient in the prophylaxis period being scored (IU/mL).",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. One value per patient per prophylaxis period, not a time-varying column: the paper derives a Cave after each dose in each patient from the companion PopPK model's individual post hoc parameters, then averages those within Period 1 and within Period 2 to give the single mean Cave that scores that period's count (paper Methods, 'Exposure-response count modeling'). 1 IU/mL = 100% of normal ADAMTS13 activity, so the fitted ECave50 of 0.0149 IU/mL corresponds to about 1.5% of normal. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here; the validation vignette does this explicitly. Reference exposures from Table S2: 0.0308 / 0.0613 IU/mL for PBT 10 IU/kg Q2W / Q1W and 0.203 / 0.405 IU/mL for rADAMTS13 40 IU/kg Q2W / Q1W.",
-      source_name        = "Cave"
+      notes = "Required input. One value per patient per prophylaxis period, not a time-varying column: the paper derives a Cave after each dose in each patient from the companion PopPK model's individual post hoc parameters, then averages those within Period 1 and within Period 2 to give the single mean Cave that scores that period's count (paper Methods, 'Exposure-response count modeling'). 1 IU/mL = 100% of normal ADAMTS13 activity, so the fitted ECave50 of 0.0149 IU/mL corresponds to about 1.5% of normal. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here; the validation vignette does this explicitly. Reference exposures from Table S2: 0.0308 / 0.0613 IU/mL for PBT 10 IU/kg Q2W / Q1W and 0.203 / 0.405 IU/mL for rADAMTS13 40 IU/kg Q2W / Q1W.",
+      source_name = "Cave"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "All ages. The count analysis was run first in patients aged >=12 years and then repeated without age restriction; the parameters extracted here are the all-ages final model (paper Methods and Results).",
-    weight_range   = "Not reported separately for the 41-patient exposure-response set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "All ages. The count analysis was run first in patients aged >=12 years and then repeated without age restriction; the parameters extracted here are the all-ages final model (paper Methods and Results).",
+    weight_range = "Not reported separately for the 41-patient exposure-response set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported separately for the 41-patient exposure-response set.",
-    disease_state  = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: thrombocytopenia, defined as a platelet count decreased by at least 25% from baseline or a platelet count <150,000/uL (paper Methods, 'Exposure-response analyses').",
-    dose_range     = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
-    regions        = "Multinational phase III crossover study NCT03393975.",
-    notes          = "The exposure-response analyses use only the pivotal phase III study, Periods 1 and 2, giving N = 41 (Table S5 and Table S7 headers). Two patients included in the exploratory data analysis and the repeated time-to-event modeling were not counted as part of the prophylaxis cohort in the count exposure-response analysis (Figure 1 footnote a), which is why the count-model N (41) is smaller than the RTTE cohort and much smaller than the 65-patient PK analysis set."
+    disease_state = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: thrombocytopenia, defined as a platelet count decreased by at least 25% from baseline or a platelet count <150,000/uL (paper Methods, 'Exposure-response analyses').",
+    dose_range = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
+    regions = "Multinational phase III crossover study NCT03393975.",
+    notes = "The exposure-response analyses use only the pivotal phase III study, Periods 1 and 2, giving N = 41 (Table S5 and Table S7 headers). Two patients included in the exploratory data analysis and the repeated time-to-event modeling were not counted as part of the prophylaxis cohort in the count exposure-response analysis (Figure 1 footnote a), which is why the count-model N (41) is smaller than the RTTE cohort and much smaller than the 65-patient PK analysis set."
   )
 
   ini({

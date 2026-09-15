@@ -9,93 +9,93 @@ Li_2018_PF04236921 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "PF-04236921", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "PF-04236921", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "CRP synthesis rate", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "CRP synthesis rate", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, Vc, Q and Vp with reference 72 kg per the Li 2018 final-model equations (paper Eq. for CL/Vc/Q/Vp on p2064). The reference 72 kg is the pooled-cohort median across the five studies (Table 2, p2065 median values 79/82/61/70/73 kg for B0151001/B0151004/B0151002/B0151003/B0151006). Treated as baseline weight; the source paper does not describe time-varying weight handling.",
-      source_name        = "BWT"
+      notes = "Power effect on CL, Vc, Q and Vp with reference 72 kg per the Li 2018 final-model equations (paper Eq. for CL/Vc/Q/Vp on p2064). The reference 72 kg is the pooled-cohort median across the five studies (Table 2, p2065 median values 79/82/61/70/73 kg for B0151001/B0151004/B0151002/B0151003/B0151006). Treated as baseline weight; the source paper does not describe time-varying weight handling.",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effect on linear CL with form theta_SEX_on_CL^SEXF (per Li 2018 paper equation on p2064 with SEX=1 male, SEX=2 female; the canonical SEXF coding 0=male/1=female is identical to (SEX_paper - 1)). The estimate 0.862 (Table 3, p2068) means females have 14 percent lower CL than males, consistent with the Discussion (p2070).",
-      source_name        = "SEX (1 = male, 2 = female; canonical SEXF = SEX - 1)"
+      notes = "Multiplicative effect on linear CL with form theta_SEX_on_CL^SEXF (per Li 2018 paper equation on p2064 with SEX=1 male, SEX=2 female; the canonical SEXF coding 0=male/1=female is identical to (SEX_paper - 1)). The estimate 0.862 (Table 3, p2068) means females have 14 percent lower CL than males, consistent with the Discussion (p2070).",
+      source_name = "SEX (1 = male, 2 = female; canonical SEXF = SEX - 1)"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (baseline)",
+      description = "Serum albumin concentration (baseline)",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL with reference 4.0 g/dL per the Li 2018 final-model equation on p2064 (alongside the BWT/ALB/CRCL/CRP/SEX covariate block). Also a power effect on baseline CRP and on the logit-scale Imax parameter with the same reference 4.0 g/dL (paper Eq. for BLCRP and Imax_prime on p2066). The reference 4.0 g/dL is the pooled-cohort median (Table 2 medians 4.5/4.5/4.2/4.0/3.9 g/dL for HV_IV/HV_SC/RA/CD/SLE).",
-      source_name        = "ALB"
+      notes = "Power effect on linear CL with reference 4.0 g/dL per the Li 2018 final-model equation on p2064 (alongside the BWT/ALB/CRCL/CRP/SEX covariate block). Also a power effect on baseline CRP and on the logit-scale Imax parameter with the same reference 4.0 g/dL (paper Eq. for BLCRP and Imax_prime on p2066). The reference 4.0 g/dL is the pooled-cohort median (Table 2 medians 4.5/4.5/4.2/4.0/3.9 g/dL for HV_IV/HV_SC/RA/CD/SLE).",
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw Cockcroft-Gault, not BSA-normalized)",
-      units              = "mL/min (raw, not BSA-normalized)",
-      type               = "continuous",
+      description = "Creatinine clearance (raw Cockcroft-Gault, not BSA-normalized)",
+      units = "mL/min (raw, not BSA-normalized)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL with reference 113 mL/min per the Li 2018 final-model equation on p2064. The paper Table 2 lists CLcr in 'ml min-1' (without the /1.73 m^2 BSA normalisation) so this model carries the source unit raw mL/min rather than the canonical mL/min/1.73 m^2 BSA-normalised form (see covariate-columns.md notes on per-model unit documentation). The reference 113 mL/min is approximately the pooled-cohort median (Table 2 medians 116/123/93.3/110/119 mL/min).",
-      source_name        = "CLCR"
+      notes = "Power effect on linear CL with reference 113 mL/min per the Li 2018 final-model equation on p2064. The paper Table 2 lists CLcr in 'ml min-1' (without the /1.73 m^2 BSA normalisation) so this model carries the source unit raw mL/min rather than the canonical mL/min/1.73 m^2 BSA-normalised form (see covariate-columns.md notes on per-model unit documentation). The reference 113 mL/min is approximately the pooled-cohort median (Table 2 medians 116/123/93.3/110/119 mL/min).",
+      source_name = "CLCR"
     ),
     CRP = list(
-      description        = "C-reactive protein concentration (baseline)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein concentration (baseline)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL with reference 7.6 mg/L per the Li 2018 final-model equation on p2064. The assay is the high-sensitivity CRP assay used for the PD endpoint (Methods, p2062; LLOQ 0.01-0.02 mg/dL = 0.1-0.2 mg/L). The reference 7.6 mg/L is approximately the pooled-cohort median across the five studies (Table 2 medians 0.9/0.8/7.4/19.4/2.9 mg/L for HV_IV/HV_SC/RA/CD/SLE). CRP also enters the PD model as the state variable but as a covariate here it is the baseline pre-dose value.",
-      source_name        = "CRP"
+      notes = "Power effect on linear CL with reference 7.6 mg/L per the Li 2018 final-model equation on p2064. The assay is the high-sensitivity CRP assay used for the PD endpoint (Methods, p2062; LLOQ 0.01-0.02 mg/dL = 0.1-0.2 mg/L). The reference 7.6 mg/L is approximately the pooled-cohort median across the five studies (Table 2 medians 0.9/0.8/7.4/19.4/2.9 mg/L for HV_IV/HV_SC/RA/CD/SLE). CRP also enters the PD model as the state variable but as a covariate here it is the baseline pre-dose value.",
+      source_name = "CRP"
     ),
     DIS_RA = list(
-      description        = "Rheumatoid arthritis cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rheumatoid arthritis cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HV / CD / SLE)",
-      notes              = "One of three orthogonal binary indicators (DIS_RA, DIS_CD, DIS_SLE) decomposing the four-level Li 2018 disease-cohort categorical. Healthy volunteers (B0151001 IV + B0151004 SC) are the reference (all three indicators = 0). Disease-stratified parameters: typical CL (Table 3A theta_CL,HV/RA/CD/SLE = 0.00546/0.00588/0.00946/0.00643 L/h), typical baseline CRP, typical IC50, typical Imax (Table 3B). Coded here as log-shift covariate effects on the HV reference value.",
-      source_name        = "POPULATION (paper categorical: HV / RA / CD / SLE; encoded as 0 for non-RA)"
+      notes = "One of three orthogonal binary indicators (DIS_RA, DIS_CD, DIS_SLE) decomposing the four-level Li 2018 disease-cohort categorical. Healthy volunteers (B0151001 IV + B0151004 SC) are the reference (all three indicators = 0). Disease-stratified parameters: typical CL (Table 3A theta_CL,HV/RA/CD/SLE = 0.00546/0.00588/0.00946/0.00643 L/h), typical baseline CRP, typical IC50, typical Imax (Table 3B). Coded here as log-shift covariate effects on the HV reference value.",
+      source_name = "POPULATION (paper categorical: HV / RA / CD / SLE; encoded as 0 for non-RA)"
     ),
     DIS_CD = list(
-      description        = "Crohn's disease cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crohn's disease cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HV / RA / SLE)",
-      notes              = "Paired with DIS_RA and DIS_SLE; HV reference when all three indicators = 0. CD-cohort typical CL is approximately 60 percent higher than the other cohorts (Discussion, p2070; Table 3A theta_CL,CD = 0.00946 L/h vs typical 0.0058 L/h elsewhere). Distinct from IBD_CD (which is CD vs UC in a pooled IBD cohort) -- here the complement is the heterogeneous HV/RA/SLE pool, not UC.",
-      source_name        = "POPULATION (paper categorical: HV / RA / CD / SLE; encoded as 0 for non-CD)"
+      notes = "Paired with DIS_RA and DIS_SLE; HV reference when all three indicators = 0. CD-cohort typical CL is approximately 60 percent higher than the other cohorts (Discussion, p2070; Table 3A theta_CL,CD = 0.00946 L/h vs typical 0.0058 L/h elsewhere). Distinct from IBD_CD (which is CD vs UC in a pooled IBD cohort) -- here the complement is the heterogeneous HV/RA/SLE pool, not UC.",
+      source_name = "POPULATION (paper categorical: HV / RA / CD / SLE; encoded as 0 for non-CD)"
     ),
     DIS_SLE = list(
-      description        = "Systemic lupus erythematosus cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Systemic lupus erythematosus cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HV / RA / CD)",
-      notes              = "Paired with DIS_RA and DIS_CD; HV reference when all three indicators = 0. SLE-cohort drives a non-unit Hill coefficient gamma (1.55 vs 1 in the HV/RA/CD reference; Table 3B theta_gamma_SLE = 1.55) as well as separate typical Imax / IC50 / baseline CRP values.",
-      source_name        = "POPULATION (paper categorical: HV / RA / CD / SLE; encoded as 0 for non-SLE)"
+      notes = "Paired with DIS_RA and DIS_CD; HV reference when all three indicators = 0. SLE-cohort drives a non-unit Hill coefficient gamma (1.55 vs 1 in the HV/RA/CD reference; Table 3B theta_gamma_SLE = 1.55) as well as separate typical Imax / IC50 / baseline CRP values.",
+      source_name = "POPULATION (paper categorical: HV / RA / CD / SLE; encoded as 0 for non-SLE)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 392L,
-    n_studies      = 5L,
-    age_range      = "18-73 years",
-    age_median     = "33 years (HV IV) / 43 (HV SC) / 55 (RA) / 37 (CD) / 39 (SLE)",
-    weight_range   = "30-157 kg",
-    weight_median  = "72 kg (pooled across cohorts; per-cohort medians 79/82/61/70/73 kg)",
+    species = "human",
+    n_subjects = 392L,
+    n_studies = 5L,
+    age_range = "18-73 years",
+    age_median = "33 years (HV IV) / 43 (HV SC) / 55 (RA) / 37 (CD) / 39 (SLE)",
+    weight_range = "30-157 kg",
+    weight_median = "72 kg (pooled across cohorts; per-cohort medians 79/82/61/70/73 kg)",
     sex_female_pct = 47.5,
     race_ethnicity = c(White = 76.5, Black = 12.8, Asian = 7.7, Other = 3.1),
-    disease_state  = "Pooled: healthy volunteers (n = 36 IV in B0151001 + 10 SC in B0151004), rheumatoid arthritis on background methotrexate (n = 31 in B0151002), moderate-to-severe Crohn's disease refractory to anti-TNF (n = 178 in B0151003), active generalised systemic lupus erythematosus (n = 138 in B0151006).",
-    dose_range     = "PF-04236921 7-700 mg IV single dose (B0151001 HV); 1, 10, 30, 100, 250 mg IV Q4W x 3 doses (B0151002 RA); 200 mg SC single dose (B0151004 HV); 10, 50, 200 mg SC at Day 1 and Week 4 (B0151003 CD); 10, 50, 200 mg SC at Day 1, Week 8 and Week 16 (B0151006 SLE).",
-    regions        = "Multi-regional phase 1 / phase 2 studies (NCT00838565, NCT01287897, NCT01166555, NCT01405196).",
-    notes          = paste(
+    disease_state = "Pooled: healthy volunteers (n = 36 IV in B0151001 + 10 SC in B0151004), rheumatoid arthritis on background methotrexate (n = 31 in B0151002), moderate-to-severe Crohn's disease refractory to anti-TNF (n = 178 in B0151003), active generalised systemic lupus erythematosus (n = 138 in B0151006).",
+    dose_range = "PF-04236921 7-700 mg IV single dose (B0151001 HV); 1, 10, 30, 100, 250 mg IV Q4W x 3 doses (B0151002 RA); 200 mg SC single dose (B0151004 HV); 10, 50, 200 mg SC at Day 1 and Week 4 (B0151003 CD); 10, 50, 200 mg SC at Day 1, Week 8 and Week 16 (B0151006 SLE).",
+    regions = "Multi-regional phase 1 / phase 2 studies (NCT00838565, NCT01287897, NCT01166555, NCT01405196).",
+    notes = paste(
       "Baseline demographics from Li 2018 Table 2 (p2065). PK assay LLOQ 100 ng/mL ELISA; CRP assay LLOQ 0.01-0.02 mg/dL (high-sensitivity particle-enhanced immunoturbidimetry).",
       "8.5 percent of post-dose PK samples were below quantitation and excluded; 9.4 percent of CRP samples were below the LLOQ and imputed as LLOQ/2.",
       "One RA patient with CWRES > 6 was excluded from PK refinement.",

@@ -23,31 +23,31 @@ Agoram_2006_darbepoetin_alfa_cia <- function() {
   units <- list(time = "day", dosing = "ug", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "darbepoetin alfa", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "darbepoetin alfa", units = "ug", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "darbepoetin alfa", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "darbepoetin alfa", units = "ug", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "darbepoetin alfa", units = "ug", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalized power effect on clearance and central volume with an",
         "explicit reference weight of 70 kg printed in Agoram 2006 Equations",
         "12 and 13 (`(BWT/70)^theta`). PK development cohort mean 70.8 +/-",
         "17.2 kg, range 36-123 kg (Table 2, combined 990146 + 20010162)."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     CONMED_PLATIN_GT2 = list(
-      description        = "More than two cycles of platinum-containing chemotherapy during the PK assessment window",
-      units              = "(binary)",
-      type               = "binary",
+      description = "More than two cycles of platinum-containing chemotherapy during the PK assessment window",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Agoram 2006 defines the underlying covariate PCNT as the count of",
         "platinum-containing chemotherapy cycles administered during the PK",
         "assessment, then dichotomizes it in Equation 12 as `X = 1 if PCNT >",
@@ -61,7 +61,7 @@ Agoram_2006_darbepoetin_alfa_cia <- function() {
         "models must carry both indicator columns. Mutual-consistency",
         "constraint: CONMED_PLATIN_GT2 = 1 implies CONMED_PLATIN = 1."
       ),
-      source_name        = "PCNT (dichotomized at > 2)"
+      source_name = "PCNT (dichotomized at > 2)"
     )
   )
 
@@ -73,36 +73,36 @@ Agoram_2006_darbepoetin_alfa_cia <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened graphically on CL / V1 / Ka; not retained in the full PK covariate model (Agoram 2006 Results). No estimate reported."
+      units = "years",
+      type = "continuous",
+      notes = "Screened graphically on CL / V1 / Ka; not retained in the full PK covariate model (Agoram 2006 Results). No estimate reported."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened graphically; not retained in the full PK covariate model (Agoram 2006 Results). No estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened graphically; not retained in the full PK covariate model (Agoram 2006 Results). No estimate reported."
     ),
     HGB_BL = list(
       description = "Baseline hemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened graphically as a PK covariate; not retained in the full PK covariate model (Agoram 2006 Results). No estimate reported. Baseline hemoglobin IS an estimated parameter (Hb0) in the sibling PD model rather than a covariate."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened graphically as a PK covariate; not retained in the full PK covariate model (Agoram 2006 Results). No estimate reported. Baseline hemoglobin IS an estimated parameter (Hb0) in the sibling PD model rather than a covariate."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 140L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 140L,
+    n_studies = 2L,
     n_observations = 1442L,
-    age_range      = "22-87 years (combined PK data set; Agoram 2006 Table 2)",
-    age_median     = "Mean 62.3 years, SD 12.9 (median not tabulated)",
-    weight_range   = "36-123 kg (combined PK data set; Agoram 2006 Table 2)",
-    weight_median  = "Mean 70.8 kg, SD 17.2 (median not tabulated)",
+    age_range = "22-87 years (combined PK data set; Agoram 2006 Table 2)",
+    age_median = "Mean 62.3 years, SD 12.9 (median not tabulated)",
+    weight_range = "36-123 kg (combined PK data set; Agoram 2006 Table 2)",
+    weight_median = "Mean 70.8 kg, SD 17.2 (median not tabulated)",
     sex_female_pct = 69,
     race_ethnicity = "Screened as a covariate but not tabulated in Agoram 2006.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (>= 18 years) with nonmyeloid malignancies receiving cyclic",
       "chemotherapy, with chemotherapy-induced anemia. Study 990146 required",
       "hemoglobin <= 13.0 g/dL (so some subjects were not anemic by the",
@@ -117,13 +117,13 @@ Agoram_2006_darbepoetin_alfa_cia <- function() {
       "gastrointestinal 14%, lymphoma 14%, lung 11%, genitourinary 9%,",
       "other 8%."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Study 990146: 2.25 ug/kg QW, IV or SC. Study 20010162: 6.75 ug/kg SC",
       "Q3W, randomized 1:1 to day 1 or day 15 of a 21-day chemotherapy cycle",
       "(Agoram 2006 Table 1)."
     ),
-    regions        = "Two Amgen-sponsored clinical studies (990146, 20010162); geographic sites not stated in the publication.",
-    notes          = paste(
+    regions = "Two Amgen-sponsored clinical studies (990146, 20010162); geographic sites not stated in the publication.",
+    notes = paste(
       "PK model development data set: 140 patients, 1442 serum darbepoetin",
       "alfa concentrations, pooled from Amgen studies 990146 (n = 56) and",
       "20010162 (n = 84). Full PK profiles were collected at weeks 1 and 9",

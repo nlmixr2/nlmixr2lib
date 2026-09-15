@@ -8,66 +8,66 @@ Yang_2021_cemiplimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cemiplimab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cemiplimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cemiplimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on shared CL/Q with reference 76.2 kg and on shared V2/V3 with reference 76.2 kg (Yang 2021 Table 2 median weight; Eqs. for CL_i, Q_i, V2_i, V3_i in the Final PopPK model section).",
-      source_name        = "WGTBL"
+      notes = "Power scaling on shared CL/Q with reference 76.2 kg and on shared V2/V3 with reference 76.2 kg (Yang 2021 Table 2 median weight; Eqs. for CL_i, Q_i, V2_i, V3_i in the Final PopPK model section).",
+      source_name = "WGTBL"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on shared CL/Q with reference 38 g/L (Yang 2021 Table 2 median albumin; Eqs. for CL_i and Q_i).",
-      source_name        = "ALBBL"
+      notes = "Power scaling on shared CL/Q with reference 38 g/L (Yang 2021 Table 2 median albumin; Eqs. for CL_i and Q_i).",
+      source_name = "ALBBL"
     ),
     IGG = list(
-      description        = "Baseline endogenous serum immunoglobulin G concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline endogenous serum immunoglobulin G concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on shared CL/Q with reference 9.65 g/L (Yang 2021 Table 2 median IgG; Eqs. for CL_i and Q_i).",
-      source_name        = "IGGBL"
+      notes = "Power scaling on shared CL/Q with reference 9.65 g/L (Yang 2021 Table 2 median IgG; Eqs. for CL_i and Q_i).",
+      source_name = "IGGBL"
     ),
     ALT = list(
-      description        = "Baseline serum alanine aminotransferase activity",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Baseline serum alanine aminotransferase activity",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on shared CL/Q with reference 20 IU/L (Yang 2021 Table 2 median ALT; Eqs. for CL_i and Q_i).",
-      source_name        = "ALTBL"
+      notes = "Power scaling on shared CL/Q with reference 20 IU/L (Yang 2021 Table 2 median ALT; Eqs. for CL_i and Q_i).",
+      source_name = "ALTBL"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on shared V2/V3 with reference 26.5 kg/m^2 (Yang 2021 Table 2 median BMI; Eqs. for V2_i and V3_i).",
-      source_name        = "BMIBL"
+      notes = "Power scaling on shared V2/V3 with reference 26.5 kg/m^2 (Yang 2021 Table 2 median BMI; Eqs. for V2_i and V3_i).",
+      source_name = "BMIBL"
     )
   )
 
   population <- list(
-    n_subjects     = 548L,
-    n_studies      = 2L,
-    age_range      = "27-96 years (median 65)",
-    age_median     = "65 years",
-    weight_range   = "30.9-172 kg (median 76.2)",
-    weight_median  = "76.2 kg",
+    n_subjects = 548L,
+    n_studies = 2L,
+    age_range = "27-96 years (median 65)",
+    age_median = "65 years",
+    weight_range = "30.9-172 kg (median 76.2)",
+    weight_median = "76.2 kg",
     sex_female_pct = 39.6,
     race_ethnicity = c(White = 90.9, Black = 3.6, Asian = 1.6, Other = 3.8),
-    disease_state  = "Advanced solid tumors (any), including advanced cutaneous squamous cell carcinoma (CSCC; metastatic or locally advanced)",
-    dose_range     = "1, 3, or 10 mg/kg Q2W; 3 mg/kg Q3W; 200 mg Q2W; 350 mg Q3W (all 30-min IV infusion)",
-    regions        = "Multinational (not enumerated in the paper)",
-    notes          = "Pooled from Study 1423 (NCT02383212; first-in-human in advanced malignancies) and Study 1540 (NCT02760498; phase 2 in advanced CSCC). Final analysis set 11,178 PK observations from 548 patients (Yang 2021 Tables 1-2). Median labs: albumin 38 g/L, IgG 9.65 g/L, ALT 20 IU/L, BMI 26.5 kg/m^2 (Yang 2021 Table 2)."
+    disease_state = "Advanced solid tumors (any), including advanced cutaneous squamous cell carcinoma (CSCC; metastatic or locally advanced)",
+    dose_range = "1, 3, or 10 mg/kg Q2W; 3 mg/kg Q3W; 200 mg Q2W; 350 mg Q3W (all 30-min IV infusion)",
+    regions = "Multinational (not enumerated in the paper)",
+    notes = "Pooled from Study 1423 (NCT02383212; first-in-human in advanced malignancies) and Study 1540 (NCT02760498; phase 2 in advanced CSCC). Final analysis set 11,178 PK observations from 548 patients (Yang 2021 Tables 1-2). Median labs: albumin 38 g/L, IgG 9.65 g/L, ALT 20 IU/L, BMI 26.5 kg/m^2 (Yang 2021 Table 2)."
   )
 
   ini({

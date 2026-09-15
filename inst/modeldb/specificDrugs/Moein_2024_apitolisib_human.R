@@ -37,26 +37,36 @@ Moein_2024_apitolisib_human <- function() {
   covariateData <- list()
 
   compartmentData <- list(
-    depot       = list(analyte = "apitolisib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "apitolisib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "apitolisib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "apitolisib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "apitolisib", units = "mg", specimen = "plasma", verified = TRUE),
-    pakt        = list(analyte = "phosphorylated Akt (serine 473) in platelet-rich plasma, percent of baseline", units = "%", specimen = "plasma", verified = TRUE),
-    tumor_size  = list(analyte = "tumour size (RECIST sum of longest diameters)", units = "mm", specimen = "not applicable", verified = TRUE)
+    pakt = list(
+      analyte = "phosphorylated Akt (serine 473) in platelet-rich plasma, percent of baseline",
+      units = "%",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    tumor_size = list(
+      analyte = "tumour size (RECIST sum of longest diameters)",
+      units = "mm",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 117L,
-    n_studies     = 2L,
+    species = "human",
+    n_subjects = 117L,
+    n_studies = 2L,
     disease_state = "advanced solid tumors or non-Hodgkin's lymphoma",
-    dose_range    = paste(
+    dose_range = paste(
       "Apitolisib PO: a single dose on day 1 followed by a 1-week washout,",
       "then 30, 40 or 50 mg once daily for 28 days; or 2, 4, 8, 16, 32, 40,",
       "50 or 70 mg once daily on a 3-weeks-on/1-week-off schedule; or 6, 12,",
       "25, 50, 100, 150 or 200 mg once weekly for 28 days."
     ),
-    regions       = "(not reported in the modelling paper)",
-    notes         = paste(
+    regions = "(not reported in the modelling paper)",
+    notes = paste(
       "Two phase 1 dose-escalation studies using a 3+3 design",
       "(ClinicalTrials.gov NCT00854152 and NCT00854126). Sub-populations",
       "differ by layer: the population PK model used n = 146 patients with",

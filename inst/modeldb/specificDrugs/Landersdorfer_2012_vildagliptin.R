@@ -11,29 +11,34 @@ Landersdorfer_2012_vildagliptin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "vildagliptin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1           = list(analyte = "vildagliptin", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "vildagliptin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "vildagliptin", units = "mg", specimen = "plasma", verified = FALSE),
-    complex            = list(analyte = "vildagliptin-DPP-4 complex", units = "mg", specimen = "plasma", verified = FALSE),
-    complex_peripheral = list(analyte = "vildagliptin-DPP-4 complex", units = "mg", specimen = "tissue", verified = FALSE)
+    depot = list(analyte = "vildagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "vildagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "vildagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "vildagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "vildagliptin-DPP-4 complex", units = "mg", specimen = "plasma", verified = FALSE),
+    complex_peripheral = list(
+      analyte = "vildagliptin-DPP-4 complex",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "37-64 years",
-    age_median     = "53.5 years",
-    weight_range   = "65-116 kg",
-    weight_median  = "91 kg (mean)",
-    height_range   = "148-183 cm",
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "37-64 years",
+    age_median = "53.5 years",
+    weight_range = "65-116 kg",
+    weight_median = "91 kg (mean)",
+    height_range = "148-183 cm",
     sex_female_pct = 53.8,
-    disease_state  = "type 2 diabetes mellitus (washout of hypoglycaemic drugs for up to 4 weeks)",
-    dose_range     = "10, 25, 100 mg oral vildagliptin BID for 28 days, four-way crossover with placebo",
-    notes          = paste(
+    disease_state = "type 2 diabetes mellitus (washout of hypoglycaemic drugs for up to 4 weeks)",
+    dose_range = "10, 25, 100 mg oral vildagliptin BID for 28 days, four-way crossover with placebo",
+    notes = paste(
       "Demographics from Results section: 12 subjects completed all four periods,",
       "one subject completed only the 10 and 25 mg treatments; 6 male, 7 female.",
       "Bioavailability F (77.2%) was fixed from co-modelling with a separate",

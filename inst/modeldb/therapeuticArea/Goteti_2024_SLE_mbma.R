@@ -57,13 +57,15 @@ Goteti_2024_SLE_mbma <- function() {
   # variability. Declared as paper-specific per Wojciechowski_2015 /
   # Lee_2011 precedent.
   paper_specific_etas <- c(
-    "eta_wk4_SRI", "eta_delta_SRI",
-    "eta_wk4_BICLA", "eta_delta_BICLA"
+    "eta_wk4_SRI",
+    "eta_delta_SRI",
+    "eta_wk4_BICLA",
+    "eta_delta_BICLA"
   )
 
   units <- list(
-    time          = "week (visit week relative to baseline)",
-    dosing        = paste(
+    time = "week (visit week relative to baseline)",
+    dosing = paste(
       "(no rxode2 dose events; drug-arm dose is a covariate.",
       "Continuous Emax drugs: DOSE_ANIFROLUMAB_MG (mg IV q4w),",
       "DOSE_BELIMUMAB_MGKG (mg/kg IV q2wx3+q4w),",
@@ -84,17 +86,17 @@ Goteti_2024_SLE_mbma <- function() {
 
   covariateData <- list(
     SCORE_SLEDAI = list(
-      description        = paste(
+      description = paste(
         "Mean baseline Systemic Lupus Erythematosus Disease Activity",
         "Index (SLEDAI) score at the study-arm level. Enters the DTM as",
         "a centered (SLEDAI - 10.5) covariate on both the latent baseline",
         "mu_ijk (via beta_sledai_mu) and the latent long-term change",
         "delta_ijk (via beta_sledai_delta) per Goteti 2024 Equation 8."
       ),
-      units              = "(score, 0-105 possible range; typical trial-arm means 8.4-14)",
-      type               = "continuous",
+      units = "(score, 0-105 possible range; typical trial-arm means 8.4-14)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate: the aggregate mean baseline",
         "SLEDAI across all patients in the study arm, not an individual",
         "score. The covariate register generally holds individual-level",
@@ -108,17 +110,17 @@ Goteti_2024_SLE_mbma <- function() {
         "response rate for higher-SLEDAI cohorts. Source paper column:",
         "study-arm mean SLEDAI."
       ),
-      source_name        = "SLEDAI (mean)"
+      source_name = "SLEDAI (mean)"
     ),
     DOSE_ANIFROLUMAB_MG = list(
-      description        = paste(
+      description = paste(
         "Per-arm anifrolumab dose amount (mg IV q4w); 0 if the arm did",
         "not receive anifrolumab."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate. The paper fit a continuous",
         "Emax dose-response for the anifrolumab i.v. q4w regimen across",
         "three doses (150, 300, 1000 mg; Goteti 2024 Table 1). Enters",
@@ -127,19 +129,19 @@ Goteti_2024_SLE_mbma <- function() {
         "for the anifrolumab i.v. q4w regimen; other routes / frequencies",
         "are not covered by this continuous dose-response."
       ),
-      source_name        = "Anifrolumab dose (Goteti 2024 Table 1 / Table 4)"
+      source_name = "Anifrolumab dose (Goteti 2024 Table 1 / Table 4)"
     ),
     DOSE_BELIMUMAB_MGKG = list(
-      description        = paste(
+      description = paste(
         "Per-arm belimumab dose amount (mg/kg IV q2w x 3 + q4w); 0 if",
         "the arm did not receive belimumab by that regimen. Do NOT use",
         "for the 200 mg s.c. q.w. belimumab arm (which uses a discrete",
         "effect via CONMED_XI_DISCRETE)."
       ),
-      units              = "mg/kg",
-      type               = "continuous",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate. The paper fit a continuous",
         "Emax dose-response for the belimumab i.v. q2wx3+q4w regimen",
         "across three doses (1, 4, 10 mg/kg; Goteti 2024 Table 1). Enters",
@@ -149,17 +151,17 @@ Goteti_2024_SLE_mbma <- function() {
         "value 0.16 (Table 4 first belimumab row); pass that as",
         "CONMED_XI_DISCRETE."
       ),
-      source_name        = "Belimumab dose (Goteti 2024 Table 1 / Table 4)"
+      source_name = "Belimumab dose (Goteti 2024 Table 1 / Table 4)"
     ),
     DOSE_CC220_MG = list(
-      description        = paste(
+      description = paste(
         "Per-arm CC-220 (iberdomide) dose amount (mg oral qd); 0 if the",
         "arm did not receive CC-220."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate. Continuous Emax dose-response",
         "for the CC-220 oral qd regimen across three doses (0.15, 0.30,",
         "0.45 mg; Goteti 2024 Table 1). Enters xi_ij via (Dose * Emax)",
@@ -168,19 +170,19 @@ Goteti_2024_SLE_mbma <- function() {
         "zero on the Emax point estimate, reflecting high posterior",
         "uncertainty for this small dose-response cohort."
       ),
-      source_name        = "CC-220 dose (Goteti 2024 Table 1 / Table 4)"
+      source_name = "CC-220 dose (Goteti 2024 Table 1 / Table 4)"
     ),
     DOSE_EPRATUZUMAB_IVQ2W_MG = list(
-      description        = paste(
+      description = paste(
         "Per-arm epratuzumab dose amount for the i.v. q2w regimen (mg);",
         "0 if the arm did not receive epratuzumab i.v. q2w. Do NOT use",
         "for the 600 mg i.v. q.w. epratuzumab arm (which uses a discrete",
         "effect via CONMED_XI_DISCRETE)."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate. Continuous Emax dose-response",
         "for the epratuzumab i.v. q2w regimen across three doses (100,",
         "400, 1200, 1800 mg; Goteti 2024 Table 1). Enters xi_ij via",
@@ -189,19 +191,19 @@ Goteti_2024_SLE_mbma <- function() {
         "regimen has its own discrete-effect value 0.324 (Table 4);",
         "pass that as CONMED_XI_DISCRETE."
       ),
-      source_name        = "Epratuzumab dose i.v. q2w (Goteti 2024 Table 1 / Table 4)"
+      source_name = "Epratuzumab dose i.v. q2w (Goteti 2024 Table 1 / Table 4)"
     ),
     DOSE_LULIZUMAB_SCQ2W_MG = list(
-      description        = paste(
+      description = paste(
         "Per-arm lulizumab pegol dose amount for the s.c. q2w regimen",
         "(mg); 0 if the arm did not receive lulizumab pegol s.c. q2w.",
         "Do NOT use for the 12.5 mg s.c. q.w. lulizumab pegol arm (which",
         "uses a discrete effect via CONMED_XI_DISCRETE)."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate. Continuous Emax dose-response",
         "for the lulizumab pegol s.c. q2w regimen across three doses",
         "(1.25, 5, 12.5 mg; Goteti 2024 Table 1). Enters xi_ij via",
@@ -210,17 +212,17 @@ Goteti_2024_SLE_mbma <- function() {
         "pegol regimen has its own discrete-effect value 0.206 (Table",
         "4); pass that as CONMED_XI_DISCRETE."
       ),
-      source_name        = "Lulizumab pegol dose s.c. q2w (Goteti 2024 Table 1 / Table 4)"
+      source_name = "Lulizumab pegol dose s.c. q2w (Goteti 2024 Table 1 / Table 4)"
     ),
     DOSE_SIFALIMUMAB_MG = list(
-      description        = paste(
+      description = paste(
         "Per-arm sifalimumab dose amount (mg IV q2w x 3 + q4w); 0 if",
         "the arm did not receive sifalimumab."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate. Continuous Emax dose-response",
         "for the sifalimumab i.v. q2wx3+q4w regimen across three doses",
         "(200, 600, 1200 mg; Goteti 2024 Table 1). Enters xi_ij via",
@@ -228,19 +230,19 @@ Goteti_2024_SLE_mbma <- function() {
         "ED50_SIFA = 942 mg (Table 4). Effect size is small and the",
         "posterior interval crosses zero on Emax."
       ),
-      source_name        = "Sifalimumab dose (Goteti 2024 Table 1 / Table 4)"
+      source_name = "Sifalimumab dose (Goteti 2024 Table 1 / Table 4)"
     ),
     CONMED_XI_DISCRETE = list(
-      description        = paste(
+      description = paste(
         "Per-arm latent-scale discrete-treatment effect xi passed",
         "directly for discrete-effect regimens (Goteti 2024 Table 4);",
         "0 for placebo + SoC arms and for arms whose drug is covered",
         "by a continuous-Emax dose-response above."
       ),
-      units              = "(latent-scale relative delta multiplier; dimensionless)",
-      type               = "continuous",
+      units = "(latent-scale relative delta multiplier; dimensionless)",
+      type = "continuous",
       reference_category = "0 (placebo + standard of care)",
-      notes              = paste(
+      notes = paste(
         "MBMA study-arm-level covariate documenting the arm's",
         "discrete-effect xi value. The paper fit per-regimen additive",
         "effects on the latent-scale (1 + xi) multiplier for 24 drug-",
@@ -280,16 +282,16 @@ Goteti_2024_SLE_mbma <- function() {
         "Placebo + SoC arms and continuous-Emax arms pass",
         "CONMED_XI_DISCRETE = 0."
       ),
-      source_name        = "xi_delta_d (Goteti 2024 Table 4 discrete-effect column)"
+      source_name = "xi_delta_d (Goteti 2024 Table 4 discrete-effect column)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Mean age of study-arm patients (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Reported per-arm (Goteti 2024 Table 2: mean 40.2, range",
         "31.7-46.4 across arms) but not retained as a covariate in the",
         "final MBMA DTM. Excluded to preserve the screening provenance",
@@ -298,9 +300,9 @@ Goteti_2024_SLE_mbma <- function() {
     ),
     WT = list(
       description = "Mean body weight of study-arm patients (kg).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Reported per-arm for 17% of arms (Goteti 2024 Table 2: mean",
         "70.6, range 66.2-75.4) but not retained as a covariate in the",
         "final MBMA DTM."
@@ -308,9 +310,9 @@ Goteti_2024_SLE_mbma <- function() {
     ),
     SEXF = list(
       description = "Percentage female per study arm (%).",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Reported per-arm (Goteti 2024 Table 2: mean 94.1%, range",
         "83.3-100%) but not retained as a covariate in the final MBMA",
         "DTM."
@@ -318,9 +320,9 @@ Goteti_2024_SLE_mbma <- function() {
     ),
     RACE_WHITE = list(
       description = "Percentage White race per study arm (%).",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Reported per-arm for 85% of arms (Goteti 2024 Table 2: mean",
         "64.4%, range 0-100%) but not retained as a covariate in the",
         "final MBMA DTM. Similarly for Black, Asian, and other race",
@@ -330,17 +332,17 @@ Goteti_2024_SLE_mbma <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12136L,
-    n_studies      = 25L,
-    n_arms         = 81L,
-    n_treatments   = 16L,
-    age_range      = paste(
+    species = "human",
+    n_subjects = 12136L,
+    n_studies = 25L,
+    n_arms = 81L,
+    n_treatments = 16L,
+    age_range = paste(
       "adult; per-arm mean age range 31.7-46.4 years (Goteti 2024 Table",
       "2), overall across-arm mean 40.2 years"
     ),
-    age_median     = "across-arm median 40.6 years (Goteti 2024 Table 2)",
-    weight_range   = paste(
+    age_median = "across-arm median 40.6 years (Goteti 2024 Table 2)",
+    weight_range = paste(
       "per-arm mean weight range 66.2-75.4 kg reported in 17% of arms",
       "(Goteti 2024 Table 2), overall across-arm mean 70.6 kg"
     ),
@@ -351,12 +353,12 @@ Goteti_2024_SLE_mbma <- function() {
       Black = 11.2,
       Other = 14.9
     ),
-    regions        = paste(
+    regions = paste(
       "International; North America 34.2%, Central-South America 19.5%,",
       "Asia 17.5%, other regions 27.0% (Goteti 2024 Table 2 mean across",
       "arms that reported region)"
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Systemic lupus erythematosus (SLE); across-arm mean baseline",
       "SLEDAI 10.5 (range 8.8-14.0), physician global assessment 1.46,",
       "prednisone-equivalent daily dose 11.7 mg/day, low C3 in 37.1%,",
@@ -364,13 +366,13 @@ Goteti_2024_SLE_mbma <- function() {
       "antimalarials 66.3%, on concurrent immunosuppressants 46.1%",
       "(Goteti 2024 Table 2)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "16 investigational and approved SLE therapeutics across a range",
       "of doses, routes, and frequencies (Goteti 2024 Table 1). See",
       "the CONMED_XI_DISCRETE lookup and the DOSE_* covariate notes for",
       "the six continuous-Emax regimens for the per-drug dose ranges."
     ),
-    notes          = paste(
+    notes = paste(
       "MBMA at the study-arm level: each modelled data point is the",
       "aggregate mean response rate (SRI-4/5/6 or BICLA) in a group of",
       "patients at a particular visit time in one arm of one trial,",

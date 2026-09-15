@@ -9,36 +9,36 @@ Jansson_2008_eflornithine_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_l       = list(analyte = "L-eflornithine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_d       = list(analyte = "D-eflornithine", units = "mg", specimen = "administration site", verified = FALSE),
-    central_l     = list(analyte = "L-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
-    central_d     = list(analyte = "D-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_l = list(analyte = "L-eflornithine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_d = list(analyte = "D-eflornithine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_l = list(analyte = "L-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_d = list(analyte = "D-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_l = list(analyte = "L-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_d = list(analyte = "D-eflornithine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE_HIGH_EFL = list(
-      description       = "High-dose oral eflornithine indicator (1 = 3000 mg/kg oral dose record; 0 = 750-2000 mg/kg oral or any IV dose).",
-      units             = "(binary)",
-      type              = "binary",
+      description = "High-dose oral eflornithine indicator (1 = 3000 mg/kg oral dose record; 0 = 750-2000 mg/kg oral or any IV dose).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (750-2000 mg/kg oral, or IV at 375 / 1000 mg/kg)",
-      notes             = "Per-dose-record indicator that scales bioavailability F upward for both enantiomers at the highest dose level. Jansson 2008 Results paragraph reports OFV drop -11.4 (P < 0.01) for the categorical encoding vs linear or power dose-F relationships. Apply at the dose record; observation rows inherit the indicator from the preceding dose.",
-      source_name       = "derived from administered dose"
+      notes = "Per-dose-record indicator that scales bioavailability F upward for both enantiomers at the highest dose level. Jansson 2008 Results paragraph reports OFV drop -11.4 (P < 0.01) for the categorical encoding vs linear or power dose-F relationships. Apply at the dose record; observation rows inherit the indicator from the preceding dose.",
+      source_name = "derived from administered dose"
     )
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 69L,
-    n_studies      = 1L,
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 69L,
+    n_studies = 1L,
     sex_female_pct = 0,
-    weight_range   = "260-320 g",
-    weight_median  = "approximately 290 g (study midpoint)",
-    disease_state  = "healthy male Sprague-Dawley rats",
-    dose_range     = "Oral 750, 1500, 2000, or 3000 mg/kg of racemic eflornithine hydrochloride solution by gavage (10 mL/kg); IV 375 or 1000 mg/kg as 3-min infusion modeled as bolus via the jugular vein catheter (3.3 mL/kg).",
-    regions        = "Sweden (Goteborg University)",
-    notes          = "n = 69 male Sprague-Dawley rats split across 6 dose-route arms (Jansson 2008 Table 1): 10 oral 750 mg/kg + 9 oral 1500 mg/kg + 7 oral 2000 mg/kg + 10 oral 3000 mg/kg + 5 IV 375 mg/kg + 5 IV 1000 mg/kg for chiral analysis (1-3 samples / rat), plus 4 oral 750 + 4 oral 1500 + 4 oral 2000 + 4 oral 3000 + 4 IV 375 + 3 IV 1000 for racemic analysis (8-16 samples / rat). Animals acclimatized at least 5 days; jugular vein catheters tunneled subcutaneously; allowed 16 h recovery after surgery. Chiral assay LLOQ 83 uM (300 uL plasma); racemic assay LLOQ 5 uM (50 uL plasma). Eflornithine MW 182.17 g/mol."
+    weight_range = "260-320 g",
+    weight_median = "approximately 290 g (study midpoint)",
+    disease_state = "healthy male Sprague-Dawley rats",
+    dose_range = "Oral 750, 1500, 2000, or 3000 mg/kg of racemic eflornithine hydrochloride solution by gavage (10 mL/kg); IV 375 or 1000 mg/kg as 3-min infusion modeled as bolus via the jugular vein catheter (3.3 mL/kg).",
+    regions = "Sweden (Goteborg University)",
+    notes = "n = 69 male Sprague-Dawley rats split across 6 dose-route arms (Jansson 2008 Table 1): 10 oral 750 mg/kg + 9 oral 1500 mg/kg + 7 oral 2000 mg/kg + 10 oral 3000 mg/kg + 5 IV 375 mg/kg + 5 IV 1000 mg/kg for chiral analysis (1-3 samples / rat), plus 4 oral 750 + 4 oral 1500 + 4 oral 2000 + 4 oral 3000 + 4 IV 375 + 3 IV 1000 for racemic analysis (8-16 samples / rat). Animals acclimatized at least 5 days; jugular vein catheters tunneled subcutaneously; allowed 16 h recovery after surgery. Chiral assay LLOQ 83 uM (300 uL plasma); racemic assay LLOQ 5 uM (50 uL plasma). Eflornithine MW 182.17 g/mol."
   )
 
   ini({

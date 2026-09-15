@@ -35,46 +35,46 @@ Yau_2023_diazepam_pbpk_kpu_human <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_diazepam_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central  = list(analyte = "diazepam", units = "mg", specimen = "plasma", verified = FALSE),
-    adipose  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    bone     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    brain    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    heart    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    skin     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    other    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    gut      = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    stomach  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "diazepam", units = "mg", specimen = "plasma", verified = FALSE),
+    adipose = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    bone = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    brain = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    skin = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    gut = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    stomach = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
     pancreas = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
-    liver    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE)
+    liver = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 7L,
-    age_range      = "adults; study 2 contrasted young vs elderly subjects",
-    weight_range   = "70-kg reference man used for the physiological constants (Table S1)",
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 7L,
+    age_range = "adults; study 2 contrasted young vs elderly subjects",
+    weight_range = "70-kg reference man used for the physiological constants (Table S1)",
     sex_female_pct = NA_real_,
-    disease_state  = "healthy volunteers / normal subjects",
-    dose_range     = paste(
+    disease_state = "healthy volunteers / normal subjects",
+    dose_range = paste(
       "IV diazepam 0.1-0.15 mg/kg or 10 mg, given as bolus or as short",
       "infusions of 0.375-2 min across the seven contributing studies",
       "(Table S4)"
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "35 human IV concentration-time profiles pooled from seven published",
       "studies (Table S4), digitised with WebPlotDigitizer 4.2. Of the 35",
       "profiles, 28 are individual profiles and 7 are study-average",

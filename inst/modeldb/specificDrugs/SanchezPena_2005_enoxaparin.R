@@ -20,9 +20,9 @@ SanchezPena_2005_enoxaparin <- function() {
     "doi:10.1111/j.1365-2125.2005.02452.x"
   )
   vignette <- "SanchezPena_2005_enoxaparin"
-  units    <- list(
-    time          = "h",
-    dosing        = "IU",
+  units <- list(
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -35,27 +35,27 @@ SanchezPena_2005_enoxaparin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Estimated allometric scaling exponents on CL (0.9) and V (0.7);",
         "reference weight 75 kg per the covariate equation in",
         "Sanchez-Pena 2005 Results (immediately above Table 2):",
         "CL = TV_CL * (BW/75)^0.9 and V = TV_V * (BW/75)^0.7.",
         "Time-fixed (baseline only) in the source data set."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age (years)",
-      units       = "year",
-      type        = "continuous",
-      notes       = paste(
+      units = "year",
+      type = "continuous",
+      notes = paste(
         "Screened in the covariate sub-model (Sanchez-Pena 2005 Methods,",
         "Population pharmacokinetic modelling section). Not retained in the",
         "final model: no significant improvement in the population PK model",
@@ -64,19 +64,19 @@ SanchezPena_2005_enoxaparin <- function() {
     ),
     SEXF = list(
       description = "Biological sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes       = paste(
+      notes = paste(
         "Screened (paper text: 'gender'). Not retained in the final model.",
         "Cohort was 79% male / 21% female (Table 1)."
       )
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened. The Results note CL was 'influenced to a lesser degree by",
         "serum creatinine', but the effect did not survive the OFV-7-unit",
         "backward elimination step. Not retained in the final model."
@@ -84,9 +84,9 @@ SanchezPena_2005_enoxaparin <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance (raw Cockcroft-Gault, NOT BSA-normalized)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened. The Results note CL was 'influenced to a lesser degree by",
         "creatinine clearance', but the effect did not survive the OFV-7-unit",
         "backward elimination step. Discussion attributes the lack of CrCl",
@@ -99,35 +99,35 @@ SanchezPena_2005_enoxaparin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 546L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 546L,
+    n_studies = 1L,
     n_observations = 1978L,
-    age_range      = "21-93 years",
-    age_median     = "63 years (SD 11)",
-    weight_range   = "35-153 kg",
-    weight_median  = "76 kg (SD 15)",
+    age_range = "21-93 years",
+    age_median = "63 years (SD 11)",
+    weight_range = "35-153 kg",
+    weight_median = "76 kg (SD 15)",
     sex_female_pct = 21,
     race_ethnicity = "Not reported (single-centre Paris cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults referred for elective PCI of coronary or vein-graft stenosis",
       "> 70%. Excluded: primary PCI for ST-elevation MI, LMWH or UFH within",
       "the prior 48 h, or GPIIb/IIIa antagonist within the prior 2 weeks.",
       "Renal function distribution: CrCl < 30 mL/min in 4%, 31-59 mL/min in",
       "33%, >= 60 mL/min in 62%. 15% aged > 75 years."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.5 mg/kg single IV bolus (mean dose 38 +/- 7 mg = 3830 +/- 730 IU)",
       "immediately before PCI. Simulations in the source paper also explored",
       "0.75 mg/kg and 1 mg/kg single doses, and second-bolus regimens."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Five samples per patient: pre-bolus, 10 min post-bolus (start of PCI),",
       "end of PCI (mean 45 min), 3 h post-PCI, and the morning after PCI;",
       "1978 quantifiable anti-Xa concentrations after exclusions."
     ),
-    regions        = "Paris, France (Pitie-Salpetriere University Hospital).",
-    notes          = paste(
+    regions = "Paris, France (Pitie-Salpetriere University Hospital).",
+    notes = paste(
       "Demographics from Sanchez-Pena 2005 Table 1. 556 patients enrolled;",
       "10 (1.8%) excluded for probable misadministration leaving 546 in the",
       "final analysis. Concomitant GPIIb/IIIa inhibitors: eptifibatide (146",

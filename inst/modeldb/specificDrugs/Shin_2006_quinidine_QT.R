@@ -31,8 +31,8 @@ Shin_2006_quinidine_QT <- function() {
   vignette <- "Shin_2006_quinidine_QT"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -45,25 +45,25 @@ Shin_2006_quinidine_QT <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Source paper uses SEX with 1 = male, 0 = female (Shin 2006",
         "Table 3 footnote). Canonical SEXF inverts the value:",
         "SEXF = 1 - SEX. The E0 covariate effect '408 + 34*(1 - SEX)' in",
         "the source paper is then exactly '408 + 34 * SEXF' in canonical",
         "encoding; the +34 ms shift applies to females."
       ),
-      source_name        = "SEX (values inverted: SEXF = 1 - SEX)"
+      source_name = "SEX (values inverted: SEXF = 1 - SEX)"
     ),
     RACE_WHITE = list(
-      description        = "White (Caucasian) race indicator, 1 = White, 0 = non-White (Korean in this cohort).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White (Caucasian) race indicator, 1 = White, 0 = non-White (Korean in this cohort).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Korean; fETHN = 1)",
-      notes              = paste(
+      notes = paste(
         "Source paper uses ETHN with 1 = Korean, 0 = Caucasian and a",
         "derived multiplier fETHN of 1 for Korean / 1.26 for Caucasian",
         "(Shin 2006 Table 3 footnote). Canonical RACE_WHITE inverts the",
@@ -73,14 +73,14 @@ Shin_2006_quinidine_QT <- function() {
         "interaction (Caucasian females only) is implemented as",
         "106 * SEXF * RACE_WHITE."
       ),
-      source_name        = "ETHN (values inverted: RACE_WHITE = 1 - ETHN)"
+      source_name = "ETHN (values inverted: RACE_WHITE = 1 - ETHN)"
     ),
     WT = list(
-      description        = "Body weight at baseline (kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline (kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used by the typical-value PK driver to scale the per-kg NCA",
         "summary values (CL = 0.3 L/h/kg, Vc = Vss = 2.5 L/kg from",
         "Shin 2006 Table 2 'Total' columns) to subject-level CL and",
@@ -88,19 +88,19 @@ Shin_2006_quinidine_QT <- function() {
         "both CL and Vc, equivalent to setting per-kg constants. WT is",
         "time-fixed per subject for this single-occasion dataset."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 37L,
-    n_studies      = 1L,
-    age_range      = "Korean 21-29 years (M mean 22.1 +/- 1.6; F mean 22.7 +/- 2.4); Caucasian 21-37 years (M mean 26.2 +/- 7.5; F mean 27.7 +/- 3.6)",
-    weight_range   = "Korean 49.7-73.8 kg (M mean 66.5 +/- 7.3; F mean 53.4 +/- 3.7); Caucasian 55.2-78.6 kg (M mean 69.8 +/- 8.8; F mean 60.7 +/- 5.5)",
+    species = "human",
+    n_subjects = 37L,
+    n_studies = 1L,
+    age_range = "Korean 21-29 years (M mean 22.1 +/- 1.6; F mean 22.7 +/- 2.4); Caucasian 21-37 years (M mean 26.2 +/- 7.5; F mean 27.7 +/- 3.6)",
+    weight_range = "Korean 49.7-73.8 kg (M mean 66.5 +/- 7.3; F mean 53.4 +/- 3.7); Caucasian 55.2-78.6 kg (M mean 69.8 +/- 8.8; F mean 60.7 +/- 5.5)",
     sex_female_pct = 49,
     race_ethnicity = c(Korean = 65, Caucasian = 35),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers screened for the absence of cardiovascular,",
       "hepatic, renal, neurological, and haematological abnormalities;",
       "normal ECG at baseline; not pregnant (urine pregnancy test in",
@@ -109,7 +109,7 @@ Shin_2006_quinidine_QT <- function() {
       "menstrual-cycle effects; abstained from alcohol, grapefruit",
       "juice, and caffeine for 3 weeks before and during the study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 4 mg/kg quinidine gluconate (base) IV infusion over 20 min",
       "in 20 mL normal saline via Harvard infusion pump. Reported",
       "actual doses (Shin 2006 Table 1): Korean M 266.1 +/- 29.4 mg,",
@@ -117,8 +117,8 @@ Shin_2006_quinidine_QT <- function() {
       "Caucasian F 242.7 +/- 22.2 mg. The cross-over arm used matching",
       "i.v. saline placebo with a 1 month washout."
     ),
-    regions        = "Korea (Inje University Busan Paik Hospital) for Korean subjects; United States (Georgetown University Medical Center, Washington DC) for Caucasian subjects.",
-    notes          = paste(
+    regions = "Korea (Inje University Busan Paik Hospital) for Korean subjects; United States (Georgetown University Medical Center, Washington DC) for Caucasian subjects.",
+    notes = paste(
       "Randomised, double-blind crossover study (Shin 2006 Methods).",
       "Baseline QTc by sex was: Korean M 402 +/- 9 ms, Korean F 443",
       "+/- 8 ms (sex difference significant within Korean cohort,",

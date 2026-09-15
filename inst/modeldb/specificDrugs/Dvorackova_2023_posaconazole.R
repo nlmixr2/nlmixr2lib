@@ -1,24 +1,24 @@
 Dvorackova_2023_posaconazole <- function() {
   description <- "Population PK model for oral posaconazole tablets in adult lung-transplant recipients (Dvorackova 2023). One-compartment disposition with first-order absorption and first-order elimination, parameterised on the apparent (oral) scale as CL/F and Vd/F because bioavailability was not identifiable from the oral-only therapeutic-drug-monitoring data. The absorption rate constant Ka was fixed to 0.8 1/h (back-calculated from the tmax and half-life reported in the posaconazole SmPC) because all concentrations were sampled in the elimination phase; inter-individual variability on Ka was nevertheless estimated and is very large, reflecting that absorption is essentially unidentifiable from these data. Age is the only covariate retained in the final model, entering log-linearly (exponentially) on apparent clearance so that CL/F declines by about 0.9 percent per year of age. Residual variability is proportional. The model was used for Monte Carlo dose optimisation against the EUCAST trough targets of 0.7 mg/L for prophylaxis and 1.25 mg/L for therapy."
-  reference   <- "Dvorackova E, Sima M, Zajacova A, Vyskocilova K, Kotowski T, Dunovska K, Klapkova E, Havlin J, Lischke R, Slanar O. Dosing Optimization of Posaconazole in Lung-Transplant Recipients Based on Population Pharmacokinetic Model. Antibiotics (Basel). 2023;12(9):1399. doi:10.3390/antibiotics12091399."
-  vignette    <- "Dvorackova_2023_posaconazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Dvorackova E, Sima M, Zajacova A, Vyskocilova K, Kotowski T, Dunovska K, Klapkova E, Havlin J, Lischke R, Slanar O. Dosing Optimization of Posaconazole in Lung-Transplant Recipients Based on Population Pharmacokinetic Model. Antibiotics (Basel). 2023;12(9):1399. doi:10.3390/antibiotics12091399."
+  vignette <- "Dvorackova_2023_posaconazole"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "posaconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at the start of posaconazole therapy",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at the start of posaconazole therapy",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (recorded at the beginning of therapy; Dvorackova 2023 Table 1).",
         "The only covariate retained in the final model (Dvorackova 2023 Table 3: p = 0.012 for age on CL/F;",
         "all other tested covariates had p > 0.05). Enters log-linearly and UNCENTERED on apparent clearance:",
@@ -31,21 +31,21 @@ Dvorackova_2023_posaconazole <- function() {
         "(rather than additive) covariate form against the paper's own simulated AUC values.",
         sep = " "
       ),
-      source_name        = "Age"
+      source_name = "Age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "22-71 years (median 56, IQR 48-61; Dvorackova 2023 Table 1)",
-    age_median     = "56 years",
-    weight_range   = "38-100 kg (median 69, IQR 60-83; Dvorackova 2023 Table 1)",
-    weight_median  = "69 kg",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "22-71 years (median 56, IQR 48-61; Dvorackova 2023 Table 1)",
+    age_median = "56 years",
+    weight_range = "38-100 kg (median 69, IQR 60-83; Dvorackova 2023 Table 1)",
+    weight_median = "69 kg",
     sex_female_pct = 31.3,
     race_ethnicity = "Not reported (single-centre Czech cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adult lung-transplant recipients receiving oral posaconazole delayed-release tablets (Noxafil)",
       "for antifungal prophylaxis or for treatment of invasive fungal disease during the postoperative period.",
       "Indications for lung transplantation were interstitial lung disease (13), idiopathic pulmonary fibrosis",
@@ -53,13 +53,13 @@ Dvorackova_2023_posaconazole <- function() {
       "bronchial asthma (1), and chronic aspergillosis (1).",
       sep = " "
     ),
-    dose_range     = "100-400 mg once daily oral posaconazole tablets; all patients started at 300 mg once daily and were subsequently dose-adjusted by therapeutic drug monitoring.",
-    regions        = "Czech Republic (Motol University Hospital, Prague), October 2020 to March 2023",
+    dose_range = "100-400 mg once daily oral posaconazole tablets; all patients started at 300 mg once daily and were subsequently dose-adjusted by therapeutic drug monitoring.",
+    regions = "Czech Republic (Motol University Hospital, Prague), October 2020 to March 2023",
     n_observations = "80 serum posaconazole concentrations (1-12 per patient, mean 2.5, mode 2), all drawn in the elimination phase from day 4 of treatment onward (Dvorackova 2023 Sections 2.1 and 4.2).",
     renal_function = "Serum creatinine median 110 umol/L (range 53-301); CKD-EPI eGFR median 0.98 mL/s/1.73 m2 (range 0.32-2.16) (Dvorackova 2023 Table 1).",
     hepatic_function = "ALT median 0.72 ukat/L (range 0.24-4.97), AST median 0.35 ukat/L (range 0.15-1.68), GGT median 0.63 ukat/L (range 0.20-3.30) (Dvorackova 2023 Table 1).",
-    co_medication  = "All patients received induction with basiliximab or antithymocyte globulin plus maintenance immunosuppression: tacrolimus (31) or cyclosporin A (1), prednisone (32), and mycophenolate mofetil (31). Gastric-pH-raising drugs (proton pump inhibitors or famotidine) were taken by 29 of 32 patients.",
-    notes          = paste(
+    co_medication = "All patients received induction with basiliximab or antithymocyte globulin plus maintenance immunosuppression: tacrolimus (31) or cyclosporin A (1), prednisone (32), and mycophenolate mofetil (31). Gastric-pH-raising drugs (proton pump inhibitors or famotidine) were taken by 29 of 32 patients.",
+    notes = paste(
       "Prospective, observational, single-centre therapeutic-drug-monitoring study",
       "(ANZCTR ACTRN12622000997752; Ethics Committee EK-873/22).",
       "Posaconazole was quantified by a validated LC-MS/MS assay with a lower limit of quantification of 0.1 mg/L",

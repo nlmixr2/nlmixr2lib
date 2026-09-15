@@ -68,7 +68,9 @@ test_that("addDepot adds other than default agruments", {
 .isSubseq <- function(haystack, needle) {
   i <- 1L
   for (h in haystack) {
-    if (i > length(needle)) break
+    if (i > length(needle)) {
+      break
+    }
     if (identical(h, needle[[i]])) i <- i + 1L
   }
   i > length(needle)

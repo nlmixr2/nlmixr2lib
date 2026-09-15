@@ -15,36 +15,66 @@ Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1 <- function() {
   vignette <- "Mody_2023_doxorubicin_dexrazoxane_breast_cancer"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg (IV 15-min infusion; mg/m^2 doses pre-multiplied by the 1.8 m^2 typical body surface area in the event table)",
+    time = "h",
+    dosing = "mg (IV 15-min infusion; mg/m^2 doses pre-multiplied by the 1.8 m^2 typical body surface area in the event table)",
     concentration = "mg/L (plasma); uM (tumour-site PD driver, derived); % (cell viability, the PD readout)"
   )
 
   compartmentData <- list(
-    central_dox              = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_dox          = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral2_dox          = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),
-    central_dexrazoxane      = list(analyte = "dexrazoxane", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_dexrazoxane  = list(analyte = "dexrazoxane", units = "mg", specimen = "plasma", verified = TRUE),
-    transit1_dox             = list(analyte = "doxorubicin cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit2_dox             = list(analyte = "doxorubicin cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit3_dox             = list(analyte = "doxorubicin cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit1_dexrazoxane     = list(analyte = "dexrazoxane cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit2_dexrazoxane     = list(analyte = "dexrazoxane cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit3_dexrazoxane     = list(analyte = "dexrazoxane cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    viability                = list(analyte = "cell viability", units = "%", specimen = "not applicable", verified = TRUE)
+    central_dox = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_dox = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2_dox = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),
+    central_dexrazoxane = list(analyte = "dexrazoxane", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_dexrazoxane = list(analyte = "dexrazoxane", units = "mg", specimen = "plasma", verified = TRUE),
+    transit1_dox = list(
+      analyte = "doxorubicin cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit2_dox = list(
+      analyte = "doxorubicin cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit3_dox = list(
+      analyte = "doxorubicin cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit1_dexrazoxane = list(
+      analyte = "dexrazoxane cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit2_dexrazoxane = list(
+      analyte = "dexrazoxane cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit3_dexrazoxane = list(
+      analyte = "dexrazoxane cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    viability = list(analyte = "cell viability", units = "%", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "human (simulated) driving an in vitro JIMT-1 human breast cancer cell PD model",
-    n_subjects       = 500L,
-    n_studies        = 1L,
-    disease_state    = "Simulated typical adult cancer patient with a body surface area of 1.8 m^2; the PD layer is the JIMT-1 (HER2-expressing, trastuzumab-resistant breast cancer) cell model established in vitro.",
-    dose_range       = "DOX 50 mg/m^2 (90 mg at 1.8 m^2) Q3W as a 15-min IV infusion, alone or with DEX 500 mg/m^2 (900 mg at 1.8 m^2), over three cycles (9 weeks).",
+    species = "human (simulated) driving an in vitro JIMT-1 human breast cancer cell PD model",
+    n_subjects = 500L,
+    n_studies = 1L,
+    disease_state = "Simulated typical adult cancer patient with a body surface area of 1.8 m^2; the PD layer is the JIMT-1 (HER2-expressing, trastuzumab-resistant breast cancer) cell model established in vitro.",
+    dose_range = "DOX 50 mg/m^2 (90 mg at 1.8 m^2) Q3W as a 15-min IV infusion, alone or with DEX 500 mg/m^2 (900 mg at 1.8 m^2), over three cycles (9 weeks).",
     dosing_frequency = "Q3W, three cycles, both drugs given simultaneously as 15-min IV infusions.",
-    notes            = "Population simulation of 500 subjects with an arbitrary 10% inter-individual variability on the PD parameters and on the tumour:plasma ratios (paper Methods). Efficacy was summarised as the area under the percent-cell-viability effect curve (AUEC) over the three cycles for DOX alone and for DOX + DEX at kp_tumor_dexrazoxane of 0.1, 1 and 10. The clinical plasma PK parameters are typical values for a 1.8 m^2 subject and carry no covariates."
+    notes = "Population simulation of 500 subjects with an arbitrary 10% inter-individual variability on the PD parameters and on the tumour:plasma ratios (paper Methods). Efficacy was summarised as the area under the percent-cell-viability effect curve (AUEC) over the three cycles for DOX alone and for DOX + DEX at kp_tumor_dexrazoxane of 0.1, 1 and 10. The clinical plasma PK parameters are typical values for a 1.8 m^2 subject and carry no covariates."
   )
 
   ini({

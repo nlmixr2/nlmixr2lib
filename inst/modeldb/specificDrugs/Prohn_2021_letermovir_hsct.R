@@ -21,18 +21,18 @@ Prohn_2021_letermovir_hsct <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_CSA = list(
-      description        = "Concomitant cyclosporine (CsA) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cyclosporine (CsA) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant cyclosporine)",
-      notes              = paste(
+      notes = paste(
         "Prohn 2021 estimated cyclosporine cotreatment as two SEPARATE",
         "parameters rather than as a fractional shift: CL is a distinct THETA",
         "with (4.84 L/h) and without (3.38 L/h) CsA, and oral bioavailability",
@@ -50,14 +50,14 @@ Prohn_2021_letermovir_hsct <- function() {
         "on cyclosporine received 240 mg/day rather than 480 mg/day.",
         sep = " "
       ),
-      source_name        = "CSA"
+      source_name = "CSA"
     ),
     TX_HCT = list(
-      description        = "Allogeneic hematopoietic stem cell transplant (HSCT) recipient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Allogeneic hematopoietic stem cell transplant (HSCT) recipient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy phase I participant)",
-      notes              = paste(
+      notes = paste(
         "1 = HSCT recipient (the phase IIb and phase III cohorts, 363 of the",
         "399 subjects); 0 = healthy participant contributing steady-state",
         "phase I data (36 subjects) that were pooled in to anchor the",
@@ -73,14 +73,14 @@ Prohn_2021_letermovir_hsct <- function() {
         "exercised with TX_HCT = 1.",
         sep = " "
       ),
-      source_name        = "HP (healthy participant flag, complemented)"
+      source_name = "HP (healthy participant flag, complemented)"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian: White, Black, Hispanic and Other)",
-      notes              = paste(
+      notes = paste(
         "The only covariate retained by the stepwise search for this model.",
         "Multiplicative on the peripheral volume: Vp is 0.609 times the",
         "non-Asian value in Asian participants (Table 3, 'Asian effect",
@@ -94,14 +94,14 @@ Prohn_2021_letermovir_hsct <- function() {
         "term is carried.",
         sep = " "
       ),
-      source_name        = "ASIAN"
+      source_name = "ASIAN"
     ),
     OCC = list(
-      description        = "Dosing-occasion index for between-occasion variability on bioavailability",
-      units              = "(index)",
-      type               = "categorical",
+      description = "Dosing-occasion index for between-occasion variability on bioavailability",
+      units = "(index)",
+      type = "categorical",
       reference_category = "no reference category; 0 or any value outside 1-8 zeroes every occasion indicator",
-      notes              = paste(
+      notes = paste(
         "Prohn 2021 carried interoccasion variability on bioavailability",
         "(Table 3, 'IOV, bioavailability'), added because repeated trough",
         "samples in the same participant spanned a 100-fold range: 'IOV was",
@@ -118,16 +118,16 @@ Prohn_2021_letermovir_hsct <- function() {
         "computed 'without interoccasion variability'.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Pre-specified and tested on CL and bioavailability, and on V1 and V2",
         "(Supplementary Information, 'HSCT recipient (phase III model)",
         "covariate analysis'), but not retained: 'adding the effect of body",
@@ -141,39 +141,39 @@ Prohn_2021_letermovir_hsct <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Pre-specified and tested on CL, bioavailability, V1 and V2; not retained. Median 51 years, range 18-75 (Table 1).",
+      units = "years",
+      type = "continuous",
+      notes = "Pre-specified and tested on CL, bioavailability, V1 and V2; not retained. Median 51 years, range 18-75 (Table 1).",
       source_name = "AGE"
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Pre-specified and tested on CL, bioavailability, V1 and V2; not retained. No point estimate is reported.",
+      units = "mL/min",
+      type = "continuous",
+      notes = "Pre-specified and tested on CL, bioavailability, V1 and V2; not retained. No point estimate is reported.",
       source_name = "CrCl"
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Pre-specified and tested on CL, bioavailability, V1 and V2; not retained. 190 of 399 subjects (48%) were female (Table 1).",
+      units = "(binary)",
+      type = "binary",
+      notes = "Pre-specified and tested on CL, bioavailability, V1 and V2; not retained. 190 of 399 subjects (48%) were female (Table 1).",
       source_name = "sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 399,
-    n_studies      = 5,
-    age_range      = "median 51 years, range 18-75 (Table 1)",
-    weight_range   = "median 75 kg, range 35-142 (Table 1)",
+    species = "human",
+    n_subjects = 399,
+    n_studies = 5,
+    age_range = "median 51 years, range 18-75 (Table 1)",
+    weight_range = "median 75 kg, range 35-142 (Table 1)",
     sex_female_pct = 48,
     race_ethnicity = "Reported only as the Asian / non-Asian contrast retained in the model. Figure S7 defines non-Asian as White, Black, Hispanic and Other, and Asian as Japanese plus Asian participants from other countries. Counts by race are not tabulated.",
-    disease_state  = "Cytomegalovirus-seropositive allogeneic hematopoietic stem cell transplant recipients receiving letermovir prophylaxis (363 of 399 subjects, 91%), pooled with 36 healthy participants (9%) who contributed steady-state phase I data at the same dosing schedule to anchor the structural model.",
-    dose_range     = "240-480 mg once daily (480 mg/day alone, 240 mg/day with concomitant cyclosporine), orally or as a 1-hour intravenous infusion",
-    regions        = "Not reported.",
-    notes          = paste(
+    disease_state = "Cytomegalovirus-seropositive allogeneic hematopoietic stem cell transplant recipients receiving letermovir prophylaxis (363 of 399 subjects, 91%), pooled with 36 healthy participants (9%) who contributed steady-state phase I data at the same dosing schedule to anchor the structural model.",
+    dose_range = "240-480 mg once daily (480 mg/day alone, 240 mg/day with concomitant cyclosporine), orally or as a 1-hour intravenous infusion",
+    regions = "Not reported.",
+    notes = paste(
       "Data sources (Table 1): one phase III trial NCT02137772 (n = 350), one",
       "phase IIb trial NCT01063829 (n = 13) and three phase I trials (n = 36).",
       "2888 concentration observations, 2566 (89%) after oral and 322 (11%)",

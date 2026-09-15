@@ -18,7 +18,7 @@ Li_2023_granisetron <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "granisetron", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "granisetron", units = "ug", specimen = "administration site", verified = FALSE),
     central = list(analyte = "granisetron", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
@@ -31,65 +31,65 @@ Li_2023_granisetron <- function() {
     # final model carries no covariates. Recorded here to preserve the
     # provenance of the covariate screen.
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2).",
-      source_name        = "age"
+      notes = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2).",
+      source_name = "age"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2). No allometric scaling is applied a priori either.",
-      source_name        = "weight"
+      notes = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2). No allometric scaling is applied a priori either.",
+      source_name = "weight"
     ),
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2).",
-      source_name        = "height"
+      notes = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2).",
+      source_name = "height"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2).",
-      source_name        = "BMI"
+      notes = "Screened as a power function normalised to the population median (Li 2023 Eq 2) but not retained in the final model (Li 2023 Section 3.2).",
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = "Screened as an exponential categorical effect (Li 2023 Eq 3) but not retained in the final model (Li 2023 Section 3.2). Li 2023 Discussion notes the same negative finding in Howell 2009 (n = 48 healthy subjects + 793 cancer patients).",
-      source_name        = "gender"
+      notes = "Screened as an exponential categorical effect (Li 2023 Eq 3) but not retained in the final model (Li 2023 Section 3.2). Li 2023 Discussion notes the same negative finding in Howell 2009 (n = 48 healthy subjects + 793 cancer patients).",
+      source_name = "gender"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 112L,                               # Li 2023 Section 3.1: 1372 concentrations from 112 Caucasian healthy subjects used for model building
-    n_studies      = 4L,                                 # Li 2023 Table 1: 392MD/11/C, 392MD/26/C, 392MD/40/C, 392MD/43/C
-    n_observations = 1372L,                              # Li 2023 Section 3.1
-    age_range      = NULL,                               # Li 2023 Table 2 reports mean +/- SD per study, not ranges
-    age_mean       = "43.01 +/- 17.80 years",            # Li 2023 Section 3.1 (pooled Caucasian)
-    weight_mean    = "70.54 +/- 16.13 kg",               # Li 2023 Section 3.1 (pooled Caucasian)
-    height_mean    = "169.51 +/- 9.69 cm",               # Li 2023 Section 3.1 (pooled Caucasian)
-    bmi_mean       = "24.39 +/- 4.43 kg/m^2",            # Li 2023 Section 3.1 (pooled Caucasian)
-    sex_female_pct = 42.86,                              # Li 2023 Section 3.1 (pooled Caucasian)
+    species = "human",
+    n_subjects = 112L, # Li 2023 Section 3.1: 1372 concentrations from 112 Caucasian healthy subjects used for model building
+    n_studies = 4L, # Li 2023 Table 1: 392MD/11/C, 392MD/26/C, 392MD/40/C, 392MD/43/C
+    n_observations = 1372L, # Li 2023 Section 3.1
+    age_range = NULL, # Li 2023 Table 2 reports mean +/- SD per study, not ranges
+    age_mean = "43.01 +/- 17.80 years", # Li 2023 Section 3.1 (pooled Caucasian)
+    weight_mean = "70.54 +/- 16.13 kg", # Li 2023 Section 3.1 (pooled Caucasian)
+    height_mean = "169.51 +/- 9.69 cm", # Li 2023 Section 3.1 (pooled Caucasian)
+    bmi_mean = "24.39 +/- 4.43 kg/m^2", # Li 2023 Section 3.1 (pooled Caucasian)
+    sex_female_pct = 42.86, # Li 2023 Section 3.1 (pooled Caucasian)
     race_ethnicity = c(White = 100, Black = 0, Asian = 0, Other = 0), # Li 2023 Table 2: all four model-building studies enrolled Caucasian healthy volunteers
-    disease_state  = "Healthy volunteers (no chemotherapy-induced nausea and vomiting; GTDS is indicated for CINV prophylaxis).",
-    dose_range     = "Single 34.3 mg/52 cm2 granisetron transdermal patch worn 6-9 days depending on study (Li 2023 Table 1).",
-    regions        = "Four Caucasian healthy-volunteer studies (sponsor studies 392MD/11/C, 392MD/26/C, 392MD/40/C, 392MD/43/C).",
-    sampling       = "Study-specific schedules from pre-dose out to 120-216 h post-application; 96-660 samples per study, 1372 in total (Li 2023 Table 1).",
-    software       = "Phoenix NLME 1.30, FOCE ELS (Li 2023 Section 2.2).",
-    notes          = paste(
+    disease_state = "Healthy volunteers (no chemotherapy-induced nausea and vomiting; GTDS is indicated for CINV prophylaxis).",
+    dose_range = "Single 34.3 mg/52 cm2 granisetron transdermal patch worn 6-9 days depending on study (Li 2023 Table 1).",
+    regions = "Four Caucasian healthy-volunteer studies (sponsor studies 392MD/11/C, 392MD/26/C, 392MD/40/C, 392MD/43/C).",
+    sampling = "Study-specific schedules from pre-dose out to 120-216 h post-application; 96-660 samples per study, 1372 in total (Li 2023 Table 1).",
+    software = "Phoenix NLME 1.30, FOCE ELS (Li 2023 Section 2.2).",
+    notes = paste(
       "The model was fit to the four Caucasian studies only. A fifth study",
       "(SP-0102, 24 Chinese healthy male volunteers, mean age 27.13 +/- 4.07",
       "years, weight 65.07 +/- 5.67 kg, sampling to 240 h) was held out and used",

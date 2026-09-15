@@ -37,7 +37,7 @@ OlssonGisleskog_2025_ibrutinib <- function() {
     sep = " "
   )
   vignette <- "OlssonGisleskog_2025_ibrutinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Confirmed against Olsson Gisleskog 2025 Methods 2.2
@@ -45,18 +45,18 @@ OlssonGisleskog_2025_ibrutinib <- function() {
   # first-order absorption") and Methods 2.1 (ibrutinib PLASMA concentrations
   # by LC-MS/MS, LLOQ 0.5 ng/mL).
   compartmentData <- list(
-    depot       = list(analyte = "ibrutinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ibrutinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ibrutinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ibrutinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ibrutinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FASTED_STRICT = list(
-      description        = "Strict-fasting dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Strict-fasting dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (modified fasting or fed)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator distinguishing the STRICTER of the two",
         "non-fed prandial states that Olsson Gisleskog 2025 Table 2",
         "contrasts. 1 = strict fasting, defined by Methods 2.1 as the",
@@ -87,14 +87,14 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "MEAL_PREDOSE_2H = 1), whereas here it means dose first, food later.",
         "Always read each paper's own definition."
       ),
-      source_name        = "prandial state (Table 2 row labels 'fast' / 'mod fast' / 'fed')"
+      source_name = "prandial state (Table 2 row labels 'fast' / 'mod fast' / 'fed')"
     ),
     FED = list(
-      description        = "Fed-state dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasting or modified fasting)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. 1 = the dose was taken with food; 0 =",
         "strict fasting or modified fasting. Retained on the zero-order",
         "input duration D1 only: Olsson Gisleskog 2025 Table 2 gives",
@@ -110,14 +110,14 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "for completeness so the model can simulate the fed state. Pairs",
         "with FASTED_STRICT to span the paper's three prandial states."
       ),
-      source_name        = "prandial state (Table 2 row labels 'fast' / 'mod fast' / 'fed')"
+      source_name = "prandial state (Table 2 row labels 'fast' / 'mod fast' / 'fed')"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. SHINE enrolled patients 65 years of age or",
         "older by protocol (Methods 2.1); the ibrutinib arm median is 71",
         "years, range 65-86 (Table 1). Enters F1 as the power effect",
@@ -135,14 +135,14 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "exposure directly: over the observed 65-86 year range the factor",
         "spans 1.00 to 1.20."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant CYP3A inhibitor)",
-      notes              = paste(
+      notes = paste(
         "1 = the dose was taken with a concomitant CYP3A inhibitor of any",
         "strength; 0 = no concomitant CYP3A inhibitor. Table 1 splits the",
         "ibrutinib arm into none 79 (31%), weak or moderate 128 (49%) and",
@@ -163,17 +163,17 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "median of 349. Set the column per dose record from the",
         "comedication history."
       ),
-      source_name        = "coadministered CYP3A inhibitor (Table 1)"
+      source_name = "coadministered CYP3A inhibitor (Table 1)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tabulated in Olsson Gisleskog 2025 Table 1 (ibrutinib arm median",
         "71.9 kg, range 35-126) and screened as a prognostic factor in the",
         "exposure-response analysis, but carries no effect in the final",
@@ -188,41 +188,41 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "this analysis started from cannot be settled from the sources on",
         "disk (Marostica 2015 is not open access)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1 ibrutinib arm median 25.7 kg/m^2 (range 16.7-49.2).",
         "Reported as a baseline characteristic only; not a covariate in the",
         "population PK model and not among the prognostic factors carried",
         "into the exposure-response regressions."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Table 1 ibrutinib arm 82 / 259 female (32%). Screened as an",
         "exposure-response prognostic factor (Table 1 'E, S' annotation;",
         "subgroups in Table S3) and found not significant for either",
         "atrial fibrillation (Table S4) or any hemorrhage (Table S5). No",
         "effect on any PK parameter."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1 dichotomises the ibrutinib arm as CRCL >= 60 mL/min 177",
         "(68%) and CRCL < 60 mL/min 82 (32%); the continuous values are not",
         "tabulated. Screened as an exposure-response safety prognostic",
@@ -230,29 +230,29 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "parameter -- consistent with ibrutinib's negligible renal",
         "elimination."
       ),
-      source_name        = "Renal function"
+      source_name = "Renal function"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 259L,
-    n_studies       = 1L,
-    n_observations  = 2070L,
-    age_range       = "65-86 years",
-    age_median      = "71 years",
-    weight_range    = "35-126 kg",
-    weight_median   = "71.9 kg",
-    bmi_median      = "25.7 kg/m^2 (range 16.7-49.2)",
-    sex_female_pct  = 31.7,
-    race_ethnicity  = c(
+    species = "human",
+    n_subjects = 259L,
+    n_studies = 1L,
+    n_observations = 2070L,
+    age_range = "65-86 years",
+    age_median = "71 years",
+    weight_range = "35-126 kg",
+    weight_median = "71.9 kg",
+    bmi_median = "25.7 kg/m^2 (range 16.7-49.2)",
+    sex_female_pct = 31.7,
+    race_ethnicity = c(
       `White, not Hispanic or Latino` = 71.0,
-      `White, Hispanic or Latino`     = 4.6,
-      Asian                           = 17.8,
+      `White, Hispanic or Latino` = 4.6,
+      Asian = 17.8,
       `Black, of African heritage or African American` = 0.8,
-      Other                           = 5.8
+      Other = 5.8
     ),
-    disease_state   = paste(
+    disease_state = paste(
       "Previously untreated mantle cell lymphoma in patients 65 years of",
       "age or older. Simplified MCL international prognostic index low",
       "risk 52 (20%), intermediate 119 (46%), high 88 (34%); ECOG 0 133",
@@ -260,7 +260,7 @@ OlssonGisleskog_2025_ibrutinib <- function() {
       "tumour bulk >= 5 cm 95 (37%); baseline TP53 mutated 26, unmutated",
       "114, unknown 119 (Olsson Gisleskog 2025 Table 1, ibrutinib column)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Ibrutinib 560 mg orally once daily, taken at least 30 min before or",
       "at least 2 h after a meal, continued until progressive disease or",
       "unacceptable toxicity. Reduction to 420 mg or 280 mg once daily was",
@@ -271,21 +271,21 @@ OlssonGisleskog_2025_ibrutinib <- function() {
       "up to 6 cycles, and responders continued rituximab maintenance",
       "every 8 weeks for up to 12 further doses."
     ),
-    regions         = "Global (phase 3 SHINE, NCT01776840)",
+    regions = "Global (phase 3 SHINE, NCT01776840)",
     hepatic_function = paste(
       "By NCI ODWG liver-function classification (Table 1): normal 231",
       "(89%), mild or moderate impairment 28 (11%), severe 0."
     ),
-    renal_function  = paste(
+    renal_function = paste(
       "Creatinine clearance >= 60 mL/min 177 (68%), < 60 mL/min 82 (32%)",
       "(Table 1)."
     ),
-    co_medication   = paste(
+    co_medication = paste(
       "Concomitant CYP3A inhibitor at any point: none 79 (31%), weak or",
       "moderate 128 (49%), strong 52 (20%) (Table 1). All patients received",
       "bendamustine and rituximab background therapy."
     ),
-    notes           = paste(
+    notes = paste(
       "The PK dataset is the 259 patients of the SHINE ibrutinib arm; only",
       "ibrutinib-arm samples were assayed (Methods 2.1). Sampling was",
       "sparse: pre-dose on day 2 of cycles 1, 2 and 3, plus 1, 2 and 4 h",

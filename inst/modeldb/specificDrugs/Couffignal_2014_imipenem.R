@@ -23,23 +23,23 @@ Couffignal_2014_imipenem <- function() {
     sep = " "
   )
   vignette <- "Couffignal_2014_imipenem"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total bodyweight at inclusion",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total bodyweight at inclusion",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Total bodyweight at inclusion (paper Table 1; cohort median 77 kg,",
         "range 45-126 kg). Used as the reference value in the multiplicative",
         "power model V1 = 20.4 * (WT/77)^1.3 * (ALB/18)^(-1.1) (paper Results",
@@ -49,14 +49,14 @@ Couffignal_2014_imipenem <- function() {
         "10th = 53 kg, 50th = 77 kg, 90th = 111 kg, which bracket the cohort",
         "covariate sensitivity analysis."
       ),
-      source_name        = "Total bodyweight (kg)"
+      source_name = "Total bodyweight (kg)"
     ),
     CRCL = list(
-      description        = "Measured 4-hour urinary creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Measured 4-hour urinary creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Measured creatinine clearance over a 4-hour urine collection",
         "starting at the fourth imipenem infusion (paper Methods 'Covariate",
         "analysis'; the paper cites internal references 30-32 establishing",
@@ -74,14 +74,14 @@ Couffignal_2014_imipenem <- function() {
         "assay form -- precedent: Delattre 2010 amikacin, Lamoth 2009",
         "imipenem, AbdulAziz 2016 doripenem)."
       ),
-      source_name        = "CrCL4h"
+      source_name = "CrCL4h"
     ),
     ALB = list(
-      description        = "Serum albumin measured at the fourth imipenem dose",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin measured at the fourth imipenem dose",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Serum albumin (g/L) measured at the time of the fourth imipenem",
         "dose (paper Table 1; cohort median 18 g/L, range 10-28 g/L, with",
         "the median reported as a footnote derived from 9 patients with",
@@ -94,21 +94,21 @@ Couffignal_2014_imipenem <- function() {
         "serum-albumin percentiles 10th = 11 g/L, 50th = 18 g/L, 90th =",
         "23 g/L, which bracket the cohort covariate sensitivity analysis."
       ),
-      source_name        = "Serum albumin (g/L)"
+      source_name = "Serum albumin (g/L)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 51L,
-    n_studies        = 1L,
-    age_range        = "28-84 years",
-    age_median       = "60 years",
-    weight_range     = "45-126 kg",
-    weight_median    = "77 kg",
-    sex_female_pct   = 19.6,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
+    age_range = "28-84 years",
+    age_median = "60 years",
+    weight_range = "45-126 kg",
+    weight_median = "77 kg",
+    sex_female_pct = 19.6,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Critically ill adult ICU patients (age >= 18) mechanically",
       "ventilated for more than 48 h with clinical suspicion of",
       "ventilator-associated pneumonia (VAP) due to Gram-negative",
@@ -122,7 +122,7 @@ Couffignal_2014_imipenem <- function() {
       "antibiotic therapy in the 3 months before admission (30% of",
       "those had received imipenem)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "0.5 h IV infusion of imipenem every 8 hours; dose chosen per",
       "the European Medicine Agency renal-adjustment table by",
       "Cockcroft-Gault CrCL (ClCG > 70 mL/min/1.73 m^2: 1000 mg q8h;",
@@ -131,15 +131,15 @@ Couffignal_2014_imipenem <- function() {
       "patients (9%) on 500 mg, 15 (29%) on 750 mg, 32 (62%) on 1000",
       "mg, all q8h (paper Results 'Patients')."
     ),
-    regions          = "France (multicentre: 3 ICUs across 2 hospitals -- Hopital V Dupouy polyvalent ICU in Argenteuil, AP-HP Hopital Bichat medical and surgical ICUs in Paris)",
-    renal_function   = paste(
+    regions = "France (multicentre: 3 ICUs across 2 hospitals -- Hopital V Dupouy polyvalent ICU in Argenteuil, AP-HP Hopital Bichat medical and surgical ICUs in Paris)",
+    renal_function = paste(
       "Measured 4-hour creatinine clearance median 86.4 mL/min (range",
       "9.1-571.4 mL/min, paper Table 1; raw mL/min, not BSA-normalised).",
       "Patients with Cockcroft-Gault CrCL < 10 mL/min or on renal",
       "replacement therapy were excluded."
     ),
     n_concentrations = 297L,
-    notes            = paste(
+    notes = paste(
       "Prospective open-label multicentre IMPACT study",
       "(ClinicalTrials.gov NCT00950222; paper Methods 'Study design",
       "and population'). 63 patients screened, 12 excluded (3 lacked",

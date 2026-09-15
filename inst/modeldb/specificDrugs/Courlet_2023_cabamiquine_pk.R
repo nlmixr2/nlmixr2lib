@@ -38,20 +38,20 @@ Courlet_2023_cabamiquine_pk <- function() {
   # "Population pharmacokinetic model"), which draws Depot, Central (V2,
   # Ccab), Peripheral 1 (V3), Peripheral 2 (V4), and Recycling.
   compartmentData <- list(
-    depot       = list(analyte = "cabamiquine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood",         verified = TRUE),
-    peripheral1 = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood",         verified = TRUE),
-    peripheral2 = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood",         verified = TRUE),
-    gallbladder = list(analyte = "cabamiquine", units = "mg", specimen = "bile",                verified = TRUE)
+    depot = list(analyte = "cabamiquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    peripheral1 = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    peripheral2 = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    gallbladder = list(analyte = "cabamiquine", units = "mg", specimen = "bile", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with exponents fixed at 0.75 on the apparent",
         "clearances (CL/F, Q2/F, Q3/F) and 1 on the apparent volumes",
         "(V2/F, V3/F, V4/F) per Courlet 2023 Supplementary Material 1 rows",
@@ -61,14 +61,14 @@ Courlet_2023_cabamiquine_pk <- function() {
         "the reference (centering) weight; the packaged model uses the",
         "conventional 70 kg. See vignette Assumptions and deviations."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_CABAMIQUINE_MG = list(
-      description        = "Administered cabamiquine single oral dose",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered cabamiquine single oral dose",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject single oral dose. Enters the model as an empirical",
         "power effect on the apparent central volume,",
         "V2/F = 2363 * (WT/70)^1 * DOSE_CABAMIQUINE_MG^e_dose_vc, which the",
@@ -90,18 +90,18 @@ Courlet_2023_cabamiquine_pk <- function() {
         "the salt reading, reproduces the published recrudescence rates. See",
         "vignette Assumptions and deviations."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 101L,
-    n_studies      = 2L,
-    age_range      = "18-55 years",
+    species = "human",
+    n_subjects = 101L,
+    n_studies = 2L,
+    age_range = "18-55 years",
     sex_female_pct = 0,
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy malaria-naive adult volunteers. Study 1 part 2 subjects were",
       "inoculated with Plasmodium falciparum-infected erythrocytes (strain",
       "3D7) 8 days before dosing (induced blood stage malaria, IBSM);",
@@ -109,15 +109,15 @@ Courlet_2023_cabamiquine_pk <- function() {
       "sporozoites (strain NF54) 2 h or 96 h before dosing (sporozoite",
       "challenge, SpzCh)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral doses across 14 dose levels. Study 1 (NCT03261401)",
       "administered cabamiquine succinate salt (1 mg salt = 0.797 mg free",
       "base), including the 150, 400, and 800 mg IBSM cohorts; study 2",
       "administered free base at 30, 60, 80, 100, and 200 mg."
     ),
-    regions        = "Australia (QIMR Berghofer) and the Netherlands",
+    regions = "Australia (QIMR Berghofer) and the Netherlands",
     trial_registration = "ClinicalTrials.gov NCT03261401 (study 1)",
-    notes          = paste(
+    notes = paste(
       "The PK data set comprised 1,823 evaluable cabamiquine blood",
       "concentrations from 101 healthy subjects across 14 doses (Results",
       "'PK/PD data'). Parasitemia data used for the PK/PD layer came from",

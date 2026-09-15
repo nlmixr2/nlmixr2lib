@@ -20,22 +20,22 @@ Zheng_2012_mAb8_minipig <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mAb8", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mAb8", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mAb8", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "Gottingen minipig",
-    n_subjects     = 5L,
-    n_studies      = 1L,
-    weight_range   = "IV: 9.7 kg mean (Table 5); SC arm not conducted",
+    species = "Gottingen minipig",
+    n_subjects = 5L,
+    n_studies = 1L,
+    weight_range = "IV: 9.7 kg mean (Table 5); SC arm not conducted",
     sex_female_pct = 0,
-    disease_state  = "Healthy Gottingen minipig; non-disclosed humanized IgG1 or stabilized IgG4 (approx 150 kDa) mAb preclinical PK (IV only).",
-    dose_range     = "10 mg/kg IV bolus (n = 5); no SC arm (Table 5)",
-    regions        = "Contract research organizations (Denmark, UK, USA)",
-    notes          = paste(
+    disease_state = "Healthy Gottingen minipig; non-disclosed humanized IgG1 or stabilized IgG4 (approx 150 kDa) mAb preclinical PK (IV only).",
+    dose_range = "10 mg/kg IV bolus (n = 5); no SC arm (Table 5)",
+    regions = "Contract research organizations (Denmark, UK, USA)",
+    notes = paste(
       "Zheng 2012 Tables 1 and 5; pI = 8.7 (Table 4). Non-disclosed",
       "humanized IgG (IgG1 or stabilized IgG4) around 150 kDa. Male",
       "cohort. IV-only study; Ka, F and Tmax are 'not available' in Table 1.",

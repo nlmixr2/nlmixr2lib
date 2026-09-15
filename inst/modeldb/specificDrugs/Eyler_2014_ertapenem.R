@@ -8,56 +8,56 @@ Eyler_2014_ertapenem <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "CRRT-active indicator (1 while continuous venovenous hemodialysis or hemodiafiltration is running, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CRRT-active indicator (1 while continuous venovenous hemodialysis or hemodiafiltration is running, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CRRT circuit off / paused)",
-      notes              = "Time-varying within subject. Gates the additive dialytic-arm clearance cl_dialysis: the CRRT contribution is added to body systemic clearance only while the circuit is running (Eyler 2014 Methods, Pharmacokinetic analysis: 'An indicator variable, DIAL, with a value of 1 or 0, was used to turn the effluent compartment on and off, respectively, if the CVVHD/F was turned off for any reason'). Three of eight subjects had CRRT paused mid-sampling (135, 142, and 276 minutes; Results paragraph 1) for filter changes or an off-floor procedure; RRT_HEMODIAL_ACTIVE flips to 0 during those windows. For subjects whose circuit ran continuously across sampling, RRT_HEMODIAL_ACTIVE = 1 throughout. The paper does not distinguish CVVHD vs CVVHDF in the model: both modalities are encoded by RRT_HEMODIAL_ACTIVE = 1, with the dialytic-arm clearance (CLdial = 36 mL/min) reflecting the pooled-cohort mean of dialytic solute removal at the cohort mean effluent rate (38 ml/h/kg). This is the time-varying per-session dialysis gate (canonical RRT_HEMODIAL_ACTIVE), distinct from the static RRT_HEMODIAL_STATUS subject-level indicator.",
-      source_name        = "DIAL",
-      source_alias       = "HEMODIALYSIS (working column name before the 2026-06-19 canonical-register standardization; renamed to the time-varying gate canonical RRT_HEMODIAL_ACTIVE)"
+      notes = "Time-varying within subject. Gates the additive dialytic-arm clearance cl_dialysis: the CRRT contribution is added to body systemic clearance only while the circuit is running (Eyler 2014 Methods, Pharmacokinetic analysis: 'An indicator variable, DIAL, with a value of 1 or 0, was used to turn the effluent compartment on and off, respectively, if the CVVHD/F was turned off for any reason'). Three of eight subjects had CRRT paused mid-sampling (135, 142, and 276 minutes; Results paragraph 1) for filter changes or an off-floor procedure; RRT_HEMODIAL_ACTIVE flips to 0 during those windows. For subjects whose circuit ran continuously across sampling, RRT_HEMODIAL_ACTIVE = 1 throughout. The paper does not distinguish CVVHD vs CVVHDF in the model: both modalities are encoded by RRT_HEMODIAL_ACTIVE = 1, with the dialytic-arm clearance (CLdial = 36 mL/min) reflecting the pooled-cohort mean of dialytic solute removal at the cohort mean effluent rate (38 ml/h/kg). This is the time-varying per-session dialysis gate (canonical RRT_HEMODIAL_ACTIVE), distinct from the static RRT_HEMODIAL_STATUS subject-level indicator.",
+      source_name = "DIAL",
+      source_alias = "HEMODIALYSIS (working column name before the 2026-06-19 canonical-register standardization; renamed to the time-varying gate canonical RRT_HEMODIAL_ACTIVE)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a power covariate (centered on the cohort median 80 kg) on CLS, CLdial, and VC during covariate screening (Eyler 2014 Methods, Covariate testing equation 10) but not retained in the final model (Table 2 reports only the structural typical-value estimates; no WT exponents). The cohort weight range was 56.0-119.2 kg (mean 78.9 +/- 19.8 kg, Table 1). Listed in covariatesDataExcluded to preserve the screened-but-not-retained provenance.",
-      source_name        = "WT"
+      notes = "Tested as a power covariate (centered on the cohort median 80 kg) on CLS, CLdial, and VC during covariate screening (Eyler 2014 Methods, Covariate testing equation 10) but not retained in the final model (Table 2 reports only the structural typical-value estimates; no WT exponents). The cohort weight range was 56.0-119.2 kg (mean 78.9 +/- 19.8 kg, Table 1). Listed in covariatesDataExcluded to preserve the screened-but-not-retained provenance.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a power covariate on CLS and on the CLS interindividual-variability estimate (Eyler 2014 Methods, Covariate testing paragraph 2) but not retained in the final model. The cohort age range was 31-78 years (mean 62 +/- 16 years, Table 1).",
-      source_name        = "AGE"
+      notes = "Tested as a power covariate on CLS and on the CLS interindividual-variability estimate (Eyler 2014 Methods, Covariate testing paragraph 2) but not retained in the final model. The cohort age range was 31-78 years (mean 62 +/- 16 years, Table 1).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 8L,
-    n_studies        = 1L,
-    age_range        = "31-78 years",
-    age_median       = "70 years (cohort mean 62 +/- 16 years; Table 1)",
-    weight_range     = "56.0-119.2 kg",
-    weight_median    = "80 kg (cohort mean 78.9 +/- 19.8 kg; Table 1)",
-    sex_female_pct   = 62.5,
-    race_ethnicity   = "Not reported (single-centre study at the University of Michigan, USA)",
-    disease_state    = "Critically ill adult ICU patients with acute kidney injury and suspected or confirmed Gram-negative infection, requiring continuous renal replacement therapy. Severity: APACHE III scores 63-123 (mean 83 +/- 19 for the 7 subjects with reported scores). Mean serum albumin 3.0 +/- 0.5 g/dL. Urine output minimal (< 50 mL / 24 h) in all subjects.",
-    dose_range       = "Single 1 g ertapenem (Merck) as a 30-min IV infusion (clinical-care dose for empiric Gram-negative coverage).",
-    regions          = "United States (single-centre, University of Michigan)",
-    renal_function   = "Acute kidney injury requiring continuous renal replacement therapy. Modalities: CVVHD (n=4, subjects 1-4 with low ultrafiltration) and CVVHDF (n=4, subjects 5-8). Mean blood flow rate 181 +/- 26 mL/min; mean dialysate flow rate 24 +/- 10 mL/h/kg; mean ultrafiltration rate 14 +/- 8 mL/h/kg; mean effluent rate (dialysate + ultrafiltrate) 38 +/- 10 mL/h/kg. Mean sieving coefficient (effluent / pre-filter serum) 0.21 +/- 0.06. Three of eight subjects had CRRT paused (135-276 minutes) during the 24 h sampling interval; the pauses are reflected by RRT_HEMODIAL_ACTIVE = 0 in those windows.",
-    notes            = "ClinicalTrials.gov NCT00877370. Cohort enrolled April 2009 - March 2011. Bioanalytical: total ertapenem serum concentrations by HPLC-MS/MS at IBMP Nuernberg-Heroldsberg (Sorgel laboratory); unbound concentrations by equilibrium dialysis; effluent concentrations from CRRT effluent samples. LLOQ 0.5 ug/mL; inter- and intra-day precision < 12% across matrices. Pre-filter serum concentrations were adjusted for citrate dilution (Methods equation 1) before modeling."
+    species = "human",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "31-78 years",
+    age_median = "70 years (cohort mean 62 +/- 16 years; Table 1)",
+    weight_range = "56.0-119.2 kg",
+    weight_median = "80 kg (cohort mean 78.9 +/- 19.8 kg; Table 1)",
+    sex_female_pct = 62.5,
+    race_ethnicity = "Not reported (single-centre study at the University of Michigan, USA)",
+    disease_state = "Critically ill adult ICU patients with acute kidney injury and suspected or confirmed Gram-negative infection, requiring continuous renal replacement therapy. Severity: APACHE III scores 63-123 (mean 83 +/- 19 for the 7 subjects with reported scores). Mean serum albumin 3.0 +/- 0.5 g/dL. Urine output minimal (< 50 mL / 24 h) in all subjects.",
+    dose_range = "Single 1 g ertapenem (Merck) as a 30-min IV infusion (clinical-care dose for empiric Gram-negative coverage).",
+    regions = "United States (single-centre, University of Michigan)",
+    renal_function = "Acute kidney injury requiring continuous renal replacement therapy. Modalities: CVVHD (n=4, subjects 1-4 with low ultrafiltration) and CVVHDF (n=4, subjects 5-8). Mean blood flow rate 181 +/- 26 mL/min; mean dialysate flow rate 24 +/- 10 mL/h/kg; mean ultrafiltration rate 14 +/- 8 mL/h/kg; mean effluent rate (dialysate + ultrafiltrate) 38 +/- 10 mL/h/kg. Mean sieving coefficient (effluent / pre-filter serum) 0.21 +/- 0.06. Three of eight subjects had CRRT paused (135-276 minutes) during the 24 h sampling interval; the pauses are reflected by RRT_HEMODIAL_ACTIVE = 0 in those windows.",
+    notes = "ClinicalTrials.gov NCT00877370. Cohort enrolled April 2009 - March 2011. Bioanalytical: total ertapenem serum concentrations by HPLC-MS/MS at IBMP Nuernberg-Heroldsberg (Sorgel laboratory); unbound concentrations by equilibrium dialysis; effluent concentrations from CRRT effluent samples. LLOQ 0.5 ug/mL; inter- and intra-day precision < 12% across matrices. Pre-filter serum concentrations were adjusted for citrate dilution (Methods equation 1) before modeling."
   )
 
   ini({

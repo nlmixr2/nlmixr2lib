@@ -16,44 +16,44 @@ Zeng_2009_acyclovir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "acyclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "acyclovir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "acyclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline or time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline or time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL (fixed exponent 0.75) and V (fixed exponent 1) with reference weight 19.6 kg (Zeng 2009 covariate-analysis paragraph: 'the population CL and V terms were standardized to 19.6 kg, which represents the median value of weight in this study group'). Cohort range 7.3-70.2 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL (fixed exponent 0.75) and V (fixed exponent 1) with reference weight 19.6 kg (Zeng 2009 covariate-analysis paragraph: 'the population CL and V terms were standardized to 19.6 kg, which represents the median value of weight in this study group'). Cohort range 7.3-70.2 kg (Table 1).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Counahan formula (CrCl = 0.43 * height_cm / serum_creatinine_mg_per_dL), expressed in the canonical mL/min/1.73 m^2 units.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Counahan formula (CrCl = 0.43 * height_cm / serum_creatinine_mg_per_dL), expressed in the canonical mL/min/1.73 m^2 units.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper computes CrCl with the Counahan formula natively in mL/min/1.73 m^2 (Methods, covariate analysis) but reports it in L/h/m^2 in Table 1 and uses 3.7 L/h/m^2 as the standardising reference. Converting to the canonical CRCL register units: 1 L/h/m^2 = (1000/60) * 1.73 = 28.83 mL/min/1.73 m^2, so 3.7 L/h/m^2 corresponds to 106.7 mL/min/1.73 m^2. The covariate effect is a power function `(CRCL/106.7)^e_crcl_cl`. Cohort range 2.0-5.7 L/h/m^2 = 57.7-164.4 mL/min/1.73 m^2 (Table 1).",
-      source_name        = "CLCR"
+      notes = "Source paper computes CrCl with the Counahan formula natively in mL/min/1.73 m^2 (Methods, covariate analysis) but reports it in L/h/m^2 in Table 1 and uses 3.7 L/h/m^2 as the standardising reference. Converting to the canonical CRCL register units: 1 L/h/m^2 = (1000/60) * 1.73 = 28.83 mL/min/1.73 m^2, so 3.7 L/h/m^2 corresponds to 106.7 mL/min/1.73 m^2. The covariate effect is a power function `(CRCL/106.7)^e_crcl_cl`. Cohort range 2.0-5.7 L/h/m^2 = 57.7-164.4 mL/min/1.73 m^2 (Table 1).",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 43L,
-    n_studies      = 1L,
-    age_range      = "0.8-19.9 years",
-    age_median     = "6.3 years",
-    weight_range   = "7.3-70.2 kg",
-    weight_median  = "19.6 kg",
+    species = "human",
+    n_subjects = 43L,
+    n_studies = 1L,
+    age_range = "0.8-19.9 years",
+    age_median = "6.3 years",
+    weight_range = "7.3-70.2 kg",
+    weight_median = "19.6 kg",
     sex_female_pct = 41.9,
-    disease_state  = "Children and young people with malignancy (acute lymphoblastic leukemia n=16, acute myeloid leukemia n=6, neuroblastoma n=5, Wiskott-Aldrich syndrome n=3, Fanconi's anemia n=2, other diseases n=11) receiving acyclovir prophylactically against herpes simplex virus and varicella-zoster virus reactivation during chemotherapy or hematopoietic stem cell transplantation. Comedication with mycophenolate mofetil in 9/43 patients; tested as a covariate on CL but not retained.",
-    dose_range     = "Intravenous acyclovir 5 mg/kg three times daily (1-h infusion); oral valacyclovir 10 mg/kg twice daily. 25 patients received IV only, 7 received oral only, 11 received both at different times.",
-    regions        = "Single centre, Children's Hospital at Westmead, Sydney, Australia.",
+    disease_state = "Children and young people with malignancy (acute lymphoblastic leukemia n=16, acute myeloid leukemia n=6, neuroblastoma n=5, Wiskott-Aldrich syndrome n=3, Fanconi's anemia n=2, other diseases n=11) receiving acyclovir prophylactically against herpes simplex virus and varicella-zoster virus reactivation during chemotherapy or hematopoietic stem cell transplantation. Comedication with mycophenolate mofetil in 9/43 patients; tested as a covariate on CL but not retained.",
+    dose_range = "Intravenous acyclovir 5 mg/kg three times daily (1-h infusion); oral valacyclovir 10 mg/kg twice daily. 25 patients received IV only, 7 received oral only, 11 received both at different times.",
+    regions = "Single centre, Children's Hospital at Westmead, Sydney, Australia.",
     sampling_design = "1216 plasma acyclovir concentrations measured by validated HPLC (LOQ 0.1 mg/L; recovery 101%; intra- and inter-day precision <7% over 0.1-60 mg/L). Heavy children (>20 kg): 12-14 samples per dosing interval (intensive). Light children (<20 kg) and ad hoc samples: sparse design. Median 25 samples per patient (range 3-50). IV samples drawn 0-8 h post-infusion end; oral samples 0-12 h post-dose.",
-    iov_structure   = "Inter-occasion variability (IOV) was identified on CL (19.2% CV) and V (30.4% CV) in addition to the diagonal IIV (Table 3 final-model). This model file does NOT encode IOV structurally -- the source paper defines an 'occasion' as 7 days for daily-administered patients but does not supply a per-sample OCC column convention for the model-library use case; the nlmixr2lib convention (Andrews 2017 / Brooks 2021 precedent) is to omit IOV when no operational occasion mapping is defined. Downstream users who want to simulate IOV can add an OCC indicator and per-occasion etas in rxode2.",
-    notes          = "Demographics from Zeng 2009 Table 1. Acyclovir is eliminated predominantly by renal excretion (glomerular filtration + tubular secretion); approximately 10% of dose is metabolized in the liver. Valacyclovir is the L-valyl ester prodrug of acyclovir, rapidly hydrolyzed after oral administration to release systemic acyclovir; the F estimated here (0.60) is the bioavailability of acyclovir delivered via the oral valacyclovir prodrug, applied only to the depot (oral) route."
+    iov_structure = "Inter-occasion variability (IOV) was identified on CL (19.2% CV) and V (30.4% CV) in addition to the diagonal IIV (Table 3 final-model). This model file does NOT encode IOV structurally -- the source paper defines an 'occasion' as 7 days for daily-administered patients but does not supply a per-sample OCC column convention for the model-library use case; the nlmixr2lib convention (Andrews 2017 / Brooks 2021 precedent) is to omit IOV when no operational occasion mapping is defined. Downstream users who want to simulate IOV can add an OCC indicator and per-occasion etas in rxode2.",
+    notes = "Demographics from Zeng 2009 Table 1. Acyclovir is eliminated predominantly by renal excretion (glomerular filtration + tubular secretion); approximately 10% of dose is metabolized in the liver. Valacyclovir is the L-valyl ester prodrug of acyclovir, rapidly hydrolyzed after oral administration to release systemic acyclovir; the F estimated here (0.60) is the bioavailability of acyclovir delivered via the oral valacyclovir prodrug, applied only to the depot (oral) route."
   )
 
   ini({

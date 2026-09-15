@@ -33,19 +33,19 @@ deVelde_2020_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Glomerular filtration rate estimated by the CKD-EPI equation and",
         "then DE-NORMALISED to an absolute per-patient rate in mL/min by",
         "multiplying the BSA-normalised value by the patient's body surface",
@@ -53,10 +53,10 @@ deVelde_2020_imipenem <- function() {
         "the formula, eGFR CKD-EPI-abs, as 'absolute CKD-EPI (i.e.,",
         "CKD-EPI, multiplied by BSA)'."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNIT HAZARD. This column is an ABSOLUTE rate in mL/min, NOT the",
         "mL/min/1.73 m^2 that a CKD-EPI calculator returns by default. The",
         "reference of 119 is only interpretable on the absolute scale --",
@@ -73,7 +73,7 @@ deVelde_2020_imipenem <- function() {
         "inst/references/covariate-columns.md, which accepts CKD-EPI eGFR",
         "-- precedent: Bajaj 2017 nivolumab, Krens 2020 ganciclovir."
       ),
-      source_name        = "eGFR CKD-EPI-abs"
+      source_name = "eGFR CKD-EPI-abs"
     )
   )
 
@@ -81,27 +81,42 @@ deVelde_2020_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    WT  = list(description = "Total body weight",  units = "kg", type = "continuous", notes = "Screened as TBW, not retained (Zhang 2025 Table 3). Cohort median 75 kg, range 66-85 (Table 1)."),
-    IBW = list(description = "Ideal body weight",  units = "kg", type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    LBW = list(description = "Lean body weight",   units = "kg", type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model().")
+    WT = list(
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as TBW, not retained (Zhang 2025 Table 3). Cohort median 75 kg, range 66-85 (Table 1)."
+    ),
+    IBW = list(
+      description = "Ideal body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    LBW = list(
+      description = "Lean body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model()."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 26L,
-    n_studies        = 1L,
-    age_median       = "51 years (IQR 39-54)",
-    weight_median    = "75 kg (IQR 66-85)",
-    sex_female_pct   = 30.8,
-    race_ethnicity   = NULL,
-    disease_state    = "Critically ill adults receiving imipenem-cilastatin",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
+    age_median = "51 years (IQR 39-54)",
+    weight_median = "75 kg (IQR 66-85)",
+    sex_female_pct = 30.8,
+    race_ethnicity = NULL,
+    disease_state = "Critically ill adults receiving imipenem-cilastatin",
+    dose_range = paste(
       "500 mg imipenem intravenously every 6 h (Zhang 2025 Supplementary",
       "Table S1). The infusion duration is not reported by the review."
     ),
-    regions          = "Netherlands",
+    regions = "Netherlands",
     n_concentrations = 138L,
-    notes            = paste(
+    notes = paste(
       "Retrospective study (Zhang 2025 Table 1, study 9); 26 patients, 138",
       "samples, sex split 18 male / 8 female. Blood was sampled at peak,",
       "intermediate and trough time points and assayed by HPLC-UV (Zhang",

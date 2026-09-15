@@ -8,37 +8,37 @@ Bouazza_2010_lamivudine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline (single measurement per child); used for allometric scaling on CL/F and Q/F (exponent 0.75, fixed) and on Vc/F and Vp/F (exponent 1, fixed) with reference weight 16.8 kg (cohort median, Methods 'Modeling strategy').",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline (single measurement per child); used for allometric scaling on CL/F and Q/F (exponent 0.75, fixed) and on Vc/F and Vp/F (exponent 1, fixed) with reference weight 16.8 kg (cohort median, Methods 'Modeling strategy').",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45,
-    n_studies      = 1,
-    age_range      = "2.5-14 years (median 6.75)",
-    age_median     = "6.75 years",
-    weight_range   = "11-37 kg",
-    weight_median  = "16.8 kg",
+    species = "human",
+    n_subjects = 45,
+    n_studies = 1,
+    age_range = "2.5-14 years (median 6.75)",
+    age_median = "6.75 years",
+    weight_range = "11-37 kg",
+    weight_median = "16.8 kg",
     sex_female_pct = 38,
     race_ethnicity = "West African (sub-Saharan); ethnic stratification not reported in source.",
-    disease_state  = "Antiretroviral-naive HIV-1 infected children, CDC clinical stage A-C, with severe immunological / virological status meeting Burkina Faso HAART initiation criteria.",
-    dose_range     = "Lamivudine oral, 8 mg/kg once daily as 150 mg tablet or 10 mg/ml oral solution; median dose 150 mg (range 90-300 mg). Co-administered with didanosine 240 mg/m^2 q.d. and weight-band efavirenz q.d.",
-    regions        = "Burkina Faso (Bobo-Dioulasso); BURKINAME-ANRS 12103 trial (ClinicalTrials.gov NCT00122538).",
+    disease_state = "Antiretroviral-naive HIV-1 infected children, CDC clinical stage A-C, with severe immunological / virological status meeting Burkina Faso HAART initiation criteria.",
+    dose_range = "Lamivudine oral, 8 mg/kg once daily as 150 mg tablet or 10 mg/ml oral solution; median dose 150 mg (range 90-300 mg). Co-administered with didanosine 240 mg/m^2 q.d. and weight-band efavirenz q.d.",
+    regions = "Burkina Faso (Bobo-Dioulasso); BURKINAME-ANRS 12103 trial (ClinicalTrials.gov NCT00122538).",
     n_observations = 148,
-    notes          = "Forty-nine children enrolled, 45 evaluable for PK (17 girls / 28 boys). Sampling schedule: pre-dose, 1 h, 3 h post-dose (39 children) or pre-dose, 1, 2, 3, 6, 12, 24 h post-dose (10 children). Sampling began on day 15 of treatment for 38 children and between months 2-5 of treatment for 11 children -- assumed to be at steady state for the model. Demographics in Table 1 of the source."
+    notes = "Forty-nine children enrolled, 45 evaluable for PK (17 girls / 28 boys). Sampling schedule: pre-dose, 1 h, 3 h post-dose (39 children) or pre-dose, 1, 2, 3, 6, 12, 24 h post-dose (10 children). Sampling began on day 15 of treatment for 38 children and between months 2-5 of treatment for 11 children -- assumed to be at steady state for the model. Demographics in Table 1 of the source."
   )
 
   ini({

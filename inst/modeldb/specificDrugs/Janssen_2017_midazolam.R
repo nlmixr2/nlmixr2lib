@@ -31,16 +31,16 @@ Janssen_2017_midazolam <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "65-77 years (median 67)",
-    weight_range   = "Body surface area 1.76-2.34 m^2 (median 1.95-1.96 m^2); body weight not reported in the paper",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "65-77 years (median 67)",
+    weight_range = "Body surface area 1.76-2.34 m^2 (median 1.95-1.96 m^2); body weight not reported in the paper",
     sex_female_pct = 0,
-    disease_state  = "Metastatic castration-resistant prostate cancer; all previously treated with docetaxel; scheduled to receive cabazitaxel as routine palliative care",
-    dose_range     = "Single 2.5 mg intravenous bolus of midazolam (CYP3A phenotyping probe), administered 1-7 days before the patient's first cabazitaxel infusion",
-    regions        = "Meander Medical Center, Amersfoort, The Netherlands (single-centre)",
-    notes          = paste(
+    disease_state = "Metastatic castration-resistant prostate cancer; all previously treated with docetaxel; scheduled to receive cabazitaxel as routine palliative care",
+    dose_range = "Single 2.5 mg intravenous bolus of midazolam (CYP3A phenotyping probe), administered 1-7 days before the patient's first cabazitaxel infusion",
+    regions = "Meander Medical Center, Amersfoort, The Netherlands (single-centre)",
+    notes = paste(
       "Six plasma samples per subject collected at 0, 30, 60, 120, 240,",
       "and 360 min post-injection (Methods). Bioanalysis by validated",
       "LC-MS/MS with LOQ = 0.4 ng/mL; inter- and intra-run precision <",

@@ -40,46 +40,51 @@ Willmann_2021_ionisFxirx <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "IONIS-FXIRX (BAY2306001)", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "IONIS-FXIRX (BAY2306001)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "IONIS-FXIRX (BAY2306001)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "IONIS-FXIRX (BAY2306001)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "IONIS-FXIRX (BAY2306001)", units = "mg", specimen = "plasma", verified = FALSE),
-    fxi         = list(analyte = "FXI activity", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "FXI activity", units = "mg", specimen = "not applicable", verified = FALSE)
+    fxi = list(analyte = "FXI activity", units = "mg", specimen = "plasma", verified = FALSE),
+    effect = list(analyte = "FXI activity", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Willmann 2021 Table S1: healthy-volunteer mean 72.7 (SD 10.5) kg in ASO-CS1; ESRD mean 87.8 (SD 22.7) kg in ASO-CS4. The paper's exploratory covariate analysis retained body weight only on V2 (central volume) as a power relationship of the form V2 = V2_ref * (WT/WT_ref)^e_wt_vc with e_wt_vc = 0.967 (Table S2). The paper does not state the reference weight; a 70 kg reference is used here per the standard NONMEM allometric-scaling convention (see vignette Errata for the audit trail).",
-      source_name        = "WT"
+      notes = "Willmann 2021 Table S1: healthy-volunteer mean 72.7 (SD 10.5) kg in ASO-CS1; ESRD mean 87.8 (SD 22.7) kg in ASO-CS4. The paper's exploratory covariate analysis retained body weight only on V2 (central volume) as a power relationship of the form V2 = V2_ref * (WT/WT_ref)^e_wt_vc with e_wt_vc = 0.967 (Table S2). The paper does not state the reference weight; a 70 kg reference is used here per the standard NONMEM allometric-scaling convention (see vignette Errata for the audit trail).",
+      source_name = "WT"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Intermittent-hemodialysis treatment-status indicator (1 = subject with end-stage renal disease on hemodialysis, 0 = healthy volunteer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis treatment-status indicator (1 = subject with end-stage renal disease on hemodialysis, 0 = healthy volunteer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = "Willmann 2021 Methods (study ASO-CS4): patients with ESRD on hemodialysis received IONIS-FXIRX every 28 days over 12 weeks. A dedicated PK cohort demonstrated that hemodialysis itself did not alter the PK or PD (single 300 mg dose given immediately post-dialysis versus immediately pre-dialysis produced equivalent concentration profiles), so ESRD enters the model as a subject-level treatment-status indicator rather than a per-session activity indicator. Retained in the final PK model on CL (proportional reduction of 53%) and on the peripheral volume V3 (proportional reduction of 38%) and in the final PK/PD model on the effect-site driving concentration through the keoPAT factor (0.329, ~ one-third the HV value; see Table S4 and Discussion). Enters the structural PK model as multiplicative factors (1 - e_esrd_cl) on CL and (1 - e_esrd_vp) on V3, and enters the effect-compartment equation as the multiplicative factor exp(le_esrd_effect * RRT_HEMODIAL_STATUS) on the plasma concentration driving the effect site (equivalently keoPAT^RRT_HEMODIAL_STATUS).",
-      source_name        = "ESRD"
+      notes = "Willmann 2021 Methods (study ASO-CS4): patients with ESRD on hemodialysis received IONIS-FXIRX every 28 days over 12 weeks. A dedicated PK cohort demonstrated that hemodialysis itself did not alter the PK or PD (single 300 mg dose given immediately post-dialysis versus immediately pre-dialysis produced equivalent concentration profiles), so ESRD enters the model as a subject-level treatment-status indicator rather than a per-session activity indicator. Retained in the final PK model on CL (proportional reduction of 53%) and on the peripheral volume V3 (proportional reduction of 38%) and in the final PK/PD model on the effect-site driving concentration through the keoPAT factor (0.329, ~ one-third the HV value; see Table S4 and Discussion). Enters the structural PK model as multiplicative factors (1 - e_esrd_cl) on CL and (1 - e_esrd_vp) on V3, and enters the effect-compartment equation as the multiplicative factor exp(le_esrd_effect * RRT_HEMODIAL_STATUS) on the plasma concentration driving the effect site (equivalently keoPAT^RRT_HEMODIAL_STATUS).",
+      source_name = "ESRD"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 137L,
-    n_studies        = 2L,
-    age_range        = "ASO-CS1 mean 45.4 (SD 11.9) years; ASO-CS4 mean 59.2 (SD 12.9) years",
-    weight_range     = "ASO-CS1 mean 72.7 (SD 10.5) kg; ASO-CS4 mean 87.8 (SD 22.7) kg; ESRD cohort spanned 48.5-164 kg per Methods",
-    sex_female_pct   = 33.6,
-    race_ethnicity   = "Not reported in the primary publication.",
-    disease_state    = "Healthy adult volunteers (ASO-CS1; n = 88, 66 active drug + 22 placebo) and adults with end-stage renal disease requiring hemodialysis (ASO-CS4; n = 49, 36 active drug + 13 placebo).",
-    dose_range       = "ASO-CS1: single subcutaneous doses of 50, 100, 200, or 300 mg and multiple subcutaneous doses of 50, 100, 200, or 300 mg (three doses in week 1 then once weekly for weeks 2-6; 8 doses total). ASO-CS4: multiple subcutaneous doses of 200 or 300 mg every 28 days for up to 12 weeks.",
-    regions          = "Phase I ASO-CS1 and phase II ASO-CS4 sites; specific regions not summarised in Willmann 2021.",
-    renal_function   = "Two-strata cohort: ASO-CS1 healthy volunteers with normal renal function; ASO-CS4 adults on maintenance hemodialysis for ESRD. Hemodialysis itself did not alter PK or PD (dedicated PK-cohort sub-study).",
+    species = "human",
+    n_subjects = 137L,
+    n_studies = 2L,
+    age_range = "ASO-CS1 mean 45.4 (SD 11.9) years; ASO-CS4 mean 59.2 (SD 12.9) years",
+    weight_range = "ASO-CS1 mean 72.7 (SD 10.5) kg; ASO-CS4 mean 87.8 (SD 22.7) kg; ESRD cohort spanned 48.5-164 kg per Methods",
+    sex_female_pct = 33.6,
+    race_ethnicity = "Not reported in the primary publication.",
+    disease_state = "Healthy adult volunteers (ASO-CS1; n = 88, 66 active drug + 22 placebo) and adults with end-stage renal disease requiring hemodialysis (ASO-CS4; n = 49, 36 active drug + 13 placebo).",
+    dose_range = "ASO-CS1: single subcutaneous doses of 50, 100, 200, or 300 mg and multiple subcutaneous doses of 50, 100, 200, or 300 mg (three doses in week 1 then once weekly for weeks 2-6; 8 doses total). ASO-CS4: multiple subcutaneous doses of 200 or 300 mg every 28 days for up to 12 weeks.",
+    regions = "Phase I ASO-CS1 and phase II ASO-CS4 sites; specific regions not summarised in Willmann 2021.",
+    renal_function = "Two-strata cohort: ASO-CS1 healthy volunteers with normal renal function; ASO-CS4 adults on maintenance hemodialysis for ESRD. Hemodialysis itself did not alter PK or PD (dedicated PK-cohort sub-study).",
     n_concentrations = 2229L,
-    notes            = "Baseline demographics summarised in Willmann 2021 Supplementary Information Table S1. Total PK/PD observations for IONIS-FXIRX studies (ASO-CS1 + ASO-CS4) = 1126 + 1103 = 2229. Only active-drug subjects contribute to the PK/PD fit (66 + 36 = 102 active); placebo subjects (22 + 13 = 35) contributed FXI-activity data to inform baseline and residual variability. Study ASO-CS1 subjects who received placebo had FXI-activity observations pooled with IONIS-FXIRX ASO-CS1 data (Table S4 residual-error rows). Doses were subcutaneous throughout."
+    notes = "Baseline demographics summarised in Willmann 2021 Supplementary Information Table S1. Total PK/PD observations for IONIS-FXIRX studies (ASO-CS1 + ASO-CS4) = 1126 + 1103 = 2229. Only active-drug subjects contribute to the PK/PD fit (66 + 36 = 102 active); placebo subjects (22 + 13 = 35) contributed FXI-activity data to inform baseline and residual variability. Study ASO-CS1 subjects who received placebo had FXI-activity observations pooled with IONIS-FXIRX ASO-CS1 data (Table S4 residual-error rows). Doses were subcutaneous throughout."
   )
 
   ini({

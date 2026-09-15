@@ -31,27 +31,27 @@ Wang_2024_patisiran_human_pbpk <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/mL")
 
   compartmentData <- list(
-    venous_np    = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    arterial_np  = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_lung_np   = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_liver_np  = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    is_liver_np  = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
+    venous_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    arterial_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_lung_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_liver_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    is_liver_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
     int_liver_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
     vp_spleen_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
     is_spleen_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_other_np  = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_other_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
     int_other_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = 2L,
-    weight_range  = "69.70 kg reference body weight (Table 1)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    weight_range = "69.70 kg reference body weight (Table 1)",
     disease_state = "healthy volunteers",
-    dose_range    = "0.01, 0.05, 0.15, 0.3 and 0.5 mg/kg patisiran (siRNA) as a single intravenous dose",
-    regions       = "not reported",
-    notes         = paste(
+    dose_range = "0.01, 0.05, 0.15, 0.3 and 0.5 mg/kg patisiran (siRNA) as a single intravenous dose",
+    regions = "not reported",
+    notes = paste(
       "Mean plasma MC3 concentrations digitised from the review document for",
       "the phase 1 trials ALN-TTR02-001 and ALN-TTR02-005 of patisiran",
       "(Onpattro), the first approved siRNA-LNP drug. The 0.5 mg/kg arm was",

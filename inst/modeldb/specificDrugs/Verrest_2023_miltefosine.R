@@ -29,25 +29,25 @@ Verrest_2023_miltefosine <- function() {
     sep = " "
   )
   vignette <- "Verrest_2023_miltefosine_paromomycin"
-  units    <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amounts are mg of miltefosine, matching the trial
   # dataset's AMT column ("MF: mg", supplementary NONMEM control stream
   # $INPUT dataset description).
   compartmentData <- list(
-    depot       = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling on CL/F (exponent fixed 0.75) and on",
         "Vc/F and Vp/F (exponent fixed 1.00), normalized to a reference",
         "of 18 kg. Q/F is NOT scaled on FFM. The 18 kg reference is not",
@@ -63,14 +63,14 @@ Verrest_2023_miltefosine <- function() {
         "descriptor also determined the allometric miltefosine dose",
         "given to children under 30 kg (Verrest 2023 Figure S1)."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     DOSE_MF_CUM_MGKG = list(
-      description        = "Cumulative administered miltefosine dose per kg body weight",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Cumulative administered miltefosine dose per kg body weight",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING: the running total of miltefosine administered to",
         "the subject up to the current record, divided by body weight",
         "(control stream dataset description: 'AMTT: total MF dose',",
@@ -89,70 +89,70 @@ Verrest_2023_miltefosine <- function() {
         "mg/kg after 27 days of dosing, and (77.1/70)^-2.40 = 0.792,",
         "i.e. the 21% lower bioavailability on Day 28 stated in Results."
       ),
-      source_name        = "DDOS"
+      source_name = "DDOS"
     )
   )
 
   covariatesDataExcluded <- list(
     MICR = list(
-      description        = "Leishmania parasite load by microscopy score at treatment start (0-6)",
-      units              = "(ordinal score)",
-      type               = "categorical",
+      description = "Leishmania parasite load by microscopy score at treatment start (0-6)",
+      units = "(ordinal score)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a marker of disease severity on the first-week",
         "bioavailability reduction and not retained: 'No other",
         "covariates could be identified to explain the non-linear",
         "effects on bioavailability' (Verrest 2023 Results). Scored in",
         "spleen, bone marrow or lymph node aspirate."
       ),
-      source_name        = "MICR"
+      source_name = "MICR"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a disease-severity / malnutrition marker on the",
         "first-week bioavailability reduction and not retained (Verrest",
         "2023 Methods 'Covariate analysis'; Results). Cohort value 28.3",
         "g/L mean (range 1.5-54.6)."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     NEUT = list(
-      description        = "Absolute neutrophil count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Absolute neutrophil count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a disease-severity marker on the miltefosine",
         "first-week bioavailability reduction and not retained. It IS",
         "retained in the companion paromomycin model from the same",
         "trial, where it drives the decrease in clearance over time",
         "(Verrest_2023_paromomycin)."
       ),
-      source_name        = "NEUTR"
+      source_name = "NEUTR"
     ),
     WBC = list(
-      description        = "Total white blood cell count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Total white blood cell count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a disease-severity marker on the first-week",
         "bioavailability reduction and not retained (Verrest 2023",
         "Methods 'Covariate analysis')."
       ),
-      source_name        = "WBC"
+      source_name = "WBC"
     ),
     HAZ = list(
-      description        = "Height-for-age Z-score",
-      units              = "(Z-score)",
-      type               = "continuous",
+      description = "Height-for-age Z-score",
+      units = "(Z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a nutritional-status marker on the first-week",
         "bioavailability reduction for patients up to 19 years old and",
         "not retained: 'variables associated with malnutrition, such as",
@@ -161,47 +161,47 @@ Verrest_2023_miltefosine <- function() {
         "bioavailability' (Verrest 2023 Discussion). Derived with the R",
         "package 'zscorer' against the WHO Child Growth Standards."
       ),
-      source_name        = "HAZ"
+      source_name = "HAZ"
     ),
     BAZ = list(
-      description        = "BMI-for-age Z-score",
-      units              = "(Z-score)",
-      type               = "continuous",
+      description = "BMI-for-age Z-score",
+      units = "(Z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a nutritional-status marker on the first-week",
         "bioavailability reduction for patients up to 19 years old and",
         "not retained (Verrest 2023 Discussion). Derived with the R",
         "package 'zscorer' against the WHO Child Growth Standards."
       ),
-      source_name        = "BAZ"
+      source_name = "BAZ"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a nutritional-status marker on the first-week",
         "bioavailability reduction for patients from 19 years old and",
         "not retained (Verrest 2023 Methods 'Covariate analysis').",
         "Cohort value 17.7 kg/m^2 mean (range 14.6-21.3)."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 265L,
-    n_studies      = 1L,
-    age_range      = "4-45 years",
-    age_mean       = "13.6 years (sparse sampling group); 13.8 years (intensive sampling group)",
-    weight_range   = "11.0-71.0 kg",
-    weight_mean    = "32.9 kg (sparse sampling group); 33.6 kg (intensive sampling group)",
+    species = "human",
+    n_subjects = 265L,
+    n_studies = 1L,
+    age_range = "4-45 years",
+    age_mean = "13.6 years (sparse sampling group); 13.8 years (intensive sampling group)",
+    weight_range = "11.0-71.0 kg",
+    weight_mean = "32.9 kg (sparse sampling group); 33.6 kg (intensive sampling group)",
     sex_female_pct = 19.2,
     race_ethnicity = "Eastern African (Kenyan, Sudanese, Ethiopian and Ugandan cohorts; no further breakdown reported)",
-    disease_state  = paste(
+    disease_state = paste(
       "Eastern African children and adults with symptomatic,",
       "parasitologically confirmed visceral leishmaniasis; 59% were",
       "paediatric (<=12 years). Patients with relapse, severe",
@@ -211,7 +211,7 @@ Verrest_2023_miltefosine <- function() {
       "which the authors propose as the explanation for the reduced",
       "first-week bioavailability."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral miltefosine twice daily for 14 days (PM+MF14D arm) or 28",
       "days (PM+MF28D arm). Children under 30 kg received an allometric",
       "dose based on sex, weight and height, i.e. on fat-free mass",
@@ -221,8 +221,8 @@ Verrest_2023_miltefosine <- function() {
       "patients also received intramuscular paromomycin sulphate 20",
       "mg/kg/day for 14 days."
     ),
-    regions        = "Eastern Africa (Kenya: Kacheliba; Uganda: Amudat; Sudan: Doka, Um El Kher; Ethiopia: Gondar, Abdurafi)",
-    co_medication  = paste(
+    regions = "Eastern Africa (Kenya: Kacheliba; Uganda: Amudat; Sudan: Doka, Um El Kher; Ethiopia: Gondar, Abdurafi)",
+    co_medication = paste(
       "Intramuscular paromomycin given simultaneously in every patient",
       "for 14 days. The exposures achieved for both drugs matched",
       "previous monotherapy studies, which the authors read as evidence",
@@ -230,7 +230,7 @@ Verrest_2023_miltefosine <- function() {
       "in this model. The companion paromomycin model is",
       "Verrest_2023_paromomycin."
     ),
-    samples        = paste(
+    samples = paste(
       "910 miltefosine plasma concentrations after exclusions (927 per",
       "the Results text; 309 from the 26-patient intensive-sampling",
       "cohort plus 601 sparse per Table 2). Sparse sampling was on Day",
@@ -241,7 +241,7 @@ Verrest_2023_miltefosine <- function() {
       "quantification. Where a patient vomited, the pre-vomiting dose",
       "was excluded and the re-dose retained (n = 20)."
     ),
-    notes          = paste(
+    notes = paste(
       "NONMEM 7.5, ADVAN13, FOCE-I with interaction; parameter precision",
       "by sampling importance resampling. The starting point was the",
       "earlier Eastern African miltefosine model of Dorlo 2017 (Verrest",

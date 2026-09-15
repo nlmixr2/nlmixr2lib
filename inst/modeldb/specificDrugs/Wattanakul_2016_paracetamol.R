@@ -27,14 +27,14 @@ Wattanakul_2016_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Wattanakul_2016_paracetamol"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -47,34 +47,34 @@ Wattanakul_2016_paracetamol <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    age_range      = "15 to 54 years (median 25; IQR 22-37)",
-    weight_range   = "47 to 70 kg (median 58; IQR 55-63)",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "15 to 54 years (median 25; IQR 22-37)",
+    weight_range = "47 to 70 kg (median 58; IQR 55-63)",
     sex_female_pct = 100 * (1 - 19 / 21),
     race_ethnicity = "Thai (Mae Sot Hospital, Tak Province, Thailand)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with slide-confirmed uncomplicated Plasmodium falciparum",
       "malaria and aural temperature > 38 C (range 38.1-41.2 C);",
       "median parasitaemia ~47,500 parasites/uL.",
       "All patients also received intravenous artesunate plus oral",
       "doxycycline antimalarial therapy per the local protocol."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 600 mg dose by either intramuscular injection",
       "(300 mg / 2 mL Partamol, two 2 mL injections in the anterior thigh)",
       "or oral syrup (Tylenol, given orally or via nasogastric tube),",
       "in a randomized open-label two-treatment crossover design with",
       "alternate-route dosing on day 1."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Pre-dose plus 0.5, 1.0, 1.5, 2, 3, 4, 6, 8, 10 and 12 h after each",
       "dose; 363 quantifiable paracetamol concentrations were included in",
       "the pharmacokinetic analysis."
     ),
-    regions        = "Thailand (Mae Sot Hospital, Tak Province)",
-    notes          = paste(
+    regions = "Thailand (Mae Sot Hospital, Tak Province)",
+    notes = paste(
       "Baseline demographics from Wattanakul 2016 Table 1; study conducted",
       "May to June 2001. 19/21 (90%) were male. Patients on potentially",
       "interacting drugs or who had taken paracetamol within 12 h were",

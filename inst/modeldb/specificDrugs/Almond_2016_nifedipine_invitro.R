@@ -46,38 +46,38 @@ Almond_2016_nifedipine_invitro <- function() {
   vignette <- "Almond_2016_cyp3a4_induction"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static in vitro concentration-response model driven by an external nifedipine concentration covariate)",
+    time = "h",
+    dosing = "(none; static in vitro concentration-response model driven by an external nifedipine concentration covariate)",
     concentration = "(both observations are dimensionless fold-induction over vehicle control; the driving covariate CP_NIFEDIPINE_UM is the nominal nifedipine concentration in the culture medium in uM)"
   )
 
   covariateData <- list(
     CP_NIFEDIPINE_UM = list(
-      description        = "Nominal nifedipine concentration in the hepatocyte culture medium, supplied as a covariate. In this in-vitro model the column carries a culture-medium concentration rather than a plasma concentration, but the quantity and units (uM) are identical.",
-      units              = "umol/L (uM)",
-      type               = "continuous",
+      description = "Nominal nifedipine concentration in the hepatocyte culture medium, supplied as a covariate. In this in-vitro model the column carries a culture-medium concentration rather than a plasma concentration, but the quantity and units (uM) are identical.",
+      units = "umol/L (uM)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Almond 2016 Table 1: nifedipine was assayed at seven final concentrations in culture medium containing 0.1 percent dimethyl sulfoxide (v/v) -- 0.03, 1, 2, 3, 10, 30 and 100 uM. Note the large gap between the lowest point (0.03 uM) and the next (1 uM); the remaining six points bracket the fitted activity IndC50 of 4.0 uM.",
         "Nifedipine MW = 346.3 g/mol (Supplemental Table 1, where nifedipine appears as a VICTIM drug), so 1 uM = 0.3463 mg/L.",
         "Set to 0 for the vehicle-control condition, at which the model returns fold = 1 by construction."
       ),
-      source_name        = "concentration of the inducer"
+      source_name = "concentration of the inducer"
     )
   )
 
   population <- list(
-    species          = "in vitro (cryopreserved human hepatocytes, four donors: Hu1206, Hu1191, Hu1198, Hu4193)",
-    n_subjects       = 4L,
-    n_studies        = 1L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Not applicable -- primary human hepatocytes in culture.",
-    dose_range       = "Nominal nifedipine concentrations 0.03, 1, 2, 3, 10, 30 and 100 uM in culture medium with 0.1 percent dimethyl sulfoxide (v/v) (Table 1).",
-    regions          = NA_character_,
-    notes            = paste(
+    species = "in vitro (cryopreserved human hepatocytes, four donors: Hu1206, Hu1191, Hu1198, Hu4193)",
+    n_subjects = 4L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Not applicable -- primary human hepatocytes in culture.",
+    dose_range = "Nominal nifedipine concentrations 0.03, 1, 2, 3, 10, 30 and 100 uM in culture medium with 0.1 percent dimethyl sulfoxide (v/v) (Table 1).",
+    regions = NA_character_,
+    notes = paste(
       "Cryopreserved human hepatocytes from four donors (Hu1206, Hu1191, Hu1198, Hu4193; Life Technologies) were incubated with serial dilutions of the inducer prepared daily in dimethyl sulfoxide (Materials and Methods).",
       "Two endpoints were measured in parallel in the same incubations: CYP3A4 catalytic activity as 6-beta-hydroxytestosterone formation by liquid chromatography-tandem mass spectrometry, and CYP3A4 mRNA by the QuantiGene Plex 2.0 assay. Because both readouts come from the same cells in the same experiment, they are two outputs of one model rather than two model files.",
       "Curve fitting was carried out on each donor individually and the mean Indmax and IndC50 then calculated across donors; Table 2 reports those means with the donor-level standard deviations, which is what this file's inter-individual variability encodes.",

@@ -41,11 +41,11 @@ Nava_2018_busulfan <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Theory-based ('theoretical') allometric scaling with reference weight",
         "70 kg and exponents fixed at 0.75 on CL and 1 on V (Nava 2018 Results",
         "'Base model' and the displayed clearance equation on p. 1497).",
@@ -57,14 +57,14 @@ Nava_2018_busulfan <- function() {
         "model. Nava 2018 Table 1 reports no weight summary; only weight",
         "adequacy (12.5% overweight, 6.3% obese among children older than 2)."
       ),
-      source_name        = "ABW"
+      source_name = "ABW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried in WEEKS, not the register-default months, because the source",
         "equations are written in weeks. Supplemental Material Table S2",
         "equation E defines PMA[weeks] = 52 * AGE[years] + 40; gestational age",
@@ -79,14 +79,14 @@ Nava_2018_busulfan <- function() {
         "exponent -0.06 (Table 2, 'PMA on V'). Cohort range 45.2-1080 weeks",
         "(age 0.1-20 years by equation E)."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     GSTA1_RM = list(
-      description        = "GSTA1 rapid-metabolizer diplotype group (group G1) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "GSTA1 rapid-metabolizer diplotype group (group G1) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal metabolizer group G2, or poor metabolizer group G3)",
-      notes              = paste(
+      notes = paste(
         "1 = subject's GSTA1 diplotype places them in group G1 (rapid",
         "metabolizers, higher predicted promoter activity). Paired with",
         "GSTA1_PM so that both indicators = 0 selects the G2 normal-metabolizer",
@@ -96,28 +96,28 @@ Nava_2018_busulfan <- function() {
         "analysis and genotyping'; Supplemental Material Table S1 and Figures",
         "S1-S2). 16 of 112 subjects (14.3%) were G1 (Nava 2018 Table 1)."
       ),
-      source_name        = "GSTA1 group G1"
+      source_name = "GSTA1 group G1"
     ),
     GSTA1_PM = list(
-      description        = "GSTA1 poor-metabolizer diplotype group (group G3) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "GSTA1 poor-metabolizer diplotype group (group G3) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal metabolizer group G2, or rapid metabolizer group G1)",
-      notes              = paste(
+      notes = paste(
         "1 = subject's GSTA1 diplotype places them in group G3 (poor",
         "metabolizers, lower predicted promoter activity). Paired with",
         "GSTA1_RM so that both indicators = 0 selects the G2 normal-metabolizer",
         "reference group. 16 of 112 subjects (14.3%) were G3 (Nava 2018",
         "Table 1)."
       ),
-      source_name        = "GSTA1 group G3"
+      source_name = "GSTA1 group G3"
     ),
     OCC = list(
-      description        = "Busulfan dosing-day occasion index",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Busulfan dosing-day occasion index",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Integer 1-4 identifying which of the four consecutive busulfan dosing",
         "days an observation belongs to. Decomposed inside model() into binary",
         "indicators multiplying per-occasion eta slots. The paper reports",
@@ -130,7 +130,7 @@ Nava_2018_busulfan <- function() {
         "all four occasions, so occasions 2-4 are fixed to the occasion-1",
         "variance."
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
@@ -140,9 +140,9 @@ Nava_2018_busulfan <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested as a potential covariate (Methods 'Covariate analysis and",
         "sources of variability') and not retained by the stepwise forward",
         "(p = 0.05) / backward (p = 0.01) procedure. 59 of 112 subjects",
@@ -154,9 +154,9 @@ Nava_2018_busulfan <- function() {
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Post-natal age was tested directly as a covariate and lost to",
         "postmenstrual age: the maturation factor Fmat 'was a more significant",
         "covariate on clearance than post-natal age' (Discussion). Age still",
@@ -165,9 +165,9 @@ Nava_2018_busulfan <- function() {
     ),
     DIS_MALIGNANT = list(
       description = "Malignant baseline disease indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Baseline disease (malignant vs non-malignant) was tested and not",
         "retained (Methods 'Covariate analysis and sources of variability').",
         "74 of 112 subjects (66.1%) had a malignant diagnosis (Table 1). Name",
@@ -177,9 +177,9 @@ Nava_2018_busulfan <- function() {
     ),
     REGIMEN_BUCY = list(
       description = "BuCy conditioning-regimen indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Conditioning regimen (BuCy vs others) was tested and not retained",
         "(Methods 'Covariate analysis and sources of variability'). 91 of 112",
         "subjects (81.3%) received BuCy (Table 1). Name is descriptive only --",
@@ -190,14 +190,14 @@ Nava_2018_busulfan <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 112L,
-    n_studies      = 1L,
-    age_range      = "0.1-20 years",
-    age_median     = "5.4 years",
+    species = "human",
+    n_subjects = 112L,
+    n_studies = 1L,
+    age_range = "0.1-20 years",
+    age_median = "5.4 years",
     sex_female_pct = 52.7,
     race_ethnicity = c(Caucasian = 83.9, African = 10.7, Other = 5.4),
-    disease_state  = paste(
+    disease_state = paste(
       "Children and adolescents receiving intravenous busulfan as part of the",
       "conditioning regimen before autologous or allogeneic haematopoietic",
       "stem cell transplantation. 66.1% malignant (AML 30.4%, MDS 17.0%,",
@@ -206,7 +206,7 @@ Nava_2018_busulfan <- function() {
       "6.3%, haemophagocytic syndrome 4.5%). Conditioning regimens: BuCy",
       "81.3%, BuMel 12.5%, BuCyVP16 7.1%, BuCyMel 0.9%, BuMelAraC 0.9%."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous busulfan for four consecutive days on one of two schedules.",
       "Bu6 (April 2002 - April 2012): 2-h infusion every 6 h, initial dose",
       "16 mg/m^2 in infants <= 3 months, 0.8 mg/kg in children > 3 months and",
@@ -216,8 +216,8 @@ Nava_2018_busulfan <- function() {
       "2nd (Bu24) or 5th (Bu6) dose, targeting a cumulative 4-day AUC of",
       "18 000 uM.min (i.e. AUC24h 3600-6000 uM.min or AUC6h 900-1500 uM.min)."
     ),
-    regions        = "Canada (single centre: CHU Sainte-Justine, Montreal, Quebec)",
-    notes          = paste(
+    regions = "Canada (single centre: CHU Sainte-Justine, Montreal, Quebec)",
+    notes = paste(
       "Retrospective chart review of paediatric transplants performed between",
       "April 2002 and August 2016; part of NCT01257854. 199 PK profiles and",
       "1735 plasma busulfan concentrations from 112 subjects; 114 profiles",

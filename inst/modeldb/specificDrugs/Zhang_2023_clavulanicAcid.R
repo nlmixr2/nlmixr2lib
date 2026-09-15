@@ -31,20 +31,20 @@ Zhang_2023_clavulanicAcid <- function() {
     sep = " "
   )
   vignette <- "Zhang_2023_aztreonam_amoxicillin_clavulanate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "clavulanic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "clavulanic acid", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "clavulanic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, normalized to 1.73 m2 body surface area",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, normalized to 1.73 m2 body surface area",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The ONLY covariate in this model, entering clearance as a LINEAR proportionality:",
         "CL = 6.8*(CRCL/102), with no power exponent. Both renderings of the source agree - Section 2.4",
         "prints 'CL = 6.8*(CrCL 102)' and the Supplementary Materials equation prints",
@@ -56,27 +56,27 @@ Zhang_2023_clavulanicAcid <- function() {
         "Source variable name CrCL.",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10000,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 10000,
+    n_studies = 1,
     sex_female_pct = 50,
     renal_function = "creatinine clearance 10-150 mL/min/1.73 m2, uniformly distributed",
-    disease_state  = paste(
+    disease_state = paste(
       "simulated adults; the source population PK analysis was conducted in critically ill patients",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "amoxicillin/clavulanate as 3 h intravenous infusions by renal function category (Table 1):",
       "1/0.2 g q6h for CRCL > 50-150 and > 30-50 mL/min; 1/0.2 g followed by 500/100 mg q12h for",
       "CRCL 10-30 mL/min. Clavulanate doses are therefore 200 mg or 100 mg.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "The 10,000 subjects are a VIRTUAL population constructed by Zhang 2023 (Section 2.4 and the",
       "Supplementary Materials script), not an observed cohort: sex 50/50 and creatinine clearance",
       "sampled uniformly within each renal function category. Body weight was simulated for the",

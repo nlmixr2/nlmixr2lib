@@ -29,57 +29,57 @@ Kim_2025_infliximab_fasanmade_combined <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The source equations are written on per-kilogram CL / V values with reference 65 kg, so the total-parameter exponent is 1 plus the published per-kg exponent. Kim 2025's control stream gives per-kg exponents of -0.313 (CL), -0.233 (Vc) and -0.588 (Vp), i.e. total-parameter exponents of 0.687, 0.767 and 0.412; Q is a constant per-kg value, giving a total-Q exponent of 1.0. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
-      source_name        = "WGT"
+      notes = "The source equations are written on per-kilogram CL / V values with reference 65 kg, so the total-parameter exponent is 1 plus the published per-kg exponent. Kim 2025's control stream gives per-kg exponents of -0.313 (CL), -0.233 (Vc) and -0.588 (Vp), i.e. total-parameter exponents of 0.687, 0.767 and 0.412; Q is a constant per-kg value, giving a total-Q exponent of 1.0. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
+      source_name = "WGT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, normalized to a 4.1 g/dL reference: CL *= (ALB/4.1)^(-0.855). The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "ALB"
+      notes = "Power effect on CL, normalized to a 4.1 g/dL reference: CL *= (ALB/4.1)^(-0.855). The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (antibodies toward infliximab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (antibodies toward infliximab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Linear fractional effect on CL: CL *= (1 + 0.291 * ADA_POS), i.e. +29.1% clearance when ADA-positive. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "ATI"
+      notes = "Linear fractional effect on CL: CL *= (1 + 0.291 * ADA_POS), i.e. +29.1% clearance when ADA-positive. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset.",
+      source_name = "ATI"
     ),
     CONMED_IMMUNOMOD = list(
-      description        = "Concomitant immunomodulator therapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant immunomodulator therapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant immunomodulator)",
-      notes              = "Linear fractional effect on CL: CL *= (1 - 0.137 * CONMED_IMMUNOMOD), i.e. -13.7% clearance while on an immunomodulator. In Kim 2025's validation dataset the immunomodulator class comprised azathioprine, mercaptopurine, methotrexate, cyclosporine and tacrolimus (Table 1 footnote). Source paper labels this covariate 'IMM'; renamed to canonical CONMED_IMMUNOMOD per covariate-columns.md. Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "IMM"
+      notes = "Linear fractional effect on CL: CL *= (1 - 0.137 * CONMED_IMMUNOMOD), i.e. -13.7% clearance while on an immunomodulator. In Kim 2025's validation dataset the immunomodulator class comprised azathioprine, mercaptopurine, methotrexate, cyclosporine and tacrolimus (Table 1 footnote). Source paper labels this covariate 'IMM'; renamed to canonical CONMED_IMMUNOMOD per covariate-columns.md. Time-varying in the Kim 2025 validation dataset.",
+      source_name = "IMM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 692L,
-    n_studies      = 2L,
-    age_range      = "Pooled paediatric and adult cohort; median age 33 years (Kim 2025 Table S1).",
-    weight_range   = "Not reported; median body weight 65 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
+    species = "human",
+    n_subjects = 692L,
+    n_studies = 2L,
+    age_range = "Pooled paediatric and adult cohort; median age 33 years (Kim 2025 Table S1).",
+    weight_range = "Not reported; median body weight 65 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
     sex_female_pct = 56,
     race_ethnicity = "Not specified.",
-    disease_state  = "Crohn's disease (n = 692).",
-    dose_range     = "Intravenous infliximab during both induction and maintenance phases.",
-    regions        = "Multi-regional pivotal trials of infliximab in Crohn's disease (REACH and ACCENT I).",
-    notes          = paste(
+    disease_state = "Crohn's disease (n = 692).",
+    dose_range = "Intravenous infliximab during both induction and maintenance phases.",
+    regions = "Multi-regional pivotal trials of infliximab in Crohn's disease (REACH and ACCENT I).",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Fasanmade_combined model: Crohn's disease (n = 692),",
       "pooled paediatric and adult patients, induction and maintenance phases,",

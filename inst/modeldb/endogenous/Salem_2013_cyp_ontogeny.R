@@ -35,8 +35,8 @@ Salem_2013_cyp_ontogeny <- function() {
   )
   vignette <- "Salem_2013_cyp_ontogeny"
   units <- list(
-    time          = "year (postnatal age; valid 0 to 20)",
-    dosing        = "n/a (no exogenous dosing; enzyme / renal ontogeny system model)",
+    time = "year (postnatal age; valid 0 to 20)",
+    dosing = "n/a (no exogenous dosing; enzyme / renal ontogeny system model)",
     concentration = paste(
       "n/a (no drug concentration). Every output is a unitless",
       "fraction of the corresponding adult value."
@@ -45,11 +45,11 @@ Salem_2013_cyp_ontogeny <- function() {
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the renal-function output only. Salem 2013",
         "Supplementary Table S1 gives renal function as a quadratic in",
         "BSA divided by 120 mL/min, the adult glomerular filtration",
@@ -64,16 +64,16 @@ Salem_2013_cyp_ontogeny <- function() {
         "(adult GFR) near BSA = 1.42 m^2; keep BSA inside the paediatric",
         "-to-adult range 0.2 to 2.0 m^2."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Salem 2013 Supplementary Table S1 reports separate renal",
         "'fractional expression at birth relative to adult' summary",
         "values for males (0.15) and females (0.14), but the renal",
@@ -88,14 +88,14 @@ Salem_2013_cyp_ontogeny <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10000L,
-    n_studies      = 16L,
-    age_range      = "Birth to 20 years (ontogeny functions evaluated over 0 to 20 years at 0.1-year increments; DDI simulations at age bands 1 day, 7 days, 1 month, 1 year, 2 years and 20 years)",
-    weight_range   = "Not reported (Simcyp Paediatric v12 virtual population defaults)",
+    species = "human",
+    n_subjects = 10000L,
+    n_studies = 16L,
+    age_range = "Birth to 20 years (ontogeny functions evaluated over 0 to 20 years at 0.1-year increments; DDI simulations at age bands 1 day, 7 days, 1 month, 1 year, 2 years and 20 years)",
+    weight_range = "Not reported (Simcyp Paediatric v12 virtual population defaults)",
     sex_female_pct = 50,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy paediatric and adult virtual subjects. The ontogeny",
       "functions themselves are regressions on pooled in vitro human",
       "liver-bank expression and catalytic-activity data (Salem 2013",
@@ -106,10 +106,10 @@ Salem_2013_cyp_ontogeny <- function() {
       "Johnson 2006 renal), updated from the Johnson 2006 models. The",
       "per-study subject counts are not restated in this paper."
     ),
-    dose_range     = "n/a (no exogenous drug PK is modelled by this system layer)",
-    regions        = "Not reported",
-    n_bootstrap    = 10000L,
-    notes          = paste(
+    dose_range = "n/a (no exogenous drug PK is modelled by this system layer)",
+    regions = "Not reported",
+    n_bootstrap = 10000L,
+    notes = paste(
       "n_subjects is the size of the virtual cohort used for the",
       "hypothetical DDI simulations, not of the ontogeny regressions:",
       "'One hundred simulations with 10 trials and 10 subjects were",

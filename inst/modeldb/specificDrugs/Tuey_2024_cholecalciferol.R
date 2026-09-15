@@ -28,8 +28,8 @@ Tuey_2024_cholecalciferol <- function() {
   )
   vignette <- "Tuey_2024_cholecalciferol"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -39,12 +39,12 @@ Tuey_2024_cholecalciferol <- function() {
   # because Methods 4.5 converted every observation from ng/mL to nmol/L
   # before fitting.
   compartmentData <- list(
-    depot           = list(analyte = "cholecalciferol", units = "nmol", specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "cholecalciferol", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "cholecalciferol", units = "nmol", specimen = "plasma", verified = TRUE),
-    central_25d3    = list(analyte = "25-hydroxyvitamin D3", units = "nmol", specimen = "plasma", verified = TRUE),
-    central_125d3   = list(analyte = "1,25-dihydroxyvitamin D3", units = "nmol", specimen = "plasma", verified = TRUE),
-    central_2425d3  = list(analyte = "24,25-dihydroxyvitamin D3", units = "nmol", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "cholecalciferol", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "cholecalciferol", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "cholecalciferol", units = "nmol", specimen = "plasma", verified = TRUE),
+    central_25d3 = list(analyte = "25-hydroxyvitamin D3", units = "nmol", specimen = "plasma", verified = TRUE),
+    central_125d3 = list(analyte = "1,25-dihydroxyvitamin D3", units = "nmol", specimen = "plasma", verified = TRUE),
+    central_2425d3 = list(analyte = "24,25-dihydroxyvitamin D3", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
@@ -58,194 +58,194 @@ Tuey_2024_cholecalciferol <- function() {
   # here so the paper's covariate screen is not lost.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on all parameters and specifically flagged on the 1,25D3",
         "baseline concentration by covariate-plot inspection (Results 2.3);",
         "not retained. Median 92.0 kg, range 70.7-135.3 kg (Table 1)."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     BMI = list(
-      description        = "Body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Flagged on the 1,25D3 volume of distribution by covariate-plot",
         "inspection (Results 2.3); not retained. Median 32.6 kg/m^2, range",
         "25.6-43.4 (Table 1); every subject had BMI > 25 kg/m^2, which the",
         "Discussion cites as a reason the obesity effect known from the",
         "literature could not be resolved here."
       ),
-      source_name        = "BMI (kg/m2)"
+      source_name = "BMI (kg/m2)"
     ),
     AGE = list(
-      description        = "Age at enrolment.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened (Methods 4.7); not retained. Median 61 years, range 29-73 (Table 1).",
-      source_name        = "Age (years)"
+      notes = "Screened (Methods 4.7); not retained. Median 61 years, range 29-73 (Table 1).",
+      source_name = "Age (years)"
     ),
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened as 'gender' (Methods 4.7); not retained. 17 of 29 (59",
         "percent) female (Table 1)."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White)",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. Table 1 reports only two race",
         "categories: White 19 of 29 (66 percent), Black 10 of 29 (34 percent)."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     RACE_HISPANIC = list(
-      description        = "Hispanic ethnicity indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hispanic ethnicity indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Hispanic)",
-      notes              = paste(
+      notes = paste(
         "Screened as 'ethnicity' (Methods 4.7); not retained. 4 of 29 (14",
         "percent) Hispanic, 24 non-Hispanic, 1 declined to disclose",
         "(Table 1 footnote a)."
       ),
-      source_name        = "Ethnicity"
+      source_name = "Ethnicity"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Flagged on the 1,25D3 and 24,25D3 baseline concentrations by",
         "covariate-plot inspection (Results 2.3) and discussed as",
         "biologically plausible for 24,25D3, but not retained by the",
         "stepwise procedure. Median 37 mL/min/1.73 m^2, range 11-97",
         "(Table 1); CKD stages 1-5 represented."
       ),
-      source_name        = "eGFR (mL/min/1.73m2)"
+      source_name = "eGFR (mL/min/1.73m2)"
     ),
     PTH = list(
-      description        = "Serum parathyroid hormone concentration.",
-      units              = "not reported",
-      type               = "continuous",
+      description = "Serum parathyroid hormone concentration.",
+      units = "not reported",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a serum protein covariate (Methods 4.7); not retained.",
         "No summary statistic is tabulated for it in Tuey 2024. No canonical",
         "entry exists in inst/references/covariate-columns.md because no",
         "model in the library has yet retained it; the name here is",
         "documentation of the paper's screen only, not a canonical claim."
       ),
-      source_name        = "PTH"
+      source_name = "PTH"
     ),
     FGF23 = list(
-      description        = "Serum fibroblast growth factor 23 concentration.",
-      units              = "not reported",
-      type               = "continuous",
+      description = "Serum fibroblast growth factor 23 concentration.",
+      units = "not reported",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a serum protein covariate (Methods 4.7); not retained.",
         "No summary statistic is tabulated for it in Tuey 2024. No canonical",
         "entry exists in inst/references/covariate-columns.md because no",
         "model in the library has yet retained it; the name here is",
         "documentation of the paper's screen only, not a canonical claim."
       ),
-      source_name        = "FGF-23"
+      source_name = "FGF-23"
     ),
     SNP_CYP2R1_RS12794714 = list(
-      description        = "CYP2R1 rs12794714 genotype (25-hydroxylase).",
-      units              = "(genotype)",
-      type               = "categorical",
+      description = "CYP2R1 rs12794714 genotype (25-hydroxylase).",
+      units = "(genotype)",
+      type = "categorical",
       reference_category = "G/G",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. G/G 15 (51 percent), G/A 13",
         "(45 percent), A/A 0, not determined 1 (Table 1)."
       ),
-      source_name        = "CYP2R1 rs12794714"
+      source_name = "CYP2R1 rs12794714"
     ),
     SNP_CYP27B1_RS10877012 = list(
-      description        = "CYP27B1 rs10877012 genotype (1-alpha-hydroxylase).",
-      units              = "(genotype)",
-      type               = "categorical",
+      description = "CYP27B1 rs10877012 genotype (1-alpha-hydroxylase).",
+      units = "(genotype)",
+      type = "categorical",
       reference_category = "C/C",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. C/C 15 (51 percent), C/A 11",
         "(38 percent), A/A 2 (7 percent), not determined 1 (Table 1)."
       ),
-      source_name        = "CYP27B1 rs10877012"
+      source_name = "CYP27B1 rs10877012"
     ),
     SNP_CYP24A1_RS6013897 = list(
-      description        = "CYP24A1 rs6013897 genotype (24-hydroxylase).",
-      units              = "(genotype)",
-      type               = "categorical",
+      description = "CYP24A1 rs6013897 genotype (24-hydroxylase).",
+      units = "(genotype)",
+      type = "categorical",
       reference_category = "A/A",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. A/A 18 (62 percent), A/S 8",
         "(28 percent), S/S 2 (7 percent), not determined 1 (Table 1)."
       ),
-      source_name        = "CYP24A1 rs6013897"
+      source_name = "CYP24A1 rs6013897"
     ),
     SNP_GC_RS7041 = list(
-      description        = "GC rs7041 genotype (vitamin D binding protein).",
-      units              = "(genotype)",
-      type               = "categorical",
+      description = "GC rs7041 genotype (vitamin D binding protein).",
+      units = "(genotype)",
+      type = "categorical",
       reference_category = "G/G",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. G/G 17 (59 percent), G/A 9",
         "(31 percent), A/A 2 (7 percent), not determined 1 (Table 1)."
       ),
-      source_name        = "GC_VDBP rs7041"
+      source_name = "GC_VDBP rs7041"
     ),
     SNP_VDR_RS2228570 = list(
-      description        = "VDR rs2228570 genotype (vitamin D receptor, FokI).",
-      units              = "(genotype)",
-      type               = "categorical",
+      description = "VDR rs2228570 genotype (vitamin D receptor, FokI).",
+      units = "(genotype)",
+      type = "categorical",
       reference_category = "G/G",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. G/G 17 (59 percent), A/G 6",
         "(21 percent), A/A 5, not determined 1 (Table 1)."
       ),
-      source_name        = "VDR rs2228570"
+      source_name = "VDR rs2228570"
     ),
     SNP_VDR_RS7968585 = list(
-      description        = "VDR rs7968585 genotype (vitamin D receptor).",
-      units              = "(genotype)",
-      type               = "categorical",
+      description = "VDR rs7968585 genotype (vitamin D receptor).",
+      units = "(genotype)",
+      type = "categorical",
       reference_category = "G/G",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.7); not retained. G/G 7 (24 percent), G/A 14",
         "(49 percent), A/A 7 (24 percent), not determined 1 (Table 1)."
       ),
-      source_name        = "VDR rs7968585"
+      source_name = "VDR rs7968585"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29,
-    n_studies      = 1,
-    age_range      = "29-73 years",
-    age_median     = "61 years",
-    weight_range   = "70.7-135.3 kg",
-    weight_median  = "92.0 kg",
+    species = "human",
+    n_subjects = 29,
+    n_studies = 1,
+    age_range = "29-73 years",
+    age_median = "61 years",
+    weight_range = "70.7-135.3 kg",
+    weight_median = "92.0 kg",
     sex_female_pct = 59,
     race_ethnicity = c(White = 66, Black = 34),
-    disease_state  = paste(
+    disease_state = paste(
       "Chronic kidney disease (stages 1-5, non-dialysis) with vitamin D",
       "insufficiency or deficiency, defined as total 25D3 below 30 ng/mL.",
       "Median baseline 25D3 18 ng/mL (range 7-29); median eGFR 37",
@@ -253,9 +253,9 @@ Tuey_2024_cholecalciferol <- function() {
       "25.6-43.4). CKD stage distribution: 1 (3 percent), 5 (17 percent),",
       "14 (48 percent), 8 (28 percent), 1 (3 percent) for stages 1-5."
     ),
-    dose_range     = "Single 5000 I.U. oral dose of cholecalciferol (equivalent to 325 nmol)",
-    regions        = "United States (University of Colorado and University of Pittsburgh)",
-    notes          = paste(
+    dose_range = "Single 5000 I.U. oral dose of cholecalciferol (equivalent to 325 nmol)",
+    regions = "United States (University of Colorado and University of Pittsburgh)",
+    notes = paste(
       "Baseline characteristics from Tuey 2024 Table 1; ClinicalTrials.gov",
       "NCT02360644. Serial plasma sampling at baseline and 0.5, 1, 2, 4, 8,",
       "12, 24, 48, 168 and 336 h (Methods 4.1). 310 plasma concentrations",

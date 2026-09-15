@@ -27,11 +27,11 @@ Li_2017_naproxen_rat <- function() {
 
   covariateData <- list(
     ALB = list(
-      description        = "Plasma albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Plasma albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Li 2017 reports albumin in umol/L as `Pt` (Table 1, marked Fixed; measured by ELISA",
         "and shown in Fig. 2): 347 umol/L in CIA females, 550 in healthy females, 282 in CIA",
         "males and 422 in healthy males. Converted to the canonical SI unit g/L inside the",
@@ -42,14 +42,14 @@ Li_2017_naproxen_rat <- function() {
         "(n1 * Pt) and the linear non-saturable arm (n2 * Pt * Ka2) in plasma, and the same two",
         "quantities scaled by E/P in the tissue interstitial fluid."
       ),
-      source_name        = "Pt"
+      source_name = "Pt"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Sex enters only through the plasma-protein-binding constants: Li 2017 Table 1",
         "estimates Ka1 and Ka2 separately in each of the four sex-by-disease groups, and the",
         "Discussion records that a single shared pair 'produced less satisfactory overall",
@@ -57,14 +57,14 @@ Li_2017_naproxen_rat <- function() {
         "and Vt by disease only, and the Results state that NCA 'did not indicate any",
         "significant differences in the PK parameters between female and male rats'."
       ),
-      source_name        = "sex group"
+      source_name = "sex group"
     ),
     DIS_CIA = list(
-      description        = "Collagen-induced arthritis indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Collagen-induced arthritis indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy control rat)",
-      notes              = paste(
+      notes = paste(
         "1 = rat with collagen-induced arthritis studied at peak disease (day 16 post",
         "induction in females, day 21 in males); 0 = age- and sex-matched healthy control.",
         "Disease selects the unbound plasma clearance, the unbound distribution clearance and",
@@ -74,42 +74,42 @@ Li_2017_naproxen_rat <- function() {
         "Table 1. The absorption rate constant and the central volume are shared across all",
         "groups."
       ),
-      source_name        = "CIA"
+      source_name = "CIA"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "naproxen",
-      units    = "ug/kg",
+      analyte = "naproxen",
+      units = "ug/kg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "naproxen (total, bound plus unbound)",
-      units    = "ug/kg",
+      analyte = "naproxen (total, bound plus unbound)",
+      units = "ug/kg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "naproxen (total, bound plus unbound)",
-      units    = "ug/kg",
+      analyte = "naproxen (total, bound plus unbound)",
+      units = "ug/kg",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "rat (Lewis)",
-    sex            = "male and female",
-    n_subjects     = "3 CIA rats and 4 healthy rats sampled at each PK time point; 8 CIA and 8 healthy females plus 4 CIA and 4 healthy males for the albumin and protein-binding studies",
-    n_studies      = 1L,
-    age_range      = "5-8 weeks old at purchase, age-matched within each sex group at the time of the PK studies",
-    weight_range   = "approximately 110-160 g (females) and 170-220 g (males)",
-    disease_state  = "Collagen-induced arthritis (Chondrex protocol) studied at peak disease -- day 16 post induction in females, day 21 in males; approximately 80 percent of females and 60 percent of males developed arthritis in one or both hind paws. Healthy age-matched Lewis rats served as controls.",
-    dose_range     = "Single intraperitoneal bolus of sodium naproxen in phosphate-buffered saline (pH 8), 1 mL/kg: 11, 27.5 or 55 mg/kg sodium naproxen (equivalent to 10, 25 or 50 mg/kg naproxen) in CIA rats and 55 mg/kg sodium naproxen (50 mg/kg naproxen) in healthy rats",
-    regions        = "United States (State University of New York at Buffalo)",
-    notes          = paste(
+    species = "rat (Lewis)",
+    sex = "male and female",
+    n_subjects = "3 CIA rats and 4 healthy rats sampled at each PK time point; 8 CIA and 8 healthy females plus 4 CIA and 4 healthy males for the albumin and protein-binding studies",
+    n_studies = 1L,
+    age_range = "5-8 weeks old at purchase, age-matched within each sex group at the time of the PK studies",
+    weight_range = "approximately 110-160 g (females) and 170-220 g (males)",
+    disease_state = "Collagen-induced arthritis (Chondrex protocol) studied at peak disease -- day 16 post induction in females, day 21 in males; approximately 80 percent of females and 60 percent of males developed arthritis in one or both hind paws. Healthy age-matched Lewis rats served as controls.",
+    dose_range = "Single intraperitoneal bolus of sodium naproxen in phosphate-buffered saline (pH 8), 1 mL/kg: 11, 27.5 or 55 mg/kg sodium naproxen (equivalent to 10, 25 or 50 mg/kg naproxen) in CIA rats and 55 mg/kg sodium naproxen (50 mg/kg naproxen) in healthy rats",
+    regions = "United States (State University of New York at Buffalo)",
+    notes = paste(
       "Serial saphenous-vein sampling at 15, 30 and 45 min and 1, 2, 4, 6, 9, 12 and 24 h",
       "post dose; naproxen quantified in plasma and in ultrafiltrate by LC-MS/MS. Plasma",
       "protein binding was measured by ultrafiltration over 2-500 ug/mL in pooled plasma from",

@@ -1,7 +1,7 @@
 Ezzati_2014_dexmedetomidine_piglet <- function() {
   description <- "Preclinical (newborn piglet). One-compartment IV population PK model of dexmedetomidine in a piglet perinatal-asphyxia model with therapeutic hypothermia (Ezzati 2014). Clearance scales allometrically with body weight (Holford exponent 0.75) standardised to 70 kg, decreases with body temperature centred at 37 C (Ftemp), and is multiplied by a paper-specific factor FAED (= 0.558) in the post-hypoxic-ischemic state; volume scales allometrically with weight (exponent 1)."
-  reference   <- "Ezzati M, Broad K, Kawano G, Faulkner S, Hassell J, Fleiss B, Gressens P, Fierens I, Rostami J, Maze M, Sleigh JW, Anderson B, Sanders RD, Robertson NJ. Pharmacokinetics of dexmedetomidine combined with therapeutic hypothermia in a piglet asphyxia model. Acta Anaesthesiol Scand. 2014; 58(6):733-742. doi:10.1111/aas.12318"
-  vignette    <- "Ezzati_2014_dexmedetomidine_piglet"
+  reference <- "Ezzati M, Broad K, Kawano G, Faulkner S, Hassell J, Fleiss B, Gressens P, Fierens I, Rostami J, Maze M, Sleigh JW, Anderson B, Sanders RD, Robertson NJ. Pharmacokinetics of dexmedetomidine combined with therapeutic hypothermia in a piglet asphyxia model. Acta Anaesthesiol Scand. 2014; 58(6):733-742. doi:10.1111/aas.12318"
+  vignette <- "Ezzati_2014_dexmedetomidine_piglet"
   paper_specific_etas <- c("etalfaed", "etaRUV")
 
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
@@ -15,44 +15,44 @@ Ezzati_2014_dexmedetomidine_piglet <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per piglet in Ezzati 2014. Used for a-priori allometric scaling per the paper Methods: CL scales as (WT/70)^0.75 and V scales as (WT/70)^1; reference weight 70 kg (Holford size standard).",
-      source_name        = "WT"
+      notes = "Time-fixed per piglet in Ezzati 2014. Used for a-priori allometric scaling per the paper Methods: CL scales as (WT/70)^0.75 and V scales as (WT/70)^1; reference weight 70 kg (Holford size standard).",
+      source_name = "WT"
     ),
     BODYTEMP = list(
-      description        = "Body (rectal) temperature; time-varying across the cooling / rewarming cycle",
-      units              = "degC",
-      type               = "continuous",
+      description = "Body (rectal) temperature; time-varying across the cooling / rewarming cycle",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the linear-deviation effect on CL: Effect_TEMP = 1 + Ftemp * (BODYTEMP - 37). Reference 37 degC per Ezzati 2014 PDF page 736 equation. Piglet normothermia 38.5 degC; therapeutic-hypothermia target 33.5 degC. Source column `TEMP` is an existing canonical alias of BODYTEMP per Kloprogge 2013 / 2014 precedent.",
-      source_name        = "TEMP"
+      notes = "Time-varying. Drives the linear-deviation effect on CL: Effect_TEMP = 1 + Ftemp * (BODYTEMP - 37). Reference 37 degC per Ezzati 2014 PDF page 736 equation. Piglet normothermia 38.5 degC; therapeutic-hypothermia target 33.5 degC. Source column `TEMP` is an existing canonical alias of BODYTEMP per Kloprogge 2013 / 2014 precedent.",
+      source_name = "TEMP"
     ),
     HIE_POST = list(
-      description        = "Post hypoxic-ischemic event indicator (1 = subject is in the post-insult state from the documented HI event onward; 0 = no HI event)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Post hypoxic-ischemic event indicator (1 = subject is in the post-insult state from the documented HI event onward; 0 = no HI event)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no HI event or pre-insult)",
-      notes              = "Time-varying within a subject as the indicator flips from 0 to 1 at the HI insult time and remains 1 thereafter. In Ezzati 2014 dosing began 0.5 h or 4 h after the HI insult so HIE_POST = 1 for the entire PK observation window of the 9 HI-exposed piglets; 1 control piglet had HIE_POST = 0 throughout (1.5 ug/kg/h infusion without HI and without hypothermia). The paper's source column `AED` encodes a continuous NTP-integral severity score that the final model dichotomises to a 0/1 state flag.",
-      source_name        = "AED"
+      notes = "Time-varying within a subject as the indicator flips from 0 to 1 at the HI insult time and remains 1 thereafter. In Ezzati 2014 dosing began 0.5 h or 4 h after the HI insult so HIE_POST = 1 for the entire PK observation window of the 9 HI-exposed piglets; 1 control piglet had HIE_POST = 0 throughout (1.5 ug/kg/h infusion without HI and without hypothermia). The paper's source column `AED` encodes a continuous NTP-integral severity score that the final model dichotomises to a 0/1 state flag.",
+      source_name = "AED"
     )
   )
 
   population <- list(
-    species        = "piglet (newborn, male, age <24 h)",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "<24 h (mean 22.9 h, SD 1.2 h)",
-    age_median     = "mean 22.9 h",
-    weight_range   = "1.6-2.0 kg",
-    weight_median  = "mean 1.76 kg (SD 0.23)",
+    species = "piglet (newborn, male, age <24 h)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "<24 h (mean 22.9 h, SD 1.2 h)",
+    age_median = "mean 22.9 h",
+    weight_range = "1.6-2.0 kg",
+    weight_median = "mean 1.76 kg (SD 0.23)",
     sex_female_pct = 0,
-    disease_state  = "Perinatal cerebral hypoxia-ischaemia induced by bilateral common-carotid occlusion + FiO2 reduction to 0.09 for 12.5 min, followed by whole-body cooling to 33.5 degC for 18-24 h. 9 of 10 piglets received the HI insult; 1 control piglet had no HI and no cooling.",
-    dose_range     = "1 ug/kg IV loading dose over 20 min + maintenance IV infusion 0.6-10 ug/kg/h for 46-48 h",
-    regions        = "United Kingdom (single-centre preclinical study).",
-    notes          = "Population is a small preclinical cohort (Ezzati 2014 Table 1 + Methods). All piglets male. 1000-replicate bootstrap and prediction-corrected VPC used for evaluation (Methods). Estimation in NONMEM VII (ADVAN1 TRANS2, FOCE-I; Globomax LLC)."
+    disease_state = "Perinatal cerebral hypoxia-ischaemia induced by bilateral common-carotid occlusion + FiO2 reduction to 0.09 for 12.5 min, followed by whole-body cooling to 33.5 degC for 18-24 h. 9 of 10 piglets received the HI insult; 1 control piglet had no HI and no cooling.",
+    dose_range = "1 ug/kg IV loading dose over 20 min + maintenance IV infusion 0.6-10 ug/kg/h for 46-48 h",
+    regions = "United Kingdom (single-centre preclinical study).",
+    notes = "Population is a small preclinical cohort (Ezzati 2014 Table 1 + Methods). All piglets male. 1000-replicate bootstrap and prediction-corrected VPC used for evaluation (Methods). Estimation in NONMEM VII (ADVAN1 TRANS2, FOCE-I; Globomax LLC)."
   )
 
   ini({

@@ -24,24 +24,24 @@ Zhao_2009_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the second, additive component of apparent oral clearance:",
         "3.62 * (BW/28) L/h, referenced to the cohort median 28 kg. Weight enters",
         "linearly (exponent 1) and additively rather than as an allometric",
@@ -49,14 +49,14 @@ Zhao_2009_ganciclovir <- function() {
         "range 12-76 kg; mean 34 (SD 19) kg (Yang 2023 Table 2).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote defines CLcr as creatinine clearance in mL/min",
         "(raw, NOT BSA-normalized), distinct from the BSA-normalized `CrCL` used by",
         "Franck 2021 in the same repository. Drives the first, additive component of",
@@ -69,21 +69,21 @@ Zhao_2009_ganciclovir <- function() {
         "primary publication.",
         sep = " "
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
     n_observations = 164L,
-    age_median     = "9 years (range 3-17); mean 10 (SD 5) years",
-    weight_median  = "28 kg (range 12-76); mean 34 (SD 19) kg",
+    age_median = "9 years (range 3-17); mean 10 (SD 5) years",
+    weight_median = "28 kg (range 12-76); mean 34 (SD 19) kg",
     sex_female_pct = 50,
     race_ethnicity = "Not reported.",
-    disease_state  = "Pediatric renal transplant patients.",
-    co_medication  = paste(
+    disease_state = "Pediatric renal transplant patients.",
+    co_medication = paste(
       "Prednisone and mycophenolate mofetil were tested as covariates and not",
       "retained. Yang 2023 Section 4.2 attributes this model's higher simulated",
       "concentrations relative to the other pediatric valganciclovir models to the",
@@ -91,15 +91,15 @@ Zhao_2009_ganciclovir <- function() {
       "the renal clearance of ganciclovir.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Prophylactic therapy: oral valganciclovir 900 mg/24 h. Pre-emptive therapy:",
       "IV ganciclovir 5 mg/kg/12 h for 15 days followed by oral valganciclovir",
       "10 mg/kg/12 h for 3 months.",
       sep = " "
     ),
-    regions        = "France (prospective study).",
-    bioassay       = "HPLC, LLOQ 0.25 ug/mL.",
-    notes          = paste(
+    regions = "France (prospective study).",
+    bioassay = "HPLC, LLOQ 0.25 ug/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Intensive sampling at",
       "0 (pre-dose), 1, 2, 4, 6, 8 and 12 h post dose. Covariates tested: weight,",
       "age, height, CLcr, AST, ALT, serum protein, prednisone and mycophenolate",

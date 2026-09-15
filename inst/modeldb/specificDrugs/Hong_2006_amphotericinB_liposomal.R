@@ -8,37 +8,37 @@ Hong_2006_amphotericinB_liposomal <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "amphotericinB liposomal", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amphotericinB liposomal", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amphotericinB liposomal", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying across dosing courses. Reference value 21 kg (cohort median, Hong 2006 Table 1). Covariate enters as an exponential effect on CL and V1: parameter = typical * exp(coefficient * (WT - 21)). The cohort included patients between 6.1 and 84.1 kg.",
-      source_name        = "WT"
+      notes = "Time-varying across dosing courses. Reference value 21 kg (cohort median, Hong 2006 Table 1). Covariate enters as an exponential effect on CL and V1: parameter = typical * exp(coefficient * (WT - 21)). The cohort included patients between 6.1 and 84.1 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 39L,
-    n_studies        = 1L,
-    age_range        = "0.17-17 years",
-    age_median       = "6.5 years (mean 7.1, SD 5.1)",
-    weight_range     = "6.1-84.1 kg",
-    weight_median    = "21.1 kg (mean 28.8, SD 19.8)",
-    sex_female_pct   = 33,
-    race_ethnicity   = "Not reported (single-centre paediatric oncology cohort in Sydney, Australia)",
-    disease_state    = "Paediatric oncology patients receiving liposomal amphotericin B (AmBisome) for antifungal therapy or prophylaxis; all neutropenic and febrile. Diagnoses: 15 acute lymphoblastic leukaemia, 4 acute myeloid leukaemia, 20 other; 16 of 39 had received a bone marrow transplant (12 allogeneic, 4 autologous).",
-    dose_range       = "0.8-5.9 mg/kg/day liposomal amphotericin B administered as a 1-h IV infusion through a central venous catheter, once daily. Typical prophylaxis 1-3 mg/kg/day; escalated to 5-6 mg/kg/day on evidence of invasive fungal infection.",
-    regions          = "Australia (single centre, the Children's Hospital at Westmead, Sydney, NSW)",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "0.17-17 years",
+    age_median = "6.5 years (mean 7.1, SD 5.1)",
+    weight_range = "6.1-84.1 kg",
+    weight_median = "21.1 kg (mean 28.8, SD 19.8)",
+    sex_female_pct = 33,
+    race_ethnicity = "Not reported (single-centre paediatric oncology cohort in Sydney, Australia)",
+    disease_state = "Paediatric oncology patients receiving liposomal amphotericin B (AmBisome) for antifungal therapy or prophylaxis; all neutropenic and febrile. Diagnoses: 15 acute lymphoblastic leukaemia, 4 acute myeloid leukaemia, 20 other; 16 of 39 had received a bone marrow transplant (12 allogeneic, 4 autologous).",
+    dose_range = "0.8-5.9 mg/kg/day liposomal amphotericin B administered as a 1-h IV infusion through a central venous catheter, once daily. Typical prophylaxis 1-3 mg/kg/day; escalated to 5-6 mg/kg/day on evidence of invasive fungal infection.",
+    regions = "Australia (single centre, the Children's Hospital at Westmead, Sydney, NSW)",
     n_concentrations = 637L,
-    n_courses        = 48L,
-    notes            = "Baseline characteristics from Hong 2006 Table 1 (mean (SD), median, range): age 7.1 yr (5.1), 6.5, 0.17-17; weight 28.8 kg (19.8), 21.1, 6.1-84.1; height 119.2 cm (33.7), 118.5, 61.5-190; BSA 0.96 m^2 (0.46), 0.82, 0.32-2.11; creatinine 74 umol/L (108), 47, 19-659; GGT 105 U/L (211), 39, 11-1398. 637 plasma concentration observations from 48 dosing courses across 39 patients (mean 13.3 samples per course, range 3-30). NONMEM 5.1.1 first-order conditional estimation; bootstrap n=1000 in Wings for NONMEM. Renal-function markers were not screened as covariates because renal elimination is a minor pathway for L-AmB; sex did not significantly affect PK by Mann-Whitney U; weight and height were highly correlated (r2 = 0.93) and weight was selected as the size descriptor over height; age was tested on V1 but did not improve the fit beyond weight. Hong 2006 reports between-occasion variability (BOV, 46% on CL and 56% on V1) that exceeds the within-subject IIV on the same parameters. nlmixr2lib has no canonical pattern for occasion-keyed IOV without an OCC column, so this BOV is encoded here as additional log-normal IIV on fixed-at-1 multipliers (lcl_bov_mult, lvc_bov_mult) following the Bellanti 2015 deferoxamine precedent; see vignette Assumptions and deviations for the loss of within-subject occasion drift."
+    n_courses = 48L,
+    notes = "Baseline characteristics from Hong 2006 Table 1 (mean (SD), median, range): age 7.1 yr (5.1), 6.5, 0.17-17; weight 28.8 kg (19.8), 21.1, 6.1-84.1; height 119.2 cm (33.7), 118.5, 61.5-190; BSA 0.96 m^2 (0.46), 0.82, 0.32-2.11; creatinine 74 umol/L (108), 47, 19-659; GGT 105 U/L (211), 39, 11-1398. 637 plasma concentration observations from 48 dosing courses across 39 patients (mean 13.3 samples per course, range 3-30). NONMEM 5.1.1 first-order conditional estimation; bootstrap n=1000 in Wings for NONMEM. Renal-function markers were not screened as covariates because renal elimination is a minor pathway for L-AmB; sex did not significantly affect PK by Mann-Whitney U; weight and height were highly correlated (r2 = 0.93) and weight was selected as the size descriptor over height; age was tested on V1 but did not improve the fit beyond weight. Hong 2006 reports between-occasion variability (BOV, 46% on CL and 56% on V1) that exceeds the within-subject IIV on the same parameters. nlmixr2lib has no canonical pattern for occasion-keyed IOV without an OCC column, so this BOV is encoded here as additional log-normal IIV on fixed-at-1 multipliers (lcl_bov_mult, lvc_bov_mult) following the Bellanti 2015 deferoxamine precedent; see vignette Assumptions and deviations for the loss of within-subject occasion drift."
   )
 
   ini({

@@ -45,46 +45,46 @@ Ollier_2015_ropivacaine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ropivacaine", units = "umol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ropivacaine", units = "umol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE),
     complex = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE),
-    target  = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE)
+    target = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study entry.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline weight, used in the allometric power scaling of Vc with reference 70 kg and exponent 1.28 (Table 2, Weight on V = 1.28 with %RSE 37; equation on p. 69 'ln(theta_ij) = ln(theta_pop_j) + beta_W * (ln(W_i) - ln(70)) + eta_ij' -- the log-centred exponential form is algebraically the power form (W/70)^beta_W).",
-      source_name        = "W"
+      notes = "Baseline weight, used in the allometric power scaling of Vc with reference 70 kg and exponent 1.28 (Table 2, Weight on V = 1.28 with %RSE 37; equation on p. 69 'ln(theta_ij) = ln(theta_pop_j) + beta_W * (ln(W_i) - ln(70)) + eta_ij' -- the log-centred exponential form is algebraically the power form (W/70)^beta_W).",
+      source_name = "W"
     ),
     LIVER_RESECT_MAJOR = list(
-      description        = "Binary indicator for major hepatic resection: 1 = three or more liver segments resected, 0 = two segments resected.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for major hepatic resection: 1 = three or more liver segments resected, 0 = two segments resected.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (2 segments)",
-      notes              = "Time-fixed per subject. Ollier 2015 reports the raw counts n=7 with 2 segments, n=2 with 3, n=6 with 4, n=1 with 5 (Table 1); dichotomised into NSH=0 (2 segments) and NSH=1 (3, 4 or 5 segments) per Methods 'Covariate model'. Used as a multiplicative exponential effect on free ropivacaine clearance: `Cl = exp(lcl + etalcl) * exp(beta * LIVER_RESECT_MAJOR)` with `beta = log(620/1310) = -0.7480`, i.e., Cl drops from 1310 L/h in the reference cohort to 620 L/h in the major-resection cohort (Table 2 shows the two values directly rather than the coefficient).",
-      source_name        = "NSH"
+      notes = "Time-fixed per subject. Ollier 2015 reports the raw counts n=7 with 2 segments, n=2 with 3, n=6 with 4, n=1 with 5 (Table 1); dichotomised into NSH=0 (2 segments) and NSH=1 (3, 4 or 5 segments) per Methods 'Covariate model'. Used as a multiplicative exponential effect on free ropivacaine clearance: `Cl = exp(lcl + etalcl) * exp(beta * LIVER_RESECT_MAJOR)` with `beta = log(620/1310) = -0.7480`, i.e., Cl drops from 1310 L/h in the reference cohort to 620 L/h in the major-resection cohort (Table 2 shows the two values directly rather than the coefficient).",
+      source_name = "NSH"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "29-77 years",
-    age_median     = "65 years",
-    weight_range   = "44-130 kg",
-    weight_median  = "75.5 kg",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "29-77 years",
+    age_median = "65 years",
+    weight_range = "44-130 kg",
+    weight_median = "75.5 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in source paper.",
-    disease_state  = "Adult patients undergoing hepatic resection for hepatocellular carcinoma (n=4), metastasis (n=10), or hepatocellular adenoma (n=2). Randomised to ropivacaine (n=19 enrolled; 3 excluded for pharmacokinetic profiles incompatible with a correctly placed TAP catheter, leaving n=16 for the analysis).",
-    dose_range     = "Fixed regimen of five 3 mg/kg (10.9 umol/kg) ropivacaine boluses via a transversus abdominis plane (TAP) catheter at 0, 12, 24, 36, and 48 h post-surgical incision (Methods 'Ropivacaine administration'). The vignette packages a 210 mg (764.7 umol) bolus per dose for a 70 kg reference weight.",
-    regions        = "France (single-centre; CHU Saint-Etienne).",
-    n_excluded     = 3L,
-    notes          = "Baseline preoperative biological data (Table 1) include plasma creatinine 71 (45-135) uM, prothrombin time 100 (87-100) %, AST 35 (25-61) IU/L, fibrinogen 3.0 (1.1-5.6) g/L. Postoperative day-0/1/2 fibrinogen medians 3.6 / 4.5 / 5.8 g/L (see vignette Assumptions and deviations for why the fibrinogen-slope covariate on kin was dropped)."
+    disease_state = "Adult patients undergoing hepatic resection for hepatocellular carcinoma (n=4), metastasis (n=10), or hepatocellular adenoma (n=2). Randomised to ropivacaine (n=19 enrolled; 3 excluded for pharmacokinetic profiles incompatible with a correctly placed TAP catheter, leaving n=16 for the analysis).",
+    dose_range = "Fixed regimen of five 3 mg/kg (10.9 umol/kg) ropivacaine boluses via a transversus abdominis plane (TAP) catheter at 0, 12, 24, 36, and 48 h post-surgical incision (Methods 'Ropivacaine administration'). The vignette packages a 210 mg (764.7 umol) bolus per dose for a 70 kg reference weight.",
+    regions = "France (single-centre; CHU Saint-Etienne).",
+    n_excluded = 3L,
+    notes = "Baseline preoperative biological data (Table 1) include plasma creatinine 71 (45-135) uM, prothrombin time 100 (87-100) %, AST 35 (25-61) IU/L, fibrinogen 3.0 (1.1-5.6) g/L. Postoperative day-0/1/2 fibrinogen medians 3.6 / 4.5 / 5.8 g/L (see vignette Assumptions and deviations for why the fibrinogen-slope covariate on kin was dropped)."
   )
 
   ini({

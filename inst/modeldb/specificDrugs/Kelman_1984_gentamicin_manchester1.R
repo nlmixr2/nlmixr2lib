@@ -13,41 +13,41 @@ Kelman_1984_gentamicin_manchester1 <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Manchester I cohort range 1.6-9.1 kg. Linear-additive slope on CL (e_wt_cl = 0.089 L/h per kg) AND sole determinant of V (e_wt_vc = 0.41 L per kg). Paper Table 1.",
-      source_name        = "weight"
+      notes = "Time-varying. Manchester I cohort range 1.6-9.1 kg. Linear-additive slope on CL (e_wt_cl = 0.089 L/h per kg) AND sole determinant of V (e_wt_vc = 0.41 L per kg). Paper Table 1.",
+      source_name = "weight"
     ),
     PNA = list(
-      description        = "Postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Manchester I cohort range 1-153 days (approx 0.033-5.03 months). Paper Table 3 Model 1 reports theta2 = 0.0013 L/h per day-of-age; reparameterised here as e_pna_cl = 0.0013 * 30.4375 = 0.03957 L/h per month-of-PNA so the covariate column matches the canonical PNA-in-months scale (see inst/references/covariate-columns.md).",
-      source_name        = "age (paper reports in days; converted to canonical PNA in months for covariate column)"
+      notes = "Time-varying. Manchester I cohort range 1-153 days (approx 0.033-5.03 months). Paper Table 3 Model 1 reports theta2 = 0.0013 L/h per day-of-age; reparameterised here as e_pna_cl = 0.0013 * 30.4375 = 0.03957 L/h per month-of-PNA so the covariate column matches the canonical PNA-in-months scale (see inst/references/covariate-columns.md).",
+      source_name = "age (paper reports in days; converted to canonical PNA in months for covariate column)"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Manchester I cohort range 26-165 umol/L. Linear-additive slope on CL (e_creat_cl = -0.0010 L/h per umol/L, paper Table 3 Model 1 theta3).",
-      source_name        = "serum creatinine"
+      notes = "Time-varying. Manchester I cohort range 26-165 umol/L. Linear-additive slope on CL (e_creat_cl = -0.0010 L/h per umol/L, paper Table 3 Model 1 theta3).",
+      source_name = "serum creatinine"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32,
-    n_studies      = 1,
-    age_range      = "1-153 days postnatal",
-    weight_range   = "1.6-9.1 kg",
-    disease_state  = "Neonates and young infants requiring gentamicin therapy (clinical therapeutic-drug-monitoring data; collected previously by Ashurst et al. 1977 and Samba-Donga 1977)",
-    dose_range     = "Gentamicin IV bolus over 1-2 min (n=49 in pooled Manchester I+II; cohort I subset not separately reported) or IM (n=51 in pooled Manchester I+II); dose individualised per clinical practice; steady-state samples after at least 2 days of therapy",
-    regions        = "Manchester, England (single centre)",
-    notes          = "Manchester I subset (Kelman 1984 Table 1). The Manchester dataset was 'arbitrarily divided into two groups according to age, with the limit set at 6 months' (paper Methods, page 686); Manchester I is the subset with PNA < 6 months. 128 total data points (peak/trough split not separately reported by subset in Table 1)."
+    species = "human",
+    n_subjects = 32,
+    n_studies = 1,
+    age_range = "1-153 days postnatal",
+    weight_range = "1.6-9.1 kg",
+    disease_state = "Neonates and young infants requiring gentamicin therapy (clinical therapeutic-drug-monitoring data; collected previously by Ashurst et al. 1977 and Samba-Donga 1977)",
+    dose_range = "Gentamicin IV bolus over 1-2 min (n=49 in pooled Manchester I+II; cohort I subset not separately reported) or IM (n=51 in pooled Manchester I+II); dose individualised per clinical practice; steady-state samples after at least 2 days of therapy",
+    regions = "Manchester, England (single centre)",
+    notes = "Manchester I subset (Kelman 1984 Table 1). The Manchester dataset was 'arbitrarily divided into two groups according to age, with the limit set at 6 months' (paper Methods, page 686); Manchester I is the subset with PNA < 6 months. 128 total data points (peak/trough split not separately reported by subset in Table 1)."
   )
 
   ini({

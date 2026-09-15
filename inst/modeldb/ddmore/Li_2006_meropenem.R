@@ -11,40 +11,40 @@ Li_2006_meropenem <- function() {
   vignette <- "Li_2006_meropenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  ddmore_id    <- "DDMODEL00000213"
+  ddmore_id <- "DDMODEL00000213"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Used in power-form effect on CL with reference 35 years (sample median per DDMORE Model_Accommodations and Li 2006 demographics).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Used in power-form effect on CL with reference 35 years (sample median per DDMORE Model_Accommodations and Li 2006 demographics).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Used in power-form effect on V1 (central volume) with reference 70 kg (sample median per DDMORE Model_Accommodations and Li 2006 demographics).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline. Used in power-form effect on V1 (central volume) with reference 70 kg (sample median per DDMORE Model_Accommodations and Li 2006 demographics).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw, measured; not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, measured; not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Power-form effect on CL with reference 83 mL/min",
         "(sample median per DDMORE Model_Accommodations and Li 2006 demographics).",
         "Deviation from canonical CRCL: the canonical register entry is BSA-normalized",
@@ -52,26 +52,26 @@ Li_2006_meropenem <- function() {
         "exponent (0.62, FIXED) was estimated under that raw-mL/min parameterization.",
         "Source data column 'CLCR' is mapped to canonical 'CRCL' on input."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    n_subjects     = 79,
-    n_studies      = 1,
-    age_range      = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
-    age_median     = "35 years (DDMORE Model_Accommodations)",
-    age_sd         = "18.2 years (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)",
-    weight_range   = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
-    weight_median  = "70 kg (DDMORE Model_Accommodations)",
-    weight_sd      = "16.1 kg (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)",
+    n_subjects = 79,
+    n_studies = 1,
+    age_range = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
+    age_median = "35 years (DDMORE Model_Accommodations)",
+    age_sd = "18.2 years (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)",
+    weight_range = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
+    weight_median = "70 kg (DDMORE Model_Accommodations)",
+    weight_sd = "16.1 kg (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)",
     sex_female_pct = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
     race_ethnicity = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
-    disease_state  = "Adult patients receiving meropenem for clinical infection. Specific indication not extractable from DDMORE bundle alone; Li 2006 reports a population PK and dosing-regimen-optimization analysis in adult patients.",
-    dose_range     = "500-2000 mg meropenem IV. Six dosing groups in the DDMORE simulated cohort: 500/1000/2000 mg given as 0.5-h infusions (rates 1000/2000/4000 mg/h, all corresponding to 0.5-h infusion duration) and as 3-h infusions (rates 166.7/333.3/666.7 mg/h). Note: Model_Accommodations.txt states the rate for the 2000 mg short-infusion group as 3000 mg/h, but the simulated dataset (Simulated_DatasetMeropenem.csv) uses 4000 mg/h, consistent with a 0.5-h infusion. The dataset value (4000 mg/h) is used here.",
-    crcl_median    = "83 mL/min (DDMORE Model_Accommodations; raw measured CrCl, not BSA-normalized)",
-    regions        = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
-    notes          = "Demographic medians come from DDMORE Model_Accommodations.txt, which states the model 'was used as described in publication (Li et al)'. The Li 2006 PDF is not on disk under the literature tree; full demographics, study design, indication, and inclusion criteria could not be cross-checked. The bundle's simulated dataset uses lognormal AGE (median 35, sd 18.2) and lognormal WT (median 70, sd 16.1), with all CLCR fixed at 83 mL/min because no CLCR distribution was reported in the publication."
+    disease_state = "Adult patients receiving meropenem for clinical infection. Specific indication not extractable from DDMORE bundle alone; Li 2006 reports a population PK and dosing-regimen-optimization analysis in adult patients.",
+    dose_range = "500-2000 mg meropenem IV. Six dosing groups in the DDMORE simulated cohort: 500/1000/2000 mg given as 0.5-h infusions (rates 1000/2000/4000 mg/h, all corresponding to 0.5-h infusion duration) and as 3-h infusions (rates 166.7/333.3/666.7 mg/h). Note: Model_Accommodations.txt states the rate for the 2000 mg short-infusion group as 3000 mg/h, but the simulated dataset (Simulated_DatasetMeropenem.csv) uses 4000 mg/h, consistent with a 0.5-h infusion. The dataset value (4000 mg/h) is used here.",
+    crcl_median = "83 mL/min (DDMORE Model_Accommodations; raw measured CrCl, not BSA-normalized)",
+    regions = "Not extractable from DDMORE bundle (Li 2006 PDF not on disk).",
+    notes = "Demographic medians come from DDMORE Model_Accommodations.txt, which states the model 'was used as described in publication (Li et al)'. The Li 2006 PDF is not on disk under the literature tree; full demographics, study design, indication, and inclusion criteria could not be cross-checked. The bundle's simulated dataset uses lognormal AGE (median 35, sd 18.2) and lognormal WT (median 70, sd 16.1), with all CLCR fixed at 83 mL/min because no CLCR distribution was reported in the publication."
   )
 
   ini({

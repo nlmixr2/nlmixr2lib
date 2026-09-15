@@ -8,37 +8,37 @@ Wu_2012_sirolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HCT = list(
-      description        = "Hematocrit (packed red-blood-cell volume fraction)",
-      units              = "%",
-      type               = "continuous",
+      description = "Hematocrit (packed red-blood-cell volume fraction)",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline hematocrit; range 11.8-44.7% (median 35.1%) per Wu 2012 Table 2 footnote to Table 1. Negative power-form effect on apparent oral clearance: CL/F = th_CL * (35.1 / HCT)^th_HCT; higher hematocrit -> lower apparent CL, attributed to RBC sequestration of sirolimus (>95% of whole-blood drug resides in red cells).",
-      source_name        = "HCT"
+      notes = "Baseline hematocrit; range 11.8-44.7% (median 35.1%) per Wu 2012 Table 2 footnote to Table 1. Negative power-form effect on apparent oral clearance: CL/F = th_CL * (35.1 / HCT)^th_HCT; higher hematocrit -> lower apparent CL, attributed to RBC sequestration of sirolimus (>95% of whole-blood drug resides in red cells).",
+      source_name = "HCT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 76L,
+    species = "human",
+    n_subjects = 76L,
     n_observations = 563L,
-    n_studies      = 4L,
-    age_range      = "22-83 years",
-    age_median     = "mean 57.7 years",
-    weight_range   = "32.8-154.6 kg",
-    weight_median  = "mean 79.76 kg",
+    n_studies = 4L,
+    age_range = "22-83 years",
+    age_median = "mean 57.7 years",
+    weight_range = "32.8-154.6 kg",
+    weight_median = "mean 79.76 kg",
     sex_female_pct = 48.7,
     race_ethnicity = "Not reported (single-centre cohort at The University of Chicago).",
-    disease_state  = "Adults with advanced solid tumors enrolled in phase I trials of oral sirolimus.",
-    dose_range     = "1-60 mg/week oral sirolimus, plus one trial of 4 mg once daily. Liquid formulation in trials 1, 3, and 4; tablet in trial 2. Drug formulation was not a significant covariate on absorption parameters.",
-    regions        = "USA (single centre).",
-    notes          = "Wu 2012 Table 2 baseline demographics: hematocrit 35.0% (11.8-44.7), hemoglobin 11.83 g/dL (7.5-15.7), creatinine 0.85 mg/dL (0.3-1.4), GFR 88.69 mL/min/BSA (42->120), albumin 3.80 g/dL (2.5-4.6). Hematocrit was the only significant covariate retained in backward elimination; in forward addition gender shrank V1/F to 0.75x the male value but did not survive backward elimination, and body weight modestly increased V2/F (exponent 0.676) without statistically significant OFV change. 16 of 808 raw samples (2.0%) were BLQ; M3 method was tested but not retained."
+    disease_state = "Adults with advanced solid tumors enrolled in phase I trials of oral sirolimus.",
+    dose_range = "1-60 mg/week oral sirolimus, plus one trial of 4 mg once daily. Liquid formulation in trials 1, 3, and 4; tablet in trial 2. Drug formulation was not a significant covariate on absorption parameters.",
+    regions = "USA (single centre).",
+    notes = "Wu 2012 Table 2 baseline demographics: hematocrit 35.0% (11.8-44.7), hemoglobin 11.83 g/dL (7.5-15.7), creatinine 0.85 mg/dL (0.3-1.4), GFR 88.69 mL/min/BSA (42->120), albumin 3.80 g/dL (2.5-4.6). Hematocrit was the only significant covariate retained in backward elimination; in forward addition gender shrank V1/F to 0.75x the male value but did not survive backward elimination, and body weight modestly increased V2/F (exponent 0.676) without statistically significant OFV change. 16 of 808 raw samples (2.0%) were BLQ; M3 method was tested but not retained."
   )
 
   ini({

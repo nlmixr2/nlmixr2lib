@@ -13,11 +13,11 @@ Peng_2025_meropenem <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the Cockcroft-Gault equation; raw mL/min, NOT BSA-normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the Cockcroft-Gault equation; raw mL/min, NOT BSA-normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Peng 2025 Table 1: median 13.6 mL/min (IQR 6.9-22.2) across the 21-subject cohort;",
         "Methods list it as 'Cockcroft-Gault-based creatinine clearance (CLCR)' among the screened",
         "continuous covariates. The 13.6 mL/min cohort median is the centering constant CLCR_median",
@@ -29,14 +29,14 @@ Peng_2025_meropenem <- function() {
         "extrapolate the term out to 10-50 mL/min. All subjects were on CRRT, so this column is the",
         "RESIDUAL native renal function on top of the extracorporeal clearance carried by QEFF."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     QEFF = list(
-      description        = "Individually determined CRRT (continuous venovenous hemofiltration) clearance of meropenem",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individually determined CRRT (continuous venovenous hemofiltration) clearance of meropenem",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Peng 2025 Methods 'Quantification of Meropenem and Its CRRT Clearance': CL_CRRT is the",
         "ultrafiltrate flow rate Q_uf (mL/h) multiplied by the sieving coefficient Sc, where Sc is the",
         "effluent-to-plasma meropenem concentration ratio measured at the same time point.",
@@ -49,81 +49,81 @@ Peng_2025_meropenem <- function() {
         "prescription must be multiplied by body weight AND by Sc, then divided by 1000, before it",
         "enters this column."
       ),
-      source_name        = "CL_CRRT"
+      source_name = "CL_CRRT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Peng 2025 Results p. 1109: significant on CLbody in the univariable screen, but 'age and sex did not remain significant covariates for CLbody after accounting for creatinine clearance'. Table 1 median 58.0 years (IQR 54.0-71.0)."
+      units = "year",
+      type = "continuous",
+      notes = "Peng 2025 Results p. 1109: significant on CLbody in the univariable screen, but 'age and sex did not remain significant covariates for CLbody after accounting for creatinine clearance'. Table 1 median 58.0 years (IQR 54.0-71.0)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = NA_character_,
-      type        = "categorical",
-      notes       = "Peng 2025 Results p. 1109: significant on CLbody univariately, dropped in backward elimination once CLCR was included. Table 1: 16 male (76.2%), 5 female (23.8%)."
+      units = NA_character_,
+      type = "categorical",
+      notes = "Peng 2025 Results p. 1109: significant on CLbody univariately, dropped in backward elimination once CLCR was included. Table 1: 16 male (76.2%), 5 female (23.8%)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Peng 2025 Methods: screened as a continuous covariate; not retained. Table 1 median 65.0 kg (IQR 60.0-70.0). The 65 kg median is nevertheless load-bearing OUTSIDE the model: the paper's simulations convert the weight-normalized 25 mL/h/kg CRRT dose into the absolute ultrafiltrate flow that feeds QEFF."
+      units = "kg",
+      type = "continuous",
+      notes = "Peng 2025 Methods: screened as a continuous covariate; not retained. Table 1 median 65.0 kg (IQR 60.0-70.0). The 65 kg median is nevertheless load-bearing OUTSIDE the model: the paper's simulations convert the weight-normalized 25 mL/h/kg CRRT dose into the absolute ultrafiltrate flow that feeds QEFF."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation (APACHE) II score",
-      units       = NA_character_,
-      type        = "continuous",
-      notes       = "Peng 2025 Methods: screened; not retained. Table 1 median 19 (IQR 15-26)."
+      units = NA_character_,
+      type = "continuous",
+      notes = "Peng 2025 Methods: screened; not retained. Table 1 median 19 (IQR 15-26)."
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated; the paper reports only that C-reactive protein was among the collected laboratory examinations."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated; the paper reports only that C-reactive protein was among the collected laboratory examinations."
     ),
     PROCALCITONIN = list(
       description = "Procalcitonin",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated. Documentation only. The paper writes the covariate as PCT; the canonical column in inst/references/covariate-columns.md is PROCALCITONIN spelled out, because a bare PCT collides with the _PCT percent suffix (BODYFAT_PCT, RACE_ASIAN_PCT, CUM_FLUID_BAL_PCT and others) and with PCT = proximal convoluted tubule in Lu_2014_sglt_qsp.R. The units above are the conventional clinical ones (ng/mL = ug/L), not a source-paper statement."
+      units = "ng/mL",
+      type = "continuous",
+      notes = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated. Documentation only. The paper writes the covariate as PCT; the canonical column in inst/references/covariate-columns.md is PROCALCITONIN spelled out, because a bare PCT collides with the _PCT percent suffix (BODYFAT_PCT, RACE_ASIAN_PCT, CUM_FLUID_BAL_PCT and others) and with PCT = proximal convoluted tubule in Lu_2014_sglt_qsp.R. The units above are the conventional clinical ones (ng/mL = ug/L), not a source-paper statement."
     ),
     DIS_SEPSIS = list(
       description = "Sepsis (versus other infection) indicator",
-      units       = NA_character_,
-      type        = "categorical",
-      notes       = "Peng 2025 Methods: 'sepsis or other infections' screened as a categorical covariate; not retained. Table 1: sepsis / septic shock 5 (23.8%), severe pneumonia 5 (23.8%), uremia 3 (14.3%), other 8 (38.1%)."
+      units = NA_character_,
+      type = "categorical",
+      notes = "Peng 2025 Methods: 'sepsis or other infections' screened as a categorical covariate; not retained. Table 1: sepsis / septic shock 5 (23.8%), severe pneumonia 5 (23.8%), uremia 3 (14.3%), other 8 (38.1%)."
     ),
     DIS_ARF = list(
       description = "Acute kidney injury (versus chronic renal failure) indicator",
-      units       = NA_character_,
-      type        = "categorical",
-      notes       = "Peng 2025 Methods: 'AKI or chronic renal failure' screened as a categorical covariate; not retained. Table 1: chronic renal failure 13 (61.9%), AKI 7 (33.3%), normal 1 (4.8%)."
+      units = NA_character_,
+      type = "categorical",
+      notes = "Peng 2025 Methods: 'AKI or chronic renal failure' screened as a categorical covariate; not retained. Table 1: chronic renal failure 13 (61.9%), AKI 7 (33.3%), normal 1 (4.8%)."
     ),
     ANURIA = list(
       description = "Anuric (versus non-anuric) urine-output indicator",
-      units       = NA_character_,
-      type        = "categorical",
-      notes       = "Peng 2025 Methods: 'urine output (anuric or non-anuric)' screened as a categorical covariate; not retained. Per-category counts not tabulated; the paper reports only that patients had 'minimal residual renal function' (Limitations, p. 1115)."
+      units = NA_character_,
+      type = "categorical",
+      notes = "Peng 2025 Methods: 'urine output (anuric or non-anuric)' screened as a categorical covariate; not retained. Per-category counts not tabulated; the paper reports only that patients had 'minimal residual renal function' (Limitations, p. 1115)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 21L,
-    n_studies        = 1L,
-    age_median       = "58.0 years (IQR 54.0-71.0)",
-    weight_median    = "65.0 kg (IQR 60.0-70.0)",
-    sex_female_pct   = 23.8,
-    race_ethnicity   = "Chinese (single-center cohort, Changsha, Hunan)",
-    disease_state    = "Adults in a respiratory intensive care unit requiring continuous renal replacement therapy (CVVH) and receiving meropenem as standard antimicrobial therapy. Median APACHE II 19 (IQR 15-26). Main diagnoses: sepsis / septic shock 5 (23.8%), severe pneumonia 5 (23.8%), uremia 3 (14.3%), other including renal failure 8 (38.1%). Patients with major surgery in the preceding 4 weeks, or who were pregnant, were excluded.",
-    renal_function   = "Chronic renal failure 13 (61.9%), acute kidney injury 7 (33.3%), normal 1 (4.8%). Median Cockcroft-Gault creatinine clearance 13.6 mL/min (IQR 6.9-22.2). All subjects on CVVH; median ultrafiltrate flow 2477.5 mL/h (IQR 2406.6-2559.0), median meropenem sieving coefficient 0.75 (IQR 0.72-0.88), median CRRT dose 25.76 mL/h/kg.",
-    dose_range       = "Meropenem 1 g intravenously every 8-12 h as a 2-3 h prolonged infusion. Observed regimens: 1 g q8h 10 (47.6%), 1 g q12h 8 (38.1%), 1 g q6h 2 (9.5%), 0.5 g q8h 1 (4.8%).",
-    regions          = "China (Third Xiangya Hospital, Central South University, Changsha). Enrolled May 2021 to April 2023.",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_median = "58.0 years (IQR 54.0-71.0)",
+    weight_median = "65.0 kg (IQR 60.0-70.0)",
+    sex_female_pct = 23.8,
+    race_ethnicity = "Chinese (single-center cohort, Changsha, Hunan)",
+    disease_state = "Adults in a respiratory intensive care unit requiring continuous renal replacement therapy (CVVH) and receiving meropenem as standard antimicrobial therapy. Median APACHE II 19 (IQR 15-26). Main diagnoses: sepsis / septic shock 5 (23.8%), severe pneumonia 5 (23.8%), uremia 3 (14.3%), other including renal failure 8 (38.1%). Patients with major surgery in the preceding 4 weeks, or who were pregnant, were excluded.",
+    renal_function = "Chronic renal failure 13 (61.9%), acute kidney injury 7 (33.3%), normal 1 (4.8%). Median Cockcroft-Gault creatinine clearance 13.6 mL/min (IQR 6.9-22.2). All subjects on CVVH; median ultrafiltrate flow 2477.5 mL/h (IQR 2406.6-2559.0), median meropenem sieving coefficient 0.75 (IQR 0.72-0.88), median CRRT dose 25.76 mL/h/kg.",
+    dose_range = "Meropenem 1 g intravenously every 8-12 h as a 2-3 h prolonged infusion. Observed regimens: 1 g q8h 10 (47.6%), 1 g q12h 8 (38.1%), 1 g q6h 2 (9.5%), 0.5 g q8h 1 (4.8%).",
+    regions = "China (Third Xiangya Hospital, Central South University, Changsha). Enrolled May 2021 to April 2023.",
     n_concentrations = 94L,
-    notes            = "Prospective single-center study. Plasma and CRRT-effluent meropenem measured by validated UPLC-PDA. NONMEM 7.5 FOCE-I with PsN 5.3 and Pirana 3.0. Model evaluated by prediction-corrected VPC (1000 replicates) and a 1000-sample non-parametric bootstrap (Table 2). Monte Carlo dosing simulations used mrgsolve 1.4.1 with 10,000 virtual subjects per scenario, all fixed at 65 kg and a 25 mL/h/kg CRRT dose."
+    notes = "Prospective single-center study. Plasma and CRRT-effluent meropenem measured by validated UPLC-PDA. NONMEM 7.5 FOCE-I with PsN 5.3 and Pirana 3.0. Model evaluated by prediction-corrected VPC (1000 replicates) and a 1000-sample non-parametric bootstrap (Table 2). Monte Carlo dosing simulations used mrgsolve 1.4.1 with 10,000 virtual subjects per scenario, all fixed at 65 kg and a 25 mL/h/kg CRRT dose."
   )
 
   ini({

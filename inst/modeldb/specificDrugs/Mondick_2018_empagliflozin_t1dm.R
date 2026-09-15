@@ -32,28 +32,28 @@ Mondick_2018_empagliflozin_t1dm <- function() {
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled against a reference of 25 kg/m^2 on CL/F, Vc/F, Q/F and",
         "Vp/F (Mondick 2018 Population PK Modeling equations). Cohort mean (SD)",
         "25.6 (3.69) kg/m^2. Body size enters the model only through BMI; there",
         "is no separate allometric weight term."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "BSA-normalized estimated glomerular filtration rate (eGFR). Mondick",
         "2018 does not name the estimating equation; the value is reported as",
         "mL/(min * 1.73 m^2)."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "NOT a covariate on a PK parameter. It is a mechanistic driver: the",
         "model de-normalizes it to an absolute filtration rate using the",
         "individual BSA (Mondick 2018: 'eGFR values were converted from",
@@ -62,26 +62,26 @@ Mondick_2018_empagliflozin_t1dm <- function() {
         "concentration difference to give the urinary glucose excretion rate.",
         "Cohort mean (SD) 102 (13.8) mL/min/1.73 m^2."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used solely to convert the BSA-normalized CRCL back to an absolute",
         "filtration rate, as CRCL * BSA / 1.73. Mondick 2018 does not report",
         "the BSA formula used nor the cohort BSA distribution."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     GLU = list(
-      description        = "Plasma glucose concentration, time-varying regressor",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Plasma glucose concentration, time-varying regressor",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exogenous driving regressor, not a covariate on a parameter. Mondick",
         "2018 fitted eight-point daily plasma-glucose profiles and linearly",
         "interpolated between observed time points ('iPG'); the model declares",
@@ -90,14 +90,14 @@ Mondick_2018_empagliflozin_t1dm <- function() {
         "(factor 18.016), matching the register's canonical unit and the",
         "Bosch_2025_glp1ra_hba1c.R precedent."
       ),
-      source_name        = "PG"
+      source_name = "PG"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled against the 42-year reference patient on both Gmax and",
         "Imax (Mondick 2018 Supplementary Table 2 footnote). Cohort mean (SD)",
         "41.0 (10.9) years; study range 20-60 years. Both age exponents are",
@@ -105,43 +105,43 @@ Mondick_2018_empagliflozin_t1dm <- function() {
         "age effect is identifiable; the terms are retained because the paper",
         "reports them as part of a full covariate model."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 = male (the reference patient is a 42-year-old male)",
-      notes              = paste(
+      notes = paste(
         "Enters as a multiplicative factor raised to the SEXF indicator on both",
         "Gmax and Imax (Mondick 2018 Supplementary Table 2). Cohort 22/75",
         "female (29.3%)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
-    glu_urine   = list(analyte = "glucose", units = "mg", specimen = "urine", verified = TRUE)
+    glu_urine = list(analyte = "glucose", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 75,
-    n_studies      = 1,
-    age_range      = "20-60 years",
-    age_median     = "41.0 years (mean; SD 10.9). Reference patient 42 years",
-    weight_median  = "79.3 kg (mean; SD 14.3)",
-    bmi_median     = "25.6 kg/m^2 (mean; SD 3.69)",
+    species = "human",
+    n_subjects = 75,
+    n_studies = 1,
+    age_range = "20-60 years",
+    age_median = "41.0 years (mean; SD 10.9). Reference patient 42 years",
+    weight_median = "79.3 kg (mean; SD 14.3)",
+    bmi_median = "25.6 kg/m^2 (mean; SD 3.69)",
     sex_female_pct = 29.3,
     renal_function = "eGFR mean 102 mL/min/1.73 m^2 (SD 13.8)",
-    disease_state  = "type 1 diabetes mellitus, on background insulin",
-    dose_range     = "placebo, or empagliflozin 2.5, 10 or 25 mg orally once daily for 28 days, as adjunct to insulin",
-    regions        = "Germany, Austria",
-    notes          = paste(
+    disease_state = "type 1 diabetes mellitus, on background insulin",
+    dose_range = "placebo, or empagliflozin 2.5, 10 or 25 mg orally once daily for 28 days, as adjunct to insulin",
+    regions = "Germany, Austria",
+    notes = paste(
       "EASE-1 (NCT01969747), a randomized, placebo-controlled, parallel-group",
       "phase 2 study run at one German and one Austrian centre between",
       "25 November 2013 and 20 April 2014. Randomization 1:1:1:1 to placebo",

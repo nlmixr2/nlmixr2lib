@@ -14,46 +14,46 @@ Zhang_2011_nutlin3a <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "nutlin-3a", units = "mg", specimen = "administration site", verified = FALSE),
-    venous     = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
-    lung       = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    arterial   = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
-    adipose    = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    adrenal    = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "nutlin-3a", units = "mg", specimen = "administration site", verified = FALSE),
+    venous = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
+    lung = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    arterial = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
+    adipose = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    adrenal = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
     bonemarrow = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    brain      = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle     = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen     = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    intestine  = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    liver      = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    retina     = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
-    vitreous   = list(analyte = "nutlin-3a", units = "mg", specimen = "vitreous", verified = FALSE),
-    res_vasc   = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
-    res_tis    = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE)
+    brain = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    intestine = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    retina = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    vitreous = list(analyte = "nutlin-3a", units = "mg", specimen = "vitreous", verified = FALSE),
+    res_vasc = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
+    res_tis = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Mouse body weight. Used to scale all tissue volumes linearly from the %-of-body-weight values in Table 1 (assumed tissue density 1 kg/L). The paper's adult C57BL/6 mice were ~25 g (0.025 kg); the model file defaults to WT = 0.025 if users do not supply it via the event table or rxSolve(params = c(WT = ...)). The Brown et al. 1997 physiological tissue blood flows tabulated in mL/h were converted to L/h.",
-      source_name        = "WT"
+      notes = "Mouse body weight. Used to scale all tissue volumes linearly from the %-of-body-weight values in Table 1 (assumed tissue density 1 kg/L). The paper's adult C57BL/6 mice were ~25 g (0.025 kg); the model file defaults to WT = 0.025 if users do not supply it via the event table or rxSolve(params = c(WT = ...)). The Brown et al. 1997 physiological tissue blood flows tabulated in mL/h were converted to L/h.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "mouse (adult C57BL/6, male and female)",
-    n_subjects     = 355L,
-    n_studies      = 2L,
-    age_range      = "adult",
-    weight_range   = "~25 g (typical adult C57BL/6)",
+    species = "mouse (adult C57BL/6, male and female)",
+    n_subjects = 355L,
+    n_studies = 2L,
+    age_range = "adult",
+    weight_range = "~25 g (typical adult C57BL/6)",
     sex_female_pct = 4.8,
-    disease_state  = "Healthy, non-tumour-bearing adult mice. The PBPK model was fit to pooled plasma + tissue PK from non-tumour-bearing animals.",
-    dose_range     = "Intravenous: 10 and 20 mg/kg single bolus (tail vein). Oral: 50, 100, and 200 mg/kg single gavage. Model simulations explored 50, 100, 200, and 400 mg/kg QD and BID.",
-    regions        = "St. Jude Children's Research Hospital (Memphis, TN, USA)",
-    notes          = "Study 1: 145 mice (128 male + 17 female) split into oral 100 mg/kg, oral 200 mg/kg, and IV 10 mg/kg arms with destructive sampling for tissue distribution. Study 2: 210 adult male mice in oral 50, 100 mg/kg and IV 10, 20 mg/kg arms with serial plasma sampling. Tissues sampled: plasma, liver, spleen, intestine, muscle, lung, adipose, bone marrow, adrenal gland, brain, retina, vitreous (the union across the two studies)."
+    disease_state = "Healthy, non-tumour-bearing adult mice. The PBPK model was fit to pooled plasma + tissue PK from non-tumour-bearing animals.",
+    dose_range = "Intravenous: 10 and 20 mg/kg single bolus (tail vein). Oral: 50, 100, and 200 mg/kg single gavage. Model simulations explored 50, 100, 200, and 400 mg/kg QD and BID.",
+    regions = "St. Jude Children's Research Hospital (Memphis, TN, USA)",
+    notes = "Study 1: 145 mice (128 male + 17 female) split into oral 100 mg/kg, oral 200 mg/kg, and IV 10 mg/kg arms with destructive sampling for tissue distribution. Study 2: 210 adult male mice in oral 50, 100 mg/kg and IV 10, 20 mg/kg arms with serial plasma sampling. Tissues sampled: plasma, liver, spleen, intestine, muscle, lung, adipose, bone marrow, adrenal gland, brain, retina, vitreous (the union across the two studies)."
   )
 
   ini({

@@ -19,48 +19,48 @@ Svensson_2014_bedaquiline_lpvr <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2     = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (used for allometric scaling around 70 kg)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (used for allometric scaling around 70 kg)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Allometric scaling applied with fixed exponents 0.75 on apparent clearances (CL/F, Q1/F, Q2/F, CL_M2, Q_M2) and 1 on apparent volumes (V/F, VP1/F, VP2/F, V_M2, VP_M2) around a 70 kg reference adult. Svensson 2014 Materials and Methods 'Nonlinear mixed-effects modeling' states 'Allometric scaling of disposition parameters with body weight as the size descriptor and fixed coefficients (0.75 for clearance [CL] and 1 for volume of distribution) was applied.' Reference weight of 70 kg is confirmed by Supplementary Table S1a footnote b: 'Disposition parameters for a typical individual of 70 kg, allometric scaling with body weight and fixed coefficients 0.75 for CL and 1 for V applied.'",
-      source_name        = "WT"
+      notes = "Time-fixed baseline body weight. Allometric scaling applied with fixed exponents 0.75 on apparent clearances (CL/F, Q1/F, Q2/F, CL_M2, Q_M2) and 1 on apparent volumes (V/F, VP1/F, VP2/F, V_M2, VP_M2) around a 70 kg reference adult. Svensson 2014 Materials and Methods 'Nonlinear mixed-effects modeling' states 'Allometric scaling of disposition parameters with body weight as the size descriptor and fixed coefficients (0.75 for clearance [CL] and 1 for volume of distribution) was applied.' Reference weight of 70 kg is confirmed by Supplementary Table S1a footnote b: 'Disposition parameters for a typical individual of 70 kg, allometric scaling with body weight and fixed coefficients 0.75 for CL and 1 for V applied.'",
+      source_name = "WT"
     ),
     CONMED_LPV = list(
-      description        = "Concomitant ritonavir-boosted lopinavir (LPV/r) co-administration (1 = on twice-daily 400/100 mg LPV/r, 0 = not on LPV/r).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ritonavir-boosted lopinavir (LPV/r) co-administration (1 = on twice-daily 400/100 mg LPV/r, 0 = not on LPV/r).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on LPV/r)",
-      notes              = "Subject- and time-varying indicator of concomitant LPV/r co-administration. Study C110 was a crossover study (n = 16 healthy seronegative volunteers) in which a single 400 mg bedaquiline dose was given alone in one period and after 10 days of LPV/r 400/100 mg twice daily in the other period; the LPV/r dosing continued throughout the second-period 14-day PK sampling window. The DDI is mediated by ritonavir's potent CYP3A4 inhibition. Svensson 2014 Materials and Methods state 'The impacts of LPV/r (inhibition) were assumed to start immediately upon initiation of administration and to vanish within 1 day after the last LPV/r dose.' Multiplicative factor on apparent CL during co-administration: cl_bdq_eff = cl_bdq_base * e_lpv_cl ^ CONMED_LPV with e_lpv_cl = 0.347 (RSE 9.3%) for bedaquiline (BDQ CL falls to 35% of the no-LPV/r value) and cl_m2_eff = cl_m2_base * e_lpv_cl_m2 ^ CONMED_LPV with e_lpv_cl_m2 = 0.578 (RSE 8.7%) for M2 (M2 CL falls to 58% of the no-LPV/r value). Svensson 2014 Supplementary Table S1a 'EFF1 LPV/r BDQ CL = 0.347' and 'EFF2 LPV/r M2 CL = 0.578'. For simulation, set CONMED_LPV = 1 on observation rows while LPV/r is being given and 0 otherwise.",
-      source_name        = "LPV/r"
+      notes = "Subject- and time-varying indicator of concomitant LPV/r co-administration. Study C110 was a crossover study (n = 16 healthy seronegative volunteers) in which a single 400 mg bedaquiline dose was given alone in one period and after 10 days of LPV/r 400/100 mg twice daily in the other period; the LPV/r dosing continued throughout the second-period 14-day PK sampling window. The DDI is mediated by ritonavir's potent CYP3A4 inhibition. Svensson 2014 Materials and Methods state 'The impacts of LPV/r (inhibition) were assumed to start immediately upon initiation of administration and to vanish within 1 day after the last LPV/r dose.' Multiplicative factor on apparent CL during co-administration: cl_bdq_eff = cl_bdq_base * e_lpv_cl ^ CONMED_LPV with e_lpv_cl = 0.347 (RSE 9.3%) for bedaquiline (BDQ CL falls to 35% of the no-LPV/r value) and cl_m2_eff = cl_m2_base * e_lpv_cl_m2 ^ CONMED_LPV with e_lpv_cl_m2 = 0.578 (RSE 8.7%) for M2 (M2 CL falls to 58% of the no-LPV/r value). Svensson 2014 Supplementary Table S1a 'EFF1 LPV/r BDQ CL = 0.347' and 'EFF2 LPV/r M2 CL = 0.578'. For simulation, set CONMED_LPV = 1 on observation rows while LPV/r is being given and 0 otherwise.",
+      source_name = "LPV/r"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "20-54 years",
-    age_median     = "25.5 years",
-    weight_range   = "65-103 kg",
-    weight_median  = "75 kg",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "20-54 years",
+    age_median = "25.5 years",
+    weight_range = "65-103 kg",
+    weight_median = "75 kg",
     sex_female_pct = 6.25,
     race_ethnicity = c(Black = 37.5, White = 62.5, `Mixed race` = 0.0),
-    disease_state  = "HIV-seronegative healthy adult volunteers (18-55 years; BMI 18-32 kg/m^2; less than 10 cigarettes/day). Women of childbearing potential, individuals with TB / HIV-1 / HIV-2, and individuals with a history of substance abuse were excluded. Subjects previously enrolled in trials involving bedaquiline were ineligible.",
-    dose_range     = "Two single 400 mg oral doses of bedaquiline given 4 weeks apart in a crossover sequence; LPV/r at 400/100 mg twice daily started 10 days before either the first or second bedaquiline dose and continued through the 14-day PK sampling window. PK samples were collected pre-dose and at 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72, 120, 168, 216, 264, and 336 h after each bedaquiline dose (17 samples per dose per analyte).",
-    regions        = "Not stated in the publication beyond study sponsor (Tibotec / Janssen) and ClinicalTrials.gov registration NCT00828529.",
-    study_id       = "C110 (LPV/r DDI; NCT00828529).",
-    notes          = "Baseline demographics from Svensson 2014 Table 1. 532 BDQ + 532 M2 PK samples available; 20 M2 samples were below limit of quantification (LLOQ 1.00 ng/mL) and were omitted from modelling. Bedaquiline and M2 concentrations were determined by LC-MS/MS validated to FDA guidelines."
+    disease_state = "HIV-seronegative healthy adult volunteers (18-55 years; BMI 18-32 kg/m^2; less than 10 cigarettes/day). Women of childbearing potential, individuals with TB / HIV-1 / HIV-2, and individuals with a history of substance abuse were excluded. Subjects previously enrolled in trials involving bedaquiline were ineligible.",
+    dose_range = "Two single 400 mg oral doses of bedaquiline given 4 weeks apart in a crossover sequence; LPV/r at 400/100 mg twice daily started 10 days before either the first or second bedaquiline dose and continued through the 14-day PK sampling window. PK samples were collected pre-dose and at 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72, 120, 168, 216, 264, and 336 h after each bedaquiline dose (17 samples per dose per analyte).",
+    regions = "Not stated in the publication beyond study sponsor (Tibotec / Janssen) and ClinicalTrials.gov registration NCT00828529.",
+    study_id = "C110 (LPV/r DDI; NCT00828529).",
+    notes = "Baseline demographics from Svensson 2014 Table 1. 532 BDQ + 532 M2 PK samples available; 20 M2 samples were below limit of quantification (LLOQ 1.00 ng/mL) and were omitted from modelling. Bedaquiline and M2 concentrations were determined by LC-MS/MS validated to FDA guidelines."
   )
 
   ini({

@@ -26,18 +26,20 @@ Xu_2024_linezolid <- function() {
   # single disposition state holds linezolid amount in plasma.
   compartmentData <- list(
     central = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-model effect on CL centred at 82 years, per the final-model",
         "equation on Xu 2024 p. 5078: CL = 2.7 x (age/82)^-0.56 x",
         "(CrCL/42.0)^0.50 x exp(eta_CL). The negative exponent makes CL fall",
@@ -48,17 +50,17 @@ Xu_2024_linezolid <- function() {
         "50, 70, 90 and 100 years was simulated in the Monte Carlo dosing",
         "analysis (Table 4)."
       ),
-      source_name        = "age"
+      source_name = "age"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated by the Cockcroft-Gault formula",
         "(raw mL/min, NOT BSA-normalized)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried as the raw Cockcroft-Gault value in mL/min rather than the",
         "canonical BSA-normalized mL/min/1.73 m^2 form - the same deviation",
         "documented in Tsuji_2017_linezolid.R, Delattre_2010_amikacin.R and",
@@ -75,7 +77,7 @@ Xu_2024_linezolid <- function() {
         "sit at the edge of the observed range. CrCL of 15, 30, 45, 60 and 90",
         "mL/min was simulated in the Monte Carlo dosing analysis (Table 4)."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
@@ -86,11 +88,11 @@ Xu_2024_linezolid <- function() {
   # may be attributed to the narrow range of body weights evaluated here."
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested as a covariate on clearance and rejected by the stepwise",
         "forward-inclusion / backward-elimination procedure (Xu 2024",
         "Discussion). The authors attribute the null result to the narrow",
@@ -105,28 +107,28 @@ Xu_2024_linezolid <- function() {
         "weight is absent from the reported model-building path and its",
         "rejection is documented only in the Discussion prose."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 166L,
-    n_studies      = 1L,
-    age_range      = paste(
+    species = "human",
+    n_subjects = 166L,
+    n_studies = 1L,
+    age_range = paste(
       "Adults >= 18 years; PPK cohort (n = 166) median (IQR) 82.0",
       "(75.0, 89.0) years per supplementary Table S1 - the same 82 years",
       "used as the centering value of the final CL equation."
     ),
-    age_median     = "82.0 years (supplementary Table S1, n = 166)",
-    weight_range   = paste(
+    age_median = "82.0 years (supplementary Table S1, n = 166)",
+    weight_range = paste(
       "PPK cohort (n = 166) median (IQR) 60.0 (55.0, 65.0) kg per",
       "supplementary Table S1."
     ),
-    weight_median  = "60.0 kg (supplementary Table S1, n = 166)",
+    weight_median = "60.0 kg (supplementary Table S1, n = 166)",
     sex_female_pct = 26.5,
     race_ethnicity = "Chinese (single-centre cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with hospital-acquired pneumonia diagnosed per the 2016",
       "ATS/IDSA guidelines and renal insufficiency (Cockcroft-Gault",
       "CrCL < 90 mL/min per the 2010 FDA guidance). Patients on renal",
@@ -142,18 +144,18 @@ Xu_2024_linezolid <- function() {
       "per supplementary Table S1 - the CrCL median is the same 42.0 mL/min",
       "used as the centering value of the final CL equation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Linezolid 600 mg every 12 h by intravenous infusion (package label",
       "standard dose); clinicians were free to adjust the regimen on the",
       "basis of steady-state trough concentrations. Monte Carlo simulations",
       "explored 600, 400, 300 and 200 mg every 12 h as 1 h infusions."
     ),
-    regions        = paste(
+    regions = paste(
       "Single centre: Suzhou Municipal Hospital (The Affiliated Suzhou",
       "Hospital of Nanjing Medical University), Suzhou, China.",
       "July 2018 - August 2023."
     ),
-    notes          = paste(
+    notes = paste(
       "Retrospective study. 207 linezolid serum concentrations from 166",
       "patients with renal insufficiency entered the PPK analysis; samples",
       "were predominantly steady-state troughs drawn 30 min or immediately",

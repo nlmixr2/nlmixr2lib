@@ -21,7 +21,7 @@ Bai_2024_imipenem <- function() {
     sep = " "
   )
   vignette <- "Bai_2024_imipenem"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Methods "Laboratory analysis": blood samples were
@@ -29,23 +29,23 @@ Bai_2024_imipenem <- function() {
   # imipenem concentration was determined by ... HPLC-UV". The assayed
   # analyte is imipenem itself; cilastatin was not measured.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Endogenous creatinine clearance computed with the Cockcroft-Gault",
         "equation in SI creatinine units, reported as raw mL/min and NOT",
         "normalised to 1.73 m^2 body surface area. Table 1 footnote gives the",
         "exact form used: CrCl = [(140 - age) * weight (kg)] /",
         "[0.818 * Cr (umol/L)], multiplied by 0.85 for women."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on CL:",
         "CL (L/h) = 11.357 * (CrCl / 99.896)^0.473 * exp(eta), the paper's",
         "Eq. 8 (Results, 'Population pharmacokinetics'), with the exponent",
@@ -63,7 +63,7 @@ Bai_2024_imipenem <- function() {
         "from 776.148 to 734.330 and the CL inter-individual variability",
         "from 38.562% to 35.748% CV."
       ),
-      source_name        = "CrCl"
+      source_name = "CrCl"
     )
   )
 
@@ -78,9 +78,9 @@ Bai_2024_imipenem <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened; Table 1 gives 56.45 +/- 18.76 years, median 56, range",
         "18-96. The Discussion states age 'was related to the individual",
         "variation in the parameters' (online supplemental figure 1) but it",
@@ -91,9 +91,9 @@ Bai_2024_imipenem <- function() {
     ),
     WT = list(
       description = "Body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened; Table 1 gives 70.21 +/- 72.01 kg, median 69, range",
         "19.6-311.7. Not retained; weight is also an input to the",
         "Cockcroft-Gault CrCl. The reported standard deviation exceeds the",
@@ -105,9 +105,9 @@ Bai_2024_imipenem <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened; Table 1 gives 94.35 +/- 187.94 umol/L, median 64.8, range",
         "32.8-883. Figure 2 shows the base-model CL ETA against both Cr and",
         "CrCl; the relationship disappeared in the final model after CrCl was",
@@ -117,9 +117,9 @@ Bai_2024_imipenem <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "unitless",
-      type        = "categorical",
-      notes       = paste(
+      units = "unitless",
+      type = "categorical",
+      notes = paste(
         "Screened as an indicator variable (Methods, 'Final model'). Cohort",
         "33 male / 18 female (Table 1). Not retained; no coefficient is",
         "reported. Sex enters the Cockcroft-Gault CrCl via the 0.85 factor."
@@ -128,9 +128,9 @@ Bai_2024_imipenem <- function() {
     ),
     AKI = list(
       description = "Acute kidney injury indicator.",
-      units       = "unitless",
-      type        = "categorical",
-      notes       = paste(
+      units = "unitless",
+      type = "categorical",
+      notes = paste(
         "Screened as an indicator variable. 20 of 51 patients (39.21%) met",
         "the KDIGO 2021 AKI criteria (Table 1). Not retained; no coefficient",
         "is reported."
@@ -139,9 +139,9 @@ Bai_2024_imipenem <- function() {
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score.",
-      units       = "points",
-      type        = "continuous",
-      notes       = paste(
+      units = "points",
+      type = "continuous",
+      notes = paste(
         "Screened; Table 1 gives 16.67 +/- 6.44, median 15, range 8-33. Not",
         "retained; no coefficient is reported."
       ),
@@ -149,9 +149,9 @@ Bai_2024_imipenem <- function() {
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score.",
-      units       = "points",
-      type        = "continuous",
-      notes       = paste(
+      units = "points",
+      type = "continuous",
+      notes = paste(
         "Screened; Table 1 gives 6.78 +/- 5.06, median 5, range 2-19. Not",
         "retained; no coefficient is reported."
       ),
@@ -160,17 +160,17 @@ Bai_2024_imipenem <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
     n_observations = 196L,
-    age_range      = "18-96 years",
-    age_median     = "56 years",
-    weight_range   = "19.6-311.7 kg as tabulated (Table 1 reports 70.21 +/- 72.01 kg; the standard deviation exceeds the mean and the upper bound is implausible, so treat this row as unreliable)",
-    weight_median  = "69 kg",
+    age_range = "18-96 years",
+    age_median = "56 years",
+    weight_range = "19.6-311.7 kg as tabulated (Table 1 reports 70.21 +/- 72.01 kg; the standard deviation exceeds the mean and the upper bound is implausible, so treat this row as unreliable)",
+    weight_median = "69 kg",
     sex_female_pct = 100 * 18 / 51,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults admitted to the intensive care unit and meeting",
       "the Sepsis 3.0 diagnostic criteria, treated with imipenem as part of",
       "their anti-infection therapy. Comorbid state at enrolment: acute",
@@ -184,7 +184,7 @@ Bai_2024_imipenem <- function() {
       "the CRRT-containing cohort of Li et al. as a reason for the clearance",
       "difference between the two studies."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Imipenem-cilastatin 500 mg/500 mg given intravenously; imipenem doses",
       "of 0.5 g q6h, 0.5 g q8h and 1 g q8h were the commonly prescribed",
       "regimens, with the regimen chosen by the attending physician. Each",
@@ -194,7 +194,7 @@ Bai_2024_imipenem <- function() {
       "simulations span six regimens: 500 and 1000 mg q6h, q8h and q12h, all",
       "as 1-hour infusions."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Samples were drawn at or near steady state, at least 24 hours after",
       "the start of imipenem therapy. The nominal schedule was duplicate",
       "samples before the dose (0 h) and at 0.5, 1, 1.5, 2, 3, 4, 6 and 8",
@@ -210,8 +210,8 @@ Bai_2024_imipenem <- function() {
       "its dosing simulations into four CrCl bands: 17.80-30, 30-60, 60-90",
       "and 90-256.22 mL/min."
     ),
-    regions        = "People's Republic of China (single centre; intensive care unit, Beijing Friendship Hospital, Capital Medical University, Beijing).",
-    notes          = paste(
+    regions = "People's Republic of China (single centre; intensive care unit, Beijing Friendship Hospital, Capital Medical University, Beijing).",
+    notes = paste(
       "Baseline demographics from Bai 2024 Table 1; modelling details from",
       "Methods, 'Population pharmacokinetics/validation'. Prospective",
       "open-label study (ethics certificate 2018-P2-219-01). The model was",

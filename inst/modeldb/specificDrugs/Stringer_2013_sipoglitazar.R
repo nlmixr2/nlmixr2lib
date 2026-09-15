@@ -23,42 +23,42 @@ Stringer_2013_sipoglitazar <- function() {
   # were reported in ng/mL (Stringer 2013 Bioanalysis) and are carried here
   # in mg/L, which is the same number divided by 1000.
   compartmentData <- list(
-    depot       = list(analyte = "sipoglitazar", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "sipoglitazar", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "sipoglitazar", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sipoglitazar", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "sipoglitazar", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     UGT2B15_STAR2_HET = list(
-      description        = "UGT2B15 *1/*2 heterozygote at the D85Y (rs1902023) coding polymorphism",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B15 *1/*2 heterozygote at the D85Y (rs1902023) coding polymorphism",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with UGT2B15_STAR2_HOM = 0, i.e. the *1/*1 wild-type homozygote stratum",
-      notes              = paste(
+      notes = paste(
         "Germline genotype, time-fixed. Paired with UGT2B15_STAR2_HOM to select one",
         "of three stratum-specific typical clearances. Genotype frequencies in the",
         "pooled analysis population (Stringer 2013 Table 1, n = 1151): *1/*1 22%,",
         "*1/*2 51%, *2/*2 27%."
       ),
-      source_name        = "UGT2B15*1/*2"
+      source_name = "UGT2B15*1/*2"
     ),
     UGT2B15_STAR2_HOM = list(
-      description        = "UGT2B15 *2/*2 homozygous-variant (poor metaboliser) genotype at D85Y (rs1902023)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B15 *2/*2 homozygous-variant (poor metaboliser) genotype at D85Y (rs1902023)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with UGT2B15_STAR2_HET = 0, i.e. the *1/*1 wild-type homozygote stratum",
-      notes              = paste(
+      notes = paste(
         "Germline genotype, time-fixed. Paired with UGT2B15_STAR2_HET. The *2/*2",
         "stratum has the lowest apparent clearance (1.53 vs 4.46 L/h in *1/*1)."
       ),
-      source_name        = "UGT2B15*2/*2"
+      source_name = "UGT2B15*2/*2"
     ),
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear centered effect on the central volume per Stringer 2013 equation 4,",
         "P(mean) = theta(i) * (1 + theta(f) * (COV - COV(median))). Stringer 2013",
         "cites Anderson & Holford (Annu Rev Pharmacol Toxicol 2008;48:303-332) for",
@@ -68,44 +68,44 @@ Stringer_2013_sipoglitazar <- function() {
         "substitute that cohort's median FFM; the effect is centered, so the choice",
         "only rescales where the typical V = 9.03 L is anchored."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     STUDY_SIPO_PHASE2 = list(
-      description        = "Observation belongs to the phase II type-2-diabetes patient studies (EC201, EC202)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Observation belongs to the phase II type-2-diabetes patient studies (EC201, EC202)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase I healthy-volunteer study 006)",
-      notes              = paste(
+      notes = paste(
         "Selects the phase II proportional residual magnitude and switches on the",
         "inter-individual variability Stringer 2013 places on that residual. The",
         "phase II samples were all intended as troughs but the actual time after",
         "dose was never recorded (supplementary methods), so the phase II residual",
         "absorbs an unrecorded-sampling-time component in addition to assay error."
       ),
-      source_name        = "study"
+      source_name = "study"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1151,
-    n_studies      = 3,
-    age_range      = "18-75 years",
-    age_median     = "26 years (phase I, study 006); 56 years (EC201); 57 years (EC202)",
-    weight_range   = "48-149 kg",
-    weight_median  = "71 kg (phase I, study 006); 90 kg (EC201); 87 kg (EC202)",
+    species = "human",
+    n_subjects = 1151,
+    n_studies = 3,
+    age_range = "18-75 years",
+    age_median = "26 years (phase I, study 006); 56 years (EC201); 57 years (EC202)",
+    weight_range = "48-149 kg",
+    weight_median = "71 kg (phase I, study 006); 90 kg (EC201); 87 kg (EC202)",
     sex_female_pct = 54.1,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 524 healthy volunteers (phase I study 006) and 627 adults with type",
       "2 diabetes mellitus and no prior exposure to antidiabetic medication",
       "(phase II studies EC201 and EC202)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral 64 mg (study 006); once- or twice-daily oral 8, 16, 32 and 64 mg",
       "total daily dose for 12 weeks (EC201, EC202)"
     ),
     genotype_frequency = c(`*1/*1` = 22, `*1/*2` = 51, `*2/*2` = 27),
-    notes          = paste(
+    notes = paste(
       "Demographics from Stringer 2013 Table 1 (median and range). Female percentage",
       "is the pooled (304 + 155 + 164) / 1151. The phase I study enrolled a range of",
       "ethnicities but Table 1 does not tabulate race, so race_ethnicity is omitted.",

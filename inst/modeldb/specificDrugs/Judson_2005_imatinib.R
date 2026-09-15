@@ -38,11 +38,11 @@ Judson_2005_imatinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as the power function (WT / 67.5)^0.002 (Yang 2025 ",
         "Table 1, 'CL/F: 10.6 x (TBW/67.5)^0.002'). The reference value ",
         "67.5 kg is the centring constant printed inside the covariate ",
@@ -56,21 +56,21 @@ Judson_2005_imatinib <- function() {
         "cannot describe pediatric clearance; that allometric variant is ",
         "Yang 2025's own modification and is NOT encoded here."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 43L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 43L,
+    n_studies = 1L,
     n_observations = "517 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "not reported in Yang 2025 Table 1",
-    disease_state  = "Adults with gastrointestinal stromal tumor (GIST) or soft-tissue sarcoma (STS)",
-    dose_range     = "Oral imatinib 400-1000 mg total daily dose",
-    regions        = "Europe and USA",
-    bioanalytical  = "LC-MS/MS, limit of quantification 4 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "not reported in Yang 2025 Table 1",
+    disease_state = "Adults with gastrointestinal stromal tumor (GIST) or soft-tissue sarcoma (STS)",
+    dose_range = "Oral imatinib 400-1000 mg total daily dose",
+    regions = "Europe and USA",
+    bioanalytical = "LC-MS/MS, limit of quantification 4 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "Yang 2025 Table 1 footnote a: 'The population PK model was ",
       "described differently on day 1, day 29, and the extension phase. ",
       "The model on the extension phase was used in this current ",

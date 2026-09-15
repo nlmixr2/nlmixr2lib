@@ -1,53 +1,53 @@
 Hennig_2006_itraconazole <- function() {
   description <- "Population PK model for oral itraconazole and its active metabolite hydroxy-itraconazole in paediatric cystic-fibrosis and bone-marrow-transplant patients (Hennig 2006). One-compartment parent + one-compartment metabolite with first-order absorption, first-order metabolic conversion (fm fixed to 1), allometric weight scaling on parent CL/F (0.75) and Vd/F (1.0), and formulation-specific ka and relative bioavailability for capsule vs oral solution."
-  reference   <- "Hennig S, Wainwright CE, Bell SC, Miller H, Friberg LE, Charles BG. Population pharmacokinetics of itraconazole and its active metabolite hydroxy-itraconazole in paediatric cystic fibrosis and bone marrow transplant patients. Clin Pharmacokinet. 2006;45(11):1099-1114. doi:10.2165/00003088-200645110-00004"
-  vignette    <- "Hennig_2006_itraconazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Hennig S, Wainwright CE, Bell SC, Miller H, Friberg LE, Charles BG. Population pharmacokinetics of itraconazole and its active metabolite hydroxy-itraconazole in paediatric cystic fibrosis and bone marrow transplant patients. Clin Pharmacokinet. 2006;45(11):1099-1114. doi:10.2165/00003088-200645110-00004"
+  vignette <- "Hennig_2006_itraconazole"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
     central_ohi = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; constant within an individual in the source dataset).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; constant within an individual in the source dataset).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Fixed allometric scaling: (WT/70)^0.75 on CL/F of itraconazole and (WT/70)^1.0 on Vd/F of itraconazole. No weight scaling on metabolite parameters per the source NMTRAN control stream. Reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Fixed allometric scaling: (WT/70)^0.75 on CL/F of itraconazole and (WT/70)^1.0 on Vd/F of itraconazole. No weight scaling on metabolite parameters per the source NMTRAN control stream. Reference weight 70 kg.",
+      source_name = "WT"
     ),
     FORM_CAPSULE = list(
-      description        = "Formulation indicator at the dose record: 1 = capsule (Sporanox), 0 = oral solution.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Formulation indicator at the dose record: 1 = capsule (Sporanox), 0 = oral solution.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral solution; relative bioavailability fixed to 1).",
-      notes              = "Per-record covariate (each subject may switch formulations during follow-up). Switches absorption rate between ka(capsule) = 0.09 h^-1 and ka(solution) = 0.96 h^-1, and gates the IIV-bearing relative-bioavailability term so etalfdepot only contributes when FORM_CAPSULE = 1.",
-      source_name        = "PREP"
+      notes = "Per-record covariate (each subject may switch formulations during follow-up). Switches absorption rate between ka(capsule) = 0.09 h^-1 and ka(solution) = 0.96 h^-1, and gates the IIV-bearing relative-bioavailability term so etalfdepot only contributes when FORM_CAPSULE = 1.",
+      source_name = "PREP"
     )
   )
 
   population <- list(
-    n_subjects     = 49,
-    n_studies      = 2,
-    age_range      = "0.4-30 years (median 8 years; 5 adult cystic-fibrosis patients aged 19-30 years pooled with 44 paediatric patients)",
-    age_median     = "8 years",
-    weight_range   = "6.8-83.5 kg",
-    weight_median  = "29.3 kg",
+    n_subjects = 49,
+    n_studies = 2,
+    age_range = "0.4-30 years (median 8 years; 5 adult cystic-fibrosis patients aged 19-30 years pooled with 44 paediatric patients)",
+    age_median = "8 years",
+    weight_range = "6.8-83.5 kg",
+    weight_median = "29.3 kg",
     sex_female_pct = 38.8,
     race_ethnicity = c(White = 95.9, Other = 4.1),
-    disease_state  = "Paediatric cystic fibrosis (n = 29; itraconazole prescribed for allergic bronchopulmonary aspergillosis) or paediatric bone-marrow transplant (n = 20; itraconazole prescribed for fungal-infection prophylaxis); 5 adult cystic-fibrosis subjects from The Prince Charles Hospital pooled with the paediatric cohort for comparison.",
-    dose_range     = "Oral itraconazole 1.5-12.5 mg/kg/day (median 5.4 mg/kg/day) as Sporanox capsules or oral cyclodextrin solution; switching between formulations was allowed mid-study after at least three consecutive doses of the most recent formulation.",
-    regions        = "Australia (The Royal Children's Hospital, Brisbane, QLD; The Prince Charles Hospital, Brisbane, QLD).",
+    disease_state = "Paediatric cystic fibrosis (n = 29; itraconazole prescribed for allergic bronchopulmonary aspergillosis) or paediatric bone-marrow transplant (n = 20; itraconazole prescribed for fungal-infection prophylaxis); 5 adult cystic-fibrosis subjects from The Prince Charles Hospital pooled with the paediatric cohort for comparison.",
+    dose_range = "Oral itraconazole 1.5-12.5 mg/kg/day (median 5.4 mg/kg/day) as Sporanox capsules or oral cyclodextrin solution; switching between formulations was allowed mid-study after at least three consecutive doses of the most recent formulation.",
+    regions = "Australia (The Royal Children's Hospital, Brisbane, QLD; The Prince Charles Hospital, Brisbane, QLD).",
     n_observations = "227 itraconazole observations (median 0.264 mg/L) and 192 hydroxy-itraconazole observations (median 0.531 mg/L); LLOQ 0.075 mg/L for both analytes (sub-LLOQ values imputed as half-LLOQ = 0.0375 mg/L per Hennig 2006 Drug Analysis section).",
-    food_status    = "75% of capsule doses were taken with food, 25% on an empty stomach; 9% of oral-solution doses were taken with food, 91% on an empty stomach. Food and acidic-beverage effects were tested as covariates on Frel but did not reach significance.",
-    notes          = "Demographic and dosing summary from Hennig 2006 Table I. Sampling was empirical (1-2 samples per subject per visit), with preferred windows of 0-6 h and 4 h before next dose; samples below LLOQ assigned to LLOQ/2 = 0.0375 mg/L."
+    food_status = "75% of capsule doses were taken with food, 25% on an empty stomach; 9% of oral-solution doses were taken with food, 91% on an empty stomach. Food and acidic-beverage effects were tested as covariates on Frel but did not reach significance.",
+    notes = "Demographic and dosing summary from Hennig 2006 Table I. Sampling was empirical (1-2 samples per subject per visit), with preferred windows of 0-6 h and 4 h before next dose; samples below LLOQ assigned to LLOQ/2 = 0.0375 mg/L."
   )
 
   ini({

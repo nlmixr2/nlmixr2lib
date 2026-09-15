@@ -13,71 +13,78 @@ Akbar_2025_voriconazole <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centered-linear effect on CL: CL_typical *= (1 + 0.0077 * (CRCL - 120)). Reference 120 mL/min (Akbar 2025 Eq 7). Akbar 2025 does not state which formula was used to derive CRCL or whether the value is BSA-normalized; the inclusion of pediatric subjects (down to 3 years / 5.3 kg) suggests the Schwartz formula was likely used for the pediatric stratum (which yields BSA-normalized mL/min/1.73 m^2) while Cockcroft-Gault was likely used for adults (raw mL/min). The slope 0.0077 was estimated against whatever scale was used in the source data; downstream simulation should supply CRCL on the same scale. The canonical CRCL register entry is documented as BSA-normalized but is reused here because the source paper simply names the column 'creatinine clearance' without further qualification.",
-      source_name        = "CLCR"
+      notes = "Centered-linear effect on CL: CL_typical *= (1 + 0.0077 * (CRCL - 120)). Reference 120 mL/min (Akbar 2025 Eq 7). Akbar 2025 does not state which formula was used to derive CRCL or whether the value is BSA-normalized; the inclusion of pediatric subjects (down to 3 years / 5.3 kg) suggests the Schwartz formula was likely used for the pediatric stratum (which yields BSA-normalized mL/min/1.73 m^2) while Cockcroft-Gault was likely used for adults (raw mL/min). The slope 0.0077 was estimated against whatever scale was used in the source data; downstream simulation should supply CRCL on the same scale. The canonical CRCL register entry is documented as BSA-normalized but is reused here because the source paper simply names the column 'creatinine clearance' without further qualification.",
+      source_name = "CLCR"
     ),
     TUMTP_LYMPH = list(
-      description        = "Lymphoma cancer-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Lymphoma cancer-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-lymphoma; when paired with all other Akbar 2025 TUMTP_* indicators = 0, the implicit reference is leukemia)",
-      notes              = "Additive-fractional +1.91% effect on CL (Eq 2 of Akbar 2025). Source category 'Lymphoma' (n = 14, 15.9% of cohort). The 95% CI on the coefficient spans zero (-0.382 to 0.777 per Table 2 bootstrap), so the lymphoma effect on CL is not statistically distinguishable from leukemia in this dataset.",
-      source_name        = "DISEASE == 'Lymphoma'"
+      notes = "Additive-fractional +1.91% effect on CL (Eq 2 of Akbar 2025). Source category 'Lymphoma' (n = 14, 15.9% of cohort). The 95% CI on the coefficient spans zero (-0.382 to 0.777 per Table 2 bootstrap), so the lymphoma effect on CL is not statistically distinguishable from leukemia in this dataset.",
+      source_name = "DISEASE == 'Lymphoma'"
     ),
     TUMTP_SARC = list(
-      description        = "Sarcoma cancer-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sarcoma cancer-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-sarcoma; when paired with all other Akbar 2025 TUMTP_* indicators = 0, the implicit reference is leukemia)",
-      notes              = "Additive-fractional +18.5% effect on CL (Eq 3 of Akbar 2025). Source category 'Sarcoma' (n = 9, 10.2% of cohort). The 95% CI on the coefficient spans zero (-0.403 to 2.01 per Table 2 bootstrap row labelled CL-DISEASE 3, where Table 2 footnotes 'd' and 'e' are mislabelled relative to the equation text -- see vignette Errata).",
-      source_name        = "DISEASE == 'Sarcoma'"
+      notes = "Additive-fractional +18.5% effect on CL (Eq 3 of Akbar 2025). Source category 'Sarcoma' (n = 9, 10.2% of cohort). The 95% CI on the coefficient spans zero (-0.403 to 2.01 per Table 2 bootstrap row labelled CL-DISEASE 3, where Table 2 footnotes 'd' and 'e' are mislabelled relative to the equation text -- see vignette Errata).",
+      source_name = "DISEASE == 'Sarcoma'"
     ),
     TUMTP_BREAST = list(
-      description        = "Breast-cancer indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Breast-cancer indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-breast-cancer; when paired with all other Akbar 2025 TUMTP_* indicators = 0, the implicit reference is leukemia)",
-      notes              = "Additive-fractional -81.7% effect on CL (Eq 4 of Akbar 2025); breast cancer subjects had ~5x lower CL than leukemia at the same CRCL. Source category 'Breast cancer' (n = 8, 9.1% of cohort). Effect is statistically significant (95% CI -0.919 to -0.593 per Table 2 bootstrap row labelled CL-DISEASE 4) and is consistent with Fig 1 of Akbar 2025 which shows breast cancer subjects with the lowest median CL (~2 L/h vs the leukemia reference 6.17 L/h).",
-      source_name        = "DISEASE == 'Breast cancer'"
+      notes = "Additive-fractional -81.7% effect on CL (Eq 4 of Akbar 2025); breast cancer subjects had ~5x lower CL than leukemia at the same CRCL. Source category 'Breast cancer' (n = 8, 9.1% of cohort). Effect is statistically significant (95% CI -0.919 to -0.593 per Table 2 bootstrap row labelled CL-DISEASE 4) and is consistent with Fig 1 of Akbar 2025 which shows breast cancer subjects with the lowest median CL (~2 L/h vs the leukemia reference 6.17 L/h).",
+      source_name = "DISEASE == 'Breast cancer'"
     ),
     TUMTP_MYELO = list(
-      description        = "Multiple myeloma cancer-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiple myeloma cancer-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-myeloma; when paired with all other Akbar 2025 TUMTP_* indicators = 0, the implicit reference is leukemia)",
-      notes              = "Additive-fractional -2.33% effect on CL (Eq 5 of Akbar 2025). Source category 'Myeloma' (n = 4, 4.5% of cohort). The 95% CI on the coefficient spans zero (-0.365 to 0.553 per Table 2 bootstrap), so the myeloma effect on CL is not statistically distinguishable from leukemia.",
-      source_name        = "DISEASE == 'Myeloma'"
+      notes = "Additive-fractional -2.33% effect on CL (Eq 5 of Akbar 2025). Source category 'Myeloma' (n = 4, 4.5% of cohort). The 95% CI on the coefficient spans zero (-0.365 to 0.553 per Table 2 bootstrap), so the myeloma effect on CL is not statistically distinguishable from leukemia.",
+      source_name = "DISEASE == 'Myeloma'"
     ),
     TUMTP_GLIO = list(
-      description        = "Glioma cancer-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Glioma cancer-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-glioma; when paired with all other Akbar 2025 TUMTP_* indicators = 0, the implicit reference is leukemia)",
-      notes              = "Additive-fractional +8.81% effect on CL (Eq 6 of Akbar 2025). Source category 'Glioma' (n = 3, 3.4% of cohort). The 95% CI on the coefficient spans zero (-0.233 to 0.830 per Table 2 bootstrap), so the glioma effect on CL is not statistically distinguishable from leukemia in this small cohort.",
-      source_name        = "DISEASE == 'Glioma'"
+      notes = "Additive-fractional +8.81% effect on CL (Eq 6 of Akbar 2025). Source category 'Glioma' (n = 3, 3.4% of cohort). The 95% CI on the coefficient spans zero (-0.233 to 0.830 per Table 2 bootstrap), so the glioma effect on CL is not statistically distinguishable from leukemia in this small cohort.",
+      source_name = "DISEASE == 'Glioma'"
     )
   )
 
   population <- list(
-    n_subjects     = 88L,
-    n_studies      = 1L,
+    n_subjects = 88L,
+    n_studies = 1L,
     n_observations = 88L,
-    age_range      = "3-90 years",
-    age_median     = "35 years (38 years per Abstract; Results section reports median 38 with range 3-90; Table 1 reports median 35 with range 3-67 -- internal inconsistency in the source paper)",
-    weight_range   = "5.3-95.6 kg",
-    weight_median  = "30.85 kg",
+    age_range = "3-90 years",
+    age_median = "35 years (38 years per Abstract; Results section reports median 38 with range 3-90; Table 1 reports median 35 with range 3-67 -- internal inconsistency in the source paper)",
+    weight_range = "5.3-95.6 kg",
+    weight_median = "30.85 kg",
     sex_female_pct = 46.6,
-    age_group      = c(adult_pct = 53.4, pediatric_pct = 46.6),
-    cancer_type    = c(Leukemia_pct = 56.8, Lymphoma_pct = 15.9, Sarcoma_pct = 10.2, BreastCancer_pct = 9.1, Myeloma_pct = 4.5, Glioma_pct = 3.4),
+    age_group = c(adult_pct = 53.4, pediatric_pct = 46.6),
+    cancer_type = c(
+      Leukemia_pct = 56.8,
+      Lymphoma_pct = 15.9,
+      Sarcoma_pct = 10.2,
+      BreastCancer_pct = 9.1,
+      Myeloma_pct = 4.5,
+      Glioma_pct = 3.4
+    ),
     fungal_infection = c(Suspected_pct = 54.5, Aspergillosis_pct = 35.2, FungalPneumonia_pct = 10.2),
-    disease_state  = "Adult and pediatric cancer patients (mixed solid and hematologic malignancies) receiving intravenous voriconazole for systemic fungal infections; majority empirical therapy for suspected fungal infection in immunocompromised cancer patients including febrile neutropenia.",
-    dose_range     = "Intravenous voriconazole loading 6 mg/kg q12h for 24 h, then maintenance 4 mg/kg q12h. Administered doses 56-400 mg per dose in the dataset. Trough samples drawn on day 5 before the morning dose per hospital protocol.",
-    regions        = "Single center: Shaukat Khanum Memorial Cancer Hospital and Research Centre, Lahore, Pakistan.",
-    notes          = "Retrospective therapeutic drug monitoring (TDM) data collected 1 January 2023 - 31 December 2023 from electronic medical records. 488 admitted cancer patients with systemic fungal infections were screened, 112 had voriconazole TDM data, and 88 with complete information were retained. Trough concentrations spanned 0.10-21.0 ug/mL. Bioanalytical method: homogeneous enzyme immunoassay on Siemens Atellica CH-930. Single observation per subject (sparse TDM design). Baseline demographics per Akbar 2025 Table 1; final-model parameter estimates per Akbar 2025 Table 2."
+    disease_state = "Adult and pediatric cancer patients (mixed solid and hematologic malignancies) receiving intravenous voriconazole for systemic fungal infections; majority empirical therapy for suspected fungal infection in immunocompromised cancer patients including febrile neutropenia.",
+    dose_range = "Intravenous voriconazole loading 6 mg/kg q12h for 24 h, then maintenance 4 mg/kg q12h. Administered doses 56-400 mg per dose in the dataset. Trough samples drawn on day 5 before the morning dose per hospital protocol.",
+    regions = "Single center: Shaukat Khanum Memorial Cancer Hospital and Research Centre, Lahore, Pakistan.",
+    notes = "Retrospective therapeutic drug monitoring (TDM) data collected 1 January 2023 - 31 December 2023 from electronic medical records. 488 admitted cancer patients with systemic fungal infections were screened, 112 had voriconazole TDM data, and 88 with complete information were retained. Trough concentrations spanned 0.10-21.0 ug/mL. Bioanalytical method: homogeneous enzyme immunoassay on Siemens Atellica CH-930. Single observation per subject (sparse TDM design). Baseline demographics per Akbar 2025 Table 1; final-model parameter estimates per Akbar 2025 Table 2."
   )
 
   ini({

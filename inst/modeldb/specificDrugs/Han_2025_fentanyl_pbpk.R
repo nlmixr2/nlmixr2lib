@@ -38,7 +38,7 @@ Han_2025_fentanyl_pbpk <- function() {
     sep = " "
   )
   vignette <- "Han_2025_cyp3a4_pediatric_geriatric_pbpk"
-  units    <- list(time = "min", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ng/mL")
 
   # Perfused gut-WALL tissue states. The gut LUMEN segments use the canonical
   # stomach / duodenum / jejunum / ileum / cecum / colon names; the tissue
@@ -46,43 +46,47 @@ Han_2025_fentanyl_pbpk <- function() {
   # are declared paper-specific following the `wall_<segment>` precedent set by
   # Luo_2024_remimazolam_pbpk.R (same research group, same model lineage).
   paper_specific_compartments <- c(
-    "wall_stomach", "wall_duodenum", "wall_jejunum",
-    "wall_ileum", "wall_cecum", "wall_colon"
+    "wall_stomach",
+    "wall_duodenum",
+    "wall_jejunum",
+    "wall_ileum",
+    "wall_cecum",
+    "wall_colon"
   )
 
   compartmentData <- list(
-    lung          = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney        = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    heart         = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    liver         = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle        = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    skin          = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose       = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    brain         = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    venous        = list(analyte = "fentanyl", units = "mg", specimen = "whole blood",  verified = TRUE),
-    spleen        = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    arterial      = list(analyte = "fentanyl", units = "mg", specimen = "whole blood",  verified = TRUE),
-    other         = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach       = list(analyte = "fentanyl", units = "mg", specimen = "administration site",  verified = TRUE),
-    duodenum      = list(analyte = "fentanyl", units = "mg", specimen = "administration site",  verified = TRUE),
-    jejunum       = list(analyte = "fentanyl", units = "mg", specimen = "administration site",  verified = TRUE),
-    ileum         = list(analyte = "fentanyl", units = "mg", specimen = "administration site",  verified = TRUE),
-    cecum         = list(analyte = "fentanyl", units = "mg", specimen = "administration site",  verified = TRUE),
-    colon         = list(analyte = "fentanyl", units = "mg", specimen = "administration site",  verified = TRUE),
-    wall_stomach  = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    venous = list(analyte = "fentanyl", units = "mg", specimen = "whole blood", verified = TRUE),
+    spleen = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    arterial = list(analyte = "fentanyl", units = "mg", specimen = "whole blood", verified = TRUE),
+    other = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "fentanyl", units = "mg", specimen = "administration site", verified = TRUE),
+    duodenum = list(analyte = "fentanyl", units = "mg", specimen = "administration site", verified = TRUE),
+    jejunum = list(analyte = "fentanyl", units = "mg", specimen = "administration site", verified = TRUE),
+    ileum = list(analyte = "fentanyl", units = "mg", specimen = "administration site", verified = TRUE),
+    cecum = list(analyte = "fentanyl", units = "mg", specimen = "administration site", verified = TRUE),
+    colon = list(analyte = "fentanyl", units = "mg", specimen = "administration site", verified = TRUE),
+    wall_stomach = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
     wall_duodenum = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum  = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum    = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_cecum    = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_colon    = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE)
+    wall_jejunum = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_cecum = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_colon = list(analyte = "fentanyl", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Chronological age in years; drives every age-dependent system parameter.",
-      units              = "years",
-      type               = "continuous",
-      notes              = paste(
+      description = "Chronological age in years; drives every age-dependent system parameter.",
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "The model switches between three physiology regimes on AGE:",
         "paediatric (AGE < 18, Tables S3-S5 and Eq 3-17), adult",
         "(18 <= AGE <= 60, the fixed Table S2 reference values) and geriatric",
@@ -94,14 +98,14 @@ Han_2025_fentanyl_pbpk <- function() {
         "sources, the physiology is NOT continuous across the 18-year and",
         "60-year boundaries; see the vignette's Errata section."
       ),
-      source_name        = "Age (year)"
+      source_name = "Age (year)"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Read only by the geriatric branch (AGE > 60). Table S6 / S7",
         "footnote states 'Male sex = 0. Female sex = 1', which matches the",
         "canonical SEXF orientation exactly, so no sign inversion is needed.",
@@ -109,13 +113,13 @@ Han_2025_fentanyl_pbpk <- function() {
         "reference values carry no sex term, so SEXF has no effect below",
         "60 years."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     PAGE = list(
-      description        = "Postmenstrual age in months (gestational age at birth + postnatal age).",
-      units              = "months",
-      type               = "continuous",
-      notes              = paste(
+      description = "Postmenstrual age in months (gestational age at birth + postnatal age).",
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Han 2025 writes postmenstrual age (PMA) in YEARS in Eq 8 and",
         "Eq 13; the canonical PAGE carries months, so model() converts with",
         "PMA_years = PAGE / 12. Load-bearing only for neonates and preterm",
@@ -125,27 +129,27 @@ Han_2025_fentanyl_pbpk <- function() {
         "where GA is gestational age at birth in weeks; the value is then",
         "not read."
       ),
-      source_name        = "PMA (postmenstrual age)"
+      source_name = "PMA (postmenstrual age)"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth) in months.",
-      units              = "months",
-      type               = "continuous",
-      notes              = paste(
+      description = "Postnatal age (chronological time since birth) in months.",
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Two roles. (1) PNA <= 1 month selects the neonatal / preterm",
         "branch, which uses Eq 8 for hepatic CYP3A4 activity and Eq 13 for",
         "plasma albumin instead of Eq 7 and Eq 14. (2) Eq 16 is written in",
         "DAYS after birth, so model() converts with days = 30.4375 * PNA.",
         "For a non-neonate set PNA = 12 * AGE."
       ),
-      source_name        = "PNA (postnatal age)"
+      source_name = "PNA (postnatal age)"
     ),
     ROUTE_IV = list(
-      description        = "Route indicator for the dose being simulated, 1 = intravenous, 0 = oral.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Route indicator for the dose being simulated, 1 = intravenous, 0 = oral.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral administration)",
-      notes              = paste(
+      notes = paste(
         "Gates the gut-wall unbound fraction only. Supplementary Eq S5 and",
         "its surrounding text state that fu,gut 'was defaulted to 1 for oral",
         "administration and equaled to free fraction of drug (fu,b) in blood",
@@ -159,27 +163,27 @@ Han_2025_fentanyl_pbpk <- function() {
         "simulates; the oral setting is retained for structural parity with",
         "the midazolam sibling but cannot absorb, because peff is 0."
       ),
-      source_name        = "Route of administration"
+      source_name = "Route of administration"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1000L,
-    n_studies      = 54L,
-    age_range      = "gestational age 32 weeks (preterm neonates) to 71 years",
-    weight_range   = "1.5 kg (preterm neonates) to 95 kg (adults)",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 1000L,
+    n_studies = 54L,
+    age_range = "gestational age 32 weeks (preterm neonates) to 71 years",
+    weight_range = "1.5 kg (preterm neonates) to 95 kg (adults)",
+    disease_state = paste(
       "Neonates and infants in intensive care, children and adults undergoing surgery or receiving fentanyl analgesia, and elderly surgical patients.",
       "Han 2025 Table S9 lists 54 fentanyl data sets digitised from the",
       "published literature (12 paediatric, 36 adult, 6 geriatric);",
       "Table S13 gives the observed and predicted AUC0-t for each."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "2-100 ug/kg intravenous bolus over 0.5-2 min, plus continuous infusions of 0.1 ug/kg/min to 1.5 ug/kg/h and a 100 ug/h 24 h transdermal-equivalent infusion"
     ),
-    regions        = "Multinational literature compilation",
-    notes          = paste(
+    regions = "Multinational literature compilation",
+    notes = paste(
       "The 1000 'subjects' are virtual individuals, not real patients: Han",
       "2025 Section 2.1 constructs them by varying Peff, fu,b, CLint,l,",
       "CLint,i, Rb and PBSF uniformly between 0.67 and 1.5 times the ideal",

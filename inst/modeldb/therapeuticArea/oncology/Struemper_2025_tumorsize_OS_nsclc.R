@@ -34,8 +34,8 @@ Struemper_2025_tumorsize_OS_nsclc <- function() {
   vignette <- "Struemper_2025_tumorsize_OS_nsclc"
 
   units <- list(
-    time          = "weeks (TS dynamics and OS hazard; OS mu_OS published in log-days is converted to log-weeks inside model() so a single weeks time axis carries both sub-models)",
-    dosing        = "n/a (no PK input; treatment effect encoded entirely via per-arm typical kge and kse selected by the TRT categorical covariate)",
+    time = "weeks (TS dynamics and OS hazard; OS mu_OS published in log-days is converted to log-weeks inside model() so a single weeks time axis carries both sub-models)",
+    dosing = "n/a (no PK input; treatment effect encoded entirely via per-arm typical kge and kse selected by the TRT categorical covariate)",
     concentration = "mm (TS observable = sum of longest diameters of target lesions per RECIST 1.1; the canonical covariate column corresponding to the time-varying TS observable is TUM_SLD)"
   )
 
@@ -51,10 +51,10 @@ Struemper_2025_tumorsize_OS_nsclc <- function() {
   covariateData <- list(
     TRT = list(
       description = "Per-subject treatment-arm integer indicator selecting the per-arm typical TS parameters (kge, kse) at simulation / fit time.",
-      units       = "(categorical / integer-coded)",
-      type        = "categorical",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       source_name = "TRT",
-      notes       = paste(
+      notes = paste(
         "Integer coding (Struemper 2025 Table 1 + Table 2):",
         "  1 = PEMBRO (pembrolizumab; INTR@PID LUNG 037; n = 152) -- canonical default, largest single-agent PD-1 cohort",
         "  2 = FELAD (feladilimab; INDUCE-1; n = 52)",
@@ -74,59 +74,59 @@ Struemper_2025_tumorsize_OS_nsclc <- function() {
     ),
     LDH = list(
       description = "Baseline serum lactate dehydrogenase activity (paper alias LDHBL).",
-      units       = "IU/L (equivalently U/L; the canonical register treats IU/L and U/L interchangeably)",
-      type        = "continuous",
+      units = "IU/L (equivalently U/L; the canonical register treats IU/L and U/L interchangeably)",
+      type = "continuous",
       source_name = "LDHBL",
-      notes       = "Power scaling on kge: kge = exp(lkge_arm + eta) * (LDH / 225.5) ^ e_ldh_kge with reference 225.5 IU/L (Struemper 2025 Figure 3 caption typical-subject value)."
+      notes = "Power scaling on kge: kge = exp(lkge_arm + eta) * (LDH / 225.5) ^ e_ldh_kge with reference 225.5 IU/L (Struemper 2025 Figure 3 caption typical-subject value)."
     ),
     PDL1_TUM = list(
       description = "Baseline tumor PD-L1 expression by immunohistochemistry, Tumor Proportion Score (TPS): percent of viable tumor cells with complete or partial membrane staining at any intensity.",
-      units       = "percent (0-100)",
-      type        = "continuous",
+      units = "percent (0-100)",
+      type = "continuous",
       source_name = "PD-L1",
-      notes       = "Exponential effect on kse: kse = exp(lkse_arm + eta) * exp(PDL1_TUM * e_pdl1_tum_ks * has_pd1) where has_pd1 = 1 if TRT is 1 or in {6, 7, 8, 9, 10, 11, 12} (pembrolizumab- or dostarlimab-containing arms) and 0 otherwise. PD-L1 assay was 22C3 in all studies except INTR@PID (TRT = 1) which used 73-10 and had no individual values available -- the source paper imputed 70 percent for all INTR@PID subjects, the population median among high (>=50 percent) expressers; users replicating the paper's PEMBRO arm should set PDL1_TUM = 70 for all TRT = 1 subjects."
+      notes = "Exponential effect on kse: kse = exp(lkse_arm + eta) * exp(PDL1_TUM * e_pdl1_tum_ks * has_pd1) where has_pd1 = 1 if TRT is 1 or in {6, 7, 8, 9, 10, 11, 12} (pembrolizumab- or dostarlimab-containing arms) and 0 otherwise. PD-L1 assay was 22C3 in all studies except INTR@PID (TRT = 1) which used 73-10 and had no individual values available -- the source paper imputed 70 percent for all INTR@PID subjects, the population median among high (>=50 percent) expressers; users replicating the paper's PEMBRO arm should set PDL1_TUM = 70 for all TRT = 1 subjects."
     ),
     NTARGET_GE3 = list(
       description = "Binary indicator: 1 if baseline number of target lesions (per RECIST 1.1) is three or more, 0 if one or two.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "NTARGET",
-      notes       = "Multiplicative effect on the typical-value baseline TS: TSb = exp(lrbase + eta) * (1 + e_ntarget_ge3_tsb * NTARGET_GE3). The source paper reports the linear-continuous form TVTSb * (1 + (NTARGET - 3) * 0.288) centred at NTARGET = 3 (Table 3 footnote a). The library binarises at the paper's reference value of 3 per the count-covariate policy (cf. MET_GE4 in Bruno 2005); the per-lesion linear coefficient 0.288 is reused as the single-step binary coefficient. Deviation documented in vignette Errata. Reference category 0 = one or two target lesions. Derive from a raw count column via NTARGET_GE3 = as.integer(NTARGET >= 3)."
+      notes = "Multiplicative effect on the typical-value baseline TS: TSb = exp(lrbase + eta) * (1 + e_ntarget_ge3_tsb * NTARGET_GE3). The source paper reports the linear-continuous form TVTSb * (1 + (NTARGET - 3) * 0.288) centred at NTARGET = 3 (Table 3 footnote a). The library binarises at the paper's reference value of 3 per the count-covariate policy (cf. MET_GE4 in Bruno 2005); the per-lesion linear coefficient 0.288 is reused as the single-step binary coefficient. Deviation documented in vignette Errata. Reference category 0 = one or two target lesions. Derive from a raw count column via NTARGET_GE3 = as.integer(NTARGET >= 3)."
     ),
     ALB = list(
       description = "Baseline serum albumin (paper alias ALBBL).",
-      units       = "g/L",
-      type        = "continuous",
+      units = "g/L",
+      type = "continuous",
       source_name = "ALBBL",
-      notes       = "Linear centred deviation on mu_OS (log-days): CV4 = (ALB - 39.4) * 0.0452. Reference 39.4 g/L = population median (Struemper 2025 Figure 3 caption)."
+      notes = "Linear centred deviation on mu_OS (log-days): CV4 = (ALB - 39.4) * 0.0452. Reference 39.4 g/L = population median (Struemper 2025 Figure 3 caption)."
     ),
     TPRO = list(
       description = "Baseline serum total protein (paper alias TPROBL).",
-      units       = "g/L",
-      type        = "continuous",
+      units = "g/L",
+      type = "continuous",
       source_name = "TPROBL",
-      notes       = "Linear centred deviation on mu_OS (log-days): CV5 = (TPRO - 71) * 0.0194. Reference 71 g/L = population median (Struemper 2025 Figure 3 caption)."
+      notes = "Linear centred deviation on mu_OS (log-days): CV5 = (TPRO - 71) * 0.0194. Reference 71 g/L = population median (Struemper 2025 Figure 3 caption)."
     ),
     NLR = list(
       description = "Baseline neutrophil-to-lymphocyte ratio (paper alias NLRBL); capped at 100 in the source analysis per Methods Section 2.4 to avoid stability issues from four outlying values (>3000).",
-      units       = "ratio (unitless)",
-      type        = "continuous",
+      units = "ratio (unitless)",
+      type = "continuous",
       source_name = "NLRBL",
-      notes       = "Linear centred deviation on mu_OS (log-days): CV6 = (NLR - 4.1) * (-0.0141). Reference 4.1 = population median (Struemper 2025 Figure 3 caption). Cap NLR at 100 on data ingestion to match the source paper."
+      notes = "Linear centred deviation on mu_OS (log-days): CV6 = (NLR - 4.1) * (-0.0141). Reference 4.1 = population median (Struemper 2025 Figure 3 caption). Cap NLR at 100 on data ingestion to match the source paper."
     )
   )
 
   population <- list(
-    species         = "human (adults with advanced/metastatic NSCLC)",
-    n_subjects      = 786L,
-    n_studies       = 7L,
-    age_range       = "not reported in this paper; advanced/metastatic NSCLC trial cohorts",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "not reported in this paper at the pooled level (per-study demographics are in the underlying trial publications)",
-    disease_state   = "advanced/metastatic NSCLC (locally advanced, Stage IIIb/IIIc, Stage IV, recurrent, or metastatic per each study's inclusion criteria)",
-    dose_range      = "n/a (no PK input; per-arm dosing was the protocol-defined dose per study)",
-    regions         = "multiregional across seven clinical trials (per-study geographic mix not pooled in this paper)",
-    notes           = paste(
+    species = "human (adults with advanced/metastatic NSCLC)",
+    n_subjects = 786L,
+    n_studies = 7L,
+    age_range = "not reported in this paper; advanced/metastatic NSCLC trial cohorts",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not reported in this paper at the pooled level (per-study demographics are in the underlying trial publications)",
+    disease_state = "advanced/metastatic NSCLC (locally advanced, Stage IIIb/IIIc, Stage IV, recurrent, or metastatic per each study's inclusion criteria)",
+    dose_range = "n/a (no PK input; per-arm dosing was the protocol-defined dose per study)",
+    regions = "multiregional across seven clinical trials (per-study geographic mix not pooled in this paper)",
+    notes = paste(
       "Pooled-cohort baseline covariate medians (Struemper 2025 Figure 3 caption; population-typical reference values used in the model's centring constants):",
       "  Baseline lactate dehydrogenase (LDH) = 225.5 IU/L",
       "  Baseline tumor PD-L1 expression (PDL1_TUM) = 15 percent",

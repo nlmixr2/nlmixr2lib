@@ -32,7 +32,7 @@ Gaohua_2012_pregnancy_pbpk_midazolam <- function() {
     sep = " "
   )
   vignette <- "Gaohua_2012_pregnancy_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("preg")
 
@@ -41,30 +41,30 @@ Gaohua_2012_pregnancy_pbpk_midazolam <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
-    lung     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    adipose  = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    bone     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    brain    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    heart    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    gut      = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    liver    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    skin     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
-    preg     = list(analyte = "midazolam", units = "mg", specimen = "not applicable", verified = FALSE),
+    depot = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    lung = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    bone = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    brain = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    gut = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    skin = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    preg = list(analyte = "midazolam", units = "mg", specimen = "not applicable", verified = FALSE),
     arterial = list(analyte = "midazolam", units = "mg", specimen = "blood cell", verified = FALSE),
-    venous   = list(analyte = "midazolam", units = "mg", specimen = "blood cell", verified = FALSE)
+    venous = list(analyte = "midazolam", units = "mg", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     GA = list(
-      description        = "Gestational age at the time of dose administration",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at the time of dose administration",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Gestational age (in weeks) of the mother when the simulation starts.",
         "Inside model() the running variable gaweek evolves as",
         "gaweek = GA + t/(24*7) so physiological parameters drift over a long",
@@ -75,19 +75,19 @@ Gaohua_2012_pregnancy_pbpk_midazolam <- function() {
         "1-40 weeks range simulates the corresponding pregnancy stage.",
         "Per the paper Methods (Eq. 3): t in hours, 24*7 = 168 hours per week."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     )
   )
 
   population <- list(
-    species        = "human (pregnant women)",
-    n_subjects     = NA_integer_,
-    n_studies      = 3L,
-    age_range      = "20-40 years (basal reference); validated against pregnancy stages 28-37 weeks",
-    weight_range   = "60 kg basal non-pregnant; rises to ~76 kg at 36 weeks per Table 2",
+    species = "human (pregnant women)",
+    n_subjects = NA_integer_,
+    n_studies = 3L,
+    age_range = "20-40 years (basal reference); validated against pregnancy stages 28-37 weeks",
+    weight_range = "60 kg basal non-pregnant; rises to ~76 kg at 36 weeks per Table 2",
     sex_female_pct = 100,
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy pregnant Caucasian women. The validation cohorts in the Gaohua",
       "2012 paper were caffeine (n = 8 pregnant at 36 +/- 3 weeks gestation,",
       "n = 4 nonpregnant; Brazier 1983 ref 24), metoprolol (n = 5 pregnant at",
@@ -98,9 +98,9 @@ Gaohua_2012_pregnancy_pbpk_midazolam <- function() {
       "Gaohua_2012_pregnancy_pbpk_caffeine and",
       "Gaohua_2012_pregnancy_pbpk_metoprolol."
     ),
-    dose_range     = "Midazolam 2 mg oral single dose (Hebert 2008 protocol; Gaohua 2012 Fig 4, Table 5)",
-    regions        = "Europe (UK / France)",
-    notes          = paste(
+    dose_range = "Midazolam 2 mg oral single dose (Hebert 2008 protocol; Gaohua 2012 Fig 4, Table 5)",
+    regions = "Europe (UK / France)",
+    notes = paste(
       "Basal physiology was taken from Simcyp Simulator version 11 for the",
       "healthy non-pregnant 20-40 year old Caucasian woman cohort. The 14-",
       "compartment perfusion-limited Simcyp full-PBPK structure (Jamei 2009",

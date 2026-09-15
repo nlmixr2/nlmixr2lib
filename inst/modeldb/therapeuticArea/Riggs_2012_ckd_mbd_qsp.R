@@ -58,11 +58,37 @@ Riggs_2012_ckd_mbd_qsp <- function() {
   # the mapping to the OpenBoneMin.cpp name is given on every compartmentData
   # entry and reproduced as a table in the validation vignette.
   paper_specific_compartments <- c(
-    "PTH", "PTpool", "PThypertrophy", "calcitriol", "alphaOHase",
-    "plasmaCa", "ECCPhos", "PhosGut", "IntraPO", "gutCa", "gutCaAbsorp",
-    "HAp", "boneCaExch", "boneCaNonExch", "OBfast", "OBslow", "OC", "ROB",
-    "TGFB", "TGFBact", "RANKL", "RANK", "RANK_RANKL", "OPG", "OPG_RANKL",
-    "RX2", "CREB", "BCL2", "BMDls", "urineCa", "casrAgonist"
+    "PTH",
+    "PTpool",
+    "PThypertrophy",
+    "calcitriol",
+    "alphaOHase",
+    "plasmaCa",
+    "ECCPhos",
+    "PhosGut",
+    "IntraPO",
+    "gutCa",
+    "gutCaAbsorp",
+    "HAp",
+    "boneCaExch",
+    "boneCaNonExch",
+    "OBfast",
+    "OBslow",
+    "OC",
+    "ROB",
+    "TGFB",
+    "TGFBact",
+    "RANKL",
+    "RANK",
+    "RANK_RANKL",
+    "OPG",
+    "OPG_RANKL",
+    "RX2",
+    "CREB",
+    "BCL2",
+    "BMDls",
+    "urineCa",
+    "casrAgonist"
   )
 
   # buildModelDb() infers the registry's dosing column only from states
@@ -75,8 +101,8 @@ Riggs_2012_ckd_mbd_qsp <- function() {
   dosing <- c("calcitriol", "casrAgonist")
 
   units <- list(
-    time          = "h",
-    dosing        = "pmol (calcitriol) or mmol/L calcium equivalents (CaSR agonist)",
+    time = "h",
+    dosing = "pmol (calcitriol) or mmol/L calcium equivalents (CaSR agonist)",
     concentration = "pmol/L (PTH, calcitriol) or mmol/L (calcium, phosphate)"
   )
 
@@ -87,46 +113,121 @@ Riggs_2012_ckd_mbd_qsp <- function() {
   # moiety and unit of every state. `verified = FALSE` marks the states whose
   # biological matrix had to be inferred because neither source names one.
   compartmentData <- list(
-    PTH            = list(analyte = "parathyroid hormone", units = "pmol", specimen = "plasma", verified = TRUE),                      # obm PTH
-    PTpool         = list(analyte = "parathyroid gland PTH-production capacity", units = "fraction of maximal", specimen = "tissue", verified = TRUE),  # obm S
-    PThypertrophy  = list(analyte = "parathyroid gland hypertrophy factor", units = "ratio to baseline", specimen = "tissue", verified = TRUE),         # obm PTmax
-    calcitriol     = list(analyte = "calcitriol (1,25-dihydroxyvitamin D3)", units = "pmol", specimen = "plasma", verified = TRUE),    # obm B
-    alphaOHase     = list(analyte = "renal 1-alpha-hydroxylase", units = "pmol/h equivalent", specimen = "tissue", verified = TRUE),   # obm AOH
-    plasmaCa       = list(analyte = "calcium", units = "mmol", specimen = "plasma", verified = TRUE),                                  # obm P
-    ECCPhos        = list(analyte = "inorganic phosphate", units = "mmol", specimen = "plasma", verified = TRUE),                      # obm ECCPhos
-    PhosGut        = list(analyte = "dietary inorganic phosphate", units = "mmol", specimen = "administration site", verified = TRUE), # obm PhosGut
-    IntraPO        = list(analyte = "intracellular inorganic phosphate", units = "mmol", specimen = "tissue", verified = TRUE),        # obm IntraPO
-    gutCa          = list(analyte = "dietary calcium", units = "mmol", specimen = "administration site", verified = TRUE),             # obm T
-    gutCaAbsorp    = list(analyte = "calcitriol-dependent intestinal calcium-absorption capacity", units = "fraction of maximal", specimen = "not applicable", verified = TRUE), # obm R
-    HAp            = list(analyte = "bone hydroxyapatite deposition capacity", units = "ratio to baseline", specimen = "tissue", verified = TRUE),      # obm HAp
-    boneCaExch     = list(analyte = "immediately exchangeable bone calcium", units = "mmol", specimen = "tissue", verified = TRUE),    # obm Q
-    boneCaNonExch  = list(analyte = "non-immediately-exchangeable bone calcium", units = "mmol", specimen = "tissue", verified = TRUE),# obm Qbone
-    OBfast         = list(analyte = "fast-turnover osteoblasts", units = "pmol/L", specimen = "tissue", verified = FALSE),             # obm OBfast
-    OBslow         = list(analyte = "slow-turnover osteoblasts", units = "pmol/L", specimen = "tissue", verified = FALSE),             # obm OBslow
-    OC             = list(analyte = "active osteoclasts", units = "pmol/L", specimen = "tissue", verified = FALSE),                    # obm OC
-    ROB            = list(analyte = "responding osteoblasts", units = "pmol/L", specimen = "tissue", verified = FALSE),                # obm ROB1
-    TGFB           = list(analyte = "latent transforming growth factor beta", units = "pmol/L", specimen = "tissue", verified = FALSE),# obm TGFB
-    TGFBact        = list(analyte = "active transforming growth factor beta", units = "pmol/L", specimen = "tissue", verified = FALSE),# obm TGFBact
-    RANKL          = list(analyte = "free RANK ligand", units = "pmol/L", specimen = "tissue", verified = TRUE),                       # obm L
-    RANK           = list(analyte = "free RANK receptor", units = "pmol/L", specimen = "tissue", verified = TRUE),                     # obm RNK
-    RANK_RANKL     = list(analyte = "RANK-RANK-ligand complex", units = "pmol/L", specimen = "tissue", verified = TRUE),               # obm M
-    OPG            = list(analyte = "free osteoprotegerin", units = "pmol/L", specimen = "tissue", verified = TRUE),                   # obm O
-    OPG_RANKL      = list(analyte = "osteoprotegerin-RANK-ligand complex", units = "pmol/L", specimen = "tissue", verified = TRUE),    # obm N
-    RX2            = list(analyte = "RUNX2 transcription factor", units = "arbitrary", specimen = "tissue", verified = TRUE),          # obm RX2
-    CREB           = list(analyte = "cAMP response element-binding protein", units = "arbitrary", specimen = "tissue", verified = TRUE), # obm CREB
-    BCL2           = list(analyte = "B-cell lymphoma 2 protein", units = "arbitrary", specimen = "tissue", verified = TRUE),           # obm BCL2
-    BMDls          = list(analyte = "lumbar spine bone mineral density", units = "ratio to baseline", specimen = "not applicable", verified = TRUE),  # obm BMDlsDEN
-    urineCa        = list(analyte = "cumulative excreted calcium", units = "mmol", specimen = "urine", verified = TRUE),               # obm UCA
-    casrAgonist    = list(analyte = "hypothetical calcium-sensing-receptor agonist (calcimimetic)", units = "mmol/L calcium equivalents", specimen = "administration site", verified = TRUE)  # equation (6)
+    PTH = list(analyte = "parathyroid hormone", units = "pmol", specimen = "plasma", verified = TRUE), # obm PTH
+    PTpool = list(
+      analyte = "parathyroid gland PTH-production capacity",
+      units = "fraction of maximal",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm S
+    PThypertrophy = list(
+      analyte = "parathyroid gland hypertrophy factor",
+      units = "ratio to baseline",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm PTmax
+    calcitriol = list(
+      analyte = "calcitriol (1,25-dihydroxyvitamin D3)",
+      units = "pmol",
+      specimen = "plasma",
+      verified = TRUE
+    ), # obm B
+    alphaOHase = list(
+      analyte = "renal 1-alpha-hydroxylase",
+      units = "pmol/h equivalent",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm AOH
+    plasmaCa = list(analyte = "calcium", units = "mmol", specimen = "plasma", verified = TRUE), # obm P
+    ECCPhos = list(analyte = "inorganic phosphate", units = "mmol", specimen = "plasma", verified = TRUE), # obm ECCPhos
+    PhosGut = list(
+      analyte = "dietary inorganic phosphate",
+      units = "mmol",
+      specimen = "administration site",
+      verified = TRUE
+    ), # obm PhosGut
+    IntraPO = list(analyte = "intracellular inorganic phosphate", units = "mmol", specimen = "tissue", verified = TRUE), # obm IntraPO
+    gutCa = list(analyte = "dietary calcium", units = "mmol", specimen = "administration site", verified = TRUE), # obm T
+    gutCaAbsorp = list(
+      analyte = "calcitriol-dependent intestinal calcium-absorption capacity",
+      units = "fraction of maximal",
+      specimen = "not applicable",
+      verified = TRUE
+    ), # obm R
+    HAp = list(
+      analyte = "bone hydroxyapatite deposition capacity",
+      units = "ratio to baseline",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm HAp
+    boneCaExch = list(
+      analyte = "immediately exchangeable bone calcium",
+      units = "mmol",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm Q
+    boneCaNonExch = list(
+      analyte = "non-immediately-exchangeable bone calcium",
+      units = "mmol",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm Qbone
+    OBfast = list(analyte = "fast-turnover osteoblasts", units = "pmol/L", specimen = "tissue", verified = FALSE), # obm OBfast
+    OBslow = list(analyte = "slow-turnover osteoblasts", units = "pmol/L", specimen = "tissue", verified = FALSE), # obm OBslow
+    OC = list(analyte = "active osteoclasts", units = "pmol/L", specimen = "tissue", verified = FALSE), # obm OC
+    ROB = list(analyte = "responding osteoblasts", units = "pmol/L", specimen = "tissue", verified = FALSE), # obm ROB1
+    TGFB = list(
+      analyte = "latent transforming growth factor beta",
+      units = "pmol/L",
+      specimen = "tissue",
+      verified = FALSE
+    ), # obm TGFB
+    TGFBact = list(
+      analyte = "active transforming growth factor beta",
+      units = "pmol/L",
+      specimen = "tissue",
+      verified = FALSE
+    ), # obm TGFBact
+    RANKL = list(analyte = "free RANK ligand", units = "pmol/L", specimen = "tissue", verified = TRUE), # obm L
+    RANK = list(analyte = "free RANK receptor", units = "pmol/L", specimen = "tissue", verified = TRUE), # obm RNK
+    RANK_RANKL = list(analyte = "RANK-RANK-ligand complex", units = "pmol/L", specimen = "tissue", verified = TRUE), # obm M
+    OPG = list(analyte = "free osteoprotegerin", units = "pmol/L", specimen = "tissue", verified = TRUE), # obm O
+    OPG_RANKL = list(
+      analyte = "osteoprotegerin-RANK-ligand complex",
+      units = "pmol/L",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm N
+    RX2 = list(analyte = "RUNX2 transcription factor", units = "arbitrary", specimen = "tissue", verified = TRUE), # obm RX2
+    CREB = list(
+      analyte = "cAMP response element-binding protein",
+      units = "arbitrary",
+      specimen = "tissue",
+      verified = TRUE
+    ), # obm CREB
+    BCL2 = list(analyte = "B-cell lymphoma 2 protein", units = "arbitrary", specimen = "tissue", verified = TRUE), # obm BCL2
+    BMDls = list(
+      analyte = "lumbar spine bone mineral density",
+      units = "ratio to baseline",
+      specimen = "not applicable",
+      verified = TRUE
+    ), # obm BMDlsDEN
+    urineCa = list(analyte = "cumulative excreted calcium", units = "mmol", specimen = "urine", verified = TRUE), # obm UCA
+    casrAgonist = list(
+      analyte = "hypothetical calcium-sensing-receptor agonist (calcimimetic)",
+      units = "mmol/L calcium equivalents",
+      specimen = "administration site",
+      verified = TRUE
+    ) # equation (6)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = 1,
-    n_studies     = 2,
-    age_range     = "not reported",
+    species = "human",
+    n_subjects = 1,
+    n_studies = 2,
+    age_range = "not reported",
     disease_state = paste(
       "Chronic kidney disease-mineral bone disorder (CKD-MBD). A single",
       "deterministic hypothetical patient starts from normal renal",
@@ -136,14 +237,14 @@ Riggs_2012_ckd_mbd_qsp <- function() {
       "58 mL/min at month 28, 39 mL/min at month 50 and 16 mL/min at",
       "month 120."
     ),
-    dose_range    = paste(
+    dose_range = paste(
       "Hypothetical calcimimetic: constant 0.25, 0.5, 0.75 and 1 mM",
       "calcium equivalents from year 8.5 (Methods, equation 6); the",
       "Figure 4 legend labels the same simulations 0.33, 0.67 and",
       "1.0 mM Ca Eq. Calcitriol: 1.25 and 2.5 ug every other day from",
       "year 8.5 (Methods; Figure 5)."
     ),
-    notes         = paste(
+    notes = paste(
       "There is no fitted cohort. The model is deterministic and was run",
       "as a single hypothetical patient; the authors state explicitly",
       "that variance terms for inter- and intra-individual differences",

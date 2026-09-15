@@ -36,13 +36,18 @@ PillaReddy_2013_olanzapine_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "olanzapine panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "olanzapine panss subscales",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "olanzapine panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -51,44 +56,44 @@ PillaReddy_2013_olanzapine_panss_subscales <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part I Table 2 reports a 25% lower olanzapine CL/F in females vs males ('CL (gender) -0.25 (-0.323 to -0.173)'); not retained in the Part II PD model() body (typical-individual reference is the pooled male+female estimate)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part I Table 2 reports a 25% lower olanzapine CL/F in females vs males ('CL (gender) -0.25 (-0.323 to -0.173)'); not retained in the Part II PD model() body (typical-individual reference is the pooled male+female estimate)."
     ),
     DIS = list(
       description = "Disease state at entry (acute vs chronic schizophrenia)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II placebo-model covariate; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II placebo-model covariate; not implemented."
     ),
     USA = list(
       description = "Study geographic origin (USA vs non-USA)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II placebo-model covariate on Pmax negative and residual error; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II placebo-model covariate on Pmax negative and residual error; not implemented."
     ),
     REG = list(
       description = "Dosing regimen (qd vs bid)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II residual-error covariate on PANSS negative; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II residual-error covariate on PANSS negative; not implemented."
     ),
     DUR = list(
       description = "Study duration (short vs long)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II residual-error covariate on PANSS positive; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II residual-error covariate on PANSS positive; not implemented."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 741L,
-    n_studies       = 12L,
-    age_range       = "Adults with schizophrenia (specific range not tabulated in Part II).",
-    weight_range    = "Adult schizophrenia population.",
-    sex_female_pct  = NA_real_,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 741L,
+    n_studies = 12L,
+    age_range = "Adults with schizophrenia (specific range not tabulated in Part II).",
+    weight_range = "Adult schizophrenia population.",
+    sex_female_pct = NA_real_,
+    disease_state = paste(
       "Adults with schizophrenia recruited into acute and chronic-stable",
       "Phase II / III double-blind clinical trials. Olanzapine arms in",
       "Part I Table 1: SCH-303 (10 mg qd), SCH-304 (10 mg qd), SCH-305 (10",
@@ -97,9 +102,9 @@ PillaReddy_2013_olanzapine_panss_subscales <- function() {
       "general 44 (43.7-44.2) for the atypical-antipsychotic pool (Part",
       "II Table 2)."
     ),
-    dose_range      = "Oral olanzapine 10-15 mg/day (Part I Table 1).",
-    regions         = "Pooled across multinational schizophrenia trials 1989-2009.",
-    notes           = paste(
+    dose_range = "Oral olanzapine 10-15 mg/day (Part I Table 1).",
+    regions = "Pooled across multinational schizophrenia trials 1989-2009.",
+    notes = paste(
       "Olanzapine PANSS-negative Emax (0.33) was numerically the highest",
       "across the five compared antipsychotics (Part II Figure 1a and",
       "Results), associated with olanzapine's broader receptor binding",

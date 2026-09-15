@@ -34,8 +34,8 @@ Johnson_2011_olanzapine_rat <- function() {
   )
   vignette <- "Johnson_2011_olanzapine_rat"
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg",
+    time = "h",
+    dosing = "mg/kg",
     concentration = "mg/L"
   )
 
@@ -44,23 +44,23 @@ Johnson_2011_olanzapine_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central             = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
-    brain_vascular      = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    central = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_vascular = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
     brain_extravascular = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
-    effect              = list(analyte = "D2RO", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "D2RO", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     ROUTE_IP = list(
-      description        = paste(
+      description = paste(
         "Intraperitoneal-route indicator: 1 = the dose record is",
         "intraperitoneal (IP), 0 = subcutaneous (SC) or intravenous (IV)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (SC or IV; bioavailability fixed at 1)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate. Selects the intraperitoneal",
         "bioavailability FIP (about 0.636 with 87% CV log-normal IIV)",
         "when ROUTE_IP = 1; the encoding",
@@ -71,7 +71,7 @@ Johnson_2011_olanzapine_rat <- function() {
         "because the absorption rate constant was not estimable from the",
         "Johnson 2011 dataset (Results, Population Plasma Pharmacokinetics)."
       ),
-      source_name        = paste(
+      source_name = paste(
         "(implicit; the per-study route is reported in Table I of the",
         "source paper)"
       )
@@ -79,21 +79,21 @@ Johnson_2011_olanzapine_rat <- function() {
   )
 
   population <- list(
-    species        = "rat (Wistar or Sprague-Dawley)",
-    n_subjects     = 283L,
-    n_studies      = 12L,
-    age_range      = "Adult (specific age not reported in the source publication)",
-    weight_range   = "Not reported individually (per-kg structural parameters)",
+    species = "rat (Wistar or Sprague-Dawley)",
+    n_subjects = 283L,
+    n_studies = 12L,
+    age_range = "Adult (specific age not reported in the source publication)",
+    weight_range = "Not reported individually (per-kg structural parameters)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy",
-    dose_range     = paste(
+    disease_state = "Healthy",
+    dose_range = paste(
       "Single dose 0.01-40 mg/kg via intraperitoneal (IP), subcutaneous",
       "(SC), or intravenous (IV) routes. Per Table I: IP studies 1-6b",
       "(0.01-30 mg/kg); SC studies 7-11 (0.04-40 mg/kg); IV study 12",
       "(2.5 mg/kg)."
     ),
-    regions        = "Pooled industrial datasets from three sponsors",
-    notes          = paste(
+    regions = "Pooled industrial datasets from three sponsors",
+    notes = paste(
       "Pooled dataset of plasma concentration (PC), total brain",
       "concentration (BC) and striatal dopamine D2 receptor occupancy",
       "(RO) measurements from 12 single-dose studies contributed to the",

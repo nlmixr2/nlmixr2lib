@@ -34,7 +34,12 @@ Schulthess_2017_autoreg_stim_negfb <- function() {
   # the implied central volume is 1 and `central` carries a concentration.
   compartmentData <- list(
     central = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
-    effect  = list(analyte = "autoregulated biomarker response x", units = "umol/L", specimen = "not applicable", verified = TRUE)
+    effect = list(
+      analyte = "autoregulated biomarker response x",
+      units = "umol/L",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(

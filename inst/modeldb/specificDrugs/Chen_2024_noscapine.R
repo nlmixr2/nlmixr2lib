@@ -39,11 +39,11 @@ Chen_2024_noscapine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline total body weight (TBW). Drives a power model on apparent",
         "clearance normalised to the cohort MEAN of 77.3 kg (Sect. 3.3.2",
         "equation: CL/F = (TBW/77.3)^1.34 * TVCL_phenotype/F * exp(eta)).",
@@ -52,14 +52,14 @@ Chen_2024_noscapine <- function() {
         "SIR 95% CI 0.485-2.33), not fixed at an allometric 0.75.",
         "Table 1 range 54.3-107 kg."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline age. Drives a power model on the inter-compartmental",
         "clearance between the central and first peripheral compartment,",
         "normalised to the cohort MEDIAN of 29.0 years (Sect. 3.3.2 equation:",
@@ -68,40 +68,40 @@ Chen_2024_noscapine <- function() {
         "ESTIMATED (Table 4, RSE 32.3%, SIR 95% CI 0.125-0.568).",
         "Table 1 range 19.0-65.0 years."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CYP2C9_IM_AS15 = list(
-      description        = paste(
+      description = paste(
         "CYP2C9 intermediate-metabolizer with CPIC activity score 1.5",
         "(genotype *1/*2) indicator"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (extensive metabolizer, *1/*1 or *1/*9, activity score 2.0) when",
         "CYP2C9_PM_IM_AS10 is also 0"
       ),
-      notes              = paste(
+      notes = paste(
         "Mutually exclusive with CYP2C9_PM_IM_AS10; both 0 identifies the",
         "extensive-metabolizer reference stratum whose typical CL/F is the",
         "lcl typical value. Table 2: 10/48 subjects (20.8%) are *1/*2.",
         "Additive log shift on CL/F: log(531/958) = -0.5901 (Table 4",
         "CL/F_IM_1.5 = 531 L/h vs CL/F_EM = 958 L/h)."
       ),
-      source_name        = "CYP2C9 genotype-predicted phenotype (IM with AS of 1.5)"
+      source_name = "CYP2C9 genotype-predicted phenotype (IM with AS of 1.5)"
     ),
     CYP2C9_PM_IM_AS10 = list(
-      description        = paste(
+      description = paste(
         "CYP2C9 poor-metabolizer or intermediate-metabolizer with CPIC",
         "activity score 1.0 (genotypes *1/*3, *2/*3, *3/*3) indicator"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (extensive metabolizer, *1/*1 or *1/*9, activity score 2.0) when",
         "CYP2C9_IM_AS15 is also 0"
       ),
-      notes              = paste(
+      notes = paste(
         "Mutually exclusive with CYP2C9_IM_AS15. Table 2: 6/48 subjects",
         "(12.6%) carry *1/*3 (n = 3), *2/*3 (n = 2) or *3/*3 (n = 1).",
         "Sect. 3.1: activity-score-1.0 intermediate metabolizers were pooled",
@@ -112,21 +112,21 @@ Chen_2024_noscapine <- function() {
         "Additive log shift on CL/F: log(343/958) = -1.0271 (Table 4",
         "CL/F_PM_IM_1.0 = 343 L/h vs CL/F_EM = 958 L/h)."
       ),
-      source_name        = "CYP2C9 genotype-predicted phenotype (PM & IM with AS of 1)"
+      source_name = "CYP2C9 genotype-predicted phenotype (PM & IM with AS of 1)"
     ),
     FORM_NOSCAPINE_TEST = list(
-      description        = paste(
+      description = paste(
         "Reformulated noscapine oral suspension (InfectoPharm, the bioequi-",
         "valence study test product) vs the Nipaxon 5 mg/mL oral suspension",
         "(McNeil, reference) formulation indicator"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (Nipaxon 5 mg/mL reference oral suspension; the relative-",
         "bioavailability anchor F = 1)"
       ),
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator: this is a two-period crossover, so every",
         "subject receives the test product on one period and the reference on",
         "the other (Sect. 2.1). Set on each dose row. Drives relative",
@@ -136,14 +136,14 @@ Chen_2024_noscapine <- function() {
         "'only apparent bioavailability differed between test and reference",
         "preparations' -- no absorption-rate parameter differs by formulation."
       ),
-      source_name        = "formulation (test vs reference)"
+      source_name = "formulation (test vs reference)"
     ),
     OCC = list(
-      description        = "Integer-valued crossover-period occasion indicator",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued crossover-period occasion indicator",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "OCC = 1 for the first treatment period and OCC = 2 for the second",
         "(two-period crossover with a 6-14 day washout, Sect. 2.1).",
         "Decomposed inside model() into binary indicators oc1 / oc2 that",
@@ -152,16 +152,16 @@ Chen_2024_noscapine <- function() {
         "Chen_2023_nemonoxacin.R and Jonsson_2011_ethambutol.R precedent.",
         "For single-occasion simulation pass OCC = 1."
       ),
-      source_name        = "period"
+      source_name = "period"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened in the forward-addition covariate analysis (Sect. 2.4.2)",
         "but not retained in the final model (Sect. 3.3.2: 'Because of a lack",
         "of significant effects, other clinical characteristics ... were not",
@@ -170,63 +170,63 @@ Chen_2024_noscapine <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened (Sect. 2.4.2) but not retained (Sect. 3.3.2).",
         "Table 1 mean 24.6, range 18.0-29.5 kg/m^2."
       )
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Liver-function marker screened (Sect. 2.4.2) but not retained",
         "(Sect. 3.3.2). Table 1 mean 24.1, range 7.0-96.0 U/L."
       )
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Liver-function marker screened (Sect. 2.4.2) but not retained",
         "(Sect. 3.3.2). Table 1 mean 23.5, range 14.0-39.0 U/L."
       )
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Liver-function marker screened (Sect. 2.4.2) but not retained",
         "(Sect. 3.3.2). Table 1 mean 64.8, range 36.0-103 U/L."
       )
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (CKD-EPI 2009)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Renal-function marker screened (Sect. 2.4.2) but not retained",
         "(Sect. 3.3.2). Table 1 mean 107, range 76.0-132 mL/min."
       )
     ),
     UREA = list(
       description = "Plasma urea concentration",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Renal-function marker screened (Sect. 2.4.2) but not retained",
         "(Sect. 3.3.2). Table 1 mean 26.7, range 13.0-40.0 mg/dL."
       )
     ),
     CYP2C19_PM_IM = list(
       description = "CYP2C19 intermediate-metabolizer indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Genotyped in all 48 subjects and screened on CL/F (Sect. 2.4.2,",
         "Table 2: 13/48 IM), but no significant effect was found -- Fig. 2",
         "shows no significant Cmax / AUC difference and Sect. 3.3.2 retained",
@@ -235,18 +235,18 @@ Chen_2024_noscapine <- function() {
     ),
     CYP3A4_IM = list(
       description = "CYP3A4 intermediate-metabolizer (*1/*22) indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Genotyped and screened (Table 2: 9/48 are *1/*22) but not retained",
         "(Sect. 3.3.2, Fig. 2)."
       )
     ),
     CYP3A5_EXPR = list(
       description = "CYP3A5 expresser (*1 carrier) indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Genotyped and screened (Table 2: 12/48 *1/*3 intermediate",
         "metabolizers, 36/48 poor metabolizers, no *1/*1) but not retained",
         "(Sect. 3.3.2, Fig. 2)."
@@ -255,49 +255,49 @@ Chen_2024_noscapine <- function() {
   )
 
   compartmentData <- list(
-    transit1    = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
-    liver       = list(analyte = "noscapine", units = "mg", specimen = "tissue", verified = TRUE),
-    central     = list(analyte = "noscapine", units = "mg", specimen = "plasma", verified = TRUE),
+    transit1 = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "noscapine", units = "mg", specimen = "administration site", verified = TRUE),
+    liver = list(analyte = "noscapine", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "noscapine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "noscapine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "noscapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 48L,
+    n_studies = 1L,
     n_observations = 1920L,
-    age_range      = "19.0-65.0 years",
-    age_median     = "29 years",
-    weight_range   = "54.3-107 kg",
-    weight_median  = "77.0 kg",
+    age_range = "19.0-65.0 years",
+    age_median = "29 years",
+    weight_range = "54.3-107 kg",
+    weight_median = "77.0 kg",
     sex_female_pct = 37.5,
     race_ethnicity = paste(
       "Predominantly European ancestry by genome-wide principal-component",
       "analysis; 2 subjects clustered with South Asian / American populations",
       "and 2 with African populations (Fig. S1 of the ESM)"
     ),
-    disease_state  = "healthy volunteers",
-    dose_range     = "50 mg single oral dose (5 mg/mL oral suspension) in each of two crossover periods",
-    regions        = "Germany (Clinical Pharmacology Unit, University Hospital of Cologne)",
-    bmi_range      = "18.0-29.5 kg/m^2",
-    genotype       = paste(
+    disease_state = "healthy volunteers",
+    dose_range = "50 mg single oral dose (5 mg/mL oral suspension) in each of two crossover periods",
+    regions = "Germany (Clinical Pharmacology Unit, University Hospital of Cologne)",
+    bmi_range = "18.0-29.5 kg/m^2",
+    genotype = paste(
       "CYP2C9: 32 extensive metabolizers (*1/*1 n = 31, *1/*9 n = 1),",
       "10 intermediate metabolizers with activity score 1.5 (*1/*2),",
       "6 poor / intermediate metabolizers with activity score 1.0",
       "(*1/*3 n = 3, *2/*3 n = 2, *3/*3 n = 1). CYP2C19, CYP3A4, CYP3A5 and",
       "CYP2E1 were also genotyped (Table 2) but had no significant PK effect."
     ),
-    study_design   = paste(
+    study_design = paste(
       "Randomized, two-period, two-stage, crossover bioequivalence study of a",
       "reformulated noscapine oral suspension (test) vs Nipaxon 5 mg/mL oral",
       "suspension (reference), 6-14 day washout. DRKS00017760;",
       "EUDRA-CT 2019-002012-12."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics and baseline covariates in Table 1 (n = 48; 30 men, 18",
       "women). Genotype frequencies in Table 2. Rich sampling at baseline and",
       "0.17, 0.33, 0.5, 0.67, 0.83, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 4, 6,",

@@ -51,33 +51,48 @@ Yang_2024_naloxone_carfentanil <- function() {
   )
   vignette <- "Yang_2024_naloxone_opioid_reversal"
   units <- list(
-    time          = "min",
-    dosing        = "ug",
+    time = "min",
+    dosing = "ug",
     concentration = "ng/mL"
   )
   dosing <- c("central", "depot_naloxone")
 
   compartmentData <- list(
-    central              = list(analyte = "carfentanil", units = "ug", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "carfentanil", units = "ug", specimen = "plasma", verified = TRUE),
-    effect               = list(analyte = "carfentanil biophase (effect-site) concentration", units = "pM", specimen = "not applicable", verified = TRUE),
-    depot_naloxone       = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit1_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit2_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit3_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    central_naloxone     = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "carfentanil", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "carfentanil", units = "ug", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "carfentanil biophase (effect-site) concentration",
+      units = "pM",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    depot_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit1_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit2_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit3_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    central_naloxone = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1_naloxone = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
-    effect_naloxone      = list(analyte = "naloxone biophase (effect-site) concentration", units = "pM", specimen = "not applicable", verified = TRUE),
-    RL_op                = list(analyte = "fraction of mu-opioid receptors bound by carfentanil", units = "fraction", specimen = "not applicable", verified = TRUE)
+    effect_naloxone = list(
+      analyte = "naloxone biophase (effect-site) concentration",
+      units = "pM",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    RL_op = list(
+      analyte = "fraction of mu-opioid receptors bound by carfentanil",
+      units = "fraction",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Acts only on naloxone apparent clearance:",
         "CL/F = 3.26 * (WT/70)^0.538 (Yang 2024 Table S4). The reference",
         "weight of 70 kg is explicit in control stream (D)",
@@ -85,19 +100,19 @@ Yang_2024_naloxone_carfentanil <- function() {
         "parameters are point predictions for a 70 kg human and carry",
         "no further weight scaling."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human (carfentanil PK extrapolated from mouse and rabbit by interspecies allometric scaling)",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "Healthy adults (naloxone layer 23-54 years)",
-    weight_range   = "Simulations fix WT = 70 kg; naloxone PK data spanned 57.2-100.2 kg",
+    species = "human (carfentanil PK extrapolated from mouse and rabbit by interspecies allometric scaling)",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "Healthy adults (naloxone layer 23-54 years)",
+    weight_range = "Simulations fix WT = 70 kg; naloxone PK data spanned 57.2-100.2 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult virtual population. No human carfentanil clinical",
       "PK or PD study exists; the carfentanil layer is entirely",
       "constructed, and Yang 2024 states explicitly that validation of",
@@ -105,7 +120,7 @@ Yang_2024_naloxone_carfentanil <- function() {
       "naloxone PK layer is Yang 2024's own auto-injector population PK",
       "in 48 healthy adults and IS data-derived."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Yang 2024 simulated IV carfentanil at 0.2, 2.2 and 4.2 ug/kg.",
       "The lowest is the human equivalent of the half-maximal effective",
       "dose (bradypnea and/or loss of posture) in non-human primates",
@@ -115,8 +130,8 @@ Yang_2024_naloxone_carfentanil <- function() {
       "fallen 60 percent from baseline, and a prophylactic arm gave",
       "NAI 10 mg at 5, 15, 30 or 60 min BEFORE the 4.2 ug/kg dose."
     ),
-    regions        = NA_character_,
-    pk_scenarios   = paste(
+    regions = NA_character_,
+    pk_scenarios = paste(
       "Two allometric scenarios are reported throughout Yang 2024.",
       "Scenario 1 (encoded in ini() here, and the one published as",
       "control stream (D)): regression through the MOUSE data point,",
@@ -130,7 +145,7 @@ Yang_2024_naloxone_carfentanil <- function() {
       "initial ventilation drop but a faster reversal; Scenario 1's",
       "long half-life produces renarcotisation after about 2 h."
     ),
-    notes          = paste(
+    notes = paste(
       "Carfentanil PK was constructed by assuming carfentanil and",
       "fentanyl scale with the same allometric exponent b, fitting the",
       "coefficient log(a) through a single animal species, and then",

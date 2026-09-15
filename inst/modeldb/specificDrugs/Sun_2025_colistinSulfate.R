@@ -26,7 +26,7 @@ Sun_2025_colistinSulfate <- function() {
     sep = " "
   )
   vignette <- "Sun_2025_colistinSulfate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
@@ -37,21 +37,21 @@ Sun_2025_colistinSulfate <- function() {
     # analyte is colistin itself, reported as "the total concentration of
     # colistin sulfate ... calculated as the sum of colistin A and colistin
     # B" -- not a colistimethate metabolite.
-    central     = list(analyte = "colistin sulfate", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "colistin sulfate", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "colistin sulfate", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated with the Cockcroft-Gault equation,",
         "reported as RAW mL/min and NOT normalised to 1.73 m^2 body surface",
         "area."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (a single baseline value). Power effect on CL:",
         "CL = 2.66 * (CrCL / 71.40)^0.456 * exp(eta) per Sun 2025 Eq. 1, with",
         "the exponent 0.456 also tabulated as the 'dCLdCrCL' row of Table 2",
@@ -70,14 +70,14 @@ Sun_2025_colistinSulfate <- function() {
         "during colistin sulfate treatment were EXCLUDED, so the model",
         "carries no information about renal replacement therapy."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on the central volume:",
         "V1 = 49.70 * (WT / 67.89)^1.2 * exp(eta) per Sun 2025 Eq. 2, with the",
         "exponent 1.2 also tabulated as the 'dVdWT' row of Table 2 (legend",
@@ -96,7 +96,7 @@ Sun_2025_colistinSulfate <- function() {
         "term; the paper does not discuss this partial collinearity.",
         "Fitted over an observed range of 40-100 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -110,61 +110,61 @@ Sun_2025_colistinSulfate <- function() {
   # individually reported as covariate candidates, so they are not listed here.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the stepwise covariate model and rejected (Results, 'PPK",
         "analysis'). Table 1 gives a median of 78.5 [31, 98] years -- an",
         "unusually elderly ICU cohort. No point estimate is reported, so",
         "nothing is encoded. Age DOES enter the model indirectly, through the",
         "Cockcroft-Gault equation that generates CRCL (Eq. 5)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "unitless",
-      type               = "categorical",
+      description = "Female sex indicator.",
+      units = "unitless",
+      type = "categorical",
       reference_category = "male",
-      notes              = paste(
+      notes = paste(
         "Screened in the stepwise covariate model and rejected (Results, 'PPK",
         "analysis'). Table 1 gives 117 male / 61 female. No point estimate is",
         "reported, so nothing is encoded. Sex DOES enter the model indirectly,",
         "through the 0.85 female multiplier of the Cockcroft-Gault equation",
         "that generates CRCL (Eq. 5)."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     ALB = list(
-      description        = "Serum albumin.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the stepwise covariate model and rejected (Results, 'PPK",
         "analysis'). Table 1 gives 30.97 +/- 4.43 g/L, i.e. the cohort was",
         "uniformly hypoalbuminaemic with little spread, which plausibly limits",
         "the power to detect an albumin effect. No point estimate is reported,",
         "so nothing is encoded."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 178L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 178L,
+    n_studies = 1L,
     n_observations = 364L,
-    age_range      = "31-98 years (inclusion criterion age >= 18 years)",
-    age_median     = "78.5 years",
-    weight_range   = "40-100 kg",
-    weight_median  = "70 kg",
+    age_range = "31-98 years (inclusion criterion age >= 18 years)",
+    age_median = "78.5 years",
+    weight_range = "40-100 kg",
+    weight_median = "70 kg",
     sex_female_pct = 100 * 61 / 178,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill intensive-care patients treated with intravenous",
       "colistin sulfate for carbapenem-resistant organism (CRO) infections.",
       "Infection sites were pulmonary (93.26%), urinary tract (10.11%),",
@@ -181,7 +181,7 @@ Sun_2025_colistinSulfate <- function() {
       "received continuous renal replacement therapy during treatment were",
       "excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous infusion of colistin sulfate (marketed specification 0.5",
       "MU; Asia Pioneer Pharmaceutical, Shanghai). Table 1 gives a median",
       "daily dose of 1.5 [1.0, 4.0] MU. The product label recommends 1.0-1.5",
@@ -193,7 +193,7 @@ Sun_2025_colistinSulfate <- function() {
       "(mg/L) are on a mass basis. This model therefore takes dose in mg. See",
       "`notes` below and the vignette Errata for the back-solved conversion."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Sparse, opportunistic therapeutic drug monitoring retrieved",
       "retrospectively from computerised records; the precise dose and",
       "sampling clock times were recorded. Of the 364 concentrations, 52",
@@ -209,8 +209,8 @@ Sun_2025_colistinSulfate <- function() {
       "umol/L. Patients on continuous renal replacement therapy during",
       "treatment were excluded."
     ),
-    regions        = "People's Republic of China (single centre; Beijing Electric Power Hospital, Beijing).",
-    notes          = paste(
+    regions = "People's Republic of China (single centre; Beijing Electric Power Hospital, Beijing).",
+    notes = paste(
       "Baseline demographics from Sun 2025 Table 1 and Results 'Baseline",
       "characteristics of patients'. Retrospective single-centre cohort",
       "collected May 2022 to May 2024 (ethics approval n090327). The final",

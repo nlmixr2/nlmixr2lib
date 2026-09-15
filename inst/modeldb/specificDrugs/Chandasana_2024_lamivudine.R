@@ -8,88 +8,93 @@ Chandasana_2024_lamivudine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline weight; fixed allometric scaling with exponent 0.75 on CL/F and Q/F, exponent 1.0 on V2/F (=V3/F), reference 70 kg. Range 50.2-153.0 kg in the analysis population (Chandasana 2024 Table 1).",
-      source_name        = "WT"
+      notes = "Baseline weight; fixed allometric scaling with exponent 0.75 on CL/F and Q/F, exponent 1.0 on V2/F (=V3/F), reference 70 kg. Range 50.2-153.0 kg in the analysis population (Chandasana 2024 Table 1).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (CKD-EPI)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (CKD-EPI)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "eGFR calculated with the CKD-EPI equation and BSA-normalised to mL/min/1.73 m^2 (Chandasana 2024 Table 1 footnote). Power effect on CL/F, reference 99 mL/min/1.73 m^2 (population median per Chandasana 2024 Table 1). Range 44.0-147.0. Canonical column name CRCL covers the BSA-normalised CKD-EPI eGFR variant used here.",
-      source_name        = "eGFR"
+      notes = "eGFR calculated with the CKD-EPI equation and BSA-normalised to mL/min/1.73 m^2 (Chandasana 2024 Table 1 footnote). Power effect on CL/F, reference 99 mL/min/1.73 m^2 (population median per Chandasana 2024 Table 1). Range 44.0-147.0. Canonical column name CRCL covers the BSA-normalised CKD-EPI eGFR variant used here.",
+      source_name = "eGFR"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black / African American; pools White, Asian, American Indian or Alaskan, Native Hawaiian or other Pacific, and Other races)",
-      notes              = "Exponential effect on CL/F encoded as (theta)^RACE in Chandasana 2024 Table 2 footnote (0 = non-Black/African American, 1 = Black/African American). The paper reports 21% lower CL/F in Black/African American subjects; the fitted multiplier theta = 0.789 reproduces this reduction.",
-      source_name        = "RACE"
+      notes = "Exponential effect on CL/F encoded as (theta)^RACE in Chandasana 2024 Table 2 footnote (0 = non-Black/African American, 1 = Black/African American). The paper reports 21% lower CL/F in Black/African American subjects; the fitted multiplier theta = 0.789 reproduces this reduction.",
+      source_name = "RACE"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final lamivudine model (Chandasana 2024 Discussion)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained in the final lamivudine model (Chandasana 2024 Discussion)."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not significant for lamivudine (Chandasana 2024 Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not significant for lamivudine (Chandasana 2024 Discussion)."
     ),
     RACE_HISPANIC = list(
       description = "Hispanic / Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Ethnicity was screened as a lamivudine covariate but not retained; only race (Black/African American vs other, encoded via RACE_BLACK) reached significance (Chandasana 2024 Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Ethnicity was screened as a lamivudine covariate but not retained; only race (Black/African American vs other, encoded via RACE_BLACK) reached significance (Chandasana 2024 Discussion)."
     ),
     SCR = list(
       description = "Serum creatinine at baseline",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained separately once eGFR was included (Chandasana 2024 Discussion)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained separately once eGFR was included (Chandasana 2024 Discussion)."
     ),
     CDC_HIV = list(
       description = "CDC HIV classification (1 vs 2/3)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened but not significant (Chandasana 2024 Discussion)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened but not significant (Chandasana 2024 Discussion)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 362L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 362L,
+    n_studies = 1L,
     n_observations = 2611L,
-    age_range      = "20-74 years (median 40)",
-    weight_range   = "50.2-153.0 kg (median 78.8)",
+    age_range = "20-74 years (median 40)",
+    weight_range = "50.2-153.0 kg (median 78.8)",
     sex_female_pct = 6.9,
-    race_ethnicity = c(White = 80.4, `Black or African American` = 13.5, Asian = 3.59,
-                       `American Indian or Alaskan` = 1.93,
-                       `Native Hawaiian or other Pacific` = 0.28, Other = 0.28),
-    ethnicity      = c(`Non-Hispanic or Latino` = 80.7, `Hispanic or Latino` = 19.3),
-    disease_state  = "Virologically-suppressed adults living with HIV-1 switching to dolutegravir 50 mg / lamivudine 300 mg fixed-dose combination once daily (TANGO phase 3 PK substudy).",
-    dose_range     = "Lamivudine 300 mg once daily as the dolutegravir/lamivudine 50/300 mg fixed-dose combination tablet.",
-    regions        = "Multinational phase 3 study (NCT03446573).",
+    race_ethnicity = c(
+      White = 80.4,
+      `Black or African American` = 13.5,
+      Asian = 3.59,
+      `American Indian or Alaskan` = 1.93,
+      `Native Hawaiian or other Pacific` = 0.28,
+      Other = 0.28
+    ),
+    ethnicity = c(`Non-Hispanic or Latino` = 80.7, `Hispanic or Latino` = 19.3),
+    disease_state = "Virologically-suppressed adults living with HIV-1 switching to dolutegravir 50 mg / lamivudine 300 mg fixed-dose combination once daily (TANGO phase 3 PK substudy).",
+    dose_range = "Lamivudine 300 mg once daily as the dolutegravir/lamivudine 50/300 mg fixed-dose combination tablet.",
+    regions = "Multinational phase 3 study (NCT03446573).",
     renal_function = "eGFR (mL/min/1.73 m^2, CKD-EPI) 99 median, range 44.0-147.0 (Chandasana 2024 Table 1). Distribution: normal (>90) 82.3%, mild (60-89) 17.4%, moderate (50-59) 0.28%.",
-    notes          = "TANGO PK substudy: sparse sampling in all subjects at weeks 4, 8, 12, 24, 36, 48 plus intensive sampling in 30 subjects at week 4 (pre-dose, 0.5, 1, 1.5, 2, 3, 4, 6, 10, 24 h post-dose). 362 subjects contributed 2,611 lamivudine samples for the population PK analysis. A base one-compartment lamivudine model (Moore 1999-style twice-daily backbone) was extended to two compartments here because the once-daily sampling captured absorption, distribution, and elimination phases (Chandasana 2024 Discussion); V3/F was set equal to V2/F because V3/F alone was unreliably estimated on the full data set."
+    notes = "TANGO PK substudy: sparse sampling in all subjects at weeks 4, 8, 12, 24, 36, 48 plus intensive sampling in 30 subjects at week 4 (pre-dose, 0.5, 1, 1.5, 2, 3, 4, 6, 10, 24 h post-dose). 362 subjects contributed 2,611 lamivudine samples for the population PK analysis. A base one-compartment lamivudine model (Moore 1999-style twice-daily backbone) was extended to two compartments here because the once-daily sampling captured absorption, distribution, and elimination phases (Chandasana 2024 Discussion); V3/F was set equal to V2/F because V3/F alone was unreliably estimated on the full data set."
   )
 
   ini({

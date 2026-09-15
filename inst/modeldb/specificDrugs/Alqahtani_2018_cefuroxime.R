@@ -10,43 +10,43 @@ Alqahtani_2018_cefuroxime <- function() {
     sep = " "
   )
   vignette <- "Alqahtani_2018_cefuroxime"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw mL/min, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw mL/min, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CL_CR estimated by the Cockcroft-Gault equation (Alqahtani 2018 Methods, Study design and settings). Raw mL/min, NOT BSA-normalized to mL/min/1.73 m^2. Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form -- same convention as Delattre_2010_amikacin and Shi_2018_ceftazidime). Reference value 78.5 mL/min (cohort mean, Alqahtani 2018 Table 1 and the Table 2 footnote b CL covariate formula). The effect on CL is a power form: CL = 3.43 * (CRCL / 78.5)^0.56.",
-      source_name        = "CL_CR"
+      notes = "Source column CL_CR estimated by the Cockcroft-Gault equation (Alqahtani 2018 Methods, Study design and settings). Raw mL/min, NOT BSA-normalized to mL/min/1.73 m^2. Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form -- same convention as Delattre_2010_amikacin and Shi_2018_ceftazidime). Reference value 78.5 mL/min (cohort mean, Alqahtani 2018 Table 1 and the Table 2 footnote b CL covariate formula). The effect on CL is a power form: CL = 3.43 * (CRCL / 78.5)^0.56.",
+      source_name = "CL_CR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 78L,
-    n_studies      = 1L,
-    age_range      = "18-80 years",
-    age_mean       = "54.2 years (SD 13.2)",
-    weight_range   = "41-111.8 kg",
-    weight_mean    = "76.7 kg (SD 14.7)",
-    bmi_range      = "16.6-43.2 kg/m^2 (mean 28.6, SD 5.2)",
+    species = "human",
+    n_subjects = 78L,
+    n_studies = 1L,
+    age_range = "18-80 years",
+    age_mean = "54.2 years (SD 13.2)",
+    weight_range = "41-111.8 kg",
+    weight_mean = "76.7 kg (SD 14.7)",
+    bmi_range = "16.6-43.2 kg/m^2 (mean 28.6, SD 5.2)",
     sex_female_pct = 24,
     race_ethnicity = "Not reported (single-centre Saudi Arabian cohort; King Fahad Cardiac Center, King Saud University Medical City, Riyadh)",
-    disease_state  = "Adults scheduled to undergo cardiac surgical procedures (coronary artery bypass graft surgery with cardiopulmonary bypass); patients allergic to beta-lactams, with prior systemic infections, or who received antibiotic therapy in the 72 h before surgery were excluded",
-    dose_range     = "Cefuroxime 1.5 g IV infusion over 30 min administered 30-60 min before skin incision; an extra 1.5 g dose was mixed into the CPB solution if surgery lasted >4 h; subsequent prophylactic doses for 48 h were either 1.5 g every 12 h or 1 g every 8 h",
-    regions        = "Saudi Arabia (single-centre prospective open-label study at King Fahad Cardiac Center, King Saud University Medical City)",
+    disease_state = "Adults scheduled to undergo cardiac surgical procedures (coronary artery bypass graft surgery with cardiopulmonary bypass); patients allergic to beta-lactams, with prior systemic infections, or who received antibiotic therapy in the 72 h before surgery were excluded",
+    dose_range = "Cefuroxime 1.5 g IV infusion over 30 min administered 30-60 min before skin incision; an extra 1.5 g dose was mixed into the CPB solution if surgery lasted >4 h; subsequent prophylactic doses for 48 h were either 1.5 g every 12 h or 1 g every 8 h",
+    regions = "Saudi Arabia (single-centre prospective open-label study at King Fahad Cardiac Center, King Saud University Medical City)",
     renal_function = "Cockcroft-Gault creatinine clearance mean 78.5 mL/min (SD 24, range 28.3-125); serum creatinine mean 85 umol/L (SD 29.7, range 41-245); raw mL/min, not BSA-normalized",
-    notes          = "Baseline demographics per Alqahtani 2018 Table 1. 78 adults; 468 plasma samples analyzed by validated HPLC (linearity 0.5-200 ug/mL, equivalent to 0.5-200 mg/L). Cefuroxime PK fit using Monolix v4.4 (SAEM). Eight covariates were screened (age, weight, serum creatinine, CL_CR, gender, height, albumin, BMI); only CL_CR was retained on CL after stepwise log-likelihood ratio testing. Indication was antibiotic prophylaxis against postoperative surgical-site infection."
+    notes = "Baseline demographics per Alqahtani 2018 Table 1. 78 adults; 468 plasma samples analyzed by validated HPLC (linearity 0.5-200 ug/mL, equivalent to 0.5-200 mg/L). Cefuroxime PK fit using Monolix v4.4 (SAEM). Eight covariates were screened (age, weight, serum creatinine, CL_CR, gender, height, albumin, BMI); only CL_CR was retained on CL after stepwise log-likelihood ratio testing. Indication was antibiotic prophylaxis against postoperative surgical-site infection."
   )
 
   ini({

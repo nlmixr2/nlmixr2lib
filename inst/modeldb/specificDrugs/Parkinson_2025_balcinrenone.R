@@ -44,26 +44,32 @@ Parkinson_2025_balcinrenone <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "balcinrenone", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "balcinrenone",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "balcinrenone", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "balcinrenone",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "balcinrenone", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "balcinrenone",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Baseline body weight. Allometric scaling referenced to 70 kg with ",
         "exponents FIXED at 0.75 on CL/F and Q/F and 1 on Vc/F and Vp/F ",
         "(supplement 'Final NONMEM Model': ALLOCL = (BWT/70)**0.75, ",
@@ -74,17 +80,17 @@ Parkinson_2025_balcinrenone <- function() {
         "83.8 (15.1) kg mean (SD), median 83.0 kg, range 47.0-128.2 kg ",
         "(supplement Table S2)."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     CRCL = list(
-      description        = paste0(
+      description = paste0(
         "Baseline estimated glomerular filtration rate, CKD-EPI equation ",
         "(Levey 2009), BSA-normalised"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed baseline value (the source column is BEGFR). Enters CL/F ",
         "as the power ratio (CRCL/57.68)^0.435; 57.68 is the pooled-dataset ",
         "median baseline eGFR taken from the supplement's final control ",
@@ -98,14 +104,14 @@ Parkinson_2025_balcinrenone <- function() {
         "rather than the Wahlby-style CRCL_BASE (which is reserved for ",
         "papers that split a time-varying CRCL from its baseline)."
       ),
-      source_name        = "BEGFR"
+      source_name = "BEGFR"
     ),
     FED = list(
-      description        = "1 = dose taken in the fed state, 0 = dose taken fasted",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = dose taken in the fed state, 0 = dose taken fasted",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste0(
+      notes = paste0(
         "Dose-record level. The source column is FOOD and is coded with the ",
         "OPPOSITE polarity: the supplement's final control stream sets the ",
         "multiplier to 1 when FOOD = 1 and to (1 + THETA) when FOOD = 0, so ",
@@ -124,10 +130,10 @@ Parkinson_2025_balcinrenone <- function() {
         "without a controlled meal (Discussion), so the general FED ",
         "indicator applies rather than FED_HIGHFAT."
       ),
-      source_name        = "FOOD (inverted: FED = 1 - FOOD)"
+      source_name = "FOOD (inverted: FED = 1 - FOOD)"
     ),
     STUDY_BALCINRENONE_PHASE1 = list(
-      description        = paste0(
+      description = paste0(
         "1 = participant from one of the four single-dose phase 1 studies ",
         "(NCT03843060, NCT03804645, NCT04469907, NCT04798222; healthy ",
         "participants and participants with renal impairment); 0 = ",
@@ -135,10 +141,10 @@ Parkinson_2025_balcinrenone <- function() {
         "with heart failure and chronic kidney disease (NCT03682497, ",
         "NCT04595370)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase 1b/2b patient with heart failure and CKD)",
-      notes              = paste0(
+      notes = paste0(
         "Subject-level, time-fixed. The source column is PTSFLAG and is ",
         "coded with the OPPOSITE polarity (PTSFLAG = 1 for patients, the ",
         "most common group at 135 of 189 participants), so ",
@@ -152,14 +158,14 @@ Parkinson_2025_balcinrenone <- function() {
         "single- vs repeated-dose design, less accurate dose/sample timing ",
         "in the patient studies, or unrecorded food state."
       ),
-      source_name        = "PTSFLAG (inverted: STUDY_BALCINRENONE_PHASE1 = 1 - PTSFLAG)"
+      source_name = "PTSFLAG (inverted: STUDY_BALCINRENONE_PHASE1 = 1 - PTSFLAG)"
     ),
     DOSE_BALCINRENONE_MG = list(
-      description        = "Balcinrenone dose administered on the current dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Balcinrenone dose administered on the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Per-dose-record covariate driving the absorption-rate effect ",
         "KA = TVKA * (DOSE/150)^-0.262 (supplement 'Final NONMEM Model' ",
         "KADOSE block; Table 1 footnote 'Dose KA = (dose/150)**KA~Dose'). ",
@@ -173,21 +179,21 @@ Parkinson_2025_balcinrenone <- function() {
         "(supplement Table S1); the reference 150 mg is the renal-impairment ",
         "study dose."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 184L,
-    n_studies      = 6L,
-    age_range      = "20-90 years",
-    age_median     = "69 years",
-    weight_range   = "47.0-128.2 kg",
-    weight_median  = "83.0 kg",
+    species = "human",
+    n_subjects = 184L,
+    n_studies = 6L,
+    age_range = "20-90 years",
+    age_median = "69 years",
+    weight_range = "47.0-128.2 kg",
+    weight_median = "83.0 kg",
     sex_female_pct = 25.9,
     race_ethnicity = c(White = 79.37, Black = 11.11, Asian = 8.99, Other = 0.53),
-    disease_state  = paste0(
+    disease_state = paste0(
       "pooled: healthy participants (NCT03843060, NCT03804645, ",
       "NCT04798222), participants with renal impairment without heart ",
       "failure (NCT04469907), and patients with heart failure (HFmrEF or ",
@@ -199,19 +205,19 @@ Parkinson_2025_balcinrenone <- function() {
       "median was 49.1 and the healthy bioavailability-study cohorts ",
       "99.6-106.6"
     ),
-    co_medication  = paste0(
+    co_medication = paste0(
       "dapagliflozin co-administered in 107 of 189 participants (56.6%); ",
       "tested in the SCM and not retained in the final model (supplement ",
       "Table S4)"
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "15-300 mg oral immediate-release capsule; single doses of 50, 100, ",
       "150 and 300 mg in the phase 1 studies and once-daily 15, 50, 100, ",
       "150 or 200 mg for 12-28 days in the phase 1b/2b studies ",
       "(supplement Table S1)"
     ),
     n_observations = "1882 plasma concentrations used from 2031 available (17% below the limit of quantification, handled by Beal's M3 method in the final model)",
-    notes          = paste0(
+    notes = paste0(
       "Demographics are the pooled 'Total' column of supplement Table S2, ",
       "which summarises all 189 participants evaluable for PK; 184 ",
       "participants and 1882 observations entered the final analysis after ",

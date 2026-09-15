@@ -15,17 +15,17 @@ Chirehwa_2017_pyrazinamide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass derived from body weight, height, and sex via the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass derived from body weight, height, and sex via the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Drives fixed allometric scaling of CL/F (exponent 0.75)",
         "and V/F (exponent 1.0), both referenced to the cohort-median FFM of 42 kg",
         "(Chirehwa 2017 Table 1 footnote a: 'FFM (kg) 42.2 (28.0-57.6)' and Table 2",
@@ -38,26 +38,26 @@ Chirehwa_2017_pyrazinamide <- function() {
         "(Chirehwa 2017 Methods 'Model development' paragraph 4).",
         "User data sets supply FFM directly as a covariate column."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 61L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 61L,
+    n_studies = 1L,
     n_observations = 1342L,
-    age_range      = "18-47 years",
-    age_median     = "32 years",
-    weight_range   = "34.4-98.7 kg",
-    weight_median  = "55.2 kg",
-    height_range   = "1.41-1.81 m",
-    height_median  = "1.59 m",
-    ffm_range      = "28.0-57.6 kg",
-    ffm_median     = "42.2 kg",
+    age_range = "18-47 years",
+    age_median = "32 years",
+    weight_range = "34.4-98.7 kg",
+    weight_median = "55.2 kg",
+    height_range = "1.41-1.81 m",
+    height_median = "1.59 m",
+    ffm_range = "28.0-57.6 kg",
+    ffm_median = "42.2 kg",
     sex_female_pct = 54,
-    disease_state  = "Adults coinfected with HIV and pulmonary tuberculosis (drug-susceptible TB at trial entry); 67% receiving antiretroviral therapy at PK sampling.",
-    dose_range     = paste(
+    disease_state = "Adults coinfected with HIV and pulmonary tuberculosis (drug-susceptible TB at trial entry); 67% receiving antiretroviral therapy at PK sampling.",
+    dose_range = paste(
       "Oral pyrazinamide given as part of the WHO four-drug fixed-dose combination tablet",
       "(150 mg rifampin + 75 mg isoniazid + 400 mg pyrazinamide + 275 mg ethambutol per tablet),",
       "with the number of tablets per dose adjusted to body weight band per WHO guidelines.",
@@ -65,8 +65,8 @@ Chirehwa_2017_pyrazinamide <- function() {
       "PK sampling on days 1, 8, 15, and 29 of TB treatment after an overnight fast,",
       "at predose and 1, 2, 4, 6, 8, and 12 h postdose, plus a 12-h pre-dose sample on day 15."
     ),
-    regions        = "South Africa.",
-    notes          = paste(
+    regions = "South Africa.",
+    notes = paste(
       "Baseline demographics from Chirehwa 2017 Table 1; final structural and variability",
       "estimates from Table 2. Lower limit of quantification was 0.2 mg/liter; one BLQ sample",
       "was discarded. Concomitant medications included rifampin (a potent CYP / UGT inducer)",

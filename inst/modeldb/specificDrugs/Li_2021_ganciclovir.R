@@ -20,7 +20,7 @@ Li_2021_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -31,24 +31,24 @@ Li_2021_ganciclovir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling referenced to the cohort median 12.0 kg. Both exponents are",
         "estimated rather than fixed at canonical allometric values (1.02 on CL,",
         "0.80 on Vc). Cohort median 12.0 kg, range 2.5-55.0 kg (Yang 2023 Table 2).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (Gao formula, pediatric)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (Gao formula, pediatric)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the model through the derived kidney-function ratio",
         "KF = eGFR / 120, i.e. CRCL normalized to 120 mL/min/1.73 m^2",
         "(Yang 2023 Table 3 footnote: 'KF: kidney function, KF = eGFR/(120",
@@ -58,24 +58,24 @@ Li_2021_ganciclovir <- function() {
         "for this model's simulated profiles differing from the others.",
         sep = " "
       ),
-      source_name        = "eGFR (via KF)"
+      source_name = "eGFR (via KF)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 104L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 104L,
+    n_studies = 1L,
     n_observations = 138L,
-    age_median     = "2.46 years (range 0.10-12.83); mean 3.06 (SD 2.99) years",
-    weight_median  = "12.0 kg (range 2.5-55.0); mean 13.7 (SD 8.3) kg",
+    age_median = "2.46 years (range 0.10-12.83); mean 3.06 (SD 2.99) years",
+    weight_median = "12.0 kg (range 2.5-55.0); mean 13.7 (SD 8.3) kg",
     sex_female_pct = 48.1,
     race_ethnicity = "Chinese (single-centre Chinese cohort; not further specified).",
-    disease_state  = "Critically ill pediatric patients.",
-    dose_range     = "IV ganciclovir 5 mg/kg/12 h.",
-    regions        = "China (retrospective study).",
-    bioassay       = "HPLC, LLOQ 0.1 ug/mL.",
-    notes          = paste(
+    disease_state = "Critically ill pediatric patients.",
+    dose_range = "IV ganciclovir 5 mg/kg/12 h.",
+    regions = "China (retrospective study).",
+    bioassay = "HPLC, LLOQ 0.1 ug/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Sampling strategy not",
       "reported; the dataset is very sparse (138 samples from 104 subjects), which",
       "the Yang 2023 authors cite as a likely limitation of this model's",

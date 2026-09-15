@@ -143,16 +143,22 @@ Lim_2026_leuprolide <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "leuprolide", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "leuprolide",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     depot2 = list(
-      analyte = "leuprolide", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "leuprolide",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "leuprolide", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "leuprolide",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 

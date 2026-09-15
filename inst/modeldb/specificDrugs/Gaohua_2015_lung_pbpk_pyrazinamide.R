@@ -36,21 +36,21 @@ Gaohua_2015_lung_pbpk_pyrazinamide <- function() {
     sep = " "
   )
   vignette <- "Gaohua_2015_lung_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # The lung segments and the pulmonary blood reservoir are anatomical states
   # of this paper's lung model and do not generalise to other extractions;
   # `arterial` is the systemic arterial blood pool of Appendix S1 eq 7.
-  paper_specific_compartments        <- c("arterial")
+  paper_specific_compartments <- c("arterial")
   paper_specific_compartment_pattern <- "^lung_"
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales the systemic distribution volume only (Vss is reported in",
         "L/kg in Supplementary Table S2).  Clearance and the lung physiology",
         "are absolute values for the reference adult and are not weight",
@@ -58,48 +58,48 @@ Gaohua_2015_lung_pbpk_pyrazinamide <- function() {
         "reproduce the simulations in this package's vignette.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
-    depot        = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = TRUE),
-    arterial     = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
-    lung_pbr     = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = TRUE),
+    arterial = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
+    lung_pbr = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_rt_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_rt_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_rt_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_rt_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_rm_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_rm_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_rm_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_rm_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_rl_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_rl_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_rl_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_rl_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_lt_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_lt_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_lt_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_lt_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_ll_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_ll_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_ll_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_ll_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_la_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_la_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_la_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_la_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE),
     lung_ua_fluid = list(analyte = "pyrazinamide", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    lung_ua_mass  = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung_ua_mass = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = TRUE),
     lung_ua_blood = list(analyte = "pyrazinamide", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species     = "human",
-    n_subjects  = 540L,
-    n_studies   = 2L,
-    age_range   = "20-55 years",
+    species = "human",
+    n_subjects = 540L,
+    n_studies = 2L,
+    age_range = "20-55 years",
     sex_female_pct = 0,
-    disease_state  = "virtual healthy adults",
-    dose_range     = "1500 mg single oral dose (plasma verification); 1000 mg once daily for 5 days (lung)",
-    regions        = "North European Caucasian (Simcyp virtual population)",
-    notes       = paste(
+    disease_state = "virtual healthy adults",
+    dose_range = "1500 mg single oral dose (plasma verification); 1000 mg once daily for 5 days (lung)",
+    regions = "North European Caucasian (Simcyp virtual population)",
+    notes = paste(
       "Supplementary Appendix S2: the plasma-verification simulation used 140",
       "healthy volunteers (age 20-50, 0% female) given a single 1500 mg dose,",
       "compared with observed data from Agrawal et al. 2002.  The lung",

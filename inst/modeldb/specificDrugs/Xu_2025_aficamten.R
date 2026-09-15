@@ -9,59 +9,59 @@ Xu_2025_aficamten <- function() {
   # Supporting Information Data S1 (ADVAN4 TRANS4: depot + central +
   # peripheral, S2 = V2/1000 so that a dose in mg gives ng/mL).
   compartmentData <- list(
-    depot       = list(analyte = "aficamten", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "aficamten", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "aficamten", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "aficamten", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "aficamten", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (baseline value). Power model normalised to a standard 80 kg, applied with a shared exponent across CL/F and Q/F and a second shared exponent across Vc/F and Vp/F (Xu 2025 Figure S3).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject (baseline value). Power model normalised to a standard 80 kg, applied with a shared exponent across CL/F and Q/F and a second shared exponent across Vc/F and Vp/F (Xu 2025 Figure S3).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source NONMEM column SEX is coded 1 = male, 2 = female; SEXF = 1 for SEX == 2. Proportional effect on CL/F and Vp/F relative to the male reference (Xu 2025 Table 1).",
-      source_name        = "SEX"
+      notes = "Source NONMEM column SEX is coded 1 = male, 2 = female; SEXF = 1 for SEX == 2. Proportional effect on CL/F and Vp/F relative to the male reference (Xu 2025 Table 1).",
+      source_name = "SEX"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator (vs participant with obstructive hypertrophic cardiomyopathy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator (vs participant with obstructive hypertrophic cardiomyopathy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (participant with oHCM)",
-      notes              = "Source NONMEM column PTYPE; PTYPE == 1 identifies healthy participants. Proportional effect on CL/F and Vp/F. The oHCM cohort is the reference, so the typical values in ini() describe a male participant with oHCM weighing 80 kg (Xu 2025 Section 3.1.3).",
-      source_name        = "PTYPE"
+      notes = "Source NONMEM column PTYPE; PTYPE == 1 identifies healthy participants. Proportional effect on CL/F and Vp/F. The oHCM cohort is the reference, so the typical values in ini() describe a male participant with oHCM weighing 80 kg (Xu 2025 Section 3.1.3).",
+      source_name = "PTYPE"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation indicator (vs tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation indicator (vs tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet: phase 2, phase 3, or commercial tablet)",
-      notes              = "Source NONMEM column FORM (<= 1 capsule; 2 phase 2 tablet; 3 phase 3 tablet; 4 commercial tablet). Selects between two separately estimated absorption lag times; the three tablet levels share a single lag time. Formulation affects only Tlag in the final model -- no formulation effect on relative bioavailability or Ka was retained (Xu 2025 Section 3.1.3).",
-      source_name        = "FORM"
+      notes = "Source NONMEM column FORM (<= 1 capsule; 2 phase 2 tablet; 3 phase 3 tablet; 4 commercial tablet). Selects between two separately estimated absorption lag times; the three tablet levels share a single lag time. Formulation affects only Tlag in the final model -- no formulation effect on relative bioavailability or Ka was retained (Xu 2025 Section 3.1.3).",
+      source_name = "FORM"
     ),
     FED = list(
-      description        = "Fed-state-at-dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state-at-dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (fed: standard meal, high-fat meal, or unspecified 'with or without food')",
-      notes              = "Source NONMEM column FOOD (0 fasted; 1 high-fat meal; 2 standard meal); FED = 0 only when FOOD == 0. The fasted effect on Ka is applied as (1 - FED), so the reference arm is the standard meal. Phase 2 / phase 3 oHCM records, which the source records as 'with or without food' and which set none of the NONMEM FASTED / HIGHFAT / STDMEAL indicators, therefore carry FED = 1 to place them on the reference arm (Xu 2025 Table S5 and Data S1 control stream).",
-      source_name        = "FOOD"
+      notes = "Source NONMEM column FOOD (0 fasted; 1 high-fat meal; 2 standard meal); FED = 0 only when FOOD == 0. The fasted effect on Ka is applied as (1 - FED), so the reference arm is the standard meal. Phase 2 / phase 3 oHCM records, which the source records as 'with or without food' and which set none of the NONMEM FASTED / HIGHFAT / STDMEAL indicators, therefore carry FED = 1 to place them on the reference arm (Xu 2025 Table S5 and Data S1 control stream).",
+      source_name = "FOOD"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal-at-dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal-at-dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted, standard meal, or unspecified 'with or without food')",
-      notes              = "Source NONMEM column FOOD == 1. Carries all three high-fat-meal effects (relative bioavailability, Tlag, Ka). High-fat-meal records also carry FED = 1. Evaluated only in the phase 1 food-effect study, in which a single 20 mg dose was given fasted or fed (Xu 2025 Table S1).",
-      source_name        = "FOOD"
+      notes = "Source NONMEM column FOOD == 1. Carries all three high-fat-meal effects (relative bioavailability, Tlag, Ka). High-fat-meal records also carry FED = 1. Evaluated only in the phase 1 food-effect study, in which a single 20 mg dose was given fasted or fed (Xu 2025 Table S1).",
+      source_name = "FOOD"
     )
   )
 
@@ -78,49 +78,53 @@ Xu_2025_aficamten <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Significant on CL/F and Vp/F in univariate screening (p < 0.01) but removed in backward elimination (p > 0.001). Data S1 control stream retains the power terms (AGE/60)^THETA(11) on CL/F and (AGE/60)^THETA(23) on Vp/F with both thetas '0 FIX' (Xu 2025 Section 3.1.2)."
+      units = "years",
+      type = "continuous",
+      notes = "Significant on CL/F and Vp/F in univariate screening (p < 0.01) but removed in backward elimination (p > 0.001). Data S1 control stream retains the power terms (AGE/60)^THETA(11) on CL/F and (AGE/60)^THETA(23) on Vp/F with both thetas '0 FIX' (Xu 2025 Section 3.1.2)."
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/dL (source convention; canonical column units are g/L)",
-      type        = "continuous",
-      notes       = "Significant on CL/F in univariate screening but removed in backward elimination. Data S1 control stream retains (ALB/4.5)^THETA(12) with THETA(12) '0 FIX'; the 4.5 normalisation constant confirms the source reported albumin in g/dL (Xu 2025 Section 3.1.2)."
+      units = "g/dL (source convention; canonical column units are g/L)",
+      type = "continuous",
+      notes = "Significant on CL/F in univariate screening but removed in backward elimination. Data S1 control stream retains (ALB/4.5)^THETA(12) with THETA(12) '0 FIX'; the 4.5 normalisation constant confirms the source reported albumin in g/dL (Xu 2025 Section 3.1.2)."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Significant on CL/F in univariate screening but removed in backward elimination. Data S1 control stream retains (AST/20)^THETA(13) with THETA(13) '0 FIX' (Xu 2025 Section 3.1.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Significant on CL/F in univariate screening but removed in backward elimination. Data S1 control stream retains (AST/20)^THETA(13) with THETA(13) '0 FIX' (Xu 2025 Section 3.1.2)."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min (source convention; canonical column units are mL/min/1.73 m^2)",
-      type        = "continuous",
-      notes       = "Significant on CL/F in univariate screening but removed in backward elimination; mild and moderate renal impairment had no significant effect in the final model. Data S1 control stream retains (CRCL/100)^THETA(14) with THETA(14) '0 FIX' (Xu 2025 Sections 3.1.2 and 3.1.3)."
+      units = "mL/min (source convention; canonical column units are mL/min/1.73 m^2)",
+      type = "continuous",
+      notes = "Significant on CL/F in univariate screening but removed in backward elimination; mild and moderate renal impairment had no significant effect in the final model. Data S1 control stream retains (CRCL/100)^THETA(14) with THETA(14) '0 FIX' (Xu 2025 Sections 3.1.2 and 3.1.3)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 447,
-    n_studies      = 9,
-    age_range      = "18-83 years",
-    age_median     = "43 years",
-    weight_range   = "47.0-156 kg",
-    weight_median  = "77.2 kg",
+    species = "human",
+    n_subjects = 447,
+    n_studies = 9,
+    age_range = "18-83 years",
+    age_median = "43 years",
+    weight_range = "47.0-156 kg",
+    weight_median = "77.2 kg",
     sex_female_pct = 39.4,
     race_ethnicity = c(
-      White = 71.1, Black = 11.2, Asian = 13.4,
-      AmericanIndianAlaskaNative = 0.9, NativeHawaiianPacificIslander = 0.2,
-      Multiple = 2.5, Other = 0.7
+      White = 71.1,
+      Black = 11.2,
+      Asian = 13.4,
+      AmericanIndianAlaskaNative = 0.9,
+      NativeHawaiianPacificIslander = 0.2,
+      Multiple = 2.5,
+      Other = 0.7
     ),
-    disease_state  = "264 healthy participants (7 phase 1 studies) and 183 participants with symptomatic obstructive hypertrophic cardiomyopathy (phase 2 REDWOOD-HCM, NCT04219826; phase 3 SEQUOIA-HCM, NCT05186818)",
-    dose_range     = "single oral doses of 1-75 mg; multiple once-daily oral doses of 5-30 mg",
+    disease_state = "264 healthy participants (7 phase 1 studies) and 183 participants with symptomatic obstructive hypertrophic cardiomyopathy (phase 2 REDWOOD-HCM, NCT04219826; phase 3 SEQUOIA-HCM, NCT05186818)",
+    dose_range = "single oral doses of 1-75 mg; multiple once-daily oral doses of 5-30 mg",
     renal_function = "Normal 83.7%, mild impairment 13.4%, moderate impairment 2.9% (by CrCL; no severe impairment)",
     n_observations = 9963,
-    notes          = "Baseline demographics per Xu 2025 Table S5; study designs and sampling schedules per Table S1; sample accounting per Table S3. Samples below the 1 ng/mL LLOQ (n = 373) were excluded from the analysis. Participants with hepatic impairment and with non-obstructive HCM were excluded from the population PK dataset. Covariates screened but not retained in the final model (Xu 2025 Section 3.1.2): age, serum albumin, AST, and creatinine clearance on CL/F, age on Vp/F, and race on CL/F and Vc/F -- all significant in univariate screening (p < 0.01) but eliminated at the stricter backward-elimination threshold (p > 0.001), and all retained in the Data S1 control stream with zero-fixed coefficients (see covariatesDataExcluded; race enters as a 3-indicator contrast against a reference level via THETA(17)-THETA(19) on CL/F and THETA(20)-THETA(22) on Vc/F, and the source does not state which numeric RACE level is the reference). Baseline disease-related covariates (left ventricular ejection fraction, NYHA class, N-terminal prohormone of brain natriuretic peptide) and concomitant medications (beta-blockers, calcium channel blockers, disopyramide, amiodarone) were screened after the demographic covariates were incorporated and showed no significant impact on clearance (p >= 0.01); these carry no coefficient in the control stream."
+    notes = "Baseline demographics per Xu 2025 Table S5; study designs and sampling schedules per Table S1; sample accounting per Table S3. Samples below the 1 ng/mL LLOQ (n = 373) were excluded from the analysis. Participants with hepatic impairment and with non-obstructive HCM were excluded from the population PK dataset. Covariates screened but not retained in the final model (Xu 2025 Section 3.1.2): age, serum albumin, AST, and creatinine clearance on CL/F, age on Vp/F, and race on CL/F and Vc/F -- all significant in univariate screening (p < 0.01) but eliminated at the stricter backward-elimination threshold (p > 0.001), and all retained in the Data S1 control stream with zero-fixed coefficients (see covariatesDataExcluded; race enters as a 3-indicator contrast against a reference level via THETA(17)-THETA(19) on CL/F and THETA(20)-THETA(22) on Vc/F, and the source does not state which numeric RACE level is the reference). Baseline disease-related covariates (left ventricular ejection fraction, NYHA class, N-terminal prohormone of brain natriuretic peptide) and concomitant medications (beta-blockers, calcium channel blockers, disopyramide, amiodarone) were screened after the demographic covariates were incorporated and showed no significant impact on clearance (p >= 0.01); these carry no coefficient in the control stream."
   )
 
   ini({

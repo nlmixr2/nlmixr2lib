@@ -19,7 +19,7 @@ Krens_2020_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -30,11 +30,11 @@ Krens_2020_ganciclovir <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "CKD-EPI-estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI-estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Renal function estimated with the Chronic Kidney Disease Epidemiology",
         "Collaboration (CKD-EPI) equation, which returns mL/min/1.73 m^2. Power",
         "effect on CL referenced to 65 mL/min/1.73 m^2. CKD-EPI was the only",
@@ -45,24 +45,24 @@ Krens_2020_ganciclovir <- function() {
         "42 L for every subject regardless of size.",
         sep = " "
       ),
-      source_name        = "CKD-EPI"
+      source_name = "CKD-EPI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
     n_observations = 128L,
-    age_median     = "56 years (range 30-82)",
-    weight_median  = "70 kg (range 44-140)",
+    age_median = "56 years (range 30-82)",
+    weight_median = "70 kg (range 44-140)",
     sex_female_pct = 50,
     race_ethnicity = "Not reported; ethnicity was tested as a covariate and not retained.",
-    disease_state  = "Critically ill (intensive-care) patients receiving ganciclovir.",
-    dose_range     = "IV ganciclovir 2.8 mg/kg/day (range 0.7-20 mg/kg/day).",
-    regions        = "Netherlands (retrospective study).",
-    bioassay       = "HPLC, LLOQ 0.5 mg/L; LC-MS/MS, LLOQ 0.1 mg/L.",
-    notes          = paste(
+    disease_state = "Critically ill (intensive-care) patients receiving ganciclovir.",
+    dose_range = "IV ganciclovir 2.8 mg/kg/day (range 0.7-20 mg/kg/day).",
+    regions = "Netherlands (retrospective study).",
+    bioassay = "HPLC, LLOQ 0.5 mg/L; LC-MS/MS, LLOQ 0.1 mg/L.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Sampling strategy not",
       "reported. Yang 2023 notes that this model's simulated concentration-time",
       "profiles showed high variability at 5 mg/kg q12h and differed from the",

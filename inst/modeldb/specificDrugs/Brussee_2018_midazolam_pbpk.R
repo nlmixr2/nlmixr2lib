@@ -22,25 +22,25 @@ Brussee_2018_midazolam_pbpk <- function() {
     sep = " "
   )
   vignette <- "Brussee_2018_midazolam_pbpk"
-  units    <- list(time = "h", dosing = "ug", concentration = "microgram/L")
+  units <- list(time = "h", dosing = "ug", concentration = "microgram/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
     central_1ohm = list(analyte = "1-OH-midazolam", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the time of dose administration",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the time of dose administration",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-occasion body weight (the paper records body weight at the day",
         "of dosing, range 0.770-2.030 kg). WT scales the term-neonate reference",
         "physiology (Bjorkman 2005 Table 1, reproduced in Brussee 2018 Table 1):",
@@ -53,36 +53,36 @@ Brussee_2018_midazolam_pbpk <- function() {
         "supplied in kg in the data column; the intestinal-length formula",
         "internally converts to grams via WT * 1000."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human (preterm neonates)",
-    n_subjects     = 37L,
-    n_studies      = 2L,
-    age_range      = "Postnatal age 3-11 days at the time of dosing",
-    weight_range   = "Body weight 0.770-2.030 kg at the time of dosing",
-    weight_median  = "1.1 kg (typical preterm neonate)",
-    ga_range       = "Gestational age at birth 26-34 weeks",
-    pna_range      = "Postnatal age 3-11 days",
+    species = "human (preterm neonates)",
+    n_subjects = 37L,
+    n_studies = 2L,
+    age_range = "Postnatal age 3-11 days at the time of dosing",
+    weight_range = "Body weight 0.770-2.030 kg at the time of dosing",
+    weight_median = "1.1 kg (typical preterm neonate)",
+    ga_range = "Gestational age at birth 26-34 weeks",
+    pna_range = "Postnatal age 3-11 days",
     birth_weight_range = "Birth weight 0.745-2.135 g",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Preterm neonates admitted to the Sophia Children's Hospital neonatal",
       "intensive care unit (Rotterdam, The Netherlands). Drawn from the IV",
       "(de Wildt 2001 Clin Pharmacol Ther 70:525-531) and oral (de Wildt 2002",
       "Br J Clin Pharmacol 53:390-392) midazolam pharmacokinetic studies in",
       "the same NICU cohort."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.1 mg/kg midazolam orally via nasogastric tube (n = 13) or as a",
       "30-minute intravenous infusion (n = 25). Subjects still meeting the",
       "inclusion criteria after >= 72 h received a second 0.1 mg/kg dose via",
       "the other route in a crossover design."
     ),
-    regions        = "The Netherlands",
-    notes          = paste(
+    regions = "The Netherlands",
+    notes = paste(
       "Pooled IV + oral midazolam concentration data from de Wildt 2001 and",
       "de Wildt 2002. Plasma midazolam and 1-OH-midazolam were sampled at",
       "0.5, 1, 2, 4, 6, 12, and 24 hours post-dose; observations below LLOQ",

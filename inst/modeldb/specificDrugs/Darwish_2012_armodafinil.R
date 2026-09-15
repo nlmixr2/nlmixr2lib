@@ -18,34 +18,34 @@ Darwish_2012_armodafinil <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "armodafinil", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "armodafinil", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "armodafinil", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters the model twice. (1) Pharmacokinetics: Darwish 2012 Eq. 3 expresses the apparent volume of distribution per kg of body weight, Vd_i = [Vd * BW] * exp(eta_Vd), and Darwish 2012 Table II adds a linear weight effect on the per-kg volume itself (-0.003 L/kg per kg). The Methods state that 'Observed BW and the other covariates (ie, sex, age, and race) were centered using their median values', but the median is not printed; 86 kg is used as the centring weight (see the model file's Implementation notes for the derivation). (2) Pharmacodynamics: Darwish 2012 Table III carries a body-weight coefficient of 0.004 on the log baseline hazard, footnoted 'Coefficient of body weight >86 kg'. Body-weight range in the armodafinil efficacy trial was 45-153 kg (Darwish 2012 Results, 'Predicted Steady-State Plasma Concentration-Versus-Time Profiles').",
-      source_name        = "BW"
+      notes = "Time-fixed per subject. Enters the model twice. (1) Pharmacokinetics: Darwish 2012 Eq. 3 expresses the apparent volume of distribution per kg of body weight, Vd_i = [Vd * BW] * exp(eta_Vd), and Darwish 2012 Table II adds a linear weight effect on the per-kg volume itself (-0.003 L/kg per kg). The Methods state that 'Observed BW and the other covariates (ie, sex, age, and race) were centered using their median values', but the median is not printed; 86 kg is used as the centring weight (see the model file's Implementation notes for the derivation). (2) Pharmacodynamics: Darwish 2012 Table III carries a body-weight coefficient of 0.004 on the log baseline hazard, footnoted 'Coefficient of body weight >86 kg'. Body-weight range in the armodafinil efficacy trial was 45-153 kg (Darwish 2012 Results, 'Predicted Steady-State Plasma Concentration-Versus-Time Profiles').",
+      source_name = "BW"
     ),
     TCLOCK = list(
-      description        = "Wall-clock time of day of the MSLT session, in decimal hours on a 0-24 scale.",
-      units              = "hour of day (0-24)",
-      type               = "continuous",
+      description = "Wall-clock time of day of the MSLT session, in decimal hours on a 0-24 scale.",
+      units = "hour of day (0-24)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying per record. This is the argument `t` of the cubic baseline-hazard polynomial of Darwish 2012 Eq. 5, where t is clock time within the MSLT testing interval, 'usually from 0000 to 0800 h'. In the armodafinil efficacy trial the MSLT was run as five 20-minute sessions every 2 hours from 0000 to 0800 h, so the polynomial is supported on TCLOCK = 0, 2, 4, 6, 8. Darwish 2012 Discussion states that 'Extrapolation to times later than 0800 h was not considered appropriate'; do not evaluate the hazard outside 0-8 h. Distinct from the model's integration-time axis, which carries time after dose (dosing was around 2200 h, i.e. 2 hours before TCLOCK = 0).",
-      source_name        = "t (clock time in Darwish 2012 Eq. 5)"
+      notes = "Time-varying per record. This is the argument `t` of the cubic baseline-hazard polynomial of Darwish 2012 Eq. 5, where t is clock time within the MSLT testing interval, 'usually from 0000 to 0800 h'. In the armodafinil efficacy trial the MSLT was run as five 20-minute sessions every 2 hours from 0000 to 0800 h, so the polynomial is supported on TCLOCK = 0, 2, 4, 6, 8. Darwish 2012 Discussion states that 'Extrapolation to times later than 0800 h was not considered appropriate'; do not evaluate the hazard outside 0-8 h. Distinct from the model's integration-time axis, which carries time after dose (dosing was around 2200 h, i.e. 2 hours before TCLOCK = 0).",
+      source_name = "t (clock time in Darwish 2012 Eq. 5)"
     ),
     STUDY_MODAF = list(
-      description        = "Integer study identifier of the Darwish 2012 pooled analysis; the levels armodafinil was administered in are 1, 2, 6 (pharmacokinetic studies) and 7 (the MSLT efficacy trial).",
-      units              = "(integer 1-8)",
-      type               = "categorical",
+      description = "Integer study identifier of the Darwish 2012 pooled analysis; the levels armodafinil was administered in are 1, 2, 6 (pharmacokinetic studies) and 7 (the MSLT efficacy trial).",
+      units = "(integer 1-8)",
+      type = "categorical",
       reference_category = "6 for the pharmacokinetic sub-model (SWD-patient study); 7 for the MSLT hazard sub-model (the armodafinil efficacy trial, which is the baseline-hazard reference)",
-      notes              = "Time-fixed per subject. Selects the study-specific absorption rate constant of Darwish 2012 Table II ('the population pharmacokinetic model detected no difference in ka between armodafinil and modafinil, [but] ka differed across studies'). Armodafinil was dosed in Study 1 (ka 2.04 1/h), Study 2 (ka 0.41 1/h) and Study 6 (ka 0.79 1/h); Study 1 additionally carries a +0.13 L/kg apparent-volume offset (Table II footnote a, 'Difference from population average'). Study 7 is the armodafinil MSLT efficacy trial, which contributed no plasma concentrations -- its patients' concentrations were predicted with the SWD-patient (Study 6) absorption rate, so levels 6, 7 and 8 all select ka = 0.79 1/h. Use STUDY_MODAF = 7 when simulating the pharmacodynamic layer, and set it to 7 for the sister modafinil model too when reproducing the paper's like-for-like drug comparison (Darwish 2012 Figure 8) under a common baseline hazard.",
-      source_name        = "Study no. (Darwish 2012 Table I; Studies 7 and 8 per the paper's Methods text)"
+      notes = "Time-fixed per subject. Selects the study-specific absorption rate constant of Darwish 2012 Table II ('the population pharmacokinetic model detected no difference in ka between armodafinil and modafinil, [but] ka differed across studies'). Armodafinil was dosed in Study 1 (ka 2.04 1/h), Study 2 (ka 0.41 1/h) and Study 6 (ka 0.79 1/h); Study 1 additionally carries a +0.13 L/kg apparent-volume offset (Table II footnote a, 'Difference from population average'). Study 7 is the armodafinil MSLT efficacy trial, which contributed no plasma concentrations -- its patients' concentrations were predicted with the SWD-patient (Study 6) absorption rate, so levels 6, 7 and 8 all select ka = 0.79 1/h. Use STUDY_MODAF = 7 when simulating the pharmacodynamic layer, and set it to 7 for the sister modafinil model too when reproducing the paper's like-for-like drug comparison (Darwish 2012 Figure 8) under a common baseline hazard.",
+      source_name = "Study no. (Darwish 2012 Table I; Studies 7 and 8 per the paper's Methods text)"
     )
   )
 
@@ -61,38 +61,38 @@ Darwish_2012_armodafinil <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a covariate in both the population pharmacokinetic and the MSLT hazard model; not retained. No point estimate is reported."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a covariate in both the population pharmacokinetic and the MSLT hazard model; not retained. No point estimate is reported."
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a covariate in both sub-models; not retained. No point estimate is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a covariate in both sub-models; not retained. No point estimate is reported."
     ),
     RACE_BLACK = list(
       description = "Race indicator used to represent the paper's unspecified race covariate screen.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Darwish 2012 names 'race' among the screened covariates but neither defines its categories nor reports an estimate; no race effect is retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Darwish 2012 names 'race' among the screened covariates but neither defines its categories nor reports an estimate; no race effect is retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 284L,
-    n_studies      = 6L,
-    age_range      = "not reported in the source paper",
-    weight_range   = "45-153 kg in the armodafinil efficacy trial (Study 7); 52-138 kg in the modafinil efficacy trial (Study 8)",
-    weight_median  = "not reported; 86 kg is used as the centring weight (see Implementation notes)",
+    species = "human",
+    n_subjects = 284L,
+    n_studies = 6L,
+    age_range = "not reported in the source paper",
+    weight_range = "45-153 kg in the armodafinil efficacy trial (Study 7); 52-138 kg in the modafinil efficacy trial (Study 8)",
+    weight_median = "not reported; 86 kg is used as the centring weight (see Implementation notes)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Pharmacokinetic model: 190 healthy volunteers (Studies 1-5) pooled with 94 patients with excessive sleepiness associated with shift work disorder (Study 6). Pharmacodynamic (MSLT) model: 449 patients with excessive sleepiness associated with shift work disorder from two 3-month randomised, double-blind, placebo-controlled efficacy trials (Study 7, armodafinil 150 mg/d, 245 patients; Study 8, modafinil 200 mg/d, 204 patients), contributing close to 7000 MSLT observations.",
-    dose_range     = "Armodafinil single doses of 50, 100, 200, 300 or 400 mg (Study 1) and 100, 150, 200 or 300 mg/d (Study 2); multiple doses of 150, 200 or 250 mg/d (Study 6); 150 mg/d in the efficacy trial (Study 7). All efficacy-trial doses were given around 2200 h, 30 to 60 minutes before each night shift.",
-    regions        = "not reported in the source paper",
-    biomarkers     = "Multiple Sleep Latency Test (MSLT) sleep latency in minutes, recorded as five 20-minute sessions every 2 hours from 0000 to 0800 h at baseline and at weeks 4, 8 and 12. Values are right-censored at the 20-minute session length.",
-    notes          = "Pharmacokinetic dataset: 3773 plasma concentration observations from 284 subjects across the six studies of Darwish 2012 Table I. Population pharmacokinetic model fitted by maximum-likelihood NLME in S-PLUS 8.0 (TIBCO); pharmacokinetic/pharmacodynamic model fitted in NONMEM VI level 1 with the first-order conditional (Laplace) method, accounting for right censoring at 20 minutes. Dropouts: 38 of 254 randomised (15%) in Study 7 and 16 of 209 (7.7%) in Study 8; last observation carried forward."
+    disease_state = "Pharmacokinetic model: 190 healthy volunteers (Studies 1-5) pooled with 94 patients with excessive sleepiness associated with shift work disorder (Study 6). Pharmacodynamic (MSLT) model: 449 patients with excessive sleepiness associated with shift work disorder from two 3-month randomised, double-blind, placebo-controlled efficacy trials (Study 7, armodafinil 150 mg/d, 245 patients; Study 8, modafinil 200 mg/d, 204 patients), contributing close to 7000 MSLT observations.",
+    dose_range = "Armodafinil single doses of 50, 100, 200, 300 or 400 mg (Study 1) and 100, 150, 200 or 300 mg/d (Study 2); multiple doses of 150, 200 or 250 mg/d (Study 6); 150 mg/d in the efficacy trial (Study 7). All efficacy-trial doses were given around 2200 h, 30 to 60 minutes before each night shift.",
+    regions = "not reported in the source paper",
+    biomarkers = "Multiple Sleep Latency Test (MSLT) sleep latency in minutes, recorded as five 20-minute sessions every 2 hours from 0000 to 0800 h at baseline and at weeks 4, 8 and 12. Values are right-censored at the 20-minute session length.",
+    notes = "Pharmacokinetic dataset: 3773 plasma concentration observations from 284 subjects across the six studies of Darwish 2012 Table I. Population pharmacokinetic model fitted by maximum-likelihood NLME in S-PLUS 8.0 (TIBCO); pharmacokinetic/pharmacodynamic model fitted in NONMEM VI level 1 with the first-order conditional (Laplace) method, accounting for right censoring at 20 minutes. Dropouts: 38 of 254 randomised (15%) in Study 7 and 16 of 209 (7.7%) in Study 8; last observation carried forward."
   )
 
   # Implementation notes (see the vignette's 'Assumptions and deviations'

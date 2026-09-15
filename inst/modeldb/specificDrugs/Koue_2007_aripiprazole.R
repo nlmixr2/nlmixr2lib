@@ -8,59 +8,59 @@ Koue_2007_aripiprazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed in Koue 2007 (single-, multi-, and itraconazole-coadministration trials in healthy Japanese male volunteers; weight range 48.2-75.2 kg, mean 60.7 kg per the Pharmacokinetic Data section). Enters every clearance and volume parameter as a multiplicative scaling per kg with no reference-weight normalisation, i.e. Vc/F = theta3 * WT, Vp/F = theta8 * WT, Q/F = theta9 * WT, CL/F = (theta4 - theta5*G2 - theta6*G3 - theta7*ITZ) * WT. Equivalent to a fixed allometric exponent of 1.0 on every dispositional parameter.",
-      source_name        = "WT"
+      notes = "Time-fixed in Koue 2007 (single-, multi-, and itraconazole-coadministration trials in healthy Japanese male volunteers; weight range 48.2-75.2 kg, mean 60.7 kg per the Pharmacokinetic Data section). Enters every clearance and volume parameter as a multiplicative scaling per kg with no reference-weight normalisation, i.e. Vc/F = theta3 * WT, Vp/F = theta8 * WT, Q/F = theta9 * WT, CL/F = (theta4 - theta5*G2 - theta6*G3 - theta7*ITZ) * WT. Equivalent to a fixed allometric exponent of 1.0 on every dispositional parameter.",
+      source_name = "WT"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive or intermediate metabolizer)",
-      notes              = "1 = subject is a CYP2D6 poor metabolizer (genotype encoding no functional CYP2D6 activity; Koue 2007 Group 3 = CYP2D6 *5/*10, *10/*10, or *41/*41), 0 otherwise. Paired with CYP2D6_EM to encode the three-level EM/IM/PM phenotype using two binary indicators; in this paper Group 1 (EM) is the explicit reference rather than IM, so within model() the IM indicator is derived as (1 - CYP2D6_EM - CYP2D6_PM). Maps to the paper's binary G3 (Eq. 4): G3 = 1 for Group 3, 0 otherwise.",
-      source_name        = "G3 (paper Eq. 4)"
+      notes = "1 = subject is a CYP2D6 poor metabolizer (genotype encoding no functional CYP2D6 activity; Koue 2007 Group 3 = CYP2D6 *5/*10, *10/*10, or *41/*41), 0 otherwise. Paired with CYP2D6_EM to encode the three-level EM/IM/PM phenotype using two binary indicators; in this paper Group 1 (EM) is the explicit reference rather than IM, so within model() the IM indicator is derived as (1 - CYP2D6_EM - CYP2D6_PM). Maps to the paper's binary G3 (Eq. 4): G3 = 1 for Group 3, 0 otherwise.",
+      source_name = "G3 (paper Eq. 4)"
     ),
     CYP2D6_EM = list(
-      description        = "CYP2D6 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or poor metabolizer)",
-      notes              = "1 = subject is a CYP2D6 extensive metabolizer (Koue 2007 Group 1 = CYP2D6 *1/*1, *1/*2, or *2/*2), 0 otherwise. Paired with CYP2D6_PM to encode the three-level EM/IM/PM phenotype; Koue 2007 takes Group 1 (EM) as the model reference and Group 2 (IM) and Group 3 (PM) as additive linear-deviation shifts on CL/F. Within model() the implicit IM stratum is derived as (1 - CYP2D6_EM - CYP2D6_PM), so this column is required even though it does not appear in the paper's equation as a named indicator.",
-      source_name        = "Group 1 indicator (paper Table 1 / Eq. 4); derived as 1 - G2 - G3"
+      notes = "1 = subject is a CYP2D6 extensive metabolizer (Koue 2007 Group 1 = CYP2D6 *1/*1, *1/*2, or *2/*2), 0 otherwise. Paired with CYP2D6_PM to encode the three-level EM/IM/PM phenotype; Koue 2007 takes Group 1 (EM) as the model reference and Group 2 (IM) and Group 3 (PM) as additive linear-deviation shifts on CL/F. Within model() the implicit IM stratum is derived as (1 - CYP2D6_EM - CYP2D6_PM), so this column is required even though it does not appear in the paper's equation as a named indicator.",
+      source_name = "Group 1 indicator (paper Table 1 / Eq. 4); derived as 1 - G2 - G3"
     ),
     CONMED_AZOLE = list(
-      description        = "Concomitant azole antifungal coadministration (itraconazole) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant azole antifungal coadministration (itraconazole) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant itraconazole)",
-      notes              = "1 = aripiprazole observation falls within the itraconazole-coadministration period of the protocol-3 trial (itraconazole 100 mg once daily for 21 consecutive days, aripiprazole 3 mg on day 7 after itraconazole start; Koue 2007 Pharmacokinetic Data section), 0 otherwise. Only itraconazole was studied in Koue 2007; the canonical CONMED_AZOLE column pools any systemic azole antifungal, but here only itraconazole was administered. Maps to the paper's binary ITZ (Eq. 4): ITZ = 1 for the coadministration period, 0 otherwise.",
-      source_name        = "ITZ (paper Eq. 4)"
+      notes = "1 = aripiprazole observation falls within the itraconazole-coadministration period of the protocol-3 trial (itraconazole 100 mg once daily for 21 consecutive days, aripiprazole 3 mg on day 7 after itraconazole start; Koue 2007 Pharmacokinetic Data section), 0 otherwise. Only itraconazole was studied in Koue 2007; the canonical CONMED_AZOLE column pools any systemic azole antifungal, but here only itraconazole was administered. Maps to the paper's binary ITZ (Eq. 4): ITZ = 1 for the coadministration period, 0 otherwise.",
+      source_name = "ITZ (paper Eq. 4)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 68L,
-    n_studies        = 3L,
-    n_observations   = NA_integer_,
-    age_range        = "20-32 years (mean 23.1)",
-    weight_range     = "48.2-75.2 kg (mean 60.7)",
-    sex_female_pct   = 0,
-    race_ethnicity   = "100% Japanese (per Pharmacokinetic Data section)",
-    disease_state    = "Healthy adult Japanese male volunteers across three clinical trials: single-dose (protocol 1, n=26 -- the abstract reports 24 contributing subjects), multiple-dose (protocol 2, n=15), and itraconazole-coadministration (protocol 3, n=27).",
-    dose_range       = "Oral aripiprazole (ABILIFY tablet): 6 mg single dose (protocol 1), 3 mg once daily for 14 d (protocol 2), and 3 mg single dose with and without itraconazole 100 mg once daily for 21 d (protocol 3).",
-    regions          = "Japan",
-    notes            = "CYP2D6 genotype distribution (Koue 2007 Table 1): Group 1 (EM = *1/*1, *1/*2, *2/*2) n=14; Group 2 (IM = *1/*5, *1/*10, *2/*5, *2/*10, *2/*41) n=39; Group 3 (PM = *5/*10, *10/*10, *41/*41) n=15. Genotyping was performed by PCR-RFLP and long-PCR for CYP2D6 *2, *4, *5, *10, *14, *18, *36, *41; CYP3A5 was not genotyped. All food effects on absorption were judged not significant (Results and Discussion). The parent dataset comes from two previously published clinical-pharmacology studies cited as references 13 and 14 of Koue 2007."
+    species = "human",
+    n_subjects = 68L,
+    n_studies = 3L,
+    n_observations = NA_integer_,
+    age_range = "20-32 years (mean 23.1)",
+    weight_range = "48.2-75.2 kg (mean 60.7)",
+    sex_female_pct = 0,
+    race_ethnicity = "100% Japanese (per Pharmacokinetic Data section)",
+    disease_state = "Healthy adult Japanese male volunteers across three clinical trials: single-dose (protocol 1, n=26 -- the abstract reports 24 contributing subjects), multiple-dose (protocol 2, n=15), and itraconazole-coadministration (protocol 3, n=27).",
+    dose_range = "Oral aripiprazole (ABILIFY tablet): 6 mg single dose (protocol 1), 3 mg once daily for 14 d (protocol 2), and 3 mg single dose with and without itraconazole 100 mg once daily for 21 d (protocol 3).",
+    regions = "Japan",
+    notes = "CYP2D6 genotype distribution (Koue 2007 Table 1): Group 1 (EM = *1/*1, *1/*2, *2/*2) n=14; Group 2 (IM = *1/*5, *1/*10, *2/*5, *2/*10, *2/*41) n=39; Group 3 (PM = *5/*10, *10/*10, *41/*41) n=15. Genotyping was performed by PCR-RFLP and long-PCR for CYP2D6 *2, *4, *5, *10, *14, *18, *36, *41; CYP3A5 was not genotyped. All food effects on absorption were judged not significant (Results and Discussion). The parent dataset comes from two previously published clinical-pharmacology studies cited as references 13 and 14 of Koue 2007."
   )
 
   ini({

@@ -1,6 +1,6 @@
 Kado_2023_benzathine_benzylpenicillin_g <- function() {
   description <- "One-compartment population PK model for penicillin released from a high-dose subcutaneous infusion of benzathine benzylpenicillin G (SCIP) with a fixed elimination rate and a dual-input depot: part of the dose enters the depot as a bolus and the remainder by a zero-order process of estimated duration (DUR, ~44 days, scaled by body mass index), after which absorption proceeds through a single transit compartment (t1/2,tr) and then a slow first-order step (t1/2,abs ~ 11.8 days) into the central compartment. Developed from 400 dried-blood-spot penicillin concentrations collected over 16 weeks in 24 healthy adult volunteers given a single 3.6, 7.2, or 10.8 MIU subcutaneous abdominal infusion (Kado 2023)."
-  reference   <- paste(
+  reference <- paste(
     "Kado J, Salman S, Hla TK, Enkel S, Henderson R, Hand RM, Hort A,",
     "Page-Sharp M, Batty K, Moore BR, Bennett J, Anderson A, Carapetis J,",
     "Manning L. Subcutaneous infusion of high-dose benzathine penicillin G is",
@@ -13,8 +13,8 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
     "modellib('Kado_2020_benzathine_benzylpenicillin_g').",
     sep = " "
   )
-  vignette    <- "Kado_2023_benzathine_benzylpenicillin_g"
-  units       <- list(time = "day", dosing = "mg", concentration = "ng/mL")
+  vignette <- "Kado_2023_benzathine_benzylpenicillin_g"
+  units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
   # The final model was fitted to dried-blood-spot (whole blood) concentrations
   # (Results, 'Pharmacokinetic modeling'); plasma and DBS were shown to be
@@ -22,19 +22,34 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
   # interchangeable with a plasma fit. `depot` and `depot2` are the bolus and
   # zero-order halves of the single subcutaneous depot of Figure 2.
   compartmentData <- list(
-    depot    = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1 = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "whole blood", verified = FALSE)
+    depot = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot2 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit1 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, used as the allometric size descriptor.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, used as the allometric size descriptor.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference weight 70 kg: Kado 2023 Table 2 reports kel as 'h^-1 . 70 kg^-1'",
         "and V/F as 'L . 70 kg^-1'. Allometric exponents were fixed a priori at 1 for",
         "volume and 3/4 for clearance (Methods, 'Population pharmacokinetic analysis'),",
@@ -47,14 +62,14 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
         "are NOT allometrically scaled.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Body mass index at baseline; power covariate on the zero-order input duration DUR.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline; power covariate on the zero-order input duration DUR.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Applied as the power form DUR_i = DUR_pop * (BMI / 25)^1.13, matching the",
         "general continuous-covariate power model given in the Supplemental",
         "Information ('Population pharmacokinetic analysis'):",
@@ -72,24 +87,24 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
         "Assumed time-fixed at baseline.",
         sep = " "
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "18.0-54.1 years",
-    age_median     = "26.9 years",
-    weight_range   = "not reported (BMI 21.9-34.0 kg/m^2; enrolment criterion 20.0-34.9 kg/m^2)",
-    weight_median  = "not reported (BMI median 25.1 kg/m^2)",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "18.0-54.1 years",
+    age_median = "26.9 years",
+    weight_range = "not reported (BMI 21.9-34.0 kg/m^2; enrolment criterion 20.0-34.9 kg/m^2)",
+    weight_median = "not reported (BMI median 25.1 kg/m^2)",
     sex_female_pct = 16.7,
     race_ethnicity = c(European = 33.3, Asian = 33.3, HispanicLatino = 16.7, African = 8.3, Mixed = 8.3),
-    disease_state  = "healthy adult volunteers without rheumatic heart disease (no chronic renal impairment or significant liver dysfunction, no penicillin/cephalosporin allergy)",
-    dose_range     = "single subcutaneous abdominal infusion of 3.6 MIU (2,700 mg, n = 4), 7.2 MIU (5,400 mg, n = 10), or 10.8 MIU (8,100 mg, n = 10) benzathine penicillin G (Bicillin L-A), infused over up to 30 minutes",
-    regions        = "Australia (Perth, Western Australia)",
-    notes          = paste(
+    disease_state = "healthy adult volunteers without rheumatic heart disease (no chronic renal impairment or significant liver dysfunction, no penicillin/cephalosporin allergy)",
+    dose_range = "single subcutaneous abdominal infusion of 3.6 MIU (2,700 mg, n = 4), 7.2 MIU (5,400 mg, n = 10), or 10.8 MIU (8,100 mg, n = 10) benzathine penicillin G (Bicillin L-A), infused over up to 30 minutes",
+    regions = "Australia (Perth, Western Australia)",
+    notes = paste(
       "Phase 1 open-label dose-escalation study (ACTRN12621000135819). Enrolment was",
       "balanced by body composition: 12 participants with ideal BMI (20-24.9 kg/m^2)",
       "and 12 with higher BMI (25-34.9 kg/m^2). 400 dried-blood-spot concentrations",

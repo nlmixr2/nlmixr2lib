@@ -34,8 +34,8 @@ Duan_2024_linezolid <- function() {
   )
   vignette <- "Duan_2024_linezolid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -45,11 +45,11 @@ Duan_2024_linezolid <- function() {
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline). Duan 2024 Table 1 reports",
         "cohort BSA = 0.13 +/- 0.03 m^2; Equations 1-2 centre the power",
         "model on 0.127 m^2, which is the unrounded cohort mean and the",
@@ -66,7 +66,7 @@ Duan_2024_linezolid <- function() {
         "0.15 m^2 (Tables 5 and 6).",
         sep = " "
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
@@ -82,15 +82,15 @@ Duan_2024_linezolid <- function() {
   covariatesDataExcluded <- list(
     GA = list(
       description = "Gestational age",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1: 31.00 +/- 2.74 weeks."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1: 31.00 +/- 2.74 weeks."
     ),
     PAGE = list(
       description = "Postmenstrual age",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Screened by SCM; not retained. Table 1: 33.16 +/- 2.77 weeks.",
         "Reported in weeks by the paper; the register documents PAGE in",
         "months, so convert before reuse.",
@@ -99,9 +99,9 @@ Duan_2024_linezolid <- function() {
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = paste(
+      units = "days",
+      type = "continuous",
+      notes = paste(
         "Screened by SCM; not retained. Table 1 median 13.00 days (IQR",
         "8.00-19.25). The Discussion attributes the absence of a PNA",
         "effect to the narrow 8-19 day range in this cohort. Reported in",
@@ -112,15 +112,15 @@ Duan_2024_linezolid <- function() {
     ),
     WT_BIRTH = list(
       description = "Birth weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1: 1449.44 +/- 496.73 g."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1: 1449.44 +/- 496.73 g."
     ),
     WT = list(
       description = "Current body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened by SCM; not retained (BSA was retained instead).",
         "Table 1: 1571.30 +/- 503.81 g. The Methods note that correlated",
         "covariates were screened and only one of a correlated pair was",
@@ -130,51 +130,51 @@ Duan_2024_linezolid <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened by SCM; not retained. Table 1: 32/54 male (59.26%), so 40.74% female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened by SCM; not retained. Table 1: 32/54 male (59.26%), so 40.74% female."
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1: 126.43 +/- 20.90 g/L."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1: 126.43 +/- 20.90 g/L."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1 median 9.00 U/L (IQR 5.75-17.00)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1 median 9.00 U/L (IQR 5.75-17.00)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Not tabulated in Table 1."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Not tabulated in Table 1."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1 median 81.36 umol/L (IQR 40.93-136.94)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1 median 81.36 umol/L (IQR 40.93-136.94)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1 median 31.95 g/L (IQR 29.33-34.43)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1 median 31.95 g/L (IQR 29.33-34.43)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened by SCM; not retained. Table 1: 40.55 +/- 12.96 umol/L (Jaffe method)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened by SCM; not retained. Table 1: 40.55 +/- 12.96 umol/L (Jaffe method)."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Screened by SCM; not retained. Table 1 median 29.46",
         "mL/min/1.73 m^2 (IQR 24.79-40.41). Derived by the authors with",
         "the Schwartz formula CLcr = K * L / SCR using K = 0.33 for",
@@ -186,16 +186,16 @@ Duan_2024_linezolid <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 1L,
-    age_range      = "gestational age 31.00 +/- 2.74 weeks; postmenstrual age 33.16 +/- 2.77 weeks",
-    age_median     = "postnatal age 13.00 days (IQR 8.00-19.25)",
-    weight_range   = "current weight 1571.30 +/- 503.81 g; birth weight 1449.44 +/- 496.73 g",
-    weight_median  = "1.571 kg (typical-subject weight named in the Table 4 footnote)",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 1L,
+    age_range = "gestational age 31.00 +/- 2.74 weeks; postmenstrual age 33.16 +/- 2.77 weeks",
+    age_median = "postnatal age 13.00 days (IQR 8.00-19.25)",
+    weight_range = "current weight 1571.30 +/- 503.81 g; birth weight 1449.44 +/- 496.73 g",
+    weight_median = "1.571 kg (typical-subject weight named in the Table 4 footnote)",
     sex_female_pct = 40.74,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Premature neonates in a neonatal intensive care unit treated with",
       "intravenous linezolid for late-onset sepsis. Pneumonia in 53/54",
       "(98.15%), bloodstream infection in 48/54 (88.89%), necrotizing",
@@ -206,7 +206,7 @@ Duan_2024_linezolid <- function() {
       "(57.41%), most commonly coagulase-negative Staphylococcus (27).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous linezolid (Zyvox) per the manufacturer's",
       "instructions: 10 mg/kg q12h for preterm neonates with gestational",
       "age <34 weeks and postnatal age <7 days; 10 mg/kg q8h for preterm",
@@ -215,8 +215,8 @@ Duan_2024_linezolid <- function() {
       "course 7-14 days (median 10 days, IQR 9-11).",
       sep = " "
     ),
-    regions        = "China (single centre: Affiliated Suzhou Hospital of Nanjing Medical University, Suzhou, Jiangsu)",
-    notes          = paste(
+    regions = "China (single centre: Affiliated Suzhou Hospital of Nanjing Medical University, Suzhou, Jiangsu)",
+    notes = paste(
       "Retrospective therapeutic-drug-monitoring cohort, November 2019",
       "to November 2023. 54 infants contributed 84 serum linezolid",
       "concentrations measured by LC-MS/MS (validated 0.5-50 ug/mL).",

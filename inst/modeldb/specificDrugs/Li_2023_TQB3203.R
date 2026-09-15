@@ -32,23 +32,32 @@ Li_2023_TQB3203 <- function() {
   # State amounts are therefore mg and Cc is scaled by 1000 to reach ng/mL.
   compartmentData <- list(
     central = list(
-      analyte = "TQ-B3203", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "TQ-B3203",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "TQ-B3203", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "TQ-B3203",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "TQ-B3203", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "TQ-B3203",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-normalized power effect on CL, (BMI / 23.44)^0.78, per Li 2023",
         "Eq. 10 and Eq. 7. The normalizing constant 23.44 kg/m^2 is the",
         "population median (Li 2023 Table 1 and Results 3.3 narrative).",
@@ -59,17 +68,17 @@ Li_2023_TQB3203 <- function() {
         "so the effect is not supported outside roughly 19-29 kg/m^2.",
         "Time-fixed at baseline."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     DBIL = list(
-      description        = paste(
+      description = paste(
         "Direct (conjugated) serum bilirubin at baseline, a marker of biliary",
         "excretion function"
       ),
-      units              = "umol/L",
-      type               = "continuous",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-normalized power effects on CL, (DBIL / 2.82)^-0.24 (Li 2023",
         "Eq. 10, Table 4), and on CL2, (DBIL / 2.82)^-1.77 (Li 2023 Table 4).",
         "The normalizing constant 2.82 umol/L is the population median (Li 2023",
@@ -80,14 +89,14 @@ Li_2023_TQB3203 <- function() {
         "raises DBIL and lowers TQ-B3203 clearance (paper Discussion).",
         "Observed range 1.5-7.9 umol/L. Time-fixed at baseline."
       ),
-      source_name        = "DBIL"
+      source_name = "DBIL"
     ),
     LBM = list(
-      description        = "Lean body mass (the paper's lean body weight, LBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (the paper's lean body weight, LBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-normalized power effects on V1, (LBM / 49.53)^1.18 (Li 2023",
         "Eq. 9, Table 4); on V2, (LBM / 49.53)^-1.41 (Table 4); and on CL2,",
         "(LBM / 49.53)^-2.55 (Table 4). The normalizing constant 49.53 kg is",
@@ -104,20 +113,24 @@ Li_2023_TQB3203 <- function() {
         "a cohort of median weight 64.0 kg and height 164 cm). Time-fixed at",
         "baseline."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = paste(
         "Screened (Li 2023 Methods 2.5.2, Table 1: median 57 years, range",
         "31-70) but not retained in the final model."
       )
     ),
     WT = list(
-      description = "Total body weight", units = "kg", type = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       notes = paste(
         "Screened (Table 1: median 64.0 kg, range 47.9-80.0) but dropped",
         "before stepwise selection because it correlated (r > 0.5) with the",
@@ -126,11 +139,14 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     HT = list(
-      description = "Height", units = "cm", type = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       notes = "Screened (Table 1: median 164 cm, range 148-178); not retained."
     ),
     BSA = list(
-      description = "Body surface area (Du Bois formula)", units = "m^2",
+      description = "Body surface area (Du Bois formula)",
+      units = "m^2",
       type = "continuous",
       notes = paste(
         "Screened as a covariate and not retained (Li 2023 Methods 2.5.2).",
@@ -141,16 +157,20 @@ Li_2023_TQB3203 <- function() {
     ),
     IBW = list(
       description = "Ideal body weight (Devine formula, Li 2023 Eq. 5 / 5a)",
-      units = "kg", type = "continuous",
+      units = "kg",
+      type = "continuous",
       notes = "Screened (Table 1: median 60.50 kg); not retained."
     ),
     WT_ADJUSTED = list(
       description = "Adjusted body weight (Li 2023 Eq. 6 / 6a)",
-      units = "kg", type = "continuous",
+      units = "kg",
+      type = "continuous",
       notes = "Screened (Table 1: median 61.90 kg); not retained."
     ),
     BODYFAT_PCT = list(
-      description = "Body fat percentage", units = "%", type = "continuous",
+      description = "Body fat percentage",
+      units = "%",
+      type = "continuous",
       notes = paste(
         "Screened alongside LBW because of the drug's high lipophilicity",
         "(Li 2023 Methods 2.5.2, citing Park 2018); Table 1 median 23.39%.",
@@ -158,7 +178,9 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     CRE = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened (Table 1: median 60 umol/L); not retained."
     ),
     CRCL = list(
@@ -166,7 +188,8 @@ Li_2023_TQB3203 <- function() {
         "Endogenous creatinine clearance (Cockcroft-Gault, Li 2023 Eq. 4 / 4a)",
         "and its adjusted-weight variant"
       ),
-      units = "mL/min", type = "continuous",
+      units = "mL/min",
+      type = "continuous",
       notes = paste(
         "Only the adjusted-CLcr variant survived the collinearity check and",
         "entered stepwise screening (Li 2023 Results 3.3); it was not",
@@ -177,7 +200,8 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     TBILI = list(
-      description = "Total serum bilirubin", units = "umol/L",
+      description = "Total serum bilirubin",
+      units = "umol/L",
       type = "continuous",
       notes = paste(
         "Screened but dropped in the univariate collinearity check against",
@@ -186,14 +210,16 @@ Li_2023_TQB3203 <- function() {
     ),
     IBIL = list(
       description = "Indirect (unconjugated) serum bilirubin",
-      units = "umol/L", type = "continuous",
+      units = "umol/L",
+      type = "continuous",
       notes = paste(
         "Screened but dropped in the collinearity check against DBIL",
         "(Li 2023 Discussion); Table 1 median 6 umol/L."
       )
     ),
     ALT = list(
-      description = "Baseline alanine aminotransferase", units = "IU/L",
+      description = "Baseline alanine aminotransferase",
+      units = "IU/L",
       type = "continuous",
       notes = paste(
         "Retained through the collinearity check and entered stepwise",
@@ -203,7 +229,8 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     AST = list(
-      description = "Baseline aspartate transaminase", units = "IU/L",
+      description = "Baseline aspartate transaminase",
+      units = "IU/L",
       type = "continuous",
       notes = paste(
         "Screened but dropped in the collinearity check (Li 2023 Discussion);",
@@ -211,7 +238,9 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     SEXF = list(
-      description = "Sex", units = "(binary)", type = "binary",
+      description = "Sex",
+      units = "(binary)",
+      type = "binary",
       notes = paste(
         "Screened and found to influence the same PK parameters as LBW and",
         "DBIL, but dropped before stepwise selection because it was",
@@ -220,7 +249,8 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     SNP_UGT1A1_RS8175347 = list(
-      description = "UGT1A1*28 promoter TA-repeat genotype", units = "(genotype)",
+      description = "UGT1A1*28 promoter TA-repeat genotype",
+      units = "(genotype)",
       type = "categorical",
       notes = paste(
         "Screened (Table 1: 14/15 TA(6)/TA(6), 1/15 TA(6)/TA(7)); not",
@@ -228,7 +258,8 @@ Li_2023_TQB3203 <- function() {
       )
     ),
     SNP_UGT1A1_RS4148323 = list(
-      description = "UGT1A1*6 (211G>A) genotype", units = "(genotype)",
+      description = "UGT1A1*6 (211G>A) genotype",
+      units = "(genotype)",
       type = "categorical",
       notes = paste(
         "Screened (Table 1: 10/15 211G/G, 5/15 211G/A). Entered the full",
@@ -240,19 +271,19 @@ Li_2023_TQB3203 <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
     n_observations = 316L,
-    n_episodes     = 25L,
-    age_range      = "31-70 years (median 57, IQR 44-65)",
-    age_median     = "57 years",
-    weight_range   = "47.9-80.0 kg (median 64.0, IQR 57.5-68.0)",
-    weight_median  = "64.0 kg",
-    height_range   = "148-178 cm (median 164, IQR 160-173)",
-    bmi_range      = "18.64-28.97 kg/m^2 (median 23.44, IQR 21.05-24.91)",
-    lbm_range      = "32.09-59.40 kg (median 49.53, IQR 38.36-55.45)",
-    bsa_range      = "1.420-1.938 m^2 (median 1.678, IQR 1.600-1.841)",
+    n_episodes = 25L,
+    age_range = "31-70 years (median 57, IQR 44-65)",
+    age_median = "57 years",
+    weight_range = "47.9-80.0 kg (median 64.0, IQR 57.5-68.0)",
+    weight_median = "64.0 kg",
+    height_range = "148-178 cm (median 164, IQR 160-173)",
+    bmi_range = "18.64-28.97 kg/m^2 (median 23.44, IQR 21.05-24.91)",
+    lbm_range = "32.09-59.40 kg (median 49.53, IQR 38.36-55.45)",
+    bsa_range = "1.420-1.938 m^2 (median 1.678, IQR 1.600-1.841)",
     sex_female_pct = 33.3,
     race_ethnicity = "100% Chinese (single-country trial; Table 1 reports no race strata).",
     hepatic_function = paste(
@@ -265,17 +296,17 @@ Li_2023_TQB3203 <- function() {
       "Cockcroft-Gault creatinine clearance 27.35-157.3 (median 109.2);",
       "serum creatinine 38-204 umol/L (median 60) -- Table 1."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Clearly diagnosed advanced solid tumors, ECOG performance status 0-1,",
       "life expectancy > 3 months, no prior camptothecin-analog therapy."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "2-45 mg/m^2 TQ-B3203 liposome injection as a single 90-min IV infusion",
       "on day 1 of cycle 1 and day 22 of cycle 2 (dose levels 2, 4, 6, 10, 14,",
       "30 and 45 mg/m^2; Table 2)."
     ),
-    regions        = "China (multi-centre; Peking University Cancer Hospital lead site).",
-    notes          = paste(
+    regions = "China (multi-centre; Peking University Cancer Hospital lead site).",
+    notes = paste(
       "Baseline demographics from Li 2023 Table 1; NCA summaries by dose level",
       "and cycle from Table 2. Estimation used Phoenix NLME 8.3 with FOCE-ELS",
       "(not NONMEM). Sampling was pre-dose, 45 and 90 min after infusion start,",

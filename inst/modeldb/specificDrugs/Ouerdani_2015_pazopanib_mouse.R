@@ -12,8 +12,8 @@ Ouerdani_2015_pazopanib_mouse <- function() {
   )
   vignette <- "Ouerdani_2015_pazopanib_mouse"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; pazopanib exposure enters as the per-period AUC_PAZO covariate, not via a PK ODE)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; pazopanib exposure enters as the per-period AUC_PAZO covariate, not via a PK ODE)",
     concentration = "mm^3 (tumour volume measured by handheld caliper, computed as (length * width^2) / 2; not a drug concentration)"
   )
 
@@ -22,41 +22,46 @@ Ouerdani_2015_pazopanib_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    tumor_size        = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    carrying_capacity = list(analyte = "vasculature-determined carrying capacity", units = NA_character_, specimen = "tumor", verified = FALSE)
+    tumor_size = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    carrying_capacity = list(
+      analyte = "vasculature-determined carrying capacity",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AUC_PAZO = list(
-      description        = "Per-period mean AUC of pazopanib driving the antiangiogenic and (formally) the cytotoxic drug-effect rates in the Ouerdani 2015 TGI model.",
-      units              = "ug*h/mL (= mg*h/L)",
-      type               = "continuous",
+      description = "Per-period mean AUC of pazopanib driving the antiangiogenic and (formally) the cytotoxic drug-effect rates in the Ouerdani 2015 TGI model.",
+      units = "ug*h/mL (= mg*h/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per dose group in the preclinical CAKI-2 xenograft experiment. Ouerdani 2015 cites the FDA Pharmacology Review for pazopanib NDA 022465 for the per-dose-group AUC values: 220.2 ug*h/mL at 10 mg/kg/day, 656.8 ug*h/mL at 30 mg/kg/day, and 1140.8 ug*h/mL at 100 mg/kg/day. Set to 0 for vehicle-control mice; the model() block gates both drug-effect rates on AUC_PAZO > 0 so that vehicle animals follow the pure-growth dynamics (a = 0, c = 0 at AUC_PAZO = 0).",
-      source_name        = "AUC"
+      notes = "Time-fixed per dose group in the preclinical CAKI-2 xenograft experiment. Ouerdani 2015 cites the FDA Pharmacology Review for pazopanib NDA 022465 for the per-dose-group AUC values: 220.2 ug*h/mL at 10 mg/kg/day, 656.8 ug*h/mL at 30 mg/kg/day, and 1140.8 ug*h/mL at 100 mg/kg/day. Set to 0 for vehicle-control mice; the model() block gates both drug-effect rates on AUC_PAZO > 0 so that vehicle animals follow the pure-growth dynamics (a = 0, c = 0 at AUC_PAZO = 0).",
+      source_name = "AUC"
     ),
     TUM_VOL = list(
-      description        = "Per-animal observed baseline tumour volume at randomisation; used as the per-subject initial condition for the tumor_size ODE state.",
-      units              = "mm^3",
-      type               = "continuous",
+      description = "Per-animal observed baseline tumour volume at randomisation; used as the per-subject initial condition for the tumor_size ODE state.",
+      units = "mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ouerdani 2015 sets P0 to the observed baseline tumour volume per animal so only six structural parameters are estimated. Range at randomisation: 100-250 mm^3 (paper Methods, preclinical data section).",
-      source_name        = "P0"
+      notes = "Ouerdani 2015 sets P0 to the observed baseline tumour volume per animal so only six structural parameters are estimated. Range at randomisation: 100-250 mm^3 (paper Methods, preclinical data section).",
+      source_name = "P0"
     )
   )
 
   population <- list(
-    species        = "mouse (female CB-17 SCID with subcutaneous CAKI-2 renal-cell carcinoma xenograft)",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "8-10 weeks at randomisation",
-    weight_range   = "not reported in the modelling paper",
+    species = "mouse (female CB-17 SCID with subcutaneous CAKI-2 renal-cell carcinoma xenograft)",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "8-10 weeks at randomisation",
+    weight_range = "not reported in the modelling paper",
     sex_female_pct = 100,
     race_ethnicity = NA,
-    disease_state  = "renal-cell carcinoma CAKI-2 subcutaneous xenograft; tumour volumes 100-250 mm^3 at randomisation",
-    dose_range     = "vehicle, 10, 30, or 100 mg/kg pazopanib once daily by oral gavage for 24 days",
-    regions        = "preclinical (in-vivo xenograft); housing in specific-pathogen-free environments",
-    notes          = "8 mice per dose group (4 dose groups, including vehicle) = 32 mice. Tumour volumes measured twice weekly by handheld caliper; calculated as (length * width^2) / 2. The paper's preclinical Methods state that 8 observations of each type (tumour volume and body weight) were collected per mouse; the model fits the tumour-volume time course only. Drug exposure (AUC_PAZO) is reported per dose group (not per animal) from a separate preclinical PK study cited as FDA NDA 022465 Pharmacology Review."
+    disease_state = "renal-cell carcinoma CAKI-2 subcutaneous xenograft; tumour volumes 100-250 mm^3 at randomisation",
+    dose_range = "vehicle, 10, 30, or 100 mg/kg pazopanib once daily by oral gavage for 24 days",
+    regions = "preclinical (in-vivo xenograft); housing in specific-pathogen-free environments",
+    notes = "8 mice per dose group (4 dose groups, including vehicle) = 32 mice. Tumour volumes measured twice weekly by handheld caliper; calculated as (length * width^2) / 2. The paper's preclinical Methods state that 8 observations of each type (tumour volume and body weight) were collected per mouse; the model fits the tumour-volume time course only. Drug exposure (AUC_PAZO) is reported per dose group (not per animal) from a separate preclinical PK study cited as FDA NDA 022465 Pharmacology Review."
   )
 
   ini({

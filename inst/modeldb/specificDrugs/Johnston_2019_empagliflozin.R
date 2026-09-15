@@ -27,10 +27,10 @@ Johnston_2019_empagliflozin <- function() {
   )
   vignette <- "Johnston_2019_empagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "n/a (no drug dosing events; empagliflozin exposure enters as the per-subject AUC_EMPA covariate from an upstream popPK)",
+    time = "h",
+    dosing = "n/a (no drug dosing events; empagliflozin exposure enters as the per-subject AUC_EMPA covariate from an upstream popPK)",
     concentration = "% HbA1c (NGSP; observation output -- not a drug concentration)",
-    AUC_EMPA      = "nmol*h/L (empagliflozin steady-state AUC over the q24h dosing interval)"
+    AUC_EMPA = "nmol*h/L (empagliflozin steady-state AUC over the q24h dosing interval)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -43,11 +43,11 @@ Johnston_2019_empagliflozin <- function() {
 
   covariateData <- list(
     AUC_EMPA = list(
-      description        = "Steady-state empagliflozin AUC over the q24h dosing interval supplied as a per-subject (time-fixed) drug-exposure covariate from an upstream popPK analysis (Mondick 2018, updated with EASE-2 / EASE-3 data on file).",
-      units              = "nmol*h/L",
-      type               = "continuous",
+      description = "Steady-state empagliflozin AUC over the q24h dosing interval supplied as a per-subject (time-fixed) drug-exposure covariate from an upstream popPK analysis (Mondick 2018, updated with EASE-2 / EASE-3 data on file).",
+      units = "nmol*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject (time-fixed) steady-state AUC of empagliflozin. The",
         "source authors generate AUCss from individual empirical Bayes",
         "estimates of an upstream popPK model (Mondick 2018 plus EASE-2 /",
@@ -58,80 +58,80 @@ Johnston_2019_empagliflozin <- function() {
         "(back-calculated from the simulated half-maximal -0.29% HbA1c",
         "change reported in the poster Results)."
       ),
-      source_name        = "AUCss"
+      source_name = "AUCss"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (pre-treatment) body weight; reference 82 kg (Johnston 2019 Results / reference-patient description). Enters baseline HbA1c and Emax via power form `(WT / 82)^e_wt_<param>`.",
-      source_name        = "WTB"
+      notes = "Baseline (pre-treatment) body weight; reference 82 kg (Johnston 2019 Results / reference-patient description). Enters baseline HbA1c and Emax via power form `(WT / 82)^e_wt_<param>`.",
+      source_name = "WTB"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (BSA-normalised eGFR)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (BSA-normalised eGFR)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (pre-treatment) eGFR; reference 98 mL/min/1.73 m^2 (Johnston 2019 reference-patient description). The source paper does not specify which creatinine-based eGFR equation was used (MDRD or CKD-EPI). Enters baseline HbA1c and Emax via power form `(CRCL / 98)^e_crcl_<param>`.",
-      source_name        = "eGFR"
+      notes = "Baseline (pre-treatment) eGFR; reference 98 mL/min/1.73 m^2 (Johnston 2019 reference-patient description). The source paper does not specify which creatinine-based eGFR equation was used (MDRD or CKD-EPI). Enters baseline HbA1c and Emax via power form `(CRCL / 98)^e_crcl_<param>`.",
+      source_name = "eGFR"
     ),
     HBA1C = list(
-      description        = "Baseline (pre-treatment) HbA1c (per-subject, time-fixed)",
-      units              = "% (NGSP)",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) HbA1c (per-subject, time-fixed)",
+      units = "% (NGSP)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline HbA1c as a per-subject covariate on Emax in the full-random-effects covariate model (Johnston 2019 Equation 1; reference 8.14 %, the model-estimated typical baseline at the reference patient). NOT the same column as the time-course HbA1c observations: this is the per-subject baseline anchor used inside the covariate equation for Emax; observations are the model-predicted longitudinal HbA1c trajectory. Enters via power form `(HBA1C / 8.14)^e_hba1c_emax`.",
-      source_name        = "HbA1c (baseline)"
+      notes = "Baseline HbA1c as a per-subject covariate on Emax in the full-random-effects covariate model (Johnston 2019 Equation 1; reference 8.14 %, the model-estimated typical baseline at the reference patient). NOT the same column as the time-course HbA1c observations: this is the per-subject baseline anchor used inside the covariate equation for Emax; observations are the model-predicted longitudinal HbA1c trajectory. Enters via power form `(HBA1C / 8.14)^e_hba1c_emax`.",
+      source_name = "HbA1c (baseline)"
     ),
     INSDOSE_BL = list(
-      description        = "Baseline total daily insulin dose normalised to body weight",
-      units              = "U/kg/day",
-      type               = "continuous",
+      description = "Baseline total daily insulin dose normalised to body weight",
+      units = "U/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject (time-fixed) total daily exogenous insulin dose at baseline, normalised to body weight (U/kg). Reference 0.660 U/kg (Johnston 2019 reference-patient description). Enters baseline HbA1c and Emax via power form `(INSDOSE_BL / 0.660)^e_insdose_bl_<param>`. Distinct from `INS_BL` (plasma insulin concentration) -- this is an administered dose level, not a measured biomarker.",
-      source_name        = "IDB"
+      notes = "Per-subject (time-fixed) total daily exogenous insulin dose at baseline, normalised to body weight (U/kg). Reference 0.660 U/kg (Johnston 2019 reference-patient description). Enters baseline HbA1c and Emax via power form `(INSDOSE_BL / 0.660)^e_insdose_bl_<param>`. Distinct from `INS_BL` (plasma insulin concentration) -- this is an administered dose level, not a measured biomarker.",
+      source_name = "IDB"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the reference patient is male per Johnston 2019 Results)",
-      notes              = "Encoded as multiplier `e_sexf_<param>^SEXF` on baseline HbA1c, Emax, and placebo rate (i.e., the Table 2 multiplier value applies when SEXF = 1, and 1.0 when SEXF = 0). 391 males and 405 females in the modelled cohort.",
-      source_name        = "Sex"
+      notes = "Encoded as multiplier `e_sexf_<param>^SEXF` on baseline HbA1c, Emax, and placebo rate (i.e., the Table 2 multiplier value applies when SEXF = 1, and 1.0 when SEXF = 0). 391 males and 405 females in the modelled cohort.",
+      source_name = "Sex"
     ),
     INSDT_CSII = list(
-      description        = "Insulin delivery type indicator (1 = continuous subcutaneous insulin infusion (CSII), 0 = multiple daily injections (MDI) reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Insulin delivery type indicator (1 = continuous subcutaneous insulin infusion (CSII), 0 = multiple daily injections (MDI) reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MDI; the reference patient is on MDI per Johnston 2019 Results)",
-      notes              = "Encoded as multiplier `e_insdt_csii_<param>^INSDT_CSII` on baseline HbA1c, Emax, and placebo rate. Follows the `<COLUMN>_<LEVEL>` decomposition pattern used for `REGI_BID` and `TUMTP_*` categoricals: a future paper that retains the same INSDT covariate but with more than two levels would register sibling canonicals (e.g., `INSDT_CGM`) rather than overload this name. M-EASE-2 distinguishes only CSII vs MDI.",
-      source_name        = "INSDT"
+      notes = "Encoded as multiplier `e_insdt_csii_<param>^INSDT_CSII` on baseline HbA1c, Emax, and placebo rate. Follows the `<COLUMN>_<LEVEL>` decomposition pattern used for `REGI_BID` and `TUMTP_*` categoricals: a future paper that retains the same INSDT covariate but with more than two levels would register sibling canonicals (e.g., `INSDT_CGM`) rather than overload this name. M-EASE-2 distinguishes only CSII vs MDI.",
+      source_name = "INSDT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 796L,
+    species = "human",
+    n_subjects = 796L,
     n_subjects_male = 391L,
     n_subjects_female = 405L,
-    n_studies       = 2L,
-    studies         = "EASE-2 (52-week phase 3 trial, empagliflozin 10 and 25 mg QD treatment arms; primary development data) and EASE-1 (4-week phase 2 dose-finding study, empagliflozin 2.5, 10, 25 mg QD). External qualification used EASE-3 (out-of-sample 26-week phase 3 trial that included a 2.5 mg QD arm).",
-    age_range       = "21-69 years (95th-percentile interval at baseline)",
-    weight_range    = "55-125 kg (95th-percentile interval at baseline)",
-    sex_female_pct  = 100 * 405 / 796,  # = 50.88 %
-    disease_state   = paste0(
+    n_studies = 2L,
+    studies = "EASE-2 (52-week phase 3 trial, empagliflozin 10 and 25 mg QD treatment arms; primary development data) and EASE-1 (4-week phase 2 dose-finding study, empagliflozin 2.5, 10, 25 mg QD). External qualification used EASE-3 (out-of-sample 26-week phase 3 trial that included a 2.5 mg QD arm).",
+    age_range = "21-69 years (95th-percentile interval at baseline)",
+    weight_range = "55-125 kg (95th-percentile interval at baseline)",
+    sex_female_pct = 100 * 405 / 796, # = 50.88 %
+    disease_state = paste0(
       "Adults with type 1 diabetes mellitus (T1DM) on background insulin ",
       "therapy. Baseline HbA1c 7.2-9.5 % (95th-percentile interval). ",
       "Reference patient: male, multiple-daily-injection (MDI) insulin, ",
       "total daily insulin dose 0.660 U/kg, HbA1c 8.1 %, eGFR 98 mL/min/",
       "1.73 m^2, body weight 82 kg."
     ),
-    dose_range      = "Empagliflozin 0 (placebo), 2.5 (simulated only -- not directly studied in EASE-2), 10, 25 mg QD adjunctive to insulin; per-subject AUCss supplied as the AUC_EMPA covariate.",
-    egfr_range      = "57-127 mL/min/1.73 m^2 (95th-percentile interval at baseline)",
-    regions         = "Multi-national (EASE-2 / EASE-1 trials).",
-    n_observations  = "Not reported in the poster.",
-    notes           = paste0(
+    dose_range = "Empagliflozin 0 (placebo), 2.5 (simulated only -- not directly studied in EASE-2), 10, 25 mg QD adjunctive to insulin; per-subject AUCss supplied as the AUC_EMPA covariate.",
+    egfr_range = "57-127 mL/min/1.73 m^2 (95th-percentile interval at baseline)",
+    regions = "Multi-national (EASE-2 / EASE-1 trials).",
+    n_observations = "Not reported in the poster.",
+    notes = paste0(
       "Pop-PD analysis using Markov Chain Monte Carlo Bayesian estimation ",
       "(NONMEM v7.4). AUC50 was estimated under an informative prior ",
       "derived from a Type 2 diabetes exposure-response analysis (Baron ",

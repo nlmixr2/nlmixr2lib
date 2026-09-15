@@ -38,11 +38,11 @@ Shao_2023_bedaquiline <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Baseline body weight, normalised to the development-cohort median of ",
         "67 kg (Shao 2023 Table 1, development cohort: median 67 kg, IQR ",
         "59-74 kg). Enters CL/F with the allometric exponent fixed at 0.75 and ",
@@ -53,14 +53,14 @@ Shao_2023_bedaquiline <- function() {
         "therefore treats WT as time-fixed, but a user with longitudinal ",
         "weights may supply it as a time-varying column."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Baseline serum albumin in SI units (g/L), the units Shao 2023 reports ",
         "and calibrated the coefficient in, so no unit conversion is applied ",
         "inside model(). Normalised to the development-cohort median of ",
@@ -73,56 +73,56 @@ Shao_2023_bedaquiline <- function() {
         "protein binding of bedaquiline (Discussion) and lists the time-fixed ",
         "treatment of albumin as a model limitation."
       ),
-      source_name        = "Albumin"
+      source_name = "Albumin"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
     n_observations = paste0(
       "1,205 quantifiable plasma bedaquiline concentrations (0.04-5.96 mg/L); ",
       "5 further samples below the 10 ng/mL LLOQ were discarded ",
       "(Shao 2023 Results 3.2)."
     ),
-    age_range      = "18-70 years by protocol; observed median 44 years (IQR 34-53) (Shao 2023 Table 1)",
-    age_median     = "44 years",
-    weight_range   = "IQR 59-74 kg (Shao 2023 Table 1); no full range reported",
-    weight_median  = "67 kg",
-    height_median  = "165 cm (IQR 158-173) (Shao 2023 Table 1)",
+    age_range = "18-70 years by protocol; observed median 44 years (IQR 34-53) (Shao 2023 Table 1)",
+    age_median = "44 years",
+    weight_range = "IQR 59-74 kg (Shao 2023 Table 1); no full range reported",
+    weight_median = "67 kg",
+    height_median = "165 cm (IQR 158-173) (Shao 2023 Table 1)",
     albumin_median = "37.1 g/L (IQR 32.0-40.6) (Shao 2023 Table 1)",
     sex_female_pct = 29.1,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Adults with multidrug-resistant tuberculosis (MDR-TB) confirmed by ",
       "phenotypic drug-susceptibility testing; 16.4% pre-XDR, 16.4% with a ",
       "pulmonary cavity, 16.4% with type 2 diabetes mellitus. Patients with ",
       "abnormal liver or kidney function, pregnancy, or HIV / hepatitis B / ",
       "hepatitis C infection were excluded (Shao 2023 Methods 2.1, Table 1)."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Oral bedaquiline 400 mg once daily for the first 2 weeks followed by ",
       "200 mg three times weekly for the following 22 weeks (the WHO ",
       "recommended regimen), within a standardized bedaquiline-containing ",
       "MDR-TB regimen."
     ),
-    regions        = "China (Guizhou, Henan, Jiangsu and Sichuan Provinces), June 2016 to June 2019",
-    co_medication  = paste0(
+    regions = "China (Guizhou, Henan, Jiangsu and Sichuan Provinces), June 2016 to June 2019",
+    co_medication = paste0(
       "Development cohort: moxifloxacin or levofloxacin plus linezolid plus a ",
       "background regimen; validation cohort: moxifloxacin, linezolid, ",
       "clofazimine and cycloserine. Shao 2023 lists the unmodelled ",
       "drug-drug interaction potential of the companion drugs (notably ",
       "clofazimine) as a limitation."
     ),
-    notes          = paste0(
+    notes = paste0(
       "The 55 subjects of the richly-sampled development cohort are the ",
       "subjects this PK model was fit to; plasma was drawn predose and at 1, ",
       "2, 3, 4, 5, 6, 8, 12, 18 and 24 h after dosing on treatment weeks 2 and ",

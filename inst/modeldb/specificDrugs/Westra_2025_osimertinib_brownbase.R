@@ -6,28 +6,28 @@ Westra_2025_osimertinib_brownbase <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; reported in kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; reported in kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects inherited fixed from Brown 2017 with reference weight 62 kg: exponent 0.56 on parent CL/F, 0.65 on parent V/F, and 0.99 on AZ5104 CL/F. AZ5104 V/F carries no weight effect. Supplementary Part SII NONMEM $PK block; $THETA 8, 9 and 10 are all flagged FIX.",
-      source_name        = "BW"
+      notes = "Power-form effects inherited fixed from Brown 2017 with reference weight 62 kg: exponent 0.56 on parent CL/F, 0.65 on parent V/F, and 0.99 on AZ5104 CL/F. AZ5104 V/F carries no weight effect. Supplementary Part SII NONMEM $PK block; $THETA 8, 9 and 10 are all flagged FIX.",
+      source_name = "BW"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on parent V/F with exponent 1.33 and reference albumin 39 g/L, inherited fixed from Brown 2017 (supplementary Part SII $PK 'V1 = (THETA(5)*((BW/62)**THETA(9))*((ALB/39)**THETA(11)))'; $THETA 11 is flagged FIX). Albumin was separately tested and NOT retained in the de novo Westra 2025 model, so it appears here only through the inherited Brown 2017 structure.",
-      source_name        = "ALB"
+      notes = "Power-form effect on parent V/F with exponent 1.33 and reference albumin 39 g/L, inherited fixed from Brown 2017 (supplementary Part SII $PK 'V1 = (THETA(5)*((BW/62)**THETA(9))*((ALB/39)**THETA(11)))'; $THETA 11 is flagged FIX). Albumin was separately tested and NOT retained in the de novo Westra 2025 model, so it appears here only through the inherited Brown 2017 structure.",
+      source_name = "ALB"
     ),
     CONMED_COBICISTAT = list(
-      description        = "Concomitant cobicistat 150 mg once-daily coadministration indicator (1 = boosted with cobicistat, 0 = osimertinib monotherapy).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cobicistat 150 mg once-daily coadministration indicator (1 = boosted with cobicistat, 0 = osimertinib monotherapy).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (osimertinib monotherapy; the reference state is the pre-boost osimertinib 80 mg QD phase of the OSIBOOST trial).",
-      notes              = "Multiplicative power-form effect on osimertinib apparent clearance only: cl is multiplied by 0.678^CONMED_COBICISTAT, i.e. a 32.2 percent reduction in CL/F when cobicistat is coadministered (Westra 2025 Results 'Generalizability'; supplementary Part SII $THETA 12, the ONLY theta in that control stream not flagged FIX). The paper reports the addition was highly significant (P < .0001, delta OFV = -63.4) and that extending the same covariate to AZ5104 CL/F did not further improve the fit (P > .05). This 32.2 percent reduction closely reproduces the 29.6 percent found in the de novo model Westra_2025_osimertinib.R, which is the point of the analysis. Time-varying within a subject, as in the companion model.",
-      source_name        = "COBI"
+      notes = "Multiplicative power-form effect on osimertinib apparent clearance only: cl is multiplied by 0.678^CONMED_COBICISTAT, i.e. a 32.2 percent reduction in CL/F when cobicistat is coadministered (Westra 2025 Results 'Generalizability'; supplementary Part SII $THETA 12, the ONLY theta in that control stream not flagged FIX). The paper reports the addition was highly significant (P < .0001, delta OFV = -63.4) and that extending the same covariate to AZ5104 CL/F did not further improve the fit (P > .05). This 32.2 percent reduction closely reproduces the 29.6 percent found in the de novo model Westra_2025_osimertinib.R, which is the point of the analysis. Time-varying within a subject, as in the companion model.",
+      source_name = "COBI"
     )
   )
 
@@ -36,27 +36,27 @@ Westra_2025_osimertinib_brownbase <- function() {
   # statements S2 = V1/1000 and S3 = V2/1000, which place both observed
   # concentrations in ug/L.
   compartmentData <- list(
-    depot          = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
     central_az5104 = list(analyte = "AZ5104", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 11,
-    n_studies      = 1,
-    age_median     = "69.0 years",
-    weight_median  = "78.5 kg",
-    height_median  = "166.0 cm",
-    bmi_median     = "23.6 kg/m^2",
-    bsa_median     = "1.9 m^2",
+    species = "human",
+    n_subjects = 11,
+    n_studies = 1,
+    age_median = "69.0 years",
+    weight_median = "78.5 kg",
+    height_median = "166.0 cm",
+    bmi_median = "23.6 kg/m^2",
+    bsa_median = "1.9 m^2",
     sex_female_pct = 63.6,
     race_ethnicity = c(Caucasian = 100.0),
-    disease_state  = "Advanced non-small cell lung cancer, adenocarcinoma histology in 100 percent of the cohort, ECOG/WHO performance status 0-1 in 100 percent. All patients were on established osimertinib treatment and were selected for a relatively low steady-state trough concentration (Cmin,ss at or below 195 ug/L) under osimertinib 80 mg once daily.",
-    dose_range     = "Oral osimertinib 80 mg once daily (one patient received an increased dose of 160 mg once daily), first as monotherapy and then with oral cobicistat 150 mg once daily added for at least 21 days to reach steady state.",
-    regions        = "Netherlands (Maastricht University Medical Centre and the Antoni van Leeuwenhoek hospital).",
+    disease_state = "Advanced non-small cell lung cancer, adenocarcinoma histology in 100 percent of the cohort, ECOG/WHO performance status 0-1 in 100 percent. All patients were on established osimertinib treatment and were selected for a relatively low steady-state trough concentration (Cmin,ss at or below 195 ug/L) under osimertinib 80 mg once daily.",
+    dose_range = "Oral osimertinib 80 mg once daily (one patient received an increased dose of 160 mg once daily), first as monotherapy and then with oral cobicistat 150 mg once daily added for at least 21 days to reach steady state.",
+    regions = "Netherlands (Maastricht University Medical Centre and the Antoni van Leeuwenhoek hospital).",
     n_observations = "88 osimertinib and AZ5104 plasma concentrations in total from the 11 patients, the same dataset as the de novo model.",
-    notes          = "The cobicistat factor of this model was estimated on the 11-patient OSIBOOST cohort described above (Westra 2025 Table 1). Every OTHER parameter is inherited fixed from Brown 2017, whose own estimation population was 780 subjects (748 advanced-NSCLC patients from AURA and AURA2 plus 32 healthy volunteers, weight median 62 kg, albumin median 39 g/L). Users comparing this model against Westra_2025_osimertinib.R should note that its much larger between-subject variability is NOT a property of either the OSIBOOST cohort or the Brown 2017 population: it follows from Westra 2025 having entered Brown's reported standard deviations into a NONMEM $OMEGA block, which reads them as variances. The variances are reproduced here because they are what the published Table S1 simulations were run with. See the ini() scale note and the vignette Errata."
+    notes = "The cobicistat factor of this model was estimated on the 11-patient OSIBOOST cohort described above (Westra 2025 Table 1). Every OTHER parameter is inherited fixed from Brown 2017, whose own estimation population was 780 subjects (748 advanced-NSCLC patients from AURA and AURA2 plus 32 healthy volunteers, weight median 62 kg, albumin median 39 g/L). Users comparing this model against Westra_2025_osimertinib.R should note that its much larger between-subject variability is NOT a property of either the OSIBOOST cohort or the Brown 2017 population: it follows from Westra 2025 having entered Brown's reported standard deviations into a NONMEM $OMEGA block, which reads them as variances. The variances are reproduced here because they are what the published Table S1 simulations were run with. See the ini() scale note and the vignette Errata."
   )
 
   ini({

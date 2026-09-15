@@ -39,37 +39,37 @@ Landersdorfer_2007_flucloxacillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "flucloxacillin", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "flucloxacillin", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "23-34 years (median 25)",
-    weight_range   = "52-83 kg (median 71)",
-    height_range   = "165-190 cm (median 178)",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "23-34 years (median 25)",
+    weight_range = "52-83 kg (median 71)",
+    height_range = "165-190 cm (median 178)",
     sex_female_pct = 50,
     race_ethnicity = "100% Caucasian (paper Methods, Study participants)",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers with normal renal and hepatic function;",
       "screened by physical exam, ECG, urinalysis, and drugs-of-abuse",
       "panel before entry (Landersdorfer 2007 Methods, Study participants)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Randomised two-way crossover: 500 mg and 1,000 mg single doses",
       "given as 5-min IV infusions, separated by a >=4-day washout",
       "(Landersdorfer 2007 Methods, Study design and drug administration).",
       "Monte Carlo simulation explored continuous-infusion, 4-h, and 0.5-h",
       "infusion regimens at daily doses of 6 g and 12 g (Methods, MCS)."
     ),
-    regions        = "Germany (Institute for Biomedical and Pharmaceutical Research, Nuernberg-Heroldsberg)",
-    notes          = paste(
+    regions = "Germany (Institute for Biomedical and Pharmaceutical Research, Nuernberg-Heroldsberg)",
+    notes = paste(
       "Baseline demographics from Landersdorfer 2007 Results, Demographics",
       "(median weight 71 kg [52-83]; median height 178 cm [165-190];",
       "median age 25 years [23-34]; n=10, 5 M / 5 F). Plasma and urine",

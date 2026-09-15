@@ -61,11 +61,11 @@ Mi_2024_aditoprim_pbpk <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mi 2024 Table 2 fixes BW = 30 kg, and the Supplementary Material",
         "code sets `BW=30`. Every organ volume and blood flow is a fixed",
         "fraction of BW, and the renal and hepatic clearances are per-kg",
@@ -77,33 +77,33 @@ Mi_2024_aditoprim_pbpk <- function() {
         "see vignette Errata. The underlying residue-depletion studies",
         "used market-age swine."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
-    blood       = list(analyte = "aditoprim", units = "mg", specimen = "whole blood", verified = TRUE),
-    liver       = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney      = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle      = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose     = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    other       = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    urine       = list(analyte = "aditoprim", units = "mg", specimen = "urine", verified = TRUE),
+    depot = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
+    blood = list(analyte = "aditoprim", units = "mg", specimen = "whole blood", verified = TRUE),
+    liver = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "aditoprim", units = "mg", specimen = "urine", verified = TRUE),
     metabolized = list(analyte = "aditoprim", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "pig (swine)",
-    n_subjects     = 92L,
-    n_studies      = 4L,
-    age_range      = "grower / finisher swine",
-    weight_range   = "model reference BW = 30 kg; Upton (2008) physiology is quoted for 25 kg pigs",
-    disease_state  = "healthy",
-    dose_range     = "5 and 10 mg/kg intramuscular aditoprim injection in the calibration and validation datasets; 0, 2.5, 5, 10, 12.5, 15, 20 and 25 mg/kg once or twice daily were simulated",
-    regions        = "China",
-    notes          = paste(
+    species = "pig (swine)",
+    n_subjects = 92L,
+    n_studies = 4L,
+    age_range = "grower / finisher swine",
+    weight_range = "model reference BW = 30 kg; Upton (2008) physiology is quoted for 25 kg pigs",
+    disease_state = "healthy",
+    dose_range = "5 and 10 mg/kg intramuscular aditoprim injection in the calibration and validation datasets; 0, 2.5, 5, 10, 12.5, 15, 20 and 25 mg/kg once or twice daily were simulated",
+    regions = "China",
+    notes = paste(
       "No animals were dosed for this modelling paper. The structural",
       "model was calibrated and validated against four previously",
       "published swine datasets (Mi 2024 Table 1), with graphical data",

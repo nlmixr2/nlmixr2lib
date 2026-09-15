@@ -10,24 +10,24 @@ Cao_2013_gevokizumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "gevokizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "gevokizumab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "gevokizumab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Cavelti-Weder 2012 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Cavelti-Weder 2012 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Type 2 diabetes mellitus (gevokizumab anti-IL-1beta humanized IgG2).",
-    dose_range     = "0.01, 0.03, 0.1, 0.3, 1, 3 mg/kg IV (Cao 2013 Figure 5 gevokizumab panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Cavelti-Weder C et al. Diabetes Care 2012;35:1654-1662 (PMID 22699287). The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated."
+    disease_state = "Type 2 diabetes mellitus (gevokizumab anti-IL-1beta humanized IgG2).",
+    dose_range = "0.01, 0.03, 0.1, 0.3, 1, 3 mg/kg IV (Cao 2013 Figure 5 gevokizumab panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Cavelti-Weder C et al. Diabetes Care 2012;35:1654-1662 (PMID 22699287). The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated."
   )
 
   ini({

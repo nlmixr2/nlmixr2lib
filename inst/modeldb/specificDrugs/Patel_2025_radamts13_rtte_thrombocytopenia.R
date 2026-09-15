@@ -21,38 +21,43 @@ Patel_2025_radamts13_rtte_thrombocytopenia <- function() {
   paper_specific_etas <- c("etallambda0")
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
     concentration = "probability (the model output `sur` is the thrombocytopenia-event-free survival probability, not a drug concentration; the CAV covariate is in IU/mL)"
   )
 
   compartmentData <- list(
-    cumhaz = list(analyte = "thrombocytopenia event hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "thrombocytopenia event hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Average plasma ADAMTS13 activity driving the instantaneous thrombocytopenia hazard (IU/mL).",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Average plasma ADAMTS13 activity driving the instantaneous thrombocytopenia hazard (IU/mL).",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Per-record, and may be time-varying: the source model is driven by 'time-varying ADAMTS13 activity' and specifically by a daily Cave (paper Methods, 'Longitudinal repeated time-to-event exposure-response modeling'). The paper's own reported simulations, however, hold it constant at the treatment-arm median Cave - Table S8b's event-free probabilities are reproduced exactly by this model with a constant CAV, which is how the validation vignette gates it. 1 IU/mL = 100% of normal ADAMTS13 activity. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here. Set to 0 for an untreated period, which collapses the hazard to the baseline lambda0.",
-      source_name        = "Cave"
+      notes = "Required input. Per-record, and may be time-varying: the source model is driven by 'time-varying ADAMTS13 activity' and specifically by a daily Cave (paper Methods, 'Longitudinal repeated time-to-event exposure-response modeling'). The paper's own reported simulations, however, hold it constant at the treatment-arm median Cave - Table S8b's event-free probabilities are reproduced exactly by this model with a constant CAV, which is how the validation vignette gates it. 1 IU/mL = 100% of normal ADAMTS13 activity. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here. Set to 0 for an untreated period, which collapses the hazard to the baseline lambda0.",
+      source_name = "Cave"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 43L,
-    n_studies      = 1L,
-    age_range      = "All ages (paper Results, 'Using data from Periods 1 to 3 and all age groups').",
-    weight_range   = "Not reported separately for the RTTE set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
+    species = "human",
+    n_subjects = 43L,
+    n_studies = 1L,
+    age_range = "All ages (paper Results, 'Using data from Periods 1 to 3 and all age groups').",
+    weight_range = "Not reported separately for the RTTE set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported separately for the RTTE set.",
-    disease_state  = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: thrombocytopenia, defined as a platelet count decreased by at least 25% from baseline or a platelet count <150,000/uL (paper Methods, 'Exposure-response analyses').",
-    dose_range     = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
-    regions        = "Multinational phase III crossover study NCT03393975.",
-    notes          = "The RTTE analysis uses longitudinal data from all three prophylaxis periods, unlike the count and Cox analyses which use Periods 1 and 2 only. n_subjects is given as 43 because Figure 1 footnote a states that the count exposure-response cohort of 41 excluded two patients who WERE included in the repeated time-to-event modeling; the paper does not print an explicit RTTE N, so 43 is inferred from that footnote and should be treated as the paper's implied cohort rather than a directly reported figure. The paper reports the RTTE estimates with 95% confidence intervals rather than RSEs (Table S6)."
+    disease_state = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: thrombocytopenia, defined as a platelet count decreased by at least 25% from baseline or a platelet count <150,000/uL (paper Methods, 'Exposure-response analyses').",
+    dose_range = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
+    regions = "Multinational phase III crossover study NCT03393975.",
+    notes = "The RTTE analysis uses longitudinal data from all three prophylaxis periods, unlike the count and Cox analyses which use Periods 1 and 2 only. n_subjects is given as 43 because Figure 1 footnote a states that the count exposure-response cohort of 41 excluded two patients who WERE included in the repeated time-to-event modeling; the paper does not print an explicit RTTE N, so 43 is inferred from that footnote and should be treated as the paper's implied cohort rather than a directly reported figure. The paper reports the RTTE estimates with 95% confidence intervals rather than RSEs (Table S6)."
   )
 
   ini({

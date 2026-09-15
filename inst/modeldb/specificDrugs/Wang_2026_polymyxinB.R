@@ -18,80 +18,80 @@ Wang_2026_polymyxinB <- function() {
   # Collection") and the disposition model is the two-compartment structure of
   # the final-model equations on page 6 (V1 central, V2 peripheral).
   compartmentData <- list(
-    central     = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "polymyxinB", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "CKD-EPI estimated glomerular filtration rate (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI estimated glomerular filtration rate (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wang 2026 Methods 'Study Design': 'CrCL was calculated using the Cockcroft-Gault formula, and eGFR was determined using the CKD-EPI formula.' The CKD-EPI eGFR is stored under the canonical CRCL column per inst/references/covariate-columns.md, whose CRCL entry explicitly accepts a CKD-EPI-estimated glomerular filtration rate in mL/min/1.73 m^2. Applied as a power covariate on CL, CL = 1.68 * (CRCL / 42.88)^0.43 * exp(eta_CL), which is the final-model equation printed on page 6 of the paper. IMPORTANT: the normalizing constant 42.88 mL/min/1.73 m^2 is the cohort MEDIAN eGFR and appears ONLY inside that typeset equation -- Table 1 reports the eGFR mean +/- SD (57.44 +/- 43.89) and never the median, and the equation is a vector graphic that plain text extraction drops entirely. See the vignette source-trace section. Both eGFR and Cockcroft-Gault CrCL were screened on CL in forward inclusion (eGFR dOFV -12.658; CrCL dOFV -5.705); eGFR gave the larger OFV drop and was the one retained, so the raw Cockcroft-Gault CrCL is deliberately NOT carried as a separate column here. Time-fixed per subject in this analysis.",
-      source_name        = "eGFR"
+      notes = "Wang 2026 Methods 'Study Design': 'CrCL was calculated using the Cockcroft-Gault formula, and eGFR was determined using the CKD-EPI formula.' The CKD-EPI eGFR is stored under the canonical CRCL column per inst/references/covariate-columns.md, whose CRCL entry explicitly accepts a CKD-EPI-estimated glomerular filtration rate in mL/min/1.73 m^2. Applied as a power covariate on CL, CL = 1.68 * (CRCL / 42.88)^0.43 * exp(eta_CL), which is the final-model equation printed on page 6 of the paper. IMPORTANT: the normalizing constant 42.88 mL/min/1.73 m^2 is the cohort MEDIAN eGFR and appears ONLY inside that typeset equation -- Table 1 reports the eGFR mean +/- SD (57.44 +/- 43.89) and never the median, and the equation is a vector graphic that plain text extraction drops entirely. See the vignette source-trace section. Both eGFR and Cockcroft-Gault CrCL were screened on CL in forward inclusion (eGFR dOFV -12.658; CrCL dOFV -5.705); eGFR gave the larger OFV drop and was the one retained, so the raw Cockcroft-Gault CrCL is deliberately NOT carried as a separate column here. Time-fixed per subject in this analysis.",
+      source_name = "eGFR"
     )
   )
 
   covariatesDataExcluded <- list(
     ECMO = list(
       description = "Extracorporeal membrane oxygenation support",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Wang 2026 Methods: one of the three categorical covariates screened. Reached forward-inclusion significance on CL (dOFV -7.258, p < 0.05) and entered the full model, but was removed during backward elimination (p < 0.001 threshold). The Discussion attributes this to the very limited number of ECMO patients (n = 2, 3.57% of the cohort) and explicitly states the study 'could not robustly demonstrate an independent effect of ECMO on PB CL'."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Wang 2026 Methods: one of the three categorical covariates screened. Reached forward-inclusion significance on CL (dOFV -7.258, p < 0.05) and entered the full model, but was removed during backward elimination (p < 0.001 threshold). The Discussion attributes this to the very limited number of ECMO patients (n = 2, 3.57% of the cohort) and explicitly states the study 'could not robustly demonstrate an independent effect of ECMO on PB CL'."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Wang 2026 Methods: screened as a continuous covariate. Reached forward-inclusion significance on CL (dOFV -12.057, p < 0.05) and entered the full model alongside eGFR and ECMO, but was removed during backward elimination. Cohort value 40.21 +/- 78.90 U/L (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Wang 2026 Methods: screened as a continuous covariate. Reached forward-inclusion significance on CL (dOFV -12.057, p < 0.05) and entered the full model alongside eGFR and ECMO, but was removed during backward elimination. Cohort value 40.21 +/- 78.90 U/L (Table 1)."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Wang 2026 Methods: screened as a continuous covariate. Reached forward-inclusion significance on CL (dOFV -9.301, p < 0.05) but was not retained in the final model. Cohort value 21.40 +/- 13.64 mmol/L (Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Wang 2026 Methods: screened as a continuous covariate. Reached forward-inclusion significance on CL (dOFV -9.301, p < 0.05) but was not retained in the final model. Cohort value 21.40 +/- 13.64 mmol/L (Table 1)."
     ),
     CRRT = list(
       description = "Continuous renal replacement therapy, delivered exclusively as continuous veno-venous hemofiltration (CVVH)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Wang 2026 Methods: recorded prospectively at each sampling time and time-aligned with each pharmacokinetic sample as a binary covariate (CRRT = 1 if ongoing at the exact sampling time, 0 otherwise), then tested with the categorical covariate structure of Eq.4. Not retained (CVVH dOFV -0.137, p > 0.05). 20 of 56 patients (35.71%) received CRRT, all via CVVH. A separate exploratory analysis found no significant correlation between effluent rate and drug clearance in the CVVH patients (absolute r = 0.158). The Discussion contrasts this null result with Hanafin et al, who reported significantly increased clearance under CVVHDF, and concludes the specific renal-replacement modality is a determinant that cannot be generalized."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Wang 2026 Methods: recorded prospectively at each sampling time and time-aligned with each pharmacokinetic sample as a binary covariate (CRRT = 1 if ongoing at the exact sampling time, 0 otherwise), then tested with the categorical covariate structure of Eq.4. Not retained (CVVH dOFV -0.137, p > 0.05). 20 of 56 patients (35.71%) received CRRT, all via CVVH. A separate exploratory analysis found no significant correlation between effluent rate and drug clearance in the CVVH patients (absolute r = 0.158). The Discussion contrasts this null result with Hanafin et al, who reported significantly increased clearance under CVVHDF, and concludes the specific renal-replacement modality is a determinant that cannot be generalized."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Wang 2026 Methods: screened as a continuous covariate. Not retained (dOFV -0.466, p > 0.05). Cohort value 60.73 +/- 10.78 kg (Table 1). Notable because the Discussion records that earlier polymyxin B analyses identified body weight as a covariate, and that Hanafin et al retained body weight on volume of distribution, whereas this final model did not."
+      units = "kg",
+      type = "continuous",
+      notes = "Wang 2026 Methods: screened as a continuous covariate. Not retained (dOFV -0.466, p > 0.05). Cohort value 60.73 +/- 10.78 kg (Table 1). Notable because the Discussion records that earlier polymyxin B analyses identified body weight as a covariate, and that Hanafin et al retained body weight on volume of distribution, whereas this final model did not."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Wang 2026 Methods: screened as a continuous covariate. The Discussion reports it explicitly as the one named covariate tested on V1: 'During the covariate screening for factors influencing V1, no statistically significant covariate was identified, including ALB (dOFV -1.581, p > 0.05).' Cohort value 34.71 +/- 6.71 g/L (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Wang 2026 Methods: screened as a continuous covariate. The Discussion reports it explicitly as the one named covariate tested on V1: 'During the covariate screening for factors influencing V1, no statistically significant covariate was identified, including ALB (dOFV -1.581, p > 0.05).' Cohort value 34.71 +/- 6.71 g/L (Table 1)."
     ),
     OTHER_SCREENED_COVARIATES = list(
       description = "Remaining candidate covariates screened and not retained",
-      units       = "(various)",
-      type        = "continuous",
-      notes       = "Wang 2026 Methods lists the full screening set. Continuous: age, weight, BMI, ALT, AST, TP, ALB, TBIL, DBIL, BUN, eGFR, WBC, PLT, uric acid, Scr, and CrCL. Categorical: sex, CRRT status, and ECMO status. Only eGFR survived backward elimination. This entry groups age, BMI, AST, total protein, total bilirubin, direct bilirubin, white blood cell count, platelet count, uric acid, serum creatinine, Cockcroft-Gault creatinine clearance and sex, for which the paper reports no individual dOFV; the covariates that do carry a reported dOFV are given their own entries above."
+      units = "(various)",
+      type = "continuous",
+      notes = "Wang 2026 Methods lists the full screening set. Continuous: age, weight, BMI, ALT, AST, TP, ALB, TBIL, DBIL, BUN, eGFR, WBC, PLT, uric acid, Scr, and CrCL. Categorical: sex, CRRT status, and ECMO status. Only eGFR survived backward elimination. This entry groups age, BMI, AST, total protein, total bilirubin, direct bilirubin, white blood cell count, platelet count, uric acid, serum creatinine, Cockcroft-Gault creatinine clearance and sex, for which the paper reports no individual dOFV; the covariates that do carry a reported dOFV are given their own entries above."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 56L,
-    n_studies      = 1L,
-    age_mean       = "60.64 +/- 12.96 years",
-    weight_mean    = "60.73 +/- 10.78 kg",
+    species = "human",
+    n_subjects = 56L,
+    n_studies = 1L,
+    age_mean = "60.64 +/- 12.96 years",
+    weight_mean = "60.73 +/- 10.78 kg",
     sex_female_pct = 21.4,
     race_ethnicity = "Not reported (two-center Chinese ICU cohort)",
-    disease_state  = "Critically ill adults (>= 18 years) in intensive care receiving intravenous polymyxin B sulfate. APACHE II 25.02 +/- 4.55. Pulmonary infection dominated (52 patients, 92.86%), with abdominal (4), sepsis (6), urinary tract (2), intracranial (1) and other (3) infections also present; patients could carry more than one infection type. Pathogens included Pseudomonas aeruginosa (39.29%), Klebsiella pneumoniae (26.79%) and Acinetobacter baumannii (25.00%). 20 patients (35.71%) received CRRT, exclusively CVVH; 2 patients (3.57%) received ECMO. Comorbidities: hypertension 33.93%, diabetes 16.07%, coronary disease 3.57%. Exclusions were pregnancy, allergy or intolerance to polymyxin B, and missing weight or renal function data.",
-    dose_range     = "Intravenous polymyxin B sulfate, generally following the product label recommendation of 1.5-2.5 mg/kg per day (1 mg = 10,000 IU) divided into two doses. Regimens varied by treating clinician and were NOT adjusted for CRRT status or renal function; observed regimens included a 100 mg loading dose followed by 50 mg q12h, and maintenance doses of 50-100 mg q12h without a preceding load. Monte Carlo dosing simulations covered first and maintenance doses of 50-200 mg given q12h or q8h as 1-hour infusions.",
-    regions        = "China (Guangdong Provincial People's Hospital and Maoming People's Hospital intensive care units), August 2020 to October 2022",
+    disease_state = "Critically ill adults (>= 18 years) in intensive care receiving intravenous polymyxin B sulfate. APACHE II 25.02 +/- 4.55. Pulmonary infection dominated (52 patients, 92.86%), with abdominal (4), sepsis (6), urinary tract (2), intracranial (1) and other (3) infections also present; patients could carry more than one infection type. Pathogens included Pseudomonas aeruginosa (39.29%), Klebsiella pneumoniae (26.79%) and Acinetobacter baumannii (25.00%). 20 patients (35.71%) received CRRT, exclusively CVVH; 2 patients (3.57%) received ECMO. Comorbidities: hypertension 33.93%, diabetes 16.07%, coronary disease 3.57%. Exclusions were pregnancy, allergy or intolerance to polymyxin B, and missing weight or renal function data.",
+    dose_range = "Intravenous polymyxin B sulfate, generally following the product label recommendation of 1.5-2.5 mg/kg per day (1 mg = 10,000 IU) divided into two doses. Regimens varied by treating clinician and were NOT adjusted for CRRT status or renal function; observed regimens included a 100 mg loading dose followed by 50 mg q12h, and maintenance doses of 50-100 mg q12h without a preceding load. Monte Carlo dosing simulations covered first and maintenance doses of 50-200 mg given q12h or q8h as 1-hour infusions.",
+    regions = "China (Guangdong Provincial People's Hospital and Maoming People's Hospital intensive care units), August 2020 to October 2022",
     renal_function = "CKD-EPI eGFR 57.44 +/- 43.89 mL/min/1.73 m^2 (cohort median 42.88, read from the final-model equation on page 6); Cockcroft-Gault creatinine clearance 150.79 +/- 145.79 mL/min; serum creatinine 190.18 +/- 154.35 umol/L; blood urea nitrogen 21.40 +/- 13.64 mmol/L. Renal function spanned the full range, and the dosing simulations were stratified into eGFR bands of <15, 15-30, 30-60, 60-90 and 90-130 mL/min/1.73 m^2.",
     n_observations = "350 polymyxin B plasma concentrations from 56 patients. Sampling began after at least the third dose, at seven time points per occasion: pre-dose (10 min before administration); 5 min, 1 h, 2 h, 4 h and 8 h after the end of infusion; and 10 min before the subsequent dose. Mean observed concentration 3.0774 +/- 2.1373 mg/L (Table 1).",
-    notes          = "Prospective two-center study. NONMEM 7.3.0 with FOCE-I. Model evaluation used goodness-of-fit plots, prediction-corrected VPC (1000 replicates), NPDE and a 1000-replicate PsN bootstrap with a 93.5% success rate; all final estimates fell inside the bootstrap 95% CI (Table 2). Plasma quantified by HPLC-MS/MS using a previously published in-house method. The dosing recommendations of Table 3 target AUC24/MIC >= 50 with PTA >= 80% over MICs of 0.125-2 mg/L."
+    notes = "Prospective two-center study. NONMEM 7.3.0 with FOCE-I. Model evaluation used goodness-of-fit plots, prediction-corrected VPC (1000 replicates), NPDE and a 1000-replicate PsN bootstrap with a 93.5% success rate; all final estimates fell inside the bootstrap 95% CI (Table 2). Plasma quantified by HPLC-MS/MS using a previously published in-house method. The dosing recommendations of Table 3 target AUC24/MIC >= 50 with PTA >= 80% over MICs of 0.125-2 mg/L."
   )
 
   ini({

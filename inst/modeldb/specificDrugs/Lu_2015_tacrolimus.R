@@ -1,55 +1,55 @@
 Lu_2015_tacrolimus <- function() {
   description <- "Two-compartment population PK model with first-order absorption and lag time for oral tacrolimus in pooled Chinese healthy volunteers and adult orthotopic liver-transplant recipients (Lu 2015). Apparent peripheral volume V3/F is fixed at the healthy-volunteer-only estimate (916 L). Apparent clearance CL/F is reduced multiplicatively in liver-transplant recipients and further modulated by an exponential serum ALT effect that applies only to the transplant cohort."
-  reference   <- "Lu YX, Su QH, Wu KH, Ren YP, Li L, Zhou TY, Lu W. A population pharmacokinetic study of tacrolimus in healthy Chinese volunteers and liver transplant patients. Acta Pharmacol Sin. 2015;36(2):281-288. doi:10.1038/aps.2014.110"
-  vignette    <- "Lu_2015_tacrolimus"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Lu YX, Su QH, Wu KH, Ren YP, Li L, Zhou TY, Lu W. A population pharmacokinetic study of tacrolimus in healthy Chinese volunteers and liver transplant patients. Acta Pharmacol Sin. 2015;36(2):281-288. doi:10.1038/aps.2014.110"
+  vignette <- "Lu_2015_tacrolimus"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator: 1 = healthy Chinese volunteer (single 2 mg oral dose under bioequivalence study), 0 = adult orthotopic liver-transplant recipient on chronic oral tacrolimus immunosuppression.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator: 1 = healthy Chinese volunteer (single 2 mg oral dose under bioequivalence study), 0 = adult orthotopic liver-transplant recipient on chronic oral tacrolimus immunosuppression.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (liver-transplant recipient)",
-      notes              = "Time-fixed per subject. Lu 2015 uses the source name `SubPop` with the opposite orientation (SubPop = 0 for healthy volunteer, SubPop = 1 for liver-transplant patient); the canonical `DIS_HEALTHY` flip is applied via the identity SubPop = 1 - DIS_HEALTHY when reproducing the paper's Eq. 10. The reference complement here is the liver-transplant patient cohort (n = 112), not the union of all non-healthy indications referenced elsewhere in the register.",
-      source_name        = "SubPop"
+      notes = "Time-fixed per subject. Lu 2015 uses the source name `SubPop` with the opposite orientation (SubPop = 0 for healthy volunteer, SubPop = 1 for liver-transplant patient); the canonical `DIS_HEALTHY` flip is applied via the identity SubPop = 1 - DIS_HEALTHY when reproducing the paper's Eq. 10. The reference complement here is the liver-transplant patient cohort (n = 112), not the union of all non-healthy indications referenced elsewhere in the register.",
+      source_name = "SubPop"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity at the time of the observation. Time-varying per subject in the transplant cohort (daily clinical-chemistry panel); near-normal and not load-bearing in the healthy-volunteer cohort.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity at the time of the observation. Time-varying per subject in the transplant cohort (daily clinical-chemistry panel); near-normal and not load-bearing in the healthy-volunteer cohort.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Lu 2015 Eq. 10 enters ALT via an exponential effect Exp(ALT / 40 * theta_ALT) applied only to liver-transplant patients (gated on SubPop = 1, i.e., DIS_HEALTHY = 0). The normalisation factor 40 IU/L is interpreted as the clinical upper limit of normal for serum ALT used by the central laboratory; the paper does not state it explicitly but uses ALT / 40 verbatim in the printed equation. Patient ALT mean 146.4 +/- 290.0 IU/L (range 5 - 6300, Table 1); healthy-volunteer ALT mean 33.0 +/- 20.9 IU/L (range 8.5 - 125.3).",
-      source_name        = "ALT"
+      notes = "Lu 2015 Eq. 10 enters ALT via an exponential effect Exp(ALT / 40 * theta_ALT) applied only to liver-transplant patients (gated on SubPop = 1, i.e., DIS_HEALTHY = 0). The normalisation factor 40 IU/L is interpreted as the clinical upper limit of normal for serum ALT used by the central laboratory; the paper does not state it explicitly but uses ALT / 40 verbatim in the printed equation. Patient ALT mean 146.4 +/- 290.0 IU/L (range 5 - 6300, Table 1); healthy-volunteer ALT mean 33.0 +/- 20.9 IU/L (range 8.5 - 125.3).",
+      source_name = "ALT"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 152L,
-    n_studies            = 1L,
-    age_range            = "24 - 78 years",
-    age_median           = "Liver-transplant patients 58.4 +/- 11.6 years; healthy volunteers 28.7 +/- 3.47 years (Table 1 means +/- SD)",
-    weight_range         = "44 - 97 kg",
-    weight_median        = "Liver-transplant patients 69.0 +/- 11.8 kg; healthy volunteers 62.5 +/- 6.46 kg (Table 1 means +/- SD)",
-    sex_female_pct       = 17.1,
-    sex_distribution     = "Liver-transplant patients: 86 male / 26 female (76.8% / 23.2%). Healthy volunteers: 40 male / 0 female. Pooled cohort 126 male / 26 female (82.9% / 17.1%).",
-    race_ethnicity       = "Chinese (single-country: Beijing, China; healthy volunteers from PLA Second Artillery General Hospital, transplant recipients from General Hospital of Armed Police Forces).",
-    disease_state        = "Pooled cohort of (i) 112 adult Chinese orthotopic liver-transplant recipients in the early postoperative period (POD 2 - 137, mean 19.4 days) receiving the triple immunosuppressive regimen of tacrolimus + mycophenolate mofetil + corticosteroids; (ii) 40 healthy adult Chinese male volunteers in a bioequivalence study receiving a single 2 mg oral dose. Underlying liver disease in the transplant arm: primary hepatic carcinoma (50.9%), liver cirrhosis or chronic severe hepatitis (30.6%), hepatic cancer recurrence (6.5%), alcoholic cirrhosis (4.6%), other (< 5%).",
-    dose_range           = "Liver-transplant patients: initial 0.05 mg/kg/day in two divided oral doses, titrated by TDM (concentration target window not stated). Healthy volunteers: single 2 mg oral capsule.",
-    formulations         = "Tacrolimus (Prograf, FK506; Astellas Pharma China) oral capsules 0.5 mg or 1 mg; identical formulation across cohorts.",
-    n_observations       = 1951L,
+    species = "human",
+    n_subjects = 152L,
+    n_studies = 1L,
+    age_range = "24 - 78 years",
+    age_median = "Liver-transplant patients 58.4 +/- 11.6 years; healthy volunteers 28.7 +/- 3.47 years (Table 1 means +/- SD)",
+    weight_range = "44 - 97 kg",
+    weight_median = "Liver-transplant patients 69.0 +/- 11.8 kg; healthy volunteers 62.5 +/- 6.46 kg (Table 1 means +/- SD)",
+    sex_female_pct = 17.1,
+    sex_distribution = "Liver-transplant patients: 86 male / 26 female (76.8% / 23.2%). Healthy volunteers: 40 male / 0 female. Pooled cohort 126 male / 26 female (82.9% / 17.1%).",
+    race_ethnicity = "Chinese (single-country: Beijing, China; healthy volunteers from PLA Second Artillery General Hospital, transplant recipients from General Hospital of Armed Police Forces).",
+    disease_state = "Pooled cohort of (i) 112 adult Chinese orthotopic liver-transplant recipients in the early postoperative period (POD 2 - 137, mean 19.4 days) receiving the triple immunosuppressive regimen of tacrolimus + mycophenolate mofetil + corticosteroids; (ii) 40 healthy adult Chinese male volunteers in a bioequivalence study receiving a single 2 mg oral dose. Underlying liver disease in the transplant arm: primary hepatic carcinoma (50.9%), liver cirrhosis or chronic severe hepatitis (30.6%), hepatic cancer recurrence (6.5%), alcoholic cirrhosis (4.6%), other (< 5%).",
+    dose_range = "Liver-transplant patients: initial 0.05 mg/kg/day in two divided oral doses, titrated by TDM (concentration target window not stated). Healthy volunteers: single 2 mg oral capsule.",
+    formulations = "Tacrolimus (Prograf, FK506; Astellas Pharma China) oral capsules 0.5 mg or 1 mg; identical formulation across cohorts.",
+    n_observations = 1951L,
     n_observations_breakdown = "1100 trough samples from 112 liver-transplant patients (sparse, microparticle enzyme immunoassay, 1.5 - 30 ug/L linear range); 851 dense post-dose samples from 40 healthy volunteers (HPLC-MS, 0.1 - 25 ug/L linear range).",
-    regions              = "China (single-country)",
-    notes                = "Cohort and demographic details from Lu 2015 Table 1. Of the 112 transplant patients, 36 were >= 65 years (elderly subgroup); age showed no significant CL/F effect in either the forward-inclusion or backward-elimination steps (Table 3) and was not retained in the final model. Co-medications in the transplant arm included methylprednisolone (perioperative bolus 500 - 1000 mg, oral taper to 4 mg/day) and MMF dispersible tablets 750 mg bid; the analysis does not test these as covariates."
+    regions = "China (single-country)",
+    notes = "Cohort and demographic details from Lu 2015 Table 1. Of the 112 transplant patients, 36 were >= 65 years (elderly subgroup); age showed no significant CL/F effect in either the forward-inclusion or backward-elimination steps (Table 3) and was not retained in the final model. Co-medications in the transplant arm included methylprednisolone (perioperative bolus 500 - 1000 mg, oral taper to 4 mg/day) and MMF dispersible tablets 750 mg bid; the analysis does not test these as covariates."
   )
 
   ini({

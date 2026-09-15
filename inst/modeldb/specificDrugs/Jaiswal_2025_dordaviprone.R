@@ -56,7 +56,7 @@ Jaiswal_2025_dordaviprone <- function() {
     sep = " "
   )
   vignette <- "Jaiswal_2025_dordaviprone"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Jaiswal 2025 Figure 1 (the PBPK
@@ -65,16 +65,22 @@ Jaiswal_2025_dordaviprone <- function() {
   # a single adjusting compartment.
   compartmentData <- list(
     depot = list(
-      analyte = "dordaviprone", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "dordaviprone",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "dordaviprone", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "dordaviprone",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "dordaviprone", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "dordaviprone",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
@@ -85,62 +91,62 @@ Jaiswal_2025_dordaviprone <- function() {
   # that single published ratio (see ini()).
   covariateData <- list(
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole (strong CYP3A4 inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole (strong CYP3A4 inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CYP3A4 modulator coadministered",
-      notes              = paste(
+      notes = paste(
         "Jaiswal 2025 Table 2 / Table S6: multiple-dose itraconazole",
         "with a single 125 mg dordaviprone dose, clinical study 103.",
         "This is the only modulator arm with observed clinical data;",
         "the other five are model predictions."
       ),
-      source_name        = "itraconazole"
+      source_name = "itraconazole"
     ),
     CONMED_ERYTHROMYCIN = list(
-      description        = "Concomitant erythromycin (moderate CYP3A4 inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant erythromycin (moderate CYP3A4 inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CYP3A4 modulator coadministered",
-      notes              = "Jaiswal 2025 Figure 3: erythromycin 500 mg four times daily, simulated only.",
-      source_name        = "erythromycin"
+      notes = "Jaiswal 2025 Figure 3: erythromycin 500 mg four times daily, simulated only.",
+      source_name = "erythromycin"
     ),
     CONMED_FLUCONAZOLE = list(
-      description        = "Concomitant fluconazole (moderate CYP3A4 inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant fluconazole (moderate CYP3A4 inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CYP3A4 modulator coadministered",
-      notes              = "Jaiswal 2025 Figure 3: fluconazole 200 mg once daily, simulated only.",
-      source_name        = "fluconazole"
+      notes = "Jaiswal 2025 Figure 3: fluconazole 200 mg once daily, simulated only.",
+      source_name = "fluconazole"
     ),
     CONMED_CIMETIDINE = list(
-      description        = "Concomitant cimetidine (weak CYP3A4 inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cimetidine (weak CYP3A4 inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CYP3A4 modulator coadministered",
-      notes              = "Jaiswal 2025 Figure 3: cimetidine 400 mg twice daily, simulated only.",
-      source_name        = "cimetidine"
+      notes = "Jaiswal 2025 Figure 3: cimetidine 400 mg twice daily, simulated only.",
+      source_name = "cimetidine"
     ),
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz (moderate CYP3A4 inducer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz (moderate CYP3A4 inducer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CYP3A4 modulator coadministered",
-      notes              = paste(
+      notes = paste(
         "Jaiswal 2025 Figure 3: efavirenz 600 mg once daily, simulated",
         "only. Here the reference category is simply 'no efavirenz'",
         "rather than the alternative-antiretroviral-regimen reference",
         "used by the antiretroviral popPK models that share this column."
       ),
-      source_name        = "efavirenz"
+      source_name = "efavirenz"
     ),
     CONMED_RIFAMPICIN = list(
-      description        = "Concomitant rifampicin (strong CYP3A4 inducer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin (strong CYP3A4 inducer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CYP3A4 modulator coadministered",
-      notes              = "Jaiswal 2025 Figure 3: rifampicin 600 mg once daily, simulated only.",
-      source_name        = "rifampicin"
+      notes = "Jaiswal 2025 Figure 3: rifampicin 600 mg once daily, simulated only.",
+      source_name = "rifampicin"
     )
   )
 
@@ -155,7 +161,8 @@ Jaiswal_2025_dordaviprone <- function() {
         "instead, because the systemic-compartment volume also subtracts",
         "a liver volume whose weight-scaling Simcyp does not publish."
       ),
-      units = "kg", type = "continuous",
+      units = "kg",
+      type = "continuous",
       notes = "Simcyp North European Caucasian population file; relationship not published."
     ),
     CONMED_PPI = list(
@@ -169,7 +176,8 @@ Jaiswal_2025_dordaviprone <- function() {
         "reproducible here; because the published effect is null, the",
         "no-modulator model reproduces both arms."
       ),
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Null effect in the source; documented rather than encoded."
     ),
     FOOD = list(
@@ -182,26 +190,27 @@ Jaiswal_2025_dordaviprone <- function() {
         "reduction to a single first-order ka, so the fed arm is not",
         "encoded."
       ),
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Absorption-model-mediated; not reproducible from a first-order ka."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 4L,
-    age_range      = "Healthy adult participants; individual ages not tabulated in the source.",
-    weight_median  = "70 kg (reference weight used for the L/kg volume inputs)",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 4L,
+    age_range = "Healthy adult participants; individual ages not tabulated in the source.",
+    weight_median = "70 kg (reference weight used for the L/kg volume inputs)",
+    disease_state = paste(
       "Healthy participants. The paper argues the same magnitudes of",
       "change would apply to the target H3 K27M-mutant glioma",
       "population, but no patient data were used in model development",
       "or verification."
     ),
-    dose_range     = "Single oral doses of 125, 375 and 625 mg; 625 mg is the planned therapeutic dose (once weekly).",
-    regions        = "North European Caucasian virtual population (Simcyp default, Howgate 2006) with trial-matched demographics.",
-    studies        = paste(
+    dose_range = "Single oral doses of 125, 375 and 625 mg; 625 mg is the planned therapeutic dose (once weekly).",
+    regions = "North European Caucasian virtual population (Simcyp default, Howgate 2006) with trial-matched demographics.",
+    studies = paste(
       "ONC201-101 Part A single ascending dose (n = 15 healthy",
       "participants) supplied the 625 mg profile used to fit the",
       "minimal-PBPK distribution parameters and the 125 / 375 mg",
@@ -213,7 +222,7 @@ Jaiswal_2025_dordaviprone <- function() {
       "calculation and whose AUC and Cmax ratios calibrated fm CYP3A4.",
       "Clinical study 107 (n = 16) supplied the rabeprazole arm."
     ),
-    notes          = paste(
+    notes = paste(
       "n_subjects records the 15 participants of ONC201-101 Part A, the",
       "study the disposition parameters were fitted against; n_studies",
       "counts the four clinical studies listed above. This is a PBPK",

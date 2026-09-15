@@ -32,18 +32,24 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
     sep = " "
   )
   vignette <- "Boulanger_2025_trimethoprim_sulfonamides_pig"
-  units    <- list(time = "h", dosing = "mg/kg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "ug/mL")
   # Declared explicitly: buildModelDb()'s dosing heuristic only recognises the
   # literal names `depot` and `central`, so without this field the registry
   # would record just "depot,central" and hide the eight sibling-drug and
   # intramuscular dosing targets. Table 1 doses every one of these: IV into the
   # four central compartments, oral into the four `depot`s, IM into `depot2`
   # (TMP) and `depot2_sdz` (SDZ).
-  dosing   <- c(
-    "depot", "depot2", "central",
-    "depot_sdz", "depot2_sdz", "central_sdz",
-    "depot_sdmx", "central_sdmx",
-    "depot_smx", "central_smx"
+  dosing <- c(
+    "depot",
+    "depot2",
+    "central",
+    "depot_sdz",
+    "depot2_sdz",
+    "central_sdz",
+    "depot_sdmx",
+    "central_sdmx",
+    "depot_smx",
+    "central_smx"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -52,29 +58,29 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
   # normalised amounts in mg/kg and dividing by the L/kg volumes yields
   # ug/mL directly.
   compartmentData <- list(
-    depot            = list(analyte = "trimethoprim",    units = "mg/kg", specimen = "administration site", verified = TRUE),
-    depot2           = list(analyte = "trimethoprim",    units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "trimethoprim",    units = "mg/kg", specimen = "plasma", verified = TRUE),
-    peripheral1      = list(analyte = "trimethoprim",    units = "mg/kg", specimen = "plasma", verified = TRUE),
-    depot_sdz        = list(analyte = "sulfadiazine",    units = "mg/kg", specimen = "administration site", verified = TRUE),
-    depot2_sdz       = list(analyte = "sulfadiazine",    units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central_sdz      = list(analyte = "sulfadiazine",    units = "mg/kg", specimen = "plasma", verified = TRUE),
-    peripheral1_sdz  = list(analyte = "sulfadiazine",    units = "mg/kg", specimen = "plasma", verified = TRUE),
-    depot_sdmx       = list(analyte = "sulfadimethoxine", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central_sdmx     = list(analyte = "sulfadimethoxine", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "trimethoprim", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "trimethoprim", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "trimethoprim", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "trimethoprim", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    depot_sdz = list(analyte = "sulfadiazine", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    depot2_sdz = list(analyte = "sulfadiazine", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central_sdz = list(analyte = "sulfadiazine", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1_sdz = list(analyte = "sulfadiazine", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    depot_sdmx = list(analyte = "sulfadimethoxine", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central_sdmx = list(analyte = "sulfadimethoxine", units = "mg/kg", specimen = "plasma", verified = TRUE),
     peripheral1_sdmx = list(analyte = "sulfadimethoxine", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    depot_smx        = list(analyte = "sulfamethoxazole", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central_smx      = list(analyte = "sulfamethoxazole", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    peripheral1_smx  = list(analyte = "sulfamethoxazole", units = "mg/kg", specimen = "plasma", verified = TRUE)
+    depot_smx = list(analyte = "sulfamethoxazole", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central_smx = list(analyte = "sulfamethoxazole", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1_smx = list(analyte = "sulfamethoxazole", units = "mg/kg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight of the pig",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight of the pig",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Occasion-varying: pigs were re-weighed before each period of the",
         "cross-over (Methods, 'Experimental PK study and blood collection').",
         "Enters as a power function normalised to the 31.1 kg median of all",
@@ -82,14 +88,14 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
         "weight effect was retained for SDMX or SMX. Weights spanned 23.8-46.8",
         "kg across the three combination studies."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     OCC = list(
-      description        = "Occasion index for inter-occasion variability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for inter-occasion variability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into binary indicators oc1/oc2/oc3. An",
         "occasion is one administration period of the cross-over design",
         "(Table 1): OCC = 1 and OCC = 2 are the two cross-over periods, and",
@@ -100,28 +106,28 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
         "the equivalent of NONMEM $OMEGA BLOCK SAME). Records taken before",
         "any dose may carry OCC = 0, which zeroes every indicator."
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
   population <- list(
-    species        = "pig (Large White x Landrace)",
-    n_subjects     = 34,
-    n_studies      = 4,
-    age_range      = "7-8 weeks at enrolment",
-    weight_range   = "23.8-46.8 kg",
-    weight_median  = "31.1 kg",
+    species = "pig (Large White x Landrace)",
+    n_subjects = 34,
+    n_studies = 4,
+    age_range = "7-8 weeks at enrolment",
+    weight_range = "23.8-46.8 kg",
+    weight_median = "31.1 kg",
     sex_female_pct = 100,
-    disease_state  = "healthy growing pigs",
-    dose_range     = paste(
+    disease_state = "healthy growing pigs",
+    dose_range = paste(
       "single dose of licensed 1:5 TMP:S products - TMP/SDZ 2.5+12.5 mg/kg IV",
       "and IM, 5+25 mg/kg oral; TMP/SDMX 4+18.6 mg/kg IV, 8+37.36 mg/kg oral;",
       "TMP/SMX 6+30 mg/kg IV and oral (Table 1). Pooled De Smet 2017 data add",
       "multiple-dose oral (25+5 or 12.5+2.5 mg/kg q12h x 5 d) and IM",
       "(12.5+2.5 or 25+5 mg/kg q24h x 5 d) SDZ/TMP records."
     ),
-    regions        = "France and Belgium",
-    notes          = paste(
+    regions = "France and Belgium",
+    notes = paste(
       "Three independent two-period cross-over studies with 10 (TMP/SDZ), 10",
       "(TMP/SMX) and 14 (TMP/SDMX) pigs; all animals female, housed",
       "individually after jugular catheterisation (Methods, 'Animals' and",

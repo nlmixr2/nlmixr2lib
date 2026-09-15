@@ -8,46 +8,46 @@ Zhao_2015_teicoplanin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Zhao 2015 Table 1: mean 32.3 kg (SD 17.8), median 27.1 kg (range 7.7-90.6). Reference value 27.1 kg (population median) used in the allometric size terms in Table 2 footnote for Vc, Vp, Q, and CL: Vc = theta1 * (WT/27.1)^1, Vp = theta2 * (WT/27.1)^1, Q = theta3 * (WT/27.1)^0.75, and CL = theta4 * (WT/27.1)^0.75 * RF. The two volume exponents (1) and the two clearance exponents (0.75) are fixed a priori per Results: 'allometric coefficients of 0.75 for CL and Q, 1 for V1 and V2'.",
-      source_name        = "WT"
+      notes = "Zhao 2015 Table 1: mean 32.3 kg (SD 17.8), median 27.1 kg (range 7.7-90.6). Reference value 27.1 kg (population median) used in the allometric size terms in Table 2 footnote for Vc, Vp, Q, and CL: Vc = theta1 * (WT/27.1)^1, Vp = theta2 * (WT/27.1)^1, Q = theta3 * (WT/27.1)^0.75, and CL = theta4 * (WT/27.1)^0.75 * RF. The two volume exponents (1) and the two clearance exponents (0.75) are fixed a priori per Results: 'allometric coefficients of 0.75 for CL and Q, 1 for V1 and V2'.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Schwartz-formula creatinine clearance (BSA-normalized eGFR)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Schwartz-formula creatinine clearance (BSA-normalized eGFR)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Zhao 2015 Table 1: mean 191.2 (SD 76.2), median 178.9, range 48.6-464.1 (units reported as mL/min in Table 1 but produced by the Schwartz formula, which yields eGFR in mL/min/1.73 m^2 by construction; Zhao 2015 Methods 'creatinine clearance (Schwartz formula)'). Reference value 179 mL/min/1.73 m^2 (population median; the Results text uses '179 mL/min' and Table 2 footnote writes 'RF = (CLcr/179)^theta5'). Stored under canonical CRCL per inst/references/covariate-columns.md, which accepts the Schwartz-formula eGFR with its native BSA-normalized units.",
-      source_name        = "CLCR"
+      notes = "Zhao 2015 Table 1: mean 191.2 (SD 76.2), median 178.9, range 48.6-464.1 (units reported as mL/min in Table 1 but produced by the Schwartz formula, which yields eGFR in mL/min/1.73 m^2 by construction; Zhao 2015 Methods 'creatinine clearance (Schwartz formula)'). Reference value 179 mL/min/1.73 m^2 (population median; the Results text uses '179 mL/min' and Table 2 footnote writes 'RF = (CLcr/179)^theta5'). Stored under canonical CRCL per inst/references/covariate-columns.md, which accepts the Schwartz-formula eGFR with its native BSA-normalized units.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 85L,
-    n_studies        = 1L,
-    age_range        = "0.5-16.9 years",
-    age_median       = "8.1 years (mean 8.4, SD 4.6)",
-    weight_range     = "7.7-90.6 kg",
-    weight_median    = "27.1 kg (mean 32.3, SD 17.8)",
-    sex_female_pct   = 37.6,
-    race_ethnicity   = "Not reported (single-center cohort at Robert Debre Hospital, Paris)",
-    disease_state    = "Children with malignant hematological disease (acute lymphoblastic leukemia 41/85, acute myeloblastic leukemia 27/85, biphenotypic acute leukemia 4/85, juvenile myelomonocytic leukemia 3/85, lymphoma 5/85, other 5/85); 34/85 had bone marrow transplantation. Teicoplanin given as empirical antibiotic therapy with therapeutic drug monitoring.",
-    dose_range       = "Teicoplanin (Targocid, Sanofi-Aventis) IV injection over 3-5 min. Initial regimen 10 mg/kg every 12 h for three loading doses followed by 10 mg/kg once daily maintenance. Observed individual doses 90-600 mg (median 270; mean 9.4 mg/kg, range 4.9-13.2 mg/kg). Monitoring target was steady-state trough concentration Css,min >= 10 mg/L.",
-    regions          = "France (single center, Department of Paediatric Haemato-Oncology, Robert Debre Hospital, APHP, Paris)",
-    renal_function   = "Schwartz-formula creatinine clearance median 178.9 mL/min/1.73 m^2 (range 48.6-464.1); serum creatinine median 33 umol/L (range 12-121).",
+    species = "human",
+    n_subjects = 85L,
+    n_studies = 1L,
+    age_range = "0.5-16.9 years",
+    age_median = "8.1 years (mean 8.4, SD 4.6)",
+    weight_range = "7.7-90.6 kg",
+    weight_median = "27.1 kg (mean 32.3, SD 17.8)",
+    sex_female_pct = 37.6,
+    race_ethnicity = "Not reported (single-center cohort at Robert Debre Hospital, Paris)",
+    disease_state = "Children with malignant hematological disease (acute lymphoblastic leukemia 41/85, acute myeloblastic leukemia 27/85, biphenotypic acute leukemia 4/85, juvenile myelomonocytic leukemia 3/85, lymphoma 5/85, other 5/85); 34/85 had bone marrow transplantation. Teicoplanin given as empirical antibiotic therapy with therapeutic drug monitoring.",
+    dose_range = "Teicoplanin (Targocid, Sanofi-Aventis) IV injection over 3-5 min. Initial regimen 10 mg/kg every 12 h for three loading doses followed by 10 mg/kg once daily maintenance. Observed individual doses 90-600 mg (median 270; mean 9.4 mg/kg, range 4.9-13.2 mg/kg). Monitoring target was steady-state trough concentration Css,min >= 10 mg/L.",
+    regions = "France (single center, Department of Paediatric Haemato-Oncology, Robert Debre Hospital, APHP, Paris)",
+    renal_function = "Schwartz-formula creatinine clearance median 178.9 mL/min/1.73 m^2 (range 48.6-464.1); serum creatinine median 33 umol/L (range 12-121).",
     n_concentrations = 143L,
-    age_groups       = "Infants (1 month to 2 years) 10/85; children (2-12 years) 49/85; adolescents (12-18 years) 26/85.",
-    notes            = "Baseline demographics from Zhao 2015 Table 1 (cohort enrolled 2012-2013). 143 teicoplanin concentrations from 85 children analyzed (TDM n=123 + opportunistic n=20), concentrations <LLOQ to 35.1 mg/L. Teicoplanin assay: quantitative microsphere system (QMS) on CDX automate (Thermo Fisher), calibration 0-100 mg/L, LLOQ 3 mg/L (CV<5%). Model fit using NONMEM 7.2.0 FOCE-INTER. Final-model parameter values were confirmed by 500-replicate nonparametric bootstrap (Table 2) and externally validated in an independent group of 15 children (Bayesian estimation, r^2 = 0.99, mean PE 0.7%, mean APE 5.3%)."
+    age_groups = "Infants (1 month to 2 years) 10/85; children (2-12 years) 49/85; adolescents (12-18 years) 26/85.",
+    notes = "Baseline demographics from Zhao 2015 Table 1 (cohort enrolled 2012-2013). 143 teicoplanin concentrations from 85 children analyzed (TDM n=123 + opportunistic n=20), concentrations <LLOQ to 35.1 mg/L. Teicoplanin assay: quantitative microsphere system (QMS) on CDX automate (Thermo Fisher), calibration 0-100 mg/L, LLOQ 3 mg/L (CV<5%). Model fit using NONMEM 7.2.0 FOCE-INTER. Final-model parameter values were confirmed by 500-replicate nonparametric bootstrap (Table 2) and externally validated in an independent group of 15 children (Bayesian estimation, r^2 = 0.99, mean PE 0.7%, mean APE 5.3%)."
   )
 
   ini({

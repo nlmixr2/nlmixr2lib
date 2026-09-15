@@ -15,54 +15,54 @@ Conrado_2014_alzheimer <- function() {
     dosing = "(none; disease-progression model, no drug input)",
     concentration = "(ADAS-Cog total score, 0-70, unitless)"
   )
-  ddmore_id    <- "DDMODEL00000290"
+  ddmore_id <- "DDMODEL00000290"
   replicate_of <- NULL
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at baseline (years)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline (years)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed in Conrado 2014. Centred on 75 years inside model() (the source-paper centring); the slope-coefficient e_sl_age is the fractional change in disease-progression slope per year above 75. Source column AGE in the bundle's NONMEM input dataset.",
-      source_name        = "AGE"
+      notes = "Time-fixed in Conrado 2014. Centred on 75 years inside model() (the source-paper centring); the slope-coefficient e_sl_age is the fractional change in disease-progression slope per year above 75. Source column AGE in the bundle's NONMEM input dataset.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator with 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator with 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) -- the source paper centres the baseline-coefficient on the female cohort, which it labels the 'most common' category",
-      notes              = "Source column SEX in the bundle is coded 1 = female, 2 = male. The canonical SEXF (1 = female) is derived as `SEXF = as.integer(SEX == 1)`. The source-paper coefficient 0.953 multiplies the typical baseline score for males (SEXF = 0); the female reference cohort takes a multiplier of 1.",
-      source_name        = "SEX"
+      notes = "Source column SEX in the bundle is coded 1 = female, 2 = male. The canonical SEXF (1 = female) is derived as `SEXF = as.integer(SEX == 1)`. The source-paper coefficient 0.953 multiplies the typical baseline score for males (SEXF = 0); the female reference cohort takes a multiplier of 1.",
+      source_name = "SEX"
     ),
     APOE4_COUNT = list(
-      description        = "APOE-epsilon-4 allele count: 0 = non-carrier, 1 = heterozygous, 2 = homozygous (continuous representation, with the population mean used as the centring value)",
-      units              = "(count, 0 / 1 / 2 alleles per subject)",
-      type               = "continuous",
+      description = "APOE-epsilon-4 allele count: 0 = non-carrier, 1 = heterozygous, 2 = homozygous (continuous representation, with the population mean used as the centring value)",
+      units = "(count, 0 / 1 / 2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred on 0.72 inside model() -- the population-mean APOE-epsilon-4 count in the CAMD cohort, taken directly from the source `.mod`'s `APOE4C - 0.72` re-centring expressions. Source column APOE4C in the bundle is the cleaned continuous version of the upstream APOE4 column (0 = non-carrier, 1 = heterozygous, 2 = homozygous, 3 = unknown), with the unknown subjects recoded to the population mean.",
-      source_name        = "APOE4C"
+      notes = "Centred on 0.72 inside model() -- the population-mean APOE-epsilon-4 count in the CAMD cohort, taken directly from the source `.mod`'s `APOE4C - 0.72` re-centring expressions. Source column APOE4C in the bundle is the cleaned continuous version of the upstream APOE4 column (0 = non-carrier, 1 = heterozygous, 2 = homozygous, 3 = unknown), with the unknown subjects recoded to the population mean.",
+      source_name = "APOE4C"
     ),
     CONMED_AD = list(
-      description        = "Concomitant Alzheimer's-symptomatic medication indicator at baseline (typically a cholinesterase inhibitor and / or memantine), 1 = on treatment, 0 = not on treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant Alzheimer's-symptomatic medication indicator at baseline (typically a cholinesterase inhibitor and / or memantine), 1 = on treatment, 0 = not on treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (on concomitant Alzheimer's-symptomatic medication) -- the source paper labels this as the 'most common' category and centres the slope-effect coefficient on the on-treatment cohort, so the multiplicative slope factor is 1 for CONMED_AD = 1 and 1 + e_sl_conmed_ad_off for CONMED_AD = 0. The non-standard most-common-as-reference convention is preserved from the source for traceability.",
-      notes              = "Source column COMED2 in the bundle. Time-fixed per subject in the CAMD-derived dataset. The source `.mod` does not name the symptomatic-medication class beyond the binary flag; the publication context (CAMD ADAS-Cog disease-progression dataset, 2014) makes cholinesterase-inhibitor / memantine the dominant interpretation. See the canonical `CONMED_AD` entry in inst/references/covariate-columns.md for the full notes on the reference-category inversion.",
-      source_name        = "COMED2"
+      notes = "Source column COMED2 in the bundle. Time-fixed per subject in the CAMD-derived dataset. The source `.mod` does not name the symptomatic-medication class beyond the binary flag; the publication context (CAMD ADAS-Cog disease-progression dataset, 2014) makes cholinesterase-inhibitor / memantine the dominant interpretation. See the canonical `CONMED_AD` entry in inst/references/covariate-columns.md for the full notes on the reference-category inversion.",
+      source_name = "COMED2"
     )
   )
 
   population <- list(
-    n_subjects     = 4494L,
-    n_studies      = 15L,
-    age_range      = "Adults with Alzheimer's disease, mild cognitive impairment, or healthy elderly comparators; specific age-range and median not extracted from the source bundle and the linked publication PDF was not on disk in /home/bill/github/mab_human_consensus/literature for cross-check at extraction time.",
-    weight_range   = "(not extracted; not a covariate in the disease-progression model)",
+    n_subjects = 4494L,
+    n_studies = 15L,
+    age_range = "Adults with Alzheimer's disease, mild cognitive impairment, or healthy elderly comparators; specific age-range and median not extracted from the source bundle and the linked publication PDF was not on disk in /home/bill/github/mab_human_consensus/literature for cross-check at extraction time.",
+    weight_range = "(not extracted; not a covariate in the disease-progression model)",
     sex_female_pct = NA_real_,
-    disease_state  = "Alzheimer's disease (mild-to-moderate AD predominates), pooled across the 15 randomised-controlled-trial arms contributing to the CAMD ADAS-Cog disease-progression dataset (2014 release).",
-    dose_range     = "(not applicable; disease-progression model on the placebo and active-treatment arms pooled, with concomitant Alzheimer's-symptomatic medication as a covariate rather than a dosed input)",
-    regions        = "(not extracted; CAMD pools randomised-controlled-trial arms across multiple international sponsors)",
-    notes          = "Subject and study counts taken directly from the bundle's Output_real_CPathAD.lst header (TOT. NO. OF INDIVIDUALS = 4494; ETABAR N = 15 for the study-level etas, indicating 15 randomised-controlled-trial arms in the source dataset). Demographic detail (age range / median, weight range, sex split, regional breakdown) is described in the Conrado 2014 publication's Methods / Results tables but the publication PDF was not on disk at extraction time, so finer-grained population descriptors are recorded as NA. The dataset is the Coalition Against Major Diseases (CAMD) ADAS-Cog database aggregated by the Critical Path Institute for the published model-fitting exercise."
+    disease_state = "Alzheimer's disease (mild-to-moderate AD predominates), pooled across the 15 randomised-controlled-trial arms contributing to the CAMD ADAS-Cog disease-progression dataset (2014 release).",
+    dose_range = "(not applicable; disease-progression model on the placebo and active-treatment arms pooled, with concomitant Alzheimer's-symptomatic medication as a covariate rather than a dosed input)",
+    regions = "(not extracted; CAMD pools randomised-controlled-trial arms across multiple international sponsors)",
+    notes = "Subject and study counts taken directly from the bundle's Output_real_CPathAD.lst header (TOT. NO. OF INDIVIDUALS = 4494; ETABAR N = 15 for the study-level etas, indicating 15 randomised-controlled-trial arms in the source dataset). Demographic detail (age range / median, weight range, sex split, regional breakdown) is described in the Conrado 2014 publication's Methods / Results tables but the publication PDF was not on disk at extraction time, so finer-grained population descriptors are recorded as NA. The dataset is the Coalition Against Major Diseases (CAMD) ADAS-Cog database aggregated by the Critical Path Institute for the published model-fitting exercise."
   )
 
   ini({

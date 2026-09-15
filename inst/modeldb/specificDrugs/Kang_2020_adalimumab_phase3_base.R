@@ -31,77 +31,77 @@ Kang_2020_adalimumab_phase3_base <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight, normalised to a 70 kg reference. Allometric exponents were fixed at 0.75 on the clearance-related parameters (CL/F, Q/F) and 1 on the volume-related parameters (Vc/F, Vp/F) rather than estimated (Kang 2020 Section 3.3 and the Table 3 row labels). Body weight was one of only two covariates whose 95% CI fell outside the +/-20% clinical-relevance band (Section 3.3 and Figure 3A).",
-      source_name        = "WT"
+      notes = "Baseline body weight, normalised to a 70 kg reference. Allometric exponents were fixed at 0.75 on the clearance-related parameters (CL/F, Q/F) and 1 on the volume-related parameters (Vc/F, Vp/F) rather than estimated (Kang 2020 Section 3.3 and the Table 3 row labels). Body weight was one of only two covariates whose 95% CI fell outside the +/-20% clinical-relevance band (Section 3.3 and Figure 3A).",
+      source_name = "WT"
     ),
     ADA_POS = list(
-      description        = "Anti-drug-antibody positivity at the time of the PK sample",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug-antibody positivity at the time of the PK sample",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (ADA-positive). NOTE: this model's reference subject is ADA-POSITIVE at a titre of 16, not ADA-negative -- see notes.",
-      notes              = "Time-varying. Kang 2020 Equation 5 writes the covariate as ADA-, an indicator taking the value 1 for a negative ADA test and 0 for a positive test; this file carries the canonical ADA_POS orientation and forms the paper's indicator inside model() as (1 - ADA_POS). The reference covariate set for the typical CL/F is an ADA-POSITIVE subject at a titre of 16 (Section 3.3), so exp(e_ada_neg_cl) = 0.560 is the multiplicative CL/F factor applied to ADA-negative subjects; Section 3.3 states this as clearance being approximately 44.0% lower in the absence of ADA. A typical ADA-negative 70 kg patient therefore has CL/F = 0.0244 * 0.560 = 0.0137 L/h (0.33 L/day). ADA appeared during treatment in 55% of subjects in this study (Section 3.1).",
-      source_name        = "ADA-"
+      notes = "Time-varying. Kang 2020 Equation 5 writes the covariate as ADA-, an indicator taking the value 1 for a negative ADA test and 0 for a positive test; this file carries the canonical ADA_POS orientation and forms the paper's indicator inside model() as (1 - ADA_POS). The reference covariate set for the typical CL/F is an ADA-POSITIVE subject at a titre of 16 (Section 3.3), so exp(e_ada_neg_cl) = 0.560 is the multiplicative CL/F factor applied to ADA-negative subjects; Section 3.3 states this as clearance being approximately 44.0% lower in the absence of ADA. A typical ADA-negative 70 kg patient therefore has CL/F = 0.0244 * 0.560 = 0.0137 L/h (0.33 L/day). ADA appeared during treatment in 55% of subjects in this study (Section 3.1).",
+      source_name = "ADA-"
     ),
     ADA_TITER = list(
-      description        = "Anti-drug-antibody titre, reciprocal-dilution convention",
-      units              = "reciprocal dilution (powers of 2: 1, 2, 4, 8, 16, 32, ...)",
-      type               = "continuous",
+      description = "Anti-drug-antibody titre, reciprocal-dilution convention",
+      units = "reciprocal dilution (powers of 2: 1, 2, 4, 8, 16, 32, ...)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, matched in time to the PK sample. Determined by a 3-tier bridging electrochemiluminescence assay as the lowest 2-fold dilution still giving a positive response, so the values are generally powers of 2 (Kang 2020 Section 2.2). Zero-encoding convention: ADA-NEGATIVE records carry the REFERENCE titre of 16, not 0 and not 1, so that log(ADA_TITER / 16) vanishes and the entire ADA-negative effect is carried by the ADA_POS = 0 indicator. This is the only encoding consistent with the paper's own arithmetic in Section 3.3, which quotes the Table 3 factor 0.560 directly as the ADA-negative-versus-titre-16 clearance ratio. The titre effect is confirmed independently by the same paragraph: clearance is approximately 28% greater at a titre of 64 than at 16, and (64/16)^0.178 = 1.28. model() applies a defensive guard so any ADA_TITER coding on ADA-negative records gives the same result. ADA titre was the other covariate whose 95% CI fell outside the +/-20% clinical-relevance band (Figure 3A).",
-      source_name        = "ADA"
+      notes = "Time-varying, matched in time to the PK sample. Determined by a 3-tier bridging electrochemiluminescence assay as the lowest 2-fold dilution still giving a positive response, so the values are generally powers of 2 (Kang 2020 Section 2.2). Zero-encoding convention: ADA-NEGATIVE records carry the REFERENCE titre of 16, not 0 and not 1, so that log(ADA_TITER / 16) vanishes and the entire ADA-negative effect is carried by the ADA_POS = 0 indicator. This is the only encoding consistent with the paper's own arithmetic in Section 3.3, which quotes the Table 3 factor 0.560 directly as the ADA-negative-versus-titre-16 clearance ratio. The titre effect is confirmed independently by the same paragraph: clearance is approximately 28% greater at a titre of 64 than at 16, and (64/16)^0.178 = 1.28. model() applies a defensive guard so any ADA_TITER coding on ADA-negative records gives the same result. ADA titre was the other covariate whose 95% CI fell outside the +/-20% clinical-relevance band (Figure 3A).",
+      source_name = "ADA"
     ),
     CRP = list(
-      description        = "C-reactive protein, a marker of inflammatory disease activity",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein, a marker of inflammatory disease activity",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, normalised to a 3 mg/L reference (Kang 2020 Equation 5 and Section 3.3). Baseline values in this study ranged from 1 to 141 mg/L with arm means of 13.1-13.7 mg/L (Table 1). The effect is positive: apparent clearance rises with CRP. The authors judged it not clinically meaningful because the median effect size stayed within +/-20% of the typical CL/F (Section 3.3, Figure 3A).",
-      source_name        = "CRP"
+      notes = "Time-varying, normalised to a 3 mg/L reference (Kang 2020 Equation 5 and Section 3.3). Baseline values in this study ranged from 1 to 141 mg/L with arm means of 13.1-13.7 mg/L (Table 1). The effect is positive: apparent clearance rises with CRP. The authors judged it not clinically meaningful because the median effect size stayed within +/-20% of the typical CL/F (Section 3.3, Figure 3A).",
+      source_name = "CRP"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, normalised to a 43 g/L reference (Kang 2020 Equation 5 and Section 3.3). Baseline values in this study ranged from 32 to 52 g/L with arm means of 42.2-42.6 g/L (Table 1). The effect is negative: apparent clearance falls as albumin rises, which the authors attribute to higher albumin indicating more neonatal Fc receptor available to recycle IgG (Section 4.1). Judged not clinically meaningful (Section 3.3, Figure 3A). Reported in SI units in the source, matching the canonical g/L register unit; no conversion was applied.",
-      source_name        = "ALB"
+      notes = "Time-varying, normalised to a 43 g/L reference (Kang 2020 Equation 5 and Section 3.3). Baseline values in this study ranged from 32 to 52 g/L with arm means of 42.2-42.6 g/L (Table 1). The effect is negative: apparent clearance falls as albumin rises, which the authors attribute to higher albumin indicating more neonatal Fc receptor available to recycle IgG (Section 4.1). Judged not clinically meaningful (Section 3.3, Figure 3A). Reported in SI units in the source, matching the canonical g/L register unit; no conversion was applied.",
+      source_name = "ALB"
     ),
     RHEUMATOID_FACTOR = list(
-      description        = "Baseline rheumatoid factor",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Baseline rheumatoid factor",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-FIXED at its baseline value, unlike the time-varying CRP and ALB: Kang 2020 Equation 5 subscripts this covariate with i alone while CRP, ALB and the ADA terms carry an i,t subscript. Normalised to a 47 IU/mL reference. Baseline values in this study ranged from 5 to 6080 IU/mL with arm means of 129-182 IU/mL (Table 1); the reference of 47 is well below those means. The effect is positive: apparent clearance rises with rheumatoid factor. Judged not clinically meaningful (Section 3.3, Figure 3A). The source calls the column BRF for baseline rheumatoid factor.",
-      source_name        = "BRF"
+      notes = "Time-FIXED at its baseline value, unlike the time-varying CRP and ALB: Kang 2020 Equation 5 subscripts this covariate with i alone while CRP, ALB and the ADA terms carry an i,t subscript. Normalised to a 47 IU/mL reference. Baseline values in this study ranged from 5 to 6080 IU/mL with arm means of 129-182 IU/mL (Table 1); the reference of 47 is well below those means. The effect is positive: apparent clearance rises with rheumatoid factor. Judged not clinically meaningful (Section 3.3, Figure 3A). The source calls the column BRF for baseline rheumatoid factor.",
+      source_name = "BRF"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 644,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 644,
+    n_studies = 1,
     n_observations = 4342,
-    age_range      = "21-80 years",
-    age_median     = "arm means 52.9-53.3 years",
-    weight_range   = "38.5-139 kg",
-    weight_median  = "arm means 73.0-76.6 kg",
+    age_range = "21-80 years",
+    age_median = "arm means 52.9-53.3 years",
+    weight_range = "38.5-139 kg",
+    weight_median = "arm means 73.0-76.6 kg",
     sex_female_pct = 83,
     race_ethnicity = c(White = 95, Black = 2, Asian = 2, Other = 1),
-    disease_state  = "active rheumatoid arthritis, all on background methotrexate",
-    dose_range     = "40 mg subcutaneously every 2 weeks for 48 weeks",
-    regions        = "not reported",
-    notes          = paste(
+    disease_state = "active rheumatoid arthritis, all on background methotrexate",
+    dose_range = "40 mg subcutaneously every 2 weeks for 48 weeks",
+    regions = "not reported",
+    notes = paste(
       "Phase 3 base study NCT02137226, a randomised, double-blind,",
       "parallel-arm, multiple-dose, active-comparator equivalence trial.",
       "Subjects were randomised 1:1 to adalimumab-adbm or US-licensed Humira",

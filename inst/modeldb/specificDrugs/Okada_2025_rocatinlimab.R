@@ -8,59 +8,59 @@ Okada_2025_rocatinlimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "rocatinlimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "rocatinlimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "rocatinlimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rocatinlimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rocatinlimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-allometric scaling (WT/70)^exponent on CL (0.923), V1 (0.828), and Vmax (0.494). Reference 70 kg adult. Treated as baseline (time-fixed) in the Okada 2025 analysis.",
-      source_name        = "WT"
+      notes = "Power-allometric scaling (WT/70)^exponent on CL (0.923), V1 (0.828), and Vmax (0.494). Reference 70 kg adult. Treated as baseline (time-fixed) in the Okada 2025 analysis.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin (baseline)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (baseline)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (ALB/44)^-1.30 on linear CL. Reference 44 g/L (population median). Source column ALBU; the supplement reports albumin in g/L (mean 43.8, median 44, range 31-53).",
-      source_name        = "ALBU"
+      notes = "Power scaling (ALB/44)^-1.30 on linear CL. Reference 44 g/L (population median). Source column ALBU; the supplement reports albumin in g/L (mean 43.8, median 44, range 31-53).",
+      source_name = "ALBU"
     ),
     DIS_PSORIASIS = list(
-      description        = "Plaque-psoriasis disease-state indicator (1 = psoriasis patient, 0 = non-psoriasis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plaque-psoriasis disease-state indicator (1 = psoriasis patient, 0 = non-psoriasis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-psoriasis: atopic dermatitis, ulcerative colitis, or healthy volunteer)",
-      notes              = "Multiplicative shift on linear CL: CL is multiplied by (1 + e_psoriasis_cl) = (1 - 0.372) for psoriasis patients. Source column DIS in the NONMEM control stream encodes 0=healthy, 1=psoriasis, 2=UC, 3=AD; ingestion sets DIS_PSORIASIS = as.integer(DIS == 1).",
-      source_name        = "DIS == 1"
+      notes = "Multiplicative shift on linear CL: CL is multiplied by (1 + e_psoriasis_cl) = (1 - 0.372) for psoriasis patients. Source column DIS in the NONMEM control stream encodes 0=healthy, 1=psoriasis, 2=UC, 3=AD; ingestion sets DIS_PSORIASIS = as.integer(DIS == 1).",
+      source_name = "DIS == 1"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any patient: AD, UC, or psoriasis)",
-      notes              = "Multiplicative shift on Vmax: Vmax is multiplied by (1 + e_healthy_vmax) = (1 - 0.532) for healthy volunteers. Source column DIS in the NONMEM control stream uses DIS=0 for healthy; ingestion sets DIS_HEALTHY = as.integer(DIS == 0).",
-      source_name        = "DIS == 0"
+      notes = "Multiplicative shift on Vmax: Vmax is multiplied by (1 + e_healthy_vmax) = (1 - 0.532) for healthy volunteers. Source column DIS in the NONMEM control stream uses DIS=0 for healthy; ingestion sets DIS_HEALTHY = as.integer(DIS == 0).",
+      source_name = "DIS == 0"
     )
   )
 
   population <- list(
-    n_subjects     = 413L,
-    n_studies      = 5L,
-    age_range      = "18-89 years (combined; pooled across 5 studies)",
-    age_median     = 35,
-    weight_range   = "38.0-166.0 kg",
-    weight_median  = 70.3,
+    n_subjects = 413L,
+    n_studies = 5L,
+    age_range = "18-89 years (combined; pooled across 5 studies)",
+    age_median = 35,
+    weight_range = "38.0-166.0 kg",
+    weight_median = 70.3,
     sex_female_pct = 32.7,
     race_ethnicity = c(
-      White_not_Hispanic_or_Latino   = 43.9,
-      Asian                          = 52.2,
-      Black_or_African               = 2.2,
-      White_Hispanic_or_Latino       = 1.2,
+      White_not_Hispanic_or_Latino = 43.9,
+      Asian = 52.2,
+      Black_or_African = 2.2,
+      White_Hispanic_or_Latino = 1.2,
       American_Indian_Alaskan_Native = 0.5
     ),
     disease_state = "Pooled cohort: 64.4% atopic dermatitis (Studies 4 and 5), 13.8% ulcerative colitis (Studies 2 and 3 partial), 13.1% plaque psoriasis (Study 1), 8.7% healthy volunteers (Study 3). Target indication for the model is moderate-to-severe atopic dermatitis.",

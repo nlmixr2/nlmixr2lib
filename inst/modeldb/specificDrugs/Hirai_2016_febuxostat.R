@@ -15,44 +15,44 @@ Hirai_2016_febuxostat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
-    uapool1     = list(analyte = "uric acid", units = "mg", specimen = "urine", verified = FALSE),
-    uapool2     = list(analyte = "uric acid", units = "mg", specimen = "plasma", verified = FALSE),
-    xanthine    = list(analyte = "xanthine", units = "mg", specimen = "plasma", verified = FALSE)
+    uapool1 = list(analyte = "uric acid", units = "mg", specimen = "urine", verified = FALSE),
+    uapool2 = list(analyte = "uric acid", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine = list(analyte = "xanthine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Enters as a multiplicative factor on all body-weight-normalized volumes (Vc, Vp for febuxostat; Vd1, Vd2 for uric acid; Vd for xanthine) and thereby on all body-weight-normalized clearances (CL, Q, kel_R_UA). Reference values used by Hirai 2016 across data sets: 60 kg for Japanese and 70 kg for Caucasian patients (Table 1 and Methods p. 1015).",
-      source_name        = "BW"
+      notes = "Time-fixed. Enters as a multiplicative factor on all body-weight-normalized volumes (Vc, Vp for febuxostat; Vd1, Vd2 for uric acid; Vd for xanthine) and thereby on all body-weight-normalized clearances (CL, Q, kel_R_UA). Reference values used by Hirai 2016 across data sets: 60 kg for Japanese and 70 kg for Caucasian patients (Table 1 and Methods p. 1015).",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault, actual body weight; the paper treats estimated GFR mL/min per 1.73 m^2 and CLcr mL/min as exchangeable per Results p. 1017)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault, actual body weight; the paper treats estimated GFR mL/min per 1.73 m^2 and CLcr mL/min as exchangeable per Results p. 1017)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Sole driver of renal uric acid clearance via Hirai 2016 Eq. 9 (Tykarski 1991): CL_R_UA (mL/min) = 1.23 * CRCL^0.433. Renal impairment classes reported by the paper: normal (>80 mL/min), mild CKD (50-80), moderate CKD (30-49), severe CKD (<29). Febuxostat AUC was reported to be elevated by 48 percent in moderate CKD and 74 percent in severe CKD compared with normal renal function (Results p. 1017), but the paper does not provide per-CKD-class point estimates for the febuxostat PK parameters -- see vignette Errata.",
-      source_name        = "CLcr"
+      notes = "Time-fixed. Sole driver of renal uric acid clearance via Hirai 2016 Eq. 9 (Tykarski 1991): CL_R_UA (mL/min) = 1.23 * CRCL^0.433. Renal impairment classes reported by the paper: normal (>80 mL/min), mild CKD (50-80), moderate CKD (30-49), severe CKD (<29). Febuxostat AUC was reported to be elevated by 48 percent in moderate CKD and 74 percent in severe CKD compared with normal renal function (Results p. 1017), but the paper does not provide per-CKD-class point estimates for the febuxostat PK parameters -- see vignette Errata.",
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 735,
-    n_studies      = 5,
-    age_range      = "adults (specific ages not reported per data set)",
-    weight_range   = "59-88 kg across data sets (Table 1); reference weights 60 kg (Japanese) and 70 kg (Caucasian)",
+    species = "human",
+    n_subjects = 735,
+    n_studies = 5,
+    age_range = "adults (specific ages not reported per data set)",
+    weight_range = "59-88 kg across data sets (Table 1); reference weights 60 kg (Japanese) and 70 kg (Caucasian)",
     sex_female_pct = NA_real_,
-    disease_state  = "healthy volunteers (n = 156) and hyperuricemic patients (n = 579) across normal renal function and mild / moderate / severe chronic kidney disease",
-    dose_range     = "10-240 mg febuxostat orally once daily for at least 7 days (Table 1 across data sets 1-39)",
-    regions        = "Japan and United States",
-    notes          = "Data set assembled from Medline searches, the Japanese Pharmaceuticals and Medical Devices Agency Common Technical Documents summary, and the febuxostat interview form and prescribing information issued by Teijin Pharma (Methods p. 1013-1014, references 9-12, 18-20). 39 data sets in total, listed in Table 1. Mean plasma concentrations of febuxostat were digitized from published figures using UnGraph 5 (BIOSOFT) and fit with an open two-compartment first-order-absorption model in Phoenix WinNonlin (Certara). The febuxostat PK parameters below are the range of point-estimate values reported by the paper for the four renal function classes (Vd1: 0.23-0.30 L/kg, k10: 0.25-0.46/h, k12: 0.13-0.32/h, k21: 0.16-0.20/h; Results p. 1018). This model encodes the NORMAL-renal-function endpoints of those ranges (matching the representative 60 kg patient in Figure 2). Fu of febuxostat was reported as 0.9 percent (normal / mild), 0.8 percent (moderate CKD), and 1.2 percent (severe CKD); the normal / mild value is used here."
+    disease_state = "healthy volunteers (n = 156) and hyperuricemic patients (n = 579) across normal renal function and mild / moderate / severe chronic kidney disease",
+    dose_range = "10-240 mg febuxostat orally once daily for at least 7 days (Table 1 across data sets 1-39)",
+    regions = "Japan and United States",
+    notes = "Data set assembled from Medline searches, the Japanese Pharmaceuticals and Medical Devices Agency Common Technical Documents summary, and the febuxostat interview form and prescribing information issued by Teijin Pharma (Methods p. 1013-1014, references 9-12, 18-20). 39 data sets in total, listed in Table 1. Mean plasma concentrations of febuxostat were digitized from published figures using UnGraph 5 (BIOSOFT) and fit with an open two-compartment first-order-absorption model in Phoenix WinNonlin (Certara). The febuxostat PK parameters below are the range of point-estimate values reported by the paper for the four renal function classes (Vd1: 0.23-0.30 L/kg, k10: 0.25-0.46/h, k12: 0.13-0.32/h, k21: 0.16-0.20/h; Results p. 1018). This model encodes the NORMAL-renal-function endpoints of those ranges (matching the representative 60 kg patient in Figure 2). Fu of febuxostat was reported as 0.9 percent (normal / mild), 0.8 percent (moderate CKD), and 1.2 percent (severe CKD); the normal / mild value is used here."
   )
 
   ini({

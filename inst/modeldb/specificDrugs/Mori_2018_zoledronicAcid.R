@@ -11,8 +11,8 @@ Mori_2018_zoledronicAcid <- function() {
   )
   vignette <- "Mori_2018_zoledronicAcid"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "mU/dL"
     # units$concentration documents the serum TRACP-5b biomarker output; this is
     # a K-PD model with no observed plasma drug concentration. Outputs are:
@@ -31,17 +31,17 @@ Mori_2018_zoledronicAcid <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     depot_kpd = list(analyte = "zoledronic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    effect    = list(analyte = "zoledronic acid", units = "mg", specimen = "not applicable", verified = FALSE),
-    bmd       = list(analyte = "bone mineral density", units = "mg", specimen = "lymph", verified = FALSE)
+    effect = list(analyte = "zoledronic acid", units = "mg", specimen = "not applicable", verified = FALSE),
+    bmd = list(analyte = "bone mineral density", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list(
     ON_TREATMENT = list(
-      description        = "Treatment-arm indicator: 1 = subject is in the active zoledronic-acid arm (received yearly IV ZOL 5 mg); 0 = subject is in the placebo arm. Per-subject and time-fixed.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Treatment-arm indicator: 1 = subject is in the active zoledronic-acid arm (received yearly IV ZOL 5 mg); 0 = subject is in the placebo arm. Per-subject and time-fixed.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm)",
-      notes              = paste(
+      notes = paste(
         "Gates the multiplicative TRACP5B_BL power-effect on Scale (the marker-to-BMD",
         "coupling): the Scale covariate effect is significant only in the ZOL arm",
         "(Mori 2018 Results, Covariate exploration). When ON_TREATMENT = 0 the",
@@ -52,14 +52,14 @@ Mori_2018_zoledronicAcid <- function() {
         "via dose events on the depot_kpd compartment (5 mg IV at t = 0 and t = 365",
         "days); placebo subjects simply receive no dose events."
       ),
-      source_name        = "Treatment group (Mori 2018 Table 1)"
+      source_name = "Treatment group (Mori 2018 Table 1)"
     ),
     TRACP5B_BL = list(
-      description        = "Baseline (pre-dose) serum tartrate-resistant acid phosphatase 5b (TRACP-5b) concentration measured by the Osteolinks fragment-absorbed immunocapture enzymatic assay. Time-fixed per subject. Drives (a) the steady-state TRACP-5b pool through Kin = TRACP5B_BL * Kout and the marker initial condition `effect(0) <- TRACP5B_BL`, and (b) a power-model covariate effect on EKD50, Slope, T50 (both arms) and Scale (active-arm only, gated by ON_TREATMENT) centred on the cohort reference 400 mU / dL.",
-      units              = "mU/dL",
-      type               = "continuous",
+      description = "Baseline (pre-dose) serum tartrate-resistant acid phosphatase 5b (TRACP-5b) concentration measured by the Osteolinks fragment-absorbed immunocapture enzymatic assay. Time-fixed per subject. Drives (a) the steady-state TRACP-5b pool through Kin = TRACP5B_BL * Kout and the marker initial condition `effect(0) <- TRACP5B_BL`, and (b) a power-model covariate effect on EKD50, Slope, T50 (both arms) and Scale (active-arm only, gated by ON_TREATMENT) centred on the cohort reference 400 mU / dL.",
+      units = "mU/dL",
+      type = "continuous",
       reference_category = "n/a -- power-model standardisation to 400 mU/dL (cohort mean baseline = 401.1 mU/dL; the paper states standardisation to the cohort median but the numeric median is not published)",
-      notes              = paste(
+      notes = paste(
         "Mori 2018 Table 1 reports baseline TRACP-5b mean 401.1 +/- 147.9 mU / dL,",
         "range [157, 1240] mU/dL across N = 306 patients. The cohort median is not",
         "published; this file uses 400 mU / dL as the documented standardisation",
@@ -68,65 +68,65 @@ Mori_2018_zoledronicAcid <- function() {
         "(which is the modelled state in `effect`, with its observation channel",
         "TRACP5b)."
       ),
-      source_name        = "Baseline TRACP-5b (Mori 2018 Table 1, Table 2 covariate rows)"
+      source_name = "Baseline TRACP-5b (Mori 2018 Table 1, Table 2 covariate rows)"
     ),
     BMD_BL = list(
-      description        = "Baseline (pre-dose) lumbar-spine (L2-L4) bone mineral density measured by dual-energy X-ray absorptiometry (DXA, Hologic). Time-fixed per subject. Used as the BMD compartment initial condition `bmd(0) <- BMD_BL` and as the deviation reference inside the BMD effect-compartment ODE.",
-      units              = "g/cm^2",
-      type               = "continuous",
+      description = "Baseline (pre-dose) lumbar-spine (L2-L4) bone mineral density measured by dual-energy X-ray absorptiometry (DXA, Hologic). Time-fixed per subject. Used as the BMD compartment initial condition `bmd(0) <- BMD_BL` and as the deviation reference inside the BMD effect-compartment ODE.",
+      units = "g/cm^2",
+      type = "continuous",
       reference_category = "n/a -- used as a per-subject anchor; no power-form covariate effect.",
-      notes              = paste(
+      notes = paste(
         "Mori 2018 Table 1 reports baseline lumbar-spine BMD mean 0.677 +/- 0.094",
         "g / cm^2, range [0.36, 0.98] across N = 306 patients. The standard DXA",
         "areal-density unit g / cm^2 is preserved (the corresponding T-score range",
         "of -5.51 to -0.25 is reported in Table 1 but not used in the model)."
       ),
-      source_name        = "Baseline lumbar BMD (Mori 2018 Table 1)"
+      source_name = "Baseline lumbar BMD (Mori 2018 Table 1)"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male). Mori 2018 reports 94.4% female (289 of 306 patients) and screened sex as a candidate covariate but did not retain it in the final model.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Mori 2018 Methods 'Statistical models' lists sex among the screened patient characteristics; Results 'Covariate exploration' confirms only baseline TRACP-5b survived the forward / backward selection on EKD50, Slope, T50, and Scale. Not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Mori 2018 Methods 'Statistical models' lists sex among the screened patient characteristics; Results 'Covariate exploration' confirms only baseline TRACP-5b survived the forward / backward selection on EKD50, Slope, T50, and Scale. Not retained in the final model."
     ),
     AGE = list(
       description = "Subject age in years at study entry. Mori 2018 cohort mean 72.9 +/- 5.2 years, range [65, 87].",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate via the power-model parameterisation; not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate via the power-model parameterisation; not retained in the final model."
     ),
     WT = list(
       description = "Body weight in kg at study entry. Mori 2018 cohort mean 52.3 +/- 8.0 kg, range [34.1, 83.6].",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate via the power-model parameterisation; not retained in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a continuous covariate via the power-model parameterisation; not retained in the final model."
     ),
     PRIOR_BIO = list(
       description = "Prior bisphosphonate-treatment indicator: 1 = previously treated with a bisphosphonate (with sufficient washout per the ZONE study protocol), 0 = never treated. Mori 2018 cohort 9.5% had prior bisphosphonate use with sufficient washout.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a categorical covariate (modelled in a relative-effect manner per Methods 'Statistical models'); not retained in the final model. PRIOR_BIO is the closest existing canonical (biologic encompasses many therapies); the source paper screens specifically for prior bisphosphonate use. Not used in the final model so the close-but-not-exact canonical is acceptable in covariatesDataExcluded (documentation only)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical covariate (modelled in a relative-effect manner per Methods 'Statistical models'); not retained in the final model. PRIOR_BIO is the closest existing canonical (biologic encompasses many therapies); the source paper screens specifically for prior bisphosphonate use. Not used in the final model so the close-but-not-exact canonical is acceptable in covariatesDataExcluded (documentation only)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 306L,
-    n_studies      = 1L,
-    age_range      = "65-87 years (mean 72.9 +/- 5.2)",
-    weight_range   = "34.1-83.6 kg (mean 52.3 +/- 8.0)",
+    species = "human",
+    n_subjects = 306L,
+    n_studies = 1L,
+    age_range = "65-87 years (mean 72.9 +/- 5.2)",
+    weight_range = "34.1-83.6 kg (mean 52.3 +/- 8.0)",
     sex_female_pct = 94.4,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = "Primary osteoporosis (Japanese ZONE study; lumbar-spine T-score mean -2.80 +/- 0.80, range [-5.51, -0.25]).",
-    dose_range     = "Zoledronic acid 5 mg IV infused over 15 minutes once yearly; placebo arm received no drug. All subjects received daily oral calcium 610 mg + vitamin D 400 IU + magnesium 30 mg supplementation throughout the 2-year study.",
-    regions        = "Japan",
+    disease_state = "Primary osteoporosis (Japanese ZONE study; lumbar-spine T-score mean -2.80 +/- 0.80, range [-5.51, -0.25]).",
+    dose_range = "Zoledronic acid 5 mg IV infused over 15 minutes once yearly; placebo arm received no drug. All subjects received daily oral calcium 610 mg + vitamin D 400 IU + magnesium 30 mg supplementation throughout the 2-year study.",
+    regions = "Japan",
     n_observations = c(TRACP5b = 3410L, BMD = 1146L),
     bl_tracp5b_mU_per_dL = "Mean 401.1 +/- 147.9 mU/dL (range [157, 1240])",
-    bl_bmd_g_per_cm2     = "Mean 0.677 +/- 0.094 g/cm^2 (range [0.36, 0.98])",
-    notes          = paste(
+    bl_bmd_g_per_cm2 = "Mean 0.677 +/- 0.094 g/cm^2 (range [0.36, 0.98])",
+    notes = paste(
       "ZONE study (Mori 2018 ref [10]) was a 2-year multicentre randomised",
       "double-blind placebo-controlled parallel-group trial; 665 patients were",
       "randomised (333 ZOL, 332 placebo) and 306 patients (145 ZOL, 161 placebo)",

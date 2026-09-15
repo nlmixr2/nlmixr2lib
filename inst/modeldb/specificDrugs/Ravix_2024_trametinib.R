@@ -32,18 +32,18 @@ Ravix_2024_trametinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "trametinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "trametinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "trametinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "trametinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "trametinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-centred at FFM_median = 46.35 kg (Ravix 2024 Table 1 cohort median",
         "and Table 2 footnote) and applied as a linear deviation,",
         "cl *= (1 + 1.41 * (FFM - 46.35) / 46.35).",
@@ -63,14 +63,14 @@ Ravix_2024_trametinib <- function() {
         "(Ravix 2024 Methods Section 2.2.1).",
         sep = " "
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-centred at AGE_median = 63 years (Ravix 2024 Table 1 cohort median",
         "and Table 2 footnote) and applied as a linear deviation,",
         "cl *= (1 + (-0.69) * (AGE - 63) / 63), so apparent clearance DECREASES with",
@@ -79,7 +79,7 @@ Ravix_2024_trametinib <- function() {
         "154 years, far outside the observed 30-85 year range; do not extrapolate.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
@@ -90,9 +90,9 @@ Ravix_2024_trametinib <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Significant on CL in univariate analysis (dOFV = -12.51, p < 0.01) but the",
         "effect disappeared once fat-free mass was in the model (Results Section 3.2),",
         "because the Deurenberg FFM derivation already carries a sex term.",
@@ -101,63 +101,63 @@ Ravix_2024_trametinib <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL; not significant (dOFV > -3.40, p > 0.05). Cohort median (min, max) 70 (45, 96) kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL; not significant (dOFV > -3.40, p > 0.05). Cohort median (min, max) 70 (45, 96) kg."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on CL; not significant. Cohort median (min, max) 25.3 (17.3, 33.8) kg/m^2. Still needed upstream as an input to the Deurenberg FFM derivation."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on CL; not significant. Cohort median (min, max) 25.3 (17.3, 33.8) kg/m^2. Still needed upstream as an input to the Deurenberg FFM derivation."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Significant on CL in univariate analysis (dOFV = -7.13, p < 0.01) but not retained in the multivariate model. Cohort median (min, max) 1.78 (1.40, 2.23) m^2."
+      units = "m^2",
+      type = "continuous",
+      notes = "Significant on CL in univariate analysis (dOFV = -7.13, p < 0.01) but not retained in the multivariate model. Cohort median (min, max) 1.78 (1.40, 2.23) m^2."
     ),
     CRCL = list(
       description = "Creatinine clearance, Cockcroft-Gault",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Significant on CL in univariate analysis (dOFV = -11.15, p < 0.01) but not retained. Cohort median (min, max) 84 (42, 164) mL/min/1.73m^2. Consistent with only 19% urinary excretion of trametinib."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Significant on CL in univariate analysis (dOFV = -11.15, p < 0.01) but not retained. Cohort median (min, max) 84 (42, 164) mL/min/1.73m^2. Consistent with only 19% urinary excretion of trametinib."
     ),
     BUN = list(
       description = "Serum urea",
-      units       = "Not reported",
-      type        = "continuous",
-      notes       = "Listed among the tested covariates (Methods Section 2.2.1) but not significant and not tabulated in Table 1, so neither its units nor its distribution are reported."
+      units = "Not reported",
+      type = "continuous",
+      notes = "Listed among the tested covariates (Methods Section 2.2.1) but not significant and not tabulated in Table 1, so neither its units nor its distribution are reported."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not significant. Cohort median (min, max) 5 (3, 12) umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened on CL; not significant. Cohort median (min, max) 5 (3, 12) umol/L."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not significant. Cohort median (min, max) 91 (49, 873) U/L. Reported by the paper under the French abbreviation PAL."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened on CL; not significant. Cohort median (min, max) 91 (49, 873) U/L. Reported by the paper under the French abbreviation PAL."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not significant. Cohort median (min, max) 30 (12, 211) U/L. Reported by the paper under the French abbreviation ASAT."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened on CL; not significant. Cohort median (min, max) 30 (12, 211) U/L. Reported by the paper under the French abbreviation ASAT."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not significant. Cohort median (min, max) 26 (8, 152) U/L. Reported by the paper under the French abbreviation ALAT."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened on CL; not significant. Cohort median (min, max) 26 (8, 152) U/L. Reported by the paper under the French abbreviation ALAT."
     ),
     CONMED_DABRAFENIB = list(
       description = "Concomitant dabrafenib coadministration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "This is the paper's headline methodological finding, and the reason the",
         "covariate is absent from the final model. Concomitant dabrafenib was",
         "significant on CL in univariate analysis (dOFV = -7.23, p < 0.01) and again",
@@ -174,32 +174,32 @@ Ravix_2024_trametinib <- function() {
     ),
     FED = list(
       description = "Fed-state indicator at the time of dosing",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed among the tested covariates (Methods Section 2.2.1) as 'food intake'; not significant on CL and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed among the tested covariates (Methods Section 2.2.1) as 'food intake'; not significant on CL and not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
     n_observations = 113L,
-    age_range      = "30-85 years",
-    age_median     = "63 years",
-    weight_range   = "45-96 kg",
-    weight_median  = "70 kg",
+    age_range = "30-85 years",
+    age_median = "63 years",
+    weight_range = "45-96 kg",
+    weight_median = "70 kg",
     sex_female_pct = 45,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults treated for a solid tumour (Ravix 2024 Table 1): melanoma 22 (67%),",
       "ovarian cancer 3 (9%), breast cancer 2 (6%), cholangiocarcinoma 2 (6%), and",
       "one patient each (3%) with thyroid carcinoma, gastrointestinal stromal",
       "tumour, hepatocellular carcinoma and ileocecal carcinoma.",
       sep = " "
     ),
-    dose_range     = "Trametinib 0.5-2 mg orally once daily; 7 patients (21%) on monotherapy and 22 (67%) with concomitant dabrafenib",
-    regions        = "Switzerland (Lausanne University Hospital; OpTAT study, ClinicalTrials.gov NCT04484064)",
-    notes          = paste(
+    dose_range = "Trametinib 0.5-2 mg orally once daily; 7 patients (21%) on monotherapy and 22 (67%) with concomitant dabrafenib",
+    regions = "Switzerland (Lausanne University Hospital; OpTAT study, ClinicalTrials.gov NCT04484064)",
+    notes = paste(
       "Real-life therapeutic-drug-monitoring data, sparse and opportunistic: median",
       "(min, max) 3 (1, 11) samples per patient drawn 5 h (0.13, 202 h) after the",
       "reported intake, with a maximum of eight samples per patient. Two patients",

@@ -52,7 +52,7 @@ vanderGaag_2025_osimertinib_pbpk <- function() {
     sep = " "
   )
   vignette <- "vanderGaag_2025_osimertinib_pbpk"
-  units    <- list(time = "h", dosing = "nmol", concentration = "nM")
+  units <- list(time = "h", dosing = "nmol", concentration = "nM")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Every state holds an amount of osimertinib in nmol.
@@ -61,56 +61,56 @@ vanderGaag_2025_osimertinib_pbpk <- function() {
   # section 2.2.2). verified = TRUE: the state list is transcribed from
   # Appendix S5 Suppl Eq 7-20, which writes out every differential equation.
   compartmentData <- list(
-    gut_lumen        = list(analyte = "osimertinib", units = "nmol", specimen = "administration site", verified = TRUE),
-    venous           = list(analyte = "osimertinib", units = "nmol", specimen = "whole blood", verified = TRUE),
-    arterial         = list(analyte = "osimertinib", units = "nmol", specimen = "whole blood", verified = TRUE),
-    brain            = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    spleen           = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    other            = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    adipose          = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    adipose_complex  = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    gut              = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    gut_complex      = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    heart            = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    heart_complex    = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    kidney           = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    kidney_complex   = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    liver            = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    liver_complex    = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    lung             = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    lung_complex     = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    tumor            = list(analyte = "osimertinib", units = "nmol", specimen = "tumor", verified = TRUE),
-    tumor_complex    = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tumor", verified = TRUE),
-    pancreas         = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    gut_lumen = list(analyte = "osimertinib", units = "nmol", specimen = "administration site", verified = TRUE),
+    venous = list(analyte = "osimertinib", units = "nmol", specimen = "whole blood", verified = TRUE),
+    arterial = list(analyte = "osimertinib", units = "nmol", specimen = "whole blood", verified = TRUE),
+    brain = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    adipose_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    gut_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    heart_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    kidney_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    liver_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    lung_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    tumor = list(analyte = "osimertinib", units = "nmol", specimen = "tumor", verified = TRUE),
+    tumor_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tumor", verified = TRUE),
+    pancreas = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
     pancreas_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    muscle           = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    muscle_complex   = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    skin             = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
-    skin_complex     = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE)
+    muscle = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    muscle_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "osimertinib", units = "nmol", specimen = "tissue", verified = TRUE),
+    skin_complex = list(analyte = "osimertinib-EGFR complex", units = "nmol", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = "single 87.5 kg reference individual (Table S2); the model is deterministic and is not stratified by body size",
+    species = "human",
+    n_subjects = 4L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = "single 87.5 kg reference individual (Table S2); the model is deterministic and is not stratified by body size",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "advanced-stage (stage 3-4) non-small cell lung cancer with an activating",
       "EGFR mutation (exon 19 deletion or exon 21 L858R) and progression on a",
       "first-generation EGFR-TKI; the tumor compartment assumes a 50/50 mix of",
       "wild-type and L858R/T790M-mutated EGFR alleles"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "2.7 ug (280 MBq) intravenous [11C]C-osimertinib microdose, and 80 mg",
       "oral osimertinib once daily"
     ),
-    regions        = "Netherlands (Amsterdam UMC)",
-    notes          = paste(
+    regions = "Netherlands (Amsterdam UMC)",
+    notes = paste(
       "This is a bottom-up whole-body PBPK model: every parameter is a",
       "literature or in-vitro value and none was estimated from the clinical",
       "data, so the model has no between-subject variability. Verification used",

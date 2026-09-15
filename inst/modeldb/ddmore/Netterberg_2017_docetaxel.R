@@ -20,7 +20,7 @@ Netterberg_2017_docetaxel <- function() {
   # The PD-only model itself has no dosing compartment; CP_MGL is read directly from the
   # time-varying covariate column.
   units <- list(time = "h", dosing = "mg", concentration = "mg/L", anc = "10^9 cells/L", aag = "g/L")
-  ddmore_id    <- "DDMODEL00000224"
+  ddmore_id <- "DDMODEL00000224"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -28,7 +28,7 @@ Netterberg_2017_docetaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    circ       = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE),
+    circ = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE),
     precursor1 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE),
@@ -37,58 +37,58 @@ Netterberg_2017_docetaxel <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effect on baseline ANC: BACOV *= (1 + e_sexf_ba * SEXF). Female subjects have ~12.1% lower baseline ANC than males (Kloft 2006 / Netterberg 2017 .mod THETA(11) = -0.121451). Source NM-TRAN column `SEX` uses Kloft 2006's 1 = male, 2 = female encoding; decompose to canonical SEXF via `SEXF = as.integer(SEX == 2)`. Time-fixed per subject.",
-      source_name        = "SEX"
+      notes = "Multiplicative effect on baseline ANC: BACOV *= (1 + e_sexf_ba * SEXF). Female subjects have ~12.1% lower baseline ANC than males (Kloft 2006 / Netterberg 2017 .mod THETA(11) = -0.121451). Source NM-TRAN column `SEX` uses Kloft 2006's 1 = male, 2 = female encoding; decompose to canonical SEXF via `SEXF = as.integer(SEX == 2)`. Time-fixed per subject.",
+      source_name = "SEX"
     ),
     ECOG_GE1 = list(
-      description        = "Eastern Cooperative Oncology Group performance status indicator, 1 = ECOG >= 1, 0 = ECOG = 0.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Eastern Cooperative Oncology Group performance status indicator, 1 = ECOG >= 1, 0 = ECOG = 0.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG = 0; fully active / asymptomatic)",
-      notes              = "Multiplicative effect on baseline ANC: BACOV *= (1 + e_ecogge1_ba * ECOG_GE1). Subjects with ECOG >= 1 have ~13.0% higher baseline ANC than ECOG = 0 subjects (Kloft 2006 / Netterberg 2017 .mod THETA(8) = 0.130406). Source NM-TRAN column `PERF` is the ordinal ECOG / WHO performance score; the .mod's $PK block binarizes via `IF(PERF.EQ.0.OR.PERF.EQ.-99) BAPERF = 0; IF(PERF.GE.1) BAPERF = THETA(8)`. Decompose to canonical via `ECOG_GE1 = as.integer(PERF >= 1)`. Time-fixed per subject.",
-      source_name        = "PERF"
+      notes = "Multiplicative effect on baseline ANC: BACOV *= (1 + e_ecogge1_ba * ECOG_GE1). Subjects with ECOG >= 1 have ~13.0% higher baseline ANC than ECOG = 0 subjects (Kloft 2006 / Netterberg 2017 .mod THETA(8) = 0.130406). Source NM-TRAN column `PERF` is the ordinal ECOG / WHO performance score; the .mod's $PK block binarizes via `IF(PERF.EQ.0.OR.PERF.EQ.-99) BAPERF = 0; IF(PERF.GE.1) BAPERF = THETA(8)`. Decompose to canonical via `ECOG_GE1 = as.integer(PERF >= 1)`. Time-fixed per subject.",
+      source_name = "PERF"
     ),
     PRIOR_ANTICANCER = list(
-      description        = "Prior anticancer therapy of any modality (chemotherapy, radiotherapy, hormonal, targeted, immunotherapy, surgery), 1 = had prior anticancer therapy, 0 = treatment-naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anticancer therapy of any modality (chemotherapy, radiotherapy, hormonal, targeted, immunotherapy, surgery), 1 = had prior anticancer therapy, 0 = treatment-naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (treatment-naive)",
-      notes              = "Multiplicative effect on baseline ANC: BACOV *= (1 + e_pc_ba * PRIOR_ANTICANCER). Subjects with prior anticancer therapy have ~14.7% lower baseline ANC than treatment-naive subjects (Kloft 2006 / Netterberg 2017 .mod THETA(7) = -0.146837). Source NM-TRAN column `PC` (0 = no prior anticancer therapy, 1 = had prior anticancer therapy) maps directly. Time-fixed per subject.",
-      source_name        = "PC"
+      notes = "Multiplicative effect on baseline ANC: BACOV *= (1 + e_pc_ba * PRIOR_ANTICANCER). Subjects with prior anticancer therapy have ~14.7% lower baseline ANC than treatment-naive subjects (Kloft 2006 / Netterberg 2017 .mod THETA(7) = -0.146837). Source NM-TRAN column `PC` (0 = no prior anticancer therapy, 1 = had prior anticancer therapy) maps directly. Time-fixed per subject.",
+      source_name = "PC"
     ),
     AAG = list(
-      description        = "Serum alpha-1 acid glycoprotein concentration (acute-phase protein that binds basic and lipophilic drugs including docetaxel).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum alpha-1 acid glycoprotein concentration (acute-phase protein that binds basic and lipophilic drugs including docetaxel).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Two distinct effects per Kloft 2006: (a) a piecewise-linear effect on baseline ANC with breakpoint at the cohort median 1.34 g/L (separate slopes e_aag_low_ba = 0.175 for AAG <= 1.34 and e_aag_high_ba = 0.495 for AAG > 1.34, applied as `BACOV *= (1 + slope * (AAG - 1.34))`); (b) a linear effect on the drug-effect slope SL (e_aag_sl = -0.351 applied as `SL *= (1 + e_aag_sl * (AAG - 1.34))`). Reference value 1.34 g/L is the Kloft 2006 cohort median. Source NM-TRAN column `AAG` (g/L) maps directly. Time-fixed per subject.",
-      source_name        = "AAG"
+      notes = "Two distinct effects per Kloft 2006: (a) a piecewise-linear effect on baseline ANC with breakpoint at the cohort median 1.34 g/L (separate slopes e_aag_low_ba = 0.175 for AAG <= 1.34 and e_aag_high_ba = 0.495 for AAG > 1.34, applied as `BACOV *= (1 + slope * (AAG - 1.34))`); (b) a linear effect on the drug-effect slope SL (e_aag_sl = -0.351 applied as `SL *= (1 + e_aag_sl * (AAG - 1.34))`). Reference value 1.34 g/L is the Kloft 2006 cohort median. Source NM-TRAN column `AAG` (g/L) maps directly. Time-fixed per subject.",
+      source_name = "AAG"
     ),
     CP_MGL = list(
-      description        = "Time-varying instantaneous docetaxel plasma concentration supplied per event row as the PD driver.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Time-varying instantaneous docetaxel plasma concentration supplied per event row as the PD driver.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drug-effect input: `drug = SL * CP_MGL` with SL in 1/(mg/L) units. CP_MGL is supplied as a time-varying covariate column rather than computed from a coupled PK model, reflecting the Kloft 2006 / Netterberg 2017 sequential-PK-then-PD design. The Kloft 2006 source paper feeds CP_MGL from a Bruno-style docetaxel popPK simulation (typical Cmax ~3 mg/L after a 100 mg/m^2 1-hour IV infusion, biexponential decay over ~72 hours). Set CP_MGL = 0 outside the drug-exposure window. Source NM-TRAN column `CP` (Kloft 2006 / Netterberg 2017 'predicted docetaxel concentration', mg/L) maps directly.",
-      source_name        = "CP"
+      notes = "Drug-effect input: `drug = SL * CP_MGL` with SL in 1/(mg/L) units. CP_MGL is supplied as a time-varying covariate column rather than computed from a coupled PK model, reflecting the Kloft 2006 / Netterberg 2017 sequential-PK-then-PD design. The Kloft 2006 source paper feeds CP_MGL from a Bruno-style docetaxel popPK simulation (typical Cmax ~3 mg/L after a 100 mg/m^2 1-hour IV infusion, biexponential decay over ~72 hours). Set CP_MGL = 0 outside the drug-exposure window. Source NM-TRAN column `CP` (Kloft 2006 / Netterberg 2017 'predicted docetaxel concentration', mg/L) maps directly.",
+      source_name = "CP"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Adult cancer patients receiving docetaxel chemotherapy. The Kloft 2006 source analysis pools data from multiple anticancer drugs (docetaxel, paclitaxel, etoposide, CPT-11, vinflunine) into a single Friberg-family myelosuppression analysis and reports drug-specific parameter sets; the DDMORE bundle for DDMODEL00000224 implements only the docetaxel parameter set, used by Netterberg 2017 as a fixed model for an ANC-prediction-methodology study (frequent-monitoring evaluation of nadir, time-to-baseline-recovery, and time-to-different-neutropenic-grade prediction).",
-    dose_range     = "Intravenous docetaxel, typical 100 mg/m^2 over 1-hour infusion every 3 weeks (Kloft 2006 / Netterberg 2017 simulated trajectory). The model itself does not encode docetaxel dosing — exposure is consumed via the CP_MGL covariate column.",
-    regions        = NA_character_,
-    notes          = "Population demographic detail (n_subjects, age, weight, sex, race) is not reproduced in the DDMORE bundle for DDMODEL00000224 and neither the Netterberg 2017 nor the Kloft 2006 publication PDF is on disk in this worktree. The bundle's `Simulated_myelosuppression_dailyANC.csv` contains a single virtual subject (54 records, one docetaxel cycle, daily ANC monitoring over 21 days) used as a regression-style smoke test; it is not representative of the source-paper clinical cohort. The Kloft 2006 paper develops the myelosuppression model on a pooled multi-drug cancer-patient cohort; the Netterberg 2017 paper uses the docetaxel arm of that model unchanged to evaluate prediction-methodology under frequent-monitoring scenarios. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    disease_state = "Adult cancer patients receiving docetaxel chemotherapy. The Kloft 2006 source analysis pools data from multiple anticancer drugs (docetaxel, paclitaxel, etoposide, CPT-11, vinflunine) into a single Friberg-family myelosuppression analysis and reports drug-specific parameter sets; the DDMORE bundle for DDMODEL00000224 implements only the docetaxel parameter set, used by Netterberg 2017 as a fixed model for an ANC-prediction-methodology study (frequent-monitoring evaluation of nadir, time-to-baseline-recovery, and time-to-different-neutropenic-grade prediction).",
+    dose_range = "Intravenous docetaxel, typical 100 mg/m^2 over 1-hour infusion every 3 weeks (Kloft 2006 / Netterberg 2017 simulated trajectory). The model itself does not encode docetaxel dosing — exposure is consumed via the CP_MGL covariate column.",
+    regions = NA_character_,
+    notes = "Population demographic detail (n_subjects, age, weight, sex, race) is not reproduced in the DDMORE bundle for DDMODEL00000224 and neither the Netterberg 2017 nor the Kloft 2006 publication PDF is on disk in this worktree. The bundle's `Simulated_myelosuppression_dailyANC.csv` contains a single virtual subject (54 records, one docetaxel cycle, daily ANC monitoring over 21 days) used as a regression-style smoke test; it is not representative of the source-paper clinical cohort. The Kloft 2006 paper develops the myelosuppression model on a pooled multi-drug cancer-patient cohort; the Netterberg 2017 paper uses the docetaxel arm of that model unchanged to evaluate prediction-methodology under frequent-monitoring scenarios. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

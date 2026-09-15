@@ -8,69 +8,69 @@ Lioger_2017_rituximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Median-centred power effect on V1 with exponent 1.0; reference 1.8 m^2 (Lioger 2017 Table 1 median). BSA computation formula not specified in the paper.",
-      source_name        = "BSA"
+      notes = "Time-fixed baseline value. Median-centred power effect on V1 with exponent 1.0; reference 1.8 m^2 (Lioger 2017 Table 1 median). BSA computation formula not specified in the paper.",
+      source_name = "BSA"
     ),
     SEXF = list(
-      description        = "Sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 (male)",
-      notes              = "Lioger 2017 uses female as the reference category (women are 82.8% of the cohort). The paper's categorical-covariate parameterisation is Ln(V1_TV) = Ln(V1_female) + beta_sex_on_male * SEXM, with beta_sex_on_male = 0.37 (V1 higher in men). Because the canonical column is SEXF (1 = female), the model derives SEXM = 1 - SEXF inline and applies exp(e_sexmale_vc * SEXM). Typical V1 = 4.1 L is the female-reference value from Table 2.",
-      source_name        = "SEX"
+      notes = "Lioger 2017 uses female as the reference category (women are 82.8% of the cohort). The paper's categorical-covariate parameterisation is Ln(V1_TV) = Ln(V1_female) + beta_sex_on_male * SEXM, with beta_sex_on_male = 0.37 (V1 higher in men). Because the canonical column is SEXF (1 = female), the model derives SEXM = 1 - SEXF inline and applies exp(e_sexmale_vc * SEXM). Typical V1 = 4.1 L is the female-reference value from Table 2.",
+      source_name = "SEX"
     ),
     OCC = list(
-      description        = "Rituximab treatment course (RTC) number, integer 1..5 (course 4 and 5 were pooled in the paper's categorical analysis but the final model uses RTC as a continuous power covariate)",
-      units              = "(count)",
-      type               = "continuous",
+      description = "Rituximab treatment course (RTC) number, integer 1..5 (course 4 and 5 were pooled in the paper's categorical analysis but the final model uses RTC as a continuous power covariate)",
+      units = "(count)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Lioger 2017 Table 2 retains RTC as a continuous power covariate on V1 (RTC parameterisation as continuous gave lower AIC than as categorical, 5236.1 vs. 5252.5). Median-centred at RTC = 1 (first course). Same column is also the occasion index the paper used for IOV (see population$notes and 'Assumptions and deviations' in the vignette).",
-      source_name        = "RTC"
+      notes = "Lioger 2017 Table 2 retains RTC as a continuous power covariate on V1 (RTC parameterisation as continuous gave lower AIC than as categorical, 5236.1 vs. 5252.5). Median-centred at RTC = 1 (first course). Same column is also the occasion index the paper used for IOV (see population$notes and 'Assumptions and deviations' in the vignette).",
+      source_name = "RTC"
     ),
     IGG = list(
-      description        = "Pre-therapeutic (pre-course) serum immunoglobulin G concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Pre-therapeutic (pre-course) serum immunoglobulin G concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying: measured by nephelometry prior to each rituximab infusion (Methods, Biological data). Median-centred power effect on k10 with exponent 0.50; reference 10 g/L (Lioger 2017 Table 1 medians across the five courses are 10.6, 10.4, 9.2, 8.9, 10.2 g/L; the pooled median is not published as a single number, so a rounded 10 g/L is used per the standing 'undefined reference/centering value -> rounded standard' extraction policy).",
-      source_name        = "IgG"
+      notes = "Time-varying: measured by nephelometry prior to each rituximab infusion (Methods, Biological data). Median-centred power effect on k10 with exponent 0.50; reference 10 g/L (Lioger 2017 Table 1 medians across the five courses are 10.6, 10.4, 9.2, 8.9, 10.2 g/L; the pooled median is not published as a single number, so a rounded 10 g/L is used per the standing 'undefined reference/centering value -> rounded standard' extraction policy).",
+      source_name = "IgG"
     ),
     CD19_ABS = list(
-      description        = "Pre-course CD19+ B-cell count (surrogate of target-antigen burden)",
-      units              = "cells/mm^3",
-      type               = "continuous",
+      description = "Pre-course CD19+ B-cell count (surrogate of target-antigen burden)",
+      units = "cells/mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying: measured by flow cytometry prior to each rituximab infusion (Methods, Biological data). Median-centred power effect on k10 with exponent 0.035; reference 100 cells/mm^3 (Lioger 2017 Table 1 per-course medians are 214, 44, 33, 126, 142 cells/mm^3 -- course 1 is the pre-treatment baseline and courses 2-5 fall after B-cell depletion, so the pooled median is much lower than the course-1 value; a rounded 100 cells/mm^3 is used per the standing 'undefined reference/centering value -> rounded standard' extraction policy).",
-      source_name        = "CD19"
+      notes = "Time-varying: measured by flow cytometry prior to each rituximab infusion (Methods, Biological data). Median-centred power effect on k10 with exponent 0.035; reference 100 cells/mm^3 (Lioger 2017 Table 1 per-course medians are 214, 44, 33, 126, 142 cells/mm^3 -- course 1 is the pre-treatment baseline and courses 2-5 fall after B-cell depletion, so the pooled median is much lower than the course-1 value; a rounded 100 cells/mm^3 is used per the standing 'undefined reference/centering value -> rounded standard' extraction policy).",
+      source_name = "CD19"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 1L,
     n_observations = 674L,
-    n_courses      = 125L,
-    age_range      = "38-84 years",
-    age_median     = "59 years",
+    n_courses = 125L,
+    age_range = "38-84 years",
+    age_median = "59 years",
     sex_female_pct = 82.8,
-    bsa_range      = "1.35-2.29 m^2",
-    bsa_median     = "1.8 m^2",
-    disease_state  = "Rheumatoid arthritis fulfilling American College of Rheumatology criteria. Median disease duration 1.4 years (range 0.27-4.6 years), median initial DAS28 5.24 (range 2.1-8.35). 68.8% rheumatoid factor positive, 82.9% anti-citrullinated protein antibody positive, 79.6% past anti-TNF use.",
-    dose_range     = "1000 mg IV infusion on days 1 and 15 per course, 1-5 courses per patient (median 2). Retreatment on an as-needed basis after week 24 based on symptoms of relapse.",
+    bsa_range = "1.35-2.29 m^2",
+    bsa_median = "1.8 m^2",
+    disease_state = "Rheumatoid arthritis fulfilling American College of Rheumatology criteria. Median disease duration 1.4 years (range 0.27-4.6 years), median initial DAS28 5.24 (range 2.1-8.35). 68.8% rheumatoid factor positive, 82.9% anti-citrullinated protein antibody positive, 79.6% past anti-TNF use.",
+    dose_range = "1000 mg IV infusion on days 1 and 15 per course, 1-5 courses per patient (median 2). Retreatment on an as-needed basis after week 24 based on symptoms of relapse.",
     concomitant_medications = "Corticosteroids 75%, methotrexate 48.4%.",
-    regions        = "Single centre, University Hospital of Tours, France, July 2007 - October 2010; follow-up completed November 2012.",
-    notes          = "Reported medians from Lioger 2017 Table 1. Rituximab concentrations were quantified by a validated ELISA derived from Blasco et al. 2007 (LOD 0.061 mg/L, LLOQ 0.20 mg/L, ULOQ 9.0 mg/L). 27.9% of samples were below the quantitation limit and interval-censored between 0 and 0.061 mg/L in the source estimation. Source NLME software: MONOLIX 4.3.2 with SAEM (K1 = 700, K2 = 300). Retrospective single-centre therapeutic-drug-monitoring cohort; ethical approval waived as data were routine clinical practice. IOV on V1 (gamma_V1 = 0.33) and k10 (gamma_k10 = 0.08) improved the fit (dOFV = 56.3) but is not encoded structurally here -- see the vignette 'Assumptions and deviations' section."
+    regions = "Single centre, University Hospital of Tours, France, July 2007 - October 2010; follow-up completed November 2012.",
+    notes = "Reported medians from Lioger 2017 Table 1. Rituximab concentrations were quantified by a validated ELISA derived from Blasco et al. 2007 (LOD 0.061 mg/L, LLOQ 0.20 mg/L, ULOQ 9.0 mg/L). 27.9% of samples were below the quantitation limit and interval-censored between 0 and 0.061 mg/L in the source estimation. Source NLME software: MONOLIX 4.3.2 with SAEM (K1 = 700, K2 = 300). Retrospective single-centre therapeutic-drug-monitoring cohort; ethical approval waived as data were routine clinical practice. IOV on V1 (gamma_V1 = 0.33) and k10 (gamma_k10 = 0.08) improved the fit (dOFV = 56.3) but is not encoded structurally here -- see the vignette 'Assumptions and deviations' section."
   )
 
   ini({

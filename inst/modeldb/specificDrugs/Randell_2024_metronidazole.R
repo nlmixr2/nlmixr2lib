@@ -16,85 +16,85 @@ Randell_2024_metronidazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Combined analysis cohort mean (SD) 1.8 (1.0) kg (Randell 2024 Table S1). Enters CL linearly (fixed exponent 1, the PTN_METRO base structural relationship) and V through an estimated power exponent theta_WT-V = 0.763. No reference weight is used: both relationships are written on absolute body weight in kg, so theta_CL is a per-kg clearance and theta_V is the volume at WT = 1 kg.",
-      source_name        = "WT"
+      notes = "Combined analysis cohort mean (SD) 1.8 (1.0) kg (Randell 2024 Table S1). Enters CL linearly (fixed exponent 1, the PTN_METRO base structural relationship) and V through an estimated power exponent theta_WT-V = 0.763. No reference weight is used: both relationships are written on absolute body weight in kg, so theta_CL is a per-kg clearance and theta_V is the volume at WT = 1 kg.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus chronologic age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus chronologic age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. The paper reports PMA in weeks (combined cohort mean (SD) 33.2 (5.3) weeks; supported range 23-48 weeks). Drives the sigmoidal Emax (Hill) maturation function on CL with TM50 = 25.6 weeks. Inside model() the canonical PAGE (months) is converted back to weeks via PMA_wk = PAGE * 4.35 so the published TM50 in weeks applies directly.",
-      source_name        = "PMA"
+      notes = "Time-varying. The paper reports PMA in weeks (combined cohort mean (SD) 33.2 (5.3) weeks; supported range 23-48 weeks). Drives the sigmoidal Emax (Hill) maturation function on CL with TM50 = 25.6 weeks. Inside model() the canonical PAGE (months) is converted back to weeks via PMA_wk = PAGE * 4.35 so the published TM50 in weeks applies directly.",
+      source_name = "PMA"
     )
   )
 
   covariatesDataExcluded <- list(
     BGA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened during the covariate re-evaluation for the optimized model (Randell 2024 Methods 'Optimization'; selection process in Table S3) but not retained: the postmenstrual-age maturation function on CL captured the developmental effect. Combined cohort mean (SD) 30.6 (5.2) weeks, supported range 22.7-41.0 weeks."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened during the covariate re-evaluation for the optimized model (Randell 2024 Methods 'Optimization'; selection process in Table S3) but not retained: the postmenstrual-age maturation function on CL captured the developmental effect. Combined cohort mean (SD) 30.6 (5.2) weeks, supported range 22.7-41.0 weeks."
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened but not retained in the optimized model (Randell 2024 Methods 'Optimization', Table S3). Combined cohort mean (SD) 18.6 (17.3) days, supported range 0-80 days."
+      units = "days",
+      type = "continuous",
+      notes = "Screened but not retained in the optimized model (Randell 2024 Methods 'Optimization', Table S3). Combined cohort mean (SD) 18.6 (17.3) days, supported range 0-80 days."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Combined cohort 81/146 (55%) male, i.e., 45% female (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Combined cohort 81/146 (55%) male, i.e., 45% female (Table S1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Combined cohort mean (SD) 0.6 (0.4) mg/dL (Table S1)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Combined cohort mean (SD) 0.6 (0.4) mg/dL (Table S1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Available in 101/146 infants; mean (SD) 2.4 (0.6) g/dL (Table S1)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Available in 101/146 infants; mean (SD) 2.4 (0.6) g/dL (Table S1)."
     ),
     CONMED_CYP3A_INDUCER = list(
       description = "Concomitant administration of a CYP3A inducer",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Metronidazole is metabolized in part by CYP3A, so induction and inhibition were biologically plausible covariates on CL; neither met the forward-inclusion criterion."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3). Metronidazole is metabolized in part by CYP3A, so induction and inhibition were biologically plausible covariates on CL; neither met the forward-inclusion criterion."
     ),
     CONMED_CYP3A_INHIBITOR = list(
       description = "Concomitant administration of a CYP3A inhibitor",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Randell 2024 Methods 'Optimization', Table S3)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 146L,
-    n_studies        = 2L,
-    age_range        = "22.7-41.0 weeks gestational age at birth; 0-80 days postnatal age; 23-48 weeks postmenstrual age",
-    age_median       = "Means (SD) in the combined cohort: gestational age 30.6 (5.2) weeks; postnatal age 18.6 (17.3) days; postmenstrual age 33.2 (5.3) weeks",
-    weight_range     = "Combined cohort mean (SD) 1.8 (1.0) kg",
-    weight_median    = "1.8 kg (mean)",
-    sex_female_pct   = 45,
-    race_ethnicity   = c(White = 60, Other = 40),
-    disease_state    = "Critically ill preterm and term infants with suspected or confirmed complicated intra-abdominal infection (including necrotizing enterocolitis) receiving intravenous metronidazole in the neonatal intensive care unit.",
-    dose_range       = "SCAMP trial: metronidazole given as a 30-minute intravenous infusion, 15 mg/kg loading dose followed by a 7.5 mg/kg maintenance dose at 24 hours, then 7.5 mg/kg at postmenstrual-age-defined intervals (every 12 h for PMA 23-<34 weeks, every 8 h for PMA 34-40 weeks, every 6 h for PMA >40 weeks). PTN_METRO doses were those of the source study (Cohen-Wolkowiez 2013).",
-    regions          = "United States and Canada (multicenter Pediatric Trials Network sites)",
-    renal_function   = "Serum creatinine mean (SD) 0.6 (0.4) mg/dL in the combined cohort",
+    species = "human",
+    n_subjects = 146L,
+    n_studies = 2L,
+    age_range = "22.7-41.0 weeks gestational age at birth; 0-80 days postnatal age; 23-48 weeks postmenstrual age",
+    age_median = "Means (SD) in the combined cohort: gestational age 30.6 (5.2) weeks; postnatal age 18.6 (17.3) days; postmenstrual age 33.2 (5.3) weeks",
+    weight_range = "Combined cohort mean (SD) 1.8 (1.0) kg",
+    weight_median = "1.8 kg (mean)",
+    sex_female_pct = 45,
+    race_ethnicity = c(White = 60, Other = 40),
+    disease_state = "Critically ill preterm and term infants with suspected or confirmed complicated intra-abdominal infection (including necrotizing enterocolitis) receiving intravenous metronidazole in the neonatal intensive care unit.",
+    dose_range = "SCAMP trial: metronidazole given as a 30-minute intravenous infusion, 15 mg/kg loading dose followed by a 7.5 mg/kg maintenance dose at 24 hours, then 7.5 mg/kg at postmenstrual-age-defined intervals (every 12 h for PMA 23-<34 weeks, every 8 h for PMA 34-40 weeks, every 6 h for PMA >40 weeks). PTN_METRO doses were those of the source study (Cohen-Wolkowiez 2013).",
+    regions = "United States and Canada (multicenter Pediatric Trials Network sites)",
+    renal_function = "Serum creatinine mean (SD) 0.6 (0.4) mg/dL in the combined cohort",
     hepatic_function = "ALT mean (SD) 21.0 (20.5) U/L (n = 75), AST 51.0 (47.6) U/L (n = 73), total bilirubin 1.0 (1.0) mg/dL (n = 85); measured only in SCAMP",
-    ethnicity        = "30/146 (21%) Hispanic ethnicity",
-    notes            = "The optimized model was fit to a combined data set of plasma metronidazole concentrations from the Metronidazole Pharmacokinetics in Premature Infants study (PTN_METRO, NCT01222585) and plasma concentrations estimated from dried blood spots (ePlasma) collected in the Antibiotic Safety in Infants with Complicated Intra-Abdominal Infections trial (SCAMP, NCT01994993). Demographics per Randell 2024 Table S1 (SCAMP n = 122, PTN_METRO n = 24, combined n = 146). DBS were converted to ePlasma with the comparability regression Cplasma = 1.11 * CDBS + 253 ng/mL (R-squared 0.86, 42 paired samples from 21 PTN_METRO infants). NONMEM 7.4 FOCE-I, ADVAN1 TRANS2. Eta shrinkage 8% (CL) and 29% (V); epsilon shrinkage 17%. Bootstrap 1000 replicates, 99.7% converged."
+    ethnicity = "30/146 (21%) Hispanic ethnicity",
+    notes = "The optimized model was fit to a combined data set of plasma metronidazole concentrations from the Metronidazole Pharmacokinetics in Premature Infants study (PTN_METRO, NCT01222585) and plasma concentrations estimated from dried blood spots (ePlasma) collected in the Antibiotic Safety in Infants with Complicated Intra-Abdominal Infections trial (SCAMP, NCT01994993). Demographics per Randell 2024 Table S1 (SCAMP n = 122, PTN_METRO n = 24, combined n = 146). DBS were converted to ePlasma with the comparability regression Cplasma = 1.11 * CDBS + 253 ng/mL (R-squared 0.86, 42 paired samples from 21 PTN_METRO infants). NONMEM 7.4 FOCE-I, ADVAN1 TRANS2. Eta shrinkage 8% (CL) and 29% (V); epsilon shrinkage 17%. Bootstrap 1000 replicates, 99.7% converged."
   )
 
   ini({

@@ -67,8 +67,8 @@ Chetty_2014_efalizumab_cd11a_qsp <- function() {
   vignette <- "Chetty_2014_efalizumab_cd11a_pasi"
 
   units <- list(
-    time          = "h",
-    dosing        = "(not applicable; the efalizumab concentration is supplied as the time-varying covariate CP_EFALIZUMAB_UGML)",
+    time = "h",
+    dosing = "(not applicable; the efalizumab concentration is supplied as the time-varying covariate CP_EFALIZUMAB_UGML)",
     concentration = "umol/L"
   )
 
@@ -78,8 +78,8 @@ Chetty_2014_efalizumab_cd11a_qsp <- function() {
     # Table 1 carries the pool as a molar concentration ("Rmax: CD11a abundance
     # 0.01 uM"), not as a per-cell receptor count.
     total_target = list(
-      analyte  = "CD11a (total: free + efalizumab-bound)",
-      units    = "umol/L",
+      analyte = "CD11a (total: free + efalizumab-bound)",
+      units = "umol/L",
       specimen = "whole blood",
       verified = TRUE
     )
@@ -87,11 +87,11 @@ Chetty_2014_efalizumab_cd11a_qsp <- function() {
 
   covariateData <- list(
     CP_EFALIZUMAB_UGML = list(
-      description        = "Time-varying efalizumab concentration driving CD11a target engagement",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Time-varying efalizumab concentration driving CD11a target engagement",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Converted to umol/L inside model() as CP_EFALIZUMAB_UGML / mw_efa *",
         "1000 (equivalently, divided by 148.841), because Km and the CD11a pool",
         "are reported in umol/L.",
@@ -121,26 +121,26 @@ Chetty_2014_efalizumab_cd11a_qsp <- function() {
         "0.5 ug/mL to about 7 ug/mL. Single-dose profiles for 1, 3 and 10 mg/kg",
         "are in Figure 2A."
       ),
-      source_name        = "(none; computed by the Simcyp Mechanistic FcRn PBPK model, not a named data column)"
+      source_name = "(none; computed by the Simcyp Mechanistic FcRn PBPK model, not a named data column)"
     )
   )
 
   population <- list(
-    species        = "human (in silico; Simcyp virtual north European Caucasian healthy volunteers, verified against published psoriasis cohorts)",
-    n_subjects     = 500L,
-    n_studies      = 4L,
-    age_range      = "25-50 years (simulated cohort)",
+    species = "human (in silico; Simcyp virtual north European Caucasian healthy volunteers, verified against published psoriasis cohorts)",
+    n_subjects = 500L,
+    n_studies = 4L,
+    age_range = "25-50 years (simulated cohort)",
     sex_female_pct = 50,
-    disease_state  = "Simulated in healthy volunteers; verified against clinical data from adults with moderate-to-severe plaque psoriasis",
-    dose_range     = paste(
+    disease_state = "Simulated in healthy volunteers; verified against clinical data from adults with moderate-to-severe plaque psoriasis",
+    dose_range = paste(
       "Single intravenous doses of 1, 3 and 10 mg/kg (Bauer 1999, Chetty 2014",
       "reference 12); multiple dosing escalating 0.3 mg/kg/week in week 1,",
       "0.4 in week 2, 0.6 in week 3 and 1 mg/kg/week for the following 4 weeks,",
       "each given as a 1 h infusion (Gottlieb 2002, reference 15); and",
       "1 mg/kg/week (Ng 2005, reference 18)"
     ),
-    regions        = "north European Caucasian virtual population",
-    notes          = paste(
+    regions = "north European Caucasian virtual population",
+    notes = paste(
       "Chetty 2014 Simulations section: 'Predictive studies used 5 trials with",
       "100 virtual north European Caucasian Healthy Volunteers each, aged",
       "between 25 and 50 years, with an equal proportion of males and females',",

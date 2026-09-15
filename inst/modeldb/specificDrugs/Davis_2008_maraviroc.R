@@ -10,51 +10,51 @@ Davis_2008_maraviroc <- function() {
   )
   vignette <- "Davis_2008_maraviroc"
   units <- list(
-    time          = "h",
-    dosing        = "not applicable (concentration-QT regression model; maraviroc plasma concentration is supplied as the time-varying covariate CP_MVC_NGML rather than via rxode2 dose events)",
+    time = "h",
+    dosing = "not applicable (concentration-QT regression model; maraviroc plasma concentration is supplied as the time-varying covariate CP_MVC_NGML rather than via rxode2 dose events)",
     concentration = "ms (the modelled observation QT is the ECG QT interval in ms, NOT a drug concentration; the input covariate CP_MVC_NGML is maraviroc plasma concentration in ng/mL; the slash in this units string is only to satisfy checkModelConventions concentration-units parsing)"
   )
 
   covariateData <- list(
     CP_MVC_NGML = list(
-      description        = "Time-varying maraviroc plasma concentration driving the linear concentration-QT term theta3 * Cp.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Time-varying maraviroc plasma concentration driving the linear concentration-QT term theta3 * Cp.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Davis 2008 Methods 'Concentration-QT modelling' (page 70): the one-stage analysis uses all postdose data for maraviroc 100, 300 and 900 mg, plus placebo and run-in-day predose data (Cp = 0 on placebo / predose). For simulation supply Cp at each observation time-point either from a separate maraviroc popPK source or from interpolated mean profiles of Davis 2008 Figure 2. Placebo simulations use Cp = 0 throughout.",
-      source_name        = "Cp (Methods 'Concentration-QT modelling - Base model' equation)"
+      notes = "Davis 2008 Methods 'Concentration-QT modelling' (page 70): the one-stage analysis uses all postdose data for maraviroc 100, 300 and 900 mg, plus placebo and run-in-day predose data (Cp = 0 on placebo / predose). For simulation supply Cp at each observation time-point either from a separate maraviroc popPK source or from interpolated mean profiles of Davis 2008 Figure 2. Placebo simulations use Cp = 0 throughout.",
+      source_name = "Cp (Methods 'Concentration-QT modelling - Base model' equation)"
     ),
     RR = list(
-      description        = "Time-varying ECG RR interval used inside the QT/RR correction factor (RR/1000)^theta4.",
-      units              = "ms",
-      type               = "continuous",
+      description = "Time-varying ECG RR interval used inside the QT/RR correction factor (RR/1000)^theta4.",
+      units = "ms",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Davis 2008 used observed RR intervals from the ECG recorder over each post-dose measurement period (Methods 'Pharmacokinetics and pharmacodynamics'). The model normalises by 1000 ms (corresponding to 60 beats/min) inside the correction factor; for a resting adult at 65 bpm RR ~ 923 ms, at 60 bpm RR = 1000 ms, at 75 bpm RR = 800 ms. Time-varying within and between treatment periods.",
-      source_name        = "RR (Methods 'Concentration-QT modelling - Base model' equation)"
+      notes = "Davis 2008 used observed RR intervals from the ECG recorder over each post-dose measurement period (Methods 'Pharmacokinetics and pharmacodynamics'). The model normalises by 1000 ms (corresponding to 60 beats/min) inside the correction factor; for a resting adult at 65 bpm RR ~ 923 ms, at 60 bpm RR = 1000 ms, at 75 bpm RR = 800 ms. Time-varying within and between treatment periods.",
+      source_name = "RR (Methods 'Concentration-QT modelling - Base model' equation)"
     ),
     SEXF = list(
-      description        = "Female sex indicator (0 = male, 1 = female).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (0 = male, 1 = female).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Davis 2008 Methods 'Concentration-QT modelling - Base model' encodes Sex_i = 0 for men and Sex_i = 1 for women, with multiplicative effect (1 + theta2 * Sex_i) on the population QT intercept theta1 (Table 3 estimates: theta1 = 398 ms for men; theta1*(1 + 0.0166) = 404.6 ms for women).",
-      source_name        = "Sex"
+      notes = "Davis 2008 Methods 'Concentration-QT modelling - Base model' encodes Sex_i = 0 for men and Sex_i = 1 for women, with multiplicative effect (1 + theta2 * Sex_i) on the population QT intercept theta1 (Table 3 estimates: theta1 = 398 ms for men; theta1*(1 + 0.0166) = 404.6 ms for women).",
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 61L,
-    n_studies      = 1L,
-    age_range      = "19-44 years (inclusion 18-45 years)",
-    weight_range   = "men 60-90 kg; women 50-85 kg (per inclusion criteria); cohort means 72 kg (men) and 61 kg (women)",
-    height_range   = "men mean 175 cm; women mean 165 cm",
+    species = "human",
+    n_subjects = 61L,
+    n_studies = 1L,
+    age_range = "19-44 years (inclusion 18-45 years)",
+    weight_range = "men 60-90 kg; women 50-85 kg (per inclusion criteria); cohort means 72 kg (men) and 61 kg (women)",
+    height_range = "men mean 175 cm; women mean 165 cm",
     sex_female_pct = 51,
     race_ethnicity = c(White = 96.7, Asian = 3.3, Black = 1.6),
-    disease_state  = "Healthy adult male and (postmenopausal, surgically sterile, or contracepting) female volunteers",
-    dose_range     = "Single oral doses of maraviroc 100, 300, or 900 mg; placebo; oral moxifloxacin 400 mg active comparator. Five-way crossover with 7-day washout (Methods 'Study design')",
-    regions        = "Single centre (Pfizer Global Research and Development, Sandwich, UK)",
-    notes          = "Demographics from Davis 2008 Results (page 71). 30 men (1 Asian, 29 White) mean 175 cm / 72 kg; 31 women (1 Asian, 1 Black, 29 White) mean 165 cm / 61 kg. 61 subjects enrolled; one defaulted and three discontinued for non-treatment-related AEs (miscarriage, tonsil abscess, pyelonephritis). Per-treatment n in the QT analysis: maraviroc 100 mg n=59, 300 mg n=58, 900 mg n=58, moxifloxacin 400 mg n=58, placebo n=58 (manually-read QTcI; Table 2)."
+    disease_state = "Healthy adult male and (postmenopausal, surgically sterile, or contracepting) female volunteers",
+    dose_range = "Single oral doses of maraviroc 100, 300, or 900 mg; placebo; oral moxifloxacin 400 mg active comparator. Five-way crossover with 7-day washout (Methods 'Study design')",
+    regions = "Single centre (Pfizer Global Research and Development, Sandwich, UK)",
+    notes = "Demographics from Davis 2008 Results (page 71). 30 men (1 Asian, 29 White) mean 175 cm / 72 kg; 31 women (1 Asian, 1 Black, 29 White) mean 165 cm / 61 kg. 61 subjects enrolled; one defaulted and three discontinued for non-treatment-related AEs (miscarriage, tonsil abscess, pyelonephritis). Per-treatment n in the QT analysis: maraviroc 100 mg n=59, 300 mg n=58, 900 mg n=58, moxifloxacin 400 mg n=58, placebo n=58 (manually-read QTcI; Table 2)."
   )
 
   ini({

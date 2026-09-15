@@ -8,70 +8,70 @@ Han_2016_bevacizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on CL and Q (shared exponent) and on V1 and V2 (shared exponent), centered at 70 kg. Model-building cohort median 74.8 kg (range 38.6-195 kg; Han 2016 Table 2 row BWT).",
-      source_name        = "BWT"
+      notes = "Allometric power scaling on CL and Q (shared exponent) and on V1 and V2 (shared exponent), centered at 70 kg. Model-building cohort median 74.8 kg (range 38.6-195 kg; Han 2016 Table 2 row BWT).",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 = female (reference); CL and V1 are larger in males.",
-      notes              = "Han 2016 reports the categorical effect as 'Male on CL = 1.14' and 'Male on V1 = 1.18' (Table 3). Inverted from source-paper notation (source 'Male = 1') to the canonical SEXF (1 = female) by computing the male indicator as (1 - SEXF) in model().",
-      source_name        = "Male (= 1 - SEXF)"
+      notes = "Han 2016 reports the categorical effect as 'Male on CL = 1.14' and 'Male on V1 = 1.18' (Table 3). Inverted from source-paper notation (source 'Male = 1') to the canonical SEXF (1 = female) by computing the male indicator as (1 - SEXF) in model().",
+      source_name = "Male (= 1 - SEXF)"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL with paper-reported reference value 39 g/L (model-building median, Han 2016 Table 2; Fig. 2 typical-patient definition). For patients with missing ALB in the source fit, Han 2016 imputed ALB = 41.8 g/L (Table 3 'Missing ALBU on CL'); users who wish to mirror that imputation should pre-fill missing ALB with 41.8 g/L on the data table.",
-      source_name        = "ALBU"
+      notes = "Power-form effect on CL with paper-reported reference value 39 g/L (model-building median, Han 2016 Table 2; Fig. 2 typical-patient definition). For patients with missing ALB in the source fit, Han 2016 imputed ALB = 41.8 g/L (Table 3 'Missing ALBU on CL'); users who wish to mirror that imputation should pre-fill missing ALB with 41.8 g/L on the data table.",
+      source_name = "ALBU"
     ),
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL with paper-reported reference value 109 U/L (model-building median, Han 2016 Table 2; Fig. 2 typical-patient definition). For patients with missing ALP in the source fit, Han 2016 imputed ALP = 76.3 U/L (Table 3 'Missing BALP on CL'); users who wish to mirror that imputation should pre-fill missing ALP with 76.3 U/L on the data table.",
-      source_name        = "BALP"
+      notes = "Power-form effect on CL with paper-reported reference value 109 U/L (model-building median, Han 2016 Table 2; Fig. 2 typical-patient definition). For patients with missing ALP in the source fit, Han 2016 imputed ALP = 76.3 U/L (Table 3 'Missing BALP on CL'); users who wish to mirror that imputation should pre-fill missing ALP with 76.3 U/L on the data table.",
+      source_name = "BALP"
     ),
     CONMED_IFNALPHA = list(
-      description        = "Concomitant interferon alpha treatment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant interferon alpha treatment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant IFN-alpha",
-      notes              = "Han 2016 Table 3 reports 'IFNa on CL = 0.844' as the multiplicative factor when IFN-alpha is coadministered (102 of 1792 patients in the model-building cohort, all in the renal cell carcinoma RCC study BO17705). New canonical registered alongside this extraction as a sibling of CONMED_IFNB1A (the existing CONMED_IFNB1A entry explicitly invites the CONMED_IFNALPHA name for the alpha-interferon species).",
-      source_name        = "IFNa"
+      notes = "Han 2016 Table 3 reports 'IFNa on CL = 0.844' as the multiplicative factor when IFN-alpha is coadministered (102 of 1792 patients in the model-building cohort, all in the renal cell carcinoma RCC study BO17705). New canonical registered alongside this extraction as a sibling of CONMED_IFNB1A (the existing CONMED_IFNB1A entry explicitly invites the CONMED_IFNALPHA name for the alpha-interferon species).",
+      source_name = "IFNa"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 1792L,
-    n_studies        = 15L,
-    age_range        = "20-88 years",
-    age_median       = "59 years",
-    weight_range     = "38.6-195 kg",
-    weight_median    = "74.8 kg",
-    sex_female_pct   = 47,
-    race_ethnicity   = "Caucasian 51.8%, Asian 3.7%, Black 2.7%, Hispanic 0.9%, Other 2.8%, unknown 38.1% (race recorded for 1113 of 1792 patients; Han 2016 Table 2).",
-    disease_state    = "Adult cancer patients: colon/colorectal, non-small cell lung, kidney, pancreatic, breast, prostate (HRPC), and brain (glioblastoma) cancers; Phases I-IV studies in early and metastatic disease.",
-    dose_range       = "Bevacizumab 1-20 mg/kg intravenous infusion (30-90 min) given once every 1, 2, or 3 weeks, as a single agent, in combination with chemotherapy, or with interferon alpha.",
-    regions          = "Multinational (15 Genentech / Roche studies, predominantly North America and Europe).",
-    renal_function   = "Normal 49.7%, mild impairment 37.2%, moderate impairment 10.9% (Han 2016 Table 2 row 'Renal function').",
-    co_medication    = "Single agent 5.8%, chemotherapy 88.5%, interferon alpha 5.7% (Han 2016 Table 2 row 'Concomitant treatment').",
-    n_observations   = "8943 bevacizumab serum concentrations (model-building) plus 1670 concentrations from 146 Japanese patients in three additional studies (external validation; not used for fitting).",
-    notes            = "Pooled model-building dataset comprises 15 Genentech / Roche studies (Han 2016 Table 1); external validation uses three Japanese studies (JO18157, JO19901, JO19907). Bevacizumab serum concentrations measured by ELISA with LLOQ 78 ng/mL; concentrations below LLOQ were omitted before model-building. <5% of samples were below LLOQ and all were pre-dose."
+    species = "human",
+    n_subjects = 1792L,
+    n_studies = 15L,
+    age_range = "20-88 years",
+    age_median = "59 years",
+    weight_range = "38.6-195 kg",
+    weight_median = "74.8 kg",
+    sex_female_pct = 47,
+    race_ethnicity = "Caucasian 51.8%, Asian 3.7%, Black 2.7%, Hispanic 0.9%, Other 2.8%, unknown 38.1% (race recorded for 1113 of 1792 patients; Han 2016 Table 2).",
+    disease_state = "Adult cancer patients: colon/colorectal, non-small cell lung, kidney, pancreatic, breast, prostate (HRPC), and brain (glioblastoma) cancers; Phases I-IV studies in early and metastatic disease.",
+    dose_range = "Bevacizumab 1-20 mg/kg intravenous infusion (30-90 min) given once every 1, 2, or 3 weeks, as a single agent, in combination with chemotherapy, or with interferon alpha.",
+    regions = "Multinational (15 Genentech / Roche studies, predominantly North America and Europe).",
+    renal_function = "Normal 49.7%, mild impairment 37.2%, moderate impairment 10.9% (Han 2016 Table 2 row 'Renal function').",
+    co_medication = "Single agent 5.8%, chemotherapy 88.5%, interferon alpha 5.7% (Han 2016 Table 2 row 'Concomitant treatment').",
+    n_observations = "8943 bevacizumab serum concentrations (model-building) plus 1670 concentrations from 146 Japanese patients in three additional studies (external validation; not used for fitting).",
+    notes = "Pooled model-building dataset comprises 15 Genentech / Roche studies (Han 2016 Table 1); external validation uses three Japanese studies (JO18157, JO19901, JO19907). Bevacizumab serum concentrations measured by ELISA with LLOQ 78 ng/mL; concentrations below LLOQ were omitted before model-building. <5% of samples were below LLOQ and all were pre-dose."
   )
 
   ini({

@@ -31,11 +31,11 @@ Yang_2025_venetoclax <- function() {
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model (Results 'PopPK Analysis';",
         "dOFV = 11.4, P < 0.001 on CL/F). Entered as a power function normalized to",
         "the development-cohort median albumin, CL/F = tvCL/F * (ALB / 38.4)^theta",
@@ -51,7 +51,7 @@ Yang_2025_venetoclax <- function() {
         "they are recorded in covariatesDataExcluded.",
         sep = " "
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     )
   )
 
@@ -62,57 +62,57 @@ Yang_2025_venetoclax <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex, coded female = 1 in the source (male = 0, female = 1).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on all PK parameters; no significant effect. Development cohort 43.3% female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on all PK parameters; no significant effect. Development cohort 43.3% female (Table 1)."
     ),
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 57.0 years (range 18.0-74.0, Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 57.0 years (range 18.0-74.0, Table 1)."
     ),
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 60.0 kg (range 40.0-100.0, Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 60.0 kg (range 40.0-100.0, Table 1)."
     ),
     SCR = list(
       description = "Serum creatinine at baseline.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 58.5 umol/L (range 35.0-99.0, Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 58.5 umol/L (range 35.0-99.0, Table 1)."
     ),
     CRCL = list(
       description = "Creatinine clearance at baseline.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 104.5 mL/min (range 54.6-250.7, Table 1)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 104.5 mL/min (range 54.6-250.7, Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase at baseline.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 18.0 U/L (range 5.0-141.0, Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 18.0 U/L (range 5.0-141.0, Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase at baseline.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 17.0 U/L (range 8.0-112.0, Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 17.0 U/L (range 8.0-112.0, Table 1)."
     ),
     TPROT = list(
       description = "Total serum protein at baseline.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; no significant effect. Development cohort median 61.3 g/L (range 41.7-80.1, Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; no significant effect. Development cohort median 61.3 g/L (range 41.7-80.1, Table 1)."
     ),
     CONC_VORICONAZOLE = list(
       description = "Concomitant voriconazole plasma concentration.",
-      units       = "ug/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ug/mL",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and found NOT significant on any venetoclax",
         "PK parameter (Results 'PopPK Analysis'). This is a load-bearing negative result:",
         "the CYP3A inhibition is already saturated at the voriconazole exposures observed,",
@@ -125,36 +125,36 @@ Yang_2025_venetoclax <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "venetoclax", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "venetoclax", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "venetoclax", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "venetoclax", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "venetoclax", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
     n_observations = "261 venetoclax concentrations from the 30 development-dataset patients; a further 55 trough samples from 43 separate patients formed the external validation dataset (73 patients enrolled in total).",
-    age_range      = "18.0-74.0 years",
-    age_median     = "57.0 years (Table 1)",
-    weight_range   = "40.0-100.0 kg",
-    weight_median  = "60.0 kg (Table 1)",
+    age_range = "18.0-74.0 years",
+    age_median = "57.0 years (Table 1)",
+    weight_range = "40.0-100.0 kg",
+    weight_median = "60.0 kg (Table 1)",
     sex_female_pct = 43.3,
     race_ethnicity = "Not reported; single-centre Chinese cohort (Zhengzhou, Henan Province), so presumed predominantly Han Chinese.",
-    disease_state  = paste(
+    disease_state = paste(
       "Hematologic malignancies: acute myeloid leukemia 73.3%, chronic myelomonocytic",
       "leukemia 6.7%, acute lymphoblastic leukemia 6.7%, chronic lymphocytic leukemia 3.3%,",
       "mantle cell lymphoma 3.3%, myelodysplastic syndrome 3.3%, mixed phenotype acute",
       "leukemia 3.3% (Table 1). ECOG performance status 1 in 83.3%, 2 in 10.0%, 3 in 6.7%.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Venetoclax 100 mg orally once daily without ramp-up in all but one patient, who",
       "reduced to 50 mg/day on day 3 for nausea and neutropenia. Simulations in the paper",
       "additionally explore 50 and 75 mg once daily.",
       sep = " "
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "ALL patients received concomitant voriconazole, either continued at 200 mg twice",
       "daily or initiated at 400 mg twice daily on day 1 followed by 200 mg twice daily.",
       "Other concomitant drugs: azacitidine 60.0%, decitabine 30.0%, zanubrutinib 3.3%,",
@@ -163,8 +163,8 @@ Yang_2025_venetoclax <- function() {
     ),
     renal_function = "Creatinine clearance median 104.5 mL/min (range 54.6-250.7); serum creatinine median 58.5 umol/L (range 35.0-99.0) (Table 1).",
     hepatic_function = "Alanine aminotransferase median 18.0 U/L (range 5.0-141.0); aspartate aminotransferase median 17.0 U/L (range 8.0-112.0); serum albumin median 38.4 g/L (range 27.2-48.5) (Table 1).",
-    regions        = "China (single centre; First Affiliated Hospital of Zhengzhou University, Henan Province).",
-    notes          = paste(
+    regions = "China (single centre; First Affiliated Hospital of Zhengzhou University, Henan Province).",
+    notes = paste(
       "Prospective observational study conducted September 2022 to May 2023 (ethics",
       "approval KY-2022-0388). Development dataset used intensive sampling at 0-1 h",
       "pre-dose and 2, 4, 5, 6, 7, 8, 12 and 24 h post-dose on days 5-11; the external",

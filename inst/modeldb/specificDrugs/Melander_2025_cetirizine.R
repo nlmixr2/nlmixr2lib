@@ -17,11 +17,11 @@ Melander_2025_cetirizine <- function() {
 
   covariateData <- list(
     T_PUMP = list(
-      description        = "Duration of the breast-milk pumping (expression) session used to collect the milk sample",
-      units              = "h",
-      type               = "continuous",
+      description = "Duration of the breast-milk pumping (expression) session used to collect the milk sample",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained by the stepwise covariate-modelling",
         "search (Melander 2025 Results section 3 and Table 2); maternal age,",
         "maternal body weight, BMI, breastfeeding exclusivity and infant age",
@@ -35,70 +35,70 @@ Melander_2025_cetirizine <- function() {
         "0.033-0.833 h). Source column TPUMP.",
         sep = " "
       ),
-      source_name        = "TPUMP"
+      source_name = "TPUMP"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Maternal age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by the stepwise covariate model and not retained (Melander 2025 Methods section 2.3 and Table 2, 'No significant effects were found from maternal characteristics'). Cohort mean 30 years (range 22-40)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by the stepwise covariate model and not retained (Melander 2025 Methods section 2.3 and Table 2, 'No significant effects were found from maternal characteristics'). Cohort mean 30 years (range 22-40)."
     ),
     WT = list(
       description = "Maternal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened by the stepwise covariate model and not retained (Melander 2025 Results section 3, 'No significant effects were found from maternal characteristics such as body weight or BMI'). Cohort mean 78 kg (range 53-110). Retained here as documentation because maternal weight is nevertheless needed to compute the relative infant dose, which normalises the maternal dose per kg of maternal body weight."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened by the stepwise covariate model and not retained (Melander 2025 Results section 3, 'No significant effects were found from maternal characteristics such as body weight or BMI'). Cohort mean 78 kg (range 53-110). Retained here as documentation because maternal weight is nevertheless needed to compute the relative infant dose, which normalises the maternal dose per kg of maternal body weight."
     ),
     BMI = list(
       description = "Maternal body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened by the stepwise covariate model and not retained (Melander 2025 Results section 3 and Table 2). No cohort summary reported."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened by the stepwise covariate model and not retained (Melander 2025 Results section 3 and Table 2). No cohort summary reported."
     ),
     AGE_INFANT = list(
       description = "Postnatal age of the breastfed infant",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened as a proxy for milk maturity and not retained (Melander 2025 Methods section 2.3, 'Age of the child gave an indication of the maturity of the milk, which potentially could impact milk composition', and Results section 3, 'nor was the age of the infant found to be a significant covariate'). Cohort mean 8.2 months (range 8.3 weeks to 21 months)."
+      units = "months",
+      type = "continuous",
+      notes = "Screened as a proxy for milk maturity and not retained (Melander 2025 Methods section 2.3, 'Age of the child gave an indication of the maturity of the milk, which potentially could impact milk composition', and Results section 3, 'nor was the age of the infant found to be a significant covariate'). Cohort mean 8.2 months (range 8.3 weeks to 21 months)."
     ),
     WT_INFANT = list(
       description = "Body weight of the breastfed infant",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Not a covariate on any PK parameter. Reported for the cohort (mean 8.3 kg, range 3.7-11.9 kg) and used outside the PK model in the relative-infant-dose calculation, where the assumed daily milk intake is 150 mL per kg of infant body weight (Melander 2025 Methods section 2.4); because both the absolute infant dose and the maternal dose in the RID ratio are expressed per kg of the respective body weight, infant weight cancels out of the RID itself."
+      units = "kg",
+      type = "continuous",
+      notes = "Not a covariate on any PK parameter. Reported for the cohort (mean 8.3 kg, range 3.7-11.9 kg) and used outside the PK model in the relative-infant-dose calculation, where the assumed daily milk intake is 150 mL per kg of infant body weight (Melander 2025 Methods section 2.4); because both the absolute infant dose and the maternal dose in the RID ratio are expressed per kg of the respective body weight, infant weight cancels out of the RID itself."
     ),
     BF_EXCLUSIVE = list(
       description = "Exclusive-breastfeeding indicator (yes / no)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened by the stepwise covariate model as a breastfeeding-pattern covariate and not retained (Melander 2025 Methods section 2.3, 'breastfeeding exclusivity (yes/no, categorical variable)'). No point estimate is reported, so no effect can be encoded. Not registered in inst/references/covariate-columns.md because the model does not use it."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened by the stepwise covariate model as a breastfeeding-pattern covariate and not retained (Melander 2025 Methods section 2.3, 'breastfeeding exclusivity (yes/no, categorical variable)'). No point estimate is reported, so no effect can be encoded. Not registered in inst/references/covariate-columns.md because the model does not use it."
     )
   )
 
   compartmentData <- list(
     depot = list(analyte = "cetirizine", units = "mg", specimen = "administration site", verified = TRUE),
-    milk  = list(analyte = "cetirizine", units = "mg", specimen = "milk", verified = TRUE)
+    milk = list(analyte = "cetirizine", units = "mg", specimen = "milk", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 35,
+    n_studies = 1,
     n_observations = 205,
-    age_range      = "22-40 years",
-    age_mean       = "30 years",
-    weight_range   = "53-110 kg",
-    weight_mean    = "78 kg",
+    age_range = "22-40 years",
+    age_mean = "30 years",
+    weight_range = "53-110 kg",
+    weight_mean = "78 kg",
     sex_female_pct = 100,
-    disease_state  = "Healthy lactating (breastfeeding) women taking cetirizine or levocetirizine for allergic conditions; no disease state was required for enrolment.",
-    dose_range     = "Cetirizine 10 mg once daily in 32 of 35 women; 20 mg once daily in 2 women; levocetirizine 5 mg once daily in 1 woman. All women had dosed for at least two days before the sampling day so that milk sampling was at steady state.",
-    regions        = "Norway (mothers resident in Norway; samples analysed at Uppsala University, Sweden). Regional Committee for Medical and Health Research Ethics in South-East Norway, REK no. 232351.",
+    disease_state = "Healthy lactating (breastfeeding) women taking cetirizine or levocetirizine for allergic conditions; no disease state was required for enrolment.",
+    dose_range = "Cetirizine 10 mg once daily in 32 of 35 women; 20 mg once daily in 2 women; levocetirizine 5 mg once daily in 1 woman. All women had dosed for at least two days before the sampling day so that milk sampling was at steady state.",
+    regions = "Norway (mothers resident in Norway; samples analysed at Uppsala University, Sweden). Regional Committee for Medical and Health Research Ethics in South-East Norway, REK no. 232351.",
     infant_partner = "Each mother had one breastfed infant: mean age 8.2 months (range 8.3 weeks to 21 months), mean body weight 8.3 kg (range 3.7-11.9 kg). Infant characteristics enter the relative-infant-dose calculation, not the PK model.",
     feeding_pattern = "Relative infant dose assumes a daily milk intake of 150 mL per kg of infant body weight, per the FDA clinical-lactation-study guidance (Melander 2025 Methods section 2.4).",
-    notes          = "Baseline demographics from Melander 2025 Methods section 2.1; the parent lactation study is Nordeng et al. Each woman provided 4-6 milk samples, nominally pre-dose (time 0) and 2, 4, 8, 12 and 24 h after dose intake, self-collected at home with a supplied electric breast pump. The women were instructed to pump until the breast felt empty and to retain 20 mL of the full pumped volume, so each sample is a whole-breast average rather than fore- or hind-milk. Mean pumping duration 14.9 min (range 2-50 min). Assay: LC-MS/MS with LLOQ 0.39 ug/L and limit of detection 0.04 ug/L; 17 detectable samples from three women fell between the two limits and were carried into the fit with their own additive residual-error term rather than being censored."
+    notes = "Baseline demographics from Melander 2025 Methods section 2.1; the parent lactation study is Nordeng et al. Each woman provided 4-6 milk samples, nominally pre-dose (time 0) and 2, 4, 8, 12 and 24 h after dose intake, self-collected at home with a supplied electric breast pump. The women were instructed to pump until the breast felt empty and to retain 20 mL of the full pumped volume, so each sample is a whole-breast average rather than fore- or hind-milk. Mean pumping duration 14.9 min (range 2-50 min). Assay: LC-MS/MS with LLOQ 0.39 ug/L and limit of detection 0.04 ug/L; 17 detectable samples from three women fell between the two limits and were carried into the fit with their own additive residual-error term rather than being censored."
   )
 
   ini({

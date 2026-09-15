@@ -8,33 +8,33 @@ Lon_2013_abatacept <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Lon 2013 reports PK parameters normalized to body weight (CL, CLD in mL/day/kg; V1, V2 in mL/kg). WT is used here to scale those to absolute units (mL/day and mL) for a dose given in mg. The study enrolled male Lewis rats weighing 150-175 g at arrival; no individual body-weight covariate effect was modeled in the source.",
-      source_name        = "WT"
+      notes = "Lon 2013 reports PK parameters normalized to body weight (CL, CLD in mL/day/kg; V1, V2 in mL/kg). WT is used here to scale those to absolute units (mL/day and mL) for a dose given in mg. The study enrolled male Lewis rats weighing 150-175 g at arrival; no individual body-weight covariate effect was modeled in the source.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 17L,
-    n_studies      = 1L,
-    species        = "Male Lewis rat (Rattus norvegicus), collagen-induced arthritis (CIA) model",
-    age_range      = "6-9 weeks old at arrival; dosing initiated on day 21 post-collagen induction",
-    weight_range   = "150-175 g at arrival",
+    n_subjects = 17L,
+    n_studies = 1L,
+    species = "Male Lewis rat (Rattus norvegicus), collagen-induced arthritis (CIA) model",
+    age_range = "6-9 weeks old at arrival; dosing initiated on day 21 post-collagen induction",
+    weight_range = "150-175 g at arrival",
     sex_female_pct = 0,
-    disease_state  = "Collagen-induced arthritis (CIA) with paw swelling >= 50% increase in one or two hind paws by day 20 post-induction",
-    dose_range     = "10 mg/kg IV single dose (n=5); 20 mg/kg SC single dose (n=6); 20 mg/kg SC on day 21 followed by 10 mg/kg SC on days 23, 25, 27, 29 (n=6)",
-    regions        = "United States (University at Buffalo)",
-    notes          = "Fifty male Lewis rats purchased; 23 arthritic rats with >=50% paw-swelling response were randomized to vehicle (single n=3, multiple n=3), IV 10 mg/kg (n=5), SC single 20 mg/kg (n=6), or SC multiple (n=6). Seventeen abatacept-treated rats contributed to the population PK fit. Plasma abatacept was quantified by sCTLA-4 ELISA (LLOQ 0.16 ng/mL, inter-day CV ~15%). Per Lon 2013 Methods (Animals) and Experimental Design."
+    disease_state = "Collagen-induced arthritis (CIA) with paw swelling >= 50% increase in one or two hind paws by day 20 post-induction",
+    dose_range = "10 mg/kg IV single dose (n=5); 20 mg/kg SC single dose (n=6); 20 mg/kg SC on day 21 followed by 10 mg/kg SC on days 23, 25, 27, 29 (n=6)",
+    regions = "United States (University at Buffalo)",
+    notes = "Fifty male Lewis rats purchased; 23 arthritic rats with >=50% paw-swelling response were randomized to vehicle (single n=3, multiple n=3), IV 10 mg/kg (n=5), SC single 20 mg/kg (n=6), or SC multiple (n=6). Seventeen abatacept-treated rats contributed to the population PK fit. Plasma abatacept was quantified by sCTLA-4 ELISA (LLOQ 0.16 ng/mL, inter-day CV ~15%). Per Lon 2013 Methods (Animals) and Experimental Design."
   )
 
   ini({

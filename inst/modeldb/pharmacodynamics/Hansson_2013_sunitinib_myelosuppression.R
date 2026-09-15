@@ -29,78 +29,93 @@ Hansson_2013_sunitinib_myelosuppression <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    svegfr3  = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
-    prol     = list(analyte = "progenitor cells", units = "mg", specimen = "blood cell", verified = FALSE),
-    transit1 = list(analyte = "mature neutrophil precursors", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2 = list(analyte = "late mature neutrophil precursors", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3 = list(analyte = "circulating neutrophils", units = "mg", specimen = "administration site", verified = FALSE),
-    circ     = list(analyte = "ANC", units = "mg", specimen = "whole blood", verified = FALSE)
+    svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    prol = list(analyte = "progenitor cells", units = "mg", specimen = "blood cell", verified = FALSE),
+    transit1 = list(
+      analyte = "mature neutrophil precursors",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit2 = list(
+      analyte = "late mature neutrophil precursors",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit3 = list(
+      analyte = "circulating neutrophils",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    circ = list(analyte = "ANC", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The paper Methods describes sunitinib administered at 25-75 mg PO QD on 4/2, 2/2, 2/1, or continuous schedules across studies 1004, 1047, 1045, and 013 (Table 1). For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule, 0 mg during off-cycles, matching the largest cohort (Demetri 2006 / Study 1004).",
-      source_name        = "DOSE"
+      notes = "The paper Methods describes sunitinib administered at 25-75 mg PO QD on 4/2, 2/2, 2/1, or continuous schedules across studies 1004, 1047, 1045, and 013 (Table 1). For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule, 0 mg during off-cycles, matching the largest cohort (Demetri 2006 / Study 1004).",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e85 Methods describes the upstream popPK as a previously developed 2-compartment model (Houk et al. 2009 Clin Cancer Res 15:2497-2506; that popPK is not packaged in nlmixr2lib at extraction time). The companion Hansson_2013a / Hansson_2013c sunitinib model files use a typical-value reference of 32.819 L/h for typical-cohort vignettes; the same value is used here so the in-model svegfr3 dynamics match the upstream Hansson 2013a typical-value figure.",
-      source_name        = "CL"
+      notes = "Required input. The Hansson 2013 e85 Methods describes the upstream popPK as a previously developed 2-compartment model (Houk et al. 2009 Clin Cancer Res 15:2497-2506; that popPK is not packaged in nlmixr2lib at extraction time). The companion Hansson_2013a / Hansson_2013c sunitinib model files use a typical-value reference of 32.819 L/h for typical-cohort vignettes; the same value is used here so the in-model svegfr3 dynamics match the upstream Hansson 2013a typical-value figure.",
+      source_name = "CL"
     ),
     BAS_SVEGFR3 = list(
-      description        = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as the initial condition for the in-model svegfr3 state and as the denominator in the sVEGFR-3 REL driver svegfr3_rel = (BAS_SVEGFR3 - svegfr3) / BAS_SVEGFR3.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as the initial condition for the in-model svegfr3 state and as the denominator in the sVEGFR-3 REL driver svegfr3_rel = (BAS_SVEGFR3 - svegfr3) / BAS_SVEGFR3.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Hansson 2013 e84 (companion paper) reports a typical sVEGFR-3 baseline of 63900 pg/mL. For new-population simulations either (a) simulate from `Hansson_2013a_sunitinib` to obtain individual posthoc baselines, or (b) set every subject to the typical 63900 pg/mL.",
-      source_name        = "BAS3"
+      notes = "Required input. Hansson 2013 e84 (companion paper) reports a typical sVEGFR-3 baseline of 63900 pg/mL. For new-population simulations either (a) simulate from `Hansson_2013a_sunitinib` to obtain individual posthoc baselines, or (b) set every subject to the typical 63900 pg/mL.",
+      source_name = "BAS3"
     ),
     MRT_SVEGFR3 = list(
-      description        = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as kout3 = 1 / MRT_SVEGFR3 inside model().",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as kout3 = 1 / MRT_SVEGFR3 inside model().",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013a typical sVEGFR-3 MRT is 401 h (Hansson 2013 e84 Table 2). Same population strategy as BAS_SVEGFR3.",
-      source_name        = "MRT3"
+      notes = "Required input. The Hansson 2013a typical sVEGFR-3 MRT is 401 h (Hansson 2013 e84 Table 2). Same population strategy as BAS_SVEGFR3.",
+      source_name = "MRT3"
     ),
     EC50_SVEGFR3 = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff_svegfr3 = auc / (EC50_SVEGFR3 + auc).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff_svegfr3 = auc / (EC50_SVEGFR3 + auc).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013a typical (shared across the four biomarkers) IC50 is 1.0 mg*h/L (Hansson 2013 e84 Table 2). Same population strategy as BAS_SVEGFR3.",
-      source_name        = "EC53"
+      notes = "Required input. The Hansson 2013a typical (shared across the four biomarkers) IC50 is 1.0 mg*h/L (Hansson 2013 e84 Table 2). Same population strategy as BAS_SVEGFR3.",
+      source_name = "EC53"
     ),
     RACE_JAPANESE = list(
-      description        = "Binary indicator: 1 = Japanese subject (Study 1045 from Shirao 2010 phase I/II), 0 = non-Japanese (Studies 1004, 1047, 013). Switches the typical baseline ANC0 between 4.94 (non-Japanese) and 3.69 (Japanese) 10^9/L per Hansson 2013 Table 2 row 'ANC0: Study 45'.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = Japanese subject (Study 1045 from Shirao 2010 phase I/II), 0 = non-Japanese (Studies 1004, 1047, 013). Switches the typical baseline ANC0 between 4.94 (non-Japanese) and 3.69 (Japanese) 10^9/L per Hansson 2013 Table 2 row 'ANC0: Study 45'.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = "Hansson 2013 estimated a separate baseline parameter for Study 1045 to account for lower ANC levels in Japanese patients (Results section: 'A separate baseline parameter (ANC0) was estimated to account for lower ANC levels in Study 45, which was conducted in Japanese patients.'). For typical-cohort vignette simulations set every subject to 0 (non-Japanese, ANC0 = 4.94).",
-      source_name        = "(derived from study identifier; Study 1045 in the paper = Japanese cohort)"
+      notes = "Hansson 2013 estimated a separate baseline parameter for Study 1045 to account for lower ANC levels in Japanese patients (Results section: 'A separate baseline parameter (ANC0) was estimated to account for lower ANC levels in Study 45, which was conducted in Japanese patients.'). For typical-cohort vignette simulations set every subject to 0 (non-Japanese, ANC0 = 4.94).",
+      source_name = "(derived from study identifier; Study 1045 in the paper = Japanese cohort)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 303L,
-    n_studies      = 4L,
-    age_range      = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section that includes Methods + Results + Tables)",
-    weight_range   = "not reported in the on-disk trimmed paper text",
+    species = "human",
+    n_subjects = 303L,
+    n_studies = 4L,
+    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section that includes Methods + Results + Tables)",
+    weight_range = "not reported in the on-disk trimmed paper text",
     sex_female_pct = NA_real_,
     race_ethnicity = "majority non-Japanese (Studies 1004, 1047, 013); Japanese subgroup is Study 1045 (n=36) per Shirao 2010",
-    disease_state  = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
-    dose_range     = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule (Table 1). The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib.",
-    regions        = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the trimmed paper text.",
-    biomarkers     = "Absolute neutrophil count (ANC) measured serially across treatment cycles. Median (range) observed ANC during treatment: 3.1 (0.080-20) in study 1004, 1.8 (0.010-7.5) in study 1047, 2.1 (0.28-12) in study 1045, 2.6 (0.16-15) in study 013 (Hansson 2013 Table 1).",
-    notes          = "n_subjects = 303 reported in Hansson 2013 e85 Methods ('analyzed data were from four clinical trials in phases I-III, which comprised patients with imatinib-resistant malignant GIST treated with sunitinib... totaling 303 patients'). Per-cohort baseline demographics (age, weight, sex, race) are not transcribed in the trimmed paper text; the cohort breakdown by study is from Table 1."
+    disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
+    dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule (Table 1). The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib.",
+    regions = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the trimmed paper text.",
+    biomarkers = "Absolute neutrophil count (ANC) measured serially across treatment cycles. Median (range) observed ANC during treatment: 3.1 (0.080-20) in study 1004, 1.8 (0.010-7.5) in study 1047, 2.1 (0.28-12) in study 1045, 2.6 (0.16-15) in study 013 (Hansson 2013 Table 1).",
+    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods ('analyzed data were from four clinical trials in phases I-III, which comprised patients with imatinib-resistant malignant GIST treated with sunitinib... totaling 303 patients'). Per-cohort baseline demographics (age, weight, sex, race) are not transcribed in the trimmed paper text; the cohort breakdown by study is from Table 1."
   )
 
   ini({

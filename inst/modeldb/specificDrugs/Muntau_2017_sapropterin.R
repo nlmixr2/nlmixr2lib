@@ -8,36 +8,36 @@ Muntau_2017_sapropterin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "sapropterin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; pediatric range 5-20 kg in the SPARK trial).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; pediatric range 5-20 kg in the SPARK trial).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent clearance and apparent central volume, normalized to a reference adult weight of 70 kg (Table 4 footnote: 'Reference weight (adult male patient)'). Table 3 reports the exponents (0.839 on CL/F and 0.573 on V/F).",
-      source_name        = "WT"
+      notes = "Power-form effect on apparent clearance and apparent central volume, normalized to a reference adult weight of 70 kg (Table 4 footnote: 'Reference weight (adult male patient)'). Table 3 reports the exponents (0.839 on CL/F and 0.573 on V/F).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52L,
-    n_studies      = 1L,
-    age_range      = "2-47 months",
-    age_mean       = "21 months (SD 12)",
-    weight_range   = "5-20 kg",
-    weight_mean    = "11.3 kg (SD 3.0)",
+    species = "human",
+    n_subjects = 52L,
+    n_studies = 1L,
+    age_range = "2-47 months",
+    age_mean = "21 months (SD 12)",
+    weight_range = "5-20 kg",
+    weight_mean = "11.3 kg (SD 3.0)",
     sex_female_pct = 46.4,
-    disease_state  = "BH4-responsive phenylketonuria (PKU) or mild hyperphenylalaninemia (HPA): per Table 2, 21% classical PKU, 32% mild PKU, 46% mild HPA in the ITT population.",
-    dose_range     = "10 mg/kg/day oral sapropterin (could be uptitrated to 20 mg/kg/day at week 4 if Phe tolerance had not increased by >20% vs baseline; only 2 of 27 sapropterin-treated patients escalated).",
-    regions        = "Europe (Austria, Belgium, Czech Republic, Germany, Italy, Netherlands, Slovakia, Turkey, United Kingdom; 22 sites in 9 countries).",
-    trial          = "SPARK (NCT01376908) -- 26-week open-label, multicentre, randomized phase IIIb study.",
-    age_strata     = c("<12 months" = 15L, "12-<24 months" = 18L, "24-<48 months" = 23L),
-    notes          = "Baseline demographics from Table 2 (n=56 ITT, n=52 with >=1 PK sample contributing to the popPK analysis). Pharmacokinetic sampling was planned by D-optimization with sparse sampling; plasma samples for endogenous BH4 measurement were collected at baseline and sparsely between weeks 5-12 after oral administration of 10 mg/kg/day. The Discussion notes the one-compartment fit yielded concentration profiles 'virtually identical to those from a two-compartment model evaluated in a previous study' (the Qi 2014 pooled 0-50 years analysis in nlmixr2lib as Qi_2014_sapropterin), supporting the parsimonious one-compartment selection at <4 years."
+    disease_state = "BH4-responsive phenylketonuria (PKU) or mild hyperphenylalaninemia (HPA): per Table 2, 21% classical PKU, 32% mild PKU, 46% mild HPA in the ITT population.",
+    dose_range = "10 mg/kg/day oral sapropterin (could be uptitrated to 20 mg/kg/day at week 4 if Phe tolerance had not increased by >20% vs baseline; only 2 of 27 sapropterin-treated patients escalated).",
+    regions = "Europe (Austria, Belgium, Czech Republic, Germany, Italy, Netherlands, Slovakia, Turkey, United Kingdom; 22 sites in 9 countries).",
+    trial = "SPARK (NCT01376908) -- 26-week open-label, multicentre, randomized phase IIIb study.",
+    age_strata = c("<12 months" = 15L, "12-<24 months" = 18L, "24-<48 months" = 23L),
+    notes = "Baseline demographics from Table 2 (n=56 ITT, n=52 with >=1 PK sample contributing to the popPK analysis). Pharmacokinetic sampling was planned by D-optimization with sparse sampling; plasma samples for endogenous BH4 measurement were collected at baseline and sparsely between weeks 5-12 after oral administration of 10 mg/kg/day. The Discussion notes the one-compartment fit yielded concentration profiles 'virtually identical to those from a two-compartment model evaluated in a previous study' (the Qi 2014 pooled 0-50 years analysis in nlmixr2lib as Qi_2014_sapropterin), supporting the parsimonious one-compartment selection at <4 years."
   )
 
   ini({

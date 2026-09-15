@@ -8,64 +8,64 @@ Rozman_2017_rituximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on the time-stationary clearance cl_exp_inf with estimated exponent 1.23 (95% CI 0.70-1.73, which brackets the theoretical allometric 0.75 per Rozman 2017 Results). Reference weight 70 kg matches the typical-male subject Rozman 2017 used for the Figure 3 progressor / non-progressor simulation.",
-      source_name        = "WT"
+      notes = "Time-fixed baseline value. Power effect on the time-stationary clearance cl_exp_inf with estimated exponent 1.23 (95% CI 0.70-1.73, which brackets the theoretical allometric 0.75 per Rozman 2017 Results). Reference weight 70 kg matches the typical-male subject Rozman 2017 used for the Figure 3 progressor / non-progressor simulation.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at treatment start",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at treatment start",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Linear effect on the time-stationary clearance cl_exp_inf, centered at 60 years: cl_exp_inf is reduced by 0.82% per year above the 60-year reference (Rozman 2017 Results, Table 2 theta = -0.00820).",
-      source_name        = "AGE"
+      notes = "Time-fixed baseline value. Linear effect on the time-stationary clearance cl_exp_inf, centered at 60 years: cl_exp_inf is reduced by 0.82% per year above the 60-year reference (Rozman 2017 Results, Table 2 theta = -0.00820).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Rozman 2017 anchors the typical-value central volume V1 = 4.62 L to the male reference; women have 21.4% lower V1 (Rozman 2017 Results, Table 2 theta = -0.214). Applied via (1 + e_sexf_vc * SEXF) = (1 - 0.214) for females, (1) for males.",
-      source_name        = "SEX"
+      notes = "Rozman 2017 anchors the typical-value central volume V1 = 4.62 L to the male reference; women have 21.4% lower V1 (Rozman 2017 Results, Table 2 theta = -0.214). Applied via (1 + e_sexf_vc * SEXF) = (1 - 0.214) for females, (1) for males.",
+      source_name = "SEX"
     ),
     PFS_EVENT = list(
-      description        = "Progression-free-survival event indicator (1 = patient experienced disease progression during follow-up, 0 = no progression observed through end of follow-up)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Progression-free-survival event indicator (1 = patient experienced disease progression during follow-up, 0 = no progression observed through end of follow-up)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no progression event observed during follow-up)",
-      notes              = "Post-hoc outcome-derived covariate: Rozman 2017 assessed disease progression during follow-up (median observation 52.9 months) per revised response criteria for malignant lymphoma (International Harmonization Project). 6 / 29 patients (20.7%) experienced progression. Applied as a proportional multiplier on the time-varying CL decay-rate cl_exp_kdes: cl_exp_kdes in progressors is 82.2% lower than in non-progressors (0.0254/day vs 0.143/day; Rozman 2017 Table 2 theta = -0.822, 95% CI -0.950 to -0.334). Biological interpretation (paper Discussion): slow decay of target-mediated CL reflects sustained CD20 target burden, which is associated with poorer response. Using an outcome variable as a covariate on PK carries selection-bias implications documented in the vignette Assumptions and deviations section.",
-      source_name        = "progression status (paper does not disclose the NONMEM $INPUT column name)"
+      notes = "Post-hoc outcome-derived covariate: Rozman 2017 assessed disease progression during follow-up (median observation 52.9 months) per revised response criteria for malignant lymphoma (International Harmonization Project). 6 / 29 patients (20.7%) experienced progression. Applied as a proportional multiplier on the time-varying CL decay-rate cl_exp_kdes: cl_exp_kdes in progressors is 82.2% lower than in non-progressors (0.0254/day vs 0.143/day; Rozman 2017 Table 2 theta = -0.822, 95% CI -0.950 to -0.334). Biological interpretation (paper Discussion): slow decay of target-mediated CL reflects sustained CD20 target burden, which is associated with poorer response. Using an outcome variable as a covariate on PK carries selection-bias implications documented in the vignette Assumptions and deviations section.",
+      source_name = "progression status (paper does not disclose the NONMEM $INPUT column name)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
     n_observations = 512L,
-    age_range      = "48-84 years",
-    age_median     = "62 years",
-    weight_range   = "54-100 kg",
-    weight_median  = "74 kg",
+    age_range = "48-84 years",
+    age_median = "62 years",
+    weight_range = "54-100 kg",
+    weight_median = "74 kg",
     sex_female_pct = 44.8,
     race_ethnicity = "Caucasian (100%)",
-    disease_state  = "Newly diagnosed diffuse large B-cell lymphoma (DLBCL); Ann Arbour clinical stage I-II 37.9% / III-IV 62.1%; International Prognostic Index (IPI) 0-2 65.5% / IPI 3-5 34.5%; bulky disease 34.5%.",
-    dose_range     = "Rituximab 375 mg/m^2 IV every 3 weeks for 8 cycles of R-CHOP (rituximab + cyclophosphamide + doxorubicin + vincristine + methylprednisolone). Median dose per cycle 700 mg (range 500-800 mg). First-cycle slow infusion 50 mg/h ramped to a maximum 400 mg/h; subsequent cycles fast infusion (20% of dose over 30 min then 80% over 60 min).",
-    regimen        = "Q3W IV infusion x 8 cycles. Sixteen of 29 patients received additional radiotherapy after R-CHOP.",
-    regions        = "Slovenia (single-centre Institute of Oncology Ljubljana study).",
-    followup       = "Median observation 52.9 months (range 9.7-66.3 months). Six patients (20.7%) experienced disease progression during follow-up (three with IPI = 4, three with IPI = 1); four progressed at 3 months post-therapy, one at 4 months, one at 5 months. Projected 5-year progression-free and overall survival both 79%.",
-    sampling       = "18 samples per patient (16-18 available). Cycles 1-7: peak (15 min to 3 h post-infusion) and trough (immediately before the next cycle's infusion) per cycle. Cycle 8: peak plus 1, 3, and 6 months post-final-infusion.",
-    assay          = "Enzyme-linked immunosorbent assay (ELISA) with rat anti-rituximab IgG2a capture (MB2A4) and goat peroxidase-conjugated anti-human IgG detection; five-parameter logistic calibration; between-run precision <= 13.8% CV, within-run precision <= 9.8% CV, accuracy <= 13.7% deviation. Calibration range 10-2000 mg/L (samples diluted 1/20000).",
-    notes          = "First prospective popPK study of rituximab in newly diagnosed DLBCL patients on standard 3-week R-CHOP. Covariates tested and not retained in the final model: IPI, irradiation-following-R-CHOP indicator, and treatment response category (complete / partial / stable / progressive; the binary disease-progression indicator on KD was retained instead). Comorbidities (arterial hypertension, benign prostatic hyperplasia, hypercholesterolaemia) and concomitant medications (ACE inhibitors / ARB antagonists, proton-pump inhibitors, NSAIDs) were not expected to affect rituximab PK and were not tested."
+    disease_state = "Newly diagnosed diffuse large B-cell lymphoma (DLBCL); Ann Arbour clinical stage I-II 37.9% / III-IV 62.1%; International Prognostic Index (IPI) 0-2 65.5% / IPI 3-5 34.5%; bulky disease 34.5%.",
+    dose_range = "Rituximab 375 mg/m^2 IV every 3 weeks for 8 cycles of R-CHOP (rituximab + cyclophosphamide + doxorubicin + vincristine + methylprednisolone). Median dose per cycle 700 mg (range 500-800 mg). First-cycle slow infusion 50 mg/h ramped to a maximum 400 mg/h; subsequent cycles fast infusion (20% of dose over 30 min then 80% over 60 min).",
+    regimen = "Q3W IV infusion x 8 cycles. Sixteen of 29 patients received additional radiotherapy after R-CHOP.",
+    regions = "Slovenia (single-centre Institute of Oncology Ljubljana study).",
+    followup = "Median observation 52.9 months (range 9.7-66.3 months). Six patients (20.7%) experienced disease progression during follow-up (three with IPI = 4, three with IPI = 1); four progressed at 3 months post-therapy, one at 4 months, one at 5 months. Projected 5-year progression-free and overall survival both 79%.",
+    sampling = "18 samples per patient (16-18 available). Cycles 1-7: peak (15 min to 3 h post-infusion) and trough (immediately before the next cycle's infusion) per cycle. Cycle 8: peak plus 1, 3, and 6 months post-final-infusion.",
+    assay = "Enzyme-linked immunosorbent assay (ELISA) with rat anti-rituximab IgG2a capture (MB2A4) and goat peroxidase-conjugated anti-human IgG detection; five-parameter logistic calibration; between-run precision <= 13.8% CV, within-run precision <= 9.8% CV, accuracy <= 13.7% deviation. Calibration range 10-2000 mg/L (samples diluted 1/20000).",
+    notes = "First prospective popPK study of rituximab in newly diagnosed DLBCL patients on standard 3-week R-CHOP. Covariates tested and not retained in the final model: IPI, irradiation-following-R-CHOP indicator, and treatment response category (complete / partial / stable / progressive; the binary disease-progression indicator on KD was retained instead). Comorbidities (arterial hypertension, benign prostatic hyperplasia, hypercholesterolaemia) and concomitant medications (ACE inhibitors / ARB antagonists, proton-pump inhibitors, NSAIDs) were not expected to affect rituximab PK and were not tested."
   )
 
   ini({

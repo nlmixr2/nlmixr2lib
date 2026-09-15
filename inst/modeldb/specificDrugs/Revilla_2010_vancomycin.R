@@ -13,57 +13,57 @@ Revilla_2010_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Revilla 2010 Table 2: mean 73.0 kg (SD 13.3, range 45-150). Used to convert the paper's weight-normalised CL (mL/min/kg) and V (L/kg) into total L/h and L. Body weight was added to the model before the evaluation of other covariates per Discussion paragraph 4.",
-      source_name        = "WT"
+      notes = "Revilla 2010 Table 2: mean 73.0 kg (SD 13.3, range 45-150). Used to convert the paper's weight-normalised CL (mL/min/kg) and V (L/kg) into total L/h and L. Body weight was added to the model before the evaluation of other covariates per Discussion paragraph 4.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at start of vancomycin therapy",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at start of vancomycin therapy",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Revilla 2010 Table 2: mean 61.1 years (SD 16.3, range 18-85). Enters the non-renal CL arm as AGE^theta2 with theta2 = -0.24 (Table 4 final-model column).",
-      source_name        = "AGE"
+      notes = "Revilla 2010 Table 2: mean 61.1 years (SD 16.3, range 18-85). Enters the non-renal CL arm as AGE^theta2 with theta2 = -0.24 (Table 4 final-model column).",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "24-hour measured creatinine clearance (Levey-estimated CrCl substituted for the ~8 percent of records with no 24-hour collection); raw mL/min, not BSA-normalised",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "24-hour measured creatinine clearance (Levey-estimated CrCl substituted for the ~8 percent of records with no 24-hour collection); raw mL/min, not BSA-normalised",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Revilla 2010 Table 2: mean 74.7 mL/min (SD 58.0, range 10-328); the 24-hour measured CrCl was preferred and the Levey-formula estimate was substituted only when the measurement was unavailable (Methods, Patients and study design, ~8 percent of data). Stored under the canonical CRCL covariate per the inst/references/covariate-columns.md precedent that accepts raw mL/min when the source does not BSA-normalise (Delattre 2010 amikacin, MedellinGaribay 2015 gentamicin). Enters the renal CL arm as 0.67 * CRCL/WT in mL/min/kg.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Revilla 2010 Table 2: mean 74.7 mL/min (SD 58.0, range 10-328); the 24-hour measured CrCl was preferred and the Levey-formula estimate was substituted only when the measurement was unavailable (Methods, Patients and study design, ~8 percent of data). Stored under the canonical CRCL covariate per the inst/references/covariate-columns.md precedent that accepts raw mL/min when the source does not BSA-normalise (Delattre 2010 amikacin, MedellinGaribay 2015 gentamicin). Enters the renal CL arm as 0.67 * CRCL/WT in mL/min/kg.",
+      source_name = "CLCR"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CrSe. Revilla 2010 Table 2: mean 1.4 mg/dL (SD 1.0, range 0.6-5.0). A 0.5 mg/dL quantification limit was assumed for values below the assay limit. Enters V via a dichotomous indicator A = (CREAT > 1 mg/dL): V multiplies by theta4 = 2.49 when A = 1 (Table 4 final-model column; threshold direction confirmed by Results paragraph below Table 3 and Discussion paragraph 4).",
-      source_name        = "CrSe"
+      notes = "Source column CrSe. Revilla 2010 Table 2: mean 1.4 mg/dL (SD 1.0, range 0.6-5.0). A 0.5 mg/dL quantification limit was assumed for values below the assay limit. Enters V via a dichotomous indicator A = (CREAT > 1 mg/dL): V multiplies by theta4 = 2.49 when A = 1 (Table 4 final-model column; threshold direction confirmed by Results paragraph below Table 3 and Discussion paragraph 4).",
+      source_name = "CrSe"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 191L,
-    n_studies        = 1L,
-    age_range        = "18-85 years",
-    age_median       = "61.1 years (mean)",
-    weight_range     = "45-150 kg",
-    weight_median    = "73.0 kg (mean)",
-    sex_female_pct   = 34,
-    race_ethnicity   = "Not reported (single-centre Spanish ICU cohort)",
-    disease_state    = "Adult medical ICU patients receiving vancomycin (severe trauma n=81, post-surgery n=50, sepsis n=49 of whom n=13 septic shock, respiratory infections / pneumonia n=66, multiorgan failure n=35, respiratory distress syndrome n=30, hypovolaemic shock n=15)",
-    dose_range       = "Vancomycin IV; mostly 60-min infusions (n=406 episodes; 42% 1000 mg q12h and 20% 1000 mg q24h, mean 18.4 mg/kg/day); 14 episodes continuous infusion (mean rate 56.9 mg/h); no patient received a loading dose",
-    regions          = "Spain (single centre, University Hospital of Salamanca, 1999-2004)",
-    apache_ii        = "mean 18.0 (SD 6.9, range 2-41)",
-    serum_albumin    = "mean 2.3 g/dL (SD 0.7, range 0.5-6.2)",
-    renal_function   = "24-hour measured CrCl mean 74.7 mL/min (SD 58.0, range 10-328); raw mL/min, not BSA-normalised. Patients on renal replacement therapy were excluded.",
+    species = "human",
+    n_subjects = 191L,
+    n_studies = 1L,
+    age_range = "18-85 years",
+    age_median = "61.1 years (mean)",
+    weight_range = "45-150 kg",
+    weight_median = "73.0 kg (mean)",
+    sex_female_pct = 34,
+    race_ethnicity = "Not reported (single-centre Spanish ICU cohort)",
+    disease_state = "Adult medical ICU patients receiving vancomycin (severe trauma n=81, post-surgery n=50, sepsis n=49 of whom n=13 septic shock, respiratory infections / pneumonia n=66, multiorgan failure n=35, respiratory distress syndrome n=30, hypovolaemic shock n=15)",
+    dose_range = "Vancomycin IV; mostly 60-min infusions (n=406 episodes; 42% 1000 mg q12h and 20% 1000 mg q24h, mean 18.4 mg/kg/day); 14 episodes continuous infusion (mean rate 56.9 mg/h); no patient received a loading dose",
+    regions = "Spain (single centre, University Hospital of Salamanca, 1999-2004)",
+    apache_ii = "mean 18.0 (SD 6.9, range 2-41)",
+    serum_albumin = "mean 2.3 g/dL (SD 0.7, range 0.5-6.2)",
+    renal_function = "24-hour measured CrCl mean 74.7 mL/min (SD 58.0, range 10-328); raw mL/min, not BSA-normalised. Patients on renal replacement therapy were excluded.",
     n_concentrations = 569L,
-    notes            = "Retrospective non-comparative cohort. 569 concentration-time records from 191 patients (mean 2.98 per patient, range 1-19), of which ~80 percent are C(min) trough samples (0-60 min pre-dose). External validation cohort: 46 patients / 73 concentrations (2007-2008), mean age 58.7 +/- 16.6 years, mean weight 73.1 +/- 19.8 kg. Excluded from model building: neoplasic disorders, prior cardiac surgery, renal replacement therapy, and patients without concentration-time data. Mechanical ventilation 87%; parenteral nutrition 46%; co-medications albumin 21%, furosemide 64%, catecholamines 71%. Demographics in Table 2. Fit in NONMEM v5 level 1.1 (FOCE INTERACTION, ADVAN1 TRANS2). External evaluation: standardised prediction errors 0.14 +/- 0.70 mg/L (95% CI -0.03 to 0.30 included zero); 100% of observed concentrations fell within PRED +/- 2 * SDpop."
+    notes = "Retrospective non-comparative cohort. 569 concentration-time records from 191 patients (mean 2.98 per patient, range 1-19), of which ~80 percent are C(min) trough samples (0-60 min pre-dose). External validation cohort: 46 patients / 73 concentrations (2007-2008), mean age 58.7 +/- 16.6 years, mean weight 73.1 +/- 19.8 kg. Excluded from model building: neoplasic disorders, prior cardiac surgery, renal replacement therapy, and patients without concentration-time data. Mechanical ventilation 87%; parenteral nutrition 46%; co-medications albumin 21%, furosemide 64%, catecholamines 71%. Demographics in Table 2. Fit in NONMEM v5 level 1.1 (FOCE INTERACTION, ADVAN1 TRANS2). External evaluation: standardised prediction errors 0.14 +/- 0.70 mg/L (95% CI -0.03 to 0.30 included zero); 100% of observed concentrations fell within PRED +/- 2 * SDpop."
   )
 
   ini({

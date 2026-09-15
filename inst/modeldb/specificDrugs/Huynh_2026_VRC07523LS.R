@@ -8,53 +8,53 @@ Huynh_2026_VRC07523LS <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "VRC07523LS", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "VRC07523LS", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "VRC07523LS", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "VRC07523LS", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "VRC07523LS", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Updated at each PK visit in the infant cohort to track growth (Huynh 2026 Methods, Population pharmacokinetic analysis: 'PK parameters were scaled allometrically based on observed potential covariates ... Weight was updated as a PK study visit for both the modelling and simulation'). Used for allometric scaling on CL and Q with exponent 0.85 and on Vc and Vp with exponent 1.0; reference 70 kg.",
-      source_name        = "WTKG"
+      notes = "Time-varying. Updated at each PK visit in the infant cohort to track growth (Huynh 2026 Methods, Population pharmacokinetic analysis: 'PK parameters were scaled allometrically based on observed potential covariates ... Weight was updated as a PK study visit for both the modelling and simulation'). Used for allometric scaling on CL and Q with exponent 0.85 and on Vc and Vp with exponent 1.0; reference 70 kg.",
+      source_name = "WTKG"
     ),
     CHILD = list(
-      description        = "Age-group indicator: 1 = infant, 0 = adult",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Age-group indicator: 1 = infant, 0 = adult",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult)",
-      notes              = "Time-fixed per subject. Encodes the IMPAACT P1112 infant cohort (median post-natal age 2.5 days) as CHILD = 1 and the VRC 605 adult cohort (median 29.4 years) as CHILD = 0. The published structural CL (47.76 mL/d/70 kg) and D1 (36 h) are reported with infants as the reference category, so the model file applies the effect via (1 + e_child_cl * (1 - CHILD)) (and analogously on D1) with a positive coefficient to preserve the paper's verbatim values; adults carry CL/F = 158.4 x (WTKG/70)^0.85 x 1.69 and D1 = 36 x 2.79 hours per Huynh 2026 Table 2 footnote.",
-      source_name        = "AGEGRP (1 = infant, 0 = adult)"
+      notes = "Time-fixed per subject. Encodes the IMPAACT P1112 infant cohort (median post-natal age 2.5 days) as CHILD = 1 and the VRC 605 adult cohort (median 29.4 years) as CHILD = 0. The published structural CL (47.76 mL/d/70 kg) and D1 (36 h) are reported with infants as the reference category, so the model file applies the effect via (1 + e_child_cl * (1 - CHILD)) (and analogously on D1) with a positive coefficient to preserve the paper's verbatim values; adults carry CL/F = 158.4 x (WTKG/70)^0.85 x 1.69 and D1 = 36 x 2.79 hours per Huynh 2026 Table 2 footnote.",
+      source_name = "AGEGRP (1 = infant, 0 = adult)"
     ),
     CYCLE = list(
-      description        = "Dose-number indicator: 1 = first dose, 2+ = repeat dose",
-      units              = "(count)",
-      type               = "count",
+      description = "Dose-number indicator: 1 = first dose, 2+ = repeat dose",
+      units = "(count)",
+      type = "count",
       reference_category = "1 (first dose)",
-      notes              = "Time-varying. Increment at the start of each new dose; supply CYCLE >= 1 at every observation row. Source paper applies a multiplicative factor of 1.49 on Vss (= Vc + Vp) for the second and subsequent doses (Huynh 2026 Table 2; 'V_ss increased by 49% in comparison to the first dose'). Mechanism is hypothesized to involve TMDD or FcRn-binding changes but was not pursued in the paper.",
-      source_name        = "DOSEN (1 = first, >=2 = repeat)"
+      notes = "Time-varying. Increment at the start of each new dose; supply CYCLE >= 1 at every observation row. Source paper applies a multiplicative factor of 1.49 on Vss (= Vc + Vp) for the second and subsequent doses (Huynh 2026 Table 2; 'V_ss increased by 49% in comparison to the first dose'). Mechanism is hypothesized to involve TMDD or FcRn-binding changes but was not pursued in the paper.",
+      source_name = "DOSEN (1 = first, >=2 = repeat)"
     )
   )
 
   population <- list(
-    n_subjects     = 46L,
-    n_studies      = 2L,
-    age_range      = "Infants (IMPAACT P1112): 37-42 weeks gestational age, 0-5 days post-natal age at first dose. Adults (VRC 605): 22-48 years.",
-    age_median     = "Infants 2.5 days post-natal age; adults 29.4 years",
-    weight_range   = "Infants: 2.2-4.3 kg. Adults: 45-97 kg.",
-    weight_median  = "Infants 2.8 kg; adults 71.1 kg",
+    n_subjects = 46L,
+    n_studies = 2L,
+    age_range = "Infants (IMPAACT P1112): 37-42 weeks gestational age, 0-5 days post-natal age at first dose. Adults (VRC 605): 22-48 years.",
+    age_median = "Infants 2.5 days post-natal age; adults 29.4 years",
+    weight_range = "Infants: 2.2-4.3 kg. Adults: 45-97 kg.",
+    weight_median = "Infants 2.8 kg; adults 71.1 kg",
     sex_female_pct = 50.0,
-    disease_state  = "Healthy adults (VRC 605) and HIV-exposed (uninfected) infants (IMPAACT P1112) enrolled for HIV-1 prophylaxis evaluation",
-    dose_range     = "Infants: 80 mg s.c. single dose (n=12) or 80 mg s.c. at birth + 100 mg s.c. at week 12 (n=9). Adults: 1, 5, 20, or 40 mg/kg i.v. single (n=12); 5 mg/kg s.c. single (n=3); 20 mg/kg i.v. q12w x3 (n=5); 5 mg/kg s.c. q12w x3 (n=5).",
-    regions        = "United States (multi-site IMPAACT P1112 and VRC 605 trials)",
-    n_infants      = 21L,
-    n_adults       = 25L,
-    sampling       = "638 VRC07-523LS serum concentrations across 84 weeks (211 infant samples; 480 adult samples after exclusion of one infant for tolerability). Quantification by anti-idiotype antibody capture ELISA.",
-    notes          = "Per Huynh 2026 Table 1 (Baseline demographics and study designs) and Methods, Patient population. Sex split combines 12 male / 9 female infants and 11 male / 14 female adults."
+    disease_state = "Healthy adults (VRC 605) and HIV-exposed (uninfected) infants (IMPAACT P1112) enrolled for HIV-1 prophylaxis evaluation",
+    dose_range = "Infants: 80 mg s.c. single dose (n=12) or 80 mg s.c. at birth + 100 mg s.c. at week 12 (n=9). Adults: 1, 5, 20, or 40 mg/kg i.v. single (n=12); 5 mg/kg s.c. single (n=3); 20 mg/kg i.v. q12w x3 (n=5); 5 mg/kg s.c. q12w x3 (n=5).",
+    regions = "United States (multi-site IMPAACT P1112 and VRC 605 trials)",
+    n_infants = 21L,
+    n_adults = 25L,
+    sampling = "638 VRC07-523LS serum concentrations across 84 weeks (211 infant samples; 480 adult samples after exclusion of one infant for tolerability). Quantification by anti-idiotype antibody capture ELISA.",
+    notes = "Per Huynh 2026 Table 1 (Baseline demographics and study designs) and Methods, Patient population. Sex split combines 12 male / 9 female infants and 11 male / 14 female adults."
   )
 
   ini({

@@ -22,37 +22,37 @@ Franck_2021_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling referenced to the cohort median 26.7 kg: exponent 0.75",
         "on CL, exponent 1 (linear) on Vc and Vp. Q is not weight-scaled in this",
         "model. Cohort median 26.7 kg, range 5.96-87 kg (Yang 2023 Table 2).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote defines CrCL as creatinine clearance in",
         "mL/min/1.73 m^2 (BSA-normalized), distinct from the raw-mL/min `CLcr`",
         "used by other studies in the same repository. Power effect on CL",
@@ -61,28 +61,28 @@ Franck_2021_ganciclovir <- function() {
         "(Yang 2023 Section 3.4.2).",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
     n_observations = 580L,
-    age_median     = "7.5 years (range 0.5-17.4)",
-    weight_median  = "26.7 kg (range 5.96-87)",
+    age_median = "7.5 years (range 0.5-17.4)",
+    weight_median = "26.7 kg (range 5.96-87)",
     sex_female_pct = 40,
     race_ethnicity = "Not reported; ethnicity was tested as a covariate and not retained.",
-    disease_state  = "Pediatric solid-organ transplant (SOT) and stem-cell transplant (SCT) recipients.",
-    dose_range     = paste(
+    disease_state = "Pediatric solid-organ transplant (SOT) and stem-cell transplant (SCT) recipients.",
+    dose_range = paste(
       "Pre-emptive approach for prevention of CMV disease: IV ganciclovir",
       "5 mg/kg/12 h or oral valganciclovir 10 mg/kg/12 h.",
       sep = " "
     ),
-    regions        = "Canada (retrospective study).",
-    bioassay       = "HPLC, LLOQ 0.039 mg/L.",
-    notes          = paste(
+    regions = "Canada (retrospective study).",
+    bioassay = "HPLC, LLOQ 0.039 mg/L.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Intensive sampling for both",
       "the ganciclovir and valganciclovir arms. Covariates tested: weight, BSA, sex,",
       "age, ethnicity, transplant type, formulation, serum creatinine, urea and",

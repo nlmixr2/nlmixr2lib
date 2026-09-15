@@ -17,81 +17,81 @@ Lee_2024_topiramate <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on Vd/F with the exponent fixed at 1, centred at 62 kg (Lee 2024 Table S1 equation Vd/F = theta2 * (WT/62); Results 'allometric scaling was applied with the exponent of 1'). Body weight was documented for only 237 of the 555 samples (Lee 2024 Table 1 footnote a); cohort mean 64.6 +/- 17.7 kg.",
-      source_name        = "WT"
+      notes = "Allometric scaling on Vd/F with the exponent fixed at 1, centred at 62 kg (Lee 2024 Table S1 equation Vd/F = theta2 * (WT/62); Results 'allometric scaling was applied with the exponent of 1'). Body weight was documented for only 237 of the 555 samples (Lee 2024 Table 1 footnote a); cohort mean 64.6 +/- 17.7 kg.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F normalized to 90 mL/min (Lee 2024 Table S1 theta8 = 0.277; equation (CLcr/90)^theta8). Lee 2024 does not state the creatinine-clearance assay or whether the value was body-surface-area normalized, so the raw mL/min form is assumed here (as in Delattre_2010_amikacin.R, Georges_2009_ceftazidime.R and Chen_2023_nemonoxacin.R); 90 mL/min is the conventional normal-renal-function anchor.",
-      source_name        = "CLcr"
+      notes = "Power effect on CL/F normalized to 90 mL/min (Lee 2024 Table S1 theta8 = 0.277; equation (CLcr/90)^theta8). Lee 2024 does not state the creatinine-clearance assay or whether the value was body-surface-area normalized, so the raw mL/min form is assumed here (as in Delattre_2010_amikacin.R, Georges_2009_ceftazidime.R and Chen_2023_nemonoxacin.R); 90 mL/min is the conventional normal-renal-function anchor.",
+      source_name = "CLcr"
     ),
     CONMED_PHT = list(
-      description        = "Concomitant phenytoin coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenytoin coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenytoin)",
-      notes              = "Additive effect on CL/F of +1.02 L/h (Lee 2024 Table S1 theta6), i.e. +70% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Time-fixed here because the analysis required a stable antiseizure-medication regimen for at least one month before sampling (Lee 2024 Methods).",
-      source_name        = "PHT"
+      notes = "Additive effect on CL/F of +1.02 L/h (Lee 2024 Table S1 theta6), i.e. +70% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Time-fixed here because the analysis required a stable antiseizure-medication regimen for at least one month before sampling (Lee 2024 Methods).",
+      source_name = "PHT"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = "Additive effect on CL/F of +0.703 L/h (Lee 2024 Table S1 theta4), i.e. +48% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Time-fixed here because the analysis required a stable antiseizure-medication regimen for at least one month before sampling (Lee 2024 Methods).",
-      source_name        = "CBZ"
+      notes = "Additive effect on CL/F of +0.703 L/h (Lee 2024 Table S1 theta4), i.e. +48% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Time-fixed here because the analysis required a stable antiseizure-medication regimen for at least one month before sampling (Lee 2024 Methods).",
+      source_name = "CBZ"
     ),
     CONMED_OXC = list(
-      description        = "Concomitant oxcarbazepine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant oxcarbazepine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant oxcarbazepine)",
-      notes              = "Additive effect on CL/F of +0.419 L/h (Lee 2024 Table S1 theta5), i.e. +29% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Time-fixed here because the analysis required a stable antiseizure-medication regimen for at least one month before sampling (Lee 2024 Methods).",
-      source_name        = "OXC"
+      notes = "Additive effect on CL/F of +0.419 L/h (Lee 2024 Table S1 theta5), i.e. +29% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Time-fixed here because the analysis required a stable antiseizure-medication regimen for at least one month before sampling (Lee 2024 Methods).",
+      source_name = "OXC"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital)",
-      notes              = "Additive effect on CL/F of +0.376 L/h (Lee 2024 Table S1 theta7), i.e. +26% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Lee 2024 does not state whether primidone was pooled with phenobarbital.",
-      source_name        = "PB"
+      notes = "Additive effect on CL/F of +0.376 L/h (Lee 2024 Table S1 theta7), i.e. +26% relative to the 1.45 L/h monotherapy intercept (Lee 2024 Discussion). Lee 2024 does not state whether primidone was pooled with phenobarbital.",
+      source_name = "PB"
     ),
     DOSE_TPM_MGD = list(
-      description        = "Total daily topiramate dose",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Total daily topiramate dose",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F normalized to 100 mg/day (Lee 2024 Table S1 theta9 = 0.193; equation (DOSE/100)^theta9), encoding the mild dose-dependence of topiramate apparent clearance. Per-record covariate carrying the current total daily dose level, updated when the prescriber changes the dose; distinct from the rxode2 event-table amt column, which carries the amount of each individual administration. For a twice-daily regimen the value is the sum across the day (89.2 mg b.i.d. -> DOSE_TPM_MGD = 178.4). Cohort mean 178.4 +/- 117.9 mg/day (Lee 2024 Table 1).",
-      source_name        = "DOSE"
+      notes = "Power effect on CL/F normalized to 100 mg/day (Lee 2024 Table S1 theta9 = 0.193; equation (DOSE/100)^theta9), encoding the mild dose-dependence of topiramate apparent clearance. Per-record covariate carrying the current total daily dose level, updated when the prescriber changes the dose; distinct from the rxode2 event-table amt column, which carries the amount of each individual administration. For a twice-daily regimen the value is the sum across the day (89.2 mg b.i.d. -> DOSE_TPM_MGD = 178.4). Cohort mean 178.4 +/- 117.9 mg/day (Lee 2024 Table 1).",
+      source_name = "DOSE"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "topiramate", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "topiramate", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "topiramate", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 389L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 389L,
+    n_studies = 1L,
     n_observations = 555L,
-    age_mean       = "46.4 +/- 10.9 years",
-    weight_mean    = "64.6 +/- 17.7 kg (documented for 237 of 555 samples)",
+    age_mean = "46.4 +/- 10.9 years",
+    weight_mean = "64.6 +/- 17.7 kg (documented for 237 of 555 samples)",
     sex_female_pct = 49.5,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Adults with epilepsy on chronic topiramate therapy (53 patients on topiramate monotherapy, 340 on antiseizure-medication polytherapy; 55.3% of samples drawn while co-prescribed an enzyme-inducing antiseizure medication - carbamazepine, oxcarbazepine, phenytoin or phenobarbital). 5.6% of samples were taken during an insufficient response (< 50% seizure-frequency reduction), 94.4% during a sufficient response of which 57.7% were seizure-free.",
-    dose_range     = "Mean total daily dose 178.4 +/- 117.9 mg/day (121.4 +/- 59.4 mg/day monotherapy; 187.5 +/- 122.3 mg/day polytherapy). Lee 2024 does not state the dosing frequency.",
-    regions        = "South Korea (Seoul National University Hospital)",
-    notes          = "Retrospective therapeutic-drug-monitoring cohort sampled between January 2017 and January 2022 (Lee 2024 Table 1). Regimens were stable for at least one month before sampling so steady state could be assumed, and the sampling time relative to the last dose was recorded for every sample. Inpatient measurements were excluded. Samples below the 0.25 mg/L lower limit of quantification were discarded (M1 method). Serum topiramate was measured by UPLC-MS/MS with a 0.25-50 mg/L calibration range."
+    disease_state = "Adults with epilepsy on chronic topiramate therapy (53 patients on topiramate monotherapy, 340 on antiseizure-medication polytherapy; 55.3% of samples drawn while co-prescribed an enzyme-inducing antiseizure medication - carbamazepine, oxcarbazepine, phenytoin or phenobarbital). 5.6% of samples were taken during an insufficient response (< 50% seizure-frequency reduction), 94.4% during a sufficient response of which 57.7% were seizure-free.",
+    dose_range = "Mean total daily dose 178.4 +/- 117.9 mg/day (121.4 +/- 59.4 mg/day monotherapy; 187.5 +/- 122.3 mg/day polytherapy). Lee 2024 does not state the dosing frequency.",
+    regions = "South Korea (Seoul National University Hospital)",
+    notes = "Retrospective therapeutic-drug-monitoring cohort sampled between January 2017 and January 2022 (Lee 2024 Table 1). Regimens were stable for at least one month before sampling so steady state could be assumed, and the sampling time relative to the last dose was recorded for every sample. Inpatient measurements were excluded. Samples below the 0.25 mg/L lower limit of quantification were discarded (M1 method). Serum topiramate was measured by UPLC-MS/MS with a 0.25-50 mg/L calibration range."
   )
 
   ini({

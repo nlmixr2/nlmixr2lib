@@ -1,7 +1,7 @@
 Hosseini_2024_flt3lfc_human <- function() {
   description <- "QSP. Human translation of the FLT3L-Fc (RO7497987) minimal PBPK/PD model with expansion-enhanced target-mediated drug disposition, used to select the 700 ug first-in-human dose. Couples (a) a Cao/Jusko two-tissue-group mPBPK model of FLT3L-Fc in which drug binds one or two monomeric FLT3 receptors in plasma and the double-bound homodimer expands the total FLT3 receptor pool, (b) an empirical one-compartment SC model with Michaelis-Menten elimination for the comparator recombinant FLT3 ligand CDX-301, and (c) a shared transit-delayed indirect-response model for conventional dendritic cell (cDC1 and cDC2) expansion in peripheral blood. PK parameters translated from cynomolgus monkey; FLT3 target parameters refined against GS-3583 clinical PK (human-derived scenario); PD calibrated to CDX-301 and recombinant FLT3L data in healthy volunteers (Hosseini 2024 Table S2, human column)."
-  reference   <- "Hosseini I, Fleisher B, Getz J, Decalf J, Kwong M, Ovacik M, Bainbridge TW, Moussion C, Rao GK, Gadkar K, Kamath AV, Ramanujan S. A Minimal PBPK/PD Model with Expansion-Enhanced Target-Mediated Drug Disposition to Support a First-in-Human Clinical Study Design for a FLT3L-Fc Molecule. Pharmaceutics. 2024 May 15;16(5):660. doi:10.3390/pharmaceutics16050660. PMCID PMC11125320. Structural equations from the Supplementary Materials 'Supplemental ODEs and Repeated Assignments' (SimBiology export); parameter values from Supplementary Table S2, 'Human Value' column. PD source data: Anandasabapathy 2015 Bone Marrow Transplant 50:924-930 (CDX-301) and Maraskovsky 2000 Blood 96:878-884 (recombinant human FLT3L); GS-3583 PK from Rajakumaraswamy 2021 J Clin Oncol 39:2559."
-  vignette    <- "Hosseini_2024_flt3lfc"
+  reference <- "Hosseini I, Fleisher B, Getz J, Decalf J, Kwong M, Ovacik M, Bainbridge TW, Moussion C, Rao GK, Gadkar K, Kamath AV, Ramanujan S. A Minimal PBPK/PD Model with Expansion-Enhanced Target-Mediated Drug Disposition to Support a First-in-Human Clinical Study Design for a FLT3L-Fc Molecule. Pharmaceutics. 2024 May 15;16(5):660. doi:10.3390/pharmaceutics16050660. PMCID PMC11125320. Structural equations from the Supplementary Materials 'Supplemental ODEs and Repeated Assignments' (SimBiology export); parameter values from Supplementary Table S2, 'Human Value' column. PD source data: Anandasabapathy 2015 Bone Marrow Transplant 50:924-930 (CDX-301) and Maraskovsky 2000 Blood 96:878-884 (recombinant human FLT3L); GS-3583 PK from Rajakumaraswamy 2021 J Clin Oncol 39:2559."
+  vignette <- "Hosseini_2024_flt3lfc"
 
   # Two routes, two molecules: FLT3L-Fc is given IV straight into `plasma`
   # (absolute ug), and CDX-301 subcutaneously into `depot` (ug/kg). Declared
@@ -16,9 +16,14 @@ Hosseini_2024_flt3lfc_human <- function() {
   # conventional dendritic cell counts, each fed by its own two-compartment
   # signal-transit chain, so the transit states carry the cell-type suffix.
   paper_specific_compartments <- c(
-    "complex_sb", "complex_db",
-    "transit1_cdc1", "transit2_cdc1", "transit1_cdc2", "transit2_cdc2",
-    "cdc1", "cdc2"
+    "complex_sb",
+    "complex_db",
+    "transit1_cdc1",
+    "transit2_cdc1",
+    "transit1_cdc2",
+    "transit2_cdc2",
+    "cdc1",
+    "cdc2"
   )
 
   units <- list(time = "h", dosing = "ug", concentration = "ug/mL")
@@ -29,30 +34,80 @@ Hosseini_2024_flt3lfc_human <- function() {
   # `plasma` as an absolute amount (ug), whereas the CDX-301 sub-model is
   # body-weight normalised and is dosed into `depot` as ug/kg.
   compartmentData <- list(
-    plasma        = list(analyte = "FLT3L-Fc", units = "ug", specimen = "plasma", verified = TRUE),
-    tight         = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
-    leaky         = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
-    lymph         = list(analyte = "FLT3L-Fc", units = "ug", specimen = "lymph", verified = TRUE),
-    target        = list(analyte = "free FLT3 receptor", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_sb    = list(analyte = "single-bound FLT3L-Fc:FLT3 complex", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_db    = list(analyte = "double-bound FLT3:FLT3L-Fc:FLT3 homodimer complex", units = "nM", specimen = "plasma", verified = TRUE),
-    depot         = list(analyte = "CDX-301 (recombinant human FLT3 ligand)", units = "ug/kg", specimen = "administration site", verified = TRUE),
-    central       = list(analyte = "CDX-301 (recombinant human FLT3 ligand)", units = "ug/kg", specimen = "plasma", verified = TRUE),
-    transit1_cdc1 = list(analyte = "cDC1 expansion signal, first transit state", units = "nM", specimen = "not applicable", verified = TRUE),
-    transit2_cdc1 = list(analyte = "cDC1 expansion signal, second transit state", units = "nM", specimen = "not applicable", verified = TRUE),
-    transit1_cdc2 = list(analyte = "cDC2 expansion signal, first transit state", units = "nM", specimen = "not applicable", verified = TRUE),
-    transit2_cdc2 = list(analyte = "cDC2 expansion signal, second transit state", units = "nM", specimen = "not applicable", verified = TRUE),
-    cdc1          = list(analyte = "conventional type 1 dendritic cells", units = "cells/mL", specimen = "whole blood", verified = TRUE),
-    cdc2          = list(analyte = "conventional type 2 dendritic cells", units = "cells/mL", specimen = "whole blood", verified = TRUE)
+    plasma = list(analyte = "FLT3L-Fc", units = "ug", specimen = "plasma", verified = TRUE),
+    tight = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
+    leaky = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
+    lymph = list(analyte = "FLT3L-Fc", units = "ug", specimen = "lymph", verified = TRUE),
+    target = list(analyte = "free FLT3 receptor", units = "nM", specimen = "plasma", verified = TRUE),
+    complex_sb = list(
+      analyte = "single-bound FLT3L-Fc:FLT3 complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_db = list(
+      analyte = "double-bound FLT3:FLT3L-Fc:FLT3 homodimer complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    depot = list(
+      analyte = "CDX-301 (recombinant human FLT3 ligand)",
+      units = "ug/kg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "CDX-301 (recombinant human FLT3 ligand)",
+      units = "ug/kg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    transit1_cdc1 = list(
+      analyte = "cDC1 expansion signal, first transit state",
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit2_cdc1 = list(
+      analyte = "cDC1 expansion signal, second transit state",
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit1_cdc2 = list(
+      analyte = "cDC2 expansion signal, first transit state",
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit2_cdc2 = list(
+      analyte = "cDC2 expansion signal, second transit state",
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cdc1 = list(
+      analyte = "conventional type 1 dendritic cells",
+      units = "cells/mL",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    cdc2 = list(
+      analyte = "conventional type 2 dendritic cells",
+      units = "cells/mL",
+      specimen = "whole blood",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_studies     = 3,
+    species = "human",
+    n_studies = 3,
     disease_state = "Healthy adult volunteers",
-    dose_range    = paste0(
+    dose_range = paste0(
       "PD calibration -- CDX-301 daily SC 3, 10, 25 or 75 ug/kg for 5 days, ",
       "25 ug/kg for 7 or 10 days (clinical study 1) and recombinant human ",
       "FLT3L daily SC 10-100 ug/kg for 14 days (clinical study 2). ",
@@ -60,7 +115,7 @@ Hosseini_2024_flt3lfc_human <- function() {
       "(clinical study 3). FLT3L-Fc projections -- IV 0.01-1 mg/kg q3w; the ",
       "selected first-in-human dose is 700 ug (0.01 mg/kg for a 70 kg subject)."
     ),
-    notes         = paste0(
+    notes = paste0(
       "Typical-value mechanistic (QSP) simulator: the paper calibrated the model ",
       "by particle-swarm optimisation in SimBiology/gQSPSim and reports point ",
       "estimates with no uncertainty, so no inter-individual variability and no ",
@@ -75,8 +130,8 @@ Hosseini_2024_flt3lfc_human <- function() {
       "rbase_target = 11.3 nM, vmax_prolif = 1.90e-3 /h, km_prolif = 0.547 and ",
       "hill_prolif = 3.93 (Table S2 cyno column) substituted."
     ),
-    model_class   = "QSP / minimal PBPK with expansion-enhanced TMDD, coupled to a transit-delayed indirect-response dendritic cell expansion model (16 states)",
-    n_states      = 16
+    model_class = "QSP / minimal PBPK with expansion-enhanced TMDD, coupled to a transit-delayed indirect-response dendritic cell expansion model (16 states)",
+    n_states = 16
   )
 
   ini({

@@ -64,23 +64,33 @@ Benson_2010_reboxetine_apparent_qsp <- function() {
   compartmentData <- list(
     target = list(
       analyte = "free (unoccupied) human noradrenaline transporter, hNET",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     tracer = list(
       analyte = "free [3H]-desmethylimipramine (radioligand tracer)",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     complex = list(
       analyte = "hNET-[3H]-desmethylimipramine complex (RT); the measured species",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     reboxetine = list(
       analyte = "free racemic reboxetine, treated as a single apparent ligand",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     complex_reboxetine = list(
       analyte = "hNET-reboxetine complex (RD)",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
@@ -91,22 +101,22 @@ Benson_2010_reboxetine_apparent_qsp <- function() {
   paper_specific_compartments <- c("tracer", "reboxetine", "complex_reboxetine")
 
   population <- list(
-    species        = "in vitro (HEK-293 cell membrane homogenate expressing recombinant human noradrenaline transporter, hNET; assay buffer 20 mM HEPES, 120 mM NaCl, 5 mM KCl, pH 7.4, room temperature ~25 C)",
-    n_subjects     = 53L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "in vitro (HEK-293 cell membrane homogenate expressing recombinant human noradrenaline transporter, hNET; assay buffer 20 mM HEPES, 120 mM NaCl, 5 mM KCl, pH 7.4, room temperature ~25 C)",
+    n_subjects = 53L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "In vitro radioligand binding assay; not a clinical population.",
-    dose_range     = paste(
+    disease_state = "In vitro radioligand binding assay; not a clinical population.",
+    dose_range = paste(
       "Experiment 3 (competition kinetics): racemic reboxetine at 0.1, 0.3",
       "and 1 nM against [3H]-DMI tracer at c. 1 nM and hNET at c. 0.1 nM.",
       "Three racemate data sets contributed to the apparent-racemate fit",
       "(Figure 1C bottom row)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "The mixed-effects 'individual' is an EXPERIMENT, not a subject: all",
       "data from Experiments 1-3 were analysed in a single NONMEM VI FOCE-I",
       "step over 1500 data points from 53 experiments (Benson 2010 Results).",
@@ -117,7 +127,7 @@ Benson_2010_reboxetine_apparent_qsp <- function() {
       "All experiments were run at room temperature (25 C); Benson 2010",
       "Discussion cautions that in vivo rate constants at 37 C would differ."
     ),
-    n_experiments  = 53L,
+    n_experiments = 53L,
     n_observations = 1500L
   )
 

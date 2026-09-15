@@ -15,53 +15,53 @@ Sanchez_2011_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     GGT = list(
-      description        = "Serum gamma-glutamyltransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum gamma-glutamyltransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying biochemical liver-function covariate used as a linear-additive shift on apparent oral efavirenz clearance CL/F per Sanchez 2011 Table 4 / final-model equation: CL/F drops by 0.00279 L/h per +1 U/L of GGT. The effect is clinically relevant only at extreme values (Discussion paragraph 3: a 20% decrease in CL/F is reached around GGT 1,155 U/L). Cohort distribution: mean 121.21 +/- 156.79 U/L, range 8-1,612 U/L (Table 1).",
-      source_name        = "GGT"
+      notes = "Time-varying biochemical liver-function covariate used as a linear-additive shift on apparent oral efavirenz clearance CL/F per Sanchez 2011 Table 4 / final-model equation: CL/F drops by 0.00279 L/h per +1 U/L of GGT. The effect is clinically relevant only at extreme values (Discussion paragraph 3: a 20% decrease in CL/F is reached around GGT 1,155 U/L). Cohort distribution: mean 121.21 +/- 156.79 U/L, range 8-1,612 U/L (Table 1).",
+      source_name = "GGT"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant. In the Sanchez 2011 Caucasian cohort the CYP2B6*6 haplotype was defined by the joint presence of 516G>T and 785A>G; the two SNPs are in tight linkage disequilibrium (Table 2 reports near-identical heterozygous/homozygous frequencies: 516G>T 60.80/32.80/6.40 % WT/het/hom and 785A>G 58.40/35.20/6.40 %), so *6 status maps one-to-one onto 516G>T genotype.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant. In the Sanchez 2011 Caucasian cohort the CYP2B6*6 haplotype was defined by the joint presence of 516G>T and 785A>G; the two SNPs are in tight linkage disequilibrium (Table 2 reports near-identical heterozygous/homozygous frequencies: 516G>T 60.80/32.80/6.40 % WT/het/hom and 785A>G 58.40/35.20/6.40 %), so *6 status maps one-to-one onto 516G>T genotype.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). The source paper encodes two mutually-exclusive binary indicators 'CYP2B6*6 [G/T]' and 'CYP2B6*6 [T/T]' as multiplicative factors on CL/F (paper Table 4 / final-model equation). The canonical count column reconstructs them deterministically: *6 [G/T] = (count == 1), *6 [T/T] = (count == 2). Cohort distribution: 76 (60.80%) GG wild-type, 41 (32.80%) GT heterozygous, 8 (6.40%) TT homozygous (Table 2 row 516G>T; matching 785A>G frequencies in Table 2). The Sanchez 2011 paper combines these two SNPs into the *6 haplotype because both define the *6 allele; in any Caucasian cohort with the same tight 516/785 linkage disequilibrium, the canonical 516G>T count column is the right encoding (same precedent as Schipani_2011_nevirapine.R and Olagunju_2018_efavirenz.R).",
-      source_name        = "CYP2B6*6 [G/T] and CYP2B6*6 [T/T] (paired indicators reconstructing the 516G>T T-allele count via *6 = joint 516G>T + 785A>G in tight LD)"
+      notes = "Time-fixed (germline genotype). The source paper encodes two mutually-exclusive binary indicators 'CYP2B6*6 [G/T]' and 'CYP2B6*6 [T/T]' as multiplicative factors on CL/F (paper Table 4 / final-model equation). The canonical count column reconstructs them deterministically: *6 [G/T] = (count == 1), *6 [T/T] = (count == 2). Cohort distribution: 76 (60.80%) GG wild-type, 41 (32.80%) GT heterozygous, 8 (6.40%) TT homozygous (Table 2 row 516G>T; matching 785A>G frequencies in Table 2). The Sanchez 2011 paper combines these two SNPs into the *6 haplotype because both define the *6 allele; in any Caucasian cohort with the same tight 516/785 linkage disequilibrium, the canonical 516G>T count column is the right encoding (same precedent as Schipani_2011_nevirapine.R and Olagunju_2018_efavirenz.R).",
+      source_name = "CYP2B6*6 [G/T] and CYP2B6*6 [T/T] (paired indicators reconstructing the 516G>T T-allele count via *6 = joint 516G>T + 785A>G in tight LD)"
     ),
     SNP_ABCC4_1497CT_CARRIER = list(
-      description        = "Binary carrier indicator for the ABCC4 (MRP4) c.1497C>T variant. 1 = subject carries at least one 1497T allele (heterozygous CT or homozygous TT); 0 = homozygous 1497CC wild-type. In the Sanchez 2011 cohort no 1497TT homozygotes were observed, so the indicator is effectively a heterozygous-vs-wild-type indicator in this dataset.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary carrier indicator for the ABCC4 (MRP4) c.1497C>T variant. 1 = subject carries at least one 1497T allele (heterozygous CT or homozygous TT); 0 = homozygous 1497CC wild-type. In the Sanchez 2011 cohort no 1497TT homozygotes were observed, so the indicator is effectively a heterozygous-vs-wild-type indicator in this dataset.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous 1497CC wild-type)",
-      notes              = "Time-fixed per subject (germline genotype). Sanchez 2011 Table 2 reports 121 (96.80%) CC wild-type, 4 (3.20%) CT heterozygous, 0 (0.00%) TT homozygous out of n = 125 successfully genotyped patients. Multiplicative factor 0.793 on CL/F for 1497CT carriers (Discussion paragraph 8: 'EFV CL/F decreased by a factor of 0.79 for patients with a heterozygous genotype, possibly due to a decreased protein expression').",
-      source_name        = "MRP4 1497C>T"
+      notes = "Time-fixed per subject (germline genotype). Sanchez 2011 Table 2 reports 121 (96.80%) CC wild-type, 4 (3.20%) CT heterozygous, 0 (0.00%) TT homozygous out of n = 125 successfully genotyped patients. Multiplicative factor 0.793 on CL/F for 1497CT carriers (Discussion paragraph 8: 'EFV CL/F decreased by a factor of 0.79 for patients with a heterozygous genotype, possibly due to a decreased protein expression').",
+      source_name = "MRP4 1497C>T"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 128,
-    n_studies      = 1,
-    age_range      = "18-77 years",
-    age_median     = "45 years (mean 45.06 +/- 9.16)",
-    weight_range   = "39-113 kg",
-    weight_median  = "65 kg (mean 64.98 +/- 12.20)",
+    species = "human",
+    n_subjects = 128,
+    n_studies = 1,
+    age_range = "18-77 years",
+    age_median = "45 years (mean 45.06 +/- 9.16)",
+    weight_range = "39-113 kg",
+    weight_median = "65 kg (mean 64.98 +/- 12.20)",
     sex_female_pct = 32.82,
     race_ethnicity = c(Caucasian = 96.87, Other = 3.13),
-    disease_state  = "HIV-positive adults on EFV-based antiretroviral therapy (600 mg EFV once daily plus two NRTIs) for at least 3 months at an unchanged dose for at least 1 month, with treatment adherence > 90% and no co-medication with known CYP inducers or inhibitors. 38.66% of analyzed concentrations were drawn from subjects with concomitant hepatitis C (HCV) co-infection.",
-    dose_range     = "Initial dose 600 mg orally once daily; approximately 20% of subjects required TDM-driven dose adjustments in the range 200-1,600 mg/day (mean daily dose 608.75 +/- 104.36 mg/day; Table 1).",
-    regions        = "Spain (University Hospital of Salamanca outpatient TDM clinic)",
-    cyp2b6_freq    = "516G>T (rs3745274): GG 60.80%, GT 32.80%, TT 6.40% (n = 125). 785A>G: AA 58.40%, AG 35.20%, GG 6.40% (n = 125). The two SNPs are in tight linkage disequilibrium and jointly define the CYP2B6*6 haplotype that the paper uses as a paired heterozygous/homozygous indicator on CL/F (Sanchez 2011 Table 2).",
-    abcc4_freq     = "ABCC4 (MRP4) 1497C>T: CC 96.80%, CT 3.20%, TT 0.00% (n = 125). Low minor-allele frequency in this Caucasian cohort, with no 1497TT homozygotes observed.",
-    notes          = "869 EFV plasma concentrations from 128 patients (mean 4.59 +/- 2.84 samples per patient). Sparse therapeutic-drug-monitoring (TDM) data drawn at the midpoint of the dosing interval, 8-20 h post dose at steady state. Mean observed EFV concentration 3.18 +/- 1.61 ug/mL (range 0.84-15.16 ug/mL). 90 SNPs (CYP2A6, CYP2B6, CYP2C19, CYP2C8, CYP2C9, CYP2D6, CYP3A4, CYP3A5, MDR1, MRP1, MRP2, MRP4, UGT2B7, ABCA1, BCRP) plus 12 demographic / biochemical covariates were screened; only GGT, CYP2B6*6, and MRP4 1497C>T were retained in the final CL/F model (paper Results 'final model adopted for CL/F' paragraph; Table 4)."
+    disease_state = "HIV-positive adults on EFV-based antiretroviral therapy (600 mg EFV once daily plus two NRTIs) for at least 3 months at an unchanged dose for at least 1 month, with treatment adherence > 90% and no co-medication with known CYP inducers or inhibitors. 38.66% of analyzed concentrations were drawn from subjects with concomitant hepatitis C (HCV) co-infection.",
+    dose_range = "Initial dose 600 mg orally once daily; approximately 20% of subjects required TDM-driven dose adjustments in the range 200-1,600 mg/day (mean daily dose 608.75 +/- 104.36 mg/day; Table 1).",
+    regions = "Spain (University Hospital of Salamanca outpatient TDM clinic)",
+    cyp2b6_freq = "516G>T (rs3745274): GG 60.80%, GT 32.80%, TT 6.40% (n = 125). 785A>G: AA 58.40%, AG 35.20%, GG 6.40% (n = 125). The two SNPs are in tight linkage disequilibrium and jointly define the CYP2B6*6 haplotype that the paper uses as a paired heterozygous/homozygous indicator on CL/F (Sanchez 2011 Table 2).",
+    abcc4_freq = "ABCC4 (MRP4) 1497C>T: CC 96.80%, CT 3.20%, TT 0.00% (n = 125). Low minor-allele frequency in this Caucasian cohort, with no 1497TT homozygotes observed.",
+    notes = "869 EFV plasma concentrations from 128 patients (mean 4.59 +/- 2.84 samples per patient). Sparse therapeutic-drug-monitoring (TDM) data drawn at the midpoint of the dosing interval, 8-20 h post dose at steady state. Mean observed EFV concentration 3.18 +/- 1.61 ug/mL (range 0.84-15.16 ug/mL). 90 SNPs (CYP2A6, CYP2B6, CYP2C19, CYP2C8, CYP2C9, CYP2D6, CYP3A4, CYP3A5, MDR1, MRP1, MRP2, MRP4, UGT2B7, ABCA1, BCRP) plus 12 demographic / biochemical covariates were screened; only GGT, CYP2B6*6, and MRP4 1497C>T were retained in the final CL/F model (paper Results 'final model adopted for CL/F' paragraph; Table 4)."
   )
 
   ini({

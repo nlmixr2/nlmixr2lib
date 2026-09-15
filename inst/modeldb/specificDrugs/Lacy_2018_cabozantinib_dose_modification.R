@@ -16,8 +16,8 @@ Lacy_2018_cabozantinib_dose_modification <- function() {
   paper_specific_etas <- c("etalhaz_base")
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the time-varying drug input is supplied as the CAV data covariate, in ng/mL, derived from the upstream Lacy 2018 popPK)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the time-varying drug input is supplied as the CAV data covariate, in ng/mL, derived from the upstream Lacy 2018 popPK)",
     concentration = "probability (the model output `sur` is the dose-modification-free survival probability, not a drug concentration)"
   )
 
@@ -26,40 +26,45 @@ Lacy_2018_cabozantinib_dose_modification <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz = list(analyte = "dose modification hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "dose modification hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Time-varying individual predicted daily average plasma cabozantinib concentration (ng/mL).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Time-varying individual predicted daily average plasma cabozantinib concentration (ng/mL).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Per-record time-varying column. Set to 0 during dose interruptions (DOSE = 0). Derived in the source paper from individual empirical-Bayes post-hoc parameters of the upstream Lacy 2018 popPK model (Lacy S et al., Cancer Chemother Pharmacol 2018;81(6):1071-1082; doi:10.1007/s00280-018-3581-0). Source paper's predicted steady-state Cavg values: 375 ng/mL at 20 mg/day, 750 ng/mL at 40 mg/day, 1125 ng/mL at 60 mg/day in RCC patients. The validation vignette shows the recommended cohort construction using the upstream popPK model.",
-      source_name        = "Cavg"
+      notes = "Required input. Per-record time-varying column. Set to 0 during dose interruptions (DOSE = 0). Derived in the source paper from individual empirical-Bayes post-hoc parameters of the upstream Lacy 2018 popPK model (Lacy S et al., Cancer Chemother Pharmacol 2018;81(6):1071-1082; doi:10.1007/s00280-018-3581-0). Source paper's predicted steady-state Cavg values: 375 ng/mL at 20 mg/day, 750 ng/mL at 40 mg/day, 1125 ng/mL at 60 mg/day in RCC patients. The validation vignette shows the recommended cohort construction using the upstream popPK model.",
+      source_name = "Cavg"
     ),
     DOSE = list(
-      description        = "Current administered cabozantinib daily dose (mg).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered cabozantinib daily dose (mg).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Per-record time-varying column carrying the current daily cabozantinib dose. Set to 0 during dose interruptions; otherwise 20, 40, or 60 mg per the METEOR protocol's stepped-reduction rules. Only used inside model() to derive the binary dose-hold indicator `on_hold = 1 - (DOSE > 0)` that switches between the active-dose and hold-state hazards.",
-      source_name        = "DOSE"
+      notes = "Required input. Per-record time-varying column carrying the current daily cabozantinib dose. Set to 0 during dose interruptions; otherwise 20, 40, or 60 mg per the METEOR protocol's stepped-reduction rules. Only used inside model() to derive the binary dose-hold indicator `on_hold = 1 - (DOSE > 0)` that switches between the active-dose and hold-state hazards.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 317L,
-    n_studies        = 1L,
-    age_range        = "ages reported only at cohort level for METEOR (paper Methods cites enrolment criteria of >=18 years; demographic breakdown for the 317-patient dose-modification subset is in ER Supplemental Table 2)",
-    weight_range     = "not separately reported for the dose-modification subset",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = "not separately reported for the dose-modification subset",
-    disease_state    = "Advanced or metastatic renal cell carcinoma (RCC) with clear-cell histology and measurable disease per RECIST. Subjects had received at least one prior VEGFR-TKI therapy. METEOR randomised 658 patients 1:1 to cabozantinib 60-mg tablet QD vs everolimus 10-mg QD; the dose-modification analysis uses 317 patients on the cabozantinib arm with at least one dose record. Number of DMAK events per patient ranged 0-52 (paper Methods Dose Modification subsection).",
-    dose_range       = "Cabozantinib 60-mg tablet (Cabometyx) QD starting dose; protocol allowed reductions to 40 mg and 20 mg and dose interruptions for AE management.",
-    regions          = "Multinational phase III trial (NCT01865747); regional breakdown not reported in the Lacy 2018 ER paper.",
-    notes            = "Baseline cohort characteristics for the 317-patient subset are in ER Supplemental Table 2 (categorical demographics: baseline ECOG score, MSKCC risk factors, sum of tumor diameters relative to the median, visceral and bone metastases, lung metastases, liver metastases, prior number of VEGF-targeted TKI therapies, organs involved, time to PD on most recent prior TKI). 79% of the 210 MTC patients in the upstream Lacy 2018 popPK cohort dose-reduced from 140 mg; the analogous metric for the RCC METEOR cohort is approximately 60% dose-reduced from 60 mg (paper Discussion)."
+    species = "human",
+    n_subjects = 317L,
+    n_studies = 1L,
+    age_range = "ages reported only at cohort level for METEOR (paper Methods cites enrolment criteria of >=18 years; demographic breakdown for the 317-patient dose-modification subset is in ER Supplemental Table 2)",
+    weight_range = "not separately reported for the dose-modification subset",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not separately reported for the dose-modification subset",
+    disease_state = "Advanced or metastatic renal cell carcinoma (RCC) with clear-cell histology and measurable disease per RECIST. Subjects had received at least one prior VEGFR-TKI therapy. METEOR randomised 658 patients 1:1 to cabozantinib 60-mg tablet QD vs everolimus 10-mg QD; the dose-modification analysis uses 317 patients on the cabozantinib arm with at least one dose record. Number of DMAK events per patient ranged 0-52 (paper Methods Dose Modification subsection).",
+    dose_range = "Cabozantinib 60-mg tablet (Cabometyx) QD starting dose; protocol allowed reductions to 40 mg and 20 mg and dose interruptions for AE management.",
+    regions = "Multinational phase III trial (NCT01865747); regional breakdown not reported in the Lacy 2018 ER paper.",
+    notes = "Baseline cohort characteristics for the 317-patient subset are in ER Supplemental Table 2 (categorical demographics: baseline ECOG score, MSKCC risk factors, sum of tumor diameters relative to the median, visceral and bone metastases, lung metastases, liver metastases, prior number of VEGF-targeted TKI therapies, organs involved, time to PD on most recent prior TKI). 79% of the 210 MTC patients in the upstream Lacy 2018 popPK cohort dose-reduced from 140 mg; the analogous metric for the RCC METEOR cohort is approximately 60% dose-reduced from 60 mg (paper Discussion)."
   )
 
   ini({

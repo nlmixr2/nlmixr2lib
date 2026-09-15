@@ -15,74 +15,74 @@ Yu_2017_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the time of the pharmacokinetic evaluation.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the time of the pharmacokinetic evaluation.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the CL/F covariate model as a linear additive term: CL/F = 0.0916 * BW + 0.0417 * Scr + 7.98 (Yu 2017 page 1574 / Table 3 footnote). Cohort mean (population group, n = 79) is 58.0 +/- 9.33 kg (range 39-82); cohort mean (full group, n = 118) is 58.3 +/- 9.91 kg (range 36.8-94). No reference-weight normalisation is applied because the paper's model is additive rather than power-form.",
-      source_name        = "BW"
+      notes = "Enters the CL/F covariate model as a linear additive term: CL/F = 0.0916 * BW + 0.0417 * Scr + 7.98 (Yu 2017 page 1574 / Table 3 footnote). Cohort mean (population group, n = 79) is 58.0 +/- 9.33 kg (range 39-82); cohort mean (full group, n = 118) is 58.3 +/- 9.91 kg (range 36.8-94). No reference-weight normalisation is applied because the paper's model is additive rather than power-form.",
+      source_name = "BW"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration at the time of the pharmacokinetic evaluation.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration at the time of the pharmacokinetic evaluation.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the CL/F covariate model as a linear additive term: CL/F = 0.0916 * BW + 0.0417 * Scr + 7.98 (Yu 2017 page 1574 / Table 3 footnote). Cohort mean (population group, n = 79) is 141.2 +/- 128.5 umol/L (range 61-915); cohort mean (validation group, n = 39) is 129.3 +/- 64.6 umol/L (range 64-328). The paper's CL/F increases with Scr -- a counter-intuitive direction for a renally-influenced apparent clearance that the authors attribute (Discussion page 1576-1577) to higher MPA free fraction under acidosis / uremia / MPAG accumulation, which raises the unbound substrate concentration available for glucuronidation and thereby increases apparent CL/F.",
-      source_name        = "Scr"
+      notes = "Enters the CL/F covariate model as a linear additive term: CL/F = 0.0916 * BW + 0.0417 * Scr + 7.98 (Yu 2017 page 1574 / Table 3 footnote). Cohort mean (population group, n = 79) is 141.2 +/- 128.5 umol/L (range 61-915); cohort mean (validation group, n = 39) is 129.3 +/- 64.6 umol/L (range 64-328). The paper's CL/F increases with Scr -- a counter-intuitive direction for a renally-influenced apparent clearance that the authors attribute (Discussion page 1576-1577) to higher MPA free fraction under acidosis / uremia / MPAG accumulation, which raises the unbound substrate concentration available for glucuronidation and thereby increases apparent CL/F.",
+      source_name = "Scr"
     ),
     UGT2B7_211GG = list(
-      description        = "UGT2B7 211G>T (rs7438135) homozygous G/G (Ala71/Ala71) genotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B7 211G>T (rs7438135) homozygous G/G (Ala71/Ala71) genotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-G/G UGT2B7 211 genotype: 211GT or 211TT).",
-      notes              = "One of three binary indicators reconstructing Yu 2017's ordinal column 'UGT2B7 genotype' (Table 5; original values 211GT, 211GG, 211TT). The paper encodes the ordinal column as GT = 1, GG = 2, TT = 3 (back-solved from V1/F = 7.72 * UGT2B7 + 14.7 against the Table 5 group means 24.2, 30.8, 36.9 L). The model() block derives the ordinal code as ugt2b7_211_code = UGT2B7_211GT * 1 + UGT2B7_211GG * 2 + UGT2B7_211TT * 3. In the n = 79 population group there were 42 PK evaluations with the 211GG genotype.",
-      source_name        = "UGT2B7 genotype"
+      notes = "One of three binary indicators reconstructing Yu 2017's ordinal column 'UGT2B7 genotype' (Table 5; original values 211GT, 211GG, 211TT). The paper encodes the ordinal column as GT = 1, GG = 2, TT = 3 (back-solved from V1/F = 7.72 * UGT2B7 + 14.7 against the Table 5 group means 24.2, 30.8, 36.9 L). The model() block derives the ordinal code as ugt2b7_211_code = UGT2B7_211GT * 1 + UGT2B7_211GG * 2 + UGT2B7_211TT * 3. In the n = 79 population group there were 42 PK evaluations with the 211GG genotype.",
+      source_name = "UGT2B7 genotype"
     ),
     UGT2B7_211GT = list(
-      description        = "UGT2B7 211G>T (rs7438135) heterozygous G/T (Ala71/Ser71) genotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B7 211G>T (rs7438135) heterozygous G/T (Ala71/Ser71) genotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-G/T UGT2B7 211 genotype: 211GG or 211TT).",
-      notes              = "Companion to UGT2B7_211GG and UGT2B7_211TT (see UGT2B7_211GG notes for the ordinal reconstruction). The 211GT heterozygous genotype was the most common in Yu 2017's cohort (51 of 101 PK evaluations across the population group).",
-      source_name        = "UGT2B7 genotype"
+      notes = "Companion to UGT2B7_211GG and UGT2B7_211TT (see UGT2B7_211GG notes for the ordinal reconstruction). The 211GT heterozygous genotype was the most common in Yu 2017's cohort (51 of 101 PK evaluations across the population group).",
+      source_name = "UGT2B7 genotype"
     ),
     UGT2B7_211TT = list(
-      description        = "UGT2B7 211G>T (rs7438135) homozygous T/T (Ser71/Ser71) genotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B7 211G>T (rs7438135) homozygous T/T (Ser71/Ser71) genotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-T/T UGT2B7 211 genotype: 211GG or 211GT).",
-      notes              = "Companion to UGT2B7_211GG and UGT2B7_211GT (see UGT2B7_211GG notes for the ordinal reconstruction). The 211TT homozygous variant was the rarest in Yu 2017's cohort (8 of 101 PK evaluations across the population group).",
-      source_name        = "UGT2B7 genotype"
+      notes = "Companion to UGT2B7_211GG and UGT2B7_211GT (see UGT2B7_211GG notes for the ordinal reconstruction). The 211TT homozygous variant was the rarest in Yu 2017's cohort (8 of 101 PK evaluations across the population group).",
+      source_name = "UGT2B7 genotype"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 118L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 118L,
+    n_studies = 1L,
     n_population_group = 79L,
     n_validation_group = 39L,
-    n_pk_evaluations  = "1 evaluation in all 118 patients; 31 patients had 2 evaluations; 4 patients had 3 evaluations. Total 1172 plasma MPA concentrations (783 in the population group, 389 in the validation group).",
-    age_range      = "18-76 years (population group 18-68; validation group 21-76)",
-    age_mean       = "41.4 +/- 11.2 years (population group); 44.3 +/- 12.0 years (validation group); 42.5 +/- 11.4 years overall",
-    weight_range   = "36.8-94 kg (population group 39-82; validation group 36.8-94)",
-    weight_mean    = "58.0 +/- 9.33 kg (population group); 58.9 +/- 11.1 kg (validation group); 58.3 +/- 9.91 kg overall",
+    n_pk_evaluations = "1 evaluation in all 118 patients; 31 patients had 2 evaluations; 4 patients had 3 evaluations. Total 1172 plasma MPA concentrations (783 in the population group, 389 in the validation group).",
+    age_range = "18-76 years (population group 18-68; validation group 21-76)",
+    age_mean = "41.4 +/- 11.2 years (population group); 44.3 +/- 12.0 years (validation group); 42.5 +/- 11.4 years overall",
+    weight_range = "36.8-94 kg (population group 39-82; validation group 36.8-94)",
+    weight_mean = "58.0 +/- 9.33 kg (population group); 58.9 +/- 11.1 kg (validation group); 58.3 +/- 9.91 kg overall",
     sex_female_pct = 39.8,
     race_ethnicity = "Chinese (single-center cohort at Ruijin Hospital, Shanghai JiaoTong University School of Medicine).",
-    disease_state  = "Adult renal transplant recipients receiving triple-immunosuppression with MMF + cyclosporine (or tacrolimus for 12 of 118 patients) + corticosteroids. Pharmacokinetic evaluations were performed 3 to 1460 days after the start of MMF therapy; most occurred within the first month post-transplant.",
-    dose_range     = "Oral MMF 1.0 g preoperatively then 2.0 g/day divided BID (target 1.0 g q12h) with clinical adjustment for tolerability. Population-group mean dose 900.1 +/- 177.0 mg per 12 h (range 250-1250); validation-group mean 919.4 +/- 200.7 mg per 12 h (range 500-1500).",
-    regions        = "China (Shanghai, single-center).",
+    disease_state = "Adult renal transplant recipients receiving triple-immunosuppression with MMF + cyclosporine (or tacrolimus for 12 of 118 patients) + corticosteroids. Pharmacokinetic evaluations were performed 3 to 1460 days after the start of MMF therapy; most occurred within the first month post-transplant.",
+    dose_range = "Oral MMF 1.0 g preoperatively then 2.0 g/day divided BID (target 1.0 g q12h) with clinical adjustment for tolerability. Population-group mean dose 900.1 +/- 177.0 mg per 12 h (range 250-1250); validation-group mean 919.4 +/- 200.7 mg per 12 h (range 500-1500).",
+    regions = "China (Shanghai, single-center).",
     co_medications = "Cyclosporine (CsA, Neoral) in 104 of 118 patients with target C0 200-250 ug/L and C2h 1200-1500 ug/L during month 1, tapered to C0 150-200 ug/L thereafter; tacrolimus (Prograf) in the remaining 12 patients with target trough 10-15 ug/L during week 1, tapered to 5-10 ug/L thereafter; intravenous methylprednisolone 500 mg at surgery, tapered to oral prednisone 5-20 mg/day. CsA was administered 2 h after MMF; tacrolimus was co-administered with MMF.",
     ugt2b7_distribution = "Across the population group (n = 79 patients, 101 PK evaluations) the UGT2B7 211G>T genotype was distributed as 211GT in 51 evaluations (40 patients), 211GG in 42 evaluations (32 patients), and 211TT in 8 evaluations (7 patients).",
-    sampling_window= "Full pharmacokinetic profiles used 10 blood samples drawn before (C0) and at 0.5, 1, 1.5, 2, 4, 6, 8, 10, and 12 h after the morning dose. Sparse-sampling occasions used 3 or 4 time-points: 0, 0.5, 2 h or 0, 0.5, 2, and 8 h.",
-    notes          = "Single-center retrospective study. Plasma MPA concentrations measured by validated HPLC (LOQ 0.25 mg/L, intraday CV < 6%, interday CV < 8%, accuracy 97.9-101.8%). Patient characteristics from Yu 2017 Table 1."
+    sampling_window = "Full pharmacokinetic profiles used 10 blood samples drawn before (C0) and at 0.5, 1, 1.5, 2, 4, 6, 8, 10, and 12 h after the morning dose. Sparse-sampling occasions used 3 or 4 time-points: 0, 0.5, 2 h or 0, 0.5, 2, and 8 h.",
+    notes = "Single-center retrospective study. Plasma MPA concentrations measured by validated HPLC (LOQ 0.25 mg/L, intraday CV < 6%, interday CV < 8%, accuracy 97.9-101.8%). Patient characteristics from Yu 2017 Table 1."
   )
 
   ini({

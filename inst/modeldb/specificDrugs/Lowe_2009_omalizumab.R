@@ -3,8 +3,8 @@ Lowe_2009_omalizumab <- function() {
   reference <- "Lowe PJ, Tannenbaum S, Gautier A, Jimenez P. Relationship between omalizumab pharmacokinetics, IgE pharmacodynamics and symptoms in patients with severe persistent allergic (IgE-mediated) asthma. Br J Clin Pharmacol. 2009;68(1):61-76. doi:10.1111/j.1365-2125.2009.03401.x (PMID 19660004). Extends Hayashi N et al., Br J Clin Pharmacol. 2007;63(5):548-561; see modellib('Hayashi_2007_omalizumab')."
   vignette <- "Lowe_2009_omalizumab"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ng/mL (total omalizumab, total IgE, and free IgE)"
   )
 
@@ -13,47 +13,47 @@ Lowe_2009_omalizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "omalizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "omalizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "omalizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "omalizumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "IgE", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Pretreatment (baseline) body weight; used as a per-subject fixed covariate for dose selection and as a power covariate on all clearances and volumes (CL_X/F, CL_E/F, CL_C/F, V_X/f = V_E/f, V_C/f) and on IgE production rate (R/f). All effects centred at 70 kg (Lowe 2009 Table 3 footnote *).",
-      source_name        = "Body weight"
+      notes = "Pretreatment (baseline) body weight; used as a per-subject fixed covariate for dose selection and as a power covariate on all clearances and volumes (CL_X/F, CL_E/F, CL_C/F, V_X/f = V_E/f, V_C/f) and on IgE production rate (R/f). All effects centred at 70 kg (Lowe 2009 Table 3 footnote *).",
+      source_name = "Body weight"
     ),
     IGE = list(
-      description        = "Baseline serum total IgE concentration (pretreatment)",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum total IgE concentration (pretreatment)",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL of free IgE (CL_E/F), on IgE production rate (R/f), and on the equilibrium dissociation constant (Kd). All effects centred at 365 ng/mL (Lowe 2009 Table 3 footnote dagger). Also used as the initial value for the total-IgE state total_target at t = 0: total_target(0) = (IGE / MW_IgE) * V_E. Lowe 2009 Methods state 1 IU/mL = 2.42 ng/mL.",
-      source_name        = "IgE0 (baseline IgE concentration)"
+      notes = "Power covariate on CL of free IgE (CL_E/F), on IgE production rate (R/f), and on the equilibrium dissociation constant (Kd). All effects centred at 365 ng/mL (Lowe 2009 Table 3 footnote dagger). Also used as the initial value for the total-IgE state total_target at t = 0: total_target(0) = (IGE / MW_IgE) * V_E. Lowe 2009 Methods state 1 IU/mL = 2.42 ng/mL.",
+      source_name = "IgE0 (baseline IgE concentration)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 1928L,
-    n_studies        = 5L,
-    n_observations   = 23488L,
+    species = "human",
+    n_subjects = 1928L,
+    n_studies = 5L,
+    n_observations = 23488L,
     n_omalizumab_obs = 5938L,
-    n_total_ige_obs  = 11034L,
-    n_free_ige_obs   = 6156L,
-    age_range        = "12-79 years (Lowe 2009 Methods 'Study design and conduct'; Table 2)",
-    weight_range     = "39-150 kg",
-    weight_median    = "Reference 70 kg (Lowe 2009 Table 3 footnote *)",
-    sex_female_pct   = NA_real_,
-    disease_state    = "Severe persistent allergic (IgE-mediated) asthma (four Phase III studies) plus healthy atopic volunteers (single-dose bioequivalence study)",
-    dose_range       = "Subcutaneous 75-375 mg per dose every 2 or 4 weeks (Phase III studies, indexed on bodyweight x baseline IgE per the dosing table) plus single-dose SC 150 or 300 mg (bioequivalence study)",
-    regions          = "Multinational (INNOVATE + three other Phase III) plus USA (bioequivalence study)",
+    n_total_ige_obs = 11034L,
+    n_free_ige_obs = 6156L,
+    age_range = "12-79 years (Lowe 2009 Methods 'Study design and conduct'; Table 2)",
+    weight_range = "39-150 kg",
+    weight_median = "Reference 70 kg (Lowe 2009 Table 3 footnote *)",
+    sex_female_pct = NA_real_,
+    disease_state = "Severe persistent allergic (IgE-mediated) asthma (four Phase III studies) plus healthy atopic volunteers (single-dose bioequivalence study)",
+    dose_range = "Subcutaneous 75-375 mg per dose every 2 or 4 weeks (Phase III studies, indexed on bodyweight x baseline IgE per the dosing table) plus single-dose SC 150 or 300 mg (bioequivalence study)",
+    regions = "Multinational (INNOVATE + three other Phase III) plus USA (bioequivalence study)",
     baseline_ige_range = "19-1055 IU/mL (~46-2553 ng/mL using paper's 1 IU/mL = 2.42 ng/mL conversion); reference 365 ng/mL (~150.8 IU/mL)",
-    notes            = "Five clinical studies: INNOVATE [13] (28-week treatment + 16-week follow-up, severe persistent allergic asthma), two 7-month Phase III parallel-group studies in adolescents and adults with moderate-to-severe allergic asthma on ICS [23, 24], a 32-week corticosteroid-reduction pilot [25], and a single-dose bioequivalence study in healthy atopic volunteers (Novartis, unpublished). Combined dataset 23 488 observations (5938 omalizumab, 11 034 total IgE, 6156 free IgE) from 1928 patients/volunteers. Lowe 2009 Table 2."
+    notes = "Five clinical studies: INNOVATE [13] (28-week treatment + 16-week follow-up, severe persistent allergic asthma), two 7-month Phase III parallel-group studies in adolescents and adults with moderate-to-severe allergic asthma on ICS [23, 24], a 32-week corticosteroid-reduction pilot [25], and a single-dose bioequivalence study in healthy atopic volunteers (Novartis, unpublished). Combined dataset 23 488 observations (5938 omalizumab, 11 034 total IgE, 6156 free IgE) from 1928 patients/volunteers. Lowe 2009 Table 2."
   )
 
   ini({

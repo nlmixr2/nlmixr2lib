@@ -1599,12 +1599,8 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Zhao_2025_paracetamol.R` (power exponent -1.10 on the paracetamol leftover clearance CL_p/F, normalised to the pooled mean of 25 ng/mL; baseline medians 34 ng/mL in healthy controls vs 17 ng/mL in spinal-muscular-atrophy patients, with the paper quoting a normal range of 15-75 ng/mL, and the effect carrying dOFV = 18.5 as the strongest covariate in that analysis).
 - **Notes:** Sibling of the existing muscle / tissue-turnover markers `CPK` and `LDH`, and distinct from both -- myoglobin is a protein mass concentration in ng/mL while `CPK` and `LDH` are enzyme activities in U/L, and Zhao 2025 screens all three independently (only myoglobin is retained). Scope: general because the concept is assay-standard and paper-independent, matching the other routine plasma clinical-chemistry analytes `ALB`, `CRP`, `CREAT`, `HGB`, `ALT`, `AST`, `TBILI`, `ALP`, `LDH`, and `CPK`. In muscle-wasting populations myoglobin is low because muscle mass is low, so a negative exponent on a clearance term should be read as a muscle-mass surrogate rather than as muscle injury; the direction of the clinical interpretation is paper-specific and belongs in per-model notes. Distinct from any model state variable representing a myoglobin time course -- the covariate column is the laboratory observation.
 
-### DIAL (**DEPRECATED -- superseded by `RRT_HEMODIAL_ACTIVE`**)
-- **Description:** Deprecated entry. The `DIAL` form is retained ONLY as a `source_alias` of `RRT_HEMODIAL_ACTIVE` so that pre-2026-06-09 data CSVs continue to load.
-- **Notes:** Do not use for new models. See `RRT_HEMODIAL_ACTIVE` for the current canonical.
-
 ### BFR (**canonical for blood flow rate through the extracorporeal circuit during dialysis**)
-- **Description:** Instantaneous blood flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `DIAL = 1` -- in the interdialytic period the value is sentinel and the Michaels-equation term is gated off by `DIAL`.
+- **Description:** Instantaneous blood flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `RRT_HEMODIAL_ACTIVE = 1` -- in the interdialytic period the value is sentinel and the Michaels-equation term is gated off by `RRT_HEMODIAL_ACTIVE`.
 - **Units:** mL/min
 - **Type:** continuous
 - **Scope:** general
@@ -1612,17 +1608,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `phi_Blood` -- Butragueno-Laiseca 2022 supplementary material eq. 4 and the sibling Butragueno-Laiseca 2025 teicoplanin analysis; same orientation, no transformation.
 - **Example models:** `Liesenfeld_2013_dabigatran.R` (Michaels-equation role), `ButraguenoLaiseca_2022_piperacillin.R` (post-filter plasma-flow denominator; paediatric CVVHDF, supplementary Table 3 blood flow 70 (SD 31) mL/min. Note that this paper's main-text Results misprint the same quantity weight-normalised as "5 (SD 2) ml/kg/h" -- the per-minute reading is the one that reproduces the paper's own published extraction ratio, see the model file and vignette Errata).
-- **Notes:** Pairs with `DIAL` (binary on/off gate) and `DFR` (dialysate flow rate).
+- **Notes:** Pairs with `RRT_HEMODIAL_ACTIVE` (binary on/off gate) and `DFR` (dialysate flow rate).
 
 ### DFR (**canonical for dialysate flow rate through the extracorporeal circuit during dialysis**)
-- **Description:** Instantaneous dialysate flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `DIAL = 1`.
+- **Description:** Instantaneous dialysate flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `RRT_HEMODIAL_ACTIVE = 1`.
 - **Units:** mL/min
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- enters the Michaels equation together with `BFR`. The ratification source fixed DFR at 700 mL/min throughout (Liesenfeld 2013 Methods, Study Design) and additionally simulated 500 mL/min (Methods, Simulations).
 - **Source aliases:** none known.
 - **Example models:** `Liesenfeld_2013_dabigatran.R`.
-- **Notes:** Pairs with `DIAL` and `BFR`.
+- **Notes:** Pairs with `RRT_HEMODIAL_ACTIVE` and `BFR`.
 
 ### VASCACC_AVF1N (**canonical for single-needle arteriovenous-fistula vascular-access indicator**)
 - **Description:** 1 = the haemodialysis session was performed through an arteriovenous fistula cannulated in a SINGLE-needle setup (one needle alternately draws and returns blood, so a fraction of already-dialysed blood is recirculated); 0 = any other access type. Per-subject (or per-session) indicator describing how the patient is cannulated for extracorporeal therapy, as distinct from the circuit-setting covariates `BFR` / `DFR` / `Q_CVVH` (flow rates) and the therapy-presence flags `RRT_HEMODIAL_STATUS` / `RRT_HEMODIAL_ACTIVE`. Access type matters pharmacokinetically because it changes the effective solute presentation to the dialyser: a single-needle fistula recirculates blood, so the nominal pump blood flow rate overstates the flow of undialysed blood reaching the membrane.

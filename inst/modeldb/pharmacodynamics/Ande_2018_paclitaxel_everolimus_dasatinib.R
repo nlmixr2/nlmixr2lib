@@ -11,8 +11,8 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
   )
   vignette <- "Ande_2018_paclitaxel_everolimus_dasatinib"
   units <- list(
-    time          = "h",
-    dosing        = "ug (PAC IV infusion); 50 nM target bath concentration (DE)",
+    time = "h",
+    dosing = "ug (PAC IV infusion); 50 nM target bath concentration (DE)",
     concentration = "nmol/L (PAC PD driver Cc); fold/L (caspase3Act, unitless relative-to-baseline); cells/L (tumorCells, total bioreactor count)"
   )
 
@@ -21,30 +21,30 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
-    transit1    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
-    tumor       = list(analyte = "PAC, caspase3Act, tumorCells", units = NA_character_, specimen = "tumor", verified = FALSE)
+    transit1 = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tumor = list(analyte = "PAC, caspase3Act, tumorCells", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species             = "in vitro (JIMT-1 HER2-positive trastuzumab-resistant breast cancer cell line)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Homo sapiens JIMT-1 cell line (HER2-positive, MUC4-expressing, refractory to trastuzumab, pertuzumab, T-DM1 and lapatinib; AddexBio)",
-    system              = "BelloCell HD continuous cell culture system (Cesco Bioengineering) with 865 BioNOC II PET fabric carriers (bed volume 100 cm^3); two BelloCell-500AP perfusion bottles per arm (one control, one treatment); 500 mL working volume; oscillating up-down speed 1.5 mm/s upper-hold 2 min bottom-hold 1.5 min; 0.53 mL/min perfusion in/out to maintain isovolumetric medium replacement.",
-    medium              = "DMEM + 5% FBS + 1% penicillin-streptomycin; 1% DMSO maintained throughout the 5-day treatment period; assay medium with and without drugs made fresh and added daily.",
-    temperature         = "37 C, 5% CO2",
-    duration            = "21 days (5-day treatment of PAC + DAS + EVE followed by 2-day washout and 14-day regrowth observation); cell counts every 2 days; caspase-3 measured daily for the first 5 days; PAC PK sampling at 2, 3, 6, 24, 27, 30, 48, 56, 72, 78, 96 h.",
-    inoculum            = "30 mL of JIMT-1 cell suspension at 2.6e6 cells/mL (8e7 cells per bottle) seeded onto BioNOC II carriers; 72 h pre-attachment incubation before PAC infusion at experiment t = 0; observed initial post-attachment count approximately 1.5e8 cells per Figure 6B starting points.",
-    regimens            = "Treatment arm: PAC 3.75 ug/min (225.14 ug/h) constant-rate IV infusion into the bioreactor for 3 h starting at t = 0; DAS and EVE spiked at t = 24 h to 50 nM each and maintained at 50 nM via continuous perfusion infusion for the following 72 h (DE 'on' during 24 <= t < 96 h), then washout via daily medium replacement.",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. The paper fits in Monolix and reports point estimates with % RSE for each parameter (Tables 1 / 2 / 3) but does NOT tabulate a residual-error SD, between-bottle eta, or assay precision. The packaged 3DD model accordingly contains no etas; per-output additive residual SDs are encoded as small placeholders (flagged with fixed() and operator-derived inline comments) so the model parses but should not be interpreted as Monolix-reported uncertainty. See Ande 2018 Methods (3DD Cell Culture Experiments, Drugs Dosing Schedule, PK/PD Modeling of Data From 3DD Cell Culture Settings) and Table 3."
+    species = "in vitro (JIMT-1 HER2-positive trastuzumab-resistant breast cancer cell line)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Homo sapiens JIMT-1 cell line (HER2-positive, MUC4-expressing, refractory to trastuzumab, pertuzumab, T-DM1 and lapatinib; AddexBio)",
+    system = "BelloCell HD continuous cell culture system (Cesco Bioengineering) with 865 BioNOC II PET fabric carriers (bed volume 100 cm^3); two BelloCell-500AP perfusion bottles per arm (one control, one treatment); 500 mL working volume; oscillating up-down speed 1.5 mm/s upper-hold 2 min bottom-hold 1.5 min; 0.53 mL/min perfusion in/out to maintain isovolumetric medium replacement.",
+    medium = "DMEM + 5% FBS + 1% penicillin-streptomycin; 1% DMSO maintained throughout the 5-day treatment period; assay medium with and without drugs made fresh and added daily.",
+    temperature = "37 C, 5% CO2",
+    duration = "21 days (5-day treatment of PAC + DAS + EVE followed by 2-day washout and 14-day regrowth observation); cell counts every 2 days; caspase-3 measured daily for the first 5 days; PAC PK sampling at 2, 3, 6, 24, 27, 30, 48, 56, 72, 78, 96 h.",
+    inoculum = "30 mL of JIMT-1 cell suspension at 2.6e6 cells/mL (8e7 cells per bottle) seeded onto BioNOC II carriers; 72 h pre-attachment incubation before PAC infusion at experiment t = 0; observed initial post-attachment count approximately 1.5e8 cells per Figure 6B starting points.",
+    regimens = "Treatment arm: PAC 3.75 ug/min (225.14 ug/h) constant-rate IV infusion into the bioreactor for 3 h starting at t = 0; DAS and EVE spiked at t = 24 h to 50 nM each and maintained at 50 nM via continuous perfusion infusion for the following 72 h (DE 'on' during 24 <= t < 96 h), then washout via daily medium replacement.",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. The paper fits in Monolix and reports point estimates with % RSE for each parameter (Tables 1 / 2 / 3) but does NOT tabulate a residual-error SD, between-bottle eta, or assay precision. The packaged 3DD model accordingly contains no etas; per-output additive residual SDs are encoded as small placeholders (flagged with fixed() and operator-derived inline comments) so the model parses but should not be interpreted as Monolix-reported uncertainty. See Ande 2018 Methods (3DD Cell Culture Experiments, Drugs Dosing Schedule, PK/PD Modeling of Data From 3DD Cell Culture Settings) and Table 3."
   )
 
   ini({

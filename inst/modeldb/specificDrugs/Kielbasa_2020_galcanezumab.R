@@ -8,36 +8,36 @@ Kielbasa_2020_galcanezumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "galcanezumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "galcanezumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "galcanezumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric (power) scaling on CL/F with exponent 0.601 and reference weight 73.6 kg (population median). Body weight had a non-qualifying effect on V/F in the source analysis and is not used to scale V/F in the final model.",
-      source_name        = "WT"
+      notes = "Used for allometric (power) scaling on CL/F with exponent 0.601 and reference weight 73.6 kg (population median). Body weight had a non-qualifying effect on V/F in the source analysis and is not used to scale V/F in the final model.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects        = 1889,
-    n_studies         = 7,
-    age_range         = "17-65 years",
-    age_mean          = "41 years (SD 12)",
-    weight_range      = "40-135.5 kg",
-    weight_mean       = "75.8 kg (SD 16.8)",
-    weight_median     = "73.6 kg",
-    sex_female_pct    = 80,
-    race_ethnicity    = c(White = 72, NonHispanic = 74),
-    disease_state     = "Healthy adults and adults with episodic or chronic migraine (60% episodic, 29% chronic, 11% healthy).",
-    dose_range        = "5-300 mg SC, single dose or Q4W / QM regimens; phase 3 studies used 240 mg loading dose then 120 mg QM or 240 mg QM.",
-    regions           = "Pooled analysis across 7 clinical studies (phase 1-3); regional breakdown not reported.",
-    analysis_dataset  = "15770 PK observations from 1889 individuals included in model development; 1448 observations from 270 patients in Study I5Q-MC-CGAJ used as external validation.",
-    notes             = "Baseline demographics from Kielbasa 2020 Results paragraph 1 and Supplemental Table S1."
+    n_subjects = 1889,
+    n_studies = 7,
+    age_range = "17-65 years",
+    age_mean = "41 years (SD 12)",
+    weight_range = "40-135.5 kg",
+    weight_mean = "75.8 kg (SD 16.8)",
+    weight_median = "73.6 kg",
+    sex_female_pct = 80,
+    race_ethnicity = c(White = 72, NonHispanic = 74),
+    disease_state = "Healthy adults and adults with episodic or chronic migraine (60% episodic, 29% chronic, 11% healthy).",
+    dose_range = "5-300 mg SC, single dose or Q4W / QM regimens; phase 3 studies used 240 mg loading dose then 120 mg QM or 240 mg QM.",
+    regions = "Pooled analysis across 7 clinical studies (phase 1-3); regional breakdown not reported.",
+    analysis_dataset = "15770 PK observations from 1889 individuals included in model development; 1448 observations from 270 patients in Study I5Q-MC-CGAJ used as external validation.",
+    notes = "Baseline demographics from Kielbasa 2020 Results paragraph 1 and Supplemental Table S1."
   )
 
   ini({

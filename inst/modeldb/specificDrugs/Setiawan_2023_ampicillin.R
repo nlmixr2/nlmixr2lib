@@ -30,17 +30,17 @@ Setiawan_2023_ampicillin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The ONLY covariate retained in the final model. Enters clearance as the simple inverse",
         "ratio CL = CLpop * (1.4 / CREAT) (Setiawan 2023 Eq. 1); the exponent is structurally -1,",
         "not an estimated power. The reference 1.4 mg/dL is the cohort median serum creatinine",
@@ -54,28 +54,28 @@ Setiawan_2023_ampicillin <- function() {
         "as CREAT 6, 2, 1.5, 1, 0.7 mg/dL <-> CLcr 10, 20, 30, 70, 100 mL/min/1.73 m2 (Results 3.3).",
         sep = " "
       ),
-      source_name        = "SeCr"
+      source_name = "SeCr"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate on ampicillin PK (Methods 2.4.2) but not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a candidate covariate on ampicillin PK (Methods 2.4.2) but not retained in the final model."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened as a candidate covariate (Methods 2.4.2, 'gender') but not retained in the final model."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened as a candidate covariate (Methods 2.4.2, 'gender') but not retained in the final model."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Methods 2.4.2) but not retained; no parameter in this",
         "model is scaled by body size. Table 1 footnote b records that weight was directly measured",
         "in only 8 of the 16 patients.",
@@ -84,21 +84,21 @@ Setiawan_2023_ampicillin <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.4.2) but not retained in the final model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.4.2) but not retained in the final model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.4.2) but not retained in the final model; no value is reported in Table 1."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.4.2) but not retained in the final model; no value is reported in Table 1."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (CKD-EPI, BSA-normalized)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Tested on CL both with and without allometric 0.75 scaling and rejected in favour of the",
         "raw serum-creatinine reciprocal (Table 2 model-selection block). Cohort median 42.2,",
         "range 5.9-108.4 mL/min/1.73 m2 (Table 1).",
@@ -108,32 +108,32 @@ Setiawan_2023_ampicillin <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 16L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
     n_concentrations = 59L,
-    age_range        = "40-82 years",
-    age_median       = "68 years",
-    weight_range     = "40-82 kg",
-    weight_median    = "62 kg",
-    sex_female_pct   = 62.5,
-    race_ethnicity   = "Not reported (single-centre Indonesian cohort)",
-    disease_state    = paste(
+    age_range = "40-82 years",
+    age_median = "68 years",
+    weight_range = "40-82 kg",
+    weight_median = "62 kg",
+    sex_female_pct = 62.5,
+    race_ethnicity = "Not reported (single-centre Indonesian cohort)",
+    disease_state = paste(
       "Hospitalised adults (>= 18 years) receiving intravenous ampicillin-sulbactam on general",
       "wards (NOT the intensive care unit) of a referral hospital in Surabaya, Indonesia. Patients",
       "on or planned for renal replacement therapy at the time of sampling, and pregnant women,",
       "were excluded. 11 of 16 patients had eGFR CKD-EPI < 60 mL/min/1.73 m2.",
       sep = " "
     ),
-    renal_function   = "Serum creatinine median 1.4 mg/dL (range 0.6-6.4); eGFR CKD-EPI median 42.2 mL/min/1.73 m2 (range 5.9-108.4)",
-    dose_range       = paste(
+    renal_function = "Serum creatinine median 1.4 mg/dL (range 0.6-6.4); eGFR CKD-EPI median 42.2 mL/min/1.73 m2 (range 5.9-108.4)",
+    dose_range = paste(
       "1000 mg ampicillin + 500 mg sulbactam (1.5 g total) as a ~3-minute intravenous bolus",
       "injection: q8h in 12 patients (75%) and q6h in 4 patients (25%). Only one",
       "ampicillin-sulbactam product was available at the site.",
       sep = " "
     ),
-    regions          = "Indonesia (single referral hospital, Surabaya, East Java)",
-    notes            = paste(
+    regions = "Indonesia (single referral hospital, Surabaya, East Java)",
+    notes = paste(
       "Baseline demographics from Setiawan 2023 Table 1. Serial sampling within one dosing",
       "interval at 5, 20, 120 and 240 minutes after injection plus a pre-dose trough; 59 ampicillin",
       "concentrations from 16 patients entered the ampicillin analysis (60 entered the sulbactam",

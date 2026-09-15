@@ -15,11 +15,11 @@ Sheiner_1979_tubocurarine <- function() {
     sep = " "
   )
   vignette <- "Sheiner_1979_tubocurarine"
-  units    <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "d-tubocurarine", units = "mg",    specimen = "plasma",         verified = TRUE),
-    peripheral1 = list(analyte = "d-tubocurarine", units = "mg",    specimen = "plasma",         verified = TRUE),
+    central = list(analyte = "d-tubocurarine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "d-tubocurarine", units = "mg", specimen = "plasma", verified = TRUE),
     # The effect state holds a CONCENTRATION, not an amount: Sheiner 1979
     # Eq. 7 rescales the hypothetical effect-compartment amount Ae to the
     # equivalent steady-state plasma concentration Cpss = keo * Z / V1, so
@@ -27,16 +27,16 @@ Sheiner_1979_tubocurarine <- function() {
     # compartment is explicitly hypothetical (p. 360: it receives negligible
     # mass and its exponential does not enter the PK solution), so no
     # biological matrix applies.
-    effect      = list(analyte = "d-tubocurarine", units = "ug/mL", specimen = "not applicable", verified = TRUE)
+    effect = list(analyte = "d-tubocurarine", units = "ug/mL", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     RENALIMP_SEV = list(
-      description        = "Chronic end-stage renal failure indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic end-stage renal failure indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal serum creatinine)",
-      notes              = paste(
+      notes = paste(
         "1 = chronic end-stage renal failure undergoing renal transplantation",
         "(anaemic, haemoglobin 6.8 +/- 1.5 g/100 mL; serum creatinine",
         "10.1 +/- 2.3 mg/100 mL in spite of recent dialysis; studied before",
@@ -47,14 +47,14 @@ Sheiner_1979_tubocurarine <- function() {
         "between the two groups is the absence of a renal elimination rate",
         "constant in the renal failure patients (p. 363)."
       ),
-      source_name        = "RF"
+      source_name = "RF"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Not reported by Sheiner 1979. Every dose in the paper is given in",
         "mg/kg and the disposition parameters recovered from Fig. 3 are",
         "therefore per kilogram; WT converts them to the absolute amounts",
@@ -64,17 +64,17 @@ Sheiner_1979_tubocurarine <- function() {
         "matches Fig. 3 for any WT. The paper never fitted a weight",
         "covariate; see the vignette Assumptions and deviations section."
       ),
-      source_name        = NA_character_
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,                                            # Sheiner 1979 p. 362: group 3 = 10 normal + 10 renal failure
-    n_studies      = 1L,                                             # Sheiner 1979 p. 362; part of these data previously reported as Miller 1977 J Pharmacol Exp Ther 202:1-7 (reference 21), refitted here
-    age_range      = "not reported for group 3",                     # Sheiner 1979 p. 362 gives ages only for group 1 (21-49 years)
-    weight_range   = "not reported",                                 # Sheiner 1979 reports doses in mg/kg but no weights
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 20L, # Sheiner 1979 p. 362: group 3 = 10 normal + 10 renal failure
+    n_studies = 1L, # Sheiner 1979 p. 362; part of these data previously reported as Miller 1977 J Pharmacol Exp Ther 202:1-7 (reference 21), refitted here
+    age_range = "not reported for group 3", # Sheiner 1979 p. 362 gives ages only for group 1 (21-49 years)
+    weight_range = "not reported", # Sheiner 1979 reports doses in mg/kg but no weights
+    disease_state = paste(
       "Adults undergoing elective surgery. 10 patients with normal serum",
       "creatinine; 10 patients with chronic end-stage renal failure",
       "undergoing renal transplantation, anaemic (haemoglobin 6.8 +/- 1.5",
@@ -82,15 +82,15 @@ Sheiner_1979_tubocurarine <- function() {
       "recent dialysis, all studied prior to insertion of the transplant",
       "kidney."
     ),
-    dose_range     = "Single IV bolus d-tubocurarine 0.3 mg/kg (5 per group) or 0.5 mg/kg (5 per group)",  # Sheiner 1979 p. 362
-    anesthesia     = paste(
+    dose_range = "Single IV bolus d-tubocurarine 0.3 mg/kg (5 per group) or 0.5 mg/kg (5 per group)", # Sheiner 1979 p. 362
+    anesthesia = paste(
       "Induction with nitrous oxide:oxygen and halothane, trachea intubated",
       "without drugs; maintenance with nitrous oxide (60%):oxygen and",
       "halothane at end-tidal 0.45-0.8%. dTC given 20 min after induction.",
       "Temperature, ventilation and dTC effect monitored as in group 1."
-    ),                                                               # Sheiner 1979 p. 362
-    n_observations = "7 to 9 plasma and effect data points per patient (samples at 3, 15, 30, 45, 60, 90 and 120 min, plus 150 and 180 min after the 0.5 mg/kg dose)",  # Sheiner 1979 p. 362
-    notes          = paste(
+    ), # Sheiner 1979 p. 362
+    n_observations = "7 to 9 plasma and effect data points per patient (samples at 3, 15, 30, 45, 60, 90 and 120 min, plus 150 and 180 min after the 0.5 mg/kg dose)", # Sheiner 1979 p. 362
+    notes = paste(
       "Effect is the force of thumb adduction after supramaximal ulnar",
       "nerve stimulation (single 0.1 ms stimuli at 0.3 pulse/s), expressed",
       "as degree of paralysis with 0 = no paralysis and 1.0 = 100%",

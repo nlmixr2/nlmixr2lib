@@ -32,59 +32,59 @@ Ravva_2010_varenicline_car_w9_12 <- function() {
   )
   vignette <- "Ravva_2010_varenicline_exposure_response"
   units <- list(
-    time          = "week",
-    dosing        = "n/a (exposure-response model; varenicline exposure enters as the AUC_VAREN covariate rather than as a dosing event)",
+    time = "week",
+    dosing = "n/a (exposure-response model; varenicline exposure enters as the AUC_VAREN covariate rather than as a dosing event)",
     concentration = "p_car (probability of continuous abstinence at weeks 9-12, 0-1; also logit_car)"
   )
 
   covariateData <- list(
     AUC_VAREN = list(
-      description        = "Individual varenicline steady-state daily exposure, AUC(0-24)ss. Ravva 2010 Methods (Pharmacokinetics): 'Individual 24-h daily exposure, measured as AUC(0-24)ss, was calculated as dose divided by CL/F_i (apparent clearance); the individual empirical Bayes estimate of apparent clearance was predicted from the final population PK model and parameters obtained from a pooled analysis in adult smokers.'",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Individual varenicline steady-state daily exposure, AUC(0-24)ss. Ravva 2010 Methods (Pharmacokinetics): 'Individual 24-h daily exposure, measured as AUC(0-24)ss, was calculated as dose divided by CL/F_i (apparent clearance); the individual empirical Bayes estimate of apparent clearance was predicted from the final population PK model and parameters obtained from a pooled analysis in adult smokers.'",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the logit ADDITIVELY (not as a multiplicative factor on the intercept like the demographic covariates) -- see Ravva 2010 Equation 2. Set to 0 for placebo subjects (Ravva 2010 Figure 3a caption: 'exposure was set to zero for the placebo group'). Observed cohort range spans the three exposure bins reported in Results: 50-142, >142-184 and >184-408 ng*h/mL. The reference-population quit probability of 0.562 at 1 mg b.i.d. (Ravva 2010 Figure 3b) implies a typical AUC(0-24)ss of about 186 ng*h/mL at 1 mg b.i.d. and about 93 ng*h/mL at 0.5 mg b.i.d. Downstream users should compute the per-subject value from the companion Ravva 2009 varenicline population PK model as total daily dose / (CL/F).",
-      source_name        = "AUC(0-24)ss"
+      notes = "Enters the logit ADDITIVELY (not as a multiplicative factor on the intercept like the demographic covariates) -- see Ravva 2010 Equation 2. Set to 0 for placebo subjects (Ravva 2010 Figure 3a caption: 'exposure was set to zero for the placebo group'). Observed cohort range spans the three exposure bins reported in Results: 50-142, >142-184 and >184-408 ng*h/mL. The reference-population quit probability of 0.562 at 1 mg b.i.d. (Ravva 2010 Figure 3b) implies a typical AUC(0-24)ss of about 186 ng*h/mL at 1 mg b.i.d. and about 93 ng*h/mL at 0.5 mg b.i.d. Downstream users should compute the per-subject value from the companion Ravva 2009 varenicline population PK model as total daily dose / (CL/F).",
+      source_name = "AUC(0-24)ss"
     ),
     SMOKE_TTFC_SCORE = list(
-      description        = "Fagerstrom Test for Nicotine Dependence item 1 ('How soon after you wake up do you smoke your first cigarette?') scored 0-3 as published by Ravva 2010 Methods: >60 min (0); 31-60 min (1); 6-30 min (2); within 5 min (3). Higher score = greater nicotine dependence.",
-      units              = "(ordinal score 0-3)",
-      type               = "categorical",
+      description = "Fagerstrom Test for Nicotine Dependence item 1 ('How soon after you wake up do you smoke your first cigarette?') scored 0-3 as published by Ravva 2010 Methods: >60 min (0); 31-60 min (1); 6-30 min (2); within 5 min (3). Higher score = greater nicotine dependence.",
+      units = "(ordinal score 0-3)",
+      type = "categorical",
       reference_category = "0 = first cigarette more than 60 min after waking (the model reference level; all three derived indicators are 0)",
-      notes              = "Decomposed inside model() into three 0/1 indicators, one per non-reference level, each carrying its own estimated exponent -- the source model does NOT impose a linear per-level effect. Note the deliberate distinction between the MODEL reference category (score 0, >60 min) and the REPORTING reference population (score 2, 6-30 min) used by Ravva 2010 to quote probabilities: Methods defines the reference population as 'Caucasian, 45-year-old, male smokers who smoke their first cigarette within 6-30 min after waking in the morning'. Cohort distribution for this endpoint (Ravva 2010 Table 1, CAR weeks 9-12 column): <=5 min 636; 6-30 min 832; 31-60 min 284; >60 min 140 (total 1,892). Preferred over the cigarettes-per-day item because the two are collinear (Results: 'Simultaneous inclusion of the correlated predictors FSQ1, FSQ4, and CO in the model was avoided by selecting the FSQ1 variable as the most relevant predictor of nicotine dependence').",
-      source_name        = "FSQ1"
+      notes = "Decomposed inside model() into three 0/1 indicators, one per non-reference level, each carrying its own estimated exponent -- the source model does NOT impose a linear per-level effect. Note the deliberate distinction between the MODEL reference category (score 0, >60 min) and the REPORTING reference population (score 2, 6-30 min) used by Ravva 2010 to quote probabilities: Methods defines the reference population as 'Caucasian, 45-year-old, male smokers who smoke their first cigarette within 6-30 min after waking in the morning'. Cohort distribution for this endpoint (Ravva 2010 Table 1, CAR weeks 9-12 column): <=5 min 636; 6-30 min 832; 31-60 min 284; >60 min 140 (total 1,892). Preferred over the cigarettes-per-day item because the two are collinear (Results: 'Simultaneous inclusion of the correlated predictors FSQ1, FSQ4, and CO in the model was avoided by selecting the FSQ1 variable as the most relevant predictor of nicotine dependence').",
+      source_name = "FSQ1"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on the baseline logit with reference 45 years, (AGE/45)^e_age_base_logit (Ravva 2010 Equation 2). Cohort mean 43 years, range 18-75 years (Ravva 2010 Table 1, CAR weeks 9-12 column). The negative exponent means the baseline quit probability RISES with age: Results report a baseline quit probability increasing from 0.35 at age 18 to 0.64 at age 75.",
-      source_name        = "Age"
+      notes = "Power scaling on the baseline logit with reference 45 years, (AGE/45)^e_age_base_logit (Ravva 2010 Equation 2). Cohort mean 43 years, range 18-75 years (Ravva 2010 Table 1, CAR weeks 9-12 column). The negative exponent means the baseline quit probability RISES with age: Results report a baseline quit probability increasing from 0.35 at age 18 to 0.64 at age 75.",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male (the Ravva 2010 reference population is male)",
-      notes              = "Ravva 2010 Equation 2 writes this term as theta7^(1-Sex) with the effect row labelled 'Female' in Table 3 and the reference population defined as male, so the paper's 'Sex' column is 1 = male and (1 - Sex) is identically the canonical SEXF (1 = female). Encoded directly as e_sexf_base_logit^SEXF with no value transformation. Cohort 889 female (47%) of 1,892 (Ravva 2010 Table 1). The estimate 1.02 is essentially null; Results conclude 'Gender had no influence on the efficacy of varenicline.'",
-      source_name        = "Sex"
+      notes = "Ravva 2010 Equation 2 writes this term as theta7^(1-Sex) with the effect row labelled 'Female' in Table 3 and the reference population defined as male, so the paper's 'Sex' column is 1 = male and (1 - Sex) is identically the canonical SEXF (1 = female). Encoded directly as e_sexf_base_logit^SEXF with no value transformation. Cohort 889 female (47%) of 1,892 (Ravva 2010 Table 1). The estimate 1.02 is essentially null; Results conclude 'Gender had no influence on the efficacy of varenicline.'",
+      source_name = "Sex"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the Ravva 2010 reference population is Caucasian)",
-      notes              = "Power-of-indicator form on the baseline logit: e_race_black_base_logit^RACE_BLACK (Ravva 2010 Equation 2). Cohort 210 (11%) of 1,892 (Ravva 2010 Table 1). Same canonical column as the companion Ravva_2009_varenicline.R population PK model. Because the intercept is negative, a factor above 1 LOWERS the quit probability; Results note 'a trend, albeit less precisely defined, toward a decreased baseline quit probability in blacks as compared with whites'.",
-      source_name        = "Race (Black)"
+      notes = "Power-of-indicator form on the baseline logit: e_race_black_base_logit^RACE_BLACK (Ravva 2010 Equation 2). Cohort 210 (11%) of 1,892 (Ravva 2010 Table 1). Same canonical column as the companion Ravva_2009_varenicline.R population PK model. Because the intercept is negative, a factor above 1 LOWERS the quit probability; Results note 'a trend, albeit less precisely defined, toward a decreased baseline quit probability in blacks as compared with whites'.",
+      source_name = "Race (Black)"
     ),
     RACE_OTHER = list(
-      description        = "Composite 'Other' race indicator pooling Asian, Hispanic and 'Other' races (the Ravva 2010 grouping)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite 'Other' race indicator pooling Asian, Hispanic and 'Other' races (the Ravva 2010 grouping)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the Ravva 2010 reference population is Caucasian)",
-      notes              = "Power-of-indicator form on the baseline logit: e_race_other_base_logit^RACE_OTHER (Ravva 2010 Equation 2). Table 1 footnote a: 'Other includes asian, hispanic, and Other races.' Cohort 141 (8%) of 1,892 (Ravva 2010 Table 1). Same canonical column and same composite definition as the companion Ravva_2009_varenicline.R population PK model, which is why RACE_OTHER is used here in preference to the semantically narrower RACE_NONBLACK_NONWHITE.",
-      source_name        = "Race (other)"
+      notes = "Power-of-indicator form on the baseline logit: e_race_other_base_logit^RACE_OTHER (Ravva 2010 Equation 2). Table 1 footnote a: 'Other includes asian, hispanic, and Other races.' Cohort 141 (8%) of 1,892 (Ravva 2010 Table 1). Same canonical column and same composite definition as the companion Ravva_2009_varenicline.R population PK model, which is why RACE_OTHER is used here in preference to the semantically narrower RACE_NONBLACK_NONWHITE.",
+      source_name = "Race (other)"
     )
   )
 
@@ -92,37 +92,37 @@ Ravva_2010_varenicline_car_w9_12 <- function() {
   # model, so they are documentation only and are never referenced in model().
   covariatesDataExcluded <- list(
     SMOKE_CPD_SCORE = list(
-      description        = "Fagerstrom Test for Nicotine Dependence item 4 ('How many cigarettes per day do you smoke?') scored 0-3 as published by Ravva 2010 Methods: 10 or less (0); 11-20 (1); 21-30 (2); >=31 (3).",
-      units              = "(ordinal score 0-3)",
-      type               = "categorical",
+      description = "Fagerstrom Test for Nicotine Dependence item 4 ('How many cigarettes per day do you smoke?') scored 0-3 as published by Ravva 2010 Methods: 10 or less (0); 11-20 (1); 21-30 (2); >=31 (3).",
+      units = "(ordinal score 0-3)",
+      type = "categorical",
       reference_category = "0 = 10 or fewer cigarettes per day",
-      notes              = "Screened as a candidate nicotine-dependence predictor but dropped for collinearity with SMOKE_TTFC_SCORE (Ravva 2010 Results: 'Simultaneous inclusion of the correlated predictors FSQ1, FSQ4, and CO in the model was avoided by selecting the FSQ1 variable as the most relevant predictor of nicotine dependence'). Discussion adds that time to the first cigarette 'was found to be more predictive of smoking cessation than the number of cigarettes smoked per day'. Cohort distribution (Ravva 2010 Table 1, CAR weeks 9-12 column): <=10 109; 11-20 1,061; 21-30 511; >30 211.",
-      source_name        = "FSQ4"
+      notes = "Screened as a candidate nicotine-dependence predictor but dropped for collinearity with SMOKE_TTFC_SCORE (Ravva 2010 Results: 'Simultaneous inclusion of the correlated predictors FSQ1, FSQ4, and CO in the model was avoided by selecting the FSQ1 variable as the most relevant predictor of nicotine dependence'). Discussion adds that time to the first cigarette 'was found to be more predictive of smoking cessation than the number of cigarettes smoked per day'. Cohort distribution (Ravva 2010 Table 1, CAR weeks 9-12 column): <=10 109; 11-20 1,061; 21-30 511; >30 211.",
+      source_name = "FSQ4"
     ),
     CO_EXHALED_PPM = list(
-      description        = "Exhaled carbon monoxide concentration at baseline, a biochemical marker of recent smoking intensity",
-      units              = "ppm",
-      type               = "continuous",
+      description = "Exhaled carbon monoxide concentration at baseline, a biochemical marker of recent smoking intensity",
+      units = "ppm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a candidate baseline-smoking-status predictor but dropped for collinearity with SMOKE_TTFC_SCORE (same Results sentence as SMOKE_CPD_SCORE). Retained in the source analysis only for two non-modelling purposes: confirming self-reported abstinence (Methods: 'CAR was confirmed by an exhaled CO measurement of 10 p.p.m. or less') and imputing eight missing baseline values by multivariate regression on FSQ1 and gender. Cohort mean 22 ppm, range 1-81 ppm (Ravva 2010 Table 1, CAR weeks 9-12 column).",
-      source_name        = "CO"
+      notes = "Screened as a candidate baseline-smoking-status predictor but dropped for collinearity with SMOKE_TTFC_SCORE (same Results sentence as SMOKE_CPD_SCORE). Retained in the source analysis only for two non-modelling purposes: confirming self-reported abstinence (Methods: 'CAR was confirmed by an exhaled CO measurement of 10 p.p.m. or less') and imputing eight missing baseline values by multivariate regression on FSQ1 and gender. Cohort mean 22 ppm, range 1-81 ppm (Ravva 2010 Table 1, CAR weeks 9-12 column).",
+      source_name = "CO"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1892L,
-    n_studies      = 3L,
-    age_range      = "18-75 years",
-    age_mean       = "43 years",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 1892L,
+    n_studies = 3L,
+    age_range = "18-75 years",
+    age_mean = "43 years",
+    weight_range = NA_character_,
     sex_female_pct = 47.0,
     race_ethnicity = c(White = 81.0, Black = 11.0, Other = 8.0),
-    disease_state  = "Adult cigarette smokers motivated to stop smoking. More than 75% reported smoking the first cigarette of the day within 30 min of waking; the majority smoked at least 11 cigarettes/day and more than 40% of those smoked at least 20 cigarettes/day.",
-    dose_range     = "Varenicline 0.5 mg b.i.d. and 1 mg b.i.d. oral, plus placebo and (in studies 3 and 4) a bupropion SR 150 mg b.i.d. comparator arm, over a 12-week treatment period after an initial titration week.",
-    regions        = "Multicenter, multinational.",
+    disease_state = "Adult cigarette smokers motivated to stop smoking. More than 75% reported smoking the first cigarette of the day within 30 min of waking; the majority smoked at least 11 cigarettes/day and more than 40% of those smoked at least 20 cigarettes/day.",
+    dose_range = "Varenicline 0.5 mg b.i.d. and 1 mg b.i.d. oral, plus placebo and (in studies 3 and 4) a bupropion SR 150 mg b.i.d. comparator arm, over a 12-week treatment period after an initial titration week.",
+    regions = "Multicenter, multinational.",
     smoking_marker = "Baseline exhaled carbon monoxide mean 22 ppm, range 1-81 ppm.",
-    notes          = "Pooled from studies 2, 3 and 4 of the five randomized, double-blind, placebo-controlled trials summarized in Ravva 2010 Supplementary Table S1 (study 2 n = 609, study 3 n = 642, study 4 n = 641). Baseline demographics from Ravva 2010 Table 1, 'CAR at weeks 9-12' column. A total of 416 subjects (22% of this database) did not complete the treatment period and were assigned as quit failures; subjects with unknown smoking status or exhaled CO > 10 ppm were assumed to be smoking for the remainder of the study."
+    notes = "Pooled from studies 2, 3 and 4 of the five randomized, double-blind, placebo-controlled trials summarized in Ravva 2010 Supplementary Table S1 (study 2 n = 609, study 3 n = 642, study 4 n = 641). Baseline demographics from Ravva 2010 Table 1, 'CAR at weeks 9-12' column. A total of 416 subjects (22% of this database) did not complete the treatment period and were assigned as quit failures; subjects with unknown smoking status or exhaled CO > 10 ppm were assumed to be smoking for the remainder of the study."
   )
 
   ini({

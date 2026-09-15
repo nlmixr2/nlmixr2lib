@@ -26,18 +26,18 @@ Kirubakaran_2022_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power-form allometric scaling on CL/F and Q/F (exponent 0.75) and on V2/F ",
         "and V3/F (exponent 1.0); reference 57 kg (Kirubakaran 2022 Methods 2.5.1 / ",
         "Section 3.3.3; the reference value 57 kg is the median FFM reported in ",
@@ -46,14 +46,14 @@ Kirubakaran_2022_tacrolimus <- function() {
         "albumin, AST, ALP per Methods 2.1). Derived per subject from height, ",
         "weight, and sex via the Janmahasatian 2005 formula."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     HCT = list(
-      description        = "Haematocrit (volume fraction of red blood cells)",
-      units              = "fraction (e.g., 0.26)",
-      type               = "continuous",
+      description = "Haematocrit (volume fraction of red blood cells)",
+      units = "fraction (e.g., 0.26)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power-form effect on CL/F with exponent -0.84 and reference 0.34 ",
         "(Kirubakaran 2022 Table 3 and Section 3.3.3). Reference 0.34 is the ",
         "median HCT in the model-building dataset (Table 1 reports median 0.26 ",
@@ -61,14 +61,14 @@ Kirubakaran_2022_tacrolimus <- function() {
         "Time-varying (carried forward up to one month if missing). Source ",
         "reports HCT as a fraction; do not pass percent values."
       ),
-      source_name        = "HCT"
+      source_name = "HCT"
     ),
     CONMED_AZOLE = list(
-      description        = "Concomitant azole antifungal therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant azole antifungal therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole antifungal)",
-      notes              = paste0(
+      notes = paste0(
         "Time-varying. Selects the typical CL/F (21.1 L/h without azole, 4.2 L/h ",
         "with azole) and the BSV magnitude on CL/F (61% CV without azole, 89.5% ",
         "CV with azole) per Kirubakaran 2022 Table 3. Pooled across itraconazole ",
@@ -83,22 +83,22 @@ Kirubakaran_2022_tacrolimus <- function() {
         "input data. The 80% CL/F reduction with azole reflects mechanism-based ",
         "CYP3A4 / P-glycoprotein inhibition."
       ),
-      source_name        = "AZOLE"
+      source_name = "AZOLE"
     )
   )
 
   population <- list(
-    n_subjects     = 87L,
-    n_studies      = 1L,
-    age_range      = "16-70 years (model building 16-70; external evaluation 16-69)",
-    age_median     = "53 years (model building); 56 years (external evaluation)",
-    weight_range   = "40-111 kg (model building 40-107; external evaluation 45-111)",
-    weight_median  = "77 kg (model building); 75 kg (external evaluation)",
-    height_range   = "154-195 cm (model building 154-190; external evaluation 150-195)",
-    height_median  = "175 cm (both subsets)",
+    n_subjects = 87L,
+    n_studies = 1L,
+    age_range = "16-70 years (model building 16-70; external evaluation 16-69)",
+    age_median = "53 years (model building); 56 years (external evaluation)",
+    weight_range = "40-111 kg (model building 40-107; external evaluation 45-111)",
+    weight_median = "77 kg (model building); 75 kg (external evaluation)",
+    height_range = "154-195 cm (model building 154-190; external evaluation 150-195)",
+    height_median = "175 cm (both subsets)",
     sex_female_pct = 32.2,
     race_ethnicity = c(White_Caucasian = 48.3, Asian = 11.5, Unknown = 40.2),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Heart transplant recipients followed from transplantation to ",
       "approximately 1 year post-transplant; immunosuppressive maintenance with ",
       "oral immediate-release tacrolimus (Prograf), mycophenolate mofetil, and ",
@@ -106,21 +106,21 @@ Kirubakaran_2022_tacrolimus <- function() {
       "received itraconazole 200 mg q12h prophylaxis until at least the cessation ",
       "of antifungal therapy 6 months post-transplant."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Oral immediate-release tacrolimus q12h, individualized to trough target. ",
       "Median (range) 0.50 mg q12h (0.05-8.00) under concomitant azole antifungal ",
       "and 3.00 mg q12h (0.25-12.00) without concomitant azole (Section 3.2)."
     ),
-    regions        = "Single centre, St Vincent's Hospital Sydney, Australia",
-    n_concentrations_modelbuild  = 1099L,
-    n_concentrations_external    = 348L,
+    regions = "Single centre, St Vincent's Hospital Sydney, Australia",
+    n_concentrations_modelbuild = 1099L,
+    n_concentrations_external = 348L,
     haematocrit_baseline = "median 0.26 (range 0.21-0.38) (Table 1)",
-    albumin_baseline     = "median 34 g/L (range 20-43) (Table 1)",
-    creatinine_baseline  = "median 131 umol/L (range 39-276) (Table 1)",
+    albumin_baseline = "median 34 g/L (range 20-43) (Table 1)",
+    creatinine_baseline = "median 131 umol/L (range 39-276) (Table 1)",
     creatinine_clearance_baseline = "median 63 mL/min (range 25-172) (Cockcroft-Gault, Table 1)",
-    diabetes_pct         = 33.3,
+    diabetes_pct = 33.3,
     cyp3a5_genotype_known_pct = 51.0,
-    notes          = paste0(
+    notes = paste0(
       "Retrospective routine-care monitoring data; almost entirely pre-dose ",
       "(trough) concentrations (Section 3.2). Bioanalytical assay: whole-blood ",
       "tacrolimus by UHPLC-MS/MS, quantification range 2-50 ug/L. Model-building ",

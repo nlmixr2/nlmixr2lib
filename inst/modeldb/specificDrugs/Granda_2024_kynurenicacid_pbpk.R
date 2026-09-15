@@ -60,7 +60,7 @@ Granda_2024_kynurenicacid_pbpk <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Iohexol renal clearance (measured GFR by an exogenous filtration",
         "tracer), RAW and NOT BSA-normalized. Table 3 tabulates the",
         "absolute per-subject value in mL/min (range 20-146); Table 1",
@@ -69,29 +69,29 @@ Granda_2024_kynurenicacid_pbpk <- function() {
         "the ABSOLUTE whole-organ filtration flow, so the raw Table 3",
         "column is the correct input."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters twice: as the glomerular filtration flow qgfr = CRCL * 0.06",
         "(L/h) and as the tubular-adaptation driver pr = CRCL / 120, where",
         "120 mL/min is the framework healthy-adult anchor. Seven subjects",
         "have CRCL above 120, so pr exceeds 1 for them; that is the",
         "framework behaviour and is not clamped."
       ),
-      source_name        = "Iohexol CLr"
+      source_name = "Iohexol CLr"
     ),
     KBF = list(
-      description        = paste(
+      description = paste(
         "Kidney blood flow, estimated per subject as the measured renal",
         "clearance of isovalerylglycine -- an endogenous solute chosen for",
         "its rapid clearance (more than fourfold GFR), low protein binding",
         "and high extraction ratio. Range 76-1692 mL/min (Table 3)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as the peritubular vascular flow qk = KBF * 0.06 (L/h),",
         "REPLACING the framework population default Q_kidney = 60 * pr L/h.",
         "Substituting this per-subject measurement is the paper's central",
@@ -100,57 +100,57 @@ Granda_2024_kynurenicacid_pbpk <- function() {
         "subject whose measured biomarker clearance exceeds their KBF",
         "cannot be fitted (participants 38, 41 and 45)."
       ),
-      source_name        = "Isovalerylglycine CLr"
+      source_name = "Isovalerylglycine CLr"
     )
   )
 
   compartmentData <- list(
-    pt1_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, proximal tubule S1
-    pt1_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, proximal tubule S1
-    pt1_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, proximal tubule S1
-    pt2_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, proximal tubule S2
-    pt2_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, proximal tubule S2
-    pt2_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, proximal tubule S2
-    pt3_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, proximal tubule S3
-    pt3_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, proximal tubule S3
-    pt3_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, proximal tubule S3
-    lohdesc_lumen    = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, descending loop of Henle
-    lohdesc_cell     = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, descending loop of Henle
-    lohdesc_blood    = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, descending loop of Henle
-    lohasc_lumen     = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, ascending loop of Henle
-    lohasc_cell      = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, ascending loop of Henle
-    lohasc_blood     = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, ascending loop of Henle
-    distal_lumen     = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, distal tubule
-    distal_cell      = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, distal tubule
-    distal_blood     = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, distal tubule
-    cd1_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, connecting tubule
-    cd1_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, connecting tubule
-    cd1_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, connecting tubule
-    cd2_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, initial collecting duct
-    cd2_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, initial collecting duct
-    cd2_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, initial collecting duct
-    cd3_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, cortical collecting duct
-    cd3_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, cortical collecting duct
-    cd3_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, cortical collecting duct
-    cd4_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, medullary collecting duct
-    cd4_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, medullary collecting duct
-    cd4_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, medullary collecting duct
-    cd5_lumen        = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE),  # tubular fluid, papillary collecting duct
-    cd5_cell         = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE),  # epithelial cell, papillary collecting duct
-    cd5_blood        = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # peritubular blood, papillary collecting duct
-    central          = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE),  # systemic venous blood (V_ven0 = 42 L)
-    urine            = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE)  # cumulative amount excreted into bladder urine
+    pt1_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, proximal tubule S1
+    pt1_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, proximal tubule S1
+    pt1_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, proximal tubule S1
+    pt2_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, proximal tubule S2
+    pt2_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, proximal tubule S2
+    pt2_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, proximal tubule S2
+    pt3_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, proximal tubule S3
+    pt3_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, proximal tubule S3
+    pt3_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, proximal tubule S3
+    lohdesc_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, descending loop of Henle
+    lohdesc_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, descending loop of Henle
+    lohdesc_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, descending loop of Henle
+    lohasc_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, ascending loop of Henle
+    lohasc_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, ascending loop of Henle
+    lohasc_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, ascending loop of Henle
+    distal_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, distal tubule
+    distal_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, distal tubule
+    distal_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, distal tubule
+    cd1_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, connecting tubule
+    cd1_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, connecting tubule
+    cd1_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, connecting tubule
+    cd2_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, initial collecting duct
+    cd2_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, initial collecting duct
+    cd2_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, initial collecting duct
+    cd3_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, cortical collecting duct
+    cd3_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, cortical collecting duct
+    cd3_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, cortical collecting duct
+    cd4_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, medullary collecting duct
+    cd4_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, medullary collecting duct
+    cd4_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, medullary collecting duct
+    cd5_lumen = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE), # tubular fluid, papillary collecting duct
+    cd5_cell = list(analyte = "Kynurenic acid", units = "mg", specimen = "tissue", verified = TRUE), # epithelial cell, papillary collecting duct
+    cd5_blood = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # peritubular blood, papillary collecting duct
+    central = list(analyte = "Kynurenic acid", units = "mg", specimen = "whole blood", verified = TRUE), # systemic venous blood (V_ven0 = 42 L)
+    urine = list(analyte = "Kynurenic acid", units = "mg", specimen = "urine", verified = TRUE) # cumulative amount excreted into bladder urine
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27,
-    n_studies      = 1,
-    age_mean       = "54 years (SD 15)",
+    species = "human",
+    n_subjects = 27,
+    n_studies = 1,
+    age_mean = "54 years (SD 15)",
     sex_female_pct = 37,
     race_ethnicity = c(Black = 41, White = 56, Other = 3.7),
-    bmi_mean       = "29.0 kg/m^2 (SD 5.7)",
-    disease_state  = paste(
+    bmi_mean = "29.0 kg/m^2 (SD 5.7)",
+    disease_state = paste(
       "Adult outpatients spanning the full range of kidney function",
       "(CKD stages 1-5, not on renal replacement therapy). iGFR",
       "76 +/- 30 mL/min/1.73 m^2: 6 subjects (22%) below 45, 4 (15%)",
@@ -162,13 +162,13 @@ Granda_2024_kynurenicacid_pbpk <- function() {
       "76-1692 mL/min (Table 3); kynurenic acid CLr 226 +/- 138 mL/min",
       "and creatinine clearance 105 +/- 50 mL/min (Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral tenofovir alafenamide 50 mg plus single oral",
       "oseltamivir 30 mg, with 13 plasma samples over 600 min and a",
       "concurrent 10-h timed urine collection."
     ),
-    regions        = "United States (University of Washington, Seattle)",
-    notes          = paste(
+    regions = "United States (University of Washington, Seattle)",
+    notes = paste(
       "Ancillary study to PROCLAIM (Proximal Tubular Clearance of Renal",
       "Medications); 54 subjects completed the primary visit and 27",
       "completed the second visit analysed here. Baseline demographics",

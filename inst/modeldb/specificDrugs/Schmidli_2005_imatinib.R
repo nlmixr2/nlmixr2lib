@@ -38,11 +38,11 @@ Schmidli_2005_imatinib <- function() {
 
   covariateData <- list(
     OCC = list(
-      description        = "Occasion indicator: 1 = the day-1 (first-dose) occasion, 2 = the day-29-or-later occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion indicator: 1 = the day-1 (first-dose) occasion, 2 = the day-29-or-later occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (day 1, first dose)",
-      notes              = paste0(
+      notes = paste0(
         "Yang 2025 Table 1 footnote b defines the source column as ",
         "'Occasion (OCC) with OCC = 0 for day 1 and OCC = 1 (used in this ",
         "current validation study) for day >= 29'. The canonical OCC column ",
@@ -60,14 +60,14 @@ Schmidli_2005_imatinib <- function() {
         "Petain_2008_imatinib.R, which Yang 2025 annotates with the same ",
         "footnote b."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as (WT/80)^0.301 and Vc/F as (WT/80)^0.405 (Yang 2025 ",
         "Table 1). The reference 80 kg is the centring constant printed ",
         "inside the covariate term. Note that neither exponent is the ",
@@ -79,14 +79,14 @@ Schmidli_2005_imatinib <- function() {
         "Yang 2025 (median prediction error -8.82%, median absolute ",
         "prediction error 39.7%, Table 3)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     HGB = list(
-      description        = "Hemoglobin concentration",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Hemoglobin concentration",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as (HGB/13)^0.897 and Vc/F as (HGB/13)^0.676 (Yang ",
         "2025 Table 1). Yang 2025 Table 1 abbreviation list gives the unit ",
         "explicitly: 'HG hemoglobin (g/dL)'. The reference 13 g/dL is the ",
@@ -96,14 +96,14 @@ Schmidli_2005_imatinib <- function() {
         "using this model. The register permits either unit for HGB and ",
         "requires the per-model unit to be declared here, which it is."
       ),
-      source_name        = "HG"
+      source_name = "HG"
     ),
     WBC = list(
-      description        = "White blood cell count",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "White blood cell count",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as (WBC/16)^-0.105 and Vc/F as (WBC/16)^-0.07 (Yang ",
         "2025 Table 1). Yang 2025 Table 1 abbreviation list: 'WBC white ",
         "blood cell count (10^9/L)'. The reference 16 x 10^9/L is the ",
@@ -113,21 +113,21 @@ Schmidli_2005_imatinib <- function() {
         "is the defining laboratory abnormality. Both exponents are small ",
         "and negative."
       ),
-      source_name        = "WBC"
+      source_name = "WBC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 371L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 371L,
+    n_studies = 1L,
     n_observations = "1930 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "18-70 years",
-    disease_state  = "Adults with chronic-phase chronic myeloid leukaemia (CML)",
-    dose_range     = "Oral imatinib 400 mg total daily dose",
-    regions        = "Multi-country international phase III study",
-    bioanalytical  = "LC-MS/MS, limit of quantification 25 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "18-70 years",
+    disease_state = "Adults with chronic-phase chronic myeloid leukaemia (CML)",
+    dose_range = "Oral imatinib 400 mg total daily dose",
+    regions = "Multi-country international phase III study",
+    bioanalytical = "LC-MS/MS, limit of quantification 25 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "The largest of the three international-trial-derived models in Yang ",
       "2025 Table 1 apart from Gotta 2014. Demographic detail beyond the ",
       "row above (weight range, sex split, race) is not reported by the ",

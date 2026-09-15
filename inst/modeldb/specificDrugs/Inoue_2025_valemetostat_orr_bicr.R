@@ -30,185 +30,184 @@ Inoue_2025_valemetostat_orr_bicr <- function() {
   )
   vignette <- "Inoue_2025_valemetostat_ptcl"
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CSSU_VALE covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CSSU_VALE covariate column)",
     concentration = "prob_orr_central (probability of objective response by blinded independent central review, 0-1; also logit_orr_central)"
   )
 
   covariateData <- list(
     CSSU_VALE = list(
-      description        = "Unbound (free) valemetostat average plasma concentration over the on-treatment window up to the endpoint event (the paper Cavgtte). Supplied as data: this model has no PK layer, and the source analysis computed it from each patient post hoc parameters, actual dosing records and concomitant medications using the companion population PK model, so it reflects dose reductions and interruptions.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Unbound (free) valemetostat average plasma concentration over the on-treatment window up to the endpoint event (the paper Cavgtte). Supplied as data: this model has no PK layer, and the source analysis computed it from each patient post hoc parameters, actual dosing records and concomitant medications using the companion population PK model, so it reflects dose reductions and interruptions.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 13.9 ng/mL and scaled by 12.2 ng/mL inside model(). The centre is the Figure S6 reference subject exposure; the scale is printed in the Results narrative as the per-12.2 ng/mL increment.",
-      source_name        = "Cavgtte"
+      notes = "Centred at 13.9 ng/mL and scaled by 12.2 ng/mL inside model(). The centre is the Figure S6 reference subject exposure; the scale is printed in the Results narrative as the per-12.2 ng/mL increment.",
+      source_name = "Cavgtte"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase concentration. Enters the model as log(LDH), standardized on the log scale.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase concentration. Enters the model as log(LDH), standardized on the log scale.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters as log(LDH), centred at 5.5 (log units) and scaled by 0.579 inside model(); the centre corresponds to 244.7 untransformed. Scale source: solved from the Figure S6 panel; Table 1 reports a natural-scale SD only.",
-      source_name        = "log baseline LDH, log U/L"
+      notes = "Enters as log(LDH), centred at 5.5 (log units) and scaled by 0.579 inside model(); the centre corresponds to 244.7 untransformed. Scale source: solved from the Figure S6 panel; Table 1 reports a natural-scale SD only.",
+      source_name = "log baseline LDH, log U/L"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size, as the sum of the products of perpendicular diameters of target lesions. Enters the model as log(TUMSZ), standardized on the log scale.",
-      units              = "mm^2",
-      type               = "continuous",
+      description = "Baseline tumor size, as the sum of the products of perpendicular diameters of target lesions. Enters the model as log(TUMSZ), standardized on the log scale.",
+      units = "mm^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters as log(TUMSZ), centred at 7.37 (log units) and scaled by 1.104 inside model(); the centre corresponds to 1588 untransformed. Scale source: solved from the Figure S6 panel; Table 1 reports a natural-scale SD only.",
-      source_name        = "log baseline tumor size, mm2"
+      notes = "Enters as log(TUMSZ), centred at 7.37 (log units) and scaled by 1.104 inside model(); the centre corresponds to 1588 untransformed. Scale source: solved from the Figure S6 panel; Table 1 reports a natural-scale SD only.",
+      source_name = "log baseline tumor size, mm2"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 69 and scaled by 12.6 inside model(). Centre is the Figure S6 reference subject value; scale source: Table 1 ER-efficacy SD 12.6 (the free-centre solve returns 12.37).",
-      source_name        = "Age, years"
+      notes = "Centred at 69 and scaled by 12.6 inside model(). Centre is the Figure S6 reference subject value; scale source: Table 1 ER-efficacy SD 12.6 (the free-centre solve returns 12.37).",
+      source_name = "Age, years"
     ),
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 74 and scaled by 13.4 inside model(). Centre is the Figure S6 reference subject value; scale source: Table 1 ER-efficacy SD 13.4 (solve 13.47).",
-      source_name        = "Weight, kg"
+      notes = "Centred at 74 and scaled by 13.4 inside model(). Centre is the Figure S6 reference subject value; scale source: Table 1 ER-efficacy SD 13.4 (solve 13.47).",
+      source_name = "Weight, kg"
     ),
     AAG = list(
-      description        = "Baseline plasma alpha-1-acid glycoprotein concentration -- the binding protein that drives the saturable-binding component of the companion population PK model.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline plasma alpha-1-acid glycoprotein concentration -- the binding protein that drives the saturable-binding component of the companion population PK model.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 120 and scaled by 61.6 inside model(). Centre is the Figure S6 reference subject value; scale source: Table 1 ER-efficacy SD 61.6 (solve 62.16).",
-      source_name        = "AAG, mg/dL"
+      notes = "Centred at 120 and scaled by 61.6 inside model(). Centre is the Figure S6 reference subject value; scale source: Table 1 ER-efficacy SD 61.6 (solve 62.16).",
+      source_name = "AAG, mg/dL"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. Binary covariates are NOT centred or scaled.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. Binary covariates are NOT centred or scaled.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the Figure S6 / S8 reference subject is male)",
-      notes              = "Source row: Sex: Female.",
-      source_name        = "Sex: Female"
+      notes = "Source row: Sex: Female.",
+      source_name = "Sex: Female"
     ),
     RACE_ASIAN_OTH = list(
-      description        = "Asian non-Japanese indicator; 1 = Asian non-Japanese, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian non-Japanese indicator; 1 = Asian non-Japanese, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian Japanese, when RACE_WHITE and RACE_OTHER are also 0)",
-      notes              = "Source row: Race/Country: Asian non-Japanese.",
-      source_name        = "Race/Country: Asian non-Japanese"
+      notes = "Source row: Race/Country: Asian non-Japanese.",
+      source_name = "Race/Country: Asian non-Japanese"
     ),
     RACE_WHITE = list(
-      description        = "White indicator; 1 = White, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White indicator; 1 = White, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian Japanese, when RACE_ASIAN_OTH and RACE_OTHER are also 0)",
-      notes              = "Source row: Race/Country: White.",
-      source_name        = "Race/Country: White"
+      notes = "Source row: Race/Country: White.",
+      source_name = "Race/Country: White"
     ),
     RACE_OTHER = list(
-      description        = "Other race/country indicator; 1 = a race/country category outside Asian Japanese, Asian non-Japanese and White; 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Other race/country indicator; 1 = a race/country category outside Asian Japanese, Asian non-Japanese and White; 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian Japanese, when RACE_ASIAN_OTH and RACE_WHITE are also 0)",
-      notes              = "Source row: Race/Country: Other.",
-      source_name        = "Race/Country: Other"
+      notes = "Source row: Race/Country: Other.",
+      source_name = "Race/Country: Other"
     ),
     ECOG_GE1 = list(
-      description        = "ECOG performance status indicator; 1 = ECOG PS 1 or greater, 0 = ECOG PS 0. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ECOG performance status indicator; 1 = ECOG PS 1 or greater, 0 = ECOG PS 0. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG PS 0)",
-      notes              = "Source row: ECOG PS: 1+.",
-      source_name        = "ECOG PS: 1+"
+      notes = "Source row: ECOG PS: 1+.",
+      source_name = "ECOG PS: 1+"
     ),
     LINE_3L = list(
-      description        = "Third-line therapy indicator; 1 = exactly two prior anticancer regimens, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Third-line therapy indicator; 1 = exactly two prior anticancer regimens, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (paired with LINE_4L_PLUS; both 0 denotes one prior regimen, i.e. second-line therapy)",
-      notes              = "The source column counts PRIOR REGIMENS, not lines: this indicator is 1 when the patient had exactly TWO prior regimens, which is third-line therapy. See the LINE_3L register entry for the off-by-one warning. Source row: Number of prior regimens: 2.",
-      source_name        = "Number of prior regimens: 2"
+      notes = "The source column counts PRIOR REGIMENS, not lines: this indicator is 1 when the patient had exactly TWO prior regimens, which is third-line therapy. See the LINE_3L register entry for the off-by-one warning. Source row: Number of prior regimens: 2.",
+      source_name = "Number of prior regimens: 2"
     ),
     LINE_4L_PLUS = list(
-      description        = "Fourth-line-or-later therapy indicator; 1 = more than two prior anticancer regimens, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fourth-line-or-later therapy indicator; 1 = more than two prior anticancer regimens, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (paired with LINE_3L; both 0 denotes one prior regimen, i.e. second-line therapy)",
-      notes              = "The source column counts PRIOR REGIMENS, not lines: this indicator is 1 when the patient had MORE THAN TWO prior regimens, which is fourth-line therapy or later. Source row: Number of prior regimens: >2.",
-      source_name        = "Number of prior regimens: >2"
+      notes = "The source column counts PRIOR REGIMENS, not lines: this indicator is 1 when the patient had MORE THAN TWO prior regimens, which is fourth-line therapy or later. Source row: Number of prior regimens: >2.",
+      source_name = "Number of prior regimens: >2"
     ),
     TUMTP_PTCL_NOS = list(
-      description        = "PTCL not-otherwise-specified subtype indicator; 1 = PTCL-NOS, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PTCL not-otherwise-specified subtype indicator; 1 = PTCL-NOS, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (angioimmunoblastic T-cell lymphoma, when TUMTP_ALCL and TUMTP_PTCL_OTHER are also 0)",
-      notes              = "Source row: PTCL subtypes: PTCL, NOS.",
-      source_name        = "PTCL subtypes: PTCL, NOS"
+      notes = "Source row: PTCL subtypes: PTCL, NOS.",
+      source_name = "PTCL subtypes: PTCL, NOS"
     ),
     TUMTP_ALCL = list(
-      description        = "Anaplastic large-cell lymphoma subtype indicator; 1 = ALCL, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anaplastic large-cell lymphoma subtype indicator; 1 = ALCL, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (angioimmunoblastic T-cell lymphoma, when TUMTP_PTCL_NOS and TUMTP_PTCL_OTHER are also 0)",
-      notes              = "Source row: PTCL subtypes: ALCL.",
-      source_name        = "PTCL subtypes: ALCL"
+      notes = "Source row: PTCL subtypes: ALCL.",
+      source_name = "PTCL subtypes: ALCL"
     ),
     TUMTP_PTCL_OTHER = list(
-      description        = "Residual PTCL subtype indicator; 1 = a PTCL subtype other than AITL, PTCL-NOS or ALCL; 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Residual PTCL subtype indicator; 1 = a PTCL subtype other than AITL, PTCL-NOS or ALCL; 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (angioimmunoblastic T-cell lymphoma, when TUMTP_PTCL_NOS and TUMTP_ALCL are also 0)",
-      notes              = "Source row: PTCL subtypes: All other subtypes.",
-      source_name        = "PTCL subtypes: All other subtypes"
+      notes = "Source row: PTCL subtypes: All other subtypes.",
+      source_name = "PTCL subtypes: All other subtypes"
     ),
     TX_HCT = list(
-      description        = "Prior hematopoietic stem cell transplant indicator; 1 = yes, 0 = no. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior hematopoietic stem cell transplant indicator; 1 = yes, 0 = no. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior transplant)",
-      notes              = "Source row: Prior transplants: Yes.",
-      source_name        = "Prior transplants: Yes"
+      notes = "Source row: Prior transplants: Yes.",
+      source_name = "Prior transplants: Yes"
     ),
     HEPIMP = list(
-      description        = "NCI-ODWG hepatic impairment indicator; 1 = mild or moderate impairment, 0 = normal hepatic function. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NCI-ODWG hepatic impairment indicator; 1 = mild or moderate impairment, 0 = normal hepatic function. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function)",
-      notes              = "The source covariate is a two-level factor, normal versus mild-or-moderate impairment (Table S3). No patient with severe hepatic impairment was enrolled in either exposure-response analysis set (Table 1 reports only normal / mild / moderate), so the canonical HEPIMP mild-or-worse definition and the paper mild-or-moderate wording coincide exactly in this cohort. Do not substitute HEPIMP_MILD, which would silently exclude the moderate patients. Source row: NCI-ODWG hepatic function: Mild or Moderate impairment.",
-      source_name        = "NCI-ODWG hepatic function: Mild or Moderate impairment"
+      notes = "The source covariate is a two-level factor, normal versus mild-or-moderate impairment (Table S3). No patient with severe hepatic impairment was enrolled in either exposure-response analysis set (Table 1 reports only normal / mild / moderate), so the canonical HEPIMP mild-or-worse definition and the paper mild-or-moderate wording coincide exactly in this cohort. Do not substitute HEPIMP_MILD, which would silently exclude the moderate patients. Source row: NCI-ODWG hepatic function: Mild or Moderate impairment.",
+      source_name = "NCI-ODWG hepatic function: Mild or Moderate impairment"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 119L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 119L,
+    n_studies = 1L,
     n_observations = "119 binary objective-response records, one per patient",
-    age_range      = "mean 65.6 years, SD 12.6 (Inoue 2025 Table 1, ER efficacy population)",
-    weight_range   = "mean 73.4 kg, SD 13.4 (Inoue 2025 Table 1, ER efficacy population)",
+    age_range = "mean 65.6 years, SD 12.6 (Inoue 2025 Table 1, ER efficacy population)",
+    weight_range = "mean 73.4 kg, SD 13.4 (Inoue 2025 Table 1, ER efficacy population)",
     sex_female_pct = 28.6,
-    race_ethnicity = c(`Asian, Japanese` = 12.6, `Asian, non-Japanese` = 12.6,
-                       White = 62.2, Other = 12.6),
-    disease_state  = paste0(
-        "relapsed or refractory peripheral T-cell lymphoma; subtypes AITL ",
-        "35.3%, PTCL not otherwise specified 34.5%, ALCL 7.6%, all other ",
-        "subtypes 22.7%"
-      ),
-    dose_range     = "valemetostat 200 mg orally once daily (a single dose level)",
-    regions        = "multiregional (VALENTINE-PTCL01)",
-    notes          = paste0(
-        "Exposure-response efficacy analysis set: the 119 patients with PTCL ",
-        "enrolled in the phase 2 VALENTINE-PTCL01 trial. Observed ORR by BICR ",
-        "43.7%. Because only one dose level was studied, the exposure range ",
-        "is narrow and the paper reports the exposure-response relationship ",
-        "for ORR as flat (the exposure odds ratio credible interval spans 1). ",
-        "ECOG PS 0 in 42.9%; one prior regimen 30.3%, two 25.2%, more than ",
-        "two 44.5%; prior transplant 2.5%; NCI-ODWG hepatic function normal ",
-        "80.7%, mild 16.8%, moderate 2.5%."
-      )
+    race_ethnicity = c(`Asian, Japanese` = 12.6, `Asian, non-Japanese` = 12.6, White = 62.2, Other = 12.6),
+    disease_state = paste0(
+      "relapsed or refractory peripheral T-cell lymphoma; subtypes AITL ",
+      "35.3%, PTCL not otherwise specified 34.5%, ALCL 7.6%, all other ",
+      "subtypes 22.7%"
+    ),
+    dose_range = "valemetostat 200 mg orally once daily (a single dose level)",
+    regions = "multiregional (VALENTINE-PTCL01)",
+    notes = paste0(
+      "Exposure-response efficacy analysis set: the 119 patients with PTCL ",
+      "enrolled in the phase 2 VALENTINE-PTCL01 trial. Observed ORR by BICR ",
+      "43.7%. Because only one dose level was studied, the exposure range ",
+      "is narrow and the paper reports the exposure-response relationship ",
+      "for ORR as flat (the exposure odds ratio credible interval spans 1). ",
+      "ECOG PS 0 in 42.9%; one prior regimen 30.3%, two 25.2%, more than ",
+      "two 44.5%; prior transplant 2.5%; NCI-ODWG hepatic function normal ",
+      "80.7%, mild 16.8%, moderate 2.5%."
+    )
   )
 
   ini({

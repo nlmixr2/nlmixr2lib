@@ -32,18 +32,18 @@ Chen_2024_rituximab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
-    bcell       = list(analyte = "CD19+ B-lymphocytes", units = "mg", specimen = "not applicable", verified = FALSE)
+    bcell = list(analyte = "CD19+ B-lymphocytes", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference (normalising) BSA is 0.9 m^2, the median BSA of the",
         "14-patient cohort (Chen 2021 Table 1). CL scales as (BSA/0.9)^1.26 and",
         "V1 scales linearly as (BSA/0.9); Q and V2 carry no covariate",
@@ -52,7 +52,7 @@ Chen_2024_rituximab <- function() {
         "mg/m^2 (375 mg/m^2, capped at 500 mg per infusion).",
         sep = " "
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
@@ -66,21 +66,21 @@ Chen_2024_rituximab <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as a PD covariate in Chen 2024; not retained. The authors",
         "attribute the null result to the limited sample size and note that",
         "age-related decreases in CD19+ B cells are reported elsewhere",
@@ -89,11 +89,11 @@ Chen_2024_rituximab <- function() {
       )
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = paste(
+      notes = paste(
         "Screened as a PD covariate in Chen 2024; not retained. The cohort was",
         "13 boys / 1 girl (Chen 2021 Table 1).",
         sep = " "
@@ -101,57 +101,57 @@ Chen_2024_rituximab <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     TCHOL = list(
       description = "Serum total cholesterol",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     CRCL = list(
       description = "Creatinine clearance (Schwartz equation)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     CYSC = list(
       description = "Cystatin C",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate in Chen 2024; not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened as a PD covariate in Chen 2024; not retained."
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 14,
-    n_studies     = 1,
-    age_range     = "3.0-15.6 years",
-    age_median    = "6.8 years",
-    weight_range  = "15.0-96.5 kg",
+    species = "human",
+    n_subjects = 14,
+    n_studies = 1,
+    age_range = "3.0-15.6 years",
+    age_median = "6.8 years",
+    weight_range = "15.0-96.5 kg",
     weight_median = "23.2 kg",
-    bsa_range     = "0.6-2.1 m^2",
-    bsa_median    = "0.9 m^2",
+    bsa_range = "0.6-2.1 m^2",
+    bsa_median = "0.9 m^2",
     sex_female_pct = 7.1,
     race_ethnicity = c(Asian = 100),
     disease_state = "frequent-relapsing or steroid-dependent nephrotic syndrome (5 FRNS, 7 SDNS, 2 FRNS/SDNS; 8 minimal change disease, 3 focal segmental glomerulosclerosis, 3 not biopsied)",
-    dose_range    = "375 mg/m^2 IV (maximum 500 mg per infusion) once weekly for up to 2 weeks; 11 of 14 patients received 2 infusions, 3 received 1 infusion",
-    regions       = "China (single centre, Children's Hospital of Fudan University, Shanghai)",
+    dose_range = "375 mg/m^2 IV (maximum 500 mg per infusion) once weekly for up to 2 weeks; 11 of 14 patients received 2 infusions, 3 received 1 infusion",
+    regions = "China (single centre, Children's Hospital of Fudan University, Shanghai)",
     n_observations = "72 rituximab concentrations (Chen 2021); 102 CD19+ lymphocyte counts (Chen 2024)",
     notes = paste(
       "Baseline demographics are in Chen 2021 Table 1; the CD19+ lymphocyte",

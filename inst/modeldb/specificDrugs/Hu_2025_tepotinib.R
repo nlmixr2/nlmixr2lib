@@ -40,17 +40,17 @@ Hu_2025_tepotinib <- function() {
   # tepo_p to "peripheral"; reactions v67 / v68 / v69 are the absorption,
   # elimination and inter-compartmental distribution fluxes respectively.
   compartmentData <- list(
-    depot       = list(analyte = "tepotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tepotinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "tepotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tepotinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tepotinib", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = NA_integer_,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
     disease_state = paste(
       "Advanced non-small cell lung cancer with MET exon 14 skipping mutations",
       "or MET amplification. The QSP framework applies this PK module to two",
@@ -58,7 +58,7 @@ Hu_2025_tepotinib <- function() {
       "virtual clinical trials'); the PK module itself carries no",
       "between-subject variability, so it is a typical-value model."
     ),
-    dose_range    = paste(
+    dose_range = paste(
       "Tepotinib 500 mg once daily (containing 450 mg active moiety) is the",
       "clinically approved regimen simulated in Figure 7B; 600 mg QD was also",
       "simulated and gave no further gain in objective response rate.",

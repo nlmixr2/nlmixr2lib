@@ -22,75 +22,75 @@ Yang_2026_copd_fev1_ipd <- function() {
   # Harun_2019_cysticFibrosis.
 
   units <- list(
-    time          = "week (weeks since randomization; the disease-progression slope is reported per year and is divided by 52 inside model())",
-    dosing        = "ug/day (per-arm TOTAL DAILY dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events; this model has no PK layer)",
+    time = "week (weeks since randomization; the disease-progression slope is reported per year and is divided by 52 inside model())",
+    dosing = "ug/day (per-arm TOTAL DAILY dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events; this model has no PK layer)",
     concentration = "L (FEV1 absolute volume, observation FEV1)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at randomization.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at randomization.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 62 years in this model (Supporting Information IPD control stream: 'BAGE = ( 1 + THETA(10)*(AGE - 62))'), which is the pooled median and mean age of the two IPD studies (Table S1: mean 62, median 62, range 40-85). Age enters BOTH the baseline (e_age_base) and the vilanterol reference efficacy (e_age_effref_vi). NOTE the centring differs from the sibling combined model Yang_2026_copd_fev1_adipd_mbma, which centres age at 63.4 years because it pools the 298 aggregated-data studies as well; the two centrings are NOT interchangeable.",
-      source_name        = "AGE"
+      notes = "Centred at 62 years in this model (Supporting Information IPD control stream: 'BAGE = ( 1 + THETA(10)*(AGE - 62))'), which is the pooled median and mean age of the two IPD studies (Table S1: mean 62, median 62, range 40-85). Age enters BOTH the baseline (e_age_base) and the vilanterol reference efficacy (e_age_effref_vi). NOTE the centring differs from the sibling combined model Yang_2026_copd_fev1_adipd_mbma, which centres age at 63.4 years because it pools the 298 aggregated-data studies as well; the two centrings are NOT interchangeable.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female-sex indicator. 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female-sex indicator. 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male). The source parameterised this as SEX with 1 = male (the most common level, 69.7% of the pooled IPD cohort per Table S1) as the reference, so the published coefficient is carried on the female side of the contrast and applies unchanged to SEXF.",
-      notes              = "Source column SEX is coded 1 = male; the canonical SEXF is its complement (SEXF = 1 - SEX). The source control stream writes 'IF(SEX.EQ.1) BSEX = 1' and 'IF(SEX.EQ.0) BSEX = (1 + THETA(14))', i.e. the estimated coefficient THETA(14) = -0.248 multiplies the FEMALE level with male as the reference. Re-expressed on SEXF the identical algebra is '1 + e_sexf_base * SEXF', so the published value and its sign are carried over unchanged and no reference-category flip is involved. Direction confirmed twice in the paper text ('female ... related to lower baseline', Abstract and Section 3.3) and against the sibling combined model, where the equivalent centred form (1 + 0.276*(SEX - 0.671)) gives the same female/male baseline ratio of 0.75.",
-      source_name        = "SEX (1 = male)"
+      notes = "Source column SEX is coded 1 = male; the canonical SEXF is its complement (SEXF = 1 - SEX). The source control stream writes 'IF(SEX.EQ.1) BSEX = 1' and 'IF(SEX.EQ.0) BSEX = (1 + THETA(14))', i.e. the estimated coefficient THETA(14) = -0.248 multiplies the FEMALE level with male as the reference. Re-expressed on SEXF the identical algebra is '1 + e_sexf_base * SEXF', so the published value and its sign are carried over unchanged and no reference-category flip is involved. Direction confirmed twice in the paper text ('female ... related to lower baseline', Abstract and Section 3.3) and against the sibling combined model, where the equivalent centred form (1 + 0.276*(SEX - 0.671)) gives the same female/male baseline ratio of 0.75.",
+      source_name = "SEX (1 = male)"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator at baseline. 1 = current smoker, 0 = non-current (former) smoker.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator at baseline. 1 = current smoker, 0 = non-current (former) smoker.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (current smoker) is the source's reference level because it is the most common (54.2% of the pooled IPD cohort, Table S1); the estimated coefficient is carried on the non-current-smoker side.",
-      notes              = "Source column FL_SMOK, coded 1 = current smoker, which matches the canonical SMOKE coding exactly (no transformation). The control stream writes 'IF(FL_SMOK.EQ.1) BFL_SMOK = 1' and 'IF(FL_SMOK.EQ.0) BFL_SMOK = (1 + THETA(13))', so the coefficient applies to the NON-smoker level; model() encodes this as '1 + e_nonsmoke_base * (1 - SMOKE)'. The paper cautions that this association is not causal -- patients tend to stop smoking at more severe COPD stages (Section 4, refs 26-28).",
-      source_name        = "FL_SMOK"
+      notes = "Source column FL_SMOK, coded 1 = current smoker, which matches the canonical SMOKE coding exactly (no transformation). The control stream writes 'IF(FL_SMOK.EQ.1) BFL_SMOK = 1' and 'IF(FL_SMOK.EQ.0) BFL_SMOK = (1 + THETA(13))', so the coefficient applies to the NON-smoker level; model() encodes this as '1 + e_nonsmoke_base * (1 - SMOKE)'. The paper cautions that this association is not causal -- patients tend to stop smoking at more severe COPD stages (Section 4, refs 26-28).",
+      source_name = "FL_SMOK"
     ),
     DIS_COPD_GOLD = list(
-      description        = "GOLD spirometric severity stage at screening, as an ordinal 1-4 category (1 = mild, 2 = moderate, 3 = severe, 4 = very severe).",
-      units              = "(ordinal stage 1-4)",
-      type               = "ordinal",
+      description = "GOLD spirometric severity stage at screening, as an ordinal 1-4 category (1 = mild, 2 = moderate, 3 = severe, 4 = very severe).",
+      units = "(ordinal stage 1-4)",
+      type = "ordinal",
       reference_category = "3 (severe), the pooled cohort median, used as the centring constant and as the knee of the hockey-stick relationships.",
-      notes              = "Source column FL_COPD; Table S1 footnote 1 defines it as the '% predicted GOLD Stage Category at the screening phase'. The pooled IPD distribution is stage 1: 0.09%, stage 2: 46.5%, stage 3: 44.1%, stage 4: 8.66%, with 0.625% missing (imputed to the median, 3). Carried as a SINGLE ordinal column rather than pre-binned indicators because the source fits a piecewise-LINEAR (hockey-stick) effect in the raw stage number, with separate slopes below and above the median stage 3; indicator columns could not reproduce that form. This follows the single-ordinal-column rationale already recorded for SMOKE_TTFC_SCORE. The stage enters the baseline (two slopes), the vilanterol reference efficacy (two slopes) and the disease-progression slope (one slope).",
-      source_name        = "FL_COPD"
+      notes = "Source column FL_COPD; Table S1 footnote 1 defines it as the '% predicted GOLD Stage Category at the screening phase'. The pooled IPD distribution is stage 1: 0.09%, stage 2: 46.5%, stage 3: 44.1%, stage 4: 8.66%, with 0.625% missing (imputed to the median, 3). Carried as a SINGLE ordinal column rather than pre-binned indicators because the source fits a piecewise-LINEAR (hockey-stick) effect in the raw stage number, with separate slopes below and above the median stage 3; indicator columns could not reproduce that form. This follows the single-ordinal-column rationale already recorded for SMOKE_TTFC_SCORE. The stage enters the baseline (two slopes), the vilanterol reference efficacy (two slopes) and the disease-progression slope (one slope).",
+      source_name = "FL_COPD"
     ),
     CONMED_VILANTEROL_DOSE = list(
-      description        = "Per-arm total daily vilanterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily vilanterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no vilanterol in this arm, which collapses the vilanterol Emax term to zero).",
-      notes              = "Source column avdostotN for the slot whose drgNoN equals 25 (vilanterol). The reference dose against which the reported reference efficacy is quoted is 25 ug/day (control stream 'REFDVIL = 25'), i.e. vilanterol 25 ug q.d. Dose levels present in the two IPD studies are 0 and 25 ug/day. The unit must match the ED50 unit -- ED50_vilanterol = exp(0.709) = 2.03 ug/day.",
-      source_name        = "avdostot (drgNo = 25)"
+      notes = "Source column avdostotN for the slot whose drgNoN equals 25 (vilanterol). The reference dose against which the reported reference efficacy is quoted is 25 ug/day (control stream 'REFDVIL = 25'), i.e. vilanterol 25 ug q.d. Dose levels present in the two IPD studies are 0 and 25 ug/day. The unit must match the ED50 unit -- ED50_vilanterol = exp(0.709) = 2.03 ug/day.",
+      source_name = "avdostot (drgNo = 25)"
     ),
     CONMED_FLUTICASONEFUROATE_DOSE = list(
-      description        = "Per-arm total daily fluticasone furoate dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily fluticasone furoate dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no fluticasone furoate in this arm, which collapses the fluticasone furoate Emax term to zero).",
-      notes              = "Source column avdostotN for the slot whose drgNoN equals 32 (fluticasone furoate). The reference dose against which the reported reference efficacy is quoted is 100 ug/day (control stream 'REFDFF = 100'), i.e. fluticasone furoate 100 ug q.d. Dose levels present in the two IPD studies are 0, 50, 100 and 200 ug/day (Kerwin 2013 gave 50/25 and 100/25 ug FF/VI; Martinez 2013 gave 100/25 and 200/25 ug FF/VI). The unit must match the ED50 unit -- ED50_fluticasone furoate = exp(2.43) = 11.4 ug/day.",
-      source_name        = "avdostot (drgNo = 32)"
+      notes = "Source column avdostotN for the slot whose drgNoN equals 32 (fluticasone furoate). The reference dose against which the reported reference efficacy is quoted is 100 ug/day (control stream 'REFDFF = 100'), i.e. fluticasone furoate 100 ug q.d. Dose levels present in the two IPD studies are 0, 50, 100 and 200 ug/day (Kerwin 2013 gave 50/25 and 100/25 ug FF/VI; Martinez 2013 gave 100/25 and 200/25 ug FF/VI). The unit must match the ED50 unit -- ED50_fluticasone furoate = exp(2.43) = 11.4 ug/day.",
+      source_name = "avdostot (drgNo = 32)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 2241L,
-    n_studies       = 2L,
-    age_range       = "40-85 years (pooled; mean 62, SD 8.8, median 62)",
-    age_median      = "62 years",
-    weight_range    = "not reported in the source (body weight was not a covariate in this model)",
-    sex_female_pct  = 30.3,
-    disease_state   = "Moderate-to-very-severe chronic obstructive pulmonary disease. GOLD spirometric stage at screening: stage 1 0.09%, stage 2 46.5%, stage 3 44.1%, stage 4 8.66% (0.625% missing). 54.2% were current smokers at baseline. Mean on-treatment FEV1 1.372 L (SD 0.509, range 0.300-4.140).",
-    dose_range      = "Fluticasone furoate 0, 50, 100 or 200 ug q.d. and vilanterol 0 or 25 ug q.d., alone or in combination, over 24 weeks; placebo-controlled.",
-    regions         = "Multicentre (both trials were international multicentre studies).",
+    species = "human",
+    n_subjects = 2241L,
+    n_studies = 2L,
+    age_range = "40-85 years (pooled; mean 62, SD 8.8, median 62)",
+    age_median = "62 years",
+    weight_range = "not reported in the source (body weight was not a covariate in this model)",
+    sex_female_pct = 30.3,
+    disease_state = "Moderate-to-very-severe chronic obstructive pulmonary disease. GOLD spirometric stage at screening: stage 1 0.09%, stage 2 46.5%, stage 3 44.1%, stage 4 8.66% (0.625% missing). 54.2% were current smokers at baseline. Mean on-treatment FEV1 1.372 L (SD 0.509, range 0.300-4.140).",
+    dose_range = "Fluticasone furoate 0, 50, 100 or 200 ug q.d. and vilanterol 0 or 25 ug q.d., alone or in combination, over 24 weeks; placebo-controlled.",
+    regions = "Multicentre (both trials were international multicentre studies).",
     trials_included = "NCT01053988 (Kerwin EM et al., Respir Med 2013;107:560-569; n = 1025) and NCT01054885 (Martinez FJ et al., Respir Med 2013;107:550-559; n = 1216). Both are 24-week randomized, smoking-status-stratified, placebo-controlled, double-blind, parallel-group, multicentre studies.",
-    notes           = "Demographics are from Supporting Information Table S1. sex_female_pct computed as 1 - 1563/2241 = 30.3% from the reported male counts (681 + 882 = 1563 of 2241). The two studies are also among the 298 studies of the aggregated-data set, but were REMOVED from the aggregated data when building the combined ADIPD model so that no observation is used twice (Section 2.1). The drug-interaction term between fluticasone furoate and vilanterol was tested and NOT retained (dOFV < 0.1; Section 3.3), so the two drug effects are purely additive here."
+    notes = "Demographics are from Supporting Information Table S1. sex_female_pct computed as 1 - 1563/2241 = 30.3% from the reported male counts (681 + 882 = 1563 of 2241). The two studies are also among the 298 studies of the aggregated-data set, but were REMOVED from the aggregated data when building the combined ADIPD model so that no observation is used twice (Section 2.1). The drug-interaction term between fluticasone furoate and vilanterol was tested and NOT retained (dOFV < 0.1; Section 3.3), so the two drug effects are purely additive here."
   )
 
   ini({

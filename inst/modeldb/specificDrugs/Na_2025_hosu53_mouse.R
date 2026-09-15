@@ -32,10 +32,10 @@ Na_2025_hosu53_mouse <- function() {
   # HOSU-53 molecular weight, so mg/kg doses cannot be converted here; see
   # the vignette "Assumptions and deviations" section.
   compartmentData <- list(
-    depot       = list(analyte = "HOSU-53", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "HOSU-53", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "HOSU-53", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "HOSU-53", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "HOSU-53", units = "nmol", specimen = "plasma", verified = TRUE),
-    dho         = list(analyte = "dihydroorotate", units = "umol/L", specimen = "plasma", verified = TRUE)
+    dho = list(analyte = "dihydroorotate", units = "umol/L", specimen = "plasma", verified = TRUE)
   )
 
   # Na 2025 Section 2.7 screened dose level, sex, salt form, and vehicle
@@ -46,47 +46,47 @@ Na_2025_hosu53_mouse <- function() {
   # model references none of them.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator. Screened on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator. Screened on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Both sexes contributed to the mouse dataset (Na 2025 Section 2.2: male mice at 4, 10, 20, and 30 mg/kg; female mice at 10 mg/kg). Section 3.3 and the Discussion report that sex was not a significant covariate."
+      notes = "Both sexes contributed to the mouse dataset (Na 2025 Section 2.2: male mice at 4, 10, 20, and 30 mg/kg; female mice at 10 mg/kg). Section 3.3 and the Discussion report that sex was not a significant covariate."
     ),
     DOSE_HOSU53_MGKG = list(
-      description        = "Administered HOSU-53 dose level in mg/kg. Screened as a categorical covariate on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered HOSU-53 dose level in mg/kg. Screened as a categorical covariate on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Dose levels contributing to the modelled mouse dataset were 3 mg/kg (IV), 4 mg/kg, and 10 mg/kg (Na 2025 Section 3.1). Section 3.2 reports less-than-dose-proportional exposure in mice over the wider 4-30 mg/kg range, which the linear-elimination structure retained here does not reproduce."
+      notes = "Dose levels contributing to the modelled mouse dataset were 3 mg/kg (IV), 4 mg/kg, and 10 mg/kg (Na 2025 Section 3.1). Section 3.2 reports less-than-dose-proportional exposure in mice over the wider 4-30 mg/kg range, which the linear-elimination structure retained here does not reproduce."
     ),
     FORM_HOSU53_SALT = list(
-      description        = "HOSU-53 salt form administered (sodium salt vs lysine salt). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HOSU-53 salt form administered (sodium salt vs lysine salt). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sodium salt)",
-      notes              = "Na 2025 Section 2.1 reports bridging PK studies between the sodium and lysine salts that 'demonstrated near-identical results'; the covariate screen confirmed no significant effect."
+      notes = "Na 2025 Section 2.1 reports bridging PK studies between the sodium and lysine salts that 'demonstrated near-identical results'; the covariate screen confirmed no significant effect."
     ),
     FORM_HOSU53_VEHICLE = list(
-      description        = "Dosing vehicle used for the oral formulation (40% or 20% HPBCD). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Dosing vehicle used for the oral formulation (40% or 20% HPBCD). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "40% hydroxypropyl-beta-cyclodextrin (HPBCD)",
-      notes              = "The second mouse single-dose study used 20% HPBCD specifically 'to reduce the potential impact of formulation components on HOSU-53 disposition' (Na 2025 Section 2.2); the covariate screen found no significant vehicle effect."
+      notes = "The second mouse single-dose study used 20% HPBCD specifically 'to reduce the potential impact of formulation components on HOSU-53 disposition' (Na 2025 Section 2.2); the covariate screen found no significant vehicle effect."
     )
   )
 
   population <- list(
-    species          = "mouse (non-tumour-bearing, and male and female triple-immunodeficient NCG mice bearing MOLM-13 disseminated AML xenografts)",
-    n_subjects       = 45L,
-    n_studies        = 3L,
-    n_pk_samples     = 309L,
-    n_pd_samples     = 253L,
-    sex              = "male and female",
-    disease_state    = "healthy mice (single-dose PK/PD studies) and MOLM-13 human disseminated acute myeloid leukaemia xenograft-bearing NCG mice (repeat-dose study)",
-    dose_range       = "3 mg/kg IV and 4 and 10 mg/kg PO in the modelled dataset (3/4/10 mg/kg = 9/9/27 mice). The broader mouse programme also dosed 20 mg/kg PO QD and 30 mg/kg PO twice weekly, which did not contribute to the modelled dataset. All PO dosing was by gavage and all IV dosing was by bolus.",
-    blq_handling     = "No HOSU-53 PK samples were below the limit of quantification (excluding pre-dose). 9 of 253 DHO PD samples (<4%) were below the limit of quantification and were excluded from the analysis (Na 2025 Section 3.1).",
-    assay_range      = "UHPLC-MS/MS calibration range 10.0-5000 ng/mL for HOSU-53 and 10.0-30,000 ng/mL for DHO in mouse plasma (Na 2025 Supplementary Materials).",
-    notes            = "Study-level detail is in Na 2025 Supplementary Table S1. Modelling was performed with the SAEM algorithm in Monolix 2024R1; PK and PD parameters were estimated simultaneously (Section 2.6) and parameter precision was assessed by nonparametric bootstrap. Section 3.2 notes that mouse elimination was slower than in rats and dogs (mean NCA half-life 30 h vs 6-8 h), possibly because of higher plasma protein binding."
+    species = "mouse (non-tumour-bearing, and male and female triple-immunodeficient NCG mice bearing MOLM-13 disseminated AML xenografts)",
+    n_subjects = 45L,
+    n_studies = 3L,
+    n_pk_samples = 309L,
+    n_pd_samples = 253L,
+    sex = "male and female",
+    disease_state = "healthy mice (single-dose PK/PD studies) and MOLM-13 human disseminated acute myeloid leukaemia xenograft-bearing NCG mice (repeat-dose study)",
+    dose_range = "3 mg/kg IV and 4 and 10 mg/kg PO in the modelled dataset (3/4/10 mg/kg = 9/9/27 mice). The broader mouse programme also dosed 20 mg/kg PO QD and 30 mg/kg PO twice weekly, which did not contribute to the modelled dataset. All PO dosing was by gavage and all IV dosing was by bolus.",
+    blq_handling = "No HOSU-53 PK samples were below the limit of quantification (excluding pre-dose). 9 of 253 DHO PD samples (<4%) were below the limit of quantification and were excluded from the analysis (Na 2025 Section 3.1).",
+    assay_range = "UHPLC-MS/MS calibration range 10.0-5000 ng/mL for HOSU-53 and 10.0-30,000 ng/mL for DHO in mouse plasma (Na 2025 Supplementary Materials).",
+    notes = "Study-level detail is in Na 2025 Supplementary Table S1. Modelling was performed with the SAEM algorithm in Monolix 2024R1; PK and PD parameters were estimated simultaneously (Section 2.6) and parameter precision was assessed by nonparametric bootstrap. Section 3.2 notes that mouse elimination was slower than in rats and dogs (mean NCA half-life 30 h vs 6-8 h), possibly because of higher plasma protein binding."
   )
 
   ini({

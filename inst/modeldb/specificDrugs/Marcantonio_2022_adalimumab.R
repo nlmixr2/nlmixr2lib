@@ -33,8 +33,8 @@ Marcantonio_2022_adalimumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = paste(
+    time = "day",
+    dosing = paste(
       "Dose amount into the depot compartment (SC) or Ab_00 compartment (IV)",
       "must be in nmol (convert from mg via amt_nmol = amt_mg * 1e6 / MW_Da;",
       "for adalimumab MW = 148000 Da, 40 mg = 270.3 nmol).",
@@ -58,30 +58,30 @@ Marcantonio_2022_adalimumab <- function() {
     Ab_0L = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_L0 = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_LL = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1    = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1    = list(analyte = "TNFR", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1R1  = list(analyte = "TNF:TNFR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1    = list(analyte = "adalimumab-TNF-alpha complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+    L1 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1 = list(analyte = "TNFR", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1 = list(analyte = "TNF:TNFR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1 = list(analyte = "adalimumab-TNF-alpha complex", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
   covariatesDataExcluded <- list(
     BW = list(
       description = "Body weight; the paper assumes a typical 70 kg adult for mg/kg-per-kg dose conversion but body weight does not appear in the ODE system.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Paper Table 2 lists BW = 70 kg only for converting mg-per-kg dosing to mg. Not a model covariate."
+      units = "kg",
+      type = "continuous",
+      notes = "Paper Table 2 lists BW = 70 kg only for converting mg-per-kg dosing to mg. Not a model covariate."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with active rheumatoid arthritis (RA); clinically approved indication for adalimumab.",
-    dose_range     = "40 mg SC every other week (approved RA dose); some patients not receiving methotrexate benefit from 40 mg every week (Adalimumab USPI 2021).",
-    regions        = NA_character_,
-    notes          = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with active rheumatoid arthritis (RA); clinically approved indication for adalimumab.",
+    dose_range = "40 mg SC every other week (approved RA dose); some patients not receiving methotrexate benefit from 40 mg every week (Adalimumab USPI 2021).",
+    regions = NA_character_,
+    notes = paste(
       "Marcantonio 2022 is a methodological Early Feasibility Assessment",
       "(EFA) paper that uses mechanistic PKPD models parameterised entirely",
       "from literature (no fitting, no clinical dataset). The 'population'",

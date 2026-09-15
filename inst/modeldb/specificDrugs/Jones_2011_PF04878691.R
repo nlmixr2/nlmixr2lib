@@ -33,36 +33,36 @@ Jones_2011_PF04878691 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "PF04878691", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "PF04878691", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "PF04878691", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF04878691", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF04878691", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required scaling covariate. Jones 2011 estimated all disposition parameters per kilogram body weight (Table 1 unit row 'l h^-1 kg^-1' for clearances and 'l kg^-1' for volumes); per the Methods, 'all doses were normalised for body weight to ensure that any IIV estimated was purely due to variability in the parameter rather than dose'. Population median 79 kg (range 57-97 kg).",
-      source_name        = "WT"
+      notes = "Required scaling covariate. Jones 2011 estimated all disposition parameters per kilogram body weight (Table 1 unit row 'l h^-1 kg^-1' for clearances and 'l kg^-1' for volumes); per the Methods, 'all doses were normalised for body weight to ensure that any IIV estimated was purely due to variability in the parameter rather than dose'. Population median 79 kg (range 57-97 kg).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "21-55 years",
-    age_median     = "34 years",
-    weight_range   = "57-97 kg",
-    weight_median  = "79 kg",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "21-55 years",
+    age_median = "34 years",
+    weight_range = "57-97 kg",
+    weight_median = "79 kg",
     sex_female_pct = 8,
     race_ethnicity = "Not tabulated in Jones 2011.",
-    disease_state  = "Healthy adult volunteers (multiple-dose escalation Phase 1 study; ClinicalTrials.gov NCT00810758).",
-    dose_range     = "PF-04878691 administered orally as an extemporaneously-prepared solution at 3, 6, or 9 mg twice weekly (days 1, 4, 8, 11) for 2 weeks; n = 6 active per dose cohort plus n = 2 placebo per cohort. Last four subjects withdrew during active treatment after two doses following two SAEs in the 9 mg cohort (study prematurely terminated).",
-    regions        = "Not specified.",
-    notes          = "Median age and weight from Jones 2011 Methods ('Clinical TLR7 study data'). Two female subjects (8%) and 22 males (92%). Serial PK sampling pre-dose and up to 312 h after the last dose; LLOQ 0.1 ng/mL; HPLC-MS/MS, inter-/intra-assay CV < 4.9%."
+    disease_state = "Healthy adult volunteers (multiple-dose escalation Phase 1 study; ClinicalTrials.gov NCT00810758).",
+    dose_range = "PF-04878691 administered orally as an extemporaneously-prepared solution at 3, 6, or 9 mg twice weekly (days 1, 4, 8, 11) for 2 weeks; n = 6 active per dose cohort plus n = 2 placebo per cohort. Last four subjects withdrew during active treatment after two doses following two SAEs in the 9 mg cohort (study prematurely terminated).",
+    regions = "Not specified.",
+    notes = "Median age and weight from Jones 2011 Methods ('Clinical TLR7 study data'). Two female subjects (8%) and 22 males (92%). Serial PK sampling pre-dose and up to 312 h after the last dose; LLOQ 0.1 ng/mL; HPLC-MS/MS, inter-/intra-assay CV < 4.9%."
   )
 
   ini({

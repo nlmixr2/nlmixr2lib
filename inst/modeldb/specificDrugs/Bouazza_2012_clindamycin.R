@@ -23,40 +23,40 @@ Bouazza_2012_clindamycin <- function() {
     sep = " "
   )
   vignette <- "Bouazza_2012_clindamycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "clindamycin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "clindamycin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used as a continuous covariate on apparent clearance via the",
         "estimated power model CL/F = theta_CL * (BW/70)^cov_WT (Bouazza",
         "2012 Results, 'Population pharmacokinetics'). Cohort range 23",
         "to 133 kg (mean 70 kg, 95% CI 45-113 kg). The reference",
         "weight is 70 kg (the typical adult)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     RIFAMPICIN = list(
-      description        = "Rifampicin co-administration (binary)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rifampicin co-administration (binary)",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Co-treatment with rifampicin was tested as a categorical effect",
         "on clindamycin clearance (4 of 50 patients co-treated, 8%).",
         "The effect (43% increase in CL/F, SE 0.17) was significant by",
@@ -69,11 +69,11 @@ Bouazza_2012_clindamycin <- function() {
       )
     ),
     AGE = list(
-      description        = "Age",
-      units              = "year",
-      type               = "continuous",
+      description = "Age",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tabulated in the cohort summary (Table 1: 56.7 +/- 3.0 years,",
         "range 18-93). Bouazza 2012 Methods 'Modelling strategy and",
         "population pharmacokinetic model' lists age among the screened",
@@ -81,11 +81,11 @@ Bouazza_2012_clindamycin <- function() {
       )
     ),
     RENALFAIL = list(
-      description        = "Renal failure (binary; Cockcroft-Gault estimated CrCL)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Renal failure (binary; Cockcroft-Gault estimated CrCL)",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tabulated in the cohort summary (Table 1: 5 of 50 patients,",
         "10%). Renal failure was assessed because clindamycin dosage is",
         "not adjusted in renal insufficiency per the label; no",
@@ -94,11 +94,11 @@ Bouazza_2012_clindamycin <- function() {
       )
     ),
     HEPATICFAIL = list(
-      description        = "Hepatic failure (binary)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatic failure (binary)",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tabulated in the cohort summary (Table 1: 2 of 50 patients,",
         "4.2%). Hepatic function was screened because clindamycin is",
         "primarily hepatically metabolised; no significant effect was",
@@ -108,16 +108,16 @@ Bouazza_2012_clindamycin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
     n_observations = 122L,
-    age_range      = "18-93 years (Table 1 mean 56.7)",
-    weight_range   = "23-133 kg (Table 1 mean 69.9; Methods reports a 95% reference range of 45-113 kg)",
+    age_range = "18-93 years (Table 1 mean 56.7)",
+    weight_range = "23-133 kg (Table 1 mean 69.9; Methods reports a 95% reference range of 45-113 kg)",
     sex_female_pct = 40,
     race_ethnicity = NA,
-    disease_state  = "Adult patients with bone and joint infections (osteomyelitis)",
-    dose_range     = paste(
+    disease_state = "Adult patients with bone and joint infections (osteomyelitis)",
+    dose_range = paste(
       "600 mg three times daily (q8h) by oral tablet or 20-min",
       "intravenous infusion; one patient received 600 mg four times",
       "daily and two patients received 600 mg once daily. Median",
@@ -126,8 +126,8 @@ Bouazza_2012_clindamycin <- function() {
       "received both routes (58 PO plus 64 i.v. plasma concentrations).",
       "All patients sampled at steady state."
     ),
-    regions        = "France (Cochin Hospital, Paris; retrospective therapeutic drug monitoring, 2008-2010)",
-    notes          = paste(
+    regions = "France (Cochin Hospital, Paris; retrospective therapeutic drug monitoring, 2008-2010)",
+    notes = paste(
       "Two of 122 plasma concentrations were below the 0.1 mg/L limit",
       "of quantification and were handled as left-censored data by the",
       "Monolix M3 method. BMI distribution: 24% normal weight (< 25",

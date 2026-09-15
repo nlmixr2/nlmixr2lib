@@ -17,12 +17,12 @@ Zecchin_2016_survival <- function() {
   paper_specific_compartments <- c("wts")
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; drug exposure enters as time-varying per-cycle AUC_CARBO and AUC_GEM)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; drug exposure enters as time-varying per-cycle AUC_CARBO and AUC_GEM)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
-  ddmore_id    <- "DDMODEL00000218"
+  ddmore_id <- "DDMODEL00000218"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -31,94 +31,99 @@ Zecchin_2016_survival <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     tumor_size = list(analyte = "Tumour-size", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    wts        = list(analyte = "Weibull baseline hazard rate", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cumhaz     = list(analyte = "Cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    wts = list(
+      analyte = "Weibull baseline hazard rate",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    cumhaz = list(analyte = "Cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     KG = list(
-      description        = "Subject-specific tumour-size first-order growth rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model (DDMODEL00000217). Used inside the inline SLD ODE term `KG / 1000 * tumor_size`.",
-      units              = "(1/day) * 1000 (source NONMEM convention; the `/1000` rescaling is applied inside the model)",
-      type               = "continuous",
+      description = "Subject-specific tumour-size first-order growth rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model (DDMODEL00000217). Used inside the inline SLD ODE term `KG / 1000 * tumor_size`.",
+      units = "(1/day) * 1000 (source NONMEM convention; the `/1000` rescaling is applied inside the model)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Supplied directly in the dataset (column `KG` in DDMODEL00000218 NONMEM `$INPUT`; identical column shipped in the bundle's Simulated_OS.csv). When this OS model is used standalone, populate `KG` per subject by first fitting `Zecchin_2016_tumorovarian` and extracting the per-subject empirical-Bayes posterior of `lkg + etalkg`. Bundle simulated-dataset typical values: ~0.85 (bundle subject 1).",
-      source_name        = "KG"
+      notes = "Time-fixed per subject. Supplied directly in the dataset (column `KG` in DDMODEL00000218 NONMEM `$INPUT`; identical column shipped in the bundle's Simulated_OS.csv). When this OS model is used standalone, populate `KG` per subject by first fitting `Zecchin_2016_tumorovarian` and extracting the per-subject empirical-Bayes posterior of `lkg + etalkg`. Bundle simulated-dataset typical values: ~0.85 (bundle subject 1).",
+      source_name = "KG"
     ),
     KD0 = list(
-      description        = "Subject-specific carboplatin-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_CARBO` inside the SLD ODE term `KD0 / 1000 * AUC_CARBO * tumor_size`.",
-      units              = "(1/day per AUC_CARBO unit) * 1000 (source NONMEM convention; the `/1000` rescaling is applied inside the model)",
-      type               = "continuous",
+      description = "Subject-specific carboplatin-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_CARBO` inside the SLD ODE term `KD0 / 1000 * AUC_CARBO * tumor_size`.",
+      units = "(1/day per AUC_CARBO unit) * 1000 (source NONMEM convention; the `/1000` rescaling is applied inside the model)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Supplied directly in the dataset (column `KD0` in DDMODEL00000218 NONMEM `$INPUT`; identical column shipped in the bundle's Simulated_OS.csv). The source SLD model (DDMODEL00000217) wires a single shared `ETA(2)` onto both `KD0` and `KD1`, so per-subject `KD0` and `KD1` are correlated 1:1 in the empirical-Bayes posterior. Bundle simulated-dataset typical values: ~0.06 (bundle subject 1).",
-      source_name        = "KD0"
+      notes = "Time-fixed per subject. Supplied directly in the dataset (column `KD0` in DDMODEL00000218 NONMEM `$INPUT`; identical column shipped in the bundle's Simulated_OS.csv). The source SLD model (DDMODEL00000217) wires a single shared `ETA(2)` onto both `KD0` and `KD1`, so per-subject `KD0` and `KD1` are correlated 1:1 in the empirical-Bayes posterior. Bundle simulated-dataset typical values: ~0.06 (bundle subject 1).",
+      source_name = "KD0"
     ),
     KD1 = list(
-      description        = "Subject-specific gemcitabine-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_GEM` inside the SLD ODE term `KD1 / 100 * AUC_GEM * tumor_size`.",
-      units              = "(1/day per AUC_GEM unit) * 100 (source NONMEM convention; the `/100` rescaling is applied inside the model)",
-      type               = "continuous",
+      description = "Subject-specific gemcitabine-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_GEM` inside the SLD ODE term `KD1 / 100 * AUC_GEM * tumor_size`.",
+      units = "(1/day per AUC_GEM unit) * 100 (source NONMEM convention; the `/100` rescaling is applied inside the model)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Supplied directly in the dataset (column `KD1` in DDMODEL00000218 NONMEM `$INPUT`; identical column shipped in the bundle's Simulated_OS.csv). Shares ETA(2) with `KD0` in the source SLD fit (see KD0 notes). Bundle simulated-dataset typical values: ~0.02 (bundle subject 1).",
-      source_name        = "KD1"
+      notes = "Time-fixed per subject. Supplied directly in the dataset (column `KD1` in DDMODEL00000218 NONMEM `$INPUT`; identical column shipped in the bundle's Simulated_OS.csv). Shares ETA(2) with `KD0` in the source SLD fit (see KD0 notes). Bundle simulated-dataset typical values: ~0.02 (bundle subject 1).",
+      source_name = "KD1"
     ),
     IBASE = list(
-      description        = "Subject-specific baseline tumour-size estimate carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Sets the SLD ODE initial state (`tumor_size(0) = IBASE * 1000`, in mm) and the denominator of the time-varying tumour-size ratio (`mmbas = IBASE * 1000`).",
-      units              = "metres (source NONMEM convention; the `*1000` conversion to mm is applied inside the model)",
-      type               = "continuous",
+      description = "Subject-specific baseline tumour-size estimate carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Sets the SLD ODE initial state (`tumor_size(0) = IBASE * 1000`, in mm) and the denominator of the time-varying tumour-size ratio (`mmbas = IBASE * 1000`).",
+      units = "metres (source NONMEM convention; the `*1000` conversion to mm is applied inside the model)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Distinct from the canonical `TUM_SLD` covariate, which carries the *measured* baseline SLD in mm. `IBASE` is the *fitted* baseline from the upstream IPP run and is the value the SLD ODE integrates from. Bundle simulated-dataset typical values: ~0.04-0.50 m (bundle subject 1: 0.285 m = 285 mm).",
-      source_name        = "IBASE"
+      notes = "Time-fixed per subject. Distinct from the canonical `TUM_SLD` covariate, which carries the *measured* baseline SLD in mm. `IBASE` is the *fitted* baseline from the upstream IPP run and is the value the SLD ODE integrates from. Bundle simulated-dataset typical values: ~0.04-0.50 m (bundle subject 1: 0.285 m = 285 mm).",
+      source_name = "IBASE"
     ),
     AUC_CARBO = list(
-      description        = "Per-cycle average AUC of carboplatin (time-varying drug-exposure covariate driving the carboplatin cytotoxic-death term inside the inline SLD ODE).",
-      units              = "carboplatin AUC units (mg*min/mL)",
-      type               = "continuous",
+      description = "Per-cycle average AUC of carboplatin (time-varying drug-exposure covariate driving the carboplatin cytotoxic-death term inside the inline SLD ODE).",
+      units = "carboplatin AUC units (mg*min/mL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in cycles where carboplatin is not administered. The DDMORE bundle's Simulated_OS.csv encodes this column as `AUC0`; the source `$INPUT` NM-TRAN column is `CB`.",
-      source_name        = "CB"
+      notes = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in cycles where carboplatin is not administered. The DDMORE bundle's Simulated_OS.csv encodes this column as `AUC0`; the source `$INPUT` NM-TRAN column is `CB`.",
+      source_name = "CB"
     ),
     AUC_GEM = list(
-      description        = "Per-cycle average AUC of gemcitabine (parent plus active intracellular metabolite per Zecchin 2016 Methods); time-varying drug-exposure covariate driving the gemcitabine cytotoxic-death term inside the inline SLD ODE.",
-      units              = "gemcitabine AUC units (paper composite mol*day / 10^6 cells)",
-      type               = "continuous",
+      description = "Per-cycle average AUC of gemcitabine (parent plus active intracellular metabolite per Zecchin 2016 Methods); time-varying drug-exposure covariate driving the gemcitabine cytotoxic-death term inside the inline SLD ODE.",
+      units = "gemcitabine AUC units (paper composite mol*day / 10^6 cells)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in carboplatin-monotherapy cycles. The DDMORE bundle's Simulated_OS.csv encodes this column as `AUC1`; the source `$INPUT` NM-TRAN column is `G`.",
-      source_name        = "G"
+      notes = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in carboplatin-monotherapy cycles. The DDMORE bundle's Simulated_OS.csv encodes this column as `AUC1`; the source `$INPUT` NM-TRAN column is `G`.",
+      source_name = "G"
     ),
     NEW_LESION = list(
-      description        = "Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current time. Once `NEW_LESION` flips to 1 it stays 1 for subsequent times in that subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current time. Once `NEW_LESION` flips to 1 it stays 1 for subsequent times in that subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no new lesion appeared as of the current time)",
-      notes              = "Step-function flag, not a transient pulse. The bundle's Simulated_OS.csv encodes this column as `NWLSCOV`; the source `$INPUT` column is `NEW_LESION`. Hazard effect: multiplicative `exp(e_nwls_haz * NEW_LESION)` with `e_nwls_haz = 1.23` (Output_real_OS.lst FINAL TH5 / Zecchin 2016 Table 2 gamma_NewLes(t) = 1.23).",
-      source_name        = "NEW_LESION"
+      notes = "Step-function flag, not a transient pulse. The bundle's Simulated_OS.csv encodes this column as `NWLSCOV`; the source `$INPUT` column is `NEW_LESION`. Hazard effect: multiplicative `exp(e_nwls_haz * NEW_LESION)` with `e_nwls_haz = 1.23` (Output_real_OS.lst FINAL TH5 / Zecchin 2016 Table 2 gamma_NewLes(t) = 1.23).",
+      source_name = "NEW_LESION"
     ),
     TUM_SLD = list(
-      description        = "Measured baseline sum of longest diameters (SLD) at enrolment per RECIST 1.1.",
-      units              = "mm",
-      type               = "continuous",
+      description = "Measured baseline sum of longest diameters (SLD) at enrolment per RECIST 1.1.",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Used in the OS hazard via the time-fixed normalised covariate `NSLD0 = TUM_SLD / 70`. The reference value 70 mm is the average baseline SLD in the Zecchin 2016 cohort (Methods / Table 2). Distinct from `IBASE`, which is the empirical-Bayes posterior of the *fitted* SLD baseline from the upstream IPP run (the two values differ at the per-subject level). Source dataset column: `SLD0`.",
-      source_name        = "SLD0"
+      notes = "Time-fixed per subject. Used in the OS hazard via the time-fixed normalised covariate `NSLD0 = TUM_SLD / 70`. The reference value 70 mm is the average baseline SLD in the Zecchin 2016 cohort (Methods / Table 2). Distinct from `IBASE`, which is the empirical-Bayes posterior of the *fitted* SLD baseline from the upstream IPP run (the two values differ at the per-subject level). Source dataset column: `SLD0`.",
+      source_name = "SLD0"
     ),
     ECOG_GE1 = list(
-      description        = "Binary baseline Eastern Cooperative Oncology Group (ECOG) performance-status indicator: 1 if ECOG >= 1 at enrolment, 0 if ECOG = 0.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary baseline Eastern Cooperative Oncology Group (ECOG) performance-status indicator: 1 if ECOG >= 1 at enrolment, 0 if ECOG = 0.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG = 0; fully active / asymptomatic)",
-      notes              = "Time-fixed per subject. The Zecchin 2016 paper dichotomizes ECOG to 0 vs >=1 at enrolment because of the small number of patients with ECOG > 1 in the trial cohort (Zecchin 2016 Methods). The bundle's Simulated_OS.csv ships an already-binarized `ECOG` column with values in {0, 1}, so the model's `ECOG_GE1` covariate maps directly from the bundle's `ECOG` column. Hazard effect: multiplicative `exp(e_ecog_haz * ECOG_GE1)` with `e_ecog_haz = 0.516` (Output_real_OS.lst FINAL TH6 / Zecchin 2016 Table 2 gamma_ECOG = 0.518).",
-      source_name        = "ECOG"
+      notes = "Time-fixed per subject. The Zecchin 2016 paper dichotomizes ECOG to 0 vs >=1 at enrolment because of the small number of patients with ECOG > 1 in the trial cohort (Zecchin 2016 Methods). The bundle's Simulated_OS.csv ships an already-binarized `ECOG` column with values in {0, 1}, so the model's `ECOG_GE1` covariate maps directly from the bundle's `ECOG` column. Hazard effect: multiplicative `exp(e_ecog_haz * ECOG_GE1)` with `e_ecog_haz = 0.516` (Output_real_OS.lst FINAL TH6 / Zecchin 2016 Table 2 gamma_ECOG = 0.518).",
+      source_name = "ECOG"
     )
   )
 
   population <- list(
-    n_subjects     = 336L,
-    n_studies      = 1L,
-    age_range      = "median ~59 years (advanced epithelial ovarian cancer cohort; Zecchin 2016 Table S2 / paper text)",
-    weight_range   = "not transcribed in this extraction (Zecchin 2016 Table S2 captures the demographic distributions; the WebFetch summary did not report the weight quantiles)",
+    n_subjects = 336L,
+    n_studies = 1L,
+    age_range = "median ~59 years (advanced epithelial ovarian cancer cohort; Zecchin 2016 Table S2 / paper text)",
+    weight_range = "not transcribed in this extraction (Zecchin 2016 Table S2 captures the demographic distributions; the WebFetch summary did not report the weight quantiles)",
     sex_female_pct = 100,
-    disease_state  = "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / platinum-sensitive cohort, randomised Phase III chemotherapy trial)",
-    dose_range     = "Phase III chemotherapy: carboplatin monotherapy (target AUC 5.0 mg*min/mL Q3W) or carboplatin (target AUC 4.0 mg*min/mL Q3W) plus gemcitabine, per the trial protocol referenced by Zecchin 2016",
-    notes          = "336 patients pooled from a randomised Phase III trial in advanced epithelial ovarian cancer (Zecchin 2016, BJCP 82(3):717-727; PMID 27136318). The current OS model was fit using the IPP (Iterative Population PK) approach: the upstream SLD model (DDMODEL00000217) supplies subject-level empirical-Bayes posteriors of KG, KD0, KD1, IBASE, which feed into the OS model via the dataset. Median baseline SLD ~70 mm (used as the reference TVSLD0). The publication PDF was not on disk for this extraction; the Methods / Table 2 cross-check was performed via PMC HTML (PMC5338128)."
+    disease_state = "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / platinum-sensitive cohort, randomised Phase III chemotherapy trial)",
+    dose_range = "Phase III chemotherapy: carboplatin monotherapy (target AUC 5.0 mg*min/mL Q3W) or carboplatin (target AUC 4.0 mg*min/mL Q3W) plus gemcitabine, per the trial protocol referenced by Zecchin 2016",
+    notes = "336 patients pooled from a randomised Phase III trial in advanced epithelial ovarian cancer (Zecchin 2016, BJCP 82(3):717-727; PMID 27136318). The current OS model was fit using the IPP (Iterative Population PK) approach: the upstream SLD model (DDMODEL00000217) supplies subject-level empirical-Bayes posteriors of KG, KD0, KD1, IBASE, which feed into the OS model via the dataset. Median baseline SLD ~70 mm (used as the reference TVSLD0). The publication PDF was not on disk for this extraction; the Methods / Table 2 cross-check was performed via PMC HTML (PMC5338128)."
   )
 
   ini({

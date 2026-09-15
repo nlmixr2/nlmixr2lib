@@ -35,20 +35,26 @@ Nie_2023_nalbuphine <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "nalbuphine", units = "ug", specimen = "plasma", verified = TRUE
+      analyte = "nalbuphine",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "nalbuphine", units = "ug", specimen = "tissue", verified = TRUE
+      analyte = "nalbuphine",
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     PFA_NET_RATE = list(
-      description        = "Hourly net fluid volume infused during surgery",
-      units              = "mL/h",
-      type               = "continuous",
+      description = "Hourly net fluid volume infused during surgery",
+      units = "mL/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column HNF. Nie 2023 Table 1 footnote defines it as",
         "HNF = (FVI + BVI - UVO) / OT, where FVI is the fluid volume infused, BVI the blood",
         "volume infused and UVO the urine volume output during surgery, and OT the operation",
@@ -66,7 +72,7 @@ Nie_2023_nalbuphine <- function() {
         "(Results 3.1).",
         sep = " "
       ),
-      source_name        = "HNF"
+      source_name = "HNF"
     )
   )
 
@@ -81,9 +87,9 @@ Nie_2023_nalbuphine <- function() {
   covariatesDataExcluded <- list(
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Tested on CL as an exponential function (Nie 2023 Table 3 models 2 and 20, functional",
         "expression 'a' = Eq. 1 linear per the table footnote key). Entered the full model",
         "(OFV 2158.168 -> 2150.776 alone; 2148.529 -> 2141.133 on top of HNF-on-Q) but was",
@@ -94,21 +100,21 @@ Nie_2023_nalbuphine <- function() {
     ),
     GGT = list(
       description = "Gamma-glutamyltransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL (Table 3 model 3, dOFV -4.90) and on V2 (model 13, dOFV -7.02); not retained. No coefficient printed."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL (Table 3 model 3, dOFV -4.90) and on V2 (model 13, dOFV -7.02); not retained. No coefficient printed."
     ),
     HR = list(
       description = "Heart rate",
-      units       = "beats/min",
-      type        = "continuous",
-      notes       = "Tested on V1 (Table 3 model 5, dOFV -7.06) and on Q (model 8, dOFV -5.88); not retained. No coefficient printed."
+      units = "beats/min",
+      type = "continuous",
+      notes = "Tested on V1 (Table 3 model 5, dOFV -7.06) and on Q (model 8, dOFV -5.88); not retained. No coefficient printed."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested on V2 only (Table 3 model 12, dOFV -4.07) and not retained; no allometric",
         "scaling appears anywhere in the final model. This is the paper's central dosing",
         "finding -- because body weight does not enter the PK, a fixed 12 mg dose and a",
@@ -121,42 +127,42 @@ Nie_2023_nalbuphine <- function() {
     ),
     UA = list(
       description = "Uric acid",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested on V2 (Table 3 model 14, dOFV -5.37); not retained. No coefficient printed."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested on V2 (Table 3 model 14, dOFV -5.37); not retained. No coefficient printed."
     ),
     DDIMER = list(
       description = "Plasma D-dimer",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Tested on V2 (Table 3 model 15, dOFV -4.79); not retained. No coefficient printed."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Tested on V2 (Table 3 model 15, dOFV -4.79); not retained. No coefficient printed."
     ),
     SMOKE = list(
       description = "Current-smoker indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on V2 (Table 3 model 19, dOFV -3.94); not retained. No coefficient printed. Table 1: 11/27 (40.7%) in the model-building cohort."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on V2 (Table 3 model 19, dOFV -3.94); not retained. No coefficient printed. Table 1: 11/27 (40.7%) in the model-building cohort."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 47L,
-    n_studies       = 1L,
-    age_range       = "21-78 years overall; model-building cohort 53.85 +/- 16.63 years (median 58, range 21-76), external-validation cohort 52.5 +/- 13.56 (median 54.5, range 27-78)",
-    age_median      = "58 years (model-building cohort, Table 1)",
-    weight_range    = "48-86 kg overall; model-building cohort 63.32 +/- 9.3 kg (median 62, range 48-82), external-validation cohort 62.25 +/- 9.67 (median 59.5, range 50.8-86)",
-    weight_median   = "62 kg (model-building cohort, Table 1)",
-    height_range    = "Model-building cohort 163.96 +/- 6.87 cm (median 165, range 153-175)",
-    sex_female_pct  = 55.6,
-    race_ethnicity  = "Not reported; single-centre Chinese cohort",
-    disease_state   = "Adults scheduled for elective surgery under general anaesthesia. Liver resection 14.8%, cholecystectomy 12.8%, pancreatic resection 36.2%, other surgery 36.2%; 29.8% laparoscopic and 70.2% open. Model-building cohort: tumour 77.8%, hepatobiliary disease 55.6%, hypertension 25.9%, Child-Turcotte-Pugh class B 18.5% (the remainder class A).",
-    dose_range      = "Single nalbuphine 15 mg intravenous injection over 2-3 min at induction (0.24 +/- 0.04 mg/kg), followed by midazolam 0.05 mg/kg, sufentanil 0.2 ug/kg, etomidate 0.03 mg/kg and cisatracurium 0.2 mg/kg; anaesthesia maintained with sevoflurane and remifentanil",
-    regions         = "China (Shijiazhuang; the Fourth Hospital of Hebei Medical University, single centre, 2021)",
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
+    age_range = "21-78 years overall; model-building cohort 53.85 +/- 16.63 years (median 58, range 21-76), external-validation cohort 52.5 +/- 13.56 (median 54.5, range 27-78)",
+    age_median = "58 years (model-building cohort, Table 1)",
+    weight_range = "48-86 kg overall; model-building cohort 63.32 +/- 9.3 kg (median 62, range 48-82), external-validation cohort 62.25 +/- 9.67 (median 59.5, range 50.8-86)",
+    weight_median = "62 kg (model-building cohort, Table 1)",
+    height_range = "Model-building cohort 163.96 +/- 6.87 cm (median 165, range 153-175)",
+    sex_female_pct = 55.6,
+    race_ethnicity = "Not reported; single-centre Chinese cohort",
+    disease_state = "Adults scheduled for elective surgery under general anaesthesia. Liver resection 14.8%, cholecystectomy 12.8%, pancreatic resection 36.2%, other surgery 36.2%; 29.8% laparoscopic and 70.2% open. Model-building cohort: tumour 77.8%, hepatobiliary disease 55.6%, hypertension 25.9%, Child-Turcotte-Pugh class B 18.5% (the remainder class A).",
+    dose_range = "Single nalbuphine 15 mg intravenous injection over 2-3 min at induction (0.24 +/- 0.04 mg/kg), followed by midazolam 0.05 mg/kg, sufentanil 0.2 ug/kg, etomidate 0.03 mg/kg and cisatracurium 0.2 mg/kg; anaesthesia maintained with sevoflurane and remifentanil",
+    regions = "China (Shijiazhuang; the Fourth Hospital of Hebei Medical University, single centre, 2021)",
     hepatic_function = "55.6% of the model-building cohort had hepatobiliary disease; 18.5% were Child-Turcotte-Pugh class B and the rest class A. Excluded: known or suspected cardiopulmonary, renal or metabolic disease.",
-    renal_function  = "Creatinine clearance (Cockcroft-Gault) 111.19 +/- 27.38 mL/min in the model-building cohort (median 105.14, range 53.4-160.98)",
-    co_medication   = "Midazolam, sufentanil, etomidate, cisatracurium, sevoflurane and remifentanil, all part of the anaesthetic protocol. Nie 2023 Discussion notes as a limitation that nalbuphine, midazolam, sufentanil and sevoflurane are all CYP3A4 substrates and that the study design could not resolve any interaction between them.",
-    notes           = "Baseline demographics per Nie 2023 Table 1. 458 concentrations were drawn from 48 patients; one subject (5 samples) was dropped for a missing HNF value, leaving 27 patients / 353 samples for model building (intensive sampling: pre-dose and 3, 5, 10, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 5, 6, 12 h) and 20 patients / 100 samples for external validation (sparse sampling: pre-dose, during intubation, and 1, 3, 10 min after intubation). Every post-dose sample was above the 0.1 ng/mL LLOQ and none was flagged as an outlier."
+    renal_function = "Creatinine clearance (Cockcroft-Gault) 111.19 +/- 27.38 mL/min in the model-building cohort (median 105.14, range 53.4-160.98)",
+    co_medication = "Midazolam, sufentanil, etomidate, cisatracurium, sevoflurane and remifentanil, all part of the anaesthetic protocol. Nie 2023 Discussion notes as a limitation that nalbuphine, midazolam, sufentanil and sevoflurane are all CYP3A4 substrates and that the study design could not resolve any interaction between them.",
+    notes = "Baseline demographics per Nie 2023 Table 1. 458 concentrations were drawn from 48 patients; one subject (5 samples) was dropped for a missing HNF value, leaving 27 patients / 353 samples for model building (intensive sampling: pre-dose and 3, 5, 10, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 5, 6, 12 h) and 20 patients / 100 samples for external validation (sparse sampling: pre-dose, during intubation, and 1, 3, 10 min after intubation). Every post-dose sample was above the 0.1 ng/mL LLOQ and none was flagged as an outlier."
   )
 
   ini({

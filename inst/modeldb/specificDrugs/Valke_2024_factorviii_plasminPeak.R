@@ -28,56 +28,56 @@ Valke_2024_factorviii_plasminPeak <- function() {
   )
   vignette <- "Valke_2024_factorviii_thrombin_plasmin"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/dL (observation Cc is FVIII activity; the PD output plasminPeak is normalized plasmin peak height as a percentage of normal pooled plasma)"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "A priori allometric power scaling of the PK parameters at a 70 kg reference with exponents fixed at 0.75 for CL and Q and 1 for V1 and V2 (Valke 2024 Supplementary Methods Eq. 1). Cohort mean 62 kg (SD 7), median 62 kg (range 48-73 kg; Table 1). Body weight was tested as a covariate on the PD parameters and was not significant (Valke 2024 Results 3.5), so it acts on the PK layer only.",
-      source_name        = "Bodyweight"
+      notes = "A priori allometric power scaling of the PK parameters at a 70 kg reference with exponents fixed at 0.75 for CL and Q and 1 for V1 and V2 (Valke 2024 Supplementary Methods Eq. 1). Cohort mean 62 kg (SD 7), median 62 kg (range 48-73 kg; Table 1). Body weight was tested as a covariate on the PD parameters and was not significant (Valke 2024 Results 3.5), so it acts on the PK layer only.",
+      source_name = "Bodyweight"
     ),
     ADA_POS = list(
-      description        = "FVIII inhibitor status by the Nijmegen-modified Bethesda assay (NBA): 1 = inhibitor-positive (titer >= 0.60 NBU/mL), 0 = negative. Mapped onto the canonical ADA_POS column per the NAB-subset alias documented in inst/references/covariate-columns.md.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "FVIII inhibitor status by the Nijmegen-modified Bethesda assay (NBA): 1 = inhibitor-positive (titer >= 0.60 NBU/mL), 0 = negative. Mapped onto the canonical ADA_POS column per the NAB-subset alias documented in inst/references/covariate-columns.md.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NBA inhibitor negative)",
-      notes              = "Valke 2024 Table 2: the only covariate retained in the final PK model; CL is 1.53x higher in NBA-positive patients (theta^flag form of Supplementary Methods Eq. 6). 1 of 29 patients (3%) was NBA-positive (titer 1.1 NBU/mL). No covariate was retained on the PD parameters.",
-      source_name        = "NBA"
+      notes = "Valke 2024 Table 2: the only covariate retained in the final PK model; CL is 1.53x higher in NBA-positive patients (theta^flag form of Supplementary Methods Eq. 6). 1 of 29 patients (3%) was NBA-positive (titer 1.1 NBU/mL). No covariate was retained on the PD parameters.",
+      source_name = "NBA"
     ),
     ASSAY_OSA = list(
-      description        = "One-stage activated partial thromboplastin time clotting assay (OSA) indicator (1 = OSA, 0 = chromogenic substrate assay, CSA)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "One-stage activated partial thromboplastin time clotting assay (OSA) indicator (1 = OSA, 0 = chromogenic substrate assay, CSA)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CSA) per the canonical column definition; in THIS model the structural PK parameters are on the OSA scale, so the assay correction and the alternative residual-error magnitudes are applied to the CSA (ASSAY_OSA = 0) rows",
-      notes              = "Valke 2024 Results 3.4 and Table 2: FVIII activity was measured by both assays and CSA samples read 0.939x the OSA value; residual error also differs by assay. Affects the FVIII activity observation Cc only -- the PD layer is driven by the untransformed one-stage-scale FVIII activity, which is what the individual PK predictions supplied to the sequential PD estimation step represent. Per-observation (per-row). Set ASSAY_OSA = 1 to simulate the one-stage-assay readout.",
-      source_name        = "Assay method"
+      notes = "Valke 2024 Results 3.4 and Table 2: FVIII activity was measured by both assays and CSA samples read 0.939x the OSA value; residual error also differs by assay. Affects the FVIII activity observation Cc only -- the PD layer is driven by the untransformed one-stage-scale FVIII activity, which is what the individual PK predictions supplied to the sequential PD estimation step represent. Per-observation (per-row). Set ASSAY_OSA = 1 to simulate the one-stage-assay readout.",
+      source_name = "Assay method"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "factor VIII", units = "IU", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "factor VIII", units = "IU", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "factor VIII", units = "IU", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29L,
-    n_studies      = 1L,
-    age_range      = "19-53 years",
-    age_median     = "27 years",
-    weight_range   = "48-73 kg",
-    weight_median  = "62 kg",
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
+    age_range = "19-53 years",
+    age_median = "27 years",
+    weight_range = "48-73 kg",
+    weight_median = "62 kg",
     sex_female_pct = 0,
-    disease_state  = "Severe hemophilia A (FVIII activity level < 1 IU/dL). Baseline plasmin peak height 27.4 nM (IQR 17.5-32.0), i.e. 95% of normal pooled plasma (IQR 69-112) against a healthy-control reference of 17.2 (SD 8.5) nM -- within the normal range but reflecting the hyperfibrinolysis of untreated severe hemophilia A, which resolves as thrombin generation is restored.",
-    dose_range     = "Single intravenous bolus of pdVWF/FVIII concentrate (Humate-P, CSL Behring): median 1600 IU FVIII (IQR 1500-1700), i.e. 25.0 IU/kg (IQR 24.6-25.4).",
-    regions        = "Iran (Ghaem Hospital, Mashhad University of Medical Sciences); samples analysed at Radboud University Medical Center, Nijmegen, The Netherlands.",
-    notes          = "Sub-study of the IMPALA study (Dutch Trial Register NL2808). All patients male. 285 normalized plasmin peak values were available for the PD analysis; ten were undetectable and were excluded (< 4% of samples). The analysis was sequential: individual PK parameters from the Valke 2024 PK model were fixed as the input to the PD estimation step. This is a replication study of Bukkems 2022 (Br J Clin Pharmacol 88(6):2757-2768); the Bukkems plasmin peak model over-predicted this cohort badly (MPE 58.9%, MAPE 58.9%) because the estimated baseline differed (125% of NPP in Bukkems vs 81.2% here, attributed by the authors to an assay artifact in plasmin peak height determination), so the PD parameters were re-estimated. The authors conclude that plasmin generation may not be a suitable pharmacodynamic target because the difference between healthy individuals and hemophilia A patients is small. The Bukkems estimates reproduced in Valke 2024 Table 3 for comparison are NOT encoded here."
+    disease_state = "Severe hemophilia A (FVIII activity level < 1 IU/dL). Baseline plasmin peak height 27.4 nM (IQR 17.5-32.0), i.e. 95% of normal pooled plasma (IQR 69-112) against a healthy-control reference of 17.2 (SD 8.5) nM -- within the normal range but reflecting the hyperfibrinolysis of untreated severe hemophilia A, which resolves as thrombin generation is restored.",
+    dose_range = "Single intravenous bolus of pdVWF/FVIII concentrate (Humate-P, CSL Behring): median 1600 IU FVIII (IQR 1500-1700), i.e. 25.0 IU/kg (IQR 24.6-25.4).",
+    regions = "Iran (Ghaem Hospital, Mashhad University of Medical Sciences); samples analysed at Radboud University Medical Center, Nijmegen, The Netherlands.",
+    notes = "Sub-study of the IMPALA study (Dutch Trial Register NL2808). All patients male. 285 normalized plasmin peak values were available for the PD analysis; ten were undetectable and were excluded (< 4% of samples). The analysis was sequential: individual PK parameters from the Valke 2024 PK model were fixed as the input to the PD estimation step. This is a replication study of Bukkems 2022 (Br J Clin Pharmacol 88(6):2757-2768); the Bukkems plasmin peak model over-predicted this cohort badly (MPE 58.9%, MAPE 58.9%) because the estimated baseline differed (125% of NPP in Bukkems vs 81.2% here, attributed by the authors to an assay artifact in plasmin peak height determination), so the PD parameters were re-estimated. The authors conclude that plasmin generation may not be a suitable pharmacodynamic target because the difference between healthy individuals and hemophilia A patients is small. The Bukkems estimates reproduced in Valke 2024 Table 3 for comparison are NOT encoded here."
   )
 
   ini({

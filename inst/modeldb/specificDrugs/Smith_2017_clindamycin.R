@@ -13,51 +13,51 @@ Smith_2017_clindamycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Reference 70 kg. Allometric scaling: CL ~ (WT/70)^0.75, V ~ (WT/70)^1.0 (both exponents fixed per Smith 2017 Methods Equations 4-5). TBW was found to be the most robust body-size descriptor over FFM/NFM/LBW per Results.",
-      source_name        = "TBW"
+      notes = "Time-varying. Reference 70 kg. Allometric scaling: CL ~ (WT/70)^0.75, V ~ (WT/70)^1.0 (both exponents fixed per Smith 2017 Methods Equations 4-5). TBW was found to be the most robust body-size descriptor over FFM/NFM/LBW per Results.",
+      source_name = "TBW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. The Smith 2017 paper reports postmenstrual age in WEEKS in the sigmoidal Hill maturation function on CL (TM50 = 39.5 weeks, Hill = 2.83). Canonical PAGE in nlmixr2lib is in months, so the model converts internally as PMA_weeks = PAGE * 4.345 before evaluating the Hill equation.",
-      source_name        = "PMA"
+      notes = "Time-varying. The Smith 2017 paper reports postmenstrual age in WEEKS in the sigmoidal Hill maturation function on CL (TM50 = 39.5 weeks, Hill = 2.83). Canonical PAGE in nlmixr2lib is in months, so the model converts internally as PMA_weeks = PAGE * 4.345 before evaluating the Hill equation.",
+      source_name = "PMA"
     ),
     ALB = list(
-      description        = "Serum albumin",
+      description = "Serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying or baseline (per source dataset). Reference 3.3 g/dL (Smith 2017 Methods Equation 5 typical value used in the V relationship). Power effect on V: (ALB/3.3)^(-0.83).",
-      source_name        = "ALB"
+      notes = "Time-varying or baseline (per source dataset). Reference 3.3 g/dL (Smith 2017 Methods Equation 5 typical value used in the V relationship). Power effect on V: (ALB/3.3)^(-0.83).",
+      source_name = "ALB"
     ),
     AAG = list(
-      description        = "Alpha-1 acid glycoprotein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Alpha-1 acid glycoprotein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying or baseline (per source dataset). Reference 2.4 g/L (= 2.4 mg/mL; Smith 2017 reports AAG in mg/mL, 1 mg/mL = 1 g/L). Power effect on V: (AAG/2.4)^(-0.25).",
-      source_name        = "AAG"
+      notes = "Time-varying or baseline (per source dataset). Reference 2.4 g/L (= 2.4 mg/mL; Smith 2017 reports AAG in mg/mL, 1 mg/mL = 1 g/L). Power effect on V: (AAG/2.4)^(-0.25).",
+      source_name = "AAG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 220L,
-    n_studies      = 3L,
-    age_range      = "5 days postnatal (Staph Trio neonates) to 20.5 years (PTN POPS)",
-    weight_range   = "0.5-224 kg (pooled across three trials)",
+    species = "human",
+    n_subjects = 220L,
+    n_studies = 3L,
+    age_range = "5 days postnatal (Staph Trio neonates) to 20.5 years (PTN POPS)",
+    weight_range = "0.5-224 kg (pooled across three trials)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in the main paper",
-    disease_state  = "Pediatric patients (obese and nonobese) and premature infants receiving intravenous clindamycin per standard of care; indications include skin and soft-tissue infections, bone and joint infections, and other invasive Staphylococcus aureus infections.",
-    dose_range     = "30-40 mg/kg/day IV (CLIN01); 10 mg/kg every 6, 8, or 12 h IV (Staph Trio); per standard-of-care dosing (PTN POPS)",
-    regions        = "United States (multicenter)",
-    notes          = "Pooled cohort of 220 children (76 obese with BMI >= 95th percentile for age) contributing 420 plasma samples across three Best Pharmaceuticals for Children Act-Pediatric Trials Network studies: CLIN01 (n=21 adolescents with BMI >= 85th percentile; NCT01744730), PTN POPS (n=178 pediatric standard-of-care; NCT01431326), and Staph Trio (n=21 neonates; NCT01728363). Demographics per Smith 2017 Table 1; combined cohort summary per Results."
+    disease_state = "Pediatric patients (obese and nonobese) and premature infants receiving intravenous clindamycin per standard of care; indications include skin and soft-tissue infections, bone and joint infections, and other invasive Staphylococcus aureus infections.",
+    dose_range = "30-40 mg/kg/day IV (CLIN01); 10 mg/kg every 6, 8, or 12 h IV (Staph Trio); per standard-of-care dosing (PTN POPS)",
+    regions = "United States (multicenter)",
+    notes = "Pooled cohort of 220 children (76 obese with BMI >= 95th percentile for age) contributing 420 plasma samples across three Best Pharmaceuticals for Children Act-Pediatric Trials Network studies: CLIN01 (n=21 adolescents with BMI >= 85th percentile; NCT01744730), PTN POPS (n=178 pediatric standard-of-care; NCT01431326), and Staph Trio (n=21 neonates; NCT01728363). Demographics per Smith 2017 Table 1; combined cohort summary per Results."
   )
 
   ini({

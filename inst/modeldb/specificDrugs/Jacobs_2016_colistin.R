@@ -15,66 +15,66 @@ Jacobs_2016_colistin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "colistimethate sodium", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "colistimethate sodium", units = "mg", specimen = "plasma", verified = FALSE),
     central_col = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = "Time-varying within subject. Gates the fixed hemodialysis-clearance contributions for CMS (90 mL/min) and colistin (137 mL/min) -- those terms are zero when RRT_HEMODIAL_ACTIVE = 0. The Jacobs 2016 PK sampling was performed between HD sessions, so RRT_HEMODIAL_ACTIVE = 0 throughout the data the model was fit to (Methods, Sample collection); HD-active dynamics are exercised in the paper's HD simulation scenarios (Methods, Simulations; Figure 4) where 4-h sessions are imposed at user-chosen times. For non-HD patients leave RRT_HEMODIAL_ACTIVE = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `RRT_HEMODIAL_ACTIVE` per inst/references/covariate-columns.md.",
-      source_name        = "DIAL"
+      notes = "Time-varying within subject. Gates the fixed hemodialysis-clearance contributions for CMS (90 mL/min) and colistin (137 mL/min) -- those terms are zero when RRT_HEMODIAL_ACTIVE = 0. The Jacobs 2016 PK sampling was performed between HD sessions, so RRT_HEMODIAL_ACTIVE = 0 throughout the data the model was fit to (Methods, Sample collection); HD-active dynamics are exercised in the paper's HD simulation scenarios (Methods, Simulations; Figure 4) where 4-h sessions are imposed at user-chosen times. For non-HD patients leave RRT_HEMODIAL_ACTIVE = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `RRT_HEMODIAL_ACTIVE` per inst/references/covariate-columns.md.",
+      source_name = "DIAL"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested in forward inclusion (P<0.05) and backward deletion (P<0.01) but not retained in the final model (Jacobs 2016 Methods, Population PK modeling; Results: no covariate was included due to nonsignificant decreases of OFV)."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested in forward inclusion (P<0.05) and backward deletion (P<0.01) but not retained in the final model (Jacobs 2016 Methods, Population PK modeling; Results: no covariate was included due to nonsignificant decreases of OFV)."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "yr",
-      type        = "continuous",
-      notes       = "Tested but not retained (same screen)."
+      units = "yr",
+      type = "continuous",
+      notes = "Tested but not retained (same screen)."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested but not retained. All subjects had abolished renal function (anuric); the structural model fixes CMS renal clearance at 0."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested but not retained. All subjects had abolished renal function (anuric); the structural model fixes CMS renal clearance at 0."
     ),
     BUN = list(
       description = "Serum urea concentration",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Tested but not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Tested but not retained."
     ),
     BODYTEMP = list(
       description = "Body temperature",
-      units       = "C",
-      type        = "continuous",
-      notes       = "Tested but not retained."
+      units = "C",
+      type = "continuous",
+      notes = "Tested but not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "36-82 years (median 65)",
-    weight_range   = "52-100 kg (median 80)",
+    species = "human",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "36-82 years (median 65)",
+    weight_range = "52-100 kg (median 80)",
     sex_female_pct = 25,
     race_ethnicity = NULL,
-    disease_state  = "Critically ill ICU patients with acute renal failure requiring intermittent hemodialysis, treated with colistimethate sodium (CMS / Colimycine) as part of standard care for severe Gram-negative infection (Pseudomonas aeruginosa, Acinetobacter baumannii, Klebsiella pneumoniae). All eight subjects had abolished CMS renal clearance, so the estimated CMS clearance is structurally nonrenal.",
-    dose_range     = "First dose 0.4-9 MIU CMS (median 1.5 MIU); maintenance 0.4-2 MIU q8h (median 0.5 MIU q8h) administered as 1-h IV infusions of CMS reconstituted in 50 mL saline. 1 MIU CMS sodium is equivalent to 80 mg of CMS sodium (Jacobs 2016 Results). Four subjects also received CMS aerosol cotreatment; the aerosol pathway (about 9% of dose reaching systemic, 1.4% presystemically converted to colistin per Marchand 2014 ref 12) is not represented in this nlmixr2lib model.",
-    regions        = "Two-site multicenter France: CHU Poitiers, Hopital Lariboisiere Paris.",
-    notes          = "Demographics from Jacobs 2016 Table 1: 2 women, 6 men (25% female). Serum creatinine range 172-470 micromol/L (median 310). SAPS II 39-75 (median 58). Intermittent hemodialysis sessions: 4-h duration every 2 days using a 1.6 m^2 B3 polymethylmethacrylate membrane on a Gambro AK 200, blood flow 300 mL/min, dialysate flow 500 mL/min."
+    disease_state = "Critically ill ICU patients with acute renal failure requiring intermittent hemodialysis, treated with colistimethate sodium (CMS / Colimycine) as part of standard care for severe Gram-negative infection (Pseudomonas aeruginosa, Acinetobacter baumannii, Klebsiella pneumoniae). All eight subjects had abolished CMS renal clearance, so the estimated CMS clearance is structurally nonrenal.",
+    dose_range = "First dose 0.4-9 MIU CMS (median 1.5 MIU); maintenance 0.4-2 MIU q8h (median 0.5 MIU q8h) administered as 1-h IV infusions of CMS reconstituted in 50 mL saline. 1 MIU CMS sodium is equivalent to 80 mg of CMS sodium (Jacobs 2016 Results). Four subjects also received CMS aerosol cotreatment; the aerosol pathway (about 9% of dose reaching systemic, 1.4% presystemically converted to colistin per Marchand 2014 ref 12) is not represented in this nlmixr2lib model.",
+    regions = "Two-site multicenter France: CHU Poitiers, Hopital Lariboisiere Paris.",
+    notes = "Demographics from Jacobs 2016 Table 1: 2 women, 6 men (25% female). Serum creatinine range 172-470 micromol/L (median 310). SAPS II 39-75 (median 58). Intermittent hemodialysis sessions: 4-h duration every 2 days using a 1.6 m^2 B3 polymethylmethacrylate membrane on a Gambro AK 200, blood flow 300 mL/min, dialysate flow 500 mL/min."
   )
 
   ini({

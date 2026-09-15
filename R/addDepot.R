@@ -14,10 +14,7 @@
 #' # most of the examples in the model library already have a depot
 #' # the PK_2cmt_no_depot is an exception
 #' readModelDb("PK_2cmt_no_depot") |> addDepot()
-addDepot <- function(ui,
-                     central = "central", depot = "depot",
-                     ka = "ka",
-                     model) {
+addDepot <- function(ui, central = "central", depot = "depot", ka = "ka", model) {
   .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentName(depot)
@@ -44,8 +41,7 @@ addDepot <- function(ui,
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui <- .iniAddTheta(.ui, paste0("l", ka),
-    label = paste0("First order absorption rate (", ka, ")"))
+  .ui <- .iniAddTheta(.ui, paste0("l", ka), label = paste0("First order absorption rate (", ka, ")"))
   rxode2::rxUiCompress(rxode2::as.rxUi(.ui))
 }
 
@@ -63,9 +59,7 @@ addDepot <- function(ui,
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |> removeDepot()
-removeDepot <- function(ui, central = "central", depot = "depot",
-                        ka = "ka",
-                        model) {
+removeDepot <- function(ui, central = "central", depot = "depot", ka = "ka", model) {
   .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentExists(.ui, central)
@@ -76,9 +70,7 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- .dropDotAddExpr(.replaceMult(.tmp$w, ka, depot, "."))
-  .modelLines <- c(.tmp$pre,
-    .tmp$w,
-    .tmp$post)
+  .modelLines <- c(.tmp$pre, .tmp$w, .tmp$post)
   .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .eta <- .tmp$eta
@@ -90,8 +82,7 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .theta <- .tmp$theta
   .eta <- .tmp$eta
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .eta)
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }

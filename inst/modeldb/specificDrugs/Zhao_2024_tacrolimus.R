@@ -11,8 +11,8 @@ Zhao_2024_tacrolimus <- function() {
   )
   vignette <- "Zhao_2024_tacrolimus"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -25,41 +25,41 @@ Zhao_2024_tacrolimus <- function() {
   # here; a whole-blood assay is also what makes V/F = 2690 L comparable to the
   # other whole-blood tacrolimus models tabulated in Zhao 2024 Table 7.)
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     CONC_VORI_NGML = list(
-      description        = "Measured voriconazole concentration in the co-administered patient (the source's C_VRC); 0 for a patient not receiving voriconazole",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Measured voriconazole concentration in the co-administered patient (the source's C_VRC); 0 for a patient not receiving voriconazole",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-VARYING within subject: voriconazole concentrations were measured alongside every tacrolimus concentration (Zhao 2024 inclusion criterion 5, 'at least three measurements of tacrolimus and voriconazole concentrations'). UNIT CONVERSION: Zhao 2024 reports C_VRC in ug/mL (Table 1 median 0.00 [0.00, 0.50]; Discussion gives the observed range as 0-3.38 ug/mL) whereas the canonical column is ng/mL, so the model divides by 1000 before applying the published coefficients. The covariate is EXPONENTIAL, not power-scaled: the cohort median is exactly 0.00 ug/mL (many patients contributed pre-voriconazole samples) so no ratio-to-median form is possible, and exp(theta * C_VRC) reduces to 1 at C_VRC = 0, which is the untreated reference. Zhao 2024 warns that the model should not be extrapolated far above the observed 3.38 ug/mL ceiling: the published dose-recommendation tables run to 7 ug/mL, and the exponential term amplifies steeply there. Distinct from the binary CONMED_VORICONAZOLE, which is the right column for a model that estimates an on/off coefficient instead of a concentration-driven one.",
-      source_name        = "CVRC"
+      notes = "TIME-VARYING within subject: voriconazole concentrations were measured alongside every tacrolimus concentration (Zhao 2024 inclusion criterion 5, 'at least three measurements of tacrolimus and voriconazole concentrations'). UNIT CONVERSION: Zhao 2024 reports C_VRC in ug/mL (Table 1 median 0.00 [0.00, 0.50]; Discussion gives the observed range as 0-3.38 ug/mL) whereas the canonical column is ng/mL, so the model divides by 1000 before applying the published coefficients. The covariate is EXPONENTIAL, not power-scaled: the cohort median is exactly 0.00 ug/mL (many patients contributed pre-voriconazole samples) so no ratio-to-median form is possible, and exp(theta * C_VRC) reduces to 1 at C_VRC = 0, which is the untreated reference. Zhao 2024 warns that the model should not be extrapolated far above the observed 3.38 ug/mL ceiling: the published dose-recommendation tables run to 7 ug/mL, and the exponential term amplifies steeply there. Distinct from the binary CONMED_VORICONAZOLE, which is the right column for a model that estimates an on/off coefficient instead of a concentration-driven one.",
+      source_name = "CVRC"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-VARYING within subject; collected with every tacrolimus concentration (Zhao 2024 section 2.2). Enters as the power scaling (CREAT / 237)^-0.40, so apparent clearance FALLS as serum creatinine rises. 237 umol/L is the cohort median (Zhao 2024 Table 1, IQR 162.9-648.0) and is the value the authors held fixed for the voriconazole dose-recommendation simulation in Table 5, which is what identifies it as the normalising constant; the paper never prints the covariate equation itself. The cohort is drawn from the first 15 post-operative days, when graft function is still recovering, which is why the creatinine range extends far above the normal adult range. See the vignette's Assumptions and deviations section for the paper's internal contradiction over whether this coefficient acts on CL/F or on V/F.",
-      source_name        = "CREA"
+      notes = "TIME-VARYING within subject; collected with every tacrolimus concentration (Zhao 2024 section 2.2). Enters as the power scaling (CREAT / 237)^-0.40, so apparent clearance FALLS as serum creatinine rises. 237 umol/L is the cohort median (Zhao 2024 Table 1, IQR 162.9-648.0) and is the value the authors held fixed for the voriconazole dose-recommendation simulation in Table 5, which is what identifies it as the normalising constant; the paper never prints the covariate equation itself. The cohort is drawn from the first 15 post-operative days, when graft function is still recovering, which is why the creatinine range extends far above the normal adult range. See the vignette's Assumptions and deviations section for the paper's internal contradiction over whether this coefficient acts on CL/F or on V/F.",
+      source_name = "CREA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 19L,
-    n_studies      = 1L,
-    age_range      = "median 44 years (IQR 37.5-52.5)",
-    weight_range   = "median 63 kg (IQR 51-72)",
+    species = "human",
+    n_subjects = 19L,
+    n_studies = 1L,
+    age_range = "median 44 years (IQR 37.5-52.5)",
+    weight_range = "median 63 kg (IQR 51-72)",
     sex_female_pct = 21.1,
     race_ethnicity = c(Chinese = 100.0),
-    disease_state  = "Adults (>= 18 years) within 15 days of a first renal transplant, on an oral triple immunosuppressive regimen (tacrolimus + mycophenolate mofetil + glucocorticoid) and receiving concomitant voriconazole for invasive fungal infection",
-    dose_range     = "Oral tacrolimus, clinician-titrated; observed dose per administration median 3.00 mg (IQR 1.50-3.50)",
-    regions        = "Single centre, The Second Xiangya Hospital of Central South University, Changsha, Hunan, People's Republic of China",
-    notes          = "Retrospective non-interventional cohort, January 2016 to March 2021. 167 tacrolimus whole-blood concentrations (8-9 per patient), the majority drawn within 30 min before a dose, i.e. troughs. Observed tacrolimus concentration median 7.90 ng/mL (IQR 5.55-10.78); time after operation median 8 days (IQR 4-11); voriconazole concentration median 0.00 ug/mL (IQR 0.00-0.50), observed range 0-3.38 ug/mL; serum creatinine median 237 umol/L (IQR 162.9-648.0); albumin median 34.0 g/L; haematocrit median 26.2%. Genotypes were an inclusion requirement but neither was retained: CYP3A5 *1/*3 10 (52.6%) and *3/*3 9 (47.4%) with no *1/*1 carriers, CYP2C19 *1/*1 6 and *1/*2 9. Renal source DBD 17, DCD 1, living 1. Estimated in Phoenix NLME 8.1; covariates selected by forward addition (p <= 0.01) and backward elimination (p < 0.001); validated by 1000-sample bootstrap and prediction-corrected VPC. Registered as ChiCTR2100048712."
+    disease_state = "Adults (>= 18 years) within 15 days of a first renal transplant, on an oral triple immunosuppressive regimen (tacrolimus + mycophenolate mofetil + glucocorticoid) and receiving concomitant voriconazole for invasive fungal infection",
+    dose_range = "Oral tacrolimus, clinician-titrated; observed dose per administration median 3.00 mg (IQR 1.50-3.50)",
+    regions = "Single centre, The Second Xiangya Hospital of Central South University, Changsha, Hunan, People's Republic of China",
+    notes = "Retrospective non-interventional cohort, January 2016 to March 2021. 167 tacrolimus whole-blood concentrations (8-9 per patient), the majority drawn within 30 min before a dose, i.e. troughs. Observed tacrolimus concentration median 7.90 ng/mL (IQR 5.55-10.78); time after operation median 8 days (IQR 4-11); voriconazole concentration median 0.00 ug/mL (IQR 0.00-0.50), observed range 0-3.38 ug/mL; serum creatinine median 237 umol/L (IQR 162.9-648.0); albumin median 34.0 g/L; haematocrit median 26.2%. Genotypes were an inclusion requirement but neither was retained: CYP3A5 *1/*3 10 (52.6%) and *3/*3 9 (47.4%) with no *1/*1 carriers, CYP2C19 *1/*1 6 and *1/*2 9. Renal source DBD 17, DCD 1, living 1. Estimated in Phoenix NLME 8.1; covariates selected by forward addition (p <= 0.01) and backward elimination (p < 0.001); validated by 1000-sample bootstrap and prediction-corrected VPC. Registered as ChiCTR2100048712."
   )
 
   ini({

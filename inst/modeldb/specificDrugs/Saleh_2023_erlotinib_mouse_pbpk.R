@@ -40,24 +40,24 @@ Saleh_2023_erlotinib_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot                = list(analyte = "erlotinib", units = "ng", specimen = "administration site", verified = TRUE),
-    central              = list(analyte = "erlotinib", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "erlotinib", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "erlotinib", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "erlotinib", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "erlotinib", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "erlotinib", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE)
+    depot = list(analyte = "erlotinib", units = "ng", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "erlotinib", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "erlotinib", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "erlotinib", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "erlotinib", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "erlotinib", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "erlotinib", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "erlotinib", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (FVB)",
+    species = "mouse (FVB)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "50 mg/kg PO (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "50 mg/kg PO (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for erlotinib came from Stewart lab, St. Jude Children's Research Hospital",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -253,4 +253,3 @@ Saleh_2023_erlotinib_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

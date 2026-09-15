@@ -19,29 +19,29 @@ Kunisawa_2014_olprinone <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear body-weight normalization per Methods: 'Dose and all pharmacokinetic parameters such as total clearance (CL), distribution volume of the central compartment (V1), intercompartmental clearance (Q ...) and distribution volume of the peripheral compartment (V2 ...) were adjusted for body weight.' Implemented as (WT/70)^1 with reference weight 70 kg; cohort mean weight was 64.1 kg.",
-      source_name        = "WT"
+      notes = "Linear body-weight normalization per Methods: 'Dose and all pharmacokinetic parameters such as total clearance (CL), distribution volume of the central compartment (V1), intercompartmental clearance (Q ...) and distribution volume of the peripheral compartment (V2 ...) were adjusted for body weight.' Implemented as (WT/70)^1 with reference weight 70 kg; cohort mean weight was 64.1 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 9L,                                  # Table 1: nine unique healthy male volunteers (subject numbers 1-9); 39 cumulative subject-stages, 30 evaluable after exclusions
-    n_studies      = 2L,                                  # Methods: Study I (single 5-min infusion, stages I-VII) and Study II (3-h infusion, stages VIII-X)
-    age_range      = "24-32 years",                       # Table 1
-    age_median     = "26 years",                          # Table 1 (median)
-    weight_range   = "56.5-75.0 kg",                      # Table 1
-    weight_median  = "61.5 kg",                           # Table 1 (median); mean 64.1 kg, SD 6.9
-    sex_female_pct = 0,                                   # Title and Methods: 'healthy male volunteers' only
-    race_ethnicity = c(Asian = 100),                      # Asahikawa Medical University Hospital, Japan; all Japanese (Methods + Acknowledgments)
-    disease_state  = "Healthy adult male volunteers; no clinical abnormality on medical interview, physical examination, ECG, blood pressure, blood test, or urine test (Methods).",
-    dose_range     = "1.25-50 ug/kg single 5-min IV infusion (Study I); 15-min IV loading (1.33-2.67 ug/kg/min) followed by 165-min continuous IV infusion (0.25-0.75 ug/kg/min) (Study II).",
-    regions        = "Japan (Asahikawa Medical University, Hokkaido).",
-    sampling       = "500 evaluable plasma concentrations (rich): Study I sampling at 5, 7.5, 10, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 6, 8, 24 h post-dose; Study II at 15, 30 min and 1, 2, 3, 3.04, 3.08, 3.16, 3.25, 3.5, 4, 4.5, 5, 6, 7, 9, 11, 24 h post-dose.",
-    notes          = "All subjects healthy adult Japanese males. Age was the only covariate tested; not retained (P=0.363, correlation coefficient with post hoc CL = 0.240). Quantification limit 0.1 ng/mL; concentrations <LLOQ excluded."
+    n_subjects = 9L, # Table 1: nine unique healthy male volunteers (subject numbers 1-9); 39 cumulative subject-stages, 30 evaluable after exclusions
+    n_studies = 2L, # Methods: Study I (single 5-min infusion, stages I-VII) and Study II (3-h infusion, stages VIII-X)
+    age_range = "24-32 years", # Table 1
+    age_median = "26 years", # Table 1 (median)
+    weight_range = "56.5-75.0 kg", # Table 1
+    weight_median = "61.5 kg", # Table 1 (median); mean 64.1 kg, SD 6.9
+    sex_female_pct = 0, # Title and Methods: 'healthy male volunteers' only
+    race_ethnicity = c(Asian = 100), # Asahikawa Medical University Hospital, Japan; all Japanese (Methods + Acknowledgments)
+    disease_state = "Healthy adult male volunteers; no clinical abnormality on medical interview, physical examination, ECG, blood pressure, blood test, or urine test (Methods).",
+    dose_range = "1.25-50 ug/kg single 5-min IV infusion (Study I); 15-min IV loading (1.33-2.67 ug/kg/min) followed by 165-min continuous IV infusion (0.25-0.75 ug/kg/min) (Study II).",
+    regions = "Japan (Asahikawa Medical University, Hokkaido).",
+    sampling = "500 evaluable plasma concentrations (rich): Study I sampling at 5, 7.5, 10, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 6, 8, 24 h post-dose; Study II at 15, 30 min and 1, 2, 3, 3.04, 3.08, 3.16, 3.25, 3.5, 4, 4.5, 5, 6, 7, 9, 11, 24 h post-dose.",
+    notes = "All subjects healthy adult Japanese males. Age was the only covariate tested; not retained (P=0.363, correlation coefficient with post hoc CL = 0.240). Quantification limit 0.1 ng/mL; concentrations <LLOQ excluded."
   )
 
   ini({

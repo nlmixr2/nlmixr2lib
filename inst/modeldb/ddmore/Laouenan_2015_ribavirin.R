@@ -14,7 +14,7 @@ Laouenan_2015_ribavirin <- function() {
   )
   vignette <- "Laouenan_2015_ribavirin"
   units <- list(time = "day", dosing = "mg", concentration = "g/dL")
-  ddmore_id    <- "DDMODEL00000285"
+  ddmore_id <- "DDMODEL00000285"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -27,33 +27,33 @@ Laouenan_2015_ribavirin <- function() {
 
   covariateData <- list(
     CSS_RBV = list(
-      description        = "Individual posthoc ribavirin steady-state trough plasma concentration from an upstream popPK fit (regressor input)",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual posthoc ribavirin steady-state trough plasma concentration from an upstream popPK fit (regressor input)",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject (time-fixed) empirical-Bayes (modal) estimate from the Laouenan 2015 upstream ribavirin popPK fit. Used together with K_RBV inside model() to reconstruct the individual ribavirin concentration time-course analytically: riba(t) = CSS_RBV * (1 - exp(-K_RBV * t)). The DDMORE bundle's Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt carries this column as `css_mode`; rename `css_mode` -> CSS_RBV before passing the dataset to rxSolve. For typical-trajectory simulations a single CSS_RBV (e.g., the Table-1 cohort median ~3000 ng/mL) suffices.",
-      source_name        = "css_mode"
+      notes = "Per-subject (time-fixed) empirical-Bayes (modal) estimate from the Laouenan 2015 upstream ribavirin popPK fit. Used together with K_RBV inside model() to reconstruct the individual ribavirin concentration time-course analytically: riba(t) = CSS_RBV * (1 - exp(-K_RBV * t)). The DDMORE bundle's Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt carries this column as `css_mode`; rename `css_mode` -> CSS_RBV before passing the dataset to rxSolve. For typical-trajectory simulations a single CSS_RBV (e.g., the Table-1 cohort median ~3000 ng/mL) suffices.",
+      source_name = "css_mode"
     ),
     K_RBV = list(
-      description        = "Individual posthoc ribavirin approach-to-steady-state rate constant from the same upstream popPK fit (regressor input)",
-      units              = "1/day",
-      type               = "continuous",
+      description = "Individual posthoc ribavirin approach-to-steady-state rate constant from the same upstream popPK fit (regressor input)",
+      units = "1/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject (time-fixed) empirical-Bayes (modal) estimate from the Laouenan 2015 upstream ribavirin popPK fit. Apparent first-order rate constant of the lumped exponential trough-concentration model (NOT a structural elimination rate). Used together with CSS_RBV inside model() in the analytical expression riba(t) = CSS_RBV * (1 - exp(-K_RBV * t)). The DDMORE bundle's Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt carries this column as `k_mode`; rename `k_mode` -> K_RBV before passing the dataset to rxSolve. Bundle range across 15 subjects: 0.013-0.47 day^-1 (approach-to-Css half-lives 1.5-55 days).",
-      source_name        = "k_mode"
+      notes = "Per-subject (time-fixed) empirical-Bayes (modal) estimate from the Laouenan 2015 upstream ribavirin popPK fit. Apparent first-order rate constant of the lumped exponential trough-concentration model (NOT a structural elimination rate). Used together with CSS_RBV inside model() in the analytical expression riba(t) = CSS_RBV * (1 - exp(-K_RBV * t)). The DDMORE bundle's Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt carries this column as `k_mode`; rename `k_mode` -> K_RBV before passing the dataset to rxSolve. Bundle range across 15 subjects: 0.013-0.47 day^-1 (approach-to-Css half-lives 1.5-55 days).",
+      source_name = "k_mode"
     )
   )
 
   population <- list(
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adult HCV genotype 1 patients with cirrhosis (Metavir F4) and prior treatment failure to peg-interferon-alpha plus ribavirin, enrolled in the French ANRS-CO20-CUPIC compassionate-use cohort. Two treatment arms: peg-IFN-alpha2a + ribavirin + telaprevir (TVR; n = 9) and peg-IFN-alpha2a + ribavirin + boceprevir (BOC; n = 6). Baseline hemoglobin median 15.1 g/dL (range 10.8-16.0).",
-    dose_range     = "Ribavirin 1000-1200 mg/day (weight-adjusted) plus telaprevir 750 mg q8h or boceprevir 800 mg q8h plus peg-IFN-alpha2a 180 ug/week SC. Doses are not consumed by this PD model; the ribavirin exposure is supplied as the per-subject CSS_RBV / K_RBV regressors from the upstream popPK fit.",
-    regions        = "France (multicentre)",
-    notes          = "Population n = 15 and treatment-arm split (9 TVR + 6 BOC) confirmed via the Laouenan 2015 publication (PMID 26225222, doi:10.1002/psp4.8) abstract retrieved from PubMed E-utilities. The DDMORE bundle's `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` simulated dataset reproduces 15 subject identifiers from the same study. Demographic detail (age range, weight range, sex distribution, race) is reported in the publication's Table 1 but the publication PDF / PMC full text was not accessible from the worktree environment, so the corresponding fields are recorded as NA. The bundle's CAT column (BOC / TVR) records the protease-inhibitor arm but does not enter the PD model equations; the treatment effect on PK is absorbed into the per-subject CSS_RBV / K_RBV upstream-PK regressors."
+    disease_state = "Adult HCV genotype 1 patients with cirrhosis (Metavir F4) and prior treatment failure to peg-interferon-alpha plus ribavirin, enrolled in the French ANRS-CO20-CUPIC compassionate-use cohort. Two treatment arms: peg-IFN-alpha2a + ribavirin + telaprevir (TVR; n = 9) and peg-IFN-alpha2a + ribavirin + boceprevir (BOC; n = 6). Baseline hemoglobin median 15.1 g/dL (range 10.8-16.0).",
+    dose_range = "Ribavirin 1000-1200 mg/day (weight-adjusted) plus telaprevir 750 mg q8h or boceprevir 800 mg q8h plus peg-IFN-alpha2a 180 ug/week SC. Doses are not consumed by this PD model; the ribavirin exposure is supplied as the per-subject CSS_RBV / K_RBV regressors from the upstream popPK fit.",
+    regions = "France (multicentre)",
+    notes = "Population n = 15 and treatment-arm split (9 TVR + 6 BOC) confirmed via the Laouenan 2015 publication (PMID 26225222, doi:10.1002/psp4.8) abstract retrieved from PubMed E-utilities. The DDMORE bundle's `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` simulated dataset reproduces 15 subject identifiers from the same study. Demographic detail (age range, weight range, sex distribution, race) is reported in the publication's Table 1 but the publication PDF / PMC full text was not accessible from the worktree environment, so the corresponding fields are recorded as NA. The bundle's CAT column (BOC / TVR) records the protease-inhibitor arm but does not enter the PD model equations; the treatment effect on PK is absorbed into the per-subject CSS_RBV / K_RBV upstream-PK regressors."
   )
 
   ini({

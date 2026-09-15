@@ -22,23 +22,23 @@ Yuen_1995_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Weight enters un-normalized in three places. On clearance it multiplies",
         "the renal-elimination term (0.168 * BW * CLcr/100), so weight and",
         "creatinine clearance act jointly rather than as separate effects. On both",
@@ -48,20 +48,20 @@ Yuen_1995_ganciclovir <- function() {
         "Yang 2023 Table 2 records the cohort weights as not reported (NR).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance, raw (NOT BSA-normalized). Yang 2023 Table 3",
         "footnote defines CLcr as 'creatinine clearance (mL/min)'; the review does",
         "not state which estimating equation Yuen 1995 used, so the assay form is",
         "to be confirmed against the primary publication.",
         sep = " "
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw mL/min, not BSA-normalized -- distinct from the eGFR / CrCL / CKD-EPI /",
         "ASCC variants used by the other models in this repository, which are all",
         "in mL/min/1.73 m^2. Precedent for storing a raw-mL/min renal covariate",
@@ -72,14 +72,14 @@ Yuen_1995_ganciclovir <- function() {
         "(100 mL/min). CLcr was retained on CL (Yang 2023 Table 4).",
         sep = " "
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     TX_ANY = list(
-      description        = "Any-solid-organ-transplant indicator (1 = solid-organ graft recipient, 0 = non-transplant patient)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any-solid-organ-transplant indicator (1 = solid-organ graft recipient, 0 = non-transplant patient)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-transplant patient)",
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote: 'T: T = 0 for non-transplant patients and",
         "0.76 for transplant patients'. The clearance equation applies the factor",
         "as (1 - T), so a transplant recipient's renal-elimination term is reduced",
@@ -96,14 +96,14 @@ Yuen_1995_ganciclovir <- function() {
         "example for the TX_ANY canonical.",
         sep = " "
       ),
-      source_name        = "T"
+      source_name = "T"
     ),
     DIS_CMV_RETINITIS = list(
-      description        = "CMV-retinitis indicator (1 = CMV retinitis, 0 = CMV-positive without retinitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CMV-retinitis indicator (1 = CMV retinitis, 0 = CMV-positive without retinitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CMV-positive without retinitis; in Yuen 1995, asymptomatic CMV urine shedding)",
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote: 'CMV: CMV = 0 for CMV-shedding patients and",
         "0.41 for patients with CMV retinitis'. The clearance equation applies the",
         "factor as (1 - CMV), so a retinitis patient's renal-elimination term is",
@@ -119,28 +119,28 @@ Yuen_1995_ganciclovir <- function() {
         "(Yang 2023 Table 4). Founding example for the DIS_CMV_RETINITIS canonical.",
         sep = " "
       ),
-      source_name        = "CMV"
+      source_name = "CMV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 53L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 53L,
+    n_studies = 1L,
     n_observations = 558L,
-    age_median     = "Not reported in Yang 2023 Table 2.",
-    weight_median  = "Not reported in Yang 2023 Table 2.",
+    age_median = "Not reported in Yang 2023 Table 2.",
+    weight_median = "Not reported in Yang 2023 Table 2.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "31 patients with CMV retinitis, 17 patients shedding CMV in urine, and 5",
       "solid-organ-transplant recipients with renal dysfunction.",
       sep = " "
     ),
-    dose_range     = "IV ganciclovir 1.2-5.0 mg/kg as a 1 h constant-rate infusion.",
-    regions        = "United States (prospective).",
-    bioassay       = "HPLC, LLOQ 0.25 ug/mL.",
-    notes          = paste(
+    dose_range = "IV ganciclovir 1.2-5.0 mg/kg as a 1 h constant-rate infusion.",
+    regions = "United States (prospective).",
+    bioassay = "HPLC, LLOQ 0.25 ug/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2 (53 subjects, 558",
       "observations; sex, age and weight recorded as not reported). Sampling was",
       "a mixture of sparse (0.5 and 3 h post dose) and intensive (0, 1, 2-3, 5-7",

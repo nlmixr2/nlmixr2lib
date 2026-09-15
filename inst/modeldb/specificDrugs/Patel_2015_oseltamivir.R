@@ -29,7 +29,7 @@ Patel_2015_oseltamivir <- function() {
     "Br J Clin Pharmacol. 2015;79(4):624-635. doi:10.1111/bcp.12526"
   )
   vignette <- "Patel_2015_oseltamivir"
-  units    <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   # Patel 2015 Figure 1 compartment 2 ("First-pass (OC)") is an empirical
   # compartment that delays the appearance of first-pass-generated carboxylate in
@@ -41,104 +41,121 @@ Patel_2015_oseltamivir <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "oseltamivir", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "oseltamivir",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit_oselcarb = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "oseltamivir", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "oseltamivir",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "oseltamivir", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "oseltamivir",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_oselcarb = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     dialysate_oselcarb = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "dialysate", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "dialysate",
+      verified = TRUE
     ),
     urine_oselcarb = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "urine", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "urine",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (kg). Drives allometric size scaling of every clearance and volume, referenced to 70 kg: (WT/70)^0.75 on CL_pm, CL_D, and all four oseltamivir carboxylate clearance arms; (WT/70)^1.0 on Vc_OP, Vp_OP, and Vc_OC.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (kg). Drives allometric size scaling of every clearance and volume, referenced to 70 kg: (WT/70)^0.75 on CL_pm, CL_D, and all four oseltamivir carboxylate clearance arms; (WT/70)^1.0 on Vc_OP, Vp_OP, and Vc_OC.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2015 reports every disposition parameter in Table 2 with units 'l h-1 (70 kg)-1' or 'l (70 kg)-1' and states in Results (Pharmacokinetic modelling) that 'the estimated clearances and volumes were standardized to a 70 kg adult human to allow for future comparison with other subpopulations, including extrapolation to infants and children'. The paper does NOT print the exponents; 0.75 / 1.0 are the theory-based values that this idiom denotes and are carried here as fixed() -- see the vignette Assumptions and deviations section. Cohort weight range 60-92 kg (Table 1), so the terms are interpolating over a narrow band within this study and extrapolate beyond it only under the fixed-exponent assumption.",
-      source_name        = "Bodyweight (kg)"
+      notes = "Patel 2015 reports every disposition parameter in Table 2 with units 'l h-1 (70 kg)-1' or 'l (70 kg)-1' and states in Results (Pharmacokinetic modelling) that 'the estimated clearances and volumes were standardized to a 70 kg adult human to allow for future comparison with other subpopulations, including extrapolation to infants and children'. The paper does NOT print the exponents; 0.75 / 1.0 are the theory-based values that this idiom denotes and are carried here as fixed() -- see the vignette Assumptions and deviations section. Cohort weight range 60-92 kg (Table 1), so the terms are interpolating over a narrow band within this study and extrapolate beyond it only under the fixed-exponent assumption.",
+      source_name = "Bodyweight (kg)"
     ),
     RRT_CCPD_ACTIVE = list(
-      description        = "Time-varying indicator that a continuous cycler-assisted peritoneal dialysis (CCPD) exchange is running (1) or not (0). Gates the CCPD arm of the oseltamivir carboxylate dialysate clearance.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Time-varying indicator that a continuous cycler-assisted peritoneal dialysis (CCPD) exchange is running (1) or not (0). Gates the CCPD arm of the oseltamivir carboxylate dialysate clearance.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cycler-assisted exchange running)",
-      notes              = "The study regimen (Methods, Treatments; confirmed by Table 3 footnote (section symbol)) ran three CCPD exchanges of 2.5 L over an 8 h daytime block, so RRT_CCPD_ACTIVE = 1 for 0-8 h of each 24 h cycle and 0 thereafter, with oseltamivir given immediately before the block started. Genuinely time-varying within every subject. The paper's Monte Carlo simulations re-schedule this gate across three different automated-peritoneal-dialysis prescriptions (CAPD-only, intermediate, and the intensive regimen studied), which is why the CCPD / CAPD split is load-bearing rather than cosmetic. Both gates are 0 during a dry period, leaving only the renal and other routes active.",
-      source_name        = "CCPD"
+      notes = "The study regimen (Methods, Treatments; confirmed by Table 3 footnote (section symbol)) ran three CCPD exchanges of 2.5 L over an 8 h daytime block, so RRT_CCPD_ACTIVE = 1 for 0-8 h of each 24 h cycle and 0 thereafter, with oseltamivir given immediately before the block started. Genuinely time-varying within every subject. The paper's Monte Carlo simulations re-schedule this gate across three different automated-peritoneal-dialysis prescriptions (CAPD-only, intermediate, and the intensive regimen studied), which is why the CCPD / CAPD split is load-bearing rather than cosmetic. Both gates are 0 during a dry period, leaving only the renal and other routes active.",
+      source_name = "CCPD"
     ),
     RRT_CAPD_ACTIVE = list(
-      description        = "Time-varying indicator that a continuous ambulatory peritoneal dialysis (CAPD) exchange is dwelling (1) or not (0). Gates the CAPD arm of the oseltamivir carboxylate dialysate clearance.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Time-varying indicator that a continuous ambulatory peritoneal dialysis (CAPD) exchange is dwelling (1) or not (0). Gates the CAPD arm of the oseltamivir carboxylate dialysate clearance.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ambulatory exchange dwelling)",
-      notes              = "Two CAPD exchanges of 2.0 L over the 16 h overnight block, so RRT_CAPD_ACTIVE = 1 for 8-24 h of each 24 h cycle in the studied regimen. The osmotic agent differed between the two overnight exchanges (dextrose 1.5-4.25% w/v for one, icodextrin 7.5% w/v for the other), but Patel 2015 Results found the two comparable for oseltamivir carboxylate -- geometric mean CAPD clearance 0.195 L/h with icodextrin versus 0.177 L/h with dextrose, from which the paper concludes 'icodextrin had minimal impact on oseltamivir pharmacokinetics' -- so a single CAPD gate carries both and no osmotic-agent covariate is needed.",
-      source_name        = "CAPD"
+      notes = "Two CAPD exchanges of 2.0 L over the 16 h overnight block, so RRT_CAPD_ACTIVE = 1 for 8-24 h of each 24 h cycle in the studied regimen. The osmotic agent differed between the two overnight exchanges (dextrose 1.5-4.25% w/v for one, icodextrin 7.5% w/v for the other), but Patel 2015 Results found the two comparable for oseltamivir carboxylate -- geometric mean CAPD clearance 0.195 L/h with icodextrin versus 0.177 L/h with dextrose, from which the paper concludes 'icodextrin had minimal impact on oseltamivir pharmacokinetics' -- so a single CAPD gate carries both and no osmotic-agent covariate is needed.",
+      source_name = "CAPD"
     ),
     ANURIA = list(
-      description        = "Per-subject binary indicator of anuria: 1 = anuric (no residual renal elimination), 0 = residual urine production. Switches the renal arm of oseltamivir carboxylate elimination off entirely via the (1 - ANURIA) gate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-subject binary indicator of anuria: 1 = anuric (no residual renal elimination), 0 = residual urine production. Switches the renal arm of oseltamivir carboxylate elimination off entirely via the (1 - ANURIA) gate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (residual urine production preserved)",
-      notes              = "Ascertained per patient in Patel 2015 Table 1 as a Yes / No 'Anuric' column; 5 of the 9 analysed patients were anuric and 4 produced urine. Note the orientation -- the model gates by (1 - ANURIA), because the covariate is 1 for the subgroup in which the renal arm is ABSENT. The paper reports urine output only as prose ranges ('generally < 1000 ml day-1', with one patient at 1463-2776 ml day-1) and never as a per-subject volume, which is why the binary rather than URINE_VOL_24H is the right column here. Residual renal clearance was NOT predictable from serum creatinine or estimated creatinine clearance: Results states that 'inclusion of creatinine clearance as a covariate effect did not significantly improve the model', and the Discussion is explicit that 'this effect was not predicted by serum creatinine measurement or estimated creatinine clearance'. So ANURIA is the only renal-function covariate the model can use, and among urine producers the 117% between-subject variability on the renal arm is genuinely unexplained.",
-      source_name        = "Anuric"
+      notes = "Ascertained per patient in Patel 2015 Table 1 as a Yes / No 'Anuric' column; 5 of the 9 analysed patients were anuric and 4 produced urine. Note the orientation -- the model gates by (1 - ANURIA), because the covariate is 1 for the subgroup in which the renal arm is ABSENT. The paper reports urine output only as prose ranges ('generally < 1000 ml day-1', with one patient at 1463-2776 ml day-1) and never as a per-subject volume, which is why the binary rather than URINE_VOL_24H is the right column here. Residual renal clearance was NOT predictable from serum creatinine or estimated creatinine clearance: Results states that 'inclusion of creatinine clearance as a covariate effect did not significantly improve the model', and the Discussion is explicit that 'this effect was not predicted by serum creatinine measurement or estimated creatinine clearance'. So ANURIA is the only renal-function covariate the model can use, and among urine producers the 117% between-subject variability on the renal arm is genuinely unexplained.",
+      source_name = "Anuric"
     )
   )
 
   covariatesDataExcluded <- list(
     CREAT = list(
       description = "Baseline serum creatinine (umol/L), reported per patient in Patel 2015 Table 1 (range 320-1461 umol/L).",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but NOT retained. Results (Pharmacokinetic modelling): 'inclusion of creatinine clearance as a covariate effect did not significantly improve the model and did not explain the random variability associated with clearance by this route (see Supplementary Figure S2)'. Documented here to preserve the provenance of the paper's covariate screen; carries no coefficient and is not referenced in model()."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but NOT retained. Results (Pharmacokinetic modelling): 'inclusion of creatinine clearance as a covariate effect did not significantly improve the model and did not explain the random variability associated with clearance by this route (see Supplementary Figure S2)'. Documented here to preserve the provenance of the paper's covariate screen; carries no coefficient and is not referenced in model()."
     ),
     BSA = list(
       description = "Body surface area (m^2), reported per patient in Patel 2015 Table 1 (range 1.66-2.09 m^2, an inclusion criterion of 1.7-2.3 m^2).",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened but NOT retained. Results: 'Covariate effects were not explored owing to the small sample size and because visual inspection of diagnostic plots showed no significant parameter-covariate relationships.' Body size enters the model through WT allometry only."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened but NOT retained. Results: 'Covariate effects were not explored owing to the small sample size and because visual inspection of diagnostic plots showed no significant parameter-covariate relationships.' Body size enters the model through WT allometry only."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9,
-    n_studies      = 1,
-    age_range      = "24-70 years",
-    age_median     = "mean 52.8 years (Results, Study population)",
-    weight_range   = "60-92 kg",
-    weight_median  = "79 kg (median of the 10 enrolled patients, Table 1)",
+    species = "human",
+    n_subjects = 9,
+    n_studies = 1,
+    age_range = "24-70 years",
+    age_median = "mean 52.8 years (Results, Study population)",
+    weight_range = "60-92 kg",
+    weight_median = "79 kg (median of the 10 enrolled patients, Table 1)",
     sex_female_pct = 50,
     race_ethnicity = c(
-      Caucasian = 20, `Pacific Islander` = 40, `Indian/African` = 30, Maori = 10
+      Caucasian = 20,
+      `Pacific Islander` = 40,
+      `Indian/African` = 30,
+      Maori = 10
     ),
-    disease_state  = "End-stage renal disease on stable peritoneal dialysis for at least 3 months, with total Kt/V > 1.7 and a peritoneal equilibration test not indicating low transporter status. Five patients were anuric and five had residual urine production.",
+    disease_state = "End-stage renal disease on stable peritoneal dialysis for at least 3 months, with total Kt/V > 1.7 and a peritoneal equilibration test not indicating low transporter status. Five patients were anuric and five had residual urine production.",
     renal_function = "Anuric (n = 5) or residual urine production (n = 5; n = 4 in the PK analysis set). Baseline serum creatinine 320-1461 umol/L. Baseline creatinine clearance in the three urine producers with reported values was < 6, 13, and 14 mL/min.",
-    dose_range     = "Single 75 mg oral dose of oseltamivir (75000 ug) on day 1, administered immediately before the start of the automated peritoneal dialysis block.",
-    regions        = "New Zealand (two specialist clinical study facilities; ClinicalTrials.gov NCT01556633).",
+    dose_range = "Single 75 mg oral dose of oseltamivir (75000 ug) on day 1, administered immediately before the start of the automated peritoneal dialysis block.",
+    regions = "New Zealand (two specialist clinical study facilities; ClinicalTrials.gov NCT01556633).",
     n_observations = "Plasma oseltamivir and oseltamivir carboxylate predose and at 0.5, 1.33, 2, 2.5, 3, 4, 5, 6.67, 8, 10, 12, 14, 16, 20, 24, 28, 32, 48, 72, 96, 120, 144 and 168 h postdose. Dialysate collected at the beginning and end of each peritoneal-dialysis interval for the first 48 h and every 24 h thereafter; urine collected predose and over 0-24, 24-48, 48-72, 72-96, 96-120, 120-144 and 144-168 h. Values below the limit of quantification were handled by the Beal M3 method.",
-    dialysis       = "Standardized aggressive automated peritoneal dialysis: three continuous cycler-assisted (CCPD) exchanges of 2.5 L over an 8 h daytime block, then two continuous ambulatory (CAPD) exchanges of 2.0 L over 16 h overnight. Dextrose 1.5-4.25% w/v for all exchanges except one 8 h CAPD exchange using icodextrin 7.5% w/v.",
-    notes          = "Of 27 patients screened, 10 were enrolled and all 10 were included in the safety evaluation. Patient 2 was excluded from the pharmacokinetic analysis for a protocol violation (QTcF outside the permitted range after dosing), so the model was fitted to n = 9; the demographic percentages above are over the 10 enrolled patients of Table 1. All subjects were taking concomitant medication. The regimen was deliberately chosen as a worst-case high-clearance scenario rather than as typical practice."
+    dialysis = "Standardized aggressive automated peritoneal dialysis: three continuous cycler-assisted (CCPD) exchanges of 2.5 L over an 8 h daytime block, then two continuous ambulatory (CAPD) exchanges of 2.0 L over 16 h overnight. Dextrose 1.5-4.25% w/v for all exchanges except one 8 h CAPD exchange using icodextrin 7.5% w/v.",
+    notes = "Of 27 patients screened, 10 were enrolled and all 10 were included in the safety evaluation. Patient 2 was excluded from the pharmacokinetic analysis for a protocol violation (QTcF outside the permitted range after dosing), so the model was fitted to n = 9; the demographic percentages above are over the 10 enrolled patients of Table 1. All subjects were taking concomitant medication. The regimen was deliberately chosen as a worst-case high-clearance scenario rather than as typical practice."
   )
 
   ini({

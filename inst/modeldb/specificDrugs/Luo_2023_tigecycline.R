@@ -1,8 +1,8 @@
 Luo_2023_tigecycline <- function() {
   description <- "One-compartment linear IV population PK model for tigecycline in critically ill adult ICU patients. Clearance decreases linearly with APACHE II score above the cohort median of 22.5 points, and central volume decreases linearly with age above the cohort median of 72 years. Fitted by NONMEM 7.3.0 FOCE-I to 143 steady-state plasma concentrations from 54 ICU patients on the licensed 100 mg loading / 50 mg q12h maintenance regimen."
-  reference   <- "Luo X, Wang S, Li D, Wen J, Sun N, Fan G. Population pharmacokinetics of tigecycline in critically ill patients. Front Pharmacol. 2023;14:1083464. doi:10.3389/fphar.2023.1083464"
-  vignette    <- "Luo_2023_tigecycline"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Luo X, Wang S, Li D, Wen J, Sun N, Fan G. Population pharmacokinetics of tigecycline in critically ill patients. Front Pharmacol. 2023;14:1083464. doi:10.3389/fphar.2023.1083464"
+  vignette <- "Luo_2023_tigecycline"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE)
@@ -10,11 +10,11 @@ Luo_2023_tigecycline <- function() {
 
   covariateData <- list(
     APACHE_II = list(
-      description        = "Acute Physiology and Chronic Health Evaluation II score at ICU admission",
-      units              = "points",
-      type               = "continuous",
+      description = "Acute Physiology and Chronic Health Evaluation II score at ICU admission",
+      units = "points",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Cohort median 22.50 points (IQR 16.50-27.00; Luo 2023 Table 1).",
         "Reference / centring value = 22.50 points, the cohort median. The paper prints the",
         "clearance equation without a centring term (Results eq. 1: CL = (11.30 - 0.14 x APACHE II) x e^0.065),",
@@ -23,65 +23,65 @@ Luo_2023_tigecycline <- function() {
         "The centred additive-linear form used here matches the published ICU precedent",
         "Swart_2004_midazolam.R (Q = 40.8 - (APACHE - 26) x 2.75)."
       ),
-      source_name        = "APACHE II"
+      source_name = "APACHE II"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Cohort median 72.0 years (IQR 57.5-80.3; Luo 2023 Table 1);",
         "inclusion required age >= 18 years. Reference / centring value = 72.0 years, the cohort median.",
         "As for APACHE_II, the paper prints the volume equation uncentred (Results eq. 2:",
         "V = [105.00 x (1 - 0.0059 x AGE)] x e^0.160); the centred reading is adopted here.",
         "See the ini() comment on e_age_vc."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.4) but not retained in the final model. Cohort median 68.0 kg (IQR 58.3-70.0; Table 1). The Discussion attributes the null weight effect to the small sample size and the narrow, elderly age distribution."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.4) but not retained in the final model. Cohort median 68.0 kg (IQR 58.3-70.0; Table 1). The Discussion attributes the null weight effect to the small sample size and the narrow, elderly age distribution."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.4) but not retained in the final model. Cohort median 33.37 U/L (IQR 21.80-77.15; Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.4) but not retained in the final model. Cohort median 33.37 U/L (IQR 21.80-77.15; Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.4) but not retained in the final model. Cohort median 27.91 g/L (IQR 25.58-32.50; Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.4) but not retained in the final model. Cohort median 27.91 g/L (IQR 25.58-32.50; Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 1L,
-    age_range      = "Adults >= 18 years; median 72.0 (IQR 57.5-80.3)",
-    age_median     = "72.0 years",
-    weight_range   = "Median 68.0 kg (IQR 58.3-70.0)",
-    weight_median  = "68.0 kg",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 1L,
+    age_range = "Adults >= 18 years; median 72.0 (IQR 57.5-80.3)",
+    age_median = "72.0 years",
+    weight_range = "Median 68.0 kg (IQR 58.3-70.0)",
+    weight_median = "68.0 kg",
     sex_female_pct = 44.4,
     race_ethnicity = "Not reported (single-centre Chinese ICU cohort, Dalian)",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adult ICU patients with clinically confirmed or suspected Gram-positive",
       "and/or Gram-negative infection, mostly pulmonary. APACHE II median 22.50 (IQR 16.50-27.00).",
       "Baseline laboratory medians (Table 1): ALT 29.09 U/L, AST 33.37 U/L, ALP 89.30 U/L,",
       "total bilirubin 16.22 mmol/L, serum creatinine 77.49 umol/L, BUN 9.30 mmol/L,",
       "albumin 27.91 g/L, sodium 137.0 mmol/L. 28 of 54 received concomitant antifungal therapy."
     ),
-    dose_range     = "Licensed regimen only: 100 mg IV loading dose then 50 mg IV q12h maintenance, for at least 3 days",
-    regions        = "China (Second Affiliated Hospital of Dalian Medical University)",
-    notes          = paste(
+    dose_range = "Licensed regimen only: 100 mg IV loading dose then 50 mg IV q12h maintenance, for at least 3 days",
+    regions = "China (Second Affiliated Hospital of Dalian Medical University)",
+    notes = paste(
       "Retrospective single-centre study, samples collected December 2017 - July 2018.",
       "143 plasma concentrations from 54 patients (median 2.6 samples per patient), drawn at",
       "steady state pre-dose and 1, 2 and 4 h after administration. Median observed concentration",

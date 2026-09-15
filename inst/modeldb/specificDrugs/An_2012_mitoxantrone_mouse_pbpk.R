@@ -29,31 +29,31 @@ An_2012_mitoxantrone_mouse_pbpk <- function() {
     sep = " "
   )
   vignette <- "An_2012_mitoxantrone_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    lung          = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    heart         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen        = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    brain         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    liver         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney        = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    is_remainder  = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    brain = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    is_remainder = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
     int_remainder = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    central       = list(analyte = "mitoxantrone", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "mitoxantrone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mouse body weight. The An and Morris (2012) cohort weighed",
         "24-32 g with mean 27.4 g; physiological organ volumes and blood",
         "flows in Table I were scaled from the 25 g Davies and Morris",
@@ -64,18 +64,18 @@ An_2012_mitoxantrone_mouse_pbpk <- function() {
         "matching the An and Morris Eq 1 BW2/BW1 scaling. WT also enters",
         "as the IV bolus mass multiplier (dose mg = 5 mg/kg * WT)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "mouse (male ND4 Swiss Webster)",
-    n_subjects     = 27L,
-    n_studies      = 1L,
-    age_range      = "adult",
-    weight_range   = "24-32 g (mean 27.4 g)",
+    species = "mouse (male ND4 Swiss Webster)",
+    n_subjects = 27L,
+    n_studies = 1L,
+    age_range = "adult",
+    weight_range = "24-32 g (mean 27.4 g)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy, non-tumour-bearing adult male ND4 Swiss Webster mice",
       "(Harlan Labs, Indianapolis, IN). Housed at 12 h light/dark with",
       "standard diet and water ad libitum. Destructive sampling at 8",
@@ -83,13 +83,13 @@ An_2012_mitoxantrone_mouse_pbpk <- function() {
       "mice per time point. Animal study approved by the IACUC,",
       "University at Buffalo."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "5 mg/kg single intravenous bolus via penile vein. Mitoxantrone",
       "dissolved in saline at 1.25 mg/mL and delivered as 4 microL/g",
       "body weight."
     ),
-    regions        = "University at Buffalo, New York, USA",
-    notes          = paste(
+    regions = "University at Buffalo, New York, USA",
+    notes = paste(
       "Plasma and six tissue (lung, heart, spleen, liver, kidney, brain)",
       "concentrations were assayed by validated HPLC (LLOQ plasma",
       "5 ng/mL, tissues 12.5 ng/mL) and fit simultaneously by maximum",

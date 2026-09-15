@@ -19,7 +19,7 @@ Stott_2023_flucytosine <- function() {
     sep = " "
   )
   vignette <- "Stott_2023_flucytosine"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Stott 2023 "Population PK covariate screening" and Results: age, weight,
   # sex, baseline ALT, baseline serum creatinine and baseline Cockcroft-Gault
@@ -31,9 +31,9 @@ Stott_2023_flucytosine <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Stott 2023 Results: 'patient weight did not",
         "significantly correlate with volume of distribution'. Median 50 kg",
         "(IQR 47-56 kg). Weight still sets the mg/kg dose but does not scale",
@@ -44,17 +44,17 @@ Stott_2023_flucytosine <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not retained. Median 36 years (IQR 33-41 years).",
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained. Median 36 years (IQR 33-41 years).",
       source_name = "age"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Screened; not retained. The source reports sex as the count of female",
         "patients (24 of 64, 37%), so SEXF is the natural canonical encoding.",
         sep = " "
@@ -63,9 +63,9 @@ Stott_2023_flucytosine <- function() {
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. No baseline summary statistic is reported;",
         "the source states only that no patient had a raised ALT at enrolment.",
         sep = " "
@@ -74,9 +74,9 @@ Stott_2023_flucytosine <- function() {
     ),
     CREAT = list(
       description = "Baseline serum creatinine",
-      units       = "not reported",
-      type        = "continuous",
-      notes       = paste(
+      units = "not reported",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Stott 2023 Results: 'neither plasma creatinine",
         "level nor CrCl significantly correlated with flucytosine clearance'.",
         "No baseline summary statistic or unit is reported.",
@@ -86,9 +86,9 @@ Stott_2023_flucytosine <- function() {
     ),
     CRCL = list(
       description = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Raw Cockcroft-Gault CrCl in mL/min, NOT",
         "BSA-normalized to mL/min/1.73 m^2. Median 105.15 mL/min (IQR",
         "80.63-123.05 mL/min) at enrolment. The source refit the model with CL",
@@ -105,24 +105,24 @@ Stott_2023_flucytosine <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "flucytosine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "flucytosine", units = "mg", specimen = "plasma", verified = TRUE),
-    csf         = list(analyte = "flucytosine", units = "mg", specimen = "CSF", verified = TRUE),
+    depot = list(analyte = "flucytosine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "flucytosine", units = "mg", specimen = "plasma", verified = TRUE),
+    csf = list(analyte = "flucytosine", units = "mg", specimen = "CSF", verified = TRUE),
     peripheral1 = list(analyte = "flucytosine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64,
-    n_studies      = 1,
-    age_median     = "36 years (IQR 33-41 years)",
-    weight_median  = "50 kg (IQR 47-56 kg)",
+    species = "human",
+    n_subjects = 64,
+    n_studies = 1,
+    age_median = "36 years (IQR 33-41 years)",
+    weight_median = "50 kg (IQR 47-56 kg)",
     sex_female_pct = 37,
-    disease_state  = "HIV-associated cryptococcal meningoencephalitis with advanced immunosuppression (median CD4 39 cells/mm^3, IQR 21-83, n = 57)",
-    dose_range     = "flucytosine 100 mg/kg/day orally or by nasogastric tube, given as 25 mg/kg every 6 h; the interval was extended to q12h (CrCl 20-40 mL/min) or q24h (CrCl 10-20 mL/min) on deterioration of renal function",
+    disease_state = "HIV-associated cryptococcal meningoencephalitis with advanced immunosuppression (median CD4 39 cells/mm^3, IQR 21-83, n = 57)",
+    dose_range = "flucytosine 100 mg/kg/day orally or by nasogastric tube, given as 25 mg/kg every 6 h; the interval was extended to q12h (CrCl 20-40 mL/min) or q24h (CrCl 10-20 mL/min) on deterioration of renal function",
     renal_function = "Cockcroft-Gault CrCl at enrolment median 105.15 mL/min (IQR 80.63-123.05 mL/min)",
-    regions        = "Malawi (Queen Elizabeth Central Hospital, Blantyre)",
-    notes          = paste(
+    regions = "Malawi (Queen Elizabeth Central Hospital, Blantyre)",
+    notes = paste(
       "PK substudy of the Phase III AMBIsome Therapy Induction OptimisatioN",
       "(AMBITION-cm) trial; 64 patients recruited November 2018 to October 2019,",
       "31 in the amphotericin B deoxycholate control arm and 33 in the",

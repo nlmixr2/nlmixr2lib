@@ -3,8 +3,11 @@ Francke_2025_tacrolimus_startingdose <- function() {
   reference <- "Francke MI, Sassen SDT, Lloberas N, Colom H, Elens L, Moudio S, de Vries APJ, Moes DJAR, van Schaik RHN, Hesselink DA, de Winter BCM. A Population Pharmacokinetic Model and Dosing Algorithm to Guide the Tacrolimus Starting and Follow-Up Dose in Living and Deceased Donor Kidney Transplant Recipients. Clin Pharmacokinet. 2025;64:1379-1394. doi:10.1007/s40262-025-01533-0"
   vignette <- "Francke_2025_tacrolimus"
   paper_specific_residual_sds <- c(
-    "expSdRotterdamImmuno", "expSdRotterdamLeidenLcms", "expSdBarcelonaImmuno",
-    "expSdBarcelonaLcms", "expSdBrusselsImmuno"
+    "expSdRotterdamImmuno",
+    "expSdRotterdamLeidenLcms",
+    "expSdBarcelonaImmuno",
+    "expSdBarcelonaLcms",
+    "expSdBrusselsImmuno"
   )
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
@@ -13,93 +16,93 @@ Francke_2025_tacrolimus_startingdose <- function() {
   # ($SUBROUTINE ADVAN4 TRANS4; S2 = V2/1000 scales the central compartment
   # from mg/L to ng/mL) and Section 2.1.2 (whole-blood tacrolimus).
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5 *1/*3 heterozygote indicator: 1 if the recipient carries exactly one functional CYP3A5*1 allele, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 *1/*3 heterozygote indicator: 1 if the recipient carries exactly one functional CYP3A5*1 allele, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with CYP3A5_STAR1_HOM = 0 (CYP3A5 *3/*3 non-expresser, the model reference)",
-      notes              = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). Paired with CYP3A5_STAR1_HOM so the three-level genotype is encoded by two binary indicators with *3/*3 as the implicit reference (both indicators = 0). Francke 2025 Supplementary Data S3 encodes the source column CYP3A5 as 1 = *3/*3, 2 = *1/*3, 3 = *1/*1, 4 = other, -999 = unknown; the control stream assigns the SAME multiplier to categories 2 AND 4, so the three Leiden recipients with an 'Other' CYP3A5 genotype (Table 1) are pooled with the *1/*3 heterozygotes and must be coded CYP3A5_STAR1_HET = 1. Unknown genotype (-999) receives a multiplier of 1 and is therefore coded as the *3/*3 reference (both indicators = 0). Cohort distribution (Table 1, n = 1180): *3/*3 884 (74.9%), *3/*1 224 (19.0%), *1/*1 39 (3.3%), Other 3 (0.3%), Unknown 30 (2.5%). Genotype is available before transplantation and so is retained in the starting-dose model.",
-      source_name        = "CYP3A5"
+      notes = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). Paired with CYP3A5_STAR1_HOM so the three-level genotype is encoded by two binary indicators with *3/*3 as the implicit reference (both indicators = 0). Francke 2025 Supplementary Data S3 encodes the source column CYP3A5 as 1 = *3/*3, 2 = *1/*3, 3 = *1/*1, 4 = other, -999 = unknown; the control stream assigns the SAME multiplier to categories 2 AND 4, so the three Leiden recipients with an 'Other' CYP3A5 genotype (Table 1) are pooled with the *1/*3 heterozygotes and must be coded CYP3A5_STAR1_HET = 1. Unknown genotype (-999) receives a multiplier of 1 and is therefore coded as the *3/*3 reference (both indicators = 0). Cohort distribution (Table 1, n = 1180): *3/*3 884 (74.9%), *3/*1 224 (19.0%), *1/*1 39 (3.3%), Other 3 (0.3%), Unknown 30 (2.5%). Genotype is available before transplantation and so is retained in the starting-dose model.",
+      source_name = "CYP3A5"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5 *1/*1 homozygote indicator: 1 if the recipient carries two functional CYP3A5*1 alleles, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 *1/*1 homozygote indicator: 1 if the recipient carries two functional CYP3A5*1 alleles, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with CYP3A5_STAR1_HET = 0 (CYP3A5 *3/*3 non-expresser, the model reference)",
-      notes              = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). Paired with CYP3A5_STAR1_HET (see that entry for the source-column coding and the pooling of the 'Other' genotype stratum). Cohort n = 39 (3.3%; Table 1). The starting-dose model estimates this multiplier as 1.9, marginally below the full model's 1.93.",
-      source_name        = "CYP3A5"
+      notes = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). Paired with CYP3A5_STAR1_HET (see that entry for the source-column coding and the pooling of the 'Other' genotype stratum). Cohort n = 39 (3.3%; Table 1). The starting-dose model estimates this multiplier as 1.9, marginally below the full model's 1.93.",
+      source_name = "CYP3A5"
     ),
     SNP_CYP3A4_RS35599367 = list(
-      description        = "CYP3A4*22 (rs35599367) reduced-function allele carrier indicator: 1 if the recipient carries at least one CYP3A4*22 allele, 0 if CYP3A4*1/*1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A4*22 (rs35599367) reduced-function allele carrier indicator: 1 if the recipient carries at least one CYP3A4*22 allele, 0 if CYP3A4*1/*1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A4*1/*1 wild-type, the model reference)",
-      notes              = "Time-fixed germline genotype. Francke 2025 Supplementary Data S3 codes the source column CYP3A4 as 0 = *1/*1, 1 = *22 carrier, -999 = unknown; unknown receives a multiplier of 1 and is therefore coded as the wild-type reference (0). Dominant (carrier) genetic model -- the paper does not resolve *22 heterozygotes from *22 homozygotes. Cohort distribution (Table 1, n = 1180): *1 1035 (87.7%), *22 112 (9.5%), Unknown 33 (2.8%). Genotype is available before transplantation and so is retained in the starting-dose model.",
-      source_name        = "CYP3A4"
+      notes = "Time-fixed germline genotype. Francke 2025 Supplementary Data S3 codes the source column CYP3A4 as 0 = *1/*1, 1 = *22 carrier, -999 = unknown; unknown receives a multiplier of 1 and is therefore coded as the wild-type reference (0). Dominant (carrier) genetic model -- the paper does not resolve *22 heterozygotes from *22 homozygotes. Cohort distribution (Table 1, n = 1180): *1 1035 (87.7%), *22 112 (9.5%), Unknown 33 (2.8%). Genotype is available before transplantation and so is retained in the starting-dose model.",
+      source_name = "CYP3A4"
     ),
     AGE = list(
-      description        = "Recipient age at transplantation",
-      units              = "years",
-      type               = "continuous",
+      description = "Recipient age at transplantation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters CL/F as (AGE/57.5)^(-0.332); the centring constant 57.5 years is the dataset median used in Francke 2025 Supplementary Data S3 (Table 1 reports a per-recipient baseline median of 57.0 years, IQR 45.0-65.0). The starting-dose exponent (-0.332) is slightly steeper than the full model's (-0.309), which is expected because age partly absorbs the clearance signal carried by the dropped hematocrit and creatinine covariates. Missing age is coded to a multiplier of 1 per the control stream's IF(AGE.EQ.-999) branch; unknown in 40 of 1180 recipients (Table 1).",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Enters CL/F as (AGE/57.5)^(-0.332); the centring constant 57.5 years is the dataset median used in Francke 2025 Supplementary Data S3 (Table 1 reports a per-recipient baseline median of 57.0 years, IQR 45.0-65.0). The starting-dose exponent (-0.332) is slightly steeper than the full model's (-0.309), which is expected because age partly absorbs the clearance signal carried by the dropped hematocrit and creatinine covariates. Missing age is coded to a multiplier of 1 per the control stream's IF(AGE.EQ.-999) branch; unknown in 40 of 1180 recipients (Table 1).",
+      source_name = "AGE"
     ),
     HT = list(
-      description        = "Recipient height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Recipient height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject, in CENTIMETRES. Enters CL/F as (HT/170)^0.97; the centring constant 170 is the dataset median and matches the Table 1 cohort median height of 170 cm (IQR 162-177) exactly, which is what establishes the unit. Francke 2025 Table 2 labels this row 'Height (m 2)', which is a typographical error: the Supplementary Data S3 control stream reads IF(HGT.GE.0) CLHGT = ((HGT/170)**THETA(17)) and the Discussion states 'height (in cm)'. Missing height is coded to a multiplier of 1 per the control stream's IF(HGT.EQ.-999) branch; unknown in 171 of 1180 recipients (Table 1).",
-      source_name        = "HGT"
+      notes = "Time-fixed per subject, in CENTIMETRES. Enters CL/F as (HT/170)^0.97; the centring constant 170 is the dataset median and matches the Table 1 cohort median height of 170 cm (IQR 162-177) exactly, which is what establishes the unit. Francke 2025 Table 2 labels this row 'Height (m 2)', which is a typographical error: the Supplementary Data S3 control stream reads IF(HGT.GE.0) CLHGT = ((HGT/170)**THETA(17)) and the Discussion states 'height (in cm)'. Missing height is coded to a multiplier of 1 per the control stream's IF(HGT.EQ.-999) branch; unknown in 171 of 1180 recipients (Table 1).",
+      source_name = "HGT"
     ),
     STUDY_TACRO_FRANCKE = list(
-      description        = "Integer (1-7) per-observation code for the combination of transplant centre and tacrolimus bioanalytical method, used to select the residual-error magnitude.",
-      units              = "(integer 1-7)",
-      type               = "categorical",
+      description = "Integer (1-7) per-observation code for the combination of transplant centre and tacrolimus bioanalytical method, used to select the residual-error magnitude.",
+      units = "(integer 1-7)",
+      type = "categorical",
       reference_category = "None -- every observation belongs to exactly one of the seven strata and each stratum selects one of five estimated residual-error magnitudes.",
-      notes              = "Per-observation (record-level) indicator. Francke 2025 Section 2.2.1 states that residual variability was modelled for the combination of transplant centre (Erasmus MC Rotterdam, LUMC Leiden, Bellvitge Barcelona, St. Luc Brussels) and measurement method (immunoassay vs LC-MS/MS), giving seven combinations, and that 'residual errors were combined where possible based on analytical method and fit of the model' -- collapsing the seven strata onto five estimated magnitudes. The Supplementary Data S3 $ERROR block gives the mapping exactly: codes 1 and 2 share ERR1 (Rotterdam immunoassays), codes 3 and 4 share ERR2 (Rotterdam and Leiden LC-MS/MS), code 5 is ERR3 (Barcelona immunoassay), code 6 is ERR4 (Barcelona LC-MS/MS), and code 7 is ERR5 (Brussels immunoassay). The source paper does NOT state what separates code 1 from code 2 or code 3 from code 4; because each pair shares a single estimated magnitude, the distinction is immaterial to the model's predictions. For a new single-centre LC-MS/MS dataset, code 3 (or 4) is the closest analogue.",
-      source_name        = "DATA (referred to as CENTER in $INPUT)"
+      notes = "Per-observation (record-level) indicator. Francke 2025 Section 2.2.1 states that residual variability was modelled for the combination of transplant centre (Erasmus MC Rotterdam, LUMC Leiden, Bellvitge Barcelona, St. Luc Brussels) and measurement method (immunoassay vs LC-MS/MS), giving seven combinations, and that 'residual errors were combined where possible based on analytical method and fit of the model' -- collapsing the seven strata onto five estimated magnitudes. The Supplementary Data S3 $ERROR block gives the mapping exactly: codes 1 and 2 share ERR1 (Rotterdam immunoassays), codes 3 and 4 share ERR2 (Rotterdam and Leiden LC-MS/MS), code 5 is ERR3 (Barcelona immunoassay), code 6 is ERR4 (Barcelona LC-MS/MS), and code 7 is ERR5 (Brussels immunoassay). The source paper does NOT state what separates code 1 from code 2 or code 3 from code 4; because each pair shares a single estimated magnitude, the distinction is immaterial to the model's predictions. For a new single-centre LC-MS/MS dataset, code 3 (or 4) is the closest analogue.",
+      source_name = "DATA (referred to as CENTER in $INPUT)"
     )
   )
 
   covariatesDataExcluded <- list(
     HCT = list(
       description = "Hematocrit, expressed as a fraction of total blood volume (0-1, L/L)",
-      units       = "fraction",
-      type        = "continuous",
-      notes       = "Retained in the Francke 2025 full model (exponent -0.51 centred at 0.33 L/L) but DELIBERATELY EXCLUDED from the starting-dose model. Section 3.4: 'The covariates that change substantially after transplantation (hematocrit and serum creatinine) were not included in the starting dose algorithm, as the values prior to transplantation cannot be used as predictors for the tacrolimus pharmacokinetics in the post-transplant period.' Use modellib('Francke_2025_tacrolimus') when post-transplant hematocrit is available."
+      units = "fraction",
+      type = "continuous",
+      notes = "Retained in the Francke 2025 full model (exponent -0.51 centred at 0.33 L/L) but DELIBERATELY EXCLUDED from the starting-dose model. Section 3.4: 'The covariates that change substantially after transplantation (hematocrit and serum creatinine) were not included in the starting dose algorithm, as the values prior to transplantation cannot be used as predictors for the tacrolimus pharmacokinetics in the post-transplant period.' Use modellib('Francke_2025_tacrolimus') when post-transplant hematocrit is available."
     ),
     CREAT = list(
       description = "Serum creatinine concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Retained in the Francke 2025 full model (exponent -0.0905 centred at 147 umol/L) but DELIBERATELY EXCLUDED from the starting-dose model, for the same reason as hematocrit (Section 3.4). Use modellib('Francke_2025_tacrolimus') when post-transplant serum creatinine is available."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Retained in the Francke 2025 full model (exponent -0.0905 centred at 147 umol/L) but DELIBERATELY EXCLUDED from the starting-dose model, for the same reason as hematocrit (Section 3.4). Use modellib('Francke_2025_tacrolimus') when post-transplant serum creatinine is available."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1180L,
-    n_studies      = 4L,
-    age_range      = "IQR 45.0-65.0 years (all recipients at least 18 years old by protocol; range not reported)",
-    age_median     = "57.0 years",
-    weight_range   = "IQR 65.0-86.0 kg (range not reported)",
-    weight_median  = "75.6 kg",
-    height_median  = "170 cm (IQR 162-177)",
+    species = "human",
+    n_subjects = 1180L,
+    n_studies = 4L,
+    age_range = "IQR 45.0-65.0 years (all recipients at least 18 years old by protocol; range not reported)",
+    age_median = "57.0 years",
+    weight_range = "IQR 65.0-86.0 kg (range not reported)",
+    weight_median = "75.6 kg",
+    height_median = "170 cm (IQR 162-177)",
     sex_female_pct = 37.5,
     race_ethnicity = "Not reported. The four contributing centres are in the Netherlands (Rotterdam, Leiden), Spain (Barcelona), and Belgium (Brussels).",
-    disease_state  = "Adult kidney transplant recipients (living-donor and deceased-donor grafts) receiving twice-daily oral immediate-release tacrolimus (Prograf, Astellas Pharma, or Adport, Sandoz Pharma) with mycophenolic acid and a tapering glucocorticoid course as maintenance immunosuppression. Blood-group-ABO-incompatible and HLA-incompatible transplant recipients were excluded. Donor type: living 536 (45.4%), deceased 342 (29.0%), unknown 302 (25.6%). Median time after transplantation at sampling 31 days (IQR 10-91).",
-    dose_range     = "Median 4 mg per administration (IQR 2.5-6.5), twice daily; doses were set by local practice and adjusted by therapeutic drug monitoring. Median whole-blood tacrolimus concentration 9.2 ng/mL (IQR 6.9-12.6); median pre-dose concentration 8.8 ng/mL (IQR 6.7-11.8).",
-    regions        = "Netherlands (Erasmus MC, University Medical Center Rotterdam, n = 547; Leiden University Medical Center, n = 100), Spain (Bellvitge University Hospital, Barcelona, n = 444), Belgium (Cliniques Universitaires St Luc, Brussels, n = 89).",
-    genotypes      = "CYP3A5: *3/*3 884 (74.9%), *3/*1 224 (19.0%), *1/*1 39 (3.3%), Other 3 (0.3%), Unknown 30 (2.5%). CYP3A4: *1 1035 (87.7%), *22 112 (9.5%), Unknown 33 (2.8%).",
-    notes          = "Baseline characteristics from Francke 2025 Table 1 (Total column, n = 1180). Same model-building dataset as the full model; Section 3.4 notes that because time after transplantation did not improve the population PK model, ALL tacrolimus concentrations (not only early post-transplant ones) were used to develop the starting-dose model. The starting-dose covariates explained 33.5% of the inter-individual variance in CL/F versus 35.0% for the full model (Discussion paragraph 6)."
+    disease_state = "Adult kidney transplant recipients (living-donor and deceased-donor grafts) receiving twice-daily oral immediate-release tacrolimus (Prograf, Astellas Pharma, or Adport, Sandoz Pharma) with mycophenolic acid and a tapering glucocorticoid course as maintenance immunosuppression. Blood-group-ABO-incompatible and HLA-incompatible transplant recipients were excluded. Donor type: living 536 (45.4%), deceased 342 (29.0%), unknown 302 (25.6%). Median time after transplantation at sampling 31 days (IQR 10-91).",
+    dose_range = "Median 4 mg per administration (IQR 2.5-6.5), twice daily; doses were set by local practice and adjusted by therapeutic drug monitoring. Median whole-blood tacrolimus concentration 9.2 ng/mL (IQR 6.9-12.6); median pre-dose concentration 8.8 ng/mL (IQR 6.7-11.8).",
+    regions = "Netherlands (Erasmus MC, University Medical Center Rotterdam, n = 547; Leiden University Medical Center, n = 100), Spain (Bellvitge University Hospital, Barcelona, n = 444), Belgium (Cliniques Universitaires St Luc, Brussels, n = 89).",
+    genotypes = "CYP3A5: *3/*3 884 (74.9%), *3/*1 224 (19.0%), *1/*1 39 (3.3%), Other 3 (0.3%), Unknown 30 (2.5%). CYP3A4: *1 1035 (87.7%), *22 112 (9.5%), Unknown 33 (2.8%).",
+    notes = "Baseline characteristics from Francke 2025 Table 1 (Total column, n = 1180). Same model-building dataset as the full model; Section 3.4 notes that because time after transplantation did not improve the population PK model, ALL tacrolimus concentrations (not only early post-transplant ones) were used to develop the starting-dose model. The starting-dose covariates explained 33.5% of the inter-individual variance in CL/F versus 35.0% for the full model (Discussion paragraph 6)."
   )
 
   ini({

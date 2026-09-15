@@ -38,17 +38,17 @@ Schouwenburg_2026_cefuroxime <- function() {
   # concentrations'; supplement 'Methods of quantification': plasma
   # quantified by UPLC-MS/MS).
   compartmentData <- list(
-    central     = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current (not birth) body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current (not birth) body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BW. Enters all four structural parameters as an",
         "a priori allometric power term normalized to 70 kg",
         "(Schouwenburg 2026 Table 3 equations and Table 3 footnote:",
@@ -72,18 +72,18 @@ Schouwenburg_2026_cefuroxime <- function() {
         "Time-varying in principle; the source datasets recorded weight",
         "during therapy."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Body-surface-area-normalized creatinine clearance (estimated",
         "glomerular filtration rate), calculated with the bedside Schwartz",
         "equation."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CRCL, defined in the Table 3 abbreviation list as",
         "'estimated creatinine clearance (mL/min/1.73 m2)'. Methods",
         "('Covariate Relationship Analysis'): 'creatinine clearance (CRCL;",
@@ -104,14 +104,14 @@ Schouwenburg_2026_cefuroxime <- function() {
         "with a positive exponent), which is outside the observed range and",
         "outside any physiologically meaningful simulation."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     PNA = list(
-      description        = "Postnatal (chronological) age since birth, during therapy.",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal (chronological) age since birth, during therapy.",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Schouwenburg 2026 reports postnatal age in DAYS (Table 3",
         "abbreviation list: 'PNA, postnatal age (days)'; the Table 3",
         "clearance equation uses (PNA / 391) with PNA in days; the 391-day",
@@ -151,7 +151,7 @@ Schouwenburg_2026_cefuroxime <- function() {
         "rejected in favour of plain postnatal age. The model is therefore",
         "not intended for preterm extrapolation."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     )
   )
 
@@ -168,11 +168,11 @@ Schouwenburg_2026_cefuroxime <- function() {
   # characteristic and is described in population$notes instead.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Tested on clearance as a categorical covariate (Methods:",
         "'Categorical variables were modeled using a proportional model')",
         "and not retained. Supplementary Fig. S4 plots ETACL against sex",
@@ -180,28 +180,28 @@ Schouwenburg_2026_cefuroxime <- function() {
         "(Table 2). No point estimate is published, so no effect is",
         "encoded."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     GA = list(
-      description        = "Gestational age at birth. Time-fixed per subject.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth. Time-fixed per subject.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance and not retained; postnatal age alone best",
         "described maturation (Results: 'PNA was found to best describe",
         "maturation of CLcefu as an exponential function'). Pooled median",
         "GA 39.3 weeks, range 26.0-42.0 (Table 2). No point estimate is",
         "published, so no effect is encoded."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance and not retained. The supplement's 'Model",
         "development' section records that three postmenstrual-age",
         "maturation structures were evaluated -- 'PMA hill, PMA hill (hill",
@@ -214,14 +214,14 @@ Schouwenburg_2026_cefuroxime <- function() {
         "premature neonates.' No point estimate is published for any of the",
         "PMA structures, so no effect is encoded."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine, age-adjusted.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine, age-adjusted.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance and not retained; the derived, BSA-normalized",
         "CRCL was retained instead. Methods list 'serum creatinine (SCR,",
         "umol/L; age adjusted)' among the tested covariates, and the",
@@ -231,49 +231,49 @@ Schouwenburg_2026_cefuroxime <- function() {
         "14-219 (Table 2). No point estimate is published, so no effect is",
         "encoded."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     ),
     BUN = list(
-      description        = paste(
+      description = paste(
         "Serum urea. Reported as urea (not urea nitrogen) in mmol/L; to",
         "convert to blood-urea-nitrogen mg/dL multiply by 2.80."
       ),
-      units              = "mmol/L",
-      type               = "continuous",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance and not retained (Methods: 'serum urea",
         "(mmol/L)'). Pooled median 3.5 mmol/L, range 1.4-36.9 (Table 2).",
         "No point estimate is published, so no effect is encoded."
       ),
-      source_name        = "UREA"
+      source_name = "UREA"
     ),
     CRP = list(
-      description        = "C-reactive protein, an acute-phase inflammatory marker.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein, an acute-phase inflammatory marker.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance and not retained (Methods: 'C-reactive",
         "protein (mg/L)'). Pooled median 54.0 mg/L, range 1.3-375.0",
         "(Table 2). No point estimate is published, so no effect is",
         "encoded."
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 45,
+    n_studies = 3,
     n_observations = 148,
-    age_range      = "0.00-16.80 years (median 1.07 years)",
-    pna_range      = "postnatal age 0-6131 days (median 391 days)",
-    ga_range       = "gestational age 26.0-42.0 weeks (median 39.3 weeks)",
-    weight_range   = "2.8-70.0 kg",
-    weight_median  = "9.0 kg",
-    height_range   = "47-192 cm (median 68 cm)",
+    age_range = "0.00-16.80 years (median 1.07 years)",
+    pna_range = "postnatal age 0-6131 days (median 391 days)",
+    ga_range = "gestational age 26.0-42.0 weeks (median 39.3 weeks)",
+    weight_range = "2.8-70.0 kg",
+    weight_median = "9.0 kg",
+    height_range = "47-192 cm (median 68 cm)",
     sex_female_pct = 55.6,
     race_ethnicity = NULL,
     renal_function = paste(
@@ -282,21 +282,21 @@ Schouwenburg_2026_cefuroxime <- function() {
       "8.9% (4/45) met the age-adjusted augmented-renal-clearance cutoffs",
       "of 99 mL/min/1.73 m2 below 2 years and 140 above"
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "critically ill term neonates and children admitted to a level 3",
       "paediatric or cardiac intensive care unit and treated with",
       "intravenous cefuroxime for suspected or confirmed bacterial",
       "infection; no premature neonates and no patients on extracorporeal",
       "life support were included"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "intravenous cefuroxime 65.0-1500.0 mg per administration",
       "(median 225.0 mg; median 25.0 mg/kg/administration), given per the",
       "Dutch Children's Formulary (Kinderformularium) as 70 mg/kg/day q8h",
       "below 1 month of age and 100 mg/kg/day q6h above 1 month"
     ),
-    regions        = "The Netherlands (Rotterdam, Utrecht, Nijmegen)",
-    notes          = paste(
+    regions = "The Netherlands (Rotterdam, Utrecht, Nijmegen)",
+    notes = paste(
       "Pooled analysis of two datasets covering three studies",
       "(Schouwenburg 2026 Results and Table 2): (1) EXPAT Kids, a",
       "multicentre observational PK/PD trial of beta-lactam antibiotics",

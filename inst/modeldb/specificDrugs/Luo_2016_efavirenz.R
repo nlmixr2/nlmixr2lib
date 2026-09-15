@@ -15,57 +15,57 @@ Luo_2016_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Power covariate on CL/F (exponent 0.57), Vc/F (exponent 1.35), and Ka (exponent 0.768) with reference weight 20 kg (the approximate mean pediatric weight in the source studies). Luo 2016 Table 3 final model (updated data set).",
-      source_name        = "WT"
+      notes = "Time-varying. Power covariate on CL/F (exponent 0.57), Vc/F (exponent 1.35), and Ka (exponent 0.768) with reference weight 20 kg (the approximate mean pediatric weight in the source studies). Luo 2016 Table 3 final model (updated data set).",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     PART = list(
       description = "Prior antiretroviral therapy indicator (1 = yes; PACTG1021 study). Retained in Luo 2016 Table 3 final model on pediatric CL with point estimate 0.381 +/- 0.401 (SE > estimate). The paper Discussion explicitly cautions that this effect is likely confounded with the PACTG1021 study identity rather than a true PART effect.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not encoded in this packaged model. The pediatric dosing-recommendation simulations in Luo 2016 Figure 3 use the typical-value pediatric model (PART = 0); the user can re-introduce PART externally if needed. See vignette Assumptions and deviations."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not encoded in this packaged model. The pediatric dosing-recommendation simulations in Luo 2016 Figure 3 use the typical-value pediatric model (PART = 0); the user can re-introduce PART externally if needed. See vignette Assumptions and deviations."
     ),
     FORM_SOLUTION = list(
       description = "Oral-solution formulation indicator (1 = solution, 0 = capsule or capsule sprinkle). Luo 2016 Table 3 reports study-specific Frel for solution: PACTG382 -0.346 (Frel 0.654), PACTG1021 -0.0509 (Frel 0.949), AI266922 -0.754 (Frel 0.246).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not encoded. Capsule sprinkles were shown bioequivalent to capsules in adults (Luo 2016 Methods, study AI266059); the packaged model assumes capsule / capsule-sprinkle formulation with F = 1. The solution Frel adjustments were estimated to fit historical pediatric solution data and are study-specific."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not encoded. Capsule sprinkles were shown bioequivalent to capsules in adults (Luo 2016 Methods, study AI266059); the packaged model assumes capsule / capsule-sprinkle formulation with F = 1. The solution Frel adjustments were estimated to fit historical pediatric solution data and are study-specific."
     ),
     ADULT = list(
       description = "Adult-vs-pediatric cohort indicator. Luo 2016 estimated separate reference values for adult subjects (n = 24 healthy adults, study AI266059): CL_ref,adult = 3.66 L/h, Vc_ref,adult = 188 L, Ka same as pediatric reference 0.414 1/h, T_lag,adult = 0.633 h; Q (6.01 L/h) and Vp (287 L) were shared across cohorts.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not encoded. This file packages the pediatric structural model that drives the Luo 2016 pediatric dosing recommendations (the focus of the paper). Adult typical values and adult IIV (CL var 0.158, Vc var 0.132) are documented in the vignette."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not encoded. This file packages the pediatric structural model that drives the Luo 2016 pediatric dosing recommendations (the focus of the paper). Adult typical values and adult IIV (CL var 0.158, Vc var 0.132) are documented in the vignette."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 168L,
-    n_studies      = 3L,
-    age_range      = "0.2-24.7 years (pediatric studies; updated data set)",
-    age_median     = "6.73 years (pediatric)",
-    weight_range   = "3.3-117 kg",
-    weight_median  = "25.3 kg (pediatric)",
+    species = "human",
+    n_subjects = 168L,
+    n_studies = 3L,
+    age_range = "0.2-24.7 years (pediatric studies; updated data set)",
+    age_median = "6.73 years (pediatric)",
+    weight_range = "3.3-117 kg",
+    weight_median = "25.3 kg (pediatric)",
     sex_female_pct = 52.4,
     race_ethnicity = c(White = 33.3, Black_AA = 52.4, Other = 14.3, Asian = 0),
-    disease_state  = "HIV-1 infection on combination antiretroviral therapy. Pediatric patients 3 months to 21 years of age. Patients in PACTG382, PACTG1021, and AI266922 contributed PK data after at least 2 weeks of daily dosing (efavirenz autoinduction assumed to be at steady state).",
-    dose_range     = "Pediatric efavirenz doses ranging from 100 mg QD (children >= 3.5 to < 5 kg) up to a maximum of 1000 mg QD per dosing algorithm. Formulations: oral solution, capsule, or capsule sprinkle.",
-    regions        = "Multi-center pediatric AIDS clinical trials (PACTG382 and PACTG1021 Phase I/II open-label; AI266922 Phase II open-label).",
-    notes          = "Updated data set (Luo 2016 Methods 'Study data' paragraph 2): 4521 plasma efavirenz concentrations from 192 subjects = 3289 concentrations from 168 pediatric patients (sparse) + 1232 concentrations from 24 healthy adults (intensive, study AI266059). The packaged model focuses on the pediatric sub-population (n = 168). Adult cohort demographics: mean age 32.8 y (20-45), mean weight 80.6 kg (59.6-98.1), 95.8% male, 50% White / 50% Black-AA. The model was fitted with NONMEM VI FOCE-I. Pharmacogenomic data (CYP2B6 15631GT and 21563CT) were available for 102 pediatric subjects and analyzed in two ad hoc analyses (covariate-on-CL and mixture model); the paper concluded CYP2B6 genotype information is not informative for guiding pediatric dosing and is not encoded in this packaged model."
+    disease_state = "HIV-1 infection on combination antiretroviral therapy. Pediatric patients 3 months to 21 years of age. Patients in PACTG382, PACTG1021, and AI266922 contributed PK data after at least 2 weeks of daily dosing (efavirenz autoinduction assumed to be at steady state).",
+    dose_range = "Pediatric efavirenz doses ranging from 100 mg QD (children >= 3.5 to < 5 kg) up to a maximum of 1000 mg QD per dosing algorithm. Formulations: oral solution, capsule, or capsule sprinkle.",
+    regions = "Multi-center pediatric AIDS clinical trials (PACTG382 and PACTG1021 Phase I/II open-label; AI266922 Phase II open-label).",
+    notes = "Updated data set (Luo 2016 Methods 'Study data' paragraph 2): 4521 plasma efavirenz concentrations from 192 subjects = 3289 concentrations from 168 pediatric patients (sparse) + 1232 concentrations from 24 healthy adults (intensive, study AI266059). The packaged model focuses on the pediatric sub-population (n = 168). Adult cohort demographics: mean age 32.8 y (20-45), mean weight 80.6 kg (59.6-98.1), 95.8% male, 50% White / 50% Black-AA. The model was fitted with NONMEM VI FOCE-I. Pharmacogenomic data (CYP2B6 15631GT and 21563CT) were available for 102 pediatric subjects and analyzed in two ad hoc analyses (covariate-on-CL and mixture model); the paper concluded CYP2B6 genotype information is not informative for guiding pediatric dosing and is not encoded in this packaged model."
   )
 
   ini({

@@ -30,17 +30,17 @@ Zhou_2025_tacrolimus <- function() {
   # "the whole blood concentration of tacrolimus was detected by
   # chemiluminescence microparticle immunoassay (CMIA)".
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     HCT = list(
-      description        = "Haematocrit",
-      units              = "% (volume fraction times 100)",
-      type               = "continuous",
+      description = "Haematocrit",
+      units = "% (volume fraction times 100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying laboratory value collected throughout the treatment",
         "period (Methods 'General clinical data': 'laboratory indexes",
         "during treatment: ... haematocrit (HCT)'). Enters CL/F as the",
@@ -70,14 +70,14 @@ Zhou_2025_tacrolimus <- function() {
         "which is why the normalising median (26.5 %) sits far below the",
         "45 % used by Nestorov 2014."
       ),
-      source_name        = "HCT"
+      source_name = "HCT"
     ),
     POD = list(
-      description        = "Postoperative day (days elapsed since lung transplantation)",
-      units              = "days",
-      type               = "continuous",
+      description = "Postoperative day (days elapsed since lung transplantation)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. Enters CL/F as the median-normalised",
         "power form (POD / 49)^0.14 per Zhou 2025 Eq. 4. Table 1 cohort",
         "mean +/- SD 52.76 +/- 17.13 days; the Eq. 4 normalising median is",
@@ -102,14 +102,14 @@ Zhou_2025_tacrolimus <- function() {
         "simulation and treat the model as calibrated over roughly",
         "POD 2-90 days."
       ),
-      source_name        = "POD"
+      source_name = "POD"
     ),
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 poor metaboliser, when paired with CYP3A5_STAR1_HOM = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype). 1 = subject is",
         "CYP3A5*1/*3 heterozygote (genotype GA at rs776746, one functional",
         "*1 allele); 0 = otherwise (the union of *3/*3 poor metabolisers",
@@ -128,14 +128,14 @@ Zhou_2025_tacrolimus <- function() {
         "function - the *1-carrier-equals-1 orientation of these",
         "canonicals."
       ),
-      source_name        = "CYP3A5 *1/*3"
+      source_name = "CYP3A5 *1/*3"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 poor metaboliser, when paired with CYP3A5_STAR1_HET = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype). 1 = subject is",
         "CYP3A5*1/*1 rapid metaboliser (genotype AA at rs776746); 0 =",
         "otherwise. Only 13 of 142 recipients (9.15%) - see the",
@@ -146,14 +146,14 @@ Zhou_2025_tacrolimus <- function() {
         "Abstract and Eq. 4. The genotype distribution satisfied",
         "Hardy-Weinberg equilibrium (Methods 'Data statistics')."
       ),
-      source_name        = "CYP3A5 *1/*1"
+      source_name = "CYP3A5 *1/*1"
     ),
     CONMED_VORICONAZOLE = list(
-      description        = "Concomitant voriconazole coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant voriconazole coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole antifungal)",
-      notes              = paste(
+      notes = paste(
         "Time-varying. 1 = voriconazole coadministered at the time of the",
         "trough measurement; 0 = no azole antifungal. Table 1 counts 741 of",
         "988 trough records on voriconazole, making it by far the most",
@@ -168,14 +168,14 @@ Zhou_2025_tacrolimus <- function() {
         "antibiotics or calcium channel blockers, so those competing",
         "CYP3A / P-gp perpetrators do not confound the azole coefficients."
       ),
-      source_name        = "Voriconazole"
+      source_name = "Voriconazole"
     ),
     CONMED_POSACONAZOLE = list(
-      description        = "Concomitant posaconazole coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant posaconazole coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole antifungal)",
-      notes              = paste(
+      notes = paste(
         "Time-varying. 1 = posaconazole coadministered at the time of the",
         "trough measurement; 0 = no azole antifungal. Table 1 counts 157 of",
         "988 trough records. Reduces tacrolimus CL/F by 26.30%",
@@ -188,14 +188,14 @@ Zhou_2025_tacrolimus <- function() {
         "CONMED_VORICONAZOLE notes for the mutual-exclusivity and",
         "competing-perpetrator context."
       ),
-      source_name        = "Posaconazole"
+      source_name = "Posaconazole"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole antifungal)",
-      notes              = paste(
+      notes = paste(
         "Time-varying. 1 = itraconazole coadministered at the time of the",
         "trough measurement; 0 = no azole antifungal. Table 1 counts only",
         "38 of 988 trough records, the smallest azole subgroup, yet the",
@@ -210,7 +210,7 @@ Zhou_2025_tacrolimus <- function() {
         "notes for the mutual-exclusivity and competing-perpetrator",
         "context."
       ),
-      source_name        = "Itraconazole"
+      source_name = "Itraconazole"
     )
   )
 
@@ -223,9 +223,9 @@ Zhou_2025_tacrolimus <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Collected (Methods 'General clinical data') but not retained.",
         "Table 1 cohort mean +/- SD 50.26 +/- 11.13 kg. The Discussion",
         "invokes the low body weight to explain why this cohort's CL/F",
@@ -241,9 +241,9 @@ Zhou_2025_tacrolimus <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Collected but not retained. Table 1 cohort mean +/- SD 57.10 +/-",
         "11.46 years. Like weight, age is used narratively to explain the",
         "low cohort clearance ('the subjects in our study were generally",
@@ -255,18 +255,18 @@ Zhou_2025_tacrolimus <- function() {
     ),
     SEXF = list(
       description = "Sex, female indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected but not retained. Table 1 reports 116 male / 26 female",
         "(18.3% female)."
       )
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Collected but not retained. Table 1 cohort mean +/- SD 57.05 +/-",
         "20.85 mL/min (serum creatinine 99.29 +/- 46.45 mmol/L as printed).",
         "Recipients with creatinine clearance below 15 mL/min were excluded",
@@ -276,9 +276,9 @@ Zhou_2025_tacrolimus <- function() {
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Collected but not retained. Table 1 cohort mean +/- SD 90.73 +/-",
         "17.86 g/L. Strongly collinear with the retained HCT covariate;",
         "the Discussion frames the haematological effect entirely through",
@@ -287,15 +287,15 @@ Zhou_2025_tacrolimus <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected but not retained. Table 1 cohort mean +/- SD 37.33 +/- 4.08 g/L."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected but not retained. Table 1 cohort mean +/- SD 37.33 +/- 4.08 g/L."
     ),
     TBILI = list(
       description = "Total serum bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Collected but not retained. Table 1 cohort mean +/- SD 13.35 +/-",
         "23.51 umol/L. Recipients with Child-Pugh C liver dysfunction were",
         "excluded at enrolment (Methods exclusion criterion 2). Contrast",
@@ -305,30 +305,30 @@ Zhou_2025_tacrolimus <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Collected but not retained. Table 1 cohort mean +/- SD 27.38 +/- 33.32 IU/L."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Collected but not retained. Table 1 cohort mean +/- SD 27.38 +/- 33.32 IU/L."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Collected but not retained. Table 1 cohort mean +/- SD 27.93 +/- 21.52 IU/L."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Collected but not retained. Table 1 cohort mean +/- SD 27.93 +/- 21.52 IU/L."
     ),
     CONMED_PPI = list(
       description = "Concomitant proton-pump inhibitor use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected but not retained. Table 1 counts 446 of 988 trough",
         "records on a proton pump inhibitor."
       )
     ),
     CONMED_STEROID = list(
       description = "Systemic corticosteroid administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected but not retained. Table 1 counts 952 of 988 trough",
         "records on a glucocorticoid (prednisone or methylprednisolone) -",
         "i.e. 96% of records, so the covariate is nearly constant across",
@@ -337,9 +337,9 @@ Zhou_2025_tacrolimus <- function() {
     ),
     CONMED_MPA = list(
       description = "Concomitant mycophenolic acid coadministration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected but not retained. Table 1 counts 578 trough records on",
         "mycophenolate mofetil and 67 on enteric-coated mycophenolate",
         "sodium, out of 988. Part of the triple-immunotherapy backbone",
@@ -348,9 +348,9 @@ Zhou_2025_tacrolimus <- function() {
     ),
     TX_LUNG_BILATERAL = list(
       description = "Bilateral (double) lung transplantation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected but not retained. Table 1 counts 74 single-lung and 68",
         "double-lung transplantations."
       )
@@ -358,16 +358,16 @@ Zhou_2025_tacrolimus <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 142L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 142L,
+    n_studies = 1L,
     n_concentrations = 988L,
-    age_range        = "adults; Table 1 mean +/- SD 57.10 +/- 11.46 years",
-    weight_range     = "Table 1 mean +/- SD 50.26 +/- 11.13 kg",
-    height_range     = "Table 1 mean +/- SD 165.07 +/- 6.76 cm",
-    sex_female_pct   = 18.3,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = paste(
+    age_range = "adults; Table 1 mean +/- SD 57.10 +/- 11.46 years",
+    weight_range = "Table 1 mean +/- SD 50.26 +/- 11.13 kg",
+    height_range = "Table 1 mean +/- SD 165.07 +/- 6.76 cm",
+    sex_female_pct = 18.3,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste(
       "Chinese adult first-time lung transplant recipients at the First",
       "Affiliated Hospital of Guangzhou Medical University, January 2019 to",
       "December 2021, on tacrolimus-based triple immunosuppression",
@@ -383,14 +383,14 @@ Zhou_2025_tacrolimus <- function() {
       "which the Discussion invokes to explain the low apparent clearance",
       "relative to published cohorts."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Oral tacrolimus capsules (Prograf, Astellas). Initial dose",
       "50-150 ug/kg/day administered every 12 h, then titrated on trough",
       "concentration to a target of 10-15 ng/mL. Table 1 mean +/- SD daily",
       "dose 2.51 +/- 1.37 mg/day; observed trough 12.82 +/- 4.92 ng/mL."
     ),
-    regions          = "China (Guangzhou)",
-    sampling_design  = paste(
+    regions = "China (Guangzhou)",
+    sampling_design = paste(
       "988 steady-state whole-blood trough concentrations from 142",
       "recipients, collected by routine therapeutic drug monitoring within",
       "three months of transplantation. Sampling began after tacrolimus",
@@ -402,8 +402,8 @@ Zhou_2025_tacrolimus <- function() {
       "Ka was fixed rather than estimated and why no absorption-phase or",
       "peripheral-compartment parameters are identifiable."
     ),
-    cyp3a5_genotype  = c(`*3/*3 (GG)` = 51.41, `*1/*3 (GA)` = 39.44, `*1/*1 (AA)` = 9.15),
-    notes            = paste(
+    cyp3a5_genotype = c(`*3/*3 (GG)` = 51.41, `*1/*3 (GA)` = 39.44, `*1/*1 (AA)` = 9.15),
+    notes = paste(
       "Software: Phoenix NLME 8.2 (Certara); R 4.0.4 for diagnostics.",
       "Structural model selected on OFV (-2LL) and goodness-of-fit plots;",
       "one- and two-compartment models with several residual structures",

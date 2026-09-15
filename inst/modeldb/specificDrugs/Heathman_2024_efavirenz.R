@@ -34,8 +34,8 @@ Heathman_2024_efavirenz <- function() {
   )
   vignette <- "Heathman_2024_efavirenz"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L (= ug/mL) for plasma EFV (Cc), 8-OH EFV (Cc_8oh), and 7-OH EFV (Cc_7oh)"
   )
 
@@ -44,24 +44,24 @@ Heathman_2024_efavirenz <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
-    central_8oh     = list(analyte = "8-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    central_8oh = list(analyte = "8-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_8oh = list(analyte = "8-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
-    central_7oh     = list(analyte = "7-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    central_7oh = list(analyte = "7-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_7oh = list(analyte = "7-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
-    enzyme_2b6      = list(analyte = "CYP2B6 enzyme", units = "mg", specimen = "not applicable", verified = FALSE),
-    enzyme_2a6      = list(analyte = "CYP2A6 enzyme", units = "mg", specimen = "not applicable", verified = FALSE)
+    enzyme_2b6 = list(analyte = "CYP2B6 enzyme", units = "mg", specimen = "not applicable", verified = FALSE),
+    enzyme_2a6 = list(analyte = "CYP2A6 enzyme", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2B6_IM = list(
-      description        = "1 = CYP2B6 intermediate-metabolizer phenotype, 0 = otherwise. Reference category (both CYP2B6_IM and CYP2B6_SM equal to 0) is the CYP2B6 normal (extensive) metabolizer phenotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = CYP2B6 intermediate-metabolizer phenotype, 0 = otherwise. Reference category (both CYP2B6_IM and CYP2B6_SM equal to 0) is the CYP2B6 normal (extensive) metabolizer phenotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Normal / extensive metabolizer (CYP2B6_IM = 0 and CYP2B6_SM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (germline genotype). Heathman 2024 Methods 'Methods' ",
         "paragraph: 'CYP2B6 genotype was obtained and phenotype classified as ",
         "normal (NM), intermediate (IM), or poor metabolizer (PM)'. The ",
@@ -71,14 +71,14 @@ Heathman_2024_efavirenz <- function() {
         "37.1-65.6); both reductions are applied multiplicatively on the ",
         "log scale via `e_cyp2b6_im_cl_2b6` and `e_cyp2b6_im_emax_2b6`."
       ),
-      source_name        = "CYP2B6 phenotype (intermediate metabolizer level)"
+      source_name = "CYP2B6 phenotype (intermediate metabolizer level)"
     ),
     CYP2B6_SM = list(
-      description        = "1 = CYP2B6 slow- / poor-metabolizer phenotype (Heathman's 'PM'); 0 = otherwise. Reference category is the CYP2B6 normal (extensive) metabolizer phenotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = CYP2B6 slow- / poor-metabolizer phenotype (Heathman's 'PM'); 0 = otherwise. Reference category is the CYP2B6 normal (extensive) metabolizer phenotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Normal / extensive metabolizer (CYP2B6_IM = 0 and CYP2B6_SM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (germline genotype). Heathman 2024's 'poor metabolizer' ",
         "(PM) corresponds to the canonical 'slow metabolizer' (SM; see ",
         "Robarge 2017, Bienczak 2016 precedents). PM reduces the EFV-to-8-OH ",
@@ -89,23 +89,23 @@ Heathman_2024_efavirenz <- function() {
         "Heathman 2024 Results paragraph 2 ('concentrations in PM subjects ",
         "continue to accumulate for 2 to 3 weeks')."
       ),
-      source_name        = "CYP2B6 phenotype (poor metabolizer level; Heathman PM = canonical SM)"
+      source_name = "CYP2B6 phenotype (poor metabolizer level; Heathman PM = canonical SM)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 135L,
-    n_studies      = NA_integer_,
-    age_range      = "(not reported in the conference poster)",
-    weight_range   = "(not reported in the conference poster)",
+    species = "human",
+    n_subjects = 135L,
+    n_studies = NA_integer_,
+    age_range = "(not reported in the conference poster)",
+    weight_range = "(not reported in the conference poster)",
     sex_female_pct = NA_real_,
     race_ethnicity = "(not reported in the conference poster)",
-    disease_state  = "healthy volunteers",
-    dose_range     = "single 600 mg oral dose of efavirenz, followed by 600 mg once-daily for 17 days (Heathman 2024 Methods 'Methods' paragraph)",
-    regions        = "(not reported in the conference poster)",
+    disease_state = "healthy volunteers",
+    dose_range = "single 600 mg oral dose of efavirenz, followed by 600 mg once-daily for 17 days (Heathman 2024 Methods 'Methods' paragraph)",
+    regions = "(not reported in the conference poster)",
     n_observations = "4594 plasma concentration samples across the three analytes, collected up to 144 h post-dose (Heathman 2024 Methods 'Methods' paragraph)",
-    notes          = paste0(
+    notes = paste0(
       "Heathman 2024 is a Metrum Research Group / Indiana University School ",
       "of Medicine conference poster (PAGE-style; doi:10.70534/pgia9927). The ",
       "poster reports full final-model point estimates (Table 1, structural ",

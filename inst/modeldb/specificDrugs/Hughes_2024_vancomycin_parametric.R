@@ -28,17 +28,17 @@ Hughes_2024_vancomycin_parametric <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1, development dataset: median 134 kg (range 91.6-218). Total body weight does NOT",
         "enter the disposition parameters directly -- the paper's central finding is that fat-free",
         "mass outperformed total body weight as the size descriptor in this obese cohort. WT enters",
@@ -46,40 +46,40 @@ Hughes_2024_vancomycin_parametric <- function() {
         "(BMI = WT / (HT/100)^2) and, through BMI, Janmahasatian fat-free mass.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1, development dataset: median 170 cm (range 122-190). The Supplemental Digital",
         "Content 1 S4 control stream divides by 100 to obtain metres before squaring",
         "(BMI = WT / ((HT/100)**2)), which fixes the unit as cm. Enters only through BMI and hence",
         "fat-free mass.",
         sep = " "
       ),
-      source_name        = "HT"
+      source_name = "HT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1, development dataset: median 56.3 years (range 24.2-89.3). Used only inside the",
         "internal fat-free-mass-based Cockcroft-Gault creatinine-clearance calculation.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Table 1, development dataset: 41 male / 42 female (50.6% female). The Supplemental Digital",
         "Content 1 S4 control stream uses the OPPOSITE polarity, SEX with 1 = male: the default",
         "fat-free-mass line uses the male Janmahasatian coefficients (6680, 216) and IF(SEX.EQ.0)",
@@ -89,14 +89,14 @@ Hughes_2024_vancomycin_parametric <- function() {
         "and the Cockcroft-Gault factor becomes 0.85^SEXF.",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1, development dataset: median 0.84 mg/dL (range 0.40-2.51). Used as the denominator",
         "of the Cockcroft-Gault equation with the 72 constant, which fixes the unit as mg/dL. NOTE:",
         "no cap is applied to the resulting creatinine clearance -- the Results state that capping",
@@ -105,21 +105,21 @@ Hughes_2024_vancomycin_parametric <- function() {
         "clearance (based on FFM)'), against 174 mL/min when total body weight is used instead.",
         sep = " "
       ),
-      source_name        = "CR"
+      source_name = "CR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 83L,
-    n_studies      = 1L,
-    age_range      = "24.2-89.3 years",
-    age_median     = "56.3 years",
-    weight_range   = "91.6-218 kg",
-    weight_median  = "134 kg",
+    species = "human",
+    n_subjects = 83L,
+    n_studies = 1L,
+    age_range = "24.2-89.3 years",
+    age_median = "56.3 years",
+    weight_range = "91.6-218 kg",
+    weight_median = "134 kg",
     sex_female_pct = 50.6,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults with class 3 obesity (body mass index at least 40 kg/m2 at any point",
       "during treatment) receiving intravenous vancomycin under routine model-informed precision",
       "dosing, with at least one vancomycin therapeutic-drug-monitoring concentration. Patient status,",
@@ -127,15 +127,15 @@ Hughes_2024_vancomycin_parametric <- function() {
       "Discussion), so no sepsis / critical-illness stratification is available.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous vancomycin per the institutional protocol: 20 mg/kg loading dose (maximum 4000 mg),",
       "then an intermittent-infusion maintenance regimen selected to reach an AUC target of",
       "400-600 mg*h/L",
       sep = " "
     ),
-    regions        = "United States (single centre: University of Vermont Medical Center, Burlington, Vermont)",
-    bmi_range      = "40-70.3 kg/m2",
-    bmi_median     = "46.3 kg/m2",
+    regions = "United States (single centre: University of Vermont Medical Center, Burlington, Vermont)",
+    bmi_range = "40-70.3 kg/m2",
+    bmi_median = "46.3 kg/m2",
     renal_function = paste(
       "Serum creatinine median 0.84 mg/dL (range 0.40-2.51); Cockcroft-Gault creatinine clearance",
       "median 174 mL/min (range 30.2-579) on total body weight, or 84.1 mL/min (range 13.0-255) on",
@@ -143,7 +143,7 @@ Hughes_2024_vancomycin_parametric <- function() {
       sep = " "
     ),
     n_concentrations = 272L,
-    notes          = paste(
+    notes = paste(
       "Table 1, development dataset column. 83 patients contributed 272 therapeutic-drug-monitoring",
       "levels (median 2 per patient, range 1-29), of which 31 were peaks (within 2 h after end of",
       "infusion), 115 troughs (within 1 h of the next administration) and 126 random. Data were",

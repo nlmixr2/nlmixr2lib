@@ -38,11 +38,11 @@ Melhem_2018_g_csf <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "depot_kpd_corticosteroid")
 
   units <- list(
-    time          = "h",
-    dosing        = "nmol (G-CSF); mg (chemotherapy and corticosteroid KPD inputs)",
+    time = "h",
+    dosing = "nmol (G-CSF); mg (chemotherapy and corticosteroid KPD inputs)",
     concentration = "nmol/L (nM; serum G-CSF, endogenous BSLD plus exogenous FDC)",
-    ANC           = "10^9 cells/L",
-    notes         = paste(
+    ANC = "10^9 cells/L",
+    notes = paste(
       "G-CSF dose enters compartment 'depot' in nmol (filgrastim MW = 18.8 kDa;",
       "pegfilgrastim MW = 39.0 kDa: 1 ug filgrastim = 1e-6/18800 mol =",
       "5.32e-2 nmol; 1 ug pegfilgrastim = 1e-6/39000 mol = 2.56e-2 nmol).",
@@ -59,37 +59,52 @@ Melhem_2018_g_csf <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot                    = list(analyte = "filgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central                  = list(analyte = "filgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
-    precursor1               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor2               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor3               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor4               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    circ                     = list(analyte = "filgrastim-G-CSFR complex", units = NA_character_, specimen = "whole blood", verified = FALSE),
-    depot_kpd_corticosteroid = list(analyte = "corticosteroid", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot_kpd_chemotherapy   = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE)
+    depot = list(analyte = "filgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "filgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ = list(
+      analyte = "filgrastim-G-CSFR complex",
+      units = NA_character_,
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    depot_kpd_corticosteroid = list(
+      analyte = "corticosteroid",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot_kpd_chemotherapy = list(
+      analyte = "chemotherapy",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor scaling filgrastim / pegfilgrastim volume of",
         "distribution (exponent 0.943) and clearance (exponent 0.641) with reference",
         "70 kg (Melhem 2018 Table 2). Continuous covariates were normalised to 70 kg",
         "before entering the power function (Methods, Model evaluation)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FORM_GCSF_PEG = list(
-      description        = "G-CSF formulation indicator (1 = pegfilgrastim, 0 = filgrastim)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "G-CSF formulation indicator (1 = pegfilgrastim, 0 = filgrastim)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (filgrastim)",
-      notes              = paste(
+      notes = paste(
         "Categorical drug-type covariate on FSC, KSC, VD, CLD and KD",
         "(Melhem 2018 Methods 'Covariate analysis' and Table 2).",
         "Reference: filgrastim, the non-pegylated recombinant human G-CSF.",
@@ -98,14 +113,14 @@ Melhem_2018_g_csf <- function() {
         "(10.1 vs 2.6 h) and different absorption / distribution characteristics.",
         "Auto-approved sibling under the FORM_<DRUG>_<FEATURE> family."
       ),
-      source_name        = "DRUG"
+      source_name = "DRUG"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer indicator (1 = healthy adult, 0 = adult cancer patient on chemotherapy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer indicator (1 = healthy adult, 0 = adult cancer patient on chemotherapy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult cancer patient on chemotherapy)",
-      notes              = paste(
+      notes = paste(
         "Categorical population-type covariate on KINT and STM2 (Melhem 2018",
         "Methods 'Covariate analysis' and Table 2 rows STM2_HV / STM2_PT and",
         "KINT_HV / KINT_PT). Reference category = adult cancer patient on",
@@ -115,14 +130,14 @@ Melhem_2018_g_csf <- function() {
         "in Dataset B for covariate exploration but not the primary reference",
         "model of Table 2)."
       ),
-      source_name        = "POP"
+      source_name = "POP"
     ),
     DOSE_PEG_300UGKG = list(
-      description        = "Pegfilgrastim 300 ug/kg dose-cohort indicator (1 = subject received pegfilgrastim at 300 ug/kg, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pegfilgrastim 300 ug/kg dose-cohort indicator (1 = subject received pegfilgrastim at 300 ug/kg, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (filgrastim, or pegfilgrastim at any dose other than 300 ug/kg)",
-      notes              = paste(
+      notes = paste(
         "Subject-level cohort indicator carrying the low-clearance adjustment for",
         "the 300 ug/kg pegfilgrastim cohort (n = 12: 8 healthy volunteers + 4",
         "cancer patients on chemotherapy, per Melhem 2018 Results 'Model",
@@ -136,19 +151,19 @@ Melhem_2018_g_csf <- function() {
         "DOSE_HIGH_EFL for Jansson 2008 eflornithine and DOSE_400MG for",
         "Jorga 2000 tolcapone)."
       ),
-      source_name        = "DOSE_PEG_300"
+      source_name = "DOSE_PEG_300"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 703L,
-    n_studies      = 10L,
-    age_range      = "adults only in the primary Dataset A / final reference model (110 healthy adults + 618 adult cancer patients; 52 paediatric cancer patients in Dataset B were used for covariate exploration only)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 703L,
+    n_studies = 10L,
+    age_range = "adults only in the primary Dataset A / final reference model (110 healthy adults + 618 adult cancer patients; 52 paediatric cancer patients in Dataset B were used for covariate exploration only)",
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Two pooled populations: (i) healthy adult volunteers receiving",
       "filgrastim or pegfilgrastim (IV and SC routes; formal model",
       "development used SC only); (ii) adult cancer patients receiving",
@@ -156,7 +171,7 @@ Melhem_2018_g_csf <- function() {
       "(non-small-cell lung cancer, breast cancer, and other solid",
       "tumours per Table 1). All studies sponsored by Amgen Inc."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Filgrastim SC: 75, 150, 300, 600 ug once-daily for 10 days in HVs;",
       "5 ug/kg QD in adult cancer patients on chemotherapy (Table 1).",
       "Pegfilgrastim SC: 30, 60, 100, 300 ug/kg SD or QD in HVs; 30, 60,",
@@ -166,8 +181,8 @@ Melhem_2018_g_csf <- function() {
       "ug/kg single dose as comparators. First chemotherapy cycle data",
       "only (Dataset A n = 703)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Ten in-house Amgen studies. Analysis-dataset naming: Dataset A =",
       "primary structural-development set (703 subjects: 110 HV + 593 adult",
       "patients from first chemotherapy cycle; 6830 PK and 9213 PD",

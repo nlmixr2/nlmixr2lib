@@ -23,7 +23,7 @@ Yates_2023_tgi_mayneord <- function() {
   )
 
   compartmentData <- list(
-    central   = list(analyte = "Drug (generic)", units = "arbitrary dose unit", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Drug (generic)", units = "arbitrary dose unit", specimen = "plasma", verified = FALSE),
     tumor_vol = list(analyte = "tumour_size", units = "L", specimen = "tumor", verified = FALSE)
   )
 

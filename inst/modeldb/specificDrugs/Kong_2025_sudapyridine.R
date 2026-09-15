@@ -21,11 +21,11 @@ Kong_2025_sudapyridine <- function() {
 
   covariateData <- list(
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained by Kong 2025 after stepwise forward",
         "inclusion (dOFV > 3.84) and backward elimination (dOFV > 6.63):",
         "baseline ALP on the apparent metabolite clearance CL_M3 (dOFV 8.4;",
@@ -47,7 +47,7 @@ Kong_2025_sudapyridine <- function() {
         "deviations.",
         sep = " "
       ),
-      source_name        = "ALP"
+      source_name = "ALP"
     )
   )
 
@@ -57,39 +57,57 @@ Kong_2025_sudapyridine <- function() {
   # preserved without declaring covariates the model never references.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened as a demographic candidate; not retained (Kong 2025 Methods 2.4, Results 3.3). Cohort medians 28.0 / 44.0 / 36.5 years (Table 1)."
     ),
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       notes = "Screened as a demographic candidate; not retained. Kong 2025 Discussion notes that TIME-VARYING weight (a significant covariate for bedaquiline in Svensson 2016) could not be evaluated because sequential weights were not collected."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as a demographic candidate; not retained. Sex on Vc/F was reported for bedaquiline by McLeay 2014 but was not identified here (Kong 2025 Discussion)."
     ),
     DIS_HEALTHY = list(
-      description = "Healthy-volunteer versus tuberculosis-patient indicator (the paper's HP covariate)", units = "(binary)", type = "binary",
+      description = "Healthy-volunteer versus tuberculosis-patient indicator (the paper's HP covariate)",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as a candidate; not retained. Kong 2025 Discussion additionally reports that disease state defined as DS-TB versus MDR-TB was negligible (Supplementary Figures S3-S4)."
     ),
     SMOKE_CURRENT = list(
-      description = "Current-smoker indicator (the paper's SMOKE covariate)", units = "(binary)", type = "binary",
+      description = "Current-smoker indicator (the paper's SMOKE covariate)",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as a candidate; not retained (Kong 2025 Methods 2.4)."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened as a liver-function candidate; not retained. Cohort medians 12.0 / 18.5 / 10.0 U/L (Kong 2025 Table 1)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened as a liver-function candidate; not retained. Cohort medians 17.0 / 16.5 / 15.5 U/L (Kong 2025 Table 1)."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened as a liver-function candidate; not retained. Cohort medians 11.1 / 9.45 / 9.46 umol/L (Kong 2025 Table 1)."
     ),
     TCHOL = list(
-      description = "Total serum cholesterol", units = "mmol/L", type = "continuous",
+      description = "Total serum cholesterol",
+      units = "mmol/L",
+      type = "continuous",
       notes = "Screened as a liver-function candidate; not retained (Kong 2025 Methods 2.4). Baseline values are not tabulated in the paper."
     )
   )
@@ -109,28 +127,28 @@ Kong_2025_sudapyridine <- function() {
   # molar AUC ratio, and ratios of M3 Cmax between dosing regimens) is
   # reproduced exactly; see the vignette.
   compartmentData <- list(
-    depot           = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "administration site", verified = TRUE),
-    transit1        = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "administration site", verified = TRUE),
-    transit2        = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "administration site", verified = TRUE),
-    transit3        = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral2     = list(analyte = "sudapyridine (WX-081)",   units = "mg", specimen = "plasma", verified = TRUE),
-    central_m3      = list(analyte = "WX-081-M3 metabolite",    units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m3  = list(analyte = "WX-081-M3 metabolite",    units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "sudapyridine (WX-081)", units = "mg", specimen = "plasma", verified = TRUE),
+    central_m3 = list(analyte = "WX-081-M3 metabolite", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_m3 = list(analyte = "WX-081-M3 metabolite", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 72L,
-    n_studies      = 2L,
-    age_range      = "20-60 years",
-    age_median     = "28.0 years (healthy volunteers), 44.0 years (DS-TB), 36.5 years (MDR-TB)",
-    weight_range   = "41.0-77.0 kg",
-    weight_median  = "62.6 kg (healthy volunteers), 58.0 kg (DS-TB), 55.1 kg (MDR-TB)",
+    species = "human",
+    n_subjects = 72L,
+    n_studies = 2L,
+    age_range = "20-60 years",
+    age_median = "28.0 years (healthy volunteers), 44.0 years (DS-TB), 36.5 years (MDR-TB)",
+    weight_range = "41.0-77.0 kg",
+    weight_median = "62.6 kg (healthy volunteers), 58.0 kg (DS-TB), 55.1 kg (MDR-TB)",
     sex_female_pct = 27.8,
     race_ethnicity = c(Chinese = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "24 healthy volunteers (study A, phase I, NCT06117514), 28 patients with",
       "drug-susceptible pulmonary tuberculosis and 20 patients with",
       "multidrug-resistant tuberculosis (study B, phase II, NCT04608955).",
@@ -139,14 +157,14 @@ Kong_2025_sudapyridine <- function() {
       "treatment stage.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Study A: single oral 200, 300 or 400 mg on D1 then once daily D4-D14.",
       "Study B: 150, 300 or 450 mg once daily for 14 days (DS-TB); 400 mg once",
       "daily for 14 days followed by 150 mg once daily for 6 weeks (MDR-TB).",
       sep = " "
     ),
-    regions        = "China",
-    notes          = paste(
+    regions = "China",
+    notes = paste(
       "Baseline demographics from Kong 2025 Table 1. 1610 WX-081 and 1580",
       "WX-081-M3 plasma concentrations entered the analysis; 0.86% of WX-081",
       "and 2.71% of WX-081-M3 observations were below the limit of",

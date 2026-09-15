@@ -8,43 +8,43 @@ Hennig_2015_phenytoin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Allometric scaling on CL (exponent 0.75) and on V2 / V3 (exponent 1) referenced to 70 kg per Hennig 2015 Methods (p357) and final model equations (p360).",
-      source_name        = "WT"
+      notes = "Time-varying. Allometric scaling on CL (exponent 0.75) and on V2 / V3 (exponent 1) referenced to 70 kg per Hennig 2015 Methods (p357) and final model equations (p360).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Reference 35 g/L. Linear effect on the unbound-bound partition coefficient PUB per Hennig 2015 Table 2 and the equation on p360: PUB = 8.23 * (1 + 0.00737 * (ALB - 35)).",
-      source_name        = "ALB"
+      notes = "Time-varying. Reference 35 g/L. Linear effect on the unbound-bound partition coefficient PUB per Hennig 2015 Table 2 and the equation on p360: PUB = 8.23 * (1 + 0.00737 * (ALB - 35)).",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "0.08-17 years (1 month to 17 years)",
-    age_median     = "mean 6.9 years (SD 5.9)",
-    weight_range   = "4.0-80.0 kg",
-    weight_median  = "mean 27.9 kg (SD 21.2)",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "0.08-17 years (1 month to 17 years)",
+    age_median = "mean 6.9 years (SD 5.9)",
+    weight_range = "4.0-80.0 kg",
+    weight_median = "mean 27.9 kg (SD 21.2)",
     sex_female_pct = 34.4,
     race_ethnicity = "Not reported",
-    disease_state  = "Critically ill children admitted to a paediatric intensive care unit and treated with phenytoin for prevention or control of seizures (including status epilepticus). Underlying etiologies included acute brain injury, hypoxic ischemic encephalopathy, traumatic and infective brain injury, brain injury from motor vehicle accidents, brain tumour, haemorrhage (e.g., cerebral aneurysm), and longstanding structural abnormalities (e.g., cerebral palsy).",
-    dose_range     = "IV 1.7-22.0 mg/kg per dose (mean 5.4); PO 0.7-10.0 mg/kg per dose (mean 3.3). 19.5 percent of doses IV, 80.5 percent PO (Dilantin 30 mg/5 mL pediatric oral suspension administered mainly via nasogastric or transpyloric tube; IV via 100 mg/2 mL ampoules). 8 children received both routes at different times.",
-    regions        = "Single-centre paediatric intensive care unit at Mater Children's Hospital, Brisbane, Queensland, Australia (November 2006 to October 2009).",
-    notes          = "Hennig 2015 Table 1 baseline demographics. 11 patients aged <2 years, 11 patients 2-11 years, 10 patients >11 years (boys/girls 21/11). Albumin range 11.0-48.0 g/L (mean 35.0, SD 9.3); 70 percent of patients had a change in serum albumin during the study with mean (range) absolute change of 26 percent (2-54). Total of 292 paired phenytoin concentrations: 146 protein-unbound + 146 protein-bound. Fosphenytoin not used in the study (not registered in Australia at the time)."
+    disease_state = "Critically ill children admitted to a paediatric intensive care unit and treated with phenytoin for prevention or control of seizures (including status epilepticus). Underlying etiologies included acute brain injury, hypoxic ischemic encephalopathy, traumatic and infective brain injury, brain injury from motor vehicle accidents, brain tumour, haemorrhage (e.g., cerebral aneurysm), and longstanding structural abnormalities (e.g., cerebral palsy).",
+    dose_range = "IV 1.7-22.0 mg/kg per dose (mean 5.4); PO 0.7-10.0 mg/kg per dose (mean 3.3). 19.5 percent of doses IV, 80.5 percent PO (Dilantin 30 mg/5 mL pediatric oral suspension administered mainly via nasogastric or transpyloric tube; IV via 100 mg/2 mL ampoules). 8 children received both routes at different times.",
+    regions = "Single-centre paediatric intensive care unit at Mater Children's Hospital, Brisbane, Queensland, Australia (November 2006 to October 2009).",
+    notes = "Hennig 2015 Table 1 baseline demographics. 11 patients aged <2 years, 11 patients 2-11 years, 10 patients >11 years (boys/girls 21/11). Albumin range 11.0-48.0 g/L (mean 35.0, SD 9.3); 70 percent of patients had a change in serum albumin during the study with mean (range) absolute change of 26 percent (2-54). Total of 292 paired phenytoin concentrations: 146 protein-unbound + 146 protein-bound. Fosphenytoin not used in the study (not registered in Australia at the time)."
   )
 
   ini({

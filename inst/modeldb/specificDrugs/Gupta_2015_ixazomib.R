@@ -10,105 +10,105 @@ Gupta_2015_ixazomib <- function() {
     sep = " "
   )
   vignette <- "Gupta_2015_ixazomib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ixazomib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ixazomib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at baseline.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a power covariate on the second peripheral volume V4 (canonical name `lvp2`) with reference BSA = 1.90 m^2 and exponent 2.3 (Gupta 2015 Table 3 BSA-on-V4 entry; Appendix 1 NONMEM control stream V0 = (BSAC/1.90)**THETA(9); V4 = (THETA(6)*V0)*EXP(ETA(6))). The paper does not state the BSA formula (DuBois / Mosteller / Haycock); recorded as unspecified. The covariate-effect coefficient is encoded as `e_bsa_vp2` consistent with the e_<cov>_<param> convention. BSA was retained on V4 in preference to body weight because BSA and weight gave the same drop in OFV (35 points each), they are collinear, and BSA matched the BSA-based dosing convention used in the source phase I studies (Gupta 2015 Results, BSA versus weight comparison).",
-      source_name        = "BSAC"
+      notes = "Used as a power covariate on the second peripheral volume V4 (canonical name `lvp2`) with reference BSA = 1.90 m^2 and exponent 2.3 (Gupta 2015 Table 3 BSA-on-V4 entry; Appendix 1 NONMEM control stream V0 = (BSAC/1.90)**THETA(9); V4 = (THETA(6)*V0)*EXP(ETA(6))). The paper does not state the BSA formula (DuBois / Mosteller / Haycock); recorded as unspecified. The covariate-effect coefficient is encoded as `e_bsa_vp2` consistent with the e_<cov>_<param> convention. BSA was retained on V4 in preference to body weight because BSA and weight gave the same drop in OFV (35 points each), they are collinear, and BSA matched the BSA-based dosing convention used in the source phase I studies (Gupta 2015 Results, BSA versus weight comparison).",
+      source_name = "BSAC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 226L,
-    n_studies      = 4L,
-    age_range      = "23-86 years (median 62.0)",
-    age_median     = "62.0 years",
-    weight_range   = "35.5-132.3 kg (median 78.0)",
-    weight_median  = "78.0 kg",
-    bsa_range      = "1.3-2.6 m^2 (median 1.9)",
-    bsa_median     = "1.9 m^2",
+    species = "human",
+    n_subjects = 226L,
+    n_studies = 4L,
+    age_range = "23-86 years (median 62.0)",
+    age_median = "62.0 years",
+    weight_range = "35.5-132.3 kg (median 78.0)",
+    weight_median = "78.0 kg",
+    bsa_range = "1.3-2.6 m^2 (median 1.9)",
+    bsa_median = "1.9 m^2",
     sex_female_pct = 42.5,
     race_ethnicity = c(Caucasian = 87, Other = 13),
-    disease_state  = "Adult patients with advanced haematological or non-haematological malignancies: advanced solid tumours (n = 88), relapsed/refractory lymphoma (n = 30), relapsed/refractory multiple myeloma (n = 53 + 55 = 108).",
-    dose_range     = "Body-surface-area-based oral or intravenous dosing 0.125-3.95 mg/m^2 once or twice weekly. Per-study ranges (Gupta 2015 Table 1): C16001 0.125-2.34 mg/m^2 IV twice weekly; C16002 0.125-3.11 mg/m^2 IV weekly; C16003 0.24-2.23 mg/m^2 oral twice weekly; C16004 0.24-3.95 mg/m^2 oral weekly. Oral ixazomib capsule strengths were 0.2, 0.5, and 2 mg; BSA-based doses were rounded to the available capsule strengths.",
-    regions        = "Not stated (four pooled phase I oncology trials).",
-    studies        = "C16001 (n = 88), C16002 (n = 30), C16003 (n = 53), C16004 (n = 55) (Gupta 2015 Table 1).",
-    baseline_labs  = "Albumin 38.0 g/L (23-48); ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); bilirubin 7.0 umol/L (1.7-39.3); creatinine clearance 88.0 mL/min (21.9-213.7, Cockcroft-Gault). Median values with ranges per Gupta 2015 Table 2.",
-    notes          = "Demographics from Gupta 2015 Table 2. The four pooled phase I studies all used BSA-based dosing; this analysis showed that BSA does not influence ixazomib clearance and supported the transition to fixed (4 mg) dosing in subsequent phase III studies (e.g., TOURMALINE-MM1 NCT01564537, NCT01850524). A later popPK analysis (Gupta 2017, modellib('Gupta_2017_ixazomib')) refit the model on a larger combined phase I/II/III dataset (n = 755) including data from TOURMALINE-MM1; that analysis retained BSA on V4 with similar exponent magnitude but updated reference (1.87 m^2 vs 1.90 m^2 here)."
+    disease_state = "Adult patients with advanced haematological or non-haematological malignancies: advanced solid tumours (n = 88), relapsed/refractory lymphoma (n = 30), relapsed/refractory multiple myeloma (n = 53 + 55 = 108).",
+    dose_range = "Body-surface-area-based oral or intravenous dosing 0.125-3.95 mg/m^2 once or twice weekly. Per-study ranges (Gupta 2015 Table 1): C16001 0.125-2.34 mg/m^2 IV twice weekly; C16002 0.125-3.11 mg/m^2 IV weekly; C16003 0.24-2.23 mg/m^2 oral twice weekly; C16004 0.24-3.95 mg/m^2 oral weekly. Oral ixazomib capsule strengths were 0.2, 0.5, and 2 mg; BSA-based doses were rounded to the available capsule strengths.",
+    regions = "Not stated (four pooled phase I oncology trials).",
+    studies = "C16001 (n = 88), C16002 (n = 30), C16003 (n = 53), C16004 (n = 55) (Gupta 2015 Table 1).",
+    baseline_labs = "Albumin 38.0 g/L (23-48); ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); bilirubin 7.0 umol/L (1.7-39.3); creatinine clearance 88.0 mL/min (21.9-213.7, Cockcroft-Gault). Median values with ranges per Gupta 2015 Table 2.",
+    notes = "Demographics from Gupta 2015 Table 2. The four pooled phase I studies all used BSA-based dosing; this analysis showed that BSA does not influence ixazomib clearance and supported the transition to fixed (4 mg) dosing in subsequent phase III studies (e.g., TOURMALINE-MM1 NCT01564537, NCT01850524). A later popPK analysis (Gupta 2017, modellib('Gupta_2017_ixazomib')) refit the model on a larger combined phase I/II/III dataset (n = 755) including data from TOURMALINE-MM1; that analysis retained BSA on V4 with similar exponent magnitude but updated reference (1.87 m^2 vs 1.90 m^2 here)."
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight; screened against CL, V2, and V4 in covariate analysis. WT was significant only on V4 (same OFV drop as BSA) and was rejected in favour of BSA in the final model because BSA-based dosing was used in the source phase I studies (Gupta 2015 Results).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened; not retained in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; not retained in the final model."
     ),
     AGE = list(
       description = "Subject age in years; screened against CL with no clinically relevant effect over the 23-86 year range (Gupta 2015 Figure 3B; Discussion).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained."
     ),
     SEXF = list(
       description = "Female-sex indicator; screened against CL, V2, and V4 with no significant effect (Gupta 2015 Figure 3E; Results).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Source coded gender as M/F (96 female of 226)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Source coded gender as M/F (96 female of 226)."
     ),
     RACE = list(
       description = "Race (Caucasian vs other); screened on CL with no significant effect (Gupta 2015 Figure 3F).",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not retained. 196 Caucasian (87%) vs 30 other (13%)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not retained. 196 Caucasian (87%) vs 30 other (13%)."
     ),
     CRCL = list(
       description = "Creatinine clearance (Cockcroft-Gault) over 22-213.7 mL/min; screened on CL with no clinically relevant effect (Gupta 2015 Figure 3C; Discussion).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened; not retained. Renal elimination is a minor clearance pathway for ixazomib."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened; not retained. Renal elimination is a minor clearance pathway for ixazomib."
     ),
     ALT = list(
       description = "Alanine aminotransferase; screened on CL with no clinically relevant effect (Gupta 2015 Results, narrative).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained."
     ),
     AST = list(
       description = "Aspartate aminotransferase; screened on CL with no clinically relevant effect (Gupta 2015 Results, narrative).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained."
     ),
     ALB = list(
       description = "Serum albumin; screened on CL with no clinically relevant effect (Gupta 2015 Results, narrative).",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained."
     ),
     TBILI = list(
       description = "Total bilirubin; screened on CL with no clinically relevant effect (Gupta 2015 Results, narrative).",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Renamed from source key BILI to the canonical TBILI per the 2026-06-19 SI register; source units 'uM' are micromol/L, normalized to the canonical SI string umol/L (value-identical).",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Renamed from source key BILI to the canonical TBILI per the 2026-06-19 SI register; source units 'uM' are micromol/L, normalized to the canonical SI string umol/L (value-identical).",
       source_alias = "BILI",
-      source_name  = "BILI"
+      source_name = "BILI"
     )
   )
 

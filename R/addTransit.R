@@ -24,12 +24,16 @@
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |> addTransit(3)
-addTransit <- function(ui, ntransit, central = "central",
-                       depot = "depot",
-                       transit = "transit",
-                       ktr = "ktr",
-                       ka = "ka",
-                       model) {
+addTransit <- function(
+  ui,
+  ntransit,
+  central = "central",
+  depot = "depot",
+  transit = "transit",
+  ktr = "ktr",
+  ka = "ka",
+  model
+) {
   .useModelAsUi()
   checkmate::assertIntegerish(ntransit, lower = 1)
   rxode2::assertCompartmentName(transit)
@@ -41,11 +45,7 @@ addTransit <- function(ui, ntransit, central = "central",
     .mv <- rxode2::rxModelVars(.ui)
     warning("'", depot, "' added to model for transit model", call. = FALSE)
   } else if (rxode2::testCompartmentExists(.ui, paste0(transit, "1"))) {
-    .ui <- removeTransit(ui,
-      central = central,
-      depot = depot, transit = transit,
-      ktr = ktr,
-      ka = ka)
+    .ui <- removeTransit(ui, central = central, depot = depot, transit = transit, ktr = ktr, ka = ka)
   }
   rxode2::assertCompartmentExists(.ui, depot)
 
@@ -60,34 +60,34 @@ addTransit <- function(ui, ntransit, central = "central",
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .pre <- .tmp$pre
-  .central <- .replaceMult(.tmp$w,
-    v1 = depot, v2 = ka,
-    ret = paste0(ka, "*", transit, ntransit))
+  .central <- .replaceMult(.tmp$w, v1 = depot, v2 = ka, ret = paste0(ka, "*", transit, ntransit))
   .post <- .tmp$post
   .v <- seq_len(ntransit)
   # ODEs for the transit compartment (except the one from the depot)
-  .transMid <- lapply(.v,
-    function(i) {
-      if (i == 1) {
-        str2lang(paste0("d/dt(", transit, i, ")<- ",
-          ktr, "*", depot, "-",
-          ifelse(ntransit == 1, ka, ktr),
-          "*", transit, i))
-      } else if (i == ntransit) {
-        str2lang(paste0("d/dt(", transit, i, ")<- ",
-          ktr, "*", transit, i - 1, "-", ka,
-          "*", transit, i))
-      } else {
-        str2lang(paste0("d/dt(", transit, i, ")<- ",
-          ktr, "*", transit, i - 1, "-", ktr,
-          "*", transit, i))
-      }
-    })
+  .transMid <- lapply(.v, function(i) {
+    if (i == 1) {
+      str2lang(paste0(
+        "d/dt(",
+        transit,
+        i,
+        ")<- ",
+        ktr,
+        "*",
+        depot,
+        "-",
+        ifelse(ntransit == 1, ka, ktr),
+        "*",
+        transit,
+        i
+      ))
+    } else if (i == ntransit) {
+      str2lang(paste0("d/dt(", transit, i, ")<- ", ktr, "*", transit, i - 1, "-", ka, "*", transit, i))
+    } else {
+      str2lang(paste0("d/dt(", transit, i, ")<- ", ktr, "*", transit, i - 1, "-", ktr, "*", transit, i))
+    }
+  })
   # combine the lines for now
-  .modelLines <- c(.pre,
-    .transMid,
-    .central,
-    .post)
+  .modelLines <- c(.pre, .transMid, .central, .post)
 
   # Insert ktr <- exp(lktr) immediately before d/dt(depot) and modify
   # d/dt(depot) in place so every pre-existing line (including any
@@ -95,7 +95,8 @@ addTransit <- function(ui, ntransit, central = "central",
   .w <- .whichDdt(.modelLines, depot)
   .modRep <- .replaceMult(
     .modelLines[[.w]],
-    v1 = ka, v2 = depot,
+    v1 = ka,
+    v2 = depot,
     ret = paste0(ktr, "*", depot)
   )
   .before <- if (.w > 1L) .modelLines[seq_len(.w - 1L)] else list()
@@ -113,8 +114,7 @@ addTransit <- function(ui, ntransit, central = "central",
 
   # modify model block
   rxode2::model(.ui) <- .modelLines
-  .iniAddTheta(.ui, paste0("l", ktr),
-    label = paste0("First order transition rate (", ktr, ")"))
+  .iniAddTheta(.ui, paste0("l", ktr), label = paste0("First order transition rate (", ktr, ")"))
 }
 
 #' To remove transit compartments from the model
@@ -132,11 +132,16 @@ addTransit <- function(ui, ntransit, central = "central",
 #' readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit(3)
 #'
 #' readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit()
-removeTransit <- function(ui, ntransit, central = "central",
-                          depot = "depot", transit = "transit",
-                          ktr = "ktr",
-                          ka = "ka",
-                          model) {
+removeTransit <- function(
+  ui,
+  ntransit,
+  central = "central",
+  depot = "depot",
+  transit = "transit",
+  ktr = "ktr",
+  ka = "ka",
+  model
+) {
   .useModelAsUi()
   if (!missing(ntransit)) {
     checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE)
@@ -150,10 +155,14 @@ removeTransit <- function(ui, ntransit, central = "central",
   .transitCmts <- .mv$state
   .transitCmts <- .transitCmts[grepl(paste0("^", transit), .transitCmts)]
   .nc <- nchar(transit) + 1
-  .totTransit <- max(vapply(.transitCmts,
+  .totTransit <- max(vapply(
+    .transitCmts,
     function(n) {
       as.integer(substr(n, .nc, nchar(n)))
-    }, integer(1), USE.NAMES = FALSE))
+    },
+    integer(1),
+    USE.NAMES = FALSE
+  ))
   if (!missing(ntransit)) {
     checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE, len = 1)
   } else {
@@ -178,21 +187,14 @@ removeTransit <- function(ui, ntransit, central = "central",
     .modelLines <- .rmDdt(.ui$lstExpr, .transit)
     .w <- .whichDdt(.modelLines, central)
     .tmp <- .extractModelLinesAtW(.modelLines, .w)
-    .tmp$w <- .replaceMult(.tmp$w,
-      v1 = paste0(transit, .totTransit), v2 = ka,
-      ret = paste0(ka, "*", depot))
-    .tmp$pre <- .replaceMult(.tmp$pre,
-      v1 = depot, v2 = ktr,
-      ret = paste0(ka, "*", depot))
-    .modelLines <- c(.tmp$pre,
-      .tmp$w,
-      .tmp$post)
+    .tmp$w <- .replaceMult(.tmp$w, v1 = paste0(transit, .totTransit), v2 = ka, ret = paste0(ka, "*", depot))
+    .tmp$pre <- .replaceMult(.tmp$pre, v1 = depot, v2 = ktr, ret = paste0(ka, "*", depot))
+    .modelLines <- c(.tmp$pre, .tmp$w, .tmp$post)
     .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ktr)
     .modelLines <- .tmp$modelLines
     .theta <- .tmp$theta
     .eta <- .tmp$eta
-    .ui$iniDf <- rbind(.theta,
-      .eta)
+    .ui$iniDf <- rbind(.theta, .eta)
   } else {
     # remove some, but not all
     .ftransit <- .totTransit - ntransit
@@ -200,16 +202,19 @@ removeTransit <- function(ui, ntransit, central = "central",
     .modelLines <- .rmDdt(.ui$lstExpr, .transit)
     .w <- .whichDdt(.modelLines, central)
     .tmp <- .extractModelLinesAtW(.modelLines, .w)
-    .tmp$w <- .replaceMult(.tmp$w,
-      v1 = paste0(transit, .totTransit), v2 = ka,
-      ret = paste0(ka, "*", transit, .ftransit))
-    .tmp$pre <- .replaceMult(.tmp$pre,
-      v1 = paste0(transit, ntransit), v2 = ktr,
-      ret = paste0(ka, "*", transit, .ftransit))
-    .modelLines <- c(.tmp$pre,
+    .tmp$w <- .replaceMult(
       .tmp$w,
-      .tmp$post)
-
+      v1 = paste0(transit, .totTransit),
+      v2 = ka,
+      ret = paste0(ka, "*", transit, .ftransit)
+    )
+    .tmp$pre <- .replaceMult(
+      .tmp$pre,
+      v1 = paste0(transit, ntransit),
+      v2 = ktr,
+      ret = paste0(ka, "*", transit, .ftransit)
+    )
+    .modelLines <- c(.tmp$pre, .tmp$w, .tmp$post)
   }
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)

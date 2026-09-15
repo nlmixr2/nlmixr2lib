@@ -8,18 +8,18 @@ Zhang_2023_brazikumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "brazikumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "brazikumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL centred at 39 g/L (the pooled-cohort median):",
         "(ALB / 39)^-1.32 per Table 2 footnote a. Baseline value (time-fixed).",
         "UNITS CAVEAT: Zhang 2023 Table 1 labels this row 'BALB, mg/dL' with median 39.0 and",
@@ -31,14 +31,14 @@ Zhang_2023_brazikumab <- function() {
         "reference value 39 is unchanged, so the published exponent applies as printed.",
         sep = " "
       ),
-      source_name        = "BALBU"
+      source_name = "BALBU"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with Crohn's disease)",
-      notes              = paste(
+      notes = paste(
         "Linear fractional effect on CL: (1 - 0.362 * DIS_HEALTHY), i.e. healthy participants",
         "have 36.2% lower CL than patients with CD at the same albumin (Table 2 footnote a:",
         "'for health status, patients with CD = 0, and healthy subjects = 1'). Source NONMEM",
@@ -49,14 +49,14 @@ Zhang_2023_brazikumab <- function() {
         "through the inflamed gut wall ('leaky gut').",
         sep = " "
       ),
-      source_name        = "GRP"
+      source_name = "GRP"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the reference category of the published Vc typical value)",
-      notes              = paste(
+      notes = paste(
         "Linear fractional effect on Vc applied to the MALE category:",
         "(1 + 0.214 * (1 - SEXF)), giving Vc = 3.27 L in females and 3.97 L in males",
         "(Zhang 2023 Results and Table 2 footnote b). Source column GNDR is coded male = 1,",
@@ -67,52 +67,52 @@ Zhang_2023_brazikumab <- function() {
         "subjects, matching the paper's '74 women and 45 men'.",
         sep = " "
       ),
-      source_name        = "GNDR"
+      source_name = "GNDR"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate model (SCM) on CL as linear and hockey-stick relationships; not retained in the final model. The s02.mod CLWGT1 / CLWGT2 thetas are commented out and fixed to 0."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate model (SCM) on CL as linear and hockey-stick relationships; not retained in the final model. The s02.mod CLWGT1 / CLWGT2 thetas are commented out and fixed to 0."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened in the SCM on CL and on Vc (hockey-stick, centred at 23.44 kg/m^2); not retained in the final model. The s02.mod CLBMI1 / V2BMI1 / V2BMI2 thetas are commented out and fixed to 0."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened in the SCM on CL and on Vc (hockey-stick, centred at 23.44 kg/m^2); not retained in the final model. The s02.mod CLBMI1 / V2BMI1 / V2BMI2 thetas are commented out and fixed to 0."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the SCM (Methods: 'Covariates, including subject population, sex, race, age, body weight, baseline albumin, and body mass index, were screened'); not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the SCM (Methods: 'Covariates, including subject population, sex, race, age, body weight, baseline albumin, and body mass index, were screened'); not retained in the final model."
     ),
     RACE = list(
       description = "Race",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened in the SCM; not retained in the final model. The phase IIa cohort was 93% White (Table 1), so the non-White strata were too small to support an effect."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened in the SCM; not retained in the final model. The phase IIa cohort was 93% White (Table 1), so the non-White strata were too small to support an effect."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 153L,
-    n_studies      = 2L,
-    age_range      = "18-61 years (phase IIa; not reported for phase Ib)",
-    age_median     = "35 years (phase IIa pooled arms)",
-    weight_range   = "44.0-158.8 kg (phase IIa; not reported for phase Ib)",
-    weight_median  = "66.9 kg (phase IIa pooled arms)",
+    species = "human",
+    n_subjects = 153L,
+    n_studies = 2L,
+    age_range = "18-61 years (phase IIa; not reported for phase Ib)",
+    age_median = "35 years (phase IIa pooled arms)",
+    weight_range = "44.0-158.8 kg (phase IIa; not reported for phase Ib)",
+    weight_median = "66.9 kg (phase IIa pooled arms)",
     sex_female_pct = 51.0,
     race_ethnicity = c(White = 93.3, Black = 5.0, Other = 1.7),
-    disease_state  = "Pooled: 30 healthy adults (phase Ib) plus 123 adults with mild-to-severe or moderate-to-severe active Crohn's disease who had failed or were intolerant to anti-TNF-alpha therapy (4 in phase Ib, 119 in phase IIa)",
-    dose_range     = "Phase Ib: 70, 210, 420, or 700 mg IV, or 210 mg SC, Q4W (3 doses). Phase IIa double-blind induction: 700 mg IV over at least 60 min on day 1 and day 29; open-label period: 210 mg SC Q4W from week 12 through week 112.",
-    regions        = "Multinational (NCT01258205 phase Ib; NCT01714726 phase IIa)",
-    trials         = c("NCT01258205 (phase Ib)", "NCT01714726 (phase IIa)"),
-    notes          = paste(
+    disease_state = "Pooled: 30 healthy adults (phase Ib) plus 123 adults with mild-to-severe or moderate-to-severe active Crohn's disease who had failed or were intolerant to anti-TNF-alpha therapy (4 in phase Ib, 119 in phase IIa)",
+    dose_range = "Phase Ib: 70, 210, 420, or 700 mg IV, or 210 mg SC, Q4W (3 doses). Phase IIa double-blind induction: 700 mg IV over at least 60 min on day 1 and day 29; open-label period: 210 mg SC Q4W from week 12 through week 112.",
+    regions = "Multinational (NCT01258205 phase Ib; NCT01714726 phase IIa)",
+    trials = c("NCT01258205 (phase Ib)", "NCT01714726 (phase IIa)"),
+    notes = paste(
       "Baseline demographics from Zhang 2023 Table 1. The population PK analysis pooled all PK",
       "data from both studies including the phase IIa open-label period: 34 phase Ib subjects",
       "(30 healthy participants, 4 with CD; 4 women / 30 men; median 21 PK samples per subject,",

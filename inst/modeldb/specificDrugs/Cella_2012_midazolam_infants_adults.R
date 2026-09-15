@@ -16,24 +16,29 @@ Cella_2012_midazolam_infants_adults <- function() {
     sep = " "
   )
   vignette <- "Cella_2012_midazolam_paediatric_scaling"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "midazolam infants adults", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "midazolam infants adults", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "midazolam infants adults",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "midazolam infants adults", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "midazolam infants adults", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Enters the model with two distinct",
         "functional forms: allometric (exponent 0.75) on clearance with a",
         "70 kg reference, and linear per-kg scaling on the central volume",
@@ -43,34 +48,34 @@ Cella_2012_midazolam_infants_adults <- function() {
         "value (k10 ~ 0.75/min for a 70 kg adult). See the vignette",
         "Errata for the full reasoning."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
-    n_studies      = 4L,
-    age_range      = "3.2 months - 29.7 years (infants/toddlers 3.2-24.7 months; adults 19.9-29.7 years)",
-    age_median     = "Mixed: 10.9 months in the infant/toddler arm; 23.8 years in the adult arm",
-    weight_range   = "5.1 - 91 kg (infants/toddlers 5.1-12 kg; adults 59-91 kg)",
-    weight_median  = "Mixed: 9.2 kg infants/toddlers, 72.3 kg adults; 70 kg used as the allometric CL reference (see vignette Errata)",
+    species = "human",
+    n_subjects = 57L,
+    n_studies = 4L,
+    age_range = "3.2 months - 29.7 years (infants/toddlers 3.2-24.7 months; adults 19.9-29.7 years)",
+    age_median = "Mixed: 10.9 months in the infant/toddler arm; 23.8 years in the adult arm",
+    weight_range = "5.1 - 91 kg (infants/toddlers 5.1-12 kg; adults 59-91 kg)",
+    weight_median = "Mixed: 9.2 kg infants/toddlers, 72.3 kg adults; 70 kg used as the allometric CL reference (see vignette Errata)",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers (n=34) from three Centre for Human Drug",
       "Research crossover trials (89110-pilot, 89110, 94113) plus infants",
       "and toddlers (n=23) admitted to a paediatric surgical ICU at",
       "Erasmus MC - Sophia's Children's Hospital after elective",
       "craniofacial surgery."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Infants/toddlers: 0.1 mg/kg IV bolus followed by 0.05 mg/kg/h IV",
       "infusion. Adults: 0.1-0.15 mg/kg IV (bolus or 15-20 min infusion)",
       "or 5/7.5/10 mg fixed oral doses by body-weight band (<60 / 60-80 /",
       ">80 kg)."
     ),
-    regions        = "Netherlands",
-    notes          = paste(
+    regions = "Netherlands",
+    notes = paste(
       "Per Cella 2012 Table 1. Sex split not reported across all four",
       "studies; Study 94113 is explicitly 20 healthy males.",
       "Apparent oral clearance (CL/F): the paper does not separately",

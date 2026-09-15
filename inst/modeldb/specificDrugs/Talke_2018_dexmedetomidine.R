@@ -9,37 +9,37 @@ Talke_2018_dexmedetomidine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "none", units = "ug", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "none", units = "ug", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Used for a priori allometric scaling per Talke 2018 Methods: CL, Q2, Q3 scale as (WT/70)^0.75 and V1, V2, V3 scale as (WT/70)^1; reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Time-fixed per subject. Used for a priori allometric scaling per Talke 2018 Methods: CL, Q2, Q3 scale as (WT/70)^0.75 and V1, V2, V3 scale as (WT/70)^1; reference weight 70 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 10L,                        # Talke 2018 Abstract / Methods / Table 1
-    n_studies      = 1L,                         # Single-centre study at UCSF
-    age_range      = "21-36 years",              # Talke 2018 Table 1 (mean 29, SD 4)
-    age_median     = "29 years (mean)",          # Talke 2018 Table 1
-    weight_range   = "52-89 kg",                 # Talke 2018 Table 1 (mean 72, SD 13)
-    weight_median  = "72 kg (mean)",             # Talke 2018 Table 1
-    sex_female_pct = 50,                         # Talke 2018 Table 1: 5 male / 5 female
-    race_ethnicity = NULL,                       # Not reported in Talke 2018 Table 1
-    disease_state  = "Healthy adult volunteers; exclusions: history of cardiac, pulmonary, hepatic or renal disease; alcohol or drug abuse; prescription medications; age >45 years; weight >130% of normal.",
-    dose_range     = "Single computer-controlled (STANPUMP) IV infusion of dexmedetomidine over 15 min targeting plasma concentration 0.3 ng/mL; observed cumulative dose 0.28 ug/kg.",
-    regions        = "USA (single centre, University of California San Francisco).",
+    n_subjects = 10L, # Talke 2018 Abstract / Methods / Table 1
+    n_studies = 1L, # Single-centre study at UCSF
+    age_range = "21-36 years", # Talke 2018 Table 1 (mean 29, SD 4)
+    age_median = "29 years (mean)", # Talke 2018 Table 1
+    weight_range = "52-89 kg", # Talke 2018 Table 1 (mean 72, SD 13)
+    weight_median = "72 kg (mean)", # Talke 2018 Table 1
+    sex_female_pct = 50, # Talke 2018 Table 1: 5 male / 5 female
+    race_ethnicity = NULL, # Not reported in Talke 2018 Table 1
+    disease_state = "Healthy adult volunteers; exclusions: history of cardiac, pulmonary, hepatic or renal disease; alcohol or drug abuse; prescription medications; age >45 years; weight >130% of normal.",
+    dose_range = "Single computer-controlled (STANPUMP) IV infusion of dexmedetomidine over 15 min targeting plasma concentration 0.3 ng/mL; observed cumulative dose 0.28 ug/kg.",
+    regions = "USA (single centre, University of California San Francisco).",
     n_observations = "120 plasma concentrations for PK; 4560 ADC observations for PD.",
-    notes          = "BMI 20-27 kg/m^2 (mean 23, SD 2), height 160-183 cm (mean 174, SD 9). Sympathetic fibres of the left arm were blocked with axillary perivascular brachial plexus block (30 mL 1% mepivacaine) prior to dexmedetomidine infusion to isolate the direct peripheral vasoconstrictive effect (Talke 2018 Methods)."
+    notes = "BMI 20-27 kg/m^2 (mean 23, SD 2), height 160-183 cm (mean 174, SD 9). Sympathetic fibres of the left arm were blocked with axillary perivascular brachial plexus block (30 mL 1% mepivacaine) prior to dexmedetomidine infusion to isolate the direct peripheral vasoconstrictive effect (Talke 2018 Methods)."
   )
 
   ini({

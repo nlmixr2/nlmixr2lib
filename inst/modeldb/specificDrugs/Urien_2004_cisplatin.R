@@ -17,7 +17,7 @@ Urien_2004_cisplatin <- function() {
     "carried in concentration units."
   )
   reference <- "Urien S, Lokiec F. Population pharmacokinetics of total and unbound plasma cisplatin in adult patients. Br J Clin Pharmacol. 2004;57(6):756-763. doi:10.1111/j.1365-2125.2004.02082.x"
-  vignette  <- "Urien_2004_cisplatin"
+  vignette <- "Urien_2004_cisplatin"
 
   # The protein-bound platinum state is a paper-mechanistic compartment
   # (irreversible plasma-protein-binding pathway from compartment 1, per
@@ -33,70 +33,70 @@ Urien_2004_cisplatin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
-    bound       = list(analyte = "cisplatin (protein-bound)", units = "mg", specimen = "plasma", verified = FALSE)
+    bound = list(analyte = "cisplatin (protein-bound)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling centred on the cohort median 1.62 m^2 (Urien 2004 Table 1). Exponent +1.60 on the unbound central volume Vc (Table 4) and +0.83 on unbound clearance CL (Table 4). The same BSA-on-CL effect also enters the bound-formation parameter fm/Vm as a FIXED exponent -0.83 (Table 5, opposite sign) so the bound-formation flux (fm/Vm)*CL*Cc is net BSA-neutral. Urien 2004 does not state which BSA formula was used; record 'unspecified' downstream.",
-      source_name        = "BSA"
+      notes = "Power scaling centred on the cohort median 1.62 m^2 (Urien 2004 Table 1). Exponent +1.60 on the unbound central volume Vc (Table 4) and +0.83 on unbound clearance CL (Table 4). The same BSA-on-CL effect also enters the bound-formation parameter fm/Vm as a FIXED exponent -0.83 (Table 5, opposite sign) so the bound-formation flux (fm/Vm)*CL*Cc is net BSA-neutral. Urien 2004 does not state which BSA formula was used; record 'unspecified' downstream.",
+      source_name = "BSA"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling centred on the cohort median 81 mL/min (Urien 2004 Table 1). Exponent +0.36 on unbound clearance CL (Table 4). The same CLCr-on-CL effect enters fm/Vm as a FIXED exponent -0.36 (Table 5, opposite sign) so the bound-formation flux is net CLCr-neutral. The paper uses the raw Cockcroft-Gault CrCl in mL/min, NOT BSA-normalized to mL/min/1.73 m^2; document this in downstream simulations so body size is not double-corrected.",
-      source_name        = "CLCr"
+      notes = "Power scaling centred on the cohort median 81 mL/min (Urien 2004 Table 1). Exponent +0.36 on unbound clearance CL (Table 4). The same CLCr-on-CL effect enters fm/Vm as a FIXED exponent -0.36 (Table 5, opposite sign) so the bound-formation flux is net CLCr-neutral. The paper uses the raw Cockcroft-Gault CrCl in mL/min, NOT BSA-normalized to mL/min/1.73 m^2; document this in downstream simulations so body size is not double-corrected.",
+      source_name = "CLCr"
     ),
     TPRO = list(
-      description        = "Total serum protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling centred on the cohort median 70 g/L (Urien 2004 Table 1). Exponent +1.33 on the bound-formation parameter fm/Vm (Table 5). Mechanism: higher serum protein concentration shifts the binding equilibrium toward protein-bound platinum.",
-      source_name        = "PROT"
+      notes = "Power scaling centred on the cohort median 70 g/L (Urien 2004 Table 1). Exponent +1.33 on the bound-formation parameter fm/Vm (Table 5). Mechanism: higher serum protein concentration shifts the binding equilibrium toward protein-bound platinum.",
+      source_name = "PROT"
     ),
     DOSE = list(
-      description        = "Cisplatin dose per infusion (mg) supplied as a per-record data column",
-      units              = "mg",
-      type               = "continuous",
+      description = "Cisplatin dose per infusion (mg) supplied as a per-record data column",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-record administered cisplatin dose in mg. Used inside model() to compute dose per BSA = DOSE / BSA (mg/m^2). Power scaling on fm/Vm centred on dose per BSA = 25 mg/m^2 (cohort median, Urien 2004 Table 1), exponent -0.48 (Table 5). The negative dose-per-area exponent reflects saturable plasma-protein binding at higher doses. For per-record simulation, LOCF the administered dose from the most recent infusion across subsequent observation records so dose_per_bsa stays defined between infusions.",
-      source_name        = "Dose"
+      notes = "Per-record administered cisplatin dose in mg. Used inside model() to compute dose per BSA = DOSE / BSA (mg/m^2). Power scaling on fm/Vm centred on dose per BSA = 25 mg/m^2 (cohort median, Urien 2004 Table 1), exponent -0.48 (Table 5). The negative dose-per-area exponent reflects saturable plasma-protein binding at higher doses. For per-record simulation, LOCF the administered dose from the most recent infusion across subsequent observation records so dose_per_bsa stays defined between infusions.",
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 43L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 43L,
+    n_studies = 2L,
     n_observations = "873 plasma platinum measurements (396 unbound + 477 total) across 146 30-min infusions",
-    age_range      = "21-76 years",
-    age_median     = "58 years",
-    weight_range   = "40-102 kg",
-    weight_median  = "64 kg",
-    height_range   = "150-181 cm",
-    height_median  = "168 cm",
-    bsa_range      = "1.38-2.10 m^2",
-    bsa_median     = "1.62 m^2",
-    crcl_range     = "44-155 mL/min (Cockcroft-Gault)",
-    crcl_median    = "81 mL/min",
-    tpro_range     = "47-80 g/L",
-    tpro_median    = "70 g/L",
-    scr_range      = "43-120 umol/L",
-    scr_median     = "76 umol/L",
+    age_range = "21-76 years",
+    age_median = "58 years",
+    weight_range = "40-102 kg",
+    weight_median = "64 kg",
+    height_range = "150-181 cm",
+    height_median = "168 cm",
+    bsa_range = "1.38-2.10 m^2",
+    bsa_median = "1.62 m^2",
+    crcl_range = "44-155 mL/min (Cockcroft-Gault)",
+    crcl_median = "81 mL/min",
+    tpro_range = "47-80 g/L",
+    tpro_median = "70 g/L",
+    scr_range = "43-120 umol/L",
+    scr_median = "76 umol/L",
     sex_female_pct = 41.9,
-    disease_state  = "Adult patients with metastatic cancer receiving second- or third-line chemotherapy in two phase I studies (cisplatin combined with either irofulven 0.4 mg/kg or 5-fluorouracil 1 g/m^2/day continuous 120-h infusion).",
-    dose_range     = "15-80 mg total per 30-min IV infusion (median 34.4 mg; median 25 mg/m^2); 5 consecutive daily infusions or twice-monthly schedules.",
-    regions        = "France (Centre Rene Huguenin, Saint-Cloud).",
-    notes          = "Demographics from Urien 2004 Table 1 (male/female 25/18). Concomitant chemotherapy (irofulven in 18 patients, 5-FU in 25 patients) was tested as a covariate and not retained. Infusion duration typically 30 min but varied 0.25-1 h across 146 infusions; one to five consecutive daily infusions per evaluation. Modelling software: MP2 nonlinear mixed-effect program (Urien 2004 reference 3)."
+    disease_state = "Adult patients with metastatic cancer receiving second- or third-line chemotherapy in two phase I studies (cisplatin combined with either irofulven 0.4 mg/kg or 5-fluorouracil 1 g/m^2/day continuous 120-h infusion).",
+    dose_range = "15-80 mg total per 30-min IV infusion (median 34.4 mg; median 25 mg/m^2); 5 consecutive daily infusions or twice-monthly schedules.",
+    regions = "France (Centre Rene Huguenin, Saint-Cloud).",
+    notes = "Demographics from Urien 2004 Table 1 (male/female 25/18). Concomitant chemotherapy (irofulven in 18 patients, 5-FU in 25 patients) was tested as a covariate and not retained. Infusion duration typically 30 min but varied 0.25-1 h across 146 infusions; one to five consecutive daily infusions per evaluation. Modelling software: MP2 nonlinear mixed-effect program (Urien 2004 reference 3)."
   )
 
   ini({

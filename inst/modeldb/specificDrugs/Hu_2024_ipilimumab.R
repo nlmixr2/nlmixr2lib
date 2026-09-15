@@ -5,66 +5,66 @@ Hu_2024_ipilimumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Baseline lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 55 kg (exponent 0.789) and on VC with the same reference (exponent 0.874); Q and VP inherit the CL and VC exponents respectively (Hu 2024 Results equations for the ipilimumab full model; Figure 2 caption: 'The effect of lean body mass was also added to intercompartmental CL and peripheral volume, respectively, estimates of which were fixed to be similar to those of CL and VC'). Table 1 Note: LBM was estimated using the Boer equation (adults) and the Peter equation (children). Missing values were imputed to the reference in the source NONMEM code (Appendix File S3).",
-      source_name        = "ELBMB"
+      notes = "Power scaling on CL with reference 55 kg (exponent 0.789) and on VC with the same reference (exponent 0.874); Q and VP inherit the CL and VC exponents respectively (Hu 2024 Results equations for the ipilimumab full model; Figure 2 caption: 'The effect of lean body mass was also added to intercompartmental CL and peripheral volume, respectively, estimates of which were fixed to be similar to those of CL and VC'). Table 1 Note: LBM was estimated using the Boer equation (adults) and the Peter equation (children). Missing values were imputed to the reference in the source NONMEM code (Appendix File S3).",
+      source_name = "ELBMB"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only through the three age bands that define the paper's patient-population and volume covariates: young pediatric (< 12 years), adolescent (12-17 years), adult (>= 18 years). Appendix File S3 applies the splits as AGE <= 11 and 12 <= AGE <= 17. Both the numeric power effect of age on CL (THETA(9)) and the numeric power effect of age on VC (THETA(20)) were fixed to zero in the selected Full1 model, so age enters this model only categorically.",
-      source_name        = "AGE"
+      notes = "Used only through the three age bands that define the paper's patient-population and volume covariates: young pediatric (< 12 years), adolescent (12-17 years), adult (>= 18 years). Appendix File S3 applies the splits as AGE <= 11 and 12 <= AGE <= 17. Both the numeric power effect of age on CL (THETA(9)) and the numeric power effect of age on VC (THETA(20)) were fixed to zero in the selected Full1 model, so age enters this model only categorically.",
+      source_name = "AGE"
     ),
     TUMTP_MEL = list(
-      description        = "Tumor-type indicator: melanoma",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: melanoma",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 in the reference subject. The Hu 2024 reference patient population is adult melanoma, so TUMTP_MEL = 1 together with AGE >= 18 gives the reference (no population term on CL).",
-      notes              = "Part of the three-level patient-population factor (melanoma / CNS tumor / other solid tumor) that Hu 2024 crosses with an adult-versus-pediatric split. Pediatric (< 18 years) melanoma carries an exponential CL effect of exp(-0.347) = 0.707 (29% lower than adult melanoma); adult melanoma is the reference. Table 2 tumor-type counts: MEL 1284, CNST 78, other ST 65 of N = 1427, comprising adult MEL n = 1261, adult CNST n = 6, adult other ST n = 22, pediatric ST n = 43, pediatric CNST n = 72, pediatric MEL n = 23.",
-      source_name        = "POPN"
+      notes = "Part of the three-level patient-population factor (melanoma / CNS tumor / other solid tumor) that Hu 2024 crosses with an adult-versus-pediatric split. Pediatric (< 18 years) melanoma carries an exponential CL effect of exp(-0.347) = 0.707 (29% lower than adult melanoma); adult melanoma is the reference. Table 2 tumor-type counts: MEL 1284, CNST 78, other ST 65 of N = 1427, comprising adult MEL n = 1261, adult CNST n = 6, adult other ST n = 22, pediatric ST n = 43, pediatric CNST n = 72, pediatric MEL n = 23.",
+      source_name = "POPN"
     ),
     TUMTP_CNS_PRIM = list(
-      description        = "Tumor-type indicator: primary central nervous system tumor",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: primary central nervous system tumor",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (melanoma or other solid tumor)",
-      notes              = "Exponential effects on CL: adults exp(-0.661) = 0.516 (48% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.668) = 0.513 (49% lower). The adult CNS-tumor cohort in the ipilimumab dataset is small (n = 6) and young (mean age 19.3 years), which Hu 2024 Discussion offers as the reason the adult and pediatric CNS-tumor effects coincide here but differ in the nivolumab analysis. Pediatric composition (Table 2 footnote d): diffuse intrinsic pontine glioma n = 16, medulloblastoma n = 13, high-grade glioma n = 9, ependymoma n = 8, diffuse midline glioma n = 4, and others.",
-      source_name        = "POPN"
+      notes = "Exponential effects on CL: adults exp(-0.661) = 0.516 (48% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.668) = 0.513 (49% lower). The adult CNS-tumor cohort in the ipilimumab dataset is small (n = 6) and young (mean age 19.3 years), which Hu 2024 Discussion offers as the reason the adult and pediatric CNS-tumor effects coincide here but differ in the nivolumab analysis. Pediatric composition (Table 2 footnote d): diffuse intrinsic pontine glioma n = 16, medulloblastoma n = 13, high-grade glioma n = 9, ependymoma n = 8, diffuse midline glioma n = 4, and others.",
+      source_name = "POPN"
     ),
     TUMTP_OTHER = list(
-      description        = "Tumor-type indicator: other solid tumors (the residual non-melanoma, non-CNS pool)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: other solid tumors (the residual non-melanoma, non-CNS pool)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (melanoma or CNS tumor)",
-      notes              = "Exponential effects on CL: adults exp(-0.698) = 0.498 (50% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.462) = 0.630 (37% lower). Unlike the nivolumab model, the pediatric solid-tumor effect is NOT split at 12 years -- Appendix File S3 applies a single POPN = 5 term for the whole < 18-year range. Per-paper composition -- adult other (n = 22, Table 2 footnote b): Ewing sarcoma n = 5, osteosarcoma n = 5, rhabdomyosarcoma n = 3, other solid tumors n = 9; pediatric other solid tumors (n = 43, Table 2 footnote c): osteosarcoma n = 8, rhabdomyosarcoma n = 6, Ewing sarcoma n = 5, renal cell carcinoma n = 2, neuroblastoma n = 1, unspecified solid tumor n = 11, others n = 10.",
-      source_name        = "POPN"
+      notes = "Exponential effects on CL: adults exp(-0.698) = 0.498 (50% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.462) = 0.630 (37% lower). Unlike the nivolumab model, the pediatric solid-tumor effect is NOT split at 12 years -- Appendix File S3 applies a single POPN = 5 term for the whole < 18-year range. Per-paper composition -- adult other (n = 22, Table 2 footnote b): Ewing sarcoma n = 5, osteosarcoma n = 5, rhabdomyosarcoma n = 3, other solid tumors n = 9; pediatric other solid tumors (n = 43, Table 2 footnote c): osteosarcoma n = 8, rhabdomyosarcoma n = 6, Ewing sarcoma n = 5, renal cell carcinoma n = 2, neuroblastoma n = 1, unspecified solid tumor n = 11, others n = 10.",
+      source_name = "POPN"
     ),
     CONMED_NIVO_1Q3W = list(
-      description        = "Coadministration regimen: ipilimumab + nivolumab 1 mg/kg every 3 weeks",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: ipilimumab + nivolumab 1 mg/kg every 3 weeks",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ipilimumab monotherapy or any other combination regimen)",
-      notes              = "Exponential effect on CL (exp(0.0417) = 1.043; 95% CI -0.00318 to 0.0866). Source column COMBO level 1 (Appendix File S3). Table 2: n = 394 of 1427 received ipilimumab + nivolumab 1 mg/kg.",
-      source_name        = "COMBO"
+      notes = "Exponential effect on CL (exp(0.0417) = 1.043; 95% CI -0.00318 to 0.0866). Source column COMBO level 1 (Appendix File S3). Table 2: n = 394 of 1427 received ipilimumab + nivolumab 1 mg/kg.",
+      source_name = "COMBO"
     ),
     CONMED_NIVO_3Q3W = list(
-      description        = "Coadministration regimen: ipilimumab + nivolumab 3 mg/kg every 3 weeks",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: ipilimumab + nivolumab 3 mg/kg every 3 weeks",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ipilimumab monotherapy or any other combination regimen)",
-      notes              = "Exponential effect on CL (exp(0.316) = 1.372; 95% CI -0.0390 to 0.670, RSE 57.3%). Source column COMBO level 2 (Appendix File S3). Table 2: n = 116 of 1427 received ipilimumab + nivolumab 3 mg/kg.",
-      source_name        = "COMBO"
+      notes = "Exponential effect on CL (exp(0.316) = 1.372; 95% CI -0.0390 to 0.670, RSE 57.3%). Source column COMBO level 2 (Appendix File S3). Table 2: n = 116 of 1427 received ipilimumab + nivolumab 3 mg/kg.",
+      source_name = "COMBO"
     )
   )
 
@@ -75,31 +75,31 @@ Hu_2024_ipilimumab <- function() {
   covariatesDataExcluded <- list(
     CONMED_BUDESONIDE = list(
       description = "Coadministration regimen: ipilimumab 10 mg/kg q3w + oral budesonide 9 mg once daily",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "COMBO level 3 in the source NONMEM code (Appendix File S3); THETA(17) CL_chemo was declared 0 FIX and does not appear in Table 5. Table 2 records n = 58 of 1427 in this arm."
+      units = "(binary)",
+      type = "binary",
+      notes = "COMBO level 3 in the source NONMEM code (Appendix File S3); THETA(17) CL_chemo was declared 0 FIX and does not appear in Table 5. Table 2 records n = 58 of 1427 in this arm."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1427L,
-    n_studies      = 10L,
+    species = "human",
+    n_subjects = 1427L,
+    n_studies = 10L,
     n_observations = 6020L,
-    n_pediatric    = 138L,
-    age_range      = "1-89 years (pediatric 1-17 years; adult >= 18 years)",
-    age_median     = "58 years overall; pediatric solid tumors 13 y, pediatric CNS tumors 10 y, pediatric melanoma 13 y",
-    weight_range   = "10.2-160 kg",
-    weight_median  = "78.1 kg overall; pediatric solid tumors 45 kg, pediatric CNS tumors 37.4 kg, pediatric melanoma 56.1 kg",
+    n_pediatric = 138L,
+    age_range = "1-89 years (pediatric 1-17 years; adult >= 18 years)",
+    age_median = "58 years overall; pediatric solid tumors 13 y, pediatric CNS tumors 10 y, pediatric melanoma 13 y",
+    weight_range = "10.2-160 kg",
+    weight_median = "78.1 kg overall; pediatric solid tumors 45 kg, pediatric CNS tumors 37.4 kg, pediatric melanoma 56.1 kg",
     sex_female_pct = 36.9,
     race_ethnicity = c(White = 94.8, `Black/African American` = 1.1, Asian = 1.8, Other = 2.2),
-    disease_state  = "Advanced melanoma (n = 1284), central nervous system tumors (n = 78), and other solid tumors (n = 65). Analysis populations: adult MEL n = 1261, adult CNST n = 6, adult other ST n = 22, pediatric ST n = 43, pediatric CNST n = 72, pediatric MEL n = 23.",
-    dose_range     = "Ipilimumab 0.3-10 mg/kg intravenous infusion q3w for 4 doses (then q12w in several studies), alone or combined with nivolumab 1 or 3 mg/kg q3w, or with oral budesonide 9 mg once daily",
-    regions        = "Pooled global phase I, I/II, II, and III studies (10 trials; Table S1)",
+    disease_state = "Advanced melanoma (n = 1284), central nervous system tumors (n = 78), and other solid tumors (n = 65). Analysis populations: adult MEL n = 1261, adult CNST n = 6, adult other ST n = 22, pediatric ST n = 43, pediatric CNST n = 72, pediatric MEL n = 23.",
+    dose_range = "Ipilimumab 0.3-10 mg/kg intravenous infusion q3w for 4 doses (then q12w in several studies), alone or combined with nivolumab 1 or 3 mg/kg q3w, or with oral budesonide 9 mg once daily",
+    regions = "Pooled global phase I, I/II, II, and III studies (10 trials; Table S1)",
     performance_status = "ECOG PS 0 66.6%, PS 1 31.6%, PS 2 1.7%, PS 3 0.1% (screened but not retained in the final ipilimumab model)",
     renal_function = "Baseline eGFR mean 90.6 (SD 24.5) mL/min/1.73 m^2, median 90.1",
     body_composition = "Baseline lean body mass mean 55.1 (SD 12.9) kg, median 56.8 kg; estimated by the Boer equation (adults) and the Peter equation (children)",
-    notes          = "Baseline demographics per Hu 2024 Table 2 (N = 1427 across 10 ipilimumab studies, of whom 138 were pediatric). Four phase I/II studies contributed the pediatric data (ADVL1412 / CA209070, CA209908, CA184070, CA184178; Table S1)."
+    notes = "Baseline demographics per Hu 2024 Table 2 (N = 1427 across 10 ipilimumab studies, of whom 138 were pediatric). Four phase I/II studies contributed the pediatric data (ADVL1412 / CA209070, CA209908, CA184070, CA184178; Table S1)."
   )
 
   ini({

@@ -13,45 +13,45 @@ Li_2017_cediranib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cediranib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cediranib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Li 2017. Allometric power scaling with reference 73 kg (study-population median; Table 1) on CL/F (exponent 0.517) and Vc/F (exponent 0.65). Study median 73 kg (range 35-150).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline in Li 2017. Allometric power scaling with reference 73 kg (study-population median; Table 1) on CL/F (exponent 0.517) and Vc/F (exponent 0.65). Study median 73 kg (range 35-150).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Li 2017. Power scaling (AGE/59)^-0.409 on CL/F. Reference 59 years is the study-population median (Table 1; range 19-89).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline in Li 2017. Power scaling (AGE/59)^-0.409 on CL/F. Reference 59 years is the study-population median (Table 1; range 19-89).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    n_subjects     = 625L,
-    n_studies      = 19L,
+    n_subjects = 625L,
+    n_studies = 19L,
     n_observations = 7011L,
-    age_range      = "19-89 years",
-    age_median     = "59 years",
-    weight_range   = "35-150 kg",
-    weight_median  = "73 kg",
+    age_range = "19-89 years",
+    age_median = "59 years",
+    weight_range = "35-150 kg",
+    weight_median = "73 kg",
     sex_female_pct = 42.0,
     race_ethnicity = c(Caucasian = 85.1, Asian = 12.6, Black = 1.9, Other = 0.3),
-    disease_state  = "Adult patients with various advanced solid tumours, including ovarian, prostate, non-small-cell lung, gastric, colorectal, renal cell, gastrointestinal stromal, and soft-tissue sarcoma cancers (pooled across 19 Phase I and II monotherapy and combination-chemotherapy studies). Includes 17 ovarian cancer patients and 232 patients on antihypertensive co-medication.",
-    dose_range     = "Oral cediranib (cediranib maleate tablets) 0.5-90 mg once daily; majority of subjects on 20 mg (24%), 30 mg (31%), or 45 mg (42%) starting doses.",
-    regions        = "Multinational (USA, Canada, Europe, Japan).",
+    disease_state = "Adult patients with various advanced solid tumours, including ovarian, prostate, non-small-cell lung, gastric, colorectal, renal cell, gastrointestinal stromal, and soft-tissue sarcoma cancers (pooled across 19 Phase I and II monotherapy and combination-chemotherapy studies). Includes 17 ovarian cancer patients and 232 patients on antihypertensive co-medication.",
+    dose_range = "Oral cediranib (cediranib maleate tablets) 0.5-90 mg once daily; majority of subjects on 20 mg (24%), 30 mg (31%), or 45 mg (42%) starting doses.",
+    regions = "Multinational (USA, Canada, Europe, Japan).",
     platinum_chemo_pct = 7.0,
-    notes          = "Baseline demographics from Li 2017 Table 1. Race was reduced to Asian vs. non-Asian for the covariate analysis because African American (n=12) and Other (n=2) subjects were too few to support separate effect estimation. Race, sex, and platinum-containing chemotherapy were tested but not retained in the final covariate model; only WT and AGE survived backward elimination."
+    notes = "Baseline demographics from Li 2017 Table 1. Race was reduced to Asian vs. non-Asian for the covariate analysis because African American (n=12) and Other (n=2) subjects were too few to support separate effect estimation. Race, sex, and platinum-containing chemotherapy were tested but not retained in the final covariate model; only WT and AGE survived backward elimination."
   )
 
   ini({

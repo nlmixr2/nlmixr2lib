@@ -37,19 +37,19 @@ Knebel_2012_istradefylline_dyskinesia <- function() {
   vignette <- "Knebel_2012_istradefylline"
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; istradefylline exposure enters as the AUC_ISTRA covariate in ng*hr/mL, not as dosing events)",
+    time = "day",
+    dosing = "(none; istradefylline exposure enters as the AUC_ISTRA covariate in ng*hr/mL, not as dosing events)",
     concentration = "(probability, 0-1; the observation prob_dyskinesia is the probability of reporting a dyskinesia adverse event at any point during the study, not a drug concentration)"
   )
 
   covariateData <- list(
     AUC_ISTRA = list(
-      description        = "Individual predicted istradefylline area under the plasma concentration-time curve at steady state over one dosing interval (24 h; istradefylline is dosed once daily).",
-      units              = "ng*hr/mL",
-      type               = "continuous",
+      description = "Individual predicted istradefylline area under the plasma concentration-time curve at steady state over one dosing interval (24 h; istradefylline is dosed once daily).",
+      units = "ng*hr/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input; time-fixed per subject. Set to 0 for placebo-treated subjects, which reduces the model to the intercept alone and yields the baseline dyskinesia probability expit(logite0) = 15.4 percent (Knebel 2012 Table V, placebo row). In the source paper this column is the individual empirical-Bayes predicted AUCss from the companion istradefylline population PK model (Knebel 2012 reference 6), not an observed AUC; that PK model is not currently in nlmixr2lib, so AUC_ISTRA must be supplied by the user. Anchors reported in Knebel 2012 for the dose-to-exposure mapping: a median exposure of 1690 ng*hr/mL corresponds to a 5 mg/d dose (Discussion), and approximately 2500 ng*hr/mL is the approximate median exposure at 10 mg/d (Results, Figure 2); the per-dose distribution is shown graphically in Figure 4, bottom panel.",
-      source_name        = "AUC"
+      notes = "Required input; time-fixed per subject. Set to 0 for placebo-treated subjects, which reduces the model to the intercept alone and yields the baseline dyskinesia probability expit(logite0) = 15.4 percent (Knebel 2012 Table V, placebo row). In the source paper this column is the individual empirical-Bayes predicted AUCss from the companion istradefylline population PK model (Knebel 2012 reference 6), not an observed AUC; that PK model is not currently in nlmixr2lib, so AUC_ISTRA must be supplied by the user. Anchors reported in Knebel 2012 for the dose-to-exposure mapping: a median exposure of 1690 ng*hr/mL corresponds to a 5 mg/d dose (Discussion), and approximately 2500 ng*hr/mL is the approximate median exposure at 10 mg/d (Results, Figure 2); the per-dose distribution is shown graphically in Figure 4, bottom panel.",
+      source_name = "AUC"
     )
   )
 
@@ -64,53 +64,53 @@ Knebel_2012_istradefylline_dyskinesia <- function() {
   covariatesDataExcluded <- list(
     SCORE_UPDRS_II = list(
       description = "UPDRS subscale 2 score (activities of daily living).",
-      units       = "(UPDRS subscale 2 units, score 0-52)",
-      type        = "continuous",
-      notes       = "Knebel 2012 Table III lists this covariate as evaluated in the safety/tolerability models as a measure of disease severity. Screened in the full covariate model but not retained (poor precision); no point estimate reported.",
+      units = "(UPDRS subscale 2 units, score 0-52)",
+      type = "continuous",
+      notes = "Knebel 2012 Table III lists this covariate as evaluated in the safety/tolerability models as a measure of disease severity. Screened in the full covariate model but not retained (poor precision); no point estimate reported.",
       source_name = "UPDS"
     ),
     CONMED_DOPA_AGONIST = list(
       description = "Concomitant dopamine-agonist use (ropinirole, pramipexole, pergolide, bromocriptine).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Knebel 2012 Table III, evaluated in the safety/tolerability models for a possible increase in the incidence of side effects. Screened but not retained; no point estimate reported.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Knebel 2012 Table III, evaluated in the safety/tolerability models for a possible increase in the incidence of side effects. Screened but not retained; no point estimate reported.",
       source_name = "DOPA"
     ),
     CONMED_COMTI = list(
       description = "Concomitant COMT-inhibitor use (entacapone, tolcapone).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Knebel 2012 Table III, evaluated in the safety/tolerability models. Screened but not retained; no point estimate reported.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Knebel 2012 Table III, evaluated in the safety/tolerability models. Screened but not retained; no point estimate reported.",
       source_name = "COMT"
     ),
     CONMED_SELEGILINE = list(
       description = "Concomitant selegiline use.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Knebel 2012 Table III, evaluated in the safety/tolerability models. Screened but not retained; no point estimate reported.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Knebel 2012 Table III, evaluated in the safety/tolerability models. Screened but not retained; no point estimate reported.",
       source_name = "SELG"
     ),
     CONMED_AMANTADINE = list(
       description = "Concomitant amantadine use.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Knebel 2012 Table III, evaluated in the safety/tolerability models. Screened but not retained; no point estimate reported.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Knebel 2012 Table III, evaluated in the safety/tolerability models. Screened but not retained; no point estimate reported.",
       source_name = "AMAT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1789L,
-    n_studies      = 6L,
-    age_range      = "not reported in Knebel 2012 (study design and demographics are reported in the companion population PK paper, Knebel 2012 reference 6)",
-    weight_range   = "not reported in Knebel 2012",
+    species = "human",
+    n_subjects = 1789L,
+    n_studies = 6L,
+    age_range = "not reported in Knebel 2012 (study design and demographics are reported in the companion population PK paper, Knebel 2012 reference 6)",
+    weight_range = "not reported in Knebel 2012",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported in Knebel 2012",
-    disease_state  = "Parkinson disease with levodopa-related motor response complications, on levodopa/carbidopa therapy. Baseline characteristics are tabulated for the percentage OFF time cohort in Knebel 2012 Table I; the adverse-event cohort is a slightly larger overlapping set from the same six studies.",
-    dose_range     = "Istradefylline 5 to 60 mg once daily across the six phase 2/3 studies, plus placebo. Knebel 2012 additionally simulated an 80 mg/d dose by linear extrapolation from the 60 mg results.",
-    regions        = "not reported in Knebel 2012",
-    notes          = "Adverse-event database: 1198 patients treated with istradefylline and 591 treated with placebo from the six phase 2/3 studies (Knebel 2012 Results, AE Analysis), i.e. 1789 patients. The abstract instead states 1798 patients for the safety/tolerability analysis; the two figures disagree by 9 and Knebel 2012 does not reconcile them, so this file records the Results-section sum of the two stated arms. All patients supplied only one observation each, from the parallel fixed-dose response studies, except 73 patients in study 6002-US-001 who supplied 174 observations in total (that study randomised patients to the dose sequences 5, 10, 20 mg or 10, 20, 40 mg). Because the endpoint is essentially one binary record per subject, the source model is a naive-pooled logistic regression with no between-subject random effects. Only endpoints with an incidence at least 2 percent higher than placebo and judged clinically relevant were modelled; dyskinesia, dizziness and nausea met that bar. Model fit in NONMEM VI level 1.1 with FOCE-INT; precision assessed by a stratified nonparametric bootstrap of 1000 replicates."
+    disease_state = "Parkinson disease with levodopa-related motor response complications, on levodopa/carbidopa therapy. Baseline characteristics are tabulated for the percentage OFF time cohort in Knebel 2012 Table I; the adverse-event cohort is a slightly larger overlapping set from the same six studies.",
+    dose_range = "Istradefylline 5 to 60 mg once daily across the six phase 2/3 studies, plus placebo. Knebel 2012 additionally simulated an 80 mg/d dose by linear extrapolation from the 60 mg results.",
+    regions = "not reported in Knebel 2012",
+    notes = "Adverse-event database: 1198 patients treated with istradefylline and 591 treated with placebo from the six phase 2/3 studies (Knebel 2012 Results, AE Analysis), i.e. 1789 patients. The abstract instead states 1798 patients for the safety/tolerability analysis; the two figures disagree by 9 and Knebel 2012 does not reconcile them, so this file records the Results-section sum of the two stated arms. All patients supplied only one observation each, from the parallel fixed-dose response studies, except 73 patients in study 6002-US-001 who supplied 174 observations in total (that study randomised patients to the dose sequences 5, 10, 20 mg or 10, 20, 40 mg). Because the endpoint is essentially one binary record per subject, the source model is a naive-pooled logistic regression with no between-subject random effects. Only endpoints with an incidence at least 2 percent higher than placebo and judged clinically relevant were modelled; dyskinesia, dizziness and nausea met that bar. Model fit in NONMEM VI level 1.1 with FOCE-INT; precision assessed by a stratified nonparametric bootstrap of 1000 replicates."
   )
 
   ini({

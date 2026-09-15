@@ -7,19 +7,19 @@ Said_2025_imatinib <- function() {
   dosing <- c("depot", "central")
 
   compartmentData <- list(
-    depot          = list(analyte = "imatinib",              units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "imatinib",              units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1    = list(analyte = "imatinib",              units = "mg", specimen = "plasma",              verified = TRUE),
-    central_ndmima = list(analyte = "N-desmethyl imatinib",  units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    central_ndmima = list(analyte = "N-desmethyl imatinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     AAG = list(
-      description        = "Serum alpha-1-acid glycoprotein concentration; the saturable binding protein for both imatinib and N-desmethyl imatinib in this model",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum alpha-1-acid glycoprotein concentration; the saturable binding protein for both imatinib and N-desmethyl imatinib in this model",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING, and structural rather than a covariate effect: AAG enters the closed-form binding",
         "solution (Said 2025 Equations 1-2) rather than shifting a typical value, so it has no reference",
         "value and no `e_aag_*` coefficient. Measured by ELISA; a median of 4 (range 1-11) AAG levels were",
@@ -29,14 +29,14 @@ Said_2025_imatinib <- function() {
         "0.9 g/L (Said 2025 Figure 2). The source control stream column is AAGI2, the LOCF-imputed series.",
         sep = " "
       ),
-      source_name        = "AAGI2"
+      source_name = "AAGI2"
     ),
     DIS_COVID19 = list(
-      description        = "1 = COVID-19 patient (pooled InventCOVID and CounterCOVID C-ARDS cohorts), 0 = CML/GIST oncology patient",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = COVID-19 patient (pooled InventCOVID and CounterCOVID C-ARDS cohorts), 0 = CML/GIST oncology patient",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CML/GIST cancer patient from the historical oncology cohort)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The reference complement in this analysis is the CML/GIST oncology cohort,",
         "not healthy volunteers. Said 2025 calls the COVID-19 arm C-ARDS throughout, but the flag is not an",
         "ARDS indicator: InventCOVID required moderate-to-severe ARDS by Berlin criteria while CounterCOVID",
@@ -44,14 +44,14 @@ Said_2025_imatinib <- function() {
         "source control stream column is COVID. DIS_ARDS was therefore NOT used.",
         sep = " "
       ),
-      source_name        = "COVID"
+      source_name = "COVID"
     ),
     CONMED_IL6RI = list(
-      description        = "1 = preceding cotreatment with an interleukin-6 receptor inhibitor (8 mg/kg IV tocilizumab or 400 mg IV sarilumab, single dose on ICU admission), 0 = no IL-6R inhibitor",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = preceding cotreatment with an interleukin-6 receptor inhibitor (8 mg/kg IV tocilizumab or 400 mg IV sarilumab, single dose on ICU admission), 0 = no IL-6R inhibitor",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no IL-6R inhibitor cotreatment)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the source analysis. All 29 IL-6R-inhibitor patients came from",
         "InventCOVID, where 90.6% of patients received one as standard care on ICU admission; no",
         "CounterCOVID or CML/GIST patient received one (Said 2025 Table 1). The source control stream",
@@ -59,71 +59,71 @@ Said_2025_imatinib <- function() {
         "unbound imatinib clearance and NOT retained (THETA(9) is 0 FIX in the Data S1 control stream).",
         sep = " "
       ),
-      source_name        = "IL6INHIB"
+      source_name = "IL6INHIB"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Entered the full covariate model on CLu/F1 and V1/F1 but eliminated: the 95% CI fell inside the 80%-120% clinical-relevance bounds of the Said 2025 Figure 2 forest plot. No point estimate is reported."
+      units = "kg",
+      type = "continuous",
+      notes = "Entered the full covariate model on CLu/F1 and V1/F1 but eliminated: the 95% CI fell inside the 80%-120% clinical-relevance bounds of the Said 2025 Figure 2 forest plot. No point estimate is reported."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Entered the full covariate model on CLu/F1 and V1/F1 but eliminated as not clinically significant (Said 2025 Figure 2 forest plot). No point estimate is reported."
+      units = "years",
+      type = "continuous",
+      notes = "Entered the full covariate model on CLu/F1 and V1/F1 but eliminated as not clinically significant (Said 2025 Figure 2 forest plot). No point estimate is reported."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not clinically significant in the Said 2025 Figure 2 forest plot. No point estimate is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not clinically significant in the Said 2025 Figure 2 forest plot. No point estimate is reported."
     ),
     WHO_ORDINAL = list(
       description = "WHO 9-point ordinal scale for clinical improvement, used as the COVID-19 disease-severity covariate",
-      units       = "score (0-8)",
-      type        = "continuous",
-      notes       = "Tested both as a continuous WHO grade and as a binary WHO grade > 5 (ICU-admitted and invasively ventilated). Entered the full covariate model on CLu/F1 and V1/F1 but eliminated as not clinically significant (Said 2025 Figure 2 forest plot). No point estimate is reported."
+      units = "score (0-8)",
+      type = "continuous",
+      notes = "Tested both as a continuous WHO grade and as a binary WHO grade > 5 (ICU-admitted and invasively ventilated). Entered the full covariate model on CLu/F1 and V1/F1 but eliminated as not clinically significant (Said 2025 Figure 2 forest plot). No point estimate is reported."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
     ),
     AST = list(
       description = "Serum aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported."
     ),
     IL6 = list(
       description = "Serum interleukin-6 concentration",
-      units       = "pg/mL",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported. Not measured at all in the CML/GIST cohort."
+      units = "pg/mL",
+      type = "continuous",
+      notes = "Screened in the covariate analysis (Said 2025 Methods 2.3.2); not retained and no point estimate reported. Not measured at all in the CML/GIST cohort."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 335L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 335L,
+    n_studies = 3L,
     n_observations = paste(
       "InventCOVID contributed 160 total imatinib, 109 unbound imatinib, and 159 total DM-imatinib samples",
       "from 32 patients. 54 CounterCOVID samples were reanalysed (27 ICU, 27 matched hospitalised). The",
@@ -131,13 +131,13 @@ Said_2025_imatinib <- function() {
       "median 4 (range 1-10) samples per patient (Said 2025 Results 3.1 and Table S1).",
       sep = " "
     ),
-    age_range      = "20-93 years",
-    age_median     = "59 years (CML/GIST) to 64 years (ward and ICU/IL6RINH C-ARDS)",
-    weight_range   = "40-167 kg",
-    weight_median  = "70 kg (CML/GIST) to 88 kg (ICU C-ARDS); the forest-plot typical patient is 80.7 kg",
+    age_range = "20-93 years",
+    age_median = "59 years (CML/GIST) to 64 years (ward and ICU/IL6RINH C-ARDS)",
+    weight_range = "40-167 kg",
+    weight_median = "70 kg (CML/GIST) to 88 kg (ICU C-ARDS); the forest-plot typical patient is 80.7 kg",
     sex_female_pct = 34.0,
     race_ethnicity = "Not reported in the source paper (Dutch multicentre trials plus a historical Dutch oncology cohort).",
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled across four groups (Said 2025 Table 1): (1) COVID-19 ARDS patients who remained hospitalised",
       "on the ward, N = 158; (2) COVID-19 ARDS patients admitted to the ICU and invasively ventilated,",
       "N = 42; (3) COVID-19 ARDS patients admitted to the ICU, invasively ventilated, and given an IL-6R",
@@ -147,14 +147,14 @@ Said_2025_imatinib <- function() {
       "were excluded from InventCOVID.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "InventCOVID: 200 mg imatinib as a 2 h IV infusion twice daily for up to 7 days.",
       "CounterCOVID: 800 mg oral loading dose on day 0 then 400 mg orally once daily for 9 days.",
       "CML/GIST: 100-800 mg orally once daily at steady state.",
       sep = " "
     ),
-    regions        = "Netherlands",
-    notes          = paste(
+    regions = "Netherlands",
+    notes = paste(
       "Baseline characteristics are in Said 2025 Table 1 (grouped by ward / ICU / ICU+IL6RINH / CML/GIST)",
       "and Table S1 (grouped by study: InventCOVID N = 32, CounterCOVID N = 197, CML/GIST N = 106).",
       "n_subjects = 335 is the Table 1 / Table S1 column total (229 COVID-19 + 106 CML/GIST); Said 2025",

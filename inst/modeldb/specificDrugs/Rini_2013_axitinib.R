@@ -1,138 +1,138 @@
 Rini_2013_axitinib <- function() {
   description <- "Two-compartment population PK model for axitinib pooled across healthy volunteers and patients with metastatic renal cell carcinoma or other solid tumours (Rini 2013). First-order absorption with an estimated lag time; linear-proportional effects of age > 60 years, Japanese ethnicity and active smoking on systemic clearance; power-form effect of body weight on the central volume of distribution (reference 74.1 kg); a linear-proportional fasting effect on the absorption rate constant ka; a linear-proportional fasting effect on bioavailability F that applies only to crystal polymorph Form IV; and a linear-proportional reduction in F for the marketed crystal polymorph Form XLI relative to Form IV. Pooled data from 590 subjects (383 healthy volunteers, 181 metastatic RCC patients and 26 patients with other solid tumours) across 17 trials."
-  reference   <- "Rini BI, Garrett M, Poland B, Dutcher JP, Rixe O, Wilding G, Stadler WM, Pithavala YK, Kim S, Tarazi J, Motzer RJ. Axitinib in metastatic renal cell carcinoma: results of a pharmacokinetic and pharmacodynamic analysis. J Clin Pharmacol. 2013;53(5):491-504. doi:10.1002/jcph.73"
-  vignette    <- "Rini_2013_axitinib"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Rini BI, Garrett M, Poland B, Dutcher JP, Rixe O, Wilding G, Stadler WM, Pithavala YK, Kim S, Tarazi J, Motzer RJ. Axitinib in metastatic renal cell carcinoma: results of a pharmacokinetic and pharmacodynamic analysis. J Clin Pharmacol. 2013;53(5):491-504. doi:10.1002/jcph.73"
+  vignette <- "Rini_2013_axitinib"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Rini 2013 Methods 'Model development' names the states
   # explicitly (central and peripheral compartments of a linear 2-compartment
   # model with first-order absorption from an oral depot).
   compartmentData <- list(
-    depot       = list(analyte = "axitinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "axitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at screening.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at screening.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on Vc centred on 74.1 kg; the exponent 0.778 was freely estimated rather than fixed at 1. Rini 2013 Results 'PK model' prints the typical-value equation Vc = 47.3 L * (weight / 74.1 kg)^0.778; the reported screening median body weight was 74 kg (range 37-136). Body weight was tested on CL and showed no relationship.",
-      source_name        = "weight"
+      notes = "Power-form effect on Vc centred on 74.1 kg; the exponent 0.778 was freely estimated rather than fixed at 1. Rini 2013 Results 'PK model' prints the typical-value equation Vc = 47.3 L * (weight / 74.1 kg)^0.778; the reported screening median body weight was 74 kg (range 37-136). Body weight was tested on CL and showed no relationship.",
+      source_name = "weight"
     ),
     AGE_GT60 = list(
-      description        = "Indicator for subject age strictly greater than 60 years at screening.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for subject age strictly greater than 60 years at screening.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (age <= 60 years).",
-      notes              = "Rini 2013 Results 'Effects of covariates': age was first tested as a continuous covariate on CL (Supplementary Figure S2-A) but entered the final model as a binary threshold to avoid overestimating CL at younger ages given the non-uniform age distribution across the 17 pooled studies; several thresholds were tested and 60 years was the most significant (Supplementary Figure S2-B). Time-fixed per subject; derive as as.integer(AGE > 60) from the continuous age column.",
-      source_name        = "Age>60"
+      notes = "Rini 2013 Results 'Effects of covariates': age was first tested as a continuous covariate on CL (Supplementary Figure S2-A) but entered the final model as a binary threshold to avoid overestimating CL at younger ages given the non-uniform age distribution across the 17 pooled studies; several thresholds were tested and 60 years was the most significant (Supplementary Figure S2-B). Time-fixed per subject; derive as as.integer(AGE > 60) from the continuous age column.",
+      source_name = "Age>60"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese: Caucasian, Black, Hispanic, other Asian, and 'Other/Not listed').",
-      notes              = "Rini 2013 Results 'Effects of covariates' tested Asian and Japanese separately and in combination; only the Japanese indicator was significant on CL, so the non-Japanese reference deliberately pools other Asian subjects with Caucasian, Black, Hispanic and 'Other/Not listed'. The Discussion cautions that the Japanese effect may be confounded by the lower body weight and higher age of the Japanese subjects in the pooled dataset.",
-      source_name        = "RaceJapanese"
+      notes = "Rini 2013 Results 'Effects of covariates' tested Asian and Japanese separately and in combination; only the Japanese indicator was significant on CL, so the non-Japanese reference deliberately pools other Asian subjects with Caucasian, Black, Hispanic and 'Other/Not listed'. The Discussion cautions that the Japanese effect may be confounded by the lower body weight and higher age of the Japanese subjects in the pooled dataset.",
+      source_name = "RaceJapanese"
     ),
     SMOKE = list(
-      description        = "Active-smoker indicator at screening.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active-smoker indicator at screening.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ex-smoker or non-smoker; Rini 2013 pools these two into a single reference group).",
-      notes              = "Rini 2013 Results 'Effects of covariates': active smokers had 102% greater CL than ex-smokers or non-smokers, but only 19 of 590 subjects (3%) were active smokers and the estimate is imprecise (44% RSE, 95% CI 0.144 to 1.90), so the clinical significance is unclear and the Discussion calls for confirmation in a larger population. Set SMOKE = 0 to simulate the reference (ex-smoker / non-smoker) population. Two-level (current vs not-current) encoding, not the paired SMOKE_CURRENT / SMOKE_NEVER 3-level encoding, because the paper pools ex-smokers and never-smokers into one reference group.",
-      source_name        = "Smokeractive"
+      notes = "Rini 2013 Results 'Effects of covariates': active smokers had 102% greater CL than ex-smokers or non-smokers, but only 19 of 590 subjects (3%) were active smokers and the estimate is imprecise (44% RSE, 95% CI 0.144 to 1.90), so the clinical significance is unclear and the Discussion calls for confirmation in a larger population. Set SMOKE = 0 to simulate the reference (ex-smoker / non-smoker) population. Two-level (current vs not-current) encoding, not the paired SMOKE_CURRENT / SMOKE_NEVER 3-level encoding, because the paper pools ex-smokers and never-smokers into one reference group.",
+      source_name = "Smokeractive"
     ),
     FED = list(
-      description        = "Fed-vs-fasted indicator at the dose record.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted indicator at the dose record.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (fed; the typical-value reference for ka and F in this model).",
-      notes              = "The fasting effect is applied internally as (1 - FED), so FED = 1 (fed) leaves ka and F at their typical-value fed Form IV estimates and FED = 0 (fasted) activates the linear-proportional fasting increases (Rini 2013 Table 2 rows 'ka (hour-1): fed', 'Fasting effect on ka' and 'Fasting on F, Form IV'). The fasting effect on ka applies regardless of formulation; the fasting effect on F applies only to Form IV (Table 2 footnote g: 'there was no observed food effect with Form XLI'). Per-dose-record covariate; the crossover food-effect studies mean a single subject may carry both values.",
-      source_name        = "FED"
+      notes = "The fasting effect is applied internally as (1 - FED), so FED = 1 (fed) leaves ka and F at their typical-value fed Form IV estimates and FED = 0 (fasted) activates the linear-proportional fasting increases (Rini 2013 Table 2 rows 'ka (hour-1): fed', 'Fasting effect on ka' and 'Fasting on F, Form IV'). The fasting effect on ka applies regardless of formulation; the fasting effect on F applies only to Form IV (Table 2 footnote g: 'there was no observed food effect with Form XLI'). Per-dose-record covariate; the crossover food-effect studies mean a single subject may carry both values.",
+      source_name = "FED"
     ),
     FORM_AXI_XLI = list(
-      description        = "Crystal polymorph form indicator for axitinib (Form XLI marketed vs Form IV earlier).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crystal polymorph form indicator for axitinib (Form XLI marketed vs Form IV earlier).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Form IV; the typical-value F reference in Rini 2013 Table 2, F = 0.457 in the fed state).",
-      notes              = "1 = Form XLI (marketed commercial crystal polymorph); 0 = Form IV (earlier Phase I crystal polymorph and the typical-value F reference). Linear-proportional effect on F only; no effect on ka, CL, Vc, Q or Vp was retained. Rini 2013 Table 2 footnote g gives F(Form XLI) = 0.457 * (1 - 0.121) = 0.402 and states that no food effect was observed with Form XLI, so the fasting effect on F is gated to Form IV records. Per-dose-record covariate.",
-      source_name        = "Form"
+      notes = "1 = Form XLI (marketed commercial crystal polymorph); 0 = Form IV (earlier Phase I crystal polymorph and the typical-value F reference). Linear-proportional effect on F only; no effect on ka, CL, Vc, Q or Vp was retained. Rini 2013 Table 2 footnote g gives F(Form XLI) = 0.457 * (1 - 0.121) = 0.402 and states that no food effect was observed with Form XLI, so the fasting effect on F is gated to Form IV records. Per-dose-record covariate.",
+      source_name = "Form"
     )
   )
 
   covariatesDataExcluded <- list(
     BSA = list(
       description = "Body surface area.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Tested on CL in the stepwise covariate search but not retained in the final model (Rini 2013 Methods 'Model development' and Results 'Effects of covariates')."
+      units = "m^2",
+      type = "continuous",
+      notes = "Tested on CL in the stepwise covariate search but not retained in the final model (Rini 2013 Methods 'Model development' and Results 'Effects of covariates')."
     ),
     ALT = list(
       description = "Alanine aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL but not retained; median (range) at screening 21 U/L (5-188). The Discussion attributes the null result to the requirement for normal hepatic function at study entry (Rini 2013 Results 'Effects of covariates')."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL but not retained; median (range) at screening 21 U/L (5-188). The Discussion attributes the null result to the requirement for normal hepatic function at study entry (Rini 2013 Results 'Effects of covariates')."
     ),
     AST = list(
       description = "Aspartate aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL but not retained; median (range) at screening 22 U/L (9-154) (Rini 2013 Results 'Effects of covariates')."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL but not retained; median (range) at screening 22 U/L (9-154) (Rini 2013 Results 'Effects of covariates')."
     ),
     BILI = list(
       description = "Total bilirubin.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Tested on CL but not retained; median (range) at screening 0.7 mg/dL (0.1-3) (Rini 2013 Results 'Effects of covariates')."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Tested on CL but not retained; median (range) at screening 0.7 mg/dL (0.1-3) (Rini 2013 Results 'Effects of covariates')."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated with the Cockcroft-Gault equation.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested on CL but not retained; median (range) at screening 103 mL/min (8-214) (Rini 2013 Results 'Effects of covariates')."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested on CL but not retained; median (range) at screening 103 mL/min (8-214) (Rini 2013 Results 'Effects of covariates')."
     ),
     SEXF = list(
       description = "Female-sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The only categorical covariate tested on BOTH CL and Vc; not retained on either (Rini 2013 Methods 'Model development'). The pooled population was 85% male."
+      units = "(binary)",
+      type = "binary",
+      notes = "The only categorical covariate tested on BOTH CL and Vc; not retained on either (Rini 2013 Methods 'Model development'). The pooled population was 85% male."
     ),
     ECOG_GE1 = list(
       description = "Baseline ECOG performance status of 1 or worse.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL but not retained in the population PK model (Rini 2013 Methods 'Model development'). Baseline ECOG PS is separately a significant prognostic factor for progression-free and overall survival in the PK/PD Cox analysis (Table 5), which is not encoded here."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL but not retained in the population PK model (Rini 2013 Methods 'Model development'). Baseline ECOG PS is separately a significant prognostic factor for progression-free and overall survival in the PK/PD Cox analysis (Table 5), which is not encoded here."
     ),
     DIS_HEALTHY = list(
       description = "Healthy-volunteer vs cancer-patient study-population indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL but not retained: Rini 2013 Results 'Effects of covariates' reports no difference in axitinib CL between healthy volunteers and cancer patients, with clearance etas centred at zero in both groups (Supplementary Figure S3), which is what justifies pooling the two populations into a single model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL but not retained: Rini 2013 Results 'Effects of covariates' reports no difference in axitinib CL between healthy volunteers and cancer patients, with clearance etas centred at zero in both groups (Supplementary Figure S3), which is what justifies pooling the two populations into a single model."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 590L,
-    n_studies       = 17L,
-    age_range       = "18-85 years",
-    age_median      = "42 years overall; 60 years (32-85) in patients and 32 years (18-69) in healthy volunteers",
-    weight_range    = "37-136 kg",
-    weight_median   = "74 kg",
-    sex_female_pct  = 15,
-    race_ethnicity  = c(Caucasian = 61, Other = 39),
-    disease_state   = "Pooled healthy volunteers (n = 383) and patients with advanced solid tumours (n = 207, of whom 181 had metastatic renal cell carcinoma, cytokine- or sorafenib-refractory).",
-    dose_range      = "Healthy volunteers received a single 5 mg oral dose (one study additionally gave 1 mg intravenously to estimate absolute bioavailability, and one Chinese study gave single 5, 7 and 10 mg oral doses). Patients received 5 mg orally twice daily with titration permitted up to 10 mg twice daily.",
-    regions         = "United States, France, Germany, Japan, Belgium, Singapore and China.",
-    renal_function  = "Creatinine clearance (Cockcroft-Gault) median 103 mL/min (range 8-214); normal renal function was a study-entry requirement.",
+    species = "human",
+    n_subjects = 590L,
+    n_studies = 17L,
+    age_range = "18-85 years",
+    age_median = "42 years overall; 60 years (32-85) in patients and 32 years (18-69) in healthy volunteers",
+    weight_range = "37-136 kg",
+    weight_median = "74 kg",
+    sex_female_pct = 15,
+    race_ethnicity = c(Caucasian = 61, Other = 39),
+    disease_state = "Pooled healthy volunteers (n = 383) and patients with advanced solid tumours (n = 207, of whom 181 had metastatic renal cell carcinoma, cytokine- or sorafenib-refractory).",
+    dose_range = "Healthy volunteers received a single 5 mg oral dose (one study additionally gave 1 mg intravenously to estimate absolute bioavailability, and one Chinese study gave single 5, 7 and 10 mg oral doses). Patients received 5 mg orally twice daily with titration permitted up to 10 mg twice daily.",
+    regions = "United States, France, Germany, Japan, Belgium, Singapore and China.",
+    renal_function = "Creatinine clearance (Cockcroft-Gault) median 103 mL/min (range 8-214); normal renal function was a study-entry requirement.",
     hepatic_function = "AST median 22 U/L (9-154), ALT median 21 U/L (5-188), bilirubin median 0.7 mg/dL (0.1-3); normal hepatic function was a study-entry requirement. Sixteen subjects with Child-Pugh hepatic impairment (study 13) were excluded from the analysis dataset.",
-    smoking_status  = "19 of 590 subjects (3%) were active smokers.",
-    notes           = "Demographics from Rini 2013 Results 'Subject characteristics'; study designs from Table 1. Sixteen patients from dose-finding study 1 who started above the 5 mg bid maximum tolerated dose were also excluded. The PK/PD (exposure-efficacy) analyses used a 168-patient metastatic RCC subset described in Table 3; those Cox and logistic regression models are not encoded in this file (see the vignette Errata)."
+    smoking_status = "19 of 590 subjects (3%) were active smokers.",
+    notes = "Demographics from Rini 2013 Results 'Subject characteristics'; study designs from Table 1. Sixteen patients from dose-finding study 1 who started above the 5 mg bid maximum tolerated dose were also excluded. The PK/PD (exposure-efficacy) analyses used a 168-patient metastatic RCC subset described in Table 3; those Cox and logistic regression models are not encoded in this file (see the vignette Errata)."
   )
 
   ini({

@@ -13,41 +13,41 @@ Roberts_2011_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Roberts 2011 Table 1: mean 74.8 kg (SD 15.8). Enters the volume-of-distribution structural parameter as a linear factor with no reference scaling (Eq. 3: TVV = theta1 * TBW; theta1 = 1.53 L/kg). Source column TBW.",
-      source_name        = "TBW"
+      notes = "Roberts 2011 Table 1: mean 74.8 kg (SD 15.8). Enters the volume-of-distribution structural parameter as a linear factor with no reference scaling (Eq. 3: TVV = theta1 * TBW; theta1 = 1.53 L/kg). Source column TBW.",
+      source_name = "TBW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance from 24-hour urinary collection, normalized to body surface area",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance from 24-hour urinary collection, normalized to body surface area",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Roberts 2011 Methods (Patients and data collection): urinary CrCl collected daily as a routine procedure and normalized to body surface area. Population mean 90.7 mL/min/1.73 m^2 (SD 60.4) per Table 1. Enters CL as a linear factor referenced to 100 mL/min/1.73 m^2 (Eq. 4: TVCL = theta2 * CrCl/100; theta2 = 4.58 L/h). Source column CrCl.",
-      source_name        = "CrCl"
+      notes = "Roberts 2011 Methods (Patients and data collection): urinary CrCl collected daily as a routine procedure and normalized to body surface area. Population mean 90.7 mL/min/1.73 m^2 (SD 60.4) per Table 1. Enters CL as a linear factor referenced to 100 mL/min/1.73 m^2 (Eq. 4: TVCL = theta2 * CrCl/100; theta2 = 4.58 L/h). Source column CrCl.",
+      source_name = "CrCl"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 206L,
-    n_studies        = 1L,
-    age_range        = "adult (>=18 years)",
-    age_median       = "58.1 years (mean, SD 14.8)",
-    weight_range     = "mean 74.8 kg (SD 15.8)",
-    weight_median    = "74.8 kg (mean)",
-    sex_female_pct   = 38.4,
-    race_ethnicity   = "Not reported (single-center study in Brussels, Belgium)",
-    disease_state    = "Adult septic critically ill patients in the intensive care unit, treated empirically or for documented Gram-positive infection (frequently MRSA, methicillin-resistant Staphylococcus epidermidis, or ampicillin-resistant Enterococcus). Exclusion criteria: age <18 years, prior intermittent vancomycin in the 48 h before continuous-infusion onset, renal replacement therapy, continuous-infusion duration <48 h, pregnancy, burns, or cystic fibrosis. APACHE II score 21 (16-27); SOFA score 7.6 (SD 4.2).",
-    dose_range       = "Vancomycin by continuous infusion. Loading dose 15 mg/kg over 30 min (rounded to 125 mg) or simplified flat 750 mg (TBW <70 kg) / 1000 mg (TBW >=70 kg) over 30 min; maintenance 30 mg/kg/day or simplified flat 2000 mg/day (TBW <70 kg) / 3000 mg/day (TBW >=70 kg) by 24 h continuous infusion, adapted for renal failure. Per-patient target serum concentration 20-30 mg/L.",
-    regions          = "Belgium (single center, Erasme Hospital, Brussels)",
-    apache_ii        = "median 21 (IQR 16-27)",
-    sofa             = "mean 7.6 (SD 4.2)",
-    renal_function   = "BSA-normalized 24-hour urinary creatinine clearance mean 90.7 mL/min/1.73 m^2 (SD 60.4); patients on renal replacement therapy excluded",
+    species = "human",
+    n_subjects = 206L,
+    n_studies = 1L,
+    age_range = "adult (>=18 years)",
+    age_median = "58.1 years (mean, SD 14.8)",
+    weight_range = "mean 74.8 kg (SD 15.8)",
+    weight_median = "74.8 kg (mean)",
+    sex_female_pct = 38.4,
+    race_ethnicity = "Not reported (single-center study in Brussels, Belgium)",
+    disease_state = "Adult septic critically ill patients in the intensive care unit, treated empirically or for documented Gram-positive infection (frequently MRSA, methicillin-resistant Staphylococcus epidermidis, or ampicillin-resistant Enterococcus). Exclusion criteria: age <18 years, prior intermittent vancomycin in the 48 h before continuous-infusion onset, renal replacement therapy, continuous-infusion duration <48 h, pregnancy, burns, or cystic fibrosis. APACHE II score 21 (16-27); SOFA score 7.6 (SD 4.2).",
+    dose_range = "Vancomycin by continuous infusion. Loading dose 15 mg/kg over 30 min (rounded to 125 mg) or simplified flat 750 mg (TBW <70 kg) / 1000 mg (TBW >=70 kg) over 30 min; maintenance 30 mg/kg/day or simplified flat 2000 mg/day (TBW <70 kg) / 3000 mg/day (TBW >=70 kg) by 24 h continuous infusion, adapted for renal failure. Per-patient target serum concentration 20-30 mg/L.",
+    regions = "Belgium (single center, Erasme Hospital, Brussels)",
+    apache_ii = "median 21 (IQR 16-27)",
+    sofa = "mean 7.6 (SD 4.2)",
+    renal_function = "BSA-normalized 24-hour urinary creatinine clearance mean 90.7 mL/min/1.73 m^2 (SD 60.4); patients on renal replacement therapy excluded",
     n_concentrations = 579L,
-    notes            = "Retrospective single-center cohort, January 2008 to December 2009. Vancomycin assay by fluorescence polarization immunoassay (TDx; Abbott); assay limit 0.6 mg/L. Each patient contributed 2-3 trough samples (daily at 8 a.m., at least 16 h after onset of continuous infusion to capture pseudo-steady state). Model fit in NONMEM 6.1 (FOCEI) via Wings for NONMEM 6.1.3. Bootstrap N = 1000 used to derive 95% confidence intervals (Roberts 2011 Table 2). Covariates screened and not retained: age, sex, SOFA score, BMI."
+    notes = "Retrospective single-center cohort, January 2008 to December 2009. Vancomycin assay by fluorescence polarization immunoassay (TDx; Abbott); assay limit 0.6 mg/L. Each patient contributed 2-3 trough samples (daily at 8 a.m., at least 16 h after onset of continuous infusion to capture pseudo-steady state). Model fit in NONMEM 6.1 (FOCEI) via Wings for NONMEM 6.1.3. Bootstrap N = 1000 used to derive 95% confidence intervals (Roberts 2011 Table 2). Covariates screened and not retained: age, sex, SOFA score, BMI."
   )
 
   ini({

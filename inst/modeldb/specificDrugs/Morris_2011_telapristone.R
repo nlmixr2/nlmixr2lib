@@ -31,8 +31,8 @@ Morris_2011_telapristone <- function() {
   paper_specific_etas <- "etalfmetest"
 
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -41,15 +41,15 @@ Morris_2011_telapristone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "telapristone", units = "nmol", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "telapristone", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "telapristone", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "telapristone", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "telapristone", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "telapristone", units = "nmol", specimen = "plasma", verified = FALSE),
     central_cdb4453 = list(analyte = "CDB-4453", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     MIX_FAST_ELIM = list(
-      description        = paste(
+      description = paste(
         "Per-subject binary mixture-model class indicator for the",
         "telapristone CL/F mixture. 1 = subject classified to the high-CL",
         "fast-eliminator subpopulation (typical CL/F = 11.6 L/h, ~12 h",
@@ -57,10 +57,10 @@ Morris_2011_telapristone <- function() {
         "slow-eliminator subpopulation (typical CL/F = 3.34 L/h, ~35 h",
         "elimination half-life)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (low-CL slow-eliminator subpopulation; the majority class at 74.9 % of the source cohort)",
-      notes              = paste(
+      notes = paste(
         "Not a measured patient covariate. Per-subject latent-class",
         "assignment from the NONMEM $MIXTURE block (Morris 2011 Methods",
         "'Mixture Model' subsection and Equation for the individual",
@@ -80,10 +80,10 @@ Morris_2011_telapristone <- function() {
         "binary numerically matches the paper's mixture-indicator",
         "orientation."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment)"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment)"
     ),
     RENALIMP_MOD = list(
-      description        = paste(
+      description = paste(
         "Per-subject binary indicator of moderate renal impairment.",
         "1 = Cockcroft-Gault creatinine clearance 30-50 mL/min (the",
         "ZP-006 moderate-renal-impairment stratum); 0 = healthy renal",
@@ -91,10 +91,10 @@ Morris_2011_telapristone <- function() {
         "ZP-006 healthy + mild-renal-impairment reference stratum, and",
         "the ZP-005 healthy + hepatic-impairment cohort)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy renal function or mild renal impairment)",
-      notes              = paste(
+      notes = paste(
         "Morris 2011 Methods 'Covariate Analysis' and Results: the only",
         "retained covariate from a stepwise forward addition / backward",
         "elimination screen of age, weight, height, BMI, AST, ALT, CrCl,",
@@ -111,19 +111,19 @@ Morris_2011_telapristone <- function() {
         "n = 26 subjects share the reference category. Severe renal",
         "impairment / end-stage renal disease subjects were not enrolled."
       ),
-      source_name        = "RENAL (Morris 2011 Methods covariate model)"
+      source_name = "RENAL (Morris 2011 Methods covariate model)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 2L,
-    age_range      = "35-66 years (median 52.5)",
-    weight_range   = "52.3-102.3 kg (median 71.65)",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 2L,
+    age_range = "35-66 years (median 52.5)",
+    weight_range = "52.3-102.3 kg (median 71.65)",
     sex_female_pct = 100,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult women across two phase I/II open-label single-dose",
       "telapristone-acetate PK studies. ZP-005 (n = 11; NCT00741273):",
       "n = 4 healthy volunteers + n = 7 moderate hepatic impairment",
@@ -133,7 +133,7 @@ Morris_2011_telapristone <- function() {
       "moderate renal impairment (CrCl 30-50 mL/min) -- single 50 mg",
       "dose."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "25 mg or 50 mg telapristone acetate, single oral dose under",
       "fasted conditions. Dose-to-amount conversion uses telapristone",
       "molecular weight 505.6 g/mol per Morris 2011 Methods 'Data",
@@ -141,8 +141,8 @@ Morris_2011_telapristone <- function() {
       "datasheet); a 25 mg dose maps to 49,447 nmol and 50 mg to 98,894",
       "nmol of telapristone equivalents in the depot."
     ),
-    regions        = "United States (clinical trial sites under 21 CFR Part 56 IRB approval)",
-    notes          = paste(
+    regions = "United States (clinical trial sites under 21 CFR Part 56 IRB approval)",
+    notes = paste(
       "Demographics from Morris 2011 Table I. Plasma sampling 0-48 h",
       "post-dose at 22 time points per subject. Of 1,805 concentration",
       "measurements across both studies, 5.0 % (n = 90) were below the",

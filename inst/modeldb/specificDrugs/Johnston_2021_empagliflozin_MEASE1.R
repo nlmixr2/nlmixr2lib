@@ -22,18 +22,18 @@ Johnston_2021_empagliflozin_MEASE1 <- function() {
   )
   vignette <- "Johnston_2021_empagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "n/a (no drug dosing events; empagliflozin exposure enters as the per-subject AUC_EMPA covariate from the upstream popPK)",
+    time = "h",
+    dosing = "n/a (no drug dosing events; empagliflozin exposure enters as the per-subject AUC_EMPA covariate from the upstream popPK)",
     concentration = "n/a (multi-output PD-only model; the observations are HbA1c in % NGSP, MDG in mg*day/dL, and TDID in IU/kg)",
-    AUC_EMPA      = "nmol*h/L"
+    AUC_EMPA = "nmol*h/L"
   )
   covariateData <- list(
     AUC_EMPA = list(
-      description        = "Steady-state empagliflozin AUC over the q24h dosing interval supplied as a per-subject (time-fixed) drug-exposure covariate from the upstream Johnston 2021 popPK.",
-      units              = "nmol*h/L",
-      type               = "continuous",
+      description = "Steady-state empagliflozin AUC over the q24h dosing interval supplied as a per-subject (time-fixed) drug-exposure covariate from the upstream Johnston 2021 popPK.",
+      units = "nmol*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject (time-fixed) steady-state AUC of empagliflozin. The",
         "source authors generate AUCss from individual empirical Bayes",
         "estimates of the upstream popPK (Johnston 2021 Table S2; see",
@@ -43,73 +43,73 @@ Johnston_2021_empagliflozin_MEASE1 <- function() {
         "in the M-EASE-1 fit: 110 nmol*h/L (TDID) and 370 nmol*h/L (MDG)",
         "(Table S3 / Table 3)."
       ),
-      source_name        = "AUCss"
+      source_name = "AUCss"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 82 kg on baseline TDID, baseline HbA1c, and Emax_MDG (Table S3 / equations page 13).",
-      source_name        = "WT"
+      notes = "Power-form effects centred at 82 kg on baseline TDID, baseline HbA1c, and Emax_MDG (Table S3 / equations page 13).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (BSA-normalised)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (BSA-normalised)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 99 mL/min/1.73 m^2 on baseline TDID and Emax_MDG (Table S3 / equations page 13). Renamed from the source column eGFR to the canonical CRCL per covariate-columns.md.",
-      source_name        = "eGFR"
+      notes = "Power-form effects centred at 99 mL/min/1.73 m^2 on baseline TDID and Emax_MDG (Table S3 / equations page 13). Renamed from the source column eGFR to the canonical CRCL per covariate-columns.md.",
+      source_name = "eGFR"
     ),
     HBA1C = list(
-      description        = "Baseline (pre-treatment) HbA1c (per-subject, time-fixed)",
-      units              = "% (NGSP)",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) HbA1c (per-subject, time-fixed)",
+      units = "% (NGSP)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline HbA1c as a per-subject covariate on baseline TDID (Table S3 TDID equation; reference 8.1 %). NOT the same as the time-course HbA1c observations: this is the per-subject baseline anchor used inside the TDID equation; observations are the model-predicted longitudinal HbA1c trajectory.",
-      source_name        = "Base.HbA1c"
+      notes = "Baseline HbA1c as a per-subject covariate on baseline TDID (Table S3 TDID equation; reference 8.1 %). NOT the same as the time-course HbA1c observations: this is the per-subject baseline anchor used inside the TDID equation; observations are the model-predicted longitudinal HbA1c trajectory.",
+      source_name = "Base.HbA1c"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the reference patient is male per Table S3 M-EASE-1 header)",
-      notes              = "Multiplicative effects on baseline TDID, baseline HbA1c, and Emax_MDG (Table S3 / equations page 13). Encoded as `<multiplier>^SEXF`.",
-      source_name        = "Sex (1 = female; 0 = male)"
+      notes = "Multiplicative effects on baseline TDID, baseline HbA1c, and Emax_MDG (Table S3 / equations page 13). Encoded as `<multiplier>^SEXF`.",
+      source_name = "Sex (1 = female; 0 = male)"
     ),
     INSDT_CSII = list(
-      description        = "Insulin delivery type indicator (1 = continuous subcutaneous insulin infusion (CSII), 0 = multiple daily injections (MDI) reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Insulin delivery type indicator (1 = continuous subcutaneous insulin infusion (CSII), 0 = multiple daily injections (MDI) reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MDI; the reference patient is on MDI per Johnston 2021 population description)",
-      notes              = "Multiplicative effect on Emax_MDG (Table S3 / equations page 13). Follows the `<COLUMN>_<LEVEL>` decomposition pattern used elsewhere in the registry.",
-      source_name        = "INSDT"
+      notes = "Multiplicative effect on Emax_MDG (Table S3 / equations page 13). Follows the `<COLUMN>_<LEVEL>` decomposition pattern used elsewhere in the registry.",
+      source_name = "INSDT"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 796L,
-    n_subjects_empa     = 534L,
-    n_subjects_placebo  = 262L,
+    species = "human",
+    n_subjects = 796L,
+    n_subjects_empa = 534L,
+    n_subjects_placebo = 262L,
     n_hba1c_observations = 4824L,
-    n_tdid_observations  = 189182L,
-    n_mdg_observations   = 4243L,
-    n_studies           = 2L,
-    studies             = "EASE-1 (phase II, 4-week) and EASE-2 (phase III, 52-week). External evaluation on EASE-3 (phase III, 26-week, out-of-sample).",
-    age_range           = "21-69 years (95th-percentile interval at baseline)",
-    weight_range        = "55-125 kg (95th-percentile interval at baseline)",
-    egfr_range          = "57-127 mL/min/1.73 m^2 (95th-percentile interval at baseline)",
-    hba1c_range         = "7.2-9.5 % (95th-percentile interval at baseline)",
-    disease_state       = paste0(
+    n_tdid_observations = 189182L,
+    n_mdg_observations = 4243L,
+    n_studies = 2L,
+    studies = "EASE-1 (phase II, 4-week) and EASE-2 (phase III, 52-week). External evaluation on EASE-3 (phase III, 26-week, out-of-sample).",
+    age_range = "21-69 years (95th-percentile interval at baseline)",
+    weight_range = "55-125 kg (95th-percentile interval at baseline)",
+    egfr_range = "57-127 mL/min/1.73 m^2 (95th-percentile interval at baseline)",
+    hba1c_range = "7.2-9.5 % (95th-percentile interval at baseline)",
+    disease_state = paste0(
       "Adults with type 1 diabetes mellitus (T1D) on background insulin ",
       "therapy. Reference patient (Table S3 M-EASE-1 header): male, eGFR ",
       "99 mL/min/1.73 m^2, body weight 82 kg, baseline HbA1c 8.1 %, ",
       "cumulative MDG over 24 h = 4266 mg*day/dL."
     ),
-    dose_range          = "Empagliflozin 0 (placebo), 2.5, 10, 25 mg QD (as the empagliflozin arms in EASE-1 and EASE-2); AUC_EMPA covariate supplies the exposure.",
-    regions             = "Multi-national (EASE-1 / EASE-2 trials).",
-    notes               = paste0(
+    dose_range = "Empagliflozin 0 (placebo), 2.5, 10, 25 mg QD (as the empagliflozin arms in EASE-1 and EASE-2); AUC_EMPA covariate supplies the exposure.",
+    regions = "Multi-national (EASE-1 / EASE-2 trials).",
+    notes = paste0(
       "Semi-mechanistic stepwise-fit model developed in NONMEM 7.4 with ",
       "FOCE-I (Section 2.2). Step 1 fits TDID as a proportional-Emax ",
       "function of AUC_EMPA; Step 2 fits MDG using the derived TDID and a ",

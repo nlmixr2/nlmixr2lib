@@ -44,21 +44,21 @@ Ding_2026_artemether <- function() {
   # scheme', 'Drug quantification': venous plasma artemether and
   # dihydroartemisinin by LC-MS/MS) and Figure S1.
   compartmentData <- list(
-    depot        = list(analyte = "artemether",         units = "mg", specimen = "administration site", verified = TRUE),
-    transit1     = list(analyte = "artemether",         units = "mg", specimen = "administration site", verified = TRUE),
-    transit2     = list(analyte = "artemether",         units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "artemether",         units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1  = list(analyte = "artemether",         units = "mg", specimen = "plasma",              verified = TRUE),
-    central_dihydroart  = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "artemether", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "artemether", units = "mg", specimen = "plasma", verified = TRUE),
+    central_dihydroart = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Ding 2026 Methods ('Covariates model'):",
         "'bodyweight was included on all clearance and volume parameters",
         "using a conventional allometric function with fixed exponents of",
@@ -72,14 +72,14 @@ Ding_2026_artemether <- function() {
         "basis for this covariate'.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     OCC = list(
-      description        = "Dose occasion index, 1 to 6 across the six-dose artemether-lumefantrine regimen",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dose occasion index, 1 to 6 across the six-dose artemether-lumefantrine regimen",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (the first dose, at hour 0)",
-      notes              = paste(
+      notes = paste(
         "Integer occasion column taking value k on the interval starting at",
         "the k-th dose. Doses are given at 0, 8, 24, 36, 48 and 60 h",
         "(Ding 2026 Methods, 'Dosing regimen'; Table S1), so OCC = 1 for",
@@ -100,16 +100,16 @@ Ding_2026_artemether <- function() {
         "rather than extrapolating the linear rise.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     CONMED_AMODIAQUINE = list(
       description = "Coadministration of amodiaquine (triple ACT versus artemether-lumefantrine alone)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a binary drug-drug-interaction covariate on every PK",
         "parameter of artemether and dihydroartemisinin, and additionally",
         "assessed by a 500-bootstrap full covariate model, but NOT retained:",
@@ -127,23 +127,23 @@ Ding_2026_artemether <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 79L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 79L,
+    n_studies = 2L,
     n_observations = paste(
       "626 plasma samples in total, including 42 artemether and 101",
       "dihydroartemisinin measurements below the lower limit of",
       "quantification, which were discarded (Beal M1; Results 3.1.1)"
     ),
-    age_range      = "26.5-30.0 years, median by study/arm (range 8.0-58.4 years) (Table S3)",
-    weight_range   = "50.0-52.3 kg, median by study/arm (range 18.0-78.0 kg) (Table S3)",
+    age_range = "26.5-30.0 years, median by study/arm (range 8.0-58.4 years) (Table S3)",
+    weight_range = "50.0-52.3 kg, median by study/arm (range 18.0-78.0 kg) (Table S3)",
     sex_female_pct = 10.1,
-    disease_state  = paste(
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum malaria. Dense-PK cohort",
       "median admission asexual parasite count 5,597-45,000 parasites/uL and",
       "median admission body temperature 37.3-38.2 degC (Table S3)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Standard fixed-dose artemether-lumefantrine (20 mg artemether +",
       "120 mg lumefantrine per tablet) given orally as six doses over 3 days",
       "at 0, 8, 24, 36, 48 and 60 h, directly observed, with a fatty snack",
@@ -152,12 +152,12 @@ Ding_2026_artemether <- function() {
       "(Table S1). Dense-PK cohort median artemether dose 3.1-3.2",
       "mg/kg/day (range 2.1-4.4) (Table S3)."
     ),
-    regions        = paste(
+    regions = paste(
       "TRACII (NCT02453308) dense-PK sampling at one site in Bangladesh",
       "(n = 41); TACT-CV (NCT03355664) dense-PK sampling at one site in",
       "Vietnam (n = 38)."
     ),
-    notes          = paste(
+    notes = paste(
       "Only the dense-PK sub-cohorts contribute artemether and",
       "dihydroartemisinin data: samples at 1, 2, 4, 6, 8, 12, 24 and 64 h",
       "(plus 52 h in TRACII), because artemether and dihydroartemisinin were",

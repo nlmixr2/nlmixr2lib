@@ -9,7 +9,7 @@ Lim_2025_amikacin <- function() {
     sep = " "
   )
   vignette <- "Lim_2025_amikacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "amikacin", units = "mg", specimen = "serum", verified = TRUE)
@@ -17,11 +17,11 @@ Lim_2025_amikacin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at amikacin initiation",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at amikacin initiation",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Lim 2025 Methods ('Population PK analysis') states the weight effect was",
         "explored with WT 'expressed in grams', and both final equations normalize",
         "it as (WT/1,000). The reference is therefore 1,000 g = 1 kg, and the",
@@ -32,14 +32,14 @@ Lim_2025_amikacin <- function() {
         "the Methods record that a missing weight was imputed by last observation",
         "carried forward."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age) at amikacin initiation",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age) at amikacin initiation",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "WEEKS, not the register-default months. Lim 2025 Methods list the age",
         "covariates as 'gestational age (GA [weeks]), PMA (weeks), and PNA (days)',",
         "and the final CL equation is written as the bare power (PMA/30)^1.53 on a",
@@ -59,22 +59,22 @@ Lim_2025_amikacin <- function() {
         "user should regard as representative of the source cohort. Supply PMA on the",
         "true postmenstrual scale (GA_weeks + PNA_days/7)."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 90L,
-    n_studies       = 1L,
-    n_observations  = 254L,
-    ga_range        = "24+0 to 41+0 weeks (median 29+0, IQR 26+0 to 31+0)",
-    page_range      = "Table 1 prints 25+6 to 113+6 weeks (median 45+6); see covariateData$PAGE notes -- the printed column appears to carry a GA_weeks + PNA_days unit error, and the reconstructed true median is approximately 31 weeks",
-    weight_range    = "0.58-3.77 kg at amikacin initiation (median 1.34, IQR 0.90-1.90)",
+    species = "human",
+    n_subjects = 90L,
+    n_studies = 1L,
+    n_observations = 254L,
+    ga_range = "24+0 to 41+0 weeks (median 29+0, IQR 26+0 to 31+0)",
+    page_range = "Table 1 prints 25+6 to 113+6 weeks (median 45+6); see covariateData$PAGE notes -- the printed column appears to carry a GA_weeks + PNA_days unit error, and the reconstructed true median is approximately 31 weeks",
+    weight_range = "0.58-3.77 kg at amikacin initiation (median 1.34, IQR 0.90-1.90)",
     birth_weight_range = "0.54-3.77 kg (median 1.00, IQR 0.87-1.44)",
-    sex_female_pct  = 37.8,
-    race_ethnicity  = c(Chinese = 62.2, Malay = 13.4, Indian = 12.2, Other = 12.2),
-    disease_state   = paste(
+    sex_female_pct = 37.8,
+    race_ethnicity = c(Chinese = 62.2, Malay = 13.4, Indian = 12.2, Other = 12.2),
+    disease_state = paste(
       "Neonates and NICU infants treated with amikacin for suspected or proven",
       "septicaemia, predominantly extremely and very preterm (median gestational",
       "age 29 weeks). 25.6% small for gestational age, 11.1% with intrauterine",
@@ -82,14 +82,14 @@ Lim_2025_amikacin <- function() {
       "kidney disease, major congenital heart disease, acute kidney injury,",
       "unstable renal function, or ECMO were excluded."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "11 mg/kg every 36 h (postmenstrual age < 29 weeks) or 11 mg/kg every 24 h",
       "(postmenstrual age >= 29 weeks), given either as a 30-min intravenous",
       "infusion or as an intramuscular injection."
     ),
     creatinine_summary = "Serum creatinine at initiation 15-91 umol/L (median 43, IQR 29-57). Screened as a power covariate on CL but not retained in the final model.",
-    regions         = "Single centre (Department of Neonatal and Developmental Medicine, Singapore General Hospital, Singapore). Retrospective chart review, November 2012 to October 2017.",
-    notes           = paste(
+    regions = "Single centre (Department of Neonatal and Developmental Medicine, Singapore General Hospital, Singapore). Retrospective chart review, November 2012 to October 2017.",
+    notes = paste(
       "Baseline demographics from Lim 2025 Table 1, 'PK modeling' column. The 181",
       "eligible neonates were split into a model-building set (90 neonates, 254",
       "serum concentrations) and an external-validation set (91 neonates, 280",

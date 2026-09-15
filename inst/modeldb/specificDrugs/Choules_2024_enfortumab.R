@@ -4,8 +4,8 @@ Choules_2024_enfortumab <- function() {
   vignette <- "Choules_2024_vedotin_ddi"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -13,41 +13,51 @@ Choules_2024_enfortumab <- function() {
   # figures and tables. Cc_mmae is carried in the SAME mg/L system for internal
   # consistency; the paper reports MMAE in ng/mL, which is 1000 * Cc_mmae.
   compartmentData <- list(
-    central      = list(analyte = "enfortumab vedotin (conjugated antibody)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1  = list(analyte = "enfortumab vedotin (conjugated antibody)", units = "mg", specimen = "plasma", verified = TRUE),
-    central_mmae = list(analyte = "monomethyl auristatin E (MMAE)",           units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(
+      analyte = "enfortumab vedotin (conjugated antibody)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1 = list(
+      analyte = "enfortumab vedotin (conjugated antibody)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central_mmae = list(analyte = "monomethyl auristatin E (MMAE)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_KETOCONAZOLE = list(
-      description        = "Concomitant ketoconazole (combined P-glycoprotein and strong CYP3A4 inhibitor) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ketoconazole (combined P-glycoprotein and strong CYP3A4 inhibitor) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "1 = ketoconazole 400 mg orally once daily coadministered with enfortumab vedotin (Choules 2024 Table S2 virtual trial design: enfortumab vedotin 1.25 mg/kg on day 4 of daily ketoconazole, 984 h simulation), 0 = enfortumab vedotin alone. Time-varying in principle; in the source simulation ketoconazole dosing starts before the enfortumab vedotin dose and continues throughout, so the indicator is effectively on for the whole MMAE observation window and is used here as a step indicator. The effect is applied as a multiplicative factor on MMAE clearance only; the conjugated antibody is unaffected (Choules 2024 predicted no change in ADC exposure). The magnitude is back-calculated from the published MMAE AUC geometric mean ratio, not from an inhibition constant: because this reduction has MMAE AUC(inf) = payload dose / MMAE CL exactly, a CL multiplier of 1/GMR reproduces the published AUC ratio by construction. Reference category is 'no ketoconazole'.",
-      source_name        = NA_character_
+      notes = "1 = ketoconazole 400 mg orally once daily coadministered with enfortumab vedotin (Choules 2024 Table S2 virtual trial design: enfortumab vedotin 1.25 mg/kg on day 4 of daily ketoconazole, 984 h simulation), 0 = enfortumab vedotin alone. Time-varying in principle; in the source simulation ketoconazole dosing starts before the enfortumab vedotin dose and continues throughout, so the indicator is effectively on for the whole MMAE observation window and is used here as a step indicator. The effect is applied as a multiplicative factor on MMAE clearance only; the conjugated antibody is unaffected (Choules 2024 predicted no change in ADC exposure). The magnitude is back-calculated from the published MMAE AUC geometric mean ratio, not from an inhibition constant: because this reduction has MMAE AUC(inf) = payload dose / MMAE CL exactly, a CL multiplier of 1/GMR reproduces the published AUC ratio by construction. Reference category is 'no ketoconazole'.",
+      source_name = NA_character_
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampin (rifampicin; combined P-glycoprotein and strong CYP3A4 inducer) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampin (rifampicin; combined P-glycoprotein and strong CYP3A4 inducer) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "1 = rifampin 600 mg orally once daily coadministered with enfortumab vedotin (Choules 2024 Table S2 virtual trial design: enfortumab vedotin 1.25 mg/kg on day 8 of daily rifampin, 936 h simulation), 0 = enfortumab vedotin alone. The 7 days of rifampin before the enfortumab vedotin dose put CYP3A4 induction at the post-induction equilibrium, so this is a step indicator at full induction, matching the chronic-induction semantics of the canonical. The effect is applied as a multiplicative factor on MMAE clearance only. Magnitude back-calculated from the published MMAE AUC geometric mean ratio as described for CONMED_KETOCONAZOLE. Note that the source's rifampin simulation additionally applied a fold increase in the P-gp relative activity factor to MMAE to represent transporter induction, which the platform did not support natively; that mechanism is folded into the single lumped CL multiplier here. Reference category is 'no rifampin'.",
-      source_name        = NA_character_
+      notes = "1 = rifampin 600 mg orally once daily coadministered with enfortumab vedotin (Choules 2024 Table S2 virtual trial design: enfortumab vedotin 1.25 mg/kg on day 8 of daily rifampin, 936 h simulation), 0 = enfortumab vedotin alone. The 7 days of rifampin before the enfortumab vedotin dose put CYP3A4 induction at the post-induction equilibrium, so this is a step indicator at full induction, matching the chronic-induction semantics of the canonical. The effect is applied as a multiplicative factor on MMAE clearance only. Magnitude back-calculated from the published MMAE AUC geometric mean ratio as described for CONMED_KETOCONAZOLE. Note that the source's rifampin simulation additionally applied a fold increase in the P-gp relative activity factor to MMAE to represent transporter induction, which the platform did not support natively; that mechanism is folded into the single lumped CL multiplier here. Reference category is 'no rifampin'.",
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 2L,
-    age_range      = "24-83 years (1.25 mg/kg virtual trial); 48-81 years (1.0 mg/kg virtual trial); 40-90 years (multiple-dose and drug-interaction virtual trials)",
-    age_mean       = "64.9 years (simulated); 65.1 years (observed)",
-    weight_mean    = "72.0 kg (simulated); 80.3 kg (observed)",
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 2L,
+    age_range = "24-83 years (1.25 mg/kg virtual trial); 48-81 years (1.0 mg/kg virtual trial); 40-90 years (multiple-dose and drug-interaction virtual trials)",
+    age_mean = "64.9 years (simulated); 65.1 years (observed)",
+    weight_mean = "72.0 kg (simulated); 80.3 kg (observed)",
     sex_female_pct = 26,
-    disease_state  = "Locally advanced or metastatic Nectin-4-expressing urothelial carcinoma and other malignant solid tumours; Simcyp cancer population model with the plasma tissue-volume scaling factor changed from 1.2 to 1.0.",
-    dose_range     = "1.0 and 1.25 mg/kg as a 30-minute intravenous infusion; single dose and days 1, 8 and 15 of a 28-day cycle.",
-    notes          = "The simulated virtual trials used the Simcyp cancer population: 10 trials of 10 participants for the single-dose simulations and 10 trials of 15 participants for the multiple-dose verification (Choules 2024 Supplementary Methods). Observed comparator data are the phase 1 EV-101 (NCT02091999, n = 201 for the demographic comparison in Table S4) and phase 2 EV-201 (NCT03219333, n = 125) studies. Simulated versus observed demographics (mean (SD)): age 64.9 (12.2) vs 65.1 (10.1) years; weight 72.0 (14.1) vs 80.3 (20.1) kg; plasma albumin 38.2 (7.1) vs 37.5 (4.1) g/dL as printed; haematocrit 37.6 (4.65) vs 35.3 (4.76)% (Choules 2024 Table S4). All parameters in this file are calibrated at the 72.0 kg simulated mean weight; see the vignette for why no body-weight relationship is identifiable from the published outputs."
+    disease_state = "Locally advanced or metastatic Nectin-4-expressing urothelial carcinoma and other malignant solid tumours; Simcyp cancer population model with the plasma tissue-volume scaling factor changed from 1.2 to 1.0.",
+    dose_range = "1.0 and 1.25 mg/kg as a 30-minute intravenous infusion; single dose and days 1, 8 and 15 of a 28-day cycle.",
+    notes = "The simulated virtual trials used the Simcyp cancer population: 10 trials of 10 participants for the single-dose simulations and 10 trials of 15 participants for the multiple-dose verification (Choules 2024 Supplementary Methods). Observed comparator data are the phase 1 EV-101 (NCT02091999, n = 201 for the demographic comparison in Table S4) and phase 2 EV-201 (NCT03219333, n = 125) studies. Simulated versus observed demographics (mean (SD)): age 64.9 (12.2) vs 65.1 (10.1) years; weight 72.0 (14.1) vs 80.3 (20.1) kg; plasma albumin 38.2 (7.1) vs 37.5 (4.1) g/dL as printed; haematocrit 37.6 (4.65) vs 35.3 (4.76)% (Choules 2024 Table S4). All parameters in this file are calibrated at the 72.0 kg simulated mean weight; see the vignette for why no body-weight relationship is identifiable from the published outputs."
   )
 
   ini({

@@ -12,12 +12,12 @@ NA_NA_tte_lognormal <- function() {
   )
   vignette <- "NA_NA_tte_lognormal"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the AGE covariate is a per-subject baseline value)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the AGE covariate is a per-subject baseline value)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
-  ddmore_id    <- "DDMODEL00000243"
+  ddmore_id <- "DDMODEL00000243"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,31 +25,36 @@ NA_NA_tte_lognormal <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz = list(analyte = "Competing Event 1 cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "Competing Event 1 cumulative hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at enrolment (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at enrolment (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centred at 55 years inside the hazard via `exp((coef_age/1000) * (AGE - 55))`. The bundle's Simulated_event_data.csv carries AGE for 200 hypothetical patients with range 24-84 years (mean 58.7); 55 years is approximately the cohort median rounded to the nearest 5.",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Centred at 55 years inside the hazard via `exp((coef_age/1000) * (AGE - 55))`. The bundle's Simulated_event_data.csv carries AGE for 200 hypothetical patients with range 24-84 years (mean 58.7); 55 years is approximately the cohort median rounded to the nearest 5.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    n_subjects     = 200L,
-    n_studies      = 1L,
-    age_range      = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
-    weight_range   = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
+    n_subjects = 200L,
+    n_studies = 1L,
+    age_range = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
+    weight_range = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
-    dose_range     = "Not applicable (no drug administration is modelled).",
-    regions        = "Not applicable (simulated data).",
-    notes          = "200 simulated patients; 36 (18%) had Competing Event 1. Competing Event 1 is interval-censored: exact event times are unknown, only that the event occurred between two scheduled assessment visits (BAST guiding document Section  2.2.1). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_gompertz_ev2.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution selection Section  2.4.1 / Figure 2-3; covariate selection Section  2.4.2 / Table 2-4; final-fit listing Output_simulated_runCOMPEV1_101.res."
+    disease_state = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
+    dose_range = "Not applicable (no drug administration is modelled).",
+    regions = "Not applicable (simulated data).",
+    notes = "200 simulated patients; 36 (18%) had Competing Event 1. Competing Event 1 is interval-censored: exact event times are unknown, only that the event occurred between two scheduled assessment visits (BAST guiding document Section  2.2.1). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_gompertz_ev2.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution selection Section  2.4.1 / Figure 2-3; covariate selection Section  2.4.2 / Table 2-4; final-fit listing Output_simulated_runCOMPEV1_101.res."
   )
 
   ini({

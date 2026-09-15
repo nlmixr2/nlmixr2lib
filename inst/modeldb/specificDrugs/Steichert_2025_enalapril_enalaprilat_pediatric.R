@@ -1,77 +1,77 @@
 Steichert_2025_enalapril_enalaprilat_pediatric <- function() {
   description <- "Simultaneous parent + active-metabolite population PK model for oral enalapril (ODMT) and enalaprilat in ACEi-naive children with heart failure (Steichert 2025, LENA studies). Combined one-compartment model for enalapril (first-order absorption with a lag) coupled with a one-compartment model for enalaprilat via a fixed fraction metabolised fm = 0.7. Allometric scaling (fixed exponents 0.75 on CL, 1 on V) referenced to 5 kg body weight. Covariate effects retained in the final model: age and serum creatinine on the apparent clearance of enalaprilat, and modified Ross score on the apparent volume of distribution of enalaprilat. Doses must be supplied as enalapril FREE BASE, not the maleate salt: multiply a mass of enalapril maleate by 376.45/492.52 = 0.76433 (e.g. 0.25 mg maleate = 191.1 ug base). Verified against the Cmax,1 values in Section 3.3."
-  reference   <- "Steichert M, Cawello W, Laeer S; LENA Consortium. Population Pharmacokinetic Analysis of Enalapril and Enalaprilat in Newly Treated Children with Heart Failure: Implications for Safe Dosing of Enalapril (LENA Studies). Clin Pharmacokinet. 2025;64(7):1103-1118. doi:10.1007/s40262-025-01520-5"
-  vignette    <- "Steichert_2025_enalapril_enalaprilat_pediatric"
-  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  reference <- "Steichert M, Cawello W, Laeer S; LENA Consortium. Population Pharmacokinetic Analysis of Enalapril and Enalaprilat in Newly Treated Children with Heart Failure: Implications for Safe Dosing of Enalapril (LENA Studies). Clin Pharmacokinet. 2025;64(7):1103-1118. doi:10.1007/s40262-025-01520-5"
+  vignette <- "Steichert_2025_enalapril_enalaprilat_pediatric"
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "enalapril", units = "ug", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "enalapril", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "enalapril", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enalapril", units = "ug", specimen = "plasma", verified = FALSE),
     central_enaat = list(analyte = "enalaprilat", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight, used as the allometric size descriptor on the apparent clearances and apparent volumes of distribution of both enalapril and enalaprilat. Reference weight is the weighted median (5 kg) computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight, used as the allometric size descriptor on the apparent clearances and apparent volumes of distribution of both enalapril and enalaprilat. Reference weight is the weighted median (5 kg) computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; the Steichert 2025 dataset carries body weight per PK-sample record and applies last-observation-carried-forward when a scheduled weight is missing (Section 2.2.1). Range 2.52-11.3 kg in the analysed cohort (Table 1).",
-      source_name        = "Weight"
+      notes = "Time-varying; the Steichert 2025 dataset carries body weight per PK-sample record and applies last-observation-carried-forward when a scheduled weight is missing (Section 2.2.1). Range 2.52-11.3 kg in the analysed cohort (Table 1).",
+      source_name = "Weight"
     ),
     AGE = list(
-      description        = "Subject age, entered as a power-form covariate on the apparent clearance of enalaprilat: `(AGE / 0.34)^0.311`. Reference age is the weighted median (0.34 years) computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age, entered as a power-form covariate on the apparent clearance of enalaprilat: `(AGE / 0.34)^0.311`. Reference age is the weighted median (0.34 years) computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (Section 2.2.2). Range 0.07-2.09 years (25 days to 2.1 years) in the analysed cohort (Table 1). The paper tested a power form initially and confirmed no exponential-form improvement in the backward step.",
-      source_name        = "Age"
+      notes = "Time-varying (Section 2.2.2). Range 0.07-2.09 years (25 days to 2.1 years) in the analysed cohort (Table 1). The paper tested a power form initially and confirmed no exponential-form improvement in the backward step.",
+      source_name = "Age"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration, entered as an exponential-form covariate on the apparent clearance of enalaprilat: `exp(-0.0141 * (CREAT - 23.37))`. Reference is the weighted median 23.37 umol/L computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration, entered as an exponential-form covariate on the apparent clearance of enalaprilat: `exp(-0.0141 * (CREAT - 23.37))`. Reference is the weighted median 23.37 umol/L computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Range 12-68 umol/L in the analysed cohort (Table 1). The paper tested a power form first and found the exponential form superior (Section 2.2.2).",
-      source_name        = "Serum creatinine"
+      notes = "Time-varying. Range 12-68 umol/L in the analysed cohort (Table 1). The paper tested a power form first and found the exponential form superior (Section 2.2.2).",
+      source_name = "Serum creatinine"
     ),
     SCORE_ROSS = list(
-      description        = "Modified Ross score, a paediatric heart-failure severity instrument, entered as an exponential-form covariate on the apparent volume of distribution of enalaprilat: `exp(-0.15 * (SCORE_ROSS - 4))`. Reference is the weighted median score 4 across the LENA ACEi-naive cohort.",
-      units              = "(score; integer 0-12)",
-      type               = "count",
+      description = "Modified Ross score, a paediatric heart-failure severity instrument, entered as an exponential-form covariate on the apparent volume of distribution of enalaprilat: `exp(-0.15 * (SCORE_ROSS - 4))`. Reference is the weighted median score 4 across the LENA ACEi-naive cohort.",
+      units = "(score; integer 0-12)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Time-varying, determined by the investigator (Section 2.2.2). Range 0-9 observed in the analysed cohort (Table 1). Exponential form required because the score can legitimately be zero, so a power form is undefined at that boundary. Modified Reithmann / Ross / Connolly form as used across the LENA paediatric heart-failure programme.",
-      source_name        = "Ross score"
+      notes = "Time-varying, determined by the investigator (Section 2.2.2). Range 0-9 observed in the analysed cohort (Table 1). Exponential form required because the score can legitimately be zero, so a power form is undefined at that boundary. Modified Reithmann / Ross / Connolly form as used across the LENA paediatric heart-failure programme.",
+      source_name = "Ross score"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex, coded 0 = male, 1 = female in Steichert 2025 (their equation TV = theta1 * (1 + theta2 * sex) with female = 0, male = 1, which the register maps by inverting the sign of the effect on the SEXF = 1 female indicator).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a covariate on both CL and V of enalapril and enalaprilat in the stepwise search (Section 2.2.2). Not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a covariate on both CL and V of enalapril and enalaprilat in the stepwise search (Section 2.2.2). Not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34,
-    n_studies      = 2,
-    age_range      = "0.07-2.09 years (25 days to 2.1 years)",
-    age_median     = "0.3 years (unweighted) / 0.34 years (weighted median used as covariate reference)",
-    weight_range   = "2.52-11.3 kg",
-    weight_median  = "4.47 kg (unweighted) / 5 kg (weighted median used as allometric reference)",
+    species = "human",
+    n_subjects = 34,
+    n_studies = 2,
+    age_range = "0.07-2.09 years (25 days to 2.1 years)",
+    age_median = "0.3 years (unweighted) / 0.34 years (weighted median used as covariate reference)",
+    weight_range = "2.52-11.3 kg",
+    weight_median = "4.47 kg (unweighted) / 5 kg (weighted median used as allometric reference)",
     sex_female_pct = 52.9,
-    disease_state  = "ACEi-naive children with heart failure due to congenital heart disease (91.2%) or dilated cardiomyopathy (8.8%). Modified Ross score 0-9 (median 5). Serum creatinine 12-68 umol/L (median 27).",
-    dose_range     = "0.03-0.29 mg/kg/day enalapril maleate administered as orodispersible mini-tablets (Aqumeldi 0.25 mg or 1 mg). Titration doses were age- and weight-dependent per the LENA dosing regimen (Supplementary Table 1).",
-    regions        = "Austria, Germany, Hungary, the Netherlands, Serbia (LENA multicentre phase II/III PK-bridging studies EudraCT 2015-002335-17 for DCM and EudraCT 2015-002396-18 for CHD).",
+    disease_state = "ACEi-naive children with heart failure due to congenital heart disease (91.2%) or dilated cardiomyopathy (8.8%). Modified Ross score 0-9 (median 5). Serum creatinine 12-68 umol/L (median 27).",
+    dose_range = "0.03-0.29 mg/kg/day enalapril maleate administered as orodispersible mini-tablets (Aqumeldi 0.25 mg or 1 mg). Titration doses were age- and weight-dependent per the LENA dosing regimen (Supplementary Table 1).",
+    regions = "Austria, Germany, Hungary, the Netherlands, Serbia (LENA multicentre phase II/III PK-bridging studies EudraCT 2015-002335-17 for DCM and EudraCT 2015-002396-18 for CHD).",
     n_observations = "173 quantifiable enalapril + 268 quantifiable enalaprilat serum concentrations. Samples below LOQ were excluded (M1 method); LOQ 0.195 ug/L for enalapril and 0.180 ug/L for enalaprilat.",
-    notes          = "Demographics and dosing summary from Steichert 2025 Table 1 and Sections 2.1.1 / 3.1. Sampling regimen: full PK profile (predose + 1, 2, 4, 6, 12 h) at first dose or steady state, plus single trough samples at titration / dose-confirmation / study-control / end-of-study visits."
+    notes = "Demographics and dosing summary from Steichert 2025 Table 1 and Sections 2.1.1 / 3.1. Sampling regimen: full PK profile (predose + 1, 2, 4, 6, 12 h) at first dose or steady state, plus single trough samples at titration / dose-confirmation / study-control / end-of-study visits."
   )
 
   ini({

@@ -9,45 +9,45 @@ Berends_2019_infliximab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "free TNF", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL using median-normalization (ALB/38)^e_alb_cl per Berends 2019 covariate equation P = P_TV * (COV/COV_median)^theta. Reference is the cohort-median albumin of 38 g/L (Table 1).",
-      source_name        = "ALB"
+      notes = "Power effect on CL using median-normalization (ALB/38)^e_alb_cl per Berends 2019 covariate equation P = P_TV * (COV/COV_median)^theta. Reference is the cohort-median albumin of 38 g/L (Table 1).",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody (antibodies-to-infliximab) positivity",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody (antibodies-to-infliximab) positivity",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Multiplicative effect on CL using P = P_TV * theta^ADA per Berends 2019 categorical covariate equation; CL is multiplied by 2.15 for ADA-positive subjects. ADA-status was detected in 7/20 patients during follow-up. Source paper text uses 'antibodies-to-infliximab'; renamed to canonical ADA_POS per inst/references/covariate-columns.md.",
-      source_name        = "ADA"
+      notes = "Multiplicative effect on CL using P = P_TV * theta^ADA per Berends 2019 categorical covariate equation; CL is multiplied by 2.15 for ADA-positive subjects. ADA-status was detected in 7/20 patients during follow-up. Source paper text uses 'antibodies-to-infliximab'; renamed to canonical ADA_POS per inst/references/covariate-columns.md.",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "19-69 years (median 36)",
-    weight_range   = "47-90 kg (median 70)",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "19-69 years (median 36)",
+    weight_range = "47-90 kg (median 70)",
     sex_female_pct = 35,
     race_ethnicity = "Not reported (single-center Netherlands cohort)",
-    disease_state  = "Adults with moderate-to-severe ulcerative colitis (95% endoscopic Mayo score 3, 95% corticosteroid-refractory, 65% pancolitis, 35% hospitalized).",
-    dose_range     = "5 mg/kg IV infliximab induction at weeks 0, 2, and 6 (one subject also received an additional dose at day 5).",
-    regions        = "Single-center prospective cohort, Amsterdam, Netherlands.",
+    disease_state = "Adults with moderate-to-severe ulcerative colitis (95% endoscopic Mayo score 3, 95% corticosteroid-refractory, 65% pancolitis, 35% hospitalized).",
+    dose_range = "5 mg/kg IV infliximab induction at weeks 0, 2, and 6 (one subject also received an additional dose at day 5).",
+    regions = "Single-center prospective cohort, Amsterdam, Netherlands.",
     albumin_median = "38 g/L (range 23-45)",
-    crp_median     = "25.3 mg/L (range 0.6-196.2)",
+    crp_median = "25.3 mg/L (range 0.6-196.2)",
     concomitant_thiopurines_pct = 55,
-    sccai_median   = "10 (range 1-15)",
-    notes          = "Anti-TNF naive patients with active disease at baseline. The dataset comprises 214 IFX serum and 214 TNF serum measurements; antibodies-to-infliximab were detected in 7/20 patients during follow-up. Quantified IFX with a homogenous mobility shift assay (LLOQ 0.6 ug/mL, CV 12%); free TNF with an ultrasensitive Singulex immunoassay (LLOQ 10 fg/mL, CV 15%)."
+    sccai_median = "10 (range 1-15)",
+    notes = "Anti-TNF naive patients with active disease at baseline. The dataset comprises 214 IFX serum and 214 TNF serum measurements; antibodies-to-infliximab were detected in 7/20 patients during follow-up. Quantified IFX with a homogenous mobility shift assay (LLOQ 0.6 ug/mL, CV 12%); free TNF with an ultrasensitive Singulex immunoassay (LLOQ 10 fg/mL, CV 15%)."
   )
 
   ini({

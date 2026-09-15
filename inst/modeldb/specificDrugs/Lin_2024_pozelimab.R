@@ -9,45 +9,45 @@ Lin_2024_pozelimab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "pozelimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "pozelimab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "pozelimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pozelimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pozelimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pozelimab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "C5", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; time-varying body weight evaluated as sensitivity analysis only and not retained in the final model)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; time-varying body weight evaluated as sensitivity analysis only and not retained in the final model)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL, Vc, and Vp using (WT/70)^exponent. Reference weight 70 kg is the cohort-median adult body weight (Table 1). Exponents are estimated, not fixed at allometric values: 0.9989 on CL, 0.7560 on Vc and Vp.",
-      source_name        = "WT"
+      notes = "Power scaling on CL, Vc, and Vp using (WT/70)^exponent. Reference weight 70 kg is the cohort-median adult body weight (Table 1). Exponents are estimated, not fixed at allometric values: 0.9989 on CL, 0.7560 on Vc and Vp.",
+      source_name = "WT"
     ),
     DIS_PNH = list(
-      description        = "Paroxysmal nocturnal hemoglobinuria patient status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paroxysmal nocturnal hemoglobinuria patient status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-PNH: healthy volunteer or CHAPLE disease patient)",
-      notes              = "Additive-fractional effect on Vc: Vc = Vc_TV * (1 + e_pnh_vc * DIS_PNH); PNH patients have a 34.07% larger Vc than non-PNH subjects. The supplement's Supplemental Text 1 specifies only the structural ODEs and not the categorical-covariate equation form; the additive-fractional form is assumed because Table 2's 95% CI for the estimate (0.156-0.5254) is bracketed cleanly above zero and the alternative power form theta^DIS_PNH (= 0.3407) implies an implausible 66% reduction in Vc.",
-      source_name        = "PNH (disease state, PNH versus healthy volunteer)"
+      notes = "Additive-fractional effect on Vc: Vc = Vc_TV * (1 + e_pnh_vc * DIS_PNH); PNH patients have a 34.07% larger Vc than non-PNH subjects. The supplement's Supplemental Text 1 specifies only the structural ODEs and not the categorical-covariate equation form; the additive-fractional form is assumed because Table 2's 95% CI for the estimate (0.156-0.5254) is bracketed cleanly above zero and the alternative power form theta^DIS_PNH (= 0.3407) implies an implausible 66% reduction in Vc.",
+      source_name = "PNH (disease state, PNH versus healthy volunteer)"
     )
   )
 
   population <- list(
-    n_subjects     = 116L,
-    n_studies      = 4L,
-    age_range      = "3-76 years (median 37 across all subjects; pediatric and adult)",
-    age_median     = "37 years overall; 8.5 years in CHAPLE patients (range 3-19)",
-    weight_range   = "11.0-108 kg overall; 11.0-53.8 kg in CHAPLE patients",
-    weight_median  = "66.7 kg overall; 25.0 kg in CHAPLE patients",
+    n_subjects = 116L,
+    n_studies = 4L,
+    age_range = "3-76 years (median 37 across all subjects; pediatric and adult)",
+    age_median = "37 years overall; 8.5 years in CHAPLE patients (range 3-19)",
+    weight_range = "11.0-108 kg overall; 11.0-53.8 kg in CHAPLE patients",
+    weight_median = "66.7 kg overall; 25.0 kg in CHAPLE patients",
     sex_female_pct = 60.3,
     race_ethnicity = "70.7% White, 22.4% Asian, 3.4% Black or African American, 0.9% American Indian or Alaska Native, 2.6% Other (Table 1).",
-    disease_state  = "Healthy adult volunteers (n=82), adult patients with paroxysmal nocturnal hemoglobinuria (PNH; n=24), and pediatric and adult patients with CHAPLE disease (n=10; 9 children, 1 adult).",
-    dose_range     = "1-30 mg/kg single IV; 300-600 mg single SC; 400 mg SC QW; 30 mg/kg IV loading + 800 mg SC QW (PNH study); 30 mg/kg IV loading + weight-tiered 125-800 mg SC QW (CHAPLE pediatric).",
-    regions        = "Multi-regional phase 1-3 programme; specific regional breakdown not reported in the main text.",
-    ada_status     = "All 116 subjects ADA-negative (0% positive in every cohort).",
-    notes          = "Pooled phase 1 first-in-human (NCT03115996, n=42), phase 1 PK comparability (NCT04491838, n=40), phase 2 PNH (NCT03946748, n=24), and phase 2/3 CHAPLE (NCT04209634, n=10) trials. 2795 concentration samples (1640 total pozelimab, 1155 total C5). 100 (3.6%) post-dose BLQ samples excluded per Beal M1. Pozelimab MW assumed 150 kDa (typical IgG4); C5 MW 190 kDa (matches the paper's footnote conversion ksyn = 0.04922 uM/day = 9.352 mg/L/day and kD = 0.000189 uM = 0.03591 mg/L)."
+    disease_state = "Healthy adult volunteers (n=82), adult patients with paroxysmal nocturnal hemoglobinuria (PNH; n=24), and pediatric and adult patients with CHAPLE disease (n=10; 9 children, 1 adult).",
+    dose_range = "1-30 mg/kg single IV; 300-600 mg single SC; 400 mg SC QW; 30 mg/kg IV loading + 800 mg SC QW (PNH study); 30 mg/kg IV loading + weight-tiered 125-800 mg SC QW (CHAPLE pediatric).",
+    regions = "Multi-regional phase 1-3 programme; specific regional breakdown not reported in the main text.",
+    ada_status = "All 116 subjects ADA-negative (0% positive in every cohort).",
+    notes = "Pooled phase 1 first-in-human (NCT03115996, n=42), phase 1 PK comparability (NCT04491838, n=40), phase 2 PNH (NCT03946748, n=24), and phase 2/3 CHAPLE (NCT04209634, n=10) trials. 2795 concentration samples (1640 total pozelimab, 1155 total C5). 100 (3.6%) post-dose BLQ samples excluded per Beal M1. Pozelimab MW assumed 150 kDa (typical IgG4); C5 MW 190 kDa (matches the paper's footnote conversion ksyn = 0.04922 uM/day = 9.352 mg/L/day and kD = 0.000189 uM = 0.03591 mg/L)."
   )
 
   ini({

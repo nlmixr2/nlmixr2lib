@@ -52,32 +52,32 @@ Sun_2026_tilmicosin_pbpk <- function() {
   # biological matrix. Verified against the Supporting Information code
   # comments, each of which names its state's matrix and gives mg.
   compartmentData <- list(
-    stomach            = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
-    duodenum           = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
-    a_small_intestine  = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
-    a_large_intestine  = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
-    a_oral_absorbed    = list(analyte = "tilmicosin", units = "mg", specimen = "not applicable", verified = TRUE),
-    liver              = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    a_bile             = list(analyte = "tilmicosin", units = "mg", specimen = "bile", verified = TRUE),
-    venous             = list(analyte = "tilmicosin", units = "mg", specimen = "plasma", verified = TRUE),
-    arterial           = list(analyte = "tilmicosin", units = "mg", specimen = "plasma", verified = TRUE),
-    kidney             = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    urine              = list(analyte = "tilmicosin", units = "mg", specimen = "urine", verified = TRUE),
-    muscle             = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    other              = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_lung            = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    is_lung            = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    int_lung           = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
-    a_feces            = list(analyte = "tilmicosin", units = "mg", specimen = "faeces", verified = TRUE)
+    stomach = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
+    duodenum = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
+    a_small_intestine = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
+    a_large_intestine = list(analyte = "tilmicosin", units = "mg", specimen = "administration site", verified = TRUE),
+    a_oral_absorbed = list(analyte = "tilmicosin", units = "mg", specimen = "not applicable", verified = TRUE),
+    liver = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_bile = list(analyte = "tilmicosin", units = "mg", specimen = "bile", verified = TRUE),
+    venous = list(analyte = "tilmicosin", units = "mg", specimen = "plasma", verified = TRUE),
+    arterial = list(analyte = "tilmicosin", units = "mg", specimen = "plasma", verified = TRUE),
+    kidney = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "tilmicosin", units = "mg", specimen = "urine", verified = TRUE),
+    muscle = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_lung = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    is_lung = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    int_lung = list(analyte = "tilmicosin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_feces = list(analyte = "tilmicosin", units = "mg", specimen = "faeces", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sun 2026 Table S3 and the Supporting Information code both fix",
         "BW = 40 kg. Every organ volume and blood flow is a fixed fraction",
         "of BW and both elimination clearances are per-kg constants, so WT",
@@ -93,21 +93,21 @@ Sun_2026_tilmicosin_pbpk <- function() {
         "while K1 and K4 multiply an amount directly. See the vignette",
         "Errata."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "pig (crossbred Landrace x Large White x Duroc)",
-    n_subjects     = 3L,
-    n_studies      = 5L,
-    age_range      = "nursery / grower swine",
-    weight_range   = "20 +/- 1 kg (microdialysis experiment); model reference BW = 40 kg",
-    disease_state  = "healthy",
-    dose_range     = "40 mg/kg oral tilmicosin once daily for 3 consecutive days (the optimised regimen); 10, 15, 20, 40, 50 and 60 mg/kg regimens were simulated",
-    regions        = "China",
-    organism       = "Pasteurella multocida isolate ZJWZ-A, isolated in Wuhan, Hubei Province, China in 2023 and deposited in the National Reference Laboratory for Veterinary Drug Residues at Huazhong Agricultural University; tilmicosin MIC 8 ug/mL by CLSI broth microdilution",
-    notes          = paste(
+    species = "pig (crossbred Landrace x Large White x Duroc)",
+    n_subjects = 3L,
+    n_studies = 5L,
+    age_range = "nursery / grower swine",
+    weight_range = "20 +/- 1 kg (microdialysis experiment); model reference BW = 40 kg",
+    disease_state = "healthy",
+    dose_range = "40 mg/kg oral tilmicosin once daily for 3 consecutive days (the optimised regimen); 10, 15, 20, 40, 50 and 60 mg/kg regimens were simulated",
+    regions = "China",
+    organism = "Pasteurella multocida isolate ZJWZ-A, isolated in Wuhan, Hubei Province, China in 2023 and deposited in the National Reference Laboratory for Veterinary Drug Residues at Huazhong Agricultural University; tilmicosin MIC 8 ug/mL by CLSI broth microdilution",
+    notes = paste(
       "The three pigs contributing pulmonary interstitial fluid (Sun 2026",
       "Table S7, columns Lung-1 to Lung-3) are the animals of the authors'",
       "own microdialysis experiment, the first reported collection of PIF",

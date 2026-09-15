@@ -8,62 +8,62 @@ Li_2010_taranabant <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "taranabant", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "taranabant", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "taranabant", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "taranabant", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "taranabant", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "taranabant", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying in Phase 2 obese cohort (Li 2010 Methods). Power-form effect on CL/F and on V4/F with reference 31.5 kg/m^2.",
-      source_name        = "BMI"
+      notes = "Time-varying in Phase 2 obese cohort (Li 2010 Methods). Power-form effect on CL/F and on V4/F with reference 31.5 kg/m^2.",
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on Q4/F and on V4/F (additive age contribution) with reference age 39 years.",
-      source_name        = "AGE"
+      notes = "Power-form effect on Q4/F and on V4/F (additive age contribution) with reference age 39 years.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Additive 643 L shift on V4/F for female subjects. Source column SEXF i in Li 2010 Equation 3 reads 1 for females.",
-      source_name        = "SEXF"
+      notes = "Additive 643 L shift on V4/F for female subjects. Source column SEXF i in Li 2010 Equation 3 reads 1 for females.",
+      source_name = "SEXF"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, raw (not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, raw (not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying in Phase 2 obese cohort (Li 2010 Methods). Linear-deviation effect on CL/F (slope 0.0668 L/h per mL/min) and on V4/F (slope 12.5 L per mL/min) centered at 80.6 mL/min. Cockcroft-Gault is presumed but not stated in the paper.",
-      source_name        = "CrCL"
+      notes = "Time-varying in Phase 2 obese cohort (Li 2010 Methods). Linear-deviation effect on CL/F (slope 0.0668 L/h per mL/min) and on V4/F (slope 12.5 L per mL/min) centered at 80.6 mL/min. Cockcroft-Gault is presumed but not stated in the paper.",
+      source_name = "CrCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 572,
-    n_studies      = 13,
-    age_range      = "18-69 years",
-    age_median     = "39 years",
-    weight_range   = "50-151 kg",
-    weight_median  = "88.9 kg",
+    species = "human",
+    n_subjects = 572,
+    n_studies = 13,
+    age_range = "18-69 years",
+    age_median = "39 years",
+    weight_range = "50-151 kg",
+    weight_median = "88.9 kg",
     sex_female_pct = 64.3,
     race_ethnicity = c(White = 61.9, Black = 17.0, Hispanic = 14.3, Asian = 6.1, Other = 0.7),
-    disease_state  = "Pooled Phase 1 healthy volunteers (n = 187) and Phase 2 obese subjects with BMI 30-43 kg/m^2 (n = 385); 12 Phase 1 studies and 1 Phase 2 study",
-    dose_range     = "0.5-8 mg oral (single and multiple daily doses; multiple doses >= 10 mg excluded from analysis)",
-    regions        = "Multinational including a Japanese Phase 1 sub-study",
+    disease_state = "Pooled Phase 1 healthy volunteers (n = 187) and Phase 2 obese subjects with BMI 30-43 kg/m^2 (n = 385); 12 Phase 1 studies and 1 Phase 2 study",
+    dose_range = "0.5-8 mg oral (single and multiple daily doses; multiple doses >= 10 mg excluded from analysis)",
+    regions = "Multinational including a Japanese Phase 1 sub-study",
     renal_function = "Includes mild and moderate renal insufficiency from Phase 1 study 029 (CRCL range 5.1-171 mL/min). Subjects with moderate hepatic insufficiency were excluded.",
-    notes          = "Baseline demographics from Li 2010 Table II (pooled column). 6,834 plasma concentrations contributed to the fit."
+    notes = "Baseline demographics from Li 2010 Table II (pooled column). 6,834 plasma concentrations contributed to the fit."
   )
 
   ini({

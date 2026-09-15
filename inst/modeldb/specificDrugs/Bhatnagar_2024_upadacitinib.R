@@ -39,64 +39,64 @@ Bhatnagar_2024_upadacitinib <- function() {
     sep = " "
   )
   vignette <- "Bhatnagar_2024_upadacitinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "upadacitinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "upadacitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "upadacitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "upadacitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "upadacitinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects on BOTH apparent oral clearance (exponent 0.132) and apparent central volume (exponent 0.804), each normalized to a 74 kg reference. The reference weight and both exponents are fixed from the upstream pooled healthy-volunteer / rheumatoid-arthritis model (Bhatnagar 2024 reference 17) and appear as THETA(15) and THETA(14) in the Appendix S1 control streams. Observed range in the axSpA subjects with PK sampling was 41.5-144 kg (Table S1), so the exponents are exercised well outside the reference. Note that the Table S3 footnote b equation prints 0.123 for the clearance exponent and 0.864 for the volume exponent, which are neither the tabulated nor the control-stream values -- see the vignette Errata.",
-      source_name        = "WTKG"
+      notes = "Power-form effects on BOTH apparent oral clearance (exponent 0.132) and apparent central volume (exponent 0.804), each normalized to a 74 kg reference. The reference weight and both exponents are fixed from the upstream pooled healthy-volunteer / rheumatoid-arthritis model (Bhatnagar 2024 reference 17) and appear as THETA(15) and THETA(14) in the Appendix S1 control streams. Observed range in the axSpA subjects with PK sampling was 41.5-144 kg (Table S1), so the exponents are exercised well outside the reference. Note that the Table S3 footnote b equation prints 0.123 for the clearance exponent and 0.864 for the volume exponent, which are neither the tabulated nor the control-stream values -- see the vignette Errata.",
+      source_name = "WTKG"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (raw mL/min, NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (raw mL/min, NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent oral clearance (exponent 0.256) normalized to a 108.70 mL/min reference; both are fixed from the upstream model and appear as THETA(13) and the literal 108.70 divisor in the Appendix S1 control streams. Bhatnagar 2024 does not restate the estimating equation, but the reference value and the units carry over from the upstream upadacitinib analyses, which used raw Cockcroft-Gault creatinine clearance in mL/min rather than a BSA-normalized eGFR; the companion registered model Klunder_2017_upadacitinib.R uses the same raw form with a 107 mL/min reference. Do NOT supply a mL/min/1.73 m^2 value here. Bhatnagar 2024 reports that upadacitinib exposures are comparable between patients with mild or moderate renal impairment and those with normal renal function despite the statistically significant covariate.",
-      source_name        = "CRCL"
+      notes = "Power-form effect on apparent oral clearance (exponent 0.256) normalized to a 108.70 mL/min reference; both are fixed from the upstream model and appear as THETA(13) and the literal 108.70 divisor in the Appendix S1 control streams. Bhatnagar 2024 does not restate the estimating equation, but the reference value and the units carry over from the upstream upadacitinib analyses, which used raw Cockcroft-Gault creatinine clearance in mL/min rather than a BSA-normalized eGFR; the companion registered model Klunder_2017_upadacitinib.R uses the same raw form with a 107 mL/min reference. Do NOT supply a mL/min/1.73 m^2 value here. Bhatnagar 2024 reports that upadacitinib exposures are comparable between patients with mild or moderate renal impairment and those with normal renal function despite the statistically significant covariate.",
+      source_name = "CRCL"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator (1 = healthy volunteer, 0 = patient).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator (1 = healthy volunteer, 0 = patient).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (healthy volunteer). The structural lcl is the healthy-volunteer clearance; patients carry the additional multiplicative ratio 0.754 (Table S3, 'CL/F Ratio of Diseased Patients Compared to Healthy Patients'), i.e. clearance is about 25% lower in patients, as stated in the Bhatnagar 2024 Results.",
-      notes              = "Time-fixed per subject. EVERY subject in the SELECT-AXIS analyses is a patient, so the axSpA fit is entirely at DIS_HEALTHY = 0: both Appendix S1 control streams hard-code RA = 1 and therefore apply THETA(12) = 0.754 to every record. The indicator is retained here because the fixed structural clearance is expressed on the healthy-volunteer scale inherited from the upstream pooled model, so reproducing any published axSpA exposure requires DIS_HEALTHY = 0. Same canonical orientation as Klunder_2017_upadacitinib.R.",
-      source_name        = "RA (1 = patient in the control stream; DIS_HEALTHY = 1 - RA)"
+      notes = "Time-fixed per subject. EVERY subject in the SELECT-AXIS analyses is a patient, so the axSpA fit is entirely at DIS_HEALTHY = 0: both Appendix S1 control streams hard-code RA = 1 and therefore apply THETA(12) = 0.754 to every record. The indicator is retained here because the fixed structural clearance is expressed on the healthy-volunteer scale inherited from the upstream pooled model, so reproducing any published axSpA exposure requires DIS_HEALTHY = 0. Same canonical orientation as Klunder_2017_upadacitinib.R.",
+      source_name = "RA (1 = patient in the control stream; DIS_HEALTHY = 1 - RA)"
     ),
     FORM_UPA_ER = list(
-      description        = "Upadacitinib formulation indicator (1 = extended-release tablet, 0 = immediate-release capsule).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Upadacitinib formulation indicator (1 = extended-release tablet, 0 = immediate-release capsule).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (immediate-release capsule). Table S3 footnote a states that the tabulated CL/F, Vc/F, Q/F and Vp/F 'are for the immediate-release formulation (based on immediate-release bioavailability)', so the immediate-release arm is the bioavailability reference and the extended-release arm carries the 0.762 relative-bioavailability factor.",
-      notes              = "Per dose occasion. Selects the whole absorption branch of the model: the extended-release arm uses Ka = 0.0523 1/h with its own interindividual variability, a 0.154 h lag time, 74.5% of the absorbed dose entering the central compartment by a 3.29 h zero-order input, and 76.2% relative bioavailability; the immediate-release arm uses Ka = 2.77 1/h with no interindividual variability, a 0.200 h lag time, no zero-order arm and unit relative bioavailability. Every axSpA subject in SELECT-AXIS 1 and 2 received the 15 mg once-daily EXTENDED-RELEASE tablet, so FORM_UPA_ER = 1 reproduces this paper; the SELECT-AXIS-2 control stream hard-codes FORM = 2 (extended release). The immediate-release branch is retained because it is fully parameterized in the Appendix S1 control streams and in Table S3, and because it defines the bioavailability reference the clearance and volume estimates are expressed on. With FORM_UPA_ER = 0 the zero-order fraction collapses to zero, so an immediate-release dose needs only the depot dose record.",
-      source_name        = "FORM (1 = immediate release, 2 = extended release; FORM_UPA_ER = FORM - 1)"
+      notes = "Per dose occasion. Selects the whole absorption branch of the model: the extended-release arm uses Ka = 0.0523 1/h with its own interindividual variability, a 0.154 h lag time, 74.5% of the absorbed dose entering the central compartment by a 3.29 h zero-order input, and 76.2% relative bioavailability; the immediate-release arm uses Ka = 2.77 1/h with no interindividual variability, a 0.200 h lag time, no zero-order arm and unit relative bioavailability. Every axSpA subject in SELECT-AXIS 1 and 2 received the 15 mg once-daily EXTENDED-RELEASE tablet, so FORM_UPA_ER = 1 reproduces this paper; the SELECT-AXIS-2 control stream hard-codes FORM = 2 (extended release). The immediate-release branch is retained because it is fully parameterized in the Appendix S1 control streams and in Table S3, and because it defines the bioavailability reference the clearance and volume estimates are expressed on. With FORM_UPA_ER = 0 the zero-order fraction collapses to zero, so an immediate-release dose needs only the depot dose record.",
+      source_name = "FORM (1 = immediate release, 2 = extended release; FORM_UPA_ER = FORM - 1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 244L,
-    n_studies      = 3L,
-    age_range      = "19-82 years (subjects with PK sampling, Table S1)",
-    age_median     = "44 years (subjects with PK sampling, Table S1; mean 45, SD 13)",
-    weight_range   = "41.5-144 kg (subjects with PK sampling, Table S1)",
-    weight_median  = "79.0 kg (subjects with PK sampling, Table S1; mean 81.2, SD 20.0). The covariate reference weight of 74 kg is inherited from the upstream pooled model, not from this cohort.",
+    species = "human",
+    n_subjects = 244L,
+    n_studies = 3L,
+    age_range = "19-82 years (subjects with PK sampling, Table S1)",
+    age_median = "44 years (subjects with PK sampling, Table S1; mean 45, SD 13)",
+    weight_range = "41.5-144 kg (subjects with PK sampling, Table S1)",
+    weight_median = "79.0 kg (subjects with PK sampling, Table S1; mean 81.2, SD 20.0). The covariate reference weight of 74 kg is inherited from the upstream pooled model, not from this cohort.",
     sex_female_pct = 45,
     race_ethnicity = "Not tabulated. Bhatnagar 2024 Figure 4 compares model-estimated average concentrations between Asian and non-Asian patients and concludes race has no clinically meaningful effect, but reports no group sizes or percentages.",
-    disease_state  = "Axial spondyloarthritis. The population PK datasets comprised 173 patients with ankylosing spondylitis (SELECT-AXIS 1, bDMARD-naive; and SELECT-AXIS 2 study 1, bDMARD inadequate responders) and 71 patients with non-radiographic axial spondyloarthritis (SELECT-AXIS 2 study 2).",
-    dose_range     = "Upadacitinib 15 mg once daily, extended-release tablet, versus placebo (1:1 randomization) through the week-14 primary end point in all three studies.",
-    regions        = "Multinational phase II/III programme; not broken out in Bhatnagar 2024.",
+    disease_state = "Axial spondyloarthritis. The population PK datasets comprised 173 patients with ankylosing spondylitis (SELECT-AXIS 1, bDMARD-naive; and SELECT-AXIS 2 study 1, bDMARD inadequate responders) and 71 patients with non-radiographic axial spondyloarthritis (SELECT-AXIS 2 study 2).",
+    dose_range = "Upadacitinib 15 mg once daily, extended-release tablet, versus placebo (1:1 randomization) through the week-14 primary end point in all three studies.",
+    regions = "Multinational phase II/III programme; not broken out in Bhatnagar 2024.",
     renal_function = "Creatinine clearance was a retained covariate on apparent oral clearance; Bhatnagar 2024 reports that plasma exposures are comparable between patients with mild or moderate renal impairment and patients with normal renal function. The cohort renal-function range is not tabulated.",
-    notes          = "Clinical trial registrations NCT03178487 (SELECT-AXIS 1) and NCT04169373 (SELECT-AXIS 2 studies 1 and 2). PK samples were collected in all SELECT-AXIS 1 patients and in about 30% of SELECT-AXIS 2 patients at weeks 2, 8, 12 and 14; assay lower limit of quantitation 0.05 ng/mL, with below-limit samples imputed at LLOQ/2 (M5). Table S1 summarizes all 730 randomized subjects, of whom 295 had PK sampling scheduled; the population PK analysis datasets contained the 244 patients with evaluable concentrations quoted here. Fitted in NONMEM with ADVAN4 and FOCE-I. The only difference between the subjects with and without PK sampling was that mean C-reactive protein was about 40% lower in the sampled group; Bhatnagar 2024 notes that CRP has not affected upadacitinib PK in other rheumatological populations."
+    notes = "Clinical trial registrations NCT03178487 (SELECT-AXIS 1) and NCT04169373 (SELECT-AXIS 2 studies 1 and 2). PK samples were collected in all SELECT-AXIS 1 patients and in about 30% of SELECT-AXIS 2 patients at weeks 2, 8, 12 and 14; assay lower limit of quantitation 0.05 ng/mL, with below-limit samples imputed at LLOQ/2 (M5). Table S1 summarizes all 730 randomized subjects, of whom 295 had PK sampling scheduled; the population PK analysis datasets contained the 244 patients with evaluable concentrations quoted here. Fitted in NONMEM with ADVAN4 and FOCE-I. The only difference between the subjects with and without PK sampling was that mean C-reactive protein was about 40% lower in the sampled group; Bhatnagar 2024 notes that CRP has not affected upadacitinib PK in other rheumatological populations."
   )
 
   ini({

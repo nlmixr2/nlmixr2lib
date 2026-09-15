@@ -41,7 +41,7 @@ Izat_2025_zoniporide <- function() {
     sep = " "
   )
   vignette <- "Izat_2025_aldehyde_oxidase_substrates"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what the single ODE state holds, in what amount units, in
   # what biological matrix. Verified against Izat 2025 Table 1 (zoniporide
@@ -51,8 +51,10 @@ Izat_2025_zoniporide <- function() {
   # plasma concentrations.
   compartmentData <- list(
     central = list(
-      analyte = "zoniporide", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "zoniporide",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -71,7 +73,7 @@ Izat_2025_zoniporide <- function() {
         "so neither is scaled."
       ),
       units = "kg",
-      type  = "continuous",
+      type = "continuous",
       notes = paste(
         "Implicit in the L/kg volume input; not carried. No body weight",
         "is printed anywhere in the paper or Appendix S1 -- Table S3",
@@ -83,16 +85,16 @@ Izat_2025_zoniporide <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4L,
-    n_studies      = 1L,
-    age_range      = "18-55 years",
-    weight_median  = "70 kg (assumed reference weight for the L/kg volume input; not reported)",
+    species = "human",
+    n_subjects = 4L,
+    n_studies = 1L,
+    age_range = "18-55 years",
+    weight_median = "70 kg (assumed reference weight for the L/kg volume input; not reported)",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = "Single 80 mg intravenous infusion.",
-    route          = "intravenous",
-    studies        = paste(
+    disease_state = "Healthy adult volunteers.",
+    dose_range = "Single 80 mg intravenous infusion.",
+    route = "intravenous",
+    studies = paste(
       "Dalvie D, Zhang C, Chen W, Smolarek T, Obach RS, Loi CM.",
       "Cross-species comparison of the metabolism and excretion of",
       "zoniporide: contribution of aldehyde oxidase to interspecies",
@@ -103,7 +105,7 @@ Izat_2025_zoniporide <- function() {
       "both the disposition parameters reproduced here and the observed",
       "fractions metabolized."
     ),
-    notes          = paste(
+    notes = paste(
       "This is a PBPK analysis rather than a population-PK fit, so there",
       "is no pooled analysis dataset and no estimated variance",
       "components. The percent-CV figures in Table 1 and Appendix S1",

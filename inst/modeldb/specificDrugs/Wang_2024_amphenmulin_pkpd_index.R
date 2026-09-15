@@ -19,31 +19,36 @@ Wang_2024_amphenmulin_pkpd_index <- function() {
   paper_specific_compartments <- c("bact")
 
   compartmentData <- list(
-    bact = list(analyte = "Mycoplasma gallisepticum strain S6", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    bact = list(
+      analyte = "Mycoplasma gallisepticum strain S6",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     AUC_AMPH = list(
-      description        = "Amphenmulin area under the medium concentration-time curve over the current 24 h dosing interval",
-      units              = "h*ug/mL",
-      type               = "continuous",
+      description = "Amphenmulin area under the medium concentration-time curve over the current 24 h dosing interval",
+      units = "h*ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-24-h-interval amphenmulin exposure in the reaction chamber of the in-vitro dynamic model, supplied as a piecewise-constant time-varying covariate (one value per 24 h interval). Wang 2024 derived these non-compartmentally in Phoenix and reports the ranges in the Results section (In vitro pharmacokinetics and the effects on M. gallisepticum): across the 0.1-1.5 ug/mL regimens the AUC was 0.34-6.19 h*ug/mL over 0-24 h, 0.57-7.69 h*ug/mL over 24-48 h and 0.62-8.23 h*ug/mL over 48-72 h. Set to 0 for the untreated control so the sigmoid term vanishes and the predicted 24 h change equals E0. Because the paper published no structural PK model for the apparatus, this covariate is the model's only route for drug exposure.",
-      source_name        = "AUC24h (Wang 2024 Materials and Methods, Integration and modeling of pharmacokinetics/pharmacodynamics; ranges in Results, In vitro pharmacokinetics and the effects on M. gallisepticum)"
+      notes = "Per-24-h-interval amphenmulin exposure in the reaction chamber of the in-vitro dynamic model, supplied as a piecewise-constant time-varying covariate (one value per 24 h interval). Wang 2024 derived these non-compartmentally in Phoenix and reports the ranges in the Results section (In vitro pharmacokinetics and the effects on M. gallisepticum): across the 0.1-1.5 ug/mL regimens the AUC was 0.34-6.19 h*ug/mL over 0-24 h, 0.57-7.69 h*ug/mL over 24-48 h and 0.62-8.23 h*ug/mL over 48-72 h. Set to 0 for the untreated control so the sigmoid term vanishes and the predicted 24 h change equals E0. Because the paper published no structural PK model for the apparatus, this covariate is the model's only route for drug exposure.",
+      source_name = "AUC24h (Wang 2024 Materials and Methods, Integration and modeling of pharmacokinetics/pharmacodynamics; ranges in Results, In vitro pharmacokinetics and the effects on M. gallisepticum)"
     )
   )
 
   population <- list(
-    species        = "in vitro (Mycoplasma gallisepticum strain S6 culture)",
-    n_subjects     = 3L,
-    n_studies      = 1L,
-    organism       = "Mycoplasma gallisepticum standard strain S6 (National Center for Veterinary Culture Collection, Beijing); amphenmulin MIC = 0.0039 ug/mL by broth microdilution at a 10^7 CFU/mL inoculum",
-    system         = "In-vitro dynamic model: a reservoir chamber of fresh drug-free medium feeding a three-necked reaction flask holding 300 mL of medium in the external compartment and a 10 mL semipermeable-membrane internal compartment carrying the 10^7 CFU/mL culture, draining to a waste chamber under peristaltic-pump control at 1.63 mL/min. The flow rate was set so that amphenmulin elimination matched its 2.13 h intravenous half-life in chickens",
-    disease_state  = "Not applicable (in-vitro culture); starting inoculum 10^7 CFU/mL",
-    dose_range     = "Peak concentrations of 0.1, 0.2, 0.5, 0.8, 1.0 and 1.5 ug/mL, dosed every 24 h for three doses",
-    sampling       = "Drug: reaction-chamber samples at 0.083, 0.167, 0.25, 0.50, 0.75, 1, 2, 3, 4, 6, 9, 12, 24, 24.08, 25, 30, 36, 48.08, 54, 60 and 72 h. Counts: internal-compartment cultures at 0, 3, 6, 9, 12, 24, 30, 36, 48, 54, 60 and 72 h. Each sample in triplicate",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "Wang 2024 Table 3 also reports the same model fitted against Cmax/MIC (Emax = -3.3571, E0 = -0.3575, EC50 = 441.4603, Hill N = 1.3842, R = 0.8995); AUC24h/MIC is the better correlate (R = 0.9657) and is the parameterisation packaged here. The paper's headline targets for a 1 log10 CFU/mL reduction are AUC24h/MIC = 904.05 h and Cmax/MIC = 190.11. A reduction of at least 3 log10 CFU/mL was defined as bactericidal; regimens at or above 0.8 ug/mL reached that level over the three-day course."
+    species = "in vitro (Mycoplasma gallisepticum strain S6 culture)",
+    n_subjects = 3L,
+    n_studies = 1L,
+    organism = "Mycoplasma gallisepticum standard strain S6 (National Center for Veterinary Culture Collection, Beijing); amphenmulin MIC = 0.0039 ug/mL by broth microdilution at a 10^7 CFU/mL inoculum",
+    system = "In-vitro dynamic model: a reservoir chamber of fresh drug-free medium feeding a three-necked reaction flask holding 300 mL of medium in the external compartment and a 10 mL semipermeable-membrane internal compartment carrying the 10^7 CFU/mL culture, draining to a waste chamber under peristaltic-pump control at 1.63 mL/min. The flow rate was set so that amphenmulin elimination matched its 2.13 h intravenous half-life in chickens",
+    disease_state = "Not applicable (in-vitro culture); starting inoculum 10^7 CFU/mL",
+    dose_range = "Peak concentrations of 0.1, 0.2, 0.5, 0.8, 1.0 and 1.5 ug/mL, dosed every 24 h for three doses",
+    sampling = "Drug: reaction-chamber samples at 0.083, 0.167, 0.25, 0.50, 0.75, 1, 2, 3, 4, 6, 9, 12, 24, 24.08, 25, 30, 36, 48.08, 54, 60 and 72 h. Counts: internal-compartment cultures at 0, 3, 6, 9, 12, 24, 30, 36, 48, 54, 60 and 72 h. Each sample in triplicate",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Wang 2024 Table 3 also reports the same model fitted against Cmax/MIC (Emax = -3.3571, E0 = -0.3575, EC50 = 441.4603, Hill N = 1.3842, R = 0.8995); AUC24h/MIC is the better correlate (R = 0.9657) and is the parameterisation packaged here. The paper's headline targets for a 1 log10 CFU/mL reduction are AUC24h/MIC = 904.05 h and Cmax/MIC = 190.11. A reduction of at least 3 log10 CFU/mL was defined as bactericidal; regimens at or above 0.8 ug/mL reached that level over the three-day course."
   )
 
   ini({

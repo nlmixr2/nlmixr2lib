@@ -21,46 +21,46 @@ Bi_2017_peginterferon_alfa_2a <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "peginterferon alfa 2a", units = "ng", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "peginterferon alfa 2a", units = "ng", specimen = "administration site", verified = FALSE),
     central = list(analyte = "peginterferon alfa 2a", units = "ng", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Source column CCR in Bi 2017.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Source column CCR in Bi 2017.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Used with a power form on clearance ((CRCL / 91.39)^e_crcl_cl); reference 91.39 mL/min is the cohort mean (Bi 2017 Table 1). Source paper writes the column as CCR; canonical column is CRCL with the raw-Cockcroft-Gault flavour (cf. Delattre 2010 amikacin entry).",
-      source_name        = "CCR"
+      notes = "Time-fixed at baseline. Used with a power form on clearance ((CRCL / 91.39)^e_crcl_cl); reference 91.39 mL/min is the cohort mean (Bi 2017 Table 1). Source paper writes the column as CCR; canonical column is CRCL with the raw-Cockcroft-Gault flavour (cf. Delattre 2010 amikacin entry).",
+      source_name = "CCR"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Used with a power form on central volume ((BMI / 23.41)^e_bmi_vc); reference 23.41 kg/m^2 is the cohort mean (Bi 2017 Table 1).",
-      source_name        = "BMI"
+      notes = "Time-fixed at baseline. Used with a power form on central volume ((BMI / 23.41)^e_bmi_vc); reference 23.41 kg/m^2 is the cohort mean (Bi 2017 Table 1).",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 178L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 178L,
+    n_studies = 1L,
     n_observations = 208L,
-    age_range      = "15-75 years (median 50.5; mean 48.40 +/- 12.91; Bi 2017 Table 1)",
-    weight_range   = "42.5-100 kg (median 64; mean 65.52 +/- 11.74; Bi 2017 Table 1)",
-    bmi_range      = "15.43-33.80 kg/m^2 (median 23.33; mean 23.41 +/- 3.48; Bi 2017 Table 1)",
-    height_range   = "145-191 cm (median 168; mean 166.89 +/- 7.95; Bi 2017 Table 1)",
-    crcl_range     = "44.80-166.87 mL/min (median 91.66; mean 91.39 +/- 24.33; Bi 2017 Table 1)",
+    age_range = "15-75 years (median 50.5; mean 48.40 +/- 12.91; Bi 2017 Table 1)",
+    weight_range = "42.5-100 kg (median 64; mean 65.52 +/- 11.74; Bi 2017 Table 1)",
+    bmi_range = "15.43-33.80 kg/m^2 (median 23.33; mean 23.41 +/- 3.48; Bi 2017 Table 1)",
+    height_range = "145-191 cm (median 168; mean 166.89 +/- 7.95; Bi 2017 Table 1)",
+    crcl_range = "44.80-166.87 mL/min (median 91.66; mean 91.39 +/- 24.33; Bi 2017 Table 1)",
     sex_female_pct = 44.38,
     race_ethnicity = "Not explicitly tabulated; trial conducted at 302 Military Hospital, Beijing, China, so the cohort is Chinese.",
-    disease_state  = "Chronic hepatitis B (HBsAg+, HBeAg+, Anti-HBeAg-, HBV DNA >= 1e5 copies/mL, 2x ULN <= ALT <= 10x ULN, serum total bilirubin <= 2x ULN). Disease grade either hepatitis (APRI <= 2) or compensated cirrhosis (APRI > 2).",
-    dose_range     = "Subcutaneous peginterferon alfa-2a once weekly; doses in source data 50000-180000 ng (50-180 ug). Standard regimen per Bi 2017 Introduction is 180 ug SC weekly for 48 weeks.",
-    regions        = "China (single-center, 302 Military Hospital, Beijing).",
-    trial          = "ChiCTR-RO-13004320 (Chinese Clinical Trial Registry); enrolment October 2013 - June 2016",
-    notes          = "Sparse-sampling design: 208 observations from 178 patients (1-4 per patient). Blood samples randomised within 0-48 h, 48-96 h, and >96 h post-dose (target Tmax ~72 h). Serum peginterferon alfa-2a was assayed with the Pestka Biomedical Laboratories Human IFN-alpha Multi-Subtype ELISA Kit (product #41105), LLOQ 15 pg/mL. The original final-model parameter set is reported in Bi 2017 Table 2."
+    disease_state = "Chronic hepatitis B (HBsAg+, HBeAg+, Anti-HBeAg-, HBV DNA >= 1e5 copies/mL, 2x ULN <= ALT <= 10x ULN, serum total bilirubin <= 2x ULN). Disease grade either hepatitis (APRI <= 2) or compensated cirrhosis (APRI > 2).",
+    dose_range = "Subcutaneous peginterferon alfa-2a once weekly; doses in source data 50000-180000 ng (50-180 ug). Standard regimen per Bi 2017 Introduction is 180 ug SC weekly for 48 weeks.",
+    regions = "China (single-center, 302 Military Hospital, Beijing).",
+    trial = "ChiCTR-RO-13004320 (Chinese Clinical Trial Registry); enrolment October 2013 - June 2016",
+    notes = "Sparse-sampling design: 208 observations from 178 patients (1-4 per patient). Blood samples randomised within 0-48 h, 48-96 h, and >96 h post-dose (target Tmax ~72 h). Serum peginterferon alfa-2a was assayed with the Pestka Biomedical Laboratories Human IFN-alpha Multi-Subtype ELISA Kit (product #41105), LLOQ 15 pg/mL. The original final-model parameter set is reported in Bi 2017 Table 2."
   )
 
   ini({

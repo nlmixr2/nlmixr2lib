@@ -47,101 +47,101 @@ Royer_2011_cisplatin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    peritoneum  = list(analyte = "cisplatin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    peritoneum = list(analyte = "cisplatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
-    bound       = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE)
+    bound = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_EPI = list(
-      description        = "Presence of epinephrine co-administered in the intraperitoneal cisplatin bath",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Presence of epinephrine co-administered in the intraperitoneal cisplatin bath",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = cisplatin alone",
-      notes              = "1 = epinephrine co-administered in the IP bath (Royer 2011: 1 mg/L n=11, 2 mg/L n=12, or 3 mg/L n=3, dichotomised in the model because plasma Pt concentrations were similar across dose levels per Guardiola 2010). 0 = cisplatin alone (n=29). Enters IPCL and V as multiplicative fractional coefficients: IPCL_i = exp(lipcl + etalipcl) * (1 + e_epi_ipcl * CONMED_EPI); V_i = exp(lvc + etalvc) * (1 + e_epi_vc * CONMED_EPI). The Royer 2011 Table 2 notation `y1 + y2 * EPI` is a proportional-change parameterisation: y2 = -0.531 gives a 53.1% decrease in IPCL, and y4 = +0.805 gives an 80.5% increase in V (both percentages are quoted verbatim in Royer 2011 Results 'Covariates').",
-      source_name        = "EPI"
+      notes = "1 = epinephrine co-administered in the IP bath (Royer 2011: 1 mg/L n=11, 2 mg/L n=12, or 3 mg/L n=3, dichotomised in the model because plasma Pt concentrations were similar across dose levels per Guardiola 2010). 0 = cisplatin alone (n=29). Enters IPCL and V as multiplicative fractional coefficients: IPCL_i = exp(lipcl + etalipcl) * (1 + e_epi_ipcl * CONMED_EPI); V_i = exp(lvc + etalvc) * (1 + e_epi_vc * CONMED_EPI). The Royer 2011 Table 2 notation `y1 + y2 * EPI` is a proportional-change parameterisation: y2 = -0.531 gives a 53.1% decrease in IPCL, and y4 = +0.805 gives an 80.5% increase in V (both percentages are quoted verbatim in Royer 2011 Results 'Covariates').",
+      source_name = "EPI"
     ),
     TPRO = list(
-      description        = "Baseline total serum protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline total serum protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Median 34.0 g/L (range 16-56) across the pooled 55-patient cohort per Royer 2011 Table 1. Enters the protein-bound Pt formation flux multiplicatively (Supplementary Data S1 equation: PtB = (Vmax * Cc / (Cc + KM)) * Prot). The paper reports TPRO as the baseline serum total protein and uses it as a time-invariant per-subject covariate.",
-      source_name        = "PROT"
+      notes = "Median 34.0 g/L (range 16-56) across the pooled 55-patient cohort per Royer 2011 Table 1. Enters the protein-bound Pt formation flux multiplicatively (Supplementary Data S1 equation: PtB = (Vmax * Cc / (Cc + KM)) * Prot). The paper reports TPRO as the baseline serum total protein and uses it as a time-invariant per-subject covariate.",
+      source_name = "PROT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at surgery",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested in the covariate screening (Royer 2011 Methods 'Population pharmacokinetic analysis' and Results 'Covariates'); did not survive the joint OFV/IIV-reduction retention criterion and was not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Tested in the covariate screening (Royer 2011 Methods 'Population pharmacokinetic analysis' and Results 'Covariates'); did not survive the joint OFV/IIV-reduction retention criterion and was not retained in the final model."
     ),
     WT = list(
       description = "Actual body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened, not retained (Royer 2011 Methods / Results 'Covariates')."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained (Royer 2011 Methods / Results 'Covariates')."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened, not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened, not retained."
     ),
     BSA = list(
       description = "Body surface area (Du Bois and Du Bois 1916 formula)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened, not retained. BSA is used only downstream of the fit in the interstitial-Pt-penetration equation (3x0 = 3*D*BSA/IPCL) reported in Royer 2011 Discussion, not as a covariate on any structural PK parameter."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened, not retained. BSA is used only downstream of the fit in the interstitial-Pt-penetration equation (3x0 = 3*D*BSA/IPCL) reported in Royer 2011 Discussion, not as a covariate on any structural PK parameter."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened, not retained."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained."
     ),
     SCR = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened, not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained."
     ),
     CRCL = list(
       description = "Creatinine clearance (Cockcroft-Gault 1976)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened, not retained. Downstream ROC-curve analysis in Royer 2011 evaluated whether the fitted CL discriminates renal toxicity (AUC of ROC 0.514, non-discriminating; Table 3), but CL itself was not modelled as a function of CRCL."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened, not retained. Downstream ROC-curve analysis in Royer 2011 evaluated whether the fitted CL discriminates renal toxicity (AUC of ROC 0.514, non-discriminating; Table 3), but CL itself was not modelled as a function of CRCL."
     ),
     PRIP = list(
       description = "Intraperitoneal total protein concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Distinct from TPRO (serum total protein) which is retained on the protein-bound-Pt formation flux."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained. Distinct from TPRO (serum total protein) which is retained on the protein-bound-Pt formation flux."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
     n_observations = "1470 platinum measurements (316 intraperitoneal + 577 ultrafiltered plasma + 577 protein-bound plasma)",
-    age_range      = "25.5-75.0 years (median 58.3)",
-    weight_range   = "49-85 kg (median 60.5)",
-    height_range   = "150-178 cm (median 161.5)",
-    bmi_range      = "17.9-31.2 kg/m^2 (median 23.4)",
-    bsa_range      = "1.42-2.01 m^2 (median 1.63; Du Bois-Du Bois formula)",
-    lbm_range      = "36.6-56.2 kg (median 43.6; Du Bois formula per Royer 2011 Table 1 footnote a)",
-    scr_range      = "32-88 umol/L (median 58.0)",
-    crcl_range     = "58.2-182.8 mL/min (median 94.0; Cockcroft-Gault)",
-    tpro_range     = "16-56 g/L (median 34.0)",
+    age_range = "25.5-75.0 years (median 58.3)",
+    weight_range = "49-85 kg (median 60.5)",
+    height_range = "150-178 cm (median 161.5)",
+    bmi_range = "17.9-31.2 kg/m^2 (median 23.4)",
+    bsa_range = "1.42-2.01 m^2 (median 1.63; Du Bois-Du Bois formula)",
+    lbm_range = "36.6-56.2 kg (median 43.6; Du Bois formula per Royer 2011 Table 1 footnote a)",
+    scr_range = "32-88 umol/L (median 58.0)",
+    crcl_range = "58.2-182.8 mL/min (median 94.0; Cockcroft-Gault)",
+    tpro_range = "16-56 g/L (median 34.0)",
     sex_female_pct = 100,
-    disease_state  = "Recurrent epithelial ovarian cancer confined to the peritoneal cavity (no extra-peritoneal disease), with progression at least 6 months after first-line intravenous platinum-based chemotherapy. Patients had WHO performance status 0-1, life expectancy at least 3 months, and normal haematological / renal / hepatic function at baseline. Cardiac pathology was an exclusion criterion (given the anticipated cardiovascular effects of intraperitoneal epinephrine).",
-    dose_range     = "Perioperative intraperitoneal chemotherapy: 3 L physiological saline bath containing cisplatin (typically 60-70 mg/m^2 as elemental cisplatin) delivered during optimal cytoreductive surgery. Two consecutive 1-h baths per procedure; the second bath was shortened to 45 min for the last n=11 epinephrine patients (see notes). Epinephrine (n=26) was given at 1 mg/L (n=11), 2 mg/L (n=12), or 3 mg/L (n=3) in the IP bath; n=29 patients received cisplatin alone.",
-    regions        = "France (CHU Besancon multi-centre with CHU Amiens; French phase I trial infrastructure)",
-    notes          = "Peritoneal and blood samples at 1, 30, 59 min after the start of each 1-h bath (5, 25, 44 min for the shortened 45-min bath). Additional blood samples at 4, 6, 8, 16, 24 h after IPC; the 16-h samples were discarded for the last n=11 patients because they were inconvenient (0300 h) and not informative. Concomitant IV fluid (Ca-glucuronate, Mg, KCl, NaCl in normal saline) administered for renal-toxicity prevention. Platinum assayed by flameless atomic absorption spectrophotometry (Varian SpectrAA 220Z Zeeman graphite furnace) on ultrafiltered and total plasma fractions. NONMEM VI.2 double precision, FOCE with INTERACTION. 500-resampling nonparametric bootstrap confirmed parameter stability (Royer 2011 Table 2 bootstrap columns)."
+    disease_state = "Recurrent epithelial ovarian cancer confined to the peritoneal cavity (no extra-peritoneal disease), with progression at least 6 months after first-line intravenous platinum-based chemotherapy. Patients had WHO performance status 0-1, life expectancy at least 3 months, and normal haematological / renal / hepatic function at baseline. Cardiac pathology was an exclusion criterion (given the anticipated cardiovascular effects of intraperitoneal epinephrine).",
+    dose_range = "Perioperative intraperitoneal chemotherapy: 3 L physiological saline bath containing cisplatin (typically 60-70 mg/m^2 as elemental cisplatin) delivered during optimal cytoreductive surgery. Two consecutive 1-h baths per procedure; the second bath was shortened to 45 min for the last n=11 epinephrine patients (see notes). Epinephrine (n=26) was given at 1 mg/L (n=11), 2 mg/L (n=12), or 3 mg/L (n=3) in the IP bath; n=29 patients received cisplatin alone.",
+    regions = "France (CHU Besancon multi-centre with CHU Amiens; French phase I trial infrastructure)",
+    notes = "Peritoneal and blood samples at 1, 30, 59 min after the start of each 1-h bath (5, 25, 44 min for the shortened 45-min bath). Additional blood samples at 4, 6, 8, 16, 24 h after IPC; the 16-h samples were discarded for the last n=11 patients because they were inconvenient (0300 h) and not informative. Concomitant IV fluid (Ca-glucuronate, Mg, KCl, NaCl in normal saline) administered for renal-toxicity prevention. Platinum assayed by flameless atomic absorption spectrophotometry (Varian SpectrAA 220Z Zeeman graphite furnace) on ultrafiltered and total plasma fractions. NONMEM VI.2 double precision, FOCE with INTERACTION. 500-resampling nonparametric bootstrap confirmed parameter stability (Royer 2011 Table 2 bootstrap columns)."
   )
 
   ini({

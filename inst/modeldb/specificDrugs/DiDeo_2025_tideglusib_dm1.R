@@ -26,11 +26,11 @@ DiDeo_2025_tideglusib_dm1 <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with a reference body weight of 70 kg and FIXED",
         "exponents, per Di Deo 2025 Section 2.4.1: 'This effect was",
         "parameterised using a reference body weight of 70 kg and fixed",
@@ -50,17 +50,17 @@ DiDeo_2025_tideglusib_dm1 <- function() {
         "scenarios' -- so weight is the sole size/age descriptor even though",
         "the model is used to extrapolate down to 5 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_HIGH = list(
-      description        = paste(
+      description = paste(
         "High-dose indicator. 1 = the subject's administered tideglusib dose",
         "was greater than 400 mg; 0 = 400 mg or less."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Di Deo 2025 Table 2 splits BOTH the absorption rate constant and the",
         "relative bioavailability at a 400 mg threshold: rows 'Absorption rate",
         "constant, kA (1/h)' vs 'Absorption rate constant, kA (dose > 400 mg)",
@@ -81,16 +81,16 @@ DiDeo_2025_tideglusib_dm1 <- function() {
         "60+ kg band's 1000 mg and the 45-60 kg band's 800 mg and the",
         "35-45 kg band's 600 mg exceed 400 mg)."
       ),
-      source_name        = "derived from the assigned dose level"
+      source_name = "derived from the assigned dose level"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened but NOT retained. Di Deo 2025 Section 2.4.1 lists age among",
         "the factors considered and notes that where collinearity exists",
         "between covariates, such as age and weight, the choice was guided by",
@@ -102,27 +102,27 @@ DiDeo_2025_tideglusib_dm1 <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened but NOT retained; named in the Section 2.4.1 covariate list.",
         "Body weight was the only retained covariate."
       )
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Reported in Table 1 (6 of 16 patients female) but not retained as a",
         "covariate in the final model."
       )
     ),
     FED = list(
       description = "Fed-vs-fasted indicator at the dose record",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained, and NOT identifiable as a fed-vs-fasted",
         "contrast in this study: Section 2.1 states every dose was given after",
         "an overnight fast with food restricted for at least one hour",
@@ -140,32 +140,38 @@ DiDeo_2025_tideglusib_dm1 <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "tideglusib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tideglusib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "tideglusib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "tideglusib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "tideglusib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "tideglusib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16,
-    n_studies      = 1,
-    age_range      = "13.8-34.9 years",
-    age_mean       = "20.9 years (s.d. 5.9)",
-    weight_range   = "36.8-122.6 kg",
-    weight_mean    = "63.6 kg (s.d. 19.6)",
+    species = "human",
+    n_subjects = 16,
+    n_studies = 1,
+    age_range = "13.8-34.9 years",
+    age_mean = "20.9 years (s.d. 5.9)",
+    weight_range = "36.8-122.6 kg",
+    weight_mean = "63.6 kg (s.d. 19.6)",
     sex_female_pct = 37.5,
-    disease_state  = "congenital or juvenile-onset myotonic dystrophy type 1 (DM-1)",
-    dose_range     = "400 mg or 1000 mg q.d. oral, 12 weeks (1:1 allocation, 8 subjects per arm)",
-    regions        = "United Kingdom (single centre, Newcastle upon Tyne Hospitals NHS Trust)",
-    notes          = paste(
+    disease_state = "congenital or juvenile-onset myotonic dystrophy type 1 (DM-1)",
+    dose_range = "400 mg or 1000 mg q.d. oral, 12 weeks (1:1 allocation, 8 subjects per arm)",
+    regions = "United Kingdom (single centre, Newcastle upon Tyne Hospitals NHS Trust)",
+    notes = paste(
       "Study AMO-02-MD-2-001, a Phase II single-blind, placebo-controlled,",
       "fixed-dose study in adolescent and adult patients aged 13-34 years.",
       "All subjects received 2 weeks of single-blind placebo before the",

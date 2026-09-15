@@ -8,18 +8,18 @@ Thoueille_2023_lopinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate retained in the final model. Enters apparent oral clearance as a linear deviation from the 70 kg reference weight: TVCL_LPV = CL_LPV * (1 + theta_BW * (WT - 70) / 70) (Thoueille 2023, 'Final model' equation printed beneath Table 2; theta_BW reference weight of 70 kg stated in the Table 2 footnote). Cohort medians 73 kg (range 47-157) for the COPEP participants and 66 kg (range 40-147) for the PLWH on routine TDM (Thoueille 2023 Table 1). Time-fixed per subject in the source dataset.",
-      source_name        = "BW"
+      notes = "The only covariate retained in the final model. Enters apparent oral clearance as a linear deviation from the 70 kg reference weight: TVCL_LPV = CL_LPV * (1 + theta_BW * (WT - 70) / 70) (Thoueille 2023, 'Final model' equation printed beneath Table 2; theta_BW reference weight of 70 kg stated in the Table 2 footnote). Cohort medians 73 kg (range 47-157) for the COPEP participants and 66 kg (range 40-147) for the PLWH on routine TDM (Thoueille 2023 Table 1). Time-fixed per subject in the source dataset.",
+      source_name = "BW"
     )
   )
 
@@ -34,60 +34,60 @@ Thoueille_2023_lopinavir <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at sampling.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion / backward deletion on the PK parameters; not retained in the final model. Cohort medians 39 years (range 17-67) for COPEP and 41 years (range 19-78) for PLWH (Thoueille 2023 Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by forward inclusion / backward deletion on the PK parameters; not retained in the final model. Cohort medians 39 years (range 17-67) for COPEP and 41 years (range 19-78) for PLWH (Thoueille 2023 Table 1)."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on the PK parameters; not retained in the final model. Cohort 60 female / 45 male (COPEP) and 69 female / 50 male (PLWH) (Thoueille 2023 Table 1). Note that sex nonetheless entered the analysis indirectly, outside the PK model: the assumed haematocrit used to convert the COPEP dried-blood-spot concentrations to plasma concentrations was set to 0.40 for women and 0.45 for men (Thoueille 2023 Methods, 'Population pharmacokinetic analysis'). That conversion is a data-preparation step applied before model fitting, not a covariate effect inside the PK model, so it is not encoded here."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on the PK parameters; not retained in the final model. Cohort 60 female / 45 male (COPEP) and 69 female / 50 male (PLWH) (Thoueille 2023 Table 1). Note that sex nonetheless entered the analysis indirectly, outside the PK model: the assumed haematocrit used to convert the COPEP dried-blood-spot concentrations to plasma concentrations was set to 0.40 for women and 0.45 for men (Thoueille 2023 Methods, 'Population pharmacokinetic analysis'). That conversion is a data-preparation step applied before model fitting, not a covariate effect inside the PK model, so it is not encoded here."
     ),
     HT = list(
       description = "Body height.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened on the PK parameters; not retained in the final model. Cohort medians 172 cm (range 149-192) for COPEP and 168 cm (range 148-190) for PLWH (Thoueille 2023 Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened on the PK parameters; not retained in the final model. Cohort medians 172 cm (range 149-192) for COPEP and 168 cm (range 148-190) for PLWH (Thoueille 2023 Table 1)."
     ),
     BMI = list(
       description = "Body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on the PK parameters; not retained in the final model (body weight was the retained size descriptor). Cohort median 24 kg/m^2 in both populations (ranges 17-49 and 16-51) (Thoueille 2023 Table 1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on the PK parameters; not retained in the final model (body weight was the retained size descriptor). Cohort median 24 kg/m^2 in both populations (ranges 17-49 and 16-51) (Thoueille 2023 Table 1)."
     ),
     SMOKE_CURRENT = list(
       description = "Current-smoker indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on the PK parameters; not retained in the final model. Thoueille 2023 does not tabulate the smoking-status distribution."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on the PK parameters; not retained in the final model. Thoueille 2023 does not tabulate the smoking-status distribution."
     ),
     HIV_POS = list(
       description = "Study-population indicator: 1 = person living with HIV enrolled in the Swiss HIV Cohort Study routine TDM programme, 0 = HIV-negative COPEP participant receiving LPV/r as COVID-19 post-exposure prophylaxis.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on ALL PK parameters and not retained: 'PopPK parameters between COPEP participants and PLWH did not differ significantly, thus supporting the use of a unique model for both COPEP and TDM data' (Thoueille 2023 Results, 'Structural, statistical and covariate models'). This null result is the central finding of the paper, so the single pooled parameterisation encoded in ini() applies to both populations."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on ALL PK parameters and not retained: 'PopPK parameters between COPEP participants and PLWH did not differ significantly, thus supporting the use of a unique model for both COPEP and TDM data' (Thoueille 2023 Results, 'Structural, statistical and covariate models'). This null result is the central finding of the paper, so the single pooled parameterisation encoded in ini() applies to both populations."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 224L,
-    n_studies       = 2L,
-    n_observations  = 275L,
-    age_range       = "17-78 years (COPEP 17-67; PLWH 19-78)",
-    age_median      = "39 years (COPEP) and 41 years (PLWH)",
-    weight_range    = "40-157 kg (COPEP 47-157; PLWH 40-147)",
-    weight_median   = "73 kg (COPEP) and 66 kg (PLWH)",
-    height_range    = "148-192 cm (COPEP 149-192; PLWH 148-190)",
-    height_median   = "172 cm (COPEP) and 168 cm (PLWH)",
-    bmi_range       = "16-51 kg/m^2 (COPEP 17-49; PLWH 16-51)",
-    bmi_median      = "24 kg/m^2 in both populations",
-    sex_female_pct  = 57.6,
-    disease_state   = "Two pooled populations. (1) 105 HIV-negative adults exposed to SARS-CoV-2 (more than 15 min at under 2 m, or a shared closed space for more than 2 h, with a person with confirmed infection) who received LPV/r as COVID-19 post-exposure prophylaxis in the COPEP trial. (2) 119 people living with HIV (PLWH) enrolled in the Swiss HIV Cohort Study and followed in the routine therapeutic drug monitoring programme of the Service of Clinical Pharmacology, Lausanne, between January 2010 and May 2022.",
-    dose_range      = "COPEP: lopinavir/ritonavir 400/100 mg twice daily for 5 days (all 105 participants). PLWH on routine TDM: lopinavir 200 mg (9), 300 mg (1), 400 mg (85), 500 mg (5), 600 mg (7), 800 mg (10) and 1000 mg (2) per administration (Thoueille 2023 Table 1).",
-    regions         = "Switzerland (COPEP recruitment in Geneva, Basel and Lugano; TDM programme in Lausanne).",
-    notes           = "105 lopinavir concentrations from 105 COPEP participants (one dried-blood-spot sample each, taken on day 5 with the time of last intake documented; median time after dose 1.5 h, range 0.07-19 h) plus 170 sparse plasma concentrations from 119 PLWH (median 2 samples per patient, range 1-8; median time after dose 10.25 h, range 1.25-29.5 h). COPEP dried-blood-spot concentrations were converted to plasma concentrations as C_plasma = C_DBS * F_BP / (1 - HCT), with the lopinavir protein-binding ratio F_BP = 98.5% and haematocrit assumed at 0.40 for women and 0.45 for men (haematocrit was not measured in COPEP). Twelve COPEP measurements below 1000 ng/mL were excluded as indicating absolute non-adherence. ALL individuals were assumed to be at steady state (full adherence for COPEP, long treatment duration for the SHCS patients), so simulations reproducing this model should dose to steady state. Lopinavir was quantified by LC-MS/MS (LLOQ 10 ng/mL). NONMEM 7.4.3; final estimates from Thoueille 2023 Table 2, confirmed by a 2000-sample bootstrap and by prediction- and variability-corrected VPC (Fig. 1)."
+    species = "human",
+    n_subjects = 224L,
+    n_studies = 2L,
+    n_observations = 275L,
+    age_range = "17-78 years (COPEP 17-67; PLWH 19-78)",
+    age_median = "39 years (COPEP) and 41 years (PLWH)",
+    weight_range = "40-157 kg (COPEP 47-157; PLWH 40-147)",
+    weight_median = "73 kg (COPEP) and 66 kg (PLWH)",
+    height_range = "148-192 cm (COPEP 149-192; PLWH 148-190)",
+    height_median = "172 cm (COPEP) and 168 cm (PLWH)",
+    bmi_range = "16-51 kg/m^2 (COPEP 17-49; PLWH 16-51)",
+    bmi_median = "24 kg/m^2 in both populations",
+    sex_female_pct = 57.6,
+    disease_state = "Two pooled populations. (1) 105 HIV-negative adults exposed to SARS-CoV-2 (more than 15 min at under 2 m, or a shared closed space for more than 2 h, with a person with confirmed infection) who received LPV/r as COVID-19 post-exposure prophylaxis in the COPEP trial. (2) 119 people living with HIV (PLWH) enrolled in the Swiss HIV Cohort Study and followed in the routine therapeutic drug monitoring programme of the Service of Clinical Pharmacology, Lausanne, between January 2010 and May 2022.",
+    dose_range = "COPEP: lopinavir/ritonavir 400/100 mg twice daily for 5 days (all 105 participants). PLWH on routine TDM: lopinavir 200 mg (9), 300 mg (1), 400 mg (85), 500 mg (5), 600 mg (7), 800 mg (10) and 1000 mg (2) per administration (Thoueille 2023 Table 1).",
+    regions = "Switzerland (COPEP recruitment in Geneva, Basel and Lugano; TDM programme in Lausanne).",
+    notes = "105 lopinavir concentrations from 105 COPEP participants (one dried-blood-spot sample each, taken on day 5 with the time of last intake documented; median time after dose 1.5 h, range 0.07-19 h) plus 170 sparse plasma concentrations from 119 PLWH (median 2 samples per patient, range 1-8; median time after dose 10.25 h, range 1.25-29.5 h). COPEP dried-blood-spot concentrations were converted to plasma concentrations as C_plasma = C_DBS * F_BP / (1 - HCT), with the lopinavir protein-binding ratio F_BP = 98.5% and haematocrit assumed at 0.40 for women and 0.45 for men (haematocrit was not measured in COPEP). Twelve COPEP measurements below 1000 ng/mL were excluded as indicating absolute non-adherence. ALL individuals were assumed to be at steady state (full adherence for COPEP, long treatment duration for the SHCS patients), so simulations reproducing this model should dose to steady state. Lopinavir was quantified by LC-MS/MS (LLOQ 10 ng/mL). NONMEM 7.4.3; final estimates from Thoueille 2023 Table 2, confirmed by a 2000-sample bootstrap and by prediction- and variability-corrected VPC (Fig. 1)."
   )
 
   ini({

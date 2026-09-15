@@ -16,11 +16,11 @@ AlZubaydi_2024_gabapentin <- function() {
 
   covariateData <- list(
     CREAT = list(
-      description        = "Serum creatinine on the day the gabapentin TDM sample was drawn",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine on the day the gabapentin TDM sample was drawn",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power model on Cl, centered on the cohort MEAN serum creatinine of",
         "1.3 mg/dL (Al-Zubaydi 2024 Table 1: 1.3 +/- 1.0 mg/dL, range 0.4-3.8).",
         "Methods state that all continuous covariates were log-transformed and",
@@ -36,7 +36,7 @@ AlZubaydi_2024_gabapentin <- function() {
         "is reported to only two significant figures, so the centering constant",
         "carries that rounding."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     )
   )
 
@@ -48,9 +48,9 @@ AlZubaydi_2024_gabapentin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Actual body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested on Vd; not retained. Table S2 model 6: -2LL 456.83, i.e.",
         "delta +3.98 AGAINST the 452.85 covariate model, so adding WT did not",
         "improve the fit at all. Al-Zubaydi 2024 Results Section 3.2; Table 1",
@@ -60,9 +60,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested on Vd; not retained (Table S2 model 5: -2LL 457.20,",
         "delta +4.35 against the covariate model). Table 1 mean",
         "59.9 +/- 10.3 kg, range 43.2-82.2 kg. Adjusted body weight was",
@@ -73,9 +73,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     LBM = list(
       description = "Lean body weight (Janmahasatian equation)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested on Vd; not retained (Table S2 model 8: -2LL 457.44,",
         "delta +4.59 against the covariate model -- the worst of the five body",
         "size metrics screened). Table 1 mean 54.9 +/- 13.4 kg, range",
@@ -86,9 +86,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Tested on Vd; not retained (Table S2 model 9: -2LL 457.24,",
         "delta +4.39 against the covariate model). Table 1 mean",
         "30.0 +/- 7.9 kg/m^2, range 18-60."
@@ -100,9 +100,9 @@ AlZubaydi_2024_gabapentin <- function() {
         "Renal function estimate -- both Cockcroft-Gault creatinine clearance",
         "and MDRD eGFR were screened under this concept"
       ),
-      units       = "mL/min (CrCl) or mL/min/1.73 m^2 (eGFR)",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min (CrCl) or mL/min/1.73 m^2 (eGFR)",
+      type = "continuous",
+      notes = paste(
         "Both tested on Cl and both rejected in favour of raw serum creatinine,",
         "which gave the larger OFV reduction (Al-Zubaydi 2024 Results",
         "Section 3.2 and Discussion; Table S2 models 2 and 3: CrCl -2LL 475.74",
@@ -118,9 +118,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     FPG = list(
       description = "Fasting plasma glucose",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Tested on ka and Vd (main text Results Section 3.2); not retained",
         "(Table S2 model 11 tabulates FPG on Vd: -2LL 456.77, delta +3.92",
         "against the covariate model). Table 1 mean 127.6 +/- 78.2 mg/dL,",
@@ -130,9 +130,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened among the continuous covariates (Methods Section 2.3);",
         "not retained. Table 1 mean 65.7 +/- 16.4 years, range 22-93."
       ),
@@ -140,9 +140,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     SEXF = list(
       description = "Sex (1 = female)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened among the categorical covariates (Methods Section 2.3);",
         "not retained. Table 1: 51 of 82 (62.2%) female."
       ),
@@ -150,9 +150,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     T2DM = list(
       description = "Diagnosis of type 2 diabetes (1 = yes)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Tested on ka and Vd; not retained -- one of the paper's two primary",
         "negative findings (Abstract; Results Section 3.2; Conclusions).",
         "Table S2 model 10 tabulates DM on Vd: -2LL 456.83, delta +3.98",
@@ -166,9 +166,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     OBESE = list(
       description = "Obesity status (1 = BMI at least 30 kg/m^2)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Tested on Vd; not retained -- the paper's second primary negative",
         "finding. Table 1: 18 of 82 (22.0%) obese. Documentation-only",
         "placeholder name, as for T2DM."
@@ -177,9 +177,9 @@ AlZubaydi_2024_gabapentin <- function() {
     ),
     AKI = list(
       description = "Presence of acute kidney injury (1 = yes)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Tested on Cl; not retained (serum creatinine was selected instead).",
         "Table S2 model 4: -2LL 482.61, delta -13.83, p<0.01 -- a real",
         "improvement over the base model, but the weakest of the four renal",
@@ -194,9 +194,9 @@ AlZubaydi_2024_gabapentin <- function() {
         "Combined obesity/diabetes category (obese + diabetic, obese only,",
         "diabetic only, or neither)"
       ),
-      units       = "(4-level factor)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(4-level factor)",
+      type = "categorical",
+      notes = paste(
         "Tested on ka and Vd; not retained (Table S2 model 12: -2LL 456.49,",
         "delta +3.64, flagged NS). Table 1 (cont.): obesity +",
         "diabetes 8 (9.8%), obesity only 22 (26.8%), 'healthy' 52 (63.4%).",
@@ -208,30 +208,30 @@ AlZubaydi_2024_gabapentin <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte  = "gabapentin",
-      units    = "mg",
+      analyte = "gabapentin",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "gabapentin",
-      units    = "mg",
+      analyte = "gabapentin",
+      units = "mg",
       specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 82,
-    n_studies      = 1,
-    age_range      = "22-93 years",
-    age_mean       = "65.7 years",
-    weight_range   = "44.2-195.0 kg",
-    weight_mean    = "84.3 kg",
+    species = "human",
+    n_subjects = 82,
+    n_studies = 1,
+    age_range = "22-93 years",
+    age_mean = "65.7 years",
+    weight_range = "44.2-195.0 kg",
+    weight_mean = "84.3 kg",
     sex_female_pct = 62.2,
     race_ethnicity = c(White = 89.0, Black = 7.3, Other = 2.4, Asian = 1.2),
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults receiving oral gabapentin; the medical indication",
       "was not recorded in the dataset and the authors describe the cohort as",
       "a random general inpatient population"
@@ -242,12 +242,12 @@ AlZubaydi_2024_gabapentin <- function() {
       "91.67 +/- 67.6 mL/min (range 13.3-192.7); 18 of 82 (21.9%) with acute",
       "kidney injury within 48 h of sampling"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral dose 100-1200 mg (median 300 mg); total daily dose",
       "100-2700 mg (median 900 mg)"
     ),
-    regions        = "United States (New Jersey)",
-    notes          = paste(
+    regions = "United States (New Jersey)",
+    notes = paste(
       "Retrospective therapeutic drug monitoring cohort, Robert Wood Johnson",
       "University Hospital Somerset, 1 January 2009 to 7 December 2023",
       "(Methods Section 2.1). 123 gabapentin TDM concentrations from 108",

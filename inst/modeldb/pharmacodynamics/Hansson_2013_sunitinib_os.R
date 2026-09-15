@@ -21,8 +21,8 @@ Hansson_2013_sunitinib_os <- function() {
   )
   vignette <- "Hansson_2013_sunitinib_os"
   units <- list(
-    time          = "h",
-    dosing        = "n/a (no drug-dosing events; ANC(t) and DBP_REL(t) enter as time-varying covariates from the upstream Hansson 2013 myelosuppression and dBP models)",
+    time = "h",
+    dosing = "n/a (no drug-dosing events; ANC(t) and DBP_REL(t) enter as time-varying covariates from the upstream Hansson 2013 myelosuppression and dBP models)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
@@ -31,50 +31,60 @@ Hansson_2013_sunitinib_os <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz      = list(analyte = "overall survival event count", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cumhaz_cens = list(analyte = "censored overall survival event count", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "overall survival event count",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    cumhaz_cens = list(
+      analyte = "censored overall survival event count",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     ANC = list(
-      description        = "Time-varying absolute neutrophil count (10^9/L), typically simulated from the upstream Hansson_2013_sunitinib_myelosuppression model. Enters the hazard via beta_anc * ANC. Lower ANC -> lower hazard (paper: 'A more pronounced decrease in ANC over time ... decreased the hazard risk of death').",
-      units              = "10^9/L",
-      type               = "continuous",
+      description = "Time-varying absolute neutrophil count (10^9/L), typically simulated from the upstream Hansson_2013_sunitinib_myelosuppression model. Enters the hazard via beta_anc * ANC. Lower ANC -> lower hazard (paper: 'A more pronounced decrease in ANC over time ... decreased the hazard risk of death').",
+      units = "10^9/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Required input. The paper extrapolated ANC(t) from the individual myelosuppression-model predictions using AUC as the predictor, assuming dosing and schedule per protocol until time of censoring/death. For forward simulations either (a) simulate ANC(t) from `Hansson_2013_sunitinib_myelosuppression` and pass it in as a time-varying column, or (b) hold ANC at a typical-value level for sensitivity analyses.",
-      source_name        = "ANC"
+      notes = "Time-varying. Required input. The paper extrapolated ANC(t) from the individual myelosuppression-model predictions using AUC as the predictor, assuming dosing and schedule per protocol until time of censoring/death. For forward simulations either (a) simulate ANC(t) from `Hansson_2013_sunitinib_myelosuppression` and pass it in as a time-varying column, or (b) hold ANC at a typical-value level for sensitivity analyses.",
+      source_name = "ANC"
     ),
     DBP_REL = list(
-      description        = "Time-varying relative change in diastolic blood pressure from baseline (unitless fraction; e.g., 0.10 = +10% above baseline). Typically simulated from the upstream Hansson_2013_sunitinib_dbp model as DBP_REL(t) = (dbp(t) - dbp0) / dbp0. Enters the hazard via beta_dbprel * DBP_REL. Larger relative increase -> lower hazard (paper: 'patients with a greater relative change in blood pressure ... displayed the longest OS').",
-      units              = "fraction (unitless; positive when dBP elevated above baseline)",
-      type               = "continuous",
+      description = "Time-varying relative change in diastolic blood pressure from baseline (unitless fraction; e.g., 0.10 = +10% above baseline). Typically simulated from the upstream Hansson_2013_sunitinib_dbp model as DBP_REL(t) = (dbp(t) - dbp0) / dbp0. Enters the hazard via beta_dbprel * DBP_REL. Larger relative increase -> lower hazard (paper: 'patients with a greater relative change in blood pressure ... displayed the longest OS').",
+      units = "fraction (unitless; positive when dBP elevated above baseline)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Required input. The paper extrapolated dBP_REL(t) from the individual dBP indirect-response model predictions. For forward simulations either (a) simulate dBP(t) from `Hansson_2013_sunitinib_dbp` and compute DBP_REL = (dbp - dbp0) / dbp0, or (b) hold DBP_REL at a typical-value level for sensitivity analyses.",
-      source_name        = "DBPREL"
+      notes = "Time-varying. Required input. The paper extrapolated dBP_REL(t) from the individual dBP indirect-response model predictions. For forward simulations either (a) simulate dBP(t) from `Hansson_2013_sunitinib_dbp` and compute DBP_REL = (dbp - dbp0) / dbp0, or (b) hold DBP_REL at a typical-value level for sensitivity analyses.",
+      source_name = "DBPREL"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size at start of treatment (sum of longest diameters of target lesions, mm). Time-fixed per subject. Enters the hazard via beta_tumor * TUMSZ. Larger baseline tumor size -> higher hazard (paper: 'smaller tumor size at baseline, displayed the longest OS').",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size at start of treatment (sum of longest diameters of target lesions, mm). Time-fixed per subject. Enters the hazard via beta_tumor * TUMSZ. Larger baseline tumor size -> higher hazard (paper: 'smaller tumor size at baseline, displayed the longest OS').",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Required input. Median baseline SLD by study (from Hansson 2013 e84 companion paper Table 1): 194 mm in study 1004, 108 mm in study 1047, 166 mm in study 1045, 255 mm in study 013. For typical-cohort simulations a midpoint of ~150 mm is a reasonable single-value choice.",
-      source_name        = "TUMSZ"
+      notes = "Time-fixed. Required input. Median baseline SLD by study (from Hansson 2013 e84 companion paper Table 1): 194 mm in study 1004, 108 mm in study 1047, 166 mm in study 1045, 255 mm in study 013. For typical-cohort simulations a midpoint of ~150 mm is a reasonable single-value choice.",
+      source_name = "TUMSZ"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 303L,
-    n_studies      = 4L,
-    age_range      = "adults with imatinib-resistant GIST",
-    weight_range   = "not reported in the on-disk trimmed paper text",
+    species = "human",
+    n_subjects = 303L,
+    n_studies = 4L,
+    age_range = "adults with imatinib-resistant GIST",
+    weight_range = "not reported in the on-disk trimmed paper text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006, George 2009, Shirao 2010, Maki 2005).",
-    dose_range     = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1).",
-    regions        = "multinational (study 1004) and Japanese (study 1045).",
-    biomarkers     = "Overall survival (weeks from treatment start to death or censoring). Median (range) survival per study (Hansson 2013 Table 1): 61 (4-226) weeks in study 1004, 31 (15-81) in study 1047, 37 (27-48) in study 1045, 39 (4-96) in study 013. Total events: 163 deaths observed across the 303-patient pooled cohort.",
-    notes          = "Hansson 2013 e85 Methods: 'The underlying distribution of the observed survival data was evaluated by exponential, Weibull, log-logistic, extreme value, and Gompertz probability density functions.' The Weibull was selected as the baseline-hazard form. Censoring was described by a separate Weibull (lambdacens = 0.0019/week, alphacens = 1.27 per Table 2) applied in simulations. n_events = 163 reported in the paper text ('The median number of simulated events (n = 151, range: 126-176) was in accordance with the number of observed events (n = 163)')."
+    disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006, George 2009, Shirao 2010, Maki 2005).",
+    dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1).",
+    regions = "multinational (study 1004) and Japanese (study 1045).",
+    biomarkers = "Overall survival (weeks from treatment start to death or censoring). Median (range) survival per study (Hansson 2013 Table 1): 61 (4-226) weeks in study 1004, 31 (15-81) in study 1047, 37 (27-48) in study 1045, 39 (4-96) in study 013. Total events: 163 deaths observed across the 303-patient pooled cohort.",
+    notes = "Hansson 2013 e85 Methods: 'The underlying distribution of the observed survival data was evaluated by exponential, Weibull, log-logistic, extreme value, and Gompertz probability density functions.' The Weibull was selected as the baseline-hazard form. Censoring was described by a separate Weibull (lambdacens = 0.0019/week, alphacens = 1.27 per Table 2) applied in simulations. n_events = 163 reported in the paper text ('The median number of simulated events (n = 151, range: 126-176) was in accordance with the number of observed events (n = 163)')."
   )
 
   ini({

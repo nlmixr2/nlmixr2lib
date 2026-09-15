@@ -34,10 +34,10 @@ Boak_2014_linezolid <- function() {
   )
   vignette <- "Boak_2014_linezolid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    platelet      = "10^9 cells/L"
+    platelet = "10^9 cells/L"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -45,54 +45,54 @@ Boak_2014_linezolid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    lat1        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    lat2        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    lat3        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    depot       = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor5  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
-    precursor6  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
-    precursor7  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
-    precursor8  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
-    precursor9  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    lat1 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    lat2 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    lat3 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor5 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor6 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor7 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor8 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor9 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
     precursor10 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
     precursor11 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
     precursor12 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
     precursor13 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
     precursor14 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
     precursor15 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
-    transit1    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit6    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit7    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit8    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit9    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit10   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit11   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit12   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit13   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit14   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit15   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE)
+    transit1 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit8 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit9 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit10 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit11 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit12 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit13 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit14 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit15 = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = paste(
+      description = paste(
         "Body weight used in the model = the lower value of ideal body",
         "weight (IBW) and total body weight (TBW), per Boak 2014 Methods",
         "'Covariate effect model'."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The Boak 2014 model uses WT_i = min(IBW_i, TBW_i) as the size",
         "descriptor for allometric scaling on both CL and V (reference WT_STD",
         "= 65 kg, Methods paragraph 'Covariate effect model'). IBW is",
@@ -101,63 +101,63 @@ Boak_2014_linezolid <- function() {
         "the model. Fixed allometric exponents are 0.75 on CL and 1 on V",
         "(Boak 2014 reference 31)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used inside model() to compute the weight-normalised Cockcroft-Gault",
         "GFR (Boak 2014 Eq 12): GFR = (140 - AGE) * 65 * F_sex / (72 * CREAT).",
         "The individual weight is intentionally NOT used here; substituting",
         "the standard 65 kg decouples renal function from body size so the",
         "allometric F_Size_CL can handle size separately."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Cockcroft-Gault sex factor F_sex = 1 - 0.15 * SEXF (i.e., 0.85 for",
         "female and 1 for male per Boak 2014 Eq 12). SEXF replaces the",
         "paper's F_sex variable."
       ),
-      source_name        = "F_sex"
+      source_name = "F_sex"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration (Cockcroft-Gault input)",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration (Cockcroft-Gault input)",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The Cockcroft-Gault equation embedded in Boak 2014 Eq 12 requires",
         "SCR in mg/dL. Supply values in mg/dL (divide umol/L values by 88.42",
         "to convert). Boak 2014 Methods notes 'GFR was included as a",
         "time-dependent covariate' so time-varying CREAT is supported."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 41L,
-    n_studies           = 1L,
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
     n_treatment_courses = 42L,
-    n_pk_observations   = 161L,
-    age_range           = "adults >= 18 years",
-    weight_range        = paste(
+    n_pk_observations = 161L,
+    age_range = "adults >= 18 years",
+    weight_range = paste(
       "mean 74.6 kg (CV about 19% in Table 1 combined-cohort mean of the",
       "no-thrombocytopenia and thrombocytopenia subgroups)"
     ),
-    sex_female_pct      = 39.0,
-    race_ethnicity      = "not tabulated in Boak 2014",
-    disease_state       = paste(
+    sex_female_pct = 39.0,
+    race_ethnicity = "not tabulated in Boak 2014",
+    disease_state = paste(
       "Critically ill / hospitalised adults treated with linezolid at the",
       "Departments of Infectious Diseases of the Alfred and Austin",
       "Hospitals (Melbourne, Victoria, Australia) and the Transplant Unit",
@@ -168,14 +168,14 @@ Boak_2014_linezolid <- function() {
       "baseline platelet count already below the thrombocytopenia",
       "threshold."
     ),
-    dose_range          = paste(
+    dose_range = paste(
       "600 mg linezolid every 12 h (q12h) by intravenous infusion and/or",
       "oral tablet, for at least 4 days (mean duration 22 days; range",
       "5-54 days). Some patients received both IV and oral therapy but",
       "not simultaneously."
     ),
-    regions             = "Australia (Melbourne) and USA (Pittsburgh)",
-    notes               = paste(
+    regions = "Australia (Melbourne) and USA (Pittsburgh)",
+    notes = paste(
       "Prospective observational study, enrolment October 2004 - January",
       "2007 across three hospitals. Sparse PK sampling (predose plus 2,",
       "4 and 8 h postdose) collected within the first week of therapy in",

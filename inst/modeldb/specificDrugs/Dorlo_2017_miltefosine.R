@@ -33,18 +33,18 @@ Dorlo_2017_miltefosine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Baseline fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling on CL, Vc, Q, Vp with reference 53 kg",
         "(Dorlo 2017 Table 2 footnote b: 'Values reported are normalized",
         "to a standard fat-free mass of 53 kg'). Cohort median FFM was",
@@ -53,20 +53,20 @@ Dorlo_2017_miltefosine <- function() {
         "semi-mechanistic FFM formula (Dorlo 2017 cites Anderson and",
         "Holford [ref 19] for the allometric form)."
       ),
-      source_name        = "Fat-free mass (kg)"
+      source_name = "Fat-free mass (kg)"
     ),
     MIL_REGIMEN = list(
-      description        = paste(
+      description = paste(
         "Miltefosine dosing-regimen indicator. 1 = monotherapy arm (28",
         "days oral miltefosine 2.5 mg/kg/day, max 150 mg/day); 0 =",
         "combination arm (single IV liposomal amphotericin B 10 mg/kg",
         "on day 1 plus 10 days oral miltefosine 2.5 mg/kg/day, max 150",
         "mg/day). Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (combination arm: single LAmB IV + 10-day miltefosine)",
-      notes              = paste(
+      notes = paste(
         "Selects the duration of the initial reduced-bioavailability",
         "window inside model() via tlowf = 7 * MIL_REGIMEN + 1 * (1 -",
         "MIL_REGIMEN): 7 days for monotherapy, 1 day for the combination",
@@ -80,31 +80,31 @@ Dorlo_2017_miltefosine <- function() {
         "infusion and possibly a transient miltefosine-LAmB membrane",
         "interaction (Dorlo 2017 Discussion)."
       ),
-      source_name        = "Treatment arm (monotherapy MIL vs combination LAmB + MIL)"
+      source_name = "Treatment arm (monotherapy MIL vs combination LAmB + MIL)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 95L,
-    n_studies      = 1L,
-    age_range      = "7-41 years",
-    age_median     = "13 years",
-    weight_range   = "15-65 kg",
-    weight_median  = "32 kg",
-    ffm_range      = "15.2-55.9 kg",
-    ffm_median     = "29.9 kg",
-    height_range   = "107-185 cm",
+    species = "human",
+    n_subjects = 95L,
+    n_studies = 1L,
+    age_range = "7-41 years",
+    age_median = "13 years",
+    weight_range = "15-65 kg",
+    weight_median = "32 kg",
+    ffm_range = "15.2-55.9 kg",
+    ffm_median = "29.9 kg",
+    height_range = "107-185 cm",
     sex_female_pct = 13.7,
     race_ethnicity = "Eastern African (Kenyan and Sudanese cohorts; no further breakdown reported)",
-    disease_state  = paste(
+    disease_state = paste(
       "Eastern African adults and children with parasitologically",
       "confirmed visceral leishmaniasis (kala-azar) starting first-line",
       "treatment; 41 of 95 (43.2%) paediatric (>=7 and <12 years), 49",
       "of 95 (51%) malnourished by BMI / BMI-for-age z-score criteria,",
       "15 of 95 (15.7%) relapsed during the 210-day follow-up."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral miltefosine (Impavido) 2.5 mg/kg/day, maximum 150 mg/day,",
       "administered as 50 mg gelatin capsules with food and directly",
       "observed: 28 days in the monotherapy arm (median total 72.6",
@@ -113,15 +113,15 @@ Dorlo_2017_miltefosine <- function() {
       "liposomal amphotericin B (AmBisome) 10 mg/kg on day 1 (not",
       "included in this miltefosine PK model)."
     ),
-    regions        = "Eastern Africa (Kenya: Kimalel; Sudan: Dooka, Kassab)",
-    co_medication  = paste(
+    regions = "Eastern Africa (Kenya: Kimalel; Sudan: Dooka, Kassab)",
+    co_medication = paste(
       "Combination arm received single IV liposomal amphotericin B 10",
       "mg/kg on day 1. The PK model describes miltefosine concentrations",
       "only; LAmB is captured in the published time-to-event PD model",
       "as a proportional reduction in baseline relapse hazard (not",
       "encoded here)."
     ),
-    samples        = paste(
+    samples = paste(
       "608 post-dose miltefosine plasma concentrations (excluding",
       "pre-dose samples) from 95 patients, of which 28 (4.6%) were",
       "below the LLOQ of 4.00 ng/mL and handled via the M3 likelihood",
@@ -130,7 +130,7 @@ Dorlo_2017_miltefosine <- function() {
       "monotherapy arm (>=12 years): 4 h, 8 h, days 2, 6, 13, 20, 27",
       "plus days 60 and 210. Children <12 years had a sparser schedule."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Dorlo 2017 Table 1 (median, range) pooled",
       "across the monotherapy (n=48) and combination (n=47) arms.",
       "Eastern African patients had lower miltefosine exposure (~30%",

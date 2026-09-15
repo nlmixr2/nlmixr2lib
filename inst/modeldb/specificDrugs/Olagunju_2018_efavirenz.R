@@ -13,53 +13,53 @@ Olagunju_2018_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline) per the Olagunju 2018 sparse + intensive PK design. Drives fixed-exponent allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1.0) with standard reference weight 70 kg per Olagunju 2018 Methods 'Population Pharmacokinetic-Pharmacogenetic Model Development' paragraph 3.",
-      source_name        = "WT"
+      notes = "Time-fixed (baseline) per the Olagunju 2018 sparse + intensive PK design. Drives fixed-exponent allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1.0) with standard reference weight 70 kg per Olagunju 2018 Methods 'Population Pharmacokinetic-Pharmacogenetic Model Development' paragraph 3.",
+      source_name = "WT"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Olagunju 2018 Methods 'Sample Collection, SNP Genotyping and Efavirenz Quantification' paragraph 1 -- this SNP is combined with rs28399499 to define a composite CYP2B6 metaboliser status (fast / intermediate / slow) by counting the total number of variant alleles across the two SNPs. Cohort allele-genotype frequencies (n = 77; Olagunju 2018 Table 1): GG 0.32, GT 0.54, TT 0.14.",
-      source_name        = "CYP2B6 516G>T (rs3745274)"
+      notes = "Time-fixed (germline genotype). Olagunju 2018 Methods 'Sample Collection, SNP Genotyping and Efavirenz Quantification' paragraph 1 -- this SNP is combined with rs28399499 to define a composite CYP2B6 metaboliser status (fast / intermediate / slow) by counting the total number of variant alleles across the two SNPs. Cohort allele-genotype frequencies (n = 77; Olagunju 2018 Table 1): GG 0.32, GT 0.54, TT 0.14.",
+      source_name = "CYP2B6 516G>T (rs3745274)"
     ),
     SNP_CYP2B6_RS28399499_C_COUNT = list(
-      description        = "Count of CYP2B6 c.983T>C (rs28399499, p.I328T) C-alleles per subject (0/1/2). 0 = TT homozygous wild-type, 1 = TC heterozygous, 2 = CC homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.983T>C (rs28399499, p.I328T) C-alleles per subject (0/1/2). 0 = TT homozygous wild-type, 1 = TC heterozygous, 2 = CC homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Olagunju 2018 Methods 'Sample Collection, SNP Genotyping and Efavirenz Quantification' paragraph 1 -- combined with rs3745274 to define a composite CYP2B6 metaboliser status. Cohort allele-genotype frequencies (n = 77; Olagunju 2018 Table 1): TT 0.75, TC 0.25, CC 0.00. The Olagunju 2018 cohort had no 983CC homozygotes, so the 'ultra-slow' metaboliser substratum is not represented in the fitted data; the packaged model still classifies a hypothetical 983CC subject as slow (each variant allele contributes to the composite count).",
-      source_name        = "CYP2B6 983T>C (rs28399499)"
+      notes = "Time-fixed (germline genotype). Olagunju 2018 Methods 'Sample Collection, SNP Genotyping and Efavirenz Quantification' paragraph 1 -- combined with rs3745274 to define a composite CYP2B6 metaboliser status. Cohort allele-genotype frequencies (n = 77; Olagunju 2018 Table 1): TT 0.75, TC 0.25, CC 0.00. The Olagunju 2018 cohort had no 983CC homozygotes, so the 'ultra-slow' metaboliser substratum is not represented in the fitted data; the packaged model still classifies a hypothetical 983CC subject as slow (each variant allele contributes to the composite count).",
+      source_name = "CYP2B6 983T>C (rs28399499)"
     )
   )
 
   population <- list(
-    species               = "human",
-    n_subjects            = 77,
-    n_studies             = 1,
-    age_range             = "18-39 years",
-    age_median            = "27 years",
-    weight_range          = "48-83 kg",
-    weight_median         = "57 kg",
-    sex_female_pct        = 100,
-    race_ethnicity        = c(Nigerian = 100),
-    disease_state         = "HIV-positive pregnant women receiving combination antiretroviral therapy containing 600 mg efavirenz daily plus two nucleoside reverse transcriptase inhibitors for >= 4 weeks. Patients on anti-tuberculosis drugs or other co-medications with known / uncertain interactions with antiretrovirals were excluded.",
-    dose_range            = "600 mg orally once daily (evening dose). The packaged model and validation vignette also simulate 200 mg and 400 mg daily reduced-dose scenarios that the source paper investigates by Monte Carlo simulation in pregnant women stratified by CYP2B6 metaboliser status.",
-    regions               = "Nigeria (3 hospitals in Benue State: Bishop Murray Medical Centre, Makurdi; St Monica's Hospital, Adikpo; St Mary's Hospital, Okpoga)",
+    species = "human",
+    n_subjects = 77,
+    n_studies = 1,
+    age_range = "18-39 years",
+    age_median = "27 years",
+    weight_range = "48-83 kg",
+    weight_median = "57 kg",
+    sex_female_pct = 100,
+    race_ethnicity = c(Nigerian = 100),
+    disease_state = "HIV-positive pregnant women receiving combination antiretroviral therapy containing 600 mg efavirenz daily plus two nucleoside reverse transcriptase inhibitors for >= 4 weeks. Patients on anti-tuberculosis drugs or other co-medications with known / uncertain interactions with antiretrovirals were excluded.",
+    dose_range = "600 mg orally once daily (evening dose). The packaged model and validation vignette also simulate 200 mg and 400 mg daily reduced-dose scenarios that the source paper investigates by Monte Carlo simulation in pregnant women stratified by CYP2B6 metaboliser status.",
+    regions = "Nigeria (3 hospitals in Benue State: Bishop Murray Medical Centre, Makurdi; St Monica's Hospital, Adikpo; St Mary's Hospital, Okpoga)",
     gestational_age_range = "11-36 weeks (median 28); trimester distribution 5% first / 25% second / 70% third (Olagunju 2018 Table 1)",
-    cyp2b6_freq           = "516G>T (rs3745274): GG 0.32, GT 0.54, TT 0.14. 983T>C (rs28399499): TT 0.75, TC 0.25, CC 0.00 (Olagunju 2018 Table 1). The cohort had no 983CC homozygotes, so the predicted-very-slow / 'ultra-slow' metaboliser substratum is not represented.",
-    notes                 = "ClinicalTrials.gov ID NCT02269462. Data set is the same one analysed in Olagunju et al. 2015 (Clin Pharmacol Ther 97:298-306, ref 11 of the present paper). 252 plasma efavirenz concentrations were available (77 sparse PK samples from 77 women + 175 intensive PK samples from 25 women drawn 0.5-24 h after dose, stratified by genotype). Age, body weight, gestational age, and CYP2B6 516G>T / 983T>C were tested as covariates under stepwise backward elimination; only the CYP2B6 metaboliser status was statistically significant (Methods paragraph 4 + Results 'Population Pharmacokinetic Analysis')."
+    cyp2b6_freq = "516G>T (rs3745274): GG 0.32, GT 0.54, TT 0.14. 983T>C (rs28399499): TT 0.75, TC 0.25, CC 0.00 (Olagunju 2018 Table 1). The cohort had no 983CC homozygotes, so the predicted-very-slow / 'ultra-slow' metaboliser substratum is not represented.",
+    notes = "ClinicalTrials.gov ID NCT02269462. Data set is the same one analysed in Olagunju et al. 2015 (Clin Pharmacol Ther 97:298-306, ref 11 of the present paper). 252 plasma efavirenz concentrations were available (77 sparse PK samples from 77 women + 175 intensive PK samples from 25 women drawn 0.5-24 h after dose, stratified by genotype). Age, body weight, gestational age, and CYP2B6 516G>T / 983T>C were tested as covariates under stepwise backward elimination; only the CYP2B6 metaboliser status was statistically significant (Methods paragraph 4 + Results 'Population Pharmacokinetic Analysis')."
   )
 
   ini({

@@ -41,11 +41,11 @@ Claret_2014_DCR_PFS_nsclc <- function() {
 
   covariateData <- list(
     RESP_DCR = list(
-      description        = "Binary week-8 disease-control indicator: 1 = best RECIST response between weeks 3 and 14 (the assessment closest to week 8) was complete response, partial response or stable disease; 0 = progressive disease.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary week-8 disease-control indicator: 1 = best RECIST response between weeks 3 and 14 (the assessment closest to week 8) was complete response, partial response or stable disease; 0 = progressive disease.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "The paper's primary drug-effect metric, identical in definition to the one used by",
         "the companion OS model but carrying a different coefficient here. Claret 2014",
         "Methods, 'Response Metrics': patients needed at least one response assessment between",
@@ -64,14 +64,14 @@ Claret_2014_DCR_PFS_nsclc <- function() {
         "PFS at a given RESP_DCR. Both paths must be simulated to reproduce the paper's",
         "published bevacizumab hazard ratio."
       ),
-      source_name        = "DCR"
+      source_name = "DCR"
     ),
     DRUG_BEV = list(
-      description        = "Binary bevacizumab add-on treatment-arm indicator: 1 = bevacizumab plus chemotherapy, 0 = chemotherapy backbone alone.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary bevacizumab add-on treatment-arm indicator: 1 = bevacizumab plus chemotherapy, 0 = chemotherapy backbone alone.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Retained in the final PFS model with a positive coefficient (longer PFS on",
         "bevacizumab). Claret 2014 Results, 'PFS Model': 'DCR did not fully capture the effect",
         "of bevacizumab on PFS', and the Discussion draws the consequence: 'the PFS model",
@@ -86,7 +86,7 @@ Claret_2014_DCR_PFS_nsclc <- function() {
         "perfectly confounded with study in that cohort; the bevacizumab contrast is",
         "identified from the randomised Western arms only."
       ),
-      source_name        = "Bevacizumab"
+      source_name = "Bevacizumab"
     )
   )
 
@@ -97,9 +97,9 @@ Claret_2014_DCR_PFS_nsclc <- function() {
   covariatesDataExcluded <- list(
     ALB_LT35 = list(
       description = "Baseline hypoalbuminaemia indicator (1 = serum albumin below 35 g/L / 3.5 g/dL, 0 = at or above).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Significant in univariate Cox screening for PFS (deviance 11, P < .0001; Claret 2014",
         "Results, 'PFS Model') but eliminated in backward selection -- only DCR and",
         "bevacizumab treatment survived. This is the mirror image of the OS model, where",
@@ -110,9 +110,9 @@ Claret_2014_DCR_PFS_nsclc <- function() {
     ),
     ECOG_GE1 = list(
       description = "Baseline ECOG performance status dichotomised at 1 (1 = ECOG >= 1, 0 = ECOG 0).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Claret 2014 Methods dichotomises ECOG performance status as '0 vs >= 1'. The weakest",
         "of the screened covariates for PFS (univariate Cox deviance 2.1, P = .0385; Claret",
         "2014 Results) and eliminated in backward selection, which used a P < .01 cut-off.",
@@ -122,9 +122,9 @@ Claret_2014_DCR_PFS_nsclc <- function() {
     ),
     RACE_CHINESE = list(
       description = "Chinese-ethnicity indicator, tested as the paper's ethnicity covariate (1 = Chinese SAiL cohort, 0 = Western E4599 cohort).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Significant in univariate Cox screening (deviance 12; Claret 2014 Results, 'PFS",
         "Model') but eliminated in backward selection, and the paper reports no",
         "DCR-by-ethnicity interaction: 'There was no interaction between DCR and Chinese",
@@ -137,18 +137,18 @@ Claret_2014_DCR_PFS_nsclc <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 774L,
-    n_studies      = 2L,
-    age_range      = "adults with previously untreated advanced NSCLC; per-cohort age distributions are reported in the underlying trial publications (Sandler 2006 E4599; Crino 2010 SAiL), not in Claret 2014",
-    weight_range   = "not reported in Claret 2014",
+    species = "human",
+    n_subjects = 774L,
+    n_studies = 2L,
+    age_range = "adults with previously untreated advanced NSCLC; per-cohort age distributions are reported in the underlying trial publications (Sandler 2006 E4599; Crino 2010 SAiL), not in Claret 2014",
+    weight_range = "not reported in Claret 2014",
     sex_female_pct = NA_real_,
     race_ethnicity = "Western (E4599, United States) and Chinese (SAiL China subset); the paper treats ethnicity as a two-level Western-versus-Chinese contrast and does not resolve finer strata",
-    disease_state  = "First-line locally advanced, metastatic or recurrent non-small cell lung cancer",
-    dose_range     = "n/a (no PK input). E4599: bevacizumab 15 mg/kg IV Q3W plus carboplatin/paclitaxel, versus carboplatin/paclitaxel alone. SAiL: bevacizumab 15 mg/kg IV Q3W plus investigator-choice chemotherapy, single arm.",
-    regions        = "Western (E4599, Phase III) and China (SAiL, Phase IV single arm)",
-    biomarkers     = "Survival endpoint: progression-free survival (PFS), months. Time-fixed covariates: week-8 RECIST disease control (RESP_DCR) and bevacizumab treatment arm (DRUG_BEV).",
-    notes          = paste(
+    disease_state = "First-line locally advanced, metastatic or recurrent non-small cell lung cancer",
+    dose_range = "n/a (no PK input). E4599: bevacizumab 15 mg/kg IV Q3W plus carboplatin/paclitaxel, versus carboplatin/paclitaxel alone. SAiL: bevacizumab 15 mg/kg IV Q3W plus investigator-choice chemotherapy, single arm.",
+    regions = "Western (E4599, Phase III) and China (SAiL, Phase IV single arm)",
+    biomarkers = "Survival endpoint: progression-free survival (PFS), months. Time-fixed covariates: week-8 RECIST disease control (RESP_DCR) and bevacizumab treatment arm (DRUG_BEV).",
+    notes = paste(
       "n_subjects = 774 is the EVALUABLE population actually used to fit the survival model",
       "(Claret 2014 Methods, 'Response Metrics': 629 of 878 Western [72%] and 145 of 198",
       "Chinese [73%] patients had at least one response assessment between weeks 3 and 14).",

@@ -8,46 +8,53 @@ Jackson_2022_ixekizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ixekizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ixekizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ixekizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ixekizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ixekizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q, V2, V3 with reference weight 58.6 kg (paediatric dataset reference; Jackson 2022 Table 2 footnotes). Baseline weight used; over-108-week weight change in 23% of subjects was not modelled (Discussion, page 1083).",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL, Q, V2, V3 with reference weight 58.6 kg (paediatric dataset reference; Jackson 2022 Table 2 footnotes). Baseline weight used; over-108-week weight change in 23% of subjects was not modelled (Discussion, page 1083).",
+      source_name = "WT"
     ),
     ADA_TITER = list(
-      description        = "Antidrug-antibody titer/titre (continuous reciprocal dilution, British convention)",
-      units              = "titer (dimensionless reciprocal dilution, e.g. 10, 20, 40, ..., 2560)",
-      type               = "continuous",
+      description = "Antidrug-antibody titer/titre (continuous reciprocal dilution, British convention)",
+      units = "titer (dimensionless reciprocal dilution, e.g. 10, 20, 40, ..., 2560)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Log-linear multiplicative effect on CL per Jackson 2022 Table 2 footnote: CL_i = CL * (WT/58.6)^0.989 * (1 + 0.0292 * log_e[ADA titre]). ADA-negative samples (85.8% of the dataset) are encoded as ADA_TITER = 1 so that log_e(1) = 0 cancels the effect (NONMEM convention; reciprocal-dilution encoding). Source column 'ADA titre' (British spelling) maps to the canonical general-scope ADA_TITER covariate; the reciprocal-dilution zero-encoding convention is documented here.",
-      source_name        = "ADA titre"
+      notes = "Log-linear multiplicative effect on CL per Jackson 2022 Table 2 footnote: CL_i = CL * (WT/58.6)^0.989 * (1 + 0.0292 * log_e[ADA titre]). ADA-negative samples (85.8% of the dataset) are encoded as ADA_TITER = 1 so that log_e(1) = 0 cancels the effect (NONMEM convention; reciprocal-dilution encoding). Source column 'ADA titre' (British spelling) maps to the canonical general-scope ADA_TITER covariate; the reciprocal-dilution zero-encoding convention is documented here.",
+      source_name = "ADA titre"
     )
   )
 
   population <- list(
-    n_subjects     = 184L,
-    n_studies      = 1L,
-    age_range      = "6-17 years",
-    age_median     = "15 years (>50 kg), 10 years (25-50 kg), 7 years (<25 kg)",
-    weight_range   = "21.5-136 kg",
-    weight_median  = "65.2 kg (>50 kg group), 40 kg (25-50 kg group), 21.7 kg (<25 kg group); reference value used in the PopPK model is 58.6 kg",
+    n_subjects = 184L,
+    n_studies = 1L,
+    age_range = "6-17 years",
+    age_median = "15 years (>50 kg), 10 years (25-50 kg), 7 years (<25 kg)",
+    weight_range = "21.5-136 kg",
+    weight_median = "65.2 kg (>50 kg group), 40 kg (25-50 kg group), 21.7 kg (<25 kg group); reference value used in the PopPK model is 58.6 kg",
     sex_female_pct = 56.5,
-    race_ethnicity = c(White = 81.5, `Black or African American` = 3.26, Asian = 3.26, `American Indian or Alaska Native` = 1.63, Other = 7.61, Missing = 2.72),
-    disease_state  = "Moderate-to-severe plaque psoriasis (PASI >=12, sPGA >=3, BSA >=10% at screening/baseline) in paediatric patients aged 6 to <18 years",
-    dose_range     = "Weight-based Q4W SC: 20 mg (<25 kg), 40 mg (25-50 kg), 80 mg (>50 kg) after an initial 40/80/160 mg loading dose respectively",
-    regions        = "US (37.5%), Europe (41.3%), Rest of World (21.2%)",
-    weight_groups  = "4 patients <25 kg (2.2%), 45 patients 25-50 kg (24.5%), 135 patients >50 kg (73.4%)",
-    ada_incidence  = "85.8% ADA-negative, 14.2% treatment-emergent-ADA positive (78 samples in 49 patients); maximum post-baseline titres 1:10 to 1:2560",
+    race_ethnicity = c(
+      White = 81.5,
+      `Black or African American` = 3.26,
+      Asian = 3.26,
+      `American Indian or Alaska Native` = 1.63,
+      Other = 7.61,
+      Missing = 2.72
+    ),
+    disease_state = "Moderate-to-severe plaque psoriasis (PASI >=12, sPGA >=3, BSA >=10% at screening/baseline) in paediatric patients aged 6 to <18 years",
+    dose_range = "Weight-based Q4W SC: 20 mg (<25 kg), 40 mg (25-50 kg), 80 mg (>50 kg) after an initial 40/80/160 mg loading dose respectively",
+    regions = "US (37.5%), Europe (41.3%), Rest of World (21.2%)",
+    weight_groups = "4 patients <25 kg (2.2%), 45 patients 25-50 kg (24.5%), 135 patients >50 kg (73.4%)",
+    ada_incidence = "85.8% ADA-negative, 14.2% treatment-emergent-ADA positive (78 samples in 49 patients); maximum post-baseline titres 1:10 to 1:2560",
     injection_site = "Abdomen 28.6%, Arm 57.0%, Thigh 14.4% (injection site was not retained as a covariate in the paediatric model)",
-    notes          = "IXORA-PEDS Phase 3 trial (NCT03073200). Baseline demographics per Jackson 2022 Table 1; 558 measurable IXE serum concentration measurements from 184 patients."
+    notes = "IXORA-PEDS Phase 3 trial (NCT03073200). Baseline demographics per Jackson 2022 Table 1; 558 measurable IXE serum concentration measurements from 184 patients."
   )
 
   ini({

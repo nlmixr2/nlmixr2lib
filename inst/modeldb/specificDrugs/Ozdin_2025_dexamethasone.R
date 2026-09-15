@@ -28,14 +28,16 @@ Ozdin_2025_dexamethasone <- function() {
     "doi:10.1002/psp4.70103"
   )
   vignette <- "Ozdin_2025_dexamethasone"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # The canonical residual-error matcher recognises only the bare names
   # propSd / addSd / expSd, so the four cohort-stratified residual SDs are
   # declared here (same pattern as Shoji_2011_pregabalin.R).
   paper_specific_residual_sds <- c(
-    "propSdHealthy", "addSdHealthy",
-    "propSdPatient", "addSdPatient"
+    "propSdHealthy",
+    "addSdHealthy",
+    "propSdPatient",
+    "addSdPatient"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -50,17 +52,17 @@ Ozdin_2025_dexamethasone <- function() {
   # the central compartment directly with the DSP amount. The states
   # therefore hold dexamethasone amount expressed on the DSP mass basis.
   compartmentData <- list(
-    central     = list(analyte = "dexamethasone", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "dexamethasone", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dexamethasone", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline (time-fixed) body weight, source column WTBL. Allometric",
         "power scaling about a 70 kg reference, with all four exponents held",
         "FIXED at their canonical values rather than estimated: 0.75 shared by",
@@ -73,20 +75,20 @@ Ozdin_2025_dexamethasone <- function() {
         "model besides disease status, and it was fixed during structural base",
         "model development rather than tested in the stepwise covariate search."
       ),
-      source_name        = "WTBL"
+      source_name = "WTBL"
     ),
     DIS_HEALTHY = list(
-      description        = paste(
+      description = paste(
         "Healthy-participant cohort indicator; 0 = patient with ataxia",
         "telangiectasia"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (patient with ataxia telangiectasia enrolled in the phase 3 ATTeST",
         "study, NCT02770807)"
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Two distinct roles in this model.",
         "(1) Multiplicative power-form effect on clearance:",
         "e_dis_healthy_cl^DIS_HEALTHY with e_dis_healthy_cl = 1 / 0.899 =",
@@ -120,7 +122,7 @@ Ozdin_2025_dexamethasone <- function() {
         "fluctuation of CYP3A4 activity with age and body composition",
         "(Results section 3.5)."
       ),
-      source_name        = "PTNT"
+      source_name = "PTNT"
     )
   )
 
@@ -134,9 +136,9 @@ Ozdin_2025_dexamethasone <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and V1; not retained (Results section 3.3, 'no",
         "statistically significant relationships were observed between PK",
         "parameters and continuous covariates such as BMI, age, and dose').",
@@ -150,9 +152,9 @@ Ozdin_2025_dexamethasone <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and V1; not retained (Results section 3.3). Cohort",
         "range 9.60-29.5 kg/m^2, overall median 15.2 kg/m^2 (Table 1).",
         "Correlated with WT, and the Methods state that highly correlated",
@@ -161,9 +163,9 @@ Ozdin_2025_dexamethasone <- function() {
     ),
     HT = list(
       description = "Body height at baseline",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Tabulated in the baseline covariate summary (Table 1; cohort range",
         "66.8-184 cm, overall median 129 cm) and used to derive BMI, but not",
         "tested as a covariate in its own right and not in the final model."
@@ -171,9 +173,9 @@ Ozdin_2025_dexamethasone <- function() {
     ),
     SEXF = list(
       description = "Sex",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL and V1; not retained (Results section 3.3, 'the ETA",
         "versus categorical covariate plots did not indicate any",
         "statistically significant relationships'). Cohort 62 of 133 female",
@@ -182,18 +184,18 @@ Ozdin_2025_dexamethasone <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL and V1; not retained (Results section 3.3). Cohort 76",
         "of 133 White (57 percent) (Table 1)."
       )
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL and V1; not retained (Results section 3.3). Cohort 57",
         "of 133 African American and/or Black (43 percent) (Table 1). Race is",
         "fully dichotomous in this pooled dataset, so RACE_WHITE and",
@@ -202,9 +204,9 @@ Ozdin_2025_dexamethasone <- function() {
     ),
     RACE_HISPANIC = list(
       description = "Hispanic / Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL and V1 as the paper's 'ethnicity' covariate; not",
         "retained (Results section 3.3). Cohort 6 of 133 Hispanic or Latino",
         "(5 percent), 127 non-Hispanic or Latino (95 percent) (Table 1)."
@@ -212,9 +214,9 @@ Ozdin_2025_dexamethasone <- function() {
     ),
     DOSE_DSP_MG = list(
       description = "Mass of DSP encapsulated in red blood cells per infusion",
-      units       = "mg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg",
+      type = "continuous",
+      notes = paste(
         "Screened as the paper's 'dose level' covariate on CL and V1; not",
         "retained (Results section 3.3), consistent with the",
         "dose-proportional AUC reported in the Discussion. Overall mean 11.6",
@@ -227,26 +229,26 @@ Ozdin_2025_dexamethasone <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 133,
-    n_studies      = 2,
-    age_range      = "5.00-55.0 years",
-    age_median     = "10.0 years",
-    weight_range   = "15.1-95.7 kg",
-    weight_median  = "25.0 kg",
+    species = "human",
+    n_subjects = 133,
+    n_studies = 2,
+    age_range = "5.00-55.0 years",
+    age_median = "10.0 years",
+    weight_range = "15.1-95.7 kg",
+    weight_median = "25.0 kg",
     sex_female_pct = 47,
     race_ethnicity = c(White = 57, Black = 43),
-    disease_state  = paste(
+    disease_state = paste(
       "ataxia telangiectasia (115 subjects, phase 3 ATTeST NCT02770807) and",
       "healthy adults (18 subjects, phase 1 NCT01925859)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "4.2, 8.3 and 17.4 mg DSP encapsulated in red blood cells per",
       "intravenous infusion; single dose over approximately 10 min in phase",
       "1, monthly infusions over approximately 40 min in phase 3"
     ),
-    regions        = "international, multi-center (phase 3); single-center (phase 1)",
-    notes          = paste(
+    regions = "international, multi-center (phase 3); single-center (phase 1)",
+    notes = paste(
       "Baseline demographics from Ozdin 2025 Table 1. Age groups: adults",
       "n = 24 (18 healthy from phase 1 plus 6 patients from phase 3),",
       "10 to under 17 years n = 44, 6 to under 10 years n = 64, and 2 to",

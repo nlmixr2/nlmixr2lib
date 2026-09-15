@@ -38,18 +38,18 @@ Adeojo_2024_levonorgestrel <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levonorgestrel", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levonorgestrel", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "levonorgestrel", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no efavirenz; no antiretroviral therapy)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per study arm. In every efavirenz-exposed arm of the four pooled",
         "trials the efavirenz dose was 600 mg orally once daily (Carten 2012 oral",
         "levonorgestrel arm and Scarsi 2016 implant arm; Adeojo 2024 Supplementary",
@@ -69,17 +69,17 @@ Adeojo_2024_levonorgestrel <- function() {
         "compartment directly and are affected by the clearance term alone.",
         sep = " "
       ),
-      source_name        = "efavirenz"
+      source_name = "efavirenz"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 80L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 4L,
     sex_female_pct = 100,
-    age_range      = "Not reported in the pooled analysis; the constituent trials enrolled adult women of reproductive potential.",
-    disease_state  = paste(
+    age_range = "Not reported in the pooled analysis; the constituent trials enrolled adult women of reproductive potential.",
+    disease_state = paste(
       "Pooled across four trials in adult women (Adeojo 2024 Supplementary",
       "Table S1): Back 1987 (n = 5, healthy women, oral and intravenous",
       "levonorgestrel crossover, co-administered with ethinylestradiol),",
@@ -90,14 +90,14 @@ Adeojo_2024_levonorgestrel <- function() {
       "antiretroviral therapy).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Levonorgestrel 0.25 mg single oral, 0.25 mg single intravenous,",
       "0.75 mg single oral, 0.75 mg x 2 oral (12 h apart, PK sampling from",
       "12 h), and 150 mg subdermal implant (two rods, sampling over 48",
       "weeks). Efavirenz 600 mg orally once daily in the interaction arms.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "This is a meta-analytic fit to AGGREGATE data. The observations are the",
       "MEAN concentration among subjects at each nominal time point in each",
       "trial, digitised from the published figures with GraphClick 3.0;",

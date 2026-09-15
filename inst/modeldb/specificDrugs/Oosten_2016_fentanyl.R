@@ -16,47 +16,47 @@ Oosten_2016_fentanyl <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling per Oosten 2016 Methods + Results: CL/F = theta * (WT/70)^0.75 and V/F = theta * (WT/70)^1; reference weight 70 kg implied by Table 2 'CL 70kg/F' and 'V 70kg/F' headings. The paper notes 'allometrically scaled body weight on CL/F and V/F was found to explain some variability and was kept to increase model stability' (Results, Fentanyl pharmacokinetics) but does not numerically list the exponents; the conventional theoretical-allometric values 0.75 / 1.0 are inferred and encoded as fixed.",
-      source_name        = "WT"
+      notes = "Allometric scaling per Oosten 2016 Methods + Results: CL/F = theta * (WT/70)^0.75 and V/F = theta * (WT/70)^1; reference weight 70 kg implied by Table 2 'CL 70kg/F' and 'V 70kg/F' headings. The paper notes 'allometrically scaled body weight on CL/F and V/F was found to explain some variability and was kept to increase model stability' (Results, Fentanyl pharmacokinetics) but does not numerically list the exponents; the conventional theoretical-allometric values 0.75 / 1.0 are inferred and encoded as fixed.",
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer-valued transdermal-occasion indicator for IOV multiplexing on transdermal Ka.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued transdermal-occasion indicator for IOV multiplexing on transdermal Ka.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Oosten 2016 Patients/Materials/Methods defines an occasion as 'a transdermal dose followed by at least one observation'; IOV on td Ka was retained in the final model (Table 2: 32.8% CV). Values 1..10 identify successive transdermal occasions within subject; up to ten patch occasions are multiplexed via binary indicators oc1..oc10 inside model(). Non-transdermal records or transdermal occasions outside 1..10 set every indicator to 0 and yield the typical-value ka_td (no IOV applied). Extending beyond ten occasions requires adding etaiov_ka_td_<n> blocks; the cap reflects typical hospital-stay simulations (patches every 72 h).",
-      source_name        = "OCC"
+      notes = "Oosten 2016 Patients/Materials/Methods defines an occasion as 'a transdermal dose followed by at least one observation'; IOV on td Ka was retained in the final model (Table 2: 32.8% CV). Values 1..10 identify successive transdermal occasions within subject; up to ten patch occasions are multiplexed via binary indicators oc1..oc10 inside model(). Non-transdermal records or transdermal occasions outside 1..10 set every indicator to 0 and yield the typical-value ka_td (no IOV applied). Extending beyond ten occasions requires adding etaiov_ka_td_<n> blocks; the cap reflects typical hospital-stay simulations (patches every 72 h).",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 52L,
-    n_studies       = 1L,
-    age_range       = "23-80 years",
-    age_median      = "63 years",
-    weight_range    = "Not tabulated as kg; BMI 18-40 kg/m^2 (median 25)",
-    weight_median   = "Not directly reported; computed back from BMI median 25 kg/m^2 yields ~75 kg at a typical height of 1.73 m -- treated as approximate.",
-    sex_female_pct  = 37,
-    race_ethnicity  = c(Caucasian = 90, Other = 2, Unknown = 8),
-    disease_state   = "Adults admitted to the Erasmus MC Cancer Institute (Rotterdam, The Netherlands) for moderate-to-severe cancer-related nociceptive pain receiving subcutaneous and/or transdermal fentanyl for pain control. Primary tumor sites included breast (15%), urinary tract incl. kidney (15%), prostate (13%), soft-tissue sarcoma/GIST (12%), colorectal (10%), and other (35%) (Oosten 2016 Table 1). No patient met the combined liver-failure criterion (AST or ALT > ULN, bilirubin > ULN, and albumin < LLN). WHO performance status 1 in 37%, 2 in 33%, 3 in 8%, unknown in 23%. Median NRS pain-at-rest 5 (range 2-10).",
-    dose_range      = "Subcutaneous: continuous infusion 10-300 ug/h (median 75); transdermal: matrix patch (Fentanyl Sandoz Matrix) 12-400 ug/h (median 50), replaced every 72 h. Rotations from sc to td used a 1:1 dose-conversion ratio with the sc infusion continued at the same dose for 6 h after patch application then tapered 50% for another 6 h.",
-    regions         = "The Netherlands (single tertiary cancer centre, January 2010 - November 2013).",
-    n_observations  = 942L,
-    sampling        = "Sparse opportunistic sampling: 942 fentanyl plasma samples from 52 patients (median 15 per patient, range 1-86) over up to 72 h after each change in opioid regimen; protocol prescribed twice-daily samples (around 8 am and 8 pm), a baseline sample before every regimen change, and a series around any extra sc bolus (baseline, 5, 15, 30, 60 min). Median observed concentration 1.33 ng/mL (range 0.122-10.7 ng/mL). 32 patients had semi-simultaneous sc and td exposure.",
-    co_medication   = "One patient used the strong CYP3A4 inducer carbamazepine 200 mg during the study period; all others were screened to be free of strong CYP3A4 inhibitors or inducers.",
-    notes           = "Three patients participated in the study twice. Covariate analysis beyond a priori allometric weight scaling was not pursued due to limited sample size (Discussion). Trial registration NTR4369 (Dutch Trial Register)."
+    species = "human",
+    n_subjects = 52L,
+    n_studies = 1L,
+    age_range = "23-80 years",
+    age_median = "63 years",
+    weight_range = "Not tabulated as kg; BMI 18-40 kg/m^2 (median 25)",
+    weight_median = "Not directly reported; computed back from BMI median 25 kg/m^2 yields ~75 kg at a typical height of 1.73 m -- treated as approximate.",
+    sex_female_pct = 37,
+    race_ethnicity = c(Caucasian = 90, Other = 2, Unknown = 8),
+    disease_state = "Adults admitted to the Erasmus MC Cancer Institute (Rotterdam, The Netherlands) for moderate-to-severe cancer-related nociceptive pain receiving subcutaneous and/or transdermal fentanyl for pain control. Primary tumor sites included breast (15%), urinary tract incl. kidney (15%), prostate (13%), soft-tissue sarcoma/GIST (12%), colorectal (10%), and other (35%) (Oosten 2016 Table 1). No patient met the combined liver-failure criterion (AST or ALT > ULN, bilirubin > ULN, and albumin < LLN). WHO performance status 1 in 37%, 2 in 33%, 3 in 8%, unknown in 23%. Median NRS pain-at-rest 5 (range 2-10).",
+    dose_range = "Subcutaneous: continuous infusion 10-300 ug/h (median 75); transdermal: matrix patch (Fentanyl Sandoz Matrix) 12-400 ug/h (median 50), replaced every 72 h. Rotations from sc to td used a 1:1 dose-conversion ratio with the sc infusion continued at the same dose for 6 h after patch application then tapered 50% for another 6 h.",
+    regions = "The Netherlands (single tertiary cancer centre, January 2010 - November 2013).",
+    n_observations = 942L,
+    sampling = "Sparse opportunistic sampling: 942 fentanyl plasma samples from 52 patients (median 15 per patient, range 1-86) over up to 72 h after each change in opioid regimen; protocol prescribed twice-daily samples (around 8 am and 8 pm), a baseline sample before every regimen change, and a series around any extra sc bolus (baseline, 5, 15, 30, 60 min). Median observed concentration 1.33 ng/mL (range 0.122-10.7 ng/mL). 32 patients had semi-simultaneous sc and td exposure.",
+    co_medication = "One patient used the strong CYP3A4 inducer carbamazepine 200 mg during the study period; all others were screened to be free of strong CYP3A4 inhibitors or inducers.",
+    notes = "Three patients participated in the study twice. Covariate analysis beyond a priori allometric weight scaling was not pursued due to limited sample size (Discussion). Trial registration NTR4369 (Dutch Trial Register)."
   )
 
   ini({

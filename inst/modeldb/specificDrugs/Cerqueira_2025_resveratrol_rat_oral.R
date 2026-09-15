@@ -18,7 +18,8 @@ Cerqueira_2025_resveratrol_rat_oral <- function() {
     "assay and Figures 1b and 2b report. The oral arm of the paper; see",
     "Cerqueira_2025_resveratrol_rat_iv for the separately fitted 5 mg/kg",
     "intravenous arm.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Cerqueira C, Santos V, Araujo J, Pereira L, Batista F, Soares D,",
     "Azeredo F, Ferreira E.",
@@ -27,39 +28,40 @@ Cerqueira_2025_resveratrol_rat_oral <- function() {
     "Routes and Doses in Rats.",
     "Nutrients. 2025;17(1):181.",
     "doi:10.3390/nu17010181.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Cerqueira_2025_resveratrol"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
   # Per-kg normalisation: the source reports V in L/kg and dose in mg/kg,
   # so the state amounts are ug/kg and central/vc is ug/L == ng/mL.
   compartmentData <- list(
-    depot       = list(analyte = "resveratrol", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "resveratrol", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "resveratrol", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "resveratrol", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "resveratrol", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Wistar, male)",
-    n_subjects     = 6L,
-    n_studies      = 1L,
-    age_range      = "2-3 months",
-    weight_range   = "250-300 g",
+    species = "rat (Wistar, male)",
+    n_subjects = 6L,
+    n_studies = 1L,
+    age_range = "2-3 months",
+    weight_range = "250-300 g",
     sex_female_pct = 0,
-    disease_state  = "Healthy (no disease model)",
-    dose_range     = paste(
+    disease_state = "Healthy (no disease model)",
+    dose_range = paste(
       "Single 100 mg/kg dose by oral gavage. Resveratrol (purity > 98%)",
       "formulated as a 3 mg/mL solution in 10% DMSO made up to volume",
       "with saline."
     ),
-    regions        = "Brazil (Federal University of Bahia, Salvador)",
-    notes          = paste(
+    regions = "Brazil (Federal University of Bahia, Salvador)",
+    notes = paste(
       "Serial caudal-vein sampling at 0.25, 0.5, 0.75, 1, 1.5, 2, 4, 6, 10",
       "and 24 h post-dose; resveratrol quantified by HPLC-UV at 310 nm",
       "(LLOQ 62.5 ng/mL, calibration range 62.5-5000 ng/mL). Animals were",

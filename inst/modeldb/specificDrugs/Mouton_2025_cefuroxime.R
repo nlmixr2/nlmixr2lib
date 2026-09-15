@@ -11,17 +11,17 @@ Mouton_2025_cefuroxime <- function() {
   # model therefore predicts total, not unbound, concentration; Cu in model()
   # is derived from the total by an external binding relationship.
   compartmentData <- list(
-    central     = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the MDRD equation, re-expressed for standardised creatinine assays, reported as an ABSOLUTE (not BSA-indexed) value in mL/min",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the MDRD equation, re-expressed for standardised creatinine assays, reported as an ABSOLUTE (not BSA-indexed) value in mL/min",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The ONLY covariate retained in the final model, and only on",
         "clearance. Enters as the bare linear ratio (CRCL / 93) -- the",
         "supplement's Model development equation (4),",
@@ -62,14 +62,14 @@ Mouton_2025_cefuroxime <- function() {
         "the pharmacokinetic sampling day (Methods 2.4). Must be strictly",
         "positive."
       ),
-      source_name        = "MDRDABS"
+      source_name = "MDRDABS"
     ),
     WT = list(
-      description        = "Total body weight on the pharmacokinetic sampling day",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight on the pharmacokinetic sampling day",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Not used directly as a covariate. WT enters only through the",
         "Janmahasatian fat-free mass derived inside model() from WT, HT and",
         "SEXF; FFM then scales V1, V2 and Q. Body weight was included a",
@@ -79,14 +79,14 @@ Mouton_2025_cefuroxime <- function() {
         "55-120 kg; the Results paragraph additionally gives mean 85.2",
         "(SD 18.0) kg. Must be strictly positive."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HT = list(
-      description        = "Body height on the pharmacokinetic sampling day",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height on the pharmacokinetic sampling day",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Not used directly as a covariate; enters only through the",
         "Janmahasatian fat-free mass derived in model(). The control stream",
         "computes BMI = WT / (HT/100)**2, so HT is supplied in CENTIMETRES",
@@ -95,14 +95,14 @@ Mouton_2025_cefuroxime <- function() {
         "tabulated in Table 1; the simulated typical patient used 172 cm",
         "(Methods 2.7). Must be strictly positive."
       ),
-      source_name        = "HT"
+      source_name = "HT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Not used directly as a covariate; enters only through the",
         "sex-specific coefficients of the Janmahasatian fat-free mass",
         "equation. VALUE TRANSFORMATION: the source control stream codes",
@@ -121,7 +121,7 @@ Mouton_2025_cefuroxime <- function() {
         "structural body-composition formula rather than a fitted covariate",
         "effect. Table 1: 10 of 20 patients (50%) were male."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
@@ -136,15 +136,15 @@ Mouton_2025_cefuroxime <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened, not retained. Table 1: median 69 [65-75] years, range 29-86; Results gives mean 66 (SD 14.0) years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained. Table 1: median 69 [65-75] years, range 29-86; Results gives mean 66 (SD 14.0) years."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened as a covariate in its own right and not retained. BMI is",
         "nevertheless computed inside model() as the intermediate bmi_i,",
         "because the Janmahasatian fat-free-mass equation is parameterised",
@@ -156,9 +156,9 @@ Mouton_2025_cefuroxime <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a covariate on the PK parameters and not retained.",
         "Table 1: median 24.0 [19.75-26.25] g/L, range 5-31 -- markedly",
         "hypoalbuminaemic, as expected in an ICU cohort. Albumin does NOT",
@@ -175,27 +175,27 @@ Mouton_2025_cefuroxime <- function() {
     ),
     WBC = list(
       description = "Leukocyte count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Not tabulated in Table 1."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened, not retained. Not tabulated in Table 1."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score at ICU admission",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened, not retained. Table 1: median 21 [13-24], range 8-34. Present in the estimation dataset as APA2."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened, not retained. Table 1: median 21 [13-24], range 8-34. Present in the estimation dataset as APA2."
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score on the day of pharmacokinetic sampling",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened, not retained. Table 1: median 8 [6-10], range 3-17. Present in the estimation dataset as SOFA."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened, not retained. Table 1: median 8 [6-10], range 3-17. Present in the estimation dataset as SOFA."
     ),
     DOSE = list(
       description = "Administered cefuroxime dose level (750 mg or 1500 mg q8h)",
-      units       = "mg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg",
+      type = "continuous",
+      notes = paste(
         "Screened as a covariate and not retained: 'In this study, dose did",
         "not significantly impact PK parameters' (Discussion). 16 of 20",
         "patients received 750 mg q8h for selective digestive",
@@ -207,19 +207,19 @@ Mouton_2025_cefuroxime <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    age_range      = "29-86 years",
-    age_median     = "69 years",
-    weight_range   = "55-120 kg",
-    weight_median  = "85 kg",
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    age_range = "29-86 years",
+    age_median = "69 years",
+    weight_range = "55-120 kg",
+    weight_median = "85 kg",
     sex_female_pct = 50,
-    disease_state  = "critically ill adults admitted to the intensive care unit, receiving cefuroxime as standard care either for selective digestive decontamination or as empirical antibiotic therapy for sepsis",
-    dose_range     = "750 mg or 1500 mg intravenously three times daily, each administered as a 5-min bolus",
-    regions        = "Netherlands (single centre: Radboud University Medical Center, Nijmegen)",
+    disease_state = "critically ill adults admitted to the intensive care unit, receiving cefuroxime as standard care either for selective digestive decontamination or as empirical antibiotic therapy for sepsis",
+    dose_range = "750 mg or 1500 mg intravenously three times daily, each administered as a 5-min bolus",
+    regions = "Netherlands (single centre: Radboud University Medical Center, Nijmegen)",
     renal_function = "MDRD absolute median 90 [60-117.5] mL/min, range 24-168; CKD-EPI absolute median 93.5 [60-109.8] mL/min, range 22-142; measured 24-h creatinine clearance median 113 [72-150.8] mL/min, range 27-240. Augmented renal clearance was present in part of the cohort and every ARC patient had traumatic brain injury, subarachnoid haemorrhage or burns (Discussion).",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics are Table 1 of the main article; the Results",
       "'Patient characteristics and sampling' paragraph adds the means.",
       "Single-centre prospective observational PK study, ClinicalTrials.gov",

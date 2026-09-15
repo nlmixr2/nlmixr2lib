@@ -30,24 +30,24 @@ Barras_2009_enoxaparin <- function() {
     "doi:10.1111/j.1365-2125.2009.03518.x"
   )
   vignette <- "Barras_2009_enoxaparin"
-  units    <- list(time = "h", dosing = "IU", concentration = "IU/mL")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body weight calculated by the Janmahasatian (2005) formula from total body weight, height, and sex",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight calculated by the Janmahasatian (2005) formula from total body weight, height, and sex",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Stored under the canonical LBM column per",
         "inst/references/covariate-columns.md; LBW is a registered",
         "source alias of LBM. Reference value 55 kg (Barras 2009",
@@ -65,19 +65,19 @@ Barras_2009_enoxaparin <- function() {
         "scalar on the non-renal arm of CL (Eq. 2: 0.42 *",
         "(LBW / 55))."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated by the Cockcroft-Gault",
         "(1976) equation with LBW (Janmahasatian 2005 formula)",
         "substituted for total body weight as the body-size",
         "descriptor. Raw mL/min, NOT BSA-normalised."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference value 70 mL/min (Barras 2009 population median",
         "for the LBW-substituted C-G CrCl per Table 3, range",
         "10-170 mL/min in the n=118 PK cohort, range 17-166 mL/min",
@@ -90,25 +90,25 @@ Barras_2009_enoxaparin <- function() {
         "(Eq. 2: 0.3 * (CRCL / 70)); the non-renal arm scales with",
         "LBW (not CRCL)."
       ),
-      source_name        = "CLCR (LBW)"
+      source_name = "CLCR (LBW)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 118L,
-    n_studies       = 1L,
-    age_range       = "23-91 years",
-    age_median      = "61 years",
-    weight_range    = "43-120 kg",
-    weight_median   = "77 kg",
-    lbw_range       = "30-86 kg",
-    lbw_median      = "55 kg",
-    ibw_range       = "39-83 kg",
-    ibw_median      = "64 kg",
-    sex_female_pct  = 38,
-    race_ethnicity  = "Not reported (Australian university-hospital cohort)",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 118L,
+    n_studies = 1L,
+    age_range = "23-91 years",
+    age_median = "61 years",
+    weight_range = "43-120 kg",
+    weight_median = "77 kg",
+    lbw_range = "30-86 kg",
+    lbw_median = "55 kg",
+    ibw_range = "39-83 kg",
+    ibw_median = "64 kg",
+    sex_female_pct = 38,
+    race_ethnicity = "Not reported (Australian university-hospital cohort)",
+    disease_state = paste(
       "Hospitalised adults treated for pulmonary embolism, deep",
       "vein thrombosis, acute coronary syndrome, or atrial",
       "fibrillation; subjects with severe renal impairment",
@@ -119,7 +119,7 @@ Barras_2009_enoxaparin <- function() {
       "antiplatelet drugs (aspirin / clopidogrel) in 42% per Table",
       "3."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Subcutaneous enoxaparin twice daily under conventional",
       "(product label) or individualised dosing. Individualised",
       "arm: 1 mg/kg total body weight BID for subjects < 100 kg,",
@@ -134,8 +134,8 @@ Barras_2009_enoxaparin <- function() {
       "the model parameters describe anti-Xa activity in IU/mL,",
       "matching the chromogenic assay readout."
     ),
-    regions         = "Australia (Royal Brisbane and Women's Hospital and Mater Health Services)",
-    renal_function  = paste(
+    regions = "Australia (Royal Brisbane and Women's Hospital and Mater Health Services)",
+    renal_function = paste(
       "LBW-substituted C-G CrCl median 70 mL/min (range 10-170)",
       "in the n=118 PK cohort; 73 mL/min (range 17-166) in the",
       "n=103 PD cohort. Total-weight C-G CrCl median 85 mL/min",
@@ -144,8 +144,8 @@ Barras_2009_enoxaparin <- function() {
       "and contributed 5% of the anti-Xa observations per the",
       "Discussion."
     ),
-    co_medication   = "Concomitant warfarin in 31% of subjects; concomitant antiplatelet drugs (aspirin and / or clopidogrel) in 42% (per Table 3).",
-    notes           = paste(
+    co_medication = "Concomitant warfarin in 31% of subjects; concomitant antiplatelet drugs (aspirin and / or clopidogrel) in 42% (per Table 3).",
+    notes = paste(
       "Prospective randomised controlled trial: 118 subjects",
       "contributed 349 anti-Xa activity observations (mean 3 per",
       "subject, range 1-4), with 93% of samples in the first 48 h",

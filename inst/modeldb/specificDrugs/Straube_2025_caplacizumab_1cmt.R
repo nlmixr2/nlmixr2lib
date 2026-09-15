@@ -19,21 +19,26 @@ Straube_2025_caplacizumab_1cmt <- function() {
   # antibody against von Willebrand factor; Straube 2025 section 3.2).
   # specimen is not stated, hence verified = FALSE.
   compartmentData <- list(
-    central = list(analyte = "caplacizumab",                            units = "nmol", specimen = "plasma", verified = FALSE),
-    target  = list(analyte = "von Willebrand factor",                   units = "nmol", specimen = "plasma", verified = FALSE),
-    complex = list(analyte = "caplacizumab-von Willebrand factor complex", units = "nmol", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "caplacizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "von Willebrand factor", units = "nmol", specimen = "plasma", verified = FALSE),
+    complex = list(
+      analyte = "caplacizumab-von Willebrand factor complex",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "not stated in the source",
-    n_subjects    = NA_integer_,
-    n_studies     = 1L,
+    species = "not stated in the source",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     disease_state = "ALX-0081 is a single-domain antibody against von Willebrand factor (vWF) developed to treat acquired thrombotic thrombocytopenic purpura (Straube 2025 section 3.2).",
-    dose_range    = "Single intravenous doses of 0.02, 0.4 and 8 mg/kg (Figure 5b).",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Single intravenous doses of 0.02, 0.4 and 8 mg/kg (Figure 5b).",
+    regions = NA_character_,
+    notes = paste(
       "SPECIES AND BODY WEIGHT ARE NOT STATED. Straube 2025 gives only the mg/kg dose levels and reports",
       "Vc = 0.046 L, which is not consistent with an adult human; the upstream data source",
       "(Glassman and Muzykantov 2020) is not open access and could not be consulted, so the species and the",

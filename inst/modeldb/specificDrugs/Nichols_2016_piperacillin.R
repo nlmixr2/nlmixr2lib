@@ -10,7 +10,7 @@ Nichols_2016_piperacillin <- function() {
     sep = " "
   )
   vignette <- "Nichols_2016_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -21,45 +21,45 @@ Nichols_2016_piperacillin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear-additive effect on CL: TVCL = 3.51 + 0.0814 * (WT - 18) L/h,",
         "centered at the cohort median 18 kg (Nichols 2016 Results;",
         "individual weights 9.5-30.1 kg in Table 1). The paper does not",
         "model a weight effect on V."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "12 months to 9 years (1-9 y in text; one 8-yr/9-yr cohort plus toddlers)",
-    age_median     = "5 years (IQR 1.75-6.5)",
-    weight_range   = "9.5-30.1 kg",
-    weight_median  = "17.8 kg (IQR 11.4-20); model equation centers WT at 18 kg",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "12 months to 9 years (1-9 y in text; one 8-yr/9-yr cohort plus toddlers)",
+    age_median = "5 years (IQR 1.75-6.5)",
+    weight_range = "9.5-30.1 kg",
+    weight_median = "17.8 kg (IQR 11.4-20); model equation centers WT at 18 kg",
     sex_female_pct = 50,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to a pediatric intensive care unit",
       "with suspected or proven bacterial infection (most commonly pneumonia,",
       "VAP, sepsis, neutropenic fever); estimated GFR >= 60 mL/min/1.73 m^2",
       "(modified Schwartz)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "100 mg/kg piperacillin (with 12.5 mg/kg tazobactam, 8:1 ratio) every 8",
       "hours by IV extended infusion over 4 hours (per institutional",
       "protocol). Maximum 3,000 mg piperacillin per dose. Observed doses",
       "1,070-3,375 mg of piperacillin per dose in this cohort (Table 1)."
     ),
-    regions        = "United States (Riley Hospital for Children, Indianapolis, IN)",
-    egfr_range     = "86-189 mL/min/1.73 m^2 (cohort median 103, IQR 96-111)",
-    notes          = paste(
+    regions = "United States (Riley Hospital for Children, Indianapolis, IN)",
+    egfr_range = "86-189 mL/min/1.73 m^2 (cohort median 103, IQR 96-111)",
+    notes = paste(
       "Twelve children sampled at steady state (6 samples per patient: pre-",
       "dose and at 2, 4 [end of infusion], 5, 6, and 8 hours after the start",
       "of the study dose). Patients had received a median of 5 prior doses",

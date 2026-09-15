@@ -15,70 +15,71 @@ Yang_2013_losmapimod <- function() {
     "and larger in COPD patients than in the pooled healthy + RA",
     "reference. Doses were 5, 7, 7.5, 10, and 20 mg oral single- or",
     "repeat-dose; 60 mg data were excluded from the analysis due to",
-    "lack of dose-proportionality (possible saturable absorption).")
-  reference   <- "Yang S, Lukey P, Beerahee M, Hoke F. Population pharmacokinetics of losmapimod in healthy subjects and patients with rheumatoid arthritis and chronic obstructive pulmonary diseases. Clin Pharmacokinet. 2013;52(3):187-198. doi:10.1007/s40262-012-0025-6"
-  vignette    <- "Yang_2013_losmapimod"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+    "lack of dose-proportionality (possible saturable absorption)."
+  )
+  reference <- "Yang S, Lukey P, Beerahee M, Hoke F. Population pharmacokinetics of losmapimod in healthy subjects and patients with rheumatoid arthritis and chronic obstructive pulmonary diseases. Clin Pharmacokinet. 2013;52(3):187-198. doi:10.1007/s40262-012-0025-6"
+  vignette <- "Yang_2013_losmapimod"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "losmapimod", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "losmapimod", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "losmapimod", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "losmapimod", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "losmapimod", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on both absorption rate constants XKA1 and XKA2 with reference value 74 kg (median in the pooled 77-subject analysis dataset; Yang 2013 Table 3 footnote e). Applied as (WT/74)^-0.787. Body weight was tested but not retained on CL/F, V1, V2, or Q. Time-fixed at baseline.",
-      source_name        = "Bodyweight"
+      notes = "Power covariate on both absorption rate constants XKA1 and XKA2 with reference value 74 kg (median in the pooled 77-subject analysis dataset; Yang 2013 Table 3 footnote e). Applied as (WT/74)^-0.787. Body weight was tested but not retained on CL/F, V1, V2, or Q. Time-fixed at baseline.",
+      source_name = "Bodyweight"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on V1 (apparent central volume of distribution) with reference value 54 years (median in the pooled 77-subject analysis dataset; Yang 2013 Table 3 footnote d). Applied as (AGE/54)^-0.881. Age was tested but not retained on CL/F, Q, V2, XKA1, or XKA2. Time-fixed at baseline.",
-      source_name        = "Age"
+      notes = "Power covariate on V1 (apparent central volume of distribution) with reference value 54 years (median in the pooled 77-subject analysis dataset; Yang 2013 Table 3 footnote d). Applied as (AGE/54)^-0.881. Age was tested but not retained on CL/F, Q, V2, XKA1, or XKA2. Time-fixed at baseline.",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; Yang 2013 Table 3 footnote c 'Sex = male as reference').",
-      notes              = "Log-linear effect on CL/F: log(CL/F_female) - log(CL/F_male) = -0.238 (Yang 2013 Table 3). Encoded via lcl + e_sex_cl * SEXF so that SEXF = 0 recovers exp(3.44) = 31.19 L/h for males and SEXF = 1 recovers exp(3.44 - 0.238) = 24.60 L/h for females (paper reports 31.2 L/h for males and 24.6 L/h for females in Section 3). Sex was tested but not retained on V1, Q, V2, XKA1, or XKA2. Time-fixed at baseline.",
-      source_name        = "Sex"
+      notes = "Log-linear effect on CL/F: log(CL/F_female) - log(CL/F_male) = -0.238 (Yang 2013 Table 3). Encoded via lcl + e_sex_cl * SEXF so that SEXF = 0 recovers exp(3.44) = 31.19 L/h for males and SEXF = 1 recovers exp(3.44 - 0.238) = 24.60 L/h for females (paper reports 31.2 L/h for males and 24.6 L/h for females in Section 3). Sex was tested but not retained on V1, Q, V2, XKA1, or XKA2. Time-fixed at baseline.",
+      source_name = "Sex"
     ),
     DIS_COPD = list(
-      description        = "Chronic obstructive pulmonary disease patient indicator, 1 = COPD patient, 0 = non-COPD subject (healthy volunteer or rheumatoid arthritis patient).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic obstructive pulmonary disease patient indicator, 1 = COPD patient, 0 = non-COPD subject (healthy volunteer or rheumatoid arthritis patient).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-COPD; the reference group is the pooled healthy volunteers plus rheumatoid arthritis patients that share the smaller proportional residual variance).",
-      notes              = "Not retained on any structural PK parameter (CL/F, V1, Q, V2, XKA1, XKA2, MTIME, ALAG1). Retained only on the proportional residual error magnitude: sigma^2_prop = 0.061 for non-COPD subjects vs sigma^2_prop_COPD = 0.268 for COPD patients (Yang 2013 Table 3 Residual variability rows). Encoded in model() by making the proportional SD a linear switch on DIS_COPD: propSdEff = (1 - DIS_COPD) * propSd + DIS_COPD * propSd_copd. This reproduces the NONMEM $ERROR pattern IF (COPD.EQ.1) Y = IPRED*(1+EPS(2)) ELSE Y = IPRED*(1+EPS(1)). Time-fixed at baseline.",
-      source_name        = "Population indicator (Yang 2013 Section 2.3 dataset stratification)"
+      notes = "Not retained on any structural PK parameter (CL/F, V1, Q, V2, XKA1, XKA2, MTIME, ALAG1). Retained only on the proportional residual error magnitude: sigma^2_prop = 0.061 for non-COPD subjects vs sigma^2_prop_COPD = 0.268 for COPD patients (Yang 2013 Table 3 Residual variability rows). Encoded in model() by making the proportional SD a linear switch on DIS_COPD: propSdEff = (1 - DIS_COPD) * propSd + DIS_COPD * propSd_copd. This reproduces the NONMEM $ERROR pattern IF (COPD.EQ.1) Y = IPRED*(1+EPS(2)) ELSE Y = IPRED*(1+EPS(1)). Time-fixed at baseline.",
+      source_name = "Population indicator (Yang 2013 Section 2.3 dataset stratification)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 77L,
-    n_studies      = 4L,
-    age_range      = "22-74 years across the pooled analysis dataset (healthy: 22-53 y, median 43; RA: 34-73 y, median 57; COPD: 42-74 y, median 56)",
-    age_median     = "54 years (median across the pooled analysis dataset; Yang 2013 Table 3 footnote d and reference age for the V1 power covariate)",
-    weight_range   = "38.5-116 kg across the pooled analysis dataset (healthy: 56.7-100.8 kg, median 79; RA: 38.5-98 kg, median 69; COPD: 52-116 kg, median 80)",
-    weight_median  = "74 kg (median across the pooled analysis dataset; Yang 2013 Table 3 footnote e and reference weight for the ka power covariate)",
+    species = "human",
+    n_subjects = 77L,
+    n_studies = 4L,
+    age_range = "22-74 years across the pooled analysis dataset (healthy: 22-53 y, median 43; RA: 34-73 y, median 57; COPD: 42-74 y, median 56)",
+    age_median = "54 years (median across the pooled analysis dataset; Yang 2013 Table 3 footnote d and reference age for the V1 power covariate)",
+    weight_range = "38.5-116 kg across the pooled analysis dataset (healthy: 56.7-100.8 kg, median 79; RA: 38.5-98 kg, median 69; COPD: 52-116 kg, median 80)",
+    weight_median = "74 kg (median across the pooled analysis dataset; Yang 2013 Table 3 footnote e and reference weight for the ka power covariate)",
     sex_female_pct = 45,
     race_ethnicity = NA_character_,
-    disease_state  = "Pooled adult healthy volunteers (n = 30, 20 M / 10 F; studies MKI101678 and MKI102422) and patients with active rheumatoid arthritis on stable anti-rheumatic therapy (n = 23, 3 M / 20 F; study RA3103730 / NCT00256919) and patients with chronic obstructive pulmonary disease (n = 24, 19 M / 5 F; study MKI106209 / NCT00392587).",
-    dose_range     = "5-20 mg oral losmapimod, single dose or repeated dosing: 5 mg or 10 mg once daily for 14 days followed by 7.5 mg twice daily for 14 days (healthy); 7.5, 20 mg single doses (RA); 7.5 mg once or twice daily for 14 days (COPD). 60 mg data (from healthy and RA cohorts) were excluded due to lack of dose-proportionality.",
-    regions        = "GlaxoSmithKline multi-region program (United Kingdom, United States and other sites; specific country composition not tabulated in the paper).",
+    disease_state = "Pooled adult healthy volunteers (n = 30, 20 M / 10 F; studies MKI101678 and MKI102422) and patients with active rheumatoid arthritis on stable anti-rheumatic therapy (n = 23, 3 M / 20 F; study RA3103730 / NCT00256919) and patients with chronic obstructive pulmonary disease (n = 24, 19 M / 5 F; study MKI106209 / NCT00392587).",
+    dose_range = "5-20 mg oral losmapimod, single dose or repeated dosing: 5 mg or 10 mg once daily for 14 days followed by 7.5 mg twice daily for 14 days (healthy); 7.5, 20 mg single doses (RA); 7.5 mg once or twice daily for 14 days (COPD). 60 mg data (from healthy and RA cohorts) were excluded due to lack of dose-proportionality.",
+    regions = "GlaxoSmithKline multi-region program (United Kingdom, United States and other sites; specific country composition not tabulated in the paper).",
     n_observations = "1545 losmapimod plasma concentrations from 77 subjects in the analysis dataset (1247 from 30 healthy volunteers, 182 from 24 RA patients, 216 from 23 COPD patients; Yang 2013 Section 2.3).",
-    notes          = "Analysis dataset used for model building. Losmapimod plasma concentrations were quantified by validated HPLC-MS/MS assay with LLQ = 0.2 ng/mL (Yang 2013 Section 2.2). An additional 204 concentrations from 34 RA subjects (7.5 mg BID x 28 days; study RA3103718 / NCT00393146) formed the external evaluation dataset (not part of model building). Fitting used NONMEM VI with FOCEI and the MTIME feature to estimate the absorption change point (Yang 2013 Sections 2.4-2.5)."
+    notes = "Analysis dataset used for model building. Losmapimod plasma concentrations were quantified by validated HPLC-MS/MS assay with LLQ = 0.2 ng/mL (Yang 2013 Section 2.2). An additional 204 concentrations from 34 RA subjects (7.5 mg BID x 28 days; study RA3103718 / NCT00393146) formed the external evaluation dataset (not part of model building). Fitting used NONMEM VI with FOCEI and the MTIME feature to estimate the absorption change point (Yang 2013 Sections 2.4-2.5)."
   )
 
   ini({

@@ -17,11 +17,11 @@ Jin_2025_benralizumab_fev1 <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Log-scale multiplicative effect on baseline FEV1: FEV1baseline * exp(-0.09 * SEXF), i.e. an",
         "8.6% lower baseline pre-bronchodilator FEV1 in women (Jin 2025 Resource 4,",
         "'Beta_FEVB (SEXF_1)' = -0.09, RSE 16%; the Resource 4 footnote defines",
@@ -29,14 +29,14 @@ Jin_2025_benralizumab_fev1 <- function() {
         "(Jin 2025 Resource 1: 'SEXF Gender (0: male, 1: female)'), so it matches the canonical",
         "orientation and needs no value inversion. Time-fixed per subject."
       ),
-      source_name        = "SEXF"
+      source_name = "SEXF"
     ),
     CONMED_THEOPHYLLINE = list(
-      description        = "Concomitant theophylline / aminophylline use, 1 = using, 0 = not using",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant theophylline / aminophylline use, 1 = using, 0 = not using",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no theophylline or aminophylline co-medication)",
-      notes              = paste(
+      notes = paste(
         "Log-scale multiplicative effect on baseline FEV1: FEV1baseline * exp(-0.089 *",
         "CONMED_THEOPHYLLINE), i.e. an 8.5% lower baseline pre-bronchodilator FEV1 in users",
         "(Jin 2025 Resource 4, 'Beta_FEVB (CTHEO_1)' = -0.089, RSE 18%; the Resource 4 footnote",
@@ -46,14 +46,14 @@ Jin_2025_benralizumab_fev1 <- function() {
         "'CTHEO Theophylline/aminophylline use (0: no, 1: yes)'. Time-fixed per subject.",
         "Source column CTHEO."
       ),
-      source_name        = "CTHEO"
+      source_name = "CTHEO"
     ),
     EOS = list(
-      description        = "Baseline blood eosinophil count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline blood eosinophil count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on the benralizumab treatment Emax: Emax * (EOS/380)^0.699",
         "(Jin 2025 Resource 4, 'Beta_EMAX (BEOSL)' = 0.699, RSE 15%; the Resource 4 footnote defines",
         "'EMAX(BEOSL) continuous baseline eosinophil count in cell/uL on EMAX (centered around",
@@ -64,14 +64,14 @@ Jin_2025_benralizumab_fev1 <- function() {
         "baseline eosinophil counts were associated with superior FEV1 response'). Baseline",
         "(pre-first-dose) value, time-fixed per subject. Source column BEOSL."
       ),
-      source_name        = "BEOSL"
+      source_name = "BEOSL"
     ),
     TRT_BENRALIZUMAB = list(
-      description        = "Benralizumab treatment-arm indicator, 1 = randomised to benralizumab, 0 = randomised to placebo",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Benralizumab treatment-arm indicator, 1 = randomised to benralizumab, 0 = randomised to placebo",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo)",
-      notes              = paste(
+      notes = paste(
         "Gates the treatment-effect term on and off. Unlike a concentration-driven exposure-response",
         "model, the Jin 2025 FEV1 treatment effect is a function of TIME ALONE",
         "(Emax * t / (T50 + t), Resource 4) and so does not vanish of its own accord in the placebo",
@@ -83,7 +83,7 @@ Jin_2025_benralizumab_fev1 <- function() {
         "0 = placebo, 1 = 30 mg Q4W, 2 = 30 mg Q8W in Jin 2025 Resource 3: set",
         "TRT_BENRALIZUMAB = 1 when TRTAN > 0)."
       ),
-      source_name        = "TRTAN"
+      source_name = "TRTAN"
     )
   )
 
@@ -93,9 +93,9 @@ Jin_2025_benralizumab_fev1 <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Baseline standing height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "RETAINED IN THE SOURCE MODEL BUT NOT ENCODABLE. Jin 2025 Resource 4 states that 'the model",
         "included covariate effects of age and height on Pmax, age, height, sex, theophylline",
         "comedication on FEV1baseline', and tabulates a single shared coefficient",
@@ -116,9 +116,9 @@ Jin_2025_benralizumab_fev1 <- function() {
     ),
     AGE = list(
       description = "Baseline subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "RETAINED IN THE SOURCE MODEL BUT NOT ENCODABLE, for the same reason as HT. Jin 2025",
         "Resource 4 tabulates two age coefficients -- 'RPAGE' = -5.92 ('effect of age on PMAX') and",
         "'RFAGE' = -14.6 ('effect of age on FEV1') -- with no functional form and no reference age.",
@@ -133,9 +133,9 @@ Jin_2025_benralizumab_fev1 <- function() {
     ),
     FEV1_BL = list(
       description = "Observed baseline pre-bronchodilator FEV1 supplied as a covariate column",
-      units       = "mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL",
+      type = "continuous",
+      notes = paste(
         "Screened on the placebo effect and on Emax in the legacy analysis (Chia 2019 Methods) and",
         "not retained. Baseline FEV1 is a MODEL PARAMETER here (rbase with IIV etalrbase), not a",
         "covariate input."
@@ -143,27 +143,27 @@ Jin_2025_benralizumab_fev1 <- function() {
     ),
     WT = list(
       description = "Baseline body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on Emax in the legacy analysis (Chia 2019 Methods) and not retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on Emax in the legacy analysis (Chia 2019 Methods) and not retained."
     ),
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on the placebo effect and on Emax in the legacy analysis (Chia 2019 Methods) and not retained."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on the placebo effect and on Emax in the legacy analysis (Chia 2019 Methods) and not retained."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened on the placebo effect in the legacy analysis (Chia 2019 Methods) and not retained."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened on the placebo effect in the legacy analysis (Chia 2019 Methods) and not retained."
     ),
     RACE_CHINESE = list(
       description = "Chinese-heritage race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested in Jin 2025 and NOT retained -- this is the paper's headline negative result for the",
         "FEV1 endpoint. Results 3.4.1: 'The global FEV1 model was predictive of the MIRACLE data, and",
         "no statistically significant effect on participants from China was found. Consequently, no",
@@ -175,9 +175,9 @@ Jin_2025_benralizumab_fev1 <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested in Jin 2025 and not retained; Resource 6 reports that 'no statistically significant",
         "effect on participants from Asia was found in the FEV1 model'. Resource 5 shows the",
         "corresponding visual predictive checks stratified by both Chinese and Asian race."
@@ -185,15 +185,15 @@ Jin_2025_benralizumab_fev1 <- function() {
     ),
     REGION_EUROPE = list(
       description = "Geographic enrollment region",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on the placebo effect and on Emax in the legacy analysis (Chia 2019 Methods) and not retained on either."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on the placebo effect and on Emax in the legacy analysis (Chia 2019 Methods) and not retained on either."
     ),
     CONMED_STEROID = list(
       description = "Maintenance oral corticosteroid use at baseline",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on Emax in the legacy analysis (Chia 2019 Methods, 'OCS use') and not retained on",
         "the FEV1 endpoint. It IS retained on the exacerbation-rate baseline -- see",
         "modellib('Jin_2025_benralizumab_aaer')."
@@ -201,9 +201,9 @@ Jin_2025_benralizumab_fev1 <- function() {
     ),
     NEXAC12M = list(
       description = "Number of asthma exacerbations in the 12 months before study entry",
-      units       = "count (events in the prior 12 months)",
-      type        = "count",
-      notes       = paste(
+      units = "count (events in the prior 12 months)",
+      type = "count",
+      notes = paste(
         "Screened on Emax in the legacy analysis as a '>= 3 exacerbations' indicator (Chia 2019",
         "Methods) and not retained on the FEV1 endpoint. It IS retained on the exacerbation-rate",
         "baseline -- see modellib('Jin_2025_benralizumab_aaer')."
@@ -212,19 +212,19 @@ Jin_2025_benralizumab_fev1 <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3205L,
-    n_studies      = 3L,
-    age_range      = "12-75 years",
-    age_median     = "not published for the exposure-response subset",
-    weight_range   = "not published for the exposure-response subset",
-    weight_median  = "not published for the exposure-response subset",
+    species = "human",
+    n_subjects = 3205L,
+    n_studies = 3L,
+    age_range = "12-75 years",
+    age_median = "not published for the exposure-response subset",
+    weight_range = "not published for the exposure-response subset",
+    weight_median = "not published for the exposure-response subset",
     sex_female_pct = NA_real_,
     race_ethnicity = "Chinese, Asian and non-Asian strata were tested on this endpoint and none was significant; the exposure-response dataset is the SIROCCO + CALIMA + MIRACLE pool.",
-    disease_state  = "Severe, uncontrolled eosinophilic asthma on medium-to-high-dose inhaled corticosteroid plus a long-acting beta2-agonist, with benralizumab or placebo as add-on maintenance therapy.",
-    dose_range     = "Placebo, benralizumab 30 mg subcutaneously every 4 weeks, or benralizumab 30 mg subcutaneously every 8 weeks (first three doses every 4 weeks).",
-    regions        = "Multi-regional (SIROCCO, CALIMA and MIRACLE).",
-    notes          = paste(
+    disease_state = "Severe, uncontrolled eosinophilic asthma on medium-to-high-dose inhaled corticosteroid plus a long-acting beta2-agonist, with benralizumab or placebo as add-on maintenance therapy.",
+    dose_range = "Placebo, benralizumab 30 mg subcutaneously every 4 weeks, or benralizumab 30 mg subcutaneously every 8 weeks (first three doses every 4 weeks).",
+    regions = "Multi-regional (SIROCCO, CALIMA and MIRACLE).",
+    notes = paste(
       "Jin 2025 Methods 2.5: 'Data from three phase III studies (SIROCCO, CALIMA, and MIRACLE) were",
       "used in the ER analysis'. THE PAPER DOES NOT PRINT AN ANALYSIS-SET N for the FEV1 dataset, so",
       "n_subjects is the combined RANDOMISED total of those three studies (SIROCCO 1204 +",
