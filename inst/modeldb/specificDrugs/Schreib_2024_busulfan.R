@@ -369,7 +369,7 @@ Schreib_2024_busulfan <- function() {
     # 4. ODE system. One compartment with intravenous infusion; the infusion
     # duration comes from the event table (see the TINF covariate note).
     #
-    # ON rxode2 5.1.7 AND EARLIER, SOLVE THIS WITH
+    # ON rxode2 5.1.6 AND EARLIER, SOLVE THIS WITH
     # rxSolve(..., useLinCmt = FALSE). This is a one-compartment
     # linear-elimination system, so those versions' default useLinCmt = TRUE
     # rewrote it as a closed-form linCmt() solution, which can only carry a
@@ -379,8 +379,8 @@ Schreib_2024_busulfan <- function() {
     # Dose / (kel(0) * vc) and the entire time dependence disappeared. No way
     # of writing the ODE avoided the conversion -- an explicit rate variable
     # and a clearance-form denominator were both tested and were converted
-    # identically -- so the solve-time flag was the only mitigation. Later
-    # rxode2 refuses the conversion when it would change the model (rxode2
+    # identically -- so the solve-time flag was the only mitigation. rxode2
+    # 5.1.7 refuses the conversion when it would change the model (rxode2
     # issue 1370), so the flag is no longer required.
     # ------------------------------------------------------------------
     d/dt(central) <- -kel_exp_total * central
