@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kletting 2015 anti-CD66 antibody (BW 250/183) radioimmunotherapy whole-body PBPK, models 1 and 2 ([doi:10.1371/journal.pone.0127934](https://doi.org/10.1371/journal.pone.0127934)) -- adults with acute leukaemia conditioned before stem-cell transplantation.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
