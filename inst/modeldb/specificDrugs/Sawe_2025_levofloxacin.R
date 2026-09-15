@@ -454,18 +454,23 @@ Sawe_2025_levofloxacin <- function() {
     # ka, matching DADT(1) = TRANSIT - KA*A(1) and
     # DADT(2) = KA*A(1) - K*A(2).
     #
-    # Dose to `depot`. Do NOT add `f(depot) <- 0` here. That line is the
-    # natural-looking analogue of the control stream's "F1 = 0" (and is
-    # what several older transit models in this package carry), but under
-    # rxUi with rxode2 5.1.7 it silently zeroes the transit input as well
-    # and the model then absorbs nothing at all -- every concentration
-    # comes back 0. Without it, transit() is already the only input
-    # pathway: the bolus is not separately added, and mass balance is
-    # exact (a single 1000 mg dose with F = 1 yields AUC(0-inf) * CL =
-    # 999.98 mg, and the steady-state AUC identity in the validation
-    # vignette holds to under 0.1%). The vignette's AUC identity check is
-    # the standing regression gate for this.
+    # Dose to `depot`, with the bolus suppressed so that transit() is the
+    # only input pathway -- the control stream's "F1 = 0", and what the
+    # other transit models in this package carry.
+    #
+    # An earlier revision of this file said the opposite: that `f(depot) <- 0`
+    # zeroes the transit input as well, leaving the model absorbing nothing.
+    # That was true of the pre-release rxode2 5.1.7 build it was written
+    # against, not of released 5.1.7/5.1.8, where the line suppresses only
+    # the bolus. Without it on a released rxode2 the dose enters twice --
+    # once through transit(), once as the bolus -- and every simulated
+    # exposure is exactly double: a single 1000 mg dose with F = 1 gives
+    # AUC(0-inf) * CL = 1999.98 mg rather than 1000. With it, 1000.00.
+    #
+    # The vignette's steady-state AUC identity is the standing regression
+    # gate, and it is what caught this.
     kel <- cl / vc
+    f(depot)      <- 0
     d/dt(depot)   <- transit(nn, mtt, fbio) - ka * depot
     d/dt(central) <-                          ka * depot - kel * central
 

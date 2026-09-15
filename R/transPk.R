@@ -43,11 +43,10 @@ removeLinesAndInis <- function(ui, vars) {
       .modelLines[[i]]
     })
   # Remove the inis from the model
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .eta <- .tmp$eta
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   for (.v in .vars) {
     .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, .v)
     .modelLines <- .tmp$modelLines
@@ -112,10 +111,9 @@ addLogEstimates <- function(ui, vars,
   if (!is.null(beforeCmt)) {
     .before <- rxode2::assertCompartmentExists(.ui, beforeCmt)
   }
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   if (length(.theta$ntheta) == 0) {
     .ntheta <- 0
@@ -132,18 +130,10 @@ addLogEstimates <- function(ui, vars,
   .extra <- list()
   for (.i in seq_along(.vars)) {
     .v <- .vars[.i]
-    .labelCur <- .label[.i]
     .extra <- c(.extra,
       list(str2lang(paste0(.v, " <- exp(l", .v, ")"))))
-    .theta <-
-      rbind(.theta,
-        .get1theta(.v, .theta1, .ntheta,
-          label = .labelCur))
-    .ntheta <- .ntheta + 1
   }
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
@@ -163,6 +153,9 @@ addLogEstimates <- function(ui, vars,
       .tmp$w,
       .tmp$post
     )
+  }
+  for (.i in seq_along(.vars)) {
+    .ui <- .iniAddTheta(.ui, paste0("l", .vars[.i]), label = .label[.i])
   }
   .ui
 }

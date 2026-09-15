@@ -28,25 +28,10 @@ convertQuad <- function(ui, ek = c("Ik", "Ek"), cc = c("Ce", "Cc"), ek2 = "Ek2")
     .replaceMult(.ui$lstExpr,
       v1 = ek, v2 = cc,
       ret = paste0(ek, "*", cc, "+", ek2, "*", cc, "^2")))
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEk2 <- .get1theta(ek2, .theta1, .ntheta,
-    name = paste0("u", ek2),
-    label = paste0("untransformed quadratic slope (", ek2, ")"))
-  .ui$iniDf <- rbind(.theta,
-    .thetaEk2,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", ek2),
+    label = paste0("untransformed quadratic slope (", ek2, ")"))
 }
