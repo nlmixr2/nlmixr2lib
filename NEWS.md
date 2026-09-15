@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Stockmann 2015 vancomycin ([doi:10.1007/s40121-015-0067-9](https://doi.org/10.1007/s40121-015-0067-9)) -- neonates up to 54 weeks postmenstrual age.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
