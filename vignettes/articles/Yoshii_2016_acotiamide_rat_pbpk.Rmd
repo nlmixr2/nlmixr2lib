@@ -467,13 +467,55 @@ stopifnot(nrow(claims) == 6L, all(claims$Pass))
 
 The paper's central mechanistic claim is the last two rows taken together: the
 precursor-pool concentration stays above the in vitro IC50 for about the first
-two hours, and the ACh response peaks at about that time. Blood concentration
-falls below 1.79 uM within
-`r round(min(prof$time[prof$Cc < 1.79]))` min and whole-stomach concentration
-never reaches
-`r signif(max(prof$Cstomach), 3)` uM at its peak sustained, so neither of those
-readouts can explain a 2 h ACh peak. That contrast is the paper's argument for
-the precursor pool being the pharmacologically relevant space.
+two hours, and the ACh response peaks at about that time. The contrast with the
+two *measurable* readouts is what makes the precursor pool the paper's
+candidate for the pharmacologically relevant space, so it is worth quantifying
+rather than asserting.
+
+```{r ic50-residence}
+last_above <- function(col) {
+  above <- prof$time[prof[[col]] >= 1.79]
+  if (length(above)) max(above) else 0
+}
+
+residence <- tibble::tibble(
+  Readout = c("Blood (Cc)", "Whole stomach (Cstomach)", "Precursor pool (CT)"),
+  `Peak (uM)` = signif(c(max(prof$Cc), max(prof$Cstomach), max(prof$CT)), 3),
+  `Last time above IC50 (min)` = sapply(c("Cc", "Cstomach", "CT"), last_above)
+)
+```
+
+```{r ic50-residence-table, echo = FALSE}
+knitr::kable(
+  residence,
+  caption = "How long each readout stays above the in vitro AChE IC50 of 1.79 uM."
+)
+```
+
+```{r ic50-residence-assert}
+# The ordering is the paper's argument, so assert it rather than eyeballing the
+# table. All three readouts come from one deterministic solve.
+stopifnot(
+  # Every readout peaks above the IC50 -- whole stomach is NOT excluded by
+  # failing to reach it, which is the easy misreading of the paper's claim.
+  all(residence$`Peak (uM)` > 1.79),
+  # It is excluded by how briefly it stays there.
+  residence$`Last time above IC50 (min)`[1] < 30,
+  residence$`Last time above IC50 (min)`[2] < 30,
+  # Only the precursor pool is still above the IC50 anywhere near the 2 h peak.
+  residence$`Last time above IC50 (min)`[3] > 90
+)
+```
+
+All three readouts peak above the IC50, so whole stomach is not ruled out by
+failing to reach the inhibitory concentration -- it is ruled out by how briefly
+it stays there. Blood is above 1.79 uM for only
+`r residence[["Last time above IC50 (min)"]][1]` min and whole stomach for
+`r residence[["Last time above IC50 (min)"]][2]` min, while the precursor pool
+remains above it for `r residence[["Last time above IC50 (min)"]][3]` min --
+essentially the whole interval leading up to the 2 h ACh peak. Neither of the
+two measurable readouts can produce a response that late; the precursor pool
+can.
 
 # PKNCA validation
 
@@ -698,6 +740,18 @@ model peaks at about
 `r round(prof$time[which.max(prof$Cstomach)])` min. The two are not in conflict
 -- the observation is the first sample of a curve whose true maximum lies
 between samples.
+
+**The ACh peak time is a sampling artifact in the same way.** The paper reports
+that ACh "reached the maximum concentration at 2 h", and the packaged model
+reproduces the *magnitude* at 2 h to within the tolerance asserted above. The
+model's own maximum, however, falls at about
+`r round(prof$time[which.max(prof$ach)] / 60, 1)` h
+(`r signif(100 * max(prof$ach) / BASELINE, 4)`% of baseline), between the
+paper's 2 h and 4 h ACh sampling times. Since ACh was assayed only from 5 min
+to 4 h at discrete points, "maximum at 2 h" is the largest *observed* value and
+not a fitted peak time, so this is a difference in what the two numbers mean
+rather than a discrepancy in the model. It is called out because a reader
+comparing peak times directly would otherwise read it as a 45 min error.
 
 ## Modelling choices
 

@@ -88,6 +88,8 @@ navbar:
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
       - text: "Aciclovir (DAgate 2024)"
         href: articles/DAgate_2024_aciclovir.html
+      - text: "Acotiamide rat pbpk (Yoshii 2016)"
+        href: articles/Yoshii_2016_acotiamide_rat_pbpk.html
       - text: "Acyclovir (Zeng 2009)"
         href: articles/Zeng_2009_acyclovir.html
       - text: "Adalimumab (Drweesh 2026)"
@@ -7288,6 +7290,7 @@ articles:
   - articles/Yoshida_2018_coproporphyrin_I_rifampin
   - articles/Yoshida_2021_ipatasertib
   - articles/Yoshida_2024_fazpilodemab
+  - articles/Yoshii_2016_acotiamide_rat_pbpk
   - articles/Yoshioka_2018_FXa_inhibitors_mbma
   - articles/You_2013_hCG_GTN
   - articles/Youssef_2024_bepirovirsen
