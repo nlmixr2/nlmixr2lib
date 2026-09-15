@@ -5236,28 +5236,6 @@ Sibling-drug suffix for anthracycline + cardioprotectant PK/TD models (e.g., Mod
 
 ---
 
-## Deprecated Zurlinden 2016 paracetamol PBPK metabolite suffixes (subsumed into Cook 2016 forms)
-
-Zurlinden 2016 paracetamol PBPK shorthand suffixes `as` and `ag` were deprecated on 2026-06-19 because they collide with R reserved words (`as.numeric`, `as.integer`, `as.character`, etc.) and chemistry symbols (Ag = silver). The Zurlinden 2016 paracetamol PBPK model is migrated to use the existing Cook 2016 `apaps` / `apapg` canonicals for the same chemical species. See the `apaps` / `apapg` entries above for the canonical names.
-
-### as (**DEPRECATED -- use `apaps` instead**)
-- **Type:** metabolite-suffix (deprecated)
-- **Role:** Formerly APAP-sulfate suffix (Zurlinden notation). Same chemical species as `apaps` (Cook 2016 notation). Deprecated on 2026-06-19 because the bare `as` token collides with R reserved words (`as.numeric`, `as.integer`, etc.).
-- **Source aliases:**
-  - `as` -- deprecated canonical name used in `Zurlinden_2016_paracetamol.R`.
-- **Example models:** `Zurlinden_2016_paracetamol.R`.
-- **Notes:** Do not use for new models. The Zurlinden 2016 paracetamol PBPK model was migrated to `apaps` on 2026-06-19 (R-reserved-word collision fix).
-
-### ag (**DEPRECATED -- use `apapg` instead**)
-- **Type:** metabolite-suffix (deprecated)
-- **Role:** Formerly APAP-glucuronide suffix (Zurlinden notation). Same chemical species as `apapg` (Cook 2016 notation). Deprecated on 2026-06-19 because the bare `ag` token collides with the silver chemical symbol (Ag).
-- **Source aliases:**
-  - `ag` -- deprecated canonical name used in `Zurlinden_2016_paracetamol.R`.
-- **Example models:** `Zurlinden_2016_paracetamol.R`.
-- **Notes:** Do not use for new models. The Zurlinden 2016 paracetamol PBPK model was migrated to `apapg` on 2026-06-19 (chemistry-symbol collision fix).
-
----
-
 ## Per-paper additions (2026-05-28 naming audit)
 
 Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-05-28 naming-audit eta + residual-SD cleanup pass. Each is the canonical lowercase abbreviation used by its source paper for a non-parent species tracked alongside the parent.

@@ -180,9 +180,11 @@
       st <- trimws(ln)
       if (startsWith(st, "- **Type:**")) {
         cur$hasTypeField <- TRUE
-        # Trailing parentheticals qualify the type ("metabolite-suffix
-        # (deprecated)"); the leading token is the type itself.
-        cur$type <- trimws(sub("\\s*\\(.*$", "", sub("^- \\*\\*Type:\\*\\*\\s*", "", st)))
+        # Trailing parentheticals qualify the type; the leading token is the
+        # type itself. Shared with the three other readers of this field --
+        # see conventions.R::.splitRegisterType().
+        cur$type <-
+          .splitRegisterType(sub("^- \\*\\*Type:\\*\\*\\s*", "", st))$type
       }
       if (grepl("Example models", st)) {
         cur$hasExampleField <- TRUE
