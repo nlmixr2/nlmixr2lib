@@ -39,9 +39,9 @@ For full details see `vignettes/create-model-library.Rmd` and `.claude/skills/ex
 
 ## Formatting
 
-- R code is formatted with [air](https://posit-dev.github.io/air/) using `air.toml`; the `format-check` CI job runs `air format --check`. Run `air format .` (or on the files you touched) before committing.
+- R code is formatted with [air](https://posit-dev.github.io/air/) using `air.toml`; the `format-check` CI job runs `air format --check`. Run `air format .` (or on the files you touched) before committing. Install the pinned version with `curl -LsSf https://github.com/posit-dev/air/releases/download/0.11.0/air-installer.sh | sh`.
 - `air.toml` skips `ini()`, `model()`, `rxode2()` and `modelExtract()`, so the `lcl <- 1; label("...")` and `d/dt(central)` idioms are left as written.
-- `.lintr` follows rxode2's rules, with `semicolon_linter(allow_compound = TRUE)` and `/` excluded from `infix_spaces_linter` for the same idioms.
+- `.lintr` is based on rxode2's rules (nlmixr2lib keeps its opt-outs for naming, object usage, commented code and indentation), with `semicolon_linter(allow_compound = TRUE)` and `/` excluded from `infix_spaces_linter` for the same idioms.
 
 ## Testing
 

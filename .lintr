@@ -1,5 +1,5 @@
 linters: linters_with_defaults(
-    # rxode2's lintr rules (see nlmixr2/rxode2 .lintr), adapted for nlmixr2lib.
+    # Based on rxode2's lintr rules (see nlmixr2/rxode2 .lintr), adapted for nlmixr2lib.
     assignment_linter(),
     line_length_linter(120),
     whitespace_linter(),
@@ -18,7 +18,11 @@ linters: linters_with_defaults(
     object_name_linter   = NULL,
     object_length_linter = NULL,
     object_usage_linter  = NULL,
-    commented_code_linter = NULL
+    commented_code_linter = NULL,
+    # air owns indentation, and indentation_linter disagrees with air's layout
+    # of wrapped `&&`/`||` operands, so formatted code could still fail lint.
+    indentation_linter   = NULL,
+    pipe_consistency_linter = NULL
   )
 exclusions: list(
     "inst/modeldb",

@@ -21,4 +21,4 @@ jobs:
           # Pinned so CI and local `air format` agree; bump deliberately and
           # reformat in the same PR.
           version: 0.11.0
-          check: true
+          check: "true"
