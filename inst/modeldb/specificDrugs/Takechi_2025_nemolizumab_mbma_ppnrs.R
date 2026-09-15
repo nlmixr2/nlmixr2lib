@@ -58,8 +58,8 @@ Takechi_2025_nemolizumab_mbma_ppnrs <- function() {
   paper_specific_etas <- c("eta_study_eff")
 
   units <- list(
-    time          = "week",
-    dosing        = paste0(
+    time = "week",
+    dosing = paste0(
       "mg/administration (nemolizumab 30 mg or 60 mg Q4W, or 0.5 mg/kg Q4W in ",
       "SPR.115828; dupilumab 300 mg Q2W. Supplied through the ",
       "DOSE_NEMOLIZUMAB_MG and DOSE_DUPILUMAB_MG covariate columns and NOT as ",
@@ -76,11 +76,11 @@ Takechi_2025_nemolizumab_mbma_ppnrs <- function() {
 
   covariateData <- list(
     DOSE_NEMOLIZUMAB_MG = list(
-      description        = "Assigned subcutaneous nemolizumab dose for the study arm; 0 in placebo and dupilumab arms.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Assigned subcutaneous nemolizumab dose for the study arm; 0 in placebo and dupilumab arms.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Arm selector only: consumed as (DOSE_NEMOLIZUMAB_MG > 0). Takechi ",
         "2025 Results 'MBMA': 'As most trials were conducted using the ",
         "approved dose, and no clear dose-response relationship was observed, ",
@@ -92,14 +92,14 @@ Takechi_2025_nemolizumab_mbma_ppnrs <- function() {
         "outside the source's calibration and would make the model ADD the ",
         "two drug effects; no trial in the meta-analysis combined them."
       ),
-      source_name        = "Drug / Dose (Takechi 2025 Table 3, Nemolizumab rows)"
+      source_name = "Drug / Dose (Takechi 2025 Table 3, Nemolizumab rows)"
     ),
     DOSE_DUPILUMAB_MG = list(
-      description        = "Assigned subcutaneous dupilumab dose for the study arm; 0 in placebo and nemolizumab arms.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Assigned subcutaneous dupilumab dose for the study arm; 0 in placebo and nemolizumab arms.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Arm selector only: consumed as (DOSE_DUPILUMAB_MG > 0). Every ",
         "included dupilumab arm (PRIME and PRIME2) used 300 mg Q2W, so this ",
         "column takes only the values 0 and 300 across the meta-analysis and ",
@@ -112,18 +112,18 @@ Takechi_2025_nemolizumab_mbma_ppnrs <- function() {
         "limitation). The covariate below is NOT applied to dupilumab - ",
         "Table 4 attaches it to Edrug,nemolizumab only."
       ),
-      source_name        = "Drug / Dose (Takechi 2025 Table 3, Dupilumab rows)"
+      source_name = "Drug / Dose (Takechi 2025 Table 3, Dupilumab rows)"
     ),
     IGA_MOD_PCT = list(
-      description        = paste0(
+      description = paste0(
         "Percentage (0-100) of the study arm whose baseline Investigator's ",
         "Global Assessment was 3 (moderate) rather than 4 (severe). The ",
         "paper's 'PPM'."
       ),
-      units              = "%",
-      type               = "continuous",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "ARM-LEVEL AGGREGATE, not a per-subject characteristic - this is a ",
         "property of the trial arm being simulated. Table 3 prints the ",
         "COMPLEMENT ('IGA 4 at baseline (%)', i.e. the SEVERE share), so ",
@@ -141,19 +141,19 @@ Takechi_2025_nemolizumab_mbma_ppnrs <- function() {
         "positive over the whole [0, 1] domain, but the source calibrates it ",
         "only over the printed range."
       ),
-      source_name        = "IGA4 at baseline (%) (Takechi 2025 Table 3), complemented to 100"
+      source_name = "IGA4 at baseline (%) (Takechi 2025 Table 3), complemented to 100"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1170L,
-    n_studies      = 6L,
-    n_arms         = 13L,
-    age_range      = "study-arm mean ages 46.7-59.7 years",
-    weight_range   = "study-arm mean weights 60.4-87.1 kg",
+    species = "human",
+    n_subjects = 1170L,
+    n_studies = 6L,
+    n_arms = 13L,
+    age_range = "study-arm mean ages 46.7-59.7 years",
+    weight_range = "study-arm mean weights 60.4-87.1 kg",
     sex_female_pct = 51.9,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Moderate-to-severe prurigo nodularis. Across arms the baseline PP-NRS ",
       "mean ranged from 8.3 to 8.6 and the proportion of patients with an IGA ",
       "score of 4 (severe) ranged from 28.0% to 54.5% (Table 3). Takechi 2025 ",
@@ -162,16 +162,16 @@ Takechi_2025_nemolizumab_mbma_ppnrs <- function() {
       "results'. That severity split is nevertheless the one covariate this ",
       "endpoint retains - see IGA_MOD_PCT."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Nemolizumab 30 mg and 60 mg Q4W (Yokozeki et al., OLYMPIA 1, OLYMPIA ",
       "2) and 0.5 mg/kg Q4W (SPR.115828); dupilumab 300 mg Q2W (PRIME, ",
       "PRIME2); matched placebo in every trial. Trial durations 12-24 weeks."
     ),
-    regions        = paste0(
+    regions = paste0(
       "Japan (Yokozeki et al. / jRCT2011200017) and multinational North ",
       "America / Europe (SPR.115828, OLYMPIA 1, OLYMPIA 2, PRIME, PRIME2)."
     ),
-    notes          = paste0(
+    notes = paste0(
       "MBMA AT THE STUDY-ARM LEVEL: each modelled data point is one trial ",
       "arm's reported PP-NRS success rate at one time point, digitised from ",
       "published figures with WebPlotDigitizer 4.5 where not tabulated. The ",

@@ -42,39 +42,39 @@ AitOudhia_2016_sunitinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_su12662       = list(analyte = "SU12662", units = "mg", specimen = "administration site", verified = FALSE),
-    central_su12662     = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_su12662 = list(analyte = "SU12662", units = "mg", specimen = "administration site", verified = FALSE),
+    central_su12662 = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_su12662 = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
-    svegfr2             = list(analyte = "sVEGFR2", units = "mg", specimen = "plasma", verified = FALSE),
-    tumor               = list(analyte = "sunitinib", units = "mg", specimen = "tumor", verified = FALSE)
+    svegfr2 = list(analyte = "sVEGFR2", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor = list(analyte = "sunitinib", units = "mg", specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list(
     TUM_VOL = list(
-      description        = "Baseline HCC tumor volume measured by DCE-MRI at the start of sunitinib treatment, used as the per-subject initial condition of the tumor compartment and to derive the growth rate constant kg = ln(2) / (114 * TG0^0.14) per Taouli 2005.",
-      units              = "mm^3",
-      type               = "continuous",
+      description = "Baseline HCC tumor volume measured by DCE-MRI at the start of sunitinib treatment, used as the per-subject initial condition of the tumor compartment and to derive the growth rate constant kg = ln(2) / (114 * TG0^0.14) per Taouli 2005.",
+      units = "mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject time-fixed. The paper reports baseline tumor volumes for the n = 8 DCE-MRI subset; the validation vignette uses a representative typical baseline that reproduces Figure 2d. Use the subject's pre-treatment tumor volume on data ingestion; the column is consumed both as the d/dt(tumor) initial condition and inside the kg formula so a finite, positive value is required.",
-      source_name        = "TG0"
+      notes = "Per-subject time-fixed. The paper reports baseline tumor volumes for the n = 8 DCE-MRI subset; the validation vignette uses a representative typical baseline that reproduces Figure 2d. Use the subject's pre-treatment tumor volume on data ingestion; the column is consumed both as the d/dt(tumor) initial condition and inside the kg formula so a finite, positive value is required.",
+      source_name = "TG0"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "adults with confirmed advanced HCC; demographics reported in Supplementary Table S1 (not on disk)",
-    weight_range   = "not extractable from main text",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "adults with confirmed advanced HCC; demographics reported in Supplementary Table S1 (not on disk)",
+    weight_range = "not extractable from main text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Advanced hepatocellular carcinoma (HCC) with 1-4 lesions, ECOG performance status 0/1/2, life expectancy >= 12 weeks. All patients received transarterial chemoembolisation (TACE) with doxorubicin 30 mg on Day 8 of Cycle 1.",
-    dose_range     = "Sunitinib 37.5 mg PO QD, Days 1-7 + Days 15-35 of each 6-week cycle (4 weeks on / 2 weeks off, with a TACE-related break between Days 8 and 14). Repeat cycles until disease progression or unacceptable toxicity.",
-    regions        = "Single-centre phase II pilot study at Roswell Park Cancer Institute (Buffalo, NY, USA).",
-    notes          = "Single-arm open-label phase II pilot (n = 16 total; n = 8 had repeated DCE-MRI). PK / sVEGFR2 sampling at 24 h post-dose on Days 8, 10, and 35. Tumor volume measured by DCE-MRI on Days 0, 8, 10, and 35. Median observed TTP 7 months (8 months per Discussion). PK model parameters ka_D, Q_D, V2_D, ka_M, Q_M, V2_M and their IIVs (where reported as fixed) were inherited from the Houk 2009 sunitinib popPK meta-analysis (Ref 30 of the paper) under a MAP-Bayesian framework, and kout was inherited from the Lindauer 2010 sVEGFR2 popPD model (Ref 33). Detailed baseline demographics (age, weight, sex, race) are in Supplementary Table S1, which is not on disk; populate when the supplement becomes available."
+    disease_state = "Advanced hepatocellular carcinoma (HCC) with 1-4 lesions, ECOG performance status 0/1/2, life expectancy >= 12 weeks. All patients received transarterial chemoembolisation (TACE) with doxorubicin 30 mg on Day 8 of Cycle 1.",
+    dose_range = "Sunitinib 37.5 mg PO QD, Days 1-7 + Days 15-35 of each 6-week cycle (4 weeks on / 2 weeks off, with a TACE-related break between Days 8 and 14). Repeat cycles until disease progression or unacceptable toxicity.",
+    regions = "Single-centre phase II pilot study at Roswell Park Cancer Institute (Buffalo, NY, USA).",
+    notes = "Single-arm open-label phase II pilot (n = 16 total; n = 8 had repeated DCE-MRI). PK / sVEGFR2 sampling at 24 h post-dose on Days 8, 10, and 35. Tumor volume measured by DCE-MRI on Days 0, 8, 10, and 35. Median observed TTP 7 months (8 months per Discussion). PK model parameters ka_D, Q_D, V2_D, ka_M, Q_M, V2_M and their IIVs (where reported as fixed) were inherited from the Houk 2009 sunitinib popPK meta-analysis (Ref 30 of the paper) under a MAP-Bayesian framework, and kout was inherited from the Lindauer 2010 sVEGFR2 popPD model (Ref 33). Detailed baseline demographics (age, weight, sex, race) are in Supplementary Table S1, which is not on disk; populate when the supplement becomes available."
   )
 
   ini({

@@ -8,61 +8,61 @@ Han_2015_bevacizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight; used for allometric power scaling on all four disposition parameters with reference weight 44 kg (paediatric cohort median, Han 2015 Figure 3 caption).",
-      source_name        = "BWT"
+      notes = "Baseline body weight; used for allometric power scaling on all four disposition parameters with reference weight 44 kg (paediatric cohort median, Han 2015 Figure 3 caption).",
+      source_name = "BWT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline serum albumin; power scaling on CL with reference 39 g/L (paediatric cohort median, Han 2015 Figure 3 caption). Paper reports ALBU range 24-52 g/L in the model-building cohort (Table 1).",
-      source_name        = "ALBU"
+      notes = "Baseline serum albumin; power scaling on CL with reference 39 g/L (paediatric cohort median, Han 2015 Figure 3 caption). Paper reports ALBU range 24-52 g/L in the model-building cohort (Table 1).",
+      source_name = "ALBU"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Han 2015 reports the effect using a male-indicator convention: CL is multiplied by 1.11 and V1 by 1.14 when the patient is male. The paper's typical values (CL = 9.90 mL/h, V1 = 2850 mL) correspond to a female patient (paper's Figure 3 base = 44-kg female paediatric patient with albumin 39 g/L and sarcomas). To keep those typicals visible verbatim, the model file applies the male-vs-female contrast on the (1 - SEXF) axis via 1.11^(1 - SEXF) on CL and 1.14^(1 - SEXF) on V1.",
-      source_name        = "SEX (male indicator; derive SEXF = 1 - SEX_MALE)"
+      notes = "Han 2015 reports the effect using a male-indicator convention: CL is multiplied by 1.11 and V1 by 1.14 when the patient is male. The paper's typical values (CL = 9.90 mL/h, V1 = 2850 mL) correspond to a female patient (paper's Figure 3 base = 44-kg female paediatric patient with albumin 39 g/L and sarcomas). To keep those typicals visible verbatim, the model file applies the male-vs-female contrast on the (1 - SEXF) axis via 1.11^(1 - SEXF) on CL and 1.14^(1 - SEXF) on V1.",
+      source_name = "SEX (male indicator; derive SEXF = 1 - SEX_MALE)"
     ),
     TUMTP_CNS_PRIM = list(
-      description        = "Primary CNS tumour vs non-CNS-primary tumour indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Primary CNS tumour vs non-CNS-primary tumour indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-primary-CNS tumour; in Han 2015 = sarcomas)",
-      notes              = "Han 2015 Table 1 splits the paediatric cohort into primary CNS tumours (study AVF3842s; n = 76) and sarcomas (studies AVF2771s + AVF4117s + BO20924; n = 76). The primary CNS tumour umbrella pools glioma / medulloblastoma / ependymoma / brainstem-glioma / atypical-teratoid-rhabdoid histologies (specific breakdown not enumerated in the paper). Paper's typical CL and V1 are anchored to the sarcoma reference; multiplicative factors 0.725 on CL and 0.854 on V1 apply when TUMTP_CNS_PRIM = 1.",
-      source_name        = "Primary CNS tumour indicator (paper narrative)"
+      notes = "Han 2015 Table 1 splits the paediatric cohort into primary CNS tumours (study AVF3842s; n = 76) and sarcomas (studies AVF2771s + AVF4117s + BO20924; n = 76). The primary CNS tumour umbrella pools glioma / medulloblastoma / ependymoma / brainstem-glioma / atypical-teratoid-rhabdoid histologies (specific breakdown not enumerated in the paper). Paper's typical CL and V1 are anchored to the sarcoma reference; multiplicative factors 0.725 on CL and 0.854 on V1 apply when TUMTP_CNS_PRIM = 1.",
+      source_name = "Primary CNS tumour indicator (paper narrative)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 152L,
-    n_studies      = 4L,
-    age_range      = "0.5-21 years",
-    age_median     = "10.8 years",
-    weight_range   = "5.94-125 kg",
-    weight_median  = "43.8 kg",
+    species = "human",
+    n_subjects = 152L,
+    n_studies = 4L,
+    age_range = "0.5-21 years",
+    age_median = "10.8 years",
+    weight_range = "5.94-125 kg",
+    weight_median = "43.8 kg",
     sex_female_pct = 46.1,
     race_ethnicity = "Not reported (multi-region study; race distribution not tabulated in Han 2015)",
-    disease_state  = "Paediatric cancer patients: refractory sarcomas (AVF2771s), primary CNS tumours (AVF3842s), newly diagnosed osteosarcoma (AVF4117s), and metastatic soft-tissue sarcoma (BO20924 interim data). Cohort split evenly between primary CNS tumours (n = 76) and sarcomas (n = 76).",
-    dose_range     = "5-15 mg/kg IV infusion over 30-90 minutes; regimens Q2W (5, 10, 15 mg/kg) or Q3W (7.5, 15 mg/kg).",
-    regions        = "Multi-region: US, Europe (Italy, Netherlands, France)",
+    disease_state = "Paediatric cancer patients: refractory sarcomas (AVF2771s), primary CNS tumours (AVF3842s), newly diagnosed osteosarcoma (AVF4117s), and metastatic soft-tissue sarcoma (BO20924 interim data). Cohort split evenly between primary CNS tumours (n = 76) and sarcomas (n = 76).",
+    dose_range = "5-15 mg/kg IV infusion over 30-90 minutes; regimens Q2W (5, 10, 15 mg/kg) or Q3W (7.5, 15 mg/kg).",
+    regions = "Multi-region: US, Europe (Italy, Netherlands, France)",
     n_observations = "1427 quantifiable bevacizumab serum concentrations (of 1592 collected in the model-building population).",
-    co_medication  = "Bevacizumab given as single agent in AVF2771s and in combination with chemotherapy in all other studies.",
-    notes          = "Table 1 model-building cohort. Nine infants (0-2 years) included; 12 patients under 3 years across the full n = 232 cohort. Serum LLOQ = 78 ng/mL (ELISA); values below LLOQ omitted from the fit. Median half-life 19.6 days (range 9-78 days) reported in Discussion. Model-building N = 152; external validation N = 80 (studies BO25041 primary CNS + BO20924 remaining sarcoma data).",
+    co_medication = "Bevacizumab given as single agent in AVF2771s and in combination with chemotherapy in all other studies.",
+    notes = "Table 1 model-building cohort. Nine infants (0-2 years) included; 12 patients under 3 years across the full n = 232 cohort. Serum LLOQ = 78 ng/mL (ELISA); values below LLOQ omitted from the fit. Median half-life 19.6 days (range 9-78 days) reported in Discussion. Model-building N = 152; external validation N = 80 (studies BO25041 primary CNS + BO20924 remaining sarcoma data).",
     external_validation = "N = 80 paediatric patients (544 concentrations) from BO25041 (primary CNS tumours) and remaining BO20924 (metastatic soft-tissue sarcoma). Mean prediction error for concentrations 3.54%, for CL -1.84%, for V1 -0.06% (Han 2015 Results, External validation)."
   )
 

@@ -8,36 +8,36 @@ Han_2010_voriconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "19-70 years",
-    age_mean       = "50.9 +/- 16.1 years",
-    weight_range   = "46-91 kg",
-    weight_mean    = "68.0 +/- 15.2 kg",
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "19-70 years",
+    age_mean = "50.9 +/- 16.1 years",
+    weight_range = "46-91 kg",
+    weight_mean = "68.0 +/- 15.2 kg",
     ideal_bodyweight_range = "45.5-75.3 kg",
-    ideal_bodyweight_mean  = "59.6 +/- 8.2 kg",
+    ideal_bodyweight_mean = "59.6 +/- 8.2 kg",
     sex_female_pct = 46.2,
     race_ethnicity = c(Caucasian = 92.3, Other = 7.7),
     primary_diagnosis = c(
-      CysticFibrosis_n          = 3,
-      Emphysema_n               = 5,
+      CysticFibrosis_n = 3,
+      Emphysema_n = 5,
       IdiopathicPulmonaryFibrosis_n = 4,
-      Scleroderma_n             = 1
+      Scleroderma_n = 1
     ),
     days_posttransplant_oral_study = "8.5 +/- 4.4 days (range 3-19)",
-    disease_state  = "Adult lung transplant recipients during the early postoperative period; all received tacrolimus as primary immunosuppression. 3 patients (23.1%) had cystic fibrosis; the remaining 10 had emphysema, idiopathic pulmonary fibrosis, or scleroderma. One patient did not complete the oral study.",
-    dose_range     = "Loading two intravenous voriconazole doses 6 mg/kg given as 2-hour infusion every 12 h immediately post-transplant, followed by oral doses 200 mg every 12 h for 3 months posttransplant. Blood sampling at pre-dose and at 0.5, 1, 1.5, 2, 4, 6, 8, and 12 h following the second intravenous dose and following an oral dose (the 5th to 37th dose, mean 15th).",
-    regions        = "Single center: University of Pittsburgh Medical Center, Pittsburgh, PA, USA.",
-    notes          = "Prospective single-center observational study. Voriconazole plasma concentrations measured by validated HPLC (LLOQ implicit in linearity range 0.2-9 ug/mL, R^2 = 0.9998; assay precision 1.3-9.0%; assay bias 0.7-3.1%). NONMEM 6.2.0 (GloboMax) with FOCE-I. 9 samples per interval over one intravenous and one oral interval per patient; steady state confirmed by paired-t test on trough concentrations C0 vs C12 (P = 0.82, mean difference -2.7%). Baseline demographics per Han 2010 Table 1 (the 'Characteristics of patients' table); base-model population PK parameter estimates per Han 2010 Results section 'Population pharmacokinetic analysis'."
+    disease_state = "Adult lung transplant recipients during the early postoperative period; all received tacrolimus as primary immunosuppression. 3 patients (23.1%) had cystic fibrosis; the remaining 10 had emphysema, idiopathic pulmonary fibrosis, or scleroderma. One patient did not complete the oral study.",
+    dose_range = "Loading two intravenous voriconazole doses 6 mg/kg given as 2-hour infusion every 12 h immediately post-transplant, followed by oral doses 200 mg every 12 h for 3 months posttransplant. Blood sampling at pre-dose and at 0.5, 1, 1.5, 2, 4, 6, 8, and 12 h following the second intravenous dose and following an oral dose (the 5th to 37th dose, mean 15th).",
+    regions = "Single center: University of Pittsburgh Medical Center, Pittsburgh, PA, USA.",
+    notes = "Prospective single-center observational study. Voriconazole plasma concentrations measured by validated HPLC (LLOQ implicit in linearity range 0.2-9 ug/mL, R^2 = 0.9998; assay precision 1.3-9.0%; assay bias 0.7-3.1%). NONMEM 6.2.0 (GloboMax) with FOCE-I. 9 samples per interval over one intravenous and one oral interval per patient; steady state confirmed by paired-t test on trough concentrations C0 vs C12 (P = 0.82, mean difference -2.7%). Baseline demographics per Han 2010 Table 1 (the 'Characteristics of patients' table); base-model population PK parameter estimates per Han 2010 Results section 'Population pharmacokinetic analysis'."
   )
 
   ini({

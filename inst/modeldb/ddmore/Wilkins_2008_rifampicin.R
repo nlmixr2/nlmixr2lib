@@ -11,47 +11,47 @@ Wilkins_2008_rifampicin <- function() {
   )
   vignette <- "Wilkins_2008_rifampicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000280"
+  ddmore_id <- "DDMODEL00000280"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_FDC = list(
-      description        = "Fixed-dose-combination antitubercular formulation indicator (1 = FDC tablet, 0 = single-drug-combination, separate tablets).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fixed-dose-combination antitubercular formulation indicator (1 = FDC tablet, 0 = single-drug-combination, separate tablets).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (FDC; the most-common formulation in the Wilkins 2008 cohort and the typical-value reference for `lmtt` / `lcl`)",
-      notes              = "Source `.mod` $PK block uses `IF(FDC.EQ.1) MTTFDC = 0` and `IF(FDC.EQ.0) MTTFDC = THETA(8)` (and an analogous block for CLLOC vs THETA(9)), so the FDC = 1 subgroup carries the typical-value `lmtt` / `lcl` and the SDC subgroup (FDC = 0) gets a `(1 + theta) *` multiplicative shift. The .mod's `CLLOC` variable name is a vestigial label from earlier model-development; the actual covariate driving CLCOV is `FDC` (not the data-only `LOC` column kept in $INPUT but unused in $PK). Multiplicative shifts: SDC subjects get 1 + 1.04 = 2.04 x MTT (longer absorption) and 1 + 0.236 = 1.236 x CL (faster clearance) than the FDC reference. The `LOC` data column is therefore not declared as a covariate in this model file.",
-      source_name        = "FDC"
+      notes = "Source `.mod` $PK block uses `IF(FDC.EQ.1) MTTFDC = 0` and `IF(FDC.EQ.0) MTTFDC = THETA(8)` (and an analogous block for CLLOC vs THETA(9)), so the FDC = 1 subgroup carries the typical-value `lmtt` / `lcl` and the SDC subgroup (FDC = 0) gets a `(1 + theta) *` multiplicative shift. The .mod's `CLLOC` variable name is a vestigial label from earlier model-development; the actual covariate driving CLCOV is `FDC` (not the data-only `LOC` column kept in $INPUT but unused in $PK). Multiplicative shifts: SDC subjects get 1 + 1.04 = 2.04 x MTT (longer absorption) and 1 + 0.236 = 1.236 x CL (faster clearance) than the FDC reference. The `LOC` data column is therefore not declared as a covariate in this model file.",
+      source_name = "FDC"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4, 5, 6 identify the dosing / sampling occasion within subject (the Wilkins 2008 cohort had up to 6 sampling occasions per subject across the antitubercular treatment course). Decomposed inside `model()` into binary indicators `oc1` .. `oc6` that multiplex the 6 IOV etas on log-CL and the 6 IOV etas on log-MTT.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4, 5, 6 identify the dosing / sampling occasion within subject (the Wilkins 2008 cohort had up to 6 sampling occasions per subject across the antitubercular treatment course). Decomposed inside `model()` into binary indicators `oc1` .. `oc6` that multiplex the 6 IOV etas on log-CL and the 6 IOV etas on log-MTT.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    n_subjects     = 263L,
-    n_studies      = 1L,
-    age_range      = "Adults with pulmonary tuberculosis; demographic detail not extracted (Wilkins 2008 publication PDF not on disk in this worktree).",
-    weight_range   = "(not extracted; Wilkins 2008 publication not on disk for cross-check)",
+    n_subjects = 263L,
+    n_studies = 1L,
+    age_range = "Adults with pulmonary tuberculosis; demographic detail not extracted (Wilkins 2008 publication PDF not on disk in this worktree).",
+    weight_range = "(not extracted; Wilkins 2008 publication not on disk for cross-check)",
     sex_female_pct = "(not extracted)",
-    disease_state  = "Adults with newly-diagnosed pulmonary tuberculosis treated with a standard antitubercular backbone (rifampicin + isoniazid + pyrazinamide +/- ethambutol).",
-    dose_range     = "Oral rifampicin 450, 480, or 600 mg daily, multiple-dose at steady-state. The DDMORE bundle's Simulated_TB_Rifampicin_PK_Wilkins_2008.csv carries 250 simulated subjects across these three dose levels with sampling on six occasions (day 1, week 1, 2, 4, 8, 24-ish).",
-    regions        = "South Africa (Wilkins 2008 cohort).",
+    disease_state = "Adults with newly-diagnosed pulmonary tuberculosis treated with a standard antitubercular backbone (rifampicin + isoniazid + pyrazinamide +/- ethambutol).",
+    dose_range = "Oral rifampicin 450, 480, or 600 mg daily, multiple-dose at steady-state. The DDMORE bundle's Simulated_TB_Rifampicin_PK_Wilkins_2008.csv carries 250 simulated subjects across these three dose levels with sampling on six occasions (day 1, week 1, 2, 4, 8, 24-ish).",
+    regions = "South Africa (Wilkins 2008 cohort).",
     n_observations = 2913L,
-    notes          = "Population descriptors are inferred from the bundle metadata (DDMODEL00000280.rdf model-has-description-long, the .lst's `TOT. NO. OF INDIVIDUALS: 263 / TOT. NO. OF OBS RECS: 2913` header, and the .mod $INPUT column list) because the Wilkins 2008 publication PDF is not on disk in /home/bill/github/mab_human_consensus/literature/ at extraction time. n_subjects = 263 is taken directly from the .lst header. The cohort's age / weight / sex breakdown is not derivable from the bundle alone; the validation vignette's Errata section documents this caveat."
+    notes = "Population descriptors are inferred from the bundle metadata (DDMODEL00000280.rdf model-has-description-long, the .lst's `TOT. NO. OF INDIVIDUALS: 263 / TOT. NO. OF OBS RECS: 2913` header, and the .mod $INPUT column list) because the Wilkins 2008 publication PDF is not on disk in /home/bill/github/mab_human_consensus/literature/ at extraction time. n_subjects = 263 is taken directly from the .lst header. The cohort's age / weight / sex breakdown is not derivable from the bundle alone; the validation vignette's Errata section documents this caveat."
   )
 
   ini({

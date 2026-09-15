@@ -8,53 +8,53 @@ Hall_2017_dapsone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "dapsone", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "dapsone", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "dapsone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives all three MARS hinge models (Ka, CL, Vc). In-cohort range 58-138 kg (Table 1); the MARS hinges have no physical constraint outside that range and the linear-scale typical value is clamped at a small positive floor in model() to guard against extrapolation.",
-      source_name        = "Weight"
+      notes = "Drives all three MARS hinge models (Ka, CL, Vc). In-cohort range 58-138 kg (Table 1); the MARS hinges have no physical constraint outside that range and the linear-scale typical value is clamped at a small positive floor in model() to guard against extrapolation.",
+      source_name = "Weight"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the MARS hinge model on CL via the mirror basis functions BF3_CL = max(0, AGE - 27) * BF2_CL and BF4_CL = max(0, 27 - AGE) * BF2_CL. In-cohort range 21-77 years (Table 1).",
-      source_name        = "Age"
+      notes = "Enters the MARS hinge model on CL via the mirror basis functions BF3_CL = max(0, AGE - 27) * BF2_CL and BF4_CL = max(0, 27 - AGE) * BF2_CL. In-cohort range 21-77 years (Table 1).",
+      source_name = "Age"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the MARS hinge model on Ka via BF1_Ka = max(0, BUN - 7), which interacts with a weight hinge to drive Ka. In-cohort range 7-28 mg/dL (Table 1).",
-      source_name        = "BUN"
+      notes = "Enters the MARS hinge model on Ka via BF1_Ka = max(0, BUN - 7), which interacts with a weight hinge to drive Ka. In-cohort range 7-28 mg/dL (Table 1).",
+      source_name = "BUN"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35,
-    n_studies      = 1,
-    age_range      = "21-77 years",
-    age_median     = "36 years",
-    weight_range   = "58-138 kg",
-    weight_median  = "85.1 kg",
-    bmi_range      = "23.6-43.9 kg/m^2",
-    bmi_median     = "30.2 kg/m^2",
+    species = "human",
+    n_subjects = 35,
+    n_studies = 1,
+    age_range = "21-77 years",
+    age_median = "36 years",
+    weight_range = "58-138 kg",
+    weight_median = "85.1 kg",
+    bmi_range = "23.6-43.9 kg/m^2",
+    bmi_median = "30.2 kg/m^2",
     sex_female_pct = 51,
     race_ethnicity = c(White = 83, NonWhite = 17),
-    disease_state  = "Healthy adult volunteers (NCT01165840)",
-    dose_range     = "100 mg single oral dose under directly observed therapy",
-    regions        = "USA (Texas)",
-    notes          = "Stratified recruitment by BMI: 12 normal-weight (BMI < 25), 12 overweight / class I-II obese (BMI 25-40), 12 class III obese (BMI > 40); equal numbers of men and women within each stratum. Eight blood draws per subject over 72 h, sampling times chosen by D-optimal design in ADAPT 5. Baseline demographics in Table 1 of Hall 2017."
+    disease_state = "Healthy adult volunteers (NCT01165840)",
+    dose_range = "100 mg single oral dose under directly observed therapy",
+    regions = "USA (Texas)",
+    notes = "Stratified recruitment by BMI: 12 normal-weight (BMI < 25), 12 overweight / class I-II obese (BMI 25-40), 12 class III obese (BMI > 40); equal numbers of men and women within each stratum. Eight blood draws per subject over 72 h, sampling times chosen by D-optimal design in ADAPT 5. Baseline demographics in Table 1 of Hall 2017."
   )
 
   ini({

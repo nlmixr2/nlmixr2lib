@@ -14,44 +14,44 @@ Viberg_2006_cefuroxime <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYSC = list(
-      description        = "Serum cystatin C concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the model via the reciprocal transform 1/CYSC, centred at 0.758 (mg/L)^-1 (Viberg 2006 Table 4 footnote). The reciprocal value 0.758 corresponds to CYSC = 1.32 mg/L (close to the population median of 1.18-1.32 across the four renal-function strata in Table 1). Time-fixed at baseline -- Viberg 2006 found that the first measurement alone was sufficient and that adding the second measurement did not improve the fit (Results paragraph 3).",
-      source_name        = "CysC"
+      notes = "Enters the model via the reciprocal transform 1/CYSC, centred at 0.758 (mg/L)^-1 (Viberg 2006 Table 4 footnote). The reciprocal value 0.758 corresponds to CYSC = 1.32 mg/L (close to the population median of 1.18-1.32 across the four renal-function strata in Table 1). Time-fixed at baseline -- Viberg 2006 found that the first measurement alone was sufficient and that adding the second measurement did not improve the fit (Results paragraph 3).",
+      source_name = "CysC"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred-linear effect on CL and V1 with reference weight 74 kg (Viberg 2006 Table 4 footnote). Time-fixed at baseline. For the three patients with no recorded weight, Viberg 2006 imputed the population median.",
-      source_name        = "WT"
+      notes = "Centred-linear effect on CL and V1 with reference weight 74 kg (Viberg 2006 Table 4 footnote). Time-fixed at baseline. For the three patients with no recorded weight, Viberg 2006 imputed the population median.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 97L,
-    n_studies        = 1L,
-    n_observations   = 409L,
-    age_range        = "approximately 24-95 years (range across the four CLcr strata in Table 1; medians 56, 74, 82, 78 years for CLcr > 80, 41-80, 21-40, < 20 mL/min)",
-    weight_range     = "approximately 35-137 kg (range across the four CLcr strata in Table 1; medians 85, 74, 70, 68 kg)",
-    sex_female_pct   = 43.3,
-    disease_state    = "Hospitalised adult patients with symptoms and signs indicating bacterial infection believed to be susceptible to cefuroxime, deliberately recruited to span a wide range of renal capacity (CLcr 6-115 mL/min by Cockcroft-Gault).",
-    renal_function   = "CLcr range 6-115 mL/min. Stratified into four cohorts (CLcr > 80, 41-80, 21-40, < 20 mL/min) with corresponding dose adjustments per Viberg 2006 Table 1; the < 20 mL/min stratum (n = 10) carried the highest cystatin C values (median 4.51 mg/L).",
-    cohort_strata    = c(`CLcr_gt_80_n` = 20L, `CLcr_41_80_n` = 40L, `CLcr_21_40_n` = 27L, `CLcr_lt_20_n` = 10L),
-    dose_range       = "Intravenous cefuroxime 750-1500 mg per dose, administered as a 5-15 min intravenous injection. Frequency individualised by renal function: 1500 mg x 3/day or 750 mg x 3/day in CLcr > 80 patients; 750 mg x 3/day in CLcr 41-80; 750 mg x 2/day in CLcr 21-40; 750 mg x 1/day in CLcr < 20 (Viberg 2006 Table 1).",
-    regions          = "Sweden -- Uppsala University Hospital (Departments of Infectious Diseases and Nephrology) and Karlstad Central Hospital (Department of Nephrology).",
-    exclusions       = "Haemodialysis patients, patients with chronic inflammatory diseases, and patients who had received cefuroxime in the previous two weeks were excluded.",
-    notes            = "Baseline demographics per Viberg 2006 Table 1. Final-model parameter estimates per Viberg 2006 Table 4. Modelling performed in NONMEM VI beta with FOCE on log-transformed data (Methods 'Data analysis')."
+    species = "human",
+    n_subjects = 97L,
+    n_studies = 1L,
+    n_observations = 409L,
+    age_range = "approximately 24-95 years (range across the four CLcr strata in Table 1; medians 56, 74, 82, 78 years for CLcr > 80, 41-80, 21-40, < 20 mL/min)",
+    weight_range = "approximately 35-137 kg (range across the four CLcr strata in Table 1; medians 85, 74, 70, 68 kg)",
+    sex_female_pct = 43.3,
+    disease_state = "Hospitalised adult patients with symptoms and signs indicating bacterial infection believed to be susceptible to cefuroxime, deliberately recruited to span a wide range of renal capacity (CLcr 6-115 mL/min by Cockcroft-Gault).",
+    renal_function = "CLcr range 6-115 mL/min. Stratified into four cohorts (CLcr > 80, 41-80, 21-40, < 20 mL/min) with corresponding dose adjustments per Viberg 2006 Table 1; the < 20 mL/min stratum (n = 10) carried the highest cystatin C values (median 4.51 mg/L).",
+    cohort_strata = c(`CLcr_gt_80_n` = 20L, `CLcr_41_80_n` = 40L, `CLcr_21_40_n` = 27L, `CLcr_lt_20_n` = 10L),
+    dose_range = "Intravenous cefuroxime 750-1500 mg per dose, administered as a 5-15 min intravenous injection. Frequency individualised by renal function: 1500 mg x 3/day or 750 mg x 3/day in CLcr > 80 patients; 750 mg x 3/day in CLcr 41-80; 750 mg x 2/day in CLcr 21-40; 750 mg x 1/day in CLcr < 20 (Viberg 2006 Table 1).",
+    regions = "Sweden -- Uppsala University Hospital (Departments of Infectious Diseases and Nephrology) and Karlstad Central Hospital (Department of Nephrology).",
+    exclusions = "Haemodialysis patients, patients with chronic inflammatory diseases, and patients who had received cefuroxime in the previous two weeks were excluded.",
+    notes = "Baseline demographics per Viberg 2006 Table 1. Final-model parameter estimates per Viberg 2006 Table 4. Modelling performed in NONMEM VI beta with FOCE on log-transformed data (Methods 'Data analysis')."
   )
 
   ini({

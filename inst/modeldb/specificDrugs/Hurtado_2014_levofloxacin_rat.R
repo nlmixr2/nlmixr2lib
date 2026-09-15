@@ -27,30 +27,40 @@ Hurtado_2014_levofloxacin_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "unbound levofloxacin in plasma", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "unbound levofloxacin in prostate interstitial fluid", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "free levofloxacin in prostate interstitial fluid", units = "mg", specimen = "not applicable", verified = FALSE)
+    central = list(analyte = "unbound levofloxacin in plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(
+      analyte = "unbound levofloxacin in prostate interstitial fluid",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    effect = list(
+      analyte = "free levofloxacin in prostate interstitial fluid",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Wistar, male)",
-    n_subjects     = 7L,
-    n_studies      = 1L,
-    age_range      = "Adult; specific age not reported",
-    weight_range   = "0.25-0.35 kg",
+    species = "rat (Wistar, male)",
+    n_subjects = 7L,
+    n_studies = 1L,
+    age_range = "Adult; specific age not reported",
+    weight_range = "0.25-0.35 kg",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male Wistar rats anaesthetised with urethane (1.25 g/kg IP),",
       "carotid artery cannulated for blood sampling and microdialysis probes",
       "implanted in the prostate. Single 7 mg/kg IV bolus of levofloxacin",
       "administered via the femoral vein."
     ),
-    dose_range     = "7 mg/kg single IV bolus (~1.75-2.45 mg per rat); typical individual dose 2.198 mg",
-    regions        = "Porto Alegre, Brazil (UFRGS)",
-    notes          = paste(
+    dose_range = "7 mg/kg single IV bolus (~1.75-2.45 mg per rat); typical individual dose 2.198 mg",
+    regions = "Porto Alegre, Brazil (UFRGS)",
+    notes = paste(
       "Demographics from Hurtado 2014 Materials and Methods (Animal",
       "experiments). Plasma samples collected at 0.083, 0.25, 0.5, 0.75,",
       "1, 1.5, 2, 4, 6, 8, 12 h post-dose; prostate microdialysate",

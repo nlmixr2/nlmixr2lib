@@ -32,50 +32,50 @@ Borghardt_2016_olodaterol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
-    depot3      = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
+    depot3 = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral3 = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "olodaterol", units = "ug", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "olodaterol", units = "ug", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     SMOKE = list(
-      description        = "Active-smoker binary indicator at trial entry (1 = current smoker, 0 = ex-smoker or never-smoker).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active-smoker binary indicator at trial entry (1 = current smoker, 0 = ex-smoker or never-smoker).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ex-smoker or never-smoker)",
-      notes              = paste(
+      notes = paste(
         "Paper grouped ex-smokers with never-smokers based on the observed",
         "lack of difference between those subgroups (Borghardt 2016 Results,",
         "Covariate model paragraph). Encoded here using the canonical SMOKE",
         "register entry (1 = current smoker, 0 otherwise)."
       ),
-      source_name        = "Smoking status (active smoker vs ex-smoker/never-smoker)"
+      source_name = "Smoking status (active smoker vs ex-smoker/never-smoker)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 148L,
-    n_studies       = 3L,
-    age_range       = "22-49 years (median 30.5-34 across trials)",
-    weight_range    = "53-105 kg (median 78-81 across trials)",
-    sex_female_pct  = 10.1,
-    race_ethnicity  = NA,
-    disease_state   = "healthy adult volunteers",
-    dose_range      = paste(
+    species = "human",
+    n_subjects = 148L,
+    n_studies = 3L,
+    age_range = "22-49 years (median 30.5-34 across trials)",
+    weight_range = "53-105 kg (median 78-81 across trials)",
+    sex_female_pct = 10.1,
+    race_ethnicity = NA,
+    disease_state = "healthy adult volunteers",
+    dose_range = paste(
       "Intravenous infusion (trial 1): 0.5-25 ug single dose over 30 min or",
       "3 h. Oral inhalation via Respimat (trial 2 single rising-dose):",
       "2.5-70 ug. Oral inhalation via Respimat (trial 3 multiple-dose):",
       "2.5, 10, or 30 ug once daily for 14 days. Pulmonary bioavailable",
       "fraction is 49.4% of the nominal ex-mouthpiece dose."
     ),
-    regions         = "Germany (trials 1 and 2), Netherlands (trial 3)",
-    notes           = paste(
+    regions = "Germany (trials 1 and 2), Netherlands (trial 3)",
+    notes = paste(
       "Borghardt 2016 Table 1 (trial-by-trial demographics). Pooled cohort:",
       "133 male / 15 female (about 10% female; trial 1 was 100% male).",
       "Smoking status across pooled trials (nonsmoker/ex-smoker/smoker):",

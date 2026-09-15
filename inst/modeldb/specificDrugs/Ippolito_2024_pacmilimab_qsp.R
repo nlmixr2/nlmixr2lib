@@ -42,18 +42,18 @@ Ippolito_2024_pacmilimab_qsp <- function() {
   vignette <- "Ippolito_2024_pacmilimab_qsp"
 
   units <- list(
-    time          = "day",
-    dosing        = "nmol",
+    time = "day",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human (in silico virtual cohort)",
-    n_subjects    = 10000L,
+    species = "human (in silico virtual cohort)",
+    n_subjects = 10000L,
     disease_state = "triple-negative breast cancer",
-    dose_range    = paste(
+    dose_range = paste(
       "Pacmilimab 10 mg/kg every 2 weeks for 400 days is the reference regimen",
       "(the schedule selected in the phase I trial); the paper additionally",
       "explores 1, 3, 10 and 15 mg/kg at q1w, q2w, q3w and q4w, and single doses",

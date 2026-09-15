@@ -15,19 +15,14 @@
 #' @examples
 #'
 #' addIndirect(stim = "in") |> convertKinR0()
-convertKinR0 <- function(ui,
-                         kin = "kin",
-                         kout = "kout",
-                         R = "R",
-                         R0 = "R0") {
+convertKinR0 <- function(ui, kin = "kin", kout = "kout", R = "R", R0 = "R0") {
   .ui <- rxode2::assertRxUi(ui)
   kin <- rxode2::assertVariableExists(.ui, kin)
   rxode2::assertVariableNew(.ui, R0)
   R <- rxode2::assertCompartmentExists(.ui, R)
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   if (length(.theta$ntheta) == 0) {
     .ntheta <- 0
@@ -37,27 +32,22 @@ convertKinR0 <- function(ui,
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, R, start = "", end = "(0)")
   if (length(.w) != 1L) {
-    stop(paste0("the model does not have the expected ",
-      R, "(0) expression"),
-    call. = FALSE)
+    stop(paste0("the model does not have the expected ", R, "(0) expression"), call. = FALSE)
   }
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   if (!identical(.tmp$w[[3]], str2lang(paste0(kin, "/", kout)))) {
-    stop(paste0("the model does not have the expected ",
-      R, "(0) <- ", kin, "/", kout, " expression"),
-    call. = FALSE)
+    stop(paste0("the model does not have the expected ", R, "(0) <- ", kin, "/", kout, " expression"), call. = FALSE)
   }
   .modelLines <- c(
     str2lang(paste0(R0, "<- u", R0)),
     .tmp$pre,
     list(str2lang(paste0(R, "(0) <- ", R0))),
-    .tmp$post)
+    .tmp$post
+  )
 
   .w <- .whichDdt(.modelLines, R)
   if (length(.w) != 1L) {
-    stop(paste0("the model does not have the expected d/dt(",
-      R, ") expression"),
-    call. = FALSE)
+    stop(paste0("the model does not have the expected d/dt(", R, ") expression"), call. = FALSE)
   }
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- searchReplaceHelper(.tmp$w, str2lang(kin), str2lang(paste0(kout, "*", R0)))
@@ -68,17 +58,14 @@ convertKinR0 <- function(ui,
   .theta <- .tmp$theta
   .eta <- .tmp$eta
 
-  .thetaR0 <- .get1theta(R0, .theta1, .ntheta,
-    name = paste0("u", R0),
-    label = paste0("untransformed baseline (",
-      R0, ")"))
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaR0,
-    .eta)
+  # .theta/.eta here are subsets of this model's own iniDf (kin dropped), so
+  # binding them carries no assumption about its columns; the new parameter
+  # goes in through ini() rather than as a hand-built row.
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", R0), label = paste0("untransformed baseline (", R0, ")"))
 }

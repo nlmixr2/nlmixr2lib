@@ -19,11 +19,11 @@ Landersdorfer_2009_moxifloxacin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
-    cortical    = list(analyte = "moxifloxacin", units = "mg", specimen = "bile", verified = FALSE),
-    cancellous  = list(analyte = "moxifloxacin", units = "mg", specimen = "bile", verified = FALSE)
+    cortical = list(analyte = "moxifloxacin", units = "mg", specimen = "bile", verified = FALSE),
+    cancellous = list(analyte = "moxifloxacin", units = "mg", specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list()
@@ -31,37 +31,37 @@ Landersdorfer_2009_moxifloxacin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Population mean 76.8 kg (SD 13.4) per Materials and Methods 'Study participants'; weight was not retained as a covariate on any PK parameter in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Population mean 76.8 kg (SD 13.4) per Materials and Methods 'Study participants'; weight was not retained as a covariate on any PK parameter in the final model."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Population mean 63 years (SD 15) per Materials and Methods 'Study participants'; not retained as a covariate in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Population mean 63 years (SD 15) per Materials and Methods 'Study participants'; not retained as a covariate in the final model."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "14 of 24 subjects female per Materials and Methods 'Study participants'; not retained as a covariate in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "14 of 24 subjects female per Materials and Methods 'Study participants'; not retained as a covariate in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "63 +/- 15 years (mean +/- SD; specific range not tabulated)",
-    age_median     = "63 years (mean)",
-    weight_range   = "76.8 +/- 13.4 kg (mean +/- SD; specific range not tabulated)",
-    weight_median  = "76.8 kg (mean)",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "63 +/- 15 years (mean +/- SD; specific range not tabulated)",
+    age_median = "63 years (mean)",
+    weight_range = "76.8 +/- 13.4 kg (mean +/- SD; specific range not tabulated)",
+    weight_median = "76.8 kg (mean)",
     sex_female_pct = 58,
-    disease_state  = "Adults with coxarthrosis undergoing elective total hip replacement, no joint inflammation. Twenty subjects also received perioperative intravenous amoxicillin-clavulanate, three received levofloxacin, and one received clindamycin as standard antibacterial prophylaxis given in parallel to the study dose of moxifloxacin.",
-    dose_range     = "Single 400 mg oral dose (Avalox tablet) administered 2 to 7 hours before surgery.",
-    regions        = "Germany (University of Erlangen).",
-    notes          = "Sparse PK sampling: one serum sample (prior to femoral bone resection) plus one bone sample (femoral head, with or without femoral neck; separated into cortical and cancellous tissue) per subject. Demographic and sampling details from Materials and Methods 'Study participants' and 'Sampling schedule'."
+    disease_state = "Adults with coxarthrosis undergoing elective total hip replacement, no joint inflammation. Twenty subjects also received perioperative intravenous amoxicillin-clavulanate, three received levofloxacin, and one received clindamycin as standard antibacterial prophylaxis given in parallel to the study dose of moxifloxacin.",
+    dose_range = "Single 400 mg oral dose (Avalox tablet) administered 2 to 7 hours before surgery.",
+    regions = "Germany (University of Erlangen).",
+    notes = "Sparse PK sampling: one serum sample (prior to femoral bone resection) plus one bone sample (femoral head, with or without femoral neck; separated into cortical and cancellous tissue) per subject. Demographic and sampling details from Materials and Methods 'Study participants' and 'Sampling schedule'."
   )
 
   ini({

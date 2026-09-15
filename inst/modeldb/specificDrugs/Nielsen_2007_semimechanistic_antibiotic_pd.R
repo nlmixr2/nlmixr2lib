@@ -2,7 +2,11 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   description <- "In vitro (Streptococcus pyogenes M12 NCTC P1800). Semimechanistic time-kill pharmacokinetic/pharmacodynamic model of five antibiotics (benzylpenicillin, cefuroxime, erythromycin, moxifloxacin, vancomycin) against S. pyogenes. The bacterial system has two states: a growing drug-susceptible population (bact_susceptible) and a resting drug-insusceptible population (bact_resting) that captures phenotypic persister-cell switching. Bacteria grow in the susceptible state at first-order rate kgrowth, die in both states at first-order rate kdeath, and transfer from susceptible to resting at rate kSR = (kgrowth - kdeath) * (bact_susceptible + bact_resting) / Bmax so the total population reaches Bmax at stationary phase (reverse transfer kRS is fixed to 0). Each drug is dosed into its own PK compartment (pen, cxm, ery, mxf, van; the compartment state IS the bath concentration in mg/L per the in-vitro convention). Drug decays first-order via degradation (kdeg fixed from stability experiments; nonzero only for benzylpenicillin and cefuroxime). A biophase (effect) compartment (pen_e, cxm_e, ery_e, mxf_e, van_e) equilibrates with the PK compartment at first-order rate ke and drives the killing effect through a sigmoidal Emax function DRUG = Emax * Ce^gamma / (Ce^gamma + EC50^gamma). DRUG adds to the natural death rate on susceptible bacteria only (paper equation 6). Multi-drug DRUG contributions sum; in monotherapy (as fitted) only one drug is active. The starting inoculum is treated as mix1 (all bacteria in the growing state) per the paper's mixture-model dominant mode; parameters fmix1 (0.747) and fpers (0.0529) are retained as fixed documentation for the mix2 alternative starting condition."
   reference <- "Nielsen EI, Viberg A, Lowdin E, Cars O, Karlsson MO, Sandstrom M. Semimechanistic pharmacokinetic/pharmacodynamic model for assessment of activity of antibacterial agents from time-kill curve experiments. Antimicrob Agents Chemother. 2007 Jan;51(1):128-136. doi:10.1128/AAC.00604-06. PMID: 17060527."
   vignette <- "Nielsen_2007_semimechanistic_antibiotic_pd"
-  units <- list(time = "h", dosing = "mg/L (initial concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug states)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (initial concentration)",
+    concentration = "log10 CFU/mL (observation); mg/L (drug states)"
+  )
 
   # No patient covariates: this is an in-vitro semi-mechanistic PD model with
   # static drug exposures. Drug initial concentrations are applied via dosing
@@ -19,18 +23,28 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    pen              = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cxm              = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ery              = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    mxf              = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    van              = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pen_e            = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cxm_e            = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ery_e            = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    mxf_e            = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    van_e            = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    bact_resting     = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    pen = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cxm = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ery = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mxf = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    van = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pen_e = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    cxm_e = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ery_e = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mxf_e = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    van_e = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible = list(
+      analyte = "S. pyogenes",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    bact_resting = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
@@ -42,38 +56,47 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   # the in-vitro medium concentration of a single antibiotic; there is no
   # subject-level PK.
   paper_specific_compartments <- c(
-    "pen", "cxm", "ery", "mxf", "van",
-    "pen_e", "cxm_e", "ery_e", "mxf_e", "van_e",
-    "bact_susceptible", "bact_resting"
+    "pen",
+    "cxm",
+    "ery",
+    "mxf",
+    "van",
+    "pen_e",
+    "cxm_e",
+    "ery_e",
+    "mxf_e",
+    "van_e",
+    "bact_susceptible",
+    "bact_resting"
   )
 
   population <- list(
-    species             = "in vitro (Streptococcus pyogenes group A M12 strain NCTC P1800)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Streptococcus pyogenes group A M12 NCTC P1800 (single reference strain)",
-    system              = "Static time-kill curve experiments in 10 mL glass tubes with 4 mL Todd-Hewitt broth; 24-hour incubation with dense sampling at 0, 1, 2, 4, 6, 9, 12, 15, 18, and 24 h",
-    medium              = "Todd-Hewitt broth (bacteria); MIC determinations on Iso-Sensitest agar",
-    temperature         = "35 C incubation; 5% CO2 for colony counting",
-    duration            = "24 h",
-    starting_inoculum   = "10^6 CFU/mL (standard); additional lower inocula used only for antibiotic-free growth controls",
-    limit_of_detection  = "10 CFU/mL",
-    mic_values          = c(
+    species = "in vitro (Streptococcus pyogenes group A M12 strain NCTC P1800)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Streptococcus pyogenes group A M12 NCTC P1800 (single reference strain)",
+    system = "Static time-kill curve experiments in 10 mL glass tubes with 4 mL Todd-Hewitt broth; 24-hour incubation with dense sampling at 0, 1, 2, 4, 6, 9, 12, 15, 18, and 24 h",
+    medium = "Todd-Hewitt broth (bacteria); MIC determinations on Iso-Sensitest agar",
+    temperature = "35 C incubation; 5% CO2 for colony counting",
+    duration = "24 h",
+    starting_inoculum = "10^6 CFU/mL (standard); additional lower inocula used only for antibiotic-free growth controls",
+    limit_of_detection = "10 CFU/mL",
+    mic_values = c(
       benzylpenicillin = "0.012 mg/L",
-      cefuroxime       = "0.0313 mg/L",
-      erythromycin     = "0.125 mg/L",
-      moxifloxacin     = "0.125 mg/L",
-      vancomycin       = "0.25 mg/L"
+      cefuroxime = "0.0313 mg/L",
+      erythromycin = "0.125 mg/L",
+      moxifloxacin = "0.125 mg/L",
+      vancomycin = "0.25 mg/L"
     ),
     concentration_range = c(
       benzylpenicillin = "0.0625x to 64x MIC (0.00075-0.77 mg/L); 455 observations",
-      cefuroxime       = "0.0625x to 64x MIC (0.00196-2.00 mg/L); 427 observations",
-      erythromycin     = "0.0625x to 64x MIC (0.0078-8.00 mg/L); 455 observations",
-      moxifloxacin     = "0.25x to 64x MIC (0.0313-8.00 mg/L); 376 observations",
-      vancomycin       = "0.25x to 64x MIC (0.0625-16.0 mg/L); 409 observations"
+      cefuroxime = "0.0625x to 64x MIC (0.00196-2.00 mg/L); 427 observations",
+      erythromycin = "0.0625x to 64x MIC (0.0078-8.00 mg/L); 455 observations",
+      moxifloxacin = "0.25x to 64x MIC (0.0313-8.00 mg/L); 376 observations",
+      vancomycin = "0.25x to 64x MIC (0.0625-16.0 mg/L); 409 observations"
     ),
-    regimens            = "Monotherapy only; each experiment exposed the bacterial inoculum to a single antibiotic at a single fixed concentration for 24 h. Each experiment was run in duplicate or triplicate on separate days; at least one drug-free growth control was included per day.",
-    notes               = "Total of 135 time-kill experiments were fitted simultaneously in a single NONMEM ADVAN9 / FOCE analysis. Population-analysis structure used a 2-component residual model (Karlsson 1995) with replicate-specific (repl) and consistent-across-replicates (eps) components. See Nielsen 2007 Materials and Methods (p 129) and Tables 1-3."
+    regimens = "Monotherapy only; each experiment exposed the bacterial inoculum to a single antibiotic at a single fixed concentration for 24 h. Each experiment was run in duplicate or triplicate on separate days; at least one drug-free growth control was included per day.",
+    notes = "Total of 135 time-kill experiments were fitted simultaneously in a single NONMEM ADVAN9 / FOCE analysis. Population-analysis structure used a 2-component residual model (Karlsson 1995) with replicate-specific (repl) and consistent-across-replicates (eps) components. See Nielsen 2007 Materials and Methods (p 129) and Tables 1-3."
   )
 
   ini({

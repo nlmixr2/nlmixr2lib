@@ -13,11 +13,11 @@ Ozawa_2007_docetaxel <- function() {
   paper_specific_compartments <- c("input")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    anc           = "10^9 cells/L",
-    aag           = "g/L"
+    anc = "10^9 cells/L",
+    aag = "g/L"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,50 +25,50 @@ Ozawa_2007_docetaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
-    input       = list(analyte = "dexamethasone", units = "mg", specimen = "administration site", verified = FALSE),
-    precursor1  = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
+    input = list(analyte = "dexamethasone", units = "mg", specimen = "administration site", verified = FALSE),
+    precursor1 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     AAG = list(
-      description        = "Serum alpha-1 acid glycoprotein concentration, time-fixed at baseline.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum alpha-1 acid glycoprotein concentration, time-fixed at baseline.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Multiplicative power-form effect on the drug-effect slope: SLOPE = theta_SLOPE * (AAG / 0.94)^e_aag_slope (Ozawa 2007 Equation 11). Reference value 0.94 g/L (= 94 mg/dL) is the population-median constant used inside the published NONMEM control stream (Appendix I, `AGPm = 94`); Table 1 reports the cohort median as 90 mg/dL but the model fit was carried out with AGPm = 94. Source NM-TRAN column `AGP1` (Appendix I $INPUT) is reported in mg/dL; conversion to canonical g/L is `AAG_g_per_L = AGP_mg_per_dL / 100`. Cohort range 0.51-2.41 g/L (Table 1 `51-241 mg/dL`). Time-fixed per subject.",
-      source_name        = "AGP1"
+      notes = "Multiplicative power-form effect on the drug-effect slope: SLOPE = theta_SLOPE * (AAG / 0.94)^e_aag_slope (Ozawa 2007 Equation 11). Reference value 0.94 g/L (= 94 mg/dL) is the population-median constant used inside the published NONMEM control stream (Appendix I, `AGPm = 94`); Table 1 reports the cohort median as 90 mg/dL but the model fit was carried out with AGPm = 94. Source NM-TRAN column `AGP1` (Appendix I $INPUT) is reported in mg/dL; conversion to canonical g/L is `AAG_g_per_L = AGP_mg_per_dL / 100`. Cohort range 0.51-2.41 g/L (Table 1 `51-241 mg/dL`). Time-fixed per subject.",
+      source_name = "AGP1"
     ),
     NEUT = list(
-      description        = "Per-subject baseline absolute neutrophil count (observed value before drug administration), used as the fixed initial condition for the proliferation, transit, and circulating compartments.",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Per-subject baseline absolute neutrophil count (observed value before drug administration), used as the fixed initial condition for the proliferation, transit, and circulating compartments.",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source NM-TRAN column `BASE` (Appendix I $INPUT). Ozawa 2007 fixes Circ(t=0) at the per-subject observed baseline ANC (Methods page 1986: 'Circ (t = 0) was fixed at its observed value') rather than estimating a population baseline. The proliferating and three transit compartments are also initialised at this value (Methods: 'Prol (t = 0) = Transit1 (t = 0) = Transit2 (t = 0) = Transit3 (t = 0) = Circ (t = 0)'); the same value enters the feedback term as Circ0 in the (Circ0/Circ)^gamma1 ratio. The canonical NEUT register units are cells/mm^3; this model documents the per-paper unit override of 10^9 cells/L. To convert, NEUT_per_mm3 = NEUT_10e9_per_L * 1000.",
-      source_name        = "BASE"
+      notes = "Source NM-TRAN column `BASE` (Appendix I $INPUT). Ozawa 2007 fixes Circ(t=0) at the per-subject observed baseline ANC (Methods page 1986: 'Circ (t = 0) was fixed at its observed value') rather than estimating a population baseline. The proliferating and three transit compartments are also initialised at this value (Methods: 'Prol (t = 0) = Transit1 (t = 0) = Transit2 (t = 0) = Transit3 (t = 0) = Circ (t = 0)'); the same value enters the feedback term as Circ0 in the (Circ0/Circ)^gamma1 ratio. The canonical NEUT register units are cells/mm^3; this model documents the per-paper unit override of 10^9 cells/L. To convert, NEUT_per_mm3 = NEUT_10e9_per_L * 1000.",
+      source_name = "BASE"
     )
   )
 
   population <- list(
-    n_subjects     = 62L,
-    n_studies      = 1L,
-    age_range      = "21-77 years",
-    age_median     = "55.5 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    n_subjects = 62L,
+    n_studies = 1L,
+    age_range = "21-77 years",
+    age_median = "55.5 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 82.3,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Japanese adult cancer patients (44 breast, 10 non-small cell lung, 3 head and neck, 5 other) including subjects with liver dysfunction or poor performance status who would normally be excluded from drug-development trials. ECOG performance status distribution 0/1/2/3 = 14/36/7/5.",
-    dose_range     = "Docetaxel 30-60 mg/m^2 IV over 1 h every 3 weeks (the approved Japanese dose at the time was 60 mg/m^2; attending physicians could reduce based on liver function, performance status, or the extent of prior chemotherapy). Per-PS-stratum medians (Table 1): PS0 60 mg/m^2 (range 39-60), PS1 60 (40-63), PS2 60 (58-62), PS3 30 (26-60).",
-    regions        = "Japan (National Cancer Center Hospital East, Kashiwa, Chiba)",
-    co_medication  = "Dexamethasone administered before each docetaxel infusion to prevent emesis. The model's `input` compartment captures the resulting transient ANC increase but the dexamethasone dose itself is not encoded as an explicit covariate. Subjects who received granulocyte-colony stimulating factors after docetaxel were excluded from the analysis.",
-    notes          = "Baseline characteristics from Ozawa 2007 Table 1. Median (range) baseline laboratory values: albumin 3.7 (2.6-4.5) g/dL, total bilirubin 0.6 (0.2-1.2) mg/dL, AST 24 (11-310) IU/L, ALT 20 (6-140) IU/L, alkaline phosphatase 249 (93-1382) IU/L, creatinine 0.6 (0.4-1.3) mg/dL, AGP 90 (51-241) mg/dL. Forty-six subjects had < 3 prior chemotherapy regimens, 16 had >= 3. Body weight range and median are not reported in Table 1 (dose is given as mg/m^2 only). 395 ANC observations across 62 subjects fed the PD analysis. The PK and PD parameters were estimated in two sequential steps (popPK first using FOCEI, then PD using FO with individual posthoc PK parameters as input columns) but the `ini()` block below encodes the joint typical-value model so simulation reproduces both layers in one rxode2 solve."
+    disease_state = "Japanese adult cancer patients (44 breast, 10 non-small cell lung, 3 head and neck, 5 other) including subjects with liver dysfunction or poor performance status who would normally be excluded from drug-development trials. ECOG performance status distribution 0/1/2/3 = 14/36/7/5.",
+    dose_range = "Docetaxel 30-60 mg/m^2 IV over 1 h every 3 weeks (the approved Japanese dose at the time was 60 mg/m^2; attending physicians could reduce based on liver function, performance status, or the extent of prior chemotherapy). Per-PS-stratum medians (Table 1): PS0 60 mg/m^2 (range 39-60), PS1 60 (40-63), PS2 60 (58-62), PS3 30 (26-60).",
+    regions = "Japan (National Cancer Center Hospital East, Kashiwa, Chiba)",
+    co_medication = "Dexamethasone administered before each docetaxel infusion to prevent emesis. The model's `input` compartment captures the resulting transient ANC increase but the dexamethasone dose itself is not encoded as an explicit covariate. Subjects who received granulocyte-colony stimulating factors after docetaxel were excluded from the analysis.",
+    notes = "Baseline characteristics from Ozawa 2007 Table 1. Median (range) baseline laboratory values: albumin 3.7 (2.6-4.5) g/dL, total bilirubin 0.6 (0.2-1.2) mg/dL, AST 24 (11-310) IU/L, ALT 20 (6-140) IU/L, alkaline phosphatase 249 (93-1382) IU/L, creatinine 0.6 (0.4-1.3) mg/dL, AGP 90 (51-241) mg/dL. Forty-six subjects had < 3 prior chemotherapy regimens, 16 had >= 3. Body weight range and median are not reported in Table 1 (dose is given as mg/m^2 only). 395 ANC observations across 62 subjects fed the PD analysis. The PK and PD parameters were estimated in two sequential steps (popPK first using FOCEI, then PD using FO with individual posthoc PK parameters as input columns) but the `ini()` block below encodes the joint typical-value model so simulation reproduces both layers in one rxode2 solve."
   )
 
   ini({

@@ -30,39 +30,39 @@ DeJongh_2025_azd7648_olaparib_xenograft_mouse <- function() {
   vignette <- "DeJongh_2025_azd7648_olaparib_xenograft"
 
   units <- list(
-    time          = "h",
-    dosing        = "umol/kg",
+    time = "h",
+    dosing = "umol/kg",
     concentration = "uM (plasma); the tumour output tumor_size is a volume in cm3"
   )
 
   compartmentData <- list(
-    depot                 = list(analyte = "AZD7648",  units = "umol/kg", specimen = "administration site",  verified = TRUE),
-    central               = list(analyte = "AZD7648",  units = "umol/kg", specimen = "plasma",                verified = TRUE),
-    peripheral1           = list(analyte = "AZD7648",  units = "umol/kg", specimen = "tissue",     verified = TRUE),
-    effect                = list(analyte = "AZD7648",  units = "umol/kg", specimen = "tumor",       verified = TRUE),
-    depot_olaparib        = list(analyte = "olaparib", units = "umol/kg", specimen = "administration site",  verified = TRUE),
-    central_olaparib      = list(analyte = "olaparib", units = "umol/kg", specimen = "plasma",                verified = TRUE),
-    peripheral1_olaparib  = list(analyte = "olaparib", units = "umol/kg", specimen = "tissue",     verified = TRUE),
-    effect_olaparib       = list(analyte = "olaparib", units = "umol/kg", specimen = "tumor",       verified = TRUE),
-    cycling_cells         = list(analyte = "cells",    units = "cm3",     specimen = "tumor",             verified = TRUE),
-    damaged_cells1        = list(analyte = "cells",    units = "cm3",     specimen = "tumor",             verified = TRUE),
-    damaged_cells2        = list(analyte = "cells",    units = "cm3",     specimen = "tumor",             verified = TRUE),
-    damaged_cells3        = list(analyte = "cells",    units = "cm3",     specimen = "tumor",             verified = TRUE)
+    depot = list(analyte = "AZD7648", units = "umol/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "AZD7648", units = "umol/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "AZD7648", units = "umol/kg", specimen = "tissue", verified = TRUE),
+    effect = list(analyte = "AZD7648", units = "umol/kg", specimen = "tumor", verified = TRUE),
+    depot_olaparib = list(analyte = "olaparib", units = "umol/kg", specimen = "administration site", verified = TRUE),
+    central_olaparib = list(analyte = "olaparib", units = "umol/kg", specimen = "plasma", verified = TRUE),
+    peripheral1_olaparib = list(analyte = "olaparib", units = "umol/kg", specimen = "tissue", verified = TRUE),
+    effect_olaparib = list(analyte = "olaparib", units = "umol/kg", specimen = "tumor", verified = TRUE),
+    cycling_cells = list(analyte = "cells", units = "cm3", specimen = "tumor", verified = TRUE),
+    damaged_cells1 = list(analyte = "cells", units = "cm3", specimen = "tumor", verified = TRUE),
+    damaged_cells2 = list(analyte = "cells", units = "cm3", specimen = "tumor", verified = TRUE),
+    damaged_cells3 = list(analyte = "cells", units = "cm3", specimen = "tumor", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE_AZD7648_MGKGD = list(
-      source_name        = "AZD7648",
-      description        = paste(
+      source_name = "AZD7648",
+      description = paste(
         "Total daily dose of AZD7648 in mg/kg/day. Drives the Emax-shaped",
         "reduction of olaparib clearance; 0 for olaparib monotherapy and",
         "for vehicle controls. This is the total across the day, so a",
         "75 mg/kg twice-daily regimen carries the value 150."
       ),
-      units              = "mg/kg/day",
-      type               = "continuous",
+      units = "mg/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "DeJongh 2025 Equations 7-8. Carried as a covariate column rather",
         "than derived from the AZD7648 event records because the source",
         "NONMEM dataset supplies it that way (DOSE_AZD column of",
@@ -73,14 +73,14 @@ DeJongh_2025_azd7648_olaparib_xenograft_mouse <- function() {
   )
 
   population <- list(
-    species        = "mouse (female SCID C.B-17/IcrHan(R)Hsd-Prkdcscid bearing a subcutaneous FaDu ATM-knockout xenograft)",
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    age_range      = "at least 6 weeks of age at implantation",
-    weight_range   = "(not reported in the source publication)",
+    species = "mouse (female SCID C.B-17/IcrHan(R)Hsd-Prkdcscid bearing a subcutaneous FaDu ATM-knockout xenograft)",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = "at least 6 weeks of age at implantation",
+    weight_range = "(not reported in the source publication)",
     sex_female_pct = 100,
-    disease_state  = "subcutaneous FaDu ATM-knockout head-and-neck squamous-carcinoma xenograft in the dorsal left flank; randomised to treatment at a mean tumour volume of about 0.2 cm3",
-    dose_range     = paste(
+    disease_state = "subcutaneous FaDu ATM-knockout head-and-neck squamous-carcinoma xenograft in the dorsal left flank; randomised to treatment at a mean tumour volume of about 0.2 cm3",
+    dose_range = paste(
       "Study S1822 (model calibration): eight groups of 15 mice dosed",
       "orally once daily for 28 days with vehicle, AZD7648 50-100 mg/kg,",
       "olaparib 50-100 mg/kg, or five AZD7648 + olaparib combinations,",
@@ -89,8 +89,8 @@ DeJongh_2025_azd7648_olaparib_xenograft_mouse <- function() {
       "(AZD7648 100 mg/kg = 262.8812 umol/kg; olaparib 100 mg/kg =",
       "229.8428 umol/kg)."
     ),
-    regions        = "preclinical (AstraZeneca, Cambridge UK; modelling by LAP&P Consultants, Leiden)",
-    notes          = paste(
+    regions = "preclinical (AstraZeneca, Cambridge UK; modelling by LAP&P Consultants, Leiden)",
+    notes = paste(
       "Parameters in Table 3 were fitted simultaneously to all eight",
       "treatment groups of study S1822 (120 mice). Tumour volume was",
       "measured by bilateral Vernier calliper (length x width) and",

@@ -43,37 +43,52 @@ Fan_2025_ibalizumab_human <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling covariate, reference 70 kg. Exponent 1 on both volumes and 0.85 on both clearances, per Materials and Methods 'Extrapolation of the mouse model to humans'. The 70 kg reference weight is not printed; it is recovered from the paper's own arithmetic (a 0.02 kg mouse V3 of 0.54 mL scaled with exponent 1 gives 27.0 mL/kg against the reported 26.9 mL/kg, and CL of 0.024 mL/h scaled with exponent 0.85 gives 0.353 mL/h/kg against the reported 0.35 mL/h/kg).",
-      source_name        = "Not a fitted covariate; the paper applies the scaling to a per-kilogram basis, and the validation regimens are themselves mg/kg."
+      notes = "Allometric scaling covariate, reference 70 kg. Exponent 1 on both volumes and 0.85 on both clearances, per Materials and Methods 'Extrapolation of the mouse model to humans'. The 70 kg reference weight is not printed; it is recovered from the paper's own arithmetic (a 0.02 kg mouse V3 of 0.54 mL scaled with exponent 1 gives 27.0 mL/kg against the reported 26.9 mL/kg, and CL of 0.024 mL/h scaled with exponent 0.85 gives 0.353 mL/h/kg against the reported 0.35 mL/h/kg).",
+      source_name = "Not a fitted covariate; the paper applies the scaling to a per-kilogram basis, and the validation regimens are themselves mg/kg."
     )
   )
 
   compartmentData <- list(
-    depot_ip     = list(analyte = "ibalizumab", units = "mg", specimen = "administration site", verified = TRUE),
-    depot_sc     = list(analyte = "ibalizumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "ibalizumab (total: free plus CD4-bound)", units = "mg", specimen = "serum", verified = TRUE),
-    peripheral1  = list(analyte = "ibalizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    total_target = list(analyte = "CD4 receptor (total, free plus drug-bound; carried as a drug-equivalent concentration)", units = "ug/mL", specimen = "blood cell", verified = FALSE),
-    infected     = list(analyte = "HIV-1-infected CD4+ T cells", units = "cells/mL", specimen = "whole blood", verified = FALSE),
-    virus        = list(analyte = "HIV-1 RNA", units = "copies/mL", specimen = "plasma", verified = TRUE)
+    depot_ip = list(analyte = "ibalizumab", units = "mg", specimen = "administration site", verified = TRUE),
+    depot_sc = list(analyte = "ibalizumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "ibalizumab (total: free plus CD4-bound)",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    peripheral1 = list(analyte = "ibalizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    total_target = list(
+      analyte = "CD4 receptor (total, free plus drug-bound; carried as a drug-equivalent concentration)",
+      units = "ug/mL",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    infected = list(
+      analyte = "HIV-1-infected CD4+ T cells",
+      units = "cells/mL",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    virus = list(analyte = "HIV-1 RNA", units = "copies/mL", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human (allometric projection from mouse; PK validated against published clinical data)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "Not reported in Fan 2025; the validation PK were taken from a previously published clinical study (reference 14, summarised in Table S2).",
-    weight_range   = "Not reported; simulations are anchored at a 70 kg reference adult and the clinical regimens are mg/kg.",
+    species = "human (allometric projection from mouse; PK validated against published clinical data)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "Not reported in Fan 2025; the validation PK were taken from a previously published clinical study (reference 14, summarised in Table S2).",
+    weight_range = "Not reported; simulations are anchored at a 70 kg reference adult and the clinical regimens are mg/kg.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported.",
-    disease_state  = "Multidrug-resistant HIV-1 infection (the approved ibalizumab indication); the validation data are trough and profile concentrations from the cited clinical study.",
-    dose_range     = "Validation regimens (Table S2, IV infusion): 10 mg/kg weekly for the first 9 doses then 10 mg/kg every 2 weeks; and 15 mg/kg alternating weekly with placebo for the first 9 doses (up to week 8) then 15 mg/kg every 2 weeks. Trough samples were collected at all visits from day 1, weekly through week 4, then every 2 weeks through week 48.",
-    regions        = "Not reported.",
-    notes          = "No human data were fitted; the human parameters are a forward allometric projection from the murine fit, checked against the published clinical concentrations. 'Nearly all model-estimated concentrations varied within a twofold error margin compared to the observed data' (Results). The PD layer was not validated in humans because human viral-dynamic data for these scenarios were unavailable."
+    disease_state = "Multidrug-resistant HIV-1 infection (the approved ibalizumab indication); the validation data are trough and profile concentrations from the cited clinical study.",
+    dose_range = "Validation regimens (Table S2, IV infusion): 10 mg/kg weekly for the first 9 doses then 10 mg/kg every 2 weeks; and 15 mg/kg alternating weekly with placebo for the first 9 doses (up to week 8) then 15 mg/kg every 2 weeks. Trough samples were collected at all visits from day 1, weekly through week 4, then every 2 weeks through week 48.",
+    regions = "Not reported.",
+    notes = "No human data were fitted; the human parameters are a forward allometric projection from the murine fit, checked against the published clinical concentrations. 'Nearly all model-estimated concentrations varied within a twofold error margin compared to the observed data' (Results). The PD layer was not validated in humans because human viral-dynamic data for these scenarios were unavailable."
   )
 
   ini({

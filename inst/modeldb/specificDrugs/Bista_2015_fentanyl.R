@@ -15,36 +15,36 @@ Bista_2015_fentanyl <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric a priori scaling per Bista 2015 Table 2 footnote: CL/F = theta1 * (WT/70)^0.75 and V/F = theta2 * (WT/70). Reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Allometric a priori scaling per Bista 2015 Table 2 footnote: CL/F = theta1 * (WT/70)^0.75 and V/F = theta2 * (WT/70). Reference weight 70 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 56L,                                # Bista 2015 Abstract / Table 1
-    n_studies      = 1L,                                 # Single-centre observational study (Brisbane 2011-2014)
-    age_range      = "39-90 years",                      # Bista 2015 Table 1
-    age_median     = "69.5 years",                       # Bista 2015 Table 1
-    weight_range   = "41.8-110.0 kg",                    # Bista 2015 Table 1
-    weight_median  = "71.5 kg",                          # Bista 2015 Table 1
-    sex_female_pct = 39.3,                               # 22 female / 56 total per Bista 2015 Table 1 (34/22 male/female)
-    race_ethnicity = NULL,                               # Not reported in Bista 2015 Table 1
-    disease_state  = "Adults with advanced malignant disease receiving Durogesic transdermal fentanyl matrix patches for cancer-pain management; common diagnoses included ovaries, prostate, breast, cervix, lung and bone (Bista 2015 Table 1).",
-    dose_range     = "12-200 ug/h transdermal Durogesic patch (median 50 ug/h); patches replaced every 72 h; treatment duration variable, time since last patch change at sampling 0.5-77 h.",
-    regions        = "Australia (single tertiary cancer centre, Brisbane).",
-    sampling       = "Sparse opportunistic sampling: 163 plasma samples from 56 patients, median 2 samples/patient (range 1-10) on median 2 occasions/patient (range 1-10).",
-    co_medication  = "Concomitant CYP3A4/3A5 inhibitors and inducers were collected; 24 patients on inducer only, 2 on inhibitor only, 5 on both; chloramphenicol (n=1), diltiazem (n=1), fluconazole (n=2), tamoxifen (n=2), fluoxetine (n=1) as inhibitors and dexamethasone (n=28) as inducer (Bista 2015 Table 1, Methods).",
-    notes          = "BSA 0.06-2.26 m^2 (median 1.80); BMI 15-41 kg/m^2 (median 24.8); creatinine clearance 25.4-216.0 mL/min (median 99.0); ALT 8-153 IU/L (median 35.0); AST 15.0-169.0 IU/L (median 40.7); ALP 24.1-2246 IU/L (median 138). Pain score 0-10 (median 2); patch adhesion 0-3 (median 0). None of the tested covariates beyond a priori weight scaling were retained in the final model."
+    n_subjects = 56L, # Bista 2015 Abstract / Table 1
+    n_studies = 1L, # Single-centre observational study (Brisbane 2011-2014)
+    age_range = "39-90 years", # Bista 2015 Table 1
+    age_median = "69.5 years", # Bista 2015 Table 1
+    weight_range = "41.8-110.0 kg", # Bista 2015 Table 1
+    weight_median = "71.5 kg", # Bista 2015 Table 1
+    sex_female_pct = 39.3, # 22 female / 56 total per Bista 2015 Table 1 (34/22 male/female)
+    race_ethnicity = NULL, # Not reported in Bista 2015 Table 1
+    disease_state = "Adults with advanced malignant disease receiving Durogesic transdermal fentanyl matrix patches for cancer-pain management; common diagnoses included ovaries, prostate, breast, cervix, lung and bone (Bista 2015 Table 1).",
+    dose_range = "12-200 ug/h transdermal Durogesic patch (median 50 ug/h); patches replaced every 72 h; treatment duration variable, time since last patch change at sampling 0.5-77 h.",
+    regions = "Australia (single tertiary cancer centre, Brisbane).",
+    sampling = "Sparse opportunistic sampling: 163 plasma samples from 56 patients, median 2 samples/patient (range 1-10) on median 2 occasions/patient (range 1-10).",
+    co_medication = "Concomitant CYP3A4/3A5 inhibitors and inducers were collected; 24 patients on inducer only, 2 on inhibitor only, 5 on both; chloramphenicol (n=1), diltiazem (n=1), fluconazole (n=2), tamoxifen (n=2), fluoxetine (n=1) as inhibitors and dexamethasone (n=28) as inducer (Bista 2015 Table 1, Methods).",
+    notes = "BSA 0.06-2.26 m^2 (median 1.80); BMI 15-41 kg/m^2 (median 24.8); creatinine clearance 25.4-216.0 mL/min (median 99.0); ALT 8-153 IU/L (median 35.0); AST 15.0-169.0 IU/L (median 40.7); ALP 24.1-2246 IU/L (median 138). Pain score 0-10 (median 2); patch adhesion 0-3 (median 0). None of the tested covariates beyond a priori weight scaling were retained in the final model."
   )
 
   ini({

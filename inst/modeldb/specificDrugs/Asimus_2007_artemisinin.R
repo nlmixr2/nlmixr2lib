@@ -23,20 +23,20 @@ Asimus_2007_artemisinin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
-    liver      = list(analyte = "artemisinin", units = "mg", specimen = "tissue", verified = FALSE),
-    central    = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    liver = list(analyte = "artemisinin", units = "mg", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE),
     precursor1 = list(analyte = "unknown", units = "mg", specimen = "not applicable", verified = FALSE),
-    enzyme     = list(analyte = "unknown", units = "mg", specimen = "not applicable", verified = FALSE)
+    enzyme = list(analyte = "unknown", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; scales hepatic plasma flow Q_H = 0.63 * WT (L/h)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; scales hepatic plasma flow Q_H = 0.63 * WT (L/h)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the hepatic plasma flow term Q_H = q_h_per_kg * WT inside model().",
         "Asimus 2007 study population body weight: healthy volunteers 48-68 kg;",
         "malaria patients 37-63 kg (Asimus 2007 Methods 'Study design').",
@@ -44,22 +44,22 @@ Asimus_2007_artemisinin <- function() {
         "Gordi 2005 healthy-volunteer cohort (24 Vietnamese males; Gordi 2005",
         "Methods 'Study subjects and materials')."
       ),
-      source_name        = "Bodyweight"
+      source_name = "Bodyweight"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 87L,
-    n_studies      = 6L,
-    age_range      = "15-55 years",
-    weight_range   = "37-68 kg",
+    species = "human",
+    n_subjects = 87L,
+    n_studies = 6L,
+    age_range = "15-55 years",
+    weight_range = "37-68 kg",
     sex_female_pct = 0,
     race_ethnicity = c(Vietnamese = 100),
-    disease_state  = "healthy male volunteers (n = 33) plus male adults with uncomplicated falciparum malaria (n = 54)",
-    dose_range     = "Oral artemisinin 250 mg or 500 mg (2 x 250 mg) capsules in single, twice-daily and dose-escalating regimens across the six pooled studies (Asimus 2007 Table 1).",
-    regions        = "Vietnam",
-    notes          = paste(
+    disease_state = "healthy male volunteers (n = 33) plus male adults with uncomplicated falciparum malaria (n = 54)",
+    dose_range = "Oral artemisinin 250 mg or 500 mg (2 x 250 mg) capsules in single, twice-daily and dose-escalating regimens across the six pooled studies (Asimus 2007 Table 1).",
+    regions = "Vietnam",
+    notes = paste(
       "Demographics from Asimus 2007 Table 1.",
       "Six pooled clinical studies (combined healthy + malaria cohorts).",
       "Plasma artemisinin was sampled pre-dose and at multiple times to roughly",

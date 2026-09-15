@@ -13,8 +13,8 @@ Kaushal_2024_mRNA0184_cyno <- function() {
   paper_specific_compartments <- c("rel2vlk", "rel2vlk_p")
 
   units <- list(
-    time          = "h",
-    dosing        = "ng",
+    time = "h",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -23,25 +23,45 @@ Kaushal_2024_mRNA0184_cyno <- function() {
   # Table S1 writes dCe/dt = Ke0 * (C(t) - Ce(t)) directly in
   # concentration units.
   compartmentData <- list(
-    central     = list(analyte = "Rel2-vlk mRNA (A1, plasma-1)",                 units = "ng",    specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "Rel2-vlk mRNA (A2, tissue / target site)",     units = "ng",    specimen = "tissue", verified = TRUE),
-    peripheral2 = list(analyte = "Rel2-vlk mRNA (A3, plasma-2)",                 units = "ng",    specimen = "plasma", verified = TRUE),
-    effect      = list(analyte = "Rel2-vlk mRNA (Ce, hypothetical effect compartment)", units = "ng/mL", specimen = "tissue", verified = TRUE),
-    rel2vlk     = list(analyte = "Rel2-vlk protein (protein1, central)",         units = "ng",    specimen = "plasma", verified = TRUE),
-    rel2vlk_p   = list(analyte = "Rel2-vlk protein (protein2, peripheral)",      units = "ng",    specimen = "tissue", verified = TRUE)
+    central = list(analyte = "Rel2-vlk mRNA (A1, plasma-1)", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(
+      analyte = "Rel2-vlk mRNA (A2, tissue / target site)",
+      units = "ng",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    peripheral2 = list(analyte = "Rel2-vlk mRNA (A3, plasma-2)", units = "ng", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "Rel2-vlk mRNA (Ce, hypothetical effect compartment)",
+      units = "ng/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rel2vlk = list(
+      analyte = "Rel2-vlk protein (protein1, central)",
+      units = "ng",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    rel2vlk_p = list(
+      analyte = "Rel2-vlk protein (protein2, peripheral)",
+      units = "ng",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species       = "cynomolgus monkey (male, healthy)",
-    n_subjects    = 12L,
-    n_studies     = 1L,
-    age_range     = "not reported",
-    weight_range  = "2.5 kg reference body weight (Table 2 column header)",
+    species = "cynomolgus monkey (male, healthy)",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "not reported",
+    weight_range = "2.5 kg reference body weight (Table 2 column header)",
     sex_female_pct = 0,
     disease_state = "Healthy (non-disease) non-human primates. The efficacious-exposure anchor used for human dose selection (AUEC over a 2-week interval = 486 ng/mL*h after weekly 0.15 mg/kg dosing) came from a SEPARATE study in aged, high-fat-diet-induced obese cynomolgus monkeys with naturally developed cardiovascular and metabolic disease; that study is reported as 'data not shown' and is NOT part of this model's fitted dataset.",
-    dose_range    = "Single dose of mRNA-0184 at 0.15, 0.5, or 1 mg/kg administered as a 1-h intravenous infusion (N = 4 per dose level).",
-    regions       = "Preclinical study sponsored by Moderna, Inc. (Cambridge, MA, USA).",
-    notes         = "Rel2-vlk mRNA and Rel2-vlk protein plasma concentrations were measured at various timepoints up to 337 h post-dose. Assays: pre-qualified bDNA (mRNA) and ELISA (protein); LLOQ 0.050 ng/mL for Rel2-vlk mRNA and 20 pg/mL for Rel2-vlk protein (Methods, Data used for model development). Estimation was performed in Phoenix NLME 8.3.4.295 using first-order conditional estimation-extended least squares. V1 (mRNA plasma volume) and Vc (protein central volume) were fixed based on a prior estimation run (Table 1 footnote). Doses are stated in mg/kg; because concentrations are in ng/mL and volumes in mL, the dose amount supplied to the model must be expressed in ng (e.g. 0.15 mg/kg x 2.5 kg = 3.75e5 ng). See the vignette Assumptions and deviations section for the clearance-vs-rate-constant reading of Kprot and K50."
+    dose_range = "Single dose of mRNA-0184 at 0.15, 0.5, or 1 mg/kg administered as a 1-h intravenous infusion (N = 4 per dose level).",
+    regions = "Preclinical study sponsored by Moderna, Inc. (Cambridge, MA, USA).",
+    notes = "Rel2-vlk mRNA and Rel2-vlk protein plasma concentrations were measured at various timepoints up to 337 h post-dose. Assays: pre-qualified bDNA (mRNA) and ELISA (protein); LLOQ 0.050 ng/mL for Rel2-vlk mRNA and 20 pg/mL for Rel2-vlk protein (Methods, Data used for model development). Estimation was performed in Phoenix NLME 8.3.4.295 using first-order conditional estimation-extended least squares. V1 (mRNA plasma volume) and Vc (protein central volume) were fixed based on a prior estimation run (Table 1 footnote). Doses are stated in mg/kg; because concentrations are in ng/mL and volumes in mL, the dose amount supplied to the model must be expressed in ng (e.g. 0.15 mg/kg x 2.5 kg = 3.75e5 ng). See the vignette Assumptions and deviations section for the clearance-vs-rate-constant reading of Kprot and K50."
   )
 
   ini({

@@ -9,33 +9,33 @@ PK_2cmt_mAb_Davda_2014 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "mAb", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "mAb", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with reference weight 70 kg; exponent 0.865 on CL and Q, 0.957 on Vc and Vp.",
-      source_name        = "WT"
+      notes = "Allometric scaling with reference weight 70 kg; exponent 0.865 on CL and Q, 0.957 on Vc and Vp.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 171,
-    n_studies      = 4,
+    n_subjects = 171,
+    n_studies = 4,
     n_observations = 2716,
-    age_range      = NA,
-    weight_range   = NA,
+    age_range = NA,
+    weight_range = NA,
     sex_female_pct = NA,
     race_ethnicity = NA,
-    disease_state  = "Healthy volunteers enrolled in first-in-human studies of four therapeutic monoclonal antibodies (mAb a/b/c: human IgG2; mAb d: IgG1). All four antibodies target soluble ligands.",
-    dose_range     = "IV: 1-700 mg; SC: 2.1-700 mg",
-    regions        = NA,
-    notes          = "Model-based meta-analysis pooling individual-level data from 4 FIH studies (171 subjects, 2716 serum concentrations: 1153 IV, 1563 SC). Per-study demographic breakdowns (age, sex, weight, race) are not tabulated in the published paper; reference weight for allometric scaling is 70 kg."
+    disease_state = "Healthy volunteers enrolled in first-in-human studies of four therapeutic monoclonal antibodies (mAb a/b/c: human IgG2; mAb d: IgG1). All four antibodies target soluble ligands.",
+    dose_range = "IV: 1-700 mg; SC: 2.1-700 mg",
+    regions = NA,
+    notes = "Model-based meta-analysis pooling individual-level data from 4 FIH studies (171 subjects, 2716 serum concentrations: 1153 IV, 1563 SC). Per-study demographic breakdowns (age, sex, weight, race) are not tabulated in the published paper; reference weight for allometric scaling is 70 kg."
   )
 
   ini({

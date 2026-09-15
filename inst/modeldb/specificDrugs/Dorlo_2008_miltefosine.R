@@ -24,14 +24,14 @@ Dorlo_2008_miltefosine <- function() {
     sep = " "
   )
   vignette <- "Dorlo_2008_miltefosine"
-  units    <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -39,24 +39,24 @@ Dorlo_2008_miltefosine <- function() {
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported in Dorlo 2008 Table 1 (median 24 years, IQR 23-29) but",
         "no age effect was retained in the final pharmacokinetic model.",
         "The cohort was a narrow young-adult military population so the",
         "study had limited power to detect an age effect."
       ),
-      source_name        = "Age (yr)"
+      source_name = "Age (yr)"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported in Dorlo 2008 Table 1 (median 85 kg, IQR 78-89). No",
         "weight effect was retained in the final pharmacokinetic model.",
         "The cohort spans a narrow adult weight range so the study had",
@@ -64,47 +64,47 @@ Dorlo_2008_miltefosine <- function() {
         "flat 50 mg three times daily independent of weight (median",
         "1.76 mg/kg/day, IQR 1.69-1.92)."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     HEIGHT = list(
-      description        = "Body height at baseline",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at baseline",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported in Dorlo 2008 Table 1 (median 184 cm, IQR 180-188).",
         "Not retained as a covariate in the final pharmacokinetic model."
       ),
-      source_name        = "Height (cm)"
+      source_name = "Height (cm)"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Reported in Dorlo 2008 Table 1 as 'No. of males/no. of females:",
         "30/1'. Not assessed as a covariate in the final model: with only",
         "one female subject the data carried no information for a sex",
         "effect, and the cohort is effectively male-only."
       ),
-      source_name        = "No. of males/no. of females"
+      source_name = "No. of males/no. of females"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31L,
-    n_studies      = 1L,
-    age_range      = "median 24 years (IQR 23-29)",
-    age_median     = "24 years",
-    weight_range   = "median 85 kg (IQR 78-89)",
-    weight_median  = "85 kg",
-    height_range   = "median 184 cm (IQR 180-188)",
-    height_median  = "184 cm",
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
+    age_range = "median 24 years (IQR 23-29)",
+    age_median = "24 years",
+    weight_range = "median 85 kg (IQR 78-89)",
+    weight_median = "85 kg",
+    height_range = "median 184 cm (IQR 180-188)",
+    height_median = "184 cm",
     sex_female_pct = 100 / 31,
     race_ethnicity = "Dutch military personnel and embedded civilians (no further breakdown reported)",
-    disease_state  = paste(
+    disease_state = paste(
       "Old World cutaneous leishmaniasis (Leishmania major), parasite",
       "infection contracted during deployment in northern Afghanistan and",
       "confirmed by microscopy with PCR/NASBA genotyping in 27 of 31",
@@ -114,15 +114,15 @@ Dorlo_2008_miltefosine <- function() {
       "as second-line therapy for insufficient response to intralesional",
       "SbV or as primary systemic therapy for extensive disease."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral miltefosine (Impavido, Zentaris GmbH) 50 mg three times daily",
       "for 28 days (total 150 mg/day; median 1.76 mg/kg/day, IQR 1.69-",
       "1.92). Administered with a meal or snack to mitigate gastrointestinal",
       "side effects."
     ),
-    regions        = "The Netherlands (Academic Medical Center, Amsterdam); patients were Dutch ISAF military personnel deployed to Mazar-e-Sharif, Afghanistan",
-    co_medication  = "Most patients had received prior intralesional pentavalent antimony (SbV); none received concurrent systemic anti-leishmaniasis treatment during the miltefosine course.",
-    samples        = paste(
+    regions = "The Netherlands (Academic Medical Center, Amsterdam); patients were Dutch ISAF military personnel deployed to Mazar-e-Sharif, Afghanistan",
+    co_medication = "Most patients had received prior intralesional pentavalent antimony (SbV); none received concurrent systemic anti-leishmaniasis treatment during the miltefosine course.",
+    samples = paste(
       "382 miltefosine plasma concentrations from 31 patients (median 13",
       "samples per patient, range 9-20; 8 during treatment and 5 after",
       "treatment per patient at the median). Sampling on day 1 captured",
@@ -132,7 +132,7 @@ Dorlo_2008_miltefosine <- function() {
       "by validated LC-MS/MS (LLOQ 4 ng/mL); all post-baseline samples",
       "were above LLOQ."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Dorlo 2008 Table 1. 3 additional patients were",
       "screened but excluded from the PK dataset due to inconsistent",
       "labelling at the sampling site (final analysis n = 31). NONMEM",

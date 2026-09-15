@@ -30,7 +30,7 @@ Pardridge_2023_imipramine_pbpk <- function() {
     sep = " "
   )
   vignette <- "Pardridge_2023_brain_plasma_protein_binding"
-  units    <- list(time = "min", dosing = "nmol/kg", concentration = "nM")
+  units <- list(time = "min", dosing = "nmol/kg", concentration = "nM")
 
   # Paper-mechanistic brain states (Table I).  The `brain_vascular` /
   # `brain_extravascular` stems are the registered canonical brain
@@ -38,13 +38,13 @@ Pardridge_2023_imipramine_pbpk <- function() {
   # free drug species and the binding proteins themselves, which have
   # no canonical equivalent.
   paper_specific_compartments <- c(
-    "brain_vascular_drug_free",       # LF  - free (bioavailable) drug in brain capillary
-    "brain_vascular_drug_alb",        # AL  - albumin-bound drug in brain capillary
-    "brain_vascular_drug_agp",        # GL  - AGP(globulin)-bound drug in brain capillary
-    "brain_vascular_agp_free",        # GF  - free (unbound) AGP in brain capillary
-    "brain_extravascular_drug_free",  # LM  - free drug in brain
-    "brain_extravascular_drug_prot",  # PL  - drug bound to brain cytoplasmic protein
-    "brain_extravascular_prot_free"   # PF  - free brain cytoplasmic binding protein
+    "brain_vascular_drug_free", # LF  - free (bioavailable) drug in brain capillary
+    "brain_vascular_drug_alb", # AL  - albumin-bound drug in brain capillary
+    "brain_vascular_drug_agp", # GL  - AGP(globulin)-bound drug in brain capillary
+    "brain_vascular_agp_free", # GF  - free (unbound) AGP in brain capillary
+    "brain_extravascular_drug_free", # LM  - free drug in brain
+    "brain_extravascular_drug_prot", # PL  - drug bound to brain cytoplasmic protein
+    "brain_extravascular_prot_free" # PF  - free brain cytoplasmic binding protein
   )
 
   # No covariates: every parameter is a fixed literature constant and the
@@ -54,29 +54,64 @@ Pardridge_2023_imipramine_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    brain_vascular_drug_agp       = list(analyte = "imipramine AGP-bound", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_vascular_drug_alb       = list(analyte = "imipramine albumin-bound", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_vascular_drug_free      = list(analyte = "imipramine free", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_extravascular_drug_free = list(analyte = "imipramine free", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_extravascular_prot_free = list(analyte = "free brain cytoplasmic binding protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_extravascular_drug_prot = list(analyte = "imipramine drug-occupied brain cytoplasmic binding protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_vascular_agp_free       = list(analyte = "alpha-1-acid-glycoprotein (AGP) free", units = NA_character_, specimen = "tissue", verified = FALSE)
+    brain_vascular_drug_agp = list(
+      analyte = "imipramine AGP-bound",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_vascular_drug_alb = list(
+      analyte = "imipramine albumin-bound",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_vascular_drug_free = list(
+      analyte = "imipramine free",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_extravascular_drug_free = list(
+      analyte = "imipramine free",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_extravascular_prot_free = list(
+      analyte = "free brain cytoplasmic binding protein",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_extravascular_drug_prot = list(
+      analyte = "imipramine drug-occupied brain cytoplasmic binding protein",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_vascular_agp_free = list(
+      analyte = "alpha-1-acid-glycoprotein (AGP) free",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = paste(
       "Not a fit to individual data. Deterministic simulation of a typical",
       "human parameterised from published human plasma-protein chemistry.",
       "The total plasma imipramine concentration of 100 nM used by the",
       "steady-state model is a pharmacologic plasma level in treated",
       "subjects (Table II, ref 11)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "No dose events. The steady-state model holds the total plasma",
       "imipramine concentration constant at 100 nM, as during an IV",
       "infusion. The paper states that the non-steady-state model was",
@@ -84,7 +119,7 @@ Pardridge_2023_imipramine_pbpk <- function() {
       "parameters are not available following oral administration of",
       "imipramine (Methods)."
     ),
-    notes          = paste(
+    notes = paste(
       "Species provenance is mixed and should be understood before reuse.",
       "The plasma-protein concentrations (albumin 800 uM, AGP 20 uM; and",
       "the metastatic-cancer values albumin 600 uM, AGP 70 uM) and the",

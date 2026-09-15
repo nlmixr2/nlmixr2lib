@@ -44,7 +44,7 @@ Kloprogge_2015_lumefantrine <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_compartments <- c("central_dlf", "peripheral1_dlf")
-  paper_specific_etas         <- c("etalcl_dlf", "etalvc_dlf")
+  paper_specific_etas <- c("etalcl_dlf", "etalvc_dlf")
   paper_specific_residual_sds <- c("propSd_dlf")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -52,25 +52,25 @@ Kloprogge_2015_lumefantrine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
-    central_dlf     = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dlf = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_dlf = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     GA = list(
-      description        = paste(
+      description = paste(
         "Estimated gestational age at study admission. Time-fixed per",
         "subject in this study (the 3-day artemether-lumefantrine",
         "course is short enough that gestational age does not",
         "materially advance during PK sampling)."
       ),
-      units              = "weeks",
-      type               = "continuous",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Kloprogge 2015 Table 1: all-cohort median 22.8 weeks, range",
         "13.1-39.0 weeks across the 116 pregnant women. Per operator",
         "sidecar (2026-06-07), the existing GA canonical (originally",
@@ -90,14 +90,14 @@ Kloprogge_2015_lumefantrine <- function() {
         "centered at the cohort median).",
         sep = " "
       ),
-      source_name        = "EGA"
+      source_name = "EGA"
     ),
     PARA = list(
-      description        = "Plasmodium falciparum parasitaemia at admission",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Plasmodium falciparum parasitaemia at admission",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission-only (time-fixed) asexual parasite count per",
         "microlitre. Kloprogge 2015 Table 1: all-cohort median 3,260",
         "parasites/uL, range 56.8-154,000 across the 116 pregnant",
@@ -122,29 +122,29 @@ Kloprogge_2015_lumefantrine <- function() {
         "is documented empirically without a proposed mechanism.",
         sep = " "
       ),
-      source_name        = "PARA"
+      source_name = "PARA"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 116L,
-    n_studies           = 1L,
-    n_pregnant          = 116L,
-    n_dense_venous      = 13L,
-    n_sparse_capillary  = 103L,
+    species = "human",
+    n_subjects = 116L,
+    n_studies = 1L,
+    n_pregnant = 116L,
+    n_dense_venous = 13L,
+    n_sparse_capillary = 103L,
     pregnancy_trimester = "second or third trimester (median gestational age 22.8 weeks at admission; range 13.1-39.0 weeks)",
-    age_range           = "14-42 years (all-cohort range, Table 1)",
-    age_median          = "24 years (Table 1)",
-    weight_range        = "35.0-65.0 kg (all-cohort range, Table 1)",
-    weight_median       = "49.0 kg (Table 1)",
-    sex_female_pct      = 100,
-    body_temp_range     = "35.0-39.3 degC (all-cohort range, Table 1)",
-    body_temp_median    = "36.7 degC (Table 1)",
-    parasitemia_range   = "56.8-154,000 parasites/uL (all-cohort range, Table 1)",
-    parasitemia_median  = "3,260 parasites/uL (Table 1)",
-    primiparity_pct     = 23.4,
-    disease_state       = paste(
+    age_range = "14-42 years (all-cohort range, Table 1)",
+    age_median = "24 years (Table 1)",
+    weight_range = "35.0-65.0 kg (all-cohort range, Table 1)",
+    weight_median = "49.0 kg (Table 1)",
+    sex_female_pct = 100,
+    body_temp_range = "35.0-39.3 degC (all-cohort range, Table 1)",
+    body_temp_median = "36.7 degC (Table 1)",
+    parasitemia_range = "56.8-154,000 parasites/uL (all-cohort range, Table 1)",
+    parasitemia_median = "3,260 parasites/uL (Table 1)",
+    primiparity_pct = 23.4,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria. Primary",
       "presentations: 17 with PCR-confirmed recrudescent infections,",
       "22 with novel infections during follow-up, 77 with no parasite",
@@ -157,16 +157,16 @@ Kloprogge_2015_lumefantrine <- function() {
       "review of the first 20 delivered women, expanded to all",
       "patients with P. falciparum in the second or third trimester."
     ),
-    dose_range          = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per",
       "tablet; 4 tablets per dose (80 mg artemether + 480 mg",
       "lumefantrine) twice daily for 3 days (oral; dose times 0, 8,",
       "24, 36, 48, 60 hours) with 200-250 mL chocolate milk (6-7 g",
       "fat) to optimise lumefantrine bioavailability."
     ),
-    regions             = "Thailand-Myanmar border (Shoklo Malaria Research Unit antenatal clinic, Mae Sot)",
-    trial_registration  = "ISRCTN 86353884 (controlled-trials.com)",
-    notes               = paste(
+    regions = "Thailand-Myanmar border (Shoklo Malaria Research Unit antenatal clinic, Mae Sot)",
+    trial_registration = "ISRCTN 86353884 (controlled-trials.com)",
+    notes = paste(
       "Pooled analysis combining a dense venous sampling sub-study",
       "(n = 13, frequent samples at pre-last-dose and 0.5, 1, 2, 4,",
       "6, 8, 12, 24, 48, 72, 96, 120, 144, 168 h after the last",

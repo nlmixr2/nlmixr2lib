@@ -28,8 +28,8 @@ Ibrahim_2023_ibrutinib_competing_risk <- function() {
   vignette <- "Ibrahim_2023_ibrutinib"
   paper_specific_compartments <- c("s_alive", "s_dropout", "s_death")
   units <- list(
-    time          = "month",
-    dosing        = "n/a (no drug-dosing events; the model propagates state-occupancy probabilities)",
+    time = "month",
+    dosing = "n/a (no drug-dosing events; the model propagates state-occupancy probabilities)",
     concentration = "probability (all three states are occupancy probabilities, not drug concentrations)"
   )
 
@@ -38,18 +38,33 @@ Ibrahim_2023_ibrutinib_competing_risk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    s_alive   = list(analyte = "probability of being alive and on study", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    s_dropout = list(analyte = "probability of having dropped out", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    s_death   = list(analyte = "probability of having died", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    s_alive = list(
+      analyte = "probability of being alive and on study",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    s_dropout = list(
+      analyte = "probability of having dropped out",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    s_death = list(
+      analyte = "probability of having died",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WBC = list(
-      description        = "Model-predicted total leukocyte count from the preceding visit.",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Model-predicted total leukocyte count from the preceding visit.",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying, held constant between two visits (Ibrahim 2023 Patients and Methods 'Covariate analysis':",
         "'the model-predicted metrics for leukocyte count, SPD, sBP, and dBP dynamics from preceding visits were",
         "explored in the competing risk model. These metrics were assessed as time-varying covariates that remained",
@@ -59,14 +74,14 @@ Ibrahim_2023_ibrutinib_competing_risk <- function() {
         "footnote e), i.e. reference value 12 x10^9 cells/L. Check against the reported effect size: a 10-unit",
         "decrease from the reference, 12 -> 2, gives (2/12)^-0.89 = 4.93, matching the reported hazard ratio of 4.92."
       ),
-      source_name        = "Leukocyte"
+      source_name = "Leukocyte"
     ),
     TUMSZ = list(
-      description        = "Model-predicted lymph-node burden from the preceding visit, as the sum of the products of perpendicular diameters (SPD).",
-      units              = "mm^2",
-      type               = "continuous",
+      description = "Model-predicted lymph-node burden from the preceding visit, as the sum of the products of perpendicular diameters (SPD).",
+      units = "mm^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNIT WARNING: Ibrahim 2023 reports SPD in cm^2 throughout, but the canonical unit for an SPPD-type TUMSZ",
         "column in this package is mm^2, so the reference value below is the source's 14 cm^2 expressed as",
         "1400 mm^2. Because the effect is a power form the conversion is numerically invariant -- (TUMSZ/1400) with",
@@ -78,14 +93,14 @@ Ibrahim_2023_ibrutinib_competing_risk <- function() {
         "Check against the reported effect size: a 10-unit increase from the reference, 14 -> 24 cm^2, gives",
         "(24/14)^0.563 = 1.35, matching the reported hazard ratio of 1.35."
       ),
-      source_name        = "SPD"
+      source_name = "SPD"
     ),
     TUM_17P_DEL = list(
-      description        = "Deletion(17p) chromosomal abnormality in the CLL clone: 1 = del(17p) present, 0 = absent.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Deletion(17p) chromosomal abnormality in the CLL clone: 1 = del(17p) present, 0 = absent.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no del(17p))",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; a baseline cytogenetic call. Enters the death hazard multiplicatively as",
         "exp(1.42 * TUM_17P_DEL), a hazard ratio of exp(1.42) = 4.14 (Ibrahim 2023 reports 4.16 from the unrounded",
         "coefficient; Table 2 'Coefficient of deletion (17p) on lambda13' = 1.42, 95% CI 0.153-2.7). Deletion(17p)",
@@ -95,22 +110,22 @@ Ibrahim_2023_ibrutinib_competing_risk <- function() {
         "'Patients carrying deletion (17p) chromosomal abnormality had a statistically significant higher",
         "probability of DEATH'; the footnote equation is used here (see the vignette Assumptions and deviations)."
       ),
-      source_name        = "del(17p)"
+      source_name = "del(17p)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    age_range      = "mean 62.4 (SD 9.9) years",
-    weight_range   = "mean 82.3 (SD 17) kg",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = "mean 62.4 (SD 9.9) years",
+    weight_range = "mean 82.3 (SD 17) kg",
     sex_female_pct = 24.2,
     race_ethnicity = NULL,
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102",
-    regions        = "United States (PCYC-1102, phase Ib/II)",
-    notes          = paste(
+    disease_state = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102",
+    regions = "United States (PCYC-1102, phase Ib/II)",
+    notes = paste(
       "Baseline demographics from Ibrahim 2023 Supplementary Table S1. Patients were followed for a maximum of",
       "2.4 years (median 1.7 years). During the study 11 patients died and 22 dropped out before the end of the",
       "study period, for disease progression (n = 5), adverse events (n = 5) and other reasons (n = 12)",

@@ -24,12 +24,12 @@ Karakitsios_2025_bedaquiline_rat_pbpk <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
-    lung_ew     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    lung_iw     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
+    lung_ew = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    lung_iw = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
@@ -37,9 +37,9 @@ Karakitsios_2025_bedaquiline_rat_pbpk <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Not a model covariate. Table S6 reports the rat plasma model per kilogram, and this file",
         "multiplies those values by the fixed 0.25 kg Simcyp reference rat of Table S3 footnote a,",
         "because the Table S3 lung blood flow, sub-volumes and cell surface area are fixed",
@@ -51,18 +51,18 @@ Karakitsios_2025_bedaquiline_rat_pbpk <- function() {
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
+    species = "rat (Sprague-Dawley)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     sex_female_pct = NA_real_,
-    weight_median  = "0.25 kg (Simcyp reference rat; Table S3 footnote a)",
-    disease_state  = "Healthy (uninfected) rats; uninvolved lung tissue only.",
-    dose_range     = paste(
+    weight_median = "0.25 kg (Simcyp reference rat; Table S3 footnote a)",
+    disease_state = "Healthy (uninfected) rats; uninvolved lung tissue only.",
+    dose_range = paste(
       "Oral. 20 mg/kg single dose (male Sprague-Dawley); 6 mg/kg/day and 20 mg/kg/day multiple",
       "doses (male and female Sprague-Dawley). Janssen R&D data, Table S1.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Mean concentrations were modelled rather than individual data because of the small number",
       "of animals per sampling time (Methods 2.1). Rats served as a validation species for the",
       "mouse-to-larger-species extrapolation of healthy-lung disposition: Figure S4 compares",

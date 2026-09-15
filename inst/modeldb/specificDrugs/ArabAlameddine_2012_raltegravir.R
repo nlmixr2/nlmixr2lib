@@ -8,74 +8,73 @@ ArabAlameddine_2012_raltegravir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HIV_POS = list(
-      description        = "HIV-1 antibody-positive cohort indicator at study entry",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 antibody-positive cohort indicator at study entry",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative healthy volunteers)",
-      notes              = "Time-fixed per subject. Drives the HIV-status-specific absorption rate (ka HIV+ = 0.21 1/h vs ka HIV- = 0.65 1/h), the relative bioavailability anchor (F_HIV- = 1 fixed, F_HIV+ = 0.75 typical with covariate modifiers), and the proportional residual error magnitude (60% CV in HIV+ vs 83.3% CV in HIV-). Source column name in the paper Table 2 is the implicit cohort-membership indicator distinguishing the 19 healthy volunteers (HIV-) from the 145 HIV-infected patients (HIV+).",
-      source_name        = "HIV"
+      notes = "Time-fixed per subject. Drives the HIV-status-specific absorption rate (ka HIV+ = 0.21 1/h vs ka HIV- = 0.65 1/h), the relative bioavailability anchor (F_HIV- = 1 fixed, F_HIV+ = 0.75 typical with covariate modifiers), and the proportional residual error magnitude (60% CV in HIV+ vs 83.3% CV in HIV-). Source column name in the paper Table 2 is the implicit cohort-membership indicator distinguishing the 19 healthy volunteers (HIV-) from the 145 HIV-infected patients (HIV+).",
+      source_name = "HIV"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Linear additive effect on the HIV+ relative bioavailability (theta_female = 0.55, +55% relative to male reference); 65% higher RAL exposure in females per Discussion paragraph 4. Source-paper Table 2 covariate symbol theta_female with values 1 = female, 0 = male; same orientation as the canonical.",
-      source_name        = "female"
+      notes = "Time-fixed per subject. Linear additive effect on the HIV+ relative bioavailability (theta_female = 0.55, +55% relative to male reference); 65% higher RAL exposure in females per Discussion paragraph 4. Source-paper Table 2 covariate symbol theta_female with values 1 = female, 0 = male; same orientation as the canonical.",
+      source_name = "female"
     ),
     CONMED_ATAZANAVIR = list(
-      description        = "Concomitant atazanavir (HIV protease inhibitor) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant atazanavir (HIV protease inhibitor) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant atazanavir)",
-      notes              = "Time-fixed per subject within the analysis window. Linear additive effect on the HIV+ relative bioavailability (theta_ATV = 0.39, +39% relative to non-ATV reference) consistent with ATV-mediated UGT1A1 inhibition of raltegravir glucuronidation (Discussion paragraph 2). 11 of 145 HIV+ subjects in Table 1 were on concomitant atazanavir.",
-      source_name        = "ATV"
+      notes = "Time-fixed per subject within the analysis window. Linear additive effect on the HIV+ relative bioavailability (theta_ATV = 0.39, +39% relative to non-ATV reference) consistent with ATV-mediated UGT1A1 inhibition of raltegravir glucuronidation (Discussion paragraph 2). 11 of 145 HIV+ subjects in Table 1 were on concomitant atazanavir.",
+      source_name = "ATV"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (single baseline assay per the paper). Reference centring value 30 umol/L (the cohort mean per Methods 'Covariate model'; median 12, range 5-91 umol/L per Table 1). Linear additive effect on the HIV+ relative bioavailability in normalized form (1 + theta_bilirubin * (TBILI / 30 - 1)) with theta_bilirubin = 0.36; a doubling of bilirubin from 30 to 60 umol/L yields a 36% increase in F, consistent with the paper's 'approximately 30% increase in drug levels in case of grade 1 hyperbilirubinaemia (total bilirubin > 30 umol/L)' (Results paragraph 4). The exact functional form is documented in the vignette Assumptions and deviations -- the paper text ('linear, centered on the mean') is consistent with a normalized centered linear coding given the magnitudes; a raw-additive form (1 + theta * (BIL - 30)) would yield non-physical predictions at low bilirubin and is ruled out.",
-      source_name        = "BIL"
+      notes = "Time-fixed per subject (single baseline assay per the paper). Reference centring value 30 umol/L (the cohort mean per Methods 'Covariate model'; median 12, range 5-91 umol/L per Table 1). Linear additive effect on the HIV+ relative bioavailability in normalized form (1 + theta_bilirubin * (TBILI / 30 - 1)) with theta_bilirubin = 0.36; a doubling of bilirubin from 30 to 60 umol/L yields a 36% increase in F, consistent with the paper's 'approximately 30% increase in drug levels in case of grade 1 hyperbilirubinaemia (total bilirubin > 30 umol/L)' (Results paragraph 4). The exact functional form is documented in the vignette Assumptions and deviations -- the paper text ('linear, centered on the mean') is consistent with a normalized centered linear coding given the magnitudes; a raw-additive form (1 + theta * (BIL - 30)) would yield non-physical predictions at low bilirubin and is ruled out.",
+      source_name = "BIL"
     ),
     RACE_WHITE = list(
-      description        = "Caucasian race indicator (paper-dichotomized Caucasian vs non-Caucasian)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Caucasian race indicator (paper-dichotomized Caucasian vs non-Caucasian)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Caucasian; predominantly Black per Table 1 and Results paragraph 2)",
-      notes              = "Time-fixed per subject. Linear additive effect on the central volume of distribution (theta_race = -0.59, -59% relative to non-Caucasian reference) per Results paragraph 2: 60% lower V1 in Caucasians than in other ethnicities. The Caucasian-as-effect-group / non-Caucasian-as-reference parameterisation matches the Hu 2014 bapineuzumab precedent in the canonical RACE_WHITE register entry. Source column name in the paper is 'theta_race'; the paper's RACE = 1 indicator means Caucasian, identical orientation to the canonical RACE_WHITE = 1 (White).",
-      source_name        = "RACE"
+      notes = "Time-fixed per subject. Linear additive effect on the central volume of distribution (theta_race = -0.59, -59% relative to non-Caucasian reference) per Results paragraph 2: 60% lower V1 in Caucasians than in other ethnicities. The Caucasian-as-effect-group / non-Caucasian-as-reference parameterisation matches the Hu 2014 bapineuzumab precedent in the canonical RACE_WHITE register entry. Source column name in the paper is 'theta_race'; the paper's RACE = 1 indicator means Caucasian, identical orientation to the canonical RACE_WHITE = 1 (White).",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 164L,
+    species = "human",
+    n_subjects = 164L,
     n_subjects_hiv_pos = 145L,
     n_subjects_hiv_neg = 19L,
-    n_studies      = 3L,
+    n_studies = 3L,
     n_observations = 544L,
-    age_range      = "18-72 years (HIV+ cohort)",
-    age_median     = "48.5 years (HIV+ cohort)",
-    weight_range   = "45-114 kg (HIV+ cohort)",
-    weight_median  = "70 kg (HIV+ cohort)",
-    height_range   = "152-194 cm (HIV+ cohort)",
-    height_median  = "175 cm (HIV+ cohort)",
+    age_range = "18-72 years (HIV+ cohort)",
+    age_median = "48.5 years (HIV+ cohort)",
+    weight_range = "45-114 kg (HIV+ cohort)",
+    weight_median = "70 kg (HIV+ cohort)",
+    height_range = "152-194 cm (HIV+ cohort)",
+    height_median = "175 cm (HIV+ cohort)",
     sex_female_pct = 21.4,
-    race_ethnicity = c(White = 91.0, Black = 6.9, Hispanic = 0.7,
-                       Asian = 0.0, Other = 0.7, Unknown = 0.7),
-    disease_state  = "Pooled HIV-positive adults on stable raltegravir-containing antiretroviral therapy in routine therapeutic drug monitoring (n=145 Swiss HIV Cohort Study) plus healthy adult volunteers from two pharmacokinetic-interaction trials (n=19, of which 19 in an open-label crossover with and without atazanavir, and 10 HIV-infected subjects in a cellular-disposition study).",
-    dose_range     = "Oral raltegravir 400 mg twice daily (n=137 HIV+) or 800 mg once daily (n=8 HIV+); 400 mg twice daily +/- atazanavir 400 mg once daily for the healthy-volunteer crossover.",
-    regions        = "Switzerland (Swiss HIV Cohort Study and University Hospital Lausanne) and the United States (USC Laboratory of Applied Pharmacokinetics, healthy volunteer study).",
-    notes          = "Demographics summarised from Arab-Alameddine 2012 Table 1 (HIV+ cohort) and the Methods 'Study design and population' paragraph. Concomitant antiretroviral medications in the HIV+ cohort included ritonavir (49.7%), darunavir (50.3%), tenofovir (51.7%), etravirine (36.5%), and atazanavir (7.6%); median CD4 count 335 cells/mm^3 (29-968); median HIV RNA 130 copies/mL (0-277,000). Median total bilirubin 12 umol/L (5-91); the covariate model was centred at the mean 30 umol/L. Model fit with NONMEM v7.1 / NM-TRAN II (FOCE-I) per Methods 'Parameter estimation and selection'."
+    race_ethnicity = c(White = 91.0, Black = 6.9, Hispanic = 0.7, Asian = 0.0, Other = 0.7, Unknown = 0.7),
+    disease_state = "Pooled HIV-positive adults on stable raltegravir-containing antiretroviral therapy in routine therapeutic drug monitoring (n=145 Swiss HIV Cohort Study) plus healthy adult volunteers from two pharmacokinetic-interaction trials (n=19, of which 19 in an open-label crossover with and without atazanavir, and 10 HIV-infected subjects in a cellular-disposition study).",
+    dose_range = "Oral raltegravir 400 mg twice daily (n=137 HIV+) or 800 mg once daily (n=8 HIV+); 400 mg twice daily +/- atazanavir 400 mg once daily for the healthy-volunteer crossover.",
+    regions = "Switzerland (Swiss HIV Cohort Study and University Hospital Lausanne) and the United States (USC Laboratory of Applied Pharmacokinetics, healthy volunteer study).",
+    notes = "Demographics summarised from Arab-Alameddine 2012 Table 1 (HIV+ cohort) and the Methods 'Study design and population' paragraph. Concomitant antiretroviral medications in the HIV+ cohort included ritonavir (49.7%), darunavir (50.3%), tenofovir (51.7%), etravirine (36.5%), and atazanavir (7.6%); median CD4 count 335 cells/mm^3 (29-968); median HIV RNA 130 copies/mL (0-277,000). Median total bilirubin 12 umol/L (5-91); the covariate model was centred at the mean 30 umol/L. Model fit with NONMEM v7.1 / NM-TRAN II (FOCE-I) per Methods 'Parameter estimation and selection'."
   )
 
   ini({

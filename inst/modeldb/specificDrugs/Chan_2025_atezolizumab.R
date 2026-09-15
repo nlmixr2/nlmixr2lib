@@ -46,11 +46,11 @@ Chan_2025_atezolizumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effects on CL (exponent 0.808) and Vc (exponent 0.559),",
         "both normalized to a reference weight of 77 kg. Both are FIXED",
         "from the historical intravenous model (Chan 2025 Table 2 rows",
@@ -65,14 +65,14 @@ Chan_2025_atezolizumab <- function() {
         "five IMscin001 cohorts (Chan 2025 Table 1); the phase III",
         "subcutaneous arm median is 67.8 kg [30.0, 117]."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate acting on all three of CL, Vc and KA. Power",
         "effects normalized to 40 g/L throughout: CL exponent -1.12",
         "(FIXED), Vc exponent -0.350 (FIXED), KA exponent +0.795",
@@ -89,14 +89,14 @@ Chan_2025_atezolizumab <- function() {
         "guard) and then imputes the reference 40 g/L for CL and Vc, but",
         "leaves the KA factor at 1 for a missing albumin."
       ),
-      source_name        = "ALBU (recoded to ALB in $PK)"
+      source_name = "ALBU (recoded to ALB in $PK)"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor burden (sum of longest diameters of target lesions)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor burden (sum of longest diameters of target lesions)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL only, exponent 0.125, normalized to 63 mm,",
         "FIXED from the historical intravenous model (Chan 2025 Table 2",
         "row 'Tumor burden on CL (Tumor burden/63mm)', marked FIX;",
@@ -106,14 +106,14 @@ Chan_2025_atezolizumab <- function() {
         "(Chan 2025 Table 1); the phase III subcutaneous arm median is",
         "79.5 mm [10.0, 319]."
       ),
-      source_name        = "BSLD"
+      source_name = "BSLD"
     ),
     ADA_POS = list(
-      description        = "Treatment-emergent anti-drug-antibody status (1 = ADA-positive, 0 = ADA-negative)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Treatment-emergent anti-drug-antibody status (1 = ADA-positive, 0 = ADA-negative)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = paste(
+      notes = paste(
         "FRACTIONAL, not exponential: the effect enters as",
         "cl *= (1 + 0.159 * ADA_POS), i.e. a 15.9 percent higher typical",
         "clearance in ADA-positive patients. Chan 2025 Table 2 labels the",
@@ -133,14 +133,14 @@ Chan_2025_atezolizumab <- function() {
         "even though 10.6 percent of the phase III subcutaneous arm has a",
         "missing status (Chan 2025 Table 1)."
       ),
-      source_name        = "ATAG (imputed from ATAGIM)"
+      source_name = "ATAG (imputed from ATAGIM)"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "FRACTIONAL effects on both volumes: vc *= (1 - 0.129 * SEXF) and",
         "vp *= (1 - 0.272 * SEXF), i.e. females have a 12.9 percent lower",
         "central volume and a 27.2 percent lower peripheral volume. Both",
@@ -154,14 +154,14 @@ Chan_2025_atezolizumab <- function() {
         "The phase III subcutaneous arm is 29.3 percent female (Chan 2025",
         "Table 1)."
       ),
-      source_name        = "SEX (1 = male, 2 = female)"
+      source_name = "SEX (1 = male, 2 = female)"
     ),
     HGB = list(
-      description        = "Baseline hemoglobin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline hemoglobin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate on bioavailability, and the one whose",
         "functional form most needs the control stream to read correctly.",
         "It acts on the LOGIT of F1 and MULTIPLIES that logit rather than",
@@ -184,16 +184,16 @@ Chan_2025_atezolizumab <- function() {
         "screened on KA (control-stream block KAHGB) but its exponent is",
         "$THETA 0 FIX, so it is deliberately absent from model()."
       ),
-      source_name        = "HGBU (recoded to HGB in $PK)"
+      source_name = "HGBU (recoded to HGB in $PK)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on KA in the source control stream (block KAAGE,",
         "'KAAGE=((AGEN/64)**THETA(15))', reference 64 years) but its",
         "exponent is $THETA 0 FIX in the final model, so it contributes a",
@@ -205,9 +205,9 @@ Chan_2025_atezolizumab <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on the logit of F1 in the source control stream (block",
         "F1RACE, 'IF(RACEN.EQ.2) F1RACE=(THETA(21))') but THETA(21) is",
         "$THETA 0 FIX in the final model, so the term vanishes.",
@@ -217,9 +217,9 @@ Chan_2025_atezolizumab <- function() {
     ),
     RACE_HISPANIC = list(
       description = "Hispanic / Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on the logit of F1 in the source control stream (block",
         "F1ETHN, 'IF(ETHN.EQ.1) F1ETHN=(THETA(20))') but THETA(20) is",
         "$THETA 0 FIX in the final model, so the term vanishes. The",
@@ -233,9 +233,9 @@ Chan_2025_atezolizumab <- function() {
     ),
     FORM_ATEZOLIZUMAB_COFORMULATED = list(
       description = "Subcutaneous formulation (co-formulated with rHuPH20 vs co-mixed at the site)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested as a candidate covariate on the absorption parameters and",
         "NOT retained: Chan 2025 Results states 'the SC formulation was",
         "not identified as a statistically significant covariate on",
@@ -249,9 +249,9 @@ Chan_2025_atezolizumab <- function() {
     ),
     INJSITE_THIGH = list(
       description = "Subcutaneous injection site (thigh vs abdomen)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested as a candidate covariate on the absorption parameters and",
         "NOT retained: Chan 2025 Results states 'The site of SC",
         "administration and the SC formulation were not identified as",
@@ -271,20 +271,20 @@ Chan_2025_atezolizumab <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "atezolizumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "atezolizumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "atezolizumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "atezolizumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "atezolizumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 435,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 435,
+    n_studies = 1,
     n_observations = 3100,
-    disease_state  = "locally advanced or metastatic non-small cell lung cancer",
-    weight_range   = "30.0-117 kg (phase III subcutaneous arm; cohort medians 65.4-73.2 kg across all five cohorts)",
+    disease_state = "locally advanced or metastatic non-small cell lung cancer",
+    weight_range = "30.0-117 kg (phase III subcutaneous arm; cohort medians 65.4-73.2 kg across all five cohorts)",
     sex_female_pct = 29.3,
-    dose_range     = paste(
+    dose_range = paste(
       "phase Ib: a single 1800 mg subcutaneous dose in the thigh",
       "(cohort 1, N = 13), 1200 mg subcutaneous every 2 weeks for three",
       "cycles in the thigh (cohort 2, N = 15), or 1800 mg subcutaneous",
@@ -296,7 +296,7 @@ Chan_2025_atezolizumab <- function() {
       "as a ready-to-use rHuPH20 co-formulation (cohort 5, N = 246) or",
       "intravenous 1200 mg every 3 weeks (cohort 4, N = 122)"
     ),
-    notes          = paste(
+    notes = paste(
       "IMscin001 (NCT03735121), a two-part open-label study; part 1 is",
       "the phase Ib dose-finding portion and part 2 the phase III",
       "dose-confirmation portion. 435 of the 436 patients with PK data",

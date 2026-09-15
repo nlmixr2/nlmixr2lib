@@ -1,8 +1,8 @@
 Li_2024_norvancomycin <- function() {
   description <- "Two-compartment intravenous population PK model for norvancomycin (demethylvancomycin) in Chinese adults hospitalised with community-acquired pneumonia caused by gram-positive cocci, developed from prospectively collected peak and trough serum concentrations at a single centre in Shijiazhuang. Clearance carries two covariates -- a median-centered power function of age and a median-centered exponential function of serum creatinine; the volumes and the intercompartmental clearance carry none. The model underpins the paper's Monte Carlo dosing recommendations against the AUC24h/MIC >= 361 PK/PD breakpoint."
-  reference   <- "Li Y, Jiao X, Sun G, Wang F, Wu X, Dong W, Lu W, Zhang Z, Yuan Y, Zhang Z. Population Pharmacokinetics and Dosing Optimization of Norvancomycin for Chinese Patients with Community-Acquired Pneumonia. Infect Drug Resist. 2024;17:5881-5893. doi:10.2147/IDR.S496776"
-  vignette    <- "Li_2024_norvancomycin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Li Y, Jiao X, Sun G, Wang F, Wu X, Dong W, Lu W, Zhang Z, Yuan Y, Zhang Z. Population Pharmacokinetics and Dosing Optimization of Norvancomycin for Chinese Patients with Community-Acquired Pneumonia. Infect Drug Resist. 2024;17:5881-5893. doi:10.2147/IDR.S496776"
+  vignette <- "Li_2024_norvancomycin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the source: norvancomycin was given as
@@ -14,17 +14,17 @@ Li_2024_norvancomycin <- function() {
   # compartment with no named tissue in the source; it is recorded as serum
   # because the model was fitted only to serum data.
   compartmentData <- list(
-    central     = list(analyte = "norvancomycin", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "norvancomycin", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "norvancomycin", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at enrolment",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance as the median-centered power term (AGE / 57.5)^-0.426. The centering constant 57.5 years is the",
         "cohort MEDIAN age of Table 1 (mean 54.91, SD 15.66, median 57.50, range 27-80), not the mean; the equation printed",
         "in Results, 'PPK Modeling', divides by 57.5 explicitly. Retained in the final model after backward elimination",
@@ -32,14 +32,14 @@ Li_2024_norvancomycin <- function() {
         "uninformative outside that band; the paper's dosing tables (Table 3) stratify age only as 18-64 and 65-80 years.",
         sep = " "
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CREAT = list(
-      description        = "Serum creatinine, measured by an enzymatic method (Creatinine plus ver.2, Roche Diagnostics)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine, measured by an enzymatic method (Creatinine plus ver.2, Roche Diagnostics)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNITS ARE LOAD-BEARING: this column is umol/L, not mg/dL. The effect is an EXPONENTIAL-LINEAR term centered on the",
         "cohort median, exp(-0.00886 * (CREAT - 59)), so the coefficient -0.00886 has units of 1/(umol/L). Supplying mg/dL",
         "would silently flatten the covariate almost completely -- 1 mg/dL = 88.4 umol/L, so a mg/dL-scaled column spans",
@@ -51,16 +51,16 @@ Li_2024_norvancomycin <- function() {
         "stratum, which is an extrapolation beyond the observed maximum of 130).",
         sep = " "
       ),
-      source_name        = "Scr"
+      source_name = "Scr"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Entered the model at forward inclusion together with age and Scr (dOFV < -3.84, p < 0.05) but was removed at",
         "backward elimination; only age and Scr on CL survived (Results, 'PPK Modeling'). No coefficient is published.",
         "Cohort mean 165.94 cm, SD 6.76, median 165, range 153-185 (Table 1).",
@@ -69,9 +69,9 @@ Li_2024_norvancomycin <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate and not selected at forward inclusion; the final model carries NO body-size term",
         "at all, so the parameters below are whole-body values for a cohort of mean weight 64.75 kg (SD 11.24, median 64,",
         "range 46-90; Table 1) and must not be allometrically rescaled. Cohort BMI mean 23.50 kg/m2 (range 16.07-30.42).",
@@ -80,15 +80,15 @@ Li_2024_norvancomycin <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = NULL,
-      type        = "categorical",
-      notes       = "Screened as a candidate covariate and not selected (Results, 'PPK Modeling'). Cohort 17 male / 17 female of 34."
+      units = NULL,
+      type = "categorical",
+      notes = "Screened as a candidate covariate and not selected (Results, 'PPK Modeling'). Cohort 17 male / 17 female of 34."
     ),
     CRCL = list(
       description = "Creatinine clearance by the Cockcroft-Gault equation",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate and NOT selected -- the raw serum creatinine gave the better fit, which the",
         "Discussion flags as a departure from the earlier norvancomycin and vancomycin literature where CLcr is the usual",
         "renal covariate. Cohort mean 107.57 mL/min, SD 41.06, median 102.93, range 35.61-195.17 (Table 1, footnote a).",
@@ -98,60 +98,60 @@ Li_2024_norvancomycin <- function() {
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate and not selected. Cohort mean 99.97 mg/L, SD 77.02, range 1.59-235.20 (Table 1)."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate and not selected. Cohort mean 99.97 mg/L, SD 77.02, range 1.59-235.20 (Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 28.43 U/L, median 20.40, range 3.40-88.00 (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 28.43 U/L, median 20.40, range 3.40-88.00 (Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 28.52 U/L, median 21.55, range 6.80-87.90 (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 28.52 U/L, median 21.55, range 6.80-87.90 (Table 1)."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 90.09 U/L, median 81.50, range 50.00-187.00 (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 90.09 U/L, median 81.50, range 50.00-187.00 (Table 1)."
     ),
     BILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 12.47 umol/L, median 11.05, range 2.63-73.30 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 12.47 umol/L, median 11.05, range 2.63-73.30 (Table 1)."
     ),
     BILI_DIRECT = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 7.15 umol/L, median 5.00, range 1.17-68.70 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function candidate covariate and not selected. Cohort mean 7.15 umol/L, median 5.00, range 1.17-68.70 (Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
+    species = "human",
+    n_subjects = 34L,
     n_observations = 231L,
-    n_studies      = 1L,
-    age_range      = "27-80 years; mean 54.91, SD 15.66, median 57.50 (Table 1)",
-    age_median     = "57.5 years",
-    weight_range   = "46-90 kg; mean 64.75, SD 11.24, median 64.00 (Table 1)",
-    weight_median  = "64 kg",
-    height_range   = "153-185 cm; mean 165.94, SD 6.76, median 165.00 (Table 1)",
+    n_studies = 1L,
+    age_range = "27-80 years; mean 54.91, SD 15.66, median 57.50 (Table 1)",
+    age_median = "57.5 years",
+    weight_range = "46-90 kg; mean 64.75, SD 11.24, median 64.00 (Table 1)",
+    weight_median = "64 kg",
+    height_range = "153-185 cm; mean 165.94, SD 6.76, median 165.00 (Table 1)",
     sex_female_pct = 50,
     race_ethnicity = "Not reported beyond nationality; single-country Chinese cohort recruited in Shijiazhuang, Hebei.",
-    disease_state  = "Hospitalised adults (>= 18 years) with community-acquired pneumonia, with suspected or confirmed pulmonary infection attributable to gram-positive bacteria. Recruited from Respiratory and Critical Care Medicine (23), Neurosurgery (6) and Haematology (5). Pregnant patients and patients on renal replacement therapy were excluded. Ten Staphylococcus isolates were recovered from 34 patients (4 methicillin-sensitive S. aureus, 4 MRSA, 2 S. epidermidis), all susceptible to norvancomycin and vancomycin with MIC <= 1 mg/L.",
+    disease_state = "Hospitalised adults (>= 18 years) with community-acquired pneumonia, with suspected or confirmed pulmonary infection attributable to gram-positive bacteria. Recruited from Respiratory and Critical Care Medicine (23), Neurosurgery (6) and Haematology (5). Pregnant patients and patients on renal replacement therapy were excluded. Ten Staphylococcus isolates were recovered from 34 patients (4 methicillin-sensitive S. aureus, 4 MRSA, 2 S. epidermidis), all susceptible to norvancomycin and vancomycin with MIC <= 1 mg/L.",
     renal_function = "Serum creatinine mean 64.09 umol/L, SD 21.77, median 59.00, range 26-130 (Table 1); Cockcroft-Gault creatinine clearance mean 107.57 mL/min, SD 41.06, median 102.93, range 35.61-195.17. The cohort is essentially renally intact -- the observed maximum serum creatinine of 130 umol/L is below the 133 umol/L lower edge of the paper's own second dosing stratum, and the Discussion states that the number of patients with mild-to-moderate renal insufficiency was too small to support extrapolation.",
     hepatic_function = "ALT mean 28.43 U/L, AST mean 28.52 U/L, ALP mean 90.09 U/L, total bilirubin mean 12.47 umol/L, direct bilirubin mean 7.15 umol/L (Table 1). No hepatic marker was retained as a covariate.",
-    dose_range     = "800 mg intravenously every 12 h, each dose infused over 1 h by syringe pump (Methods, 'Dosage Regimen and Sampling'). This single regimen generated all of the modelled data; the 200-800 mg q8h/q12h/q24h grid in Table 3 is Monte Carlo simulation output, not observed dosing.",
-    regions        = "China (The Second Hospital of Hebei Medical University, Shijiazhuang, Hebei)",
-    notes          = paste(
+    dose_range = "800 mg intravenously every 12 h, each dose infused over 1 h by syringe pump (Methods, 'Dosage Regimen and Sampling'). This single regimen generated all of the modelled data; the 200-800 mg q8h/q12h/q24h grid in Table 3 is Monte Carlo simulation output, not observed dosing.",
+    regions = "China (The Second Hospital of Hebei Medical University, Shijiazhuang, Hebei)",
+    notes = paste(
       "Prospective, single-centre, open-label observational study run between November 2020 and March 2022; Chinese Clinical",
       "Trial Registry ChiCTR2000039794; ethics approval 2020EC07-05-2. 231 serum norvancomycin concentrations from 34",
       "patients (3-8 samples each), of which 115 (49.8%) were peaks and 116 (50.2%) troughs. Troughs were drawn 0.5 h",

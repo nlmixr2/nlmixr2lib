@@ -15,30 +15,30 @@ Landersdorfer_2012_piperacillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "piperacillin", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "piperacillin", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 10L,
-    n_studies       = 1L,
-    age_range       = "23 to 31 years; mean 25.7 (SD 3.1) years",
-    age_median      = "mean 25.7 years (Results, baseline demographics paragraph)",
-    weight_range    = "mean 69.6 (SD 9.7) kg",
-    weight_median   = "mean 69.6 kg (Results)",
-    height_range    = "mean 177.5 (SD 8.0) cm",
-    sex_female_pct  = 50,
-    race_ethnicity  = c(White = 100),
-    crcl_range      = "76 to 125 mL/min (Cockcroft-Gault); all subjects with normal renal function",
-    disease_state   = "Healthy Caucasian adult volunteers",
-    dose_range      = "Single intravenous 5-min infusion of 1500 mg or 3000 mg piperacillin; randomized two-way crossover with a washout of at least 4 days",
-    regions         = "Single-centre Germany (University Hospital of Essen)",
-    notes           = "5 male and 5 female. Piperacillin was administered alone in the study; the paper notes piperacillin PK is unaffected by tazobactam at clinical 4:1 or 8:1 ratios. Baseline demographics from Results section. Sampling schedule and assay details in Methods."
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "23 to 31 years; mean 25.7 (SD 3.1) years",
+    age_median = "mean 25.7 years (Results, baseline demographics paragraph)",
+    weight_range = "mean 69.6 (SD 9.7) kg",
+    weight_median = "mean 69.6 kg (Results)",
+    height_range = "mean 177.5 (SD 8.0) cm",
+    sex_female_pct = 50,
+    race_ethnicity = c(White = 100),
+    crcl_range = "76 to 125 mL/min (Cockcroft-Gault); all subjects with normal renal function",
+    disease_state = "Healthy Caucasian adult volunteers",
+    dose_range = "Single intravenous 5-min infusion of 1500 mg or 3000 mg piperacillin; randomized two-way crossover with a washout of at least 4 days",
+    regions = "Single-centre Germany (University Hospital of Essen)",
+    notes = "5 male and 5 female. Piperacillin was administered alone in the study; the paper notes piperacillin PK is unaffected by tazobactam at clinical 4:1 or 8:1 ratios. Baseline demographics from Results section. Sampling schedule and assay details in Methods."
   )
 
   ini({

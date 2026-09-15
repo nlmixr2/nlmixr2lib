@@ -8,28 +8,28 @@ Betts_2018_mAb_combined <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mAb combined", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mAb combined", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mAb combined", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor for CL, V1, Q and V2 with reference weight 70 kg. Species-representative body weights used in the Betts 2018 fit were 70 kg (human, subject-specific), 3 kg (cynomolgus monkey, assumed), and 0.02 kg (hFcRn Tg32 transgenic mouse, assumed).",
-      source_name        = "WT"
+      notes = "Allometric size descriptor for CL, V1, Q and V2 with reference weight 70 kg. Species-representative body weights used in the Betts 2018 fit were 70 kg (human, subject-specific), 3 kg (cynomolgus monkey, assumed), and 0.02 kg (hFcRn Tg32 transgenic mouse, assumed).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human + cynomolgus monkey + hFcRn Tg32 transgenic mouse",
-    n_subjects     = NA,
-    n_studies      = NA,
-    disease_state  = "Combined-species dataset pooling 18 mAbs with clinical data, 23 mAbs with cynomolgus monkey data, and 11 mAbs with hFcRn Tg32 mouse data (total 27 mAbs).",
-    dose_range     = "IV: mAb-specific linear dose ranges (see Betts 2018 Table 1). Non-linear doses were excluded.",
-    notes          = "Combined-species jointly-fitted 2-compartment model with allometric scaling on all four disposition parameters (CL, V1, Q, V2). Reference body weight 70 kg (human). Species-representative body weights in the source fit: 70 kg human, 3 kg cynomolgus monkey, 0.02 kg hFcRn Tg32 mouse."
+    species = "human + cynomolgus monkey + hFcRn Tg32 transgenic mouse",
+    n_subjects = NA,
+    n_studies = NA,
+    disease_state = "Combined-species dataset pooling 18 mAbs with clinical data, 23 mAbs with cynomolgus monkey data, and 11 mAbs with hFcRn Tg32 mouse data (total 27 mAbs).",
+    dose_range = "IV: mAb-specific linear dose ranges (see Betts 2018 Table 1). Non-linear doses were excluded.",
+    notes = "Combined-species jointly-fitted 2-compartment model with allometric scaling on all four disposition parameters (CL, V1, Q, V2). Reference body weight 70 kg (human). Species-representative body weights in the source fit: 70 kg human, 3 kg cynomolgus monkey, 0.02 kg hFcRn Tg32 mouse."
   )
 
   ini({

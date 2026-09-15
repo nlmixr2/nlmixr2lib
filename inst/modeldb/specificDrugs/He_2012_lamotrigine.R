@@ -1,68 +1,68 @@
 He_2012_lamotrigine <- function() {
   description <- "One-compartment population PK model for oral lamotrigine in Chinese paediatric patients with epilepsy aged 0.5-17 years (He 2012). First-order absorption with Ka fixed at 1.0 1/h and bioavailability fixed at 1 (lamotrigine steady-state trough therapeutic-drug-monitoring data, which do not identify Ka or F), and first-order elimination from a single central compartment. Apparent oral clearance is scaled by an estimated power of total body weight (exponent 0.635) and modified exponentially by concomitant antiepileptic comedication: valproate (CONMED_VPA) reduces CL, while the enzyme-inducers carbamazepine (CONMED_CBZ) and phenobarbital (CONMED_PB) increase CL. Apparent central volume is fixed at 16.7 L at the 27.87 kg reference weight, scaled linearly with total body weight (allometric exponent fixed at 1.0)."
-  reference   <- "He DK, Wang L, Lu W, Qin J, Zhang S, Li L, Zhang JM, Bao WQ, Song XQ, Liu HT. Population pharmacokinetics of lamotrigine in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Nov;33(11):1417-1423. doi:10.1038/aps.2012.118"
-  vignette    <- "He_2012_lamotrigine"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "He DK, Wang L, Lu W, Qin J, Zhang S, Li L, Zhang JM, Bao WQ, Song XQ, Liu HT. Population pharmacokinetics of lamotrigine in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Nov;33(11):1417-1423. doi:10.1038/aps.2012.118"
+  vignette <- "He_2012_lamotrigine"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lamotrigine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (paper notation TBW).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (paper notation TBW).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate used for allometric scaling of both apparent oral clearance (estimated power exponent 0.635) and apparent central volume (linear, exponent fixed at 1.0). Reference weight 27.87 kg is the mean total body weight of the PPK model group (n=116; He 2012 Table 1).",
-      source_name        = "TBW"
+      notes = "Time-varying covariate used for allometric scaling of both apparent oral clearance (estimated power exponent 0.635) and apparent central volume (linear, exponent fixed at 1.0). Reference weight 27.87 kg is the mean total body weight of the PPK model group (n=116; He 2012 Table 1).",
+      source_name = "TBW"
     ),
     CONMED_VPA = list(
-      description        = "Concomitant valproate (VPA) coadministration indicator: 1 = patient is taking valproate as a concomitant antiepileptic drug, 0 = not taking valproate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant valproate (VPA) coadministration indicator: 1 = patient is taking valproate as a concomitant antiepileptic drug, 0 = not taking valproate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant valproate)",
-      notes              = "Exponential multiplicative effect on apparent oral clearance: cl *= exp(-0.753 * CONMED_VPA), corresponding to a 53% reduction in CL relative to no-VPA reference (factor 0.471). VPA inhibits UGT enzymes that mediate lamotrigine glucuronidation (He 2012 Discussion paragraph 4; Table 3 theta3).",
-      source_name        = "VPA"
+      notes = "Exponential multiplicative effect on apparent oral clearance: cl *= exp(-0.753 * CONMED_VPA), corresponding to a 53% reduction in CL relative to no-VPA reference (factor 0.471). VPA inhibits UGT enzymes that mediate lamotrigine glucuronidation (He 2012 Discussion paragraph 4; Table 3 theta3).",
+      source_name = "VPA"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine (CBZ) coadministration indicator: 1 = patient is taking carbamazepine, 0 = not taking carbamazepine.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine (CBZ) coadministration indicator: 1 = patient is taking carbamazepine, 0 = not taking carbamazepine.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = "Exponential multiplicative effect on apparent oral clearance: cl *= exp(0.868 * CONMED_CBZ), corresponding to a ~2.4-fold increase in CL relative to no-CBZ reference. CBZ is an inducer of hepatic UGT and CYP enzymes responsible for lamotrigine elimination (He 2012 Discussion paragraph 3; Table 3 theta4).",
-      source_name        = "CBZ"
+      notes = "Exponential multiplicative effect on apparent oral clearance: cl *= exp(0.868 * CONMED_CBZ), corresponding to a ~2.4-fold increase in CL relative to no-CBZ reference. CBZ is an inducer of hepatic UGT and CYP enzymes responsible for lamotrigine elimination (He 2012 Discussion paragraph 3; Table 3 theta4).",
+      source_name = "CBZ"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital (PB) coadministration indicator: 1 = patient is taking phenobarbital, 0 = not taking phenobarbital.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital (PB) coadministration indicator: 1 = patient is taking phenobarbital, 0 = not taking phenobarbital.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital)",
-      notes              = "Exponential multiplicative effect on apparent oral clearance: cl *= exp(0.633 * CONMED_PB), corresponding to a ~1.9-fold increase in CL relative to no-PB reference. PB is a broad-spectrum CYP/UGT inducer (He 2012 Discussion paragraph 3; Table 3 theta5).",
-      source_name        = "PB"
+      notes = "Exponential multiplicative effect on apparent oral clearance: cl *= exp(0.633 * CONMED_PB), corresponding to a ~1.9-fold increase in CL relative to no-PB reference. PB is a broad-spectrum CYP/UGT inducer (He 2012 Discussion paragraph 3; Table 3 theta5).",
+      source_name = "PB"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 116,
-    n_studies       = 1,
-    age_range       = "0.5-17 years",
-    age_mean        = "6.91 years (PPK model group)",
-    weight_range    = "8-85 kg (PPK model group)",
-    weight_mean     = "27.87 kg (PPK model group)",
-    sex_female_pct  = round(48 / 116 * 100, 1),
-    race_ethnicity  = "Chinese (Han majority; not formally tested as covariate).",
-    disease_state   = "Paediatric epilepsy (diagnosis by clinician based on seizures and electroencephalogram; LTG therapy duration > 1 month so concentrations reflect steady-state trough; normal liver and kidney function).",
-    dose_range      = "Oral lamotrigine 12.5-525 mg/day in the PPK model group (mean 135 mg/day); reported as steady-state trough concentrations (no dosing-history detail in the publication).",
-    regions         = "China (multi-province referrals to the Department of Paediatrics, Peking University First Hospital, Beijing).",
-    n_observations  = "191 steady-state trough lamotrigine plasma concentrations across 116 patients in the PPK model group (1-10 samples per patient, mean 1.65); a separate PPK valid group of 168 patients with 213 concentrations was used for external validation.",
-    co_medication   = "Concomitant AEDs analysed: valproate (VPA, 63.4% of patients), carbamazepine (CBZ, 27.2%), phenobarbital (PB, 3.7%), oxcarbazepine (OXC, 7.9%), clonazepam (CZP, 8.9%), levetiracetam (LEV, 3.1%), topiramate (TPM, 5.2%). Only VPA, CBZ, and PB were retained in the final CL model; OXC, CZP, LEV, TPM had non-significant effects in univariate screening (He 2012 Table 2 models 8-11; SE > 100%).",
-    notes           = "Sparse therapeutic-drug-monitoring data: blood drawn before breakfast and before the morning dose at steady state, i.e. trough concentrations only. The model was developed in NONMEM V (ADVAN2 TRANS2) using a one-compartment open-kinetic model with first-order absorption and elimination. Because the trough data do not inform Ka or F, both were fixed (Ka = 1.0 1/h, F = 1.0) per the upstream reference paper cited as [7]. Age, sex, and concomitant OXC/CZP/LEV/TPM were tested but not retained in the final model (He 2012 Results paragraph 1; Table 2 univariate screening summarised in Table 2 rows 7-11)."
+    species = "human",
+    n_subjects = 116,
+    n_studies = 1,
+    age_range = "0.5-17 years",
+    age_mean = "6.91 years (PPK model group)",
+    weight_range = "8-85 kg (PPK model group)",
+    weight_mean = "27.87 kg (PPK model group)",
+    sex_female_pct = round(48 / 116 * 100, 1),
+    race_ethnicity = "Chinese (Han majority; not formally tested as covariate).",
+    disease_state = "Paediatric epilepsy (diagnosis by clinician based on seizures and electroencephalogram; LTG therapy duration > 1 month so concentrations reflect steady-state trough; normal liver and kidney function).",
+    dose_range = "Oral lamotrigine 12.5-525 mg/day in the PPK model group (mean 135 mg/day); reported as steady-state trough concentrations (no dosing-history detail in the publication).",
+    regions = "China (multi-province referrals to the Department of Paediatrics, Peking University First Hospital, Beijing).",
+    n_observations = "191 steady-state trough lamotrigine plasma concentrations across 116 patients in the PPK model group (1-10 samples per patient, mean 1.65); a separate PPK valid group of 168 patients with 213 concentrations was used for external validation.",
+    co_medication = "Concomitant AEDs analysed: valproate (VPA, 63.4% of patients), carbamazepine (CBZ, 27.2%), phenobarbital (PB, 3.7%), oxcarbazepine (OXC, 7.9%), clonazepam (CZP, 8.9%), levetiracetam (LEV, 3.1%), topiramate (TPM, 5.2%). Only VPA, CBZ, and PB were retained in the final CL model; OXC, CZP, LEV, TPM had non-significant effects in univariate screening (He 2012 Table 2 models 8-11; SE > 100%).",
+    notes = "Sparse therapeutic-drug-monitoring data: blood drawn before breakfast and before the morning dose at steady state, i.e. trough concentrations only. The model was developed in NONMEM V (ADVAN2 TRANS2) using a one-compartment open-kinetic model with first-order absorption and elimination. Because the trough data do not inform Ka or F, both were fixed (Ka = 1.0 1/h, F = 1.0) per the upstream reference paper cited as [7]. Age, sex, and concomitant OXC/CZP/LEV/TPM were tested but not retained in the final model (He 2012 Results paragraph 1; Table 2 univariate screening summarised in Table 2 rows 7-11)."
   )
 
   ini({

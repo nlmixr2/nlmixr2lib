@@ -19,8 +19,8 @@ Choy_2016_T2DM_WHIG <- function() {
   )
   vignette <- "Choy_2016_T2DM_WHIG"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (placebo / lifestyle intervention only)",
+    time = "day",
+    dosing = "n/a (placebo / lifestyle intervention only)",
     concentration = "weight (kg); FSI (uIU/mL); FPG (mmol/L); HbA1c (%)"
   )
 
@@ -33,8 +33,13 @@ Choy_2016_T2DM_WHIG <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    weight   = list(analyte = "body-weight", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit1 = list(analyte = "postprandial-glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    weight = list(analyte = "body-weight", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit1 = list(
+      analyte = "postprandial-glucose",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
     transit2 = list(analyte = "HbA1c", units = NA_character_, specimen = "administration site", verified = FALSE),
     transit3 = list(analyte = "HbA1c", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
@@ -42,27 +47,27 @@ Choy_2016_T2DM_WHIG <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 181L,
-    n_studies      = 1L,
-    age_range      = "18-75 years",
-    age_median     = NA_character_,
-    weight_range   = "72-159 kg (baseline)",
-    weight_median  = "104 kg (baseline)",
+    species = "human",
+    n_subjects = 181L,
+    n_studies = 1L,
+    age_range = "18-75 years",
+    age_median = NA_character_,
+    weight_range = "72-159 kg (baseline)",
+    weight_median = "104 kg (baseline)",
     sex_female_pct = 100 * 114 / 181,
     race_ethnicity = NA_character_,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Obese (BMI 27-50 kg/m^2), newly diagnosed treatment-naive type 2 ",
       "diabetes mellitus; baseline median FSI 17.8 uIU/mL (range 3.3-79.5), ",
       "FPG 7.6 mmol/L (range 5.0-14.2), HbA1c 6.7% (range 5.3-9.1)."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Placebo arm only: 6-week placebo run-in followed by 60-week ",
       "placebo + lifestyle (individualised energy-deficient diet, ",
       "behavioural modification, physical activity) maintenance phase."
     ),
-    regions        = "Sweden",
-    notes          = paste0(
+    regions = "Sweden",
+    notes = paste0(
       "Placebo arm of NCT00236600 (topiramate DIS_DIAB weight-loss study). ",
       "Mean weight change at end of study -4.1 kg; baseline beta-cell ",
       "function 61% of normal; baseline insulin sensitivity 25% of normal."

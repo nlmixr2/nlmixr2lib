@@ -26,24 +26,24 @@ Rolsma_2026_cefepime <- function() {
     sep = " "
   )
   vignette <- "Rolsma_2026_cefepime"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: cefepime is given as an intravenous infusion and TOTAL (not
   # unbound) plasma cefepime was assayed by LC-MS/MS at the Vanderbilt Mass
   # Spectrometry Core (Rolsma 2026 Methods, "Quantification of Plasma Drug
   # Concentrations"; Supplementary material text and Supplemental Table 1).
   compartmentData <- list(
-    central     = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters all four disposition parameters as the allometric ratio",
         "(WT / 70) raised to a FIXED exponent: 0.75 on the clearances CL and",
         "Q, and 1 on the volumes V1 and V2. Rolsma 2026 Methods states the",
@@ -61,14 +61,14 @@ Rolsma_2026_cefepime <- function() {
         "discrepancy on the CL exponent.",
         sep = " "
       ),
-      source_name        = "wt"
+      source_name = "wt"
     ),
     CRCL = list(
-      description        = "Estimated creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW creatinine clearance in mL/min -- NOT BSA-normalized to",
         "mL/min/1.73 m^2 and NOT weight-normalized. Rolsma 2026 states the",
         "units directly beneath the model equation block ('CrCl_i is",
@@ -89,7 +89,7 @@ Rolsma_2026_cefepime <- function() {
         "only and the two are not double-counting size.",
         sep = " "
       ),
-      source_name        = "CrCl"
+      source_name = "CrCl"
     )
   )
 
@@ -107,10 +107,10 @@ Rolsma_2026_cefepime <- function() {
   covariatesDataExcluded <- list(
     ECMO_STATUS = list(
       description = "Extracorporeal membrane oxygenation treatment-status indicator (1 = receiving ECMO)",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not receiving ECMO)",
-      notes       = paste(
+      notes = paste(
         "10 of 84 patients (11.9%, Table 1). Tested as an additive shift on",
         "CL; Supplemental Table 4 gives Obj = 2205.88 versus 2207.18 for the",
         "weight-only model, a negligible improvement. Not retained. The",
@@ -124,10 +124,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous renal replacement therapy treatment-status indicator (1 = receiving CRRT)",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not receiving CRRT)",
-      notes       = paste(
+      notes = paste(
         "9 of 84 patients (10.7%, Table 1). Individually improved fit",
         "(Supplemental Table 4 Obj = 2211.02 as an additive shift on CL) but",
         "was not retained once weight and creatinine clearance were in the",
@@ -139,10 +139,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes       = paste(
+      notes = paste(
         "41 female / 43 male (48.8% female, Table 1). Supplemental Table 4",
         "tested the effect as 'Sex = Male' (i.e. male as the indicator, the",
         "opposite orientation from the canonical SEXF); Obj = 2209.55, not",
@@ -154,10 +154,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Black or African American (the omitted category in the source's two-indicator parameterisation)",
-      notes       = paste(
+      notes = paste(
         "68 of 84 (81.0%, Table 1). Supplemental Table 4 tested race as the",
         "two indicators 'Race = Other' and 'Race = White' simultaneously",
         "(Obj = 2206.80); not retained. One patient had missing race, imputed",
@@ -168,10 +168,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     RACE_OTHER = list(
       description = "Race-category 'Other' indicator",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Black or African American",
-      notes       = paste(
+      notes = paste(
         "The source's 'Other' arm pools Native Hawaiian or other Pacific",
         "Islander (1, 1.2%) with Other race (3, 3.6%), i.e. 4 of 84 (4.8%)",
         "(Table 1). Paired with RACE_WHITE in the Supplemental Table 4",
@@ -182,10 +182,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     RACE_HISPANIC = list(
       description = "Hispanic or Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Hispanic or Latino)",
-      notes       = paste(
+      notes = paste(
         "9 of 84 (10.7%, Table 1). Individually improved fit (Supplemental",
         "Table 4 Obj = 2202.48 as 'Eth = Hispanic/Latino'), and even in",
         "combination with weight and creatinine clearance gave the lowest",
@@ -199,10 +199,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "days in the source (the canonical GA column is in weeks; divide by 7)",
-      type        = "continuous",
+      units = "days in the source (the canonical GA column is in weeks; divide by 7)",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Median 274 days (39.1 weeks), range 171-280 days, mean 263 (SD 23)",
         "(Table 1). Tested two ways, neither retained: as a continuous power",
         "term (GA / 274) on CL (Supplemental Table 4 Obj = 2211.74), and",
@@ -216,10 +216,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     AGE = list(
       description = "Postnatal age",
-      units       = "years",
-      type        = "continuous",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Median 2.61 years, range 0.1-26.8, mean 6.6 (SD 7.2) (Table 1).",
         "Tested as a power term (Age / 2.61) on CL centered at the cohort",
         "median; Supplemental Table 4 Obj = 2191.59 alone and 2166.85 combined",
@@ -232,10 +232,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL in the source (the canonical ALB column is g/L; multiply by 10)",
-      type        = "continuous",
+      units = "g/dL in the source (the canonical ALB column is g/L; multiply by 10)",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Median 2.9 g/dL, range 1.6-4.8, missing for 8 of 84 (9.5%) (Table 1).",
         "Excluded from the primary covariate analysis for missingness; tested",
         "only in the complete-data sensitivity analysis as (Albumin / 2.9) on",
@@ -247,10 +247,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Median 39 U/L, range 13-1450, missing for 15 of 84 (17.9%)",
         "(Table 1). Excluded from the primary analysis for missingness; tested",
         "in the sensitivity analysis as (AST / 39) on CL (Supplemental Table 5",
@@ -262,10 +262,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Median 26 U/L, range 6-745, missing for 15 of 84 (17.9%) (Table 1).",
         "Excluded from the primary analysis for missingness; tested in the",
         "sensitivity analysis as (ALT / 26) on CL (Supplemental Table 5",
@@ -276,10 +276,10 @@ Rolsma_2026_cefepime <- function() {
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/dL in the source (the canonical TPRO column is g/L; multiply by 10)",
-      type        = "continuous",
+      units = "g/dL in the source (the canonical TPRO column is g/L; multiply by 10)",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Median 5.3 g/dL, range 3.2-9.0, missing for 15 of 84 (17.0%)",
         "(Table 1). Excluded from the primary analysis for missingness; tested",
         "in the sensitivity analysis as (Total protein / 5.2) on CL",
@@ -294,26 +294,32 @@ Rolsma_2026_cefepime <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 84L,
-    n_studies      = 1L,
-    n_samples      = 223L,
-    age_range      = "0.1-26.8 years (Table 1). Despite the pediatric framing the cohort reaches adulthood; eligibility required age over 1 month with no upper bound.",
-    age_median     = "2.61 years (mean 6.6, SD 7.2; the distribution has a strong right skew)",
-    weight_range   = "3.5-143.0 kg (Table 1)",
-    weight_median  = "13.7 kg (mean 24.7, SD 25.5)",
-    height_range   = "49.0-184.0 cm, median 87.0 (mean 100.0, SD 41.6) (Table 1)",
+    species = "human",
+    n_subjects = 84L,
+    n_studies = 1L,
+    n_samples = 223L,
+    age_range = "0.1-26.8 years (Table 1). Despite the pediatric framing the cohort reaches adulthood; eligibility required age over 1 month with no upper bound.",
+    age_median = "2.61 years (mean 6.6, SD 7.2; the distribution has a strong right skew)",
+    weight_range = "3.5-143.0 kg (Table 1)",
+    weight_median = "13.7 kg (mean 24.7, SD 25.5)",
+    height_range = "49.0-184.0 cm, median 87.0 (mean 100.0, SD 41.6) (Table 1)",
     sex_female_pct = 48.8,
-    race_ethnicity = c(White = 81.0, `Black or African American` = 13.1, `Other race` = 3.6, `Native Hawaiian or other Pacific Islander` = 1.2, Missing = 1.2),
-    ethnicity      = "Hispanic or Latino 10.7%, not Hispanic or Latino 88.1%, missing 1.2% (Table 1)",
-    disease_state  = "Critically ill children admitted to the Neonatal Intensive Care Unit, Pediatric Critical Care Unit, or Pediatric Cardiac Intensive Care Unit and receiving cefepime as standard of care. 10 of 84 (11.9%) were supported by ECMO and 9 of 84 (10.7%) by CRRT. Patients who were pregnant, receiving hemodialysis or probenecid, or expected to die within 72 hours were excluded.",
+    race_ethnicity = c(
+      White = 81.0,
+      `Black or African American` = 13.1,
+      `Other race` = 3.6,
+      `Native Hawaiian or other Pacific Islander` = 1.2,
+      Missing = 1.2
+    ),
+    ethnicity = "Hispanic or Latino 10.7%, not Hispanic or Latino 88.1%, missing 1.2% (Table 1)",
+    disease_state = "Critically ill children admitted to the Neonatal Intensive Care Unit, Pediatric Critical Care Unit, or Pediatric Cardiac Intensive Care Unit and receiving cefepime as standard of care. 10 of 84 (11.9%) were supported by ECMO and 9 of 84 (10.7%) by CRRT. Patients who were pregnant, receiving hemodialysis or probenecid, or expected to die within 72 hours were excluded.",
     renal_function = "Creatinine clearance median 90.7 mL/min, range 10.8-275.0, mean 105.0 (SD 59.5) (Table 1). The range spans renal impairment through augmented renal clearance, which the Discussion identifies as a common and under-recognised phenomenon in critically ill children.",
     gestational_age = "Median 274 days (39.1 weeks), range 171-280 days, mean 263 (SD 23) (Table 1)",
-    dose_range     = "Standard of care as ordered by the treating team; dose median 47 mg/kg, range 11.7-58.4 (mean 44.4, SD 9.00) (Table 1). Median 11 dosing events per patient (range 2-41).",
-    regions        = "United States (single centre: Monroe Carell Jr. Children's Hospital at Vanderbilt University Medical Center, Nashville, Tennessee)",
+    dose_range = "Standard of care as ordered by the treating team; dose median 47 mg/kg, range 11.7-58.4 (mean 44.4, SD 9.00) (Table 1). Median 11 dosing events per patient (range 2-41).",
+    regions = "United States (single centre: Monroe Carell Jr. Children's Hospital at Vanderbilt University Medical Center, Nashville, Tennessee)",
     protein_binding = "Not fitted. Total plasma cefepime was assayed and is what this model outputs as Cc. The probability-of-target-attainment analysis converted total to unbound concentrations using a published protein binding of 20% (unbound fraction 0.80) taken from the literature, not estimated here (Rolsma 2026 Methods, 'Probability of Target Attainment Analysis'). Multiply Cc by 0.80 to obtain the free concentration the paper's fT>MIC targets are evaluated against.",
-    sampling       = "Opportunistic residual sampling, prioritising pre-dose, end-of-infusion and 1-2 h post-infusion times. Median 2 concentrations per patient (range 1-10). Of the 223 concentrations, 16.2% were troughs (within 2 h pre-dose), 34.5% peaks (up to 2 h post-dose) and 49.3% random (Supplemental Table 2). Measured concentrations median 60.0 mg/L, range 3.7-201.0. Assay LLOQ 0.05 mg/L; all analysed samples were above it.",
-    notes          = "Prospective popPK study of beta-lactam antibiotics with opportunistic sampling, enrolling October 2020 - November 2022. Four cefepime concentrations (1.8%) were excluded as suspected line contamination. Estimated in Monolix 2021R with SAEM. Final model shrinkage: CL 16.2%, V1 63.5%, V2 37.0% (Supplemental Table 6) -- the high V1 shrinkage means individual central volumes are poorly informed by these sparse data, so treat subject-level V1 predictions with caution. A complete-data sensitivity analysis (Supplemental Table 5) selected the same final model."
+    sampling = "Opportunistic residual sampling, prioritising pre-dose, end-of-infusion and 1-2 h post-infusion times. Median 2 concentrations per patient (range 1-10). Of the 223 concentrations, 16.2% were troughs (within 2 h pre-dose), 34.5% peaks (up to 2 h post-dose) and 49.3% random (Supplemental Table 2). Measured concentrations median 60.0 mg/L, range 3.7-201.0. Assay LLOQ 0.05 mg/L; all analysed samples were above it.",
+    notes = "Prospective popPK study of beta-lactam antibiotics with opportunistic sampling, enrolling October 2020 - November 2022. Four cefepime concentrations (1.8%) were excluded as suspected line contamination. Estimated in Monolix 2021R with SAEM. Final model shrinkage: CL 16.2%, V1 63.5%, V2 37.0% (Supplemental Table 6) -- the high V1 shrinkage means individual central volumes are poorly informed by these sparse data, so treat subject-level V1 predictions with caution. A complete-data sensitivity analysis (Supplemental Table 5) selected the same final model."
   )
 
   ini({

@@ -60,28 +60,28 @@ Mi_2023_cefquinome_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot2   = list(analyte = "cefquinome", units = "mg", specimen = "administration site", verified = FALSE),
-    depot    = list(analyte = "cefquinome", units = "mg", specimen = "administration site", verified = FALSE),
-    venous   = list(analyte = "cefquinome", units = "mg", specimen = "plasma", verified = FALSE),
+    depot2 = list(analyte = "cefquinome", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "cefquinome", units = "mg", specimen = "administration site", verified = FALSE),
+    venous = list(analyte = "cefquinome", units = "mg", specimen = "plasma", verified = FALSE),
     arterial = list(analyte = "cefquinome", units = "mg", specimen = "plasma", verified = FALSE),
-    liver    = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney   = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle   = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
-    other    = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
-    vp_lung  = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
-    is_lung  = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    vp_lung = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    is_lung = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
     int_lung = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
-    urine    = list(analyte = "cefquinome", units = "mg", specimen = "urine", verified = FALSE),
-    bile     = list(analyte = "cefquinome", units = "mg", specimen = "bile", verified = FALSE)
+    urine = list(analyte = "cefquinome", units = "mg", specimen = "urine", verified = FALSE),
+    bile = list(analyte = "cefquinome", units = "mg", specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mi 2023 Table 3 fixes BW = 25 kg (a nursery pig, the class most",
         "susceptible to respiratory-tract pathogens). Every organ volume",
         "and blood flow in the S1 Text code is a fixed fraction of BW, and",
@@ -95,20 +95,20 @@ Mi_2023_cefquinome_pbpk <- function() {
         "transfer to market-age swine (about 90-100 kg) and must be",
         "re-assessed. Calibration and validation data span 15-45 kg."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "pig (crossbred Landrace x Large White x Duroc)",
-    n_subjects     = 4L,
-    n_studies      = 5L,
-    age_range      = "nursery / grower swine",
-    weight_range   = "20 +/- 2 kg (microdialysis experiment); 15-45 kg across the calibration and validation datasets; model reference BW = 25 kg",
-    disease_state  = "healthy",
-    dose_range     = "2 mg/kg intramuscular cefquinome sulfate (label dose); extra-label regimens of 3, 4 and 5 mg/kg once or twice daily were simulated",
-    regions        = "China",
-    notes          = paste(
+    species = "pig (crossbred Landrace x Large White x Duroc)",
+    n_subjects = 4L,
+    n_studies = 5L,
+    age_range = "nursery / grower swine",
+    weight_range = "20 +/- 2 kg (microdialysis experiment); 15-45 kg across the calibration and validation datasets; model reference BW = 25 kg",
+    disease_state = "healthy",
+    dose_range = "2 mg/kg intramuscular cefquinome sulfate (label dose); extra-label regimens of 3, 4 and 5 mg/kg once or twice daily were simulated",
+    regions = "China",
+    notes = paste(
       "The four crossbred pigs are the animals of the authors' own",
       "microdialysis experiment (Mi 2023 Materials and methods,",
       "'Animals'), which supplied the lung interstitial-fluid data. The",

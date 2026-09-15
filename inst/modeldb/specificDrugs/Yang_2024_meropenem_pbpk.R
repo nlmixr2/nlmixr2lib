@@ -47,16 +47,16 @@ Yang_2024_meropenem_pbpk <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31,
-    n_studies      = 40,
-    age_range      = "38-95 years (prospective ICU cohort, Table S5)",
-    age_median     = "66 years (mean; Results 'Prospective analysis of meropenem')",
-    weight_range   = "42-85 kg (prospective ICU cohort, Table S5)",
-    weight_median  = "57 kg (mean; Results 'Prospective analysis of meropenem')",
+    species = "human",
+    n_subjects = 31,
+    n_studies = 40,
+    age_range = "38-95 years (prospective ICU cohort, Table S5)",
+    age_median = "66 years (mean; Results 'Prospective analysis of meropenem')",
+    weight_range = "42-85 kg (prospective ICU cohort, Table S5)",
+    weight_median = "57 kg (mean; Results 'Prospective analysis of meropenem')",
     sex_female_pct = 45.2,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults with severe pneumonia with or without sepsis,",
       "requiring ICU treatment; patients with cirrhosis or any liver damage,",
       "and patients in renal failure, were excluded (Methods 'Clinical data",

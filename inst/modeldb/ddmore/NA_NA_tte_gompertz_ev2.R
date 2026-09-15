@@ -12,12 +12,12 @@ NA_NA_tte_gompertz_ev2 <- function() {
   )
   vignette <- "NA_NA_tte_gompertz_ev2"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the AUC_BAST_FW covariate is a per-subject baseline first-week-AUC summary)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the AUC_BAST_FW covariate is a per-subject baseline first-week-AUC summary)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
-  ddmore_id    <- "DDMODEL00000243"
+  ddmore_id <- "DDMODEL00000243"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,31 +25,36 @@ NA_NA_tte_gompertz_ev2 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz = list(analyte = "Event 2 cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "Event 2 cumulative hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AUC_BAST_FW = list(
-      description        = "First-week AUC of the unspecified hypothetical drug used in the BAST PTTE 2017 teaching dataset.",
-      units              = "ug*h/L",
-      type               = "continuous",
+      description = "First-week AUC of the unspecified hypothetical drug used in the BAST PTTE 2017 teaching dataset.",
+      units = "ug*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centred at 3065.5 ug*h/L inside the hazard via `exp((coef_auc/1000) * (AUC_BAST_FW - 3065.5))`. The bundle's Simulated_event_data.csv carries the source-named `AUC` column for 200 hypothetical patients with range 858.6-7673.3 ug*h/L (mean 3189); 3065.5 is the cohort median used by the BAST PTTE guiding-document. Renamed from the source-data column `AUC` to the canonical `AUC_BAST_FW` in the register so that a future model using a generic `AUC` column with different drug semantics will not silently collide.",
-      source_name        = "AUC"
+      notes = "Time-fixed per subject. Centred at 3065.5 ug*h/L inside the hazard via `exp((coef_auc/1000) * (AUC_BAST_FW - 3065.5))`. The bundle's Simulated_event_data.csv carries the source-named `AUC` column for 200 hypothetical patients with range 858.6-7673.3 ug*h/L (mean 3189); 3065.5 is the cohort median used by the BAST PTTE guiding-document. Renamed from the source-data column `AUC` to the canonical `AUC_BAST_FW` in the register so that a future model using a generic `AUC` column with different drug semantics will not silently collide.",
+      source_name = "AUC"
     )
   )
 
   population <- list(
-    n_subjects     = 200L,
-    n_studies      = 1L,
-    age_range      = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
-    weight_range   = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
+    n_subjects = 200L,
+    n_studies = 1L,
+    age_range = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
+    weight_range = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
-    dose_range     = "Not applicable (no drug administration is modelled; the AUC_BAST_FW covariate is a per-subject baseline summary of the unspecified drug's first-week exposure).",
-    regions        = "Not applicable (simulated data).",
-    notes          = "200 simulated patients; 104 (52%) had Event 2. Event 2 is interval-censored: exact event times are unknown, only that the event occurred between two scheduled assessment visits (BAST guiding document Section  2.2.1). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution selection Section  2.4.1 / Figure 2-2; covariate selection Section  2.4.2 / Table 2-3; final-fit listing Output_simulated_runEV2_105.res."
+    disease_state = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
+    dose_range = "Not applicable (no drug administration is modelled; the AUC_BAST_FW covariate is a per-subject baseline summary of the unspecified drug's first-week exposure).",
+    regions = "Not applicable (simulated data).",
+    notes = "200 simulated patients; 104 (52%) had Event 2. Event 2 is interval-censored: exact event times are unknown, only that the event occurred between two scheduled assessment visits (BAST guiding document Section  2.2.1). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution selection Section  2.4.1 / Figure 2-2; covariate selection Section  2.4.2 / Table 2-3; final-fit listing Output_simulated_runEV2_105.res."
   )
 
   ini({

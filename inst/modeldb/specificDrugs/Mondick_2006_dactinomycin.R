@@ -27,18 +27,18 @@ Mondick_2006_dactinomycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dactinomycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dactinomycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dactinomycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "dactinomycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on all disposition parameters with reference",
         "weight 70 kg (Mondick 2006 Results). Clearances (CL, Q2, Q3)",
         "scale as (WT/70)^0.75 and volumes (V1, V2, V3) as (WT/70)^1.0;",
@@ -49,18 +49,18 @@ Mondick_2006_dactinomycin <- function() {
         "years; extrapolation to infants under one year is the principal",
         "scenario the source paper investigates by simulation."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human (pediatric and young adult)",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "1.58-20.3 years",
-    weight_range   = "not reported in abstract",
+    species = "human (pediatric and young adult)",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "1.58-20.3 years",
+    weight_range = "not reported in abstract",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric / young-adult patients with Wilms' tumor or",
       "rhabdomyosarcoma receiving actinomycin-D (AMD) as part of",
       "standard chemotherapy. Age, gender, and body size were screened",
@@ -69,7 +69,7 @@ Mondick_2006_dactinomycin <- function() {
       "underrepresented (the cohort starts at 1.58 years); the abstract",
       "motivates a prospective study to fill that gap."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Not reported in the abstract. Sampling schemes designed for the",
       "prospective Children's Oncology Group Phase I Consortium trial",
       "are (1) 5 min, 10 min, 2-3 h, 24-28 h, 48-96 h post-dose and (2)",
@@ -77,11 +77,11 @@ Mondick_2006_dactinomycin <- function() {
       "with the typical short IV bolus / brief IV infusion of",
       "actinomycin-D in pediatric oncology."
     ),
-    regions        = paste(
+    regions = paste(
       "Children's Hospital of Philadelphia (USA);",
       "Northern Institute for Cancer Research, Newcastle upon Tyne (UK)."
     ),
-    notes          = paste(
+    notes = paste(
       "Source is a one-page PAGE 2006 conference abstract; no",
       "supplement or subsequent full-text publication of this PK model",
       "is available on disk. NIH Award #CA098543-0251.",

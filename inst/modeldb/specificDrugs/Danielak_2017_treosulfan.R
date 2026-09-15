@@ -1,44 +1,44 @@
 Danielak_2017_treosulfan <- function() {
   description <- "Two-compartment IV-infusion population PK model for treosulfan (TREO) in pediatric patients undergoing conditioning prior to hematopoietic stem cell transplantation (Danielak 2017). Allometric body-weight scaling normalised to a 70 kg adult typical value with exponents fixed at 0.75 on CL and 1 on V1 and V2; Q has no weight covariate. Correlated IIV on CL and V1 (Cl-V1 correlation 0.714); independent IIV on Q. Proportional residual error."
-  reference   <- "Danielak D, Twardosz J, Kasprzyk A, Wachowiak J, Kalwak K, Glowka F. Population pharmacokinetics of treosulfan and development of a limited sampling strategy in children prior to hematopoietic stem cell transplantation. Eur J Clin Pharmacol. 2018 Jan;74(1):79-89. doi:10.1007/s00228-017-2344-x"
-  vignette    <- "Danielak_2017_treosulfan"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Danielak D, Twardosz J, Kasprzyk A, Wachowiak J, Kalwak K, Glowka F. Population pharmacokinetics of treosulfan and development of a limited sampling strategy in children prior to hematopoietic stem cell transplantation. Eur J Clin Pharmacol. 2018 Jan;74(1):79-89. doi:10.1007/s00228-017-2344-x"
+  vignette <- "Danielak_2017_treosulfan"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Treated as baseline (single-day sampling on first day of therapy). Allometric scaling on CL (exponent 0.75 fixed), V1 (1 fixed), and V2 (1 fixed); not applied to Q (paper reports addition of WT on Q worsened the fit). Reference weight 70 kg adult typical (Danielak 2017 Eq. 9 + Table 2; cohort range 7.7-52 kg).",
-      source_name        = "WT"
+      notes = "Treated as baseline (single-day sampling on first day of therapy). Allometric scaling on CL (exponent 0.75 fixed), V1 (1 fixed), and V2 (1 fixed); not applied to Q (paper reports addition of WT on Q worsened the fit). Reference weight 70 kg adult typical (Danielak 2017 Eq. 9 + Table 2; cohort range 7.7-52 kg).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = "0.4-15 years",
-    age_mean       = "7.8 +/- 4.9 years",
-    weight_range   = "7.7-52 kg",
-    weight_mean    = "26.9 +/- 15.7 kg",
-    bsa_range      = "0.25-1.63 m^2",
-    bsa_mean       = "0.95 +/- 0.44 m^2",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "0.4-15 years",
+    age_mean = "7.8 +/- 4.9 years",
+    weight_range = "7.7-52 kg",
+    weight_mean = "26.9 +/- 15.7 kg",
+    bsa_range = "0.25-1.63 m^2",
+    bsa_mean = "0.95 +/- 0.44 m^2",
     sex_female_pct = 20,
-    disease_state  = "Pediatric patients with malignant or non-malignant disorders receiving treosulfan-based conditioning regimens prior to allogeneic hematopoietic stem cell transplantation. Diagnoses include ALL (4), AML (1), CML (1), neuroblastoma (2), Ewing sarcoma (2), adrenoleukodystrophy (2), Diamond-Blackfan anemia (1), severe congenital neutropenia (1), and Wiskott-Aldrich syndrome (1).",
-    dose_range     = "Treosulfan IV infusion at 10, 12, or 14 g/m^2 daily as a 1 h or 2 h infusion (sampled on day 1 of therapy). Specific regimens: 10 g/m^2 over 1 h (n = 1); 12 g/m^2 over 1 h (n = 4); 12 g/m^2 over 2 h (n = 4); 14 g/m^2 over 2 h (n = 6). Body surface area calculated by the Mosteller method.",
-    regions        = "Poland (Poznan and Wroclaw)",
+    disease_state = "Pediatric patients with malignant or non-malignant disorders receiving treosulfan-based conditioning regimens prior to allogeneic hematopoietic stem cell transplantation. Diagnoses include ALL (4), AML (1), CML (1), neuroblastoma (2), Ewing sarcoma (2), adrenoleukodystrophy (2), Diamond-Blackfan anemia (1), severe congenital neutropenia (1), and Wiskott-Aldrich syndrome (1).",
+    dose_range = "Treosulfan IV infusion at 10, 12, or 14 g/m^2 daily as a 1 h or 2 h infusion (sampled on day 1 of therapy). Specific regimens: 10 g/m^2 over 1 h (n = 1); 12 g/m^2 over 1 h (n = 4); 12 g/m^2 over 2 h (n = 4); 14 g/m^2 over 2 h (n = 6). Body surface area calculated by the Mosteller method.",
+    regions = "Poland (Poznan and Wroclaw)",
     n_observations = "110 plasma treosulfan concentrations across 15 subjects (sparse sampling: 6 timepoints in 7 subjects; 10 timepoints in 8 subjects, all on day 1).",
-    notes          = "Patients recruited 2007-2011 at the Department of Oncology, Hematology and Pediatric Transplantation (Poznan University of Medical Sciences) and the Department of Pediatric Hematology, Oncology and Bone Marrow Transplantation (Wroclaw Medical University). Creatinine clearance available for 8 of 15 patients (123 +/- 60 mL/min, range 71-239); not tested as a covariate due to missingness and normal renal function in the available data. Patient sex was tested and not significant (only 3 girls). Demographics from Danielak 2017 Table 1; model and covariate analysis from Eq. 9 and Table 2."
+    notes = "Patients recruited 2007-2011 at the Department of Oncology, Hematology and Pediatric Transplantation (Poznan University of Medical Sciences) and the Department of Pediatric Hematology, Oncology and Bone Marrow Transplantation (Wroclaw Medical University). Creatinine clearance available for 8 of 15 patients (123 +/- 60 mL/min, range 71-239); not tested as a covariate due to missingness and normal renal function in the available data. Patient sex was tested and not significant (only 3 girls). Demographics from Danielak 2017 Table 1; model and covariate analysis from Eq. 9 and Table 2."
   )
 
   ini({

@@ -8,62 +8,62 @@ Zheng_2016_sifalimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "sifalimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "sifalimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sifalimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for power-form covariate scaling of CL and V1 with reference weight 64.3 kg (median of the phase IIb SLE cohort). Exponents estimated (not fixed) at 0.45 on CL and 0.36 on V1 (Zheng 2016 Table 2).",
-      source_name        = "WT"
+      notes = "Used for power-form covariate scaling of CL and V1 with reference weight 64.3 kg (median of the phase IIb SLE cohort). Exponents estimated (not fixed) at 0.45 on CL and 0.36 on V1 (Zheng 2016 Table 2).",
+      source_name = "WT"
     ),
     BGENE21 = list(
-      description        = "Baseline 21-gene type I interferon signature score (whole-blood transcriptomic composite)",
-      units              = "fold-change (relative to healthy-donor reference)",
-      type               = "continuous",
+      description = "Baseline 21-gene type I interferon signature score (whole-blood transcriptomic composite)",
+      units = "fold-change (relative to healthy-donor reference)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for power-form scaling of CL with reference value 12.04 (median of the SLE cohort; range 0.32-38.59). The 21-gene panel is the AstraZeneca/MedImmune SLE development programme signature; effect exponent 0.09 on CL (Zheng 2016 Table 2).",
-      source_name        = "BGENE21"
+      notes = "Used for power-form scaling of CL with reference value 12.04 (median of the SLE cohort; range 0.32-38.59). The 21-gene panel is the AstraZeneca/MedImmune SLE development programme signature; effect exponent 0.09 on CL (Zheng 2016 Table 2).",
+      source_name = "BGENE21"
     ),
     CONMED_STEROID = list(
-      description        = "Baseline (concomitant) systemic corticosteroid use at study entry",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline (concomitant) systemic corticosteroid use at study entry",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on steroids at baseline)",
-      notes              = "85% of the phase IIb cohort were on baseline steroids. Applied as a multiplicative fractional effect on CL `(1 + 0.11 * CONMED_STEROID)` and on V1 `(1 - 0.09 * CONMED_STEROID)` (Zheng 2016 Table 2).",
-      source_name        = "BSTEROID"
+      notes = "85% of the phase IIb cohort were on baseline steroids. Applied as a multiplicative fractional effect on CL `(1 + 0.11 * CONMED_STEROID)` and on V1 `(1 - 0.09 * CONMED_STEROID)` (Zheng 2016 Table 2).",
+      source_name = "BSTEROID"
     ),
     DOSE = list(
-      description        = "Subject's assigned fixed dose level (200, 600, or 1200 mg q4w IV)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Subject's assigned fixed dose level (200, 600, or 1200 mg q4w IV)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Treated as a per-subject covariate that takes the same value across all observations for a given subject. Power-form scaling of V1 with reference dose 600 mg and exponent 0.06 (Zheng 2016 Table 2). The effect is small and included here to reproduce the published final model.",
-      source_name        = "Dose"
+      notes = "Treated as a per-subject covariate that takes the same value across all observations for a given subject. Power-form scaling of V1 with reference dose 600 mg and exponent 0.06 (Zheng 2016 Table 2). The effect is small and included here to reproduce the published final model.",
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    n_subjects         = 298L,
-    n_studies          = 1L,
-    age_range          = "18-73 years",
-    age_median         = "40 years",
-    weight_range       = "39-131.3 kg",
-    weight_median      = "64.3 kg",
-    sex_female_pct     = 92,
-    race_ethnicity     = c(White = 59, Asian = 15, `African American` = 7, `Native American` = 4, Other = 15),
-    disease_state      = "Adults with moderate-to-severe systemic lupus erythematosus (SLE) meeting ACR criteria.",
-    dose_range         = "200, 600, or 1200 mg as a 30-60 minute IV infusion every 4 weeks for 52 weeks (13 q4w doses) with an additional loading dose on day 15; 14 IV doses total.",
-    regions            = "United States 69%; other countries 31% (multi-region phase IIb trial).",
+    n_subjects = 298L,
+    n_studies = 1L,
+    age_range = "18-73 years",
+    age_median = "40 years",
+    weight_range = "39-131.3 kg",
+    weight_median = "64.3 kg",
+    sex_female_pct = 92,
+    race_ethnicity = c(White = 59, Asian = 15, `African American` = 7, `Native American` = 4, Other = 15),
+    disease_state = "Adults with moderate-to-severe systemic lupus erythematosus (SLE) meeting ACR criteria.",
+    dose_range = "200, 600, or 1200 mg as a 30-60 minute IV infusion every 4 weeks for 52 weeks (13 q4w doses) with an additional loading dose on day 15; 14 IV doses total.",
+    regions = "United States 69%; other countries 31% (multi-region phase IIb trial).",
     baseline_steroid_use_pct = 85,
-    bgene21_range      = "0.32-38.59 (median 12.04)",
-    sledai_range       = "6-27 (median 10)",
-    n_observations     = 3961L,
-    notes              = "Baseline demographics per Zheng 2016 Table 1. PK dataset: 3961 quantifiable serum concentrations from 298 sifalimumab-treated patients (102 at 200 mg, 102 at 600 mg, 94 at 1200 mg) out of 431 enrolled in the phase IIb SLE trial (MI-CP180)."
+    bgene21_range = "0.32-38.59 (median 12.04)",
+    sledai_range = "6-27 (median 10)",
+    n_observations = 3961L,
+    notes = "Baseline demographics per Zheng 2016 Table 1. PK dataset: 3961 quantifiable serum concentrations from 298 sifalimumab-treated patients (102 at 200 mg, 102 at 600 mg, 94 at 1200 mg) out of 431 enrolled in the phase IIb SLE trial (MI-CP180)."
   )
 
   ini({

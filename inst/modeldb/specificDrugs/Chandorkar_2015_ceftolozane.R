@@ -29,27 +29,27 @@ Chandorkar_2015_ceftolozane <- function() {
     sep = " "
   )
   vignette <- "Chandorkar_2015_ceftolozane_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Doses are in mg and the paper reports plasma
   # concentrations in ug/mL, which is numerically identical to mg/L, so
   # amount(mg) / volume(L) lands directly in the reported concentration unit.
   compartmentData <- list(
-    central     = list(analyte = "ceftolozane", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ceftolozane", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ceftolozane", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Baseline creatinine clearance estimated by the Cockcroft-Gault",
         "formula; raw mL/min, NOT body-surface-area normalized"
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chandorkar 2015 Table 3A: 'CL (L/h), No infection, 5.11",
         "(2.15)*(CrCL/109)^0.715 (6.14)'. Reference value 109 mL/min; power",
         "exponent 0.715 (RSE 6.14%). The Discussion restates the same",
@@ -75,14 +75,14 @@ Chandorkar_2015_ceftolozane <- function() {
         "descriptive strata only -- the model itself uses the continuous",
         "column, with no category indicators."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     WT = list(
-      description        = "Actual total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chandorkar 2015 Table 3A: 'Vc (L), No infection, 11.4",
         "(2.70)*(weight/74)'. Reference value 74 kg. The exponent is",
         "STRUCTURALLY 1, not estimated: no RSE is attached to a weight",
@@ -106,14 +106,14 @@ Chandorkar_2015_ceftolozane <- function() {
         "Cohort means 73.5 kg (range 49-106) without infection and 79.6",
         "(range 43-173) with infection (Table 2). Baseline (time-fixed)."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     DIS_CUTI = list(
-      description        = "Complicated urinary tract infection cohort indicator (1 = cUTI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated urinary tract infection cohort indicator (1 = cUTI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer or renal-impairment subject with no infection; DIS_CIAI also 0)",
-      notes              = paste(
+      notes = paste(
         "Chandorkar 2015 Table 3A rows 'CL (L/h), With cUTI, x1.21 (24.6)'",
         "and 'Vc (L), With cUTI, x1.21 (30.1)*(weight/74)'. Both printed",
         "factors are exp(beta) under the paper's own stated parameterisation",
@@ -132,14 +132,14 @@ Chandorkar_2015_ceftolozane <- function() {
         "Unlike Vc, the cUTI Vc row RETAINS the body-weight term; only cIAI",
         "switches it off. See the WT notes."
       ),
-      source_name        = "cUTI"
+      source_name = "cUTI"
     ),
     DIS_CIAI = list(
-      description        = "Complicated intra-abdominal infection cohort indicator (1 = cIAI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated intra-abdominal infection cohort indicator (1 = cIAI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer or renal-impairment subject with no infection; DIS_CUTI also 0)",
-      notes              = paste(
+      notes = paste(
         "Chandorkar 2015 Table 3A rows 'CL (L/h), With cIAI, x1.22 (22.5)'",
         "and 'Vc (L), With cIAI, x1.59 (12.3)'. Printed as exp(beta) factors,",
         "so the ini() coefficients are log(1.22) and log(1.59).",
@@ -163,7 +163,7 @@ Chandorkar_2015_ceftolozane <- function() {
         "(Table 1, Lucasti 2014 / NCT01147640), receiving",
         "ceftolozane/tazobactam 1000/500 mg q8h."
       ),
-      source_name        = "cIAI"
+      source_name = "cIAI"
     )
   )
 
@@ -173,9 +173,9 @@ Chandorkar_2015_ceftolozane <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as an intrinsic covariate (Methods) and found directional",
         "but not retained. Results: 'A small negative trend between age and",
         "CL was also observed but it was not clinically meaningful.' No age",
@@ -184,9 +184,9 @@ Chandorkar_2015_ceftolozane <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and rejected. Results: 'Other covariates such as race, sex,",
         "dose level, and drug-drug interaction did not significantly affect",
         "CL or Vc of ceftolozane.' Note that sex nonetheless enters the model",
@@ -196,9 +196,9 @@ Chandorkar_2015_ceftolozane <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and rejected (Results: race 'did not significantly affect",
         "CL or Vc'). The cohort was 82.7% white without infection and 96.7%",
         "with infection (Table 2), so the analysis had little power to",
@@ -207,9 +207,9 @@ Chandorkar_2015_ceftolozane <- function() {
     ),
     DOSE_CEFTOLOZANE_MG = list(
       description = "Administered ceftolozane dose",
-      units       = "mg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg",
+      type = "continuous",
+      notes = paste(
         "Screened as an extrinsic covariate to test for dose-dependent",
         "(nonlinear) PK and rejected, supporting the linear structural model.",
         "Results: dose level 'did not significantly affect CL or Vc'.",
@@ -219,9 +219,9 @@ Chandorkar_2015_ceftolozane <- function() {
     ),
     CONMED_TAZOBACTAM = list(
       description = "Co-administration of tazobactam indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as the drug-drug-interaction covariate and rejected.",
         "Discussion: 'similar to previous observations, no drug-drug",
         "interaction was observed between ceftolozane and tazobactam and the",
@@ -233,24 +233,24 @@ Chandorkar_2015_ceftolozane <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 376L,
-    n_studies        = 10L,
+    species = "human",
+    n_subjects = 376L,
+    n_studies = 10L,
     n_concentrations = 5048L,
-    age_range        = "18-86 years",
-    age_median       = "means 44.7 years (no infection) and 53.5 years (infection); medians not reported",
-    weight_range     = "43-173 kg",
-    weight_median    = "means 73.5 kg (no infection) and 79.6 kg (infection); medians not reported",
-    sex_female_pct   = 43.6,
-    race_ethnicity   = c(White = 88.3, Other = 11.7),
-    disease_state    = paste(
+    age_range = "18-86 years",
+    age_median = "means 44.7 years (no infection) and 53.5 years (infection); medians not reported",
+    weight_range = "43-173 kg",
+    weight_median = "means 73.5 kg (no infection) and 79.6 kg (infection); medians not reported",
+    sex_female_pct = 43.6,
+    race_ethnicity = c(White = 88.3, Other = 11.7),
+    disease_state = paste(
       "Pooled healthy adults, adults with mild to severe renal impairment,",
       "and hospitalized patients with complicated urinary tract infection or",
       "complicated intra-abdominal infection. Table 2: 226 of 376 subjects",
       "had no infection and 150 (39.9%) had cUTI or cIAI; 121 (32.2%) were",
       "renally impaired."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "All doses given as 1-hour intravenous infusions, ceftolozane alone or",
       "with tazobactam at a fixed 2:1 ratio. Healthy volunteers received",
       "single or multiple (q8h or q12h) doses of ceftolozane 250, 500, 1000,",
@@ -260,7 +260,7 @@ Chandorkar_2015_ceftolozane <- function() {
       "patients received ceftolozane 1000 mg q8h alone; cIAI patients received",
       "ceftolozane/tazobactam 1000/500 mg q8h (Table 1)."
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "Spans severe renal impairment to augmented clearance. Estimated CrCL",
       "means 101.0 mL/min (range 19-215) without infection and 97.4 mL/min",
       "(range 41-309) with infection; Figure 1A gives the pooled observed",
@@ -269,15 +269,15 @@ Chandorkar_2015_ceftolozane <- function() {
       "end-stage-renal-disease or dialysis subjects were enrolled, so the",
       "model carries no information below about 15 mL/min."
     ),
-    bmi_range        = "17-56 kg/m^2 (means 25.8 without infection, 27.3 with infection)",
-    pkpd_target      = paste(
+    bmi_range = "17-56 kg/m^2 (means 25.8 without infection, 27.3 with infection)",
+    pkpd_target = paste(
       "Not fitted in this paper. Discussion: 'the therapeutic efficacy of",
       "ceftolozane is best correlated with the percentage of time the plasma",
       "drug concentration exceeds the MIC for the target organism (%T>MIC)'.",
       "The paper positions this PK model as the input to a later probability",
       "-of-target-attainment analysis rather than performing one."
     ),
-    notes            = paste(
+    notes = paste(
       "sex_female_pct is the pooled ceftolozane data set: (97 + 67) / 376 =",
       "43.6% (Table 2). race_ethnicity is likewise pooled white (187 + 145) /",
       "376 = 88.3%; the paper reports only the white percentage, so the",

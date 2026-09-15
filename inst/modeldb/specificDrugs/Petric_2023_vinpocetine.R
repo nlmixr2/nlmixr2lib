@@ -1,68 +1,68 @@
 Petric_2023_vinpocetine <- function() {
   description <- "Two-compartment population PK model for apovincaminic acid (AVA), the active de-esterified metabolite of vinpocetine, in healthy adult male volunteers dosed with vinpocetine (Petric 2023). Only AVA (not the parent vinpocetine) is modelled; the reported CL/F, V1/F, Q/F, V2/F apparent parameters fold the fraction of the vinpocetine dose that appears in plasma as AVA and the vinpocetine oral bioavailability into the /F term. Absorption is described as a zero-order input of duration Tk0 into the central compartment preceded by an absorption lag Tlag. Formulation is the only significant covariate: the sustained-release beta-cyclodextrin complex Ultra Vinca is the reference; the Cavinton immediate-release tablet and the extemporaneous 10 mg / 5 mL oral solution enter as log-additive shifts on Tk0 and V1/F. Between-subject variability is placed on Tlag, Tk0, CL/F, V1/F, Q/F, V2/F with a correlation of 0.72 between CL/F and V1/F. Residual error is proportional."
-  reference   <- "Petric Z, Paixao P, Filipe A, Guimaraes Morais J. Clinical Pharmacology of Vinpocetine: Properties Revisited and Introduction of a Population Pharmacokinetic Model for Its Metabolite, Apovincaminic Acid (AVA). Pharmaceutics. 2023;15(10):2502. doi:10.3390/pharmaceutics15102502."
-  vignette    <- "Petric_2023_vinpocetine"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  reference <- "Petric Z, Paixao P, Filipe A, Guimaraes Morais J. Clinical Pharmacology of Vinpocetine: Properties Revisited and Introduction of a Population Pharmacokinetic Model for Its Metabolite, Apovincaminic Acid (AVA). Pharmaceutics. 2023;15(10):2502. doi:10.3390/pharmaceutics15102502."
+  vignette <- "Petric_2023_vinpocetine"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vinpocetine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vinpocetine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vinpocetine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_VINP_IR = list(
-      description        = "Vinpocetine immediate-release tablet indicator (1 = Cavinton immediate-release 5 mg tablet, Organon / Gedeon Richter; 0 = sustained-release beta-cyclodextrin complex Ultra Vinca 10 mg tablet, Tecnimede -- the Petric 2023 reference formulation). Per-dose-occasion indicator (crossover design: each subject received all three formulations across occasions with a 7-day washout).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Vinpocetine immediate-release tablet indicator (1 = Cavinton immediate-release 5 mg tablet, Organon / Gedeon Richter; 0 = sustained-release beta-cyclodextrin complex Ultra Vinca 10 mg tablet, Tecnimede -- the Petric 2023 reference formulation). Per-dose-occasion indicator (crossover design: each subject received all three formulations across occasions with a 7-day washout).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Ultra Vinca sustained-release beta-cyclodextrin complex; the typical-value Tk0 and V1/F reference in Petric 2023 Table 1).",
-      notes              = "Paired with FORM_SOLUTION to encode the three-level Petric 2023 formulation stratification {Ultra Vinca SR beta-cyclodextrin (reference), Cavinton immediate-release, oral solution}. Both indicators = 0 selects the Ultra Vinca SR reference. Enters multiplicatively on the log-scale of Tk0 (exp(beta = -0.4)) and V1/F (exp(beta = -1.26)) per Petric 2023 Table 1.",
-      source_name        = "Formulation#2 (categorical level of the three-level Formulation covariate)"
+      notes = "Paired with FORM_SOLUTION to encode the three-level Petric 2023 formulation stratification {Ultra Vinca SR beta-cyclodextrin (reference), Cavinton immediate-release, oral solution}. Both indicators = 0 selects the Ultra Vinca SR reference. Enters multiplicatively on the log-scale of Tk0 (exp(beta = -0.4)) and V1/F (exp(beta = -1.26)) per Petric 2023 Table 1.",
+      source_name = "Formulation#2 (categorical level of the three-level Formulation covariate)"
     ),
     FORM_SOLUTION = list(
-      description        = "Oral-solution formulation indicator (1 = 10 mg / 5 mL extemporaneous oral solution prepared at the hospital pharmacy from the pure API supplied by Tecnimede; 0 = Ultra Vinca sustained-release beta-cyclodextrin 10 mg tablet, the Petric 2023 reference formulation). Per-dose-occasion indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral-solution formulation indicator (1 = 10 mg / 5 mL extemporaneous oral solution prepared at the hospital pharmacy from the pure API supplied by Tecnimede; 0 = Ultra Vinca sustained-release beta-cyclodextrin 10 mg tablet, the Petric 2023 reference formulation). Per-dose-occasion indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Ultra Vinca sustained-release beta-cyclodextrin complex; paired with FORM_VINP_IR = 0 in the reference state).",
-      notes              = "Paired with FORM_VINP_IR to encode the three-level Petric 2023 formulation stratification. Enters multiplicatively on the log-scale of Tk0 (exp(beta = -0.68)) and V1/F (exp(beta = -1.24)) per Petric 2023 Table 1. The Petric 2023 SR-tablet reference is a solid oral form (beta-cyclodextrin complex tablet), which matches the FORM_SOLUTION canonical requirement that the 0 level is a non-solution comparator; document the specific SR reference per this per-model note.",
-      source_name        = "Formulation#3 (categorical level of the three-level Formulation covariate)"
+      notes = "Paired with FORM_VINP_IR to encode the three-level Petric 2023 formulation stratification. Enters multiplicatively on the log-scale of Tk0 (exp(beta = -0.68)) and V1/F (exp(beta = -1.24)) per Petric 2023 Table 1. The Petric 2023 SR-tablet reference is a solid oral form (beta-cyclodextrin complex tablet), which matches the FORM_SOLUTION canonical requirement that the 0 level is a non-solution comparator; document the specific SR reference per this per-model note.",
+      source_name = "Formulation#3 (categorical level of the three-level Formulation covariate)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age at study entry (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a potential covariate on Tlag, Tk0, CL/F, V1/F, Q/F, and V2/F but not retained in the final model (Petric 2023 Section 3.3: 'none of the continuous covariates showed a significant impact on parameter variability'). Distribution in the study cohort: min 20, median 23, max 35 years (Petric 2023 Supplementary Table S1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a potential covariate on Tlag, Tk0, CL/F, V1/F, Q/F, and V2/F but not retained in the final model (Petric 2023 Section 3.3: 'none of the continuous covariates showed a significant impact on parameter variability'). Distribution in the study cohort: min 20, median 23, max 35 years (Petric 2023 Supplementary Table S1)."
     ),
     HEIGHT = list(
       description = "Subject height (m).",
-      units       = "m",
-      type        = "continuous",
-      notes       = "Screened as a potential covariate but not retained (Petric 2023 Section 3.3). Distribution: min 1.64, median 1.74, max 1.83 m (Supplementary Table S1)."
+      units = "m",
+      type = "continuous",
+      notes = "Screened as a potential covariate but not retained (Petric 2023 Section 3.3). Distribution: min 1.64, median 1.74, max 1.83 m (Supplementary Table S1)."
     ),
     BMI = list(
       description = "Body-mass index (kg / m^2). Petric 2023 screened weight as BMI rather than as raw kg.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a potential covariate but not retained (Petric 2023 Section 3.3). Distribution: min 20.9, median 24.9, max 32.56 kg / m^2 (Supplementary Table S1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a potential covariate but not retained (Petric 2023 Section 3.3). Distribution: min 20.9, median 24.9, max 32.56 kg / m^2 (Supplementary Table S1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "20-35 years (median 23)",
-    weight_range   = "66-93 kg (median 73.5)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "20-35 years (median 23)",
+    weight_range = "66-93 kg (median 73.5)",
     sex_female_pct = 0,
-    disease_state  = "healthy adult male volunteers",
-    dose_range     = "20 mg single oral dose of vinpocetine (either 2 x 10 mg Ultra Vinca SR beta-cyclodextrin tablets, 4 x 5 mg Cavinton IR tablets, or 10 mL of a 10 mg / 5 mL extemporaneous oral solution -- one formulation per occasion, three occasions per subject)",
-    regions        = "Portugal (Hospital Pulido Valente, Lisbon)",
-    notes          = "Open crossover relative-bioavailability study with a 7-day washout between formulations (Petric 2023 Section 2.2). Plasma AVA sampled between 0.25 h and 10 h post-dose. LLOQ 5 ng/mL (equivalent to 5 ug/L). BLQ observations were retained (not censored) per Section 3.3. Analytical method (HPLC-UV at 254 nm) validated in a prior publication (Petric 2023 ref [26])."
+    disease_state = "healthy adult male volunteers",
+    dose_range = "20 mg single oral dose of vinpocetine (either 2 x 10 mg Ultra Vinca SR beta-cyclodextrin tablets, 4 x 5 mg Cavinton IR tablets, or 10 mL of a 10 mg / 5 mL extemporaneous oral solution -- one formulation per occasion, three occasions per subject)",
+    regions = "Portugal (Hospital Pulido Valente, Lisbon)",
+    notes = "Open crossover relative-bioavailability study with a 7-day washout between formulations (Petric 2023 Section 2.2). Plasma AVA sampled between 0.25 h and 10 h post-dose. LLOQ 5 ng/mL (equivalent to 5 ug/L). BLQ observations were retained (not censored) per Section 3.3. Analytical method (HPLC-UV at 254 nm) validated in a prior publication (Petric 2023 ref [26])."
   )
 
   ini({

@@ -9,38 +9,38 @@ Hussein_2005_levocetirizine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "levocetirizine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "levocetirizine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "levocetirizine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the visit (time-varying within subject across the 18-month follow-up)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the visit (time-varying within subject across the 18-month follow-up)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear effects on CL/F and V/F in the final model (Hussein 2005 Table 3): CL/F = 0.244 + 0.0442 * WT (L/h), V/F = 0.639 * WT (L). The covariate is time-varying (Hussein 2005 Methods, weight recorded at each visit; visit means 11.9 / 13.9 / 15.0 kg at months 3 / 12 / 18). Range across all visits 8.2-20.5 kg.",
-      source_name        = "WT"
+      notes = "Linear effects on CL/F and V/F in the final model (Hussein 2005 Table 3): CL/F = 0.244 + 0.0442 * WT (L/h), V/F = 0.639 * WT (L). The covariate is time-varying (Hussein 2005 Methods, weight recorded at each visit; visit means 11.9 / 13.9 / 15.0 kg at months 3 / 12 / 18). Range across all visits 8.2-20.5 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 343L,
-    n_studies      = 1L,
-    age_range      = "12-48 months (14.4-46.3 months across the three visits)",
-    age_median     = "Visit-by-visit medians 19.1 / 27.8 / 34.6 months at months 3 / 12 / 18",
-    weight_range   = "8.2-20.5 kg across visits",
-    weight_median  = "Visit-by-visit medians 11.8 / 13.7 / 14.8 kg at months 3 / 12 / 18",
+    species = "human",
+    n_subjects = 343L,
+    n_studies = 1L,
+    age_range = "12-48 months (14.4-46.3 months across the three visits)",
+    age_median = "Visit-by-visit medians 19.1 / 27.8 / 34.6 months at months 3 / 12 / 18",
+    weight_range = "8.2-20.5 kg across visits",
+    weight_median = "Visit-by-visit medians 11.8 / 13.7 / 14.8 kg at months 3 / 12 / 18",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported",
-    disease_state  = "Atopic young children at high risk of developing asthma but not yet affected; enrolled in the ETAC (Early Treatment of the Atopic Child) randomized, double-blind, parallel-group, placebo-controlled trial. Concomitant exposures recorded at each visit included corticosteroids, penicillins, macrolides, hydroxyzine, and diarrhoea / gastro-enteritis; allergic sensitization (aeroallergen IgE) and severe-allergy markers (eosinophil count) were also captured. Severe allergy, aeroallergen sensitization, gender, age, BSA, and creatinine clearance were screened as covariates but did not reach significance in the final model (Hussein 2005 Tables 2-3 and Results).",
-    dose_range     = "Cetirizine dihydrochloride (50% levocetirizine + 50% dextrocetirizine) 0.25 mg/kg twice daily PO for 18 months as oral drops (10 mg/mL formulation). Modelled dose is the levocetirizine enantiomer, 0.125 mg/kg twice daily.",
-    regions        = "Multi-centre European trial (sites in the ETAC programme)",
-    samples        = "753 plasma levocetirizine concentration records used in the population analysis (66 children with 1 record, 144 with 2, 133 with 3); ~75% of samples taken 1-5 h post-dose. 3.9% of measured concentrations were excluded for sampling time < 0 h or > 12 h relative to dose, or concentration <= 12 ng/mL (dilution-corrected lower limit of determination).",
-    follow_up      = "18-month treatment period with PK sampling at months 3, 12, and 18 (visits 3, 6, 8); plasma drawn at each visit with the date and hour of the last dose recorded.",
-    estimation     = "NONMEM V level 1.1; first-order (FO) estimation method (FOCE also evaluated but did not improve precision).",
-    notes          = "Hussein 2005 Br J Clin Pharmacol 59(1):28-37, doi:10.1111/j.1365-2125.2005.02242.x. Baseline demographics in Table 1; final-model parameter estimates in Table 3. ETAC enrolled 343 of 399 cetirizine-treated children with usable plasma data; visit-3 / visit-6 / visit-8 included 248 / 279 / 226 children. Levocetirizine plasma assay: chiral HPLC with tandem MS detection; lower limit of determination 12 ng/mL after 4-fold plasma dilution."
+    disease_state = "Atopic young children at high risk of developing asthma but not yet affected; enrolled in the ETAC (Early Treatment of the Atopic Child) randomized, double-blind, parallel-group, placebo-controlled trial. Concomitant exposures recorded at each visit included corticosteroids, penicillins, macrolides, hydroxyzine, and diarrhoea / gastro-enteritis; allergic sensitization (aeroallergen IgE) and severe-allergy markers (eosinophil count) were also captured. Severe allergy, aeroallergen sensitization, gender, age, BSA, and creatinine clearance were screened as covariates but did not reach significance in the final model (Hussein 2005 Tables 2-3 and Results).",
+    dose_range = "Cetirizine dihydrochloride (50% levocetirizine + 50% dextrocetirizine) 0.25 mg/kg twice daily PO for 18 months as oral drops (10 mg/mL formulation). Modelled dose is the levocetirizine enantiomer, 0.125 mg/kg twice daily.",
+    regions = "Multi-centre European trial (sites in the ETAC programme)",
+    samples = "753 plasma levocetirizine concentration records used in the population analysis (66 children with 1 record, 144 with 2, 133 with 3); ~75% of samples taken 1-5 h post-dose. 3.9% of measured concentrations were excluded for sampling time < 0 h or > 12 h relative to dose, or concentration <= 12 ng/mL (dilution-corrected lower limit of determination).",
+    follow_up = "18-month treatment period with PK sampling at months 3, 12, and 18 (visits 3, 6, 8); plasma drawn at each visit with the date and hour of the last dose recorded.",
+    estimation = "NONMEM V level 1.1; first-order (FO) estimation method (FOCE also evaluated but did not improve precision).",
+    notes = "Hussein 2005 Br J Clin Pharmacol 59(1):28-37, doi:10.1111/j.1365-2125.2005.02242.x. Baseline demographics in Table 1; final-model parameter estimates in Table 3. ETAC enrolled 343 of 399 cetirizine-treated children with usable plasma data; visit-3 / visit-6 / visit-8 included 248 / 279 / 226 children. Levocetirizine plasma assay: chiral HPLC with tandem MS detection; lower limit of determination 12 ng/mL after 4-fold plasma dilution."
   )
 
   ini({

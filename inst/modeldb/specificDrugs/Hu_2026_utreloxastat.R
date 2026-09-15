@@ -34,26 +34,26 @@ Hu_2026_utreloxastat <- function() {
   # compartment + 1) / transit constant = (8 + 1) / 4.10 = 2.20 h": nine
   # first-order transfers in series (depot plus eight transits) at 4.10 1/h.
   compartmentData <- list(
-    depot       = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit5    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit6    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit7    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    transit8    = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "utreloxastat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit6 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit7 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    transit8 = list(analyte = "utreloxastat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "utreloxastat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "utreloxastat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE_UTRELOXASTAT_MG = list(
-      description        = "Administered utreloxastat dose per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered utreloxastat dose per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Amount of a single administration, not the daily total: a 250 mg BID subject carries 250.",
         "Enters relative bioavailability as the power term (DOSE_UTRELOXASTAT_MG / 250)^e_dose_fdepot.",
         "Hu 2026 states the power form (Methods, 'A power model was used for continuous covariates')",
@@ -64,14 +64,14 @@ Hu_2026_utreloxastat <- function() {
         "so no published number can falsify it, but it does set the absolute concentration scale --",
         "change it deliberately if a different normalization is preferred. Study range 100-1000 mg."
       ),
-      source_name        = "Dose levels"
+      source_name = "Dose levels"
     ),
     FED_LOWFAT = list(
-      description        = "Low-fat meal at the time of dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-fat meal at the time of dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "1 = dose taken with a low-fat meal, 0 = fasted (mutually exclusive with FED_HIGHFAT).",
         "Hu 2026 pooled three meal conditions into this one level: the protocol low-fat low-calorie",
         "meal of the food-effect part; the site-standardized meal given throughout the SAD and MAD",
@@ -80,20 +80,20 @@ Hu_2026_utreloxastat <- function() {
         "whose effect was 'not statistically distinguishable' from low-fat (Introduction and",
         "Discussion). FED_LOWFAT = 1 is therefore the usual state in this study, not a special arm."
       ),
-      source_name        = "Low-fat meals"
+      source_name = "Low-fat meals"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat high-calorie meal at the time of dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat high-calorie meal at the time of dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "1 = dose taken with a high-fat high-calorie meal, 0 = fasted (mutually exclusive with",
         "FED_LOWFAT). Only the 500 mg three-period food-effect crossover contributed this level",
         "(Methods, 'PK Data Collection'); the paper defines the high-fat end of the meal scale as",
         "55-65 g fat."
       ),
-      source_name        = "High-fat meals"
+      source_name = "High-fat meals"
     )
   )
 
@@ -102,50 +102,94 @@ Hu_2026_utreloxastat <- function() {
   # Impact on PK Exposures'; Model Structure section). No point estimates are
   # published for any of them, so they are documentation only.
   covariatesDataExcluded <- list(
-    AGE        = list(description = "Age", units = "years", type = "continuous",
-                      notes = "Screened, not retained. Study range 18.0-55.0 years (Table 1)."),
-    SEXF       = list(description = "Female sex", units = "(binary)", type = "binary",
-                      notes = "Screened, not retained. 47.1% female (Table 1)."),
-    WT         = list(description = "Body weight", units = "kg", type = "continuous",
-                      notes = "Screened, not retained. Study range 52.4-99.3 kg (Table 1). No allometric scaling is present in the final model."),
-    BMI        = list(description = "Body mass index", units = "kg/m^2", type = "continuous",
-                      notes = "Screened, not retained. Distribution not tabulated in Hu 2026."),
-    RACE_WHITE = list(description = "White race indicator", units = "(binary)", type = "binary",
-                      notes = "Screened, not retained. Hu 2026 names race and ethnicity among the screened factors but does not tabulate their distribution."),
-    ALB        = list(description = "Serum albumin", units = "g/dL", type = "continuous",
-                      notes = "Screened, not retained; hepatic-function marker."),
-    ALP        = list(description = "Alkaline phosphatase", units = "U/L", type = "continuous",
-                      notes = "Screened, not retained; hepatic-function marker."),
-    ALT        = list(description = "Alanine aminotransferase", units = "U/L", type = "continuous",
-                      notes = "Screened, not retained; hepatic-function marker."),
-    AST        = list(description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
-                      notes = "Screened, not retained; hepatic-function marker."),
-    TBILI      = list(description = "Total bilirubin", units = "mg/dL", type = "continuous",
-                      notes = "Screened, not retained; hepatic-function marker."),
-    CREAT      = list(description = "Serum creatinine", units = "mg/dL", type = "continuous",
-                      notes = "Screened, not retained; renal-function marker. Elimination of utreloxastat is primarily metabolic with negligible renal clearance (Introduction).")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained. Study range 18.0-55.0 years (Table 1)."
+    ),
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained. 47.1% female (Table 1)."
+    ),
+    WT = list(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained. Study range 52.4-99.3 kg (Table 1). No allometric scaling is present in the final model."
+    ),
+    BMI = list(
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained. Distribution not tabulated in Hu 2026."
+    ),
+    RACE_WHITE = list(
+      description = "White race indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained. Hu 2026 names race and ethnicity among the screened factors but does not tabulate their distribution."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened, not retained; hepatic-function marker."
+    ),
+    ALP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained; hepatic-function marker."
+    ),
+    ALT = list(
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained; hepatic-function marker."
+    ),
+    AST = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained; hepatic-function marker."
+    ),
+    TBILI = list(
+      description = "Total bilirubin",
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened, not retained; hepatic-function marker."
+    ),
+    CREAT = list(
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened, not retained; renal-function marker. Elimination of utreloxastat is primarily metabolic with negligible renal clearance (Introduction)."
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 68L,
-    n_studies      = 1L,
-    age_range      = "18.0-55.0 years",
-    age_median     = "29.5 years",
-    weight_range   = "52.4-99.3 kg",
-    weight_median  = "75.2 kg",
+    species = "human",
+    n_subjects = 68L,
+    n_studies = 1L,
+    age_range = "18.0-55.0 years",
+    age_median = "29.5 years",
+    weight_range = "52.4-99.3 kg",
+    weight_median = "75.2 kg",
     sex_female_pct = 47.1,
     race_ethnicity = "Not tabulated in Hu 2026; race and ethnicity were screened as covariates and not retained.",
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = paste(
+    disease_state = "Healthy adult volunteers.",
+    dose_range = paste(
       "Oral utreloxastat in three parts of one first-in-human study: single ascending doses of 100,",
       "250, 500 and 1000 mg with a low-fat breakfast (SAD, n = 32, 8 per dose level); multiple",
       "ascending doses of 150, 250 and 500 mg twice daily for 14 days with low-fat meals (MAD,",
       "n = 24); and a three-period single-dose 500 mg food-effect crossover under fasted, high-fat",
       "high-calorie and low-fat low-calorie conditions (FE, n = 12)."
     ),
-    regions        = "Not specified.",
-    notes          = paste(
+    regions = "Not specified.",
+    notes = paste(
       "Demographics from Hu 2026 Table 1 (overall column). 1463 quantifiable PK observations;",
       "concentrations below the quantitation limit were discarded following the M1 method.",
       "Sampling was intensive to 72 h post dose in the SAD and FE parts, to 24 h after the Day 1",

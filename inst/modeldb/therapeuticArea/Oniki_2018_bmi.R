@@ -27,58 +27,58 @@ Oniki_2018_bmi <- function() {
   )
   vignette <- "Oniki_2018_BMI_NAFLD"
   units <- list(
-    time          = "year",
-    dosing        = "n/a (population BMI-prediction model; no drug input)",
+    time = "year",
+    dosing = "n/a (population BMI-prediction model; no drug input)",
     concentration = "BMI (kg/m^2)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at the time of the BMI observation (years). The Oniki 2018 longitudinal NONMEM dataset carries AGE per record; the BMI model uses the per-record value. Because the typical BMI changes by < 1 kg/m^2 across the 5.5-year follow-up window for this elderly cohort (the age power exponent is -0.0709 centred on 70.8 years), the practical distinction between baseline and per-record age is small.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at the time of the BMI observation (years). The Oniki 2018 longitudinal NONMEM dataset carries AGE per record; the BMI model uses the per-record value. Because the typical BMI changes by < 1 kg/m^2 across the 5.5-year follow-up window for this elderly cohort (the age power exponent is -0.0709 centred on 70.8 years), the practical distinction between baseline and per-record age is small.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centring value 70.8 years (Oniki 2018 Eq. 1). The power-form covariate effect is (AGE / 70.8)^e_age_bmi; a typical 80-year-old is predicted to weigh ~0.85% less than a 70.8-year-old at the same sex and genotype.",
-      source_name        = "AGE"
+      notes = "Centring value 70.8 years (Oniki 2018 Eq. 1). The power-form covariate effect is (AGE / 70.8)^e_age_bmi; a typical 80-year-old is predicted to weigh ~0.85% less than a 70.8-year-old at the same sex and genotype.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. The Oniki 2018 dataset GENDER column already encodes 0 = male / 1 = female, matching the canonical SEXF orientation without inversion.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. The Oniki 2018 dataset GENDER column already encodes 0 = male / 1 = female, matching the canonical SEXF orientation without inversion.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Used as a multiplicative scalar on the typical BMI (a = e_sexf_bmi when SEXF = 1, a = 1 when SEXF = 0); the female typical BMI is 96.8% of the male typical BMI at the same age and genotype (Oniki 2018 Eq. 1).",
-      source_name        = "GENDER"
+      notes = "Used as a multiplicative scalar on the typical BMI (a = e_sexf_bmi when SEXF = 1, a = 1 when SEXF = 0); the female typical BMI is 96.8% of the male typical BMI at the same age and genotype (Oniki 2018 Eq. 1).",
+      source_name = "GENDER"
     ),
     DSBAL_TT = list(
-      description        = "Indicator for the DsbA-L (GSTK1) rs1917760 -1308G>T T/T genotype; 1 = subject carries the T/T genotype, 0 = subject carries the G/G or G/T genotype (the pooled reference). Time-fixed per subject (germline genotype).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the DsbA-L (GSTK1) rs1917760 -1308G>T T/T genotype; 1 = subject carries the T/T genotype, 0 = subject carries the G/G or G/T genotype (the pooled reference). Time-fixed per subject (germline genotype).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (G/G or G/T, pooled)",
-      notes              = "Derive from the source DsbAL three-level column (0 = G/G, 1 = G/T, 2 = T/T) as DSBAL_TT = as.integer(DsbAL == 2). G/G and G/T are pooled in Oniki 2018 because the T/T allele is the functional minor-allele state most strongly associated with elevated BMI. Used as an additive +1.5 kg/m^2 shift on the typical BMI (Oniki 2018 Eq. 1).",
-      source_name        = "DsbAL"
+      notes = "Derive from the source DsbAL three-level column (0 = G/G, 1 = G/T, 2 = T/T) as DSBAL_TT = as.integer(DsbAL == 2). G/G and G/T are pooled in Oniki 2018 because the T/T allele is the functional minor-allele state most strongly associated with elevated BMI. Used as an additive +1.5 kg/m^2 shift on the typical BMI (Oniki 2018 Eq. 1).",
+      source_name = "DsbAL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 341L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 341L,
+    n_studies = 1L,
     n_observations = "2015 BMI records across 342 subject-ids in the NONMEM dataset (Oniki 2018 s010 .lst NO. OF DATA RECS); 341 unique subjects after excluding those with habitual alcohol intake or hepatitis B/C virus positivity (Oniki 2018 Methods, Subjects and study protocol).",
-    age_range      = "Elderly Japanese cohort; baseline age mean 67.7 years (SD ~5.9) pooled across DsbA-L genotypes (Oniki 2018 Table 1).",
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    age_range = "Elderly Japanese cohort; baseline age mean 67.7 years (SD ~5.9) pooled across DsbA-L genotypes (Oniki 2018 Table 1).",
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 100 * (80 + 56 + 9) / (192 + 129 + 20),
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "General elderly Japanese cohort participating in the Japanese ",
       "Red Cross Kumamoto Health Care Center elderly health-screening ",
       "program; baseline mean BMI 22.5-23.9 kg/m^2 across DsbA-L ",
       "genotype strata (Oniki 2018 Table 1)."
     ),
-    dose_range     = "n/a (no drug input; population disease-risk model)",
-    regions        = "Japan (Kumamoto)",
-    notes          = paste0(
+    dose_range = "n/a (no drug input; population disease-risk model)",
+    regions = "Japan (Kumamoto)",
+    notes = paste0(
       "Retrospective longitudinal observation, 5.5 +/- 1.1 years of ",
       "follow-up. The Japanese Red Cross Kumamoto Health Care Center ",
       "screening program collected baseline demographics (Oniki 2018 ",

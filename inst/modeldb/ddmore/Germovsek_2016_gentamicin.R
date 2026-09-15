@@ -13,52 +13,52 @@ Germovsek_2016_gentamicin <- function() {
   vignette <- "Germovsek_2016_gentamicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  ddmore_id    <- "DDMODEL00000238"
+  ddmore_id <- "DDMODEL00000238"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Allometric scaling with reference 70 kg, exponent 0.632",
         "on CL (Germovsek 2016) and 1 on V1/V2/V3, 0.75 on Q/Q2.",
         "Source data column WT was reported in grams (g); the canonical convention is kg,",
         "so the model expects WT in kg (i.e., source_g / 1000)."
       ),
-      source_name        = "WT (g, divide by 1000 to obtain kg)"
+      source_name = "WT (g, divide by 1000 to obtain kg)"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the Hill-type maturation function on CL.",
         "Source paper / DDMORE bundle reported PMA in weeks; the canonical PAGE is in months,",
         "so the model converts internally as PMA_weeks = PAGE_months * 4.345.",
         "T50 = 55.4 weeks (fixed) and Hill = 3.33 (fixed) are kept on the source-paper weeks scale",
         "for traceability against the .lst final estimates."
       ),
-      source_name        = "PMA (weeks; multiply by 1/4.345 to obtain canonical PAGE in months)"
+      source_name = "PMA (weeks; multiply by 1/4.345 to obtain canonical PAGE in months)"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives a saturable postnatal-age effect on CL via PNAF = PNA / (P50 + PNA).",
         "Source paper / DDMORE bundle reported PNA in days; the canonical PNA is in months,",
         "so the model converts internally as PNA_days = PNA_months * 30.4375.",
@@ -66,14 +66,14 @@ Germovsek_2016_gentamicin <- function() {
         "When postnatal age is < 1 day (immediately post-partum), supply a small positive value",
         "(e.g., the time fraction in days / 30.4375) rather than 0 to avoid PNAF = 0."
       ),
-      source_name        = "PNA (days; multiply by 1/30.4375 to obtain canonical PNA in months)"
+      source_name = "PNA (days; multiply by 1/30.4375 to obtain canonical PNA in months)"
     ),
     CREAT = list(
-      description        = "Serum creatinine (measured)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine (measured)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Power-form effect on CL relative to a typical PMA-dependent serum",
         "creatinine TCREA = -2.8488 * PMA_weeks + 166.48 (Cuzzolin 2006, Rudd 1983);",
         "the model recomputes TCREA internally from PAGE so users only need to supply CREAT.",
@@ -81,26 +81,26 @@ Germovsek_2016_gentamicin <- function() {
         "TCREA was substituted; users should impute missing serum creatinine with the same",
         "TCREA formula before passing CREAT to the model."
       ),
-      source_name        = "CREAT"
+      source_name = "CREAT"
     )
   )
 
   population <- list(
-    n_subjects     = 205,
-    n_studies      = 3,
-    age_range      = "Neonates and infants; postnatal age (PNA) and postmenstrual age (PMA) ranges not extractable from the DDMORE bundle (Germovsek 2016 PDF not on disk).",
-    weight_range   = "Not extractable from DDMORE bundle (Germovsek 2016 PDF not on disk). The bundle's simulated dataset uses 2.12 kg as a representative weight (preterm neonate).",
+    n_subjects = 205,
+    n_studies = 3,
+    age_range = "Neonates and infants; postnatal age (PNA) and postmenstrual age (PMA) ranges not extractable from the DDMORE bundle (Germovsek 2016 PDF not on disk).",
+    weight_range = "Not extractable from DDMORE bundle (Germovsek 2016 PDF not on disk). The bundle's simulated dataset uses 2.12 kg as a representative weight (preterm neonate).",
     sex_female_pct = "Not extractable from DDMORE bundle.",
     race_ethnicity = "Not extractable from DDMORE bundle.",
-    disease_state  = "Neonates and infants receiving gentamicin (typical clinical indication: suspected or confirmed neonatal sepsis). Pooled across three studies: Glasgow (Thomson 1988), Uppsala (Nielsen 2009), and Estonia (unpublished).",
-    dose_range     = paste(
+    disease_state = "Neonates and infants receiving gentamicin (typical clinical indication: suspected or confirmed neonatal sepsis). Pooled across three studies: Glasgow (Thomson 1988), Uppsala (Nielsen 2009), and Estonia (unpublished).",
+    dose_range = paste(
       "Gentamicin given as short IV infusions; doses in the bundle's simulated dataset",
       "range from approximately 4-7 mg per dose (about 2-3.5 mg/kg) for a 2.12 kg neonate,",
       "delivered as 5-min infusions (rate ~ 50-90 mg/h). Real clinical regimens are once-daily",
       "to every-36-hours dosing depending on PMA and renal function."
     ),
-    regions        = "United Kingdom (Glasgow), Sweden (Uppsala), Estonia.",
-    notes          = paste(
+    regions = "United Kingdom (Glasgow), Sweden (Uppsala), Estonia.",
+    notes = paste(
       "Population description is reconstructed from the .mod $PROBLEM/$DATA comments",
       "(`data from Nielsen2009, Thomson1988, Estonia_unpub`) plus the PubMed abstract of",
       "Germovsek 2016 AAC (PMID 27270281), which states 1,325 concentrations from 205 patients",

@@ -63,11 +63,11 @@ Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight of the liver donor",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight of the liver donor",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used twice: as the allometric scalar in Eq. 4, (WT / 70)^0.75, and as",
         "the normalization denominator that turns hepatic clearance in l/h",
         "into the normalized l/h/kg the paper reports. Also feeds Eq. 10 (body",
@@ -76,30 +76,30 @@ Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny <- function() {
         "the National Center for Health Statistics (2000) growth charts",
         "substituted for the 8 donors whose weight was missing."
       ),
-      source_name        = "Wi"
+      source_name = "Wi"
     ),
     HT = list(
-      description        = "Height (body length) of the liver donor",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height (body length) of the liver donor",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Feeds Eq. 10 (body surface area) only, which in turn drives the",
         "Simcyp liver-weight function Eq. 5. Miyagi 2011 Methods state that",
         "the 50th percentile for age and gender from the National Center for",
         "Health Statistics (2000) growth charts was substituted for the 15",
         "donors whose height and/or weight was missing."
       ),
-      source_name        = "Height"
+      source_name = "Height"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened but not retained. Miyagi 2011 Results: 'Neither UGT1A1 nor",
         "1A6 activities differed significantly with gender or ethnicity', and",
         "no sex coefficient is reported for any equation. Sex enters the",
@@ -110,41 +110,41 @@ Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened but not retained; see the SEXF note above. 64% of the 50 pediatric donors."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened but not retained; see the SEXF note above. 64% of the 50 pediatric donors."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened but not retained; see the SEXF note above. 16% of the 50 pediatric donors."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened but not retained; see the SEXF note above. 16% of the 50 pediatric donors."
     ),
     RACE_HISPANIC = list(
       description = "Hispanic ethnicity indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened but not retained; see the SEXF note above. 14% of the 50 pediatric donors."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened but not retained; see the SEXF note above. 14% of the 50 pediatric donors."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened but not retained; see the SEXF note above. 3% of the 50 pediatric donors."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened but not retained; see the SEXF note above. 3% of the 50 pediatric donors."
     ),
     RACE_INDIAN = list(
       description = "American Indian race indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened but not retained; see the SEXF note above. 3% of the 50 pediatric donors."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened but not retained; see the SEXF note above. 3% of the 50 pediatric donors."
     )
   )
 
   population <- list(
-    species    = "human",
+    species = "human",
     n_subjects = 50L,
-    n_studies  = 1L,
-    age_range  = "13 days to 20 years (mean 8.0 years)",
+    n_studies = 1L,
+    age_range = "13 days to 20 years (mean 8.0 years)",
     weight_range = paste(
       "Not reported. Miyagi 2011 state that individual donor weights were",
       "used where available and that National Center for Health Statistics",

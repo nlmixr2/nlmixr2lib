@@ -27,8 +27,8 @@ Savic_2010_warfarin <- function() {
   )
   vignette <- "Savic_2010_warfarin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -37,24 +37,24 @@ Savic_2010_warfarin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "warfarin", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "warfarin", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "(not reported in Savic 2010)",
-    weight_range   = "(not reported in Savic 2010; parameters reported in absolute units, e.g., V = 7.96 L)",
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "(not reported in Savic 2010)",
+    weight_range = "(not reported in Savic 2010; parameters reported in absolute units, e.g., V = 7.96 L)",
     sex_female_pct = NA_real_,
-    disease_state  = "adult subjects after a single oral dose of warfarin (Savic 2010 Page 6 wording: '33 patients'; underlying O'Reilly 1968 / 1963 cohort was healthy adult volunteers)",
-    dose_range     = "single oral dose of warfarin (Savic 2010 reports parameter point estimates in absolute units; in the original O'Reilly 1968 study the standard dose was 1.5 mg/kg orally as a single dose)",
-    regions        = "United States (San Francisco VA Medical Center; underlying O'Reilly studies)",
-    notes          = paste(
+    disease_state = "adult subjects after a single oral dose of warfarin (Savic 2010 Page 6 wording: '33 patients'; underlying O'Reilly 1968 / 1963 cohort was healthy adult volunteers)",
+    dose_range = "single oral dose of warfarin (Savic 2010 reports parameter point estimates in absolute units; in the original O'Reilly 1968 study the standard dose was 1.5 mg/kg orally as a single dose)",
+    regions = "United States (San Francisco VA Medical Center; underlying O'Reilly studies)",
+    notes = paste(
       "33 subjects from the historical O'Reilly & Aggeler (1968)",
       "Circulation 38:169 and O'Reilly et al. (1963) J Clin Invest",
       "42:1542 warfarin PKPD dataset, re-used by Savic 2010 as the",

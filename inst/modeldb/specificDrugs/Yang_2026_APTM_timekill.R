@@ -27,26 +27,36 @@ Yang_2026_APTM_timekill <- function() {
   paper_specific_compartments <- c("aptm", "bact")
 
   compartmentData <- list(
-    aptm = list(analyte = "APTM (14-O-[(4-amino-6-hydroxy-pyrimidine-2-yl) thioacetyl] mutilin)", units = "ug/mL", specimen = "administration site", verified = TRUE),
-    bact = list(analyte = "Mycoplasma gallisepticum strain S6 (ATCC 15302)", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    aptm = list(
+      analyte = "APTM (14-O-[(4-amino-6-hydroxy-pyrimidine-2-yl) thioacetyl] mutilin)",
+      units = "ug/mL",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    bact = list(
+      analyte = "Mycoplasma gallisepticum strain S6 (ATCC 15302)",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "in vitro (Mycoplasma gallisepticum strain S6 culture)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    organism       = "Mycoplasma gallisepticum standard strain S6 (ATCC 15302; China Institute of Veterinary Drug Control), cultured at 37 C in a humidified 5% CO2 atmosphere in M. gallisepticum basal medium supplemented with 10% porcine serum, 2% penicillin, 0.013% reduced NADH and L-cysteine. APTM MIC = 0.03125 ug/mL by broth microdilution and 0.0625 ug/mL by broth macrodilution, constant across initial inoculum densities of 10^5, 10^6 and 10^7 CFU/mL",
-    system         = "Static time-kill assay by the broth macrodilution method in 2 mL tubes, incubated at 37 C, with viable counts by the drop plate method after ten-fold serial dilution",
-    medium         = "M. gallisepticum basal medium (Qingdao Hope Biological Technology) with 10% porcine serum, 2% penicillin, 0.013% NADH and L-cysteine",
-    temperature    = "37 C",
-    duration       = "48 h",
+    species = "in vitro (Mycoplasma gallisepticum strain S6 culture)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Mycoplasma gallisepticum standard strain S6 (ATCC 15302; China Institute of Veterinary Drug Control), cultured at 37 C in a humidified 5% CO2 atmosphere in M. gallisepticum basal medium supplemented with 10% porcine serum, 2% penicillin, 0.013% reduced NADH and L-cysteine. APTM MIC = 0.03125 ug/mL by broth microdilution and 0.0625 ug/mL by broth macrodilution, constant across initial inoculum densities of 10^5, 10^6 and 10^7 CFU/mL",
+    system = "Static time-kill assay by the broth macrodilution method in 2 mL tubes, incubated at 37 C, with viable counts by the drop plate method after ten-fold serial dilution",
+    medium = "M. gallisepticum basal medium (Qingdao Hope Biological Technology) with 10% porcine serum, 2% penicillin, 0.013% NADH and L-cysteine",
+    temperature = "37 C",
+    duration = "48 h",
     starting_inoculum = "approximately 10^5 CFU/mL",
     limit_of_detection = "10 CFU/mL (drop plate method)",
     concentration_range = "0 (drug-free growth control) to 16 x MIC. Because the time-kill assay used the macrodilution method, the relevant MIC for converting the x MIC multiples to absolute concentrations is the macrodilution value 0.0625 ug/mL, giving 0.0625 to 1 ug/mL",
-    disease_state  = "not applicable (in vitro)",
-    sampling       = "Viable counts at 0, 4, 8, 12, 24, 36 and 48 h; each experiment performed in triplicate",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "Ethics approval 2025C037 (Animal Ethics Committee of South China Agricultural University). APTM was supplied by Shandong Qilu KingPhar Pharmaceutical Co., Ltd.; the reference standard (96.5% purity) was used for the in vitro work. Yang 2026 Results reports that concentrations at and above 2 x MIC reduced the count to the 10 CFU/mL limit of detection within 24 h, but the Table 1 parameter set cannot reproduce that: the maximum attainable net rate is kgrowth - Emax = -0.2354 1/h, which caps the 24 h decline at 2.45 log10 CFU/mL, so a 10^5 CFU/mL inoculum cannot reach 10 CFU/mL (a 4 log10 drop) in 24 h at any concentration. The fitted Emax therefore under-predicts the maximal killing that the raw curves display. This is a property of the published fit, not of the encoding; see the vignette Errata."
+    disease_state = "not applicable (in vitro)",
+    sampling = "Viable counts at 0, 4, 8, 12, 24, 36 and 48 h; each experiment performed in triplicate",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Ethics approval 2025C037 (Animal Ethics Committee of South China Agricultural University). APTM was supplied by Shandong Qilu KingPhar Pharmaceutical Co., Ltd.; the reference standard (96.5% purity) was used for the in vitro work. Yang 2026 Results reports that concentrations at and above 2 x MIC reduced the count to the 10 CFU/mL limit of detection within 24 h, but the Table 1 parameter set cannot reproduce that: the maximum attainable net rate is kgrowth - Emax = -0.2354 1/h, which caps the 24 h decline at 2.45 log10 CFU/mL, so a 10^5 CFU/mL inoculum cannot reach 10 CFU/mL (a 4 log10 drop) in 24 h at any concentration. The fitted Emax therefore under-predicts the maximal killing that the raw curves display. This is a property of the published fit, not of the encoding; see the vignette Errata."
   )
 
   ini({

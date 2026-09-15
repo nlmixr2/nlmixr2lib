@@ -39,64 +39,64 @@ Zhang_2012_lopinavir_ritonavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_rtv       = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central_rtv     = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description       = "Total body weight (baseline or per-record).",
-      units             = "kg",
-      type              = "continuous",
-      notes             = "Allometric scaling of LPV / RTV central and peripheral volumes (V/F) referenced to 70 kg with exponent fixed at 1.0 per Holford / Anderson convention (Zhang 2012 Methods: 'allometric scaling was applied to ... volume of distribution (V/F) ... as described by Holford et al.'). The paper does not explicitly state the reference weight; 70 kg is the Holford-school convention and is documented in the vignette Assumptions and deviations section.",
-      source_name       = "WT"
+      description = "Total body weight (baseline or per-record).",
+      units = "kg",
+      type = "continuous",
+      notes = "Allometric scaling of LPV / RTV central and peripheral volumes (V/F) referenced to 70 kg with exponent fixed at 1.0 per Holford / Anderson convention (Zhang 2012 Methods: 'allometric scaling was applied to ... volume of distribution (V/F) ... as described by Holford et al.'). The paper does not explicitly state the reference weight; 70 kg is the Holford-school convention and is documented in the vignette Assumptions and deviations section.",
+      source_name = "WT"
     ),
     FFM = list(
-      description       = "Fat-free mass derived from total body weight, height, and sex via the Janmahasatian formula.",
-      units             = "kg",
-      type              = "continuous",
-      notes             = "Allometric scaling of LPV / RTV apparent clearance (CL/F) referenced to 50 kg with exponent fixed at 0.75 per Holford / Anderson convention (Zhang 2012 Methods: 'fat free mass ... as described by Holford et al.'; Janmahasatian 2005 formula referenced for FFM derivation). The paper does not explicitly state the reference FFM; 50 kg is the Holford-school convention (approximate FFM of a 70 kg adult male) and is documented in the vignette Assumptions and deviations section. Users supply FFM directly; the Janmahasatian formula is FFM_M = 9.27e3 * WT / (6.68e3 + 216 * BMI) for males and FFM_F = 9.27e3 * WT / (8.78e3 + 244 * BMI) for females, with BMI = WT / (HT/100)^2.",
-      source_name       = "FFM"
+      description = "Fat-free mass derived from total body weight, height, and sex via the Janmahasatian formula.",
+      units = "kg",
+      type = "continuous",
+      notes = "Allometric scaling of LPV / RTV apparent clearance (CL/F) referenced to 50 kg with exponent fixed at 0.75 per Holford / Anderson convention (Zhang 2012 Methods: 'fat free mass ... as described by Holford et al.'; Janmahasatian 2005 formula referenced for FFM derivation). The paper does not explicitly state the reference FFM; 50 kg is the Holford-school convention (approximate FFM of a 70 kg adult male) and is documented in the vignette Assumptions and deviations section. Users supply FFM directly; the Janmahasatian formula is FFM_M = 9.27e3 * WT / (6.68e3 + 216 * BMI) for males and FFM_F = 9.27e3 * WT / (8.78e3 + 244 * BMI) for females, with BMI = WT / (HT/100)^2.",
+      source_name = "FFM"
     ),
     CONMED_RIF = list(
-      description       = "Binary indicator of concomitant rifampicin co-administration (chronic 600 mg once daily for >=7 days, post-induction steady state).",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Binary indicator of concomitant rifampicin co-administration (chronic 600 mg once daily for >=7 days, post-induction steady state).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin)",
-      notes             = "Set to 1 for the rifampicin co-administration arms (PK2, PK3, PK4 in Zhang 2012); set to 0 for the baseline arm (PK1: LPV/r 400/100 mg twice daily without rifampicin). The paper assumes full CYP3A4 induction is reached 1 week after starting daily 600 mg rifampicin (Methods Discussion). The indicator drives the multiplicative effects on LPV CL/F (+71.0%), RTV CL/F (+36.0%), LPV F (-20.0%), RTV F (-45.0% at the 100 mg reference RTV dose), and gates the RTV dose-dependent F effect (active only when CONMED_RIF = 1).",
-      source_name       = "RIF"
+      notes = "Set to 1 for the rifampicin co-administration arms (PK2, PK3, PK4 in Zhang 2012); set to 0 for the baseline arm (PK1: LPV/r 400/100 mg twice daily without rifampicin). The paper assumes full CYP3A4 induction is reached 1 week after starting daily 600 mg rifampicin (Methods Discussion). The indicator drives the multiplicative effects on LPV CL/F (+71.0%), RTV CL/F (+36.0%), LPV F (-20.0%), RTV F (-45.0% at the 100 mg reference RTV dose), and gates the RTV dose-dependent F effect (active only when CONMED_RIF = 1).",
+      source_name = "RIF"
     ),
     DOSE = list(
-      description       = "Per-record ritonavir dose level in mg used by the RTV-bioavailability dose-effect term.",
-      units             = "mg",
-      type              = "continuous",
-      notes             = "Anchored at 100 mg (reference). The 8.1% multiplicative increment per 10 mg of RTV dose is applied only when CONMED_RIF = 1 (the dose-by-bioavailability interaction was identified only within the rifampicin-coadministered arm of the source study; Zhang 2012 Results 'Model description' paragraph 5). Set DOSE = 100 mg for the standard 400/100 mg LPV/r regimen, 150 mg for 600/150 mg LPV/r, 200 mg for 800/200 mg LPV/r. Outside the 100-200 mg range the linear extrapolation is unvalidated and may produce non-physiological F values.",
-      source_name       = "(per-protocol RTV dose level; not explicitly tabulated in the source)"
+      description = "Per-record ritonavir dose level in mg used by the RTV-bioavailability dose-effect term.",
+      units = "mg",
+      type = "continuous",
+      notes = "Anchored at 100 mg (reference). The 8.1% multiplicative increment per 10 mg of RTV dose is applied only when CONMED_RIF = 1 (the dose-by-bioavailability interaction was identified only within the rifampicin-coadministered arm of the source study; Zhang 2012 Results 'Model description' paragraph 5). Set DOSE = 100 mg for the standard 400/100 mg LPV/r regimen, 150 mg for 600/150 mg LPV/r, 200 mg for 800/200 mg LPV/r. Outside the 100-200 mg range the linear extrapolation is unvalidated and may produce non-physiological F values.",
+      source_name = "(per-protocol RTV dose level; not explicitly tabulated in the source)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 21L,
-    n_studies        = 1L,
-    n_observations   = 800L,
-    age_range        = "26-58 years",
-    age_median       = "36 years",
-    weight_range     = "43.0-110.0 kg",
-    weight_median    = "64.5 kg",
-    height_range     = "148.0-186.5 cm",
-    height_median    = "160.5 cm",
-    bmi_range        = "17.4-41.4 kg/m^2",
-    bmi_median       = "26.7 kg/m^2",
-    ffm_range        = "30.6-65.9 kg",
-    ffm_median       = "39.5 kg",
-    sex_female_pct   = 85.7,
-    race_ethnicity   = "South African adults; specific race / ethnicity composition not separately reported by Zhang 2012",
-    disease_state    = "HIV-1 infection without active tuberculosis; protease-inhibitor-naive and virologically suppressed on LPV/r plus two NRTIs at study entry (Zhang 2012 Methods 'Study design and drug analysis').",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    n_observations = 800L,
+    age_range = "26-58 years",
+    age_median = "36 years",
+    weight_range = "43.0-110.0 kg",
+    weight_median = "64.5 kg",
+    height_range = "148.0-186.5 cm",
+    height_median = "160.5 cm",
+    bmi_range = "17.4-41.4 kg/m^2",
+    bmi_median = "26.7 kg/m^2",
+    ffm_range = "30.6-65.9 kg",
+    ffm_median = "39.5 kg",
+    sex_female_pct = 85.7,
+    race_ethnicity = "South African adults; specific race / ethnicity composition not separately reported by Zhang 2012",
+    disease_state = "HIV-1 infection without active tuberculosis; protease-inhibitor-naive and virologically suppressed on LPV/r plus two NRTIs at study entry (Zhang 2012 Methods 'Study design and drug analysis').",
+    dose_range = paste(
       "Four sequential treatment conditions tested:",
       "(PK1) LPV/r 400/100 mg twice daily without rifampicin (reference);",
       "(PK2) LPV/r 400/100 mg twice daily + rifampicin 600 mg once daily;",
@@ -106,8 +106,8 @@ Zhang_2012_lopinavir_ritonavir <- function() {
       "Intensive sampling at 0 (pre-dose), 1.5, 2, 2.5, 3, 4, 5, 6, 8, 12 h after morning dose,",
       "one week after each dose adjustment."
     ),
-    regions          = "South Africa (Cape Town, University of Cape Town)",
-    notes            = paste(
+    regions = "South Africa (Cape Town, University of Cape Town)",
+    notes = paste(
       "Three patients withdrew before completing all four occasions (two transaminitis, one nausea);",
       "partial data retained. All patients had 100% pill-count adherence. Lopinavir LLOQ 0.05 mg/L,",
       "ritonavir LLOQ 0.025 mg/L; values below LLOQ (1% LPV, 2% RTV) set to LLOQ/2 in the model build.",

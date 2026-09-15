@@ -37,18 +37,18 @@ ButraguenoLaiseca_2024_meropenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE),
-    urine       = list(analyte = "meropenem", units = "mg", specimen = "urine",  verified = TRUE)
+    urine = list(analyte = "meropenem", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained on the central volume, and the only structural role body",
         "weight plays in this model: Butragueno-Laiseca 2024 Table 4 prints the parameter model",
         "for V1 as theta_V1 * WGT/10, a LINEAR (exponent 1) normalisation to the cohort median",
@@ -65,14 +65,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "from the Thy et al. model to exactly that correlation. Treated as a time-fixed",
         "baseline value in the source analysis."
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     PNA = list(
-      description        = "Postnatal (chronological) age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal (chronological) age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the renal maturation function on CLR in patients WITHOUT CKRT:",
         "Butragueno-Laiseca 2024 Table 4 prints the parameter model as",
         "theta_CLR * (eGFR/95) * AGE/(AGE + theta_50), an Emax (hyperbolic) form whose Hill",
@@ -90,14 +90,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "The maturation term does NOT apply to CKRT patients, whose renal arm the paper reports",
         "as independent of age (Results, Selection of covariates)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (cystatin-C CKD-EPI and Schwartz equations), BSA-normalised",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (cystatin-C CKD-EPI and Schwartz equations), BSA-normalised",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales the renal clearance arm linearly through the ratio (CRCL/95), where 95",
         "mL/min/1.73 m^2 is the cohort median printed in the Butragueno-Laiseca 2024 Table 4",
         "footnote ('eGFR, estimated glomerular filtration rate (median = 95 mL/min/1.73 m2)').",
@@ -114,14 +114,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "off for CKRT patients, whose Table 1 eGFR row reads 'N/A, not applicable'. Median (IQR)",
         "in the group without CKRT was 89 (69-122) mL/min/1.73 m^2."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = "CKRT-active indicator (1 while continuous kidney replacement therapy is running, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CKRT-active indicator (1 while continuous kidney replacement therapy is running, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CKRT running)",
-      notes              = paste(
+      notes = paste(
         "Selects between the two forms of the renal arm and gates the extracorporeal arm on.",
         "With RRT_CRRT_ACTIVE = 0 the renal arm takes its eGFR- and maturation-scaled form and",
         "CLCKRT is zero -- Methods, Base population model: 'CLCRT was absent in patients without",
@@ -138,14 +138,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "with polyacrylonitrile AN69 hollow-fiber hemofilters (Results, Demographics and",
         "clinical data), hence CRRT rather than the intermittent-hemodialysis member."
       ),
-      source_name        = "patient type (with or without CKRT)"
+      source_name = "patient type (with or without CKRT)"
     ),
     URINE_VOL_24H = list(
-      description        = "24-hour residual diuresis (total urine volume per day)",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "24-hour residual diuresis (total urine volume per day)",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used ONLY as a binary preserved-diuresis gate on the CKRT renal arm, following the",
         "encoding ratified by Huppe_2023_fosfomycin.R. Butragueno-Laiseca 2024 reports the",
         "theta_CLR_CKRT = 0.96 L/h estimate specifically 'For the three patients under CKRT with",
@@ -165,14 +165,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "gate is a model term, and the reading that the 0.96 L/h arm applies only to",
         "diuretic CKRT patients is an interpretation of the two quoted sentences."
       ),
-      source_name        = "residual diuresis / urine output"
+      source_name = "residual diuresis / urine output"
     ),
     URINE_VOL_INTERVAL = list(
-      description        = "Urine volume collected in the urine recovery interval containing the current urinary observation",
-      units              = "mL",
-      type               = "continuous",
+      description = "Urine volume collected in the urine recovery interval containing the current urinary observation",
+      units = "mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Converts the modelled cumulative urinary AMOUNT into the urinary CONCENTRATION the",
         "assay reports. Butragueno-Laiseca 2024 Methods, Base population model: 'CUr was",
         "obtained as AUr/UVol, where UVol is the measured volume of urine excreted in each urine",
@@ -190,14 +190,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "the data), which brackets the plausible per-interval volumes. New canonical ratified by",
         "operator sidecar request-001 / response-001 question q2 option A."
       ),
-      source_name        = "UVol"
+      source_name = "UVol"
     ),
     FILT_SA_MED = list(
-      description        = "Medium haemofilter indicator (0.6 m2 membrane surface area)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Medium haemofilter indicator (0.6 m2 membrane surface area)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the low 0.2 m2 filter, the high 1.2 m2 filter, or no CKRT)",
-      notes              = paste(
+      notes = paste(
         "One of the three levels of the hemofilter-surface-area covariate on the CKRT clearance",
         "arm. IMPORTANT -- unlike the sibling ButraguenoLaiseca_2025_teicoplanin.R, this paper",
         "references the MEDIUM filter, not the small one: Butragueno-Laiseca 2024 Table 4 gives",
@@ -218,14 +218,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "describes the M100 as 0.9 m^2. Two of the seven CKRT patients used the high filter,",
         "two the medium and three the low (Table 3). Meaningful only when RRT_CRRT_ACTIVE = 1."
       ),
-      source_name        = "FILT (Med)"
+      source_name = "FILT (Med)"
     ),
     FILT_SA_LARGE = list(
-      description        = "Large (high) haemofilter indicator (1.2 m2 membrane surface area)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Large (high) haemofilter indicator (1.2 m2 membrane surface area)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the medium 0.6 m2 reference filter, the low 0.2 m2 filter, or no CKRT)",
-      notes              = paste(
+      notes = paste(
         "The high-surface-area level of the hemofilter covariate (Butragueno-Laiseca 2024",
         "Table 4: theta_FILT_High = 1.5, RSE 23%), corroborated by Results, Selection of",
         "covariates: 'The depurative efficiency of the extracorporeal elimination was reduced",
@@ -236,14 +236,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "the reference. See the FILT_SA_MED entry for the reference-flip rationale. Meaningful",
         "only when RRT_CRRT_ACTIVE = 1."
       ),
-      source_name        = "FILT (High)"
+      source_name = "FILT (High)"
     ),
     BFR = list(
-      description        = "Blood flow rate through the CKRT extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate through the CKRT extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters ONLY the post-filter observation equation, not the clearance model.",
         "Butragueno-Laiseca 2024 Methods, Base population model, equation 4:",
         "CPost = CPre * (1 - CLRRT / phi_Pl,corr), where 'The value of phi_Pl,corr was",
@@ -254,14 +254,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "to match the L/h in which CLCKRT is expressed. Meaningful only when",
         "RRT_CRRT_ACTIVE = 1."
       ),
-      source_name        = "Blood flow"
+      source_name = "Blood flow"
     ),
     HCT = list(
-      description        = "Haematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Haematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Converts the extracorporeal blood flow to the corrected plasma flow entering the",
         "hemofilter in the post-filter observation equation. Unlike the sibling teicoplanin",
         "paper, where the plasma-fraction reading had to be inferred, THIS paper resolves the",
@@ -275,14 +275,14 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "1 - HCT/100. Haematocrit is not tabulated for this cohort; supply a physiological",
         "paediatric-ICU value. See the vignette Errata."
       ),
-      source_name        = "hematocrit"
+      source_name = "hematocrit"
     ),
     RRT_CRRT_EFFLUENT_FLOW = list(
-      description        = "Total effluent flow of the CKRT circuit (dialysate plus substitution plus net ultrafiltration)",
-      units              = "mL/h",
-      type               = "continuous",
+      description = "Total effluent flow of the CKRT circuit (dialysate plus substitution plus net ultrafiltration)",
+      units = "mL/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters ONLY the effluent observation equation. Butragueno-Laiseca 2024 Methods, Base",
         "population model, equation 5: CEffl = CLRRT * CPre / phi_Effl, 'where phi_Pl,corr and",
         "phi_Effl are the corrected plasma and total effluent flows ... The values of phi_Blood",
@@ -302,49 +302,49 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "a non-finite prediction. New canonical ratified by operator sidecar request-001 /",
         "response-001 question q1."
       ),
-      source_name        = "phi_Effl / Qeff"
+      source_name = "phi_Effl / Qeff"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate model and not retained. Butragueno-Laiseca 2024 Methods, Covariate selection lists height among the covariates 'tested in all pharmacokinetic parameters associated with interindividual variability'; Results, Selection of covariates report that 'Total protein or albumin serum levels, other demographics, and laboratory indexes did not impact model parameters.' Not tabulated for this cohort."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate model and not retained. Butragueno-Laiseca 2024 Methods, Covariate selection lists height among the covariates 'tested in all pharmacokinetic parameters associated with interindividual variability'; Results, Selection of covariates report that 'Total protein or albumin serum levels, other demographics, and laboratory indexes did not impact model parameters.' Not tabulated for this cohort."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Butragueno-Laiseca 2024 Methods, Covariate selection lists albumin concentration; Results, Selection of covariates: 'Total protein or albumin serum levels ... did not impact model parameters'). A null albumin effect is expected for meropenem, whose unbound fraction in plasma the paper takes as 0.98 (Methods, Probability of target attainment). Not tabulated for this cohort."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained (Butragueno-Laiseca 2024 Methods, Covariate selection lists albumin concentration; Results, Selection of covariates: 'Total protein or albumin serum levels ... did not impact model parameters'). A null albumin effect is expected for meropenem, whose unbound fraction in plasma the paper takes as 0.98 (Methods, Probability of target attainment). Not tabulated for this cohort."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained alongside albumin (Results, Selection of covariates). Not tabulated for this cohort."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained alongside albumin (Results, Selection of covariates). Not tabulated for this cohort."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Reported at baseline -- median (IQR) 0.38 (0.3-0.73) m^2 without CKRT and 0.79 (0.36-1.1) m^2 with CKRT (Table 1) -- and used to BSA-normalise the eGFR, but not retained as a covariate on any PK parameter in its own right. Distinct from the retained hemofilter membrane surface area (FILT_SA_MED / FILT_SA_LARGE), which is a device property rather than a body size."
+      units = "m^2",
+      type = "continuous",
+      notes = "Reported at baseline -- median (IQR) 0.38 (0.3-0.73) m^2 without CKRT and 0.79 (0.36-1.1) m^2 with CKRT (Table 1) -- and used to BSA-normalise the eGFR, but not retained as a covariate on any PK parameter in its own right. Distinct from the retained hemofilter membrane surface area (FILT_SA_MED / FILT_SA_LARGE), which is a device property rather than a body size."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
     n_observations = 212L,
-    age_range      = "3 to 173 months (supplemental Table S1); neonates under 28 days of postnatal age were excluded",
-    age_median     = "8 months (IQR 3.5-82) without CKRT; 48 months (IQR 5-106) with CKRT",
-    weight_range   = "not reported directly; IQR 5.5-17.5 kg without CKRT and 7.4-40 kg with CKRT",
-    weight_median  = "7.5 kg without CKRT; 20 kg with CKRT; 10 kg pooled (Table 4 footnote)",
+    age_range = "3 to 173 months (supplemental Table S1); neonates under 28 days of postnatal age were excluded",
+    age_median = "8 months (IQR 3.5-82) without CKRT; 48 months (IQR 5-106) with CKRT",
+    weight_range = "not reported directly; IQR 5.5-17.5 kg without CKRT and 7.4-40 kg with CKRT",
+    weight_median = "7.5 kg without CKRT; 20 kg with CKRT; 10 kg pooled (Table 4 footnote)",
     sex_female_pct = "Not reported.",
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to a paediatric intensive care unit and treated with",
       "meropenem, 7 of them undergoing continuous kidney replacement therapy on Prismaflex",
       "(Baxter Int.) devices with polyacrylonitrile AN69 hollow-fiber hemofilters. Most",
@@ -357,7 +357,7 @@ ButraguenoLaiseca_2024_meropenem <- function() {
       "several patients received empiric therapy with no organism isolated). No patient",
       "experienced neurotoxicity or nephrotoxicity."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Hospital protocol: 40 mg/kg intravenously every 8 h. In patients with CKRT the dosing",
       "interval was increased to every 12 h at the fourth dose, following the recommended",
       "renal adjustment; no patient in the no-CKRT group required adjustment. Infusions were",
@@ -369,7 +369,7 @@ ButraguenoLaiseca_2024_meropenem <- function() {
       "giving 18 samples per CKRT patient; patients without CKRT contributed 6 blood and 6",
       "urine samples."
     ),
-    regions        = "Hospital General Universitario Gregorio Maranon, Madrid, Spain (single centre).",
+    regions = "Hospital General Universitario Gregorio Maranon, Madrid, Spain (single centre).",
     renal_function = paste(
       "Group without CKRT: eGFR median 89 (IQR 69-122) mL/min/1.73 m^2, urine output median",
       "1,100 (719-1,150) mL, hourly urine output 14-125 mL/h. CKRT group: eGFR not applicable;",
@@ -382,7 +382,7 @@ ButraguenoLaiseca_2024_meropenem <- function() {
       "mL/h. Hemofilters (Table 3): low 0.2 m^2 HF20 (n = 3, mean effluent flow 44 mL/kg/h),",
       "medium 0.6 m^2 M60 (n = 2, 60 mL/kg/h), high 1.2 m^2 M100 (n = 2, 46 mL/kg/h)."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Butragueno-Laiseca 2024 Table 1, reported separately for the",
       "9 patients without and the 7 patients with CKRT; age, weight, body surface area and",
       "both stay durations did not differ significantly between the groups. 212 meropenem",

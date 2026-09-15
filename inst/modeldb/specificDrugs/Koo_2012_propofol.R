@@ -29,18 +29,18 @@ Koo_2012_propofol <- function() {
   )
   vignette <- "Koo_2012_propofol"
   units <- list(
-    time          = "min",
-    dosing        = "(not applicable; effect-site propofol concentration is supplied as the time-varying covariate CEFFECT)",
+    time = "min",
+    dosing = "(not applicable; effect-site propofol concentration is supplied as the time-varying covariate CEFFECT)",
     concentration = "ug/mL (propofol effect-site concentration via CEFFECT)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age in years",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters Ce50 and lambda via additive-linear",
         "centred forms Ce50 = 1.15 - 0.0128 * (AGE - 43) and",
         "lambda = 9.69 - 0.141 * (AGE - 43) per Koo 2012 Table 2 'Final' row.",
@@ -53,14 +53,14 @@ Koo_2012_propofol <- function() {
         "beyond the cohort range; the natural applicability window is the",
         "cohort age range and a modest extrapolation."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CEFFECT = list(
-      description        = "Time-varying propofol effect-site concentration (ug/mL) supplied as the PD driver of the sigmoid Emax probability of ROC",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Time-varying propofol effect-site concentration (ug/mL) supplied as the PD driver of the sigmoid Emax probability of ROC",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "For this model the canonical effect-site PD driver CEFFECT carries",
         "the propofol effect-site concentration in ug/mL. In the source study,",
         "CEFFECT is the Ce predicted by the Schnider 1998/1999 propofol TCI",
@@ -76,27 +76,27 @@ Koo_2012_propofol <- function() {
         "from observed plasma concentrations equilibrated with an",
         "effect-site rate constant."
       ),
-      source_name        = "(none; effect-site Ce is computed externally by the Schnider TCI controller and not stored as a named NONMEM data column with a standard alias)"
+      source_name = "(none; effect-site Ce is computed externally by the Schnider TCI controller and not stored as a named NONMEM data column with a standard alias)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 94L,
-    n_studies       = 1L,
-    age_range       = ">= 20 years (ASA I-II); cohort mean +/- SD 42.8 +/- 16.5 years (Koo 2012 Table 1)",
-    weight_range    = "cohort mean +/- SD 71.1 +/- 14.4 kg (Koo 2012 Table 1)",
-    height_range    = "cohort mean +/- SD 167 +/- 10.6 cm (Koo 2012 Table 1)",
-    bmi_range       = "cohort mean +/- SD 24.8 +/- 4.4 kg/m^2 (Koo 2012 Table 1; BMI > 30 excluded by inclusion criterion)",
-    sex_female_pct  = 100 * 41 / 94,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 94L,
+    n_studies = 1L,
+    age_range = ">= 20 years (ASA I-II); cohort mean +/- SD 42.8 +/- 16.5 years (Koo 2012 Table 1)",
+    weight_range = "cohort mean +/- SD 71.1 +/- 14.4 kg (Koo 2012 Table 1)",
+    height_range = "cohort mean +/- SD 167 +/- 10.6 cm (Koo 2012 Table 1)",
+    bmi_range = "cohort mean +/- SD 24.8 +/- 4.4 kg/m^2 (Koo 2012 Table 1; BMI > 30 excluded by inclusion criterion)",
+    sex_female_pct = 100 * 41 / 94,
+    disease_state = paste(
       "ASA I-II adults scheduled for elective minor surgery (55 eye and",
       "39 ENT procedures) at the Eye and ENT Severance Hospital. Exclusion",
       "criteria: cardiac / pulmonary / hepatic / renal disease; hearing",
       "loss or other neurological deficit; allergy or adverse reaction to",
       "medication; CNS-affecting medications; BMI > 30."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Propofol effect-site TCI (Orchestra Base Primea pump, Fresenius Vial,",
       "France) with the Schnider 1998/1999 PK + effect-site model; initial",
       "induction target Ce = 4 ug/mL with 0.5 ug/mL up-titration if loss of",
@@ -107,8 +107,8 @@ Koo_2012_propofol <- function() {
       "(0.6 mg/kg iv) for endotracheal intubation; ramosetron (0.3 mg) and",
       "ketorolac (60 mg) for PONV / pain prophylaxis pre-emergence."
     ),
-    regions         = "Korea (Yonsei University College of Medicine, Seoul; Eye and ENT Severance Hospital)",
-    notes           = paste(
+    regions = "Korea (Yonsei University College of Medicine, Seoul; Eye and ENT Severance Hospital)",
+    notes = paste(
       "Single-centre prospective study, enrolment January-September 2011.",
       "Duration of surgery 66.9 +/- 53.0 min; duration of anesthesia 97.5",
       "+/- 54.0 min. BIS at baseline 92.8 +/- 4.9, at LOC 67.0 +/- 15.1, at",

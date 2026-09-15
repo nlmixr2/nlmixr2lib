@@ -10,8 +10,8 @@ Sherer_2012_AAA <- function() {
   )
   vignette <- "Sherer_2012_AAA"
   units <- list(
-    time          = "year",
-    dosing        = "n/a (disease-progression model with no drug dosing)",
+    time = "year",
+    dosing = "n/a (disease-progression model with no drug dosing)",
     concentration = "mm (abdominal aortic aneurysm diameter, observation aaa_size)"
   )
 
@@ -20,58 +20,63 @@ Sherer_2012_AAA <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    aaa = list(analyte = "Abdominal Aortic Aneurysm Diameter", units = NA_character_, specimen = "aqueous humour", verified = FALSE)
+    aaa = list(
+      analyte = "Abdominal Aortic Aneurysm Diameter",
+      units = NA_character_,
+      specimen = "aqueous humour",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AAA_DIAM = list(
-      description        = "Baseline (screening) abdominal aortic aneurysm diameter; the per-subject time-fixed measurement that anchors the ODE initial condition and enters the regression equations for all three individual-level parameters (beta0, beta1, beta2).",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline (screening) abdominal aortic aneurysm diameter; the per-subject time-fixed measurement that anchors the ODE initial condition and enters the regression equations for all three individual-level parameters (beta0, beta1, beta2).",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; the value is the screening ultrasound diameter (men's HIMS cohort: 30-49 mm small AAA inclusion criterion). Enters the typical-value regressions as the proportional term AAA_DIAM / 32.7, where 32.7 mm is the cohort median baseline diameter (Sherer 2012 Table 1). The same column also seeds the ODE state at t = 0 indirectly via beta0 = e_aaadiam_b0 * (AAA_DIAM / 32.7) + etabeta0.",
-      source_name        = "Y(0)"
+      notes = "Time-fixed per subject; the value is the screening ultrasound diameter (men's HIMS cohort: 30-49 mm small AAA inclusion criterion). Enters the typical-value regressions as the proportional term AAA_DIAM / 32.7, where 32.7 mm is the cohort median baseline diameter (Sherer 2012 Table 1). The same column also seeds the ODE state at t = 0 indirectly via beta0 = e_aaadiam_b0 * (AAA_DIAM / 32.7) + etabeta0.",
+      source_name = "Y(0)"
     ),
     DDIMER = list(
-      description        = "Plasma D-dimer concentration measured at the HIMS follow-up blood sampling (2001-2004), used as a baseline covariate on the AAA growth rate parameters via log10-transformation.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Plasma D-dimer concentration measured at the HIMS follow-up blood sampling (2001-2004), used as a baseline covariate on the AAA growth rate parameters via log10-transformation.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (single measurement at follow-up rather than at AAA-screening baseline; Sherer 2012 Discussion explicitly flags this as a limitation). Enters the typical-value regressions as the proportional term log10(DDIMER) / log10(326), where 326 ng/mL is the cohort median D-dimer (Sherer 2012 Table 1) and log10(326) approx 2.513. The cohort interquartile range is 142-785 ng/mL; the model was developed against this range and extrapolation outside it is not validated.",
-      source_name        = "C^(D-dimer)"
+      notes = "Time-fixed per subject (single measurement at follow-up rather than at AAA-screening baseline; Sherer 2012 Discussion explicitly flags this as a limitation). Enters the typical-value regressions as the proportional term log10(DDIMER) / log10(326), where 326 ng/mL is the cohort median D-dimer (Sherer 2012 Table 1) and log10(326) approx 2.513. The cohort interquartile range is 142-785 ng/mL; the model was developed against this range and extrapolation outside it is not validated.",
+      source_name = "C^(D-dimer)"
     ),
     DIS_DIAB = list(
-      description        = "Diabetes-mellitus comorbidity indicator (Type 1 or Type 2 not distinguished). 1 = patient has diabetes; 0 = no diabetes.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diabetes-mellitus comorbidity indicator (Type 1 or Type 2 not distinguished). 1 = patient has diabetes; 0 = no diabetes.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes)",
-      notes              = "Time-fixed at HIMS screening per subject (self-reported on the lifestyle questionnaire alongside hypertension, coronary heart disease, stroke). Affects only beta2 (first derivative of growth rate with size); the Sherer 2012 forward-selection / backward-elimination did not find a significant effect on beta1. Cohort prevalence 14% (42 / 299 men, Table 1).",
-      source_name        = "Diabetes"
+      notes = "Time-fixed at HIMS screening per subject (self-reported on the lifestyle questionnaire alongside hypertension, coronary heart disease, stroke). Affects only beta2 (first derivative of growth rate with size); the Sherer 2012 forward-selection / backward-elimination did not find a significant effect on beta1. Cohort prevalence 14% (42 / 299 men, Table 1).",
+      source_name = "Diabetes"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 299L,
-    n_studies      = 1L,
-    age_range      = "65-83 years (HIMS screening 1996-1999 enrolment criterion)",
-    age_median     = "72 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 299L,
+    n_studies = 1L,
+    age_range = "65-83 years (HIMS screening 1996-1999 enrolment criterion)",
+    age_median = "72 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 0,
     race_ethnicity = "predominantly white (Sherer 2012 Discussion)",
-    disease_state  = "Men with a small (30-49 mm) abdominal aortic aneurysm detected on ultrasound screening, with both serial AAA-diameter measurements and a plasma D-dimer measurement available. Cohort drawn from the Health in Men Study (HIMS) screening study in Perth, Western Australia.",
-    dose_range     = "Not applicable -- disease-progression model with no drug dosing.",
-    regions        = "Perth, Western Australia",
-    aaa_bl_range   = "30-49 mm (small AAA inclusion criterion); cohort median 32.7 mm (q1 30.8, q3 36.0)",
-    ddimer_range   = "cohort median 326 ng/mL (q1 142, q3 785)",
-    diab_prev_pct  = 14.0,
-    htn_prev_pct   = 49.0,
-    chd_prev_pct   = 38.0,
+    disease_state = "Men with a small (30-49 mm) abdominal aortic aneurysm detected on ultrasound screening, with both serial AAA-diameter measurements and a plasma D-dimer measurement available. Cohort drawn from the Health in Men Study (HIMS) screening study in Perth, Western Australia.",
+    dose_range = "Not applicable -- disease-progression model with no drug dosing.",
+    regions = "Perth, Western Australia",
+    aaa_bl_range = "30-49 mm (small AAA inclusion criterion); cohort median 32.7 mm (q1 30.8, q3 36.0)",
+    ddimer_range = "cohort median 326 ng/mL (q1 142, q3 785)",
+    diab_prev_pct = 14.0,
+    htn_prev_pct = 49.0,
+    chd_prev_pct = 38.0,
     smoke_prev_pct = 84.0,
-    followup_dur   = "median 5.5 years (q1 5, q3 6)",
+    followup_dur = "median 5.5 years (q1 5, q3 6)",
     n_observations = "1,732 AAA size measurements (median 6 per patient; q1 6, q3 7)",
-    notes          = "Subset of 875 men diagnosed with small AAA during the Western Australia HIMS screening study who had both serial diameter measurements and a D-dimer measurement (Sherer 2012 Results). Demographics, medical conditions, and blood biochemistry summarised in Sherer 2012 Table 1; the model file's covariate set keeps the three covariates retained in the final model (AAA_DIAM, DDIMER, DIS_DIAB)."
+    notes = "Subset of 875 men diagnosed with small AAA during the Western Australia HIMS screening study who had both serial diameter measurements and a D-dimer measurement (Sherer 2012 Results). Demographics, medical conditions, and blood biochemistry summarised in Sherer 2012 Table 1; the model file's covariate set keeps the three covariates retained in the final model (AAA_DIAM, DDIMER, DIS_DIAB)."
   )
 
   ini({

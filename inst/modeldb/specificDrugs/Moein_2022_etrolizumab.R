@@ -8,85 +8,85 @@ Moein_2022_etrolizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "etrolizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "etrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "etrolizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "etrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "etrolizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling (WT / 70)^exponent on CL, Q, Vc, Vp (Table 4 notes a, b).",
-      source_name        = "WT"
+      notes = "Allometric power scaling (WT / 70)^exponent on CL, Q, Vc, Vp (Table 4 notes a, b).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect on CL: exp(theta * (ALB - 41)). Reference 41 g/L is the median of the model-development cohort (Table 3) and the reference-patient value used in Figure 1.",
-      source_name        = "ALB"
+      notes = "Exponential effect on CL: exp(theta * (ALB - 41)). Reference 41 g/L is the median of the model-development cohort (Table 3) and the reference-patient value used in Figure 1.",
+      source_name = "ALB"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect on CL: exp(theta * (CRP - 4.23)). Reference 4.23 mg/L is the reference-patient value reported in the Figure 1 forest plot caption (close to the Table 3 median of 4.31 mg/L). Standard CRP assay (typical of moderate-to-severe IBD populations where baseline CRP is well above the hs-CRP sensitivity range); the canonical general-scope CRP covariate covers both standard and high-sensitivity assays.",
-      source_name        = "CRP"
+      notes = "Exponential effect on CL: exp(theta * (CRP - 4.23)). Reference 4.23 mg/L is the reference-patient value reported in the Figure 1 forest plot caption (close to the Table 3 median of 4.31 mg/L). Standard CRP assay (typical of moderate-to-severe IBD populations where baseline CRP is well above the hs-CRP sensitivity range); the canonical general-scope CRP covariate covers both standard and high-sensitivity assays.",
+      source_name = "CRP"
     ),
     ADA_TITER = list(
-      description        = "Time-varying antidrug antibody titer",
-      units              = "(titer units)",
-      type               = "continuous",
+      description = "Time-varying antidrug antibody titer",
+      units = "(titer units)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect on CL: exp(theta * ADA_TITER). Time-varying covariate -- use the actual titer at the time of each observation; paper imputes missing baseline as 0 (ADA negative) and postdose missingness by LOCF / NOCB. ADA-negative samples are encoded as ADA_TITER = 0 (American-spelling linear-titer convention, appropriate for exp(theta * ADA_TITER) effects); distinct from the reciprocal-dilution convention used in Jackson_2022_ixekizumab where ADA_TITER = 1 for negatives so log(1) = 0 cancels a log-linear effect.",
-      source_name        = "ADAT"
+      notes = "Exponential effect on CL: exp(theta * ADA_TITER). Time-varying covariate -- use the actual titer at the time of each observation; paper imputes missing baseline as 0 (ADA negative) and postdose missingness by LOCF / NOCB. ADA-negative samples are encoded as ADA_TITER = 0 (American-spelling linear-titer convention, appropriate for exp(theta * ADA_TITER) effects); distinct from the reciprocal-dilution convention used in Jackson_2022_ixekizumab where ADA_TITER = 1 for negatives so log(1) = 0 cancels a log-linear effect.",
+      source_name = "ADAT"
     ),
     PRIOR_TNF = list(
-      description        = "Prior anti-TNF inhibitor therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anti-TNF inhibitor therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior anti-TNF)",
-      notes              = "Multiplicative effect on CL: (1 + theta * PRIOR_TNF).",
-      source_name        = "PRIOR_TNF"
+      notes = "Multiplicative effect on CL: (1 + theta * PRIOR_TNF).",
+      source_name = "PRIOR_TNF"
     ),
     DISEXT_EP = list(
-      description        = "Disease extension: extensive colitis / pancolitis (vs. left-sided colitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Disease extension: extensive colitis / pancolitis (vs. left-sided colitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (left-sided colitis; implies DISEXT_OTHER = 0 as well)",
-      notes              = "Multiplicative effect on CL. Reference category left-sided colitis, the most common group (Table 3).",
-      source_name        = "DISEXT"
+      notes = "Multiplicative effect on CL. Reference category left-sided colitis, the most common group (Table 3).",
+      source_name = "DISEXT"
     ),
     DISEXT_OTHER = list(
-      description        = "Disease extension: other (neither left-sided colitis nor extensive/pancolitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Disease extension: other (neither left-sided colitis nor extensive/pancolitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (left-sided colitis)",
-      notes              = "Multiplicative effect on CL. Mutually exclusive with DISEXT_EP. Only 2% of the development data fell in this group; the effect (+18%) carries large uncertainty (RSE 46.9%).",
-      source_name        = "DISEXT"
+      notes = "Multiplicative effect on CL. Mutually exclusive with DISEXT_EP. Only 2% of the development data fell in this group; the effect (+18%) carries large uncertainty (RSE 46.9%).",
+      source_name = "DISEXT"
     )
   )
 
   population <- list(
-    n_subjects     = 1263,
-    n_studies      = 5,
-    age_range      = "18-79 years",
-    age_median     = "38 years",
-    weight_range   = "38.0-216 kg",
-    weight_median  = "72.2 kg",
+    n_subjects = 1263,
+    n_studies = 5,
+    age_range = "18-79 years",
+    age_median = "38 years",
+    weight_range = "38.0-216 kg",
+    weight_median = "72.2 kg",
     sex_female_pct = 42,
-    disease_state  = "Moderately-to-severely active ulcerative colitis; TNF-naive and TNF inadequate responders",
-    dose_range     = "SC: 105 mg Q4W (phase III), 315-420 mg loading (phase II), 0.5-3 mg/kg Q4W (phase I); IV: 0.3-10 mg/kg single dose, 4 mg/kg Q4W (phase I)",
-    regions        = "Multinational pooled phase I-III studies",
+    disease_state = "Moderately-to-severely active ulcerative colitis; TNF-naive and TNF inadequate responders",
+    dose_range = "SC: 105 mg Q4W (phase III), 315-420 mg loading (phase II), 0.5-3 mg/kg Q4W (phase I); IV: 0.3-10 mg/kg single dose, 4 mg/kg Q4W (phase I)",
+    regions = "Multinational pooled phase I-III studies",
     ada_positive_pct = 23,
-    prior_tnf_pct    = 45,
+    prior_tnf_pct = 45,
     disease_extension_pct = c(left_sided = 53, extensive_pancolitis = 42, other = 2, missing = 3),
-    notes          = "Baseline demographics from Moein 2022 Table 3 (model-development cohort, N = 1263 with non-missing covariates). Contributing studies: ABS4262g (NCT00694980, phase I), EUCALYPTUS (NCT01336465, phase II), HIBISCUS I/II (NCT02163759/NCT02171429, phase III), HICKORY (NCT02100696, phase III), LAUREL (NCT02165215, phase III). GARDENIA (NCT02136069) was held out for external validation. Baseline medians: ALB 41 g/L, CRP 4.31 mg/L, fecal calprotectin 1500 ug/g."
+    notes = "Baseline demographics from Moein 2022 Table 3 (model-development cohort, N = 1263 with non-missing covariates). Contributing studies: ABS4262g (NCT00694980, phase I), EUCALYPTUS (NCT01336465, phase II), HIBISCUS I/II (NCT02163759/NCT02171429, phase III), HICKORY (NCT02100696, phase III), LAUREL (NCT02165215, phase III). GARDENIA (NCT02136069) was held out for external validation. Baseline medians: ALB 41 g/L, CRP 4.31 mg/L, fecal calprotectin 1500 ug/g."
   )
 
   ini({

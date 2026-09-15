@@ -26,11 +26,11 @@ Comisar_2025_rimegepant <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on all four disposition parameters, centred at",
         "70 kg. The 70 kg reference is stated in the Comisar 2025 pediatric",
         "supplement (Supplemental methods for the sensitivity analysis:",
@@ -43,14 +43,14 @@ Comisar_2025_rimegepant <- function() {
         "(0.988 to 1.372) on Vc/F and Vp/F. Analysis-population range 23.2",
         "to 134 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed state at the time of the dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of the dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator; the food-effect studies were crossover",
         "designs, so a single subject contributes both levels. Two",
         "multiplicative effects, both in Table 2: relative bioavailability",
@@ -61,14 +61,14 @@ Comisar_2025_rimegepant <- function() {
         "applies rather than FED_LOWFAT or FED_HIGHFAT. All 20 pediatric",
         "participants were dosed fasted."
       ),
-      source_name        = "Fed"
+      source_name = "Fed"
     ),
     FORM_ODT = list(
-      description        = "Orally disintegrating tablet formulation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Orally disintegrating tablet formulation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (immediate-release oral tablet)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Multiplicative effect on the transit",
         "rate constant only: ktr * (1 + 0.470 * FORM_ODT) (Table 2, 'ODT on",
         "k tr'). The ODT is the marketed 75 mg presentation and the only",
@@ -78,14 +78,14 @@ Comisar_2025_rimegepant <- function() {
         "the separate FORM_CAPSULE indicator, so tablet is the state in",
         "which both indicators are 0."
       ),
-      source_name        = "ODT"
+      source_name = "ODT"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (immediate-release oral tablet)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Multiplicative effect on the transit",
         "rate constant only: ktr * (1 + 2.19 * FORM_CAPSULE) (Table 2,",
         "'Capsule formulation on k tr'), i.e. a 3.19-fold faster transit",
@@ -96,14 +96,14 @@ Comisar_2025_rimegepant <- function() {
         "unaffected, unlike the several capsule-vs-tablet models that put",
         "the effect on F."
       ),
-      source_name        = "Capsule"
+      source_name = "Capsule"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment (Child-Pugh B)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment (Child-Pugh B)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, mild impairment, or not listed)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on apparent clearance: CL/F * (1 - 0.203 *",
         "HEPIMP_MOD) (Table 2), a 20.3% reduction. Mild hepatic impairment",
         "was tested and was NOT a significant covariate, so mild-impairment",
@@ -112,28 +112,28 @@ Comisar_2025_rimegepant <- function() {
         "impaired; no pediatric participant had hepatic impairment",
         "(Table 1)."
       ),
-      source_name        = "Moderate hepatic impairment"
+      source_name = "Moderate hepatic impairment"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment (Child-Pugh C)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment (Child-Pugh C)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, mild impairment, or not listed)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on apparent clearance: CL/F * (1 - 0.410 *",
         "HEPIMP_SEV) (Table 2), a 41.0% reduction. Six adults (1.4%) were",
         "severely impaired; no pediatric participant had hepatic",
         "impairment (Table 1). Severe hepatic impairment is one of only two",
         "covariates the upstream adult analysis judged clinically relevant."
       ),
-      source_name        = "Severe hepatic impairment"
+      source_name = "Severe hepatic impairment"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole (strong CYP3A4 / P-gp inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole (strong CYP3A4 / P-gp inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole)",
-      notes              = paste(
+      notes = paste(
         "Two multiplicative effects, both in Table 2: CL/F * (1 - 0.744 *",
         "CONMED_ITRACONAZOLE), a 74.4% clearance reduction giving a 3.9-fold",
         "AUC increase, and ktr * (1 - 0.361 * CONMED_ITRACONAZOLE). Studied",
@@ -142,14 +142,14 @@ Comisar_2025_rimegepant <- function() {
         "other covariate the upstream adult analysis judged clinically",
         "relevant."
       ),
-      source_name        = "Itraconazole use"
+      source_name = "Itraconazole use"
     ),
     CONMED_FLUCONAZOLE = list(
-      description        = "Concomitant fluconazole (moderate CYP3A4 inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant fluconazole (moderate CYP3A4 inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on apparent clearance only: CL/F * (1 -",
         "0.429 * CONMED_FLUCONAZOLE) (Table 2), a 42.9% reduction giving a",
         "1.75-fold AUC increase. Studied in a dedicated adult",
@@ -157,14 +157,14 @@ Comisar_2025_rimegepant <- function() {
         "participant took fluconazole. Unlike itraconazole, fluconazole has",
         "no effect on the transit rate constant in this model."
       ),
-      source_name        = "Fluconazole use"
+      source_name = "Fluconazole use"
     ),
     DOSE_RIMEGEPANT_MG = list(
-      description        = "Administered rimegepant dose level",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered rimegepant dose level",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record dose amount in mg, driving the nonlinear relative",
         "bioavailability F1 = (DOSE_RIMEGEPANT_MG / 10)^0.192 (Table 2",
         "'Dose effect on F 1'; the reference dose of 10 mg and the power",
@@ -177,14 +177,14 @@ Comisar_2025_rimegepant <- function() {
         "casing) is consumed by rxode2's etTrans() and never reaches",
         "model()."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     DOSE_LOW = list(
-      description        = "Low-dose cohort indicator (10 mg or 25 mg rimegepant)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-dose cohort indicator (10 mg or 25 mg rimegepant)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (75 mg or 150 mg)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator, 1 for the 10 mg and 25 mg dose levels",
         "only. Multiplicative effect on the transit rate constant: ktr *",
         "(1 + 0.596 * DOSE_LOW) (Table 2 '10/25mg dose effect on k tr',",
@@ -195,37 +195,37 @@ Comisar_2025_rimegepant <- function() {
         "levels, not by an inequality; the 6 pediatric participants who",
         "received 25 mg carry DOSE_LOW = 1."
       ),
-      source_name        = "10/25 mg dose"
+      source_name = "10/25 mg dose"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "rimegepant", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "rimegepant", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "rimegepant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rimegepant", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 443,
-    n_studies      = 14,
-    age_range      = "6-77 years",
-    age_median     = "43 years",
-    weight_range   = "23.2-134 kg",
-    weight_median  = "73.0 kg",
+    species = "human",
+    n_subjects = 443,
+    n_studies = 14,
+    age_range = "6-77 years",
+    age_median = "43 years",
+    weight_range = "23.2-134 kg",
+    weight_median = "73.0 kg",
     sex_female_pct = 31.4,
     race_ethnicity = c(White = 83.5, Black = 9.3, Asian = 7.2),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adults plus adults with renal or hepatic impairment;",
       "children 6 to <12 years with a history of migraine"
     ),
-    dose_range     = "10-150 mg single, daily, or every-other-day oral tablet, capsule, or ODT",
+    dose_range = "10-150 mg single, daily, or every-other-day oral tablet, capsule, or ODT",
     hepatic_function = "405 normal or not listed, 6 mild, 6 moderate, 6 severe (all adults)",
-    co_medication  = "45 participants took concomitant itraconazole or fluconazole in dedicated DDI studies (all adults)",
-    notes          = paste(
+    co_medication = "45 participants took concomitant itraconazole or fluconazole in dedicated DDI studies (all adults)",
+    notes = paste(
       "Baseline characteristics from Comisar 2025 Table 1. 423 adults from",
       "13 phase 1 studies (11 in the upstream adult model plus BHV3000-113",
       "and BHV3000-120) contributed 14,063 observations, and 20 children",

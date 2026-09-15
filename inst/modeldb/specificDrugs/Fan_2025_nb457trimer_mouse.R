@@ -41,26 +41,41 @@ Fan_2025_nb457trimer_mouse <- function() {
   units <- list(time = "h", dosing = "ug", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot_ip     = list(analyte = "Nb457-NbHSA-Nb457", units = "ug", specimen = "administration site", verified = TRUE),
-    depot_sc     = list(analyte = "Nb457-NbHSA-Nb457", units = "ug", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "Nb457-NbHSA-Nb457 (total: free plus CD4-bound)", units = "ug", specimen = "serum", verified = TRUE),
-    total_target = list(analyte = "CD4 receptor (total, free plus drug-bound; carried as a drug-equivalent concentration)", units = "ug/mL", specimen = "blood cell", verified = FALSE),
-    infected     = list(analyte = "HIV-1-infected CD4+ T cells", units = "cells/mL", specimen = "whole blood", verified = FALSE),
-    virus        = list(analyte = "HIV-1 RNA", units = "copies/mL", specimen = "plasma", verified = TRUE)
+    depot_ip = list(analyte = "Nb457-NbHSA-Nb457", units = "ug", specimen = "administration site", verified = TRUE),
+    depot_sc = list(analyte = "Nb457-NbHSA-Nb457", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "Nb457-NbHSA-Nb457 (total: free plus CD4-bound)",
+      units = "ug",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    total_target = list(
+      analyte = "CD4 receptor (total, free plus drug-bound; carried as a drug-equivalent concentration)",
+      units = "ug/mL",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    infected = list(
+      analyte = "HIV-1-infected CD4+ T cells",
+      units = "cells/mL",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    virus = list(analyte = "HIV-1 RNA", units = "copies/mL", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "mouse (NDG-HuPBL humanized, female)",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "Not reported.",
-    weight_range   = "Not reported. A reference body weight of 0.02 kg is implied by the paper's own allometric projection (see notes) but is never printed.",
+    species = "mouse (NDG-HuPBL humanized, female)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "Not reported.",
+    weight_range = "Not reported. A reference body weight of 0.02 kg is implied by the paper's own allometric projection (see notes) but is never printed.",
     sex_female_pct = 100,
     race_ethnicity = "Not applicable (murine study).",
-    disease_state  = "HIV-1 CH058 infection established by challenge with 10 ng p24 on day 0.",
-    dose_range     = "400 ug per mouse. PK arms: a single 400 ug intraperitoneal (IP) OR subcutaneous (SC) dose on day 1 post-infection, blood sampled at 0, 1, 4, 8, 12, 24, 72 and 120 h. PD arm: 400 ug IP on day 1 followed by 400 ug SC on days 3, 5 and 7, viral load sampled at weeks 1, 2, 3 and 4 post-infection.",
-    regions        = "Nanjing, People's Republic of China.",
-    notes          = "n = 4 female mice per arm for the PK study (one IP arm, one SC arm) and n = 4 for the PD arm (Materials and Methods, Data; Table S1). Because of the limited blood volume in mice, PK and PD were studied in separate animals, and the model was fitted by a naive pooled-data approach in which all individuals are treated as one subject (Materials and Methods, PD model). Despite that statement, Table 1 still reports estimated IIV variances for CL and V3, which this model file carries; see the vignette Errata. Ibalizumab was run as a positive control on the identical regimen and is packaged separately as Fan_2025_ibalizumab_mouse.R. Body weight is never printed; 0.02 kg is recoverable from the paper's own allometric projections (V3 = 0.73 mL scaled to 36.26 mL/kg, and 0.54 mL scaled to 26.9 mL/kg for ibalizumab, both with an exponent of 1)."
+    disease_state = "HIV-1 CH058 infection established by challenge with 10 ng p24 on day 0.",
+    dose_range = "400 ug per mouse. PK arms: a single 400 ug intraperitoneal (IP) OR subcutaneous (SC) dose on day 1 post-infection, blood sampled at 0, 1, 4, 8, 12, 24, 72 and 120 h. PD arm: 400 ug IP on day 1 followed by 400 ug SC on days 3, 5 and 7, viral load sampled at weeks 1, 2, 3 and 4 post-infection.",
+    regions = "Nanjing, People's Republic of China.",
+    notes = "n = 4 female mice per arm for the PK study (one IP arm, one SC arm) and n = 4 for the PD arm (Materials and Methods, Data; Table S1). Because of the limited blood volume in mice, PK and PD were studied in separate animals, and the model was fitted by a naive pooled-data approach in which all individuals are treated as one subject (Materials and Methods, PD model). Despite that statement, Table 1 still reports estimated IIV variances for CL and V3, which this model file carries; see the vignette Errata. Ibalizumab was run as a positive control on the identical regimen and is packaged separately as Fan_2025_ibalizumab_mouse.R. Body weight is never printed; 0.02 kg is recoverable from the paper's own allometric projections (V3 = 0.73 mL scaled to 36.26 mL/kg, and 0.54 mL scaled to 26.9 mL/kg for ibalizumab, both with an exponent of 1)."
   )
 
   ini({

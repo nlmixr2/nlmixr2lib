@@ -34,8 +34,8 @@ Azechi_2024_tamibarotene_pediatric <- function() {
   )
   vignette <- "Azechi_2024_tamibarotene_pediatric"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -43,18 +43,18 @@ Azechi_2024_tamibarotene_pediatric <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tamibarotene", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tamibarotene", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline). Azechi 2024 Table 1 reports",
         "cohort BSA mean = 0.995 m^2 (SD 0.389; median 0.805; range",
         "0.63-1.97). BSA computation formula (DuBois / Mosteller /",
@@ -72,20 +72,20 @@ Azechi_2024_tamibarotene_pediatric <- function() {
         "make the linear-scaling provenance explicit in ini().",
         sep = " "
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "4-23 years",
-    age_median     = "8 years",
-    weight_range   = "14.5-76.6 kg",
-    weight_median  = "19.9 kg",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "4-23 years",
+    age_median = "8 years",
+    weight_range = "14.5-76.6 kg",
+    weight_median = "19.9 kg",
     sex_female_pct = 32.8,
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric and young adult patients with histologically confirmed",
       "advanced or recurrent solid tumors (sarcomas, blastomas, germ",
       "cell tumors, or CNS tumors) qualifying for the phase I",
@@ -93,7 +93,7 @@ Azechi_2024_tamibarotene_pediatric <- function() {
       "protocol.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral tamibarotene 4, 6, 8, 10, or 12 mg/m^2/day divided twice",
       "daily; 1-mg soft capsule formulation suitable for pediatric",
       "administration. The dosing schedule began 2-days-on / 2-days-off",
@@ -102,12 +102,12 @@ Azechi_2024_tamibarotene_pediatric <- function() {
       "observed at the lower doses.",
       sep = " "
     ),
-    regions        = paste(
+    regions = paste(
       "Japan (4 medical institutions). Trial registration:",
       "UMIN-CTR identifier UMIN000017053.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "22 patients (15 male = 68.2%, 7 female = 32.8%) contributed 109",
       "concentration samples to the popPK dataset; one patient with an",
       "abnormally high terminal half-life was excluded from the",

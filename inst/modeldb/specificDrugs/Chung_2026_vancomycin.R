@@ -22,47 +22,47 @@ Chung_2026_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the start of vancomycin therapy",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the start of vancomycin therapy",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chung 2026 Equations (1) and (2) write both CL and V on (WT/70)^1, i.e. linear scaling normalized to a 70 kg reference, so theta_CL = 13.9 L/h and theta_V = 65.5 L are the values a 70 kg reference subject would take. The exponent of exactly 1 is printed in both equations and carries no uncertainty, so it is encoded with fixed(). Model-development cohort (Chung 2026 Table 1, 'Previous cohort [19] used for popPK model development') mean (SD) 1.88 (0.99) kg; external-validation cohort 1.06 (0.60) kg. The extraction is calibrated in the neonatal weight range only: nothing in either cohort approaches 70 kg, so the 70 kg normalization is a scaling convention rather than a supported extrapolation.",
-      source_name        = "WT"
+      notes = "Chung 2026 Equations (1) and (2) write both CL and V on (WT/70)^1, i.e. linear scaling normalized to a 70 kg reference, so theta_CL = 13.9 L/h and theta_V = 65.5 L are the values a 70 kg reference subject would take. The exponent of exactly 1 is printed in both equations and carries no uncertainty, so it is encoded with fixed(). Model-development cohort (Chung 2026 Table 1, 'Previous cohort [19] used for popPK model development') mean (SD) 1.88 (0.99) kg; external-validation cohort 1.06 (0.60) kg. The extraction is calibrated in the neonatal weight range only: nothing in either cohort approaches 70 kg, so the 70 kg normalization is a scaling convention rather than a supported extrapolation.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the sigmoidal Emax (Hill) maturation function on CL in Chung 2026 Equation (1), PMA^0.739 / (PMA^0.739 + 47.7^0.739). The source paper writes PMA in WEEKS and its TM50 of 47.7 weeks is the Rhodin 2009 renal-maturation half-time; the canonical PAGE column is in months, so model() converts back with pma_wk = PAGE * 4.35 and the published TM50 in weeks applies unchanged. Note that Chung 2023 kept the Rhodin TM50 of 47.7 weeks but estimated a much shallower Hill of 0.739 (Rhodin uses 3.4), which flattens the maturation profile across the neonatal range. Model-development cohort mean (SD) 34.3 (5.03) weeks; external-validation cohort 28.9 (3.81) weeks. Both cohorts excluded PMA of 44 weeks and above (Chung 2026 Methods, 'Study design and population').",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the sigmoidal Emax (Hill) maturation function on CL in Chung 2026 Equation (1), PMA^0.739 / (PMA^0.739 + 47.7^0.739). The source paper writes PMA in WEEKS and its TM50 of 47.7 weeks is the Rhodin 2009 renal-maturation half-time; the canonical PAGE column is in months, so model() converts back with pma_wk = PAGE * 4.35 and the published TM50 in weeks applies unchanged. Note that Chung 2023 kept the Rhodin TM50 of 47.7 weeks but estimated a much shallower Hill of 0.739 (Rhodin uses 3.4), which flattens the maturation profile across the neonatal range. Model-development cohort mean (SD) 34.3 (5.03) weeks; external-validation cohort 28.9 (3.81) weeks. Both cohorts excluded PMA of 44 weeks and above (Chung 2026 Methods, 'Study design and population').",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine, measured by the enzymatic creatinine method on the Roche cobas platform",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine, measured by the enzymatic creatinine method on the Roche cobas platform",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chung 2026 Methods, 'PopPK model identification' states explicitly that SCr in Equation (1) is in umol/L, and the model enters it as (SCr/34)^-0.653. The reference of 34 umol/L (about 0.38 mg/dL) is close to the Chung 2023 model-development cohort median of 29 umol/L (IQR 21-43, Chung 2026 Table 1); the external-validation cohort is markedly more renally impaired at a median of 56 umol/L (IQR 39.0-79.5). The negative exponent means a higher serum creatinine (poorer glomerular filtration) lowers clearance. About 30% of the validation cohort lacked a documented baseline SCr and those neonates could not be used in the popPK evaluation (Chung 2026 Limitations).",
-      source_name        = "SCr"
+      notes = "Chung 2026 Methods, 'PopPK model identification' states explicitly that SCr in Equation (1) is in umol/L, and the model enters it as (SCr/34)^-0.653. The reference of 34 umol/L (about 0.38 mg/dL) is close to the Chung 2023 model-development cohort median of 29 umol/L (IQR 21-43, Chung 2026 Table 1); the external-validation cohort is markedly more renally impaired at a median of 56 umol/L (IQR 39.0-79.5). The negative exponent means a higher serum creatinine (poorer glomerular filtration) lowers clearance. About 30% of the validation cohort lacked a documented baseline SCr and those neonates could not be used in the popPK evaluation (Chung 2026 Limitations).",
+      source_name = "SCr"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 648L,
-    n_studies        = 1L,
-    n_sites          = 1L,
-    age_range        = "Postmenstrual age below 44 weeks and postnatal age below 28 days (eligibility); model-development cohort mean (SD) postmenstrual age 34.3 (5.03) weeks and gestational age 29.9 (5.52) weeks",
-    age_median       = "Postnatal age median 21.3 days (IQR 9.33-44.3) in the model-development cohort",
-    weight_range     = "Model-development cohort mean (SD) 1.88 (0.99) kg; birth weight 1.49 (1.04) kg",
-    weight_median    = "1.88 kg (mean)",
-    sex_female_pct   = 41.2,
-    disease_state    = "Neonates in a tertiary (Level IV) neonatal intensive care unit receiving intravenous vancomycin, predominantly for suspected or confirmed late-onset sepsis caused by coagulase-negative staphylococci. Comorbidity in the model-development cohort: intra-abdominal infection 51.2%, patent ductus arteriosus 24.7%, other congenital heart disease 12.8%.",
-    dose_range       = "Weight- and postmenstrual-age-based institutional dosing with therapeutic drug monitoring. The external-validation site's standard initial regimen was 10 mg/kg per dose as a 1 h intravenous infusion, every 12 h for postmenstrual age below 30 weeks and every 8 h for postmenstrual age of 30 weeks and above (Chung 2026 Methods, 'Vancomycin dosing and monitoring practice').",
-    regions          = "Canada (Toronto, Ontario)",
-    renal_function   = "Serum creatinine median 29.0 umol/L (IQR 21.0-43.0) in the model-development cohort; last-24-h urine output mean (SD) 3.83 (1.68) mL/kg/h",
-    co_medication    = "Concurrent nephrotoxic drugs in the model-development cohort: aminoglycoside (gentamicin or tobramycin) 52.2%, furosemide 30.6%, acyclovir 4.3%, amphotericin B 3.1%, hydrochlorothiazide-spironolactone 1.5%",
-    notes            = "The parameter values reproduced here are those of the Chung 2023 model, developed in neonates admitted to the SickKids Level IV NICU in Toronto and reproduced verbatim as Equations (1) and (2) of Chung 2026. Chung 2026 Table 1 gives the development cohort as N = 648; the Chung 2026 Introduction instead says the model was developed 'based on 442 neonates', a discrepancy that cannot be resolved from Chung 2026 alone (see the vignette Errata). The externally-validating cohort of Chung 2026 is a separate, more preterm and more renally-impaired population: 366 neonates with 661 vancomycin concentrations (median 1 per neonate) from the Mount Sinai Hospital Level III NICU in Toronto, treated between 1 October 2016 and 31 December 2021, with mean (SD) postmenstrual age 28.9 (3.81) weeks, weight 1.06 (0.60) kg and median serum creatinine 56.0 umol/L. Against that cohort the model met all five predefined a priori criteria (mean error -0.46 mg/L, relative mean error 12.2%, relative median error 4.2%, RMSE 8.00, 49.3% of predictions within 30% of observed; Chung 2026 Table 5) and was the best of the 33 models compared. Concentrations were assayed by immunoturbidimetry on the Roche cobas platform with a lower limit of quantification of 4 mg/L. Model fitting for Chung 2023 was performed in Phoenix WinNonlin/NLME."
+    species = "human",
+    n_subjects = 648L,
+    n_studies = 1L,
+    n_sites = 1L,
+    age_range = "Postmenstrual age below 44 weeks and postnatal age below 28 days (eligibility); model-development cohort mean (SD) postmenstrual age 34.3 (5.03) weeks and gestational age 29.9 (5.52) weeks",
+    age_median = "Postnatal age median 21.3 days (IQR 9.33-44.3) in the model-development cohort",
+    weight_range = "Model-development cohort mean (SD) 1.88 (0.99) kg; birth weight 1.49 (1.04) kg",
+    weight_median = "1.88 kg (mean)",
+    sex_female_pct = 41.2,
+    disease_state = "Neonates in a tertiary (Level IV) neonatal intensive care unit receiving intravenous vancomycin, predominantly for suspected or confirmed late-onset sepsis caused by coagulase-negative staphylococci. Comorbidity in the model-development cohort: intra-abdominal infection 51.2%, patent ductus arteriosus 24.7%, other congenital heart disease 12.8%.",
+    dose_range = "Weight- and postmenstrual-age-based institutional dosing with therapeutic drug monitoring. The external-validation site's standard initial regimen was 10 mg/kg per dose as a 1 h intravenous infusion, every 12 h for postmenstrual age below 30 weeks and every 8 h for postmenstrual age of 30 weeks and above (Chung 2026 Methods, 'Vancomycin dosing and monitoring practice').",
+    regions = "Canada (Toronto, Ontario)",
+    renal_function = "Serum creatinine median 29.0 umol/L (IQR 21.0-43.0) in the model-development cohort; last-24-h urine output mean (SD) 3.83 (1.68) mL/kg/h",
+    co_medication = "Concurrent nephrotoxic drugs in the model-development cohort: aminoglycoside (gentamicin or tobramycin) 52.2%, furosemide 30.6%, acyclovir 4.3%, amphotericin B 3.1%, hydrochlorothiazide-spironolactone 1.5%",
+    notes = "The parameter values reproduced here are those of the Chung 2023 model, developed in neonates admitted to the SickKids Level IV NICU in Toronto and reproduced verbatim as Equations (1) and (2) of Chung 2026. Chung 2026 Table 1 gives the development cohort as N = 648; the Chung 2026 Introduction instead says the model was developed 'based on 442 neonates', a discrepancy that cannot be resolved from Chung 2026 alone (see the vignette Errata). The externally-validating cohort of Chung 2026 is a separate, more preterm and more renally-impaired population: 366 neonates with 661 vancomycin concentrations (median 1 per neonate) from the Mount Sinai Hospital Level III NICU in Toronto, treated between 1 October 2016 and 31 December 2021, with mean (SD) postmenstrual age 28.9 (3.81) weeks, weight 1.06 (0.60) kg and median serum creatinine 56.0 umol/L. Against that cohort the model met all five predefined a priori criteria (mean error -0.46 mg/L, relative mean error 12.2%, relative median error 4.2%, RMSE 8.00, 49.3% of predictions within 30% of observed; Chung 2026 Table 5) and was the best of the 33 models compared. Concentrations were assayed by immunoturbidimetry on the Roche cobas platform with a lower limit of quantification of 4 mg/L. Model fitting for Chung 2023 was performed in Phoenix WinNonlin/NLME."
   )
 
   ini({

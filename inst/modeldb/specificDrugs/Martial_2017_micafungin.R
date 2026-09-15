@@ -10,44 +10,44 @@ Martial_2017_micafungin <- function() {
     sep = " "
   )
   vignette <- "Martial_2017_micafungin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "micafungin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "micafungin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "micafungin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL and Q (exponent 0.75 fixed) and V1 and V2 (exponent 1 fixed) with reference weight 70 kg, per Martial 2017 Section 2.4 (Methods). Time-varying weight is permitted by the structural model; the ICU cohort had a median baseline weight of 76.5 kg (range 50-134 kg, Table 1).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling on CL and Q (exponent 0.75 fixed) and V1 and V2 (exponent 1 fixed) with reference weight 70 kg, per Martial 2017 Section 2.4 (Methods). Time-varying weight is permitted by the structural model; the ICU cohort had a median baseline weight of 76.5 kg (range 50-134 kg, Table 1).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "20-84 years (median 68)",
-    age_median     = "68 years",
-    weight_range   = "50-134 kg (median 76.5)",
-    weight_median  = "76.5 kg",
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "20-84 years (median 68)",
+    age_median = "68 years",
+    weight_range = "50-134 kg (median 76.5)",
+    weight_median = "76.5 kg",
     sex_female_pct = 60,
     race_ethnicity = "Not stratified in the source (single-country Dutch ICU cohort).",
-    disease_state  = "Adults admitted to the intensive care unit (ICU) and receiving micafungin for suspected or proven fungal infection. All 20 patients had pronounced hypoalbuminaemia (serum albumin <= 34 g/L); 5 (25%) received continuous veno-venous haemofiltration (CVVH) and 1 (5%) received intermittent haemodialysis at baseline (Martial 2017 Table 1).",
-    dose_range     = "100 mg micafungin once daily as a ~1 h IV infusion; therapy continued as clinically indicated, capped at 14 days plus 3 follow-up days for sampling. No dose adaptations were performed during the study (Martial 2017 Sections 2.2 and 3.1).",
-    bmi_range      = "16.3-47.5 kg/m^2 (median 24.6)",
-    regions        = "Netherlands (multicentre FANTASTIC Consortium: Radboud University Medical Center, Canisius Wilhelmina Hospital, Erasmus Medical Center, Rijnstate Hospital, University Medical Centre Utrecht).",
-    indication     = "Empiric or targeted treatment of Candida (and occasional Aspergillus) infections in the ICU; 100% of patients had Candida spp. infection.",
+    disease_state = "Adults admitted to the intensive care unit (ICU) and receiving micafungin for suspected or proven fungal infection. All 20 patients had pronounced hypoalbuminaemia (serum albumin <= 34 g/L); 5 (25%) received continuous veno-venous haemofiltration (CVVH) and 1 (5%) received intermittent haemodialysis at baseline (Martial 2017 Table 1).",
+    dose_range = "100 mg micafungin once daily as a ~1 h IV infusion; therapy continued as clinically indicated, capped at 14 days plus 3 follow-up days for sampling. No dose adaptations were performed during the study (Martial 2017 Sections 2.2 and 3.1).",
+    bmi_range = "16.3-47.5 kg/m^2 (median 24.6)",
+    regions = "Netherlands (multicentre FANTASTIC Consortium: Radboud University Medical Center, Canisius Wilhelmina Hospital, Erasmus Medical Center, Rijnstate Hospital, University Medical Centre Utrecht).",
+    indication = "Empiric or targeted treatment of Candida (and occasional Aspergillus) infections in the ICU; 100% of patients had Candida spp. infection.",
     n_observations = 356L,
-    notes          = "Baseline demographics from Martial 2017 Table 1; n = 20 evaluable patients with a first PK curve on day 3. Hypoalbuminaemia categories: 25-34 g/L (10%), 15-24 g/L (65%), <15 g/L (25%). Renal replacement: CVVH 25%, intermittent haemodialysis 5%. The cohort was 60% female. No covariates beyond a-priori allometric weight scaling were retained in the final model; stepwise screening of albumin, CVVH, and SOFA score did not produce significant OFV drops (Section 3.2)."
+    notes = "Baseline demographics from Martial 2017 Table 1; n = 20 evaluable patients with a first PK curve on day 3. Hypoalbuminaemia categories: 25-34 g/L (10%), 15-24 g/L (65%), <15 g/L (25%). Renal replacement: CVVH 25%, intermittent haemodialysis 5%. The cohort was 60% female. No covariates beyond a-priori allometric weight scaling were retained in the final model; stepwise screening of albumin, CVVH, and SOFA score did not produce significant OFV drops (Section 3.2)."
   )
 
   ini({

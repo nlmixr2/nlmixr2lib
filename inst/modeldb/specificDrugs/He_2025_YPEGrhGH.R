@@ -35,11 +35,11 @@ He_2025_YPEGrhGH <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate centred at 35.5 years (Supplementary",
         "Material, PopPK model equations). Enters three parameters:",
         "Ka with exponent -0.6957, V1/F with exponent 1.470 and Vmax",
@@ -50,67 +50,74 @@ He_2025_YPEGrhGH <- function() {
         "main text and is read from the supplement's final-model",
         "equations."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, power covariate on Vmax with exponent",
         "2.202 centred at 70 kg (Supplementary Material, PopPK model",
         "equations). The pooled cohort medians were 59.0 kg (elderly)",
         "and 66.4 kg (healthy adults) per Table 2, so 70 kg is a",
         "rounded reference rather than the dataset median."
       ),
-      source_name        = "WEIGHT"
+      source_name = "WEIGHT"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "YPEG-rhGH", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "YPEG-rhGH",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "YPEG-rhGH", units = "ug",
-      specimen = "serum", verified = TRUE
+      analyte = "YPEG-rhGH",
+      units = "ug",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "YPEG-rhGH", units = "ug",
-      specimen = "serum", verified = TRUE
+      analyte = "YPEG-rhGH",
+      units = "ug",
+      specimen = "serum",
+      verified = TRUE
     ),
     igf1 = list(
       analyte = "insulin-like growth factor 1",
       units = "fraction of baseline",
-      specimen = "serum", verified = TRUE
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52L,
-    n_studies      = 2L,
-    age_range      = "65-74 years (elderly, n = 16); 21-44 years (healthy adults, n = 36)",
-    age_median     = "66.0 years (elderly); 29.0 years (healthy adults)",
-    weight_range   = "51.1-76.1 kg (elderly); 52.4-79.6 kg (healthy adults)",
-    weight_median  = "59.0 kg (elderly); 66.4 kg (healthy adults)",
+    species = "human",
+    n_subjects = 52L,
+    n_studies = 2L,
+    age_range = "65-74 years (elderly, n = 16); 21-44 years (healthy adults, n = 36)",
+    age_median = "66.0 years (elderly); 29.0 years (healthy adults)",
+    weight_range = "51.1-76.1 kg (elderly); 52.4-79.6 kg (healthy adults)",
+    weight_median = "59.0 kg (elderly); 66.4 kg (healthy adults)",
     sex_female_pct = 23,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers. The elderly cohort (study TB2208GH) was",
       "screened to a baseline IGF-1 standard-deviation score below 0",
       "and a BMI of 18-30 kg/m2, so it models the growth-hormone",
       "-deficient elderly target population without carrying a",
       "diagnosis of adult growth hormone deficiency."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Elderly (TB2208GH): 30 ug/kg SC once every 2 weeks for 23",
       "weeks (12 injections). Healthy adults (TB1010GH): single SC",
       "doses of 10, 30, 60, 120 or 200 ug/kg."
     ),
-    regions        = "China",
-    notes          = paste(
+    regions = "China",
+    notes = paste(
       "Baseline demographics are Table 2 of the source paper; the",
       "study designs and sampling schedules are Table 1 and",
       "Supplementary Table 3. 813 of 884 PK samples (71 BQL samples",

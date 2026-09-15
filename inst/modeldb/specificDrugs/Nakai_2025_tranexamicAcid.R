@@ -1,49 +1,49 @@
 Nakai_2025_tranexamicAcid <- function() {
   description <- "Two-compartment population PK model for intravenous tranexamic acid (TXA) with first-order elimination, in adults undergoing cardiac surgery with cardiopulmonary bypass; body weight on central volume and Cockcroft-Gault creatinine clearance on clearance (Nakai 2025)."
-  reference   <- "Nakai T, Tamura T, Miyagawa Y, Inagaki T, Mutsuga M, Yamada S, Yamada K, Nishiwaki K, Mizoguchi H. Population pharmacokinetic model of tranexamic acid in patients who undergo cardiac surgery with cardiopulmonary bypass. Eur J Clin Pharmacol. 2025;81(3):441-449. doi:10.1007/s00228-025-03802-0"
-  vignette    <- "Nakai_2025_tranexamicAcid"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  reference <- "Nakai T, Tamura T, Miyagawa Y, Inagaki T, Mutsuga M, Yamada S, Yamada K, Nishiwaki K, Mizoguchi H. Population pharmacokinetic model of tranexamic acid in patients who undergo cardiac surgery with cardiopulmonary bypass. Eur J Clin Pharmacol. 2025;81(3):441-449. doi:10.1007/s00228-025-03802-0"
+  vignette <- "Nakai_2025_tranexamicAcid"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (WT/61.4)^0.911 on the central volume V1 only; 61.4 kg is the cohort median body weight (Nakai 2025 Table 1). Body weight was also tested on CL2 (Table 2 model 3) but the final model (model 7) retains it only on V1. Time-fixed at the pre-operative value.",
-      source_name        = "BW"
+      notes = "Power scaling (WT/61.4)^0.911 on the central volume V1 only; 61.4 kg is the cohort median body weight (Nakai 2025 Table 1). Body weight was also tested on CL2 (Table 2 model 3) but the final model (model 7) retains it only on V1. Time-fixed at the pre-operative value.",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation using ACTUAL body weight, NOT body-surface-area normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation using ACTUAL body weight, NOT body-surface-area normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (CRCL/61.0)^0.752 on CL1; 61.0 mL/min is the cohort median (Nakai 2025 Table 1). Cockcroft-Gault as printed in Nakai 2025 Methods: CLcr (mL/min) = ((140 - age) * BW) / (Scr * 72), x 0.85 if female, with Scr in mg/dL. Serum creatinine was measured pre-operatively, so CRCL is time-fixed at baseline. The summary equation in the Abstract/Results writes 'CLcr (L/h)' but the normalizing constant 61.0 is the mL/min median from Table 1; the Discussion worked example (BW 61.4 kg, CLcr 60.0 mL/min -> CL1 = 3.223 L/h) confirms the ratio is formed in mL/min. Raw (non-BSA-normalized) Cockcroft-Gault CRCL follows the precedent of Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R and Wada_2023_sparsentan.R.",
-      source_name        = "CLcr"
+      notes = "Power scaling (CRCL/61.0)^0.752 on CL1; 61.0 mL/min is the cohort median (Nakai 2025 Table 1). Cockcroft-Gault as printed in Nakai 2025 Methods: CLcr (mL/min) = ((140 - age) * BW) / (Scr * 72), x 0.85 if female, with Scr in mg/dL. Serum creatinine was measured pre-operatively, so CRCL is time-fixed at baseline. The summary equation in the Abstract/Results writes 'CLcr (L/h)' but the normalizing constant 61.0 is the mL/min median from Table 1; the Discussion worked example (BW 61.4 kg, CLcr 60.0 mL/min -> CL1 = 3.223 L/h) confirms the ratio is formed in mL/min. Raw (non-BSA-normalized) Cockcroft-Gault CRCL follows the precedent of Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R and Wada_2023_sparsentan.R.",
+      source_name = "CLcr"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 77L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 77L,
+    n_studies = 1L,
     n_observations = 453L,
-    age_range      = "26-84 years",
-    age_median     = "69 years (IQR 60-75)",
-    weight_range   = "38.0-97.6 kg",
-    weight_median  = "61.4 kg (IQR 54.6-75.2)",
-    bmi_range      = "15.1-35.0 kg/m^2",
+    age_range = "26-84 years",
+    age_median = "69 years (IQR 60-75)",
+    weight_range = "38.0-97.6 kg",
+    weight_median = "61.4 kg (IQR 54.6-75.2)",
+    bmi_range = "15.1-35.0 kg/m^2",
     sex_female_pct = 33.8,
-    disease_state  = "Adults undergoing cardiac surgery (CABG, single or complex valve, aortic, or combined procedures) with cardiopulmonary bypass",
+    disease_state = "Adults undergoing cardiac surgery (CABG, single or complex valve, aortic, or combined procedures) with cardiopulmonary bypass",
     renal_function = "Cockcroft-Gault creatinine clearance 21.8-147.5 mL/min (median 61.0, IQR 48.1-76.3); serum creatinine 38.0-271.4 umol/L (median 85.7). Patients on haemodialysis were excluded.",
-    dose_range     = "Double-bolus regimen: 1000 mg intravenous TXA at the start of the operative procedure and a further 1000 mg after cardiopulmonary bypass was discontinued (Nakai 2025 Methods, Study design)",
-    regions        = "Single centre, Nagoya University Hospital, Japan (August 2021 to August 2022)",
-    notes          = "Prospective observational study; 88 patients screened, 11 excluded (8 on haemodialysis, 2 without CPB, 1 with a different dosing regimen). Baseline demographics in Nakai 2025 Table 1. Sampling at approximately 0.5, 1, 2 and 5 h after the first dose and 1, 6 and 16 h after re-administration. Intraoperative CPB duration 76-424 min (median 170). Estimation in Phoenix NLME 8.4.0 with FOCE-ELS."
+    dose_range = "Double-bolus regimen: 1000 mg intravenous TXA at the start of the operative procedure and a further 1000 mg after cardiopulmonary bypass was discontinued (Nakai 2025 Methods, Study design)",
+    regions = "Single centre, Nagoya University Hospital, Japan (August 2021 to August 2022)",
+    notes = "Prospective observational study; 88 patients screened, 11 excluded (8 on haemodialysis, 2 without CPB, 1 with a different dosing regimen). Baseline demographics in Nakai 2025 Table 1. Sampling at approximately 0.5, 1, 2 and 5 h after the first dose and 1, 6 and 16 h after re-administration. Intraoperative CPB duration 76-424 min (median 170). Estimation in Phoenix NLME 8.4.0 with FOCE-ELS."
   )
 
   ini({

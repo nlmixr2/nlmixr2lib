@@ -33,8 +33,8 @@ Tobin_2026_atomoxetine <- function() {
   )
   vignette <- "Tobin_2026_atomoxetine"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -45,17 +45,17 @@ Tobin_2026_atomoxetine <- function() {
   # compartment") and Methods 'Study Populations' (atomoxetine plasma
   # concentrations).
   compartmentData <- list(
-    depot   = list(analyte = "atomoxetine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "atomoxetine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "atomoxetine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Allometric scaling on both Vc/F (exponent 1.0) and CL/F (exponent ",
         "0.75), centred at a 70 kg typical adult. Tobin 2026 Equation (3) ",
         "defines the term as (wt_i / 70)^b_theta with '70 is the typical ",
@@ -70,18 +70,18 @@ Tobin_2026_atomoxetine <- function() {
         "the vignette's Assumptions and deviations section. Cohort mean ",
         "54.5 +/- 26.4 kg (Tobin 2026 Table 1)."
       ),
-      source_name        = "wt"
+      source_name = "wt"
     ),
     CYP2D6_PM = list(
-      description        = paste0(
+      description = paste0(
         "1 = CYP2D6 poor-metabolizer phenotype (CPIC activity score 0), ",
         "0 = otherwise. Together with CYP2D6_IM = 0 the reference category ",
         "is the pooled CYP2D6 normal-plus-ultrarapid metabolizer group."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Normal or ultrarapid metabolizer (CYP2D6_PM = 0 and CYP2D6_IM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (germline genotype-derived phenotype). Tobin 2026 ",
         "Methods 'Genotyping and Phenotyping': phenotype assigned from CPIC ",
         "activity score, poor metabolizer = activity score 0. Carries two ",
@@ -97,19 +97,19 @@ Tobin_2026_atomoxetine <- function() {
         "'relative bioavailability or clearance effects of CYP2D6 UMs did ",
         "not explain variability in Vc/F nor CL/F'."
       ),
-      source_name        = "CYP2D6 phenotype (poor metabolizer level)"
+      source_name = "CYP2D6 phenotype (poor metabolizer level)"
     ),
     CYP2D6_IM = list(
-      description        = paste0(
+      description = paste0(
         "1 = CYP2D6 intermediate-metabolizer phenotype (CPIC activity score ",
         "0.25-1), 0 = otherwise. Together with CYP2D6_PM = 0 the reference ",
         "category is the pooled CYP2D6 normal-plus-ultrarapid metabolizer ",
         "group."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Normal or ultrarapid metabolizer (CYP2D6_PM = 0 and CYP2D6_IM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (germline genotype-derived phenotype). Tobin 2026 ",
         "Methods 'Genotyping and Phenotyping': intermediate metabolizer = ",
         "CPIC activity score 0.25-1. Carries a relative bioavailability of ",
@@ -120,17 +120,17 @@ Tobin_2026_atomoxetine <- function() {
         "participants (47.7%), the largest phenotype group (Tobin 2026 ",
         "Table 1)."
       ),
-      source_name        = "CYP2D6 phenotype (intermediate metabolizer level)"
+      source_name = "CYP2D6 phenotype (intermediate metabolizer level)"
     ),
     CYP2C19_PM = list(
-      description        = paste0(
+      description = paste0(
         "1 = CYP2C19 poor-metabolizer phenotype, 0 = any other CYP2C19 ",
         "phenotype (intermediate, normal, rapid, or ultrarapid)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Any non-poor CYP2C19 phenotype (CYP2C19_PM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (germline genotype-derived phenotype). Carries a ",
         "relative bioavailability of 2.32 versus CYP2C19 normal ",
         "metabolizers, dividing BOTH Vc/F and CL/F, multiplicatively with ",
@@ -145,7 +145,7 @@ Tobin_2026_atomoxetine <- function() {
         "'Impact of Covariates' cautions that this effect rests on two ",
         "individuals and 'should be interpreted with caution'."
       ),
-      source_name        = "CYP2C19 phenotype (poor metabolizer level)"
+      source_name = "CYP2C19 phenotype (poor metabolizer level)"
     )
   )
 
@@ -154,9 +154,9 @@ Tobin_2026_atomoxetine <- function() {
   covariatesDataExcluded <- list(
     CYP2D6_UM = list(
       description = "1 = CYP2D6 ultrarapid-metabolizer phenotype (CPIC activity score > 2), 0 = otherwise",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened and rejected. Tobin 2026 Results 'Covariate Model': ",
         "'Relative bioavailability or clearance effects of CYP2D6 UMs did ",
         "not explain variability in Vc/F nor CL/F.' Ultrarapid metabolizers ",
@@ -166,9 +166,9 @@ Tobin_2026_atomoxetine <- function() {
     ),
     CYP2C19_IM = list(
       description = "1 = CYP2C19 intermediate-metabolizer phenotype, 0 = otherwise",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened as part of the CYP2C19 activity covariate exploration ",
         "(Tobin 2026 Methods 'Covariate Model Development': 'the effect of ",
         "CYP2C19 enzyme activity on clearance compared to CYP2C19 NMs was ",
@@ -179,9 +179,9 @@ Tobin_2026_atomoxetine <- function() {
     ),
     BMI = list(
       description = "Body-mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste0(
         "Obesity (BMI at or above the 95th percentile for age) was screened ",
         "against the empirical Bayes estimates of Vc/F and CL/F (Tobin 2026 ",
         "Results 'Covariate Model', Figure S4) but not retained as a ",
@@ -193,9 +193,9 @@ Tobin_2026_atomoxetine <- function() {
     ),
     RACE_ASIAN = list(
       description = "1 = self-identified Asian race, 0 = otherwise",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened and rejected for lack of data. Tobin 2026 Results ",
         "'Covariate Model': 'When stratifying by ethnicity, Asians showed ",
         "relatively lower Ka, Vc/F, and CL/F but were not included as a ",
@@ -206,31 +206,35 @@ Tobin_2026_atomoxetine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 86L,
-    n_studies      = 3L,
-    age_range      = "6-17 years",
-    age_median     = "12.6 years (mean; SD 3.2)",
-    weight_range   = "mean 54.5 kg (SD 26.4); range not reported",
-    weight_median  = "54.5 kg (mean; SD 26.4)",
+    species = "human",
+    n_subjects = 86L,
+    n_studies = 3L,
+    age_range = "6-17 years",
+    age_median = "12.6 years (mean; SD 3.2)",
+    weight_range = "mean 54.5 kg (SD 26.4); range not reported",
+    weight_median = "54.5 kg (mean; SD 26.4)",
     sex_female_pct = 18.6,
     race_ethnicity = c(
-      White = 51, Black = 33, `Mixed race` = 13, Asian = 1.2,
-      `Hispanic/Latino` = 1.2, `Native Hawaiian/Pacific Islander` = 1.2
+      White = 51,
+      Black = 33,
+      `Mixed race` = 13,
+      Asian = 1.2,
+      `Hispanic/Latino` = 1.2,
+      `Native Hawaiian/Pacific Islander` = 1.2
     ),
-    disease_state  = "attention-deficit/hyperactivity disorder (ADHD), genotyped for CYP2D6 and CYP2C19",
-    dose_range     = paste0(
+    disease_state = "attention-deficit/hyperactivity disorder (ADHD), genotyped for CYP2D6 and CYP2C19",
+    dose_range = paste0(
       "Study A: single oral 0.5 mg/kg weight-based dose. Studies B and C: ",
       "single oral doses individualised by CYP2D6 phenotype to target a ",
       "steady-state Cmax of 400 ng/mL, followed in Study C by consistent ",
       "once-daily oral dosing (twice daily for two participants) with ",
       "steady-state PK sessions at weeks 6 +/- 2 and 18 +/- 2"
     ),
-    regions        = "United States (Children's Mercy Kansas City)",
+    regions = "United States (Children's Mercy Kansas City)",
     n_observations = "1946 atomoxetine plasma concentrations over 159 participant-occasions",
     cyp2d6_phenotype = c(Intermediate = 41L, Normal = 35L, Poor = 6L, `Ultra rapid` = 4L),
     cyp2c19_phenotype = c(Normal = 31L, Rapid = 26L, Intermediate = 21L, `Ultra rapid` = 6L, Poor = 2L),
-    notes          = paste0(
+    notes = paste0(
       "Baseline demographics are Tobin 2026 Table 1. Three pooled studies, ",
       "all approved by the Children's Mercy Kansas City IRB: Study A ",
       "(single 0.5 mg/kg dose, reported by Brown et al), Study B (single ",

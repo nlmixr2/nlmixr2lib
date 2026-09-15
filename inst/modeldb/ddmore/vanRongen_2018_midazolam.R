@@ -10,32 +10,32 @@ vanRongen_2018_midazolam <- function() {
     "DDMORE Foundation Model Repository: DDMODEL00000250.",
     sep = " "
   )
-  vignette  <- "vanRongen_2018_midazolam"
-  units     <- list(time = "min", dosing = "ug", concentration = "microgram/L")
-  ddmore_id    <- "DDMODEL00000250"
+  vignette <- "vanRongen_2018_midazolam"
+  units <- list(time = "min", dosing = "ug", concentration = "microgram/L")
+  ddmore_id <- "DDMODEL00000250"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
-    transit1    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE)
+    transit1 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'TBW' (total body weight in kg) maps to the canonical WT.",
         "Time-fixed at baseline. Power-form covariate with two distinct reference",
         "weights, applied conditionally on the ADOLESCENT indicator: in adolescents",
@@ -46,35 +46,35 @@ vanRongen_2018_midazolam <- function() {
         "the published cohort medians (102.7 kg adolescents, 144 kg adults; van Rongen",
         "2018 Abstract)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     ADOLESCENT = list(
-      description        = "Adolescent indicator (1 = obese adolescent, 0 = morbidly obese adult)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Adolescent indicator (1 = obese adolescent, 0 = morbidly obese adult)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (morbidly obese adult)",
-      notes              = paste(
+      notes = paste(
         "The source .mod encodes the indicator implicitly through the subject ID:",
         "ID <= 30 are adults, ID > 30 are adolescents (.mod $INPUT comment line and",
         "$PK 'IF (ID.LE.30) ... IF (ID.GT.30) ...' branches). Users supplying their",
         "own dataset must pre-compute the canonical 0/1 ADOLESCENT column from the",
         "subject's age category (no implicit derivation from ID is performed here)."
       ),
-      source_name        = "ID"
+      source_name = "ID"
     )
   )
 
   population <- list(
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "Obese adolescents and morbidly obese adults; numeric age range not reproduced in the DDMORE bundle and not in the publication abstract",
-    weight_range   = "Adolescents: median 102.7 kg (62-149.5 kg); morbidly obese adults: median 144 kg (112-186 kg)",
-    weight_median  = "Adolescents 102.7 kg; adults 144 kg",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "Obese adolescents and morbidly obese adults; numeric age range not reproduced in the DDMORE bundle and not in the publication abstract",
+    weight_range = "Adolescents: median 102.7 kg (62-149.5 kg); morbidly obese adults: median 144 kg (112-186 kg)",
+    weight_median = "Adolescents 102.7 kg; adults 144 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Combined cohort of obese adolescents and morbidly obese adults (CYP3A activity study); no specific concurrent disease named in the publication abstract.",
-    dose_range     = "Combined oral and intravenous midazolam dosing. The DDMORE bundle's Simulated_DatafileMidaObesity.csv ships subjects receiving an oral dose of 7500 microgram followed approximately 2.5 hours later by an intravenous bolus of 5000 microgram (RATE 29997 microgram/min, ~10 s); the publication's exact dose levels are not reproduced in the bundle.",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "Combined cohort of obese adolescents and morbidly obese adults (CYP3A activity study); no specific concurrent disease named in the publication abstract.",
+    dose_range = "Combined oral and intravenous midazolam dosing. The DDMORE bundle's Simulated_DatafileMidaObesity.csv ships subjects receiving an oral dose of 7500 microgram followed approximately 2.5 hours later by an intravenous bolus of 5000 microgram (RATE 29997 microgram/min, ~10 s); the publication's exact dose levels are not reproduced in the bundle.",
+    regions = NA_character_,
+    notes = paste(
       "Demographic detail summarized from the linked publication's PubMed abstract",
       "(PMID 28785981, doi:10.1007/s40262-017-0579-4) and the DDMORE Foundation Model",
       "Repository bundle (DDMODEL00000250). The full publication PDF is not on disk",

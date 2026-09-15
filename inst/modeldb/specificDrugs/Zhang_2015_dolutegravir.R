@@ -8,143 +8,143 @@ Zhang_2015_dolutegravir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F and V/F, reference 70 kg (Zhang 2015 Table 3 footnote). Range in the analysis population 39-135 kg (Zhang 2015 Table 2).",
-      source_name        = "WT"
+      notes = "Power effect on CL/F and V/F, reference 70 kg (Zhang 2015 Table 3 footnote). Range in the analysis population 39-135 kg (Zhang 2015 Table 2).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F, reference 40 years (Zhang 2015 Table 3 footnote). Range 18-68 years.",
-      source_name        = "AGE"
+      notes = "Power effect on CL/F, reference 40 years (Zhang 2015 Table 3 footnote). Range 18-68 years.",
+      source_name = "AGE"
     ),
     TBILI = list(
-      description        = "Baseline total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F, reference 9 umol/L (Zhang 2015 Table 3 footnote). Range 3-38 umol/L. Higher bilirubin decreases CL, plausibly through competition with dolutegravir for UGT1A1 metabolism (Zhang 2015 Discussion).",
-      source_name        = "BILI"
+      notes = "Power effect on CL/F, reference 9 umol/L (Zhang 2015 Table 3 footnote). Range 3-38 umol/L. Higher bilirubin decreases CL, plausibly through competition with dolutegravir for UGT1A1 metabolism (Zhang 2015 Discussion).",
+      source_name = "BILI"
     ),
     SEXF = list(
-      description        = "Sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on bioavailability F; female subjects have 21% higher oral bioavailability than males (Zhang 2015 Table 3 footnote: F = 1.21^GEND, GEND = 1 for female). Source column is GEND (1 = female, 0 = male) in the Zhang 2015 dataset, renamed to canonical SEXF.",
-      source_name        = "GEND"
+      notes = "Exponential effect on bioavailability F; female subjects have 21% higher oral bioavailability than males (Zhang 2015 Table 3 footnote: F = 1.21^GEND, GEND = 1 for female). Source column is GEND (1 = female, 0 = male) in the Zhang 2015 dataset, renamed to canonical SEXF.",
+      source_name = "GEND"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-current smoker; pools never and former smokers)",
-      notes              = "Exponential effect on CL/F; current smokers have 16% higher CL than non-current smokers (Zhang 2015 Table 3 footnote: CL/F factor = 1.16^SMOK). Attributed to tobacco-induced UGT1A1 / CYP1A1 / CYP1A2 / CYP2B6 / CYP3A4 activity (Zhang 2015 Discussion).",
-      source_name        = "SMOK"
+      notes = "Exponential effect on CL/F; current smokers have 16% higher CL than non-current smokers (Zhang 2015 Table 3 footnote: CL/F factor = 1.16^SMOK). Attributed to tobacco-induced UGT1A1 / CYP1A1 / CYP1A2 / CYP2B6 / CYP3A4 activity (Zhang 2015 Discussion).",
+      source_name = "SMOK"
     ),
     STUDY_ING111521 = list(
-      description        = "Study ING111521 (proof-of-concept, phase 2a monotherapy) cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study ING111521 (proof-of-concept, phase 2a monotherapy) cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (SPRING-1 phase 2b or SPRING-2 phase 3 combination cohort)",
-      notes              = "Exponential effect on CL/F; typical CL/F is 35% higher in study ING111521 than in SPRING-1 / SPRING-2 (Zhang 2015 Table 3 footnote: CL/F factor = 1.35^POC). The paper attributes this unexplained study difference to the smaller sample size and less diverse patient population in the phase 2a study (Zhang 2015 Discussion). Source column POC (= 1 for ING111521, 0 otherwise) renamed to canonical STUDY_ING111521.",
-      source_name        = "POC"
+      notes = "Exponential effect on CL/F; typical CL/F is 35% higher in study ING111521 than in SPRING-1 / SPRING-2 (Zhang 2015 Table 3 footnote: CL/F factor = 1.35^POC). The paper attributes this unexplained study difference to the smaller sample size and less diverse patient population in the phase 2a study (Zhang 2015 Discussion). Source column POC (= 1 for ING111521, 0 otherwise) renamed to canonical STUDY_ING111521.",
+      source_name = "POC"
     ),
     DOSE_10MG = list(
-      description        = "10 mg dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "10 mg dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (25 mg or 50 mg dose)",
-      notes              = "Exponential effect on bioavailability F; the 10 mg dose has 24% higher relative oral bioavailability than the pooled 25 / 50 mg reference (Zhang 2015 Table 3 footnote: F = 1.24^DOSE, DOSE = 1 for 10 mg). Continuous dose was screened and was not significant; 25 mg vs 50 mg were indistinguishable. Attributed to better tablet dispersion at the lower strength (Zhang 2015 Discussion). Source column DOSE renamed to canonical DOSE_10MG.",
-      source_name        = "DOSE"
+      notes = "Exponential effect on bioavailability F; the 10 mg dose has 24% higher relative oral bioavailability than the pooled 25 / 50 mg reference (Zhang 2015 Table 3 footnote: F = 1.24^DOSE, DOSE = 1 for 10 mg). Continuous dose was screened and was not significant; 25 mg vs 50 mg were indistinguishable. Attributed to better tablet dispersion at the lower strength (Zhang 2015 Discussion). Source column DOSE renamed to canonical DOSE_10MG.",
+      source_name = "DOSE"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE = list(
       description = "Race",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened in the full-model covariate step but not significant; race did not influence dolutegravir PK (Zhang 2015 Results)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened in the full-model covariate step but not significant; race did not influence dolutegravir PK (Zhang 2015 Results)."
     ),
     ETHNIC = list(
       description = "Hispanic / Latino ethnicity",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     ),
     HBV = list(
       description = "Hepatitis B virus co-infection at baseline",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     ),
     HCV = list(
       description = "Hepatitis C virus co-infection at baseline",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     ),
     CDC = list(
       description = "CDC HIV disease-severity classification (A / B / C)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     ),
     ALB = list(
       description = "Serum albumin at baseline",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not significant; the model preferred age over albumin as the CL/F predictor (Zhang 2015 Discussion)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not significant; the model preferred age over albumin as the CL/F predictor (Zhang 2015 Discussion)."
     ),
     CRCL = list(
       description = "Creatinine clearance at baseline",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     ),
     ALT = list(
       description = "Alanine aminotransferase at baseline",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     ),
     AST = list(
       description = "Aspartate aminotransferase at baseline",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not significant (Zhang 2015 Results)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not significant (Zhang 2015 Results)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 563L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 563L,
+    n_studies = 3L,
     n_observations = 3357L,
-    age_range      = "18-68 years",
-    age_median     = "37 years",
-    weight_range   = "39.0-135 kg",
-    weight_median  = "74.5 kg",
+    age_range = "18-68 years",
+    age_median = "37 years",
+    weight_range = "39.0-135 kg",
+    weight_median = "74.5 kg",
     sex_female_pct = 15,
     race_ethnicity = c(Caucasian = 83, Black = 12, Asian = 1, Other = 4),
-    disease_state  = "HIV-1 infected antiretroviral treatment-naive adults",
-    dose_range     = "10, 25, or 50 mg dolutegravir once daily orally, alone (ING111521) or in combination with ABC/3TC or TDF/FTC (SPRING-1, SPRING-2)",
-    regions        = "Multinational",
-    notes          = "Pooled data from three phase 2/3 studies (Zhang 2015 Table 1): ING111521 (phase 2a monotherapy, n = 19), SPRING-1 (phase 2b, n = 141), SPRING-2 (phase 3, n = 403). Baseline demographics per Zhang 2015 Table 2. Race percentages summed across 'Other' cases per the paper's category assignments; 'Other' includes multiracial / unreported.",
-    smoking_pct    = "42% current, 13% former, 42% never (3% unknown; Zhang 2015 Table 2)",
-    tbili_median   = "9 umol/L (range 3-38)"
+    disease_state = "HIV-1 infected antiretroviral treatment-naive adults",
+    dose_range = "10, 25, or 50 mg dolutegravir once daily orally, alone (ING111521) or in combination with ABC/3TC or TDF/FTC (SPRING-1, SPRING-2)",
+    regions = "Multinational",
+    notes = "Pooled data from three phase 2/3 studies (Zhang 2015 Table 1): ING111521 (phase 2a monotherapy, n = 19), SPRING-1 (phase 2b, n = 141), SPRING-2 (phase 3, n = 403). Baseline demographics per Zhang 2015 Table 2. Race percentages summed across 'Other' cases per the paper's category assignments; 'Other' includes multiracial / unreported.",
+    smoking_pct = "42% current, 13% former, 42% never (3% unknown; Zhang 2015 Table 2)",
+    tbili_median = "9 umol/L (range 3-38)"
   )
 
   ini({

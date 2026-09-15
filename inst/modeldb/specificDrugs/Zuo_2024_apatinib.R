@@ -22,44 +22,44 @@ Zuo_2024_apatinib <- function() {
   # blood samples": apatinib was quantified in SERUM by LC-MS/MS, and the only
   # dosed route is oral (250 mg tablets), so `depot` is the gut lumen.
   compartmentData <- list(
-    depot   = list(analyte = "apatinib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "apatinib", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "apatinib", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     AST = list(
-      description        = "Serum aspartate aminotransferase, a marker of hepatocellular injury / liver function",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase, a marker of hepatocellular injury / liver function",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at the biochemistry panel drawn within 1 week before the apatinib dose (Zuo 2024",
         "inclusion criteria). Enters CL/F as a median-normalised power term (AST/26.6)^-0.298; 26.6 U/L",
         "is the study-population median (Table 1, range 10.5-187 U/L). Apatinib is cleared primarily by",
         "hepatic CYP3A4/5, so higher AST (worse hepatocellular function) maps to lower CL/F.",
         "AST was the only biochemical covariate retained after backward elimination."
       ),
-      source_name        = "AST"
+      source_name = "AST"
     ),
     CONMED_PACLITAXEL = list(
-      description        = "Concomitant paclitaxel indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant paclitaxel indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (apatinib co-administered with an immune-checkpoint-inhibitor monoclonal antibody)",
-      notes              = paste(
+      notes = paste(
         "1 = the apatinib sample was drawn while the patient was co-treated with paclitaxel (Zuo 2024",
         "co-administration group B; 29 of 189 classified samples). Multiplicative effect on CL/F:",
         "CL/F is multiplied by 0.58 (i.e. 42% lower) relative to the mAb reference group.",
         "One of three mutually exclusive indicators; all three zero identifies the reference group."
       ),
-      source_name        = "CM (category B)"
+      source_name = "CM (category B)"
     ),
     CONMED_ANTINEO_OTHER = list(
-      description        = "Concomitant non-taxane cytotoxic antineoplastic indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant non-taxane cytotoxic antineoplastic indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (apatinib co-administered with an immune-checkpoint-inhibitor monoclonal antibody)",
-      notes              = paste(
+      notes = paste(
         "1 = the apatinib sample was drawn while the patient was co-treated with a cytotoxic",
         "antineoplastic other than paclitaxel - platinum agents, capecitabine, or the",
         "tegafur/gimeracil/oteracil potassium combination (S-1) (Zuo 2024 co-administration group C;",
@@ -67,21 +67,21 @@ Zuo_2024_apatinib <- function() {
         "(i.e. 60% higher) relative to the mAb reference group.",
         "One of three mutually exclusive indicators; all three zero identifies the reference group."
       ),
-      source_name        = "CM (category C)"
+      source_name = "CM (category C)"
     ),
     CONMED_ANTINEO_NONE = list(
-      description        = "Apatinib monotherapy indicator (no concomitant antineoplastic)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Apatinib monotherapy indicator (no concomitant antineoplastic)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (apatinib co-administered with an immune-checkpoint-inhibitor monoclonal antibody)",
-      notes              = paste(
+      notes = paste(
         "1 = the apatinib sample was drawn while the patient was on apatinib monotherapy, with no",
         "concomitant antineoplastic agent (Zuo 2024 co-administration group D; 6 of 189 classified",
         "samples - the smallest group, and its 1.38 multiplier carries the largest RSE in Table 2 at",
         "38%). Multiplicative effect on CL/F: CL/F is multiplied by 1.38 relative to the mAb reference",
         "group. One of three mutually exclusive indicators; all three zero identifies the reference group."
       ),
-      source_name        = "CM (category D)"
+      source_name = "CM (category D)"
     )
   )
 
@@ -95,82 +95,143 @@ Zuo_2024_apatinib <- function() {
   # gap, prealbumin, tumour type) are recorded in population$notes instead of
   # being minted as unregistered column names.
   covariatesDataExcluded <- list(
-    AGE   = list(description = "Subject age", units = "years", type = "continuous",
-                 notes = "Screened; not retained. Median 64 years (range 27-86), Zuo 2024 Table 1."),
-    WT    = list(description = "Body weight", units = "kg", type = "continuous",
-                 notes = "Screened; not retained. Median 55 kg (range 39-85), Zuo 2024 Table 1."),
-    SEXF  = list(description = "Female sex indicator", units = "(binary)", type = "binary",
-                 notes = "Screened; not retained. 31 of 91 patients female, Zuo 2024 Results."),
-    ALT   = list(description = "Alanine aminotransferase", units = "U/L", type = "continuous",
-                 notes = "Screened; not retained. Median 17.4 U/L (range 5.1-124.3), Zuo 2024 Table 1."),
-    GGT   = list(description = "Gamma-glutamyltransferase", units = "U/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported."),
-    ALP   = list(description = "Alkaline phosphatase", units = "U/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported."),
-    LDH   = list(description = "Lactate dehydrogenase", units = "U/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported."),
-    TBILI = list(description = "Total bilirubin", units = "umol/L", type = "continuous",
-                 notes = paste("Screened; entered the full covariate model in forward inclusion together with",
-                               "AST and CM, then dropped in backward exclusion (OFV increase < 10.83).",
-                               "No point estimate is published, so no effect can be encoded."),
-                 source_name = "TBIL"),
-    TPRO  = list(description = "Total serum protein", units = "g/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported."),
-    ALB   = list(description = "Serum albumin", units = "g/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported."),
-    CYSC  = list(description = "Serum cystatin C", units = "mg/L", type = "continuous",
-                 notes = "Screened; not retained. Median 0.99 mg/L (range 0.43-2.98), Zuo 2024 Table 1."),
-    CREAT = list(description = "Serum creatinine", units = "umol/L", type = "continuous",
-                 notes = "Screened; not retained. Median 63 umol/L (range 35-207), Zuo 2024 Table 1.",
-                 source_name = "Scr"),
-    BUN   = list(description = "Blood urea", units = "mmol/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported.",
-                 source_name = "UREA"),
-    CRCL  = list(description = "Estimated glomerular filtration rate (BSA-normalised)",
-                 units = "mL/min/1.73 m^2", type = "continuous",
-                 notes = "Screened; not retained. Median 95.32 (range 14.08-144.48), Zuo 2024 Table 1.",
-                 source_name = "eGFR"),
-    GLU   = list(description = "Blood glucose", units = "mmol/L", type = "continuous",
-                 notes = "Screened; not retained. No summary statistics reported.")
+    AGE = list(
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained. Median 64 years (range 27-86), Zuo 2024 Table 1."
+    ),
+    WT = list(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; not retained. Median 55 kg (range 39-85), Zuo 2024 Table 1."
+    ),
+    SEXF = list(
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. 31 of 91 patients female, Zuo 2024 Results."
+    ),
+    ALT = list(
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. Median 17.4 U/L (range 5.1-124.3), Zuo 2024 Table 1."
+    ),
+    GGT = list(
+      description = "Gamma-glutamyltransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported."
+    ),
+    ALP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported."
+    ),
+    LDH = list(
+      description = "Lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported."
+    ),
+    TBILI = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
+        "Screened; entered the full covariate model in forward inclusion together with",
+        "AST and CM, then dropped in backward exclusion (OFV increase < 10.83).",
+        "No point estimate is published, so no effect can be encoded."
+      ),
+      source_name = "TBIL"
+    ),
+    TPRO = list(
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported."
+    ),
+    CYSC = list(
+      description = "Serum cystatin C",
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened; not retained. Median 0.99 mg/L (range 0.43-2.98), Zuo 2024 Table 1."
+    ),
+    CREAT = list(
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Median 63 umol/L (range 35-207), Zuo 2024 Table 1.",
+      source_name = "Scr"
+    ),
+    BUN = list(
+      description = "Blood urea",
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported.",
+      source_name = "UREA"
+    ),
+    CRCL = list(
+      description = "Estimated glomerular filtration rate (BSA-normalised)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened; not retained. Median 95.32 (range 14.08-144.48), Zuo 2024 Table 1.",
+      source_name = "eGFR"
+    ),
+    GLU = list(
+      description = "Blood glucose",
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not retained. No summary statistics reported."
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 91L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 91L,
+    n_studies = 1L,
     n_observations = 199L,
-    age_range      = "27-86 years",
-    age_median     = "64 years",
-    weight_range   = "39-85 kg",
-    weight_median  = "55 kg",
+    age_range = "27-86 years",
+    age_median = "64 years",
+    weight_range = "39-85 kg",
+    weight_median = "55 kg",
     sex_female_pct = 34.1,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Adult inpatients with solid tumours receiving oral apatinib as part of routine care;",
       "hepatic function spans normal to markedly abnormal (AST 10.5-187 U/L, ALT 5.1-124.3 U/L)",
       "and renal function spans normal to severely impaired (eGFR 14.08-144.48 mL/min/1.73 m^2,",
       "serum creatinine 35-207 umol/L)."
     ),
-    dose_range     = "Apatinib 250 mg orally once daily, as monotherapy or in combination.",
-    regions        = "China (single centre: the Third Affiliated Hospital of Soochow University, Changzhou).",
-    sampling       = paste(
+    dose_range = "Apatinib 250 mg orally once daily, as monotherapy or in combination.",
+    regions = "China (single centre: the Third Affiliated Hospital of Soochow University, Changzhou).",
+    sampling = paste(
       "Sparse therapeutic drug monitoring. All patients were at steady state and every sample was a",
       "pre-dose trough drawn immediately before the next administration; on average two samples per",
       "patient. No absorption-phase or post-peak data were collected, which is why Ka was fixed and",
       "no inter-individual variability could be estimated on V/F or Ka."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Four mutually exclusive co-administration groups classified by the drug given with apatinib",
       "(Zuo 2024 Table 1 footnote, 111:29:43:6 samples in groups A:B:C:D): A = immune-checkpoint-inhibitor",
       "monoclonal antibodies (camrelizumab, sintilimab, etc.); B = paclitaxel; C = other agents",
       "(platinum, capecitabine, or tegafur/gimeracil/oteracil potassium); D = apatinib monotherapy."
     ),
-    bioanalytical  = paste(
+    bioanalytical = paste(
       "LC-MS/MS (AB SCIEX Triple Quad 4500MD with a Jasper HPLC), duloxetine internal standard,",
       "apatinib transition m/z 398.1 -> 211.9. Calibrated range 1.00-500 ug/L; intra-day CV 2.79-5.02%",
       "and inter-day CV 6.20-9.94%."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Zuo 2024 Table 1. Data were collected between October 2021 and",
       "December 2023. Covariates screened by stepwise covariate modelling but not retained were WT,",
       "AGE, SEX, tumour type (CANCER), ALT, GGT, ALP, LDH, serum total bile acids (TBA), total protein",

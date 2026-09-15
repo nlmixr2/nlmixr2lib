@@ -1,16 +1,16 @@
 Sinha_2026_oxcarbazepine <- function() {
   description <- "Joint parent-metabolite population PK model for oral oxcarbazepine (OXZ) and its active 10-monohydroxy derivative (MHD) in children with and without obesity, aged 44 days to 20.9 years (Sinha 2026). One-compartment OXZ plus one-compartment MHD with first-order absorption, complete conversion of OXZ to MHD (the OXZ elimination clearance IS the MHD formation clearance), molar-mass-corrected bidirectional mass transfer, and a first-order MHD-to-OXZ back-transformation. All clearances and volumes are allometrically scaled to pharmacokinetic weight (PKWT), a fat-free-mass-based body-size descriptor, referenced to 50 kg; body size was the only covariate retained."
-  reference   <- "Sinha J, Zimmerman K, Balevic SJ, Hornik C, Muller WJ, Rathore M, Meyer M, Finkelstein Y, Al-Uzri A, Lakhotia A, Goldstein S, Chen JY, Anand R, Gonzalez D. Population Pharmacokinetic Modeling of Oxcarbazepine and Its Active Metabolite 10-Monohydroxy Derivative to Inform Dosing in Children with Obesity. Clin Pharmacokinet. 2026;65:329-344. doi:10.1007/s40262-025-01579-0. Correction: Clin Pharmacokinet. 2026;65:345. doi:10.1007/s40262-025-01613-1 (Eq. 10 was printed as TV_V,MHD = 50*(PKWT/50)^0.752 but should read TV_V,OXZ = 33.1*(PKWT/50)^0.752; no parameter value changed)."
-  vignette    <- "Sinha_2026_oxcarbazepine"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Sinha J, Zimmerman K, Balevic SJ, Hornik C, Muller WJ, Rathore M, Meyer M, Finkelstein Y, Al-Uzri A, Lakhotia A, Goldstein S, Chen JY, Anand R, Gonzalez D. Population Pharmacokinetic Modeling of Oxcarbazepine and Its Active Metabolite 10-Monohydroxy Derivative to Inform Dosing in Children with Obesity. Clin Pharmacokinet. 2026;65:329-344. doi:10.1007/s40262-025-01579-0. Correction: Clin Pharmacokinet. 2026;65:345. doi:10.1007/s40262-025-01613-1 (Eq. 10 was printed as TV_V,MHD = 50*(PKWT/50)^0.752 but should read TV_V,OXZ = 33.1*(PKWT/50)^0.752; no parameter value changed)."
+  vignette <- "Sinha_2026_oxcarbazepine"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass used as the body-size descriptor for allometric scaling of every clearance and volume in the model. The source paper calls this quantity 'pharmacokinetic weight' (PKWT).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass used as the body-size descriptor for allometric scaling of every clearance and volume in the model. The source paper calls this quantity 'pharmacokinetic weight' (PKWT).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference value 50 kg (Sinha 2026 ESM2 control stream: every scaling term is (PKWT/50)^theta; Discussion, 'a reference adult with 50 kg FFM').",
         "PKWT is a COMPOSITE fat-free-mass metric defined in Sinha 2026 Methods 2.3.2: FFM for children and young adults aged >= 3 years, and total body weight (WT) for children younger than 3 years.",
         "The WT fallback below 3 years exists because the Al-Sallami et al. paediatric FFM equation was developed in children >= 3 years, so the authors assumed a WT-equivalent FFM below that age.",
@@ -21,7 +21,7 @@ Sinha_2026_oxcarbazepine <- function() {
         "Exponents applied to (FFM/50): 1 (fixed) on OXZ clearance, 0.671 on MHD clearance, and a shared 0.752 on both volumes.",
         "The model consumes FFM/PKWT directly as a data column; the derivation above is reproduced in the validation vignette."
       ),
-      source_name        = "PKWT"
+      source_name = "PKWT"
     )
   )
 
@@ -33,83 +33,88 @@ Sinha_2026_oxcarbazepine <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight (screened as the body-size descriptor, superseded by PKWT)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Sinha 2026 Table 3: the WT-based model M3 had AIC 6705.62 versus 6698.54 for the PKWT-based final model M6, an ~7-point improvement that the Discussion cites as the reason PKWT was preferred. WT is still required upstream to compute PKWT (see covariateData$FFM notes). Cohort median 27.2 kg, range 3.825-156.9 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Sinha 2026 Table 3: the WT-based model M3 had AIC 6705.62 versus 6698.54 for the PKWT-based final model M6, an ~7-point improvement that the Discussion cites as the reason PKWT was preferred. WT is still required upstream to compute PKWT (see covariateData$FFM notes). Cohort median 27.2 kg, range 3.825-156.9 kg."
     ),
     PNA = list(
       description = "Postnatal age (screened, not retained)",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Sinha 2026 Table S5: model M8a (PKWT + PNA) had AIC 6699.51 versus 6698.54 for M6, so PNA was not retained. Cohort median 9 years, range 44 days to 20.90 years. PNA is still required upstream to compute PKWT."
+      units = "years",
+      type = "continuous",
+      notes = "Sinha 2026 Table S5: model M8a (PKWT + PNA) had AIC 6699.51 versus 6698.54 for M6, so PNA was not retained. Cohort median 9 years, range 44 days to 20.90 years. PNA is still required upstream to compute PKWT."
     ),
     PMA = list(
       description = "Postmenstrual age, tested as a sigmoidal (Hill) maturation function on clearance (screened, not retained)",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Sinha 2026 Table S5: model M8b (PKWT + PMA Hill maturation, estimating TM50 and the Hill coefficient gamma) had AIC 6701.14 versus 6698.54 for M6. The Discussion attributes the absent maturation signal to the small number of infants (6% of the cohort; no neonates) and to early maturation of the glucuronidation pathway. Gestational age was imputed at 40 weeks for 96% of participants."
+      units = "weeks",
+      type = "continuous",
+      notes = "Sinha 2026 Table S5: model M8b (PKWT + PMA Hill maturation, estimating TM50 and the Hill coefficient gamma) had AIC 6701.14 versus 6698.54 for M6. The Discussion attributes the absent maturation signal to the small number of infants (6% of the cohort; no neonates) and to early maturation of the glucuronidation pathway. Gestational age was imputed at 40 weeks for 96% of participants."
     ),
     SCR = list(
       description = "Serum creatinine (screened, not retained)",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Sinha 2026 Table S5: model M9a (PKWT + SCR) had AIC 6700.15 versus 6698.54 for M6. The Discussion attributes the null result to under-representation of renal impairment (SCR IQR 0.23-0.63 mg/dL). Table 2 medians: 0.42 mg/dL (AED01), 0.40 mg/dL (POP01)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Sinha 2026 Table S5: model M9a (PKWT + SCR) had AIC 6700.15 versus 6698.54 for M6. The Discussion attributes the null result to under-representation of renal impairment (SCR IQR 0.23-0.63 mg/dL). Table 2 medians: 0.42 mg/dL (AED01), 0.40 mg/dL (POP01)."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (screened, not retained)",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Sinha 2026 Table S5: model M9b (PKWT + eGFR) had AIC 6701.47 versus 6698.54 for M6. Discussion reports the cohort eGFR IQR as 95-156 mL/min/1.73 m^2, i.e. no renal impairment to detect."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Sinha 2026 Table S5: model M9b (PKWT + eGFR) had AIC 6701.47 versus 6698.54 for M6. Discussion reports the cohort eGFR IQR as 95-156 mL/min/1.73 m^2, i.e. no renal impairment to detect."
     ),
     CONMED_PB = list(
       description = "Concomitant phenobarbital, the only enzyme-inducing antiepileptic drug testable in this dataset (screened, not retained)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Sinha 2026 Table S5: model M10a (PKWT + phenobarbital) had AIC 6700.34 versus 6698.54 for M6. Only 6 of 100 participants received phenobarbital; no participant received carbamazepine, and phenytoin/fosphenytoin exposure was unknown for POP01, so phenobarbital was the only EIAED assessable. The Discussion notes that previous population PK studies reported a 17-35% increase in MHD clearance with concomitant EIAEDs, which this dataset was underpowered to detect."
+      units = "(binary)",
+      type = "binary",
+      notes = "Sinha 2026 Table S5: model M10a (PKWT + phenobarbital) had AIC 6700.34 versus 6698.54 for M6. Only 6 of 100 participants received phenobarbital; no participant received carbamazepine, and phenytoin/fosphenytoin exposure was unknown for POP01, so phenobarbital was the only EIAED assessable. The Discussion notes that previous population PK studies reported a 17-35% increase in MHD clearance with concomitant EIAEDs, which this dataset was underpowered to detect."
     ),
     CONMED_VPA = list(
       description = "Concomitant valproic acid (screened, not retained)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Sinha 2026 Table S5: model M10b (PKWT + valproic acid) had AIC 6700.34 versus 6698.54 for M6. Seven of 100 participants received valproic acid."
+      units = "(binary)",
+      type = "binary",
+      notes = "Sinha 2026 Table S5: model M10b (PKWT + valproic acid) had AIC 6700.34 versus 6698.54 for M6. Seven of 100 participants received valproic acid."
     ),
     CONMED_LEV = list(
       description = "Concomitant levetiracetam (screened, not retained)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Sinha 2026 Table S5: model M10c (PKWT + levetiracetam) had AIC 6700.34 versus 6698.54 for M6. Ten of 100 participants received levetiracetam."
+      units = "(binary)",
+      type = "binary",
+      notes = "Sinha 2026 Table S5: model M10c (PKWT + levetiracetam) had AIC 6700.34 versus 6698.54 for M6. Ten of 100 participants received levetiracetam."
     ),
     CONMED_TPM = list(
       description = "Concomitant topiramate (screened, not retained)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Sinha 2026 Table S5: model M10d (PKWT + topiramate) had AIC 6700.34 versus 6698.54 for M6. Eight of 100 participants received topiramate."
+      units = "(binary)",
+      type = "binary",
+      notes = "Sinha 2026 Table S5: model M10d (PKWT + topiramate) had AIC 6700.34 versus 6698.54 for M6. Eight of 100 participants received topiramate."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "oxcarbazepine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = TRUE),
-    central_mhd = list(analyte = "10-monohydroxy derivative (MHD) of oxcarbazepine", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "oxcarbazepine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_mhd = list(
+      analyte = "10-monohydroxy derivative (MHD) of oxcarbazepine",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100,
-    n_studies      = 2,
-    age_range      = "44 days to 20.90 years (postnatal age)",
-    age_median     = "9 years",
-    weight_range   = "3.825-156.9 kg",
-    weight_median  = "27.2 kg",
+    species = "human",
+    n_subjects = 100,
+    n_studies = 2,
+    age_range = "44 days to 20.90 years (postnatal age)",
+    age_median = "9 years",
+    weight_range = "3.825-156.9 kg",
+    weight_median = "27.2 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in the publication (race, ethnicity, and race-white/black were carried in the analysis dataset per the ESM2 $INPUT record but no summary is tabulated).",
-    disease_state  = "Children and young adults receiving oxcarbazepine as standard of care, predominantly for epilepsy / partial-onset seizures. 52 of 100 participants (52%) had obesity, defined as a body-mass-index-for-age at or above the 95th percentile of the CDC growth charts in participants >= 2 years of age.",
-    dose_range     = "Standard-of-care oxcarbazepine dosing (immediate-release tablet or suspension); doses were not protocol-assigned. Label-recommended maintenance target doses used in the paper's simulations are 60 mg/kg/day for ages 2-4 years, and 900, 1200, and 1800 mg/day for ages > 4 years weighing 20-29, > 29-39, and > 39 kg respectively, all twice daily (Table 1).",
-    regions        = "United States and Canada (Pediatric Trials Network sites).",
+    disease_state = "Children and young adults receiving oxcarbazepine as standard of care, predominantly for epilepsy / partial-onset seizures. 52 of 100 participants (52%) had obesity, defined as a body-mass-index-for-age at or above the 95th percentile of the CDC growth charts in participants >= 2 years of age.",
+    dose_range = "Standard-of-care oxcarbazepine dosing (immediate-release tablet or suspension); doses were not protocol-assigned. Label-recommended maintenance target doses used in the paper's simulations are 60 mg/kg/day for ages 2-4 years, and 900, 1200, and 1800 mg/day for ages > 4 years weighing 20-29, > 29-39, and > 39 kg respectively, all twice daily (Table 1).",
+    regions = "United States and Canada (Pediatric Trials Network sites).",
     n_observations = "425 plasma concentrations: 212 oxcarbazepine and 213 MHD. Median (range) 3 (1-7) repeated observations per participant for each analyte. No concentration was below the 1 ng/mL lower limit of quantification.",
     obesity_status = "52% with obesity (BMI-for-age >= 95th CDC percentile); 25 from POP01 and 27 from AED01. AED01 enrolled only participants with obesity.",
-    co_medication  = "Phenobarbital (n = 6), valproic acid (n = 7), topiramate (n = 8), and levetiracetam (n = 10) were co-administered on the dosing day or the prior day. No participant received carbamazepine. Phenytoin/fosphenytoin status was known only for AED01, where none was administered.",
-    notes          = "Pooled from two multicentre prospective standard-of-care PK studies: POP01 (NICHD-2011-POP01, NCT01431326, n = 73, any patient < 21 years with or without obesity) and AED01 (NICHD-2015-AED01, NCT02993861, n = 27, ages 2-18 years, all with obesity). Demographics from Sinha 2026 Table 2 and Results 3.1. Gestational-age records existed for only four POP01 participants (37.6-41 weeks), so postmenstrual age was computed from an imputed 40-week gestational age for 96% of the pooled dataset."
+    co_medication = "Phenobarbital (n = 6), valproic acid (n = 7), topiramate (n = 8), and levetiracetam (n = 10) were co-administered on the dosing day or the prior day. No participant received carbamazepine. Phenytoin/fosphenytoin status was known only for AED01, where none was administered.",
+    notes = "Pooled from two multicentre prospective standard-of-care PK studies: POP01 (NICHD-2011-POP01, NCT01431326, n = 73, any patient < 21 years with or without obesity) and AED01 (NICHD-2015-AED01, NCT02993861, n = 27, ages 2-18 years, all with obesity). Demographics from Sinha 2026 Table 2 and Results 3.1. Gestational-age records existed for only four POP01 participants (37.6-41 weeks), so postmenstrual age was computed from an imputed 40-week gestational age for 96% of the pooled dataset."
   )
 
   ini({

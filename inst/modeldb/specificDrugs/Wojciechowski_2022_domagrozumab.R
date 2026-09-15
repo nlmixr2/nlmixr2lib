@@ -9,46 +9,46 @@ Wojciechowski_2022_domagrozumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "domagrozumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "domagrozumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "myostatin", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "All structural PK parameters in the source paper are reported per kilogram (CL, Q in L/h/kg; V1, V2 in L/kg; Vmax in nM/h/kg). They are scaled by WT in model() to convert to a per-subject basis so that doses can be supplied in mg. Reference body weight is implicit (linear weight scaling, exponent = 1); the population median was 76.9 kg in healthy adults and 28.9 kg in pediatric DMD patients (Table 1).",
-      source_name        = "BWT"
+      notes = "All structural PK parameters in the source paper are reported per kilogram (CL, Q in L/h/kg; V1, V2 in L/kg; Vmax in nM/h/kg). They are scaled by WT in model() to convert to a per-subject basis so that doses can be supplied in mg. Reference body weight is implicit (linear weight scaling, exponent = 1); the population median was 76.9 kg in healthy adults and 28.9 kg in pediatric DMD patients (Table 1).",
+      source_name = "BWT"
     ),
     DIS_DMD = list(
-      description        = "Study-population indicator: 1 = pediatric patient with Duchenne muscular dystrophy, 0 = healthy adult volunteer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-population indicator: 1 = pediatric patient with Duchenne muscular dystrophy, 0 = healthy adult volunteer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy adult volunteer)",
-      notes              = "Source paper covariate is SPOP (study population). Eq. 7 of Wojciechowski 2022 defines COVSPOP = 1 for healthy adult volunteers and COVSPOP = 1 + theta_SPOP for DMD pediatric patients, applied multiplicatively to the affected typical value (Eq. 8). DIS_DMD encodes the indicator in the orientation that matches the source equation (1 -> add the theta effect). Effects in the final model: theta_SPOP_BASE = -0.641 on baseline myostatin (BASE) and theta_SPOP_kdegkint = -0.900 jointly on kdeg and kint.",
-      source_name        = "SPOP"
+      notes = "Source paper covariate is SPOP (study population). Eq. 7 of Wojciechowski 2022 defines COVSPOP = 1 for healthy adult volunteers and COVSPOP = 1 + theta_SPOP for DMD pediatric patients, applied multiplicatively to the affected typical value (Eq. 8). DIS_DMD encodes the indicator in the orientation that matches the source equation (1 -> add the theta effect). Effects in the final model: theta_SPOP_BASE = -0.641 on baseline myostatin (BASE) and theta_SPOP_kdegkint = -0.900 jointly on kdeg and kint.",
+      source_name = "SPOP"
     )
   )
 
   population <- list(
-    n_subjects     = 193L,
-    n_studies      = 2L,
-    age_range      = "6-61 years (healthy adults 19-61; DMD pediatric 6-15)",
-    age_median     = "37.0 years (HV); 9.0 years (DMD)",
-    weight_range   = "14.8-99.8 kg (HV 56.8-99.8; DMD 14.8-86.4)",
-    weight_median  = "76.9 kg (HV); 28.9 kg (DMD)",
+    n_subjects = 193L,
+    n_studies = 2L,
+    age_range = "6-61 years (healthy adults 19-61; DMD pediatric 6-15)",
+    age_median = "37.0 years (HV); 9.0 years (DMD)",
+    weight_range = "14.8-99.8 kg (HV 56.8-99.8; DMD 14.8-86.4)",
+    weight_median = "76.9 kg (HV); 28.9 kg (DMD)",
     sex_female_pct = 3.6,
     race_ethnicity = c(White = 68.4, Black = 12.4, Asian = 9.3, Other = 9.8),
-    disease_state  = "Pooled healthy adult volunteers (Phase 1, NCT01616277, n = 73) and ambulatory boys with Duchenne muscular dystrophy (Phase 2, NCT02310763, n = 120). All DMD patients were male (100%); HV cohort 90.4% male.",
-    dose_range     = "Healthy adults: single IV doses 1, 3, 10, 20, 40 mg/kg over 2-h infusion; single SC 3 mg/kg; or 10 mg/kg IV every 2 weeks x 3 doses. DMD patients: dose-escalation 5, 20, 40 mg/kg IV every 4 weeks x 4 doses each level (period 1, 16 weeks per level); period 2 (48 weeks) continued the highest tolerated dose.",
-    regions        = "Multi-regional Phase 1 and Phase 2 trials (Pfizer-sponsored).",
-    n_observations_drug      = 5181L,
+    disease_state = "Pooled healthy adult volunteers (Phase 1, NCT01616277, n = 73) and ambulatory boys with Duchenne muscular dystrophy (Phase 2, NCT02310763, n = 120). All DMD patients were male (100%); HV cohort 90.4% male.",
+    dose_range = "Healthy adults: single IV doses 1, 3, 10, 20, 40 mg/kg over 2-h infusion; single SC 3 mg/kg; or 10 mg/kg IV every 2 weeks x 3 doses. DMD patients: dose-escalation 5, 20, 40 mg/kg IV every 4 weeks x 4 doses each level (period 1, 16 weeks per level); period 2 (48 weeks) continued the highest tolerated dose.",
+    regions = "Multi-regional Phase 1 and Phase 2 trials (Pfizer-sponsored).",
+    n_observations_drug = 5181L,
     n_observations_myostatin = 8001L,
-    notes          = "Demographics from Wojciechowski 2022 Table 1 (combined HV + DMD pediatric column). 5.79% of free domagrozumab and 0.075% of total myostatin observations were below LLOQ. Anti-drug antibodies were negative or below quantification in the entire cohort, so ADA was not tested as a covariate (paper Methods)."
+    notes = "Demographics from Wojciechowski 2022 Table 1 (combined HV + DMD pediatric column). 5.79% of free domagrozumab and 0.075% of total myostatin observations were below LLOQ. Anti-drug antibodies were negative or below quantification in the entire cohort, so ADA was not tested as a covariate (paper Methods)."
   )
 
   ini({

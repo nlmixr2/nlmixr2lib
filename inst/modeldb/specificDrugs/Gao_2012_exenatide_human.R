@@ -37,36 +37,36 @@ Gao_2012_exenatide_human <- function() {
   vignette <- "Gao_2012_exenatide"
 
   units <- list(
-    time          = "min",
-    dosing        = "pmol",
+    time = "min",
+    dosing = "pmol",
     concentration = "pmol/L (pM); the paper converted all doses to moles using a molecular weight of 4186.6 g/mol for exendin-4"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight. Required because Gao 2012 Table 3 reports the human central volume of distribution per kilogram (Vc = 111 mL/kg); the model multiplies it by WT to obtain an absolute volume in litres.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Required because Gao 2012 Table 3 reports the human central volume of distribution per kilogram (Vc = 111 mL/kg); the model multiplies it by WT to obtain an absolute volume in litres.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 88.5 kg, the mean body weight of study A in Gao 2012 Materials and Methods (88.5 +/- 9.4 kg; study B was 88.8 +/- 12.1 kg and study C reported body mass index 21-29 kg/m^2 rather than weight). Time-fixed. Volume scales linearly with WT (exponent 1), which is how the source reports it, not as an estimated allometric exponent.",
-      source_name        = "b.wt."
+      notes = "Default reference value 88.5 kg, the mean body weight of study A in Gao 2012 Materials and Methods (88.5 +/- 9.4 kg; study B was 88.8 +/- 12.1 kg and study C reported body mass index 21-29 kg/m^2 rather than weight). Time-fixed. Volume scales linearly with WT (exponent 1), which is how the source reports it, not as an estimated allometric exponent.",
+      source_name = "b.wt."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "exenatide", units = "pmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "exenatide", units = "pmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "exenatide", units = "pmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "exenatide", units = "pmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "exenatide", units = "pmol", specimen = "tissue", verified = TRUE),
-    complex     = list(analyte = "exenatide/GLP-1R complex", units = "pmol", specimen = "tissue", verified = TRUE)
+    complex = list(analyte = "exenatide/GLP-1R complex", units = "pmol", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 27L,
-    n_studies     = 3L,
-    weight_range  = "88.5 +/- 9.4 kg (study A) and 88.8 +/- 12.1 kg (study B); study C reported body mass index 21-29 kg/m^2 and no body weight",
+    species = "human",
+    n_subjects = 27L,
+    n_studies = 3L,
+    weight_range = "88.5 +/- 9.4 kg (study A) and 88.8 +/- 12.1 kg (study B); study C reported body mass index 21-29 kg/m^2 and no body weight",
     disease_state = "Healthy subjects.",
-    dose_range    = paste(
+    dose_range = paste(
       "Study A: single subcutaneous doses of 0.1, 0.2, 0.3 and 0.4 ug/kg",
       "(n = 8). Study B: single subcutaneous doses of 0.02, 0.05 and",
       "0.1 ug/kg (n = 8). Study C: continuous intravenous infusion of",

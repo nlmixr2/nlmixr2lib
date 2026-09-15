@@ -56,27 +56,27 @@ Gao_2025_cefquinome_pkpd_index <- function() {
 
   covariateData <- list(
     AUC_CEFQ = list(
-      description        = "Cefquinome area under the serum concentration-time curve over the current 24 h dosing interval",
-      units              = "h*ug/mL",
-      type               = "continuous",
+      description = "Cefquinome area under the serum concentration-time curve over the current 24 h dosing interval",
+      units = "h*ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-24-h-interval cefquinome serum exposure, supplied as a piecewise-constant time-varying covariate (one value per 24 h interval). Gao 2025 derived it non-compartmentally in WinNonlin 5.2.1 (Section 2.4) and reports AUC0-last as 5.41 +/- 0.81 h*ug/mL after a single 1 mg/kg intramuscular dose and 12.33 +/- 0.69 h*ug/mL after 1 mg/kg intravenously (Table 1). Because the last quantifiable sample is at 12 h (Figure 2) and the terminal half-life is 2.35-4.16 h, AUC0-last and AUC0-24h are numerically interchangeable in this study, and the intramuscular value of 5.41 h*ug/mL is the exposure that generated the ex vivo serum samples. Set to 0 for the drug-free control so the sigmoid term vanishes and the predicted 24 h change equals e0. The companion model Gao_2025_cefquinome_foal can generate this covariate for an arbitrary dose if a closed PK-PD loop is wanted.",
-      source_name        = "AUC0-24h (Gao 2025 Sections 2.9-2.11; values in Table 1 as AUC0-last)"
+      notes = "Per-24-h-interval cefquinome serum exposure, supplied as a piecewise-constant time-varying covariate (one value per 24 h interval). Gao 2025 derived it non-compartmentally in WinNonlin 5.2.1 (Section 2.4) and reports AUC0-last as 5.41 +/- 0.81 h*ug/mL after a single 1 mg/kg intramuscular dose and 12.33 +/- 0.69 h*ug/mL after 1 mg/kg intravenously (Table 1). Because the last quantifiable sample is at 12 h (Figure 2) and the terminal half-life is 2.35-4.16 h, AUC0-last and AUC0-24h are numerically interchangeable in this study, and the intramuscular value of 5.41 h*ug/mL is the exposure that generated the ex vivo serum samples. Set to 0 for the drug-free control so the sigmoid term vanishes and the predicted 24 h change equals e0. The companion model Gao_2025_cefquinome_foal can generate this covariate for an arbitrary dose if a closed PK-PD loop is wanted.",
+      source_name = "AUC0-24h (Gao 2025 Sections 2.9-2.11; values in Table 1 as AUC0-last)"
     )
   )
 
   population <- list(
-    species        = "ex vivo (serum from horse, Ili foal) challenged with Escherichia coli",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "7 months to 1 year (serum donors)",
-    weight_range   = "191 +/- 21.7 kg (serum donors, mean +/- SD)",
-    organism       = "Escherichia coli strain HE13, isolated from a foal with septicaemia in Heilongjiang Province, China. Cefquinome MIC 0.125 ug/mL in Mueller Hinton broth and 0.062 ug/mL in foal serum; E. coli ATCC 25922 was the quality-control strain (0.054 ug/mL broth, 0.031 ug/mL serum)",
-    system         = "Ex vivo time-kill. Serum was drawn from foals before dosing and at 0.083, 0.167, 0.25, 0.5, 0.75, 1, 2, 3, 6, 9, 12 and 24 h after a single 1 mg/kg intramuscular dose; 0.5 mL of each serum sample was mixed with 50 uL of stationary-phase culture to about 1 x 10^6 CFU/mL, and 20 uL aliquots were serially diluted onto trypticase soy agar after 1, 3, 6, 9, 12 and 24 h of incubation (detection limit 200 CFU/mL)",
-    disease_state  = "Not applicable (ex vivo challenge of serum from healthy foals); starting inoculum about 1 x 10^6 CFU/mL",
-    dose_range     = "Single 1 mg/kg intramuscular dose of cefquinome sulphate injection in the serum donors",
-    regions        = "China (Northeast Agricultural University, Harbin; foals in Zhaosu County, Yili)",
-    notes          = "Ethics approval XY20230322. Gao 2025 measured MICs for 53 E. coli isolates (Figure 3: 4 strains at 0.016, 9 at 0.031, 20 at 0.062, 9 at 0.125, 7 at 0.25, 2 at 0.5 and 2 at 1 ug/mL in serum), giving MIC50 = 0.062 ug/mL; MICs in Mueller Hinton broth averaged 1.8-fold higher than in serum (Table 2), which is why the serum MIC is used here. Post-antibiotic effects were short and concentration-dependent (Table 3: 0.13-0.58 h over 1x to 4x MIC), so no PAE term is included. Gao 2025 also ran a 10,000-subject Monte Carlo simulation in Crystal Ball, treating AUC0-24h as log-normal and sampling the MIC distribution, and reported target attainment rates of 46.38% for the bactericidal target and 24.48% for the bacterial-elimination target at the recommended 1 mg/kg intramuscular dose; the vignette reproduces both to within about 1 percentage point from this model plus the Figure 3 MIC distribution."
+    species = "ex vivo (serum from horse, Ili foal) challenged with Escherichia coli",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "7 months to 1 year (serum donors)",
+    weight_range = "191 +/- 21.7 kg (serum donors, mean +/- SD)",
+    organism = "Escherichia coli strain HE13, isolated from a foal with septicaemia in Heilongjiang Province, China. Cefquinome MIC 0.125 ug/mL in Mueller Hinton broth and 0.062 ug/mL in foal serum; E. coli ATCC 25922 was the quality-control strain (0.054 ug/mL broth, 0.031 ug/mL serum)",
+    system = "Ex vivo time-kill. Serum was drawn from foals before dosing and at 0.083, 0.167, 0.25, 0.5, 0.75, 1, 2, 3, 6, 9, 12 and 24 h after a single 1 mg/kg intramuscular dose; 0.5 mL of each serum sample was mixed with 50 uL of stationary-phase culture to about 1 x 10^6 CFU/mL, and 20 uL aliquots were serially diluted onto trypticase soy agar after 1, 3, 6, 9, 12 and 24 h of incubation (detection limit 200 CFU/mL)",
+    disease_state = "Not applicable (ex vivo challenge of serum from healthy foals); starting inoculum about 1 x 10^6 CFU/mL",
+    dose_range = "Single 1 mg/kg intramuscular dose of cefquinome sulphate injection in the serum donors",
+    regions = "China (Northeast Agricultural University, Harbin; foals in Zhaosu County, Yili)",
+    notes = "Ethics approval XY20230322. Gao 2025 measured MICs for 53 E. coli isolates (Figure 3: 4 strains at 0.016, 9 at 0.031, 20 at 0.062, 9 at 0.125, 7 at 0.25, 2 at 0.5 and 2 at 1 ug/mL in serum), giving MIC50 = 0.062 ug/mL; MICs in Mueller Hinton broth averaged 1.8-fold higher than in serum (Table 2), which is why the serum MIC is used here. Post-antibiotic effects were short and concentration-dependent (Table 3: 0.13-0.58 h over 1x to 4x MIC), so no PAE term is included. Gao 2025 also ran a 10,000-subject Monte Carlo simulation in Crystal Ball, treating AUC0-24h as log-normal and sampling the MIC distribution, and reported target attainment rates of 46.38% for the bactericidal target and 24.48% for the bacterial-elimination target at the recommended 1 mg/kg intramuscular dose; the vignette reproduces both to within about 1 percentage point from this model plus the Figure 3 MIC distribution."
   )
 
   ini({

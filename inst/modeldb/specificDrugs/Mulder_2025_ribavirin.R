@@ -61,22 +61,22 @@ Mulder_2025_ribavirin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ribavirin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ribavirin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
-    hb_state    = list(analyte = "haemoglobin", units = "mg", specimen = "not applicable", verified = FALSE),
-    healthy     = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE),
-    infected    = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE),
-    virus       = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE)
+    hb_state = list(analyte = "haemoglobin", units = "mg", specimen = "not applicable", verified = FALSE),
+    healthy = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE),
+    infected = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used for allometric scaling on Vc (exponent 1.29 fixed) and Vp",
         "(exponent 0.725 fixed). Reference weight 79 kg taken from Wu",
         "2015 (upstream PK source); Mulder 2025 reports cohort median",
@@ -84,27 +84,27 @@ Mulder_2025_ribavirin <- function() {
         "are 70 kg (male) and 75 kg (female). All structural body-weight",
         "effects are carried over from Wu 2015 verbatim."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Used as multiplicative factor 0.732^SEXF on Vp (so Vp is 26.8%",
         "smaller in females vs males). Fixed from Wu 2015 (the source",
         "paper reports the same effect as 0.732^SEX with SEX = 1",
         "indicating female)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "MDRD-estimated glomerular filtration rate (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "MDRD-estimated glomerular filtration rate (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Cohort median 50 mL/min/1.73 m^2 (Mulder 2025",
         "Table 1); simulations in the source paper use 57 as the",
         "median surrogate. Enters CL via a power effect with exponent",
@@ -114,14 +114,14 @@ Mulder_2025_ribavirin <- function() {
         "column eGFR to the canonical CRCL per covariate-columns.md",
         "(MDRD eGFR is a registered CRCL alias)."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     HGB_BL = list(
-      description        = "Per-subject baseline (pre-treatment) haemoglobin concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Per-subject baseline (pre-treatment) haemoglobin concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used as initial condition for hb_state and as the baseline",
         "anchor for kin = kout * HGB_BL so the Hb state is at steady",
         "state pre-RBV. Cohort median 8.3 mmol/L (Mulder 2025 Table 1).",
@@ -131,14 +131,14 @@ Mulder_2025_ribavirin <- function() {
         "source column HBBASE to the canonical HGB_BL per covariate-",
         "columns.md."
       ),
-      source_name        = "HBBASE"
+      source_name = "HBBASE"
     ),
     HEV_VLOAD = list(
-      description        = "Per-subject baseline (pre-treatment) HEV viral load",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Per-subject baseline (pre-treatment) HEV viral load",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used as the initial condition virus(0) = HEV_VLOAD and enters",
         "the derivation of the infection-rate constant beta = kloss *",
         "rho / HEV_VLOAD and the virion production rate p = elim *",
@@ -147,20 +147,20 @@ Mulder_2025_ribavirin <- function() {
         "1; range 527-1.68e8). Renamed from source column VLBASE to",
         "the canonical HEV_VLOAD per covariate-columns.md."
       ),
-      source_name        = "VLBASE"
+      source_name = "VLBASE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 107L,
-    n_studies      = 1L,
-    age_range      = "22-84 years",
-    age_median     = "56.9 years",
-    weight_range   = "43.5-140 kg",
-    weight_median  = "74 kg (cohort); 70 kg (male median) / 75 kg (female median) used in simulations",
+    species = "human",
+    n_subjects = 107L,
+    n_studies = 1L,
+    age_range = "22-84 years",
+    age_median = "56.9 years",
+    weight_range = "43.5-140 kg",
+    weight_median = "74 kg (cohort); 70 kg (male median) / 75 kg (female median) used in simulations",
     sex_female_pct = 32.7,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult solid organ transplant (SOT) recipients with chronic",
       "hepatitis E virus (HEV) infection treated with oral ribavirin",
       "between September 2009 and November 2019. Organ-transplant",
@@ -170,15 +170,15 @@ Mulder_2025_ribavirin <- function() {
       "based immunosuppression (84.9% tacrolimus, 71.7% glucocorticoids,",
       "58.5% mycophenolic acid, 13.2% everolimus, 6.6% sirolimus)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral ribavirin median 600 mg/day (range 100-2400) for median 90",
       "days (range 21-1333). No loading dose used in the modelled",
       "regimens; the source paper's simulation arm evaluating a 33",
       "mg/kg loading dose (Burrows 2015 protocol) is illustrative",
       "only and not part of the fitted dataset."
     ),
-    regions        = "Multicentre: Netherlands, France, Belgium (5 hospitals)",
-    notes          = paste(
+    regions = "Multicentre: Netherlands, France, Belgium (5 hospitals)",
+    notes = paste(
       "Retrospective study (MEC-2018-1326). 92 subjects overlap with",
       "Mulder 2021 J Viral Hepat 28:431-435 (PMID 33135238) but no",
       "popPK/PD analysis was performed in that prior paper. 305 RBV",

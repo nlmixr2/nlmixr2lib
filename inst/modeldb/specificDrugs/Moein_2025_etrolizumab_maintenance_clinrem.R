@@ -38,18 +38,18 @@ Moein_2025_etrolizumab_maintenance_clinrem <- function() {
   )
   vignette <- "Moein_2025_etrolizumab"
   units <- list(
-    time          = "n/a (static landmark logistic regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark logistic regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_clinrem (probability of clinical remission at end of maintenance, 0-1)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE 105 mg dose (Ctrough,W4,adjusted)",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE 105 mg dose (Ctrough,W4,adjusted)",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "TOTAL etrolizumab, entering the logit LINEARLY and ",
         "UNCENTERED, so logite0 is the logit at zero exposure -- the ",
         "placebo arm (a single intercept is shared by placebo and ",
@@ -70,14 +70,14 @@ Moein_2025_etrolizumab_maintenance_clinrem <- function() {
         "randomised to placebo for maintenance. The Figure 4 panels ",
         "span 0-9 ug/mL."
       ),
-      source_name        = "Ctrough,W4,adjusted"
+      source_name = "Ctrough,W4,adjusted"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Linear effect on the logit, CENTERED at the reference of ",
         "42.0 g/L: e_alb_clinrem * (ALB - 42.0). Table S9 footnote a ",
         "defines the intercept patient as having 'Albumin (g/L): 42.0', ",
@@ -92,14 +92,14 @@ Moein_2025_etrolizumab_maintenance_clinrem <- function() {
         "Figure 4a. Analysis-set distribution (Table S6): median 42.0, ",
         "range 27.0-53.0."
       ),
-      source_name        = "Albumin"
+      source_name = "Albumin"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male, the paper's reference; Table S9 footnote a states 'Sex: Male')",
-      notes              = paste0(
+      notes = paste0(
         "Log-odds shift for female versus male (-0.563). The canonical ",
         "SEXF orientation (1 = female) matches the published ",
         "coefficient's orientation exactly, so no sign flip or ",
@@ -109,14 +109,14 @@ Moein_2025_etrolizumab_maintenance_clinrem <- function() {
         "inconclusive. Reproduced in Figure 4d. Analysis set ",
         "(Table S7): 218 male (50%), 216 female (50%)."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     PRIOR_TNF = list(
-      description        = "Prior anti-TNF biologic therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anti-TNF biologic therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (TNF-experienced) -- the PAPER's reference, the complement of the canonical column's 0 level",
-      notes              = paste0(
+      notes = paste0(
         "The published coefficient is on the TNF-NAIVE side of the ",
         "contrast (Table S9 'TNF-naive' = 0.564, RSE 40.0%, P < 0.05), ",
         "with TNF-experienced absorbed into the intercept (footnote a). ",
@@ -130,14 +130,14 @@ Moein_2025_etrolizumab_maintenance_clinrem <- function() {
         "in Figure 4e. Analysis set (Table S7): 254 TNF-experienced ",
         "(59%), 180 TNF-naive (41%)."
       ),
-      source_name        = "TNF status"
+      source_name = "TNF status"
     ),
     SCORE_CDAI = list(
-      description        = "Baseline Crohn's Disease Activity Index (CDAI) score",
-      units              = "(score, 0-600)",
-      type               = "continuous",
+      description = "Baseline Crohn's Disease Activity Index (CDAI) score",
+      units = "(score, 0-600)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Linear effect on the logit, CENTERED at the MAINTENANCE ",
         "reference score of 320: e_cdai_clinrem * (SCORE_CDAI - 320). ",
         "The reference differs by phase -- Table S9 (maintenance) uses ",
@@ -148,24 +148,24 @@ Moein_2025_etrolizumab_maintenance_clinrem <- function() {
         "in Figure 4b. Analysis-set distribution (Table S6): median ",
         "320, range 215-481."
       ),
-      source_name        = "CDAI score"
+      source_name = "CDAI score"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 434L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 434L,
+    n_studies = 1L,
     n_observations = "434 binary outcome records, one per patient (landmark analysis at end of maintenance)",
-    age_range      = "18.0-76.0 years",
-    age_median     = "37.0 years",
-    weight_range   = "35.3-154 kg",
-    weight_median  = "70.4 kg",
+    age_range = "18.0-76.0 years",
+    age_median = "37.0 years",
+    weight_range = "35.3-154 kg",
+    weight_median = "70.4 kg",
     sex_female_pct = 50,
-    disease_state  = "Moderately-to-severely active Crohn's disease with a CDAI-70 response at the end of induction; baseline CDAI median 320, SES-CD median 12.0",
-    dose_range     = "Placebo or etrolizumab 105 mg SC Q4W over a 52-week maintenance phase, following a 14-week induction phase on 105 or 210 mg SC",
-    regions        = "Multinational (BERGAMOT, NCT02394028)",
-    notes          = paste0(
+    disease_state = "Moderately-to-severely active Crohn's disease with a CDAI-70 response at the end of induction; baseline CDAI median 320, SES-CD median 12.0",
+    dose_range = "Placebo or etrolizumab 105 mg SC Q4W over a 52-week maintenance phase, following a 14-week induction phase on 105 or 210 mg SC",
+    regions = "Multinational (BERGAMOT, NCT02394028)",
+    notes = paste0(
       "Entry into the maintenance phase required a CDAI-70 response at ",
       "the end of induction, so this is a RESPONDER-ENRICHED set and is ",
       "not a random subset of the induction population. Patients who ",

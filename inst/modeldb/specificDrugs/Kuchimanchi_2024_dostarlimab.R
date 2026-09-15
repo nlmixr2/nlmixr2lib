@@ -8,81 +8,88 @@ Kuchimanchi_2024_dostarlimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight. Allometric power scaling (WT / 70)^exponent on CL (exponent 0.523) and on Vc/Vp (shared exponent 0.48). Reference 70 kg (Kuchimanchi 2024 Methods, reference patient).",
-      source_name        = "WT"
+      notes = "Baseline body weight. Allometric power scaling (WT / 70)^exponent on CL (exponent 0.523) and on Vc/Vp (shared exponent 0.48). Reference 70 kg (Kuchimanchi 2024 Methods, reference patient).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (AGE / 64)^-0.238 on CL. Reference 64 years (median age of analysis set; Kuchimanchi 2024 Methods, reference patient).",
-      source_name        = "AGE"
+      notes = "Power scaling (AGE / 64)^-0.238 on CL. Reference 64 years (median age of analysis set; Kuchimanchi 2024 Methods, reference patient).",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Serum albumin (time-varying)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (time-varying)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate. Power scaling (ALB / 39)^-0.922 on CL and (ALB / 39)^-0.132 on Vc. Reference 39 g/L (median of analysis set, Kuchimanchi 2024 Table 1; Methods reference patient).",
-      source_name        = "ALB"
+      notes = "Time-varying covariate. Power scaling (ALB / 39)^-0.922 on CL and (ALB / 39)^-0.132 on Vc. Reference 39 g/L (median of analysis set, Kuchimanchi 2024 Table 1; Methods reference patient).",
+      source_name = "ALB"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase (time-varying)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase (time-varying)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate. Power scaling (ALT / 18)^-0.0623 on CL. Reference 18 U/L per Methods reference-patient text and the equation denominator. Note the publication has an internal inconsistency: Table 1 reports median ALT of 17 U/L for the analysis set and the Figure 2 caption likewise lists ALT = 17 U/L; the Methods text and the structural equation use 18 U/L. The model uses 18 to match the equation; using 17 instead changes typical CL by less than 0.4%.",
-      source_name        = "ALT"
+      notes = "Time-varying covariate. Power scaling (ALT / 18)^-0.0623 on CL. Reference 18 U/L per Methods reference-patient text and the equation denominator. Note the publication has an internal inconsistency: Table 1 reports median ALT of 17 U/L for the analysis set and the Figure 2 caption likewise lists ALT = 17 U/L; the Methods text and the structural equation use 18 U/L. The model uses 18 to match the equation; using 17 instead changes typical CL by less than 0.4%.",
+      source_name = "ALT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the most common group, 82.0% of the analysis set)",
-      notes              = "Female is the reference category (Kuchimanchi 2024: theta_CL_SEX and theta_Vc_SEX are 0 for females and estimated for males). Implemented as (1 + theta * (1 - SEXF)) so SEXF = 1 (female) gives factor 1 and SEXF = 0 (male) gives factor 1 + theta.",
-      source_name        = "SEX (paper codes a male indicator; mapped to canonical SEXF via 1 - SEXM)"
+      notes = "Female is the reference category (Kuchimanchi 2024: theta_CL_SEX and theta_Vc_SEX are 0 for females and estimated for males). Implemented as (1 + theta * (1 - SEXF)) so SEXF = 1 (female) gives factor 1 and SEXF = 0 (male) gives factor 1 + theta.",
+      source_name = "SEX (paper codes a male indicator; mapped to canonical SEXF via 1 - SEXM)"
     ),
     CONMED_CHEMO = list(
-      description        = "Coadministration regimen: dostarlimab + platinum-doublet chemotherapy (carboplatin AUC 5 + paclitaxel 175 mg/m^2 Q3W)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: dostarlimab + platinum-doublet chemotherapy (carboplatin AUC 5 + paclitaxel 175 mg/m^2 Q3W)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (dostarlimab monotherapy; the reference regimen in this analysis)",
-      notes              = "Indicator for whether dostarlimab is being given as part of combination chemotherapy (RUBY Part 1 cycles 1-6) versus monotherapy (GARNET, RUBY cycles 7+). Implemented multiplicatively as (1 + e_combo_cl * CONMED_CHEMO) with e_combo_cl = -0.0779, so combination therapy yields CL factor 0.9221 (~7.79% lower CL than monotherapy), matching Kuchimanchi 2024 Abstract and Table 2. The paper's Equation block writes the effect with an implicit indicator as '(1 - theta_CL_MONOTR)'; the most direct numerical match to the abstract phrasing 'CL was 7.79% lower in combination therapy' is achieved by treating the parameter as a fractional-change coefficient on a combination-therapy indicator.",
-      source_name        = "MONOTR (the paper's monotherapy/combination indicator; mapped to canonical CONMED_CHEMO via the inverse value relation, see notes)"
+      notes = "Indicator for whether dostarlimab is being given as part of combination chemotherapy (RUBY Part 1 cycles 1-6) versus monotherapy (GARNET, RUBY cycles 7+). Implemented multiplicatively as (1 + e_combo_cl * CONMED_CHEMO) with e_combo_cl = -0.0779, so combination therapy yields CL factor 0.9221 (~7.79% lower CL than monotherapy), matching Kuchimanchi 2024 Abstract and Table 2. The paper's Equation block writes the effect with an implicit indicator as '(1 - theta_CL_MONOTR)'; the most direct numerical match to the abstract phrasing 'CL was 7.79% lower in combination therapy' is achieved by treating the parameter as a fractional-change coefficient on a combination-therapy indicator.",
+      source_name = "MONOTR (the paper's monotherapy/combination indicator; mapped to canonical CONMED_CHEMO via the inverse value relation, see notes)"
     )
   )
 
   population <- list(
-    n_subjects     = 868L,
-    n_studies      = 2L,
+    n_subjects = 868L,
+    n_studies = 2L,
     n_observations = 7957L,
-    age_range      = "24-86 years",
-    age_median     = "64 years",
-    weight_range   = "34.0-182.0 kg",
-    weight_median  = "73.0 kg",
+    age_range = "24-86 years",
+    age_median = "64 years",
+    weight_range = "34.0-182.0 kg",
+    weight_median = "73.0 kg",
     sex_female_pct = 82.0,
-    race_ethnicity = c(White = 74.6, Black_AfricanAmerican = 5.4, Asian = 2.3,
-                       AmericanIndianAlaskaNative = 0.6, NativeHawaiianPacificIslander = 0.1,
-                       Other = 0.7, Unknown = 1.8, NotReported = 14.5),
-    disease_state  = "Primary advanced or recurrent endometrial cancer (RUBY Part 1) plus advanced or recurrent solid tumours (GARNET: dMMR/MSI-H endometrial cancer, MMRp/MSS endometrial cancer, non-EC dMMR/MSI-H or POLE-mutant tumours, and NSCLC).",
-    dose_range     = "GARNET: 1, 3 or 10 mg/kg IV Q2W (Part 1); 500 mg Q3W or 1000 mg Q6W (Part 2A); 500 mg Q3W x 4 cycles followed by 1000 mg Q6W (Part 2B). RUBY Part 1: 500 mg IV Q3W with carboplatin (AUC 5) + paclitaxel (175 mg/m^2) Q3W for 6 cycles, followed by 1000 mg IV Q6W for up to 3 years.",
-    regions        = "Multinational; Europe 52.5%, North America 47.5%",
+    race_ethnicity = c(
+      White = 74.6,
+      Black_AfricanAmerican = 5.4,
+      Asian = 2.3,
+      AmericanIndianAlaskaNative = 0.6,
+      NativeHawaiianPacificIslander = 0.1,
+      Other = 0.7,
+      Unknown = 1.8,
+      NotReported = 14.5
+    ),
+    disease_state = "Primary advanced or recurrent endometrial cancer (RUBY Part 1) plus advanced or recurrent solid tumours (GARNET: dMMR/MSI-H endometrial cancer, MMRp/MSS endometrial cancer, non-EC dMMR/MSI-H or POLE-mutant tumours, and NSCLC).",
+    dose_range = "GARNET: 1, 3 or 10 mg/kg IV Q2W (Part 1); 500 mg Q3W or 1000 mg Q6W (Part 2A); 500 mg Q3W x 4 cycles followed by 1000 mg Q6W (Part 2B). RUBY Part 1: 500 mg IV Q3W with carboplatin (AUC 5) + paclitaxel (175 mg/m^2) Q3W for 6 cycles, followed by 1000 mg IV Q6W for up to 3 years.",
+    regions = "Multinational; Europe 52.5%, North America 47.5%",
     coadministration = "Dostarlimab monotherapy in GARNET (n = 636) and in RUBY Part 1 cycles 7+; dostarlimab + carboplatin-paclitaxel in RUBY Part 1 cycles 1-6 (n = 233).",
     ada_positive_pct = 11.6,
     hepatic_impairment_pct = c(none = 88.8, mild = 10.6, moderate = 0.6, severe = 0),
-    renal_impairment_pct   = c(none = 35.1, mild = 45.7, moderate = 18.9, severe = 0.3),
-    notes          = "Baseline demographics from Kuchimanchi 2024 Table 1 (overall analysis set, N = 869; one patient excluded from PopPK so analysis set was 868 with 7,957 PK observations). Reference patient (Methods, 'PopPK model development'): female, 70 kg, 64 years, albumin 39 g/L, ALT 18 U/L (Methods text; Figure 2 caption reports ALT = 17 U/L)."
+    renal_impairment_pct = c(none = 35.1, mild = 45.7, moderate = 18.9, severe = 0.3),
+    notes = "Baseline demographics from Kuchimanchi 2024 Table 1 (overall analysis set, N = 869; one patient excluded from PopPK so analysis set was 868 with 7,957 PK observations). Reference patient (Methods, 'PopPK model development'): female, 70 kg, 64 years, albumin 39 g/L, ALT 18 U/L (Methods text; Figure 2 caption reports ALT = 17 U/L)."
   )
 
   ini({

@@ -12,7 +12,9 @@
   .varLhs <- .ui$varLhs
   # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
   # This will add the S3 method to allow $getSplitModel to work
-  if (is.null(.varLhs)) .varLhs <- .ui$getSplitMuModel$pureMuRef
+  if (is.null(.varLhs)) {
+    .varLhs <- .ui$getSplitMuModel$pureMuRef
+  }
   .varLhs
 }
 
@@ -37,9 +39,13 @@
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addEta("ka")
 #' @export
-addEta <- function(ui, eta, priorName = getOption("nlmixr2lib.priorEta", TRUE),
-                   etaCombineType = c("default", "snake", "camel", "dot", "blank"),
-                   model) {
+addEta <- function(
+  ui,
+  eta,
+  priorName = getOption("nlmixr2lib.priorEta", TRUE),
+  etaCombineType = c("default", "snake", "camel", "dot", "blank"),
+  model
+) {
   .useModelAsUi()
   if (missing(etaCombineType)) {
     etaCombineType <- .getCombineTypeFromRoption("nlmixr2lib.etaCombineType")
@@ -94,11 +100,11 @@ addEta <- function(ui, eta, priorName = getOption("nlmixr2lib.priorEta", TRUE),
         replace = sprintf("%s + %s", currentEta, etaName)
       )
   }
-  etaIni <- lapply(X = paste0(etaMap[names(eta)],
-    "~", eta), FUN = base::str2lang)
+  etaIni <- lapply(X = paste0(etaMap[names(eta)], "~", eta), FUN = base::str2lang)
   iniArgs <-
     append(
-      list(ui), etaIni
+      list(ui),
+      etaIni
     )
   # Work around rxode2 issue #277
   lotri <- rxode2::lotri

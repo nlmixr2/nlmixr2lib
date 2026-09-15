@@ -8,50 +8,50 @@ Momper_2016_fluconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fluconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fluconazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Allometrically scaled: CL ~ WT^0.75 and V ~ WT^1.0 with both exponents fixed per the Methods section. Paper Table 1 reports weight in grams (median 710 g, range 345-2,680 g); convert to kg before use.",
-      source_name        = "WT"
+      notes = "Time-varying. Allometrically scaled: CL ~ WT^0.75 and V ~ WT^1.0 with both exponents fixed per the Methods section. Paper Table 1 reports weight in grams (median 710 g, range 345-2,680 g); convert to kg before use.",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Multiplicative power covariate on CL with reference 0.8 mg/dL: (CREAT / 0.8)^-0.41. Paper source column is SCR. Subjects with SCR > 2 mg/dL were excluded from the original trial.",
-      source_name        = "SCR"
+      notes = "Time-varying. Multiplicative power covariate on CL with reference 0.8 mg/dL: (CREAT / 0.8)^-0.41. Paper source column is SCR. Subjects with SCR > 2 mg/dL were excluded from the original trial.",
+      source_name = "SCR"
     ),
     PAGE = list(
-      description        = "Postmenstrual age = gestational age (weeks) / 4.35 + postnatal age (months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age = gestational age (weeks) / 4.35 + postnatal age (months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Multiplicative power covariate on CL with reference 28 weeks PMA (i.e., 28/4.35 = 6.4368 months): (PAGE / (28/4.35))^2.05. Momper 2016 expresses PMA in weeks with reference 28; the canonical PAGE column stores months, so the reference is rescaled to months here. Paper source column is PMA.",
-      source_name        = "PMA"
+      notes = "Time-varying. Multiplicative power covariate on CL with reference 28 weeks PMA (i.e., 28/4.35 = 6.4368 months): (PAGE / (28/4.35))^2.05. Momper 2016 expresses PMA in weeks with reference 28; the canonical PAGE column stores months, so the reference is rescaled to months here. Paper source column is PMA.",
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 141,
-    n_samples      = 604,
-    n_studies      = 1,
-    age_range      = "PNA 3-47 days (median 23); GA 22.6-28.7 weeks (median 24.7); PMA 23.7-35.1 weeks (median 28.3)",
-    weight_range   = "0.345-2.680 kg at first PK evaluation (median 0.710 kg)",
+    species = "human",
+    n_subjects = 141,
+    n_samples = 604,
+    n_studies = 1,
+    age_range = "PNA 3-47 days (median 23); GA 22.6-28.7 weeks (median 24.7); PMA 23.7-35.1 weeks (median 28.3)",
+    weight_range = "0.345-2.680 kg at first PK evaluation (median 0.710 kg)",
     sex_female_pct = 60,
     race_ethnicity = c(`Black or African American` = 53, White = 40, `American Indian or Alaska Native` = 5, Asian = 1),
-    disease_state  = "Extremely premature infants with birth weights < 750 g receiving fluconazole prophylaxis for invasive candidiasis",
-    dose_range     = "6 mg/kg IV (60-min infusion) or oral, twice weekly (Tuesdays and Fridays) for up to 42 days",
-    regions        = "United States (multicenter randomized placebo-controlled trial)",
-    notes          = "Table 1 baseline demographics. Exclusion criteria: AST/ALT > 250 U/L, SCR > 2 mg/dL, invasive candidiasis or congenital Candida infection at randomization, azole-antifungal hypersensitivity. Cesarean delivery in 67%; intubated in 81%. Final analysis dataset 604 plasma samples (61% from scavenged residual laboratory samples)."
+    disease_state = "Extremely premature infants with birth weights < 750 g receiving fluconazole prophylaxis for invasive candidiasis",
+    dose_range = "6 mg/kg IV (60-min infusion) or oral, twice weekly (Tuesdays and Fridays) for up to 42 days",
+    regions = "United States (multicenter randomized placebo-controlled trial)",
+    notes = "Table 1 baseline demographics. Exclusion criteria: AST/ALT > 250 U/L, SCR > 2 mg/dL, invasive candidiasis or congenital Candida infection at randomization, azole-antifungal hypersensitivity. Cesarean delivery in 67%; intubated in 81%. Final analysis dataset 604 plasma samples (61% from scavenged residual laboratory samples)."
   )
 
   ini({

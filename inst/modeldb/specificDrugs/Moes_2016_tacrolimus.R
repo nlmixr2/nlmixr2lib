@@ -1,61 +1,61 @@
 Moes_2016_tacrolimus <- function() {
   description <- "Two-compartment population pharmacokinetic model for oral once-daily tacrolimus (Advagraf) in stable adult liver transplant recipients (Moes 2016), with first-order elimination from the central compartment and a delayed first-order absorption phase described by three sequential transit compartments sharing the absorption rate constant ka, a fixed oral bioavailability F = 0.23, a categorical donor + recipient CYP3A5*3 combination effect on apparent oral clearance (reference both nonexpressers; donor nonexpresser + recipient *1 carrier +33%; donor *1 carrier + recipient nonexpresser +33%; both *1 carriers +71%), independent log-normal IIV on CL, Vc, and ka, and proportional residual error on whole-blood concentration."
-  reference   <- "Moes DJAR, van der Bent SAS, Swen JJ, van der Straaten T, Inderson A, Olofsen E, Verspaget HW, Guchelaar HJ, den Hartigh J, van Hoek B. Population pharmacokinetics and pharmacogenetics of once daily tacrolimus formulation in stable liver transplant recipients. Eur J Clin Pharmacol. 2016;72(2):163-174. doi:10.1007/s00228-015-1963-3"
-  vignette    <- "Moes_2016_tacrolimus"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  reference <- "Moes DJAR, van der Bent SAS, Swen JJ, van der Straaten T, Inderson A, Olofsen E, Verspaget HW, Guchelaar HJ, den Hartigh J, van Hoek B. Population pharmacokinetics and pharmacogenetics of once daily tacrolimus formulation in stable liver transplant recipients. Eur J Clin Pharmacol. 2016;72(2):163-174. doi:10.1007/s00228-015-1963-3"
+  vignette <- "Moes_2016_tacrolimus"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP3A5_EXPR = list(
-      description        = "Recipient CYP3A5 expresser indicator: 1 if the liver-transplant recipient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3 at rs776746), 0 if homozygous *3/*3.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Recipient CYP3A5 expresser indicator: 1 if the liver-transplant recipient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3 at rs776746), 0 if homozygous *3/*3.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (recipient CYP3A5 *3/*3 nonexpresser)",
-      notes              = "Time-fixed germline genotype derived from rs776746. In Moes 2016 the model-development cohort (n = 49) had recipient genotype A/A = 36, G/A = 10, G/G = 3 (Table 2) -- i.e., 13 of 49 (26.5%) recipients carried at least one *1 allele and are encoded as CYP3A5_EXPR = 1. The recipient genotype represents intestinal CYP3A5 expression and contributes to first-pass extraction independently of the donor liver genotype. Combined with CYP3A5_EXPR_DONOR to reconstruct the Moes 2016 four-level combination categories C1-C4 inside model().",
-      source_name        = "Recipient CYP3A5*3"
+      notes = "Time-fixed germline genotype derived from rs776746. In Moes 2016 the model-development cohort (n = 49) had recipient genotype A/A = 36, G/A = 10, G/G = 3 (Table 2) -- i.e., 13 of 49 (26.5%) recipients carried at least one *1 allele and are encoded as CYP3A5_EXPR = 1. The recipient genotype represents intestinal CYP3A5 expression and contributes to first-pass extraction independently of the donor liver genotype. Combined with CYP3A5_EXPR_DONOR to reconstruct the Moes 2016 four-level combination categories C1-C4 inside model().",
+      source_name = "Recipient CYP3A5*3"
     ),
     CYP3A5_EXPR_DONOR = list(
-      description        = "Donor CYP3A5 expresser indicator: 1 if the transplanted liver was donated by a donor carrying at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3 at rs776746), 0 if the donor was homozygous *3/*3.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Donor CYP3A5 expresser indicator: 1 if the transplanted liver was donated by a donor carrying at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3 at rs776746), 0 if the donor was homozygous *3/*3.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (donor CYP3A5 *3/*3 nonexpresser graft)",
-      notes              = "Time-fixed donor germline genotype (recovered from donor spleen or liver biopsy at transplantation). In Moes 2016 the model-development cohort (n = 49) had donor genotype A/A = 40, G/A = 9, G/G = 0 (Table 2) -- i.e., 9 of 49 (18.4%) donors carried at least one *1 allele and are encoded as CYP3A5_EXPR_DONOR = 1. The donor genotype represents the engrafted-liver hepatic CYP3A5 expression and is biologically distinct from the recipient's intestinal CYP3A5 contribution. Combined with CYP3A5_EXPR to reconstruct the Moes 2016 four-level combination categories C1-C4 inside model().",
-      source_name        = "Donor CYP3A5*3"
+      notes = "Time-fixed donor germline genotype (recovered from donor spleen or liver biopsy at transplantation). In Moes 2016 the model-development cohort (n = 49) had donor genotype A/A = 40, G/A = 9, G/G = 0 (Table 2) -- i.e., 9 of 49 (18.4%) donors carried at least one *1 allele and are encoded as CYP3A5_EXPR_DONOR = 1. The donor genotype represents the engrafted-liver hepatic CYP3A5 expression and is biologically distinct from the recipient's intestinal CYP3A5 contribution. Combined with CYP3A5_EXPR to reconstruct the Moes 2016 four-level combination categories C1-C4 inside model().",
+      source_name = "Donor CYP3A5*3"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 49L,
-    n_observations   = 282L,
-    age_range        = "29-69 years",
-    age_median       = "55 years",
-    age_mean_sd      = "54 +/- 11 years",
-    weight_range     = "50-131 kg",
-    weight_median    = "84 kg",
-    weight_mean_sd   = "84 +/- 18 kg (Table 1 popPK column; the Results section narrative reports a different mean of 77.5 +/- 11.8 kg with range 50-121 kg -- see Errata in the validation vignette)",
-    sex_female_pct   = 36.7,
-    race_ethnicity   = "Caucasian 92% (45 of 49); remaining 8% not separately stratified.",
-    disease_state    = "Stable adult liver transplant recipients (bilirubin and albumin within reference range, stable graft function for at least 3 months) converted from twice-daily tacrolimus (Prograf) to once-daily tacrolimus (Advagraf) with at least 2 weeks of stable Advagraf dosing prior to PK sampling.",
-    dose_range       = "Once-daily oral Advagraf 0.5-14 mg/day; mean 3.6 +/- 2.2 mg/day, median 3 mg/day (Table 1 popPK column). Each PK profile was a single AUC0-6h profile after at least 2 weeks of dosing on the new once-daily formulation.",
-    regions          = "The Netherlands (Leiden University Medical Center).",
-    co_medication    = "Primary diagnoses included alcoholic liver disease (24.5%), primary sclerosing cholangitis (18%), hepatitis C (8%), cystic liver disease (8%), nonalcoholic steatohepatitis (6%), primary biliary cirrhosis (4%), cryptogenic liver disease (4%), and other (24%). Concomitant medications including prednisolone (low doses <=10 mg) were tested as covariates and not retained.",
-    sampling_design  = "Single AUC0-6h PK profile per subject (predose plus 1, 2, 3, 4, and 6 hours postdose); 282 whole-blood tacrolimus concentrations across 49 subjects, all collected after the patient had been stable on once-daily Advagraf for at least 2 weeks.",
+    species = "human",
+    n_subjects = 49L,
+    n_observations = 282L,
+    age_range = "29-69 years",
+    age_median = "55 years",
+    age_mean_sd = "54 +/- 11 years",
+    weight_range = "50-131 kg",
+    weight_median = "84 kg",
+    weight_mean_sd = "84 +/- 18 kg (Table 1 popPK column; the Results section narrative reports a different mean of 77.5 +/- 11.8 kg with range 50-121 kg -- see Errata in the validation vignette)",
+    sex_female_pct = 36.7,
+    race_ethnicity = "Caucasian 92% (45 of 49); remaining 8% not separately stratified.",
+    disease_state = "Stable adult liver transplant recipients (bilirubin and albumin within reference range, stable graft function for at least 3 months) converted from twice-daily tacrolimus (Prograf) to once-daily tacrolimus (Advagraf) with at least 2 weeks of stable Advagraf dosing prior to PK sampling.",
+    dose_range = "Once-daily oral Advagraf 0.5-14 mg/day; mean 3.6 +/- 2.2 mg/day, median 3 mg/day (Table 1 popPK column). Each PK profile was a single AUC0-6h profile after at least 2 weeks of dosing on the new once-daily formulation.",
+    regions = "The Netherlands (Leiden University Medical Center).",
+    co_medication = "Primary diagnoses included alcoholic liver disease (24.5%), primary sclerosing cholangitis (18%), hepatitis C (8%), cystic liver disease (8%), nonalcoholic steatohepatitis (6%), primary biliary cirrhosis (4%), cryptogenic liver disease (4%), and other (24%). Concomitant medications including prednisolone (low doses <=10 mg) were tested as covariates and not retained.",
+    sampling_design = "Single AUC0-6h PK profile per subject (predose plus 1, 2, 3, 4, and 6 hours postdose); 282 whole-blood tacrolimus concentrations across 49 subjects, all collected after the patient had been stable on once-daily Advagraf for at least 2 weeks.",
     cyp3a5_distribution_recipient = "A/A (rs776746) n = 36 (73.5%), G/A n = 10 (20.4%), G/G n = 3 (6.1%); 13 of 49 (26.5%) CYP3A5*1 carriers (Table 2).",
-    cyp3a5_distribution_donor     = "A/A n = 40 (81.6%), G/A n = 9 (18.4%), G/G n = 0; 9 of 49 (18.4%) CYP3A5*1 carriers (Table 2).",
+    cyp3a5_distribution_donor = "A/A n = 40 (81.6%), G/A n = 9 (18.4%), G/G n = 0; 9 of 49 (18.4%) CYP3A5*1 carriers (Table 2).",
     cyp3a5_combination_distribution = "C1 (both nonexpressers) n = 32; C2 (recipient *1 carrier + donor nonexpresser) n = 8; C3 (recipient nonexpresser + donor *1 carrier) n = 4; C4 (both *1 carriers) n = 5 (Table 2).",
-    notes            = "Baseline demographics from Table 1 popPK column. The model-development dataset was the subset of 49 of 66 enrolled subjects for whom both recipient and donor DNA were available. The remaining 17 subjects (donor DNA not available) contributed only to the limited-sampling-strategy development, not to the population PK / pharmacogenetic analysis whose parameters this file encodes."
+    notes = "Baseline demographics from Table 1 popPK column. The model-development dataset was the subset of 49 of 66 enrolled subjects for whom both recipient and donor DNA were available. The remaining 17 subjects (donor DNA not available) contributed only to the limited-sampling-strategy development, not to the population PK / pharmacogenetic analysis whose parameters this file encodes."
   )
 
   ini({

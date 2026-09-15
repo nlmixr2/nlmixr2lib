@@ -33,59 +33,59 @@ Hansson_2013c_sunitinib <- function() {
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013 GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013 GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated, on-cycle) or 0 (off-cycle / placebo) at every record. The .mod feeds DOSE into AUC = DOSE / CLI in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles.",
-      source_name        = "DOSE"
+      notes = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated, on-cycle) or 0 (off-cycle / placebo) at every record. The .mod feeds DOSE into AUC = DOSE / CLI in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles.",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The DDMORE-bundle simulated dataset carries CLI values 30-43 L/h across its three subjects; this is consistent with the Houk et al. 2010 typical sunitinib CL and with the typical-value reference (32.819 L/h) used by the upstream Hansson 2013a biomarker PD model. For a re-fit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model (the Hansson 2013 paper text describes the upstream PK as a 'previously developed 2-compartment model'; that popPK is not extracted into nlmixr2lib).",
-      source_name        = "CL"
+      notes = "Required input. The DDMORE-bundle simulated dataset carries CLI values 30-43 L/h across its three subjects; this is consistent with the Houk et al. 2010 typical sunitinib CL and with the typical-value reference (32.819 L/h) used by the upstream Hansson 2013a biomarker PD model. For a re-fit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model (the Hansson 2013 paper text describes the upstream PK as a 'previously developed 2-compartment model'; that popPK is not extracted into nlmixr2lib).",
+      source_name = "CL"
     ),
     BAS_SVEGFR3 = list(
-      description        = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used both as the initial condition for the in-model svegfr3 state and as the denominator in the relative-change driver bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used both as the initial condition for the in-model svegfr3 state and as the denominator in the relative-change driver bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The DDMORE-bundle simulated dataset carries BAS_SVEGFR3 values 42554-57365 pg/mL across its three subjects, consistent with the Hansson 2013a typical-value sVEGFR-3 baseline of 63900 pg/mL (the 011 vignette's typical-value figure shows steady-state at the BAS_SVEGFR3 set point, with on-cycle drug effect depleting it by ~50%). For new-population simulations either (a) simulate from `Hansson_2013a_sunitinib` to obtain individual posthoc baselines, or (b) set every subject to the typical 63900 pg/mL.",
-      source_name        = "BAS3"
+      notes = "Required input. The DDMORE-bundle simulated dataset carries BAS_SVEGFR3 values 42554-57365 pg/mL across its three subjects, consistent with the Hansson 2013a typical-value sVEGFR-3 baseline of 63900 pg/mL (the 011 vignette's typical-value figure shows steady-state at the BAS_SVEGFR3 set point, with on-cycle drug effect depleting it by ~50%). For new-population simulations either (a) simulate from `Hansson_2013a_sunitinib` to obtain individual posthoc baselines, or (b) set every subject to the typical 63900 pg/mL.",
+      source_name = "BAS3"
     ),
     MRT_SVEGFR3 = list(
-      description        = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as kout3 = 1 / MRT_SVEGFR3 inside model().",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as kout3 = 1 / MRT_SVEGFR3 inside model().",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The DDMORE-bundle simulated dataset carries MRT_SVEGFR3 values 313-408 h across its three subjects, consistent with the Hansson 2013a typical sVEGFR-3 MRT of 401 h. Same population strategy as BAS_SVEGFR3.",
-      source_name        = "MRT3"
+      notes = "Required input. The DDMORE-bundle simulated dataset carries MRT_SVEGFR3 values 313-408 h across its three subjects, consistent with the Hansson 2013a typical sVEGFR-3 MRT of 401 h. Same population strategy as BAS_SVEGFR3.",
+      source_name = "MRT3"
     ),
     EC50_SVEGFR3 = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc).",
-      units              = "mg*h/L (matches the auc = DOSE / CLI exposure summary)",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc).",
+      units = "mg*h/L (matches the auc = DOSE / CLI exposure summary)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The DDMORE-bundle simulated dataset carries EC50_SVEGFR3 values 1.0-2.8 mg*h/L across its three subjects, consistent with the Hansson 2013a typical sVEGFR-3 IC50 of 1.0 mg*h/L. Same population strategy as BAS_SVEGFR3.",
-      source_name        = "EC53"
+      notes = "Required input. The DDMORE-bundle simulated dataset carries EC50_SVEGFR3 values 1.0-2.8 mg*h/L across its three subjects, consistent with the Hansson 2013a typical sVEGFR-3 IC50 of 1.0 mg*h/L. Same population strategy as BAS_SVEGFR3.",
+      source_name = "EC53"
     )
   )
 
   population <- list(
-    n_subjects     = 303L,
-    n_studies      = 1L,
-    age_range      = "adults with imatinib-resistant GIST (paper not on disk; Hansson 2013c CPT Pharmacometrics Syst Pharmacol 2013;2:e85 baseline-demographics table not available in the bundle)",
-    weight_range   = "not reported in the DDMORE bundle",
+    n_subjects = 303L,
+    n_studies = 1L,
+    age_range = "adults with imatinib-resistant GIST (paper not on disk; Hansson 2013c CPT Pharmacometrics Syst Pharmacol 2013;2:e85 baseline-demographics table not available in the bundle)",
+    weight_range = "not reported in the DDMORE bundle",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Imatinib-resistant gastrointestinal stromal tumours (GIST). The Hansson 2013 multinational Phase III sunitinib trial (sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule + placebo run-in) supplied the biomarker / AE / overall-survival dataset for the e84 / e85 / e86 paper trio; this fatigue Markov + proportional-odds model fits to the per-visit fatigue-grade data from that cohort.",
-    dose_range     = "Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (standard GIST regimen at the time of the source study). Placebo arm: no sunitinib.",
-    regions        = "Phase III multinational trial; specific regions not reported in the DDMORE bundle.",
-    biomarkers     = "Fatigue grade per NCI-CTC v3 (ordinal: 0 = none, 1 = mild, 2 = moderate, 3+ = severe or worse, with the .mod's PDV.GT.2 branch pooling grade 3 and grade 4). The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted.",
-    notes          = "n_subjects = 303 carried over from the upstream Hansson 2013a biomarker model (same Phase III trial cohort); the AE-OS paper's fatigue analysis-set count is not derivable from the DDMORE bundle. Detailed baseline-demographics (age, weight, sex, race, prior-imatinib-duration distributions) are in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85, doi:10.1038/psp.2013.62), which was not on disk in /home/bill/github/mab_human_consensus/literature at extraction time. The bundle's simulated dataset is intentionally minimal (three subjects, daily observations over 27 days) and is not representative of the published cohort."
+    disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST). The Hansson 2013 multinational Phase III sunitinib trial (sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule + placebo run-in) supplied the biomarker / AE / overall-survival dataset for the e84 / e85 / e86 paper trio; this fatigue Markov + proportional-odds model fits to the per-visit fatigue-grade data from that cohort.",
+    dose_range = "Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (standard GIST regimen at the time of the source study). Placebo arm: no sunitinib.",
+    regions = "Phase III multinational trial; specific regions not reported in the DDMORE bundle.",
+    biomarkers = "Fatigue grade per NCI-CTC v3 (ordinal: 0 = none, 1 = mild, 2 = moderate, 3+ = severe or worse, with the .mod's PDV.GT.2 branch pooling grade 3 and grade 4). The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted.",
+    notes = "n_subjects = 303 carried over from the upstream Hansson 2013a biomarker model (same Phase III trial cohort); the AE-OS paper's fatigue analysis-set count is not derivable from the DDMORE bundle. Detailed baseline-demographics (age, weight, sex, race, prior-imatinib-duration distributions) are in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85, doi:10.1038/psp.2013.62), which was not on disk in /home/bill/github/mab_human_consensus/literature at extraction time. The bundle's simulated dataset is intentionally minimal (three subjects, daily observations over 27 days) and is not representative of the published cohort."
   )
 
   ini({

@@ -15,18 +15,18 @@ Zhang_2025_dupilumab_fev1 <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the model twice, at two different reference weights, because the PK and PD layers",
         "were fitted against different datasets. PK layer (fixed from Zhang 2021): power effects on",
         "Ke, V2 and Vmax normalised to 78 kg. PD layer (Zhang 2025 Equation 13): power effect",
@@ -34,66 +34,66 @@ Zhang_2025_dupilumab_fev1 <- function() {
         "Phase 3 PK/PD dataset (Zhang 2025 Table 2). The NONMEM source column for the PD-layer effect",
         "is BLWT (baseline weight); the PK-layer weight is time-varying."
       ),
-      source_name        = "BLWT"
+      source_name = "BLWT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect (AGE / 50)^-0.423 on baseline FEV1 (Zhang 2025 Equation 13); 50 years is the",
         "median of the pooled dataset (Zhang 2025 Table 2). Age had no significant effect on the",
         "dupilumab treatment effect Emax. Source column AGEY."
       ),
-      source_name        = "AGEY"
+      source_name = "AGEY"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Selects the sex-specific typical baseline FEV1: 1.93 L in men, 1.54 L in women",
         "(Zhang 2025 Table 3 / Equation 13). The NONMEM source column SEX is 1 for female, and the",
         "control stream derives FEMALE = 1 when SEX == 1, so the source coding already matches the",
         "canonical SEXF orientation (no value inversion needed)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     NEXAC12M = list(
-      description        = "Number of severe asthma exacerbations in the 12 months before study entry",
-      units              = "count",
-      type               = "count",
+      description = "Number of severe asthma exacerbations in the 12 months before study entry",
+      units = "count",
+      type = "count",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect (NEXAC12M / 1.0)^-0.0411 on baseline FEV1 (Zhang 2025 Equation 13 and Table 3);",
         "the normalising value 1.0 is the population median (Zhang 2025 Table 2; range 1-50). Used as a",
         "continuous count inside a power function, so it cannot be decomposed into band indicators.",
         "Zhang 2025 Table 4 shows the effect is not clinically meaningful (-7% at the 95th percentile of",
         "6 exacerbations). Source column PREEXAC."
       ),
-      source_name        = "PREEXAC"
+      source_name = "PREEXAC"
     ),
     FENO = list(
-      description        = "Baseline fractional exhaled nitric oxide concentration",
-      units              = "ppb",
-      type               = "continuous",
+      description = "Baseline fractional exhaled nitric oxide concentration",
+      units = "ppb",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Type-2 inflammation biomarker. Power effect (FENO / 25)^0.682 on the dupilumab maximum",
         "treatment effect Emax (Zhang 2025 Equation 12 and Table 3); 25 ppb is the median of the pooled",
         "dataset (Zhang 2025 Table 2; range 3-387 ppb). Baseline (pre-first-dose) value, time-fixed per",
         "subject. Source column BFENO."
       ),
-      source_name        = "BFENO"
+      source_name = "BFENO"
     ),
     EOS = list(
-      description        = "Baseline blood eosinophil count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline blood eosinophil count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Type-2 inflammation biomarker. Power effect (EOS / 260)^0.334 on the dupilumab maximum",
         "treatment effect Emax. Zhang 2025 Equation 12 writes the same ratio as (EOS / 0.26) with EOS in",
         "10^9/L; the supplementary NONMEM control stream uses (BEOS / 260), i.e. the dataset column is in",
@@ -101,44 +101,44 @@ Zhang_2025_dupilumab_fev1 <- function() {
         "cells/uL form is used here to match the register canonical. Baseline value, time-fixed per",
         "subject. Source column BEOS."
       ),
-      source_name        = "BEOS"
+      source_name = "BEOS"
     ),
     ALB = list(
-      description        = "Serum albumin (baseline)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (baseline)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "PK-layer covariate only, inherited fixed from Zhang 2021: power effect (ALB / 44)^-0.484 on V2.",
         "Zhang 2025 uses 44 g/L as the reference-patient albumin in its covariate simulations",
         "(Zhang 2025 Section 2.4)."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Creatinine clearance normalized to body surface area (Cockcroft-Gault, BSA-normalized as 1.73 * CrCl / BSA)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance normalized to body surface area (Cockcroft-Gault, BSA-normalized as 1.73 * CrCl / BSA)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "PK-layer covariate only, inherited fixed from Zhang 2021: power effect (CRCL / 111)^0.217 on Ke.",
         "Zhang 2025 uses 111 mL/min/1.73 m^2 as the reference-patient value in its covariate simulations",
         "(Zhang 2025 Section 2.4). Source column CLCRN."
       ),
-      source_name        = "CLCRN"
+      source_name = "CLCRN"
     ),
     ADA_POS = list(
-      description        = "Stationary anti-drug antibody (ADA) positivity indicator (positive at any time on study)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Stationary anti-drug antibody (ADA) positivity indicator (positive at any time on study)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative; typical patient)",
-      notes              = paste(
+      notes = paste(
         "PK-layer covariate only, inherited fixed from Zhang 2021: Ke * (1 + 0.191 * ADA_POS).",
         "Zhang 2025 tested stationary ADA status as a covariate on the PD parameters and found no",
         "significant effect on Emax (Zhang 2025 Results / Figure S2); the reference patient in the",
         "Zhang 2025 covariate simulations is ADA-negative."
       ),
-      source_name        = "ADA2"
+      source_name = "ADA2"
     )
   )
 
@@ -148,89 +148,89 @@ Zhang_2025_dupilumab_fev1 <- function() {
   covariatesDataExcluded <- list(
     RACE = list(
       description = "Race group",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     REGION = list(
       description = "Geographic enrollment region",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     SMOKE = list(
       description = "Smoking history indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     FEV1 = list(
       description = "Baseline pre-bronchodilator FEV1 supplied as a covariate column",
-      units       = "L",
-      type        = "continuous",
-      notes       = paste(
+      units = "L",
+      type = "continuous",
+      notes = paste(
         "Screened as a covariate on Emax; not significant. Baseline FEV1 is a MODEL PARAMETER here",
         "(lrbase_male / lrbase_female with IIV etalrbase), not a covariate input."
       )
     ),
     IGE = list(
       description = "Baseline serum total immunoglobulin E",
-      units       = "IU/mL",
-      type        = "continuous",
-      notes       = "Type-2 biomarker screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "IU/mL",
+      type = "continuous",
+      notes = "Type-2 biomarker screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     TARC = list(
       description = "Baseline thymus and activation-regulated chemokine",
-      units       = "pg/mL",
-      type        = "continuous",
-      notes       = "Type-2 biomarker screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "pg/mL",
+      type = "continuous",
+      notes = "Type-2 biomarker screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     POSTN = list(
       description = "Baseline serum periostin",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = "Type-2 biomarker screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "ng/mL",
+      type = "continuous",
+      notes = "Type-2 biomarker screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     SCORE_ACQ5 = list(
       description = "Baseline 5-item asthma control questionnaire score",
-      units       = "score",
-      type        = "continuous",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "score",
+      type = "continuous",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     ICSD = list(
       description = "Background inhaled-corticosteroid dose level at randomization",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     AGEOS = list(
       description = "Age at onset of asthma",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     ),
     ATOP = list(
       description = "Atopic medical condition indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on Emax; not significant (Zhang 2025 Results, Figure S2)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2654L,
-    n_studies      = 2L,
-    age_range      = "12-87 years",
-    age_median     = "50 years",
-    weight_range   = "30-227 kg",
-    weight_median  = "77.0 kg",
+    species = "human",
+    n_subjects = 2654L,
+    n_studies = 2L,
+    age_range = "12-87 years",
+    age_median = "50 years",
+    weight_range = "30-227 kg",
+    weight_median = "77.0 kg",
     sex_female_pct = 62.9,
     race_ethnicity = "Race and geographic region were screened as covariates and were not significant; the race breakdown is not tabulated in the main text.",
-    disease_state  = "Uncontrolled, persistent moderate-to-severe asthma treated with a medium-to-high dose of inhaled corticosteroid plus up to two long-acting beta2-agonists; dupilumab or placebo given as add-on maintenance therapy.",
-    dose_range     = "Placebo (n = 794), or dupilumab 200 mg SC (400 mg loading dose) or 300 mg SC (600 mg loading dose) every 2 or every 4 weeks (n = 1860).",
-    regions        = "Multi-regional Phase 2b (NCT01854047 / DRI12544, 24 weeks) and Phase 3 (NCT02414854 / EFC13579, 52 weeks) placebo-controlled pivotal studies.",
-    notes          = paste(
+    disease_state = "Uncontrolled, persistent moderate-to-severe asthma treated with a medium-to-high dose of inhaled corticosteroid plus up to two long-acting beta2-agonists; dupilumab or placebo given as add-on maintenance therapy.",
+    dose_range = "Placebo (n = 794), or dupilumab 200 mg SC (400 mg loading dose) or 300 mg SC (600 mg loading dose) every 2 or every 4 weeks (n = 1860).",
+    regions = "Multi-regional Phase 2b (NCT01854047 / DRI12544, 24 weeks) and Phase 3 (NCT02414854 / EFC13579, 52 weeks) placebo-controlled pivotal studies.",
+    notes = paste(
       "Baseline demographics from Zhang 2025 Table 2 (pooled N = 2654; Phase 2b N = 761, Phase 3",
       "N = 1893). Adolescents (12 to <18 years) N = 107 (4.0%), all from the Phase 3 study. Median",
       "(range) baseline blood eosinophil count 0.26 (0-8.75) x 10^9/L = 260 (0-8750) cells/uL; median",

@@ -16,106 +16,106 @@ Dong_2014_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at the per-subject value listed in Dong 2014 Table 1 (paediatric renal transplant cohort; mean 39.8 kg, median 38.2 kg, range 10.3-106.4 kg). Used for size-scaling on apparent clearance with reference 70 kg and an ESTIMATED exponent of 0.31 (not the canonical allometric 0.75; Dong 2014 Discussion notes that the 0.75 exponent could not be confirmed in this small paediatric cohort and a data-driven exponent of 0.31 was retained). Weight was tested but not retained on Vc/F, Vp/F, or Q/F.",
-      source_name        = "WT"
+      notes = "Time-fixed at the per-subject value listed in Dong 2014 Table 1 (paediatric renal transplant cohort; mean 39.8 kg, median 38.2 kg, range 10.3-106.4 kg). Used for size-scaling on apparent clearance with reference 70 kg and an ESTIMATED exponent of 0.31 (not the canonical allometric 0.75; Dong 2014 Discussion notes that the 0.75 exponent could not be confirmed in this small paediatric cohort and a data-driven exponent of 0.31 was retained). Weight was tested but not retained on Vc/F, Vp/F, or Q/F.",
+      source_name = "WT"
     ),
     BSA = list(
-      description        = "Body surface area (assumed DuBois or Mosteller formula; not specified in source)",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area (assumed DuBois or Mosteller formula; not specified in source)",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at the per-subject value listed in Dong 2014 Table 1 (PK cohort mean 1.21 m^2, median 1.26 m^2, range 0.49-2.21 m^2). Used as the denominator of dose per body surface area (DBSA = DOSE / BSA, mg/m^2), which enters the relative bioavailability power function with reference 450 mg/m^2 (the lower of the two starting-dose-per-BSA protocols). Source paper does not state which BSA formula was used; assume DuBois or Mosteller for downstream simulations.",
-      source_name        = "BSA"
+      notes = "Time-fixed at the per-subject value listed in Dong 2014 Table 1 (PK cohort mean 1.21 m^2, median 1.26 m^2, range 0.49-2.21 m^2). Used as the denominator of dose per body surface area (DBSA = DOSE / BSA, mg/m^2), which enters the relative bioavailability power function with reference 450 mg/m^2 (the lower of the two starting-dose-per-BSA protocols). Source paper does not state which BSA formula was used; assume DuBois or Mosteller for downstream simulations.",
+      source_name = "BSA"
     ),
     DOSE = list(
-      description        = "Current administered mycophenolate mofetil (MMF) dose at the most recent dosing event",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered mycophenolate mofetil (MMF) dose at the most recent dosing event",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-dose-record value carried forward between doses. Used together with BSA to derive the dose per body surface area DBSA = DOSE / BSA in mg/m^2, which drives the dose-dependent relative bioavailability factor BIO = (DBSA / 450)^e_dbsa_f with reference 450 mg/m^2 (the lower of the two starting-dose protocols in Dong 2014). Subjects were started pre-surgery on 450 or 600 mg/m^2 MMF twice daily according to each institutional protocol and subsequently titrated; the population mean DBSA on the PK study day was 444 mg/m^2 (range 244.6-589.6 mg/m^2; Dong 2014 Table 1). At simulation time, set DOSE equal to the prescribed MMF amount in mg at each dose record (the rxode2 amt event-column value is the same number on dose rows).",
-      source_name        = "DOSE"
+      notes = "Per-dose-record value carried forward between doses. Used together with BSA to derive the dose per body surface area DBSA = DOSE / BSA in mg/m^2, which drives the dose-dependent relative bioavailability factor BIO = (DBSA / 450)^e_dbsa_f with reference 450 mg/m^2 (the lower of the two starting-dose protocols in Dong 2014). Subjects were started pre-surgery on 450 or 600 mg/m^2 MMF twice daily according to each institutional protocol and subsequently titrated; the population mean DBSA on the PK study day was 444 mg/m^2 (range 244.6-589.6 mg/m^2; Dong 2014 Table 1). At simulation time, set DOSE equal to the prescribed MMF amount in mg at each dose record (the rxode2 amt event-column value is the same number on dose rows).",
+      source_name = "DOSE"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested in the covariate stepwise selection but did not significantly improve the model (Dong 2014 Results 'Population PK modelling' and Discussion). PK study cohort age range 2.1-20.2 years, median 14.2 years (Dong 2014 Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested in the covariate stepwise selection but did not significantly improve the model (Dong 2014 Results 'Population PK modelling' and Discussion). PK study cohort age range 2.1-20.2 years, median 14.2 years (Dong 2014 Table 1)."
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Tested as a popPK covariate but not retained (Dong 2014 Results)."
+      notes = "Tested as a popPK covariate but not retained (Dong 2014 Results)."
     ),
     CRCL = list(
       description = "Creatinine clearance calculated by the Schwartz formula (paediatric; BSA-normalized)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Tested as a popPK covariate but not retained (Dong 2014 Methods 'Patients' and Results 'Population PK modelling'). PK study cohort range 20.5-228.3 mL/min/1.73 m^2, mean 118.1 (Dong 2014 Table 1)."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Tested as a popPK covariate but not retained (Dong 2014 Methods 'Patients' and Results 'Population PK modelling'). PK study cohort range 20.5-228.3 mL/min/1.73 m^2, mean 118.1 (Dong 2014 Table 1)."
     ),
     ALB = list(
       description = "Serum albumin concentration (mass concentration; SI canonical g/L per the 2026-06-19 register standardization audit).",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Source paper reports serum albumin in g/dL (Dong 2014 Table 1). Canonical column is now SI g/L per the 2026-06-19 register standardization audit (1 g/dL = 10 g/L). Excluded covariate: tested on CL/F (not significant) and on PD baseline IMPDH activity E0 (delta-OFV = -4.26, P > 0.01) but not retained because it did not meet the required significance threshold (Dong 2014 Results 'Population PK modelling' and 'Population PK-PD modelling'). Because ALB is not retained in the final model it is not referenced in model(); no inline g/L -> g/dL conversion is required.",
+      units = "g/L",
+      type = "continuous",
+      notes = "Source paper reports serum albumin in g/dL (Dong 2014 Table 1). Canonical column is now SI g/L per the 2026-06-19 register standardization audit (1 g/dL = 10 g/L). Excluded covariate: tested on CL/F (not significant) and on PD baseline IMPDH activity E0 (delta-OFV = -4.26, P > 0.01) but not retained because it did not meet the required significance threshold (Dong 2014 Results 'Population PK modelling' and 'Population PK-PD modelling'). Because ALB is not retained in the final model it is not referenced in model(); no inline g/L -> g/dL conversion is required.",
       source_name = "albumin (g/dL)"
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Reported in Table 1 baseline demographics; not retained in the final popPK model."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Reported in Table 1 baseline demographics; not retained in the final popPK model."
     ),
     RACE_BLACK = list(
-      description        = "African-American race indicator (1 = African-American, 0 = otherwise; Caucasian in this cohort)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "African-American race indicator (1 = African-American, 0 = otherwise; Caucasian in this cohort)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian; 20 of 24 subjects in the PK cohort, 15 of 17 in the PK-PD cohort)",
-      notes              = "Tested on PD baseline IMPDH activity E0 with a statistically significant OFV drop (delta-OFV = -8.84) consistent with lower IMPDH baseline activity in the two African-American patients (mean 2.13 vs 3.86 nmol h-1 mg-1 protein in Caucasians). However, the bootstrap 95% confidence interval (-1.09, +0.50) indicated an unreliable covariate effect given only n = 2 African-American patients, and race was therefore not included in the final PK-PD model (Dong 2014 Results 'Population PK-PD modelling')."
+      notes = "Tested on PD baseline IMPDH activity E0 with a statistically significant OFV drop (delta-OFV = -8.84) consistent with lower IMPDH baseline activity in the two African-American patients (mean 2.13 vs 3.86 nmol h-1 mg-1 protein in Caucasians). However, the bootstrap 95% confidence interval (-1.09, +0.50) indicated an unreliable covariate effect given only n = 2 African-American patients, and race was therefore not included in the final PK-PD model (Dong 2014 Results 'Population PK-PD modelling')."
     ),
     CONMED_THYMOGLOBULIN = list(
       description = "Co-medication with rabbit antithymocyte globulin (Thymoglobulin) for induction immunosuppression",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested but not retained (Dong 2014 Results 'Population PK modelling')."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested but not retained (Dong 2014 Results 'Population PK modelling')."
     ),
     CONMED_BASILIXIMAB = list(
       description = "Co-medication with basiliximab (Simulect) for induction immunosuppression",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested but not retained (Dong 2014 Results 'Population PK modelling')."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested but not retained (Dong 2014 Results 'Population PK modelling')."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "2.1-20.2 years (PK cohort; PK-PD subset 4.1-20.2 years)",
-    age_median     = "14.2 years (PK cohort); 14.7 years (PK-PD subset)",
-    weight_range   = "10.3-106.4 kg (PK cohort; PK-PD subset 10.3-106.0 kg)",
-    weight_median  = "38.2 kg (PK cohort); 43.3 kg (PK-PD subset)",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "2.1-20.2 years (PK cohort; PK-PD subset 4.1-20.2 years)",
+    age_median = "14.2 years (PK cohort); 14.7 years (PK-PD subset)",
+    weight_range = "10.3-106.4 kg (PK cohort; PK-PD subset 10.3-106.0 kg)",
+    weight_median = "38.2 kg (PK cohort); 43.3 kg (PK-PD subset)",
     sex_female_pct = 37.5,
     race_ethnicity = c(Caucasian = 83, African_American = 17),
-    disease_state  = "Paediatric kidney transplant recipients in the early post-transplant period (days 4-9 post-transplantation). All patients were on tacrolimus + prednisone backbone immunosuppression with basiliximab (Simulect) or rabbit antithymocyte globulin (Thymoglobulin) as induction therapy; patients on concomitant cyclosporine were excluded.",
-    dose_range     = "Oral MMF (CellCept) at 450 or 600 mg/m^2 twice daily at study entry per institutional protocol, with subsequent dose adjustments at the prescribing physician's discretion. Mean dose per BSA on the PK study day was 444 mg/m^2 (range 244.6-589.6 mg/m^2; Dong 2014 Table 1). For patients weighing less than 15 kg a sparser PK sampling schedule was used due to maximum blood draw volume restrictions.",
-    regions        = "Cincinnati, OH, USA (Cincinnati Children's Hospital Medical Center; single-site).",
-    notes          = "Pooled PK cohort n = 24 with 214 MPA plasma concentrations (none below the 0.25 mg/L LLOQ). PK-PD subset n = 17 with 97 IMPDH activity measurements available from peripheral blood mononuclear cells; the other 7 patients had insufficient sample volume for the IMPDH assay. A pre-transplant baseline IMPDH activity was collected once before transplantation. Demographics from Dong 2014 Table 1."
+    disease_state = "Paediatric kidney transplant recipients in the early post-transplant period (days 4-9 post-transplantation). All patients were on tacrolimus + prednisone backbone immunosuppression with basiliximab (Simulect) or rabbit antithymocyte globulin (Thymoglobulin) as induction therapy; patients on concomitant cyclosporine were excluded.",
+    dose_range = "Oral MMF (CellCept) at 450 or 600 mg/m^2 twice daily at study entry per institutional protocol, with subsequent dose adjustments at the prescribing physician's discretion. Mean dose per BSA on the PK study day was 444 mg/m^2 (range 244.6-589.6 mg/m^2; Dong 2014 Table 1). For patients weighing less than 15 kg a sparser PK sampling schedule was used due to maximum blood draw volume restrictions.",
+    regions = "Cincinnati, OH, USA (Cincinnati Children's Hospital Medical Center; single-site).",
+    notes = "Pooled PK cohort n = 24 with 214 MPA plasma concentrations (none below the 0.25 mg/L LLOQ). PK-PD subset n = 17 with 97 IMPDH activity measurements available from peripheral blood mononuclear cells; the other 7 patients had insufficient sample volume for the IMPDH assay. A pre-transplant baseline IMPDH activity was collected once before transplantation. Demographics from Dong 2014 Table 1."
   )
 
   ini({

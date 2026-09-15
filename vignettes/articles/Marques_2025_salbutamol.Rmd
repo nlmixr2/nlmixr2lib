@@ -189,7 +189,7 @@ tibble::tibble(
 stopifnot(
   cmax_ui > 0,
   cmax_ode > 0,
-  abs(cmax_ui / cmax_ode - 1) < 1e-4
+  abs(cmax_ui / cmax_ode - 1) < 1e-6
 )
 ```
 

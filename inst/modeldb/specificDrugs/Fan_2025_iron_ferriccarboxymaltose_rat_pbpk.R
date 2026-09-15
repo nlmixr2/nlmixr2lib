@@ -41,31 +41,31 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
   paper_specific_compartments <- "ivip"
 
   compartmentData <- list(
-    ivip     = list(analyte = "ferric carboxymaltose", units = "mg", specimen = "plasma", verified = TRUE),
-    plasma   = list(analyte = "iron", units = "mg", specimen = "serum", verified = TRUE),
-    bone     = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
-    heart    = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
-    lung     = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen   = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
+    ivip = list(analyte = "ferric carboxymaltose", units = "mg", specimen = "plasma", verified = TRUE),
+    plasma = list(analyte = "iron", units = "mg", specimen = "serum", verified = TRUE),
+    bone = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "iron", units = "mg", specimen = "tissue", verified = TRUE),
     rbc_iron = list(analyte = "iron", units = "mg", specimen = "blood cell", verified = FALSE),
-    brain    = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
-    adipose  = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
-    other    = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE)
+    brain = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "iron", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   population <- list(
-    species       = "rat (Sprague-Dawley, iron-deficiency anaemia)",
-    n_subjects    = "not reported; digitised group mean data only",
-    n_studies     = "1 (reference [24] of the paper)",
-    weight_range  = "0.345 kg (single body weight used for all physiology)",
+    species = "rat (Sprague-Dawley, iron-deficiency anaemia)",
+    n_subjects = "not reported; digitised group mean data only",
+    n_studies = "1 (reference [24] of the paper)",
+    weight_range = "0.345 kg (single body weight used for all physiology)",
     disease_state = "iron-deficiency anaemia",
-    dose_range    = "single 30 mg Fe/kg intravenous ferric carboxymaltose (10.35 mg in a 345 g rat)",
-    notes         = paste(
+    dose_range = "single 30 mg Fe/kg intravenous ferric carboxymaltose (10.35 mg in a 345 g rat)",
+    notes = paste(
       "Only bone, liver, spleen, heart, muscle and kidney kp values were",
       "estimated from the rat data; every other kp, and the loss clearance,",
       "were inherited from the mouse fit. The paper does not say WHICH mouse",

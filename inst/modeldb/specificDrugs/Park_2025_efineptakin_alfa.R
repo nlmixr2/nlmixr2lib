@@ -19,10 +19,10 @@ Park_2025_efineptakin_alfa <- function() {
   # receive the full amount; the f() values do the splitting.
   dosing <- c("depot", "depot2")
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL",
-    alc           = "cells/uL"
+    alc = "cells/uL"
   )
   # UNITS, established arithmetically (the paper never states the dose base).
   # Doses are reported in mg/kg and as absolute amounts ("0.06 to 1.7 mg/kg;
@@ -47,25 +47,35 @@ Park_2025_efineptakin_alfa <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "rhIL-7-hyFc (efineptakin alfa)", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "rhIL-7-hyFc (efineptakin alfa)", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "rhIL-7-hyFc (efineptakin alfa)", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(
+      analyte = "rhIL-7-hyFc (efineptakin alfa)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    depot2 = list(
+      analyte = "rhIL-7-hyFc (efineptakin alfa)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(analyte = "rhIL-7-hyFc (efineptakin alfa)", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "rhIL-7-hyFc (efineptakin alfa)", units = "mg", specimen = "serum", verified = TRUE),
-    precursor1  = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
-    precursor2  = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
-    precursor3  = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
-    precursor4  = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
-    circ        = list(analyte = "lymphocytes", units = "cells/uL", specimen = "whole blood", verified = TRUE)
+    precursor1 = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
+    precursor2 = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
+    precursor3 = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
+    precursor4 = list(analyte = "lymphocytes", units = "cells/uL", specimen = "not applicable", verified = TRUE),
+    circ = list(analyte = "lymphocytes", units = "cells/uL", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Female sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "male (SEXF = 0)",
-      notes              = "The ONLY covariate retained in the final PK or PD model, and it acts on the EARLY clearance arm only. Park 2025 Results: 'Sex was the only covariate influencing CL< TCLchange. The estimated clearance values were 4.82 L/h in females, 12.40 L/h in males (both CL<TCLchange), and 45.80 L/h CL> TCLchange in both sexes.' Male is taken as the reference because it carries the plain lcl; the female effect is therefore e_sexf_cl = log(4.82 / 12.40). No covariate acts on the LATE arm (lcl_late) -- the paper is explicit that the post-breakpoint clearance is the same in both sexes -- so the sex effect switches off at TCLchange along with the early arm. Cohort split: 19 male / 16 female of 35 (Table 1). The paper reports the sex effect on clearance had limited clinical consequence for the PD endpoint: predicted ALC at 1.2 mg/kg every 12 weeks was 2723 cells/uL in males versus 2709 cells/uL in females.",
-      source_name        = "SEX"
+      notes = "The ONLY covariate retained in the final PK or PD model, and it acts on the EARLY clearance arm only. Park 2025 Results: 'Sex was the only covariate influencing CL< TCLchange. The estimated clearance values were 4.82 L/h in females, 12.40 L/h in males (both CL<TCLchange), and 45.80 L/h CL> TCLchange in both sexes.' Male is taken as the reference because it carries the plain lcl; the female effect is therefore e_sexf_cl = log(4.82 / 12.40). No covariate acts on the LATE arm (lcl_late) -- the paper is explicit that the post-breakpoint clearance is the same in both sexes -- so the sex effect switches off at TCLchange along with the early arm. Cohort split: 19 male / 16 female of 35 (Table 1). The paper reports the sex effect on clearance had limited clinical consequence for the PD endpoint: predicted ALC at 1.2 mg/kg every 12 weeks was 2723 cells/uL in males versus 2709 cells/uL in females.",
+      source_name = "SEX"
     )
   )
 
@@ -77,32 +87,80 @@ Park_2025_efineptakin_alfa <- function() {
   # the remainder of the screen is recorded verbatim in population$notes rather
   # than asserted against canonical names that do not exist in the register.
   covariatesDataExcluded <- list(
-    AGE           = list(description = "Age", units = "years", type = "continuous", reference_category = NULL, notes = "Screened in the 26-covariate stepwise analysis; not retained. Cohort mean 57.9 years, CV 16.2% (Table 1); range 40-75 years; 31% (11/35) aged over 60."),
-    WT            = list(description = "Body weight", units = "kg", type = "continuous", reference_category = NULL, notes = "Screened; not retained. NOTE this model carries NO allometric scaling -- clearance and volume are absolute, and mg/kg doses must be converted to an absolute mg amount before simulation. Cohort means 67.1 kg in males (range 49-110) and 55.3 kg in females (range 42-68) (Table 1 and Results text)."),
-    HT            = list(description = "Height", units = "cm", type = "continuous", reference_category = NULL, notes = "Screened; not retained. Cohort means 169.7 cm male, 157.9 cm female (Table 1)."),
-    SMOKE_CURRENT = list(description = "Current-smoker indicator", units = "(binary)", type = "categorical", reference_category = "non-smoker", notes = "Screened; not retained. Cohort: 1 smoker, 9 ex-smokers, 25 non-smokers (Table 1)."),
-    WBC           = list(description = "White blood cell count", units = "10^9/L", type = "continuous", reference_category = NULL, notes = "Screened; not retained. Cohort mean 7.77, CV 40.3% (Table 1)."),
-    RBC           = list(description = "Red blood cell count", units = "10^12/L", type = "continuous", reference_category = NULL, notes = "Screened; not retained. Cohort mean 3.80, CV 14.2% (Table 1)."),
-    HGB           = list(description = "Hemoglobin", units = "g/dL", type = "continuous", reference_category = NULL, notes = "Screened; not retained. Cohort mean 11.86, CV 13.2% (Table 1)."),
-    HCT           = list(description = "Hematocrit", units = "%", type = "continuous", reference_category = NULL, notes = "Screened; not retained. Cohort mean 35.61, CV 12.9% (Table 1).")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened in the 26-covariate stepwise analysis; not retained. Cohort mean 57.9 years, CV 16.2% (Table 1); range 40-75 years; 31% (11/35) aged over 60."
+    ),
+    WT = list(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened; not retained. NOTE this model carries NO allometric scaling -- clearance and volume are absolute, and mg/kg doses must be converted to an absolute mg amount before simulation. Cohort means 67.1 kg in males (range 49-110) and 55.3 kg in females (range 42-68) (Table 1 and Results text)."
+    ),
+    HT = list(
+      description = "Height",
+      units = "cm",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened; not retained. Cohort means 169.7 cm male, 157.9 cm female (Table 1)."
+    ),
+    SMOKE_CURRENT = list(
+      description = "Current-smoker indicator",
+      units = "(binary)",
+      type = "categorical",
+      reference_category = "non-smoker",
+      notes = "Screened; not retained. Cohort: 1 smoker, 9 ex-smokers, 25 non-smokers (Table 1)."
+    ),
+    WBC = list(
+      description = "White blood cell count",
+      units = "10^9/L",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened; not retained. Cohort mean 7.77, CV 40.3% (Table 1)."
+    ),
+    RBC = list(
+      description = "Red blood cell count",
+      units = "10^12/L",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened; not retained. Cohort mean 3.80, CV 14.2% (Table 1)."
+    ),
+    HGB = list(
+      description = "Hemoglobin",
+      units = "g/dL",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened; not retained. Cohort mean 11.86, CV 13.2% (Table 1)."
+    ),
+    HCT = list(
+      description = "Hematocrit",
+      units = "%",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Screened; not retained. Cohort mean 35.61, CV 12.9% (Table 1)."
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35L,
-    n_studies      = 1L,
-    age_range      = "40-75 years (mean 57.9, CV 16.2%)",
-    weight_range   = "42-110 kg (male mean 67.1, range 49-110; female mean 55.3, range 42-68)",
-    height_range   = "male mean 169.7 cm, female mean 157.9 cm",
+    species = "human",
+    n_subjects = 35L,
+    n_studies = 1L,
+    age_range = "40-75 years (mean 57.9, CV 16.2%)",
+    weight_range = "42-110 kg (male mean 67.1, range 49-110; female mean 55.3, range 42-68)",
+    height_range = "male mean 169.7 cm, female mean 157.9 cm",
     sex_female_pct = 45.7,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Histologically confirmed, locally advanced, recurrent or metastatic solid tumours that were incurable and had failed or were unsuitable for standard therapy. ECOG performance status 0-1, age at least 19 years, adequate haematologic and end-organ function. Anti-tumour therapy within 3 weeks, or prior immune checkpoint inhibitor or immunomodulatory antibody within 12 weeks, were exclusions.",
-    dose_range     = "Intramuscular rhIL-7-hyFc 0.06, 0.12, 0.24, 0.48, 0.72, 0.96, 1.2 and 1.7 mg/kg (equivalent to 2.8-133.5 mg absolute) every 3 weeks in 29 patients, plus 1.2 mg/kg every 6 weeks in 6 patients. 1.2 mg/kg was the maximum tolerated dose; one dose-limiting grade 3 or higher hypersensitivity occurred at 1.7 mg/kg.",
-    regions        = "Republic of Korea (Yonsei Cancer Center, Asan Medical Center, Seoul St. Mary's Hospital)",
-    observations   = "402 serum rhIL-7-hyFc concentration measurements and 256 ALC observations across 75 treatment cycles in 35 patients. All 35 contributed cycle-1 data; 26 (74%) contributed cycle-2 data; 6 contributed cycle-3 data; only 1 patient extended beyond three cycles. PK sampling at 0, 0.5, 6, 12, 24, 48, 72, 168 and 336 h in cycle 1, then 504, 672, 840 and 1008 h; ALC weekly to 1008 h then at 1512, 2016, 2520, 3024, 3528, 4032 and 4536 h. Assay LLOQ 0.031 ng/mL (Quantikine HS ELISA).",
-    baseline_alc   = "Median 1268 cells/uL (range 341-2453); Table 1 mean 1314.4 cells/uL (CV 40.3%). 12 of 35 patients (34%) had ALC above 1500 cells/uL and 2 had severe lymphopenia below 500 cells/uL.",
-    baseline_il7   = "Median endogenous serum IL-7 0.05 ng/mL (range 0.02-0.23). The ELISA measures total IL-7 and cannot separate endogenous from drug-derived, so this baseline is carried in the observation model rather than subtracted from the data.",
-    notes          = "Estimation used NONMEM 7.4.3 with ADVAN13 and FOCE-I; PK and PD were fitted SEQUENTIALLY, the PD model taking individual empirical Bayes PK estimates as input. Precision from a 1000-replicate nonparametric bootstrap (PK 988/1000 and PD 997/1000 successful). Twenty-six covariates were screened by stepwise covariate modelling and only sex was retained: sex, age, body weight, height, smoking status, alcohol consumption, red blood cell count, hemoglobin, hematocrit, white blood cell count, neutrophil %, lymphocyte %, monocyte %, eosinophil %, basophil %, platelet count, mean corpuscular hemoglobin, mean corpuscular hemoglobin concentration, absolute neutrophil count, absolute lymphocyte count, prothrombin time, activated partial thromboplastin time, PT in international normalization ratio, thyroid-stimulating hormone, T3 and free T4. Anti-drug antibodies developed across all doses and dosing intervals but did not affect safety and were NOT modelled as a covariate on clearance -- the time-dependent clearance step is structural, and the paper reports the clearance increase was not dose-dependent (no correlation between Bayesian individual clearance and dose). Long-term data are thin: 27 of 35 patients (77%) received only one or two doses."
+    disease_state = "Histologically confirmed, locally advanced, recurrent or metastatic solid tumours that were incurable and had failed or were unsuitable for standard therapy. ECOG performance status 0-1, age at least 19 years, adequate haematologic and end-organ function. Anti-tumour therapy within 3 weeks, or prior immune checkpoint inhibitor or immunomodulatory antibody within 12 weeks, were exclusions.",
+    dose_range = "Intramuscular rhIL-7-hyFc 0.06, 0.12, 0.24, 0.48, 0.72, 0.96, 1.2 and 1.7 mg/kg (equivalent to 2.8-133.5 mg absolute) every 3 weeks in 29 patients, plus 1.2 mg/kg every 6 weeks in 6 patients. 1.2 mg/kg was the maximum tolerated dose; one dose-limiting grade 3 or higher hypersensitivity occurred at 1.7 mg/kg.",
+    regions = "Republic of Korea (Yonsei Cancer Center, Asan Medical Center, Seoul St. Mary's Hospital)",
+    observations = "402 serum rhIL-7-hyFc concentration measurements and 256 ALC observations across 75 treatment cycles in 35 patients. All 35 contributed cycle-1 data; 26 (74%) contributed cycle-2 data; 6 contributed cycle-3 data; only 1 patient extended beyond three cycles. PK sampling at 0, 0.5, 6, 12, 24, 48, 72, 168 and 336 h in cycle 1, then 504, 672, 840 and 1008 h; ALC weekly to 1008 h then at 1512, 2016, 2520, 3024, 3528, 4032 and 4536 h. Assay LLOQ 0.031 ng/mL (Quantikine HS ELISA).",
+    baseline_alc = "Median 1268 cells/uL (range 341-2453); Table 1 mean 1314.4 cells/uL (CV 40.3%). 12 of 35 patients (34%) had ALC above 1500 cells/uL and 2 had severe lymphopenia below 500 cells/uL.",
+    baseline_il7 = "Median endogenous serum IL-7 0.05 ng/mL (range 0.02-0.23). The ELISA measures total IL-7 and cannot separate endogenous from drug-derived, so this baseline is carried in the observation model rather than subtracted from the data.",
+    notes = "Estimation used NONMEM 7.4.3 with ADVAN13 and FOCE-I; PK and PD were fitted SEQUENTIALLY, the PD model taking individual empirical Bayes PK estimates as input. Precision from a 1000-replicate nonparametric bootstrap (PK 988/1000 and PD 997/1000 successful). Twenty-six covariates were screened by stepwise covariate modelling and only sex was retained: sex, age, body weight, height, smoking status, alcohol consumption, red blood cell count, hemoglobin, hematocrit, white blood cell count, neutrophil %, lymphocyte %, monocyte %, eosinophil %, basophil %, platelet count, mean corpuscular hemoglobin, mean corpuscular hemoglobin concentration, absolute neutrophil count, absolute lymphocyte count, prothrombin time, activated partial thromboplastin time, PT in international normalization ratio, thyroid-stimulating hormone, T3 and free T4. Anti-drug antibodies developed across all doses and dosing intervals but did not affect safety and were NOT modelled as a covariate on clearance -- the time-dependent clearance step is structural, and the paper reports the clearance increase was not dose-dependent (no correlation between Bayesian individual clearance and dose). Long-term data are thin: 27 of 35 patients (77%) received only one or two doses."
   )
 
   ini({

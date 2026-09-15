@@ -1,6 +1,6 @@
 Zhang_2016_rilotumumab <- function() {
   description <- "Two-compartment IV population PK model for rilotumumab (fully human anti-HGF IgG2 monoclonal antibody) in patients with MET-positive gastric or gastroesophageal-junction adenocarcinoma receiving rilotumumab in combination with epirubicin / cisplatin / capecitabine (ECX). The structural model and parameter values were inherited from the previously developed population PK analysis of rilotumumab (Zhu et al. 2014, J Pharm Sci 103:328-336); Zhang 2016 reports the typical-value point estimates and IIV %CV from that prior model and uses it as the reference for an external visual predictive check assessing whether ECX co-administration alters rilotumumab PK."
-  reference   <- paste(
+  reference <- paste(
     "Zhang Y, Kondragunta V, Han T-H, et al.",
     "Assessment of pharmacokinetic interaction between rilotumumab and",
     "epirubicin, cisplatin and capecitabine (ECX) in a Phase 3 study in",
@@ -12,32 +12,32 @@ Zhang_2016_rilotumumab <- function() {
     "antibody against hepatocyte growth factor, in cancer patients.",
     "J Pharm Sci. 2014;103(1):328-336. doi:10.1002/jps.23763."
   )
-  vignette    <- "Zhang_2016_rilotumumab"
-  units       <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  vignette <- "Zhang_2016_rilotumumab"
+  units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rilotumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rilotumumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rilotumumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 279L,
+    species = "human",
+    n_subjects = 279L,
     n_observations = 1460L,
-    n_studies      = 1L,
-    age_range      = "19-85 years",
-    age_median     = "59 years",
-    weight_range   = "39-120 kg",
-    weight_median  = "69 kg",
-    disease_state  = "Unresectable, locally advanced or metastatic MET-positive gastric or gastroesophageal-junction (GEJ) adenocarcinoma (MET-positivity defined as tumour membrane staining >= 25% by central immunohistochemistry).",
-    dose_range     = "15 mg/kg IV every 3 weeks (Q3W) in combination with epirubicin 50 mg/m^2 IV bolus Q3W, cisplatin 60 mg/m^2 IV infusion Q3W, and capecitabine 625 mg/m^2 orally twice daily.",
-    regions        = "Multicenter Phase 3 (ClinicalTrials.gov NCT00719550).",
-    notes          = "Population summary refers to the Phase 3 cohort that informed the rilotumumab serum concentrations used for the external VPC (Zhang 2016 Results: '279 subjects had measured PK concentrations for rilotumumab'). Of these, 53 had intensive PK sampling and 226 had sparse PK sampling. A total of 1460 serum concentrations were included in the population PK evaluation (34 records excluded as outliers or below-quantitation). The structural model and parameter values themselves were estimated by Zhu 2014 using data from seven Phase 1 and Phase 2 studies; the Phase 3 weight (39-120 kg) and age (19-85 years) ranges fall within the Zhu 2014 dataset (Zhang 2016 page 1050). Body weight and age were the significant covariates retained in the Zhu 2014 final model, but Zhang 2016 does not reproduce the covariate equations or coefficient estimates; sex, cancer type, ECX co-administration, baseline HGF and MET levels, and organ functions were tested and not retained (Zhang 2016 page 1053)."
+    n_studies = 1L,
+    age_range = "19-85 years",
+    age_median = "59 years",
+    weight_range = "39-120 kg",
+    weight_median = "69 kg",
+    disease_state = "Unresectable, locally advanced or metastatic MET-positive gastric or gastroesophageal-junction (GEJ) adenocarcinoma (MET-positivity defined as tumour membrane staining >= 25% by central immunohistochemistry).",
+    dose_range = "15 mg/kg IV every 3 weeks (Q3W) in combination with epirubicin 50 mg/m^2 IV bolus Q3W, cisplatin 60 mg/m^2 IV infusion Q3W, and capecitabine 625 mg/m^2 orally twice daily.",
+    regions = "Multicenter Phase 3 (ClinicalTrials.gov NCT00719550).",
+    notes = "Population summary refers to the Phase 3 cohort that informed the rilotumumab serum concentrations used for the external VPC (Zhang 2016 Results: '279 subjects had measured PK concentrations for rilotumumab'). Of these, 53 had intensive PK sampling and 226 had sparse PK sampling. A total of 1460 serum concentrations were included in the population PK evaluation (34 records excluded as outliers or below-quantitation). The structural model and parameter values themselves were estimated by Zhu 2014 using data from seven Phase 1 and Phase 2 studies; the Phase 3 weight (39-120 kg) and age (19-85 years) ranges fall within the Zhu 2014 dataset (Zhang 2016 page 1050). Body weight and age were the significant covariates retained in the Zhu 2014 final model, but Zhang 2016 does not reproduce the covariate equations or coefficient estimates; sex, cancer type, ECX co-administration, baseline HGF and MET levels, and organ functions were tested and not retained (Zhang 2016 page 1053)."
   )
 
   ini({

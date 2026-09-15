@@ -10,51 +10,51 @@ Staatz_2005_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Staatz_2005_gentamicin_vancomycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Staatz 2005 Table 1: median 72 kg (range 39-138) in the combined gentamicin cohort. Enters the structural model as a linear scalar on both V1 and V2 (Table 2 footer for the gentamicin final model: V1 = theta x WT, V2 = theta x WT, Q = theta). No reference-weight normalisation; the typical-value V1 and V2 are reported directly in L/kg.",
-      source_name        = "WT"
+      notes = "Staatz 2005 Table 1: median 72 kg (range 39-138) in the combined gentamicin cohort. Enters the structural model as a linear scalar on both V1 and V2 (Table 2 footer for the gentamicin final model: V1 = theta x WT, V2 = theta x WT, Q = theta). No reference-weight normalisation; the typical-value V1 and V2 are reported directly in L/kg.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CL_Cr. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalised to mL/min/1.73 m^2); Cr_Se measurements below 60 umol/L were set to 60 umol/L per the paper's Methods (better CL estimates in patients with low creatinine production). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 63 mL/min corresponds to the BCOV_median of the gentamicin model-building data set (Staatz 2005 Table 2 bold/final row: 'CL = theta1 x (1 + theta2 x (BCOV - 63)) + theta3 x DCOV'); the combined-data BCOV median is not explicitly restated in Table 4, so 63 is used consistent with the published final-model parameter values reported in the same Table 4 'All data' column. CRCL ranged from 9 to 169 mL/min in the gentamicin model-building cohort (Table 1).",
-      source_name        = "CL_Cr"
+      notes = "Source column CL_Cr. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalised to mL/min/1.73 m^2); Cr_Se measurements below 60 umol/L were set to 60 umol/L per the paper's Methods (better CL estimates in patients with low creatinine production). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 63 mL/min corresponds to the BCOV_median of the gentamicin model-building data set (Staatz 2005 Table 2 bold/final row: 'CL = theta1 x (1 + theta2 x (BCOV - 63)) + theta3 x DCOV'); the combined-data BCOV median is not explicitly restated in Table 4, so 63 is used consistent with the published final-model parameter values reported in the same Table 4 'All data' column. CRCL ranged from 9 to 169 mL/min in the gentamicin model-building cohort (Table 1).",
+      source_name = "CL_Cr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 135L,
-    n_studies      = 1L,
-    age_range      = "29-83 years (model-building); 31-82 years (test)",
-    age_median     = "62 years (model-building); 67 years (test)",
-    weight_range   = "39-138 kg (model-building); 47-119 kg (test)",
-    weight_median  = "72 kg (model-building and test)",
+    species = "human",
+    n_subjects = 135L,
+    n_studies = 1L,
+    age_range = "29-83 years (model-building); 31-82 years (test)",
+    age_median = "62 years (model-building); 67 years (test)",
+    weight_range = "39-138 kg (model-building); 47-119 kg (test)",
+    weight_median = "72 kg (model-building and test)",
     sex_female_pct = 28.9,
     race_ethnicity = "Not reported (UK single-centre cardiothoracic surgery cohort)",
-    disease_state  = "Adults receiving intravenous gentamicin for postoperative sepsis or related infection following cardiothoracic surgery, with unstable renal function. 79% had cardiac surgery, 4% thoracic surgery, 1% wound infection, 1% native valve endocarditis; the remainder did not have admission reason recorded.",
-    dose_range     = "Intravenous gentamicin: short infusion over 10-30 min or slow bolus over 2-3 min. Median dose 120 mg (range 60-300) in the model-building set; 160 mg (range 40-300) in the test set. Therapy adjusted to achieve 1 h post-dose peak concentrations of 4-6 or 7-10 mg/L and troughs <2 mg/L.",
-    regions        = "United Kingdom (Western Infirmary, Glasgow; Cardiothoracic Surgery Unit). Data collected January 1998 - September 2003 (model-building) and September 2003 - August 2004 (test).",
+    disease_state = "Adults receiving intravenous gentamicin for postoperative sepsis or related infection following cardiothoracic surgery, with unstable renal function. 79% had cardiac surgery, 4% thoracic surgery, 1% wound infection, 1% native valve endocarditis; the remainder did not have admission reason recorded.",
+    dose_range = "Intravenous gentamicin: short infusion over 10-30 min or slow bolus over 2-3 min. Median dose 120 mg (range 60-300) in the model-building set; 160 mg (range 40-300) in the test set. Therapy adjusted to achieve 1 h post-dose peak concentrations of 4-6 or 7-10 mg/L and troughs <2 mg/L.",
+    regions = "United Kingdom (Western Infirmary, Glasgow; Cardiothoracic Surgery Unit). Data collected January 1998 - September 2003 (model-building) and September 2003 - August 2004 (test).",
     renal_function = "Cockcroft-Gault creatinine clearance median 57 mL/min (range 9-169 in model-building); median 55 mL/min (range 21-171 in test). Max within-subject CL_Cr change median 15.1 mL/min (range 0-95.1, model-building) and 18.3 mL/min (1.0-85.6, test). Cr_Se < 60 umol/L (the lower limit of the reference range) was set to 60 umol/L before computing CL_Cr.",
     n_concentrations = 550L,
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Staatz 2005 Table 1. 96 patients in the model-building set",
       "(365 gentamicin concentrations, 1-20 samples per patient, median 2), 39 patients in the",
       "test set (185 concentrations, 1-19 samples per patient, median 4). Combined cohort N = 135",

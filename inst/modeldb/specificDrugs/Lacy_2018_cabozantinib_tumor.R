@@ -13,8 +13,8 @@ Lacy_2018_cabozantinib_tumor <- function() {
   )
   vignette <- "Lacy_2018_cabozantinib_exposure_response"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the time-varying drug input is supplied as the CAV data covariate, in ng/mL, derived from the upstream Lacy 2018 popPK)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the time-varying drug input is supplied as the CAV data covariate, in ng/mL, derived from the upstream Lacy 2018 popPK)",
     concentration = "mm (tumor diameter; not a drug concentration)"
   )
 
@@ -28,28 +28,28 @@ Lacy_2018_cabozantinib_tumor <- function() {
 
   covariateData <- list(
     CAV = list(
-      description        = "Time-varying individual predicted daily average plasma cabozantinib concentration (ng/mL).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Time-varying individual predicted daily average plasma cabozantinib concentration (ng/mL).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Carried as a per-record column; updated when dose changes (dose holds set CAV = 0; reductions and escalations recompute CAV from the current daily dose and the subject-specific popPK clearance). Derived in the source paper from individual empirical-Bayes post-hoc parameters of the upstream Lacy 2018 popPK model fit to nine pooled clinical studies (Lacy S et al., Cancer Chemother Pharmacol 2018;81(6):1071-1082; doi:10.1007/s00280-018-3581-0). Source paper's predicted steady-state Cavg values: 375 ng/mL at 20 mg/day, 750 ng/mL at 40 mg/day, 1125 ng/mL at 60 mg/day in RCC patients. The validation vignette shows the recommended cohort construction using the upstream popPK model.",
-      source_name        = "Cavg"
+      notes = "Required input. Carried as a per-record column; updated when dose changes (dose holds set CAV = 0; reductions and escalations recompute CAV from the current daily dose and the subject-specific popPK clearance). Derived in the source paper from individual empirical-Bayes post-hoc parameters of the upstream Lacy 2018 popPK model fit to nine pooled clinical studies (Lacy S et al., Cancer Chemother Pharmacol 2018;81(6):1071-1082; doi:10.1007/s00280-018-3581-0). Source paper's predicted steady-state Cavg values: 375 ng/mL at 20 mg/day, 750 ng/mL at 40 mg/day, 1125 ng/mL at 60 mg/day in RCC patients. The validation vignette shows the recommended cohort construction using the upstream popPK model.",
+      source_name = "Cavg"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 319L,
-    n_observations   = 1637L,
-    n_studies        = 1L,
-    age_range        = "ages reported only at cohort level for METEOR (paper Methods cites enrolment criteria of >=18 years; demographic breakdown for the 319-patient tumor-model subset is not separately reported)",
-    weight_range     = "not separately reported for the tumor-model subset",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = "not separately reported for the tumor-model subset",
-    disease_state    = "Advanced or metastatic renal cell carcinoma (RCC) with clear-cell histology and measurable disease per RECIST. Subjects had received at least one prior VEGFR-TKI therapy. METEOR randomised 658 patients 1:1 to cabozantinib 60-mg tablet QD vs everolimus 10-mg QD; the tumor-model fit uses 319 patients on the cabozantinib arm with at least one evaluable post-baseline tumor diameter.",
-    dose_range       = "Cabozantinib 60-mg tablet (Cabometyx) QD starting dose; dose reductions allowed to 40 mg and 20 mg per protocol AE-management rules; dose interruptions also permitted.",
-    regions          = "Multinational phase III trial (NCT01865747); regional breakdown not reported in the Lacy 2018 ER paper.",
-    notes            = "Baseline cohort characteristics for the dose-modification analysis (n=317 with at least one dose record) are in Lacy 2018 ER Supplemental Table 2. The tumor-model cohort (n=319) is the largest analysis subset (one fewer than the dose-modification subset because two patients had no evaluable post-baseline tumor diameter)."
+    species = "human",
+    n_subjects = 319L,
+    n_observations = 1637L,
+    n_studies = 1L,
+    age_range = "ages reported only at cohort level for METEOR (paper Methods cites enrolment criteria of >=18 years; demographic breakdown for the 319-patient tumor-model subset is not separately reported)",
+    weight_range = "not separately reported for the tumor-model subset",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not separately reported for the tumor-model subset",
+    disease_state = "Advanced or metastatic renal cell carcinoma (RCC) with clear-cell histology and measurable disease per RECIST. Subjects had received at least one prior VEGFR-TKI therapy. METEOR randomised 658 patients 1:1 to cabozantinib 60-mg tablet QD vs everolimus 10-mg QD; the tumor-model fit uses 319 patients on the cabozantinib arm with at least one evaluable post-baseline tumor diameter.",
+    dose_range = "Cabozantinib 60-mg tablet (Cabometyx) QD starting dose; dose reductions allowed to 40 mg and 20 mg per protocol AE-management rules; dose interruptions also permitted.",
+    regions = "Multinational phase III trial (NCT01865747); regional breakdown not reported in the Lacy 2018 ER paper.",
+    notes = "Baseline cohort characteristics for the dose-modification analysis (n=317 with at least one dose record) are in Lacy 2018 ER Supplemental Table 2. The tumor-model cohort (n=319) is the largest analysis subset (one fewer than the dose-modification subset because two patients had no evaluable post-baseline tumor diameter)."
   )
 
   ini({

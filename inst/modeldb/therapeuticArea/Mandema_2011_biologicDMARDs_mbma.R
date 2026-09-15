@@ -51,201 +51,201 @@ Mandema_2011_biologicDMARDs_mbma <- function() {
   # Mandema_2011_anticoagulants_mbma so that checkModelConventions() sees a
   # parseable dosing / concentration pair.
   units <- list(
-    time          = "week (placeholder; the model is a time-independent per-arm dose-response evaluated at each trial's pre-determined primary end point, not a time course)",
-    dosing        = "mg/administration (per-arm dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events. Units are per-drug and are those of that drug's standard regimen: mg/kg q4w for abatacept and tocilizumab, mg q2w for adalimumab and certolizumab, mg/day for anakinra, mg twice weekly for etanercept, mg q4w for golimumab, mg/kg at weeks 0, 2, 6 then q8w for infliximab, mg at weeks 0 and 2 for rituximab, and mg/week for methotrexate -- see each covariateData entry)",
+    time = "week (placeholder; the model is a time-independent per-arm dose-response evaluated at each trial's pre-determined primary end point, not a time course)",
+    dosing = "mg/administration (per-arm dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events. Units are per-drug and are those of that drug's standard regimen: mg/kg q4w for abatacept and tocilizumab, mg q2w for adalimumab and certolizumab, mg/day for anakinra, mg twice weekly for etanercept, mg q4w for golimumab, mg/kg at weeks 0, 2, 6 then q8w for infliximab, mg at weeks 0 and 2 for rituximab, and mg/week for methotrexate -- see each covariateData entry)",
     concentration = "%/arm (per-arm ACR responder probability expressed as a percentage of patients in the study arm; the p_* outputs are on the 0-1 fraction scale. Output is NOT a drug concentration; the slash satisfies checkModelConventions parsing)"
   )
 
   covariateData <- list(
     # ---- Anti-TNF (tumor necrosis factor inhibitors) ------------------------
     CONMED_ADALIMUMAB_DOSE = list(
-      description        = "Per-arm adalimumab dose per administration on a once-every-2-weeks regimen.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-arm adalimumab dose per administration on a once-every-2-weeks regimen.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an adalimumab arm. Mandema 2011 Table 1 reports 6 trials, 2,136 patients, median 40 mg q2w with a range of 20-160 mg q2w. Drug class: anti-TNF. The source normalized each drug's dose to its standard regimen and found no statistically significant impact of dosage regimen after that normalization (once weekly vs. once every 2 weeks was tested for adalimumab), so a 40 mg every-week arm is entered as 80 mg q2w.",
-      source_name        = "Dose (Mandema 2011 Table 1 adalimumab row; Table 2 suggested starting dose 40 mg q2w; Figure 2 adalimumab panel x-axis 'mg q2w')"
+      notes = "0 outside an adalimumab arm. Mandema 2011 Table 1 reports 6 trials, 2,136 patients, median 40 mg q2w with a range of 20-160 mg q2w. Drug class: anti-TNF. The source normalized each drug's dose to its standard regimen and found no statistically significant impact of dosage regimen after that normalization (once weekly vs. once every 2 weeks was tested for adalimumab), so a 40 mg every-week arm is entered as 80 mg q2w.",
+      source_name = "Dose (Mandema 2011 Table 1 adalimumab row; Table 2 suggested starting dose 40 mg q2w; Figure 2 adalimumab panel x-axis 'mg q2w')"
     ),
     CONMED_CERTOLIZUMAB_DOSE = list(
-      description        = "Per-arm certolizumab pegol dose per administration on a once-every-2-weeks regimen.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-arm certolizumab pegol dose per administration on a once-every-2-weeks regimen.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a certolizumab arm. Mandema 2011 Table 1 reports 4 trials, 1,512 patients, median 200 mg q2w with a range of 200-400 mg q2w. Drug class: anti-TNF. Certolizumab is dosed the furthest up its own dose-response curve of any drug in the analysis; the source states it is given at more than 10 times its ED50 and suggests it 'may be dosed too high'.",
-      source_name        = "Dose (Mandema 2011 Table 1 certolizumab row; Table 2 suggested starting dose 200 mg q2w; Figure 2 certolizumab panel x-axis 'mg q2w')"
+      notes = "0 outside a certolizumab arm. Mandema 2011 Table 1 reports 4 trials, 1,512 patients, median 200 mg q2w with a range of 200-400 mg q2w. Drug class: anti-TNF. Certolizumab is dosed the furthest up its own dose-response curve of any drug in the analysis; the source states it is given at more than 10 times its ED50 and suggests it 'may be dosed too high'.",
+      source_name = "Dose (Mandema 2011 Table 1 certolizumab row; Table 2 suggested starting dose 200 mg q2w; Figure 2 certolizumab panel x-axis 'mg q2w')"
     ),
     CONMED_ETANERCEPT_DOSE = list(
-      description        = "Per-arm etanercept dose per administration on a twice-weekly regimen.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-arm etanercept dose per administration on a twice-weekly regimen.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an etanercept arm. Mandema 2011 Table 1 reports 11 trials, 2,493 patients, median 25 mg twice a week with a range of 0.5-50 mg. Drug class: anti-TNF. Once-weekly and twice-weekly etanercept regimens were compared in the source and showed no statistically significant regimen effect after normalization to a weekly dose, so a 50 mg once-weekly arm is entered as 25 mg twice weekly.",
-      source_name        = "Dose (Mandema 2011 Table 1 etanercept row; Table 2 suggested starting dose 25 mg biw; Figure 2 etanercept panel x-axis 'mg biw')"
+      notes = "0 outside an etanercept arm. Mandema 2011 Table 1 reports 11 trials, 2,493 patients, median 25 mg twice a week with a range of 0.5-50 mg. Drug class: anti-TNF. Once-weekly and twice-weekly etanercept regimens were compared in the source and showed no statistically significant regimen effect after normalization to a weekly dose, so a 50 mg once-weekly arm is entered as 25 mg twice weekly.",
+      source_name = "Dose (Mandema 2011 Table 1 etanercept row; Table 2 suggested starting dose 25 mg biw; Figure 2 etanercept panel x-axis 'mg biw')"
     ),
     CONMED_GOLIMUMAB_DOSE = list(
-      description        = "Per-arm golimumab dose per administration on a once-every-4-weeks regimen.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-arm golimumab dose per administration on a once-every-4-weeks regimen.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a golimumab arm. Mandema 2011 Table 1 reports 4 trials, 1,231 patients, median 100 mg q4w with a range of 50-200 mg q4w. Drug class: anti-TNF. Golimumab sits lowest on its dose-response curve of the five anti-TNFs (about 1.1 times its ED50 at the 50 mg q4w starting dose), which is why the source concludes it 'may be dosed too low' with respect to efficacy.",
-      source_name        = "Dose (Mandema 2011 Table 1 golimumab row; Table 2 suggested starting dose 50 mg q4w; Figure 2 golimumab panel x-axis 'mg q4w')"
+      notes = "0 outside a golimumab arm. Mandema 2011 Table 1 reports 4 trials, 1,231 patients, median 100 mg q4w with a range of 50-200 mg q4w. Drug class: anti-TNF. Golimumab sits lowest on its dose-response curve of the five anti-TNFs (about 1.1 times its ED50 at the 50 mg q4w starting dose), which is why the source concludes it 'may be dosed too low' with respect to efficacy.",
+      source_name = "Dose (Mandema 2011 Table 1 golimumab row; Table 2 suggested starting dose 50 mg q4w; Figure 2 golimumab panel x-axis 'mg q4w')"
     ),
     CONMED_INFLIXIMAB_DOSE = list(
-      description        = "Per-arm infliximab dose per administration, weight-normalized, on the weeks 0, 2, 6 then once-every-8-weeks regimen.",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-arm infliximab dose per administration, weight-normalized, on the weeks 0, 2, 6 then once-every-8-weeks regimen.",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an infliximab arm. Mandema 2011 Table 1 reports 7 trials, 2,179 patients, median 6 mg/kg with a range of 2-20 mg/kg on the weeks 0, 2, 6 then q8w regimen. Drug class: anti-TNF. A weight-normalized dose, NOT a mass dose; the matching ED50 (1.42 mg/kg) carries the same units. Body weight therefore enters an infliximab arm through the dose units rather than as a covariate effect.",
-      source_name        = "Dose (Mandema 2011 Table 1 infliximab row; Table 2 suggested starting dose 3 mg/kg wk 0, 2, 6, q8w; Figure 2 infliximab panel x-axis 'mg/kg wk 0.2.6.q8w')"
+      notes = "0 outside an infliximab arm. Mandema 2011 Table 1 reports 7 trials, 2,179 patients, median 6 mg/kg with a range of 2-20 mg/kg on the weeks 0, 2, 6 then q8w regimen. Drug class: anti-TNF. A weight-normalized dose, NOT a mass dose; the matching ED50 (1.42 mg/kg) carries the same units. Body weight therefore enters an infliximab arm through the dose units rather than as a covariate effect.",
+      source_name = "Dose (Mandema 2011 Table 1 infliximab row; Table 2 suggested starting dose 3 mg/kg wk 0, 2, 6, q8w; Figure 2 infliximab panel x-axis 'mg/kg wk 0.2.6.q8w')"
     ),
     # ---- Anti-IL-1 ----------------------------------------------------------
     CONMED_ANAKINRA_DOSE = list(
-      description        = "Per-arm anakinra dose per administration on a once-daily regimen.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-arm anakinra dose per administration on a once-daily regimen.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an anakinra arm. Mandema 2011 Table 1 reports 3 trials, 949 patients, median 75 mg/day with a range of 3-162 mg/day. Anakinra is the only anti-IL-1 in the analysis, so that class's Emax is identified by anakinra alone; the source found anakinra to give the smallest treatment effect of all nine biologics.",
-      source_name        = "Dose (Mandema 2011 Table 1 anakinra row; Table 2 suggested starting dose 100 mg qd; Figure 2 anakinra panel x-axis 'mg qd')"
+      notes = "0 outside an anakinra arm. Mandema 2011 Table 1 reports 3 trials, 949 patients, median 75 mg/day with a range of 3-162 mg/day. Anakinra is the only anti-IL-1 in the analysis, so that class's Emax is identified by anakinra alone; the source found anakinra to give the smallest treatment effect of all nine biologics.",
+      source_name = "Dose (Mandema 2011 Table 1 anakinra row; Table 2 suggested starting dose 100 mg qd; Figure 2 anakinra panel x-axis 'mg qd')"
     ),
     # ---- Anti-CD28 (T-cell costimulatory blocking agents) -------------------
     CONMED_ABATACEPT_DOSE = list(
-      description        = "Per-arm abatacept dose per administration, weight-normalized, on a once-every-4-weeks regimen.",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-arm abatacept dose per administration, weight-normalized, on a once-every-4-weeks regimen.",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an abatacept arm. Mandema 2011 Table 1 reports 6 trials, 1,242 patients, median 10 mg/kg q4w with a range of 0.5-10 mg/kg q4w. Abatacept is the only anti-CD28 agent in the analysis, so that class's Emax is identified by abatacept alone. A weight-normalized dose, NOT a mass dose; the matching ED50 (2.53 mg/kg) carries the same units. This is a per-arm dose in an MBMA, not a subject-level per-administration dose amount.",
-      source_name        = "Dose (Mandema 2011 Table 1 abatacept row; Table 2 suggested starting dose 10 mg/kg q4w; Figure 2 abatacept panel x-axis 'mg/kg q4w')"
+      notes = "0 outside an abatacept arm. Mandema 2011 Table 1 reports 6 trials, 1,242 patients, median 10 mg/kg q4w with a range of 0.5-10 mg/kg q4w. Abatacept is the only anti-CD28 agent in the analysis, so that class's Emax is identified by abatacept alone. A weight-normalized dose, NOT a mass dose; the matching ED50 (2.53 mg/kg) carries the same units. This is a per-arm dose in an MBMA, not a subject-level per-administration dose amount.",
+      source_name = "Dose (Mandema 2011 Table 1 abatacept row; Table 2 suggested starting dose 10 mg/kg q4w; Figure 2 abatacept panel x-axis 'mg/kg q4w')"
     ),
     # ---- Anti-CD20 (B-cell-depleting agents) --------------------------------
     CONMED_RITUXIMAB_DOSE = list(
-      description        = "Per-arm rituximab dose per administration on the two-infusion weeks 0 and 2 regimen.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-arm rituximab dose per administration on the two-infusion weeks 0 and 2 regimen.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a rituximab arm. Mandema 2011 Table 1 reports 3 trials, 707 patients, median 1,000 mg with a range of 500-1,000 mg given at weeks 0 and 2. Rituximab is the only anti-CD20 agent in the analysis, so that class's Emax is identified by rituximab alone. The source found rituximab the most efficacious of the non-anti-TNF biologics, between adalimumab and etanercept.",
-      source_name        = "Dose (Mandema 2011 Table 1 rituximab row; Table 2 suggested starting dose 1,000 mg wk 0, 2; Figure 2 rituximab panel x-axis 'mg wk 0.2')"
+      notes = "0 outside a rituximab arm. Mandema 2011 Table 1 reports 3 trials, 707 patients, median 1,000 mg with a range of 500-1,000 mg given at weeks 0 and 2. Rituximab is the only anti-CD20 agent in the analysis, so that class's Emax is identified by rituximab alone. The source found rituximab the most efficacious of the non-anti-TNF biologics, between adalimumab and etanercept.",
+      source_name = "Dose (Mandema 2011 Table 1 rituximab row; Table 2 suggested starting dose 1,000 mg wk 0, 2; Figure 2 rituximab panel x-axis 'mg wk 0.2')"
     ),
     # ---- Anti-IL-6 ----------------------------------------------------------
     CONMED_TOCILIZUMAB_DOSE = list(
-      description        = "Per-arm tocilizumab dose per administration, weight-normalized, on a once-every-4-weeks regimen.",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-arm tocilizumab dose per administration, weight-normalized, on a once-every-4-weeks regimen.",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a tocilizumab arm. Mandema 2011 Table 1 reports 7 trials, 2,377 patients, median 8 mg/kg q4w with a range of 2-8 mg/kg q4w. Tocilizumab is the only anti-IL-6 agent in the analysis. Its theoretical Emax was significantly greater than that of the anti-TNFs while its ED50 is above the studied dose range, so doubling the tocilizumab dose from 4 to 8 mg/kg buys far more response than doubling an anti-TNF dose -- the single steepest dose-response in the analysis. A weight-normalized dose, NOT a mass dose.",
-      source_name        = "Dose (Mandema 2011 Table 1 tocilizumab row; Table 2 suggested starting dose 4 mg/kg q4w; Figure 2 tocilizumab panel x-axis 'mg/kg q4w')"
+      notes = "0 outside a tocilizumab arm. Mandema 2011 Table 1 reports 7 trials, 2,377 patients, median 8 mg/kg q4w with a range of 2-8 mg/kg q4w. Tocilizumab is the only anti-IL-6 agent in the analysis. Its theoretical Emax was significantly greater than that of the anti-TNFs while its ED50 is above the studied dose range, so doubling the tocilizumab dose from 4 to 8 mg/kg buys far more response than doubling an anti-TNF dose -- the single steepest dose-response in the analysis. A weight-normalized dose, NOT a mass dose.",
+      source_name = "Dose (Mandema 2011 Table 1 tocilizumab row; Table 2 suggested starting dose 4 mg/kg q4w; Figure 2 tocilizumab panel x-axis 'mg/kg q4w')"
     ),
     # ---- Methotrexate as a RANDOMIZED treatment -----------------------------
     CONMED_MTX_DOSE = list(
-      description        = "Per-arm methotrexate dose when methotrexate is given as a RANDOMIZED treatment (methotrexate-naive trials). 0 when methotrexate is background treatment or absent.",
-      units              = "mg/week",
-      type               = "continuous",
+      description = "Per-arm methotrexate dose when methotrexate is given as a RANDOMIZED treatment (methotrexate-naive trials). 0 when methotrexate is background treatment or absent.",
+      units = "mg/week",
+      type = "continuous",
       reference_category = "0 (methotrexate not a randomized treatment; either absent, or present only as background treatment and therefore absorbed into the trial placebo response)",
-      notes              = "Mandema 2011 Table 1 reports 8 trials, 1,726 patients, with randomized methotrexate titrated to a median 18 mg/week (range 15-20). ONLY the presence of randomized methotrexate is used by the model, not the magnitude: 'The treatment effect of MTX when given as a randomized treatment was estimated as a simple mean effect because MTX was titrated to a similar dose range in all the trials and no dose-response data were available.' Any value greater than 0 therefore produces the same methotrexate effect, and values outside the titrated 15-20 mg/week range are outside the source's calibration. Setting this column non-zero alongside an anti-TNF dose column reproduces the source's initial-combination-therapy arms and activates the interaction coefficient. This is a DISTINCT concept from the canonical CONMED_MTX (background concomitant methotrexate), which in this model carries NO effect because it is absorbed into the trial-specific placebo response, and from DOSE_MTX_MGM2 (body-surface-area-normalized oncology methotrexate dosing).",
-      source_name        = "MTX dose 18 (15 to 20) mg qw (Mandema 2011 Table 1 MTX row)"
+      notes = "Mandema 2011 Table 1 reports 8 trials, 1,726 patients, with randomized methotrexate titrated to a median 18 mg/week (range 15-20). ONLY the presence of randomized methotrexate is used by the model, not the magnitude: 'The treatment effect of MTX when given as a randomized treatment was estimated as a simple mean effect because MTX was titrated to a similar dose range in all the trials and no dose-response data were available.' Any value greater than 0 therefore produces the same methotrexate effect, and values outside the titrated 15-20 mg/week range are outside the source's calibration. Setting this column non-zero alongside an anti-TNF dose column reproduces the source's initial-combination-therapy arms and activates the interaction coefficient. This is a DISTINCT concept from the canonical CONMED_MTX (background concomitant methotrexate), which in this model carries NO effect because it is absorbed into the trial-specific placebo response, and from DOSE_MTX_MGM2 (body-surface-area-normalized oncology methotrexate dosing).",
+      source_name = "MTX dose 18 (15 to 20) mg qw (Mandema 2011 Table 1 MTX row)"
     ),
     # ---- Trial geography ----------------------------------------------------
     REGION_EASTASIA = list(
-      description        = "Indicator that the trial was carried out in East Asia (1) rather than elsewhere in the world (0).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the trial was carried out in East Asia (1) rather than elsewhere in the world (0).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (trial carried out outside East Asia -- Australia, Europe or North America).",
-      notes              = "Study-arm-level trial-location indicator, not a subject-level covariate. Country membership in this model is Japan and Taiwan: 'Three trials were carried out in Japan (two for tocilizumab and one for infliximab) and one in Taiwan (etanercept).' The source reports that in these trials 'the reported treatment effects were significantly (33% (95% CI, 12 to 54%)) greater than those reported in trials carried out elsewhere in the world', consistent across the three drugs evaluated, and that after accounting for it there was no significant remaining between-trial heterogeneity. The effect acts on the Emax of the dose-response, per the source's covariate equation Emax,i = Emax,class*(1 + theta_c*(X_ij - Xbar) + eta_Emax,i), so it scales the whole biologic treatment effect by 1.33. It is NOT applied to the randomized-methotrexate mean effect, which has no Emax. Distinct from the RACE_ASIAN* family: this records where the trial was run, not patient race, and the source tested only trial location.",
-      source_name        = "primary geographic location = Asia (Mandema 2011 Methods 'Data sources' extraction list; Results paragraph on Asian trials)"
+      notes = "Study-arm-level trial-location indicator, not a subject-level covariate. Country membership in this model is Japan and Taiwan: 'Three trials were carried out in Japan (two for tocilizumab and one for infliximab) and one in Taiwan (etanercept).' The source reports that in these trials 'the reported treatment effects were significantly (33% (95% CI, 12 to 54%)) greater than those reported in trials carried out elsewhere in the world', consistent across the three drugs evaluated, and that after accounting for it there was no significant remaining between-trial heterogeneity. The effect acts on the Emax of the dose-response, per the source's covariate equation Emax,i = Emax,class*(1 + theta_c*(X_ij - Xbar) + eta_Emax,i), so it scales the whole biologic treatment effect by 1.33. It is NOT applied to the randomized-methotrexate mean effect, which has no Emax. Distinct from the RACE_ASIAN* family: this records where the trial was run, not patient race, and the source tested only trial location.",
+      source_name = "primary geographic location = Asia (Mandema 2011 Methods 'Data sources' extraction list; Results paragraph on Asian trials)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Per-arm mean patient age. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Per-arm mean patient age. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Mandema 2011 Methods lists age among the extracted patient-population characteristics tested on the parameters of the dose-response relationship. Result: 'There was also no statistically significant impact of differences in background treatment (placebo, DMARD other than MTX, or MTX), age, disease duration, gender, missing data imputation method, or treatment duration.' No point estimate is reported, so no effect parameter is included in ini(). Per-drug across-trial medians and ranges are in Table 1 (overall median 52 years, range 46-59 across trials).",
-      source_name        = "Age (years) (Mandema 2011 Table 1; Methods covariate list)"
+      notes = "Mandema 2011 Methods lists age among the extracted patient-population characteristics tested on the parameters of the dose-response relationship. Result: 'There was also no statistically significant impact of differences in background treatment (placebo, DMARD other than MTX, or MTX), age, disease duration, gender, missing data imputation method, or treatment duration.' No point estimate is reported, so no effect parameter is included in ini(). Per-drug across-trial medians and ranges are in Table 1 (overall median 52 years, range 46-59 across trials).",
+      source_name = "Age (years) (Mandema 2011 Table 1; Methods covariate list)"
     ),
     SEXF = list(
-      description        = "Per-arm proportion female. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(fraction)",
-      type               = "continuous",
+      description = "Per-arm proportion female. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods ('gender') and reported as non-significant in the Results; no point estimate is given. Rheumatoid arthritis trial populations are predominantly female, but the source does not tabulate the per-trial proportion.",
-      source_name        = "gender (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods ('gender') and reported as non-significant in the Results; no point estimate is given. Rheumatoid arthritis trial populations are predominantly female, but the source does not tabulate the per-trial proportion.",
+      source_name = "gender (Mandema 2011 Methods covariate list)"
     ),
     WT = list(
-      description        = "Per-arm mean patient body weight. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Per-arm mean patient body weight. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods ('patient population characteristics such as age, weight, gender, and disease duration') and reported non-significant in the Discussion ('Differences in failed prior treatments, background treatment, trial duration, age, gender, weight, and disease duration did not significantly affect the treatment effect'). Note that three drugs here are dosed per kilogram (abatacept, infliximab, tocilizumab), so body weight enters those arms through the mg/kg dose units rather than as a covariate effect.",
-      source_name        = "weight (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods ('patient population characteristics such as age, weight, gender, and disease duration') and reported non-significant in the Discussion ('Differences in failed prior treatments, background treatment, trial duration, age, gender, weight, and disease duration did not significantly affect the treatment effect'). Note that three drugs here are dosed per kilogram (abatacept, infliximab, tocilizumab), so body weight enters those arms through the mg/kg dose units rather than as a covariate effect.",
+      source_name = "weight (Mandema 2011 Methods covariate list)"
     ),
     DIS_DURATION_RA = list(
-      description        = "Per-arm median duration of rheumatoid arthritis at trial entry. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Per-arm median duration of rheumatoid arthritis at trial entry. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tabulated per drug in Mandema 2011 Table 1 (overall median 9 years, range 0.4-15 across trials) and screened per the Methods covariate list. Reported non-significant in the Results and Discussion; no point estimate is given. Disease duration separates the methotrexate-naive trials (median 1 year) from the methotrexate-inadequate-responder trials (median 9 years), so it is strongly confounded with the population that the two placebo-response sets in ini() already distinguish.",
-      source_name        = "Disease duration (years) (Mandema 2011 Table 1; Methods covariate list)"
+      notes = "Tabulated per drug in Mandema 2011 Table 1 (overall median 9 years, range 0.4-15 across trials) and screened per the Methods covariate list. Reported non-significant in the Results and Discussion; no point estimate is given. Disease duration separates the methotrexate-naive trials (median 1 year) from the methotrexate-inadequate-responder trials (median 9 years), so it is strongly confounded with the population that the two placebo-response sets in ini() already distinguish.",
+      source_name = "Disease duration (years) (Mandema 2011 Table 1; Methods covariate list)"
     ),
     PRIOR_TX_FAILURE_GROUP = list(
-      description        = "Failed prior treatments, grouped by the source as nonbiologic DMARDs other than methotrexate, nonbiologic DMARDs including methotrexate, or biologics. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Failed prior treatments, grouped by the source as nonbiologic DMARDs other than methotrexate, nonbiologic DMARDs including methotrexate, or biologics. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Tabulated per drug in Mandema 2011 Table 1 as 'Trials failed DMARD/MTX/anti-TNF' (9/36/5 overall) and screened per the Methods covariate list. Two specific findings are reported but neither reached the P < 0.01 acceptance criterion, so neither is encoded: (i) 'There was no statistically significant difference in the odds ratio (relative to placebo) for MTX-naive patients vs. patients who had shown inadequate response to prior MTX treatment'; (ii) in patients with an inadequate response to a prior anti-TNF, the golimumab treatment effect was 'estimated to be slightly smaller (15% relative decrease) but not significantly different from the treatment effect in patients with inadequate response to MTX'. The absolute responder percentage still differs between these populations because the placebo response differs, which the two placebo-response sets in ini() capture.",
-      source_name        = "Trials failed DMARD/MTX/anti-TNF (Mandema 2011 Table 1; Methods covariate list)"
+      notes = "Tabulated per drug in Mandema 2011 Table 1 as 'Trials failed DMARD/MTX/anti-TNF' (9/36/5 overall) and screened per the Methods covariate list. Two specific findings are reported but neither reached the P < 0.01 acceptance criterion, so neither is encoded: (i) 'There was no statistically significant difference in the odds ratio (relative to placebo) for MTX-naive patients vs. patients who had shown inadequate response to prior MTX treatment'; (ii) in patients with an inadequate response to a prior anti-TNF, the golimumab treatment effect was 'estimated to be slightly smaller (15% relative decrease) but not significantly different from the treatment effect in patients with inadequate response to MTX'. The absolute responder percentage still differs between these populations because the placebo response differs, which the two placebo-response sets in ini() capture.",
+      source_name = "Trials failed DMARD/MTX/anti-TNF (Mandema 2011 Table 1; Methods covariate list)"
     ),
     BACKGROUND_TX_GROUP = list(
-      description        = "Background (non-randomized) treatment in the trial: placebo alone, a nonbiologic DMARD other than methotrexate, or methotrexate. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Background (non-randomized) treatment in the trial: placebo alone, a nonbiologic DMARD other than methotrexate, or methotrexate. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods and reported non-significant in the Results. Background methotrexate is the reason the canonical CONMED_MTX indicator carries no parameter in this model: its effect is absorbed entirely into the trial-specific placebo response, which is why Table 2 is headed 'patients on background MTX treatment'. Only randomized methotrexate has an estimated effect, entered through CONMED_MTX_DOSE.",
-      source_name        = "background treatment (Mandema 2011 Methods covariate list; Table 1 'Placebo' rows)"
+      notes = "Screened per Mandema 2011 Methods and reported non-significant in the Results. Background methotrexate is the reason the canonical CONMED_MTX indicator carries no parameter in this model: its effect is absorbed entirely into the trial-specific placebo response, which is why Table 2 is headed 'patients on background MTX treatment'. Only randomized methotrexate has an estimated effect, entered through CONMED_MTX_DOSE.",
+      source_name = "background treatment (Mandema 2011 Methods covariate list; Table 1 'Placebo' rows)"
     ),
     TRT_DURATION = list(
-      description        = "Trial treatment duration to the pre-determined primary efficacy end point. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "week",
-      type               = "continuous",
+      description = "Trial treatment duration to the pre-determined primary efficacy end point. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "week",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported in Mandema 2011 Results: 34 trials had treatment periods of 22-30 weeks, 13 trials 12-16 weeks, and 4 trials had their primary efficacy end point at 1 year. Screened and reported non-significant; no point estimate is given. This is why the model has no time axis -- every arm contributes its response at its own primary end point.",
-      source_name        = "treatment duration (Mandema 2011 Results 'Data'; Methods covariate list)"
+      notes = "Reported in Mandema 2011 Results: 34 trials had treatment periods of 22-30 weeks, 13 trials 12-16 weeks, and 4 trials had their primary efficacy end point at 1 year. Screened and reported non-significant; no point estimate is given. This is why the model has no time axis -- every arm contributes its response at its own primary end point.",
+      source_name = "treatment duration (Mandema 2011 Results 'Data'; Methods covariate list)"
     ),
     IMPUTATION_METHOD = list(
-      description        = "Missing-data imputation method used by the source trial to derive the ACR responder percentage. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Missing-data imputation method used by the source trial to derive the ACR responder percentage. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Extracted per Mandema 2011 Methods ('All end-point information was extracted from the publications (including imputation methods)') and reported non-significant in the Results. Relevant because the certolizumab registration trials withdrew week-12/14 ACR 20 non-attainers and counted them as week-24 non-responders; the source examined and rejected this as an explanation of the large certolizumab effect.",
-      source_name        = "missing data imputation method (Mandema 2011 Methods; Results)"
+      notes = "Extracted per Mandema 2011 Methods ('All end-point information was extracted from the publications (including imputation methods)') and reported non-significant in the Results. Relevant because the certolizumab registration trials withdrew week-12/14 ACR 20 non-attainers and counted them as week-24 non-responders; the source examined and rejected this as an explanation of the large certolizumab effect.",
+      source_name = "missing data imputation method (Mandema 2011 Methods; Results)"
     ),
     PLACEBO_RESPONSE_MAGNITUDE = list(
-      description        = "Magnitude of the trial's own placebo response, screened as a modifier of the treatment effect but NOT retained in the final model.",
-      units              = "(fraction)",
-      type               = "continuous",
+      description = "Magnitude of the trial's own placebo response, screened as a modifier of the treatment effect but NOT retained in the final model.",
+      units = "(fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested explicitly and reported non-significant: 'There was no statistically significant remaining impact of the magnitude of the placebo response on the treatment effect, suggesting that the relative-odds model adequately normalizes the treatment effect for differences in placebo response across the trials.' This is the finding that licenses shifting the e0_* parameters in ini() to move to a different absolute-response setting WITHOUT changing the treatment effect. Observed placebo-response ranges across the 50 trials were 8.7-42% for ACR 20, 0-29% for ACR 50 and 0-16% for ACR 70.",
-      source_name        = "magnitude of the placebo response (Mandema 2011 Results; Discussion)"
+      notes = "Tested explicitly and reported non-significant: 'There was no statistically significant remaining impact of the magnitude of the placebo response on the treatment effect, suggesting that the relative-odds model adequately normalizes the treatment effect for differences in placebo response across the trials.' This is the finding that licenses shifting the e0_* parameters in ini() to move to a different absolute-response setting WITHOUT changing the treatment effect. Observed placebo-response ranges across the 50 trials were 8.7-42% for ACR 20, 0-29% for ACR 50 and 0-16% for ACR 70.",
+      source_name = "magnitude of the placebo response (Mandema 2011 Results; Discussion)"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 21529L,
-    n_studies            = 50L,
-    n_treatments         = 10L,
-    age_range            = "Adults with rheumatoid arthritis; across-trial median age 52 years (range of per-trial medians 46-59) per Mandema 2011 Table 1. Age was screened as a covariate and not retained.",
-    weight_range         = "Not tabulated. Body weight was screened as a covariate and not retained; abatacept, infliximab and tocilizumab are dosed per kilogram so weight enters those arms through the mg/kg dose units.",
-    sex_female_pct       = NA_real_,
-    disease_state        = "Rheumatoid arthritis in adults. 36 trials enrolled patients with an inadequate response to methotrexate (all or a percentage of patients), 9 trials enrolled methotrexate-naive patients treated only with older nonbiologic DMARDs or with NSAIDs and oral corticosteroids, and 5 trials enrolled patients with an inadequate response to methotrexate and/or a biologic anti-TNF. Efficacy end points are the percentage of patients attaining an ACR 20, 50 or 70 response at each trial's pre-determined primary time point; all 50 trials reported ACR 20, 49 reported ACR 50 and 45 reported ACR 70. Across-trial median disease duration 9 years (range of per-trial medians 0.4-15). Relative safety and tolerability were not addressed by this analysis.",
-    dose_range           = "Nine biologic DMARDs across five mechanisms of action plus randomized methotrexate; per-drug median (range) doses from Mandema 2011 Table 1 are abatacept 10 (0.5-10) mg/kg q4w, adalimumab 40 (20-160) mg q2w, anakinra 75 (3-162) mg/day, certolizumab 200 (200-400) mg q2w, etanercept 25 (0.5-50) mg twice weekly, golimumab 100 (50-200) mg q4w, infliximab 6 (2-20) mg/kg at weeks 0, 2, 6 then q8w, rituximab 1,000 (500-1,000) mg at weeks 0 and 2, tocilizumab 8 (2-8) mg/kg q4w, and methotrexate 18 (15-20) mg/week.",
-    regions              = "Predominantly Australia, Europe and North America. Four trials were carried out in East Asia: three in Japan (two tocilizumab, one infliximab) and one in Taiwan (etanercept).",
-    n_trials_acr20       = 50L,
-    n_trials_acr50       = 49L,
-    n_trials_acr70       = 45L,
+    species = "human",
+    n_subjects = 21529L,
+    n_studies = 50L,
+    n_treatments = 10L,
+    age_range = "Adults with rheumatoid arthritis; across-trial median age 52 years (range of per-trial medians 46-59) per Mandema 2011 Table 1. Age was screened as a covariate and not retained.",
+    weight_range = "Not tabulated. Body weight was screened as a covariate and not retained; abatacept, infliximab and tocilizumab are dosed per kilogram so weight enters those arms through the mg/kg dose units.",
+    sex_female_pct = NA_real_,
+    disease_state = "Rheumatoid arthritis in adults. 36 trials enrolled patients with an inadequate response to methotrexate (all or a percentage of patients), 9 trials enrolled methotrexate-naive patients treated only with older nonbiologic DMARDs or with NSAIDs and oral corticosteroids, and 5 trials enrolled patients with an inadequate response to methotrexate and/or a biologic anti-TNF. Efficacy end points are the percentage of patients attaining an ACR 20, 50 or 70 response at each trial's pre-determined primary time point; all 50 trials reported ACR 20, 49 reported ACR 50 and 45 reported ACR 70. Across-trial median disease duration 9 years (range of per-trial medians 0.4-15). Relative safety and tolerability were not addressed by this analysis.",
+    dose_range = "Nine biologic DMARDs across five mechanisms of action plus randomized methotrexate; per-drug median (range) doses from Mandema 2011 Table 1 are abatacept 10 (0.5-10) mg/kg q4w, adalimumab 40 (20-160) mg q2w, anakinra 75 (3-162) mg/day, certolizumab 200 (200-400) mg q2w, etanercept 25 (0.5-50) mg twice weekly, golimumab 100 (50-200) mg q4w, infliximab 6 (2-20) mg/kg at weeks 0, 2, 6 then q8w, rituximab 1,000 (500-1,000) mg at weeks 0 and 2, tocilizumab 8 (2-8) mg/kg q4w, and methotrexate 18 (15-20) mg/week.",
+    regions = "Predominantly Australia, Europe and North America. Four trials were carried out in East Asia: three in Japan (two tocilizumab, one infliximab) and one in Taiwan (etanercept).",
+    n_trials_acr20 = 50L,
+    n_trials_acr50 = 49L,
+    n_trials_acr70 = 45L,
     n_trials_placebo_ctl = 40L,
     mechanisms_of_action = "Anti-TNF (adalimumab, certolizumab pegol, etanercept, golimumab, infliximab); anti-IL-1 (anakinra); T-cell costimulatory blocking agent with anti-CD28 activity (abatacept); B-cell-depleting agent with anti-CD20 activity (rituximab); anti-IL-6 (tocilizumab). Ofatumumab, ocrelizumab, baminercept and ustekinumab appear in the Methods search list but no trial of theirs met the inclusion criteria, so they have no ED50 and are not columns in this model.",
-    notes                = "Summary-level MBMA: the modelled observations were per-arm ACR responder COUNTS out of the arm sample size, assumed binomial, with a separate placebo-response fixed effect estimated for EACH of the 50 trials and a trial-level random effect on the ACR 20 and ACR 70 placebo responses relative to ACR 50. Because of those per-trial intercepts the identified response variable is the log odds ratio between the active and control arms, not the absolute responder rate; the source reports none of the 50 intercepts and none of the random-effect variances. Between-trial random effects on Emax and ED50 were tested and rejected ('the absence of significant between-trial heterogeneity with respect to Emax and ED50'), so the model carries NO random effects and NO between-subject variability. Within-arm correlation across the three ACR end points measured in the same arm was handled by a compound-symmetry structure that is a property of the estimation, not of the predictive model, and is therefore not encoded. Only 1 of the 50 trials directly compared two biologics (infliximab vs. abatacept), so the comparisons this model supports are indirect ones anchored on the shared placebo and methotrexate arms."
+    notes = "Summary-level MBMA: the modelled observations were per-arm ACR responder COUNTS out of the arm sample size, assumed binomial, with a separate placebo-response fixed effect estimated for EACH of the 50 trials and a trial-level random effect on the ACR 20 and ACR 70 placebo responses relative to ACR 50. Because of those per-trial intercepts the identified response variable is the log odds ratio between the active and control arms, not the absolute responder rate; the source reports none of the 50 intercepts and none of the random-effect variances. Between-trial random effects on Emax and ED50 were tested and rejected ('the absence of significant between-trial heterogeneity with respect to Emax and ED50'), so the model carries NO random effects and NO between-subject variability. Within-arm correlation across the three ACR end points measured in the same arm was handled by a compound-symmetry structure that is a property of the estimation, not of the predictive model, and is therefore not encoded. Only 1 of the 50 trials directly compared two biologics (infliximab vs. abatacept), so the comparisons this model supports are indirect ones anchored on the shared placebo and methotrexate arms."
   )
 
   ini({

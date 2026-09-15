@@ -9,17 +9,17 @@ Lai_2026_rivaroxaban <- function() {
   # Table 1 "Rivaroxaban regimen and concentration") and measured in plasma by
   # validated UHPLC-MS/MS (Methods 2.2 "Study Procedure").
   compartmentData <- list(
-    depot   = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the Cockcroft-Gault equation",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the Cockcroft-Gault equation",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min -- NOT BSA-normalized to",
         "mL/min/1.73 m^2. Methods 2.2: 'To estimate creatinine clearance, the",
         "Cockcroft-Gault equation was utilized'. Enters CL/F as a power of the ratio to",
@@ -34,14 +34,14 @@ Lai_2026_rivaroxaban <- function() {
         "Patients with end-stage renal disease requiring dialysis were excluded",
         "(Methods 2.1), so the model carries no information about dialysis."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     FFM = list(
-      description        = "Lean body weight (fat-free mass) from the Janmahasatian equation",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight (fat-free mass) from the Janmahasatian equation",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The source calls this column 'LBW' and derives it with the Janmahasatian",
         "formula, which is the equation this register files under FFM: Methods 2.2",
         "'To estimate fat-free body mass, we evaluated two descriptors: the",
@@ -60,14 +60,14 @@ Lai_2026_rivaroxaban <- function() {
         "(Results 3.3.1) and total body weight was explicitly not significant",
         "(Discussion: 'actual bodyweight did not significantly affect V/F')."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     ),
     CONMED_CYP3A4_PGP_INH = list(
-      description        = "Concomitant CYP3A4 or P-glycoprotein inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 or P-glycoprotein inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant CYP3A4 or P-gp inhibitor)",
-      notes              = paste(
+      notes = paste(
         "1 = the patient was receiving a CYP3A4 OR a P-glycoprotein inhibitor at the",
         "time of rivaroxaban concentration measurement, 0 = neither. The source pools",
         "the two inhibition mechanisms into a single indicator (Methods 2.2:",
@@ -89,7 +89,7 @@ Lai_2026_rivaroxaban <- function() {
         "indicator. The CYP3A4/P-gp inducer arm (levetiracetam, 4 patients, 1.8%) is",
         "likewise not part of this indicator and was not retained."
       ),
-      source_name        = "CYP3A4 or P-gp inhibitors"
+      source_name = "CYP3A4 or P-gp inhibitors"
     )
   )
 
@@ -100,9 +100,9 @@ Lai_2026_rivaroxaban <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F and entered the full model, but removed in backward",
         "elimination (Results 3.3.2: 'the full model incorporated age, IBW, CrCL,",
         "CYP3A4/P-gp inhibitor use, BCRP inhibitor use, and sex ... the removal of CrCL",
@@ -112,11 +112,11 @@ Lai_2026_rivaroxaban <- function() {
       )
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened on BOTH V/F and CL/F and significant on each in forward inclusion,",
         "but dropped from the final model for collinearity with the body-size",
         "descriptors (Discussion: 'Although sex was also identified as a significant",
@@ -128,9 +128,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened and NOT retained on V/F (Discussion: 'Interestingly, actual",
         "bodyweight did not significantly affect V/F, possibly because of the",
         "moderate-to-low tissue affinity of rivaroxaban, making LBW a more accurate",
@@ -140,9 +140,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Not itself a screened covariate, but a required input to the Janmahasatian FFM",
         "equation and to the Cockcroft-Gault / MDRD-4 derivations. Recorded here because",
         "a user supplying real data must have it: one validation-cohort patient was",
@@ -152,9 +152,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened on V/F and significant in forward inclusion, but rejected in favour of",
         "LBW (Results 3.3.1: 'As BSA, IBW, LBW, and LBM were highly correlated, LBW",
         "resulted in the greatest reduction in OFV and was therefore selected for further",
@@ -163,9 +163,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened on BOTH V/F and CL/F. On V/F it lost to LBW (Results 3.3.1). On CL/F",
         "it was actually the winning body-size descriptor in forward inclusion ('Among",
         "IBW, LBM, and LBW, IBW was selected as the best body size descriptor on the",
@@ -178,9 +178,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     LBM = list(
       description = "Lean body mass from the James equation",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "The James-formula lean body mass, screened on BOTH V/F and CL/F as the",
         "'traditional body-size descriptor' alternative to the Janmahasatian LBW",
         "(Methods 2.2) and rejected on both (Results 3.3.1, 3.3.2). Distinct from the",
@@ -190,9 +190,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Reported as 'CRE' in Methods 2.2. Screened on CL/F as an alternative renal",
         "descriptor and rejected in favour of CrCL (Results 3.3.2). Mean 1.1 +/- 0.3",
         "mg/dL with 0% missing (Table 1). Still needed indirectly, as the input to the",
@@ -203,9 +203,9 @@ Lai_2026_rivaroxaban <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Not screened in the primary covariate search because 30.1% of values were",
         "missing (Table 1 footnote a; Methods 2.8). The sensitivity analysis found it to",
         "be the ONLY missing-data laboratory parameter significantly correlated with",
@@ -220,22 +220,22 @@ Lai_2026_rivaroxaban <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 226,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 226,
+    n_studies = 1,
     n_observations = 452,
-    age_range      = "over 20 years (eligibility); mean 73.2 +/- 8.2 years",
-    age_median     = "not reported; mean 73.2 years",
-    weight_range   = "not reported; mean 65.0 +/- 13.1 kg",
-    weight_median  = "not reported; mean 65.0 kg",
+    age_range = "over 20 years (eligibility); mean 73.2 +/- 8.2 years",
+    age_median = "not reported; mean 73.2 years",
+    weight_range = "not reported; mean 65.0 +/- 13.1 kg",
+    weight_median = "not reported; mean 65.0 kg",
     sex_female_pct = 45.1,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "atrial fibrillation, on rivaroxaban for at least 3 days",
-    dose_range     = "10 mg (37.6%) or 15 mg (62.4%) orally once daily",
-    regions        = "Taiwan (single center: National Taiwan University Hospital, Taipei)",
+    disease_state = "atrial fibrillation, on rivaroxaban for at least 3 days",
+    dose_range = "10 mg (37.6%) or 15 mg (62.4%) orally once daily",
+    regions = "Taiwan (single center: National Taiwan University Hospital, Taipei)",
     renal_function = "Cockcroft-Gault CrCL mean 53.7 +/- 18.9 mL/min, median 54, range 19.8-133 mL/min; 44.7% below 50 mL/min. Patients with end-stage renal disease requiring dialysis were excluded.",
-    co_medication  = "CYP3A4 or P-gp inhibitors in 86 patients (38.1%): amiodarone 56, dronedarone 15, diltiazem 12, verapamil 6. CYP3A4/P-gp inducer (levetiracetam) in 4 (1.8%). BCRP inhibitors in 22 (9.7%): benzbromarone 13, febuxostat 8, sulfasalazine 1.",
-    notes          = paste(
+    co_medication = "CYP3A4 or P-gp inhibitors in 86 patients (38.1%): amiodarone 56, dronedarone 15, diltiazem 12, verapamil 6. CYP3A4/P-gp inducer (levetiracetam) in 4 (1.8%). BCRP inhibitors in 22 (9.7%): benzbromarone 13, febuxostat 8, sulfasalazine 1.",
+    notes = paste(
       "Prospective observational DOAC-T (direct oral anticoagulant-Taiwan) cohort",
       "enrolled January 2016 to June 2023; ClinicalTrials.gov NCT05333666. Table 1",
       "baseline demographics. 258 patients enrolled, 226 analysed after exclusions",

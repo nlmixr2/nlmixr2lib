@@ -22,13 +22,13 @@ Soy_2015_benznidazole <- function() {
     sep = " "
   )
   vignette <- "Soy_2015_benznidazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "benznidazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -40,95 +40,95 @@ Soy_2015_benznidazole <- function() {
   # listed here for provenance only and are not referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results, covariate model selection paragraph). Not retained.",
-      source_name        = "AGE"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results, covariate model selection paragraph). Not retained.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results, covariate model selection paragraph). Not retained. Index cohort was 26/39 (66.7%) female.",
-      source_name        = "GENDER"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results, covariate model selection paragraph). Not retained. Index cohort was 26/39 (66.7%) female.",
+      source_name = "GENDER"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F via the scm approach (Soy 2015 Results). Not retained. Separately, Soy 2015 ran an exploratory WT-popPK model with allometric exponents fixed at 0.75 (CL/F) and 1 (V/F) and reference weight = cohort mean; that model did not improve fit and the typical-value estimates were essentially unchanged from the final no-covariate model (CL/F = 1.75 L/h, V/F = 95.3 L). Reported here for completeness; not encoded in the final model().",
-      source_name        = "WT"
+      notes = "Screened on CL/F and V/F via the scm approach (Soy 2015 Results). Not retained. Separately, Soy 2015 ran an exploratory WT-popPK model with allometric exponents fixed at 0.75 (CL/F) and 1 (V/F) and reference weight = cohort mean; that model did not improve fit and the typical-value estimates were essentially unchanged from the final no-covariate model (CL/F = 1.75 L/h, V/F = 95.3 L). Reported here for completeness; not encoded in the final model().",
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained.",
-      source_name        = "BMI"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results). Not retained.",
+      source_name = "BMI"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained. Computed via Cockcroft-Gault (Soy 2015 Methods, Data section).",
-      source_name        = "CLCR"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results). Not retained. Computed via Cockcroft-Gault (Soy 2015 Methods, Data section).",
+      source_name = "CLCR"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained. Canonical input is SI g/L per the 2026-06-19 register standardization audit. (Soy 2015 reported in mg/dL; conversion: 1 mg/dL = 0.01 g/L, but TPRO is not used in equations so no inline conversion is added.)",
-      source_name        = "TPRO"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results). Not retained. Canonical input is SI g/L per the 2026-06-19 register standardization audit. (Soy 2015 reported in mg/dL; conversion: 1 mg/dL = 0.01 g/L, but TPRO is not used in equations so no inline conversion is added.)",
+      source_name = "TPRO"
     ),
     TBILI = list(
-      description        = "Total bilirubin",
+      description = "Total bilirubin",
       units = "umol/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained.",
-      source_name        = "TBILI"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results). Not retained.",
+      source_name = "TBILI"
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results); reported as a fraction in Table 1 (index data set mean 0.40, SD 0.04). Not retained.",
-      source_name        = "HCT"
+      notes = "Screened on CL/F and V/F (Soy 2015 Results); reported as a fraction in Table 1 (index data set mean 0.40, SD 0.04). Not retained.",
+      source_name = "HCT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
     n_observations = 358L,
-    age_range      = "19-55 years",
-    age_mean       = "37.15 years (median 36 years)",
-    weight_range   = "43-100 kg",
-    weight_mean    = "70.55 kg",
+    age_range = "19-55 years",
+    age_mean = "37.15 years (median 36 years)",
+    weight_range = "43-100 kg",
+    weight_mean = "70.55 kg",
     sex_female_pct = round(100 * 26 / 39, 1),
     race_ethnicity = c(Bolivian_pct = 96),
-    disease_state  = paste(
+    disease_state = paste(
       "Adult patients (>=18 years) with chronic Chagas disease",
       "diagnosed by two T. cruzi serologic tests; treatment-naive",
       "at enrolment. Exclusion criteria included hypersensitivity to",
       "benznidazole, immunodeficiency (including HIV), hepatic or",
       "renal impairment, pregnancy, and lactation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral benznidazole 2.5 mg/kg every 12 hours for 8 weeks",
       "(maximum 400 mg/day; Abarax, Elea Laboratory, Argentina).",
       "Median drug adherence across the cohort 99.2%."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Plasma samples on treatment days +1 (first dose) and +15",
       "(steady state) at 1 h, 3-6 h, and 6-12 h post-dose; after the",
       "final dose at 3-12 h, 12-24 h, and 24-36 h; additional trough",
@@ -143,11 +143,11 @@ Soy_2015_benznidazole <- function() {
       "for external predictive-performance assessment, not for",
       "parameter estimation."
     ),
-    regions        = paste(
+    regions = paste(
       "Single center: Hospital Clinic of Barcelona, Spain.",
       "96% of patients were originally from Bolivia."
     ),
-    notes          = paste(
+    notes = paste(
       "CINEBENZ study, EudraCT 2011-002900-34, ClinicalTrials.gov",
       "NCT01755403. Baseline demographics from Soy 2015 Table 1",
       "(index data set column); final-model parameter estimates",

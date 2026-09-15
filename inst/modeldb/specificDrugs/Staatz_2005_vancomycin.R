@@ -10,7 +10,7 @@ Staatz_2005_vancomycin <- function() {
     sep = " "
   )
   vignette <- "Staatz_2005_gentamicin_vancomycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -21,39 +21,39 @@ Staatz_2005_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Staatz 2005 Table 1: median 74 kg (range 44-110) in the vancomycin model-building cohort; median 69 kg (range 47-112) in the test cohort. Enters the structural model as a linear scalar on V (Table 2 footer for the vancomycin final model: V = theta x WT). No reference-weight normalisation; the typical-value V is reported directly in L/kg.",
-      source_name        = "WT"
+      notes = "Staatz 2005 Table 1: median 74 kg (range 44-110) in the vancomycin model-building cohort; median 69 kg (range 47-112) in the test cohort. Enters the structural model as a linear scalar on V (Table 2 footer for the vancomycin final model: V = theta x WT). No reference-weight normalisation; the typical-value V is reported directly in L/kg.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CL_Cr. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalised to mL/min/1.73 m^2); Cr_Se measurements below 60 umol/L were set to 60 umol/L per the paper's Methods (better CL estimates in patients with low creatinine production). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 57 mL/min corresponds to the CL_Cr_median used in the vancomycin final model (Staatz 2005 Table 2 bold/final row: 'CL = theta1 x (1 + theta2 x (CL_Cr - 57))'). CRCL ranged from 12 to 172 mL/min in the vancomycin model-building cohort (Table 1).",
-      source_name        = "CL_Cr"
+      notes = "Source column CL_Cr. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalised to mL/min/1.73 m^2); Cr_Se measurements below 60 umol/L were set to 60 umol/L per the paper's Methods (better CL estimates in patients with low creatinine production). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 57 mL/min corresponds to the CL_Cr_median used in the vancomycin final model (Staatz 2005 Table 2 bold/final row: 'CL = theta1 x (1 + theta2 x (CL_Cr - 57))'). CRCL ranged from 12 to 172 mL/min in the vancomycin model-building cohort (Table 1).",
+      source_name = "CL_Cr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 139L,
-    n_studies      = 1L,
-    age_range      = "17-87 years (model-building); 36-92 years (test)",
-    age_median     = "66 years (model-building); 68 years (test)",
-    weight_range   = "44-110 kg (model-building); 47-112 kg (test)",
-    weight_median  = "74 kg (model-building); 69 kg (test)",
+    species = "human",
+    n_subjects = 139L,
+    n_studies = 1L,
+    age_range = "17-87 years (model-building); 36-92 years (test)",
+    age_median = "66 years (model-building); 68 years (test)",
+    weight_range = "44-110 kg (model-building); 47-112 kg (test)",
+    weight_median = "74 kg (model-building); 69 kg (test)",
     sex_female_pct = 29.5,
     race_ethnicity = "Not reported (UK single-centre cardiothoracic surgery cohort)",
-    disease_state  = "Adults receiving intravenous vancomycin for postoperative sepsis or related infection following cardiothoracic surgery, with unstable renal function. 78% had cardiac surgery, 6% thoracic surgery, 2% wound infection; the remainder did not have admission reason recorded.",
-    dose_range     = "Intravenous vancomycin infusion over 0.2-4.42 h (median 2 h). Median dose 1000 mg (range 120-2000) in the model-building set; 1000 mg (range 500-2000) in the test set. Dosage adjusted to maintain trough concentrations of 5-10 mg/L or (from 2002 onwards) 10-15 mg/L.",
-    regions        = "United Kingdom (Western Infirmary, Glasgow; Cardiothoracic Surgery Unit). Data collected January 1998 - September 2003 (model-building) and September 2003 - August 2004 (test).",
+    disease_state = "Adults receiving intravenous vancomycin for postoperative sepsis or related infection following cardiothoracic surgery, with unstable renal function. 78% had cardiac surgery, 6% thoracic surgery, 2% wound infection; the remainder did not have admission reason recorded.",
+    dose_range = "Intravenous vancomycin infusion over 0.2-4.42 h (median 2 h). Median dose 1000 mg (range 120-2000) in the model-building set; 1000 mg (range 500-2000) in the test set. Dosage adjusted to maintain trough concentrations of 5-10 mg/L or (from 2002 onwards) 10-15 mg/L.",
+    regions = "United Kingdom (Western Infirmary, Glasgow; Cardiothoracic Surgery Unit). Data collected January 1998 - September 2003 (model-building) and September 2003 - August 2004 (test).",
     renal_function = "Cockcroft-Gault creatinine clearance median 60 mL/min (range 12-172 in model-building); median 49 mL/min (range 18-173 in test). Max within-subject CL_Cr change median 11.5 mL/min (range 0-93.3, model-building) and 10.6 mL/min (0-84.3, test). Cr_Se < 60 umol/L (the lower limit of the reference range) was set to 60 umol/L before computing CL_Cr.",
     n_concentrations = 559L,
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Staatz 2005 Table 1. 102 patients in the model-building set",
       "(408 vancomycin concentrations, 1-19 samples per patient, median 3), 37 patients in the",
       "test set (151 concentrations, 1-13 samples per patient, median 4). Combined cohort N = 139",

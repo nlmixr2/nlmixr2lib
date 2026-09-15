@@ -23,38 +23,38 @@ Kovalenko_2020_dupilumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume; reference weight 75 kg (assumed from prior Kovalenko 2016 publication; not explicitly stated in Kovalenko 2020).",
-      source_name        = "WT"
+      notes = "Power effect on central volume; reference weight 75 kg (assumed from prior Kovalenko 2016 publication; not explicitly stated in Kovalenko 2020).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 2041L,
-    n_studies      = 16L,
-    age_range      = "Adults and adolescents; detailed age breakdown not reported in the main text",
-    age_median     = "Not reported in the main text",
-    weight_range   = "Not reported in the main text",
-    weight_median  = "Not reported in the main text (Kovalenko 2016 used 75 kg as the allometric reference weight)",
+    n_subjects = 2041L,
+    n_studies = 16L,
+    age_range = "Adults and adolescents; detailed age breakdown not reported in the main text",
+    age_median = "Not reported in the main text",
+    weight_range = "Not reported in the main text",
+    weight_median = "Not reported in the main text (Kovalenko 2016 used 75 kg as the allometric reference weight)",
     sex_female_pct = "Not reported in the main text",
     race_ethnicity = "Race was a tested covariate; detailed breakdown not reported in the main text (primarily White, with Black, Asian, and Other categories represented across Phase 3 AD trials).",
-    disease_state  = "Moderate-to-severe atopic dermatitis in adults and adolescents, plus healthy volunteers (202 HV / 1913 AD).",
-    dose_range     = "IV and SC dosing pooled across 16 studies; the approved adult maintenance regimen is 300 mg Q2W SC (with 600 mg SC loading dose per the label).",
-    regions        = "Multi-regional Phase 1-3 programme; specific regional breakdown not reported in the main text.",
-    notes          = "Total pooled cohort: N = 2115 (2041 on active treatment, 18,243 of 20,809 samples analysed). Source studies listed in Table S1 include R668-AS-0907, TDU12265, PKM14161, R668-AD-1117 (Model 1), several Phase 1/2 studies for Model 2, and Phase 3 studies R668-AD-1334 (SOLO 1), R668-AD-1416 (SOLO 2), and R668-AD-1224 (CHRONOS). Main-text tables report structural parameters only; detailed demographics are not reproduced in the published article."
+    disease_state = "Moderate-to-severe atopic dermatitis in adults and adolescents, plus healthy volunteers (202 HV / 1913 AD).",
+    dose_range = "IV and SC dosing pooled across 16 studies; the approved adult maintenance regimen is 300 mg Q2W SC (with 600 mg SC loading dose per the label).",
+    regions = "Multi-regional Phase 1-3 programme; specific regional breakdown not reported in the main text.",
+    notes = "Total pooled cohort: N = 2115 (2041 on active treatment, 18,243 of 20,809 samples analysed). Source studies listed in Table S1 include R668-AS-0907, TDU12265, PKM14161, R668-AD-1117 (Model 1), several Phase 1/2 studies for Model 2, and Phase 3 studies R668-AD-1334 (SOLO 1), R668-AD-1416 (SOLO 2), and R668-AD-1224 (CHRONOS). Main-text tables report structural parameters only; detailed demographics are not reproduced in the published article."
   )
 
   ini({

@@ -27,88 +27,88 @@ DeJongh_2025_olaparib_mouse <- function() {
   vignette <- "DeJongh_2025_azd7648_olaparib_xenograft"
 
   units <- list(
-    time          = "h",
-    dosing        = "umol/kg",
+    time = "h",
+    dosing = "umol/kg",
     concentration = "uM"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "olaparib", units = "umol/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "olaparib", units = "umol/kg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "olaparib", units = "umol/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "olaparib", units = "umol/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "olaparib", units = "umol/kg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     STRAIN_NUDE = list(
-      source_name        = "STRN",
-      description        = paste(
+      source_name = "STRN",
+      description = paste(
         "Mouse strain indicator: 1 = Hsd:Athymic Nude-Foxn1nu, 0 =",
         "C.B-17/IcrHan(R)Hsd-Prkdcscid (SCID). Used only to split the",
         "study S1734 relative-bioavailability factor, which the source",
         "estimated separately in each strain."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Control stream (supplementary file 6) THETA(10) for STRN = 1 (SCID) and THETA(11) for STRN = 2 (nude) within STUDY 1734."
+      notes = "Control stream (supplementary file 6) THETA(10) for STRN = 1 (SCID) and THETA(11) for STRN = 2 (nude) within STUDY 1734."
     ),
     STUDY_S1143 = list(
-      source_name        = "STUDY",
-      description        = "1 = animal enrolled in study S1143 (2, 5, 10, 50 or 100 mg/kg single oral dose, nude mice); 0 = reference study S11448.",
-      units              = "(binary)",
-      type               = "binary",
+      source_name = "STUDY",
+      description = "1 = animal enrolled in study S1143 (2, 5, 10, 50 or 100 mg/kg single oral dose, nude mice); 0 = reference study S11448.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Selects the study-specific relative bioavailability lfdepot_s1143."
+      notes = "Selects the study-specific relative bioavailability lfdepot_s1143."
     ),
     STUDY_S1721 = list(
-      source_name        = "STUDY",
-      description        = "1 = animal enrolled in study S1721 (50, 75, 100 mg/kg single and multiple oral dose, nude mice); 0 = reference study S11448.",
-      units              = "(binary)",
-      type               = "binary",
+      source_name = "STUDY",
+      description = "1 = animal enrolled in study S1721 (50, 75, 100 mg/kg single and multiple oral dose, nude mice); 0 = reference study S11448.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Selects the study-specific relative bioavailability lfdepot_s1721."
+      notes = "Selects the study-specific relative bioavailability lfdepot_s1721."
     ),
     STUDY_S1734 = list(
-      source_name        = "STUDY",
-      description        = paste(
+      source_name = "STUDY",
+      description = paste(
         "1 = animal enrolled in study S1734 (100 mg/kg single and",
         "multiple oral dose in SCID and nude mice, with and without",
         "AZD7648 co-treatment); 0 = reference study S11448. This is the",
         "only source study that informs the AZD7648-olaparib",
         "drug-drug-interaction term."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Combined with STRAIN_NUDE to select lfdepot_s1734scid or lfdepot_s1734nude."
+      notes = "Combined with STRAIN_NUDE to select lfdepot_s1734scid or lfdepot_s1734nude."
     ),
     STUDY_S1770 = list(
-      source_name        = "STUDY",
-      description        = "1 = animal enrolled in study S1770 (multiple oral dose with and without AZD7648 co-treatment, SCID mice); 0 = reference study S11448.",
-      units              = "(binary)",
-      type               = "binary",
+      source_name = "STUDY",
+      description = "1 = animal enrolled in study S1770 (multiple oral dose with and without AZD7648 co-treatment, SCID mice); 0 = reference study S11448.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Selects the study-specific relative bioavailability lfdepot_s1770."
+      notes = "Selects the study-specific relative bioavailability lfdepot_s1770."
     ),
     STUDY_S1816 = list(
-      source_name        = "STUDY",
-      description        = "1 = animal enrolled in study S1816 (multiple oral dose with AZD7648 co-treatment, SCID mice); 0 = reference study S11448.",
-      units              = "(binary)",
-      type               = "binary",
+      source_name = "STUDY",
+      description = "1 = animal enrolled in study S1816 (multiple oral dose with AZD7648 co-treatment, SCID mice); 0 = reference study S11448.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Selects the study-specific relative bioavailability lfdepot_s1816; this is also the factor carried into the DeJongh 2025 PK-PD tumour model."
+      notes = "Selects the study-specific relative bioavailability lfdepot_s1816; this is also the factor carried into the DeJongh 2025 PK-PD tumour model."
     ),
     DOSE_AZD7648_MGKGD = list(
-      source_name        = "CMDDOS",
-      description        = paste(
+      source_name = "CMDDOS",
+      description = paste(
         "Total daily dose of co-administered AZD7648 in mg/kg/day.",
         "Drives the Emax-shaped reduction of olaparib clearance;",
         "0 when olaparib is given as monotherapy."
       ),
-      units              = "mg/kg/day",
-      type               = "continuous",
+      units = "mg/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "DeJongh 2025 Equations 7-8: CmS = 1 when DoseAZ = 0 and",
         "CmS = 1 - DoseAZ/(DoseAZ + CmD50) when DoseAZ > 0. The two",
         "branches agree at DoseAZ = 0, so the model uses the single",
@@ -118,13 +118,13 @@ DeJongh_2025_olaparib_mouse <- function() {
   )
 
   population <- list(
-    species        = "mouse (female SCID C.B-17/IcrHan(R)Hsd-Prkdcscid and female Hsd:Athymic Nude-Foxn1nu)",
-    n_studies      = 6L,
-    age_range      = "at least 6 weeks of age",
-    weight_range   = "(not reported in the source publication)",
+    species = "mouse (female SCID C.B-17/IcrHan(R)Hsd-Prkdcscid and female Hsd:Athymic Nude-Foxn1nu)",
+    n_studies = 6L,
+    age_range = "at least 6 weeks of age",
+    weight_range = "(not reported in the source publication)",
     sex_female_pct = 100,
-    disease_state  = "non-tumour-bearing and FaDu ATM-knockout xenograft-bearing satellite PK groups",
-    dose_range     = paste(
+    disease_state = "non-tumour-bearing and FaDu ATM-knockout xenograft-bearing satellite PK groups",
+    dose_range = paste(
       "Olaparib 2-100 mg/kg orally as single and multiple doses, plus a",
       "20 mg/kg intravenous arm in study S11448 that anchors absolute",
       "bioavailability; given alone and with 0-150 mg/kg/day AZD7648.",
@@ -132,8 +132,8 @@ DeJongh_2025_olaparib_mouse <- function() {
       "i.e. a molar mass of 435.1 g/mol, read from the AMT and DOSE_Ola",
       "columns of the supplied NONMEM dataset, supplementary file 7)."
     ),
-    regions        = "preclinical (AstraZeneca, Cambridge UK)",
-    notes          = paste(
+    regions = "preclinical (AstraZeneca, Cambridge UK)",
+    notes = paste(
       "Olaparib plasma PK pooled across six mouse studies (S11448,",
       "S1143, S1721, S1734, S1770, S1816). Below-quantification samples",
       "were excluded after confirming they did not influence the",

@@ -8,32 +8,32 @@ Grover_2011_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
     n_observations = NA_integer_,
-    age_range      = "Adults; mean (SD) 52 (13) years",
-    age_median     = "52 years (mean)",
-    weight_range   = "Mean (SD) 83.6 (19.3) kg",
-    weight_median  = "83.6 kg (mean)",
+    age_range = "Adults; mean (SD) 52 (13) years",
+    age_median = "52 years (mean)",
+    weight_range = "Mean (SD) 83.6 (19.3) kg",
+    weight_median = "83.6 kg (mean)",
     sex_female_pct = 37,
     race_ethnicity = "100% Native American (Navajo 58%, Hopi 21%, Other tribal affiliation 21%); all subjects had both parents and both sets of grandparents of American Indian tribal-group descent (Table 1).",
-    disease_state  = "Adult Native American renal transplant recipients on stable oral tacrolimus dosing for at least one month post-transplant. 67% had diabetes mellitus before transplant; 25% had a history of acute rejection; 13% had new-onset diabetes mellitus post-transplant; mean (SD) duration post-transplant 30 (23) months.",
-    dose_range     = "Twice-daily oral tacrolimus capsules; mean (SD) twice-daily dose 1.27 (0.644) mg [0.016 (0.010) mg/kg]; mean (SD) total daily dose 2.54 (1.22) mg [0.033 (0.021) mg/kg/day, excluding one subject on therapy < 4 months with a higher target trough]; titrated to hospital target trough levels of 10-12 ng/mL within the first month post-transplant, 8-10 ng/mL between months 1 and 4, and 5-8 ng/mL after month 4; mean (SD) measured trough 6.53 (2.43) ng/mL.",
-    regions        = "United States (Mayo Clinic Arizona, Phoenix, AZ).",
-    bmi_mean_sd    = "29.9 (5) kg/m^2",
+    disease_state = "Adult Native American renal transplant recipients on stable oral tacrolimus dosing for at least one month post-transplant. 67% had diabetes mellitus before transplant; 25% had a history of acute rejection; 13% had new-onset diabetes mellitus post-transplant; mean (SD) duration post-transplant 30 (23) months.",
+    dose_range = "Twice-daily oral tacrolimus capsules; mean (SD) twice-daily dose 1.27 (0.644) mg [0.016 (0.010) mg/kg]; mean (SD) total daily dose 2.54 (1.22) mg [0.033 (0.021) mg/kg/day, excluding one subject on therapy < 4 months with a higher target trough]; titrated to hospital target trough levels of 10-12 ng/mL within the first month post-transplant, 8-10 ng/mL between months 1 and 4, and 5-8 ng/mL after month 4; mean (SD) measured trough 6.53 (2.43) ng/mL.",
+    regions = "United States (Mayo Clinic Arizona, Phoenix, AZ).",
+    bmi_mean_sd = "29.9 (5) kg/m^2",
     tribal_affiliation = "Navajo 58%, Hopi 21%, Other 21%",
     sampling_design = "Single 12-hour steady-state pharmacokinetic profile per subject: blood drawn pre-dose and at 0.5, 1, 2, 4, 6, 8, and 12 hours after the morning capsule dose, following an overnight fast. EDTA whole-blood samples analysed by the Architect tacrolimus immunoassay (Bazin 2010) at Mayo Clinic Arizona.",
-    co_medication  = "No concomitant medications, supplements, or foods known to interact with tacrolimus (antifungals, antiepileptics, macrolides, St. John's wort, grapefruit) at the time of the PK profile.",
-    notes          = "Population estimates and IIV (%CV) come from Grover 2011 Table 2 'NONMEM Parameter Estimates' row; the model was fit by NONMEM 7.1 using an empirical Bayesian approach on the 24-subject single-dose steady-state PK profiles. The 'Mean estimate' and 'S.D.' rows in Table 2 are summaries of individual Bayesian posterior modes and are not what populates `ini()` -- the population estimate row is. IIV in Vss/F was not estimable from the 24-subject dataset (Table 2: 'n.e.' for Vss/F); all subjects therefore share the same population Vss/F = 462 L, and Vp/F = Vss/F - V/F = 462 - 73.3 = 388.7 L inherits no IIV in the source model."
+    co_medication = "No concomitant medications, supplements, or foods known to interact with tacrolimus (antifungals, antiepileptics, macrolides, St. John's wort, grapefruit) at the time of the PK profile.",
+    notes = "Population estimates and IIV (%CV) come from Grover 2011 Table 2 'NONMEM Parameter Estimates' row; the model was fit by NONMEM 7.1 using an empirical Bayesian approach on the 24-subject single-dose steady-state PK profiles. The 'Mean estimate' and 'S.D.' rows in Table 2 are summaries of individual Bayesian posterior modes and are not what populates `ini()` -- the population estimate row is. IIV in Vss/F was not estimable from the 24-subject dataset (Table 2: 'n.e.' for Vss/F); all subjects therefore share the same population Vss/F = 462 L, and Vp/F = Vss/F - V/F = 462 - 73.3 = 388.7 L inherits no IIV in the source model."
   )
 
   ini({

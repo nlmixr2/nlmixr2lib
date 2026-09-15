@@ -28,15 +28,15 @@ Assmus_2025_benznidazole <- function() {
     sep = " "
   )
   vignette <- "Assmus_2025_benznidazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling applied a priori (not estimated) on CL/F",
         "(exponent 0.75) and V/F (exponent 1.0), standardized to 65 kg",
         "-- the cohort median (Assmus 2025 Methods, Population",
@@ -45,19 +45,19 @@ Assmus_2025_benznidazole <- function() {
         "Pharmacokinetics). Enrolment was restricted to 50-80 kg, so",
         "extrapolation outside that band is unsupported by these data."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (male) is the register-canonical reference, but Assmus 2025",
         "reports typical values for a FEMALE subject; the male effect is",
         "therefore applied via (1 - SEXF) to preserve the published",
         "structural estimates verbatim."
       ),
-      notes              = paste(
+      notes = paste(
         "Retained on relative oral bioavailability F only (dOFV = -15.5);",
         "men had 12.9% lower F than women (Assmus 2025 Table 2 'Sex",
         "effect on F (reference: female)'). The PK analysis dataset was",
@@ -65,14 +65,14 @@ Assmus_2025_benznidazole <- function() {
         "clinically relevant but retained it in the final model",
         "(Assmus 2025 Discussion, Pharmacokinetic properties)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CONMED_FOSRAVUCONAZOLE = list(
-      description        = "Concomitant fosravuconazole (E1224) administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant fosravuconazole (E1224) administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (benznidazole monotherapy)",
-      notes              = paste(
+      notes = paste(
         "1 = subject randomised to a benznidazole + fosravuconazole",
         "combination arm (150 mg benznidazole once daily for 4 weeks +",
         "E1224, or 300 mg benznidazole once weekly for 8 weeks + E1224).",
@@ -83,7 +83,7 @@ Assmus_2025_benznidazole <- function() {
         "(+17.7%, dOFV = -15.7; Table 2), not as a time-varying",
         "co-medication flag."
       ),
-      source_name        = "E1224"
+      source_name = "E1224"
     )
   )
 
@@ -92,97 +92,103 @@ Assmus_2025_benznidazole <- function() {
   # provenance only; not referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Preselected covariate, tested by scm; not retained (Assmus 2025 Methods, Population pharmacokinetic analysis (i); Results, Pharmacokinetics). PK dataset median 34 years (range 18-50).",
-      source_name        = "AGE"
+      notes = "Preselected covariate, tested by scm; not retained (Assmus 2025 Methods, Population pharmacokinetic analysis (i); Results, Pharmacokinetics). PK dataset median 34 years (range 18-50).",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Marker of kidney function; estimated from blood creatinine by the Cockcroft and Gault equation. Tested by scm; not retained. PK dataset median 102 mL/min (range 54.8-180).",
-      source_name        = "CLCR"
+      notes = "Marker of kidney function; estimated from blood creatinine by the Cockcroft and Gault equation. Tested by scm; not retained. PK dataset median 102 mL/min (range 54.8-180).",
+      source_name = "CLCR"
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested by scm; not retained. Of specific interest here because concentrations were measured in dried blood spots, where hematocrit can influence the blood-to-DBS relationship.",
-      source_name        = "HCT"
+      notes = "Tested by scm; not retained. Of specific interest here because concentrations were measured in dried blood spots, where hematocrit can influence the blood-to-DBS relationship.",
+      source_name = "HCT"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Marker of liver function; tested by scm, not retained. PK dataset median 22 IU/L (range 9-46).",
-      source_name        = "ALT"
+      notes = "Marker of liver function; tested by scm, not retained. PK dataset median 22 IU/L (range 9-46).",
+      source_name = "ALT"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Marker of liver function; tested by scm, not retained. PK dataset median 23 IU/L (range 12-43.7).",
-      source_name        = "AST"
+      notes = "Marker of liver function; tested by scm, not retained. PK dataset median 23 IU/L (range 12-43.7).",
+      source_name = "AST"
     ),
     ALKP = list(
-      description        = "Alkaline phosphatase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alkaline phosphatase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Marker of liver function; tested by scm, not retained. PK dataset median 195 IU/L (range 50-339).",
-      source_name        = "ALP"
+      notes = "Marker of liver function; tested by scm, not retained. PK dataset median 195 IU/L (range 50-339).",
+      source_name = "ALP"
     ),
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Marker of liver function; tested by scm, not retained. PK dataset median 13.7 umol/L (range 6.84-20.5).",
-      source_name        = "TBILI"
+      notes = "Marker of liver function; tested by scm, not retained. PK dataset median 13.7 umol/L (range 6.84-20.5).",
+      source_name = "TBILI"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "benznidazole", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "benznidazole", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "benznidazole", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 175L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 175L,
+    n_studies = 1L,
     n_observations = 986L,
-    age_range      = "18-50 years",
-    age_median     = "34 years",
-    weight_range   = "50-80 kg",
-    weight_median  = "65 kg",
+    age_range = "18-50 years",
+    age_median = "34 years",
+    weight_range = "50-80 kg",
+    weight_median = "65 kg",
     sex_female_pct = 68,
     race_ethnicity = "All participants were Bolivian.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (18-50 years, 50-80 kg) with chronic indeterminate Chagas",
       "disease, confirmed by serological testing and a positive",
       "qualitative PCR result. Subjects with chronic health conditions",
       "and with signs or symptoms of the chronic cardiac or digestive",
       "form of Chagas disease were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Six active oral benznidazole arms (Abarax, Laboratorios ELEA):",
       "150 mg twice daily for 8, 4 or 2 weeks; 150 mg once daily for 4",
       "weeks alone or with fosravuconazole; and 300 mg once weekly",
@@ -190,8 +196,8 @@ Assmus_2025_benznidazole <- function() {
       "Fosravuconazole 300 mg once daily for 3 days then 300 mg once",
       "weekly for 8 weeks. A seventh placebo arm contributed no PK data."
     ),
-    regions        = "Bolivia (Cochabamba, Tarija and Sucre).",
-    sampling       = paste(
+    regions = "Bolivia (Cochabamba, Tarija and Sucre).",
+    sampling = paste(
       "Sparse dried blood spot (DBS) sampling: predose and at follow-up",
       "visits on days 1-3 and weeks 2, 3, 4, 6 and 10 (9 protocol time",
       "points per patient). HPLC-MS/MS assay, LLOQ 50 ng/mL. 986",
@@ -199,7 +205,7 @@ Assmus_2025_benznidazole <- function() {
       "Data were censored at 120 h after dose (about 10 half-lives) and",
       "modelled as natural logarithms."
     ),
-    notes          = paste(
+    notes = paste(
       "BENDITA trial, ClinicalTrials.gov NCT03378661, conducted",
       "2016-2018. 210 adults were randomised (30 per arm); the PK",
       "analysis retained 175 of the 180 actively treated subjects after",

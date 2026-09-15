@@ -9,7 +9,7 @@ Song_2024_tigecycline <- function() {
   # concentration collected per the protocol of the companion study, ref 14)
   # and the two-compartment structure of Table 2.
   compartmentData <- list(
-    central     = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -25,124 +25,124 @@ Song_2024_tigecycline <- function() {
   # convention warning. Canonical names per inst/references/covariate-columns.md.
   covariatesDataExcluded <- list(
     AST = list(
-      description        = "Serum aspartate aminotransferase activity. The ONLY covariate that reached forward-inclusion significance: Song 2024 Results, 'the inclusion of AST in the peripheral volume distribution led to a decrease in the OFV of 13.719'. It was then removed from the final model because 'its inclusion had no impact on the PTA or CFR outcomes' (Results) and the change was judged 'statistically significant but not clinically significant' (Discussion).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase activity. The ONLY covariate that reached forward-inclusion significance: Song 2024 Results, 'the inclusion of AST in the peripheral volume distribution led to a decrease in the OFV of 13.719'. It was then removed from the final model because 'its inclusion had no impact on the PTA or CFR outcomes' (Results) and the change was judged 'statistically significant but not clinically significant' (Discussion).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column AST, Table 1 (observed range 8-106 U/L). The effect form and coefficient are not printed anywhere in the paper - only the delta OFV is given - so the AST-on-V2 relationship cannot be reconstructed even if a user wanted it. Screening detail is in Table S1, which is not distributed through PubMed Central."
+      notes = "Source column AST, Table 1 (observed range 8-106 U/L). The effect form and coefficient are not printed anywhere in the paper - only the delta OFV is given - so the AST-on-V2 relationship cannot be reconstructed even if a user wanted it. Screening detail is in Table S1, which is not distributed through PubMed Central."
     ),
     WT = list(
-      description        = "Body weight. Collected per Methods ('The patients' physio-pathological data, such as age, sex, weight (WT), body mass index (BMI), ...') and screened in the stepwise covariate search; not retained.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Collected per Methods ('The patients' physio-pathological data, such as age, sex, weight (WT), body mass index (BMI), ...') and screened in the stepwise covariate search; not retained.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column WT, Table 1 (range 42-100 kg, median 70 kg). Note this differs from the companion non-CRRT model Su_2024_tigecycline, where WT was retained as a power term on both volumes."
+      notes = "Source column WT, Table 1 (range 42-100 kg, median 70 kg). Note this differs from the companion non-CRRT model Su_2024_tigecycline, where WT was retained as a power term on both volumes."
     ),
     AGE = list(
-      description        = "Age. Collected per Methods and screened; not retained.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age. Collected per Methods and screened; not retained.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column AGE, Table 1 (range 22-87 years, median 71 years)."
+      notes = "Source column AGE, Table 1 (range 22-87 years, median 71 years)."
     ),
     SEXF = list(
-      description        = "Sex, 1 = female. Collected per Methods and screened; not retained.",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Sex, 1 = female. Collected per Methods and screened; not retained.",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "male (SEXF = 0)",
-      notes              = "Source column SEX, coded M/F in Table 1; SEXF = 1 for the 6 of 21 patients recorded as F. The canonical SEXF orientation (1 = female) matches the source directly, so no value inversion is needed."
+      notes = "Source column SEX, coded M/F in Table 1; SEXF = 1 for the 6 of 21 patients recorded as F. The canonical SEXF orientation (1 = female) matches the source directly, so no value inversion is needed."
     ),
     BMI = list(
-      description        = "Body mass index. Collected per Methods and screened; not retained.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index. Collected per Methods and screened; not retained.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BMI, Table 1 (range 16.4-37.5 kg/m^2)."
+      notes = "Source column BMI, Table 1 (range 16.4-37.5 kg/m^2)."
     ),
     BUN = list(
-      description        = "Blood urea nitrogen. Reported per patient in Table 1 and screened; not retained.",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen. Reported per patient in Table 1 and screened; not retained.",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BUN, Table 1 in SI units mmol/L (range 3.64-37.3)."
+      notes = "Source column BUN, Table 1 in SI units mmol/L (range 3.64-37.3)."
     ),
     CREAT = list(
-      description        = "Serum creatinine. Reported per patient in Table 1 and screened; not retained.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine. Reported per patient in Table 1 and screened; not retained.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column SCr, Table 1 in SI units umol/L (range 47-469). In a CRRT-dependent cohort serum creatinine reflects the dialysis prescription more than native renal function, which is consistent with its failure to explain any tigecycline PK variability here."
+      notes = "Source column SCr, Table 1 in SI units umol/L (range 47-469). In a CRRT-dependent cohort serum creatinine reflects the dialysis prescription more than native renal function, which is consistent with its failure to explain any tigecycline PK variability here."
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity. Reported per patient in Table 1 and screened; not retained.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity. Reported per patient in Table 1 and screened; not retained.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column ALT, Table 1 (range 3-150 U/L)."
+      notes = "Source column ALT, Table 1 (range 3-150 U/L)."
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase activity. Reported per patient in Table 1 and screened; not retained.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase activity. Reported per patient in Table 1 and screened; not retained.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column ALP, Table 1 (range 59-184 U/L)."
+      notes = "Source column ALP, Table 1 (range 59-184 U/L)."
     ),
     TPRO = list(
-      description        = "Total serum protein. Reported per patient in Table 1 and screened; not retained.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein. Reported per patient in Table 1 and screened; not retained.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column TP, Table 1 in SI units g/L (range 42.7-66.6)."
+      notes = "Source column TP, Table 1 in SI units g/L (range 42.7-66.6)."
     ),
     GGT = list(
-      description        = "Serum gamma-glutamyl transferase activity. Reported per patient in Table 1 and screened; not retained.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum gamma-glutamyl transferase activity. Reported per patient in Table 1 and screened; not retained.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column GGT, Table 1 (range 16-181 U/L). Retained on Q in the companion non-CRRT model Su_2024_tigecycline but not here."
+      notes = "Source column GGT, Table 1 (range 16-181 U/L). Retained on Q in the companion non-CRRT model Su_2024_tigecycline but not here."
     ),
     TBILI = list(
-      description        = "Total serum bilirubin. Reported per patient in Table 1 and screened; not retained.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin. Reported per patient in Table 1 and screened; not retained.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column TBIL, Table 1 in SI units umol/L (range 11.4-113.9). Bilirubin was the covariate Broeker et al retained on tigecycline CL in their CRRT cohort (Song 2024 Discussion, ref 12); Song 2024 explicitly did not reproduce that finding."
+      notes = "Source column TBIL, Table 1 in SI units umol/L (range 11.4-113.9). Bilirubin was the covariate Broeker et al retained on tigecycline CL in their CRRT cohort (Song 2024 Discussion, ref 12); Song 2024 explicitly did not reproduce that finding."
     ),
     ALB = list(
-      description        = "Serum albumin. Reported per patient in Table 1 and screened; not retained.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin. Reported per patient in Table 1 and screened; not retained.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column ALB, Table 1 in SI units g/L (range 23.0-35.7). Retained on V2 in the companion non-CRRT model Su_2024_tigecycline but not here."
+      notes = "Source column ALB, Table 1 in SI units g/L (range 23.0-35.7). Retained on V2 in the companion non-CRRT model Su_2024_tigecycline but not here."
     ),
     URINE_VOL_24H = list(
-      description        = "24-hour urine volume, the residual-native-renal-function marker in a CRRT cohort. Named explicitly in Methods as a collected covariate; not retained.",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "24-hour urine volume, the residual-native-renal-function marker in a CRRT cohort. Named explicitly in Methods as a collected covariate; not retained.",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column UV, Table 1 (range 0-6950 mL; one anuric patient, several oliguric). Screened but not retained, consistent with the paper's overall negative covariate result."
+      notes = "Source column UV, Table 1 (range 0-6950 mL; one anuric patient, several oliguric). Screened but not retained, consistent with the paper's overall negative covariate result."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
     n_observations = 167L,
-    age_range      = "22-87 years",
-    age_median     = "71 years",
-    weight_range   = "42-100 kg",
-    weight_median  = "70 kg",
-    bmi_range      = "16.4-37.5 kg/m^2",
+    age_range = "22-87 years",
+    age_median = "71 years",
+    weight_range = "42-100 kg",
+    weight_median = "70 kg",
+    bmi_range = "16.4-37.5 kg/m^2",
     sex_female_pct = 28.6,
     race_ethnicity = "Not reported (single-center Chinese ICU cohort)",
-    disease_state  = "Critically ill adults receiving intermittent intravenous tigecycline while on continuous renal replacement therapy. Patients who did not receive CRRT continuously throughout tigecycline treatment were excluded.",
-    dose_range     = "Intermittent intravenous tigecycline every 12 h; the dose was chosen by the treating physician. Dose regimens evaluated by Monte Carlo simulation were 50, 100 and 150 mg every 12 h.",
-    regions        = "China (Sir Run Run Shaw Hospital, School of Medicine, Zhejiang University, Hangzhou)",
+    disease_state = "Critically ill adults receiving intermittent intravenous tigecycline while on continuous renal replacement therapy. Patients who did not receive CRRT continuously throughout tigecycline treatment were excluded.",
+    dose_range = "Intermittent intravenous tigecycline every 12 h; the dose was chosen by the treating physician. Dose regimens evaluated by Monte Carlo simulation were 50, 100 and 150 mg every 12 h.",
+    regions = "China (Sir Run Run Shaw Hospital, School of Medicine, Zhejiang University, Hangzhou)",
     renal_function = "All patients CRRT-dependent. Serum creatinine 47-469 umol/L, BUN 3.64-37.3 mmol/L, 24-hour urine volume 0-6950 mL (Table 1).",
     hepatic_function = "Albumin 23.0-35.7 g/L; total bilirubin 11.4-113.9 umol/L; AST 8-106 U/L; ALT 3-150 U/L; GGT 16-181 U/L; ALP 59-184 U/L; total protein 42.7-66.6 g/L (Table 1).",
-    crrt           = "20 of 21 patients on CVVH and 1 on CVVHDF; CRRT intensity 21.0-51.2 mL/kg/h; anticoagulation heparin in 12, regional sodium citrate in 5, none in 4 (Table 1). CRRT modality, intensity and anticoagulant were all screened as covariates and none was significant; the authors attribute this partly to only one CVVHDF patient being available.",
-    notes          = "Baseline demographics per Song 2024 Table 1, which lists all 21 patients individually. Single-center prospective study with intensive sampling, July 2019 - July 2023. The dosing and sampling protocol is not restated in this paper; it is carried from the companion study (ref 14, Su et al Front Pharmacol 2024;15:1342947), where tigecycline was given as a 30-minute intravenous infusion every 12 h and samples were drawn immediately before the seventh dose and at 0.5, 1, 2, 3, 4, 6 and 12 h post-dose. Model built in NONMEM 7.5.0 with PDx-Pop 5.3.1; two-compartment structure selected over one-compartment on AIC (2188.14 vs 2425.331). Stepwise covariate search used forward inclusion at delta OFV > 3.84 and backward elimination at delta OFV > 10.83; no covariate survived into the final model."
+    crrt = "20 of 21 patients on CVVH and 1 on CVVHDF; CRRT intensity 21.0-51.2 mL/kg/h; anticoagulation heparin in 12, regional sodium citrate in 5, none in 4 (Table 1). CRRT modality, intensity and anticoagulant were all screened as covariates and none was significant; the authors attribute this partly to only one CVVHDF patient being available.",
+    notes = "Baseline demographics per Song 2024 Table 1, which lists all 21 patients individually. Single-center prospective study with intensive sampling, July 2019 - July 2023. The dosing and sampling protocol is not restated in this paper; it is carried from the companion study (ref 14, Su et al Front Pharmacol 2024;15:1342947), where tigecycline was given as a 30-minute intravenous infusion every 12 h and samples were drawn immediately before the seventh dose and at 0.5, 1, 2, 3, 4, 6 and 12 h post-dose. Model built in NONMEM 7.5.0 with PDx-Pop 5.3.1; two-compartment structure selected over one-compartment on AIC (2188.14 vs 2425.331). Stepwise covariate search used forward inclusion at delta OFV > 3.84 and backward elimination at delta OFV > 10.83; no covariate survived into the final model."
   )
 
   ini({

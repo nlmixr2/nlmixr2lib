@@ -22,17 +22,17 @@ Han_2025_clozapine <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "clozapine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "clozapine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "clozapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with a 70 kg reference weight, exponent 0.75 on CL/F and 1 on V/F,",
         "both fixed to the Anderson & Holford (2008) canonical values rather than estimated",
         "(Methods, Equation 3, and Results, Equations 6-7). Cohort mean 70.49 kg (SD 13.53),",
@@ -41,14 +41,14 @@ Han_2025_clozapine <- function() {
         "single value per patient. Note the paper's standard weight of 70 kg is very close to",
         "the cohort median of 71 kg, so the reference subject is close to a typical patient."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     CONMED_ZOPICLONE = list(
-      description        = "Concomitant zopiclone indicator (1 = patient co-prescribed zopiclone tablets, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant zopiclone indicator (1 = patient co-prescribed zopiclone tablets, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant zopiclone)",
-      notes              = paste(
+      notes = paste(
         "The paper's `ZOP` variable (Results, following Equation 7: 'ZOP denoted zopiclone and",
         "when schizophrenia patients took ZOP, ZOP denoted 1, otherwise ZOP denoted 0').",
         "8 of the 81 patients were on zopiclone tablets (Table 2). This was the only one of the",
@@ -57,46 +57,46 @@ Han_2025_clozapine <- function() {
         "it is an empirical exposure shift, not a mechanistically parameterised interaction.",
         "Time-fixed at the analysis baseline in this source."
       ),
-      source_name        = "ZOP"
+      source_name = "ZOP"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a potential covariate but not retained; cohort mean 49.46 years (SD 11.15), median 50.67, range 20.67-73.11 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a potential covariate but not retained; cohort mean 49.46 years (SD 11.15), median 50.67, range 20.67-73.11 (Table 1)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained; 44 women / 37 men (Table 1). The paper reports 'Gender (men/women)', so a SEXM-oriented source column would need value inversion."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained; 44 women / 37 men (Table 1). The paper reports 'Gender (men/women)', so a SEXM-oriented source column would need value inversion."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 39.46 g/L (SD 3.21), median 39.40, range 27.90-47.90 (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 39.46 g/L (SD 3.21), median 39.40, range 27.90-47.90 (Table 1)."
     ),
     ALT = list(
       description = "Alanine transaminase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 25.47 IU/L (SD 21.61), median 20.00, range 4.00-162.00 (Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 25.47 IU/L (SD 21.61), median 20.00, range 4.00-162.00 (Table 1)."
     ),
     AST = list(
       description = "Aspartate transaminase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 21.46 IU/L (SD 12.58), median 19.00, range 9.00-119.00 (Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 21.46 IU/L (SD 12.58), median 19.00, range 9.00-119.00 (Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained; cohort mean 61.14 (SD 11.37), median 60.00, range",
         "32.00-96.00 (Table 1). Table 1 tags this row 'Creatinine (mmol/L)', which is a",
         "unit error in the source: 61 mmol/L is roughly a thousand-fold above any survivable",
@@ -107,69 +107,69 @@ Han_2025_clozapine <- function() {
     ),
     BUN = list(
       description = "Serum urea",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 4.54 mmol/L (SD 1.39), median 4.33, range 1.82-11.71 (Table 1). The paper's Table 1 row is labelled 'Urea (mmol/L)'."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 4.54 mmol/L (SD 1.39), median 4.33, range 1.82-11.71 (Table 1). The paper's Table 1 row is labelled 'Urea (mmol/L)'."
     ),
     TPRO = list(
       description = "Total protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 65.74 g/L (SD 4.71), median 66.30, range 51.90-76.60 (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 65.74 g/L (SD 4.71), median 66.30, range 51.90-76.60 (Table 1)."
     ),
     TCHOL = list(
       description = "Total cholesterol",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 4.08 mmol/L (SD 0.85), median 4.04, range 2.27-6.51 (Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 4.08 mmol/L (SD 0.85), median 4.04, range 2.27-6.51 (Table 1)."
     ),
     TRIG = list(
       description = "Serum triglyceride",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 1.58 mmol/L (SD 0.81), median 1.45, range 0.44-5.11 (Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 1.58 mmol/L (SD 0.81), median 1.45, range 0.44-5.11 (Table 1)."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 2.33 (SD 1.18), median 2.00, range 0.50-8.30 (Table 1). Table 1 tags the row 'Direct bilirubin (mmol/L)'; as for creatinine the SI unit is umol/L, and the quoted range is a normal direct-bilirubin range in umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 2.33 (SD 1.18), median 2.00, range 0.50-8.30 (Table 1). Table 1 tags the row 'Direct bilirubin (mmol/L)'; as for creatinine the SI unit is umol/L, and the quoted range is a normal direct-bilirubin range in umol/L."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 7.35 (SD 3.27), median 6.60, range 2.70-21.30 (Table 1). Table 1 tags the row 'Total bilibrubin (mmol/L)' (sic); as for creatinine the SI unit is umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 7.35 (SD 3.27), median 6.60, range 2.70-21.30 (Table 1). Table 1 tags the row 'Total bilibrubin (mmol/L)' (sic); as for creatinine the SI unit is umol/L."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 37.98% (SD 3.52), median 37.40, range 31.40-49.20 (Table 1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 37.98% (SD 3.52), median 37.40, range 31.40-49.20 (Table 1)."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 124.93 g/L (SD 14.53), median 124.00, range 21.00-166.00 (Table 1). The lower bound of 21.00 g/L is implausible for a living patient and is very likely a transcription slip in the source; the covariate is documentation-only and does not enter the final model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 124.93 g/L (SD 14.53), median 124.00, range 21.00-166.00 (Table 1). The lower bound of 21.00 g/L is implausible for a living patient and is very likely a transcription slip in the source; the covariate is documentation-only and does not enter the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 81,
-    n_studies      = 1,
-    age_mean       = "49.46 years (SD 11.15)",
-    age_median     = "50.67 years",
-    age_range      = "20.67-73.11 years",
-    weight_mean    = "70.49 kg (SD 13.53)",
-    weight_median  = "71.00 kg",
-    weight_range   = "38.00-120.00 kg",
+    species = "human",
+    n_subjects = 81,
+    n_studies = 1,
+    age_mean = "49.46 years (SD 11.15)",
+    age_median = "50.67 years",
+    age_range = "20.67-73.11 years",
+    weight_mean = "70.49 kg (SD 13.53)",
+    weight_median = "71.00 kg",
+    weight_range = "38.00-120.00 kg",
     sex_female_pct = 54.3,
-    disease_state  = "Schizophrenia; inpatients on routine oral clozapine therapy.",
-    dose_range     = "Not reported. Concentrations came from routine therapeutic drug monitoring and the paper tabulates no administered clozapine doses, dosing frequencies or sampling times; it states only that dosing 'was mainly based on the instruction' (Methods, Data collection).",
-    regions        = "China (single centre: Xuzhou Oriental Hospital Affiliated to Xuzhou Medical University, Jiangsu)",
-    notes          = paste(
+    disease_state = "Schizophrenia; inpatients on routine oral clozapine therapy.",
+    dose_range = "Not reported. Concentrations came from routine therapeutic drug monitoring and the paper tabulates no administered clozapine doses, dosing frequencies or sampling times; it states only that dosing 'was mainly based on the instruction' (Methods, Data collection).",
+    regions = "China (single centre: Xuzhou Oriental Hospital Affiliated to Xuzhou Medical University, Jiangsu)",
+    notes = paste(
       "Retrospective analysis of clozapine therapeutic-drug-monitoring concentrations",
       "collected between December 2023 and November 2024 (Methods, Data collection).",
       "All observations are TROUGH concentrations: 'The sample extraction times for plasma",

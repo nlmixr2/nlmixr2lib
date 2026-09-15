@@ -11,8 +11,8 @@ deJonge_2005_paclitaxel <- function() {
   paper_specific_compartments <- c("bound", "cremophor")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -21,10 +21,10 @@ deJonge_2005_paclitaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
-    bound       = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
-    cremophor   = list(analyte = "Cremophor EL", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    bound = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    cremophor = list(analyte = "Cremophor EL", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -111,20 +111,20 @@ deJonge_2005_paclitaxel <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 4L,
-    age_range      = "26-69 years",
-    age_median     = "53 years",
-    weight_range   = "50-103 kg",
-    weight_median  = "71 kg",
-    bsa_range      = "1.52-2.22 m^2",
-    bsa_median     = "1.81 m^2",
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 4L,
+    age_range = "26-69 years",
+    age_median = "53 years",
+    weight_range = "50-103 kg",
+    weight_median = "71 kg",
+    bsa_range = "1.52-2.22 m^2",
+    bsa_median = "1.81 m^2",
     sex_female_pct = 69,
-    disease_state  = "Adult cancer patients receiving oral paclitaxel for advanced solid tumours (six patients had advanced breast cancer continuing on oral paclitaxel after high-dose chemotherapy with cyclophosphamide / thiotepa / carboplatin and peripheral blood progenitor cell transplantation; the remaining 49 patients were from three previously published studies in solid tumours). All patients had normal cardiac, renal, hepatic, haematopoietic and pulmonary function.",
-    dose_range     = "Oral paclitaxel 60-360 mg/m^2 once or twice daily; 67 courses; 797 samples. Each oral paclitaxel administration was preceded by oral cyclosporin A 12-15 mg/kg (Neoral solution 10 min before, or capsules 30 min before, paclitaxel) which inhibits intestinal P-gp and CYP3A4 to permit measurable paclitaxel absorption. Patients fasted overnight and received a standard breakfast 2 h post-dose. Patients who vomited within 1 h of paclitaxel were excluded.",
-    regions        = "The Netherlands (Netherlands Cancer Institute / Slotervaart Hospital, Amsterdam).",
-    notes          = paste(
+    disease_state = "Adult cancer patients receiving oral paclitaxel for advanced solid tumours (six patients had advanced breast cancer continuing on oral paclitaxel after high-dose chemotherapy with cyclophosphamide / thiotepa / carboplatin and peripheral blood progenitor cell transplantation; the remaining 49 patients were from three previously published studies in solid tumours). All patients had normal cardiac, renal, hepatic, haematopoietic and pulmonary function.",
+    dose_range = "Oral paclitaxel 60-360 mg/m^2 once or twice daily; 67 courses; 797 samples. Each oral paclitaxel administration was preceded by oral cyclosporin A 12-15 mg/kg (Neoral solution 10 min before, or capsules 30 min before, paclitaxel) which inhibits intestinal P-gp and CYP3A4 to permit measurable paclitaxel absorption. Patients fasted overnight and received a standard breakfast 2 h post-dose. Patients who vomited within 1 h of paclitaxel were excluded.",
+    regions = "The Netherlands (Netherlands Cancer Institute / Slotervaart Hospital, Amsterdam).",
+    notes = paste(
       "Pooled across four treatment protocols (de Jonge 2005 Table 1):",
       "(1) weekly 200 mg, n=6 (not previously published);",
       "(2) one administration of 60-360 mg/m^2, n=33 (ref 23 -- Meerum Terwogt 1999);",

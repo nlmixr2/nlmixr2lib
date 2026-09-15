@@ -10,24 +10,24 @@ Cao_2013_MEDI528 <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "MEDI-528", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "MEDI-528", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "MEDI-528", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "healthy adult volunteers (per White 2009 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "healthy adult volunteers (per White 2009 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Two first-in-human, open-label, phase I dose-escalation safety trials of MEDI-528, a humanized monoclonal antibody against interleukin-9, in healthy adult volunteers (White 2009).",
-    dose_range     = "0.3, 1, 3, 9 mg/kg IV (Cao 2013 Figure 5 MEDI-528 panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from White B et al. Clin Ther 2009;31:728-740 (PMID 19446146). The drug is referred to as MEDI-528 (with hyphen) in the source publications; the model file name uses MEDI528 because R identifiers cannot contain hyphens."
+    disease_state = "Two first-in-human, open-label, phase I dose-escalation safety trials of MEDI-528, a humanized monoclonal antibody against interleukin-9, in healthy adult volunteers (White 2009).",
+    dose_range = "0.3, 1, 3, 9 mg/kg IV (Cao 2013 Figure 5 MEDI-528 panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from White B et al. Clin Ther 2009;31:728-740 (PMID 19446146). The drug is referred to as MEDI-528 (with hyphen) in the source publications; the model file name uses MEDI528 because R identifiers cannot contain hyphens."
   )
 
   ini({

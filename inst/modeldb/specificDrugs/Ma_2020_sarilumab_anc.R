@@ -1,6 +1,6 @@
 Ma_2020_sarilumab_anc <- function() {
   description <- "Indirect-response PopPK/PD model for absolute neutrophil count (ANC) following subcutaneous sarilumab in adults with rheumatoid arthritis (Ma 2020). Sarilumab concentrations drive stimulation of ANC elimination (margination); PK backbone is Xu 2019."
-  reference   <- paste(
+  reference <- paste(
     "Ma L, Xu C, Paccaly A, Kanamaluru V. Population Pharmacokinetic-Pharmacodynamic Relationships of Sarilumab Using Disease Activity Score 28-Joint C-Reactive Protein and Absolute Neutrophil Counts in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2020;59(11):1451-1466. doi:10.1007/s40262-020-00899-7 (PMID 32451909). PK backbone:",
     "Xu C, Su Y, Paccaly A, Kanamaluru V. Population Pharmacokinetics of Sarilumab in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2019;58(11):1455-1467. doi:10.1007/s40262-019-00765-1 (PMID 31055792)."
   )
@@ -12,55 +12,55 @@ Ma_2020_sarilumab_anc <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline weight; used on Kout with a power function centred at the median 71 kg (Ma 2020 Table 4 footnote b).",
-      source_name        = "WT"
+      notes = "Baseline weight; used on Kout with a power function centred at the median 71 kg (Ma 2020 Table 4 footnote b).",
+      source_name = "WT"
     ),
     SMOKE = list(
-      description        = "Current smoker at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current smoker at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-smoker)",
-      notes              = "Power-form covariate on baseline ANC: BASE = BASE_typ * 1.15^SMOKE (Ma 2020 Table 4).",
-      source_name        = "Smoking"
+      notes = "Power-form covariate on baseline ANC: BASE = BASE_typ * 1.15^SMOKE (Ma 2020 Table 4).",
+      source_name = "Smoking"
     ),
     PRICORT = list(
-      description        = "Prior corticosteroid treatment at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior corticosteroid treatment at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior corticosteroid)",
-      notes              = "Power-form covariate on Emax: Emax = Emax_typ * 0.819^PRICORT (Ma 2020 Table 4).",
-      source_name        = "PRICORT"
+      notes = "Power-form covariate on Emax: Emax = Emax_typ * 0.819^PRICORT (Ma 2020 Table 4).",
+      source_name = "PRICORT"
     )
   )
 
   population <- list(
-    n_subjects     = 1672,
-    n_studies      = 5,
-    age_mean_sd    = "51.7 (12.1) years",
+    n_subjects = 1672,
+    n_studies = 5,
+    age_mean_sd = "51.7 (12.1) years",
     weight_mean_sd = "74.1 (18.7) kg",
-    weight_median  = "71 kg (reference for Kout)",
+    weight_median = "71 kg (reference for Kout)",
     sex_female_pct = 82.2,
     race_ethnicity = c(Caucasian = 84.8),
-    disease_state  = "Moderate-to-severe rheumatoid arthritis (MTX-IR or TNF-IR)",
-    dose_range     = "Sarilumab 50-150 mg SC qw, or 100-200 mg SC q2w (labelled dose is 200 mg q2w with step-down to 150 mg q2w for neutropenia)",
-    regions        = "Pooled phase I-III studies (NCT01011959, NCT01061736, NCT01709578, NCT01768572)",
-    baseline_anc   = "Mean 5.38 x 10^9/L (CV 32.1%)",
-    smokers_pct    = 14.2,
-    mtx_pct        = 97.7,
-    pri_cort_pct   = 63.8,
-    notes          = "Demographics from Ma 2020 Table 2 (ANC final dataset, n = 1672). Baseline ANC summary from Table 4."
+    disease_state = "Moderate-to-severe rheumatoid arthritis (MTX-IR or TNF-IR)",
+    dose_range = "Sarilumab 50-150 mg SC qw, or 100-200 mg SC q2w (labelled dose is 200 mg q2w with step-down to 150 mg q2w for neutropenia)",
+    regions = "Pooled phase I-III studies (NCT01011959, NCT01061736, NCT01709578, NCT01768572)",
+    baseline_anc = "Mean 5.38 x 10^9/L (CV 32.1%)",
+    smokers_pct = 14.2,
+    mtx_pct = 97.7,
+    pri_cort_pct = 63.8,
+    notes = "Demographics from Ma 2020 Table 2 (ANC final dataset, n = 1672). Baseline ANC summary from Table 4."
   )
 
   ini({

@@ -14,10 +14,7 @@
 #' # most of the examples in the model library already have a depot
 #' # the PK_2cmt_no_depot is an exception
 #' readModelDb("PK_2cmt_no_depot") |> addDepot()
-addDepot <- function(ui,
-                     central = "central", depot = "depot",
-                     ka = "ka",
-                     model) {
+addDepot <- function(ui, central = "central", depot = "depot", ka = "ka", model) {
   .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentName(depot)
@@ -39,30 +36,13 @@ addDepot <- function(ui,
   .after <- if (.w < length(.modelLines)) .modelLines[(.w + 1L):length(.modelLines)] else list()
   .modelLines <- c(.before, .newLines, list(.modLine), .after)
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.iniDf$name) == 0L) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.iniDf$ntheta)
-  }
-
-  .thetaka <- .get1theta(ka, .theta1, .ntheta,
-    label = paste0("First order absorption rate (", ka, ")"))
-  .ntheta <- .ntheta + 1
-
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaka,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  rxode2::rxUiCompress(.ui)
+  .ui <- .iniAddTheta(.ui, paste0("l", ka), label = paste0("First order absorption rate (", ka, ")"))
+  rxode2::rxUiCompress(rxode2::as.rxUi(.ui))
 }
 
 
@@ -73,9 +53,7 @@ addDepot <- function(ui,
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |> removeDepot()
-removeDepot <- function(ui, central = "central", depot = "depot",
-                        ka = "ka",
-                        model) {
+removeDepot <- function(ui, central = "central", depot = "depot", ka = "ka", model) {
   .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentExists(.ui, central)
@@ -85,14 +63,11 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- .dropDotAddExpr(.replaceMult(.tmp$w, ka, depot, "."))
-  .modelLines <- c(.tmp$pre,
-    .tmp$w,
-    .tmp$post)
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .modelLines <- c(.tmp$pre, .tmp$w, .tmp$post)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .eta <- .tmp$eta
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .theta <- .dropTheta(.theta, ka)
   .eta <- .dropEta(.eta, ka)
   .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ka)
@@ -100,8 +75,7 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .theta <- .tmp$theta
   .eta <- .tmp$eta
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .eta)
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }

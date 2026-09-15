@@ -7,7 +7,13 @@ LopezArguello_2023_aztreonam_qsp <- function() {
   # Mechanistic per-cell molecule counts: six penicillin-binding proteins plus the
   # periplasmic drug pool. None map onto a canonical PK compartment name.
   paper_specific_compartments <- c(
-    "npbp1a", "npbp1b", "npbp2", "npbp3", "npbp4", "npbp56", "nperi"
+    "npbp1a",
+    "npbp1b",
+    "npbp2",
+    "npbp3",
+    "npbp4",
+    "npbp56",
+    "nperi"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -15,13 +21,48 @@ LopezArguello_2023_aztreonam_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    npbp1a = list(analyte = "aztreonam-PBP1a complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp1b = list(analyte = "aztreonam-PBP1b complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp2  = list(analyte = "aztreonam-PBP2 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp3  = list(analyte = "aztreonam-PBP3 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp4  = list(analyte = "aztreonam-PBP4 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp56 = list(analyte = "aztreonam-PBP5/6 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nperi  = list(analyte = "aztreonam in periplasm", units = NA_character_, specimen = "administration site", verified = FALSE)
+    npbp1a = list(
+      analyte = "aztreonam-PBP1a complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp1b = list(
+      analyte = "aztreonam-PBP1b complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp2 = list(
+      analyte = "aztreonam-PBP2 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp3 = list(
+      analyte = "aztreonam-PBP3 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp4 = list(
+      analyte = "aztreonam-PBP4 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp56 = list(
+      analyte = "aztreonam-PBP5/6 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nperi = list(
+      analyte = "aztreonam in periplasm",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(

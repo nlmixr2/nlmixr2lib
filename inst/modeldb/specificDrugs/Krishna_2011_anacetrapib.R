@@ -29,26 +29,32 @@ Krishna_2011_anacetrapib <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "anacetrapib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "anacetrapib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "anacetrapib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "anacetrapib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "anacetrapib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "anacetrapib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Administered anacetrapib dose amount for the dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered anacetrapib dose amount for the dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters Eq. 6 as the saturable dose effect on bioavailability, ",
         "DG1 = 1 - Dmax * DOSE / (DOSE + dose_50 + e_fed_highfat_dose_50 * ",
         "FED_HIGHFAT). Krishna 2011 describes it as 'dose_i is the ",
@@ -62,14 +68,14 @@ Krishna_2011_anacetrapib <- function() {
         "a low-fat / patient-selected diet, so F1 has already fallen to 35% ",
         "of its zero-dose asymptote at the 100 mg phase III dose."
       ),
-      source_name        = "dose"
+      source_name = "dose"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal dosing indicator, 1 = dose taken after the standard high-fat breakfast, 0 = any other prandial state",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal dosing indicator, 1 = dose taken after the standard high-fat breakfast, 0 = any other prandial state",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not a high-fat meal). The prandial reference level of this model is the FASTED state, which is encoded as all three fed indicators = 0, not by a separate column.",
-      notes              = paste0(
+      notes = paste0(
         "Acts twice. In Eq. 5 it selects the prandial multiplier ",
         "e_fed_highfat_fdepot = 2.7 on F1, and in Eq. 6 it adds ",
         "e_fed_highfat_dose_50 = 274 mg to the half-maximal dose, raising it ",
@@ -81,14 +87,14 @@ Krishna_2011_anacetrapib <- function() {
         "browns, 240 mL whole milk), matching the FDA high-fat definition. ",
         "Mutually exclusive with FED_LOWFAT and FED_PATIENTSELECTED."
       ),
-      source_name        = "I_HF"
+      source_name = "I_HF"
     ),
     FED_LOWFAT = list(
-      description        = "Low-fat-meal dosing indicator, 1 = dose taken after the standard low-fat breakfast, 0 = any other prandial state",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-fat-meal dosing indicator, 1 = dose taken after the standard low-fat breakfast, 0 = any other prandial state",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not a low-fat meal); the fasted reference is all three fed indicators = 0.",
-      notes              = paste0(
+      notes = paste0(
         "Selects the prandial multiplier e_fed_lowfat_fdepot = 2.4 on F1 in ",
         "Eq. 5. Krishna 2011 Clinical Trial Simulations: the standard ",
         "low-fat meal was 373 kcal with 20% of calories from fat (two slices ",
@@ -96,14 +102,14 @@ Krishna_2011_anacetrapib <- function() {
         "tablespoon jelly, 5 oz skim milk, 5 oz orange juice). Mutually ",
         "exclusive with FED_HIGHFAT and FED_PATIENTSELECTED."
       ),
-      source_name        = "I_LF"
+      source_name = "I_LF"
     ),
     FED_PATIENTSELECTED = list(
-      description        = "Patient-selected-meal dosing indicator, 1 = dose taken with a meal the participant chose under protocol dietary instruction, 0 = any other prandial state",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Patient-selected-meal dosing indicator, 1 = dose taken with a meal the participant chose under protocol dietary instruction, 0 = any other prandial state",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not a patient-selected meal); the fasted reference is all three fed indicators = 0.",
-      notes              = paste0(
+      notes = paste0(
         "Selects the prandial multiplier e_fed_patientselected_fdepot = 3.3 ",
         "on F1 in Eq. 5 -- the LARGEST of the three prandial multipliers, ",
         "larger than the standard high-fat meal's 2.7. Krishna 2011 Clinical ",
@@ -118,14 +124,14 @@ Krishna_2011_anacetrapib <- function() {
         "dose-selection case. Mutually exclusive with FED_HIGHFAT and ",
         "FED_LOWFAT."
       ),
-      source_name        = "I_PB"
+      source_name = "I_PB"
     ),
     NDOSEUNITS = list(
-      description        = "Number of solid oral dosage units administered in the dose",
-      units              = "(count)",
-      type               = "continuous",
+      description = "Number of solid oral dosage units administered in the dose",
+      units = "(count)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Number of liquid-filled capsules making up the dose. Krishna 2011 ",
         "Population PK Model: 'The number of capsules was considered as a ",
         "surrogate for the amount of liquid surfactant contained in the ",
@@ -143,14 +149,14 @@ Krishna_2011_anacetrapib <- function() {
         "for tablet records the value is multiplied out by ",
         "FORM_ANACETRAPIB_LFC = 0 and does not affect the prediction."
       ),
-      source_name        = "N_CAP"
+      source_name = "N_CAP"
     ),
     FORM_ANACETRAPIB_LFC = list(
-      description        = "Anacetrapib Imwitor/Tween liquid-filled-capsule formulation indicator, 1 = liquid-filled capsule (LFC), 0 = hot-melt-extruded (HME) tablet",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anacetrapib Imwitor/Tween liquid-filled-capsule formulation indicator, 1 = liquid-filled capsule (LFC), 0 = hot-melt-extruded (HME) tablet",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (hot-melt-extruded tablet, the intended commercial and phase III formulation)",
-      notes              = paste0(
+      notes = paste0(
         "Gates both NDOSEUNITS terms off for tablet records. Table I ",
         "contains no formulation theta of its own: Krishna 2011 states that ",
         "the phase IIb model update added 'formulation effects, capsule ",
@@ -168,20 +174,20 @@ Krishna_2011_anacetrapib <- function() {
         "trials (a 78-subject bridging study and a 24-subject food-effect ",
         "study) used the HME tablet."
       ),
-      source_name        = "formulation type (HME tablets vs. LFC)"
+      source_name = "formulation type (HME tablets vs. LFC)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 576L,
-    n_studies      = 8L,
-    patients_pct   = 60,
-    disease_state  = "Pooled healthy volunteers and patients with dyslipidemia; approximately 60% of the 576 subjects were patients (Krishna 2011 Results and Interpretation).",
-    dose_range     = "Oral anacetrapib single and multiple doses spanning at least 10-400 mg once daily across the eight pooled phase I / phase IIb studies; the phase IIb atorvastatin co-administration arm used atorvastatin 20 mg once daily, and 100 mg once daily as the hot-melt-extruded tablet was the dose and formulation selected for phase III.",
-    formulations   = "Imwitor/Tween liquid-filled capsule (LFC; six studies, 474 subjects) and hot-melt-extruded tablet (HME; a 78-subject bridging study and a 24-subject food-effect study).",
+    species = "human",
+    n_subjects = 576L,
+    n_studies = 8L,
+    patients_pct = 60,
+    disease_state = "Pooled healthy volunteers and patients with dyslipidemia; approximately 60% of the 576 subjects were patients (Krishna 2011 Results and Interpretation).",
+    dose_range = "Oral anacetrapib single and multiple doses spanning at least 10-400 mg once daily across the eight pooled phase I / phase IIb studies; the phase IIb atorvastatin co-administration arm used atorvastatin 20 mg once daily, and 100 mg once daily as the hot-melt-extruded tablet was the dose and formulation selected for phase III.",
+    formulations = "Imwitor/Tween liquid-filled capsule (LFC; six studies, 474 subjects) and hot-melt-extruded tablet (HME; a 78-subject bridging study and a 24-subject food-effect study).",
     prandial_states = "Four prandial strata: overnight fasted; standard low-fat breakfast (373 kcal, 20% fat); standard high-fat breakfast (827 kcal, 57% fat); and a patient-selected meal conforming to the American Heart Association TLC diet, used in the phase Ib and phase IIb trials.",
-    notes          = paste0(
+    notes = paste0(
       "Per-study designs, doses, formulations and sampling schedules are in ",
       "Table IA of the Electronic Supplementary Material, which is not on ",
       "disk (see the vignette Errata). Every parameter of all three models ",

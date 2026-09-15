@@ -36,24 +36,24 @@ Yau_2023_diazepam_pbpk_lumped_rat <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_diazepam_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives every rat physiological constant. Cardiac output is",
         "0.235 * WT^0.75 L/min (Brown, Arms and Travis 1988, cited in the",
         "Appendix S1 control stream); tissue blood flows are fixed",
@@ -65,27 +65,27 @@ Yau_2023_diazepam_pbpk_lumped_rat <- function() {
         "mg/kg (Table S5), so WT is also needed to convert to the mg dose",
         "amount used by this model."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar and Sprague-Dawley)",
-    n_subjects     = 51L,
-    n_studies      = 5L,
-    age_range      = paste(
+    species = "rat (male Wistar and Sprague-Dawley)",
+    n_subjects = 51L,
+    n_studies = 5L,
+    age_range = paste(
       "adult; Table S5 study 4 contrasted middle-aged vs old rats",
       "(clearance 1.1 vs 3.3 L/h)"
     ),
-    weight_range   = "250-g reference rat used for the physiological constants (Table S1)",
+    weight_range = "250-g reference rat used for the physiological constants (Table S1)",
     sex_female_pct = 0,
-    disease_state  = "healthy (normal) rats",
-    dose_range     = paste(
+    disease_state = "healthy (normal) rats",
+    dose_range = paste(
       "IV diazepam 1.2-5 mg/kg as a bolus, or 1 mg as a 5-min infusion",
       "across the five contributing studies (Table S5)"
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "6 rat IV concentration-time profiles pooled from five published",
       "studies (Table S5), all study-average profiles, digitised with",
       "WebPlotDigitizer 4.2; n_subjects = 51 is the sum of the reported",

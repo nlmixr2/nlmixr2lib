@@ -34,26 +34,31 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central        = list(analyte = "radiosensitizer", units = NA_character_, specimen = "plasma", verified = FALSE),
-    rad_depot       = list(analyte = "radiosensitizer", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cycling_cells  = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    central = list(analyte = "radiosensitizer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    rad_depot = list(
+      analyte = "radiosensitizer",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    cycling_cells = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells1 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells2 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells3 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    irrad1         = list(analyte = "DNA damage", units = NA_character_, specimen = "tumor", verified = FALSE),
-    irrad2         = list(analyte = "DNA damage", units = NA_character_, specimen = "tumor", verified = FALSE)
+    irrad1 = list(analyte = "DNA damage", units = NA_character_, specimen = "tumor", verified = FALSE),
+    irrad2 = list(analyte = "DNA damage", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "mouse (female CD1 nu/nu or NMRI nu/nu; FaDu head-and-neck squamous-cell-carcinoma xenograft)",
-    n_subjects    = 80,
-    n_studies     = 1,
+    species = "mouse (female CD1 nu/nu or NMRI nu/nu; FaDu head-and-neck squamous-cell-carcinoma xenograft)",
+    n_subjects = 80,
+    n_studies = 1,
     disease_state = "FaDu xenograft (human head and neck squamous cell carcinoma)",
-    dose_range    = "RS1 10-200 mg/kg PO once daily on days 3-7; radiation 2 Gy/fraction on days 3-7",
-    regions       = "Preclinical (Merck, Darmstadt, Germany)",
-    notes         = paste(
+    dose_range = "RS1 10-200 mg/kg PO once daily on days 3-7; radiation 2 Gy/fraction on days 3-7",
+    regions = "Preclinical (Merck, Darmstadt, Germany)",
+    notes = paste(
       "Primary tumor dataset: 80 mice in 8 groups of 10 -- (A) vehicle,",
       "(B) radiation 2 Gy, (C-E) RS1 10/50/200 mg/kg, (F-H) combination of",
       "2 Gy + RS1 10/50/200 mg/kg, dosed once daily on days 3-7",

@@ -13,63 +13,63 @@ Wei_2025_methotrexate <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed by the 2021 race-free CKD-EPI creatinine equation (Methods 'Study design', Equation 3, citing Inker 2021), NOT by Cockcroft-Gault -- the paper computes Cockcroft-Gault CLcr as well (Equation 2) but reports that 'eGFR emerged as a superior predictor of drug clearance than CLcr and Scr' (Discussion) and retains only eGFR. Normalized to 101.8 mL/min/1.73 m^2 in Equations 12 and 14, which matches the Table 3 cohort median of 101.8 exactly. Cohort range 5.4-162.9 mL/min/1.73 m^2 (Table 3). Time-varying: hepatic and renal function were 'routinely evaluated prior to MTX administration and monitored daily for at least three consecutive days thereafter', with the nearest value within 1-3 days substituted when a given day was missing and the record dropped when nothing fell inside a 7-day window (Methods 'Study design'). Enters clearance only, as a power term with the estimated exponent `e_crcl_cl` = 0.67. The temporal distribution of eGFR is plotted in Supplementary Appendix SA3.",
-      source_name        = "eGFR"
+      notes = "Computed by the 2021 race-free CKD-EPI creatinine equation (Methods 'Study design', Equation 3, citing Inker 2021), NOT by Cockcroft-Gault -- the paper computes Cockcroft-Gault CLcr as well (Equation 2) but reports that 'eGFR emerged as a superior predictor of drug clearance than CLcr and Scr' (Discussion) and retains only eGFR. Normalized to 101.8 mL/min/1.73 m^2 in Equations 12 and 14, which matches the Table 3 cohort median of 101.8 exactly. Cohort range 5.4-162.9 mL/min/1.73 m^2 (Table 3). Time-varying: hepatic and renal function were 'routinely evaluated prior to MTX administration and monitored daily for at least three consecutive days thereafter', with the nearest value within 1-3 days substituted when a given day was missing and the record dropped when nothing fell inside a 7-day window (Methods 'Study design'). Enters clearance only, as a power term with the estimated exponent `e_crcl_cl` = 0.67. The temporal distribution of eGFR is plotted in Supplementary Appendix SA3.",
+      source_name = "eGFR"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "SI units (mmol/L), NOT mg/dL -- Table 3 reports a median of 4.6 with range 0.5-19, which is the mmol/L scale (the mg/dL equivalent would be about 12.9). Normalized to 4.6 mmol/L in Equations 12 and 14, matching the Table 3 median exactly. Time-varying on the same daily-monitoring schedule as eGFR. Enters clearance only, as a power term with the estimated exponent `e_bun_cl` = -0.08, so a higher urea burden lowers methotrexate clearance (Discussion: 'higher BUN are significantly linked to decreased MTX clearance'). The paper argues this is an independent renal marker rather than collinearity with eGFR, reporting a between-covariate R^2 of only 0.22 and noting that BUN does not enter the 2021 CKD-EPI equation it used.",
-      source_name        = "BUN"
+      notes = "SI units (mmol/L), NOT mg/dL -- Table 3 reports a median of 4.6 with range 0.5-19, which is the mmol/L scale (the mg/dL equivalent would be about 12.9). Normalized to 4.6 mmol/L in Equations 12 and 14, matching the Table 3 median exactly. Time-varying on the same daily-monitoring schedule as eGFR. Enters clearance only, as a power term with the estimated exponent `e_bun_cl` = -0.08, so a higher urea burden lowers methotrexate clearance (Discussion: 'higher BUN are significantly linked to decreased MTX clearance'). The paper argues this is an independent renal marker rather than collinearity with eGFR, reporting a between-covariate R^2 of only 0.22 and noting that BUN does not enter the 2021 CKD-EPI equation it used.",
+      source_name = "BUN"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalized to 25 U/L in Equations 12 and 14, matching the Table 3 cohort median of 25 exactly. Cohort range 2.2-1141.7 U/L (Table 3). Time-varying on the same daily-monitoring schedule as eGFR. Enters clearance only, as a power term with the estimated exponent `e_alt_cl` = +0.03. The sign is POSITIVE, i.e. liver injury RAISES methotrexate clearance in this cohort; the authors flag this as counterintuitive and offer a release-from-damaged-hepatocytes mechanism while conceding 'the exact mechanisms remain uncertain' (Discussion). The same Discussion paragraph supplies a check on this term: it states clearance rises 'approximately 5%-9%' at 5 to 20 times the upper limit of normal, and (5)^0.03 = 1.050 with (20)^0.03 = 1.094 reproduce those two figures when the multiplier of the upper limit of normal is applied to the 25 U/L centering value itself.",
-      source_name        = "ALT"
+      notes = "Normalized to 25 U/L in Equations 12 and 14, matching the Table 3 cohort median of 25 exactly. Cohort range 2.2-1141.7 U/L (Table 3). Time-varying on the same daily-monitoring schedule as eGFR. Enters clearance only, as a power term with the estimated exponent `e_alt_cl` = +0.03. The sign is POSITIVE, i.e. liver injury RAISES methotrexate clearance in this cohort; the authors flag this as counterintuitive and offer a release-from-damaged-hepatocytes mechanism while conceding 'the exact mechanisms remain uncertain' (Discussion). The same Discussion paragraph supplies a check on this term: it states clearance rises 'approximately 5%-9%' at 5 to 20 times the upper limit of normal, and (5)^0.03 = 1.050 with (20)^0.03 = 1.094 reproduce those two figures when the multiplier of the upper limit of normal is applied to the 25 U/L centering value itself.",
+      source_name = "ALT"
     ),
     TPRO = list(
-      description        = "Total serum protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the inter-compartmental clearance Q1 only (never clearance), as a power term with the estimated exponent `e_tpro_q` = -1.68 in this nongene model. NOTE a paper-internal mismatch, transcribed as printed: Equations 13 and 15 and the Abstract all normalize to 58 g/L, but the Table 3 cohort median is 61.8 g/L, and Methods 'Covariate model' states that 'all continuous covariates were standardized to their median values'. The printed equation constant 58 is used here, following the register's standing rule that the printed equation rather than the demographics table is the authority for a centering value; at the exponent -1.68 the difference moves Q1 by about 11%. Cohort range 27.4-95.7 g/L (Table 3). Time-varying on the same daily-monitoring schedule as eGFR. Methotrexate is about 50% protein bound, and the authors read the negative exponent as more bound (hence less transportable) drug at higher total protein (Discussion).",
-      source_name        = "TP"
+      notes = "Enters the inter-compartmental clearance Q1 only (never clearance), as a power term with the estimated exponent `e_tpro_q` = -1.68 in this nongene model. NOTE a paper-internal mismatch, transcribed as printed: Equations 13 and 15 and the Abstract all normalize to 58 g/L, but the Table 3 cohort median is 61.8 g/L, and Methods 'Covariate model' states that 'all continuous covariates were standardized to their median values'. The printed equation constant 58 is used here, following the register's standing rule that the printed equation rather than the demographics table is the authority for a centering value; at the exponent -1.68 the difference moves Q1 by about 11%. Cohort range 27.4-95.7 g/L (Table 3). Time-varying on the same daily-monitoring schedule as eGFR. Methotrexate is about 50% protein bound, and the authors read the negative exponent as more bound (hence less transportable) drug at higher total protein (Discussion).",
+      source_name = "TP"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 752L,
-    n_studies      = 1L,
-    age_range      = "18.12-86.65 years (median 57.445)",
-    age_median     = "57.445 years",
-    weight_range   = "30-115 kg (median 68)",
-    weight_median  = "68 kg",
-    bsa_range      = "1.16-2.39 m^2 (median 1.73)",
-    bsa_median     = "1.73 m^2",
+    species = "human",
+    n_subjects = 752L,
+    n_studies = 1L,
+    age_range = "18.12-86.65 years (median 57.445)",
+    age_median = "57.445 years",
+    weight_range = "30-115 kg (median 68)",
+    weight_median = "68 kg",
+    bsa_range = "1.16-2.39 m^2 (median 1.73)",
+    bsa_median = "1.73 m^2",
     sex_female_pct = 44.1,
     renal_function = "eGFR 5.4-162.9 mL/min/1.73 m^2 (median 101.8) by the 2021 CKD-EPI equation; serum creatinine 24.8-641.7 umol/L (median 64.6); Cockcroft-Gault CLcr 5.9-361.8 mL/min (median 100.1). At least 17.4% of the cohort met the label definition of delayed elimination.",
     hepatic_function = "ALT 2.2-1141.7 U/L (median 25); AST 5-1915.2 U/L (median 20.4); total protein 27.4-95.7 g/L (median 61.8); albumin 19.9-51.8 g/L (median 37.5).",
-    disease_state  = "Adults with primary central nervous system lymphoma (PCNSL) receiving high-dose methotrexate, most commonly combined with rituximab or cytarabine.",
-    dose_range     = "Intravenous methotrexate 3.5 g/m^2, median infusion duration 3.1 h. Median of four infusions per patient (range 1-34). Given either as a single infusion or as a divided regimen in which 2 g was infused over 0.5 h and the remainder over the following 2.5 h. Inclusion required a dose of at least 0.5 g/m^2.",
-    co_medication  = "Omeprazole in 41.03% and levetiracetam in 35.65% of concentration records; also ilaprazole (6.27%), furosemide (15.82%), torasemide (24.91%), bumetanide (16.10%) and NSAIDs (3.51%). None reached statistical significance as a covariate. Leucovorin rescue began 6 h post-infusion in every patient and is not represented in the model.",
-    regions        = "China (single center: Beijing Tiantan Hospital, Capital Medical University), September 2016 through August 2023.",
-    notes          = "Retrospective therapeutic-drug-monitoring cohort of 752 adults contributing 6074 methotrexate plasma concentrations. Each methotrexate administration was treated as an INDEPENDENT event in the dataset because dosing intervals exceeded five elimination half-lives (Methods 'Base model'), so the inter-individual variance terms are estimated across administrations rather than across patients. Concentrations were total (protein-bound plus free) drug by UHPLC-MS/MS with a lower limit of quantification of 0.002 umol/L; records below that limit were excluded. Estimation was by first-order conditional estimation extended least squares in Phoenix NLME 8.3. Model evaluation used 200 bootstrap replicates (not 1000, for run-time reasons) and a 1000-replicate visual predictive check. The authors caution that predictive accuracy beyond 120 h post-dose is limited because only 5% (304/6074) of samples fall there, and that the sparse distribution-phase sampling may bias the peripheral volumes and inter-compartmental clearances. Demographics from Table 3; parameter estimates from Table 5 ('Final nongene-model' column)."
+    disease_state = "Adults with primary central nervous system lymphoma (PCNSL) receiving high-dose methotrexate, most commonly combined with rituximab or cytarabine.",
+    dose_range = "Intravenous methotrexate 3.5 g/m^2, median infusion duration 3.1 h. Median of four infusions per patient (range 1-34). Given either as a single infusion or as a divided regimen in which 2 g was infused over 0.5 h and the remainder over the following 2.5 h. Inclusion required a dose of at least 0.5 g/m^2.",
+    co_medication = "Omeprazole in 41.03% and levetiracetam in 35.65% of concentration records; also ilaprazole (6.27%), furosemide (15.82%), torasemide (24.91%), bumetanide (16.10%) and NSAIDs (3.51%). None reached statistical significance as a covariate. Leucovorin rescue began 6 h post-infusion in every patient and is not represented in the model.",
+    regions = "China (single center: Beijing Tiantan Hospital, Capital Medical University), September 2016 through August 2023.",
+    notes = "Retrospective therapeutic-drug-monitoring cohort of 752 adults contributing 6074 methotrexate plasma concentrations. Each methotrexate administration was treated as an INDEPENDENT event in the dataset because dosing intervals exceeded five elimination half-lives (Methods 'Base model'), so the inter-individual variance terms are estimated across administrations rather than across patients. Concentrations were total (protein-bound plus free) drug by UHPLC-MS/MS with a lower limit of quantification of 0.002 umol/L; records below that limit were excluded. Estimation was by first-order conditional estimation extended least squares in Phoenix NLME 8.3. Model evaluation used 200 bootstrap replicates (not 1000, for run-time reasons) and a 1000-replicate visual predictive check. The authors caution that predictive accuracy beyond 120 h post-dose is limited because only 5% (304/6074) of samples fall there, and that the sparse distribution-phase sampling may bias the peripheral volumes and inter-compartmental clearances. Demographics from Table 3; parameter estimates from Table 5 ('Final nongene-model' column)."
   )
 
   ini({

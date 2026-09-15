@@ -34,13 +34,18 @@ Kiriyama_2024_nifedipine_rat <- function() {
   covariateData <- list()
 
   compartmentData <- list(
-    central     = list(analyte = "nifedipine", units = "ng", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "nifedipine", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "nifedipine", units = "ng", specimen = "plasma", verified = TRUE),
-    effect_bp   = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    ehs         = list(analyte = "endogenous hypertensive substance", units = "arbitrary unit", specimen = "not applicable", verified = TRUE),
-    effect_hr   = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    effect_qt   = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    effect_qtc  = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE)
+    effect_bp = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    ehs = list(
+      analyte = "endogenous hypertensive substance",
+      units = "arbitrary unit",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_hr = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    effect_qt = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    effect_qtc = list(analyte = "nifedipine", units = "ng/mL", specimen = "not applicable", verified = TRUE)
   )
 
   paper_specific_compartments <- c(
@@ -49,7 +54,10 @@ Kiriyama_2024_nifedipine_rat <- function() {
     # `effect<n>` numbered form would falsely imply a chain, so each carries its
     # endpoint suffix instead. Precedent for an `effect_<suffix>` compartment:
     # Kleijn_2011_sugammadex_rocuronium.R (`effect_roc`).
-    "effect_bp", "effect_hr", "effect_qt", "effect_qtc",
+    "effect_bp",
+    "effect_hr",
+    "effect_qt",
+    "effect_qtc",
     # Endogenous hypertensive substance pool driving the BP homeostatic rebound.
     # Precedent for paper-mechanistic cardiovascular states: Fu_2022_atenolol_qsp.R
     # (`hr`, `edv`, `tpr`, `ctr`).
@@ -57,16 +65,16 @@ Kiriyama_2024_nifedipine_rat <- function() {
   )
 
   population <- list(
-    species        = "rat (spontaneously hypertensive rat, SHR/Izm; male)",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "not reported",
-    weight_range   = "215-315 g",
+    species = "rat (spontaneously hypertensive rat, SHR/Izm; male)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "not reported",
+    weight_range = "215-315 g",
     sex_female_pct = 0,
-    disease_state  = "spontaneous hypertension (SHR/Izm strain) under urethane anaesthesia (1.0 g/kg intraperitoneal)",
-    dose_range     = "nifedipine 1.0 mg/kg (monotherapy) or 0.5 mg/kg (coadministered with captopril), 30-minute IV infusion into the right femoral vein in 0.5 mL polyethylene glycol 400",
-    regions        = "Japan (Doshisha Women's College of Liberal Arts, Kyoto)",
-    biomarkers     = paste(
+    disease_state = "spontaneous hypertension (SHR/Izm strain) under urethane anaesthesia (1.0 g/kg intraperitoneal)",
+    dose_range = "nifedipine 1.0 mg/kg (monotherapy) or 0.5 mg/kg (coadministered with captopril), 30-minute IV infusion into the right femoral vein in 0.5 mL polyethylene glycol 400",
+    regions = "Japan (Doshisha Women's College of Liberal Arts, Kyoto)",
+    biomarkers = paste(
       "Mean arterial BP via a left-carotid-artery catheter; HR and QT via ECG;",
       "both recorded continuously from -15 to 180 min after infusion start.",
       "QTc = QT / sqrt(RR) (Bazett). Plasma nifedipine sampled from the right jugular vein",

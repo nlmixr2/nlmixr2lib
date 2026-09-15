@@ -36,29 +36,58 @@ Ibrahim_2025_ibrutinib_cll <- function() {
   )
   vignette <- "Ibrahim_2025_ibrutinib"
   paper_specific_compartments <- c(
-    "pbtk", "cll_subpop1", "cll_subpop2", "cll_subpop3", "cll_bld"
+    "pbtk",
+    "cll_subpop1",
+    "cll_subpop2",
+    "cll_subpop3",
+    "cll_bld"
   )
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
     concentration = "leukocyte and lymphocyte counts in 10^9 cells/L; SPD in cm^2; spleen volume in cc (no output is a drug concentration)"
   )
 
   compartmentData <- list(
-    pbtk        = list(analyte = "phosphorylated Bruton tyrosine kinase (pBtk)", units = "relative quantity (1 = 100% of baseline)", specimen = "not applicable", verified = TRUE),
-    cll_subpop1 = list(analyte = "CLL cells, stroma-attached proliferating colony 1 (fast detachment)", units = "10^9 cells", specimen = "lymph", verified = TRUE),
-    cll_subpop2 = list(analyte = "CLL cells, stroma-attached proliferating colony 2 (slow detachment)", units = "10^9 cells", specimen = "lymph", verified = TRUE),
-    cll_subpop3 = list(analyte = "CLL cells, released lymphoid-tissue pool exiting to blood", units = "10^9 cells", specimen = "lymph", verified = TRUE),
-    cll_bld     = list(analyte = "CLL cells, resting peripheral-blood pool", units = "10^9 cells", specimen = "blood cell", verified = TRUE)
+    pbtk = list(
+      analyte = "phosphorylated Bruton tyrosine kinase (pBtk)",
+      units = "relative quantity (1 = 100% of baseline)",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cll_subpop1 = list(
+      analyte = "CLL cells, stroma-attached proliferating colony 1 (fast detachment)",
+      units = "10^9 cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    cll_subpop2 = list(
+      analyte = "CLL cells, stroma-attached proliferating colony 2 (slow detachment)",
+      units = "10^9 cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    cll_subpop3 = list(
+      analyte = "CLL cells, released lymphoid-tissue pool exiting to blood",
+      units = "10^9 cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    cll_bld = list(
+      analyte = "CLL cells, resting peripheral-blood pool",
+      units = "10^9 cells",
+      specimen = "blood cell",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     AUC_IBRU = list(
-      description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
-      units              = "h*ng/mL",
-      type               = "continuous",
+      description = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
+      units = "h*ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: the value tracks the patient's current daily ibrutinib dose level (420, 280 or 140 mg/day in",
         "the schedules simulated by the paper; 420 and 840 mg/day in PCYC-1102 and 420 mg/day in PCYC-1115) and drops",
         "to 0 during treatment interruptions. Ibrutinib enters this model ONLY through this column -- the model",
@@ -69,14 +98,14 @@ Ibrahim_2025_ibrutinib_cll <- function() {
         "model, from another ibrutinib popPK model, or from observed exposure. Enters the pBtk production-inhibition",
         "Imax function as AUC_IBRU / (IAUC50 + AUC_IBRU) with IAUC50 = 28.4 h*ng/mL (Ibrahim 2025 Table 1)."
       ),
-      source_name        = "auc"
+      source_name = "auc"
     ),
     LINE_1L = list(
-      description        = "First-line-therapy indicator: 1 = treatment-naive (TN) at baseline, 0 = relapsed/refractory (R/R).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "First-line-therapy indicator: 1 = treatment-naive (TN) at baseline, 0 = relapsed/refractory (R/R).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (relapsed/refractory)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. This is the single covariate of the 2025 re-estimation and it acts on six places in",
         "the model (Ibrahim 2025 Results section 3.1 and Table 1):",
         "(1) pBtk turnover rate -- R/R patients have a 1.76-fold higher kout,pBtk, equivalently a 76% longer pBtk",
@@ -95,19 +124,19 @@ Ibrahim_2025_ibrutinib_cll <- function() {
         "`cbldbas <- cbldbas_tn*(1-iarm) + cbldbas_rr*(iarm)`, i.e. arm = 0 is treatment-naive.",
         "Convert on ingestion with LINE_1L = 1 - arm."
       ),
-      source_name        = "arm"
+      source_name = "arm"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 246L,
-    n_studies      = 2L,
-    age_range      = "mean 70 (SD 8.9) years",
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 151 (61%) treatment-naive, 95 (39%) relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102; 420 mg once daily in PCYC-1115",
-    regions        = "United States and international (PCYC-1102 phase Ib/II; PCYC-1115 phase III)",
-    notes          = paste(
+    species = "human",
+    n_subjects = 246L,
+    n_studies = 2L,
+    age_range = "mean 70 (SD 8.9) years",
+    disease_state = "Chronic lymphocytic leukemia (CLL); 151 (61%) treatment-naive, 95 (39%) relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102; 420 mg once daily in PCYC-1115",
+    regions = "United States and international (PCYC-1102 phase Ib/II; PCYC-1115 phase III)",
+    notes = paste(
       "Baseline demographics from Ibrahim 2025 Table S1 (Data S1, PSP-2025-0220-s01.docx), which reports only age and",
       "CLL group for the pooled n = 246 analysis population; no weight, sex or race breakdown is given in the 2025",
       "paper, so those fields are omitted rather than carried over from the 2023 predecessor (whose population is a",

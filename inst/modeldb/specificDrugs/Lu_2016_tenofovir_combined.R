@@ -8,39 +8,39 @@ Lu_2016_tenofovir_combined <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tenofovir combined", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tenofovir combined", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 106 mL/min is the cohort mean (Lu 2016 Table 1; SD 31 mL/min). The covariate enters CL/F as a power form (CRCL/106)^e_crcl_cl, where e_crcl_cl = 0.376. The paper's covariate-form selection (Methods: 'Models with linear, power, and exponential functions were tested') is not explicitly stated for the retained final-model form; the power interpretation is adopted here because (i) the reported coefficient 0.376 is dimensionless and in the typical range for power exponents on renal-function covariates, (ii) the linear/exponential alternatives with the same numeric coefficient give physically implausible CL values at the extremes of the observed CrCl range, and (iii) NONMEM's standard divisive centring (CRCL/median) for a power model matches the paper's prose 'centered to the median values'.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 106 mL/min is the cohort mean (Lu 2016 Table 1; SD 31 mL/min). The covariate enters CL/F as a power form (CRCL/106)^e_crcl_cl, where e_crcl_cl = 0.376. The paper's covariate-form selection (Methods: 'Models with linear, power, and exponential functions were tested') is not explicitly stated for the retained final-model form; the power interpretation is adopted here because (i) the reported coefficient 0.376 is dimensionless and in the typical range for power exponents on renal-function covariates, (ii) the linear/exponential alternatives with the same numeric coefficient give physically implausible CL values at the extremes of the observed CrCl range, and (iii) NONMEM's standard divisive centring (CRCL/median) for a power model matches the paper's prose 'centered to the median values'.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 404L,
-    n_studies      = 1L,
-    age_range      = "mean 35 years (SD 8)",
-    age_median     = "35 years",
-    weight_range   = "mean 61 kg (SD 11)",
-    weight_median  = "61 kg",
+    species = "human",
+    n_subjects = 404L,
+    n_studies = 1L,
+    age_range = "mean 35 years (SD 8)",
+    age_median = "35 years",
+    weight_range = "mean 61 kg (SD 11)",
+    weight_median = "61 kg",
     sex_female_pct = 45,
     race_ethnicity = "Sub-Saharan African (Kenyan and Ugandan cohort); race not stratified further in the paper",
-    disease_state  = "HIV-1-seronegative; HIV-1-uninfected members of HIV-1-serodiscordant heterosexual couples enrolled in the Partners PrEP Study",
-    dose_range     = "300 mg oral tenofovir disoproxil fumarate (TDF) once daily as preexposure prophylaxis (alone or in fixed-dose combination with emtricitabine 200 mg)",
-    regions        = "Kenya and Uganda",
-    crcl_range     = "mean 106 mL/min (SD 31)",
-    samples        = "1278 tenofovir plasma concentrations from 404 participants in the combined data set; MEMS records substituted for patient-reported dosing where available (26% of samples paired with MEMS records). The ancillary adherence substudy contributed 211 participants with MEMS-monitored dosing.",
-    adherence      = "97.2-99.1% by unannounced pill counts and MEMS in the ancillary substudy; 97% by pill counts in the main trial",
-    notes          = "Cohort demographics per Lu 2016 Table 1 (Combined data set column). Phase 3 randomised, double-blind, placebo-controlled HIV-1 PrEP trial; the PK substudy enrolled HIV-1-seronegative partners on active TDF or TDF+FTC arms. In the Combined data set, patient-reported dosing times were replaced with MEMS electronic-adherence records for the 26% of samples associated with MEMS-recorded openings; PRDI with steady-state assumption was retained for the remaining 74%. Lu 2016 Discussion notes that Ka was fixed (via a local search) due to numerical instabilities and that estimation of additional IIV on V1/F and Ka was supported only in the Combined model."
+    disease_state = "HIV-1-seronegative; HIV-1-uninfected members of HIV-1-serodiscordant heterosexual couples enrolled in the Partners PrEP Study",
+    dose_range = "300 mg oral tenofovir disoproxil fumarate (TDF) once daily as preexposure prophylaxis (alone or in fixed-dose combination with emtricitabine 200 mg)",
+    regions = "Kenya and Uganda",
+    crcl_range = "mean 106 mL/min (SD 31)",
+    samples = "1278 tenofovir plasma concentrations from 404 participants in the combined data set; MEMS records substituted for patient-reported dosing where available (26% of samples paired with MEMS records). The ancillary adherence substudy contributed 211 participants with MEMS-monitored dosing.",
+    adherence = "97.2-99.1% by unannounced pill counts and MEMS in the ancillary substudy; 97% by pill counts in the main trial",
+    notes = "Cohort demographics per Lu 2016 Table 1 (Combined data set column). Phase 3 randomised, double-blind, placebo-controlled HIV-1 PrEP trial; the PK substudy enrolled HIV-1-seronegative partners on active TDF or TDF+FTC arms. In the Combined data set, patient-reported dosing times were replaced with MEMS electronic-adherence records for the 26% of samples associated with MEMS-recorded openings; PRDI with steady-state assumption was retained for the remaining 74%. Lu 2016 Discussion notes that Ka was fixed (via a local search) due to numerical instabilities and that estimation of additional IIV on V1/F and Ka was supported only in the Combined model."
   )
 
   ini({

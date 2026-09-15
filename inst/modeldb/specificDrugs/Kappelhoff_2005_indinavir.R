@@ -21,76 +21,76 @@ Kappelhoff_2005_indinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "indinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "indinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "indinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_RTV = list(
-      description        = "Concomitant ritonavir co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ritonavir co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant ritonavir)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per occasion. Kappelhoff 2005 pooled ritonavir doses",
         "(100, 200, 400 mg) because the data supported maximal inhibition of",
         "indinavir CL at the lowest clinical dose; AUC50 was estimated to be",
         "very small in the AUC-based exploratory model. 288 of 443 occasions",
         "included ritonavir."
       ),
-      source_name        = "RTV"
+      source_name = "RTV"
     ),
     CONMED_NNRTI = list(
-      description        = "Concomitant NNRTI (efavirenz or nevirapine) co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant NNRTI (efavirenz or nevirapine) co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant NNRTI)",
-      notes              = paste(
+      notes = paste(
         "Kappelhoff 2005 pooled efavirenz and nevirapine because including",
         "separate effects for each drug did not improve goodness-of-fit.",
         "35 of 443 occasions (7.9%) included an NNRTI."
       ),
-      source_name        = "NNRTI"
+      source_name = "NNRTI"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Source paper uses SEX = 0 male, 1 female",
         "(Kappelhoff 2005 Table 2 footnote); same orientation as the canonical",
         "SEXF, so the column maps without inversion. 9 of 147 patients (6.1%)",
         "were female."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 147L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 147L,
+    n_studies = 1L,
     n_observations = 853L,
-    age_median     = "40.3 years (IQR 34.9-47.1)",
-    weight_median  = "73.0 kg (IQR 65.0-80.0)",
+    age_median = "40.3 years (IQR 34.9-47.1)",
+    weight_median = "73.0 kg (IQR 65.0-80.0)",
     sex_female_pct = 6.1,
     race_ethnicity = c(Caucasian = 82.3, Black = 9.5, Asian = 4.8, Latino = 3.4),
-    disease_state  = paste(
+    disease_state = paste(
       "HIV-1 infection on indinavir-containing antiretroviral therapy.",
       "Median CD4 cell count 380 / mm3 (IQR 220-575); median plasma",
       "log10 HIV-1 RNA 2.30 copies / mL (IQR 2.30-3.67). 5 of 138 (3.4%)",
       "with chronic hepatitis B and 8 of 138 (5.4%) with chronic hepatitis C."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Indinavir 200-1400 mg per dose, given two or three times daily, with",
       "or without ritonavir 100-400 mg per dose twice daily. Most common",
       "regimens: 800 mg TID indinavir alone (112 occasions, 25.3%);",
       "800 mg BID indinavir + 100 mg BID ritonavir (201 occasions, 45.4%);",
       "400 mg BID indinavir + 400 mg BID ritonavir (37 occasions, 8.4%)."
     ),
-    regions        = "Netherlands (Slotervaart Hospital and Academic Medical Centre, Amsterdam)",
-    notes          = paste(
+    regions = "Netherlands (Slotervaart Hospital and Academic Medical Centre, Amsterdam)",
+    notes = paste(
       "443 occasions across 147 patients. 45 patients contributed full PK",
       "profiles (8-12 timepoints per profile); the remainder contributed",
       "randomly timed therapeutic-drug-monitoring samples (2-3 samples /",

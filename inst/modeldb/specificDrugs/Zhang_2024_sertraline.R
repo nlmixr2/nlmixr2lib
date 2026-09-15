@@ -1,6 +1,6 @@
 Zhang_2024_sertraline <- function() {
   description <- "One-compartment first-order absorption population PK model for sertraline in Chinese psychiatric inpatients (Zhang 2024). Apparent oral clearance decreases linearly with age around the 22-year cohort median (CL/F = 76.1 * [1 - 0.0068 * (AGE - 22)] L/h); the absorption rate constant is held at 0.098 1/h taken from Li 2013 because the therapeutic-drug-monitoring dataset contained trough samples only and the absorption phase was not identifiable."
-  reference   <- paste(
+  reference <- paste(
     "Zhang Z, Guo Z, Tan Y, Li L, Wang Z, Wen Y, Huang S, Shang D.",
     "Population pharmacokinetic approach to guide personalized sertraline",
     "treatment in Chinese patients. Heliyon. 2024 Feb 1;10(3):e25231.",
@@ -12,16 +12,16 @@ Zhang_2024_sertraline <- function() {
     "doi:10.1177/0091270012445793 (Zhang 2024 reference 20).",
     sep = " "
   )
-  vignette    <- "Zhang_2024_sertraline"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  vignette <- "Zhang_2024_sertraline"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at the therapeutic-drug-monitoring sample",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at the therapeutic-drug-monitoring sample",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Zhang 2024 Results 3.2: adding age",
         "to CL/F in the forward-inclusion step dropped the objective function value by 7.081",
         "(P < 0.01, df = 1) and age was the only covariate to clear the retention threshold.",
@@ -39,17 +39,17 @@ Zhang_2024_sertraline <- function() {
         "concentrations than 45-year-old adults at every dose.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex, 1 = female",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened on CL/F and V/F in the forward-inclusion step and not retained",
         "(Zhang 2024 Results 3.2: 'Gender, height, weight, BMI, and combined medications were",
         "not found to have a significant effect on the decrease in OFV values').",
@@ -58,40 +58,40 @@ Zhang_2024_sertraline <- function() {
         "(Table 1).",
         sep = " "
       ),
-      source_name        = "Gender (Zhang 2024 Table 1)"
+      source_name = "Gender (Zhang 2024 Table 1)"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened via the median-centred linear form of Eq. (3) and not retained",
         "(Zhang 2024 Results 3.2). Cohort median (range) 60 (40-110) kg, mean (SD)",
         "61.54 (14.58) kg (Table 1). No allometric scaling was applied in the final model.",
         sep = " "
       ),
-      source_name        = "Weight (Zhang 2024 Table 1)"
+      source_name = "Weight (Zhang 2024 Table 1)"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened via the median-centred linear form of Eq. (3) and not retained",
         "(Zhang 2024 Results 3.2). Cohort median (range) 166 (145-185) cm, mean (SD)",
         "165.46 (7.98) cm (Table 1).",
         sep = " "
       ),
-      source_name        = "Height (Zhang 2024 Table 1)"
+      source_name = "Height (Zhang 2024 Table 1)"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened via the median-centred linear form of Eq. (3) and not retained",
         "(Zhang 2024 Results 3.2). Table 1 reports median (range) 36 (25-62) and mean (SD)",
         "37 (7.92); these values are not internally consistent with the tabulated weight and",
@@ -101,51 +101,51 @@ Zhang_2024_sertraline <- function() {
         "encoded value.",
         sep = " "
       ),
-      source_name        = "BMI (Zhang 2024 Table 1)"
+      source_name = "BMI (Zhang 2024 Table 1)"
     ),
     CONMED_LAMOTRIGINE = list(
-      description        = "Concomitant lamotrigine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant lamotrigine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant lamotrigine)",
-      notes              = paste(
+      notes = paste(
         "Screened via the paper's categorical-covariate form (Eq. 4; 0 = no combination",
         "therapy, 1 = combination therapy) and not retained (Zhang 2024 Results 3.2).",
         "The most common comedication in the cohort: 99 records (33.22 %) per Table 1.",
         sep = " "
       ),
-      source_name        = "Lamotrigine (Zhang 2024 Table 1)"
+      source_name = "Lamotrigine (Zhang 2024 Table 1)"
     ),
     CONMED_QUETIAPINE = list(
-      description        = "Concomitant quetiapine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant quetiapine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant quetiapine)",
-      notes              = paste(
+      notes = paste(
         "Screened via the paper's categorical-covariate form (Eq. 4) and not retained",
         "(Zhang 2024 Results 3.2). 12 records (4.03 %) per Table 1.",
         sep = " "
       ),
-      source_name        = "Quetiapine (Zhang 2024 Table 1)"
+      source_name = "Quetiapine (Zhang 2024 Table 1)"
     ),
     CONMED_VENLAFAXINE = list(
-      description        = "Concomitant venlafaxine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant venlafaxine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant venlafaxine)",
-      notes              = paste(
+      notes = paste(
         "Screened via the paper's categorical-covariate form (Eq. 4) and not retained",
         "(Zhang 2024 Results 3.2). 4 records (1.34 %) per Table 1.",
         sep = " "
       ),
-      source_name        = "Venlafaxine (Zhang 2024 Table 1)"
+      source_name = "Venlafaxine (Zhang 2024 Table 1)"
     ),
     CYP2C19_PHENO = list(
-      description        = "CYP2C19 metaboliser phenotype group",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "CYP2C19 metaboliser phenotype group",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "Normal / extensive metaboliser",
-      notes              = paste(
+      notes = paste(
         "Zhang 2024 Discussion: CYP2C19 was included as a candidate covariate at the start of",
         "the analysis but produced no effect on clearance and the result is not shown in the",
         "paper; the authors attribute this to the small genotyped subset (n = 38 of 140).",
@@ -154,34 +154,34 @@ Zhang_2024_sertraline <- function() {
         "screened at all.",
         sep = " "
       ),
-      source_name        = "CYP2C19 (Zhang 2024 Discussion)"
+      source_name = "CYP2C19 (Zhang 2024 Discussion)"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "sertraline", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "sertraline", units = "mg", specimen = "serum",               verified = TRUE)
+    depot = list(analyte = "sertraline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sertraline", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 140L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 140L,
+    n_studies = 1L,
     n_concentrations = 298L,
-    age_range        = "11-79 years",
-    age_median       = "22 years",
-    weight_range     = "40-110 kg",
-    weight_median    = "60 kg",
-    height_range     = "145-185 cm",
-    height_median    = "166 cm",
-    sex_female_pct   = 50,
-    race_ethnicity   = "Chinese (single-centre Guangzhou cohort; not further stratified by the source)",
-    disease_state    = "Hospitalised patients with psychiatric disorders (depression, panic disorder, generalized social anxiety disorder, obsessive-compulsive disorder and related indications) receiving oral sertraline; 52/140 (37%) were adolescents younger than 18 years",
-    dose_range       = "Not reported for the analysis dataset; the source states sertraline is routinely dosed at 25-200 mg/d and simulates 25-250 mg/d QD and 50-200 mg/d BID",
-    regions          = "China (The Affiliated Brain Hospital of Guangzhou Medical University, Guangzhou, Guangdong)",
-    co_medication    = "Lamotrigine 99 records (33.22%); quetiapine 12 records (4.03%); venlafaxine 4 records (1.34%)",
-    sampling         = "Retrospective therapeutic drug monitoring; all 298 samples are elimination-phase trough concentrations. Each patient contributed non-zero concentrations at at least two different dose levels.",
-    notes            = paste(
+    age_range = "11-79 years",
+    age_median = "22 years",
+    weight_range = "40-110 kg",
+    weight_median = "60 kg",
+    height_range = "145-185 cm",
+    height_median = "166 cm",
+    sex_female_pct = 50,
+    race_ethnicity = "Chinese (single-centre Guangzhou cohort; not further stratified by the source)",
+    disease_state = "Hospitalised patients with psychiatric disorders (depression, panic disorder, generalized social anxiety disorder, obsessive-compulsive disorder and related indications) receiving oral sertraline; 52/140 (37%) were adolescents younger than 18 years",
+    dose_range = "Not reported for the analysis dataset; the source states sertraline is routinely dosed at 25-200 mg/d and simulates 25-250 mg/d QD and 50-200 mg/d BID",
+    regions = "China (The Affiliated Brain Hospital of Guangzhou Medical University, Guangzhou, Guangdong)",
+    co_medication = "Lamotrigine 99 records (33.22%); quetiapine 12 records (4.03%); venlafaxine 4 records (1.34%)",
+    sampling = "Retrospective therapeutic drug monitoring; all 298 samples are elimination-phase trough concentrations. Each patient contributed non-zero concentrations at at least two different dose levels.",
+    notes = paste(
       "Baseline demographics from Zhang 2024 Table 1. Retrospective TDM data collected",
       "2018-2022; IRB approval 2021027. Serum sertraline quantified by LC-MS/MS over a",
       "5-500 ng/mL calibrated range. Because only troughs were available the absorption",

@@ -35,8 +35,8 @@ Hajjar_2018_DMD_6MWT <- function() {
   )
   vignette <- "Hajjar_2018_DMD_6MWT"
   units <- list(
-    time          = "year (subject age)",
-    dosing        = "n/a (disease-progression model with no drug input)",
+    time = "year (subject age)",
+    dosing = "n/a (disease-progression model with no drug input)",
     concentration = "m (six-minute walk test distance, observation walk_dist)"
   )
 
@@ -45,35 +45,40 @@ Hajjar_2018_DMD_6MWT <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    walk_dist = list(analyte = "6MWT distance", units = NA_character_, specimen = "administration site", verified = FALSE)
+    walk_dist = list(
+      analyte = "6MWT distance",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     DIS_DMD = list(
-      description        = "Binary indicator for Duchenne muscular dystrophy diagnosis: 1 = DMD subject, 0 = non-DMD subject (healthy control). Time-fixed per subject. Source poster's NONMEM variable name is PATIENT with the same orientation (1 = DMD, 0 = healthy).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for Duchenne muscular dystrophy diagnosis: 1 = DMD subject, 0 = non-DMD subject (healthy control). Time-fixed per subject. Source poster's NONMEM variable name is PATIENT with the same orientation (1 = DMD, 0 = healthy).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-DMD; healthy boys recruited as controls in Henricson 2012).",
-      notes              = "Selects the disease pathway: for DIS_DMD = 0 the latent disease coefficients ALPHA and BETA are zero and the production-rate scaling KCOV is fixed at 1, so the model reduces to a plain indirect-response 6MWT trajectory anchored to healthy growth. For DIS_DMD = 1 the latent disease term ALPHA*exp(BETA*age) multiplies KOUT and KCOV = 0.63 scales KIN down to the DMD steady-state plateau. The NONMEM source control stream applies between-subject variability on KOUT only for DMD subjects (ETA(1) inside the IF (PATIENT.EQ.1) branch); the model file reproduces this asymmetry by gating etalkout with DIS_DMD. See vignette Errata for the reporting inconsistency between the source NONMEM code (single ETA on KOUT, DMD-only) and source Table 2 (which lists a 5.40% BSV for healthy KOUT alongside the 16.7% DMD value).",
-      source_name        = "PATIENT"
+      notes = "Selects the disease pathway: for DIS_DMD = 0 the latent disease coefficients ALPHA and BETA are zero and the production-rate scaling KCOV is fixed at 1, so the model reduces to a plain indirect-response 6MWT trajectory anchored to healthy growth. For DIS_DMD = 1 the latent disease term ALPHA*exp(BETA*age) multiplies KOUT and KCOV = 0.63 scales KIN down to the DMD steady-state plateau. The NONMEM source control stream applies between-subject variability on KOUT only for DMD subjects (ETA(1) inside the IF (PATIENT.EQ.1) branch); the model file reproduces this asymmetry by gating etalkout with DIS_DMD. See vignette Errata for the reporting inconsistency between the source NONMEM code (single ETA on KOUT, DMD-only) and source Table 2 (which lists a 5.40% BSV for healthy KOUT alongside the 16.7% DMD value).",
+      source_name = "PATIENT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 235L,
-    n_studies      = 6L,
-    age_range      = "approximately 4-15.3 years across the pooled cohort (healthy controls: 4-12 years; DMD: 4-15.3 years). Source poster Table 1 reports per-study age statistics.",
-    age_median     = "DMD subjects: mean approximately 8.7 years (Brehm 2014 mean 8.72; Mercuri 2016 mean 8.73; McDonald 2013 mean 8; Goemans 2013 mean 9.5). Healthy controls: median 9 years (Henricson 2012).",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 235L,
+    n_studies = 6L,
+    age_range = "approximately 4-15.3 years across the pooled cohort (healthy controls: 4-12 years; DMD: 4-15.3 years). Source poster Table 1 reports per-study age statistics.",
+    age_median = "DMD subjects: mean approximately 8.7 years (Brehm 2014 mean 8.72; Mercuri 2016 mean 8.73; McDonald 2013 mean 8; Goemans 2013 mean 9.5). Healthy controls: median 9 years (Henricson 2012).",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 0,
     race_ethnicity = NA_character_,
-    disease_state  = "Duchenne muscular dystrophy (219 boys, 91% of pooled cohort) and healthy controls (16 boys, 9% of pooled cohort). The DMD subjects are predominantly ambulatory boys with longitudinal 6MWT measurements; 8.7% had one 6MWT measure, 51.4% had two, and 39.9% had three or more. 44.0% of the DMD subjects came from the Mercuri 2016 natural history study; the remainder are pooled from Brehm 2014 (n=14), Goemans 2013 (n=65), McDonald 2010 (n=15), and the placebo arm of the McDonald 2013 ataluren trial NCT00592553 (n=57).",
-    dose_range     = "Not applicable -- disease-progression model with no drug input. Steroid administration was explored as a covariate but conclusions about steroid effects were inconclusive due to limited covariate information and uneven group sizes (source poster Results bullet 9).",
-    regions        = "International (multiple study sites pooled from the published literature; source poster Methods step 1).",
+    disease_state = "Duchenne muscular dystrophy (219 boys, 91% of pooled cohort) and healthy controls (16 boys, 9% of pooled cohort). The DMD subjects are predominantly ambulatory boys with longitudinal 6MWT measurements; 8.7% had one 6MWT measure, 51.4% had two, and 39.9% had three or more. 44.0% of the DMD subjects came from the Mercuri 2016 natural history study; the remainder are pooled from Brehm 2014 (n=14), Goemans 2013 (n=65), McDonald 2010 (n=15), and the placebo arm of the McDonald 2013 ataluren trial NCT00592553 (n=57).",
+    dose_range = "Not applicable -- disease-progression model with no drug input. Steroid administration was explored as a covariate but conclusions about steroid effects were inconclusive due to limited covariate information and uneven group sizes (source poster Results bullet 9).",
+    regions = "International (multiple study sites pooled from the published literature; source poster Methods step 1).",
     n_observations = "Not tabulated in the source poster; observations per DMD subject distribution: 8.72% one measure, 51.4% two measures, 39.9% three or more measures (source poster Results bullet 1).",
-    notes          = "All individual-level data were digitised from the published figures of the six contributing studies using GraphClick version 3.0.3 (source poster Methods step 1a) rather than obtained as raw subject records. The model was first fit to the healthy-subject data and then refit to the pooled (healthy + DMD) dataset with the healthy parameters held fixed during the DMD parameter estimation step (source poster Results bullet 2). MTIME and KIN were estimated using the (small) healthy-subject dataset, so the corresponding RSEs reported in source Table 2 are large (323% on MTIME, 138% on KIN) relative to the precise DMD-only parameters."
+    notes = "All individual-level data were digitised from the published figures of the six contributing studies using GraphClick version 3.0.3 (source poster Methods step 1a) rather than obtained as raw subject records. The model was first fit to the healthy-subject data and then refit to the pooled (healthy + DMD) dataset with the healthy parameters held fixed during the DMD parameter estimation step (source poster Results bullet 2). MTIME and KIN were estimated using the (small) healthy-subject dataset, so the corresponding RSEs reported in source Table 2 are large (323% on MTIME, 138% on KIN) relative to the precise DMD-only parameters."
   )
 
   ini({

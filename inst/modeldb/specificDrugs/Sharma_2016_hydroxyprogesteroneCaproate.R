@@ -11,7 +11,7 @@ Sharma_2016_hydroxyprogesteroneCaproate <- function() {
     sep = " "
   )
   vignette <- "Sharma_2016_hydroxyprogesteroneCaproate"
-  units    <- list(time = "day", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
   paper_specific_compartments <- c("fetal")
 
@@ -20,105 +20,115 @@ Sharma_2016_hydroxyprogesteroneCaproate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "administration site", verified = FALSE),
-    central = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "plasma", verified = FALSE),
-    fetal   = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "tissue", verified = FALSE)
+    depot = list(
+      analyte = "17alpha-hydroxyprogesterone caproate",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(
+      analyte = "17alpha-hydroxyprogesterone caproate",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    fetal = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline maternal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline maternal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; baseline value recorded before the first 17-OHPC dose per Sharma 2016 Methods 'Covariate data'. Power-function covariate effect normalised to the cohort median of 68 kg per Sharma 2016 Results 'Data' (median weight at baseline = 68 kg, range 47-141 kg). Both CL/F (exponent 0.80, Theta_CL-WT in Table 2) and Vmaternal/F (exponent 0.84, Theta_Vmaternal-WT in Table 2) carry a (WT/68)^exp scaling per equations (9) and (10).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject; baseline value recorded before the first 17-OHPC dose per Sharma 2016 Methods 'Covariate data'. Power-function covariate effect normalised to the cohort median of 68 kg per Sharma 2016 Results 'Data' (median weight at baseline = 68 kg, range 47-141 kg). Both CL/F (exponent 0.80, Theta_CL-WT in Table 2) and Vmaternal/F (exponent 0.84, Theta_Vmaternal-WT in Table 2) carry a (WT/68)^exp scaling per equations (9) and (10).",
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer-valued PK-sampling-occasion indicator (1 = PK1 visit at 20-24 weeks gestation, 2 = PK2 visit at 31-34 weeks gestation)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued PK-sampling-occasion indicator (1 = PK1 visit at 20-24 weeks gestation, 2 = PK2 visit at 31-34 weeks gestation)",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Time-varying within subject; constant within a PK sampling window. Sharma 2016 design (Methods 'Pharmacokinetic sampling schedule and sample analysis') uses two 7-day intensive PK occasions per subject: PK1 at 20-24 weeks gestation and PK2 at 31-34 weeks gestation. IOV on CL (CV 26.5%) and Vmaternal (CV 31.6%) is reported per Table 2 ('IOV - CL (interoccasion)' and 'IOV - Vmaternal/F (interoccasion)'). Decomposed inside model() into binary indicators oc1 / oc2 multiplexing per-occasion etas (etaiov_cl_1 / etaiov_cl_2 on CL, etaiov_vc_1 / etaiov_vc_2 on Vmaternal). The occasion-2 etas are fix()'d to the occasion-1 variance to preserve the NONMEM $OMEGA BLOCK(1) SAME idiom (single IOV variance per parameter; nlmixr2 has no SAME shortcut).",
-      source_name        = "OCC"
+      notes = "Time-varying within subject; constant within a PK sampling window. Sharma 2016 design (Methods 'Pharmacokinetic sampling schedule and sample analysis') uses two 7-day intensive PK occasions per subject: PK1 at 20-24 weeks gestation and PK2 at 31-34 weeks gestation. IOV on CL (CV 26.5%) and Vmaternal (CV 31.6%) is reported per Table 2 ('IOV - CL (interoccasion)' and 'IOV - Vmaternal/F (interoccasion)'). Decomposed inside model() into binary indicators oc1 / oc2 multiplexing per-occasion etas (etaiov_cl_1 / etaiov_cl_2 on CL, etaiov_vc_1 / etaiov_vc_2 on Vmaternal). The occasion-2 etas are fix()'d to the occasion-1 variance to preserve the NONMEM $OMEGA BLOCK(1) SAME idiom (single IOV variance per parameter; nlmixr2 has no SAME shortcut).",
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested in the forward-inclusion screen on CL (Delta-OFV = -11, P < 0.001) and on Vmaternal (Delta-OFV = -2, P > 0.2) but not retained in the final model after the body-weight effect was included (Sharma 2016 Table 1).",
-      source_name        = "BMI"
+      notes = "Tested in the forward-inclusion screen on CL (Delta-OFV = -11, P < 0.001) and on Vmaternal (Delta-OFV = -2, P > 0.2) but not retained in the final model after the body-weight effect was included (Sharma 2016 Table 1).",
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Maternal age at enrolment",
-      units              = "years",
-      type               = "continuous",
+      description = "Maternal age at enrolment",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested in the forward-inclusion screen on CL and Vmaternal (both Delta-OFV ~ 0, P > 0.2); not retained in the final model (Sharma 2016 Table 1). Median age 27 years (range 19-42 years) per Results 'Data'.",
-      source_name        = "AGE"
+      notes = "Tested in the forward-inclusion screen on CL and Vmaternal (both Delta-OFV ~ 0, P > 0.2); not retained in the final model (Sharma 2016 Table 1). Median age 27 years (range 19-42 years) per Results 'Data'.",
+      source_name = "AGE"
     ),
     GA = list(
-      description        = "Gestational age at first 17-OHPC injection",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at first 17-OHPC injection",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested in the forward-inclusion screen on CL and Vmaternal (both Delta-OFV ~ 0, P > 0.2); not retained in the final model (Sharma 2016 Table 1). Median GA at first injection 17 weeks (range 16-21 weeks) per Results 'Data'. Recorded once per subject at enrolment.",
-      source_name        = "GA"
+      notes = "Tested in the forward-inclusion screen on CL and Vmaternal (both Delta-OFV ~ 0, P > 0.2); not retained in the final model (Sharma 2016 Table 1). Median GA at first injection 17 weeks (range 16-21 weeks) per Results 'Data'. Recorded once per subject at enrolment.",
+      source_name = "GA"
     ),
     RACE_BLACK = list(
-      description        = "Race indicator -- Black / African-American (1 = yes, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator -- Black / African-American (1 = yes, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Tested as one of four race-and-ethnicity categories (White / Black / Hispanic / Others) in the forward-inclusion screen on CL and Vmaternal (Delta-OFV ~ 0, P > 0.2); not retained in the final model despite a ~32% higher median CL/F in African-Americans (Sharma 2016 Discussion 'Effect of race and ethnicity'). Cohort composition per Results 'Data': White 51%, Black 19%, Hispanic 27%, Other 3% (n = 30, 11, 16, 2 respectively in Figure 4 caption).",
-      source_name        = "RACE_BLACK"
+      notes = "Tested as one of four race-and-ethnicity categories (White / Black / Hispanic / Others) in the forward-inclusion screen on CL and Vmaternal (Delta-OFV ~ 0, P > 0.2); not retained in the final model despite a ~32% higher median CL/F in African-Americans (Sharma 2016 Discussion 'Effect of race and ethnicity'). Cohort composition per Results 'Data': White 51%, Black 19%, Hispanic 27%, Other 3% (n = 30, 11, 16, 2 respectively in Figure 4 caption).",
+      source_name = "RACE_BLACK"
     ),
     RACE_HISPANIC = list(
-      description        = "Race / ethnicity indicator -- Hispanic (1 = yes, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race / ethnicity indicator -- Hispanic (1 = yes, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Tested with the Black indicator as part of the four-category race-and-ethnicity covariate; not retained (Delta-OFV ~ 0, P > 0.2; Sharma 2016 Table 1). ~10% higher CL/F vs Caucasians per Discussion 'Effect of race and ethnicity'.",
-      source_name        = "RACE_HISPANIC"
+      notes = "Tested with the Black indicator as part of the four-category race-and-ethnicity covariate; not retained (Delta-OFV ~ 0, P > 0.2; Sharma 2016 Table 1). ~10% higher CL/F vs Caucasians per Discussion 'Effect of race and ethnicity'.",
+      source_name = "RACE_HISPANIC"
     ),
     PROGESTERONE = list(
-      description        = "Baseline plasma progesterone concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline plasma progesterone concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a continuous covariate on CL (Delta-OFV ~ 0, P > 0.2); not retained (Sharma 2016 Table 1). Median baseline progesterone 52.4 ng/mL per Discussion 'Effect of hormones'. The weak inverse correlation seen in Figure 4 was not statistically significant.",
-      source_name        = "PROGESTERONE"
+      notes = "Tested as a continuous covariate on CL (Delta-OFV ~ 0, P > 0.2); not retained (Sharma 2016 Table 1). Median baseline progesterone 52.4 ng/mL per Discussion 'Effect of hormones'. The weak inverse correlation seen in Figure 4 was not statistically significant.",
+      source_name = "PROGESTERONE"
     ),
     HYDROXYPROGESTERONE = list(
-      description        = "Baseline plasma 17-hydroxyprogesterone (endogenous) concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline plasma 17-hydroxyprogesterone (endogenous) concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a continuous covariate on CL (Delta-OFV ~ 0, P > 0.2); not retained (Sharma 2016 Table 1). Median baseline hydroxyprogesterone 2.7 ng/mL per Discussion 'Effect of hormones'. Endogenous 17-OHP is structurally similar to 17-OHPC and shares CYP3A metabolism, motivating its inclusion in the screen.",
-      source_name        = "HYDROXYPROGESTERONE"
+      notes = "Tested as a continuous covariate on CL (Delta-OFV ~ 0, P > 0.2); not retained (Sharma 2016 Table 1). Median baseline hydroxyprogesterone 2.7 ng/mL per Discussion 'Effect of hormones'. Endogenous 17-OHP is structurally similar to 17-OHPC and shares CYP3A metabolism, motivating its inclusion in the screen.",
+      source_name = "HYDROXYPROGESTERONE"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 59L,
-    n_studies       = 1L,
-    n_observations  = 1514L,
-    age_range       = "19-42 years",
-    age_median      = "27 years",
-    weight_range    = "47-141 kg",
-    weight_median   = "68 kg",
-    sex_female_pct  = 100,
-    race_ethnicity  = c(White = 51, Black = 19, Hispanic = 27, Other = 3),
-    disease_state   = "Pregnant women with singleton gestation and a history of prior preterm birth, receiving prophylactic 17-OHPC for prevention of recurrent preterm birth",
-    ga_range        = "16-21 weeks gestation at first injection; treatment continued to 35 weeks gestation or delivery",
-    dose_range      = "250 mg 17-OHPC in 1 mL castor oil, intramuscular injection, once weekly",
-    regions         = "United States (multi-centre clinical study, NICHD-funded Obstetrical-Fetal Pharmacology Research Network)",
-    notes           = "Demographics from Sharma 2016 Results 'Data'. 61 women enrolled (Methods 'Patients and drug administration'); 2 excluded for missing dosing information; 59 contributed to the analysis. 1514 plasma 17-OHPC concentrations including 18 cord-blood concentrations contributed to the population PK fit. Sampling design: two 7-day intensive PK occasions (PK1 at 20-24 weeks, PK2 at 31-34 weeks) per subject, with a 28-day extended-sampling cohort of 18 women drawn on days 9, 11, 14, 17, 20, 24, 28 after the start of PK2; cord blood collected when possible at delivery from a maternal vein and umbilical cord (artery or vein). Bioanalytical assay: HPLC-MS/MS, range 1-200 ng/mL, LLOQ 1 ng/mL, inter-/intra-assay variability 7.9%/5.2% at 10 ng/mL. Estimation method: FOCEI in NONMEM VII (ICON Development Solutions); bootstrap n = 500 (490 converged) per Results 'Final model evaluation'. ClinicalTrials.gov NCT00409825."
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
+    n_observations = 1514L,
+    age_range = "19-42 years",
+    age_median = "27 years",
+    weight_range = "47-141 kg",
+    weight_median = "68 kg",
+    sex_female_pct = 100,
+    race_ethnicity = c(White = 51, Black = 19, Hispanic = 27, Other = 3),
+    disease_state = "Pregnant women with singleton gestation and a history of prior preterm birth, receiving prophylactic 17-OHPC for prevention of recurrent preterm birth",
+    ga_range = "16-21 weeks gestation at first injection; treatment continued to 35 weeks gestation or delivery",
+    dose_range = "250 mg 17-OHPC in 1 mL castor oil, intramuscular injection, once weekly",
+    regions = "United States (multi-centre clinical study, NICHD-funded Obstetrical-Fetal Pharmacology Research Network)",
+    notes = "Demographics from Sharma 2016 Results 'Data'. 61 women enrolled (Methods 'Patients and drug administration'); 2 excluded for missing dosing information; 59 contributed to the analysis. 1514 plasma 17-OHPC concentrations including 18 cord-blood concentrations contributed to the population PK fit. Sampling design: two 7-day intensive PK occasions (PK1 at 20-24 weeks, PK2 at 31-34 weeks) per subject, with a 28-day extended-sampling cohort of 18 women drawn on days 9, 11, 14, 17, 20, 24, 28 after the start of PK2; cord blood collected when possible at delivery from a maternal vein and umbilical cord (artery or vein). Bioanalytical assay: HPLC-MS/MS, range 1-200 ng/mL, LLOQ 1 ng/mL, inter-/intra-assay variability 7.9%/5.2% at 10 ng/mL. Estimation method: FOCEI in NONMEM VII (ICON Development Solutions); bootstrap n = 500 (490 converged) per Results 'Final model evaluation'. ClinicalTrials.gov NCT00409825."
   )
 
   ini({

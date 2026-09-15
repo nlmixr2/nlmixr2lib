@@ -13,48 +13,48 @@ Punyawudho_2025_dolutegravir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F and V/F with a reference weight of 60 kg, the value the paper itself uses when quoting the typical clearance ('the estimated CL/F of DTG was 2.82 L/h among PLWH weighing 60 kg'); the cohort medians were 59.3 kg (once-daily arm) and 60.2 kg (twice-daily arm), Punyawudho 2025 Table 1. The exponents are fixed, not estimated: Punyawudho 2025 Methods, 'The allometric exponents were fixed to the values of 0.75 and 1 for CL/F and V/F, respectively'. Total body weight was selected over fat-free mass, which fit worse (Results, 'Allometric scaling with body weight outperformed fat-free mass').",
-      source_name        = "body weight"
+      notes = "Allometric scaling on CL/F and V/F with a reference weight of 60 kg, the value the paper itself uses when quoting the typical clearance ('the estimated CL/F of DTG was 2.82 L/h among PLWH weighing 60 kg'); the cohort medians were 59.3 kg (once-daily arm) and 60.2 kg (twice-daily arm), Punyawudho 2025 Table 1. The exponents are fixed, not estimated: Punyawudho 2025 Methods, 'The allometric exponents were fixed to the values of 0.75 and 1 for CL/F and V/F, respectively'. Total body weight was selected over fat-free mass, which fit worse (Results, 'Allometric scaling with body weight outperformed fat-free mass').",
+      source_name = "body weight"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L (SI canonical); the source paper reports mg/dL and the model converts inline via TBILI / 17.1",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L (SI canonical); the source paper reports mg/dL and the model converts inline via TBILI / 17.1",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate retained in the final model (Punyawudho 2025 Results). Enters CL/F as an exponential effect centred on the cohort median of 0.38 mg/dL: exp(-0.297 * (TBILI_mgdL - 0.38)), so a 1 mg/dL rise in total bilirubin lowers CL/F by 1 - exp(-0.297) = 25.7%, the figure quoted in the Results. Median-centred continuous covariates with linear, power and exponential forms were screened (Methods); the exponential form is the one printed in the paper's CL/F equation. Mechanism: dolutegravir and bilirubin are both cleared by UGT1A1, so competition for the enzyme raises dolutegravir exposure in hyperbilirubinaemia (Discussion). The register's canonical unit is SI umol/L, so pass umol/L in the data; 1 mg/dL = 17.1 umol/L and the median 0.38 mg/dL is 6.50 umol/L. The paper's simulations stratify by the DAIDS hyperbilirubinaemia grades: normal 0.1-1.29, grade 1 1.3-1.89, grade 2 1.9-3.09, grade 3 3.1-6.09 and grade 4 >6.1 mg/dL (Methods, 'Simulations for evaluating optimal dosage regimens').",
-      source_name        = "total bilirubin"
+      notes = "The only covariate retained in the final model (Punyawudho 2025 Results). Enters CL/F as an exponential effect centred on the cohort median of 0.38 mg/dL: exp(-0.297 * (TBILI_mgdL - 0.38)), so a 1 mg/dL rise in total bilirubin lowers CL/F by 1 - exp(-0.297) = 25.7%, the figure quoted in the Results. Median-centred continuous covariates with linear, power and exponential forms were screened (Methods); the exponential form is the one printed in the paper's CL/F equation. Mechanism: dolutegravir and bilirubin are both cleared by UGT1A1, so competition for the enzyme raises dolutegravir exposure in hyperbilirubinaemia (Discussion). The register's canonical unit is SI umol/L, so pass umol/L in the data; 1 mg/dL = 17.1 umol/L and the median 0.38 mg/dL is 6.50 umol/L. The paper's simulations stratify by the DAIDS hyperbilirubinaemia grades: normal 0.1-1.29, grade 1 1.3-1.89, grade 2 1.9-3.09, grade 3 3.1-6.09 and grade 4 >6.1 mg/dL (Methods, 'Simulations for evaluating optimal dosage regimens').",
+      source_name = "total bilirubin"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator for between-occasion-variability multiplexing",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for between-occasion-variability multiplexing",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Punyawudho 2025 Methods defines an occasion explicitly and states the count: 'each occasion was defined as a dosing event with at least one blood sample. As a result, there were two occasions: the pre-dose occasion and the post-dose occasion.' Two occasions are therefore encoded, with occasion 1 carrying the estimated variance and occasion 2 fixing it to the same value (the NONMEM $OMEGA BLOCK(1) SAME idiom used throughout this register -- see Kawuma_2023_dolutegravir.R, Chen_2023_nemonoxacin.R, Bihorel_2023_molnupiravir.R). Between-occasion variability was carried on the absorption parameters only, and it replaced rather than supplemented between-subject variability there (Methods, 'IOV was tested either following the inclusion of the IIV or substituting the IIV on absorption parameters (F and absorption rate constant; Ka)'; Results, 'The addition of the IOV on the absorption parameters (F and Ka) significantly improved the fit'). For single-occasion records pass OCC = 1; for a multi-dose simulation alternate OCC between 1 and 2 across successive doses so that consecutive administrations draw independent absorption behaviour.",
-      source_name        = "occasion"
+      notes = "Punyawudho 2025 Methods defines an occasion explicitly and states the count: 'each occasion was defined as a dosing event with at least one blood sample. As a result, there were two occasions: the pre-dose occasion and the post-dose occasion.' Two occasions are therefore encoded, with occasion 1 carrying the estimated variance and occasion 2 fixing it to the same value (the NONMEM $OMEGA BLOCK(1) SAME idiom used throughout this register -- see Kawuma_2023_dolutegravir.R, Chen_2023_nemonoxacin.R, Bihorel_2023_molnupiravir.R). Between-occasion variability was carried on the absorption parameters only, and it replaced rather than supplemented between-subject variability there (Methods, 'IOV was tested either following the inclusion of the IIV or substituting the IIV on absorption parameters (F and absorption rate constant; Ka)'; Results, 'The addition of the IOV on the absorption parameters (F and Ka) significantly improved the fit'). For single-occasion records pass OCC = 1; for a multi-dose simulation alternate OCC between 1 and 2 across successive doses so that consecutive administrations draw independent absorption behaviour.",
+      source_name = "occasion"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
     n_observations = 332L,
-    age_range      = "21.6-60.5 years (arm means 37.5 and 35.6 years)",
-    weight_range   = "41.1-86.0 kg (arm means 59.3 and 60.2 kg)",
+    age_range = "21.6-60.5 years (arm means 37.5 and 35.6 years)",
+    weight_range = "41.1-86.0 kg (arm means 59.3 and 60.2 kg)",
     sex_female_pct = 12.5,
-    disease_state  = "HIV/tuberculosis co-infection; treatment-naive people living with HIV newly diagnosed with tuberculosis, all receiving rifampicin-based anti-tuberculosis therapy",
-    dose_range     = "dolutegravir 50 mg once daily with food (n = 20) or 50 mg twice daily without food (n = 20), each with rifampicin 450 mg daily (35-49 kg) or 600 mg daily (>=50 kg)",
-    regions        = "Thailand (HIV-NAT, Thai Red Cross AIDS Research Centre, Bangkok)",
-    notes          = "Cross-sectional analysis nested in NCT03731559. Intensive sampling at week 4: pre-dose and 1, 2, 4, 6, 8, 10 and 12 h post-dose in both arms, plus a 24 h sample in the once-daily arm. 332 dolutegravir concentrations from 40 participants entered the analysis; one participant whose concentrations were consistently below the 0.1 mg/L LLOQ was removed except for the pre-dose sample, and single below-LLOQ values were imputed at LLOQ/2 (Punyawudho 2025 Methods and Results). Serum creatinine medians were 0.891 and 0.895 mg/dL and total bilirubin medians 0.380 and 0.350 mg/dL (Table 1). EVERY participant received rifampicin, so the parameter values below are the co-administered (induced) values -- the model cannot separate the rifampicin effect from the baseline, and the authors say so explicitly (Discussion limitations: 'the pharmacokinetics of DTG in the absence of rifampicin and the effect of rifampicin on the pharmacokinetics of DTG cannot be determined'). Do not use this model for dolutegravir given without rifampicin."
+    disease_state = "HIV/tuberculosis co-infection; treatment-naive people living with HIV newly diagnosed with tuberculosis, all receiving rifampicin-based anti-tuberculosis therapy",
+    dose_range = "dolutegravir 50 mg once daily with food (n = 20) or 50 mg twice daily without food (n = 20), each with rifampicin 450 mg daily (35-49 kg) or 600 mg daily (>=50 kg)",
+    regions = "Thailand (HIV-NAT, Thai Red Cross AIDS Research Centre, Bangkok)",
+    notes = "Cross-sectional analysis nested in NCT03731559. Intensive sampling at week 4: pre-dose and 1, 2, 4, 6, 8, 10 and 12 h post-dose in both arms, plus a 24 h sample in the once-daily arm. 332 dolutegravir concentrations from 40 participants entered the analysis; one participant whose concentrations were consistently below the 0.1 mg/L LLOQ was removed except for the pre-dose sample, and single below-LLOQ values were imputed at LLOQ/2 (Punyawudho 2025 Methods and Results). Serum creatinine medians were 0.891 and 0.895 mg/dL and total bilirubin medians 0.380 and 0.350 mg/dL (Table 1). EVERY participant received rifampicin, so the parameter values below are the co-administered (induced) values -- the model cannot separate the rifampicin effect from the baseline, and the authors say so explicitly (Discussion limitations: 'the pharmacokinetics of DTG in the absence of rifampicin and the effect of rifampicin on the pharmacokinetics of DTG cannot be determined'). Do not use this model for dolutegravir given without rifampicin."
   )
 
   ini({

@@ -26,7 +26,7 @@ Thoueille_2023_tenofovir_reduced <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tenofovir reduced", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tenofovir reduced", units = "nmol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tenofovir reduced", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 

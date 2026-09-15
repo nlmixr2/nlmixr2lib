@@ -9,7 +9,7 @@ Shi_2018_ceftazidime <- function() {
     sep = " "
   )
   vignette <- "Shi_2018_ceftazidime"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -20,38 +20,38 @@ Shi_2018_ceftazidime <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight at the time of pharmacokinetic sampling",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight at the time of pharmacokinetic sampling",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL (fixed exponent 0.75) and V (fixed exponent 1.0) with reference 7.5 kg (cohort median). Shi 2018 Table 2 footnote a.",
-      source_name        = "BW"
+      notes = "Allometric scaling on CL (fixed exponent 0.75) and V (fixed exponent 1.0) with reference 7.5 kg (cohort median). Shi 2018 Table 2 footnote a.",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance computed from serum creatinine collected within 48 h of pharmacokinetic sampling (Schwartz-style pediatric formula per Shi 2018 Methods reference 24)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance computed from serum creatinine collected within 48 h of pharmacokinetic sampling (Schwartz-style pediatric formula per Shi 2018 Methods reference 24)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CRCL in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form -- same convention as Delattre_2010_amikacin). Reference value 124 mL/min (population median, Shi 2018 Table 1 / Table 2 footnote a). Effect on CL is a power form: (CRCL / 124)^theta_CRCL.",
-      source_name        = "CRCL"
+      notes = "Source column CRCL in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form -- same convention as Delattre_2010_amikacin). Reference value 124 mL/min (population median, Shi 2018 Table 1 / Table 2 footnote a). Effect on CL is a power form: (CRCL / 124)^theta_CRCL.",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 1L,
-    age_range      = "0.1-2.0 years",
-    age_median     = "0.5 years",
-    weight_range   = "3.0-13.0 kg",
-    weight_median  = "7.5 kg",
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
+    age_range = "0.1-2.0 years",
+    age_median = "0.5 years",
+    weight_range = "3.0-13.0 kg",
+    weight_median = "7.5 kg",
     sex_female_pct = 45,
     race_ethnicity = "Not reported (single-centre Chinese cohort; Children's Hospital of Hebei Province)",
-    disease_state  = "Infants 1 month to 2 years with confirmed or suspected bacterial infection (pneumonia, bronchitis, and other miscellaneous pulmonary infections); preterm newborns (gestational age < 37 weeks) excluded",
-    dose_range     = "50 mg/kg ceftazidime IV every 12 h administered as a 30-60 min infusion (uniform dose regimen across cohort)",
-    regions        = "China (Children's Hospital of Hebei Province, Shijiazhuang)",
+    disease_state = "Infants 1 month to 2 years with confirmed or suspected bacterial infection (pneumonia, bronchitis, and other miscellaneous pulmonary infections); preterm newborns (gestational age < 37 weeks) excluded",
+    dose_range = "50 mg/kg ceftazidime IV every 12 h administered as a 30-60 min infusion (uniform dose regimen across cohort)",
+    regions = "China (Children's Hospital of Hebei Province, Shijiazhuang)",
     renal_function = "Creatinine clearance median 124 mL/min (range 65-181, raw mL/min); serum creatinine median 24 umol/L (range 16-44)",
-    notes          = "Baseline demographics per Shi 2018 Table 1. 51 infants enrolled September 2015 to December 2016. 90 pharmacokinetic samples available (sparse design, 2 per subject at steady state). LLOQ 0.5 ug/mL; 12 BLQ values replaced with 0.25 ug/mL (half-LLOQ) per Shi 2018 Results. Sampling schedule: randomized to either (1) 4-8 h after infusion start and 3-5 min after infusion end, or (2) 8-12 h after infusion start and 1-2 h after infusion end."
+    notes = "Baseline demographics per Shi 2018 Table 1. 51 infants enrolled September 2015 to December 2016. 90 pharmacokinetic samples available (sparse design, 2 per subject at steady state). LLOQ 0.5 ug/mL; 12 BLQ values replaced with 0.25 ug/mL (half-LLOQ) per Shi 2018 Results. Sampling schedule: randomized to either (1) 4-8 h after infusion start and 3-5 min after infusion end, or (2) 8-12 h after infusion start and 1-2 h after infusion end."
   )
 
   ini({

@@ -9,7 +9,11 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2018_imipenem_tobramycin"
-  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (drug input concentration)",
+    concentration = "log10 CFU/mL (observation); mg/L (drug covariates)"
+  )
 
   # Cipm / Ctob are the experimentally-controlled imipenem / tobramycin
   # broth concentrations (the in-vitro HFIM PK forcing functions) supplied
@@ -24,46 +28,76 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_susceptible1 = list(analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible_susceptible2 = list(analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate1  = list(analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate2  = list(analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant1  = list(analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant2  = list(analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible_susceptible1 = list(
+      analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     Cipm = list(
-      description        = "Unbound imipenem concentration in the hollow-fiber growth medium",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Unbound imipenem concentration in the hollow-fiber growth medium",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally; the HFIM experiment used continuous infusion targeting the 5th-percentile (7.6 mg/L), median (13.4 mg/L), and 95th-percentile (23.3 mg/L) unbound concentrations expected from imipenem 4 g/day continuous infusion in critically ill patients. In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
-      source_name        = "Imipenem concentration (paper Methods and Fig. 1 legend)"
+      notes = "Time-varying covariate supplied externally; the HFIM experiment used continuous infusion targeting the 5th-percentile (7.6 mg/L), median (13.4 mg/L), and 95th-percentile (23.3 mg/L) unbound concentrations expected from imipenem 4 g/day continuous infusion in critically ill patients. In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
+      source_name = "Imipenem concentration (paper Methods and Fig. 1 legend)"
     ),
     Ctob = list(
-      description        = "Unbound tobramycin concentration in the hollow-fiber growth medium",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Unbound tobramycin concentration in the hollow-fiber growth medium",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally; the HFIM experiment simulated the two-compartment unbound tobramycin profile produced by 7 mg/kg q24h 0.5-h infusions (observed peak 12.3 mg/L at 1.2 h, trough 1.37 mg/L at 23 h; pump-flow rate switched at 5 h each day to mimic alpha/beta phases). In-vitro experimental input -- not in inst/references/covariate-columns.md.",
-      source_name        = "Tobramycin concentration (paper Methods, Fig. S1 reference)"
+      notes = "Time-varying covariate supplied externally; the HFIM experiment simulated the two-compartment unbound tobramycin profile produced by 7 mg/kg q24h 0.5-h infusions (observed peak 12.3 mg/L at 1.2 h, trough 1.37 mg/L at 23 h; pump-flow rate switched at 5 h each day to mimic alpha/beta phases). In-vitro experimental input -- not in inst/references/covariate-columns.md.",
+      source_name = "Tobramycin concentration (paper Methods, Fig. S1 reference)"
     )
   )
 
   population <- list(
-    species             = "in vitro (Acinetobacter baumannii, carbapenem-resistant clinical isolate FADDI-AB034)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Acinetobacter baumannii FADDI-AB034 (clinical CRAB isolate; imipenem MIC 32 mg/L, tobramycin MIC 2 mg/L)",
-    system              = "Hollow-fiber dynamic in vitro infection model (HFIM); 7-day exposure; total and resistant-subpopulation viable counts on antibiotic-free and antibiotic-containing agar (imipenem 1.75x and 3x MIC, tobramycin 3x and 5x MIC)",
-    medium              = "Standard cation-adjusted Mueller-Hinton broth circulating through the hollow-fiber cartridge",
-    temperature         = "37 C",
-    duration            = "168 h (7 days); dense sampling within the first 24 h and at 47, 71, 95, 119, 143, and 168 h",
-    inoculum            = "~10^7.2 CFU/mL (mirrors bacterial densities in severe clinical infections)",
-    mic_values          = c(imipenem = "32 mg/L", tobramycin = "2 mg/L"),
-    regimens            = "Imipenem monotherapy at constant 7.6, 13.4, and 23.3 mg/L unbound (corresponding to 5th, 50th, and 95th percentile steady-state concentrations from 4 g/day continuous infusion with a 1 g loading dose); tobramycin monotherapy at 7 mg/kg q24h (0.5-h infusions); each imipenem level combined with the same tobramycin regimen; antibiotic-free growth controls",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. The MBM was fit in S-ADAPT to viable-count data; the coefficient of correlation for observed vs individual (population) fitted log10 viable counts was 0.995 (0.968). Random effects (eta) are NOT estimated in the source: the paper reports population mean parameter estimates with relative standard errors only, on a single bacterial isolate; consequently the packaged model contains no etas and is intended for typical-value simulation only. See Landersdorfer 2018 Methods (page 632 = e02053-17 p. 2) and Table 1."
+    species = "in vitro (Acinetobacter baumannii, carbapenem-resistant clinical isolate FADDI-AB034)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Acinetobacter baumannii FADDI-AB034 (clinical CRAB isolate; imipenem MIC 32 mg/L, tobramycin MIC 2 mg/L)",
+    system = "Hollow-fiber dynamic in vitro infection model (HFIM); 7-day exposure; total and resistant-subpopulation viable counts on antibiotic-free and antibiotic-containing agar (imipenem 1.75x and 3x MIC, tobramycin 3x and 5x MIC)",
+    medium = "Standard cation-adjusted Mueller-Hinton broth circulating through the hollow-fiber cartridge",
+    temperature = "37 C",
+    duration = "168 h (7 days); dense sampling within the first 24 h and at 47, 71, 95, 119, 143, and 168 h",
+    inoculum = "~10^7.2 CFU/mL (mirrors bacterial densities in severe clinical infections)",
+    mic_values = c(imipenem = "32 mg/L", tobramycin = "2 mg/L"),
+    regimens = "Imipenem monotherapy at constant 7.6, 13.4, and 23.3 mg/L unbound (corresponding to 5th, 50th, and 95th percentile steady-state concentrations from 4 g/day continuous infusion with a 1 g loading dose); tobramycin monotherapy at 7 mg/kg q24h (0.5-h infusions); each imipenem level combined with the same tobramycin regimen; antibiotic-free growth controls",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. The MBM was fit in S-ADAPT to viable-count data; the coefficient of correlation for observed vs individual (population) fitted log10 viable counts was 0.995 (0.968). Random effects (eta) are NOT estimated in the source: the paper reports population mean parameter estimates with relative standard errors only, on a single bacterial isolate; consequently the packaged model contains no etas and is intended for typical-value simulation only. See Landersdorfer 2018 Methods (page 632 = e02053-17 p. 2) and Table 1."
   )
 
   ini({

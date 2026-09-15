@@ -9,27 +9,27 @@ Yang_2024_dabigatran <- function() {
   # ($MODEL block: COMP1 = DEFDOSE, COMP2 = CENTRAL, COMP3 = PERIPHER) and
   # Methods 2.3 (analyte = total dabigatran in plasma by HPLC-MS/MS).
   compartmentData <- list(
-    depot       = list(analyte = "dabigatran", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "dabigatran", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FED_HIGHFAT = list(
-      description        = "High-fat-meal (postprandial) dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal (postprandial) dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted administration)",
-      notes              = "Time-fixed per subject: Yang 2024 used a parallel design in which each subject was dosed once, either fasted (n = 61) or within 30 min after a standard high-fat meal (n = 62); the paper does not report the caloric or fat content of the meal beyond 'standard high-fat meal' (Methods 2.2). The source NONMEM data column was named `YS` (Supplementary Material $INPUT and the `KAYS` / `CLYS` / `ALAG1YS` covariate blocks); renamed to the canonical `FED_HIGHFAT` per inst/references/covariate-columns.md. Enters ka, CL/F and the absorption lag time as a linear proportional deviation, (1 + theta * FED_HIGHFAT).",
-      source_name        = "YS"
+      notes = "Time-fixed per subject: Yang 2024 used a parallel design in which each subject was dosed once, either fasted (n = 61) or within 30 min after a standard high-fat meal (n = 62); the paper does not report the caloric or fat content of the meal beyond 'standard high-fat meal' (Methods 2.2). The source NONMEM data column was named `YS` (Supplementary Material $INPUT and the `KAYS` / `CLYS` / `ALAG1YS` covariate blocks); renamed to the canonical `FED_HIGHFAT` per inst/references/covariate-columns.md. Enters ka, CL/F and the absorption lag time as a linear proportional deviation, (1 + theta * FED_HIGHFAT).",
+      source_name = "YS"
     ),
     SNP_ABCB1_RS4148738_HET = list(
-      description        = "ABCB1 rs4148738 heterozygote (CT) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 rs4148738 heterozygote (CT) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-CT: the union of CC homozygotes, n = 20, and TT homozygotes, n = 31)",
-      notes              = "Time-fixed per subject (germline genotype). 99 of the 123 subjects were genotyped (Results 3.2, Table 2): CC 20, CT 48, TT 31; minor (C) allele frequency 44.44%. The source NONMEM dataset carried three dummy indicators, `ABCB1C` / `ABCB1CT` / `ABCB1T`, and only `ABCB1CT` survived stepwise covariate modelling (Supplementary Material $INPUT and the `V2ABCB1CT` block), so the reference group is the union of the two homozygous strata rather than the wild-type homozygote alone. Enters V2/F as a linear proportional deviation, (1 + theta * SNP_ABCB1_RS4148738_HET). For subjects who were not genotyped, set to 0 to obtain the non-CT typical value.",
-      source_name        = "ABCB1CT"
+      notes = "Time-fixed per subject (germline genotype). 99 of the 123 subjects were genotyped (Results 3.2, Table 2): CC 20, CT 48, TT 31; minor (C) allele frequency 44.44%. The source NONMEM dataset carried three dummy indicators, `ABCB1C` / `ABCB1CT` / `ABCB1T`, and only `ABCB1CT` survived stepwise covariate modelling (Supplementary Material $INPUT and the `V2ABCB1CT` block), so the reference group is the union of the two homozygous strata rather than the wild-type homozygote alone. Enters V2/F as a linear proportional deviation, (1 + theta * SNP_ABCB1_RS4148738_HET). For subjects who were not genotyped, set to 0 to obtain the non-CT typical value.",
+      source_name = "ABCB1CT"
     )
   )
 
@@ -41,72 +41,72 @@ Yang_2024_dabigatran <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (Methods 2.6) but not retained. Range 18-43 years; the Discussion attributes the null result to the narrow healthy-volunteer age range."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (Methods 2.6) but not retained. Range 18-43 years; the Discussion attributes the null result to the narrow healthy-volunteer age range."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (Methods 2.6) but not retained. Range 45.2-82.0 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (Methods 2.6) but not retained. Range 45.2-82.0 kg."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened (Methods 2.6) but not retained. Range 145.5-182.5 cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened (Methods 2.6) but not retained. Range 145.5-182.5 cm."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened (Methods 2.6) but not retained. Range 19.2-25.9 kg/m^2; the Discussion notes the range was too narrow to resolve an effect."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened (Methods 2.6) but not retained. Range 19.2-25.9 kg/m^2; the Discussion notes the range was too narrow to resolve an effect."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Methods 2.6) but not retained. 29 of 123 subjects (23.6%) were female; the Discussion states 'the smaller number of female subjects precluded a thorough analysis of gender effects'. Non-compartmental analysis (Table 3) showed mean AUC about 8% higher in women."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Methods 2.6) but not retained. 29 of 123 subjects (23.6%) were female; the Discussion states 'the smaller number of female subjects precluded a thorough analysis of gender effects'. Non-compartmental analysis (Table 3) showed mean AUC about 8% higher in women."
     ),
     SNP_ABCB1_RS1045642 = list(
       description = "ABCB1 rs1045642 (c.3435C>T) variant indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Genotyped (Table 2: AA 15, AG 47, GG 36; minor A allele frequency 39.29%) and screened, but not retained. Results 3.3: no significant effect on Cmax or AUC."
+      units = "(binary)",
+      type = "binary",
+      notes = "Genotyped (Table 2: AA 15, AG 47, GG 36; minor A allele frequency 39.29%) and screened, but not retained. Results 3.3: no significant effect on Cmax or AUC."
     ),
     SNP_CES1_RS2244613 = list(
       description = "CES1 rs2244613 variant indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Genotyped (Table 2: GG 40, GT 45, TT 14; minor T allele frequency 36.87%) and screened, but not retained. TT carriers had numerically higher mean Cmax and AUC in the non-compartmental analysis (Table 3), but the effect did not survive stepwise covariate modelling."
+      units = "(binary)",
+      type = "binary",
+      notes = "Genotyped (Table 2: GG 40, GT 45, TT 14; minor T allele frequency 36.87%) and screened, but not retained. TT carriers had numerically higher mean Cmax and AUC in the non-compartmental analysis (Table 3), but the effect did not survive stepwise covariate modelling."
     ),
     SNP_CES1_RS8192935 = list(
       description = "CES1 rs8192935 variant indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Genotyped (Table 2: AA 49, AG 47, GG 3; minor G allele frequency 26.77%) and screened, but not retained. The three GG carriers had markedly higher mean Cmax and AUC (Table 3), but the Discussion states the sample size was too small to support a modelled effect."
+      units = "(binary)",
+      type = "binary",
+      notes = "Genotyped (Table 2: AA 49, AG 47, GG 3; minor G allele frequency 26.77%) and screened, but not retained. The three GG carriers had markedly higher mean Cmax and AUC (Table 3), but the Discussion states the sample size was too small to support a modelled effect."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 123L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 123L,
+    n_studies = 1L,
     n_observations = 1926L,
-    age_range      = "18-43 years",
-    age_median     = "25 years in both arms (mean 25.20 fasting, 24.94 postprandial)",
-    weight_range   = "45.2-82.0 kg",
-    weight_median  = "58.8 kg fasting arm, 59.7 kg postprandial arm",
-    height_range   = "145.5-182.5 cm",
-    bmi_range      = "19.2-25.9 kg/m^2",
+    age_range = "18-43 years",
+    age_median = "25 years in both arms (mean 25.20 fasting, 24.94 postprandial)",
+    weight_range = "45.2-82.0 kg",
+    weight_median = "58.8 kg fasting arm, 59.7 kg postprandial arm",
+    height_range = "145.5-182.5 cm",
+    bmi_range = "19.2-25.9 kg/m^2",
     sex_female_pct = 23.6,
     race_ethnicity = "All subjects Chinese; the paper reports no sub-ethnicity breakdown (Methods 2.1, single centre in Guiyang, China).",
-    disease_state  = "Healthy volunteers. Data came from the reference-formulation arm of a dabigatran etexilate bioequivalence study; renal impairment and co-medication were excluded by the inclusion criteria, which the Discussion notes removes the two covariates that dominate dabigatran PK in atrial-fibrillation patients.",
-    dose_range     = "Single oral 150 mg dabigatran etexilate (Pradaxa) with 240 mL warm water, either fasted (n = 61) or within 30 min after a standard high-fat meal (n = 62). Sampling at 0 h predose and 0.25, 0.5, 0.75, 1, 1.33, 1.67, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 12, 24, 36 and 48 h (19 points per subject).",
-    regions        = "China (Clinical Trials Center, Affiliated Hospital of Guizhou Medical University, Guiyang).",
-    genotyped_n    = 99L,
-    notes          = "Baseline demographics from Yang 2024 Table 1; genotype distributions from Table 2; non-compartmental exposure summaries from Table 3. Registered as NCT06387407; ethics approval 2024037K. 99 of the 123 subjects were genotyped for the four candidate SNPs, so simulations that exercise SNP_ABCB1_RS4148738_HET should reproduce the genotyped subset (CC 20 / CT 48 / TT 31) rather than the full 123."
+    disease_state = "Healthy volunteers. Data came from the reference-formulation arm of a dabigatran etexilate bioequivalence study; renal impairment and co-medication were excluded by the inclusion criteria, which the Discussion notes removes the two covariates that dominate dabigatran PK in atrial-fibrillation patients.",
+    dose_range = "Single oral 150 mg dabigatran etexilate (Pradaxa) with 240 mL warm water, either fasted (n = 61) or within 30 min after a standard high-fat meal (n = 62). Sampling at 0 h predose and 0.25, 0.5, 0.75, 1, 1.33, 1.67, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 12, 24, 36 and 48 h (19 points per subject).",
+    regions = "China (Clinical Trials Center, Affiliated Hospital of Guizhou Medical University, Guiyang).",
+    genotyped_n = 99L,
+    notes = "Baseline demographics from Yang 2024 Table 1; genotype distributions from Table 2; non-compartmental exposure summaries from Table 3. Registered as NCT06387407; ethics approval 2024037K. 99 of the 123 subjects were genotyped for the four candidate SNPs, so simulations that exercise SNP_ABCB1_RS4148738_HET should reproduce the genotyped subset (CC 20 / CT 48 / TT 31) rather than the full 123."
   )
 
   ini({

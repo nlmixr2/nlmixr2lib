@@ -39,25 +39,25 @@ Molto_2016_atazanavir_ritonavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "atazanavir (ATV)", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "atazanavir (ATV)", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_rtv   = list(analyte = "ritonavir (RTV)", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "atazanavir (ATV)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "atazanavir (ATV)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv = list(analyte = "ritonavir (RTV)", units = "mg", specimen = "administration site", verified = FALSE),
     central_rtv = list(analyte = "ritonavir (RTV)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 83L,
-    n_studies        = 1L,
-    age_range        = "26-75 years",
-    age_median       = "42 years",
-    weight_range     = "40-91 kg",
-    weight_median    = "70 kg",
-    sex_female_pct   = 31.33,
-    race_ethnicity   = "Caucasian (Spanish single-centre cohort)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 83L,
+    n_studies = 1L,
+    age_range = "26-75 years",
+    age_median = "42 years",
+    weight_range = "40-91 kg",
+    weight_median = "70 kg",
+    sex_female_pct = 31.33,
+    race_ethnicity = "Caucasian (Spanish single-centre cohort)",
+    disease_state = paste(
       "HIV-1 infection on stable antiretroviral therapy for >=4 weeks",
       "(steady-state conditions). 30/83 with HCV coinfection; 5/83 with",
       "advanced liver fibrosis. Median AST 27 U/L (range 11-185);",
@@ -65,15 +65,15 @@ Molto_2016_atazanavir_ritonavir <- function() {
       "(range 6.3-8.7); median albumin 4.3 g/dL (range 2.8-5.25);",
       "median alpha-1-acid glycoprotein 79 mg/dL (range 36-156)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "ATV 400 mg orally once daily (unboosted, 30/83 patients) or",
       "ATV 300 mg + RTV 100 mg orally once daily (boosted, 53/83",
       "patients). Six dosing scenarios were simulated by the paper",
       "(ATV 400 QD; ATV 300/RTV 100 QD; ATV 300/RTV 50 QD; ATV 200/RTV",
       "100 QD; ATV 300 BID; ATV 200 BID)."
     ),
-    regions          = "Spain (Catalonia, Hospital Universitari Germans Trias i Pujol, Badalona)",
-    notes            = paste(
+    regions = "Spain (Catalonia, Hospital Universitari Germans Trias i Pujol, Badalona)",
+    notes = paste(
       "Cross-sectional study enrolled May 2004 to May 2009. 38/83",
       "patients were also taking tenofovir 300 mg once daily (2",
       "unboosted, 36 boosted). 16/83 took the medication at night",

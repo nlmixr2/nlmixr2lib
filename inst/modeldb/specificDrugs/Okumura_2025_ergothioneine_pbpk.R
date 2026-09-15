@@ -63,9 +63,18 @@ Okumura_2025_ergothioneine_pbpk <- function() {
   # inside mature circulating red cells), which IS a canonical member of
   # the `rbc_<analyte>` family.
   paper_specific_compartments <- c(
-    "is_liver1", "is_liver2", "is_liver3", "is_liver4", "is_liver5",
-    "int_liver1", "int_liver2", "int_liver3", "int_liver4", "int_liver5",
-    "rbc_precursor", "renal_duct"
+    "is_liver1",
+    "is_liver2",
+    "is_liver3",
+    "is_liver4",
+    "is_liver5",
+    "int_liver1",
+    "int_liver2",
+    "int_liver3",
+    "int_liver4",
+    "int_liver5",
+    "rbc_precursor",
+    "renal_duct"
   )
 
   # Time in hours (the Napp code steps in hours and doses every 24). The
@@ -119,27 +128,27 @@ Okumura_2025_ergothioneine_pbpk <- function() {
   )
 
   compartmentData <- list(
-    depot         = list(analyte = "ergothioneine", units = "umol", specimen = "administration site", verified = TRUE),
-    central       = list(analyte = "ergothioneine", units = "umol/L", specimen = "plasma", verified = TRUE),
-    is_liver1     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_liver1    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_liver2     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_liver2    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_liver3     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_liver3    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_liver4     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_liver4    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_liver5     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_liver5    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_skin       = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_skin      = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_muscle     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_muscle    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_adipose    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_adipose   = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    depot = list(analyte = "ergothioneine", units = "umol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ergothioneine", units = "umol/L", specimen = "plasma", verified = TRUE),
+    is_liver1 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_liver1 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_liver2 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_liver2 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_liver3 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_liver3 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_liver4 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_liver4 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_liver5 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_liver5 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_skin = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_skin = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_muscle = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_muscle = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_adipose = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_adipose = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
     rbc_precursor = list(analyte = "ergothioneine", units = "umol", specimen = "blood cell", verified = TRUE),
-    rbc_egt       = list(analyte = "ergothioneine", units = "umol/L", specimen = "blood cell", verified = TRUE),
-    renal_duct    = list(analyte = "ergothioneine", units = "umol/L", specimen = "urine", verified = TRUE)
+    rbc_egt = list(analyte = "ergothioneine", units = "umol/L", specimen = "blood cell", verified = TRUE),
+    renal_duct = list(analyte = "ergothioneine", units = "umol/L", specimen = "urine", verified = TRUE)
   )
 
   population <- list(

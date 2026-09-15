@@ -40,18 +40,18 @@ Parasrampuria_2025_temsavir_resp05log_day8 <- function() {
   )
   vignette <- "Parasrampuria_2025_temsavir"
   units <- list(
-    time          = "n/a (static landmark exposure-response regression at Day 8; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark exposure-response regression at Day 8; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_hivrna_decr05log (probability of a > 0.5 log10 c/mL decrease in plasma HIV-1 RNA at Day 8, 0-1; also logit_hivrna_decr05log)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual steady-state plasma temsavir concentration at the end of the dosing interval (Ctau), per subject. Supplied as data: this model has no PK layer.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual steady-state plasma temsavir concentration at the end of the dosing interval (Ctau), per subject. Supplied as data: this model has no PK layer.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma temsavir at STEADY STATE on the",
         "approved fostemsavir 600 mg BID regimen (12 h dosing interval).",
         "Parasrampuria 2025 Methods 2.3: derived from post-hoc individual",
@@ -67,14 +67,14 @@ Parasrampuria_2025_temsavir_resp05log_day8 <- function() {
         "Ctau (< 10 ng/mL) displayed a > 0.5 log10 reduction while some",
         "subjects with high observed Ctau (> 4000 ng/mL) did not'."
       ),
-      source_name        = "Ctau"
+      source_name = "Ctau"
     ),
     HIV_VLOAD = list(
-      description        = "Baseline (Day 1) plasma HIV-1 RNA concentration.",
-      units              = "copies/mL (c/mL)",
-      type               = "continuous",
+      description = "Baseline (Day 1) plasma HIV-1 RNA concentration.",
+      units = "copies/mL (c/mL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried LINEAR in c/mL as the <VIRUS>_VLOAD family requires, and",
         "converted to log10 and centred INSIDE model(). The Table 4 Note",
         "writes the term as theta1 * (BHIVRNA - 4.65); the centring",
@@ -90,14 +90,14 @@ Parasrampuria_2025_temsavir_resp05log_day8 <- function() {
         "continuous model, where higher baseline load gives a larger",
         "decline."
       ),
-      source_name        = "BHIVRNA"
+      source_name = "BHIVRNA"
     ),
     CD4_ABS = list(
-      description        = "Baseline (Day 1) absolute peripheral-blood CD4+ T-lymphocyte count.",
-      units              = "cells/mm^3",
-      type               = "continuous",
+      description = "Baseline (Day 1) absolute peripheral-blood CD4+ T-lymphocyte count.",
+      units = "cells/mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried as the CONTINUOUS count and DICHOTOMISED INSIDE model()",
         "at 20 cells/mm3, following the register's HCV_VLOAD / ALP",
         "pattern; a pre-binarised dataset column would hide the threshold.",
@@ -113,23 +113,23 @@ Parasrampuria_2025_temsavir_resp05log_day8 <- function() {
         "subjects (27%) below 20 cells/mm3; median 98.5 cells/mm3, range",
         "0-1160 (Table S2)."
       ),
-      source_name        = "BSL (derived from baseline CD4+ count)"
+      source_name = "BSL (derived from baseline CD4+ count)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 258L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 258L,
+    n_studies = 1L,
     n_observations = "258 binary Day 8 responder records (one per subject; landmark analysis, no repeated measures)",
-    age_range      = "18-73 years (median 48) (Table S2)",
-    weight_range   = "38-146 kg (median 70) (Table S2)",
+    age_range = "18-73 years (median 48) (Table S2)",
+    weight_range = "38-146 kg (median 70) (Table S2)",
     sex_female_pct = 26.0,
     race_ethnicity = c(White = 66.0, `Black or African American` = 23.0, Asian = 1.0, Other = 10.0),
-    disease_state  = "heavily treatment-experienced (HTE) adults with multidrug-resistant HIV-1 infection failing their current antiretroviral regimen, from the randomised cohort of the phase 3 BRIGHTE study; median baseline plasma HIV-1 RNA 4.65 log10 c/mL (range 1.59-6.91), median baseline CD4+ count 98.5 cells/mm3 (range 0-1160) with 69 subjects (27%) below 20 cells/mm3",
-    dose_range     = "fostemsavir extended-release 600 mg twice daily (193 subjects) or matching placebo (65 subjects), both added to the failing regimen during the 8-day functional-monotherapy period",
-    regions        = "North America 105 (41%), South America 97 (38%), Europe 49 (19%), other 7 (3%) (Table S2)",
-    notes          = paste0(
+    disease_state = "heavily treatment-experienced (HTE) adults with multidrug-resistant HIV-1 infection failing their current antiretroviral regimen, from the randomised cohort of the phase 3 BRIGHTE study; median baseline plasma HIV-1 RNA 4.65 log10 c/mL (range 1.59-6.91), median baseline CD4+ count 98.5 cells/mm3 (range 0-1160) with 69 subjects (27%) below 20 cells/mm3",
+    dose_range = "fostemsavir extended-release 600 mg twice daily (193 subjects) or matching placebo (65 subjects), both added to the failing regimen during the 8-day functional-monotherapy period",
+    regions = "North America 105 (41%), South America 97 (38%), Europe 49 (19%), other 7 (3%) (Table S2)",
+    notes = paste0(
       "Same analysis set as the companion continuous-endpoint model ",
       "Parasrampuria_2025_temsavir_hivrna_day8 and as the sibling ",
       "1 log10 model. Fitted with NONMEM 7.2 (FOCE-I). The published ",

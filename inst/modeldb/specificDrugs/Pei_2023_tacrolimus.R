@@ -29,17 +29,17 @@ Pei_2023_tacrolimus <- function() {
   # biological matrix. Tacrolimus concentrations in Pei 2023 are whole-blood
   # (CMIA assay, Methods 2.3).
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying laboratory value collected from post-transplant day",
         "1 to day 30 (Methods 2.2, 'biochemical parameters ... total",
         "bilirubin (TBIL)'). Table 2 gives the cohort median (IQR) as",
@@ -57,14 +57,14 @@ Pei_2023_tacrolimus <- function() {
         "TBIL, voriconazole, CYP3A5*3 (rs776746), and IL-10 G-1082A",
         "(rs1800896).'"
       ),
-      source_name        = "TBIL"
+      source_name = "TBIL"
     ),
     CONMED_VORICONAZOLE = list(
-      description        = "Concomitant voriconazole coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant voriconazole coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant voriconazole)",
-      notes              = paste(
+      notes = paste(
         "Time-varying. Supplement 2.1.1: 'Categorical covariates, such as",
         "SEX (male = 1 and female = 2) and Voriconazole",
         "(co-administration = 1 and none = 0), were included in the",
@@ -76,14 +76,14 @@ Pei_2023_tacrolimus <- function() {
         "inhibitors, amiodarone); only voriconazole was retained in the",
         "final model."
       ),
-      source_name        = "Voriconazole"
+      source_name = "Voriconazole"
     ),
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser, when paired with CYP3A5_STAR1_HOM = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype at rs776746). Table S4",
         "reports two separate rs776746 coefficients ('rs776746-TC' 0.77",
         "and 'rs776746-TT' 1.18), so the three genotype strata carry",
@@ -101,14 +101,14 @@ Pei_2023_tacrolimus <- function() {
         "the paper's own reported ratio of Bayesian CL/F estimates,",
         "27.3 / 12.2 = 2.24 (Results 3.1)."
       ),
-      source_name        = "rs776746-TC"
+      source_name = "rs776746-TC"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser, when paired with CYP3A5_STAR1_HET = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype at rs776746). Maps to",
         "the TT genotype (3 of 86 genotyped subjects, 3.5 percent) - see",
         "the CYP3A5_STAR1_HET notes for the C = CYP3A5*3 orientation and",
@@ -116,14 +116,14 @@ Pei_2023_tacrolimus <- function() {
         "1.18 (CV 13.94 percent, bootstrap median 1.17, 95 percent CI",
         "0.99-1.62)."
       ),
-      source_name        = "rs776746-TT"
+      source_name = "rs776746-TT"
     ),
     SNP_IL10_RS1800896_HET = list(
-      description        = "IL-10 G-1082A (rs1800896) heterozygote indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "IL-10 G-1082A (rs1800896) heterozygote indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (rs1800896 T/T homozygote)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype). Table 2 reports only",
         "two genotype strata at rs1800896 in the 86 genotyped subjects: TT",
         "63 (73.3 percent) and CT 23 (26.7 percent); no CC subjects were",
@@ -134,16 +134,16 @@ Pei_2023_tacrolimus <- function() {
         "'IL-10 is a potent modulator of CYP3A enzyme activity, inhibiting",
         "CYP3A-associated drug metabolism'."
       ),
-      source_name        = "rs1800896-TC"
+      source_name = "rs1800896-TC"
     )
   )
 
   covariatesDataExcluded <- list(
     SNP_CYP3A4_RS2242480_VAR_COUNT = list(
       description = "CYP3A4 rs2242480 (CYP3A4*18B) variant-allele count",
-      units       = "(count, 0/1/2 alleles per subject)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
+      notes = paste(
         "Screened and reported as significant in univariate analysis -",
         "Results 3.1: 'CYP3A4*18B genotypes were also significant",
         "covariates of CL/F. For CYP3A4*18B, there was a significant",
@@ -162,9 +162,9 @@ Pei_2023_tacrolimus <- function() {
     ),
     SEXF = list(
       description = "Sex, female indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested as an indicator variable (Supplement 2.1.1: 'SEX",
         "(male = 1 and female = 2)') but not retained in the final model.",
         "Note the paper's coding is 1 = male / 2 = female, so",
@@ -178,9 +178,9 @@ Pei_2023_tacrolimus <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Collected (Methods 2.2 demographic characteristics) and used by",
         "the companion PBPK model, but not retained on either CL/F or",
         "Vd/F in the final popPK model (Table S4). Results 3.1: 'No",
@@ -189,9 +189,9 @@ Pei_2023_tacrolimus <- function() {
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "% (volume fraction times 100)",
-      type        = "continuous",
-      notes       = paste(
+      units = "% (volume fraction times 100)",
+      type = "continuous",
+      notes = paste(
         "Collected (Methods 2.2 biochemical parameters) and the second",
         "most sensitive input of the companion PBPK model (Table 5), but",
         "not retained in the final popPK model. The Discussion contrasts",
@@ -203,16 +203,16 @@ Pei_2023_tacrolimus <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 115L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 115L,
+    n_studies = 1L,
     n_concentrations = 443L,
-    age_range        = "adults >= 18 years; median (IQR) 52.00 (46.00, 61.00) years (Table 2)",
-    age_median       = "52.00 years",
-    weight_range     = "median (IQR) 67.50 (57.50, 75.00) kg (Table 2)",
-    weight_median    = "67.50 kg",
-    sex_female_pct   = 19.1,
-    disease_state    = paste(
+    age_range = "adults >= 18 years; median (IQR) 52.00 (46.00, 61.00) years (Table 2)",
+    age_median = "52.00 years",
+    weight_range = "median (IQR) 67.50 (57.50, 75.00) kg (Table 2)",
+    weight_median = "67.50 kg",
+    sex_female_pct = 19.1,
+    disease_state = paste(
       "Adult heart transplant recipients at Nanjing First Hospital",
       "(November 2012 - January 2023) on tacrolimus (Prograf) with",
       "mycophenolate and corticosteroids; multi-organ transplant",
@@ -223,26 +223,26 @@ Pei_2023_tacrolimus <- function() {
       "fluconazole, calcium antagonists, proton pump inhibitors and",
       "amiodarone."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Oral tacrolimus titrated to a whole-blood trough target of 10-15",
       "ng/mL during the early postoperative period; median (IQR) daily",
       "dose 5.00 (4.00, 6.00) mg."
     ),
-    regions          = "China (Nanjing First Hospital)",
-    sampling_design  = paste(
+    regions = "China (Nanjing First Hospital)",
+    sampling_design = paste(
       "443 steady-state whole-blood trough concentrations from 115",
       "recipients collected during routine therapeutic drug monitoring.",
       "Whole-blood tacrolimus by CMIA; LLOQ 2 ng/mL, quantitative range",
       "2-30 ng/mL."
     ),
-    genotyping       = paste(
+    genotyping = paste(
       "20 SNPs genotyped in 86 of the 115 subjects. rs35599367, rs1135840,",
       "rs150461093, rs2229109 and rs4253728 failed Hardy-Weinberg",
       "equilibrium (p < 0.05) and were excluded from the analysis.",
       "rs776746 genotype counts CC 38 / CT 45 / TT 3; rs1800896 counts",
       "TT 63 / CT 23; rs2242480 counts CC 45 / CT 40 / TT 1 (Table 2)."
     ),
-    notes            = paste(
+    notes = paste(
       "Software: Phoenix NLME 8.3 (Certara) with the FOCE algorithm.",
       "Structural-model selection by OFV / AIC / BIC; covariates by",
       "stepwise forward inclusion (p < 0.05) and backward exclusion",

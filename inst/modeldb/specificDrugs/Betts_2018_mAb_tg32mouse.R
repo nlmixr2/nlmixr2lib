@@ -8,19 +8,19 @@ Betts_2018_mAb_tg32mouse <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mAb tg32mouse", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mAb tg32mouse", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mAb tg32mouse", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "hFcRn Tg32 transgenic mouse",
-    n_subjects     = NA,
-    n_studies      = NA,
-    disease_state  = "Homozygous hFcRn Tg32 transgenic mice (human FcRn knock-in) receiving single-dose IV monoclonal antibody at 3.5 or 5 mg/kg (n=5-6 per mAb) as an early PK-screening tool for human PK prediction.",
-    dose_range     = "IV: 3.5 mg/kg (1 mAb) or 5 mg/kg (10 mAbs) per Betts 2018 Materials and methods.",
-    notes          = "Class-level typical values pooled from Pfizer internal data for 11 monoclonal antibodies with linear PK in hFcRn Tg32 mice. Reference body weight assumed 0.02 kg (20 g) per Betts 2018 Materials and methods."
+    species = "hFcRn Tg32 transgenic mouse",
+    n_subjects = NA,
+    n_studies = NA,
+    disease_state = "Homozygous hFcRn Tg32 transgenic mice (human FcRn knock-in) receiving single-dose IV monoclonal antibody at 3.5 or 5 mg/kg (n=5-6 per mAb) as an early PK-screening tool for human PK prediction.",
+    dose_range = "IV: 3.5 mg/kg (1 mAb) or 5 mg/kg (10 mAbs) per Betts 2018 Materials and methods.",
+    notes = "Class-level typical values pooled from Pfizer internal data for 11 monoclonal antibodies with linear PK in hFcRn Tg32 mice. Reference body weight assumed 0.02 kg (20 g) per Betts 2018 Materials and methods."
   )
 
   ini({

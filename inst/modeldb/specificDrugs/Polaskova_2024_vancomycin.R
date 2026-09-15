@@ -10,11 +10,11 @@ Polaskova_2024_vancomycin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine-based CKD-EPI estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine-based CKD-EPI estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Polaskova 2024 Methods 2.2: 'Both creatinine- and cystatin C-based (if available) glomerular",
         "filtration rates (eGFR) were estimated according to the Chronic Kidney Disease Epidemiology",
         "Collaboration (CKD-EPI) formula for each patient (Inker et al., 2012).' The creatinine-based",
@@ -37,14 +37,14 @@ Polaskova_2024_vancomycin <- function() {
         "because it takes body weight as an input and therefore overestimates filtration in obesity.",
         collapse = " "
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     LBM = list(
-      description        = "Lean body mass by the Boer formula",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass by the Boer formula",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Polaskova 2024 Methods 2.2: 'The body surface area (BSA) and lean body mass (LBM) were",
         "calculated using Du Bois and Boer formulas, respectively (Boer, 1984; Du Bois and Du Bois,",
         "1989).' The Boer formulae are LBM (male) = 0.407 x WT + 0.267 x HT - 19.2 and LBM (female) =",
@@ -57,7 +57,7 @@ Polaskova_2024_vancomycin <- function() {
         "against Vd and retained none of them.",
         collapse = " "
       ),
-      source_name        = "LBM"
+      source_name = "LBM"
     )
   )
 
@@ -67,11 +67,11 @@ Polaskova_2024_vancomycin <- function() {
   # at length rather than an omission (Results 3.2, Figure 2A, Discussion).
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight. Screened against both Vd and CL; not retained.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight. Screened against both Vd and CL; not retained.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table 1: median 104 kg, IQR 95-120, range 73-190. Results 3.2: against Vd, 'the other body",
         "size descriptors (BW, LBM, and BSA) were found to be without statistical significance",
         "(Figure 2A)'; against CL, BW was one of several variables positively related in the",
@@ -84,79 +84,79 @@ Polaskova_2024_vancomycin <- function() {
       )
     ),
     HT = list(
-      description        = "Height. Screened as a continuous covariate on CL; not retained.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height. Screened as a continuous covariate on CL; not retained.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: median 1.74 m, IQR 1.65-1.80, range 1.50-1.95 (reported in m; this column is cm). Results 3.2 lists height among the variables positively related to CL in the preliminary graphical assessment, but it was not retained."
+      notes = "Table 1: median 1.74 m, IQR 1.65-1.80, range 1.50-1.95 (reported in m; this column is cm). Results 3.2 lists height among the variables positively related to CL in the preliminary graphical assessment, but it was not retained."
     ),
     BSA = list(
-      description        = "Body surface area by the Du Bois formula. Screened against both Vd and CL; not retained.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area by the Du Bois formula. Screened against both Vd and CL; not retained.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: median 2.17 m^2, IQR 2.02-2.35, range 1.68-2.77. Methods 2.2 names the Du Bois formula. Screened against Vd (Figure 2A, not significant) and against CL (positively related graphically, not retained after stepwise modelling)."
+      notes = "Table 1: median 2.17 m^2, IQR 2.02-2.35, range 1.68-2.77. Methods 2.2 names the Du Bois formula. Screened against Vd (Figure 2A, not significant) and against CL (positively related graphically, not retained after stepwise modelling)."
     ),
     BMI = list(
-      description        = "Body mass index. Screened against Vd; not retained.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index. Screened against Vd; not retained.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: median 34.3 kg/m^2, IQR 32.5-38.3, range 30.1-65.7 (BMI >= 30 was the inclusion criterion). Results 3.2: 'The preliminary graphical assessment showed only a very weak relationship between BMI and vancomycin Vd', and covariate diagnostics on the final model 'found that none of the covariates tested reliably predicted vancomycin Vd.' No point estimate published."
+      notes = "Table 1: median 34.3 kg/m^2, IQR 32.5-38.3, range 30.1-65.7 (BMI >= 30 was the inclusion criterion). Results 3.2: 'The preliminary graphical assessment showed only a very weak relationship between BMI and vancomycin Vd', and covariate diagnostics on the final model 'found that none of the covariates tested reliably predicted vancomycin Vd.' No point estimate published."
     ),
     AGE = list(
-      description        = "Subject age. Screened as a continuous covariate; not retained.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age. Screened as a continuous covariate; not retained.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: median 65 years, IQR 54-72, range 26-86. Listed in Methods 2.3 among the continuous covariates tested. No point estimate published."
+      notes = "Table 1: median 65 years, IQR 54-72, range 26-86. Listed in Methods 2.3 among the continuous covariates tested. No point estimate published."
     ),
     CREAT = list(
-      description        = "Serum creatinine. Screened as a continuous covariate on CL; not retained.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine. Screened as a continuous covariate on CL; not retained.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: median 72.3 umol/L, IQR 55.8-98.1, range 23.2-374.1. Results 3.2 reports CL was negatively related to serum creatinine in the preliminary graphical assessment, but the CKD-EPI eGFR derived from it was retained instead. No point estimate published."
+      notes = "Table 1: median 72.3 umol/L, IQR 55.8-98.1, range 23.2-374.1. Results 3.2 reports CL was negatively related to serum creatinine in the preliminary graphical assessment, but the CKD-EPI eGFR derived from it was retained instead. No point estimate published."
     ),
     BUN = list(
-      description        = "Serum urea. Screened as a continuous covariate on CL; not retained.",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum urea. Screened as a continuous covariate on CL; not retained.",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: median 5.6 mmol/L, IQR 3.8-7.9, range 1.2-24.4. Reported as serum UREA (mmol/L), not blood urea nitrogen; the register admits both under BUN with the unit documented per model. Results 3.2 reports CL was negatively related to urea graphically; not retained. No point estimate published."
+      notes = "Table 1: median 5.6 mmol/L, IQR 3.8-7.9, range 1.2-24.4. Reported as serum UREA (mmol/L), not blood urea nitrogen; the register admits both under BUN with the unit documented per model. Results 3.2 reports CL was negatively related to urea graphically; not retained. No point estimate published."
     ),
     CYSC = list(
-      description        = "Serum cystatin C, measured in a subgroup only. Screened as the basis of an alternative eGFR; not retained.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C, measured in a subgroup only. Screened as the basis of an alternative eGFR; not retained.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Measured in n = 46 of 138 patients (Results 3.2). The cystatin C-based CKD-EPI eGFR was compared head-to-head against the creatinine-based estimate in that subgroup (Figure 2B) and lost. No value distribution and no point estimate are published."
+      notes = "Measured in n = 46 of 138 patients (Results 3.2). The cystatin C-based CKD-EPI eGFR was compared head-to-head against the creatinine-based estimate in that subgroup (Figure 2B) and lost. No value distribution and no point estimate are published."
     ),
     SEXF = list(
-      description        = "Female sex indicator. Screened as a categorical covariate; not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator. Screened as a categorical covariate; not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Results 3.1: 82 males and 56 females (40.6% female). Methods 2.3 lists gender among the categorical covariates tested. No point estimate published. Note that sex is still an INPUT to this model indirectly, through the sex-specific Boer LBM formula."
+      notes = "Results 3.1: 82 males and 56 females (40.6% female). Methods 2.3 lists gender among the categorical covariates tested. No point estimate published. Note that sex is still an INPUT to this model indirectly, through the sex-specific Boer LBM formula."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 138L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 138L,
+    n_studies = 1L,
     n_observations = 147L,
-    age_range      = "26-86 years",
-    age_median     = "65 years",
-    weight_range   = "73-190 kg",
-    weight_median  = "104 kg",
+    age_range = "26-86 years",
+    age_median = "65 years",
+    weight_range = "73-190 kg",
+    weight_median = "104 kg",
     sex_female_pct = 40.6,
     race_ethnicity = NULL,
-    disease_state  = "Adult obese (BMI >= 30 kg/m2) inpatients treated for suspected or proven invasive Gram-positive infection: CNS infection 33%, sepsis 18%, orthopaedic 15%, ocular 9%, skin 6%, other (pneumonia, bacteriuria, bacteraemia, endocarditis, intra-abdominal) 19%",
-    dose_range     = "Loading dose 1-4 g (median 2.5 g) as a 0.5-7 h (median 5 h) IV infusion in 122 of 138 patients; maintenance dose 0.5-1.5 g (median 1 g) q6h, q8h, q12h or q24h as a 1-3 h (median 2 h) IV infusion, or 1-4 g/day (median 2 g/day) by continuous infusion in 9 patients",
-    regions        = "Czechia (single centre: Military University Hospital Prague)",
+    disease_state = "Adult obese (BMI >= 30 kg/m2) inpatients treated for suspected or proven invasive Gram-positive infection: CNS infection 33%, sepsis 18%, orthopaedic 15%, ocular 9%, skin 6%, other (pneumonia, bacteriuria, bacteraemia, endocarditis, intra-abdominal) 19%",
+    dose_range = "Loading dose 1-4 g (median 2.5 g) as a 0.5-7 h (median 5 h) IV infusion in 122 of 138 patients; maintenance dose 0.5-1.5 g (median 1 g) q6h, q8h, q12h or q24h as a 1-3 h (median 2 h) IV infusion, or 1-4 g/day (median 2 g/day) by continuous infusion in 9 patients",
+    regions = "Czechia (single centre: Military University Hospital Prague)",
     renal_function = "eGFR (CKD-EPI, creatinine) median 1.51 mL/s/1.73 m2 (IQR 1.12-1.72, range 0.17-2.47), i.e. median 90.6 mL/min/1.73 m2 (IQR 67.2-103.2, range 10.2-148.2). 52% of patients had eGFR >= 1.5 mL/s/1.73 m2 and 5% >= 2.13. Patients on renal replacement therapy or extracorporeal life support were EXCLUDED.",
-    notes          = paste(
+    notes = paste(
       "Retrospective open-label observational study of routine therapeutic drug monitoring data,",
       "January 2013 to December 2022 (Methods 2.1). Baseline demographics are Polaskova 2024 Table 1.",
       "Only concentrations from the INITIAL phase of therapy -- the first 3 days of treatment -- were",

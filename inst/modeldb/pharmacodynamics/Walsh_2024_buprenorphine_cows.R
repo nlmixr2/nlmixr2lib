@@ -57,38 +57,38 @@ Walsh_2024_buprenorphine_cows <- function() {
   depends <- c("CP_BPN_NGML")
 
   units <- list(
-    time          = "day",
-    dosing        = "N/A (PD-only; buprenorphine plasma concentration is a required input covariate)",
+    time = "day",
+    dosing = "N/A (PD-only; buprenorphine plasma concentration is a required input covariate)",
     concentration = "COWS total score (observation, 0-44 ordinal); ng/mL (CP_BPN_NGML input covariate)"
   )
 
   covariateData <- list(
     CP_BPN_NGML = list(
-      description        = "Time-matched buprenorphine plasma concentration driving the Imax inhibition of the COWS total score. Time-varying; supplied per observation record in the event table rather than computed from a coupled PK model.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Time-matched buprenorphine plasma concentration driving the Imax inhibition of the COWS total score. Time-varying; supplied per observation record in the event table rather than computed from a coupled PK model.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Supplementary Methods, 'Model development: COWS score': Cp is the time-matched BPN concentration. COWS was evaluated on the same day before the hydromorphone challenge, so all challenge levels contributed. Observed BPN plasma concentration range across the phase 2 study was 0.636-12.3 ng/mL; the paper's application simulation swept 0-10 ng/mL (Supplementary Methods, 'Model application'). Member of the canonical CP_<DRUG>_<UNITS> plasma-PD-driver family (siblings CP_MORPH_NGML, CP_OXY_NGML, CP_FBX_NGML). The upstream CAM2038 popPK model is not reported in this paper and is not packaged in nlmixr2lib; concentrations must be supplied externally.",
-      source_name        = "Cp (Walsh 2024 Supplementary Methods, COWS Imax equation)"
+      notes = "Supplementary Methods, 'Model development: COWS score': Cp is the time-matched BPN concentration. COWS was evaluated on the same day before the hydromorphone challenge, so all challenge levels contributed. Observed BPN plasma concentration range across the phase 2 study was 0.636-12.3 ng/mL; the paper's application simulation swept 0-10 ng/mL (Supplementary Methods, 'Model application'). Member of the canonical CP_<DRUG>_<UNITS> plasma-PD-driver family (siblings CP_MORPH_NGML, CP_OXY_NGML, CP_FBX_NGML). The upstream CAM2038 popPK model is not reported in this paper and is not packaged in nlmixr2lib; concentrations must be supplied externally.",
+      source_name = "Cp (Walsh 2024 Supplementary Methods, COWS Imax equation)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
     n_observations = 598L,
-    age_range      = "18-54 years (median 36.0; mean 35.8, SD 9.1)",
-    age_median     = "36.0 years",
-    weight_range   = "53.0-110.0 kg (median 73.4; mean 75.9, SD 14.0)",
-    weight_median  = "73.4 kg",
+    age_range = "18-54 years (median 36.0; mean 35.8, SD 9.1)",
+    age_median = "36.0 years",
+    weight_range = "53.0-110.0 kg (median 73.4; mean 75.9, SD 14.0)",
+    weight_median = "73.4 kg",
     sex_female_pct = 25.5,
     race_ethnicity = c(Black = 51, White = 47, Other = 2),
-    disease_state  = "Non-treatment-seeking adults with moderate to severe opioid use disorder (DSM-5), physically dependent on opioids.",
-    dose_range     = "CAM2038 (subcutaneous long-acting buprenorphine) 24 mg (n = 22) or 32 mg (n = 25) once weekly on days 0 and 7. Intramuscular hydromorphone challenges of 0, 6 or 18 mg; COWS was assessed before the challenge so all challenge levels contributed.",
-    regions        = "USA (multisite: University of Kentucky; Columbia University / New York State Psychiatric Institute)",
-    biomarkers     = "Clinical Opiate Withdrawal Scale (COWS) total score: 11 opioid-withdrawal signs each rated 0-4 by a trained observer, total range 0-44, where 5-12 represents mild symptoms.",
-    notes          = "Baseline demographics from Supplementary Table S1; observation counts from Supplementary Table S2 (COWS: 598 PD records, 284 + 314 across the 24 mg and 32 mg arms). Study NCT02611752. No covariate analysis is reported for this endpoint. Estimation used Monte Carlo importance sampling (IMP) in NONMEM 7.5 with MATRIX=R standard errors."
+    disease_state = "Non-treatment-seeking adults with moderate to severe opioid use disorder (DSM-5), physically dependent on opioids.",
+    dose_range = "CAM2038 (subcutaneous long-acting buprenorphine) 24 mg (n = 22) or 32 mg (n = 25) once weekly on days 0 and 7. Intramuscular hydromorphone challenges of 0, 6 or 18 mg; COWS was assessed before the challenge so all challenge levels contributed.",
+    regions = "USA (multisite: University of Kentucky; Columbia University / New York State Psychiatric Institute)",
+    biomarkers = "Clinical Opiate Withdrawal Scale (COWS) total score: 11 opioid-withdrawal signs each rated 0-4 by a trained observer, total range 0-44, where 5-12 represents mild symptoms.",
+    notes = "Baseline demographics from Supplementary Table S1; observation counts from Supplementary Table S2 (COWS: 598 PD records, 284 + 314 across the 24 mg and 32 mg arms). Study NCT02611752. No covariate analysis is reported for this endpoint. Estimation used Monte Carlo importance sampling (IMP) in NONMEM 7.5 with MATRIX=R standard errors."
   )
 
   ini({

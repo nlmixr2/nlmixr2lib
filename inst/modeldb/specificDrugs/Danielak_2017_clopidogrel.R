@@ -26,7 +26,8 @@ Danielak_2017_clopidogrel <- function() {
     "value 1, not estimated because no IV clopidogrel data exist).",
     "Residual error is proportional on the linear-concentration scale for",
     "both observed analytes; M3-method handling was used for samples below",
-    "the quantitation limit (0.25 ng/mL for both clopidogrel and H4).")
+    "the quantitation limit (0.25 ng/mL for both clopidogrel and H4)."
+  )
   reference <- "Danielak D, Karazniewicz-Lada M, Komosa A, Burchardt P, Lesiak M, Kruszyna L, Graczyk-Szuster A, Glowka F. Influence of genetic co-factors on the population pharmacokinetic model for clopidogrel and its active thiol metabolite. Eur J Clin Pharmacol. 2017;73(12):1623-1632. doi:10.1007/s00228-017-2334-z"
   vignette <- "Danielak_2017_clopidogrel"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -36,38 +37,38 @@ Danielak_2017_clopidogrel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "clopidogrel", units = "mg", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "clopidogrel", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "clopidogrel", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "clopidogrel", units = "mg", specimen = "plasma", verified = FALSE),
     central_h4 = list(analyte = "H4 metabolite", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2C19_S2_CARRIER = list(
-      description        = "CYP2C19*2 loss-of-function allele carrier indicator: 1 = subject carries at least one *2 allele (heterozygous *1/*2 or homozygous *2/*2); 0 = no *2 allele.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19*2 loss-of-function allele carrier indicator: 1 = subject carries at least one *2 allele (heterozygous *1/*2 or homozygous *2/*2); 0 = no *2 allele.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP2C19*2 allele -- *1/*1, *1/*17, or *17/*17).",
-      notes              = "Time-fixed germline genotype determined by PCR-RFLP for rs4244285 (Danielak 2017 Methods 'Determination of genetic polymorphisms'). Pooled het + hom because the Danielak 2017 cohort had no *2/*2 homozygous-poor-metabolizers (n = 0 PM in the n = 63 cohort; Table 1 phenotype distribution lists only UM, EM, and IM). Linear-deviation effect on FM via the source equation FM = TVFM * (1 + e_cyp2c19_s2_fm * CYP2C19_S2_CARRIER) -- carriers convert 45% less of the absorbed clopidogrel to the active H4 thiol metabolite, giving a 36.7% lower predicted AUC of H4 vs non-carriers (Danielak 2017 Results page 1628 and Figure 4b).",
-      source_name        = "CYP2C19*2"
+      notes = "Time-fixed germline genotype determined by PCR-RFLP for rs4244285 (Danielak 2017 Methods 'Determination of genetic polymorphisms'). Pooled het + hom because the Danielak 2017 cohort had no *2/*2 homozygous-poor-metabolizers (n = 0 PM in the n = 63 cohort; Table 1 phenotype distribution lists only UM, EM, and IM). Linear-deviation effect on FM via the source equation FM = TVFM * (1 + e_cyp2c19_s2_fm * CYP2C19_S2_CARRIER) -- carriers convert 45% less of the absorbed clopidogrel to the active H4 thiol metabolite, giving a 36.7% lower predicted AUC of H4 vs non-carriers (Danielak 2017 Results page 1628 and Figure 4b).",
+      source_name = "CYP2C19*2"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 63L,
-    n_studies            = 1L,
-    n_observations       = "155 clopidogrel and 158 H4 plasma concentrations; 17 BQL samples (10 clopidogrel, 7 H4) handled with the NONMEM M3 method (Beal 2001).",
-    age_range            = "mean 65.4 +/- 10.5 years (Table 1).",
-    weight_range         = "mean 79.1 +/- 14.0 kg (n = 55 with weight reported; missing weights for 1 female and 7 male subjects imputed with sex-specific means -- female mean 73.5 kg, male mean 82.3 kg per Danielak 2017 Results 'Patients' characteristics').",
-    sex_female_pct       = 33.3,
-    race_ethnicity       = c(White = 100),
-    disease_state        = "Stable adult patients undergoing elective coronarography or percutaneous coronary intervention (PCI) on chronic oral clopidogrel 75 mg once daily for at least 7 days prior to the procedure. Exclusion criteria: acute myocardial infarction, treatment with glycoprotein IIb/IIIa antagonists / coumarin derivatives / antiplatelet drugs other than aspirin, platelet count < 100,000/uL, ongoing malignancy, liver dysfunction, impaired renal function (serum creatinine > 2 mg/dL). 95% on concomitant statin; 73% on concomitant PPI (mostly pantoprazole).",
-    dose_range           = "Oral clopidogrel 75 mg once daily for at least 7 days before sampling. Plasma sampling on the day of the procedure: full PK profile (0.5, 1, 2, 3, 4 h post-dose) in n = 17; sparse sampling (0.5 + 2 h or 1 + 3 h post-dose) in n = 46. The short sampling window (<= 4 h) was chosen because both clopidogrel and H4 are rapidly eliminated and concentrations are mostly BQL beyond 4 h post-dose.",
-    regions              = "Single-centre, Poznan, Poland.",
+    species = "human",
+    n_subjects = 63L,
+    n_studies = 1L,
+    n_observations = "155 clopidogrel and 158 H4 plasma concentrations; 17 BQL samples (10 clopidogrel, 7 H4) handled with the NONMEM M3 method (Beal 2001).",
+    age_range = "mean 65.4 +/- 10.5 years (Table 1).",
+    weight_range = "mean 79.1 +/- 14.0 kg (n = 55 with weight reported; missing weights for 1 female and 7 male subjects imputed with sex-specific means -- female mean 73.5 kg, male mean 82.3 kg per Danielak 2017 Results 'Patients' characteristics').",
+    sex_female_pct = 33.3,
+    race_ethnicity = c(White = 100),
+    disease_state = "Stable adult patients undergoing elective coronarography or percutaneous coronary intervention (PCI) on chronic oral clopidogrel 75 mg once daily for at least 7 days prior to the procedure. Exclusion criteria: acute myocardial infarction, treatment with glycoprotein IIb/IIIa antagonists / coumarin derivatives / antiplatelet drugs other than aspirin, platelet count < 100,000/uL, ongoing malignancy, liver dysfunction, impaired renal function (serum creatinine > 2 mg/dL). 95% on concomitant statin; 73% on concomitant PPI (mostly pantoprazole).",
+    dose_range = "Oral clopidogrel 75 mg once daily for at least 7 days before sampling. Plasma sampling on the day of the procedure: full PK profile (0.5, 1, 2, 3, 4 h post-dose) in n = 17; sparse sampling (0.5 + 2 h or 1 + 3 h post-dose) in n = 46. The short sampling window (<= 4 h) was chosen because both clopidogrel and H4 are rapidly eliminated and concentrations are mostly BQL beyond 4 h post-dose.",
+    regions = "Single-centre, Poznan, Poland.",
     genotype_distribution = "CYP2C19*2 carriers n = 20 (31.7%); CYP2C19*17 carriers n = 34 (54.0%); CYP3A4*1G carriers n = 10 (15.8%); ABCB1 3435TT homozygotes n = 22 (34.9%). Phenotype: UM (*1/*17 or *17/*17) n = 25 (39.7%), EM (*1/*1) n = 18 (28.6%), IM (*1/*2) n = 20 (31.7%); no PM (*2/*2) observed.",
-    bmi_range            = "mean 28.40 +/- 4.89 kg/m^2; 37/55 (67.3%) classified as obese (BMI >= 30) -- Table 1.",
-    co_medication        = "Statins 60/63 (95.2%); PPI 46/63 (73.0%); pantoprazole 43/46 (93.5% of PPI users), omeprazole 2/46, esomeprazole 1/46. Diabetes mellitus 22/63 (34.9%). PPI subtype not separately modelled because pantoprazole dominated the cohort.",
-    notes                = "Tested but not retained covariates: age, weight, BMI, obesity (BMI >= 30), sex, diabetes mellitus, PPI coadministration, statin coadministration, CYP2C19*17 allele, CYP3A4*1G allele, ABCB1 3435TT genotype. In the initial step-wise forward-selection step, sex on ka (k12 in the source) and V/F, ABCB1 3435TT on CL/F, and CYP2C19*17 on FM and V/F were significant individually; all were dropped after CYP2C19*2 was included on FM in the backward elimination (Danielak 2017 Results 'PK model' page 1626). Clopidogrel and H4 concentrations were quantified by validated HPLC-MS/MS within 0.25-5 ng/mL (clopidogrel) and 0.25-50 ng/mL (derivatised H4); within- and between-day precision below 19.9% and assay relative error below 16%. Plasma stabilised with 25 uL of 500 mM bromo-3'-methoxyacetophenone per 5 mL whole blood immediately on collection (Takahashi et al. derivatisation protocol)."
+    bmi_range = "mean 28.40 +/- 4.89 kg/m^2; 37/55 (67.3%) classified as obese (BMI >= 30) -- Table 1.",
+    co_medication = "Statins 60/63 (95.2%); PPI 46/63 (73.0%); pantoprazole 43/46 (93.5% of PPI users), omeprazole 2/46, esomeprazole 1/46. Diabetes mellitus 22/63 (34.9%). PPI subtype not separately modelled because pantoprazole dominated the cohort.",
+    notes = "Tested but not retained covariates: age, weight, BMI, obesity (BMI >= 30), sex, diabetes mellitus, PPI coadministration, statin coadministration, CYP2C19*17 allele, CYP3A4*1G allele, ABCB1 3435TT genotype. In the initial step-wise forward-selection step, sex on ka (k12 in the source) and V/F, ABCB1 3435TT on CL/F, and CYP2C19*17 on FM and V/F were significant individually; all were dropped after CYP2C19*2 was included on FM in the backward elimination (Danielak 2017 Results 'PK model' page 1626). Clopidogrel and H4 concentrations were quantified by validated HPLC-MS/MS within 0.25-5 ng/mL (clopidogrel) and 0.25-50 ng/mL (derivatised H4); within- and between-day precision below 19.9% and assay relative error below 16%. Plasma stabilised with 25 uL of 500 mM bromo-3'-methoxyacetophenone per 5 mL whole blood immediately on collection (Takahashi et al. derivatisation protocol)."
   )
 
   ini({

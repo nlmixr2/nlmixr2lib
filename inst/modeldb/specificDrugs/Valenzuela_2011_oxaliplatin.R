@@ -21,127 +21,126 @@ Valenzuela_2011_oxaliplatin <- function() {
     sep = " "
   )
   vignette <- "Valenzuela_2011_oxaliplatin"
-  units <- list(time = "h", dosing = "mg", concentration = "mg/L",
-                anc = "10^9 cells/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L", anc = "10^9 cells/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "oxaliplatin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "oxaliplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "oxaliplatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oxaliplatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "oxaliplatin", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "ANC", units = "mg", specimen = "whole blood", verified = FALSE)
+    precursor1 = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "ANC", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list()
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age",
-      units              = "year",
-      type               = "continuous",
+      description = "Age",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically in Valenzuela 2011 (Results, Pharmacodynamics paragraph: 'The exploratory graphical analysis of the effect of age, sex, body weight, serum creatinine, albumin, serum ALT, serum AST, total bilirubin, hemoglobin, and hematocrit did not suggest any correlation between these covariates and PK/PD parameters'). No formal covariate analysis was attempted because of the small sample size (N=30). Baseline distribution (Table I): mean 57.9, SD 10.5, range 32.0-75.0 year.",
-      source_name        = "AGE"
+      notes = "Screened graphically in Valenzuela 2011 (Results, Pharmacodynamics paragraph: 'The exploratory graphical analysis of the effect of age, sex, body weight, serum creatinine, albumin, serum ALT, serum AST, total bilirubin, hemoglobin, and hematocrit did not suggest any correlation between these covariates and PK/PD parameters'). No formal covariate analysis was attempted because of the small sample size (N=30). Baseline distribution (Table I): mean 57.9, SD 10.5, range 32.0-75.0 year.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): 60% female (18/30).",
-      source_name        = "SEX"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): 60% female (18/30).",
+      source_name = "SEX"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): mean 69.3, SD 12.1, range 42.0-90.0 kg.",
-      source_name        = "WT"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): mean 69.3, SD 12.1, range 42.0-90.0 kg.",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine (reported indirectly via Cockcroft-Gault CRCL)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine (reported indirectly via Cockcroft-Gault CRCL)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The paper reports Cockcroft-Gault creatinine clearance (Table I: mean 85.3, SD 32.9, range 23.2-150.0 mL/min, truncated at 150) rather than the raw serum creatinine. Screened against PK/PD parameters; no correlation.",
-      source_name        = "SCR"
+      notes = "The paper reports Cockcroft-Gault creatinine clearance (Table I: mean 85.3, SD 32.9, range 23.2-150.0 mL/min, truncated at 150) rather than the raw serum creatinine. Screened against PK/PD parameters; no correlation.",
+      source_name = "SCR"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): mean 33.3, SD 10.6, range 14.9-50.5 g/L.",
-      source_name        = "ALB"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): mean 33.3, SD 10.6, range 14.9-50.5 g/L.",
+      source_name = "ALB"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): mean 45.1, SD 20.1, range 19.0-100 IU/L.",
-      source_name        = "ALT"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): mean 45.1, SD 20.1, range 19.0-100 IU/L.",
+      source_name = "ALT"
     ),
     AST = list(
-      description        = "Serum aspartate aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): mean 38.9, SD 19.4, range 10.0-83.0 IU/L.",
-      source_name        = "AST"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): mean 38.9, SD 19.4, range 10.0-83.0 IU/L.",
+      source_name = "AST"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): mean 0.6, SD 0.3, range 0.2-1.6 umol/L (as reported; the units column header in Table I reads 'umol/L' but the magnitudes are more consistent with mg/dL -- confirm the column header against the published PDF before relying on the absolute scale).",
-      source_name        = "TBIL"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): mean 0.6, SD 0.3, range 0.2-1.6 umol/L (as reported; the units column header in Table I reads 'umol/L' but the magnitudes are more consistent with mg/dL -- confirm the column header against the published PDF before relying on the absolute scale).",
+      source_name = "TBIL"
     ),
     HGB = list(
-      description        = "Hemoglobin",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Hemoglobin",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened graphically; no correlation. Baseline distribution (Table I): mean 11.3, SD 1.5, range 6.4-13.0 g/dL.",
-      source_name        = "HGB"
+      notes = "Screened graphically; no correlation. Baseline distribution (Table I): mean 11.3, SD 1.5, range 6.4-13.0 g/dL.",
+      source_name = "HGB"
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "(fraction)",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "(fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened against PK/PD parameters in Valenzuela 2011 (Results, Pharmacodynamics paragraph) but no baseline distribution is tabulated in the paper. No correlation detected.",
-      source_name        = "HCT"
+      notes = "Screened against PK/PD parameters in Valenzuela 2011 (Results, Pharmacodynamics paragraph) but no baseline distribution is tabulated in the paper. No correlation detected.",
+      source_name = "HCT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "32-75 years",
-    age_mean       = "57.9 (SD 10.5) years",
-    weight_range   = "42-90 kg",
-    weight_mean    = "69.3 (SD 12.1) kg",
-    bsa_mean       = "1.7 (SD 0.2) m^2 (range 1.4-2.0)",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "32-75 years",
+    age_mean = "57.9 (SD 10.5) years",
+    weight_range = "42-90 kg",
+    weight_mean = "69.3 (SD 12.1) kg",
+    bsa_mean = "1.7 (SD 0.2) m^2 (range 1.4-2.0)",
     sex_female_pct = 60,
     race_ethnicity = NA_character_,
-    disease_state  = "Adults with peritoneal carcinomatosis (primary tumour: ovarian n=10, colorectal n=9, appendiceal n=5, gastric n=3, endometrial n=2, primary papillary n=1) undergoing cytoreductive surgery followed by hyperthermic intraperitoneal oxaliplatin (HIO). World Health Organization performance status 0-2; life expectancy >=3 months. Eligibility required normal hepatic and renal function (bilirubin <=1.5x ULN, AST/ALT <=2.5x ULN, serum creatinine <=1.5x ULN) and acceptable bone marrow function (WBC >3.5e9/L, neutrophils >1.5e9/L, platelets >100e9/L).",
-    dose_range     = "Single hyperthermic intraperitoneal oxaliplatin dose of 360 mg/m^2 administered in 4% icodextrin perfusate (2.5-6.0 L volume) at perfusate temperature 42-43 degC; HIO duration 30-60 min (mean 40 min). All patients additionally received intraperitoneal 5-FU 15 mg/kg over a 1-h infusion on each of the 5 postoperative days; 5-FU exposure was assumed negligible for the neutropenia model (low intrinsic neutropenic effect; 81.5% of 5-FU plasma concentrations below 0.04 mg/L LOQ).",
-    regions        = "USP Hospital San Jaime (Torrevieja, Spain); enrollment 2006-2009",
+    disease_state = "Adults with peritoneal carcinomatosis (primary tumour: ovarian n=10, colorectal n=9, appendiceal n=5, gastric n=3, endometrial n=2, primary papillary n=1) undergoing cytoreductive surgery followed by hyperthermic intraperitoneal oxaliplatin (HIO). World Health Organization performance status 0-2; life expectancy >=3 months. Eligibility required normal hepatic and renal function (bilirubin <=1.5x ULN, AST/ALT <=2.5x ULN, serum creatinine <=1.5x ULN) and acceptable bone marrow function (WBC >3.5e9/L, neutrophils >1.5e9/L, platelets >100e9/L).",
+    dose_range = "Single hyperthermic intraperitoneal oxaliplatin dose of 360 mg/m^2 administered in 4% icodextrin perfusate (2.5-6.0 L volume) at perfusate temperature 42-43 degC; HIO duration 30-60 min (mean 40 min). All patients additionally received intraperitoneal 5-FU 15 mg/kg over a 1-h infusion on each of the 5 postoperative days; 5-FU exposure was assumed negligible for the neutropenia model (low intrinsic neutropenic effect; 81.5% of 5-FU plasma concentrations below 0.04 mg/L LOQ).",
+    regions = "USP Hospital San Jaime (Torrevieja, Spain); enrollment 2006-2009",
     n_obs_peritoneum = 140L,
-    n_obs_plasma     = 338L,
-    n_obs_anc        = 678L,
-    notes          = "Single-arm Phase 1-2 safety / tolerability / PK / PD study; baseline characteristics in Table I. Peritoneal cancer index (Sugarbaker): mean 8.6, range 0.0-39.0. Complete cytoreduction (CC0) achieved in 66.7%. Cockcroft-Gault creatinine clearance: mean 85.3 mL/min (SD 32.9, range 23.2-150.0; values >150 truncated to 150). Liver metastases present in 16.7%."
+    n_obs_plasma = 338L,
+    n_obs_anc = 678L,
+    notes = "Single-arm Phase 1-2 safety / tolerability / PK / PD study; baseline characteristics in Table I. Peritoneal cancer index (Sugarbaker): mean 8.6, range 0.0-39.0. Complete cytoreduction (CC0) achieved in 66.7%. Cockcroft-Gault creatinine clearance: mean 85.3 mL/min (SD 32.9, range 23.2-150.0; values >150 truncated to 150). Liver metastases present in 16.7%."
   )
 
   ini({

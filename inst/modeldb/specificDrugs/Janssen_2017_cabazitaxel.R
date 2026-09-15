@@ -33,11 +33,11 @@ Janssen_2017_cabazitaxel <- function() {
 
   covariateData <- list(
     CYP3A4 = list(
-      description        = "Individual midazolam clearance used as a CYP3A metabolic-phenotype probe",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual midazolam clearance used as a CYP3A metabolic-phenotype probe",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant per-subject covariate. The column carries each",
         "patient's empirical-Bayes individual midazolam clearance",
         "(L/h) from the companion Janssen 2017 one-compartment IV",
@@ -58,21 +58,21 @@ Janssen_2017_cabazitaxel <- function() {
         "and reported that the linear form best described the",
         "midazolam-CL / cabazitaxel-CL relationship (Results)."
       ),
-      source_name        = "CLmdz_i"
+      source_name = "CLmdz_i"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "65-77 years (median 67)",
-    weight_range   = "Body surface area 1.76-2.34 m^2 (median 1.95-1.96 m^2); body weight not reported in the paper",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "65-77 years (median 67)",
+    weight_range = "Body surface area 1.76-2.34 m^2 (median 1.95-1.96 m^2); body weight not reported in the paper",
     sex_female_pct = 0,
-    disease_state  = "Metastatic castration-resistant prostate cancer; all previously treated with docetaxel",
-    dose_range     = "Cabazitaxel 25 mg/m^2 by intravenous infusion as part of routine palliative care (median absolute dose 46.25 mg, range 38-50 mg per Table 1)",
-    regions        = "Meander Medical Center, Amersfoort, The Netherlands (single-centre)",
-    notes          = paste(
+    disease_state = "Metastatic castration-resistant prostate cancer; all previously treated with docetaxel",
+    dose_range = "Cabazitaxel 25 mg/m^2 by intravenous infusion as part of routine palliative care (median absolute dose 46.25 mg, range 38-50 mg per Table 1)",
+    regions = "Meander Medical Center, Amersfoort, The Netherlands (single-centre)",
+    notes = paste(
       "Eight plasma samples per cabazitaxel infusion at 0, 30, 60, 120,",
       "240, 360, 600 min post-infusion plus one sample at 24 h",
       "(Methods). Bioanalysis by validated LC-MS/MS with LOQ = 1 ng/mL;",

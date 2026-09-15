@@ -8,63 +8,62 @@ Cirincione_2017_exenatide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "exenatide", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "exenatide", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "exenatide", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "exenatide", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "exenatide", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric-like effect on central volume; reference weight 84.8 kg (population median).",
-      source_name        = "WT"
+      notes = "Allometric-like effect on central volume; reference weight 84.8 kg (population median).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Modification of Diet in Renal Disease (MDRD) estimated glomerular filtration rate (creatinine-based, BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Modification of Diet in Renal Disease (MDRD) estimated glomerular filtration rate (creatinine-based, BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear clearance; reference CRCL 80 mL/min/1.73 m^2. Source column 'eGFR' (MDRD eGFR) maps to the canonical general-scope CRCL covariate (which also accepts measured CrCl BSA-normalized in the same units); the MDRD estimation method is documented here in the description.",
-      source_name        = "eGFR"
+      notes = "Power effect on linear clearance; reference CRCL 80 mL/min/1.73 m^2. Source column 'eGFR' (MDRD eGFR) maps to the canonical general-scope CRCL covariate (which also accepts measured CrCl BSA-normalized in the same units); the MDRD estimation method is documented here in the description.",
+      source_name = "eGFR"
     ),
     STUDY1 = list(
-      description        = "Indicator for Study 1 of the Cirincione 2017 pooled analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Study 1 of the Cirincione 2017 pooled analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other studies)",
-      notes              = "Selects the Study 1 log-scale residual error magnitude. Source used a character-valued DVID column with values 'study1' / 'study5' / 'otherStudy'; split into STUDY1 and STUDY5 binary indicators per covariate-columns.md register.",
-      source_name        = "DVID"
+      notes = "Selects the Study 1 log-scale residual error magnitude. Source used a character-valued DVID column with values 'study1' / 'study5' / 'otherStudy'; split into STUDY1 and STUDY5 binary indicators per covariate-columns.md register.",
+      source_name = "DVID"
     ),
     STUDY5 = list(
-      description        = "Indicator for Study 5 of the Cirincione 2017 pooled analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Study 5 of the Cirincione 2017 pooled analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other studies)",
-      notes              = "Selects the Study 5 log-scale residual error magnitude. Paired with STUDY1; STUDY1 = STUDY5 = 0 selects the pooled 'other studies' residual error.",
-      source_name        = "DVID"
+      notes = "Selects the Study 5 log-scale residual error magnitude. Paired with STUDY1; STUDY1 = STUDY5 = 0 selects the pooled 'other studies' residual error.",
+      source_name = "DVID"
     )
   )
 
   population <- list(
-    n_subjects     = 195,
-    n_studies      = 8,
-    age_range      = "18-76 years",
-    age_mean       = "48 years (SD 12.9)",
-    weight_range   = "52.6-162 kg",
-    weight_mean    = "86 kg (SD 16.2)",
+    n_subjects = 195,
+    n_studies = 8,
+    age_range = "18-76 years",
+    age_mean = "48 years (SD 12.9)",
+    weight_range = "52.6-162 kg",
+    weight_mean = "86 kg (SD 16.2)",
     sex_female_pct = 22,
     race_ethnicity = c(Caucasian = 67, Other = 33),
-    egfr_range     = "4.1 to >=90 mL/min/1.73 m^2",
-    egfr_mean      = "88.7 mL/min/1.73 m^2 (SD 31.4)",
-    renal_function = c(normal_ge_90 = 129, mild_60_89 = 47, moderate_30_59 = 10,
-                       severe_15_29 = 1, ESRD_lt_15 = 8),
-    disease_state  = "Pooled analysis: healthy volunteers and patients with type 2 diabetes mellitus, including normal renal function and mild/moderate/severe/ESRD renal impairment.",
-    dose_range     = "2.5-20 ug single or repeated SC dose",
-    regions        = "Not reported in detail",
-    notes          = "Demographics from Cirincione 2017 Table 1. 195 subjects across 8 clinical trials; concentrations quantified by 2 immunoassays (Studies 1 and 5 had distinct residual error magnitudes)."
+    egfr_range = "4.1 to >=90 mL/min/1.73 m^2",
+    egfr_mean = "88.7 mL/min/1.73 m^2 (SD 31.4)",
+    renal_function = c(normal_ge_90 = 129, mild_60_89 = 47, moderate_30_59 = 10, severe_15_29 = 1, ESRD_lt_15 = 8),
+    disease_state = "Pooled analysis: healthy volunteers and patients with type 2 diabetes mellitus, including normal renal function and mild/moderate/severe/ESRD renal impairment.",
+    dose_range = "2.5-20 ug single or repeated SC dose",
+    regions = "Not reported in detail",
+    notes = "Demographics from Cirincione 2017 Table 1. 195 subjects across 8 clinical trials; concentrations quantified by 2 immunoassays (Studies 1 and 5 had distinct residual error magnitudes)."
   )
 
   ini({

@@ -35,18 +35,18 @@ Wada_2023_sparsentan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sparsentan", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sparsentan", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sparsentan", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sparsentan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sparsentan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Administered sparsentan dose at the dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered sparsentan dose at the dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Use case (a) of the DOSE canonical: the per-record administered dose",
         "level drives the dose-dependent relative bioavailability",
         "Frel = (max(DOSE, 200) / 400)^-0.495 (Wada 2023 Table 2 note and",
@@ -56,31 +56,31 @@ Wada_2023_sparsentan <- function() {
         "Frel = (200 / 400)^-0.495 for doses at or below 200 mg. Doses studied",
         "ranged from 50 to 1600 mg (Table S1)."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL/F normalised to the overall population median of",
         "68 U/L (Wada 2023 Table 1 overall median; Table 2 footnote b names",
         "68 U/L as the reference-subject value). Overall range 25-269 U/L.",
         "Elevated ALKP is associated with lower CL/F; the paper tested ALKP as",
         "one of four hepatic markers and retained only this one."
       ),
-      source_name        = "ALKP"
+      source_name = "ALKP"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated by the Cockcroft-Gault equation,",
         "NOT BSA-normalised"
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw (absolute) Cockcroft-Gault creatinine clearance in mL/min, not",
         "normalised to 1.73 m^2 - same convention as Delattre_2010_amikacin.R,",
         "Georges_2009_ceftazidime.R and Chen_2023_nemonoxacin.R. Power effect",
@@ -90,14 +90,14 @@ Wada_2023_sparsentan <- function() {
         "is also a covariate on CL/F, the paper notes the CrCL association may",
         "be partly confounded by sex (Discussion)."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) in this paper - see notes",
-      notes              = paste(
+      notes = paste(
         "The canonical SEXF orientation is kept (1 = female), but Wada 2023",
         "reports the effect for MALES against a FEMALE reference subject",
         "(Table 2 footnote b: 'the reference subject is a white female').",
@@ -107,14 +107,14 @@ Wada_2023_sparsentan <- function() {
         "Bajaj_2017_nivolumab.R. Men had ~15% higher CL/F than women.",
         "Cohort 33.2% female (Wada 2023 Table 1)."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     RACE_BLACK = list(
-      description        = "Black or African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black or African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; the most frequent level and the paper's reference)",
-      notes              = paste(
+      notes = paste(
         "Log-additive effect on the apparent central volume Vc/F",
         "(Wada 2023 Table 2 'Effect on Vc'); Black subjects had ~36% higher",
         "Vc/F than White subjects. Cohort 23.5% Black or African American",
@@ -123,27 +123,27 @@ Wada_2023_sparsentan <- function() {
         "in Table 1 have no published coefficient and fall in the reference",
         "group here."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; the most frequent level and the paper's reference)",
-      notes              = paste(
+      notes = paste(
         "Log-additive effect on the apparent central volume Vc/F",
         "(Wada 2023 Table 2 'Effect on Vc'); Asian subjects had ~30% higher",
         "Vc/F than White subjects. Cohort 6.1% Asian (Table 1). Paired with",
         "RACE_BLACK; both 0 selects the White reference."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     FORM_TABLET = list(
-      description        = "Whole (uncrushed) tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Whole (uncrushed) tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capsule, when FORM_CRUSHED_TABLET is also 0)",
-      notes              = paste(
+      notes = paste(
         "Three-level formulation stratification {capsule reference, whole",
         "tablet, crushed tablet} encoded as the two binary indicators",
         "FORM_TABLET and FORM_CRUSHED_TABLET; both 0 selects the 100 mg",
@@ -156,14 +156,14 @@ Wada_2023_sparsentan <- function() {
         "unaffected and Cmax differs by <10% (Wada 2023 Results / Figure 3).",
         "Cohort 52.5% tablet (Table 1)."
       ),
-      source_name        = "Formulation"
+      source_name = "Formulation"
     ),
     FORM_CRUSHED_TABLET = list(
-      description        = "Crushed-tablet (dry, not resuspended) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crushed-tablet (dry, not resuspended) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capsule, when FORM_TABLET is also 0)",
-      notes              = paste(
+      notes = paste(
         "Second indicator of the three-level formulation stratification (see",
         "FORM_TABLET). The crushed tablet is absorbed faster than either the",
         "whole tablet or the capsule (Ka x exp(0.080)) and has a markedly",
@@ -171,14 +171,14 @@ Wada_2023_sparsentan <- function() {
         "RTRXRE021103 used the crushed tablet; cohort 8.1% (Table 1). The",
         "crushed-tablet Ka coefficient is imprecise (RSE 159.1%)."
       ),
-      source_name        = "Formulation"
+      source_name = "Formulation"
     ),
     CONMED_CYP3A4_INH_MOD = list(
-      description        = "Concomitant moderate CYP3A4 inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant moderate CYP3A4 inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no moderate CYP3A4 inhibitor)",
-      notes              = paste(
+      notes = paste(
         "Log-additive effect on CL/F (Wada 2023 Table 2 'Effect on CL'):",
         "CL/F x exp(-0.273), which the paper translates to a 31.4% increase in",
         "steady-state AUC and a 16.0% increase in Cmax. Cyclosporine is the",
@@ -188,14 +188,14 @@ Wada_2023_sparsentan <- function() {
         "tested and NOT retained, so they fall in the 0 reference group",
         "together with subjects on no inhibitor."
       ),
-      source_name        = "CYP3A4 inhibitor (moderate)"
+      source_name = "CYP3A4 inhibitor (moderate)"
     ),
     CONMED_CYP3A4_INH_STRONG = list(
-      description        = "Concomitant strong CYP3A4 inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A4 inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no strong CYP3A4 inhibitor)",
-      notes              = paste(
+      notes = paste(
         "Log-additive effect on CL/F (Wada 2023 Table 2 'Effect on CL'):",
         "CL/F x exp(-1.069), a 66% reduction in CL/F, which the paper",
         "translates to a 191.3% increase in steady-state AUC and a 99.0%",
@@ -205,7 +205,7 @@ Wada_2023_sparsentan <- function() {
         "Discussion (174% increase in observed sparsentan AUCinf in study",
         "021HVOL16006). Cohort 7.2% (Table 1)."
       ),
-      source_name        = "CYP3A4 inhibitor (strong)"
+      source_name = "CYP3A4 inhibitor (strong)"
     )
   )
 
@@ -216,9 +216,9 @@ Wada_2023_sparsentan <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "One of four body-size descriptors tested on CL/F and Vc/F",
         "(Table S2 footnote a); no significant effect (Discussion).",
         "Cohort median 78.6 kg, range 21.1-154.0 kg (Table 1)."
@@ -226,27 +226,27 @@ Wada_2023_sparsentan <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Body-size descriptor tested on CL/F and Vc/F (Table S2); not retained."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Body-size descriptor tested on CL/F and Vc/F (Table S2); not retained."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Body-size descriptor tested on CL/F and Vc/F (Table S2); not retained."
+      units = "m^2",
+      type = "continuous",
+      notes = "Body-size descriptor tested on CL/F and Vc/F (Table S2); not retained."
     ),
     LBM = list(
       description = "Lean body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Body-size descriptor tested on CL/F and Vc/F (Table S2); not retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Body-size descriptor tested on CL/F and Vc/F (Table S2); not retained."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested on CL/F and Vc/F (Table S2); not retained. Steady-state",
         "exposure did rise across the 8-17 / 18-64 / >=65 year brackets",
         "(Figure S2), which the paper attributes to age being an input to the",
@@ -256,21 +256,21 @@ Wada_2023_sparsentan <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Hepatic marker tested on CL/F (Table S2); not retained."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Hepatic marker tested on CL/F (Table S2); not retained."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Tested on CL/F (Discussion); not retained."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Tested on CL/F (Discussion); not retained."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Hepatic marker tested on CL/F (Table S2); not retained. Hepatic",
         "impairment was not tested directly as a covariate - ALKP, ALT, AST",
         "and total bilirubin were tested in its place and only ALKP survived",
@@ -279,21 +279,21 @@ Wada_2023_sparsentan <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Hepatic marker tested on CL/F (Table S2); not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Hepatic marker tested on CL/F (Table S2); not retained."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Hepatic marker tested on CL/F (Table S2); not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Hepatic marker tested on CL/F (Table S2); not retained."
     ),
     FED = list(
       description = "Fed-versus-fasted dose-record indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested on Frel, Ka and Tlag (Table S2); not retained. Phase I",
         "subjects generally dosed after an overnight fast; FSGS patients were",
         "instructed to dose before the first meal of the day, and the analysis",
@@ -304,9 +304,9 @@ Wada_2023_sparsentan <- function() {
     ),
     CONMED_CYP3A4_IND = list(
       description = "Concomitant CYP3A4 inducer coadministration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested on CL/F (Table S2); not retained. No subject in the cohort",
         "received a weak, moderate or strong CYP3A4 inducer - the 12.1%",
         "flagged in Table 1 are 'unknown' - so the covariate carried no",
@@ -316,17 +316,17 @@ Wada_2023_sparsentan <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 446L,
-    n_studies      = 9L,
+    species = "human",
+    n_subjects = 446L,
+    n_studies = 9L,
     n_observations = 10957L,
-    age_range      = "8-74 years",
-    age_median     = "40 years",
-    weight_range   = "21.1-154.0 kg",
-    weight_median  = "78.6 kg",
+    age_range = "8-74 years",
+    age_median = "40 years",
+    weight_range = "21.1-154.0 kg",
+    weight_median = "78.6 kg",
     sex_female_pct = 33.2,
     race_ethnicity = c(White = 67.5, Black = 23.5, Asian = 6.1, Multiple = 0.7, Other = 2.2),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 236 healthy volunteers (six phase I studies), 16 subjects with",
       "mild or moderate hepatic impairment (one phase I study), and 194",
       "patients with primary or genetic focal segmental glomerulosclerosis",
@@ -340,17 +340,17 @@ Wada_2023_sparsentan <- function() {
       "Recorded for 28 subjects only: normal 12, mild 8, moderate 8, severe 0;",
       "missing for 93.7% of the pooled cohort"
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "CYP3A4 inhibitor: none 83.0%, weak 12.8%, moderate 10.5%, strong 7.2%;",
       "P-glycoprotein inhibitor 8.1%; acid-reducing agent 13.2%;",
       "CYP3A4 inducer none 87.9% (remainder unknown)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single doses 50-1600 mg (capsule, tablet, or crushed tablet) in phase I;",
       "200, 400 or 800 mg once daily in DUET; 400 mg once daily titrating to",
       "800 mg in DUPLEX (Table S1)"
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics are Wada 2023 Table 1; the study list is",
       "Table S1. Bioanalysis was validated LC-MS/MS with a 2-4000 ng/mL",
       "calibration range and a 2 ng/mL LLOQ; all BLQ samples were excluded",

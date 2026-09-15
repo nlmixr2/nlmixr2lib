@@ -32,11 +32,11 @@ Wang_2024_ionizableLipid_mouse_pbpk <- function() {
 
   covariateData <- list(
     FORM_LNP_DMAPBLP78 = list(
-      description        = "1 = LNP formulated with the ionizable lipid DMAP-BLP at ~78 nm diameter; 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = LNP formulated with the ionizable lipid DMAP-BLP at ~78 nm diameter; 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MC3 LNP at ~80 nm, Wang 2024 Figure 5A)",
-      notes              = paste(
+      notes = paste(
         "Selects the Figure 5B parameter column. Only the spleen and 'other'",
         "permeabilities were re-fitted for this arm; the liver permeability,",
         "'other'-organ elimination rate and uptake rate carry the '#' footnote",
@@ -47,21 +47,21 @@ Wang_2024_ionizableLipid_mouse_pbpk <- function() {
         "Figure S6; the Methods / figure-table spelling is used here.",
         "Mutually exclusive with FORM_LNP_DMAPBLP45."
       ),
-      source_name        = "DMAP-BLP, 78 nm"
+      source_name = "DMAP-BLP, 78 nm"
     ),
     FORM_LNP_DMAPBLP45 = list(
-      description        = "1 = LNP formulated with the ionizable lipid DMAP-BLP at ~45 nm diameter; 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = LNP formulated with the ionizable lipid DMAP-BLP at ~45 nm diameter; 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MC3 LNP at ~80 nm, Wang 2024 Figure 5A)",
-      notes              = paste(
+      notes = paste(
         "Selects the Figure 5C parameter column: every parameter was re-fitted",
         "for the 45 nm arm, giving a much higher uptake rate (125.06 vs 5.24",
         "mL/mmol/h) and a lower liver permeability than the larger particles.",
         "The plasma dissociation rate kf = 0.1089 1/h comes from Figure 6A.",
         "Mutually exclusive with FORM_LNP_DMAPBLP78."
       ),
-      source_name        = "DMAP-BLP, 45 nm"
+      source_name = "DMAP-BLP, 45 nm"
     )
   )
 
@@ -70,34 +70,34 @@ Wang_2024_ionizableLipid_mouse_pbpk <- function() {
   # blood and interstitial spaces (SimBiology `.FreeLipid` species). The bare
   # states are pure accumulators: dissociated lipid is not re-taken up.
   compartmentData <- list(
-    venous_np     = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
-    venous        = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
-    arterial_np   = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
-    arterial      = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_lung_np    = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_lung       = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_liver_np   = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_liver      = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
-    is_liver_np   = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
-    is_liver      = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
-    int_liver_np  = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_spleen_np  = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_spleen     = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
-    is_spleen_np  = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
-    is_spleen     = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
+    venous_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
+    venous = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
+    arterial_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
+    arterial = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_lung_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_lung = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_liver_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_liver = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
+    is_liver_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
+    is_liver = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
+    int_liver_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_spleen_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_spleen = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
+    is_spleen_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
+    is_spleen = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
     int_spleen_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_other_np   = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_other      = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
-    int_other_np  = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE)
+    vp_other_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_other = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "whole blood", verified = TRUE),
+    int_other_np = list(analyte = "LNP lipid (3H-CHE traced)", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (CD-1 for the MC3 arm; C57BL/6 for the DMAP-BLP arms)",
-    n_subjects   = NA_integer_,
-    n_studies    = 2L,
-    age_range    = "6-8 weeks",
+    species = "mouse (CD-1 for the MC3 arm; C57BL/6 for the DMAP-BLP arms)",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "6-8 weeks",
     weight_range = "27 g (0.0270 kg reference body weight, Table 1)",
-    dose_range   = paste(
+    dose_range = paste(
       "MC3 arm: 11.1 mg/kg total lipid intravenously (equivalent to 1 mg/kg",
       "siRNA); DMAP-BLP arms: 0.3 mg/kg FVII siRNA, equivalent to about",
       "3.42 mg/kg ionizable lipid"

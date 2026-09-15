@@ -7,15 +7,12 @@
 #' @family PD
 #' @noRd
 #' @author Matthew L. Fidler
-.addBaseline <- function(ui, effect = "effect",
-                         eb = "Eb") {
+.addBaseline <- function(ui, effect = "effect", eb = "Eb") {
   .modelLines <- ui$lstExpr
   .w <- .whichDdt(.modelLines, effect, start = "", end = "")
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- list(str2lang(paste0(deparse1(.tmp$w), "+", eb)))
-  c(.tmp$pre,
-    .tmp$w,
-    .tmp$post)
+  c(.tmp$pre, .tmp$w, .tmp$post)
 }
 
 #' Add an estimated baseline constant
@@ -36,31 +33,13 @@ addBaselineConst <- function(ui, effect = "effect", eb = "Eb") {
   .ui <- rxode2::rxUiDecompress(.ui)
   rxode2::assertVariableExists(.ui, effect)
   rxode2::assertVariableNew(.ui, eb)
-  .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb))),
-    .addBaseline(.ui, effect = effect, eb = eb))
+  .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb))), .addBaseline(.ui, effect = effect, eb = eb))
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", eb), label = paste0("untransformed constant baseline (", eb, ")"))
 }
 #' Add baseline that decays exponential with time
 #'
@@ -77,50 +56,23 @@ addBaselineConst <- function(ui, effect = "effect", eb = "Eb") {
 #'   addDirectLin() |>
 #'   convertQuad() |>
 #'   addBaselineExp()
-addBaselineExp <- function(ui, effect = "effect", eb = "Eb",
-                           time = "time", kb = "kb") {
+addBaselineExp <- function(ui, effect = "effect", eb = "Eb", time = "time", kb = "kb") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)
   rxode2::assertVariableExists(.ui, effect)
   rxode2::assertVariableNew(.ui, eb)
   rxode2::assertVariableNew(.ui, kb)
-  .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb)),
-    str2lang(paste0(kb, "<- exp(l", kb, ")"))),
-  .addBaseline(.ui, effect = effect,
-    eb = paste0(eb, "*exp(-", kb, "*",
-      time,
-      ")")))
+  .modelLines <- c(
+    list(str2lang(paste0(eb, "<- u", eb)), str2lang(paste0(kb, "<- exp(l", kb, ")"))),
+    .addBaseline(.ui, effect = effect, eb = paste0(eb, "*exp(-", kb, "*", time, ")"))
+  )
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaKb <- .get1theta(kb, .theta1, .ntheta,
-    label = paste0("baseline time-decay constant (",
-      kb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .thetaKb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .ui <- .iniAddTheta(.ui, paste0("u", eb), label = paste0("untransformed constant baseline (", eb, ")"))
+  .iniAddTheta(.ui, paste0("l", kb), label = paste0("baseline time-decay constant (", kb, ")"))
 }
 
 #' Add baseline that decays exponential with time
@@ -138,50 +90,23 @@ addBaselineExp <- function(ui, effect = "effect", eb = "Eb",
 #'   addDirectLin() |>
 #'   convertQuad() |>
 #'   addBaseline1exp()
-addBaseline1exp <- function(ui, effect = "effect", eb = "Eb",
-                            time = "time", kb = "kb") {
+addBaseline1exp <- function(ui, effect = "effect", eb = "Eb", time = "time", kb = "kb") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)
   rxode2::assertVariableExists(.ui, effect)
   rxode2::assertVariableNew(.ui, eb)
   rxode2::assertVariableNew(.ui, kb)
-  .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb)),
-    str2lang(paste0(kb, "<- exp(l", kb, ")"))),
-  .addBaseline(.ui, effect = effect,
-    eb = paste0(eb, "*(1-exp(-", kb, "*",
-      time,
-      "))")))
+  .modelLines <- c(
+    list(str2lang(paste0(eb, "<- u", eb)), str2lang(paste0(kb, "<- exp(l", kb, ")"))),
+    .addBaseline(.ui, effect = effect, eb = paste0(eb, "*(1-exp(-", kb, "*", time, "))"))
+  )
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaKb <- .get1theta(kb, .theta1, .ntheta,
-    label = paste0("baseline time-decay constant (",
-      kb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .thetaKb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .ui <- .iniAddTheta(.ui, paste0("u", eb), label = paste0("untransformed constant baseline (", eb, ")"))
+  .iniAddTheta(.ui, paste0("l", kb), label = paste0("baseline time-decay constant (", kb, ")"))
 }
 
 #' Add an estimated baseline linear constant
@@ -196,34 +121,18 @@ addBaseline1exp <- function(ui, effect = "effect", eb = "Eb",
 #'   addDirectLin() |>
 #'   convertQuad() |>
 #'   addBaselineLin()
-addBaselineLin <- function(ui, effect = "effect", eb = "Eb",
-                           time = "time") {
+addBaselineLin <- function(ui, effect = "effect", eb = "Eb", time = "time") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)
   rxode2::assertVariableExists(.ui, effect)
   rxode2::assertVariableNew(.ui, eb)
-  .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb))),
-    .addBaseline(.ui, effect = effect, eb = paste0(eb, "*", time)))
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .eta)
+  .modelLines <- c(
+    list(str2lang(paste0(eb, "<- u", eb))),
+    .addBaseline(.ui, effect = effect, eb = paste0(eb, "*", time))
+  )
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", eb), label = paste0("untransformed constant baseline (", eb, ")"))
 }

@@ -32,7 +32,7 @@ Yau_2023_diazepam_monkey_pbpk <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_middle_out_pbpk_translation"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. `central` lumps arterial blood, venous blood and lung
@@ -44,35 +44,35 @@ Yau_2023_diazepam_monkey_pbpk <- function() {
   # of Table 1. verified = TRUE: identities read off the paper's Table 1
   # tissue groupings and the model's own equations.
   compartmentData <- list(
-    central  = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
-    adipose  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
     pancreas = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
+    skin = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "cynomolgus monkey",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "young and aged cynomolgus monkeys (two average profiles)",
-    weight_range   = "5 kg reference monkey for the physiology (Table S6)",
+    species = "cynomolgus monkey",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "young and aged cynomolgus monkeys (two average profiles)",
+    weight_range = "5 kg reference monkey for the physiology (Table S6)",
     sex_female_pct = NA_real_,
-    disease_state  = "healthy monkeys",
-    dose_range     = "0.04 mg/kg intravenous bolus (Table S2)",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "healthy monkeys",
+    dose_range = "0.04 mg/kg intravenous bolus (Table S2)",
+    regions = NA_character_,
+    notes = paste(
       "One published cynomolgus study (Yau 2023 Table S2) contributing",
       "two average profiles, six young and six aged animals. Observed",
       "monkey Vss,b was 11.1 L. Clearance was fixed to the observed",

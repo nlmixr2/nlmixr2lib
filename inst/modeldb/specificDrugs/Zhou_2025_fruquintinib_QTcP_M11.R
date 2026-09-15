@@ -50,18 +50,18 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
   vignette <- "Zhou_2025_fruquintinib"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; PD-only model fed by an external M11 plasma-concentration covariate)",
+    time = "h",
+    dosing = "(none; PD-only model fed by an external M11 plasma-concentration covariate)",
     concentration = "(observation QTcP is the CHANGE FROM BASELINE in the population-based corrected QT interval, DeltaQTcP, in ms; driving covariate CP_FRUQUINTINIB_M11_NGML is in ng/mL)"
   )
 
   covariateData <- list(
     ON_TREATMENT = list(
-      description        = "Randomized treatment-arm indicator: 1 = fruquintinib 5 mg once daily, 0 = matching placebo. Time-fixed per subject (parallel-group randomized design).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Randomized treatment-arm indicator: 1 = fruquintinib 5 mg once daily, 0 = matching placebo. Time-fixed per subject (parallel-group randomized design).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm)",
-      notes              = paste(
+      notes = paste(
         "Source paper writes this as TRT_i, 'the fixed effect associated",
         "with treatment TRT_i received by patient i (TRT_i = 0 for placebo",
         "and 1 for active drug)' (Zhou 2025 Methods 'C-QTc Model').",
@@ -83,14 +83,14 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
         "M11 concentration of 0 at each nominal time point (Zhou 2025",
         "Methods 'Overview of Data')."
       ),
-      source_name        = "Trt (paper notation TRT_i)"
+      source_name = "Trt (paper notation TRT_i)"
     ),
     CP_FRUQUINTINIB_M11_NGML = list(
-      description        = "Instantaneous total plasma concentration of M11, the major metabolite of fruquintinib, at the time of each time-matched ECG observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous total plasma concentration of M11, the major metabolite of fruquintinib, at the time of each time-matched ECG observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the linear",
         "concentration-DeltaQTcP expression DeltaQTcP = ... +",
         "(slope + etaslope) * CP_FRUQUINTINIB_M11_NGML + ... , with the",
@@ -117,14 +117,14 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
         "Set to 0 for placebo records and outside the drug-exposure",
         "window; the concentration-slope term then collapses to 0."
       ),
-      source_name        = "CONC2 (supplement model-development logs); 'M11 conc.' (Table 2)"
+      source_name = "CONC2 (supplement model-development logs); 'M11 conc.' (Table 2)"
     ),
     NTIME = list(
-      description        = "Protocol-scheduled (nominal) time in whole hours after the most recent dose at which the time-matched ECG / PK pair was collected. Takes the values 0, 1, 2, 3 and 4 h in this study; 0 h is the reference level.",
-      units              = "h",
-      type               = "categorical",
+      description = "Protocol-scheduled (nominal) time in whole hours after the most recent dose at which the time-matched ECG / PK pair was collected. Takes the values 0, 1, 2, 3 and 4 h in this study; 0 h is the reference level.",
+      units = "h",
+      type = "categorical",
       reference_category = "0 (pre-dose nominal time point)",
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into mutually-exclusive binary",
         "indicators nt1 .. nt4 multiplied by the per-timepoint fixed",
         "effects e_ntime1_e0 .. e_ntime4_e0. NTIME = 0 sets every",
@@ -149,14 +149,14 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
         "protocol schedule, not from rxode2's tad(). Because the model()",
         "decomposition tests exact equality, supply whole-number hours."
       ),
-      source_name        = "NTIME / NTime"
+      source_name = "NTIME / NTime"
     ),
     DAY21 = list(
-      description        = "Cycle 1 day 21 visit indicator: 1 = the observation was collected at the cycle 1 day 21 (steady-state) ECG visit, 0 = the observation was collected at the cycle 1 day 1 (first-dose) visit. Time-varying within subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cycle 1 day 21 visit indicator: 1 = the observation was collected at the cycle 1 day 21 (steady-state) ECG visit, 0 = the observation was collected at the cycle 1 day 1 (first-dose) visit. Time-varying within subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cycle 1 day 1 visit)",
-      notes              = paste(
+      notes = paste(
         "Source paper: 'theta_4 is the fixed effect associated with cycle",
         "1 day 21 (taking cycle 1 day 1 as the reference visit)' (Zhou",
         "2025 Methods 'C-QTc Model'); tabulated as the 'Cycle 1 day 21",
@@ -174,14 +174,14 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
         "95% CI included 0 and the likelihood-ratio-test p-value was",
         "0.1318 (Zhou 2025 Supplementary Table 1, model fit.f.2)."
       ),
-      source_name        = "visit (paper notation Visit_k, k = cycle 1 day 1 or 21)"
+      source_name = "visit (paper notation Visit_k, k = cycle 1 day 1 or 21)"
     ),
     QTC_BL = list(
-      description        = "Subject's pre-dose (cycle 1 day 1) baseline population-based corrected QT interval (QTcP), treated as a per-subject time-fixed covariate. Enters the linear-mixed-effects intercept as the centered term e_qtc_bl_e0 * (QTC_BL - 419.3). Set QTC_BL = 419.3 ms for the typical (mean-baseline) subject -- the centered term then collapses to 0.",
-      units              = "ms",
-      type               = "continuous",
+      description = "Subject's pre-dose (cycle 1 day 1) baseline population-based corrected QT interval (QTcP), treated as a per-subject time-fixed covariate. Enters the linear-mixed-effects intercept as the centered term e_qtc_bl_e0 * (QTC_BL - 419.3). Set QTC_BL = 419.3 ms for the typical (mean-baseline) subject -- the centered term then collapses to 0.",
+      units = "ms",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Source paper: 'theta_5 is the fixed",
         "effect associated with baseline QTc, QTc0,i is the baseline QTc",
         "of patient i, QTc0 is the overall mean baseline QTc' (Zhou 2025",
@@ -209,20 +209,20 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
         "QTcF baseline with a 409.5 ms centering reference; see",
         "Zhou_2025_fruquintinib_QTcF_M11.R."
       ),
-      source_name        = "baseline QTcP (paper notation QTc0,i)"
+      source_name = "baseline QTcP (paper notation QTc0,i)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 205L,
-    n_studies        = 1L,
-    n_observations   = 1456L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 205L,
+    n_studies = 1L,
+    n_observations = 1456L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = paste(
       "Adults with previously treated metastatic colorectal cancer (mCRC)",
       "enrolled in the phase 3 FRESCO-2 trial (NCT04322539) and included",
       "in the cardiovascular-safety ECG subset. Patients had progressed on",
@@ -235,7 +235,7 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
       "medications known to be associated with QTc prolongation were",
       "prohibited (Zhou 2025 Methods 'Overview of Data')."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Fruquintinib 5 mg orally once daily on days 1-21 of a 28-day cycle",
       "plus best supportive care, or matching placebo plus best supportive",
       "care. 5 mg QD is the only dose in this analysis; the maximum",
@@ -250,8 +250,8 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
       "visit contributes only the 1-4 h nominal times because the 0 h",
       "reading is the baseline)."
     ),
-    regions          = NA_character_,
-    notes            = paste(
+    regions = NA_character_,
+    notes = paste(
       "C-QTc analysis set: 1456 time-matched concentration-DeltaQTcP",
       "pairs from 205 patients (137 fruquintinib, 68 placebo), drawn from",
       "1954 sets of Holter ECG measurements in 243 patients (163",

@@ -29,7 +29,7 @@ Jonsson_2011_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482. Wang 2023 Table 2 records this model as '2 CMT' with states V1
   # (central) and V2 (peripheral). Amount units are umol because every
@@ -38,17 +38,17 @@ Jonsson_2011_methotrexate <- function() {
   # state the assayed matrix, is not on disk, and neither Wang 2023 Table 2 nor
   # the primary's abstract names it.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column Weight. The ONLY covariate in the model, and it enters",
         "all four disposition parameters strictly linearly (per kg), per Wang",
         "2023 Table 2: 'CL (L/h) = Weight x 0.185 x e^eta_CL',",
@@ -66,16 +66,16 @@ Jonsson_2011_methotrexate <- function() {
         "1.27 x 19 = 24.1 L -- exactly the lowest CL and highest V1 that Wang",
         "2023 Results quotes across the six evaluated models."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened and not retained. The primary's abstract lists the candidate",
         "set: 'A population pharmacokinetic model was developed with data from",
         "1284 HDMTX courses in 304 children evaluating age, height, weight,",
@@ -86,15 +86,15 @@ Jonsson_2011_methotrexate <- function() {
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 median 110 cm (range 63-192)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 median 110 cm (range 63-192)."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened and not retained -- deliberately, and this is the paper's",
         "headline finding: body weight 'improved the population",
         "pharmacokinetic model significantly more'. BSA nonetheless remains",
@@ -105,39 +105,39 @@ Jonsson_2011_methotrexate <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 records M/F as 'NA' for this study."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 records M/F as 'NA' for this study."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 records Scr as 'NA' for this study."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 records Scr as 'NA' for this study."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 median 31.2 U/L (range 6.0-228.6)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened and not retained (same abstract sentence as AGE). Wang 2023 Table 1 median 31.2 U/L (range 6.0-228.6)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 304L,
-    n_studies      = 1L,
-    age_range      = "0.4 to 17.8 years",
-    age_median     = "5.0 years",
-    weight_range   = "5.8 to 93.3 kg",
-    weight_median  = "19.0 kg",
-    height_range   = "63 to 192 cm (median 110)",
-    bsa_range      = "0.31 to 2.19 m^2 (median 0.76)",
-    disease_state  = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate.",
+    species = "human",
+    n_subjects = 304L,
+    n_studies = 1L,
+    age_range = "0.4 to 17.8 years",
+    age_median = "5.0 years",
+    weight_range = "5.8 to 93.3 kg",
+    weight_median = "19.0 kg",
+    height_range = "63 to 192 cm (median 110)",
+    bsa_range = "0.31 to 2.19 m^2 (median 0.76)",
+    disease_state = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate.",
     hepatic_function = "ALT median 31.2 U/L (range 6.0-228.6).",
-    dose_range     = "5 to 8 g/m^2 intravenous high-dose methotrexate -- the highest dose range of the six cohorts Wang 2023 evaluated.",
-    regions        = "Sweden and Denmark (NOPHO ALL protocol centres).",
-    notes          = paste(
+    dose_range = "5 to 8 g/m^2 intravenous high-dose methotrexate -- the highest dose range of the six cohorts Wang 2023 evaluated.",
+    regions = "Sweden and Denmark (NOPHO ALL protocol centres).",
+    notes = paste(
       "Demographics from Wang 2023 Table 1; n = 304 children contributing",
       "1,284 high-dose methotrexate courses, confirmed from the primary's own",
       "abstract, which also notes the model was developed alongside an outcome",

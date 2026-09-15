@@ -15,7 +15,8 @@ Cortez_2015_nevirapine_human_la1 <- function() {
     "a residual-error model for the human projection, so none is encoded.",
     "Reproduces Cortez 2015 Figure 4A (200 mg, 2.0 kg) and 4B (200 mg,",
     "3.9 kg).",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Cortez JM Jr, Quintero R, Moss JA, Beliveau M, Smith TJ, Baum MM.",
     "Pharmacokinetics of injectable, long-acting nevirapine for HIV",
@@ -24,27 +25,28 @@ Cortez_2015_nevirapine_human_la1 <- function() {
     "doi:10.1128/AAC.03906-14.",
     "Presystemic and peripheral parameters carried from the companion rat",
     "fit; see modellib('Cortez_2015_nevirapine_rat_la1').",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Cortez_2015_nevirapine"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size covariate on the RAT-DERIVED parameters only (ka,",
         "Vp, CLp), referenced to the 0.33 kg mean weight of the study-1",
         "rats. The human systemic parameters Vc/F and CL/F are the",
@@ -54,24 +56,24 @@ Cortez_2015_nevirapine_human_la1 <- function() {
         "deviations. Simulated infant weights were 2.0 and 3.9 kg, the",
         "range of the Ugandan newborn cohorts."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "Neonates from birth (WHO prophylaxis window is birth to 4-6 weeks of age)",
-    weight_range   = "2.0-3.9 kg",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "Neonates from birth (WHO prophylaxis window is birth to 4-6 weeks of age)",
+    weight_range = "2.0-3.9 kg",
+    disease_state = paste(
       "HIV-uninfected breastfeeding infants born to HIV-1-infected mothers,",
       "receiving nevirapine as prophylaxis against mother-to-child",
       "transmission."
     ),
-    dose_range     = "Single 200 mg subcutaneous injection of NVP LA-1 (Cortez 2015 Figure 4A and 4B)",
-    regions        = "Uganda (source of the systemic infant PK estimates)",
-    notes          = paste(
+    dose_range = "Single 200 mg subcutaneous injection of NVP LA-1 (Cortez 2015 Figure 4A and 4B)",
+    regions = "Uganda (source of the systemic infant PK estimates)",
+    notes = paste(
       "Cortez 2015 Methods 'Human simulations': \"Infant parameters for the",
       "human simulations were compiled from recent clinical studies in",
       "Uganda examining the population PK of single-dose NVP in",

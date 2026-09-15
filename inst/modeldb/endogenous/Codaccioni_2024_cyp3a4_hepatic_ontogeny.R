@@ -69,10 +69,10 @@ Codaccioni_2024_cyp3a4_hepatic_ontogeny <- function() {
   # age only.
 
   population <- list(
-    species    = "human",
+    species = "human",
     n_subjects = 9L,
-    n_studies  = 13L,
-    age_range  = paste(
+    n_studies = 13L,
+    age_range = paste(
       "Birth to 15.71 years across the paediatric verification dataset",
       "(Codaccioni 2024 Table 1); the ontogeny functions themselves are",
       "defined from birth to the adult plateau."

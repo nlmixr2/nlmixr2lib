@@ -44,7 +44,9 @@ Dias_2024_quetiapine_rat <- function() {
   # Mechanistic states named by the source paper (Figure 2 / NM-TRAN $MODEL)
   # that do not map onto a canonical compartment role.
   paper_specific_compartments <- c(
-    "auc_dopamine", "modulator", "nano"
+    "auc_dopamine",
+    "modulator",
+    "nano"
   )
 
   covariateData <- list(

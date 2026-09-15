@@ -1,6 +1,6 @@
 Koloskoff_2025_ganciclovir <- function() {
   description <- "Indirect-response viral turnover PD model for cytomegalovirus (CMV) viral load decline in pediatric solid-organ and hematopoietic-stem-cell transplant recipients receiving (val)ganciclovir (Koloskoff 2025). The model treats the q12h-interval ganciclovir AUC (AUC_0-12) as a time-varying covariate input AUC_GCV that stimulates first-order viral degradation through an Emax-EC50 relationship. The upstream popPK that produces AUC_0-12 (Franck 2021 Bayesian estimator) is NOT included here; AUC_GCV must be supplied per record by the user, either from the Franck 2021 model or any other AUC source."
-  reference   <- paste(
+  reference <- paste(
     "Koloskoff K, Franck B, Benito S, Welzel J, Autmizguine J, Theoret Y, Briand A,",
     "Ovetchkine P, Woillard J-B.",
     "Pharmacokinetic/Pharmacodynamic Modelling and Monte Carlo Simulations to Predict",
@@ -16,12 +16,12 @@ Koloskoff_2025_ganciclovir <- function() {
     "doi:10.1007/s40262-021-01034-w.",
     sep = " "
   )
-  vignette    <- "Koloskoff_2025_ganciclovir"
-  units       <- list(
-    time          = "h",
-    dosing        = "n/a (no drug dosing events; ganciclovir exposure enters as the time-varying AUC_GCV covariate)",
+  vignette <- "Koloskoff_2025_ganciclovir"
+  units <- list(
+    time = "h",
+    dosing = "n/a (no drug dosing events; ganciclovir exposure enters as the time-varying AUC_GCV covariate)",
     concentration = "log10 copies/mL (CMV viral load output; not a drug concentration)",
-    AUC_GCV       = "mg*h/L (per q12h dosing interval; q24h regimens are entered as AUC_0-24 / 2 so all data live in a q12h framework)"
+    AUC_GCV = "mg*h/L (per q12h dosing interval; q24h regimens are entered as AUC_0-24 / 2 so all data live in a q12h framework)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -34,11 +34,11 @@ Koloskoff_2025_ganciclovir <- function() {
 
   covariateData <- list(
     AUC_GCV = list(
-      description        = "Time-varying ganciclovir AUC over a q12h dosing interval (AUC_0-12) used as the drug-exposure input to the viral-load PD model.",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Time-varying ganciclovir AUC over a q12h dosing interval (AUC_0-12) used as the drug-exposure input to the viral-load PD model.",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying drug-exposure covariate. The source authors compute AUC_0-12 from",
         "an upstream popPK model (Franck 2021, doi:10.1007/s40262-021-01034-w) and feed",
         "it as a varying input ('amount') into the Monolix PD model. This nlmixr2lib",
@@ -48,32 +48,32 @@ Koloskoff_2025_ganciclovir <- function() {
         "0 in pre-treatment or off-treatment records so the drug-stimulation term",
         "vanishes and the viral load returns to the kin / kout steady-state baseline."
       ),
-      source_name        = "AUC_0-12"
+      source_name = "AUC_0-12"
     )
   )
 
   population <- list(
-    species                    = "human",
-    n_subjects                 = 29L,
-    n_occurrences              = 36L,
-    n_observations             = 184L,
-    n_studies                  = 1L,
-    age_range                  = "0.5-15 years",
-    age_median                 = "8.2 years",
-    weight_range               = "6.3-95.2 kg",
-    weight_median              = "29.4 kg",
-    height_range               = "41-172 cm",
-    height_median              = "128 cm",
-    sex_female_pct             = 41.7,
-    serum_creatinine_median    = "46.0 umol/L (range 9-414)",
-    crcl_median                = "111 mL/min/1.73 m^2 (Schwartz-modified; range 24.8-243)",
-    disease_state              = "Pediatric solid-organ transplant (SOT, n = 18 occurrences) or hematopoietic stem cell transplant (HSCT, n = 18 occurrences) recipients monitored for CMV reactivation via weekly DNAemia screening; 6 occurrences had graft-versus-host disease (GVHD).",
-    dose_range                 = "Pre-emptive treatment with IV ganciclovir 5 mg/kg q12h or oral valganciclovir 10 mg/kg q12h, adjusted by TDM. Initial AUC_0-12 median 23.5 mg*h/L (range 4.30-47.3); post-TDM AUC_0-12 median 23.7 mg*h/L (range 6.04-83.7).",
-    regions                    = "Canada (CHU Sainte-Justine, Montreal, QC).",
-    baseline_viral_load        = "Median 3.61 log10 copies/mL (range 2.57-4.85).",
-    treatment_duration_median  = "22 days (range 6-76)",
-    transplant_types           = "SOT (liver, kidney, heart) and HSCT (allogeneic). Six occurrences had GVHD; binary and time-dependent GVHD were tested as covariates and not retained.",
-    notes                      = paste(
+    species = "human",
+    n_subjects = 29L,
+    n_occurrences = 36L,
+    n_observations = 184L,
+    n_studies = 1L,
+    age_range = "0.5-15 years",
+    age_median = "8.2 years",
+    weight_range = "6.3-95.2 kg",
+    weight_median = "29.4 kg",
+    height_range = "41-172 cm",
+    height_median = "128 cm",
+    sex_female_pct = 41.7,
+    serum_creatinine_median = "46.0 umol/L (range 9-414)",
+    crcl_median = "111 mL/min/1.73 m^2 (Schwartz-modified; range 24.8-243)",
+    disease_state = "Pediatric solid-organ transplant (SOT, n = 18 occurrences) or hematopoietic stem cell transplant (HSCT, n = 18 occurrences) recipients monitored for CMV reactivation via weekly DNAemia screening; 6 occurrences had graft-versus-host disease (GVHD).",
+    dose_range = "Pre-emptive treatment with IV ganciclovir 5 mg/kg q12h or oral valganciclovir 10 mg/kg q12h, adjusted by TDM. Initial AUC_0-12 median 23.5 mg*h/L (range 4.30-47.3); post-TDM AUC_0-12 median 23.7 mg*h/L (range 6.04-83.7).",
+    regions = "Canada (CHU Sainte-Justine, Montreal, QC).",
+    baseline_viral_load = "Median 3.61 log10 copies/mL (range 2.57-4.85).",
+    treatment_duration_median = "22 days (range 6-76)",
+    transplant_types = "SOT (liver, kidney, heart) and HSCT (allogeneic). Six occurrences had GVHD; binary and time-dependent GVHD were tested as covariates and not retained.",
+    notes = paste(
       "Retrospective single-center cohort, January 2007 - December 2015. Inclusion:",
       "SOT or HSCT receiving valganciclovir and/or IV ganciclovir for CMV disease",
       "prevention with at least one full PK profile and at least two CMV viral loads.",

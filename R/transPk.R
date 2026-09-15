@@ -13,41 +13,54 @@ removeLinesAndInis <- function(ui, vars) {
   .modelLines <- .ui$lstExpr
 
   # Get a list of the var <- or var = lines
-  .exprs <- c(lapply(vars, function(x) {
-    str2lang(paste0(x, "<- ."))
-  }),
-  lapply(vars, function(x) {
-    str2lang(paste0(x, "= ."))
-  }))
+  .exprs <- c(
+    lapply(vars, function(x) {
+      str2lang(paste0(x, "<- ."))
+    }),
+    lapply(vars, function(x) {
+      str2lang(paste0(x, "= ."))
+    })
+  )
   # Find the lines that match the vars
-  .w <- which(vapply(seq_along(.modelLines),
+  .w <- which(vapply(
+    seq_along(.modelLines),
     function(i) {
       .cur <- .modelLines[[i]]
-      any(vapply(seq_along(.exprs),
+      any(vapply(
+        seq_along(.exprs),
         function(j) {
           rxode2::.matchesLangTemplate(.cur, .exprs[[j]])
-        }, logical(1)))
-    }, logical(1)))
+        },
+        logical(1)
+      ))
+    },
+    logical(1)
+  ))
 
   # Get the model variables that will be removed from initial estimates
   .txt <- rxode2::rxModelVars(
-    paste(vapply(.w,
-      function(i) {
-        deparse1(.modelLines[[i]])
-      }, character(1)), collapse = "\n"))
+    paste(
+      vapply(
+        .w,
+        function(i) {
+          deparse1(.modelLines[[i]])
+        },
+        character(1)
+      ),
+      collapse = "\n"
+    )
+  )
   .vars <- c(.txt$lhs, .txt$params)
 
   # Remove the lines from the model
-  .modelLines <- lapply(seq_along(.modelLines)[-.w],
-    function(i) {
-      .modelLines[[i]]
-    })
+  .modelLines <- lapply(seq_along(.modelLines)[-.w], function(i) {
+    .modelLines[[i]]
+  })
   # Remove the inis from the model
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .eta <- .tmp$eta
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   for (.v in .vars) {
     .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, .v)
     .modelLines <- .tmp$modelLines
@@ -55,8 +68,7 @@ removeLinesAndInis <- function(ui, vars) {
     .eta <- .tmp$eta
   }
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .eta)
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
@@ -104,18 +116,15 @@ removeLinesAndInis <- function(ui, vars) {
 #'     k31 = "k31 constant",
 #'     vc = "volume of central compartment"))
 #'
-addLogEstimates <- function(ui, vars,
-                            extraLines = NULL,
-                            beforeCmt = NULL) {
+addLogEstimates <- function(ui, vars, extraLines = NULL, beforeCmt = NULL) {
   .ui <- rxode2::assertRxUi(ui)
   .before <- NULL
   if (!is.null(beforeCmt)) {
     .before <- rxode2::assertCompartmentExists(.ui, beforeCmt)
   }
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   if (length(.theta$ntheta) == 0) {
     .ntheta <- 0
@@ -132,18 +141,9 @@ addLogEstimates <- function(ui, vars,
   .extra <- list()
   for (.i in seq_along(.vars)) {
     .v <- .vars[.i]
-    .labelCur <- .label[.i]
-    .extra <- c(.extra,
-      list(str2lang(paste0(.v, " <- exp(l", .v, ")"))))
-    .theta <-
-      rbind(.theta,
-        .get1theta(.v, .theta1, .ntheta,
-          label = .labelCur))
-    .ntheta <- .ntheta + 1
+    .extra <- c(.extra, list(str2lang(paste0(.v, " <- exp(l", .v, ")"))))
   }
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
@@ -151,7 +151,8 @@ addLogEstimates <- function(ui, vars,
     rxode2::model(.ui) <- c(
       .extra,
       extraLines,
-      .ui$lstExpr)
+      .ui$lstExpr
+    )
   } else {
     .modelLines <- .ui$lstExpr
     .w <- .whichDdt(.modelLines, .before)
@@ -163,6 +164,9 @@ addLogEstimates <- function(ui, vars,
       .tmp$w,
       .tmp$post
     )
+  }
+  for (.i in seq_along(.vars)) {
+    .ui <- .iniAddTheta(.ui, paste0("l", .vars[.i]), label = .label[.i])
   }
   .ui
 }
@@ -261,226 +265,361 @@ addLogEstimates <- function(ui, vars,
 #'   removeDepot() |>
 #'   pkTrans("k")
 #' }
-pkTrans <- function(ui,
-                    type = c("k", "k21", "vss", "aob", "alpha"),
-                    k13 = "k13",
-                    k31 = "k31",
-                    k12 = "k12",
-                    k21 = "k21",
-                    kel = "kel",
-                    vc = "vc",
-                    cl = "cl",
-                    vp = "vp",
-                    q = "q",
-                    vp2 = "vp2",
-                    q2 = "q2",
-                    vss = "vss",
-                    aob = "aob",
-                    alpha = "alpha",
-                    beta = "beta",
-                    gam = "gam",
-                    A = "A", B = "B", C = "C",
-                    s = "s", p = "p", tmp = "tmp",
-                    beforeCmt = c("depot", "central")) {
+pkTrans <- function(
+  ui,
+  type = c("k", "k21", "vss", "aob", "alpha"),
+  k13 = "k13",
+  k31 = "k31",
+  k12 = "k12",
+  k21 = "k21",
+  kel = "kel",
+  vc = "vc",
+  cl = "cl",
+  vp = "vp",
+  q = "q",
+  vp2 = "vp2",
+  q2 = "q2",
+  vss = "vss",
+  aob = "aob",
+  alpha = "alpha",
+  beta = "beta",
+  gam = "gam",
+  A = "A",
+  B = "B",
+  C = "C",
+  s = "s",
+  p = "p",
+  tmp = "tmp",
+  beforeCmt = c("depot", "central")
+) {
   typ <- match.arg(type)
   .ui <- rxode2::assertRxUi(ui)
   .cmt <- 1L
-  .rm <- c(rxode2::assertVariableExists(.ui, kel),
-    rxode2::assertVariableExists(.ui, vc))
+  .rm <- c(rxode2::assertVariableExists(.ui, kel), rxode2::assertVariableExists(.ui, vc))
   if (rxode2::testVariableExists(.ui, k12)) {
     .cmt <- 2L
-    .rm <- c(.rm,
-      rxode2::assertVariableExists(.ui, k12),
-      rxode2::assertVariableExists(.ui, k21))
+    .rm <- c(.rm, rxode2::assertVariableExists(.ui, k12), rxode2::assertVariableExists(.ui, k21))
   }
   if (rxode2::testVariableExists(.ui, k13)) {
     .cmt <- 3L
-    .rm <- c(.rm,
-      rxode2::assertVariableExists(.ui, k13),
-      rxode2::assertVariableExists(.ui, k31))
+    .rm <- c(.rm, rxode2::assertVariableExists(.ui, k13), rxode2::assertVariableExists(.ui, k31))
   }
   .ui <- removeLinesAndInis(.ui, .rm)
   if (type == "k") {
     # These would be transformations in terms of rate constants alone
     if (.cmt == 1L) {
-      .est <- stats::setNames(c(
-        paste0("Elimination from central (", kel, ")"),
-        paste0("Central compartment volume (", vc, ")")),
-      c(kel, vc))
+      .est <- stats::setNames(
+        c(
+          paste0("Elimination from central (", kel, ")"),
+          paste0("Central compartment volume (", vc, ")")
+        ),
+        c(kel, vc)
+      )
       .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt)
       return(.ui)
     } else if (.cmt == 2L) {
-      .est <- stats::setNames(c(
-        paste0("Central->Periph1 constant (", k12, ")"),
-        paste0("Periph1->Central constant (", k21, ")"),
-        paste0("Elimination from central (", kel, ")"),
-        paste0("Central compartment volume (", vc, ")")),
-      c(k12, k21, kel, vc))
+      .est <- stats::setNames(
+        c(
+          paste0("Central->Periph1 constant (", k12, ")"),
+          paste0("Periph1->Central constant (", k21, ")"),
+          paste0("Elimination from central (", kel, ")"),
+          paste0("Central compartment volume (", vc, ")")
+        ),
+        c(k12, k21, kel, vc)
+      )
       .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt)
       return(.ui)
     } else if (.cmt == 3L) {
-      .est <- stats::setNames(c(
-        paste0("Central->Periph1 constant (", k12, ")"),
-        paste0("Periph1->Central constant (", k21, ")"),
-        paste0("Central->Periph2 constant (", k13, ")"),
-        paste0("Periph2->Central constant (", k31, ")"),
-        paste0("Elimination from central (", kel, ")"),
-        paste0("Central compartment volume (", vc, ")")),
-      c(k12, k21, k13, k31, kel, vc))
+      .est <- stats::setNames(
+        c(
+          paste0("Central->Periph1 constant (", k12, ")"),
+          paste0("Periph1->Central constant (", k21, ")"),
+          paste0("Central->Periph2 constant (", k13, ")"),
+          paste0("Periph2->Central constant (", k31, ")"),
+          paste0("Elimination from central (", kel, ")"),
+          paste0("Central compartment volume (", vc, ")")
+        ),
+        c(k12, k21, k13, k31, kel, vc)
+      )
       .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt)
       return(.ui)
     }
   } else if (type == "vss") {
     if (.cmt != 2L) {
-      stop("vss transformation only works for 2 compartment models",
-        call. = FALSE)
+      stop("vss transformation only works for 2 compartment models", call. = FALSE)
     }
-    .est <- stats::setNames(c(
-      paste0("Clearance (", cl, ")"),
-      paste0("Central compartment volume (", vc, ")"),
-      paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
-      paste0("Volume of distribution at steady state (", vss, ")")),
-    c(cl, vc, q, vss))
-    .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
+    .est <- stats::setNames(
+      c(
+        paste0("Clearance (", cl, ")"),
+        paste0("Central compartment volume (", vc, ")"),
+        paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
+        paste0("Volume of distribution at steady state (", vss, ")")
+      ),
+      c(cl, vc, q, vss)
+    )
+    .ui <- addLogEstimates(
+      .ui,
+      .est,
+      beforeCmt = beforeCmt,
       extraLines = list(
         str2lang(paste0(kel, "<-", cl, "/", vc)),
         str2lang(paste0(k12, "<-", q, "/", vc)),
-        str2lang(paste0(k21, "<-", q, "/(", vss, "-", vc, ")"))))
+        str2lang(paste0(k21, "<-", q, "/(", vss, "-", vc, ")"))
+      )
+    )
     return(.ui)
   } else if (type == "aob") {
     if (.cmt != 2) {
-      stop("aob transformation only works for 2 compartment models",
-        call. = FALSE)
+      stop("aob transformation only works for 2 compartment models", call. = FALSE)
     }
-    .est <- stats::setNames(c(
-      paste0("A/B (", aob, ")"),
-      paste0("alpha macro constant (", alpha, ")"),
-      paste0("beta macro constant (", beta, ")"),
-      paste0("Volume of central compartment (", vc, ")")),
-    c(aob, alpha, beta, vc))
-    .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
+    .est <- stats::setNames(
+      c(
+        paste0("A/B (", aob, ")"),
+        paste0("alpha macro constant (", alpha, ")"),
+        paste0("beta macro constant (", beta, ")"),
+        paste0("Volume of central compartment (", vc, ")")
+      ),
+      c(aob, alpha, beta, vc)
+    )
+    .ui <- addLogEstimates(
+      .ui,
+      .est,
+      beforeCmt = beforeCmt,
       extraLines = list(
-        str2lang(paste0(k21, "<-(",
-          aob, "*", beta, "+", alpha,
-          ")/(", aob, "+1)")),
-        str2lang(paste0(kel, "<-(", alpha, "*",
-          beta, ")/", k21)),
-        str2lang(paste0(k12, "<-", alpha, "+", beta,
-          "-", k21, "-", kel))))
+        str2lang(paste0(k21, "<-(", aob, "*", beta, "+", alpha, ")/(", aob, "+1)")),
+        str2lang(paste0(kel, "<-(", alpha, "*", beta, ")/", k21)),
+        str2lang(paste0(k12, "<-", alpha, "+", beta, "-", k21, "-", kel))
+      )
+    )
     return(.ui)
   } else if (type == "k21") {
     if (.cmt == 1L) {
-      stop("k21 transformation only works for 2 and 3 compartment models",
-        call. = FALSE)
+      stop("k21 transformation only works for 2 and 3 compartment models", call. = FALSE)
     }
     if (.cmt == 2L) {
-      .est <- stats::setNames(c(
-        paste0("Periph1->Central constant (", k21, ")"),
-        paste0("alpha macro constant (", alpha, ")"),
-        paste0("beta macro constant (", beta, ")"),
-        paste0("Volume of central compartment (", vc, ")")),
-      c(k21, alpha, beta, vc))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
+      .est <- stats::setNames(
+        c(
+          paste0("Periph1->Central constant (", k21, ")"),
+          paste0("alpha macro constant (", alpha, ")"),
+          paste0("beta macro constant (", beta, ")"),
+          paste0("Volume of central compartment (", vc, ")")
+        ),
+        c(k21, alpha, beta, vc)
+      )
+      .ui <- addLogEstimates(
+        .ui,
+        .est,
+        beforeCmt = beforeCmt,
         extraLines = list(
           str2lang(paste0(kel, "<-", alpha, "*", beta, "/", k21)),
-          str2lang(paste0(k12, "<-", alpha, "+",
-            beta, "-", k21, "-", kel))))
+          str2lang(paste0(k12, "<-", alpha, "+", beta, "-", k21, "-", kel))
+        )
+      )
       return(.ui)
     } else {
       rxode2::assertVariableNew(.ui, p)
       rxode2::assertVariableNew(.ui, s)
-      .est <- stats::setNames(c(
-        paste0("Periph1->Central constant (", k21, ")"),
-        paste0("Periph2->Central constant (", k31, ")"),
-        paste0("alpha macro constant (", alpha, ")"),
-        paste0("beta macro constant (", beta, ")"),
-        paste0("gam macro constant (", gam, ")"),
-        paste0("Volume of central compartment (", vc, ")")),
-      c(k21, k31, alpha, beta, gam, vc))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
+      .est <- stats::setNames(
+        c(
+          paste0("Periph1->Central constant (", k21, ")"),
+          paste0("Periph2->Central constant (", k31, ")"),
+          paste0("alpha macro constant (", alpha, ")"),
+          paste0("beta macro constant (", beta, ")"),
+          paste0("gam macro constant (", gam, ")"),
+          paste0("Volume of central compartment (", vc, ")")
+        ),
+        c(k21, k31, alpha, beta, gam, vc)
+      )
+      .ui <- addLogEstimates(
+        .ui,
+        .est,
+        beforeCmt = beforeCmt,
         extraLines = list(
-          str2lang(paste0(kel, "<-", alpha, "*", beta, "*",
-            gam, "/(", k21, "*", k31, ")")),
+          str2lang(paste0(kel, "<-", alpha, "*", beta, "*", gam, "/(", k21, "*", k31, ")")),
           str2lang(paste0(s, "<-", alpha, "+", beta, "+", gam)),
-          str2lang(paste0(p, "<-", alpha, "*", beta, "+",
-            alpha, "*", gam, "+", beta, "*", gam)),
-          str2lang(paste0(k13, "<- (", p, "+", k31, "*", k31, "-",
-            k31, "*", s, "-", kel, "*", k21, ")/(",
-            k21, "-", k31, ")")),
-          str2lang(paste0(k12, "<-", s, "-", kel, "-", k13, "-",
-            k21, "-", k31))))
+          str2lang(paste0(p, "<-", alpha, "*", beta, "+", alpha, "*", gam, "+", beta, "*", gam)),
+          str2lang(paste0(
+            k13,
+            "<- (",
+            p,
+            "+",
+            k31,
+            "*",
+            k31,
+            "-",
+            k31,
+            "*",
+            s,
+            "-",
+            kel,
+            "*",
+            k21,
+            ")/(",
+            k21,
+            "-",
+            k31,
+            ")"
+          )),
+          str2lang(paste0(k12, "<-", s, "-", kel, "-", k13, "-", k21, "-", k31))
+        )
+      )
       return(.ui)
     }
   } else if (type == "alpha") {
     if (.cmt == 3L) {
       # trans 10
       rxode2::assertVariableNew(.ui, tmp)
-      .est <- stats::setNames(c(
-        paste0("alpha macro constant (", alpha, ")"),
-        paste0("beta macro constant (", beta, ")"),
-        paste0("gam macro constant (", gam, ")"),
-        paste0("A coefficient (", A, ")"),
-        paste0("B coefficient (", B, ")"),
-        paste0("C coefficent (", C, ")")),
-      c(alpha, beta, gam, A, B, C))
+      .est <- stats::setNames(
+        c(
+          paste0("alpha macro constant (", alpha, ")"),
+          paste0("beta macro constant (", beta, ")"),
+          paste0("gam macro constant (", gam, ")"),
+          paste0("A coefficient (", A, ")"),
+          paste0("B coefficient (", B, ")"),
+          paste0("C coefficent (", C, ")")
+        ),
+        c(alpha, beta, gam, A, B, C)
+      )
       rxode2::assertVariableNew(.ui, s)
       rxode2::assertVariableNew(.ui, p)
-      .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
+      .ui <- addLogEstimates(
+        .ui,
+        .est,
+        beforeCmt = beforeCmt,
         extraLines = list(
           str2lang(paste0(vc, "<- 1/(", A, "+", B, "+", C, ")")),
-          str2lang(paste0(s, "<- -(",
-            alpha, "*", C, "+",
-            alpha, "*", B, "+",
-            gam, "*", A, "+",
-            gam, "*", B, "+",
-            beta, "*", A, "+",
-            beta, "*", C,
-            ")*", vc)),
-          str2lang(paste0(p, "<- (",
-            alpha, "*", beta, "*", C, "+",
-            alpha, "*", gam, "*", B, "+",
-            beta, "*", gam, "*", A, ")*", vc)),
-          str2lang(paste0(tmp, "<- sqrt(", p, "*", p,
-            "-4*", s, ")")),
+          str2lang(paste0(
+            s,
+            "<- -(",
+            alpha,
+            "*",
+            C,
+            "+",
+            alpha,
+            "*",
+            B,
+            "+",
+            gam,
+            "*",
+            A,
+            "+",
+            gam,
+            "*",
+            B,
+            "+",
+            beta,
+            "*",
+            A,
+            "+",
+            beta,
+            "*",
+            C,
+            ")*",
+            vc
+          )),
+          str2lang(paste0(
+            p,
+            "<- (",
+            alpha,
+            "*",
+            beta,
+            "*",
+            C,
+            "+",
+            alpha,
+            "*",
+            gam,
+            "*",
+            B,
+            "+",
+            beta,
+            "*",
+            gam,
+            "*",
+            A,
+            ")*",
+            vc
+          )),
+          str2lang(paste0(tmp, "<- sqrt(", p, "*", p, "-4*", s, ")")),
           str2lang(paste0(k21, "<- 0.5*(-", p, "+", tmp, ")")),
           str2lang(paste0(k31, "<- 0.5*(-", p, "-", tmp, ")")),
-          str2lang(paste0(kel, "<-", alpha, "*", beta, "*",
-            gam, "/(", k21, "*", k31, ")")),
-          str2lang(paste0(k12, "<- ((", beta, "*", gam, "+",
-            alpha, "*", beta, "+",
-            alpha, "*", gam, ") - ",
-            k21, "*(", alpha, "+", beta, "+", gam,
-            ")-", kel, "*", k31, "+",
-            k21, "*", k21, ")/(", k31, "-", k21, ")")),
-          str2lang(paste0(k13, "<-",
-            alpha, "+", beta, "+", gam, "-(",
-            kel, "+", k12, "+", k21, "+", k31, ")"))))
+          str2lang(paste0(kel, "<-", alpha, "*", beta, "*", gam, "/(", k21, "*", k31, ")")),
+          str2lang(paste0(
+            k12,
+            "<- ((",
+            beta,
+            "*",
+            gam,
+            "+",
+            alpha,
+            "*",
+            beta,
+            "+",
+            alpha,
+            "*",
+            gam,
+            ") - ",
+            k21,
+            "*(",
+            alpha,
+            "+",
+            beta,
+            "+",
+            gam,
+            ")-",
+            kel,
+            "*",
+            k31,
+            "+",
+            k21,
+            "*",
+            k21,
+            ")/(",
+            k31,
+            "-",
+            k21,
+            ")"
+          )),
+          str2lang(paste0(k13, "<-", alpha, "+", beta, "+", gam, "-(", kel, "+", k12, "+", k21, "+", k31, ")"))
+        )
+      )
       return(.ui)
     } else if (.cmt == 2L) {
-      .est <- stats::setNames(c(
-        paste0("alpha macro constant (", alpha, ")"),
-        paste0("beta macro constant (", beta, ")"),
-        paste0("A coefficient (", A, ")"),
-        paste0("B coefficient (", B, ")")),
-      c(alpha, beta, A, B))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
-        extraLines = list(str2lang(paste0(vc, "<-1/(", A, "+", B,
-          ")")),
-        str2lang(paste0(k21, "<-(", A, "*", beta, "+",
-          B, "*", alpha, ")*", vc)),
-        str2lang(paste0(kel, "<-", alpha, "*",
-          beta, "/", k21)),
-        str2lang(paste0(k12, "<-", alpha, "+",
-          beta, "-", k21, "-", kel))))
+      .est <- stats::setNames(
+        c(
+          paste0("alpha macro constant (", alpha, ")"),
+          paste0("beta macro constant (", beta, ")"),
+          paste0("A coefficient (", A, ")"),
+          paste0("B coefficient (", B, ")")
+        ),
+        c(alpha, beta, A, B)
+      )
+      .ui <- addLogEstimates(
+        .ui,
+        .est,
+        beforeCmt = beforeCmt,
+        extraLines = list(
+          str2lang(paste0(vc, "<-1/(", A, "+", B, ")")),
+          str2lang(paste0(k21, "<-(", A, "*", beta, "+", B, "*", alpha, ")*", vc)),
+          str2lang(paste0(kel, "<-", alpha, "*", beta, "/", k21)),
+          str2lang(paste0(k12, "<-", alpha, "+", beta, "-", k21, "-", kel))
+        )
+      )
       return(.ui)
     } else if (.cmt == 1L) {
-      .est <- stats::setNames(c(
-        paste0("alpha macro constant (", alpha, ")"),
-        paste0("A coefficient (", A, ")")),
-      c(alpha, A))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt = beforeCmt,
-        extraLines = list(str2lang(paste0(kel, "<-", alpha)),
-          str2lang(paste0(vc, "<- 1/", A))))
+      .est <- stats::setNames(
+        c(
+          paste0("alpha macro constant (", alpha, ")"),
+          paste0("A coefficient (", A, ")")
+        ),
+        c(alpha, A)
+      )
+      .ui <- addLogEstimates(
+        .ui,
+        .est,
+        beforeCmt = beforeCmt,
+        extraLines = list(str2lang(paste0(kel, "<-", alpha)), str2lang(paste0(vc, "<- 1/", A)))
+      )
       return(.ui)
     }
   }

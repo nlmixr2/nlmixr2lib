@@ -36,50 +36,50 @@ Chen_2025_iohexol_creatinine <- function() {
   dosing <- c("central", "depot_creatinine")
 
   compartmentData <- list(
-    central             = list(analyte = "iohexol",    units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1         = list(analyte = "iohexol",    units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral2         = list(analyte = "iohexol",    units = "mg", specimen = "plasma",              verified = TRUE),
-    urine               = list(analyte = "iohexol",    units = "mg", specimen = "urine",               verified = TRUE),
-    depot_creatinine    = list(analyte = "creatinine", units = "mg", specimen = "administration site", verified = TRUE),
-    central_creatinine  = list(analyte = "creatinine", units = "mg", specimen = "plasma",              verified = TRUE),
-    urine_creatinine    = list(analyte = "creatinine", units = "mg", specimen = "urine",               verified = TRUE)
+    central = list(analyte = "iohexol", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "iohexol", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "iohexol", units = "mg", specimen = "plasma", verified = TRUE),
+    urine = list(analyte = "iohexol", units = "mg", specimen = "urine", verified = TRUE),
+    depot_creatinine = list(analyte = "creatinine", units = "mg", specimen = "administration site", verified = TRUE),
+    central_creatinine = list(analyte = "creatinine", units = "mg", specimen = "plasma", verified = TRUE),
+    urine_creatinine = list(analyte = "creatinine", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed in the source study. Used for standard allometric scaling to a 70 kg reference",
         "weight with exponents fixed at 0.75 for GFR, nCTS, Qp1 and Qp2 and at 1 for iohexol Vc, Vp1,",
         "Vp2 and creatinine Vd (Chen 2025 Methods, 'Covariate model'; control-stream TBWonCL / TBWonV).",
         "Also enters the Cockcroft-Gault creatinine generation rate. Cohort mean 78.5 kg",
         "(range 59.1-95.8 kg; Table 2)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the model only through the Cockcroft-Gault creatinine generation rate",
         "CGR = (140 - AGE) * WT / 72 * 0.85^SEXF * 60/100 (Chen 2025 Table 3, CGR row).",
         "Age was screened as a covariate on the PK parameters themselves and was NOT retained",
         "(Discussion: 'Age ... was not identified as significant in this study'). Cohort mean 33 years",
         "(range 23-48; Table 2)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Two distinct uses: (a) the 0.85 female factor of the Cockcroft-Gault",
         "creatinine generation rate, and (b) a multiplicative effect of 0.628 on nCTS, i.e. net tubular",
         "secretion in females is 62.8% of the male value (Chen 2025 Table 3 row 'SEX on CTS';",
@@ -94,7 +94,7 @@ Chen_2025_iohexol_creatinine <- function() {
         "(= (140-37)*64.5/72*0.6*0.85 = 47.1). Encoded here on the canonical SEXF polarity as",
         "0.85^SEXF and 0.628^SEXF, which reproduces the paper's numbers; see vignette Errata."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
@@ -104,21 +104,21 @@ Chen_2025_iohexol_creatinine <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a body-size covariate (Chen 2025 Methods, 'Covariate model'); not retained. Cohort mean 178 cm (Table 2)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a body-size covariate (Chen 2025 Methods, 'Covariate model'); not retained. Cohort mean 178 cm (Table 2)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a body-size covariate; not retained. Cohort mean 24.7 kg/m^2 (Table 2)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a body-size covariate; not retained. Cohort mean 24.7 kg/m^2 (Table 2)."
     ),
     LBM = list(
       description = "Lean body mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a body-size covariate; not retained. Table S2 records the head-to-head test:",
         "replacing total body weight with fat-free mass (models 2 and 3) WORSENED the objective function",
         "by 7.47 and 0.82 points, and estimating the scaling exponents instead of fixing them improved it",
@@ -127,9 +127,9 @@ Chen_2025_iohexol_creatinine <- function() {
     ),
     ALB = list(
       description = "Plasma albumin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a covariate on nCTS; not retained. The Discussion notes that lower serum albumin has",
         "been associated with higher net tubular secretion in previous studies but that no effect was",
         "detectable here, plausibly because only healthy participants were enrolled.",
@@ -140,25 +140,25 @@ Chen_2025_iohexol_creatinine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 14L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 14L,
+    n_studies = 2L,
     n_observations = 2475L,
-    age_range      = "23-48 years",
-    age_median     = "33 years (mean)",
-    weight_range   = "59.1-95.8 kg",
-    weight_median  = "78.5 kg (mean)",
+    age_range = "23-48 years",
+    age_median = "33 years (mean)",
+    weight_range = "59.1-95.8 kg",
+    weight_median = "78.5 kg (mean)",
     sex_female_pct = 35.7,
     race_ethnicity = c(White = 100),
-    disease_state  = "Healthy volunteers with normal renal function (mean estimated GFR 102 mL/min/1.73 m^2, range 80-116)",
-    dose_range     = paste(
+    disease_state = "Healthy volunteers with normal renal function (mean estimated GFR 102 mL/min/1.73 m^2, range 80-116)",
+    dose_range = paste(
       "Iohexol 259 mg or 3,235 mg as a single intravenous dose;",
       "creatinine administered as 250 g cooked beef (mean creatinine content 401 mg) eaten 25 minutes",
       "after the iohexol dose"
     ),
-    regions        = "Germany (single centre, Cologne)",
+    regions = "Germany (single centre, Cologne)",
     renal_function = "Normal; healthy volunteers only. The model was not fit to any renally impaired data, so extrapolation to reduced GFR is untested.",
-    notes          = paste(
+    notes = paste(
       "Demographics from Chen 2025 Table 2 (n = 14: 9 male, 5 female; 2 in a pilot study, 12 in the main",
       "study). Mean height 178 cm (163-196), BMI 24.7 kg/m^2 (21.2-28.9), body surface area 1.96 m^2",
       "(1.63-2.22), plasma albumin 45.6 g/L (40.0-50.0), screening plasma creatinine 0.90 mg/dL",

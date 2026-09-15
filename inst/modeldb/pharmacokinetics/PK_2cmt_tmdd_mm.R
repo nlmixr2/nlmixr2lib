@@ -9,8 +9,8 @@ PK_2cmt_tmdd_mm <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "drug", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "drug", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "drug", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "drug", units = "mg", specimen = "plasma", verified = FALSE)
   )
 

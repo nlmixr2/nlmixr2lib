@@ -28,31 +28,31 @@ Jung_2023_donepezil_singledose <- function() {
   dosing <- c("depot_oral", "depot_td")
 
   compartmentData <- list(
-    depot_oral  = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "donepezil", units = "mg", specimen = "plasma", verified = TRUE),
+    depot_oral = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "donepezil", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "donepezil", units = "mg", specimen = "plasma", verified = TRUE),
-    depot_td    = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE)
+    depot_td = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18,
-    n_studies      = 1,
-    age_range      = "24-33 years",
-    age_median     = "30.0 years",
-    weight_range   = "55.7-80.9 kg",
-    weight_median  = "63.1 kg",
+    species = "human",
+    n_subjects = 18,
+    n_studies = 1,
+    age_range = "24-33 years",
+    age_median = "30.0 years",
+    weight_range = "55.7-80.9 kg",
+    weight_median = "63.1 kg",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy adult Korean male volunteers",
-    dose_range     = "Single dose: donepezil 10 mg oral tablet (Aricept) or a 108 mg / 96 cm2 transdermal patch",
-    regions        = "Republic of Korea",
+    disease_state = "Healthy adult Korean male volunteers",
+    dose_range = "Single dose: donepezil 10 mg oral tablet (Aricept) or a 108 mg / 96 cm2 transdermal patch",
+    regions = "Republic of Korea",
     n_observations = 383,
-    notes          = paste(
+    notes = paste(
       "Jung 2023 Table 2 reports Model Case 1 as 18 subjects and 383 observations, fitted over",
       "312 h. The underlying study (Jung 2022, ref [3] of Jung 2023) is a randomised, open-label,",
       "two-treatment, two-sequence, two-period crossover bioequivalence study in healthy Korean",

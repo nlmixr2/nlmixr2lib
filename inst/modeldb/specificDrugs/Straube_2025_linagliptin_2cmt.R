@@ -20,22 +20,22 @@ Straube_2025_linagliptin_2cmt <- function() {
   # verified = FALSE. peripheral1 holds FREE drug only -- Equation (S18) gives
   # the peripheral compartment no target and no binding.
   compartmentData <- list(
-    central     = list(analyte = "linagliptin",              units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "linagliptin",              units = "nmol", specimen = "tissue", verified = FALSE),
-    target      = list(analyte = "dipeptidyl peptidase-4",   units = "nmol", specimen = "plasma", verified = FALSE),
-    complex     = list(analyte = "linagliptin-DPP-4 complex", units = "nmol", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "linagliptin", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "linagliptin", units = "nmol", specimen = "tissue", verified = FALSE),
+    target = list(analyte = "dipeptidyl peptidase-4", units = "nmol", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "linagliptin-DPP-4 complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     disease_state = "Linagliptin is a small molecule inhibitor of dipeptidyl peptidase-4 (DPP-4) used to treat type 2 diabetes (Straube 2025 section 3.2).",
-    dose_range    = "Single intravenous doses of 0.5, 2.5 and 10 mg (Figure S3c).",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Single intravenous doses of 0.5, 2.5 and 10 mg (Figure S3c).",
+    regions = NA_character_,
+    notes = paste(
       "Same digitised data as Straube_2025_linagliptin_1cmt, refitted with the two-compartment TMDD model",
       "of Equations (S18)-(S19). Species is not stated explicitly; see the one-compartment file's note.",
       "Table S1 footnote +: only koff and Kd were fixed (at Wu and An 2020 values); Vc, Vp, CL, Q, Rb, keR",

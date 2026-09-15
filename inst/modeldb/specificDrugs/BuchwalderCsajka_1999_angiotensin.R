@@ -10,32 +10,32 @@ BuchwalderCsajka_1999_angiotensin <- function() {
   vignette <- "BuchwalderCsajka_1999_angiotensin"
 
   units <- list(
-    time          = "not applicable (algebraic dose-response snapshot model; the outputs are the peak BP increase to a single angiotensin bolus, not a time course)",
-    dosing        = "ug (ug of angiotensin, expressed as angiotensin II equivalents; multiply an angiotensin I dose by Q = 0.78 before populating DOSE_AGT_UG)",
+    time = "not applicable (algebraic dose-response snapshot model; the outputs are the peak BP increase to a single angiotensin bolus, not a time course)",
+    dosing = "ug (ug of angiotensin, expressed as angiotensin II equivalents; multiply an angiotensin I dose by Q = 0.78 before populating DOSE_AGT_UG)",
     concentration = "mmHg / challenge (peak SBP and DBP increase above placebo baseline elicited by one angiotensin bolus; the outputs sbp and dbp are blood pressure responses, NOT drug concentrations; the slash is only to satisfy checkModelConventions unit parsing)"
   )
 
   covariateData <- list(
     DOSE_AGT_UG = list(
-      description        = "Angiotensin challenge dose, ug of angiotensin II equivalents (Q-corrected). For an angiotensin II bolus this is the literal injected mass; for an angiotensin I bolus, multiply by Q = 0.78 (molar-weight ratio) before populating this column.",
-      units              = "ug (Ang II equivalents)",
-      type               = "continuous",
+      description = "Angiotensin challenge dose, ug of angiotensin II equivalents (Q-corrected). For an angiotensin II bolus this is the literal injected mass; for an angiotensin I bolus, multiply by Q = 0.78 (molar-weight ratio) before populating this column.",
+      units = "ug (Ang II equivalents)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-observation challenge-dose column. Observed range across the 1144 challenges in the fitting dataset was 0.49-5.4 ug as a function of body weight (Buchwalder-Csajka 1999 Methods 'Angiotensin dose-response relationship', p. 595). Doses actually used across the 13 trials spanned 0.75-5.4 ug for n = 81 angiotensin I doses and 0.63-4.41 ug for n = 154 angiotensin II doses (Methods 'Angiotensin doses used for challenges', p. 596). The dataset is expected to already carry DOSE_AGT_UG in Ang II equivalents; the Q = 0.78 conversion for Ang I doses is a data-preparation step, not estimated inside the model.",
-      source_name        = "D x Q (Buchwalder-Csajka 1999 Table 1 row 5 column header)"
+      notes = "Per-observation challenge-dose column. Observed range across the 1144 challenges in the fitting dataset was 0.49-5.4 ug as a function of body weight (Buchwalder-Csajka 1999 Methods 'Angiotensin dose-response relationship', p. 595). Doses actually used across the 13 trials spanned 0.75-5.4 ug for n = 81 angiotensin I doses and 0.63-4.41 ug for n = 154 angiotensin II doses (Methods 'Angiotensin doses used for challenges', p. 596). The dataset is expected to already carry DOSE_AGT_UG in Ang II equivalents; the Q = 0.78 conversion for Ang I doses is a data-preparation step, not estimated inside the model.",
+      source_name = "D x Q (Buchwalder-Csajka 1999 Table 1 row 5 column header)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 228L,
-    n_observations  = 1144L,
-    n_studies       = 13L,
-    age_range       = "healthy adults (specific age range not tabulated in the source)",
-    sex_female_pct  = 0,
-    disease_state   = "Healthy normotensive volunteers participating in phase I trials of antihypertensive drugs (nine angiotensin II receptor antagonists: losartan, tasosartan, candesartan cilexedil, TAK-536, SC-52458, L-159,282, LRB-081, UP 269-6, CS-866; one ACE inhibitor: CS-622; one dual ACE-NEP inhibitor: MDL 100,240). The challenges modeled here are the exogenous angiotensin boluses administered during dose-finding and placebo periods of these trials, NOT the antihypertensive drugs.",
-    dose_range      = "Angiotensin challenge bolus 0.49-5.4 ug (Methods 'Angiotensin dose-response relationship', p. 595); 81 angiotensin I doses (0.75-5.4 ug) and 154 angiotensin II doses (0.63-4.41 ug) across the 13 trials (Methods 'Angiotensin doses used for challenges', p. 596). Figure 1 shows the 185-subject subset that received both angiotensin I and angiotensin II.",
-    notes           = "All 228 volunteers were male per Methods (p. 596: 'all the volunteers were male'). Demographic factors (age, body weight, height, ethnic group) had no detectable influence on the dose-response relationship over the range of subjects studied, so the final structural model carries no demographic covariates; only the angiotensin type enters, and it does so via the upstream Q-correction baked into DOSE_AGT_UG. Source counts: 228 subjects in the dose-finding population, 1144 angiotensin-induced peaks in the dose-response modeling dataset (Methods p. 595)."
+    species = "human",
+    n_subjects = 228L,
+    n_observations = 1144L,
+    n_studies = 13L,
+    age_range = "healthy adults (specific age range not tabulated in the source)",
+    sex_female_pct = 0,
+    disease_state = "Healthy normotensive volunteers participating in phase I trials of antihypertensive drugs (nine angiotensin II receptor antagonists: losartan, tasosartan, candesartan cilexedil, TAK-536, SC-52458, L-159,282, LRB-081, UP 269-6, CS-866; one ACE inhibitor: CS-622; one dual ACE-NEP inhibitor: MDL 100,240). The challenges modeled here are the exogenous angiotensin boluses administered during dose-finding and placebo periods of these trials, NOT the antihypertensive drugs.",
+    dose_range = "Angiotensin challenge bolus 0.49-5.4 ug (Methods 'Angiotensin dose-response relationship', p. 595); 81 angiotensin I doses (0.75-5.4 ug) and 154 angiotensin II doses (0.63-4.41 ug) across the 13 trials (Methods 'Angiotensin doses used for challenges', p. 596). Figure 1 shows the 185-subject subset that received both angiotensin I and angiotensin II.",
+    notes = "All 228 volunteers were male per Methods (p. 596: 'all the volunteers were male'). Demographic factors (age, body weight, height, ethnic group) had no detectable influence on the dose-response relationship over the range of subjects studied, so the final structural model carries no demographic covariates; only the angiotensin type enters, and it does so via the upstream Q-correction baked into DOSE_AGT_UG. Source counts: 228 subjects in the dose-finding population, 1144 angiotensin-induced peaks in the dose-response modeling dataset (Methods p. 595)."
   )
 
   ini({

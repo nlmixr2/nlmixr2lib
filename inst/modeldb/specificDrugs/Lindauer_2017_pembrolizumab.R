@@ -30,8 +30,14 @@ Lindauer_2017_pembrolizumab <- function() {
   )
   vignette <- "Lindauer_2017_pembrolizumab"
   paper_specific_compartments <- c(
-    "tumor_vs", "tumor_is", "tumor_es_ub", "tumor_es_b",
-    "complex_blood", "complex_tumor", "target_tumor", "tumor_vol"
+    "tumor_vs",
+    "tumor_is",
+    "tumor_es_ub",
+    "tumor_es_b",
+    "complex_blood",
+    "complex_tumor",
+    "target_tumor",
+    "tumor_vol"
   )
 
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
@@ -41,34 +47,34 @@ Lindauer_2017_pembrolizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central       = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1   = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tumor_vs      = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
-    tumor_es_ub   = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
-    tumor_es_b    = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
-    tumor_is      = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    central = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor_vs = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_es_ub = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_es_b = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_is = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
     complex_blood = list(analyte = "pembrolizumab-PD-1 complex", units = "mg", specimen = "plasma", verified = FALSE),
     complex_tumor = list(analyte = "pembrolizumab-PD-1 complex", units = "mg", specimen = "tumor", verified = FALSE),
-    target_tumor  = list(analyte = "PD-1", units = "mg", specimen = "tumor", verified = FALSE),
-    tumor_vol     = list(analyte = "none", units = "mg", specimen = "tumor", verified = FALSE)
+    target_tumor = list(analyte = "PD-1", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_vol = list(analyte = "none", units = "mg", specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human (translational projection from preclinical C57BL/6 mouse MC38 colon-adenocarcinoma allograft)",
-    n_subjects      = NA_integer_,
-    n_studies       = 0L,
-    age_range       = "not applicable (simulated typical adult, 70 kg reference)",
-    age_median      = "not applicable",
-    weight_range    = "70 kg reference body weight; allometric scaling assumes a single typical adult",
-    weight_median   = "70 kg",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "not applicable (translational simulation)",
-    disease_state   = "Advanced / metastatic cutaneous melanoma; KEYNOTE-001 expansion-cohort dose-selection rationale",
-    dose_range      = "0.1-10 mg/kg IV Q2W or Q3W in the published dose-response simulations; 2 mg/kg Q3W is the recommended lowest maximally efficacious dose",
-    regions         = "Translational simulation (no clinical trial population)",
-    notes           = paste(
+    species = "human (translational projection from preclinical C57BL/6 mouse MC38 colon-adenocarcinoma allograft)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "not applicable (simulated typical adult, 70 kg reference)",
+    age_median = "not applicable",
+    weight_range = "70 kg reference body weight; allometric scaling assumes a single typical adult",
+    weight_median = "70 kg",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not applicable (translational simulation)",
+    disease_state = "Advanced / metastatic cutaneous melanoma; KEYNOTE-001 expansion-cohort dose-selection rationale",
+    dose_range = "0.1-10 mg/kg IV Q2W or Q3W in the published dose-response simulations; 2 mg/kg Q3W is the recommended lowest maximally efficacious dose",
+    regions = "Translational simulation (no clinical trial population)",
+    notes = paste(
       "The model is fit on mouse PK + receptor-occupancy + tumor-volume data",
       "from MC38-bearing C57BL/6 syngeneic allograft mice receiving the mouse or",
       "rat DX400 surrogate anti-mouse-PD-1 antibody (216 mouse + 100 rat",

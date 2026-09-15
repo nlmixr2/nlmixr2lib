@@ -25,11 +25,11 @@ Hassouneh_2024_dasatinib <- function() {
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the Hassouneh 2024 final model",
         "(Results 2.2: 'Body mass index (BMI) index was the only identified",
         "covariate associated with the absorption rate constant'). Table 3",
@@ -62,14 +62,14 @@ Hassouneh_2024_dasatinib <- function() {
         "model(), which is the form standard across nlmixr2lib.",
         sep = " "
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     OCC = list(
-      description        = "Dosing-occasion indicator: 1 = first SPRYCEL period, 2 = second SPRYCEL period",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dosing-occasion indicator: 1 = first SPRYCEL period, 2 = second SPRYCEL period",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The source study is a four-period full-replicate bioequivalence",
         "study in which 'in two periods of the study, the subjects were",
         "administered an oral dose of SPRYCEL 140 mg film coated tablet, the",
@@ -90,7 +90,7 @@ Hassouneh_2024_dasatinib <- function() {
         "so occasion enters only through the IOV random effects.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -113,28 +113,28 @@ Hassouneh_2024_dasatinib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. Table 2: median 33 years (range 18-49), mean 32 +/- 8.36. Study eligibility 18-55 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. Table 2: median 33 years (range 18-49), mean 32 +/- 8.36. Study eligibility 18-55 years."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. Table 2: median 70 kg (range 51-100), mean 72 +/- 12.71. Note that BMI -- which combines weight and height -- WAS retained, on Ka."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. Table 2: median 70 kg (range 51-100), mean 72 +/- 12.71. Note that BMI -- which combines weight and height -- WAS retained, on Ka."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Not listed among the screened covariates, but reported in Table 2 (median 175 cm, range 160-192, mean 175 +/- 5.86) and load-bearing because BMI = WT / (HT/100)^2. Recorded so a data assembler can reconstruct the retained BMI covariate."
+      units = "cm",
+      type = "continuous",
+      notes = "Not listed among the screened covariates, but reported in Table 2 (median 175 cm, range 160-192, mean 175 +/- 5.86) and load-bearing because BMI = WT / (HT/100)^2. Recorded so a data assembler can reconstruct the retained BMI covariate."
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator (1 = smoker, 0 = non-smoker)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator (1 = smoker, 0 = non-smoker)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-smoker)",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.3.2), not retained. Table 2: 85.34% smokers,",
         "14.66% non-smokers. Methods 4.3.2 defines the positive level",
         "narrowly -- 'smoker subject was a subject who smoked more than 10",
@@ -148,121 +148,121 @@ Hassouneh_2024_dasatinib <- function() {
     ),
     TBILI = list(
       description = "Total serum bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as 'total bilirubin' (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges. Units not stated by the source; mg/dL recorded as the register's default assay unit."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as 'total bilirubin' (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges. Units not stated by the source; mg/dL recorded as the register's default assay unit."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published. Inclusion criterion 7 accepted ALP below the reference range."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published. Inclusion criterion 7 accepted ALP below the reference range."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as 'Cr' (Methods 4.3.2), not retained. No numeric summary published. Inclusion criterion 7 accepted creatinine below the reference range. Units not stated by the source."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as 'Cr' (Methods 4.3.2), not retained. No numeric summary published. Inclusion criterion 7 accepted creatinine below the reference range. Units not stated by the source."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required values within laboratory reference ranges."
     ),
     FPG = list(
       description = "Fasting plasma glucose (screening clinical chemistry)",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened as 'glucose' (Methods 4.3.2), not retained. No numeric summary published. The source says only 'glucose'; screening chemistry in a fasting bioequivalence study is a fasting sample, so it is filed under the FPG canonical."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened as 'glucose' (Methods 4.3.2), not retained. No numeric summary published. The source says only 'glucose'; screening chemistry in a fasting bioequivalence study is a fasting sample, so it is filed under the FPG canonical."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
     ),
     RBC = list(
       description = "Red blood cell count",
-      units       = "10^12/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
+      units = "10^12/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
     ),
     PLT = list(
       description = "Platelet count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
     ),
     NEUT = list(
       description = "Absolute neutrophil count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
     ),
     LYMPH_ABS = list(
       description = "Absolute peripheral-blood lymphocyte count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened as 'lymphocytes' (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened as 'lymphocytes' (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened as 'hemoglobin level' (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened as 'hemoglobin level' (Methods 4.3.2), not retained. No numeric summary published; inclusion required hematology within 5% of the reference limits."
     ),
     CONMED_PARACETAMOL = list(
-      description        = "Concomitant paracetamol (acetaminophen) administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant paracetamol (acetaminophen) administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant paracetamol)",
-      notes              = "Screened (Methods 4.3.2: 'concurrent medications (such as paracetamol and diclofenac)'), not retained. No numeric summary or point estimate published. Concomitant medications in this study were rescue treatments for adverse events, not scheduled therapy."
+      notes = "Screened (Methods 4.3.2: 'concurrent medications (such as paracetamol and diclofenac)'), not retained. No numeric summary or point estimate published. Concomitant medications in this study were rescue treatments for adverse events, not scheduled therapy."
     ),
     CONMED_DICLOFENAC = list(
-      description        = "Concomitant diclofenac administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant diclofenac administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant diclofenac)",
-      notes              = "Screened (Methods 4.3.2), not retained. No numeric summary or point estimate published. Concomitant medications in this study were rescue treatments for adverse events, not scheduled therapy."
+      notes = "Screened (Methods 4.3.2), not retained. No numeric summary or point estimate published. Concomitant medications in this study were rescue treatments for adverse events, not scheduled therapy."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "dasatinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dasatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "dasatinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dasatinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dasatinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 110L,
-    n_studies       = 1L,
-    n_observations  = 4180L,
-    age_range       = "18-49 years (Table 2: median 33, mean 32 +/- 8.36); study eligibility 18-55 years",
-    weight_range    = "51-100 kg (Table 2: median 70 kg, mean 72 +/- 12.71)",
-    height_range    = "160-192 cm (Table 2: median 175 cm, mean 175 +/- 5.86)",
-    bmi_range       = "18.6-29.8 kg/m^2 (Table 2: median 22.9, mean 23.6 +/- 3.50); study eligibility 18.5-30.0 kg/m^2. About 35% of subjects were overweight or obese (BMI > 25 kg/m^2) per the Discussion",
-    sex_female_pct  = 0,
-    race_ethnicity  = c(`Middle Eastern` = 100),
-    disease_state   = "Healthy volunteers (medical history, physical examination, 12-lead ECG and laboratory investigations within acceptable limits; no hepatic, renal, cardiovascular, gastrointestinal or hematological disease)",
-    dose_range      = "Single oral dose of SPRYCEL 140 mg film-coated tablet under fasting conditions with 240 mL of water, given on each of two separate occasions (one tablet per occasion); no food until 4 h post-dose",
-    smoking_status  = "85.34% smokers, 14.66% non-smokers (Table 2); exclusion criterion 4 barred heavy smokers (more than 10 cigarettes per day)",
-    regions         = "Jordan (single centre, International Pharmaceutical Research Center, Amman)",
-    co_medication   = "None scheduled; subjects agreed to take no prescription or non-prescription drugs with systemic absorption for at least two weeks before the first dose, and no CYP3A4-affecting medication or food, grapefruit, alcohol or methylxanthines during the study. Paracetamol and diclofenac appear only as rescue medication and were screened as covariates without being retained.",
-    notes           = paste(
+    species = "human",
+    n_subjects = 110L,
+    n_studies = 1L,
+    n_observations = 4180L,
+    age_range = "18-49 years (Table 2: median 33, mean 32 +/- 8.36); study eligibility 18-55 years",
+    weight_range = "51-100 kg (Table 2: median 70 kg, mean 72 +/- 12.71)",
+    height_range = "160-192 cm (Table 2: median 175 cm, mean 175 +/- 5.86)",
+    bmi_range = "18.6-29.8 kg/m^2 (Table 2: median 22.9, mean 23.6 +/- 3.50); study eligibility 18.5-30.0 kg/m^2. About 35% of subjects were overweight or obese (BMI > 25 kg/m^2) per the Discussion",
+    sex_female_pct = 0,
+    race_ethnicity = c(`Middle Eastern` = 100),
+    disease_state = "Healthy volunteers (medical history, physical examination, 12-lead ECG and laboratory investigations within acceptable limits; no hepatic, renal, cardiovascular, gastrointestinal or hematological disease)",
+    dose_range = "Single oral dose of SPRYCEL 140 mg film-coated tablet under fasting conditions with 240 mL of water, given on each of two separate occasions (one tablet per occasion); no food until 4 h post-dose",
+    smoking_status = "85.34% smokers, 14.66% non-smokers (Table 2); exclusion criterion 4 barred heavy smokers (more than 10 cigarettes per day)",
+    regions = "Jordan (single centre, International Pharmaceutical Research Center, Amman)",
+    co_medication = "None scheduled; subjects agreed to take no prescription or non-prescription drugs with systemic absorption for at least two weeks before the first dose, and no CYP3A4-affecting medication or food, grapefruit, alcohol or methylxanthines during the study. Paracetamol and diclofenac appear only as rescue medication and were screened as covariates without being retained.",
+    notes = paste(
       "116 healthy subjects enrolled, 110 completed and contributed the",
       "4180 plasma dasatinib observations (110 subjects x 2 SPRYCEL",
       "occasions x 19 samples). The dataset was split before analysis: 88",

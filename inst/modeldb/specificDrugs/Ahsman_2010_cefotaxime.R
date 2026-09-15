@@ -32,51 +32,51 @@ Ahsman_2010_cefotaxime <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "cefotaxime (CTX)", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefotaxime (CTX)", units = "mg", specimen = "plasma", verified = FALSE),
     central_dact = list(analyte = "desacetylcefotaxime (DACT)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the source analysis (the most recent weight before ECMO was used for both dose calculation and PK analysis). Power covariate on CTX CL centred at 3.5 kg (cohort median, Table 1).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject in the source analysis (the most recent weight before ECMO was used for both dose calculation and PK analysis). Power covariate on CTX CL centred at 3.5 kg (cohort median, Table 1).",
+      source_name = "WT"
     ),
     Q_CVVH = list(
-      description        = "Continuous venovenous hemofiltration (CVVH) circuit flow rate when the CVVH filter is active in the ECMO circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Continuous venovenous hemofiltration (CVVH) circuit flow rate when the CVVH filter is active in the ECMO circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; 0 when CVVH is not running. Power covariate on DACT CL centred at 193 mL/min (cohort median during CVVH operation, Table 1). When Q_CVVH = 0 (no CVVH active) the covariate effect is removed from the equation (multiplier = 1), per the source paper.",
-      source_name        = "QCVVH"
+      notes = "Time-varying; 0 when CVVH is not running. Power covariate on DACT CL centred at 193 mL/min (cohort median during CVVH operation, Table 1). When Q_CVVH = 0 (no CVVH active) the covariate effect is removed from the equation (multiplier = 1), per the source paper.",
+      source_name = "QCVVH"
     ),
     T_POST_ECMO = list(
-      description        = "Time after ECMO decannulation (end of extracorporeal circulation)",
-      units              = "hour",
-      type               = "continuous",
+      description = "Time after ECMO decannulation (end of extracorporeal circulation)",
+      units = "hour",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; 0 before and during ECMO, becomes the wall-clock hours elapsed since decannulation thereafter. Power covariate on both CTX CL and DACT CL centred at 100 h (Appendix). When T_POST_ECMO = 0 the covariate effect is removed from the equation (multiplier = 1), per the source paper.",
-      source_name        = "tEND"
+      notes = "Time-varying; 0 before and during ECMO, becomes the wall-clock hours elapsed since decannulation thereafter. Power covariate on both CTX CL and DACT CL centred at 100 h (Appendix). When T_POST_ECMO = 0 the covariate effect is removed from the equation (multiplier = 1), per the source paper.",
+      source_name = "tEND"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 37L,
-    n_studies      = 1L,
-    age_range      = "postnatal age 0.67-199 days at ECMO start (median 3.3 days); gestational age 34-42 weeks at birth (median 37 weeks)",
-    age_median     = "3.3 days postnatal",
-    weight_range   = "2.0-6.2 kg at ECMO start",
-    weight_median  = "3.5 kg",
+    species = "human",
+    n_subjects = 37L,
+    n_studies = 1L,
+    age_range = "postnatal age 0.67-199 days at ECMO start (median 3.3 days); gestational age 34-42 weeks at birth (median 37 weeks)",
+    age_median = "3.3 days postnatal",
+    weight_range = "2.0-6.2 kg at ECMO start",
+    weight_median = "3.5 kg",
     sex_female_pct = 51.4,
     race_ethnicity = NULL,
-    disease_state  = "Critically ill neonates and infants on ECMO. Primary diagnoses: meconium aspiration syndrome (46%), congenital diaphragmatic hernia (22%), pulmonary hypertension other causes (14%), congenital heart defects (11%), other including sepsis and viral infections (7%).",
-    dose_range     = "Standard IV bolus regimen: 50 mg/kg BID (PNA < 1 week, 65%), 50 mg/kg TID (PNA 1-4 weeks, 19%), 37.5 mg/kg QID (PNA > 4 weeks, 8%); small subgroup on 25 mg/kg BID (5%) or 37.5 mg/kg TID (3%) per clinical discretion.",
-    regions        = "Single centre, Sophia Children's Hospital, Erasmus University Medical Center, Rotterdam, Netherlands.",
-    notes          = "December 2006-June 2009. ECMO modality 54% VV / 46% VA (n = 41 ECMO runs across 37 patients; 4 patients had 2 runs each). Median ECMO duration 108 h (range 16-374 h). 30/37 patients underwent CVVH at median flow 193 mL/min (range 100-350 mL/min). Hypothermic (24 deg C) n = 2; normothermic (36 deg C) n = 35. Serum chemistry medians: albumin 31 g/L (21-40), serum creatinine 32 umol/L (19-69). Survival 25/37. 392 plasma samples (median 10 per patient, range 1-17). Cefotaxime administered IV into the extracorporeal line distal to the oxygenator. DACT concentrations were converted to CTX equivalents at dataset-build time via the molecular weight ratio Mr_CTX / Mr_DACT = 455.5 / 413.4."
+    disease_state = "Critically ill neonates and infants on ECMO. Primary diagnoses: meconium aspiration syndrome (46%), congenital diaphragmatic hernia (22%), pulmonary hypertension other causes (14%), congenital heart defects (11%), other including sepsis and viral infections (7%).",
+    dose_range = "Standard IV bolus regimen: 50 mg/kg BID (PNA < 1 week, 65%), 50 mg/kg TID (PNA 1-4 weeks, 19%), 37.5 mg/kg QID (PNA > 4 weeks, 8%); small subgroup on 25 mg/kg BID (5%) or 37.5 mg/kg TID (3%) per clinical discretion.",
+    regions = "Single centre, Sophia Children's Hospital, Erasmus University Medical Center, Rotterdam, Netherlands.",
+    notes = "December 2006-June 2009. ECMO modality 54% VV / 46% VA (n = 41 ECMO runs across 37 patients; 4 patients had 2 runs each). Median ECMO duration 108 h (range 16-374 h). 30/37 patients underwent CVVH at median flow 193 mL/min (range 100-350 mL/min). Hypothermic (24 deg C) n = 2; normothermic (36 deg C) n = 35. Serum chemistry medians: albumin 31 g/L (21-40), serum creatinine 32 umol/L (19-69). Survival 25/37. 392 plasma samples (median 10 per patient, range 1-17). Cefotaxime administered IV into the extracorporeal line distal to the oxygenator. DACT concentrations were converted to CTX equivalents at dataset-build time via the molecular weight ratio Mr_CTX / Mr_DACT = 455.5 / 413.4."
   )
 
   ini({

@@ -31,8 +31,8 @@ Ashraf_2024_codeine <- function() {
   )
   vignette <- "Ashraf_2024_codeine"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -46,8 +46,8 @@ Ashraf_2024_codeine <- function() {
   # metabolite clearances and volumes were estimated against the measured
   # metabolite concentrations.
   compartmentData <- list(
-    depot       = list(analyte = "codeine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "codeine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "codeine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "codeine", units = "mg", specimen = "plasma", verified = TRUE),
     central_morphine = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = TRUE),
     central_c6g = list(analyte = "codeine-6-glucuronide", units = "mg", specimen = "plasma", verified = TRUE),
     central_m3g = list(analyte = "morphine-3-glucuronide", units = "mg", specimen = "plasma", verified = TRUE)
@@ -55,11 +55,11 @@ Ashraf_2024_codeine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters codeine and morphine clearance and",
         "central volume a priori via CL_i = CL_80kg * (WT / 80)^0.75 and",
         "V_i = V_80kg * (WT / 80)^1 (Online Resource 1 Section 1.6.1,",
@@ -70,17 +70,17 @@ Ashraf_2024_codeine <- function() {
         "scaling to 'both codeine and morphine' (paper Section 2.5;",
         "Online Resource 1 Section 1.6.1)."
       ),
-      source_name        = "WTKG (Online Resource 1 Eqs. 3-4)"
+      source_name = "WTKG (Online Resource 1 Eqs. 3-4)"
     ),
     CYP2D6 = list(
-      description        = paste(
+      description = paste(
         "CYP2D6 activity score (AS): the CPIC consensus sum of per-allele",
         "activity values for the subject's diplotype."
       ),
-      units              = "(activity score, 0-4)",
-      type               = "continuous",
+      units = "(activity score, 0-4)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype). Scoring per paper",
         "Table 1 footnote a: 1 for each normal-function allele (*1, *2),",
         "0.5 for each decreased-function allele (*9, *17, *29, *41), 0.25",
@@ -96,7 +96,7 @@ Ashraf_2024_codeine <- function() {
         "parameterisation reduced unexplained variability in the metabolic",
         "ratio from 45% to 33% relative to the phenotype-class model)."
       ),
-      source_name        = "AS (paper Section 3.2 and Table 1 footnote a)"
+      source_name = "AS (paper Section 3.2 and Table 1 footnote a)"
     )
   )
 
@@ -112,33 +112,33 @@ Ashraf_2024_codeine <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on codeine clearance with power and exponential models in",
         "the PsN SCM run; not retained (Online Resource 1 Section 2.4)."
       )
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the PsN SCM run; not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the PsN SCM run; not retained."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Reported in paper Table 1 baseline demographics; not tested as a",
         "model covariate (body weight was used as the size descriptor)."
       )
     ),
     SMOKE_CURRENT = list(
       description = "Current cigarette smoking",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on codeine clearance (increased glucuronidation) and on",
         "morphine clearance in the PsN SCM run; not retained",
         "(Online Resource 1 Section 2.4)."
@@ -147,29 +147,29 @@ Ashraf_2024_codeine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 997,
-    n_studies      = 1,
-    age_mean_sd    = "47.8 (12.9) years",
+    species = "human",
+    n_subjects = 997,
+    n_studies = 1,
+    age_mean_sd = "47.8 (12.9) years",
     weight_mean_sd = "79.8 (13.8) kg",
-    weight_median  = "80 kg (allometric reference)",
-    bmi_mean_sd    = "25.9 (3.60) kg/m^2",
+    weight_median = "80 kg (allometric reference)",
+    bmi_mean_sd = "25.9 (3.60) kg/m^2",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults scheduled for elective ambulatory (day-case) surgery.",
       "American Society of Anesthesiologists physical status class 1",
       "(n = 513, 51%), 2 (n = 424, 43%) and 3 (n = 60, 6%). Use of strong",
       "CYP2D6 inhibitors was an exclusion criterion."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single preoperative oral dose of codeine 60 mg given as a",
       "paracetamol 1000 mg + codeine 60 mg combination tablet. Model",
       "simulations in the paper additionally cover 30 mg and 60 mg codeine",
       "given once to four times daily for up to four days."
     ),
-    regions        = "Finland (Jorvi Hospital day-surgery unit, Espoo)",
-    genotype       = paste(
+    regions = "Finland (Jorvi Hospital day-surgery unit, Espoo)",
+    genotype = paste(
       "CYP2D6 activity score distribution (n, % of 997): AS 0, 37 (3.7);",
       "0.25, 5 (0.5); 0.5, 21 (2.1); 0.75, 2 (0.2); 1, 240 (24); 1.25,",
       "23 (2.3); 1.5, 67 (6.7); 2, 537 (54); 2.25, 2 (0.2); 3, 61 (6.1);",
@@ -177,7 +177,7 @@ Ashraf_2024_codeine <- function() {
       "629 normal and 65 ultrarapid. A total of 64 distinct CYP2D6",
       "genotypes were observed."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from paper Table 1. Prospective clinical trial",
       "(EudraCT 2015-005561-23), 1000 patients recruited, 997 with",
       "concentration data for one or more analytes. Sampling was sparse:",

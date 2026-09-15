@@ -30,17 +30,17 @@ Wurthwein_2013_caspofungin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (recorded on study day 1 per Methods,",
         "'Pharmacokinetic sampling and recording of covariates').",
         "Linear fractional-change covariate on CL and V1 centred on",
@@ -52,18 +52,18 @@ Wurthwein_2013_caspofungin <- function() {
         "covariate body weight compared to the model using the same",
         "fractional change for CL and V1 showed no difference')."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer-valued occasion indicator for the five PK sampling",
         "occasions in Wurthwein 2013 (1 = day 1, 2 = day 4, 3 = day 7,",
         "4 = day 14, 5 = day 28)."
       ),
-      units              = "(count)",
-      type               = "categorical",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject; constant within an occasion.",
         "Decomposed inside model() into binary indicators oc1..oc5 that",
         "multiplex the per-occasion IOV etas on log-CL (16% CV; Table 2",
@@ -76,20 +76,20 @@ Wurthwein_2013_caspofungin <- function() {
         "(days 1, 4, 7, 14, and 28)'; only IOV on CL was retained in the",
         "final model (P < 0.01)."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 46L,
-    n_studies        = 1L,
-    age_range        = "18-74 years (median 61)",
-    age_median       = "61 years",
-    weight_range     = "43-104 kg (median 76)",
-    weight_median    = "76 kg",
-    sex_female_pct   = 54.3,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 46L,
+    n_studies = 1L,
+    age_range = "18-74 years (median 61)",
+    age_median = "61 years",
+    weight_range = "43-104 kg (median 76)",
+    weight_median = "76 kg",
+    sex_female_pct = 54.3,
+    disease_state = paste(
       "Adults with proven or probable invasive aspergillosis as defined",
       "by modified European Organisation for Research and Treatment of",
       "Cancer (EORTC) criteria. 27 of 46 had acute leukemia and 31 of 46",
@@ -97,14 +97,14 @@ Wurthwein_2013_caspofungin <- function() {
       "normal, AST/ALT > 5x ULN, alkaline phosphatase > 5x ULN, active",
       "veno-occlusive disease, or expected survival < 5 days."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Caspofungin 70, 100, 150, or 200 mg administered once daily as a",
       "2-hour intravenous infusion (no loading dose); maximum 28 days of",
       "treatment. Dose group sizes: 70 mg n = 9, 100 mg n = 8,",
       "150 mg n = 9, 200 mg n = 20."
     ),
-    regions          = "Germany (three university hospitals; September 2006 - July 2009)",
-    notes            = paste(
+    regions = "Germany (three university hospitals; September 2006 - July 2009)",
+    notes = paste(
       "Phase II dose-escalation study (EudraCT 2006-001936-30,",
       "ClinicalTrials.gov NCT00404092). 468 plasma samples collected on",
       "day 1 (pre-dose, 2 h [peak], 3 h, 5-7 h, 24 h [trough]) and at",

@@ -1,8 +1,8 @@
 Ai_2024_ractopamine_goat_pbpk <- function() {
   description <- "PBPK (whole-body, hybrid flow- and membrane-limited; goat). Eleven-tissue physiologically based pharmacokinetic model for the beta-adrenoceptor agonist ractopamine in Liaoning cashmere goats after repeated oral gavage, comprising gastric contents, intestinal contents, liver, spleen, kidney, heart, lung, muscle, fat, brain, a lumped rest-of-body compartment, arterial plasma, venous plasma and a urinary-excretion sink. Liver, spleen, kidney, heart and lung are perfusion (flow) limited; muscle, fat, brain and the rest of the body are membrane (permeability) limited and each carry a vascular plasma sub-compartment plus a tissue sub-compartment separated by a permeability-area product. Absorption is first-order gastric emptying (Kst) into the gut lumen followed by first-order uptake (Ka) into the liver in competition with first-order fecal loss of unabsorbed drug (Kgut); elimination is hepatic (Clhe) plus renal (Clre), both acting on the unbound fraction. Built to predict edible-tissue residues and withdrawal times against Codex Alimentarius maximum residue limits (Ai 2024)."
-  reference   <- "Ai J, Gao Y, Yang F, Zhao Z, Dong J, Wang J, Fu S, Ma Y, Gu X. Development and application of a physiologically-based pharmacokinetic model for ractopamine in goats. Front Vet Sci. 2024;11:1399043. doi:10.3389/fvets.2024.1399043"
-  vignette    <- "Ai_2024_ractopamine_goat_pbpk"
-  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  reference <- "Ai J, Gao Y, Yang F, Zhao Z, Dong J, Wang J, Fu S, Ma Y, Gu X. Development and application of a physiologically-based pharmacokinetic model for ractopamine in goats. Front Vet Sci. 2024;11:1399043. doi:10.3389/fvets.2024.1399043"
+  vignette <- "Ai_2024_ractopamine_goat_pbpk"
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Every state below integrates a drug AMOUNT in ug,
@@ -12,49 +12,49 @@ Ai_2024_ractopamine_goat_pbpk <- function() {
     # The stomach and gut states hold luminal drug (gavage contents and
     # intestinal contents), not a sampled biological matrix; "administration
     # site" is the closest member of the specimen vocabulary.
-    stomach     = list(analyte = "ractopamine", units = "ug", specimen = "administration site", verified = TRUE),
-    a_gut       = list(analyte = "ractopamine", units = "ug", specimen = "administration site", verified = TRUE),
-    liver       = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    spleen      = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    kidney      = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    heart       = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    lung        = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    vp_muscle   = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
-    int_muscle  = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    vp_adipose  = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
+    stomach = list(analyte = "ractopamine", units = "ug", specimen = "administration site", verified = TRUE),
+    a_gut = list(analyte = "ractopamine", units = "ug", specimen = "administration site", verified = TRUE),
+    liver = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    vp_muscle = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
+    int_muscle = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    vp_adipose = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
     int_adipose = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    vp_brain    = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
-    int_brain   = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    vp_other    = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
-    int_other   = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
-    arterial    = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
-    venous      = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
-    urine       = list(analyte = "ractopamine", units = "ug", specimen = "urine", verified = TRUE)
+    vp_brain = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
+    int_brain = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    vp_other = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
+    int_other = list(analyte = "ractopamine", units = "ug", specimen = "tissue", verified = TRUE),
+    arterial = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
+    venous = list(analyte = "ractopamine", units = "ug", specimen = "plasma", verified = TRUE),
+    urine = list(analyte = "ractopamine", units = "ug", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Scales every compartment volume (Vxx = Vcxx * WT), the cardiac output allometrically (Qtot = QAR * WT^0.74 * (1 - pcv)), and converts both clearances from L/h/kg to L/h. The supplementary acslX code sets `constant bw = 30`, the mean weight of the 27 male Liaoning cashmere goats (30 +/- 5 kg; Ai 2024 Section 2.2). Body weight was held constant over the 28-day dosing period and the subsequent depletion phase.",
-      source_name        = "BW"
+      notes = "Scales every compartment volume (Vxx = Vcxx * WT), the cardiac output allometrically (Qtot = QAR * WT^0.74 * (1 - pcv)), and converts both clearances from L/h/kg to L/h. The supplementary acslX code sets `constant bw = 30`, the mean weight of the 27 male Liaoning cashmere goats (30 +/- 5 kg; Ai 2024 Section 2.2). Body weight was held constant over the 28-day dosing period and the subsequent depletion phase.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "goat (Liaoning cashmere goat, Capra hircus; male)",
-    n_subjects     = 27L,
-    n_studies      = 1L,
-    age_range      = "10 months",
-    weight_range   = "30 +/- 5 kg",
+    species = "goat (Liaoning cashmere goat, Capra hircus; male)",
+    n_subjects = 27L,
+    n_studies = 1L,
+    age_range = "10 months",
+    weight_range = "30 +/- 5 kg",
     sex_female_pct = 0,
-    disease_state  = "Healthy; one-week acclimation on a drug-free diet before dosing",
-    dose_range     = "Single oral gavage 1 mg/kg BW and single intravenous 1 mg/kg BW (n = 6, crossover with a 15-day washout) for the pharmacokinetic study; continuous oral gavage 1 mg/kg BW per day for 28 days for the residue-depletion study (n = 21, including 3 controls)",
-    regions        = "China (Institute of Feed Research, Chinese Academy of Agricultural Sciences, Beijing)",
+    disease_state = "Healthy; one-week acclimation on a drug-free diet before dosing",
+    dose_range = "Single oral gavage 1 mg/kg BW and single intravenous 1 mg/kg BW (n = 6, crossover with a 15-day washout) for the pharmacokinetic study; continuous oral gavage 1 mg/kg BW per day for 28 days for the residue-depletion study (n = 21, including 3 controls)",
+    regions = "China (Institute of Feed Research, Chinese Academy of Agricultural Sciences, Beijing)",
     n_observations = NA_integer_,
-    notes          = "Three of the 27 goats were sacrificed to measure the organ-weight fractions of Ai 2024 Table 3. Tissue blood flows are literature values for sheep and goats (Ai 2024 refs 17 and 28). The residue-depletion concentration-time data come from two earlier publications by the same laboratory (Ai 2024 refs 24 and 25, Zhao 2017 and Zhao 2019). Partition coefficients, both clearances, Ka, Kst and Kgut were optimised in the acslXtreme OptStatModule against the measured data (Ai 2024 Table 4). No individual-level fitting was performed, so the model carries no inter-individual random effects; Ai 2024 propagated parameter uncertainty instead through a 500-iteration Monte Carlo analysis over the sensitive parameters to derive the withdrawal times of Ai 2024 Table 7."
+    notes = "Three of the 27 goats were sacrificed to measure the organ-weight fractions of Ai 2024 Table 3. Tissue blood flows are literature values for sheep and goats (Ai 2024 refs 17 and 28). The residue-depletion concentration-time data come from two earlier publications by the same laboratory (Ai 2024 refs 24 and 25, Zhao 2017 and Zhao 2019). Partition coefficients, both clearances, Ka, Kst and Kgut were optimised in the acslXtreme OptStatModule against the measured data (Ai 2024 Table 4). No individual-level fitting was performed, so the model carries no inter-individual random effects; Ai 2024 propagated parameter uncertainty instead through a 500-iteration Monte Carlo analysis over the sensitive parameters to derive the withdrawal times of Ai 2024 Table 7."
   )
 
   ini({

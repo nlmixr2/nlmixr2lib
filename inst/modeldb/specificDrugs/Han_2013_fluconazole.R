@@ -15,76 +15,76 @@ Han_2013_fluconazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column WT. Time-fixed at the subject's baseline weight (Han 2013 Table 1: mean 65.6 kg, range 40.0-90.0 kg, n = 60). Enters the V model as an additive linear term normalised to the population reference weight of 65 kg: V_typical = (WT/65) * theta5. The reference weight 65 was chosen by the authors to approximate the cohort mean (65.6 kg).",
-      source_name        = "WT"
+      notes = "Source column WT. Time-fixed at the subject's baseline weight (Han 2013 Table 1: mean 65.6 kg, range 40.0-90.0 kg, n = 60). Enters the V model as an additive linear term normalised to the population reference weight of 65 kg: V_typical = (WT/65) * theta5. The reference weight 65 was chosen by the authors to approximate the cohort mean (65.6 kg).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin, Shekar 2014 meropenem). Han 2013 cohort median is 123.5 mL/min (range 21.6-282.7); the model normalises CLCR to 120 mL/min inside the CL formula so the coefficient theta4 = 0.557 L/h has units of L/h per unit of (CLCR/120). CLCR is conventionally not defined for CRRT-dependent subjects; in Han 2013 the model formula switches off the CLCR-driven term when RRT_CRRT_STATUS = 1 (the CRRT arm uses a fixed CL = theta3 = 1.85 L/h).",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin, Shekar 2014 meropenem). Han 2013 cohort median is 123.5 mL/min (range 21.6-282.7); the model normalises CLCR to 120 mL/min inside the CL formula so the coefficient theta4 = 0.557 L/h has units of L/h per unit of (CLCR/120). CLCR is conventionally not defined for CRRT-dependent subjects; in Han 2013 the model formula switches off the CLCR-driven term when RRT_CRRT_STATUS = 1 (the CRRT arm uses a fixed CL = theta3 = 1.85 L/h).",
+      source_name = "CLCR"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Continuous renal replacement therapy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous renal replacement therapy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column CRRT. 1 = subject was receiving continuous renal replacement therapy (CRRT) during the modeled PK sampling period; 0 = no CRRT. 15/60 patients were on CRRT in the Han 2013 cohort. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (precedent: Shekar 2014 meropenem). The indicator is treated as time-fixed at the subject level; the model uses RRT_CRRT_STATUS as a switch between the non-RRT additive CL formula and the fixed CRRT-cohort CL theta3.",
-      source_name        = "CRRT"
+      notes = "Source column CRRT. 1 = subject was receiving continuous renal replacement therapy (CRRT) during the modeled PK sampling period; 0 = no CRRT. 15/60 patients were on CRRT in the Han 2013 cohort. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (precedent: Shekar 2014 meropenem). The indicator is treated as time-fixed at the subject level; the model uses RRT_CRRT_STATUS as a switch between the non-RRT additive CL formula and the fixed CRRT-cohort CL theta3.",
+      source_name = "CRRT"
     ),
     DIS_SEPSIS = list(
-      description        = "Active-sepsis co-condition indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active-sepsis co-condition indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column SEPS. 1 = clinically diagnosed sepsis at the start of the modeled PK interval; 0 = no sepsis. 29/60 subjects were septic in the Han 2013 cohort. Treated as time-fixed at the subject level. Enters the non-RRT CL formula as an additive shift theta9 = -0.369 L/h (septic patients have about 0.37 L/h lower CL in the non-RRT arm; consistent with the documented inflammation-driven reduction of glomerular filtration / fluconazole CL in sepsis -- see Pittrow & Penk 1999, cited as Han 2013 reference 18).",
-      source_name        = "SEPS"
+      notes = "Source column SEPS. 1 = clinically diagnosed sepsis at the start of the modeled PK interval; 0 = no sepsis. 29/60 subjects were septic in the Han 2013 cohort. Treated as time-fixed at the subject level. Enters the non-RRT CL formula as an additive shift theta9 = -0.369 L/h (septic patients have about 0.37 L/h lower CL in the non-RRT arm; consistent with the documented inflammation-driven reduction of glomerular filtration / fluconazole CL in sepsis -- see Pittrow & Penk 1999, cited as Han 2013 reference 18).",
+      source_name = "SEPS"
     ),
     DIS_EDEMA = list(
-      description        = "Clinical edema presence indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Clinical edema presence indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column EDEM. 1 = clinical edema present (puffy face and pitting peripheral edema; Han 2013 Table 1 footnote b); 0 = no clinical edema. 20/60 subjects had edema in the Han 2013 cohort. Treated as time-fixed at the subject level. Enters the V formula as an additive shift theta6 = 13.6 L (edematous patients have about 13.6 L larger V; consistent with third-space fluid expansion increasing the apparent volume of a hydrophilic small molecule).",
-      source_name        = "EDEM"
+      notes = "Source column EDEM. 1 = clinical edema present (puffy face and pitting peripheral edema; Han 2013 Table 1 footnote b); 0 = no clinical edema. 20/60 subjects had edema in the Han 2013 cohort. Treated as time-fixed at the subject level. Enters the V formula as an additive shift theta6 = 13.6 L (edematous patients have about 13.6 L larger V; consistent with third-space fluid expansion increasing the apparent volume of a hydrophilic small molecule).",
+      source_name = "EDEM"
     ),
     DIS_BURN_RECENT = list(
-      description        = "Recent-postburn hypermetabolic-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Recent-postburn hypermetabolic-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column TBI. 1 = within 30 days of burn injury (the acute hypermetabolic phase); 0 = at least 30 days postburn. The 30-day cutoff was chosen by the authors because the postburn hypermetabolic response is maximised between days 7 and 17 after injury and substantially resolved by day 30 (Han 2013 Methods, citing references 12 and 13). The Han 2013 cohort mean time from burn injury was 23 days (range 7-88). Enters both the non-RRT CL formula (theta7 = 0.504 L/h additive shift) and the V formula (theta8 = 9.61 L additive shift) as time-fixed binary indicators -- recent-postburn patients have higher CL and larger V. NOTE: the Han 2013 source column is named TBI but does NOT refer to traumatic brain injury -- it is a binary recoding of time-from-burn-injury at the 30-day threshold.",
-      source_name        = "TBI"
+      notes = "Source column TBI. 1 = within 30 days of burn injury (the acute hypermetabolic phase); 0 = at least 30 days postburn. The 30-day cutoff was chosen by the authors because the postburn hypermetabolic response is maximised between days 7 and 17 after injury and substantially resolved by day 30 (Han 2013 Methods, citing references 12 and 13). The Han 2013 cohort mean time from burn injury was 23 days (range 7-88). Enters both the non-RRT CL formula (theta7 = 0.504 L/h additive shift) and the V formula (theta8 = 9.61 L additive shift) as time-fixed binary indicators -- recent-postburn patients have higher CL and larger V. NOTE: the Han 2013 source column is named TBI but does NOT refer to traumatic brain injury -- it is a binary recoding of time-from-burn-injury at the 30-day threshold.",
+      source_name = "TBI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
-    age_range      = "20-82 years",
-    age_median     = "mean 50.3 years (range 20-82)",
-    weight_range   = "40.0-90.0 kg",
-    weight_median  = "mean 65.6 kg (range 40.0-90.0)",
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
+    age_range = "20-82 years",
+    age_median = "mean 50.3 years (range 20-82)",
+    weight_range = "40.0-90.0 kg",
+    weight_median = "mean 65.6 kg (range 40.0-90.0)",
     sex_female_pct = 17,
     race_ethnicity = "Not reported (single-centre Korean burn-ICU cohort)",
-    disease_state  = "Adult burn-ICU patients (burns 11-95% of total body surface area; mean TBSA 50.3%) with suspected (47/60) or confirmed (13/60) Candida infection. APACHE II mean 7.6 (range 2-26).",
-    dose_range     = "Fluconazole 100-400 mg IV infused over 10-40 minutes every 24 h for treatment of suspected or confirmed fungal infection. PK sampling was performed at steady state after 5-17 days (mean 6.5 days) of fluconazole therapy.",
-    regions        = "South Korea (single-centre burn ICU at Hangang Sacred Heart Hospital, Hallym University, Seoul)",
-    tbsa_range     = "11-95% (mean 50.3% of total body surface area burned)",
-    apache_ii      = "mean 7.6 (range 2-26)",
+    disease_state = "Adult burn-ICU patients (burns 11-95% of total body surface area; mean TBSA 50.3%) with suspected (47/60) or confirmed (13/60) Candida infection. APACHE II mean 7.6 (range 2-26).",
+    dose_range = "Fluconazole 100-400 mg IV infused over 10-40 minutes every 24 h for treatment of suspected or confirmed fungal infection. PK sampling was performed at steady state after 5-17 days (mean 6.5 days) of fluconazole therapy.",
+    regions = "South Korea (single-centre burn ICU at Hangang Sacred Heart Hospital, Hallym University, Seoul)",
+    tbsa_range = "11-95% (mean 50.3% of total body surface area burned)",
+    apache_ii = "mean 7.6 (range 2-26)",
     renal_function = "Cockcroft-Gault creatinine clearance mean 123.5 mL/min (range 21.6-282.7), raw mL/min, not BSA-normalized",
-    rrt_status     = "15/60 (25%) on continuous renal replacement therapy (CRRT)",
-    sepsis         = "29/60 (48%) septic at PK sampling",
-    edema          = "20/60 (33%) with clinical edema (puffy face and pitting peripheral edema)",
-    postburn_time  = "Mean 23 days from burn injury to fluconazole administration (range 7-88)",
-    notes          = "Baseline demographics per Han 2013 Table 1. 60 burn-ICU patients enrolled between December 2008 and May 2010. Patients younger than 18, pregnant / breastfeeding, or allergic to fluconazole were excluded. 409 fluconazole concentration observations (8 venous samples per subject at 0, 3, 5, 9, 24, 27, 48, and 51 h after the start of infusion, with daily dosing maintained throughout). Plasma fluconazole assayed by LC-MS/MS (LLOQ 0.04 ug/mL; inter- and intra-day precision below 7.42% RSD). NONMEM 7.2 with FOCE-I."
+    rrt_status = "15/60 (25%) on continuous renal replacement therapy (CRRT)",
+    sepsis = "29/60 (48%) septic at PK sampling",
+    edema = "20/60 (33%) with clinical edema (puffy face and pitting peripheral edema)",
+    postburn_time = "Mean 23 days from burn injury to fluconazole administration (range 7-88)",
+    notes = "Baseline demographics per Han 2013 Table 1. 60 burn-ICU patients enrolled between December 2008 and May 2010. Patients younger than 18, pregnant / breastfeeding, or allergic to fluconazole were excluded. 409 fluconazole concentration observations (8 venous samples per subject at 0, 3, 5, 9, 24, 27, 48, and 51 h after the start of infusion, with daily dosing maintained throughout). Plasma fluconazole assayed by LC-MS/MS (LLOQ 0.04 ug/mL; inter- and intra-day precision below 7.42% RSD). NONMEM 7.2 with FOCE-I."
   )
 
   ini({

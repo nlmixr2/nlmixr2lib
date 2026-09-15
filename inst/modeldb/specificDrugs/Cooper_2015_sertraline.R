@@ -1,42 +1,42 @@
 Cooper_2015_sertraline <- function() {
   description <- "One-compartment first-order absorption population PK model for sertraline in overdose (Cooper 2015). Apparent clearance is increased 1.92-fold in subjects who received single-dose activated charcoal; the model holds relative bioavailability F at 1 and a shifted lag time at 1 h, with between-subject variability on F, ts_lag, ka, Vc, and CL absorbing the overdose-specific dose-amount and dose-time uncertainty."
-  reference   <- "Cooper JM, Duffull SB, Saiao AS, Isbister GK. The pharmacokinetics of sertraline in overdose and the effect of activated charcoal. Br J Clin Pharmacol. 2015 May;79(5):307-15. doi:10.1111/bcp.12500"
-  vignette    <- "Cooper_2015_sertraline"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Cooper JM, Duffull SB, Saiao AS, Isbister GK. The pharmacokinetics of sertraline in overdose and the effect of activated charcoal. Br J Clin Pharmacol. 2015 May;79(5):307-15. doi:10.1111/bcp.12500"
+  vignette <- "Cooper_2015_sertraline"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "sertraline", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "sertraline", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "sertraline", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_CHARCOAL = list(
-      description        = "Single-dose activated charcoal administered for gut decontamination",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Single-dose activated charcoal administered for gut decontamination",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no activated charcoal)",
-      notes              = "Cooper 2015 Table 1 / Methods: 7/28 patients (25%) received single-dose activated charcoal (Carbosorb, 50 g suspension) between 1.5 and 4 h post-overdose (median 3 h). Treated as a per-subject time-fixed binary indicator in the source data; the paper does not time-resolve the SDAC bolus within subject, so the fractional CL effect is applied uniformly across the observation record. Enters the structural model via the paper's final formula CL = theta_CL * f_CL-char, where f_CL-char = 1.92 when CONMED_CHARCOAL = 1 (Table 2, Model 2 final column) and 1 when CONMED_CHARCOAL = 0. The paper also evaluated an effect on relative bioavailability F (Model 1 f_F-char = 0.731) but the f_CL-char form was selected as the final model on objective-function and biological-plausibility grounds (significant effect on CL with P < 0.05).",
-      source_name        = "SDAC"
+      notes = "Cooper 2015 Table 1 / Methods: 7/28 patients (25%) received single-dose activated charcoal (Carbosorb, 50 g suspension) between 1.5 and 4 h post-overdose (median 3 h). Treated as a per-subject time-fixed binary indicator in the source data; the paper does not time-resolve the SDAC bolus within subject, so the fractional CL effect is applied uniformly across the observation record. Enters the structural model via the paper's final formula CL = theta_CL * f_CL-char, where f_CL-char = 1.92 when CONMED_CHARCOAL = 1 (Table 2, Model 2 final column) and 1 when CONMED_CHARCOAL = 0. The paper also evaluated an effect on relative bioavailability F (Model 1 f_F-char = 0.731) but the f_CL-char form was selected as the final model on objective-function and biological-plausibility grounds (significant effect on CL with P < 0.05).",
+      source_name = "SDAC"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 28L,
-    n_studies        = 1L,
-    age_range        = "15-55 years",
-    age_median       = "32 years",
-    sex_female_pct   = 75,
-    race_ethnicity   = "Not reported (single regional toxicology unit, Hunter Region, New South Wales, Australia)",
-    disease_state    = "Acute sertraline overdose presenting to a regional toxicology unit between February 2001 and February 2010; 21/28 (75%) co-ingested other substances (alcohol most commonly, then analgesics, antihistamines, antipsychotics, benzodiazepines); none of the co-ingestants known to inhibit or induce sertraline metabolism. 7/28 patients developed serotonin toxicity; 4/28 had a Glasgow Coma Score < 15. No deaths or major complications.",
-    dose_range       = "250-5000 mg single self-administered oral overdose (median 1550 mg)",
-    regions          = "Australia (Hunter Region, New South Wales)",
-    co_medication    = "10/28 alcohol; 6/28 analgesics; 3/28 antihistamines; 3/28 antipsychotics; 4/28 benzodiazepines; 2/28 antihypertensives; 2/28 decongestants; 1/28 each: warfarin, sodium valproate, valerian, unknown substance; 9/28 no co-ingestants",
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = "15-55 years",
+    age_median = "32 years",
+    sex_female_pct = 75,
+    race_ethnicity = "Not reported (single regional toxicology unit, Hunter Region, New South Wales, Australia)",
+    disease_state = "Acute sertraline overdose presenting to a regional toxicology unit between February 2001 and February 2010; 21/28 (75%) co-ingested other substances (alcohol most commonly, then analgesics, antihistamines, antipsychotics, benzodiazepines); none of the co-ingestants known to inhibit or induce sertraline metabolism. 7/28 patients developed serotonin toxicity; 4/28 had a Glasgow Coma Score < 15. No deaths or major complications.",
+    dose_range = "250-5000 mg single self-administered oral overdose (median 1550 mg)",
+    regions = "Australia (Hunter Region, New South Wales)",
+    co_medication = "10/28 alcohol; 6/28 analgesics; 3/28 antihistamines; 3/28 antipsychotics; 4/28 benzodiazepines; 2/28 antihypertensives; 2/28 decongestants; 1/28 each: warfarin, sodium valproate, valerian, unknown substance; 9/28 no co-ingestants",
     n_concentrations = 77L,
-    notes            = "Baseline demographics from Cooper 2015 Table 1. Reported overdose was corroborated where possible by friends / relatives / ambulance officer record / tablet counts and assigned a 5-point veracity score; 14/28 score 1 (best), 11/28 score 2, 3/28 score 3, 0/28 score 4. The veracity score was tested as a covariate constraint on the between-subject variance of relative bioavailability but did not improve the model (paper Methods Uncertainty in overdose history) and was not retained in the final model. Median 2 concentrations per patient (range 1-6); sampling times 1.17-68 h post-overdose."
+    notes = "Baseline demographics from Cooper 2015 Table 1. Reported overdose was corroborated where possible by friends / relatives / ambulance officer record / tablet counts and assigned a 5-point veracity score; 14/28 score 1 (best), 11/28 score 2, 3/28 score 3, 0/28 score 4. The veracity score was tested as a covariate constraint on the between-subject variance of relative bioavailability but did not improve the model (paper Methods Uncertainty in overdose history) and was not retained in the final model. Median 2 concentrations per patient (range 1-6); sampling times 1.17-68 h post-overdose."
   )
 
   ini({

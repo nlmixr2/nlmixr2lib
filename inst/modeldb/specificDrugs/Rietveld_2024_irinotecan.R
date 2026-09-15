@@ -52,19 +52,34 @@ Rietveld_2024_irinotecan <- function() {
   # here and in the vignette rather than in the specimen field.
   compartmentData <- list(
     depot_ip = list(
-      analyte = "irinotecan", units = "umol", specimen = "administration site", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "irinotecan", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "irinotecan", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     depot_ip_sn38 = list(
-      analyte = "SN-38", units = "umol", specimen = "administration site", verified = TRUE
+      analyte = "SN-38",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central_sn38 = list(
-      analyte = "SN-38", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "SN-38",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 

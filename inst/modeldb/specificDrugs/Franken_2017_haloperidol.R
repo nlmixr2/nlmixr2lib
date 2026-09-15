@@ -25,8 +25,8 @@ Franken_2017_haloperidol <- function() {
   )
   vignette <- "Franken_2017_haloperidol"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -34,36 +34,36 @@ Franken_2017_haloperidol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "haloperidol", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "haloperidol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "haloperidol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "haloperidol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "haloperidol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28,
-    n_studies      = 1,
-    age_range      = "43-93 years",
-    age_median     = "69.5 years",
-    weight_range   = "35-108 kg",
-    weight_median  = "67 kg",
+    species = "human",
+    n_subjects = 28,
+    n_studies = 1,
+    age_range = "43-93 years",
+    age_median = "69.5 years",
+    weight_range = "35-108 kg",
+    weight_median = "67 kg",
     sex_female_pct = 46.4,
     race_ethnicity = c(Caucasian = 92.9, AfroCaribbean = 7.1),
-    disease_state  = paste(
+    disease_state = paste(
       "Terminally ill adult palliative-care patients with advanced",
       "malignancy (neoplasm in 100%; epithelial-tissue primary in 89.3%)",
       "receiving haloperidol for the treatment of delirium. Survival",
       "prognosis at enrolment was 2 days to 3 months; patients followed",
       "until time of death."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral 0.5-2 mg/day (tablets or liquid) or subcutaneous bolus",
       "0.5-5 mg/day, dosed per Dutch national palliative guidelines."
     ),
-    regions        = "The Netherlands (Laurens Cadenza palliative care centre, Rotterdam)",
-    notes          = paste(
+    regions = "The Netherlands (Laurens Cadenza palliative care centre, Rotterdam)",
+    notes = paste(
       "Demographics from Franken 2017 Table 1. NONMEM 7.2 + PsN 4.4.8",
       "with FOCE-I; ADVAN5 subroutine used to handle the two parallel",
       "absorption routes. 87 sparse plasma samples (median 3 per",

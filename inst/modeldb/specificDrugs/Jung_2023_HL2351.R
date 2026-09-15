@@ -30,27 +30,27 @@ Jung_2023_HL2351 <- function() {
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
-    abs_site    = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
+    abs_site = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40,
-    n_studies      = 1,
-    study_id       = "NCT02175056 (Phase I single-ascending-dose, Seoul National University Hospital)",
-    age_range      = "20-45 years",
+    species = "human",
+    n_subjects = 40,
+    n_studies = 1,
+    study_id = "NCT02175056 (Phase I single-ascending-dose, Seoul National University Hospital)",
+    age_range = "20-45 years",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy adult Korean men",
-    dose_range     = "Single SC dose: HL2351 1, 2, 4, 8, or 12 mg/kg (n = 8 per dose group)",
-    regions        = "Republic of Korea",
+    disease_state = "Healthy adult Korean men",
+    dose_range = "Single SC dose: HL2351 1, 2, 4, 8, or 12 mg/kg (n = 8 per dose group)",
+    regions = "Republic of Korea",
     n_observations = 472,
-    notes          = paste(
+    notes = paste(
       "Jung 2023 Table 2 reports Model Case 4 as 40 subjects and 472 observations, fitted over",
       "672 h. The cohort is the five HL2351 arms of the first-in-human single-ascending-dose",
       "study NCT02175056 reported by Ngo 2020 (the sixth arm, anakinra 100 mg, is Model Case 5).",

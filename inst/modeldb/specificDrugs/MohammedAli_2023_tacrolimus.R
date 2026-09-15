@@ -31,21 +31,21 @@ MohammedAli_2023_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP3A5_EXPR = list(
-      description        = "Recipient CYP3A5 expresser status (rs776746)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Recipient CYP3A5 expresser status (rs776746)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser)",
-      notes              = paste(
+      notes = paste(
         "1 = at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3);",
         "0 = CYP3A5*3/*3. Genotyped by TaqMan assay (Mohammed Ali 2023 Methods",
         "section 2.3). Not used on its own in the final model: it is one of the",
@@ -57,14 +57,14 @@ MohammedAli_2023_tacrolimus <- function() {
         "*3/*3 77 (78.6%), so CYP3A5_EXPR = 1 in 21 of 98 subjects.",
         sep = " "
       ),
-      source_name        = "CYP3A5 genotype"
+      source_name = "CYP3A5 genotype"
     ),
     SNP_CYP3A4_RS35599367 = list(
-      description        = "CYP3A4*22 (rs35599367, c.522-191C>T) carrier indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A4*22 (rs35599367, c.522-191C>T) carrier indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A4*1/*1 non-carrier)",
-      notes              = paste(
+      notes = paste(
         "1 = carrier of at least one CYP3A4*22 (T) allele (genotype *1/*22;",
         "no *22/*22 homozygotes were observed); 0 = CYP3A4*1/*1. Genotyped by",
         "TaqMan assay (Mohammed Ali 2023 Methods section 2.3). Second input to",
@@ -73,14 +73,14 @@ MohammedAli_2023_tacrolimus <- function() {
         "*1/*22 12 (13.3%).",
         sep = " "
       ),
-      source_name        = "CYP3A4 genotype"
+      source_name = "CYP3A4 genotype"
     ),
     OCC = list(
-      description        = "Sampling-occasion index for inter-occasion variability on CL/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion index for inter-occasion variability on CL/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Integer occasion index 1..5 decomposed inside model() into",
         "mutually-exclusive binary indicators multiplexing per-occasion etas",
         "on log CL/F. Mohammed Ali 2023 reports a single IOV magnitude",
@@ -92,7 +92,7 @@ MohammedAli_2023_tacrolimus <- function() {
         "Records with OCC outside 1..5 carry no IOV.",
         sep = " "
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
@@ -101,9 +101,9 @@ MohammedAli_2023_tacrolimus <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested univariately on CL/F, CLD/F, Vc/F and Vp/F; no significant MOFV",
         "drop (p > 0.05), and allometric inclusion of body weight on these",
         "parameters worsened the model (Results section 3.2). Cohort:",
@@ -113,9 +113,9 @@ MohammedAli_2023_tacrolimus <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Tested univariately on the disposition parameters; no significant",
         "MOFV drop (Results section 3.2). Cohort: 26.33 kg/m^2 mean",
         "(IQR 22.94-28.94).",
@@ -124,9 +124,9 @@ MohammedAli_2023_tacrolimus <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested univariately; no significant MOFV drop (Results section 3.2).",
         "Cohort: 56 years mean (IQR 46-68).",
         sep = " "
@@ -134,9 +134,9 @@ MohammedAli_2023_tacrolimus <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Listed among the covariates investigated (Methods 'Covariate Model');",
         "not retained in the final model. Cohort: 30 of 98 female (30.6%).",
         sep = " "
@@ -144,9 +144,9 @@ MohammedAli_2023_tacrolimus <- function() {
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Tested as a covariate and also as a standardizing factor on the",
         "residual error (concentrations standardized to a hematocrit of 45%);",
         "neither improved the model (Results section 3.2). The Discussion",
@@ -158,9 +158,9 @@ MohammedAli_2023_tacrolimus <- function() {
     ),
     SNP_ABCB1_RS1045642 = list(
       description = "ABCB1 c.3435C>T (rs1045642) variant carrier indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Genotyped and tested on CL/F; the ABCB1 *C/*C SNP failed to influence",
         "the model significantly (Results section 3.2) and no differences in",
         "dose-normalized C0 or AUC were found between *C carriers and",
@@ -171,32 +171,32 @@ MohammedAli_2023_tacrolimus <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 98,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 98,
+    n_studies = 1,
     n_observations = 655,
-    age_range      = "56 years mean (IQR 46-68)",
-    weight_range   = "74.73 kg mean (IQR 65-81.13)",
+    age_range = "56 years mean (IQR 46-68)",
+    weight_range = "74.73 kg mean (IQR 65-81.13)",
     sex_female_pct = 30.6,
-    disease_state  = paste(
+    disease_state = paste(
       "stable adult renal transplant recipients at least 6 months",
       "post-transplant, converted from twice-daily IR-Tac to once-daily",
       "LCP-Tac at a 0.7 dose-conversion ratio, on triple immunosuppression",
       "(tacrolimus + mycophenolate mofetil + prednisone)",
       sep = " "
     ),
-    dose_range     = "0.5-12 mg once daily (median total daily dose 2 mg)",
-    regions        = "Spain (single centre, Hospital Universitari de Bellvitge, Barcelona)",
+    dose_range = "0.5-12 mg once daily (median total daily dose 2 mg)",
+    regions = "Spain (single centre, Hospital Universitari de Bellvitge, Barcelona)",
     renal_function = "eGFR (CKD-EPI) 47.72 mL/min mean (IQR 36-58); serum creatinine 146.9 umol/L mean (IQR 116-163)",
-    hematocrit     = "40.53% mean (IQR 37.4-44.0)",
-    genotypes      = paste(
+    hematocrit = "40.53% mean (IQR 37.4-44.0)",
+    genotypes = paste(
       "CYP3A5 *1/*1 4 (4.1%), *1/*3 17 (17.3%), *3/*3 77 (78.6%);",
       "CYP3A4 *1/*1 86 (86.7%), *1/*22 12 (13.3%);",
       "CYP3A4/A5 cluster HM 19 (19.4%), IM 68 (69.4%), PM 11 (11.2%);",
       "ABCB1 *T/*T 21 (21%), *C/*T 46 (47%), *C/*C 31 (32%)",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Mohammed Ali 2023 Table 1. Pooled dataset: 30 patients from the",
       "open-label clinical trial NCT02961608 contributed rich steady-state",
       "profiles (480 of 655 observations, 10-18 samples over 24 h), and 68",

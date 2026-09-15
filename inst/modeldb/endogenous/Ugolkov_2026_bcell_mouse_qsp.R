@@ -41,17 +41,31 @@ Ugolkov_2026_bcell_mouse_qsp <- function() {
   # lower-case snake_case forms of the Supplementary Equations' state names
   # (ImmBone -> imm_bone, ASCSpleen -> asc_spleen, and so on).
   paper_specific_compartments <- c(
-    "imm_bone", "t1_bone", "t1_blood", "t1_spleen",
-    "naive_blood", "naive_spleen", "naive_ln",
-    "antigen0", "antigen1", "antigen2", "antigen3", "antigen4", "antigen5",
+    "imm_bone",
+    "t1_bone",
+    "t1_blood",
+    "t1_spleen",
+    "naive_blood",
+    "naive_spleen",
+    "naive_ln",
+    "antigen0",
+    "antigen1",
+    "antigen2",
+    "antigen3",
+    "antigen4",
+    "antigen5",
     "antigen",
-    "asc_spleen", "asc_ln", "asc_bone", "asc_blood", "asc_peripheral",
+    "asc_spleen",
+    "asc_ln",
+    "asc_bone",
+    "asc_blood",
+    "asc_peripheral",
     "igg_blood"
   )
 
   units <- list(
-    time          = "day",
-    dosing        = "none (no drug is administered; antigen exposure enters as the built-in empirical forcing function of Supplementary Equation 15, not as a dosing event)",
+    time = "day",
+    dosing = "none (no drug is administered; antigen exposure enters as the built-in empirical forcing function of Supplementary Equation 15, not as a dosing event)",
     concentration = "cell (ASC states, absolute cell counts) and 10^6 cell (B cell states); IgG in pg"
   )
 
@@ -67,32 +81,42 @@ Ugolkov_2026_bcell_mouse_qsp <- function() {
   # The conversion happens exactly once, in the ASC generation terms of
   # Supplementary Equations 22-23 -- see the model() block.
   compartmentData <- list(
-    imm_bone       = list(analyte = "immature B cells",             units = "10^6 cell", specimen = "tissue",         verified = TRUE),
-    t1_bone        = list(analyte = "transitional type 1 B cells",  units = "10^6 cell", specimen = "tissue",         verified = TRUE),
-    t1_blood       = list(analyte = "transitional type 1 B cells",  units = "10^6 cell", specimen = "whole blood",    verified = TRUE),
-    t1_spleen      = list(analyte = "transitional type 1 B cells",  units = "10^6 cell", specimen = "tissue",         verified = TRUE),
-    naive_blood    = list(analyte = "naive B cells",                units = "10^6 cell", specimen = "whole blood",    verified = TRUE),
-    naive_spleen   = list(analyte = "naive B cells",                units = "10^6 cell", specimen = "tissue",         verified = TRUE),
-    naive_ln       = list(analyte = "naive B cells",                units = "10^6 cell", specimen = "lymph",          verified = TRUE),
-    antigen0       = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    antigen1       = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    antigen2       = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    antigen3       = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    antigen4       = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    antigen5       = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    antigen        = list(analyte = "antigen",                      units = NA_character_, specimen = "not applicable", verified = TRUE),
-    asc_spleen     = list(analyte = "antibody-secreting cells",     units = "cell",      specimen = "tissue",         verified = TRUE),
-    asc_ln         = list(analyte = "antibody-secreting cells",     units = "cell",      specimen = "lymph",          verified = TRUE),
-    asc_bone       = list(analyte = "antibody-secreting cells",     units = "cell",      specimen = "tissue",         verified = TRUE),
-    asc_blood      = list(analyte = "antibody-secreting cells",     units = "cell",      specimen = "whole blood",    verified = TRUE),
-    asc_peripheral = list(analyte = "antibody-secreting cells",     units = "cell",      specimen = "tissue",         verified = TRUE),
-    igg_blood      = list(analyte = "antigen-specific IgG",         units = "pg",        specimen = "plasma",         verified = TRUE)
+    imm_bone = list(analyte = "immature B cells", units = "10^6 cell", specimen = "tissue", verified = TRUE),
+    t1_bone = list(analyte = "transitional type 1 B cells", units = "10^6 cell", specimen = "tissue", verified = TRUE),
+    t1_blood = list(
+      analyte = "transitional type 1 B cells",
+      units = "10^6 cell",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    t1_spleen = list(
+      analyte = "transitional type 1 B cells",
+      units = "10^6 cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    naive_blood = list(analyte = "naive B cells", units = "10^6 cell", specimen = "whole blood", verified = TRUE),
+    naive_spleen = list(analyte = "naive B cells", units = "10^6 cell", specimen = "tissue", verified = TRUE),
+    naive_ln = list(analyte = "naive B cells", units = "10^6 cell", specimen = "lymph", verified = TRUE),
+    antigen0 = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    antigen1 = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    antigen2 = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    antigen3 = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    antigen4 = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    antigen5 = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    antigen = list(analyte = "antigen", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    asc_spleen = list(analyte = "antibody-secreting cells", units = "cell", specimen = "tissue", verified = TRUE),
+    asc_ln = list(analyte = "antibody-secreting cells", units = "cell", specimen = "lymph", verified = TRUE),
+    asc_bone = list(analyte = "antibody-secreting cells", units = "cell", specimen = "tissue", verified = TRUE),
+    asc_blood = list(analyte = "antibody-secreting cells", units = "cell", specimen = "whole blood", verified = TRUE),
+    asc_peripheral = list(analyte = "antibody-secreting cells", units = "cell", specimen = "tissue", verified = TRUE),
+    igg_blood = list(analyte = "antigen-specific IgG", units = "pg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "mouse",
-    n_subjects    = NA_integer_,
-    n_studies     = 21L,
+    species = "mouse",
+    n_subjects = NA_integer_,
+    n_studies = 21L,
     disease_state = paste(
       "Healthy, non-genetically-modified laboratory mice. The homeostasis",
       "sub-model describes unimmunized steady-state B cell subpopulations;",
@@ -100,7 +124,7 @@ Ugolkov_2026_bcell_mouse_qsp <- function() {
       "a single antigen exposure.",
       sep = " "
     ),
-    dose_range    = paste(
+    dose_range = paste(
       "No drug. Immunogens across the calibration and validation studies were",
       "virus-like particles, LCMV, Plasmodium chabaudi, dengue virus 2, sheep",
       "red blood cells, keyhole limpet hemocyanin, NP-ova/CFA, chicken",
@@ -110,7 +134,7 @@ Ugolkov_2026_bcell_mouse_qsp <- function() {
       "(Supplementary Table S1).",
       sep = " "
     ),
-    notes         = paste(
+    notes = paste(
       "Aggregated across 21 published mouse studies identified by a systematic",
       "literature search (Supplementary Table S1); no individual-level data",
       "were used, so there are no per-animal demographics and n_subjects is",

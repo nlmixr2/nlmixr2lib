@@ -35,19 +35,19 @@ Svensson_2012_nevirapine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline; cohort median 67-72 kg across the three",
         "South African studies (range 43-128 kg per Table 1). Used for the",
         "Anderson-Holford allometric scaling of apparent volume of",
@@ -59,14 +59,14 @@ Svensson_2012_nevirapine <- function() {
         "m.'). Note that FFM (not WT) is used for CL/F allometric scaling per",
         "the same paragraph."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     FFM = list(
-      description        = "Fat-free mass derived from body weight, height, and sex via the Janmahasatian formula",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass derived from body weight, height, and sex via the Janmahasatian formula",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used for the Anderson-Holford allometric scaling of apparent oral",
         "clearance CL/F with exponent 0.75 (fixed) and reference 42 kg per",
         "Svensson 2012 Results 'Population pharmacokinetics' paragraph 2",
@@ -83,14 +83,14 @@ Svensson_2012_nevirapine <- function() {
         "via the Janmahasatian (2005) formula and supply it as a covariate;",
         "users without height can use the paper's imputation model."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (per-occasion)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (per-occasion)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted dose; e.g. morning dose in the rich-sampling protocol of study 1)",
-      notes              = paste(
+      notes = paste(
         "Per-occasion indicator: 1 = nevirapine dose taken under fed",
         "conditions (e.g. evening dose with a meal in study 1's rich-",
         "sampling protocol), 0 = nevirapine dose taken under fasted",
@@ -105,14 +105,14 @@ Svensson_2012_nevirapine <- function() {
         "Users simulating a typical fed dose should set FED = 1; a typical",
         "fasted dose, FED = 0."
       ),
-      source_name        = "FED (per the paper's narrative; the underlying NONMEM dataset is not on disk)"
+      source_name = "FED (per the paper's narrative; the underlying NONMEM dataset is not on disk)"
     ),
     TB_POS = list(
-      description        = "Active tuberculosis with concomitant TB-treatment regimen indicator (rifampicin + isoniazid +/- ethambutol)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active tuberculosis with concomitant TB-treatment regimen indicator (rifampicin + isoniazid +/- ethambutol)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no active TB; no concomitant TB treatment)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject during the TB-treatment window; effectively",
         "indicates patients who are on the continuation phase of TB therapy",
         "(rifampicin + isoniazid, with ethambutol in a small minority).",
@@ -130,14 +130,14 @@ Svensson_2012_nevirapine <- function() {
         "biologically to rifampicin-mediated CYP3A4 induction in the gut",
         "wall and to first-pass metabolism (Discussion paragraph 5)."
       ),
-      source_name        = "TB (paper narrative description of TB-treatment status)"
+      source_name = "TB (paper narrative description of TB-treatment status)"
     ),
     MIX_SLOW_ELIM_NVP = list(
-      description        = "Per-subject latent mixture-model class indicator for the slow-vs-fast CL/F sub-population in the Svensson 2012 nevirapine model",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-subject latent mixture-model class indicator for the slow-vs-fast CL/F sub-population in the Svensson 2012 nevirapine model",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fast-eliminator subpopulation; majority class at 82.7% of the source cohort, typical CL/F = 3.12 L/h)",
-      notes              = paste(
+      notes = paste(
         "1 = subject classified to the slow-eliminator subpopulation",
         "(minority class, 17.3% of the source cohort, typical CL/F = 1.45",
         "L/h); 0 = subject classified to the fast-eliminator subpopulation",
@@ -172,19 +172,19 @@ Svensson_2012_nevirapine <- function() {
         "for other drugs should register their own canonical or extend a",
         "more general MIX_SLOW_ELIM."
       ),
-      source_name        = "NONMEM $MIXTURE class assignment (component 1 = fast, component 2 = slow); MIX_SLOW_ELIM_NVP = as.integer(MIXTURE == 2)"
+      source_name = "NONMEM $MIXTURE class assignment (component 1 = fast, component 2 = slow); MIX_SLOW_ELIM_NVP = as.integer(MIXTURE == 2)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 115L,
-    n_studies        = 3L,
-    age_range        = "21-60 years (across the three South African studies; Study 1 median 34, Study 2 median 32, Study 3 median 32)",
-    weight_range     = "43-128 kg (across the three South African studies; Study 1 median 67, Study 2 median 72, Study 3 median 60)",
-    sex_female_pct   = 83.5,
-    race_ethnicity   = "African (Cape Town, South Africa)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 115L,
+    n_studies = 3L,
+    age_range = "21-60 years (across the three South African studies; Study 1 median 34, Study 2 median 32, Study 3 median 32)",
+    weight_range = "43-128 kg (across the three South African studies; Study 1 median 67, Study 2 median 72, Study 3 median 60)",
+    sex_female_pct = 83.5,
+    race_ethnicity = "African (Cape Town, South Africa)",
+    disease_state = paste(
       "HIV-1 infection on antiretroviral therapy regimens including 200 mg",
       "nevirapine twice daily at steady state. Patients in Study 1 were",
       "stratified by tuberculosis co-infection: TB-coinfected patients were",
@@ -194,14 +194,14 @@ Svensson_2012_nevirapine <- function() {
       "coinfected patients; Study 3 was an interaction study with the",
       "antimalarial artemether-lumefantrine (no malaria co-infection)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "200 mg oral nevirapine twice daily at steady state across all three",
       "model-development studies. Concomitant antiretroviral therapy",
       "(other NRTI/NNRTI backbone agents) varied between and within",
       "studies and was not retained as a PK covariate in the final model."
     ),
-    regions          = "South Africa (Cape Town: Study 1, Study 2, Study 3)",
-    notes            = paste(
+    regions = "South Africa (Cape Town: Study 1, Study 2, Study 3)",
+    notes = paste(
       "Pooled mega-model cohort from three South African studies (49 + 50",
       "+ 16 = 115 patients after exclusions; 1270 plasma nevirapine",
       "concentration samples). Study 1 (TB-interaction): rich sampling on",

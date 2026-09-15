@@ -8,80 +8,80 @@ VanWart_2004_garenoxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "garenoxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "garenoxacin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "garenoxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Raw Cockcroft-Gault creatinine clearance in mL/min (NOT BSA-normalized to mL/min/1.73 m^2); stored under canonical CRCL per the precedent in Delattre_2010_amikacin.R. Used with power-form normalization (CRCL / 86.9)^0.436 on CL. Reference 86.9 mL/min is the development-cohort median (Van Wart 2004 Table 2). Cohort range 14.5-205 mL/min.",
-      source_name        = "CRCL"
+      notes = "Raw Cockcroft-Gault creatinine clearance in mL/min (NOT BSA-normalized to mL/min/1.73 m^2); stored under canonical CRCL per the precedent in Delattre_2010_amikacin.R. Used with power-form normalization (CRCL / 86.9)^0.436 on CL. Reference 86.9 mL/min is the development-cohort median (Van Wart 2004 Table 2). Cohort range 14.5-205 mL/min.",
+      source_name = "CRCL"
     ),
     IBW = list(
-      description        = "Ideal body weight (Devine formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight (Devine formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ideal body weight by the Devine formula (Van Wart 2004 reference 30). Used in an additive linear deviation term 0.764 * (IBW - 64.2) on CL/F. Reference 64.2 kg is the development-cohort median (Table 2). Cohort range 20.9-96.9 kg.",
-      source_name        = "IBW"
+      notes = "Ideal body weight by the Devine formula (Van Wart 2004 reference 30). Used in an additive linear deviation term 0.764 * (IBW - 64.2) on CL/F. Reference 64.2 kg is the development-cohort median (Table 2). Cohort range 20.9-96.9 kg.",
+      source_name = "IBW"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used in an additive linear deviation term 0.301 * (AGE - 49.5) on CL/F. Reference 49.5 years is the development-cohort median (Van Wart 2004 Table 2). Cohort range 18-88 years (outpatients aged 18 and over).",
-      source_name        = "AGE"
+      notes = "Used in an additive linear deviation term 0.301 * (AGE - 49.5) on CL/F. Reference 49.5 years is the development-cohort median (Van Wart 2004 Table 2). Cohort range 18-88 years (outpatients aged 18 and over).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used in two places: (a) power-form allometric scaling on V/F: (WT / 79.3)^0.635 with reference 79.3 kg (development-cohort median, Van Wart 2004 Table 2); (b) derivation of the OBESE flag inside model() as WT > 1.3 * IBW (Van Wart 2004 Methods: 'obesity (defined as a WTKG greater than 130% of the IBW)'). Cohort range 34-178 kg.",
-      source_name        = "WTKG"
+      notes = "Used in two places: (a) power-form allometric scaling on V/F: (WT / 79.3)^0.635 with reference 79.3 kg (development-cohort median, Van Wart 2004 Table 2); (b) derivation of the OBESE flag inside model() as WT > 1.3 * IBW (Van Wart 2004 Methods: 'obesity (defined as a WTKG greater than 130% of the IBW)'). Cohort range 34-178 kg.",
+      source_name = "WTKG"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) -- the source paper uses male as the reference category for the additive V/F shift (V/F = 67.1 L for the typical 79.3 kg female).",
-      notes              = "Van Wart 2004 encodes sex as SEXM (1 = male, 0 = female) with female as the V/F intercept; the additive shift +17.7 L applies to males. To store under the canonical SEXF (1 = female, 0 = male) while preserving the paper's female-reference V/F = 67.1 L at WT = 79.3 kg, the male shift is applied as 17.7 * (1 - SEXF) inside model(). Cohort 50% female (Table 2 development set).",
-      source_name        = "SEXM"
+      notes = "Van Wart 2004 encodes sex as SEXM (1 = male, 0 = female) with female as the V/F intercept; the additive shift +17.7 L applies to males. To store under the canonical SEXF (1 = female, 0 = male) while preserving the paper's female-reference V/F = 67.1 L at WT = 79.3 kg, the male shift is applied as 17.7 * (1 - SEXF) inside model(). Cohort 50% female (Table 2 development set).",
+      source_name = "SEXM"
     ),
     CONMED_PSEUDOEPHEDRINE = list(
-      description        = "Concomitant pseudoephedrine coadministration (sample-level)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant pseudoephedrine coadministration (sample-level)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant pseudoephedrine at the sample)",
-      notes              = "Van Wart 2004 PSEU_jk: 1 if the kth PK sample from the jth patient was collected during concomitant pseudoephedrine administration, 0 otherwise. Sample-level / time-varying within subject. Cohort prevalence 14% of patients (82/580; Table 1). Multiplicative effect on the structural CL/F covariate term: cl_structural *= (1 - 0.144 * CONMED_PSEUDOEPHEDRINE). Mechanism (Van Wart 2004 Discussion): pseudoephedrine is renally excreted by active tubular secretion in addition to glomerular filtration (renal CL 511-532 mL/min) and competes with garenoxacin's tubular secretion.",
-      source_name        = "PSEU"
+      notes = "Van Wart 2004 PSEU_jk: 1 if the kth PK sample from the jth patient was collected during concomitant pseudoephedrine administration, 0 otherwise. Sample-level / time-varying within subject. Cohort prevalence 14% of patients (82/580; Table 1). Multiplicative effect on the structural CL/F covariate term: cl_structural *= (1 - 0.144 * CONMED_PSEUDOEPHEDRINE). Mechanism (Van Wart 2004 Discussion): pseudoephedrine is renally excreted by active tubular secretion in addition to glomerular filtration (renal CL 511-532 mL/min) and competes with garenoxacin's tubular secretion.",
+      source_name = "PSEU"
     )
   )
 
   population <- list(
-    n_subjects     = 580L,
-    n_studies      = 3L,
+    n_subjects = 580L,
+    n_studies = 3L,
     n_observations = 1529L,
-    age_range      = "18-88 years",
-    age_mean       = "49.5 years",
-    weight_range   = "34-178 kg",
-    weight_mean    = "79.3 kg",
-    ibw_range      = "20.9-96.9 kg",
-    ibw_mean       = "64.2 kg",
-    crcl_range     = "14.5-205 mL/min (Cockcroft-Gault, raw)",
-    crcl_mean      = "86.9 mL/min",
+    age_range = "18-88 years",
+    age_mean = "49.5 years",
+    weight_range = "34-178 kg",
+    weight_mean = "79.3 kg",
+    ibw_range = "20.9-96.9 kg",
+    ibw_mean = "64.2 kg",
+    crcl_range = "14.5-205 mL/min (Cockcroft-Gault, raw)",
+    crcl_mean = "86.9 mL/min",
     sex_female_pct = 50.3,
     race_ethnicity = "Caucasian 85%, Hispanic 10%, Black 6% (development set; Van Wart 2004 Table 2). Race was tested as a V/F covariate during forward selection but eliminated during backward stepwise (P > 0.00684).",
-    disease_state  = "Adult outpatients (18+) with community-acquired respiratory tract infections: acute exacerbation of chronic bronchitis (ABECB), community-acquired pneumonia (CAP), or acute bacterial sinusitis (ABS).",
-    dose_range     = "Oral garenoxacin 400 mg once daily for 5-10 days (5-day arm received placebo days 6-10 in the ABECB study; CAP and ABS were 10-day open-label).",
-    regions        = "Three multinational phase II clinical trials sponsored by Bristol-Myers Squibb (T-3811ME / BMS-284756 program).",
-    obesity_pct    = "34% obese (WTKG > 130% IBW) in development set",
-    notes          = "Population PK analysis pooled across three phase II trials. PK sampling per protocol: predose (0 h), 2 h after first dose, and the day 3-5 visit. Plasma garenoxacin quantified by LC/MS/MS (LOQ 0.01 ug/mL, range 0.01-10 ug/mL). 80/20 random split into development (580 patients, 1529 samples) and validation (141 patients, 379 samples) data sets. Patients with serum creatinine > 2.0 mg/dL or hepatic enzymes >= 3x ULN were excluded; subjects with severe renal dysfunction were rare (n = 3 with CrCL 15-29 mL/min) and the model is not validated below CrCL 15 mL/min. Food effect (fed vs fasted) was tested and not significant (P = 0.8516; F_fed = 98.2%), so bioavailability is set to 1 across dosing states. Final population PK parameter estimates from Van Wart 2004 Table 4; covariate equations from Results 'Final model' section."
+    disease_state = "Adult outpatients (18+) with community-acquired respiratory tract infections: acute exacerbation of chronic bronchitis (ABECB), community-acquired pneumonia (CAP), or acute bacterial sinusitis (ABS).",
+    dose_range = "Oral garenoxacin 400 mg once daily for 5-10 days (5-day arm received placebo days 6-10 in the ABECB study; CAP and ABS were 10-day open-label).",
+    regions = "Three multinational phase II clinical trials sponsored by Bristol-Myers Squibb (T-3811ME / BMS-284756 program).",
+    obesity_pct = "34% obese (WTKG > 130% IBW) in development set",
+    notes = "Population PK analysis pooled across three phase II trials. PK sampling per protocol: predose (0 h), 2 h after first dose, and the day 3-5 visit. Plasma garenoxacin quantified by LC/MS/MS (LOQ 0.01 ug/mL, range 0.01-10 ug/mL). 80/20 random split into development (580 patients, 1529 samples) and validation (141 patients, 379 samples) data sets. Patients with serum creatinine > 2.0 mg/dL or hepatic enzymes >= 3x ULN were excluded; subjects with severe renal dysfunction were rare (n = 3 with CrCL 15-29 mL/min) and the model is not validated below CrCL 15 mL/min. Food effect (fed vs fasted) was tested and not significant (P = 0.8516; F_fed = 98.2%), so bioavailability is set to 1 across dosing states. Final population PK parameter estimates from Van Wart 2004 Table 4; covariate equations from Results 'Final model' section."
   )
 
   ini({

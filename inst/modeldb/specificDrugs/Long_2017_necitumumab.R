@@ -8,35 +8,35 @@ Long_2017_necitumumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "necitumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "necitumumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "necitumumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying in the source analysis; last-observation-carried-forward imputation for missing)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying in the source analysis; last-observation-carried-forward imputation for missing)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL and Q (exponent 0.768) and on V1 and V2 (exponent 0.498), each normalized as (WT/70)^exponent per Long 2017 Table 4 footnotes c-f.",
-      source_name        = "WT"
+      notes = "Power covariate on CL and Q (exponent 0.768) and on V1 and V2 (exponent 0.498), each normalized as (WT/70)^exponent per Long 2017 Table 4 footnotes c-f.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 807L,
+    n_subjects = 807L,
     n_observations = 4920L,
-    n_studies      = 5L,
-    age_range      = "19-84 years",
-    age_median     = "62 years",
-    weight_range   = "35-181 kg",
-    weight_median  = "71 kg",
+    n_studies = 5L,
+    age_range = "19-84 years",
+    age_median = "62 years",
+    weight_range = "35-181 kg",
+    weight_median = "71 kg",
     sex_female_pct = 25,
     race_ethnicity = c(Caucasian = 85, Asian = 7, Black = 2, Other = 5, AmericanIndian = 0, Multiple = 0),
-    disease_state  = "Advanced solid tumors (squamous and non-squamous non-small-cell lung cancer, colorectal cancer, and other advanced solid malignancies).",
-    dose_range     = "600-800 mg necitumumab IV as approximately 1-h infusion; administered weekly (5%), every 2 weeks (1%), or on days 1 and 8 of a 21-day cycle (94%). Phase III marketed regimen is 800 mg on days 1 and 8 of a 21-day cycle, given with or without concomitant gemcitabine / cisplatin chemotherapy.",
-    regions        = "Multi-regional (five pooled clinical studies JFCA/B/C/I/J, three phase I/II with rich PK sampling and two phase III with trough-only sampling).",
-    notes          = "Baseline demographics from Long 2017 Tables 2 and 3 (807 patients; 4920 quantifiable concentrations; 184 below-LOQ samples treated as missing). 75% male; ECOG 0/1/2: 33%/60%/6% (2% missing). Concomitant cisplatin 89%; concomitant gemcitabine 42%. Hispanic/Latino ethnicity 11%. Final covariate search found patient bodyweight as the only retained covariate; age, sex, race, ethnicity, liver function (AST, ALT, bilirubin), creatinine clearance, ECOG, and concomitant gemcitabine/cisplatin were tested and not retained."
+    disease_state = "Advanced solid tumors (squamous and non-squamous non-small-cell lung cancer, colorectal cancer, and other advanced solid malignancies).",
+    dose_range = "600-800 mg necitumumab IV as approximately 1-h infusion; administered weekly (5%), every 2 weeks (1%), or on days 1 and 8 of a 21-day cycle (94%). Phase III marketed regimen is 800 mg on days 1 and 8 of a 21-day cycle, given with or without concomitant gemcitabine / cisplatin chemotherapy.",
+    regions = "Multi-regional (five pooled clinical studies JFCA/B/C/I/J, three phase I/II with rich PK sampling and two phase III with trough-only sampling).",
+    notes = "Baseline demographics from Long 2017 Tables 2 and 3 (807 patients; 4920 quantifiable concentrations; 184 below-LOQ samples treated as missing). 75% male; ECOG 0/1/2: 33%/60%/6% (2% missing). Concomitant cisplatin 89%; concomitant gemcitabine 42%. Hispanic/Latino ethnicity 11%. Final covariate search found patient bodyweight as the only retained covariate; age, sex, race, ethnicity, liver function (AST, ALT, bilirubin), creatinine clearance, ECOG, and concomitant gemcitabine/cisplatin were tested and not retained."
   )
 
   ini({

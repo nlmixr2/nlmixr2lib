@@ -1,47 +1,47 @@
 Machavaram_2013_interleukin6_cyp3a_pbpk <- function() {
   description <- "PBPK (reduced from Simcyp Population-Based Simulator V11.0). Interleukin-6 (IL-6) disposition driving concentration- and time-dependent suppression of hepatic CYP3A4 activity, developed to predict disease-drug interactions in which elevated endogenous IL-6 suppresses CYP3A4 and a cytokine-modulating therapeutic protein reverses that suppression. This is the founding source of the enzyme-turnover equation d(Enzact)/dt = kdeg * Enz0 * [1 + (Emin - 1) * [IL-6] / (EC50 + [IL-6])] - kdeg * Enzact that later cytokine-CYP3A models cite. IL-6 is described as a one-compartment intravenous model (CLiv 1.0 L/h, Vss 0.43 L/kg, both estimated by fitting) driven by zero-order IL-6 infusions of 0.0009-1.5 ug/h that clamp systemic IL-6 to 1-1500 pg/mL, or by a finite-duration infusion representing a step change from baseline synthesis R0 (assumed zero) to a perturbed synthesis rate R1 for duration T followed by exponential decline. Hepatic CYP3A4 activity is carried relative to an untreated baseline of 1 with in vitro suppression constants EC50 73.2 pg/mL and Emin 0.24 (means over five human hepatocyte donors, Dickmann 2011) and a Simcyp library degradation rate constant kdeg 0.0193/h. Intestinal CYP3A4 is NOT a separate state: the paper assumed the magnitude of gut suppression equals the hepatic magnitude and implemented it by lowering intestinal abundance directly in the Simcyp population library rather than by a second turnover equation. The downstream simvastatin and cyclosporine exposure predictions are NOT part of this model: those used proprietary Simcyp V11.0 compound files whose in vivo clearances cannot be reconstructed from the published inputs, which report CLint without the MPPGL, liver weight, CYP3A4 abundance and hepatic blood flow needed to scale it."
-  reference   <- "Machavaram KK, Almond LM, Rostami-Hodjegan A, Gardner I, Jamei M, Tay S, Wong S, Joshi A, Kenny JR. A physiologically based pharmacokinetic modeling approach to predict disease-drug interactions: suppression of CYP3A by IL-6. Clin Pharmacol Ther. 2013;94(2):260-268. doi:10.1038/clpt.2013.79. Enzyme-turnover equation from Eq. 1 (Methods) and Supplementary Methods Eq. 3; IL-6 disposition parameters and infusion-rate range from Methods 'Modeling of IL-6 profiles' and Supplementary Methods; IL-6 perturbation-input equations from Supplementary Methods Eq. 1 and Eq. 2; meta-analysis IL-6 population distributions from Results 'Meta-analysis and distribution of IL-6 in patients' and Figure 1; case-study designs from Methods and Supplementary Methods. In vitro suppression constants attributed to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422; kdeg attributed to Rowland Yeo K et al. Eur J Pharm Sci. 2011;43:160-173."
-  vignette    <- "Machavaram_2013_interleukin6_cyp3a_pbpk"
-  units       <- list(time = "h", dosing = "mg", concentration = "pg/mL")
+  reference <- "Machavaram KK, Almond LM, Rostami-Hodjegan A, Gardner I, Jamei M, Tay S, Wong S, Joshi A, Kenny JR. A physiologically based pharmacokinetic modeling approach to predict disease-drug interactions: suppression of CYP3A by IL-6. Clin Pharmacol Ther. 2013;94(2):260-268. doi:10.1038/clpt.2013.79. Enzyme-turnover equation from Eq. 1 (Methods) and Supplementary Methods Eq. 3; IL-6 disposition parameters and infusion-rate range from Methods 'Modeling of IL-6 profiles' and Supplementary Methods; IL-6 perturbation-input equations from Supplementary Methods Eq. 1 and Eq. 2; meta-analysis IL-6 population distributions from Results 'Meta-analysis and distribution of IL-6 in patients' and Figure 1; case-study designs from Methods and Supplementary Methods. In vitro suppression constants attributed to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422; kdeg attributed to Rowland Yeo K et al. Eur J Pharm Sci. 2011;43:160-173."
+  vignette <- "Machavaram_2013_interleukin6_cyp3a_pbpk"
+  units <- list(time = "h", dosing = "mg", concentration = "pg/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Vss is reported in L/kg (Methods, 'Modeling of IL-6 profiles'), so the central volume is the per-kg value multiplied by body weight; this is a linear (exponent 1) weight scaling implied by the reported unit, not a fitted allometric exponent. Clearance is reported as an absolute 1.0 L/h and is NOT weight-scaled.",
-      source_name        = "WT"
+      notes = "Vss is reported in L/kg (Methods, 'Modeling of IL-6 profiles'), so the central volume is the per-kg value multiplied by body weight; this is a linear (exponent 1) weight scaling implied by the reported unit, not a fitted allometric exponent. Clearance is reported as an absolute 1.0 L/h and is NOT weight-scaled.",
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "interleukin-6",
-      units    = "mg",
+      analyte = "interleukin-6",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     enzyme_3a4 = list(
-      analyte  = "cytochrome P450 3A4 (hepatic pool)",
-      units    = "fraction of untreated baseline (relative-to-baseline normalisation; the paper never prints an absolute hepatic CYP3A4 abundance, and every reported outcome is a percentage of baseline)",
+      analyte = "cytochrome P450 3A4 (hepatic pool)",
+      units = "fraction of untreated baseline (relative-to-baseline normalisation; the paper never prints an absolute hepatic CYP3A4 abundance, and every reported outcome is a percentage of baseline)",
       specimen = "tissue",
       verified = TRUE,
-      notes    = "The bare isoenzyme form is used rather than the composed enzyme_3a4_liver because this model resolves CYP3A4 in a single tissue; the organ suffix is reserved for models that resolve the same isoenzyme across several organs (as in Chen_2024_interleukin6_cyp3a_pbpk, which carries both liver and gut pools). This paper assumed gut suppression equalled the hepatic magnitude and implemented it as a static abundance reduction in the Simcyp population library, so no gut state exists here."
+      notes = "The bare isoenzyme form is used rather than the composed enzyme_3a4_liver because this model resolves CYP3A4 in a single tissue; the organ suffix is reserved for models that resolve the same isoenzyme across several organs (as in Chen_2024_interleukin6_cyp3a_pbpk, which carries both liver and gut pools). This paper assumed gut suppression equalled the hepatic magnitude and implemented it as a static abundance reduction in the Simcyp population library, so no gut state exists here."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 445,
-    n_studies      = 4,
-    age_range      = "18-83 years across the four case studies (28-72 rheumatoid arthritis; 18-38 and 20/34 bone marrow transplant; 48-83 postsurgical)",
-    weight_range   = "not reported (Simcyp virtual populations generate weight from the built-in demographic distributions)",
+    species = "human",
+    n_subjects = 445,
+    n_studies = 4,
+    age_range = "18-83 years across the four case studies (28-72 rheumatoid arthritis; 18-38 and 20/34 bone marrow transplant; 48-83 postsurgical)",
+    weight_range = "not reported (Simcyp virtual populations generate weight from the built-in demographic distributions)",
     sex_female_pct = 45,
-    disease_state  = "rheumatoid arthritis (case study 1), bone marrow transplant (case studies 2 and 3), postsurgical trauma (case study 4); IL-6 meta-analysis additionally covers healthy subjects",
-    dose_range     = "IL-6 as zero-order intravenous infusion 0.0009-1.5 ug/h, clamping systemic IL-6 to 1, 5, 10, 50, 100, 200, 500, 1000 or 1500 pg/mL; simulation durations 10-19 days. Victim drugs (NOT modelled here) were simvastatin 40 mg orally and cyclosporine 1.5 mg/kg over 4 h or 1-3 mg/kg/day continuously",
-    regions        = "not reported",
-    notes          = "Simulations are Simcyp virtual populations, not fitted individuals. Case study 1: 10 trials x 12 rheumatoid arthritis subjects, aged 28-72 years, 66 percent female, 18-day simulation with simvastatin on day 15. Case study 2: 10 trials x 5 male bone marrow transplant subjects, aged 18-38 years, 11-day simulation with cyclosporine on day 10. Case study 3: 10 trials x 1 male subject matched to patients 1 (age 20) and 5 (age 34) of Chen 1994, 19-day continuous cyclosporine infusion; these two patients were selected because their observed IL-6 profiles could be fitted by zero-order input with first-order elimination. Case study 4: 10 trials x 16 postsurgical subjects, aged 48-83 years, 31 percent female. n_subjects is the sum over case studies (120 + 50 + 15 + 160 = 345 simulated subjects) plus the 100-subject notional meta-analysis contribution; sex_female_pct is the trial-size-weighted mean of the reported proportions. A literature meta-analysis gave weighted geometric mean systemic IL-6 of 4 pg/mL (95 percent CI 2-8) in healthy subjects, 54 pg/mL (43-69) in rheumatoid arthritis and 229 pg/mL (174-300) postsurgery, with lognormal population distributions parameterised as mu 3.99 / sigma 1.2 (rheumatoid arthritis) and mu 5.4 / sigma 1.0 (postsurgery) on the natural-log scale; those distributions are reproduced in the vignette and are not part of model()."
+    disease_state = "rheumatoid arthritis (case study 1), bone marrow transplant (case studies 2 and 3), postsurgical trauma (case study 4); IL-6 meta-analysis additionally covers healthy subjects",
+    dose_range = "IL-6 as zero-order intravenous infusion 0.0009-1.5 ug/h, clamping systemic IL-6 to 1, 5, 10, 50, 100, 200, 500, 1000 or 1500 pg/mL; simulation durations 10-19 days. Victim drugs (NOT modelled here) were simvastatin 40 mg orally and cyclosporine 1.5 mg/kg over 4 h or 1-3 mg/kg/day continuously",
+    regions = "not reported",
+    notes = "Simulations are Simcyp virtual populations, not fitted individuals. Case study 1: 10 trials x 12 rheumatoid arthritis subjects, aged 28-72 years, 66 percent female, 18-day simulation with simvastatin on day 15. Case study 2: 10 trials x 5 male bone marrow transplant subjects, aged 18-38 years, 11-day simulation with cyclosporine on day 10. Case study 3: 10 trials x 1 male subject matched to patients 1 (age 20) and 5 (age 34) of Chen 1994, 19-day continuous cyclosporine infusion; these two patients were selected because their observed IL-6 profiles could be fitted by zero-order input with first-order elimination. Case study 4: 10 trials x 16 postsurgical subjects, aged 48-83 years, 31 percent female. n_subjects is the sum over case studies (120 + 50 + 15 + 160 = 345 simulated subjects) plus the 100-subject notional meta-analysis contribution; sex_female_pct is the trial-size-weighted mean of the reported proportions. A literature meta-analysis gave weighted geometric mean systemic IL-6 of 4 pg/mL (95 percent CI 2-8) in healthy subjects, 54 pg/mL (43-69) in rheumatoid arthritis and 229 pg/mL (174-300) postsurgery, with lognormal population distributions parameterised as mu 3.99 / sigma 1.2 (rheumatoid arthritis) and mu 5.4 / sigma 1.0 (postsurgery) on the natural-log scale; those distributions are reproduced in the vignette and are not part of model()."
   )
 
   ini({

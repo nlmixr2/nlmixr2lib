@@ -11,29 +11,29 @@ Asiimwe_2025_trastuzumabDeruxtecan_mbma <- function() {
   )
   vignette <- "Asiimwe_2025_trastuzumab_ADCs_mbma"
   units <- list(
-    time          = "day",
-    dosing        = "mg (IV infusion; approved regimens 5.4 mg/kg q3w for HER2-positive breast cancer and NSCLC, 6.4 mg/kg q3w for gastric/GEJ cancer; infused over 90 min in Cycle 1 and 30 min in subsequent cycles)",
+    time = "day",
+    dosing = "mg (IV infusion; approved regimens 5.4 mg/kg q3w for HER2-positive breast cancer and NSCLC, 6.4 mg/kg q3w for gastric/GEJ cancer; infused over 90 min in Cycle 1 and 30 min in subsequent cycles)",
     concentration = "ng/mL (serum concentration of the intact antibody-drug conjugate T-DXd; residual error terms and reported constant SD are in ng/mL)"
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 4L,
-    weight_median  = "59.0 kg (median across the 4 T-DXd Pop-PK studies; used when computing the mg-per-patient dose from a mg/kg regimen)",
-    disease_state  = "HER2-positive advanced or metastatic solid tumors: breast cancer (dominant), non-small-cell lung, gastric / gastro-oesophageal junction, colorectal, and other HER2-expressing tumors (see Asiimwe 2025 Table S3 for the 4 Pop-PK studies)",
-    dose_range     = "0.8 to 8.0 mg/kg IV; three-weekly (q3w) and weekly dosing were included for the Pop-PK fit (Cycle 1 data only; Cycle 1 approximates steady state given the ~6 day elimination half-life and 21-day cycles)",
-    regions        = "global (studies included cohorts from North America, Europe, and Japan; see Asiimwe 2025 Table S3)",
-    design         = "MBMA of summary-level data (mean concentrations per timepoint per study arm), weighted by the square root of each trial's sample size. Different doses within the same study were treated as separate 'studies' (Between-Treatment-Arm Variability absorbed into BSV) to match Phase I dose-escalation designs.",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 4L,
+    weight_median = "59.0 kg (median across the 4 T-DXd Pop-PK studies; used when computing the mg-per-patient dose from a mg/kg regimen)",
+    disease_state = "HER2-positive advanced or metastatic solid tumors: breast cancer (dominant), non-small-cell lung, gastric / gastro-oesophageal junction, colorectal, and other HER2-expressing tumors (see Asiimwe 2025 Table S3 for the 4 Pop-PK studies)",
+    dose_range = "0.8 to 8.0 mg/kg IV; three-weekly (q3w) and weekly dosing were included for the Pop-PK fit (Cycle 1 data only; Cycle 1 approximates steady state given the ~6 day elimination half-life and 21-day cycles)",
+    regions = "global (studies included cohorts from North America, Europe, and Japan; see Asiimwe 2025 Table S3)",
+    design = "MBMA of summary-level data (mean concentrations per timepoint per study arm), weighted by the square root of each trial's sample size. Different doses within the same study were treated as separate 'studies' (Between-Treatment-Arm Variability absorbed into BSV) to match Phase I dose-escalation designs.",
     reference_subject = "median body weight 59.0 kg, no covariate effects modelled (weight enters only through dose = mg/kg x WT); no other covariates were tested in the primary Pop-PK model (Asiimwe 2025 Methods 2.2).",
-    notes          = "Between-study variability (BSV) here is a study-level random effect, NOT individual between-subject variability. The T-DXd BSV magnitudes are small (omega_CL = 0.084, omega_Vc = 0.038) with high RSEs (48.3% / 38.8%) because only 4 studies were available; the sensitivity model with BTAV separated from BSV did not converge (Asiimwe 2025 Results 3.2). The paper also attempted a nonlinear-clearance / target-mediated model and a payload (DXd) sub-model but neither converged with acceptable precision; only the linear conjugate model is reproduced here."
+    notes = "Between-study variability (BSV) here is a study-level random effect, NOT individual between-subject variability. The T-DXd BSV magnitudes are small (omega_CL = 0.084, omega_Vc = 0.038) with high RSEs (48.3% / 38.8%) because only 4 studies were available; the sensitivity model with BTAV separated from BSV did not converge (Asiimwe 2025 Results 3.2). The paper also attempted a nonlinear-clearance / target-mediated model and a payload (DXd) sub-model but neither converged with acceptable precision; only the linear conjugate model is reproduced here."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumabDeruxtecan", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumabDeruxtecan", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumabDeruxtecan", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

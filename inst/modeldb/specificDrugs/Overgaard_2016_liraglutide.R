@@ -12,107 +12,107 @@ Overgaard_2016_liraglutide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "liraglutide", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "liraglutide", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "liraglutide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F only; reference weight 100 kg per Overgaard 2016 Methods (Sect. 2.2, 'rounded value close to mean body weight'). Empirical range 60-234 kg per Table 1.",
-      source_name        = "WT"
+      notes = "Power effect on CL/F only; reference weight 100 kg per Overgaard 2016 Methods (Sect. 2.2, 'rounded value close to mean body weight'). Empirical range 60-234 kg per Table 1.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) is the paper's reference category",
-      notes              = "Overgaard 2016 Table S1 reports the log-scale coefficient Cov.male = +0.27 (E_male = exp(0.27) = 1.310). Implemented as exp(e_male_cl * (1 - SEXF)) so SEXF = 1 (female) evaluates to 1.00 (reference) and SEXF = 0 (male) evaluates to 1.310, matching the paper's female reference. Cov.male sign inverts when the source column is SEXM: keep the canonical SEXF encoding and let the model do the inversion.",
-      source_name        = "SEXM"
+      notes = "Overgaard 2016 Table S1 reports the log-scale coefficient Cov.male = +0.27 (E_male = exp(0.27) = 1.310). Implemented as exp(e_male_cl * (1 - SEXF)) so SEXF = 1 (female) evaluates to 1.00 (reference) and SEXF = 0 (male) evaluates to 1.310, matching the paper's female reference. Cov.male sign inverts when the source column is SEXM: keep the canonical SEXF encoding and let the model do the inversion.",
+      source_name = "SEXM"
     ),
     AGE_GE70 = list(
-      description        = "Indicator for baseline age >= 70 years",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for baseline age >= 70 years",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (age < 70 years)",
-      notes              = "Overgaard 2016 Methods Sect. 2.2 defines the paper's age band as < or >= 70 years (final analysis; the pre-specified 75-year cut-off was lowered to 70 y for adequate cell sizes per Online Resource Sect. S2). Only 2.5 % of subjects (73 of 2923) fell in the >= 70 y stratum.",
-      source_name        = "AGE_GE70"
+      notes = "Overgaard 2016 Methods Sect. 2.2 defines the paper's age band as < or >= 70 years (final analysis; the pre-specified 75-year cut-off was lowered to 70 y for adequate cell sizes per Online Resource Sect. S2). Only 2.5 % of subjects (73 of 2923) fell in the >= 70 y stratum.",
+      source_name = "AGE_GE70"
     ),
     RACE_BLACK = list(
-      description        = "1 = Black / African American, 0 = other",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Black / African American, 0 = other",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White is the paper's reference; the sibling indicators RACE_ASIAN and RACE_OTHER are also 0 for White subjects)",
-      notes              = "Overgaard 2016 Table 1 reports 9.7 % Black / African American across the pooled pharmacokinetic dataset (283 of 2923).",
-      source_name        = "RACE_BLACK"
+      notes = "Overgaard 2016 Table 1 reports 9.7 % Black / African American across the pooled pharmacokinetic dataset (283 of 2923).",
+      source_name = "RACE_BLACK"
     ),
     RACE_ASIAN = list(
-      description        = "1 = Asian, 0 = other",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Asian, 0 = other",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White reference; small cohort, 3.3 % of pooled pharmacokinetic dataset)",
-      notes              = "Overgaard 2016 Table 1 reports 3.3 % Asian across the pooled pharmacokinetic dataset (96 of 2923). Coefficient reported at very high RSE (913 %; Table S1) because of small cell size; the paper's own analysis concluded the Asian effect is not pharmacokinetically relevant.",
-      source_name        = "RACE_ASIAN"
+      notes = "Overgaard 2016 Table 1 reports 3.3 % Asian across the pooled pharmacokinetic dataset (96 of 2923). Coefficient reported at very high RSE (913 %; Table S1) because of small cell size; the paper's own analysis concluded the Asian effect is not pharmacokinetically relevant.",
+      source_name = "RACE_ASIAN"
     ),
     RACE_OTHER = list(
-      description        = "1 = race category 'Other', 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = race category 'Other', 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White reference)",
-      notes              = "Overgaard 2016 Table 1 footnote a: 'Other' pools American Indian / Alaskan Native, Native Hawaiian / other Pacific Islander, and any 'Other'. 2.1 % of pooled pharmacokinetic dataset (62 of 2923).",
-      source_name        = "RACE_OTHER"
+      notes = "Overgaard 2016 Table 1 footnote a: 'Other' pools American Indian / Alaskan Native, Native Hawaiian / other Pacific Islander, and any 'Other'. 2.1 % of pooled pharmacokinetic dataset (62 of 2923).",
+      source_name = "RACE_OTHER"
     ),
     RACE_HISPANIC = list(
-      description        = "1 = Hispanic / Latino ethnicity, 0 = non-Hispanic",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Hispanic / Latino ethnicity, 0 = non-Hispanic",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Hispanic / -Latino reference)",
-      notes              = "Overgaard 2016 reports Hispanic ethnicity as a covariate dimension distinct from race (paper's Methods list: 'race (White, Black or African American, Asian, Other), ethnicity (Hispanic or Latino, non-Hispanic or -Latino)'). The numerical column encoding (1 = Hispanic vs 0 = non-Hispanic) is identical to the canonical RACE_HISPANIC form. 10.5 % of pooled pharmacokinetic dataset (306 of 2923). See RACE_HISPANIC register entry for the ethnicity-vs-race semantic and the OMB-classification note.",
-      source_name        = "RACE_HISPANIC"
+      notes = "Overgaard 2016 reports Hispanic ethnicity as a covariate dimension distinct from race (paper's Methods list: 'race (White, Black or African American, Asian, Other), ethnicity (Hispanic or Latino, non-Hispanic or -Latino)'). The numerical column encoding (1 = Hispanic vs 0 = non-Hispanic) is identical to the canonical RACE_HISPANIC form. 10.5 % of pooled pharmacokinetic dataset (306 of 2923). See RACE_HISPANIC register entry for the ethnicity-vs-race semantic and the OMB-classification note.",
+      source_name = "RACE_HISPANIC"
     ),
     DIS_PREDIAB = list(
-      description        = "Indicator for baseline prediabetes glycaemic status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for baseline prediabetes glycaemic status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not prediabetic; either normoglycaemic reference or T2DM which is carried by DIS_DIAB)",
-      notes              = "Overgaard 2016 stratifies baseline glycaemic status into three levels: normoglycaemic reference, prediabetic (DIS_PREDIAB = 1), and T2DM (DIS_DIAB = 1). Prediabetic subjects are 49.3 % of the pooled pharmacokinetic dataset (1442 of 2923), all from Trial 1 (SCALE Obesity and Prediabetes).",
-      source_name        = "DIS_PREDIAB"
+      notes = "Overgaard 2016 stratifies baseline glycaemic status into three levels: normoglycaemic reference, prediabetic (DIS_PREDIAB = 1), and T2DM (DIS_DIAB = 1). Prediabetic subjects are 49.3 % of the pooled pharmacokinetic dataset (1442 of 2923), all from Trial 1 (SCALE Obesity and Prediabetes).",
+      source_name = "DIS_PREDIAB"
     ),
     DIS_DIAB = list(
-      description        = "Indicator for baseline type 2 diabetes mellitus",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for baseline type 2 diabetes mellitus",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normoglycaemic reference; DIS_PREDIAB carries the prediabetic level)",
-      notes              = "Overgaard 2016 T2DM subjects are 20.0 % of the pooled pharmacokinetic dataset (584 of 2923), all from Trial 2 (SCALE Diabetes). The paper notes the T2DM effect is confounded with Trial 2 (Sect. 3.3.5); the 90 % CI narrowly falls within the bioequivalence limits so the paper concludes the effect is not pharmacokinetically relevant.",
-      source_name        = "DIS_DIAB"
+      notes = "Overgaard 2016 T2DM subjects are 20.0 % of the pooled pharmacokinetic dataset (584 of 2923), all from Trial 2 (SCALE Diabetes). The paper notes the T2DM effect is confounded with Trial 2 (Sect. 3.3.5); the 90 % CI narrowly falls within the bioequivalence limits so the paper concludes the effect is not pharmacokinetically relevant.",
+      source_name = "DIS_DIAB"
     ),
     DOSE_1P8MG = list(
-      description        = "Indicator for the 1.8 mg liraglutide dose arm",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the 1.8 mg liraglutide dose arm",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (3.0 mg liraglutide reference)",
-      notes              = "Overgaard 2016 Trial 2 (SCALE Diabetes) enrolled 191 subjects on 1.8 mg liraglutide alongside 393 subjects on 3.0 mg. The 1.8 mg arm is 6.5 % of the pooled pharmacokinetic dataset (191 of 2923). The paper uses this indicator to formally test dose linearity across the SCALE-Diabetes 1.8-3.0 mg range; the reported log-scale coefficient (+0.02, 95 % CI -0.03 to 0.08) confirms dose proportionality.",
-      source_name        = "DOSE_1P8MG"
+      notes = "Overgaard 2016 Trial 2 (SCALE Diabetes) enrolled 191 subjects on 1.8 mg liraglutide alongside 393 subjects on 3.0 mg. The 1.8 mg arm is 6.5 % of the pooled pharmacokinetic dataset (191 of 2923). The paper uses this indicator to formally test dose linearity across the SCALE-Diabetes 1.8-3.0 mg range; the reported log-scale coefficient (+0.02, 95 % CI -0.03 to 0.08) confirms dose proportionality.",
+      source_name = "DOSE_1P8MG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2923L, # Overgaard 2016 Table 1 pooled Trials 1 + 2 (2339 + 584)
-    n_studies      = 2L,    # Trials 1 and 2 (Trial 3 is separately used for dose-proportionality only)
-    age_range      = "18-84 years (Trial 1) and 18-79 years (Trial 2); mean 47.1 y, SD 12.3 y; 2.5 % (73 / 2923) aged >= 70 y",
-    weight_range   = "60-234 kg overall; mean 106 kg, SD 21 kg (Table 1)",
+    species = "human",
+    n_subjects = 2923L, # Overgaard 2016 Table 1 pooled Trials 1 + 2 (2339 + 584)
+    n_studies = 2L, # Trials 1 and 2 (Trial 3 is separately used for dose-proportionality only)
+    age_range = "18-84 years (Trial 1) and 18-79 years (Trial 2); mean 47.1 y, SD 12.3 y; 2.5 % (73 / 2923) aged >= 70 y",
+    weight_range = "60-234 kg overall; mean 106 kg, SD 21 kg (Table 1)",
     sex_female_pct = 72.3, # 2112 / 2923 female per Overgaard 2016 Table 1
     race_ethnicity = c(White = 84.9, `Black or African American` = 9.7, Asian = 3.3, Other = 2.1, Hispanic = 10.5), # Overgaard 2016 Table 1
-    disease_state  = "Overweight and obese adults with or without T2DM. 30.7 % normoglycaemic, 49.3 % prediabetic, 20.0 % T2DM. Mean BMI 38 kg/m^2, SD 7 kg/m^2 (Table 1).",
-    dose_range     = "1.8 mg once daily SC (191 subjects, Trial 2 only) or 3.0 mg once daily SC (2732 subjects, Trials 1 + 2), each preceded by a 4-week 0.6 mg/week dose escalation.",
-    regions        = "Multinational SCALE Obesity and Prediabetes and SCALE Diabetes phase IIIa trials (Trial 1: NN8022-1839 [Pi-Sunyer 2015]; Trial 2: NN8022-1922 [Davies 2015]).",
-    trials         = c("NN8022-1839", "NN8022-1922"),
+    disease_state = "Overweight and obese adults with or without T2DM. 30.7 % normoglycaemic, 49.3 % prediabetic, 20.0 % T2DM. Mean BMI 38 kg/m^2, SD 7 kg/m^2 (Table 1).",
+    dose_range = "1.8 mg once daily SC (191 subjects, Trial 2 only) or 3.0 mg once daily SC (2732 subjects, Trials 1 + 2), each preceded by a 4-week 0.6 mg/week dose escalation.",
+    regions = "Multinational SCALE Obesity and Prediabetes and SCALE Diabetes phase IIIa trials (Trial 1: NN8022-1839 [Pi-Sunyer 2015]; Trial 2: NN8022-1922 [Davies 2015]).",
+    trials = c("NN8022-1839", "NN8022-1922"),
     renal_function = "Normal (51 %), mild impairment (44 %), moderate (5 %), severe (< 0.1 %) per CKD-EPI eGFR bands (Overgaard 2016 Table 1).",
-    notes          = "Cohort is the SCALE Obesity + Prediabetes + Diabetes pooled analysis at N = 2923 subjects (2339 + 584 after exclusion of records with incomplete dosing history). Data from Trial 3 (Astrup 2009 dose-finding, N = 331) were used only for the dose-proportionality post-hoc using post hoc Bayes estimates with parameters fixed; the population PK model itself was fit to Trials 1 + 2. Overgaard 2016 Sect. 2.1.2."
+    notes = "Cohort is the SCALE Obesity + Prediabetes + Diabetes pooled analysis at N = 2923 subjects (2339 + 584 after exclusion of records with incomplete dosing history). Data from Trial 3 (Astrup 2009 dose-finding, N = 331) were used only for the dose-proportionality post-hoc using post hoc Bayes estimates with parameters fixed; the population PK model itself was fit to Trials 1 + 2. Overgaard 2016 Sect. 2.1.2."
   )
 
   ini({

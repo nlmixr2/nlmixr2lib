@@ -18,46 +18,46 @@ Green_2005_enoxaparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at study enrolment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at study enrolment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear (not allometric) covariate on Vc per Green 2005 Table 2 Covariate Model: Vc = 5.22 * (WT / 80) L. Reference 80 kg approximates the cohort median (69 kg, range 32-95). Source column WT.",
-      source_name        = "WT"
+      notes = "Linear (not allometric) covariate on Vc per Green 2005 Table 2 Covariate Model: Vc = 5.22 * (WT / 80) L. Reference 80 kg approximates the cohort median (69 kg, range 32-95). Source column WT.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance, computed with ideal body weight (IBW) as the size descriptor (raw, NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance, computed with ideal body weight (IBW) as the size descriptor (raw, NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The paper labels this quantity GFR but it is computed by the Cockcroft-Gault formula with IBW substituted for total body weight as the size descriptor (Green 2005 Methods 'Population analysis' and Discussion paragraph 5). IBW is computed as IBW_male = 50 + 2.3 * (HT_in - 60) and IBW_female = 45.5 + 2.3 * (HT_in - 60) per Green 2005 reference [19,20]. Stored under the canonical CRCL column per inst/references/covariate-columns.md, with the per-model description recording the IBW-based assay form (CRCL accepts raw mL/min when the source paper does not apply BSA normalization). Reference value 80 mL/min per Green 2005 Table 2 (renal arm normalisation) and Discussion paragraph 5 (US National Kidney Foundation DOQI threshold for 'normal' renal function). Linear additive effect on CL: CL = 0.681 * (CRCL / 80) + 0.229 L/h.",
-      source_name        = "GFR"
+      notes = "The paper labels this quantity GFR but it is computed by the Cockcroft-Gault formula with IBW substituted for total body weight as the size descriptor (Green 2005 Methods 'Population analysis' and Discussion paragraph 5). IBW is computed as IBW_male = 50 + 2.3 * (HT_in - 60) and IBW_female = 45.5 + 2.3 * (HT_in - 60) per Green 2005 reference [19,20]. Stored under the canonical CRCL column per inst/references/covariate-columns.md, with the per-model description recording the IBW-based assay form (CRCL accepts raw mL/min when the source paper does not apply BSA normalization). Reference value 80 mL/min per Green 2005 Table 2 (renal arm normalisation) and Discussion paragraph 5 (US National Kidney Foundation DOQI threshold for 'normal' renal function). Linear additive effect on CL: CL = 0.681 * (CRCL / 80) + 0.229 L/h.",
+      source_name = "GFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38L,
-    n_studies      = 1L,
-    age_range      = "median 78 years (range 44-87)",
-    weight_range   = "median 69 kg (range 32-95)",
-    height_range   = "median 1.63 m (range 1.46-1.84)",
-    bmi_range      = "median 25.3 kg/m^2 (range 14.1-34.1)",
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 1L,
+    age_range = "median 78 years (range 44-87)",
+    weight_range = "median 69 kg (range 32-95)",
+    height_range = "median 1.63 m (range 1.46-1.84)",
+    bmi_range = "median 25.3 kg/m^2 (range 14.1-34.1)",
     serum_creat_range = "median 0.13 mmol/L (range 0.05-0.25)",
-    crcl_range     = "median 32 mL/min (range 16-117); 47.4 percent below 30 mL/min, 28.9 percent in 30-50 mL/min, 15.8 percent in 51-80 mL/min, 7.9 percent above 80 mL/min",
+    crcl_range = "median 32 mL/min (range 16-117); 47.4 percent below 30 mL/min, 28.9 percent in 30-50 mL/min, 15.8 percent in 51-80 mL/min, 7.9 percent above 80 mL/min",
     sex_female_pct = 52.6,
-    disease_state  = "Adults admitted with acute coronary syndrome to a tertiary Coronary Care Unit, recruited between January 2001 and July 2002. Final diagnoses: non-ST elevation MI 60.5 percent, unstable angina 26.3 percent, ST elevation MI 10.5 percent, non-cardiac pain 2.6 percent. Comorbidities included hypertension 76.3 percent, hypercholesterolaemia 65.8 percent, diabetes 21.1 percent.",
-    dose_range     = "Subcutaneous enoxaparin (Aventis Pharma) every 12 hours in conjunction with 100-150 mg oral aspirin daily. Dosing was adapted prospectively: the first seven patients received 0.5 mg/kg every 12 h if CRCL 10-25 mL/min, 0.75 mg/kg every 12 h if CRCL 26-50 mL/min, and 1.0 mg/kg every 12 h if CRCL above 50 mL/min; subsequently all patients received 1.0 mg/kg every 12 h.",
-    regions        = "Single-centre study at the Royal Brisbane and Women's Hospital Coronary Care Unit, Brisbane, Queensland, Australia.",
+    disease_state = "Adults admitted with acute coronary syndrome to a tertiary Coronary Care Unit, recruited between January 2001 and July 2002. Final diagnoses: non-ST elevation MI 60.5 percent, unstable angina 26.3 percent, ST elevation MI 10.5 percent, non-cardiac pain 2.6 percent. Comorbidities included hypertension 76.3 percent, hypercholesterolaemia 65.8 percent, diabetes 21.1 percent.",
+    dose_range = "Subcutaneous enoxaparin (Aventis Pharma) every 12 hours in conjunction with 100-150 mg oral aspirin daily. Dosing was adapted prospectively: the first seven patients received 0.5 mg/kg every 12 h if CRCL 10-25 mL/min, 0.75 mg/kg every 12 h if CRCL 26-50 mL/min, and 1.0 mg/kg every 12 h if CRCL above 50 mL/min; subsequently all patients received 1.0 mg/kg every 12 h.",
+    regions = "Single-centre study at the Royal Brisbane and Women's Hospital Coronary Care Unit, Brisbane, Queensland, Australia.",
     n_observations = 313L,
-    notes          = "Population analysis used NONMEM v5 (Globomax) with FOCE-I. 313 anti-Xa concentrations measured by automated chromogenic assay (ACL Futura Plus, IL Test Heparin kit). Sampling: pre-dose plus 1, 2, 3, 4, 8, 12 h after the first dose, then trough before each subsequent dose. Three of 41 enrolled patients were excluded (consent withdrawal, cardiac event, obstructive uropathy). Demographics in Table 1; covariates considered in the model build included total body weight, lean body weight, ideal body weight, adjusted body weight, allometric scaling of each, body surface area, body mass index, predicted normal weight, height, sex, and Cockcroft-Gault CRCL computed with each weight descriptor. Final retained covariates: total body weight on Vc (linear) and CRCL (with IBW size descriptor) on CL (linear additive); no covariate effects were retained on intercompartmental clearance Q or basal anti-Xa activity."
+    notes = "Population analysis used NONMEM v5 (Globomax) with FOCE-I. 313 anti-Xa concentrations measured by automated chromogenic assay (ACL Futura Plus, IL Test Heparin kit). Sampling: pre-dose plus 1, 2, 3, 4, 8, 12 h after the first dose, then trough before each subsequent dose. Three of 41 enrolled patients were excluded (consent withdrawal, cardiac event, obstructive uropathy). Demographics in Table 1; covariates considered in the model build included total body weight, lean body weight, ideal body weight, adjusted body weight, allometric scaling of each, body surface area, body mass index, predicted normal weight, height, sex, and Cockcroft-Gault CRCL computed with each weight descriptor. Final retained covariates: total body weight on Vc (linear) and CRCL (with IBW size descriptor) on CL (linear additive); no covariate effects were retained on intercompartmental clearance Q or basal anti-Xa activity."
   )
 
   ini({

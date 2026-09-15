@@ -13,39 +13,39 @@ Hennig_2008_tobramycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tobramycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tobramycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tobramycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q (exponent 3/4) and Vc, Vper (exponent 1) with reference weight 70 kg, per Hennig 2008 Table 2 footnote.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL, Q (exponent 3/4) and Vc, Vper (exponent 1) with reference weight 70 kg, per Hennig 2008 Table 2 footnote.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 35L,
-    n_studies      = 1L,
-    age_range      = "0.5-17.9 years",
-    age_mean       = "9.5 years",
-    weight_range   = "6.0-72.6 kg",
-    weight_mean    = "34.0 kg",
-    height_range   = "60.0-178.0 cm",
+    n_subjects = 35L,
+    n_studies = 1L,
+    age_range = "0.5-17.9 years",
+    age_mean = "9.5 years",
+    weight_range = "6.0-72.6 kg",
+    weight_mean = "34.0 kg",
+    height_range = "60.0-178.0 cm",
     sex_female_pct = 60.0,
-    disease_state  = "Paediatric cystic fibrosis patients receiving once-daily intravenous tobramycin for pulmonary Pseudomonas aeruginosa infection.",
-    dose_range     = "70-560 mg/day (mean 9.6 mg/kg, range 6.9-15.2 mg/kg) once-daily IV infusion over 30 min.",
+    disease_state = "Paediatric cystic fibrosis patients receiving once-daily intravenous tobramycin for pulmonary Pseudomonas aeruginosa infection.",
+    dose_range = "70-560 mg/day (mean 9.6 mg/kg, range 6.9-15.2 mg/kg) once-daily IV infusion over 30 min.",
     n_observations = 318L,
     obs_per_subject = "9.1 (range 2-26)",
     occasions_per_subject = "4.6 (range 1-14)",
     serum_creatinine_range = "20.0-73.0 umol/L (mean 44.0)",
-    crcl_range     = "23.0-194.7 mL/min (Cockcroft-Gault, mean 105.7); only one patient had CrCL <50 mL/min.",
-    regions        = "Single-centre Australian cohort: Mater Health Services, Brisbane (data collected July 2005 - September 2006).",
-    notes          = "Baseline demographics from Hennig 2008 Table 1. Renal impairment was rare in this cohort, so the model is most informative for paediatric CF patients with normal serum creatinine."
+    crcl_range = "23.0-194.7 mL/min (Cockcroft-Gault, mean 105.7); only one patient had CrCL <50 mL/min.",
+    regions = "Single-centre Australian cohort: Mater Health Services, Brisbane (data collected July 2005 - September 2006).",
+    notes = "Baseline demographics from Hennig 2008 Table 1. Renal impairment was rare in this cohort, so the model is most informative for paediatric CF patients with normal serum creatinine."
   )
 
   ini({

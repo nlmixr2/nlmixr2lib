@@ -9,7 +9,7 @@ Frymoyer_2013_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Frymoyer_2013_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -20,11 +20,11 @@ Frymoyer_2013_gentamicin <- function() {
 
   covariateData <- list(
     WT_BIRTH = list(
-      description        = "Birth weight (time-fixed per subject).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth weight (time-fixed per subject).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL (fixed exponent 0.75) and on Vc (fixed",
         "exponent 1). Reference birth weight 3.3 kg corresponds to the typical",
         "neonate as discussed in the Abstract and Discussion (cohort median 3.32",
@@ -34,14 +34,14 @@ Frymoyer_2013_gentamicin <- function() {
         "distribution was implemented using an allometric model with the",
         "exponent defining the relationship fixed to 0.75 and 1, respectively.'"
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CREAT = list(
-      description        = "Serum creatinine on postnatal age (PNA) day 1 (second day of life).",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine on postnatal age (PNA) day 1 (second day of life).",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (a single SCr value drawn on PNA day 1).",
         "Reference 0.9 mg/dL is the cohort median (Table 1 IQR 0.8-1.2 mg/dL).",
         "Enters CL as a power effect (CREAT/0.9)^e_creat_cl with",
@@ -50,16 +50,16 @@ Frymoyer_2013_gentamicin <- function() {
         "lower than a neonate with SCr 0.8 mg/dL' = (1.4/0.8)^-0.566 = 0.729,",
         "i.e. 27.1% lower (Results 'Population Pharmacokinetic Analysis')."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     )
   )
 
   covariatesDataExcluded <- list(
     GA = list(
       description = "Gestational age at birth (weeks). Screened during covariate model building.",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Cohort median 40.0 weeks (IQR 37.6-40.7;",
         "Table 1). Methods note inclusion required GA >= 36 weeks; Discussion:",
         "'Gestational age did not affect clearance in our study and this was",
@@ -69,9 +69,9 @@ Frymoyer_2013_gentamicin <- function() {
     ),
     PNA = list(
       description = "Postnatal age (days). Screened during covariate model building.",
-      units       = "days",
-      type        = "continuous",
-      notes       = paste(
+      units = "days",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Discussion: 'Since all neonates were of the",
         "same postnatal age +/- 1 day, we were unable to examine this effect.'",
         "TDM was performed at the third or fourth dose, typically PNA days 3-5."
@@ -79,9 +79,9 @@ Frymoyer_2013_gentamicin <- function() {
     ),
     PHA = list(
       description = "First arterial or capillary pH. Screened during covariate model building.",
-      units       = "pH units",
-      type        = "continuous",
-      notes       = paste(
+      units = "pH units",
+      type = "continuous",
+      notes = paste(
         "Screened as a marker of asphyxia severity; not retained. Cohort",
         "median 7.0, IQR 6.9-7.1 (Table 1). Methods 'Population Pharmacokinetic",
         "Analysis' lists 'first blood pH' among the continuous covariates",
@@ -91,9 +91,9 @@ Frymoyer_2013_gentamicin <- function() {
     ),
     APGAR10 = list(
       description = "10-minute APGAR <= 5 indicator. Screened during covariate model building.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a categorical marker of asphyxia severity; not retained.",
         "Cohort median 10-minute APGAR 5, IQR 3-6 (Table 1). Methods lists",
         "'APGAR <= 5 at 10 minutes' among the categorical covariates tested",
@@ -103,9 +103,9 @@ Frymoyer_2013_gentamicin <- function() {
     ),
     CONMED_DOPAMINE = list(
       description = "Concomitant dopamine indicator. Screened during covariate model building.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a marker of cardiovascular instability that may affect",
         "renal perfusion; not retained. 62% of cohort received dopamine",
         "(Table 1, n = 18/29). Methods lists 'concomitant dopamine' among",
@@ -115,17 +115,17 @@ Frymoyer_2013_gentamicin <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 29L,
-    n_studies       = 1L,
-    n_observations  = 47L,
-    age_range       = "GA 37.6-40.7 weeks (median 40.0) at birth; PNA approximately 2-5 days at TDM",
-    age_median      = "GA 40.0 weeks; PNA day 1 (SCr) and PNA days 2-5 (gentamicin observations)",
-    weight_range    = "2.97-3.50 kg (IQR; median 3.32 kg)",
-    weight_median   = "3.32 kg",
-    sex_female_pct  = 62,
-    race_ethnicity  = "Not reported (single-centre US tertiary NICU).",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
+    n_observations = 47L,
+    age_range = "GA 37.6-40.7 weeks (median 40.0) at birth; PNA approximately 2-5 days at TDM",
+    age_median = "GA 40.0 weeks; PNA day 1 (SCr) and PNA days 2-5 (gentamicin observations)",
+    weight_range = "2.97-3.50 kg (IQR; median 3.32 kg)",
+    weight_median = "3.32 kg",
+    sex_female_pct = 62,
+    race_ethnicity = "Not reported (single-centre US tertiary NICU).",
+    disease_state = paste(
       "Term neonates (>= 36 weeks GA) with presumed hypoxic ischemic",
       "encephalopathy (HIE) treated with whole-body therapeutic hypothermia",
       "at 33.5 degrees C in a Level III NICU. Asphyxia severity: median",
@@ -139,15 +139,15 @@ Frymoyer_2013_gentamicin <- function() {
       "the independent impact of hypothermia on gentamicin pharmacokinetics",
       "since all neonates in our study were cooled.')."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Empiric gentamicin: 5 mg/kg every 24 h (25 neonates), 4.5 mg/kg",
       "every 24 h (1 neonate), 4 mg/kg every 24 h (3 neonates). Each dose",
       "administered as a 30-minute IV infusion. Median treatment duration",
       "6 days (IQR 4-7). TDM at the third or fourth dose."
     ),
-    regions         = "Single centre (University of California San Francisco NICU, USA). Data collected November 2007 to March 2010.",
+    regions = "Single centre (University of California San Francisco NICU, USA). Data collected November 2007 to March 2010.",
     creatinine_summary = "Serum creatinine on PNA day 1: median 0.9 mg/dL, IQR 0.8-1.2 mg/dL (Table 1).",
-    notes           = paste(
+    notes = paste(
       "Retrospective chart-review cohort, n = 29 term neonates (5 excluded:",
       "3 ECMO, 1 cardiomyopathy, 1 incomplete dosing record). 47 gentamicin",
       "concentrations available: 18 patients had paired peak + trough, 11",

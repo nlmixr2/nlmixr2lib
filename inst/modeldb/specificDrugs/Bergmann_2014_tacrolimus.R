@@ -8,72 +8,72 @@ Bergmann_2014_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Bergmann 2014. Allometric power scaling on CL/F with reference 70 kg and the theory-based exponent 0.75 fixed (Bergmann 2014 Table 2 footnote). Study median 79 kg (10-90 percentile 59-101).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline in Bergmann 2014. Allometric power scaling on CL/F with reference 70 kg and the theory-based exponent 0.75 fixed (Bergmann 2014 Table 2 footnote). Study median 79 kg (10-90 percentile 59-101).",
+      source_name = "WT"
     ),
     HCT = list(
-      description        = "Hematocrit, expressed as a fraction of total blood volume",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Hematocrit, expressed as a fraction of total blood volume",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Centred at 0.33 (Bergmann 2014 study-population median; 10-90 percentile 0.25-0.40). Source paper reports HCT as a fraction (0-1), not as percent (0-100); the canonical-register HCT entry's units (%) are explicitly overridden here so the centring value 0.33 and the linear-deviation coefficient -1.01 reproduce the paper's equation directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model.",
-      source_name        = "HEM"
+      notes = "Time-varying. Centred at 0.33 (Bergmann 2014 study-population median; 10-90 percentile 0.25-0.40). Source paper reports HCT as a fraction (0-1), not as percent (0-100); the canonical-register HCT entry's units (%) are explicitly overridden here so the centring value 0.33 and the linear-deviation coefficient -1.01 reproduce the paper's equation directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model.",
+      source_name = "HEM"
     ),
     POD = list(
-      description        = "Days post-transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Days post-transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Centred at 22.7 days (Bergmann 2014 Table 2 footnote; close to the 23-day median in Table 1). Values greater than 180 days are capped at 180 inside model() per the source paper's covariate equation (linear effect plateaus beyond 180 days post-transplant). 83% of dataset observations were within the first 90 days post-transplant.",
-      source_name        = "POD"
+      notes = "Time-varying within subject. Centred at 22.7 days (Bergmann 2014 Table 2 footnote; close to the 23-day median in Table 1). Values greater than 180 days are capped at 180 inside model() per the source paper's covariate equation (linear effect plateaus beyond 180 days post-transplant). 83% of dataset observations were within the first 90 days post-transplant.",
+      source_name = "POD"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 nonexpresser)",
-      notes              = "Time-fixed germline genotype derived from rs776746 (CYP3A5 6986A>G): the *1 (A) allele encodes functional CYP3A5 protein; the *3 (G) allele creates a cryptic splice site and yields nonfunctional protein. In the Bergmann 2014 cohort the genotype distribution was *1/*1 = 3 (1.7%), *1/*3 = 23 (13.3%), *3/*3 = 146 (84.4%); 1 patient with failed genotyping was assigned to *3/*3. CYP3A5_EXPR = 1 for the 26 *1 carriers, 0 for the 147 nonexpressers. Multiplicative effect on CL/F as `theta_CYP3A5 ^ CYP3A5_EXPR` with `theta_CYP3A5 = 1.60` (60% higher CL/F in expressers).",
-      source_name        = "X"
+      notes = "Time-fixed germline genotype derived from rs776746 (CYP3A5 6986A>G): the *1 (A) allele encodes functional CYP3A5 protein; the *3 (G) allele creates a cryptic splice site and yields nonfunctional protein. In the Bergmann 2014 cohort the genotype distribution was *1/*1 = 3 (1.7%), *1/*3 = 23 (13.3%), *3/*3 = 146 (84.4%); 1 patient with failed genotyping was assigned to *3/*3. CYP3A5_EXPR = 1 for the 26 *1 carriers, 0 for the 147 nonexpressers. Multiplicative effect on CL/F as `theta_CYP3A5 ^ CYP3A5_EXPR` with `theta_CYP3A5 = 1.60` (60% higher CL/F in expressers).",
+      source_name = "X"
     ),
     PRED_CMAX_FREE = list(
-      description        = "Maximum free (ultrafiltrable) plasma prednisolone concentration over a tacrolimus dosing interval",
-      units              = "nmol/L",
-      type               = "continuous",
+      description = "Maximum free (ultrafiltrable) plasma prednisolone concentration over a tacrolimus dosing interval",
+      units = "nmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject co-medication-exposure covariate (one Cmax per subject). Centred at 155.5 nmol/L in Bergmann 2014 Table 2 footnote (study median 162 nmol/L per Table 1). Values derived from limited-sampling free prednisolone concentrations at 1, 2, and 4 hours postdose per Bergmann 2014 Methods. Linear deviation effect on V1/F: every 1 nmol/L increase from 155.5 nmol/L decreases apparent central volume by 0.28%.",
-      source_name        = "PredCmax,free"
+      notes = "Per-subject co-medication-exposure covariate (one Cmax per subject). Centred at 155.5 nmol/L in Bergmann 2014 Table 2 footnote (study median 162 nmol/L per Table 1). Values derived from limited-sampling free prednisolone concentrations at 1, 2, and 4 hours postdose per Bergmann 2014 Methods. Linear deviation effect on V1/F: every 1 nmol/L increase from 155.5 nmol/L decreases apparent central volume by 0.28%.",
+      source_name = "PredCmax,free"
     )
   )
 
   population <- list(
-    n_subjects        = 173L,
-    n_studies         = 2L,
-    n_observations    = 1554L,
-    age_range         = "33-64 years (10-90 percentile)",
-    age_median        = "50 years",
-    weight_range      = "59-101 kg (10-90 percentile)",
-    weight_median     = "79 kg",
-    sex_female_pct    = 33.5,
-    race_ethnicity    = "Not reported in source paper (single-centre Brisbane, Australia cohort).",
-    disease_state     = "Adult kidney transplant recipients on protocol immunosuppression (basiliximab + methylprednisolone induction, oral tacrolimus + oral prednisolone + mycophenolate mofetil maintenance).",
-    dose_range        = "Oral tacrolimus 3-8 mg twice daily (median 5 mg per dose). Initial dose 0.075 mg/kg twice daily started preoperatively, adjusted by therapeutic drug monitoring to a target trough of 6-10 ug/L during the first 3 months posttransplant.",
-    regions           = "Australia (Princess Alexandra Hospital, Brisbane).",
+    n_subjects = 173L,
+    n_studies = 2L,
+    n_observations = 1554L,
+    age_range = "33-64 years (10-90 percentile)",
+    age_median = "50 years",
+    weight_range = "59-101 kg (10-90 percentile)",
+    weight_median = "79 kg",
+    sex_female_pct = 33.5,
+    race_ethnicity = "Not reported in source paper (single-centre Brisbane, Australia cohort).",
+    disease_state = "Adult kidney transplant recipients on protocol immunosuppression (basiliximab + methylprednisolone induction, oral tacrolimus + oral prednisolone + mycophenolate mofetil maintenance).",
+    dose_range = "Oral tacrolimus 3-8 mg twice daily (median 5 mg per dose). Initial dose 0.075 mg/kg twice daily started preoperatively, adjusted by therapeutic drug monitoring to a target trough of 6-10 ug/L during the first 3 months posttransplant.",
+    regions = "Australia (Princess Alexandra Hospital, Brisbane).",
     cyp3a5_distribution = "*1/*1 (rs776746 AA) n = 3 (1.7%); *1/*3 (AG) n = 23 (13.3%); *3/*3 (GG) n = 146 (84.4%); 1 patient with failed genotyping assigned to *3/*3. Population in Hardy-Weinberg equilibrium.",
-    pod_range         = "2-104 days (10-90 percentile); 83% of measurements within the first 90 days posttransplant.",
-    hct_median        = "0.33 (10-90 percentile 0.25-0.40)",
+    pod_range = "2-104 days (10-90 percentile); 83% of measurements within the first 90 days posttransplant.",
+    hct_median = "0.33 (10-90 percentile 0.25-0.40)",
     pred_cmax_free_median = "162 nmol/L (10-90 percentile 85-260)",
-    notes             = "Pooled analysis of two consecutive prospective studies at the same centre. Study 1 (n = 20): full 13-point concentration-time profile (predose plus 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 9, and 12 h postdose); half sampled in their first posttransplant week, half >90 days posttransplant. Study 2 (n = 153): limited concentration-time profile (predose plus 1, 2, and 4 h postdose) on at least one occasion 4-12 months posttransplant. Tacrolimus measured by HPLC-MS/MS in whole blood (assay range 0.5-50 ug/L)."
+    notes = "Pooled analysis of two consecutive prospective studies at the same centre. Study 1 (n = 20): full 13-point concentration-time profile (predose plus 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 9, and 12 h postdose); half sampled in their first posttransplant week, half >90 days posttransplant. Study 2 (n = 153): limited concentration-time profile (predose plus 1, 2, and 4 h postdose) on at least one occasion 4-12 months posttransplant. Tacrolimus measured by HPLC-MS/MS in whole blood (assay range 0.5-50 ug/L)."
   )
 
   ini({

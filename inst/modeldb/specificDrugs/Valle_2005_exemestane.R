@@ -1,8 +1,8 @@
 Valle_2005_exemestane <- function() {
   description <- "Three-compartment population PK with first-order absorption + lag time, coupled to an indirect-response PD model on plasma estrone sulphate (E1S), for oral exemestane (25 mg single dose) in healthy postmenopausal women. Crossover study comparing a sugar-coated tablet (SCT) under fasting versus an extemporaneous tablet-suspended-in-water suspension under fasting versus a SCT taken after a standard high-fat breakfast. Disposition is independent of formulation and food; absorption rate ka and apparent bioavailability F depend on formulation (suspension: ka 7.6 vs SCT 2.35 1/h, F 1.2x) and on the high-fat meal (ka 1.13 1/h, F 1.6x). Exemestane inhibits E1S synthesis via a sigmoid Imax function with IC50 22.1 pg/mL and Hill coefficient 1.73."
-  reference   <- "Valle M, Di Salle E, Jannuzzo MG, Poggesi I, Rocchetti M, Spinelli R, Verotta D. A predictive model for exemestane pharmacokinetics/pharmacodynamics incorporating the effect of food and formulation. Br J Clin Pharmacol. 2005;59(3):355-364. doi:10.1111/j.1365-2125.2005.02335.x"
-  vignette    <- "Valle_2005_exemestane"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Valle M, Di Salle E, Jannuzzo MG, Poggesi I, Rocchetti M, Spinelli R, Verotta D. A predictive model for exemestane pharmacokinetics/pharmacodynamics incorporating the effect of food and formulation. Br J Clin Pharmacol. 2005;59(3):355-364. doi:10.1111/j.1365-2125.2005.02335.x"
+  vignette <- "Valle_2005_exemestane"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   paper_specific_compartments <- c("e1s")
 
@@ -11,46 +11,46 @@ Valle_2005_exemestane <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "exemestane", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "exemestane", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
-    e1s         = list(analyte = "estrone sulphate", units = "mg", specimen = "plasma", verified = FALSE)
+    e1s = list(analyte = "estrone sulphate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_SUSPENSION = list(
-      description        = "Extemporaneous tablet-suspended-in-water formulation indicator (1 = exemestane delivered as an extemporaneously-prepared suspension administered with 180 mL of vehicle, 0 = sugar-coated tablet swallowed whole with 180 mL of water).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extemporaneous tablet-suspended-in-water formulation indicator (1 = exemestane delivered as an extemporaneously-prepared suspension administered with 180 mL of vehicle, 0 = sugar-coated tablet swallowed whole with 180 mL of water).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sugar-coated tablet (SCT); the typical-value reference in Valle 2005 Tables 2-3).",
-      notes              = "Per-dose-occasion indicator: each subject received the SCT (fasting and after high-fat breakfast) and the suspension (fasting) in a randomized three-period 3x3 Latin-square crossover. Multiplicative effect on absorption rate ka (suspension/SCT-fasting ratio 7.6/2.35 = 3.234x; Valle 2005 Table 2) and on apparent bioavailability F (suspension/SCT-fasting ratio = 1.2x; Valle 2005 Results). V is intrinsic and shared across formulations -- the apparent V/F differences in Table 2 (1360 vs 1120 vs 844 L for SCT-fasting / suspension-fasting / SCT-food) collapse to V multiplied by 1/F at the treatment-specific F.",
-      source_name        = "Treatment 2 (suspension after fasting) vs Treatment 1 (SCT after fasting)"
+      notes = "Per-dose-occasion indicator: each subject received the SCT (fasting and after high-fat breakfast) and the suspension (fasting) in a randomized three-period 3x3 Latin-square crossover. Multiplicative effect on absorption rate ka (suspension/SCT-fasting ratio 7.6/2.35 = 3.234x; Valle 2005 Table 2) and on apparent bioavailability F (suspension/SCT-fasting ratio = 1.2x; Valle 2005 Results). V is intrinsic and shared across formulations -- the apparent V/F differences in Table 2 (1360 vs 1120 vs 844 L for SCT-fasting / suspension-fasting / SCT-food) collapse to V multiplied by 1/F at the treatment-specific F.",
+      source_name = "Treatment 2 (suspension after fasting) vs Treatment 1 (SCT after fasting)"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal-at-dosing indicator (1 = sugar-coated tablet given 15 min after a standard high-fat breakfast, 0 = dose taken under overnight-fasting conditions).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal-at-dosing indicator (1 = sugar-coated tablet given 15 min after a standard high-fat breakfast, 0 = dose taken under overnight-fasting conditions).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (overnight-fasting condition; the typical-value reference in Valle 2005 Tables 2-3).",
-      notes              = "Per-dose-occasion indicator. Valle 2005 Treatment 3 = 25 mg SCT taken 15 min after a 'standard high-fat breakfast'; Treatments 1 (SCT) and 2 (suspension) were given under overnight-fasting conditions. Multiplicative effect on ka (SCT-food/SCT-fasting ratio 1.13/2.35 = 0.481x; Valle 2005 Table 2) and on apparent bioavailability F (SCT-food/SCT-fasting ratio = 1.6x; Valle 2005 Results). The food effect was only estimated on the SCT arm (no suspension-after-food condition was run); the model applies the food effect generically per dose record so SCT-after-food is the documented use case.",
-      source_name        = "Treatment 3 (SCT after high-fat breakfast) vs Treatment 1 (SCT after fasting)"
+      notes = "Per-dose-occasion indicator. Valle 2005 Treatment 3 = 25 mg SCT taken 15 min after a 'standard high-fat breakfast'; Treatments 1 (SCT) and 2 (suspension) were given under overnight-fasting conditions. Multiplicative effect on ka (SCT-food/SCT-fasting ratio 1.13/2.35 = 0.481x; Valle 2005 Table 2) and on apparent bioavailability F (SCT-food/SCT-fasting ratio = 1.6x; Valle 2005 Results). The food effect was only estimated on the SCT arm (no suspension-after-food condition was run); the model applies the food effect generically per dose record so SCT-after-food is the documented use case.",
+      source_name = "Treatment 3 (SCT after high-fat breakfast) vs Treatment 1 (SCT after fasting)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "45-68 years",
-    age_median     = "55 years (mean)",
-    weight_range   = "46-66 kg",
-    weight_median  = "54.9 kg (mean)",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "45-68 years",
+    age_median = "55 years (mean)",
+    weight_range = "46-66 kg",
+    weight_median = "54.9 kg (mean)",
     sex_female_pct = 100,
     race_ethnicity = "Not reported in Valle 2005 Methods; trial conducted at Pontchaillou Hospital (Rennes, France).",
-    disease_state  = "Healthy postmenopausal women",
-    dose_range     = "25 mg single oral dose per period; three treatment periods per subject in a 3x3 Latin-square crossover; 4-5 week washout between periods.",
-    regions        = "France (Pontchaillou Hospital, Rennes)",
-    notes          = "Open, three-period, randomized, 3x3 Latin-square crossover. Treatments: (1) sugar-coated tablet 25 mg under fasting, (2) extemporaneous suspension 25 mg under fasting, (3) sugar-coated tablet 25 mg 15 min after a standard high-fat breakfast. Exemestane plasma sampling at 0.25, 0.5, 1, 1.5, 2, 4, 6, 8, 12, 16, 24, 48, 72, 120, and 168 h post-dose (15 points). E1S sampling at 0, 24, 48, 72, 120, 168, and 336 h post-dose. Estimation by NONMEM V FOCE INTERACTION; population PK fitted first with empirical-Bayes individual estimates, then population PD fitted conditional on the individual PK estimates."
+    disease_state = "Healthy postmenopausal women",
+    dose_range = "25 mg single oral dose per period; three treatment periods per subject in a 3x3 Latin-square crossover; 4-5 week washout between periods.",
+    regions = "France (Pontchaillou Hospital, Rennes)",
+    notes = "Open, three-period, randomized, 3x3 Latin-square crossover. Treatments: (1) sugar-coated tablet 25 mg under fasting, (2) extemporaneous suspension 25 mg under fasting, (3) sugar-coated tablet 25 mg 15 min after a standard high-fat breakfast. Exemestane plasma sampling at 0.25, 0.5, 1, 1.5, 2, 4, 6, 8, 12, 16, 24, 48, 72, 120, and 168 h post-dose (15 points). E1S sampling at 0, 24, 48, 72, 120, 168, and 336 h post-dose. Estimation by NONMEM V FOCE INTERACTION; population PK fitted first with empirical-Bayes individual estimates, then population PD fitted conditional on the individual PK estimates."
   )
 
   ini({

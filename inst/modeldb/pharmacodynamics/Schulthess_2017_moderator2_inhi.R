@@ -35,10 +35,25 @@ Schulthess_2017_moderator2_inhi <- function() {
   # itself, and the supplementary R script adds dose = 0.1 to that state), so
   # the implied central volume is 1 and `central` carries a concentration.
   compartmentData <- list(
-    central    = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
-    effect     = list(analyte = "fold mRNA induction x1 (the model output)", units = "mL", specimen = "not applicable", verified = TRUE),
-    moderator1 = list(analyte = "first endogenous moderator x2", units = "mL", specimen = "not applicable", verified = TRUE),
-    moderator2 = list(analyte = "second endogenous moderator x3", units = "mL", specimen = "not applicable", verified = TRUE)
+    central = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "fold mRNA induction x1 (the model output)",
+      units = "mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    moderator1 = list(
+      analyte = "first endogenous moderator x2",
+      units = "mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    moderator2 = list(
+      analyte = "second endogenous moderator x3",
+      units = "mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(

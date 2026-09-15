@@ -2,11 +2,16 @@ Toutain_2025_doxycycline_pig <- function() {
   description <- "Preclinical (pig). Three-compartment population PK meta-analysis of doxycycline in pigs, parameterised per kg body weight, with a body-weight power model on the three clearances and the deep peripheral volume and four oral administration modalities (medicated feed under field or laboratory conditions, drinking water, stomach tube) each carrying its own absorption rate constant, bioavailability and residual error (Toutain 2025)"
   reference <- "Toutain PL, Bousquet-Melou A, Ferran AA, Roques BB, del Castillo JRE, Lees P, Croubels S, Bousquet E, Pelligand L. Pharmacokinetic-pharmacodynamic cutoff values for doxycycline in pigs to support the establishment of clinical breakpoints for antimicrobial susceptibility testing. J Vet Pharmacol Ther. 2025;48(4):300-317. doi:10.1111/jvp.13511"
   paper_specific_residual_sds <- c(
-    "propSdIv", "addSdIv",
-    "propSdFeedField", "addSdFeedField",
-    "propSdFeedLab", "addSdFeedLab",
-    "propSdWater", "addSdWater",
-    "propSdTube", "addSdTube"
+    "propSdIv",
+    "addSdIv",
+    "propSdFeedField",
+    "addSdFeedField",
+    "propSdFeedLab",
+    "addSdFeedLab",
+    "propSdWater",
+    "addSdWater",
+    "propSdTube",
+    "addSdTube"
   )
   vignette <- "Toutain_2025_doxycycline_pig"
   # Every structural parameter is normalised to body weight: doses are given in
@@ -16,70 +21,70 @@ Toutain_2025_doxycycline_pig <- function() {
   units <- list(time = "h", dosing = "mg/kg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "doxycycline", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "doxycycline", units = "mg/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "doxycycline", units = "mg/kg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "doxycycline", units = "mg/kg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power model (WT/50)^theta on the three clearances and on the deep peripheral volume, per Toutain 2025 Equation 1; the 50 kg scaling factor is the rounded observed median body weight (actual median 44.15 kg, range 8.5-100.6 kg). Because every parameter is already expressed per kg body weight, the absence of a WT term on Vc and V2 means the whole-animal Vc and V2 are exactly proportional to body weight, while whole-animal CL scales as WT^1.299.",
-      source_name        = "BW"
+      notes = "Power model (WT/50)^theta on the three clearances and on the deep peripheral volume, per Toutain 2025 Equation 1; the 50 kg scaling factor is the rounded observed median body weight (actual median 44.15 kg, range 8.5-100.6 kg). Because every parameter is already expressed per kg body weight, the absence of a WT term on Vc and V2 means the whole-animal Vc and V2 are exactly proportional to body weight, while whole-animal CL scales as WT^1.299.",
+      source_name = "BW"
     ),
     ROUTE_IV = list(
-      description        = "Indicator for intravenous administration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for intravenous administration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral administration: medicated feed, drinking water or stomach tube)",
-      notes              = "Per-dose-record indicator (1 = single IV dose through an indwelling catheter, 0 = one of the four oral modalities). Selects the IV residual-error pair (propSdIv, addSdIv) and switches off oral absorption (ka and fdepot both collapse to 0). IV doses must additionally be placed in the central compartment via cmt = 'central' on the event record; oral doses go to cmt = 'depot'. Toutain 2025 Methods 2.3.2 block A of the Appendix S3 Phoenix script.",
-      source_name        = "route of administration (IV)"
+      notes = "Per-dose-record indicator (1 = single IV dose through an indwelling catheter, 0 = one of the four oral modalities). Selects the IV residual-error pair (propSdIv, addSdIv) and switches off oral absorption (ka and fdepot both collapse to 0). IV doses must additionally be placed in the central compartment via cmt = 'central' on the event record; oral doses go to cmt = 'depot'. Toutain 2025 Methods 2.3.2 block A of the Appendix S3 Phoenix script.",
+      source_name = "route of administration (IV)"
     ),
     FORM_DOX_FEED = list(
-      description        = "Indicator for doxycycline administered mixed in medicated feed",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for doxycycline administered mixed in medicated feed",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (doxycycline given as an aqueous solution, i.e. in drinking water or by stomach tube)",
-      notes              = "Per-dose-record indicator distinguishing the two feed sub-models (submodel_1 and submodel_2 of Toutain 2025 Methods 2.3.2) from the two aqueous-solution sub-models (submodel_3 and submodel_4). Ignored when ROUTE_IV = 1. Combined with STUDY_TLS to pick between the field-condition and the laboratory-condition feed parameters.",
-      source_name        = "route of administration (oral feed)"
+      notes = "Per-dose-record indicator distinguishing the two feed sub-models (submodel_1 and submodel_2 of Toutain 2025 Methods 2.3.2) from the two aqueous-solution sub-models (submodel_3 and submodel_4). Ignored when ROUTE_IV = 1. Combined with STUDY_TLS to pick between the field-condition and the laboratory-condition feed parameters.",
+      source_name = "route of administration (oral feed)"
     ),
     STUDY_TLS = list(
-      description        = "Indicator for the TLS field trial (doxycycline in feed under on-farm field conditions)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the TLS field trial (doxycycline in feed under on-farm field conditions)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the laboratory-condition feed trials AFSSA, BIOEQ, PARADOX, Company 9203 and Company 9204)",
-      notes              = "Per-dose-record indicator for the 215-pig TLS field trial (del Castillo 2006), the single largest cohort in the meta-analysis and the only one dosed in feed under field conditions with group access to medicated meal. Only meaningful when FORM_DOX_FEED = 1. Toutain 2025 Table 1 and Table 6 ('Trial TLS (feed, field conditions)' vs 'Trials AFSSA, BIOEQ, PARADOX, Company 9203 and Company 9204 (feed, laboratory conditions)'). The paper attributes the much larger bioavailability variability under field conditions to competition between animals for access to feed.",
-      source_name        = "Trial ID = TLS"
+      notes = "Per-dose-record indicator for the 215-pig TLS field trial (del Castillo 2006), the single largest cohort in the meta-analysis and the only one dosed in feed under field conditions with group access to medicated meal. Only meaningful when FORM_DOX_FEED = 1. Toutain 2025 Table 1 and Table 6 ('Trial TLS (feed, field conditions)' vs 'Trials AFSSA, BIOEQ, PARADOX, Company 9203 and Company 9204 (feed, laboratory conditions)'). The paper attributes the much larger bioavailability variability under field conditions to competition between animals for access to feed.",
+      source_name = "Trial ID = TLS"
     ),
     ROUTE_NGT = list(
-      description        = "Indicator for an oral solution delivered by gastric tube",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for an oral solution delivered by gastric tube",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral solution taken spontaneously in drinking water)",
-      notes              = "Per-dose-record indicator separating the stomach-tubing sub-model (submodel_4: trials 104NL, 3205NL, GHENT) from the spontaneous drinking-water sub-model (submodel_3: trials KING_NL, Bea). Only meaningful when ROUTE_IV = 0 and FORM_DOX_FEED = 0. The canonical ROUTE_NGT column covers tube-delivered vs voluntarily-ingested enteral dosing; Toutain 2025 uses an oro-gastric ('stomach tubing') rather than a nasogastric tube.",
-      source_name        = "SOL (ST)"
+      notes = "Per-dose-record indicator separating the stomach-tubing sub-model (submodel_4: trials 104NL, 3205NL, GHENT) from the spontaneous drinking-water sub-model (submodel_3: trials KING_NL, Bea). Only meaningful when ROUTE_IV = 0 and FORM_DOX_FEED = 0. The canonical ROUTE_NGT column covers tube-delivered vs voluntarily-ingested enteral dosing; Toutain 2025 uses an oro-gastric ('stomach tubing') rather than a nasogastric tube.",
+      source_name = "SOL (ST)"
     )
   )
 
   population <- list(
-    species          = "pig (Sus scrofa domesticus; piglets to finishing pigs)",
-    n_subjects       = 300L,
-    n_datasets       = 380L,
-    n_observations   = 3295L,
-    n_studies        = 11L,
-    weight_range     = "8.5-100.6 kg",
-    weight_median    = "44.15 kg",
-    sex_female_pct   = 49.3,
-    disease_state    = "Mostly healthy production pigs; in the 215-pig TLS field trial 146 pigs were assessed as healthy and 66 as sick. Health status was tested as a covariate on bioavailability and was not significant, so it is absent from the final model.",
-    dose_range       = "IV 5-10.5 mg/kg single dose (57 data sets); oral in medicated feed 2.4-13.3 mg/kg per administration (265 data sets, single dose to 15 administrations at 12 h intervals); oral solution 8.68-10.59 mg/kg by stomach tube or in drinking water (58 data sets)",
-    regions          = "France (6 trials), the Netherlands (4 trials), Belgium (1 trial)",
-    sampling         = "3295 plasma samples analysed by HPLC-UV or HPLC-MS/MS with LLOQ 0.025-0.2 ug/mL; 2% of samples were below LLOQ and were discarded for the final analysis. Rich sampling (8-15 samples per pig over 12-48 h) in the laboratory trials; sparse sampling (one pre-dose plus 5-6 post-dose samples) in the 215-pig TLS field trial.",
+    species = "pig (Sus scrofa domesticus; piglets to finishing pigs)",
+    n_subjects = 300L,
+    n_datasets = 380L,
+    n_observations = 3295L,
+    n_studies = 11L,
+    weight_range = "8.5-100.6 kg",
+    weight_median = "44.15 kg",
+    sex_female_pct = 49.3,
+    disease_state = "Mostly healthy production pigs; in the 215-pig TLS field trial 146 pigs were assessed as healthy and 66 as sick. Health status was tested as a covariate on bioavailability and was not significant, so it is absent from the final model.",
+    dose_range = "IV 5-10.5 mg/kg single dose (57 data sets); oral in medicated feed 2.4-13.3 mg/kg per administration (265 data sets, single dose to 15 administrations at 12 h intervals); oral solution 8.68-10.59 mg/kg by stomach tube or in drinking water (58 data sets)",
+    regions = "France (6 trials), the Netherlands (4 trials), Belgium (1 trial)",
+    sampling = "3295 plasma samples analysed by HPLC-UV or HPLC-MS/MS with LLOQ 0.025-0.2 ug/mL; 2% of samples were below LLOQ and were discarded for the final analysis. Rich sampling (8-15 samples per pig over 12-48 h) in the laboratory trials; sparse sampling (one pre-dose plus 5-6 post-dose samples) in the 215-pig TLS field trial.",
     reference_subject = "50 kg body weight (rounded observed median), the scaling factor of the body-weight power model.",
-    notes            = "VetCAST meta-analysis of raw individual plasma concentration-time data from 11 trials (5 published, 6 unpublished marketing-authorisation trials); the same pigs were dosed on 2 or 3 occasions in the laboratory trials and each data set was treated as a separate individual, giving 380 analyzable data sets from 300 pigs. Doses are expressed as doxycycline base. Estimation was FOCE ELS in Phoenix NLME 8.3 with standard errors from a QRPEM re-run; the model was used to compute PK/PD cutoffs from fAUC/MIC with an unbound fraction of 0.31 (Portugal 2023)."
+    notes = "VetCAST meta-analysis of raw individual plasma concentration-time data from 11 trials (5 published, 6 unpublished marketing-authorisation trials); the same pigs were dosed on 2 or 3 occasions in the laboratory trials and each data set was treated as a separate individual, giving 380 analyzable data sets from 300 pigs. Doses are expressed as doxycycline base. Estimation was FOCE ELS in Phoenix NLME 8.3 with standard errors from a QRPEM re-run; the model was used to compute PK/PD cutoffs from fAUC/MIC with an unbound fraction of 0.31 (Portugal 2023)."
   )
 
   ini({

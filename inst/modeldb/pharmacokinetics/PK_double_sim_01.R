@@ -7,8 +7,8 @@ PK_double_sim_01 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot1  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot1 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
     central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

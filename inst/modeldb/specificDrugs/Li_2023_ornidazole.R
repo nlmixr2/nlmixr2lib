@@ -52,54 +52,79 @@ Li_2023_ornidazole <- function() {
   # not retain in the final model. Documentation only; not referenced in model().
   covariatesDataExcluded <- list(
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       notes = "Screened on CL (Table 2 steps 3, 12, 14); dropped in backward elimination (step 15, dOFV 5.90, p > 0.01)."
     ),
     AGE = list(
-      description = "Maternal age", units = "year", type = "continuous",
+      description = "Maternal age",
+      units = "year",
+      type = "continuous",
       notes = "Screened on CL (Table 2 step 4); not significant (dOFV 0.25)."
     ),
     CRCL = list(
-      description = "Cockcroft-Gault creatinine clearance", units = "mL/min", type = "continuous",
+      description = "Cockcroft-Gault creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       notes = "Screened on CL (Table 2 steps 5, 13); dropped in favour of TBILI."
     ),
     SCR = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened on CL (Table 2 step 6); not significant (dOFV 1.39)."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "IU/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened on CL (Table 2 step 8); not significant (dOFV 0.04)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "IU/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened on CL (Table 2 step 9); not significant (dOFV 0.07)."
     ),
     GGT = list(
-      description = "Gamma-glutamyl transferase", units = "IU/L", type = "continuous",
+      description = "Gamma-glutamyl transferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened on CL (Table 2 step 10); not significant (dOFV 2.04)."
     ),
     BUN = list(
-      description = "Blood urea nitrogen", units = "mmol/L", type = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mmol/L",
+      type = "continuous",
       notes = "Recorded and screened as a renal marker (Methods 2.3); not retained."
     ),
     UA = list(
-      description = "Uric acid", units = "umol/L", type = "continuous",
+      description = "Uric acid",
+      units = "umol/L",
+      type = "continuous",
       notes = "Recorded and screened as a renal marker (Methods 2.3); not retained."
     ),
     CYSC = list(
-      description = "Serum cystatin C", units = "mg/L", type = "continuous",
+      description = "Serum cystatin C",
+      units = "mg/L",
+      type = "continuous",
       notes = "Recorded and screened as a renal marker (Methods 2.3); not retained."
     ),
     DBILI = list(
-      description = "Direct bilirubin", units = "umol/L", type = "continuous",
+      description = "Direct bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Recorded and screened as a hepatic marker (Methods 2.3); total bilirubin retained instead."
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte = "ornidazole", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "ornidazole",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 

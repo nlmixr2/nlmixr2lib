@@ -9,48 +9,48 @@ MarquezMegias_2023_adalimumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "adalimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin (time-varying)",
+      description = "Serum albumin (time-varying)",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F using mean-normalization (ALB/3.77)^e_alb_cl per Marquez-Megias 2023 Equation (3) and supplementary Figure S1. Reference 3.77 g/dL is the mean albumin in the studied population (paper text following Equation (3); Table 1 reports the median 3.86 g/dL). Time-varying per Methods (missing values imputed with the patient's own mean).",
-      source_name        = "ALB"
+      notes = "Power effect on CL/F using mean-normalization (ALB/3.77)^e_alb_cl per Marquez-Megias 2023 Equation (3) and supplementary Figure S1. Reference 3.77 g/dL is the mean albumin in the studied population (paper text following Equation (3); Table 1 reports the median 3.86 g/dL). Time-varying per Methods (missing values imputed with the patient's own mean).",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-adalimumab antibody (AAA) positivity",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-adalimumab antibody (AAA) positivity",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AAA-negative)",
-      notes              = "Categorical effect on CL/F: CL/F = CL/F_pop * (1 + ADA_POS * e_ada_cl). e_ada_cl = 4.5 was fixed to the reference (Ternant 2015) value because only 9/54 patients (16.7%) were AAA-positive (paper Section 3.2). A patient is AAA-positive if titres exceed 10 ng/mL on at least one occasion (Methods Section 2.2). Source paper labels this covariate 'AAA'; renamed to canonical ADA_POS per inst/references/covariate-columns.md.",
-      source_name        = "AAA"
+      notes = "Categorical effect on CL/F: CL/F = CL/F_pop * (1 + ADA_POS * e_ada_cl). e_ada_cl = 4.5 was fixed to the reference (Ternant 2015) value because only 9/54 patients (16.7%) were AAA-positive (paper Section 3.2). A patient is AAA-positive if titres exceed 10 ng/mL on at least one occasion (Methods Section 2.2). Source paper labels this covariate 'AAA'; renamed to canonical ADA_POS per inst/references/covariate-columns.md.",
+      source_name = "AAA"
     )
   )
 
   population <- list(
-    n_subjects     = 54L,
-    n_studies      = 1L,
-    age_range      = "11-89 years",
-    age_median     = "43.5 years",
-    weight_range   = "34.8-94.0 kg",
-    weight_median  = "66.5 kg",
+    n_subjects = 54L,
+    n_studies = 1L,
+    age_range = "11-89 years",
+    age_median = "43.5 years",
+    weight_range = "34.8-94.0 kg",
+    weight_median = "66.5 kg",
     sex_female_pct = 44.4,
     race_ethnicity = "Not reported (single-center Spanish cohort).",
-    disease_state  = "Adults and adolescents with inflammatory bowel disease (Crohn's disease 85.2%, ulcerative colitis 14.8%).",
-    dose_range     = "Subcutaneous induction 160/80 mg at weeks 0/2 (43/54 patients) or 80/40 mg (2/54 patients), then maintenance 40 mg every 2 weeks. Induction regimen unknown for 9 patients.",
-    regions        = "Single-center retrospective study, Dr. Balmis General University Hospital of Alicante, Spain (2014-2022).",
-    bmi_median     = "22.84 kg/m^2 (range 14.1-32.03)",
+    disease_state = "Adults and adolescents with inflammatory bowel disease (Crohn's disease 85.2%, ulcerative colitis 14.8%).",
+    dose_range = "Subcutaneous induction 160/80 mg at weeks 0/2 (43/54 patients) or 80/40 mg (2/54 patients), then maintenance 40 mg every 2 weeks. Induction regimen unknown for 9 patients.",
+    regions = "Single-center retrospective study, Dr. Balmis General University Hospital of Alicante, Spain (2014-2022).",
+    bmi_median = "22.84 kg/m^2 (range 14.1-32.03)",
     albumin_median = "3.86 g/dL (range 1.97-4.96); mean 3.77 g/dL used as the model reference value (mALB).",
     aaa_positive_pct = 16.7,
-    originator_pct   = 70.4,
-    biosimilar_pct   = 27.8,
+    originator_pct = 70.4,
+    biosimilar_pct = 27.8,
     immunomodulator_pct = 40.7,
-    notes          = "Therapeutic drug-monitoring dataset comprising 148 trough serum concentrations (19 during induction, 129 during maintenance). Quantification by ELISA (LISA TRACKER Duo Drug + ADAb, TheraDiag); LLOQ 0.1 mg/L for adalimumab and 10 ng/mL for AAA. Final model was developed with informative priors on IIV(CL/F) and IIV(V/F) from the Ternant 2015 reference model (Eur J Clin Pharmacol 71:1155-1157)."
+    notes = "Therapeutic drug-monitoring dataset comprising 148 trough serum concentrations (19 during induction, 129 during maintenance). Quantification by ELISA (LISA TRACKER Duo Drug + ADAb, TheraDiag); LLOQ 0.1 mg/L for adalimumab and 10 ng/mL for AAA. Final model was developed with informative priors on IIV(CL/F) and IIV(V/F) from the Ternant 2015 reference model (Eur J Clin Pharmacol 71:1155-1157)."
   )
 
   ini({

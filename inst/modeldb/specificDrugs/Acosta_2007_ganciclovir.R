@@ -23,23 +23,23 @@ Acosta_2007_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as RAW (un-normalized) power terms, WT^1.68 on CL and WT^1 on V,",
         "so the structural reference subject is WT = 1 kg rather than a cohort",
         "median. The CL exponent of 1.68 is far above the canonical allometric 0.75",
@@ -51,32 +51,32 @@ Acosta_2007_ganciclovir <- function() {
         "(range 1.9-4.4) in study 2.0 (Yang 2023 Table 2).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 2L,
     n_observations = 484L,
-    age_median     = paste(
+    age_median = paste(
       "Postnatal age: study 1.0 30 days (range 11-34); study 2.0 20 days",
       "(range 8-33).",
       sep = " "
     ),
-    weight_median  = "study 1.0 2.7 kg (range 2.1-3.4); study 2.0 2.9 kg (range 1.9-4.4)",
+    weight_median = "study 1.0 2.7 kg (range 2.1-3.4); study 2.0 2.9 kg (range 1.9-4.4)",
     sex_female_pct = 45.8,
     race_ethnicity = "Not reported.",
-    disease_state  = "Neonates with symptomatic congenital CMV disease.",
-    dose_range     = paste(
+    disease_state = "Neonates with symptomatic congenital CMV disease.",
+    dose_range = paste(
       "IV ganciclovir 6 mg/kg/12 h; oral liquid valganciclovir formulation",
       "14 mg/kg/12 h.",
       sep = " "
     ),
-    regions        = "United States (prospective; two sequential studies pooled).",
-    bioassay       = "LC-MS, LLOQ 0.4 ug/mL.",
-    notes          = paste(
+    regions = "United States (prospective; two sequential studies pooled).",
+    bioassay = "LC-MS, LLOQ 0.4 ug/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Sampling was both intensive",
       "(0 pre-dose, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12 and/or 24 h post dose) and",
       "sparse (0 pre-dose, 1, 2, 4, 8, 12 and/or 16 and 24 h post dose).",

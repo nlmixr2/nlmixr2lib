@@ -20,24 +20,24 @@ Li_2017_CC292 <- function() {
     sep = " "
   )
   vignette <- "Li_2017_CC292"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "CC292", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "CC292", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "CC292", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "CC292", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "CC292", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Linear-deviation categorical effect on CL/F: multiplier",
         "(1 - 0.26 * SEXF) per Li 2017 final covariate model (page 1283,",
         "covariate equations following Table 2). Females have ~26% lower",
@@ -45,14 +45,14 @@ Li_2017_CC292 <- function() {
         "not clinically relevant. Reference cohort sex split: 60% male,",
         "40% female (Li 2017 Table 1)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate on apparent central volume V2/F:",
         "V2/F = 158 * (AGE / 62)^0.946 per Li 2017 final covariate",
         "equations (page 1283, following Table 2). Reference 62 years is",
@@ -60,14 +60,14 @@ Li_2017_CC292 <- function() {
         "The paper concluded the age effect on V2/F is not clinically",
         "relevant. Cohort age range 20-89 years."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with B-cell malignancy)",
-      notes              = paste(
+      notes = paste(
         "Stratifies the residual error: HNP (healthy normal participants",
         "from AVL-292-004) have a lower residual variance (sigma^2 = 0.234)",
         "than patients with relapsed/refractory B-cell malignancies from",
@@ -77,25 +77,25 @@ Li_2017_CC292 <- function() {
         "total subjects (Li 2017 Methods 'Patients and Study Design'",
         "section, study counts; Table 1 demographics)."
       ),
-      source_name        = "HNP"
+      source_name = "HNP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 145L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 145L,
+    n_studies = 2L,
     n_observations = 3156L,
-    age_range      = "20-89 years (median 62)",
-    age_median     = "62 years",
-    weight_range   = "49.9-128.4 kg (median 79.5)",
-    weight_median  = "79.5 kg",
-    height_range   = "149-200 cm (median 170)",
-    bmi_range      = "19-41 kg/m^2 (median 27)",
+    age_range = "20-89 years (median 62)",
+    age_median = "62 years",
+    weight_range = "49.9-128.4 kg (median 79.5)",
+    weight_median = "79.5 kg",
+    height_range = "149-200 cm (median 170)",
+    bmi_range = "19-41 kg/m^2 (median 27)",
     sex_female_pct = 40,
     race_ethnicity = c(White = 83.4, Black = 13.8, Asian = 1.4, Other = 1.4),
-    ethnicity      = c("Hispanic or Latino" = 10.3, "Not Hispanic or Latino" = 89.7),
-    disease_state  = paste(
+    ethnicity = c("Hispanic or Latino" = 10.3, "Not Hispanic or Latino" = 89.7),
+    disease_state = paste(
       "Pooled cohort: 32 healthy adults from AVL-292-004 (Part 1, 7-day",
       "QD multiple-dose) and 113 patients from AVL-292-003 with relapsed",
       "and/or refractory B-cell malignancies (B-NHL, CLL/SLL,",
@@ -103,16 +103,16 @@ Li_2017_CC292 <- function() {
       "moderate renal impairment (CLcr 30-60 mL/min); none had severe",
       "renal impairment."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral solid dosage. Healthy adults: 50, 100, or 200 mg QD x 7 days",
       "(AVL-292-004 Part 1). Patients: QD doses of 125, 250, 400, 625,",
       "750, 1000 mg or BID doses of 375 or 500 mg administered in 28-day",
       "cycles (AVL-292-003)."
     ),
-    regions        = "Not stated; both studies sponsored by Avila Therapeutics / Celgene Corporation",
-    cohort_split   = "32 healthy (22.1%) + 113 patients (77.9%) = 145 total",
+    regions = "Not stated; both studies sponsored by Avila Therapeutics / Celgene Corporation",
+    cohort_split = "32 healthy (22.1%) + 113 patients (77.9%) = 145 total",
     renal_impair_pct = 17.2,
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Li 2017 Table 1 (pooled column). The",
       "non-white subjects were grouped together for the race covariate",
       "analysis (race was not retained in the final model).",

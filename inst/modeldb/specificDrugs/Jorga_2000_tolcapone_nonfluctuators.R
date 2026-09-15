@@ -13,60 +13,64 @@ Jorga_2000_tolcapone_nonfluctuators <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tolcapone nonfluctuators", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tolcapone nonfluctuators", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "tolcapone nonfluctuators",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "tolcapone nonfluctuators", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tolcapone nonfluctuators", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (raw Cockcroft-Gault, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw Cockcroft-Gault, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on CL with reference 68 mL/min (population median, Table 1). Computed in the paper as CL_Cr = factor * (140 - age) * BW / serum_creatinine with factor = 1.23 for males / 1.04 for females, BW in kg, serum creatinine in umol/L (Lott & Hayton 1978; Methods). Raw Cockcroft-Gault without BSA normalization, same convention as Delattre 2010 amikacin. Source column 'CL_Cr' in the paper.",
-      source_name        = "CL_Cr"
+      notes = "Power-form covariate on CL with reference 68 mL/min (population median, Table 1). Computed in the paper as CL_Cr = factor * (140 - age) * BW / serum_creatinine with factor = 1.23 for males / 1.04 for females, BW in kg, serum creatinine in umol/L (Lott & Hayton 1978; Methods). Raw Cockcroft-Gault without BSA normalization, same convention as Delattre 2010 amikacin. Source column 'CL_Cr' in the paper.",
+      source_name = "CL_Cr"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on Vc with reference 72 g/L (population median, Table 1). Source column 'Protein' in the paper.",
-      source_name        = "Protein"
+      notes = "Power-form covariate on Vc with reference 72 g/L (population median, Table 1). Source column 'Protein' in the paper.",
+      source_name = "Protein"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (1 = dose taken with concomitant food, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (1 = dose taken with concomitant food, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Paper indicator I_Food. Multiplicative effect (1 + e_food_f * FED) applied on F1; e_food_f = -0.17 corresponds to a ~17% reduction in relative bioavailability in the fed state for the nonfluctuator cohort (Jorga 2000 Table 3 theta_Food = 0.83; Discussion: 15-20% reduction in nonfluctuators). Reference fasted F1 fixed at 0.6.",
-      source_name        = "Food"
+      notes = "Paper indicator I_Food. Multiplicative effect (1 + e_food_f * FED) applied on F1; e_food_f = -0.17 corresponds to a ~17% reduction in relative bioavailability in the fed state for the nonfluctuator cohort (Jorga 2000 Table 3 theta_Food = 0.83; Discussion: 15-20% reduction in nonfluctuators). Reference fasted F1 fixed at 0.6.",
+      source_name = "Food"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
-    study_names    = c("Nonfluctuator 200 mg t.i.d. (n = 33)",
-                       "Nonfluctuator 400 mg t.i.d. (n = 29)"),
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
+    study_names = c("Nonfluctuator 200 mg t.i.d. (n = 33)", "Nonfluctuator 400 mg t.i.d. (n = 29)"),
     n_observations = 433L,
-    age_range      = "47-83 years",
-    age_median     = "67 years",
-    weight_range   = "44-110 kg",
-    weight_median  = "72 kg",
-    lbm_range      = "34-75 kg",
-    lbm_median     = "55 kg",
-    crcl_range     = "41-141 mL/min",
-    crcl_median    = "70 mL/min",
+    age_range = "47-83 years",
+    age_median = "67 years",
+    weight_range = "44-110 kg",
+    weight_median = "72 kg",
+    lbm_range = "34-75 kg",
+    lbm_median = "55 kg",
+    crcl_range = "41-141 mL/min",
+    crcl_median = "70 mL/min",
     sex_female_pct = NA_real_,
     race_ethnicity = c(Caucasian = 98.0, Black = 0.24, Asian = 0.73, Other = 1.46),
-    disease_state  = "Parkinson's disease with stable (non-fluctuating) motor response to levodopa/AADC inhibitor therapy ('nonfluctuators')",
-    dose_range     = "200 or 400 mg tolcapone three times daily for 6 weeks, with the levodopa dose reduced 33-43% on the first day of test treatment; ongoing levodopa-carbidopa (Sinemet) or levodopa-benserazide (Madopar) therapy",
-    regions        = "One multicentre Phase II dose-finding study (Phase II nonfluctuator arm)",
-    sampling       = "Sparse: 5-8 plasma samples per patient on 2-5 occasions; samples taken pre-dose, near Cmax, and during the decline phase. Only four nonfluctuator samples were obtained 0.5-1 h after dosing across the entire cohort (Discussion).",
-    notes          = "Demographics from Table 1, 'Non-fluctuators' column (n=97 enrolled in the nonfluctuator arm; n=60 with usable PK)."
+    disease_state = "Parkinson's disease with stable (non-fluctuating) motor response to levodopa/AADC inhibitor therapy ('nonfluctuators')",
+    dose_range = "200 or 400 mg tolcapone three times daily for 6 weeks, with the levodopa dose reduced 33-43% on the first day of test treatment; ongoing levodopa-carbidopa (Sinemet) or levodopa-benserazide (Madopar) therapy",
+    regions = "One multicentre Phase II dose-finding study (Phase II nonfluctuator arm)",
+    sampling = "Sparse: 5-8 plasma samples per patient on 2-5 occasions; samples taken pre-dose, near Cmax, and during the decline phase. Only four nonfluctuator samples were obtained 0.5-1 h after dosing across the entire cohort (Discussion).",
+    notes = "Demographics from Table 1, 'Non-fluctuators' column (n=97 enrolled in the nonfluctuator arm; n=60 with usable PK)."
   )
 
   ini({

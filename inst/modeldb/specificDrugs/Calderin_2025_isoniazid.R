@@ -47,20 +47,28 @@ Calderin_2025_isoniazid <- function() {
   # CE = A(4) (not A(4)/V). So `csf` carries mg/L, not mg.
   compartmentData <- list(
     depot = list(
-      analyte = "isoniazid", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "isoniazid",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "isoniazid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "isoniazid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "isoniazid", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "isoniazid",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     ),
     csf = list(
-      analyte = "isoniazid", units = "mg/L",
-      specimen = "CSF", verified = TRUE
+      analyte = "isoniazid",
+      units = "mg/L",
+      specimen = "CSF",
+      verified = TRUE
     )
   )
 

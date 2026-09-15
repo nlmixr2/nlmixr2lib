@@ -19,124 +19,124 @@ Johnson_2025_osimertinib <- function() {
   # specimen assignment of both central compartments is verified against
   # the source.
   compartmentData <- list(
-    depot          = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
     central_az5104 = list(analyte = "AZ5104", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form (median-normalized) effects on parent CL/F (exponent 0.421), parent Vc/F (exponent 0.814), and AZ5104 CL/F (exponent 0.822). Reference weight 61 kg, stated in Johnson 2025 Results section 3.3 ('the median body weight (61 kg)') and in the Figure 2 caption ('Typical patient: White, 61 kg body weight, 39 g/L baseline serum albumin'). 61 kg is the median of the three model-building cohorts (Table 1 medians 60.5 kg for AURA + AURA2, 60.0 kg for AURA3, 62.0 kg for FLAURA); the Table 1 'Overall' median of 62.0 kg additionally includes the ADAURA external-validation set, which was excluded from model building. Baseline (not time-varying): Johnson 2025 Table 1 reports weight as a baseline characteristic.",
-      source_name        = "Weight"
+      notes = "Power-form (median-normalized) effects on parent CL/F (exponent 0.421), parent Vc/F (exponent 0.814), and AZ5104 CL/F (exponent 0.822). Reference weight 61 kg, stated in Johnson 2025 Results section 3.3 ('the median body weight (61 kg)') and in the Figure 2 caption ('Typical patient: White, 61 kg body weight, 39 g/L baseline serum albumin'). 61 kg is the median of the three model-building cohorts (Table 1 medians 60.5 kg for AURA + AURA2, 60.0 kg for AURA3, 62.0 kg for FLAURA); the Table 1 'Overall' median of 62.0 kg additionally includes the ADAURA external-validation set, which was excluded from model building. Baseline (not time-varying): Johnson 2025 Table 1 reports weight as a baseline characteristic.",
+      source_name = "Weight"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form (median-normalized) effects on parent CL/F (exponent 0.825), parent Vc/F (exponent 2.27), AZ5104 CL/F (exponent 0.928), and AZ5104 Vc/F (exponent -0.831). Reference albumin 39 g/L, stated in Johnson 2025 Results section 3.3 ('the median albumin levels (39 g/L)') and in the Figure 2 caption. Values are already in SI g/L in the source (Table 1 'Baseline albumin (g/L)'), so no g/dL conversion is applied. 39 g/L is the AURA + AURA2 median; AURA3 and FLAURA medians are 40.0 g/L, and the Table 1 'Overall' median of 40.0 g/L includes the excluded ADAURA set.",
-      source_name        = "Baseline albumin"
+      notes = "Power-form (median-normalized) effects on parent CL/F (exponent 0.825), parent Vc/F (exponent 2.27), AZ5104 CL/F (exponent 0.928), and AZ5104 Vc/F (exponent -0.831). Reference albumin 39 g/L, stated in Johnson 2025 Results section 3.3 ('the median albumin levels (39 g/L)') and in the Figure 2 caption. Values are already in SI g/L in the source (Table 1 'Baseline albumin (g/L)'), so no g/dL conversion is applied. 39 g/L is the AURA + AURA2 median; AURA3 and FLAURA medians are 40.0 g/L, and the Table 1 'Overall' median of 40.0 g/L includes the excluded ADAURA set.",
+      source_name = "Baseline albumin"
     ),
     RACE_CHINESE = list(
-      description        = "Chinese-heritage grouped-race indicator (1 = Chinese, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chinese-heritage grouped-race indicator (1 = Chinese, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Chinese; the paper-defined reference category of the grouped-race covariate is White).",
-      notes              = "Exponential effect exp(0.076 * RACE_CHINESE) on AZ5104 CL/F, i.e. ~7.9 percent higher AZ5104 apparent clearance and ~7.3 percent lower AZ5104 AUCss than White patients. Johnson 2025 'grouped race' (Table 1 footnote a) splits the Asian population into Japanese, Chinese, and non-Japanese/non-Chinese Asian, and carries White (reference), Chinese, Japanese, Asian-other, and Other as five mutually exclusive categories; a White patient is encoded as 0 for every RACE_* indicator. Race had no effect on osimertinib (parent) apparent clearance (Results section 3.3).",
-      source_name        = "Grouped race: Chinese (Johnson 2025 Table 2)"
+      notes = "Exponential effect exp(0.076 * RACE_CHINESE) on AZ5104 CL/F, i.e. ~7.9 percent higher AZ5104 apparent clearance and ~7.3 percent lower AZ5104 AUCss than White patients. Johnson 2025 'grouped race' (Table 1 footnote a) splits the Asian population into Japanese, Chinese, and non-Japanese/non-Chinese Asian, and carries White (reference), Chinese, Japanese, Asian-other, and Other as five mutually exclusive categories; a White patient is encoded as 0 for every RACE_* indicator. Race had no effect on osimertinib (parent) apparent clearance (Results section 3.3).",
+      source_name = "Grouped race: Chinese (Johnson 2025 Table 2)"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage grouped-race indicator (1 = Japanese, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage grouped-race indicator (1 = Japanese, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese; the paper-defined reference category of the grouped-race covariate is White).",
-      notes              = "Exponential effect exp(0.184 * RACE_JAPANESE) on AZ5104 CL/F, i.e. ~20.2 percent higher AZ5104 apparent clearance and ~16.8 percent lower AZ5104 AUCss than White patients.",
-      source_name        = "Grouped race: Japanese (Johnson 2025 Table 2)"
+      notes = "Exponential effect exp(0.184 * RACE_JAPANESE) on AZ5104 CL/F, i.e. ~20.2 percent higher AZ5104 apparent clearance and ~16.8 percent lower AZ5104 AUCss than White patients.",
+      source_name = "Grouped race: Japanese (Johnson 2025 Table 2)"
     ),
     RACE_ASIAN_OTH = list(
-      description        = "Asian-other grouped-race indicator (1 = Asian heritage other than Chinese or Japanese, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian-other grouped-race indicator (1 = Asian heritage other than Chinese or Japanese, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Asian-other; the paper-defined reference category of the grouped-race covariate is White).",
-      notes              = "Exponential effect exp(0.182 * RACE_ASIAN_OTH) on AZ5104 CL/F, i.e. ~20.0 percent higher AZ5104 apparent clearance and ~16.6 percent lower AZ5104 AUCss than White patients. Maps onto Johnson 2025's 'Asian (non-Chinese, non-Japanese)' grouped-race category. The dominant reference grouping here is White (not Chinese), matching the sibling model Brown_2017_osimertinib.R. This category is one arm of the paper's 'extreme case' covariate combination (43 kg, 29.3 g/L albumin, Asian non-Chinese non-Japanese).",
-      source_name        = "Grouped race: Asian (non-Chinese, non-Japanese) (Johnson 2025 Table 2)"
+      notes = "Exponential effect exp(0.182 * RACE_ASIAN_OTH) on AZ5104 CL/F, i.e. ~20.0 percent higher AZ5104 apparent clearance and ~16.6 percent lower AZ5104 AUCss than White patients. Maps onto Johnson 2025's 'Asian (non-Chinese, non-Japanese)' grouped-race category. The dominant reference grouping here is White (not Chinese), matching the sibling model Brown_2017_osimertinib.R. This category is one arm of the paper's 'extreme case' covariate combination (43 kg, 29.3 g/L albumin, Asian non-Chinese non-Japanese).",
+      source_name = "Grouped race: Asian (non-Chinese, non-Japanese) (Johnson 2025 Table 2)"
     ),
     RACE_OTHER = list(
-      description        = "Grouped-race category 'Other' indicator (1 = race grouped as Other, i.e. non-Asian and non-White, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Grouped-race category 'Other' indicator (1 = race grouped as Other, i.e. non-Asian and non-White, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the paper-defined reference category of the grouped-race covariate is White).",
-      notes              = "Exponential effect exp(0.090 * RACE_OTHER) on AZ5104 CL/F, i.e. ~9.4 percent higher AZ5104 apparent clearance and ~8.6 percent lower AZ5104 AUCss than White patients. Johnson 2025 Table 2 labels this row 'Non-Asian, non-White population effect on CLmetabolite/F'; it is the 'Other' arm of the five-level grouped-race covariate in Table 1 (which pools Black/African American, Native Hawaiian/Pacific Islander, American Indian/Alaska Native, and Other, n = 145, 8.6 percent overall). Same mapping as the sibling model Brown_2017_osimertinib.R, whose corresponding category is 'non-Asian non-Caucasian'.",
-      source_name        = "Grouped race: Other / 'Non-Asian, non-White' (Johnson 2025 Table 2)"
+      notes = "Exponential effect exp(0.090 * RACE_OTHER) on AZ5104 CL/F, i.e. ~9.4 percent higher AZ5104 apparent clearance and ~8.6 percent lower AZ5104 AUCss than White patients. Johnson 2025 Table 2 labels this row 'Non-Asian, non-White population effect on CLmetabolite/F'; it is the 'Other' arm of the five-level grouped-race covariate in Table 1 (which pools Black/African American, Native Hawaiian/Pacific Islander, American Indian/Alaska Native, and Other, n = 145, 8.6 percent overall). Same mapping as the sibling model Brown_2017_osimertinib.R, whose corresponding category is 'non-Asian non-Caucasian'.",
+      source_name = "Grouped race: Other / 'Non-Asian, non-White' (Johnson 2025 Table 2)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the full covariate model but not retained: Johnson 2025 Discussion states age was 'tested and not found to have an impact on the PK that would require [inclusion] in the final model', and the Conclusion states no dose adjustment is required for age. No point estimate is reported, so the effect cannot be reconstructed."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the full covariate model but not retained: Johnson 2025 Discussion states age was 'tested and not found to have an impact on the PK that would require [inclusion] in the final model', and the Conclusion states no dose adjustment is required for age. No point estimate is reported, so the effect cannot be reconstructed."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Johnson 2025 Discussion and Conclusion); no point estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Johnson 2025 Discussion and Conclusion); no point estimate reported."
     ),
     SMOKER = list(
       description = "Current-smoker indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Johnson 2025 Discussion and Conclusion); no point estimate reported. Table 1 reports never / current / former smoking status."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Johnson 2025 Discussion and Conclusion); no point estimate reported. Table 1 reports never / current / former smoking status."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance (renal function).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Renal impairment status was screened but not retained (Johnson 2025 Discussion); no point estimate reported."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Renal impairment status was screened but not retained (Johnson 2025 Discussion); no point estimate reported."
     ),
     WHO_PS = list(
       description = "World Health Organization performance status (0 or 1).",
-      units       = "(score)",
-      type        = "categorical",
-      notes       = "Screened but not retained (Johnson 2025 Discussion); no point estimate reported."
+      units = "(score)",
+      type = "categorical",
+      notes = "Screened but not retained (Johnson 2025 Discussion); no point estimate reported."
     ),
     LINE_OF_THERAPY = list(
       description = "Line of therapy (first-line, second-line, third-line onwards, adjuvant).",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on both CLparent/F and CLmetabolite/F and explicitly rejected: Johnson 2025 Discussion states line of therapy 'was not statistically significant and that the median variability was clearly below the 20 percent threshold for clinical relevance'. No point estimate reported."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on both CLparent/F and CLmetabolite/F and explicitly rejected: Johnson 2025 Discussion states line of therapy 'was not statistically significant and that the median variability was clearly below the 20 percent threshold for clinical relevance'. No point estimate reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1364,
-    n_studies      = 4,
-    age_range      = "25-91 years",
-    age_median     = "62 years",
-    weight_range   = "29-122 kg",
-    weight_median  = "61 kg (model-building set; 62 kg including the ADAURA validation set)",
+    species = "human",
+    n_subjects = 1364,
+    n_studies = 4,
+    age_range = "25-91 years",
+    age_median = "62 years",
+    weight_range = "29-122 kg",
+    weight_median = "61 kg (model-building set; 62 kg including the ADAURA validation set)",
     sex_female_pct = 65.3,
     race_ethnicity = c(
-      White                            = 28.2,
-      Asian_non_Chinese_non_Japanese   = 23.7,
-      Chinese                          = 21.7,
-      Japanese                         = 17.8,
-      Other                            = 8.6
+      White = 28.2,
+      Asian_non_Chinese_non_Japanese = 23.7,
+      Chinese = 21.7,
+      Japanese = 17.8,
+      Other = 8.6
     ),
-    disease_state  = "Advanced EGFR-mutation-positive non-small cell lung cancer (NSCLC). Model building used 599 patients from AURA / AURA extension (phase 1/2, NCT01802632), 210 from AURA2 (phase 2, NCT02094261), 277 from AURA3 (phase 3, NCT02151981), and 278 from FLAURA (phase 3, NCT02296125). A further 325 patients with resected stage IB-IIIA EGFR-mutation-positive NSCLC from the adjuvant ADAURA study (phase 3, NCT02511106) were held out for external validation and are NOT part of the 1364 model-building subjects.",
-    dose_range     = "Osimertinib 20-240 mg once daily orally in the AURA phase 1 dose escalation (capsule at 20, 40, 80, 160, 240 mg and tablet at 80 mg); 80 mg once daily (tablet) in AURA extension, AURA2, AURA3, FLAURA, and ADAURA. Dose reductions were permitted in AURA2, AURA3, and FLAURA. 80 mg once daily is the recommended dose.",
-    regions        = "Multiregional (AURA, AURA2, AURA3, FLAURA, and ADAURA enrolled across North America, Europe, and Asia).",
+    disease_state = "Advanced EGFR-mutation-positive non-small cell lung cancer (NSCLC). Model building used 599 patients from AURA / AURA extension (phase 1/2, NCT01802632), 210 from AURA2 (phase 2, NCT02094261), 277 from AURA3 (phase 3, NCT02151981), and 278 from FLAURA (phase 3, NCT02296125). A further 325 patients with resected stage IB-IIIA EGFR-mutation-positive NSCLC from the adjuvant ADAURA study (phase 3, NCT02511106) were held out for external validation and are NOT part of the 1364 model-building subjects.",
+    dose_range = "Osimertinib 20-240 mg once daily orally in the AURA phase 1 dose escalation (capsule at 20, 40, 80, 160, 240 mg and tablet at 80 mg); 80 mg once daily (tablet) in AURA extension, AURA2, AURA3, FLAURA, and ADAURA. Dose reductions were permitted in AURA2, AURA3, and FLAURA. 80 mg once daily is the recommended dose.",
+    regions = "Multiregional (AURA, AURA2, AURA3, FLAURA, and ADAURA enrolled across North America, Europe, and Asia).",
     n_observations = "41 461 plasma concentration samples from 1364 patients. Three patients (two in AURA extension, one in FLAURA) whose only two observations were both below the lower limit of quantification were removed before analysis. LLOQ = 0.05 nmol/L (osimertinib) and 0.0515 nmol/L (AZ5104).",
     hepatic_function = "1513 of 1689 (89.6 percent) normal, 166 (9.8 percent) at least mild impairment (Johnson 2025 Table 1).",
-    renal_function   = "605 of 1689 (35.8 percent) normal, 742 (43.9 percent) at least mild impairment, 328 (19.4 percent) at least moderate impairment (Johnson 2025 Table 1).",
-    notes          = "Demographic counts and percentages are the 'Overall (N = 1689)' column of Johnson 2025 Table 1, which pools the 1364 model-building patients with the 325 ADAURA external-validation patients; the paper does not print a model-building-only demographic column. Race percentages are the 'Grouped race' rows (Table 1 footnote a: the Asian population is split into Japanese, Chinese, and non-Japanese / non-Chinese Asian) because that is the categorisation the covariate model uses; the ungrouped 'Race' rows report 63.1 percent Asian and 34.1 percent White. Age and weight ranges are the Table 1 'Overall' ranges."
+    renal_function = "605 of 1689 (35.8 percent) normal, 742 (43.9 percent) at least mild impairment, 328 (19.4 percent) at least moderate impairment (Johnson 2025 Table 1).",
+    notes = "Demographic counts and percentages are the 'Overall (N = 1689)' column of Johnson 2025 Table 1, which pools the 1364 model-building patients with the 325 ADAURA external-validation patients; the paper does not print a model-building-only demographic column. Race percentages are the 'Grouped race' rows (Table 1 footnote a: the Asian population is split into Japanese, Chinese, and non-Japanese / non-Chinese Asian) because that is the categorisation the covariate model uses; the ungrouped 'Race' rows report 63.1 percent Asian and 34.1 percent White. Age and weight ranges are the Table 1 'Overall' ranges."
   )
 
   ini({

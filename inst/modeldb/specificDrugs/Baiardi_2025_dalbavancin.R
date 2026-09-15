@@ -15,17 +15,17 @@ Baiardi_2025_dalbavancin <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Baiardi 2025 Results",
         "section 2.2: 'Body weight scaled by allometric principles was set a",
         "priori as a covariate with fixed exponents of 0.75 on clearances (CL,",
@@ -40,7 +40,7 @@ Baiardi_2025_dalbavancin <- function() {
         "range 44-179 kg (Table 1); the Monte Carlo simulations spanned 40-200",
         "kg in three weight bands (40-80, 80-120, 120-200 kg)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     )
   )
 
@@ -49,9 +49,9 @@ Baiardi_2025_dalbavancin <- function() {
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Creatinine clearance by the Cockcroft-Gault equation",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened on CL by both linear and non-linear relationships and NOT",
         "retained: Baiardi 2025 Results 2.2 reports the addition of CLcr on CL",
         "changed the objective function value by only 0.02 units, far below the",
@@ -64,48 +64,48 @@ Baiardi_2025_dalbavancin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 72 years, range 26-97 years (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 72 years, range 26-97 years (Table 1)."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 168 cm, range 140-195 cm (Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 168 cm, range 140-195 cm (Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 33.1 g/L, range 21.4-39.6 g/L (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 33.1 g/L, range 21.4-39.6 g/L (Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 1 mg/dL, range 0.5-1.7 mg/dL (Table 1)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened (centered on the cohort median) but not retained; Baiardi 2025 Methods 4.2 and Results 2.2. Median 1 mg/dL, range 0.5-1.7 mg/dL (Table 1)."
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened (centered on the cohort median; printed as 'PCR' in Baiardi 2025 Methods 4.2) but not retained. Median 8.4 mg/L, range 0.3-183.7 mg/L (Table 1)."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened (centered on the cohort median; printed as 'PCR' in Baiardi 2025 Methods 4.2) but not retained. Median 8.4 mg/L, range 0.3-183.7 mg/L (Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
     n_observations = 195L,
-    age_range      = "26-97 years",
-    age_median     = "72 years",
-    weight_range   = "44-179 kg",
-    weight_median  = "72 kg",
+    age_range = "26-97 years",
+    age_median = "72 years",
+    weight_range = "44-179 kg",
+    weight_median = "72 kg",
     sex_female_pct = 30,
     race_ethnicity = "Not reported; single-centre Italian cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with documented or suspected Gram-positive infection who failed",
       "primary antimicrobial therapy and were prescribed multidose dalbavancin",
       "as rescue treatment. Sites of infection (Table 1): ABSSSI (10),",
@@ -115,10 +115,10 @@ Baiardi_2025_dalbavancin <- function() {
       "S. agalactiae, S. epidermidis, S. sanguinis and S. lugdunensis (1 each);",
       "12 had no growth or unavailable culture results."
     ),
-    dose_range     = "At least two 1500 mg intravenous doses (30 min infusion) 7-14 days apart, at the discretion of the prescribing physician; median 3 doses per patient, range 2-10 (Table 1).",
-    regions        = "Italy (Ente Ospedaliero Ospedali Galliera, Genoa)",
+    dose_range = "At least two 1500 mg intravenous doses (30 min infusion) 7-14 days apart, at the discretion of the prescribing physician; median 3 doses per patient, range 2-10 (Table 1).",
+    regions = "Italy (Ente Ospedaliero Ospedali Galliera, Genoa)",
     renal_function = "Creatinine clearance (Cockcroft-Gault) always above 30 mL/min: median 66.2 mL/min, range 31.7-283 mL/min (Table 1). The model is not applicable to severe renal impairment (CLcr < 30 mL/min), for which the label requires dose reduction.",
-    notes          = paste(
+    notes = paste(
       "Prospective/retrospective single-centre TDM study (DALT DRUM, Liguria",
       "Territorial Ethics Committee 82/2023) run February 2023 to February 2024;",
       "baseline demographics in Baiardi 2025 Table 1. Sampling was Ctrough plus",

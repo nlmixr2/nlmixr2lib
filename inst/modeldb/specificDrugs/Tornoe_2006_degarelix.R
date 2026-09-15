@@ -32,8 +32,15 @@ Tornoe_2006_degarelix <- function() {
 
   paper_specific_compartments <- c("feedback", "lhpool", "lh", "testosterone")
   paper_specific_etas <- c(
-    "etalkaslow", "etalogitfburst", "etalogitfdeg",
-    "etalkrel", "etalic50", "etaldeltapd", "etalkef", "etallmax", "etall50"
+    "etalkaslow",
+    "etalogitfburst",
+    "etalogitfdeg",
+    "etalkrel",
+    "etalic50",
+    "etaldeltapd",
+    "etalkef",
+    "etallmax",
+    "etall50"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -41,27 +48,27 @@ Tornoe_2006_degarelix <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "degarelix", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2       = list(analyte = "degarelix", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "degarelix", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "degarelix", units = "mg", specimen = "plasma", verified = FALSE),
-    feedback     = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
-    lhpool       = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
-    lh           = list(analyte = "LH", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "degarelix", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "degarelix", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "degarelix", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "degarelix", units = "mg", specimen = "plasma", verified = FALSE),
+    feedback = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
+    lhpool = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
+    lh = list(analyte = "LH", units = "mg", specimen = "plasma", verified = FALSE),
     testosterone = list(analyte = "testosterone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 170L,
-    n_studies      = 1L,
-    age_range      = "19-89 years (median 73)",
-    weight_range   = "45-117 kg (median 78)",
+    species = "human",
+    n_subjects = 170L,
+    n_studies = 1L,
+    age_range = "19-89 years (median 73)",
+    weight_range = "45-117 kg (median 78)",
     sex_female_pct = 0,
-    disease_state  = "Prostate cancer patients receiving ascending repeated-dose degarelix",
-    dose_range     = paste(
+    disease_state = "Prostate cancer patients receiving ascending repeated-dose degarelix",
+    dose_range = paste(
       "Initial s.c. loading doses of 120-320 mg in 20-60 mg/mL injection",
       "solutions, followed by maintenance doses identical to the loading",
       "dose when testosterone > 0.5 ng/mL. Eight dose groups: 120 mg @ 20",
@@ -69,8 +76,8 @@ Tornoe_2006_degarelix <- function() {
       "200 mg @ 60 mg/mL, 240 mg @ 40 mg/mL, 240 mg @ 60 mg/mL, 320 mg @",
       "60 mg/mL (Table 1)."
     ),
-    regions        = "Not reported",
-    notes          = paste(
+    regions = "Not reported",
+    notes = paste(
       "Degarelix study: 170 prostate-cancer patients in an open-label,",
       "multicentre, parallel and sequential, ascending repeated-dose",
       "trial. Blood samples were collected pre-dose and at 3 h and 1, 2,",

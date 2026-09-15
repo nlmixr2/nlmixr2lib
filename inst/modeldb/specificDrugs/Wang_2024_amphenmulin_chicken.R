@@ -20,16 +20,16 @@ Wang_2024_amphenmulin_chicken <- function() {
   )
 
   population <- list(
-    species        = "chicken (yellow-feathered broiler, healthy adult)",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    weight_range   = "1.58-2.04 kg",
-    disease_state  = "Healthy; no experimental infection. Birds were caged and fed ad libitum without antibiotics or anticoccidial drugs",
-    dose_range     = "Single 20 mg/kg body-weight dose of amphenmulin (98% purity). The dose level was chosen from a previous tiamulin report",
-    design         = "Thirty birds randomised to three groups of 10, receiving the same 20 mg/kg dose by intravenous injection, intramuscular injection, or oral gavage. Only the intravenous group informs this model",
-    sampling       = "Brachial wing-vein blood at 0, 5, 10, 15, 30 and 45 min and 1, 2, 3, 4, 6, 8, 10, 12 and 24 h after intravenous injection; plasma assayed by HPLC-MS/MS (LLOQ 0.005 ug/mL, LOD 0.001 ug/mL, linear 0.005-0.5 ug/mL)",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "Ethics approval 2023a015 (Animal Ethics Committee of South China Agricultural University). Table 1 reports the intravenous NCA results as mean +/- SD over the 10 birds: Kel 0.35 +/- 0.11 1/h, T1/2Ke 2.13 +/- 0.63 h, AUC0-t 18.76 +/- 6.09 h*ug/mL, AUC0-inf 18.89 +/- 6.03 h*ug/mL, MRT 3.13 +/- 1.05 h, CL 1.17 +/- 0.39 L/h/kg, Vss 3.64 +/- 1.58 L/kg. The absolute bioavailability derived from the AUC ratios was 52.14% intramuscular and 5.88% oral. Amphenmulin was designed and synthesised in the authors' own laboratory and is not a marketed drug."
+    species = "chicken (yellow-feathered broiler, healthy adult)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    weight_range = "1.58-2.04 kg",
+    disease_state = "Healthy; no experimental infection. Birds were caged and fed ad libitum without antibiotics or anticoccidial drugs",
+    dose_range = "Single 20 mg/kg body-weight dose of amphenmulin (98% purity). The dose level was chosen from a previous tiamulin report",
+    design = "Thirty birds randomised to three groups of 10, receiving the same 20 mg/kg dose by intravenous injection, intramuscular injection, or oral gavage. Only the intravenous group informs this model",
+    sampling = "Brachial wing-vein blood at 0, 5, 10, 15, 30 and 45 min and 1, 2, 3, 4, 6, 8, 10, 12 and 24 h after intravenous injection; plasma assayed by HPLC-MS/MS (LLOQ 0.005 ug/mL, LOD 0.001 ug/mL, linear 0.005-0.5 ug/mL)",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Ethics approval 2023a015 (Animal Ethics Committee of South China Agricultural University). Table 1 reports the intravenous NCA results as mean +/- SD over the 10 birds: Kel 0.35 +/- 0.11 1/h, T1/2Ke 2.13 +/- 0.63 h, AUC0-t 18.76 +/- 6.09 h*ug/mL, AUC0-inf 18.89 +/- 6.03 h*ug/mL, MRT 3.13 +/- 1.05 h, CL 1.17 +/- 0.39 L/h/kg, Vss 3.64 +/- 1.58 L/kg. The absolute bioavailability derived from the AUC ratios was 52.14% intramuscular and 5.88% oral. Amphenmulin was designed and synthesised in the authors' own laboratory and is not a marketed drug."
   )
 
   ini({

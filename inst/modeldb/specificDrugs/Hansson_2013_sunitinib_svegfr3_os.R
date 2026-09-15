@@ -31,75 +31,75 @@ Hansson_2013_sunitinib_svegfr3_os <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    svegfr3     = list(analyte = "soluble VEGFR-3 (sVEGFR-3)", units = "mg", specimen = "plasma", verified = FALSE),
-    cumhaz_os   = list(analyte = "death hazard", units = "mg", specimen = "not applicable", verified = FALSE),
+    svegfr3 = list(analyte = "soluble VEGFR-3 (sVEGFR-3)", units = "mg", specimen = "plasma", verified = FALSE),
+    cumhaz_os = list(analyte = "death hazard", units = "mg", specimen = "not applicable", verified = FALSE),
     cumhaz_cens = list(analyte = "censoring hazard", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (e.g., the 4-weeks-on / 2-weeks-off GIST regimen) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (e.g., the 4-weeks-on / 2-weeks-off GIST regimen) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles and 0 mg during the 2-week off-cycles, matching the largest study (1004) in Hansson 2013 Table 1. The per-cycle daily-AUC equivalent (mg*h/L) is the same exposure summary used by the upstream Hansson 2013a biomarker model.",
-      source_name        = "DOSE"
+      notes = "Time-varying. For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles and 0 mg during the 2-week off-cycles, matching the largest study (1004) in Hansson 2013 Table 1. The per-cycle daily-AUC equivalent (mg*h/L) is the same exposure summary used by the upstream Hansson 2013a biomarker model.",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit (Houk et al. 2009 sunitinib popPK meta-analysis, the framework PK model referenced by Hansson 2013 Methods). Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit (Houk et al. 2009 sunitinib popPK meta-analysis, the framework PK model referenced by Hansson 2013 Methods). Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Typical sunitinib CL is around 33 L/h (consistent with the value used by the upstream Hansson 2013a/b extractions in the DDMORE bundle). For a refit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model; the Hansson 2013 paper text describes the upstream PK as a 'previously developed 2-compartment model' (reference 35 = Houk 2009).",
-      source_name        = "CL"
+      notes = "Required input. Typical sunitinib CL is around 33 L/h (consistent with the value used by the upstream Hansson 2013a/b extractions in the DDMORE bundle). For a refit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model; the Hansson 2013 paper text describes the upstream PK as a 'previously developed 2-compartment model' (reference 35 = Houk 2009).",
+      source_name = "CL"
     ),
     BAS_SVEGFR3 = list(
-      description        = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream biomarker indirect-response PD fit (Hansson 2013a, DDMODEL00000197). Per-subject, time-fixed; used both as the initial condition for the in-model svegfr3 state and as the denominator in the relative-change driver bm_svegfr3 = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream biomarker indirect-response PD fit (Hansson 2013a, DDMODEL00000197). Per-subject, time-fixed; used both as the initial condition for the in-model svegfr3 state and as the denominator in the relative-change driver bm_svegfr3 = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 paper reports a typical sVEGFR-3 baseline of 63900 pg/mL (Table 2). For new-population simulations either (a) simulate from modellib('Hansson_2013a_sunitinib') to obtain individual posthoc baselines, or (b) set every subject to the typical 63900 pg/mL.",
-      source_name        = "BAS3"
+      notes = "Required input. The Hansson 2013 paper reports a typical sVEGFR-3 baseline of 63900 pg/mL (Table 2). For new-population simulations either (a) simulate from modellib('Hansson_2013a_sunitinib') to obtain individual posthoc baselines, or (b) set every subject to the typical 63900 pg/mL.",
+      source_name = "BAS3"
     ),
     MRT_SVEGFR3 = list(
-      description        = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears as kout3 = 1 / MRT_SVEGFR3 inside model().",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears as kout3 = 1 / MRT_SVEGFR3 inside model().",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 paper reports a typical sVEGFR-3 MRT of 16.7 days (Table 2), which equals 400.8 h.",
-      source_name        = "MRT3"
+      notes = "Required input. The Hansson 2013 paper reports a typical sVEGFR-3 MRT of 16.7 days (Table 2), which equals 400.8 h.",
+      source_name = "MRT3"
     ),
     EC50_SVEGFR3 = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 paper reports a typical (common across the four biomarkers) IC50 of 1.0 mg*h/L (Table 2).",
-      source_name        = "EC53"
+      notes = "Required input. The Hansson 2013 paper reports a typical (common across the four biomarkers) IC50 of 1.0 mg*h/L (Table 2).",
+      source_name = "EC53"
     ),
     TUMSZ = list(
-      description        = "Observed baseline tumor size (sum of longest diameters of target lesions, SLD, mm) at study entry; per-subject, time-fixed. Enters the OS hazard via a log-linear multiplier exp(e_tumbase_haz * TUMSZ).",
-      units              = "mm",
-      type               = "continuous",
+      description = "Observed baseline tumor size (sum of longest diameters of target lesions, SLD, mm) at study entry; per-subject, time-fixed. Enters the OS hazard via a log-linear multiplier exp(e_tumbase_haz * TUMSZ).",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Median baseline SLD across the four studies in Hansson 2013 Table 1: 194 mm (study 1004), 108 mm (study 1047), 166 mm (study 1045), 255 mm (study 013). Figure 4 caption: median baseline tumor size = 195 mm.",
-      source_name        = "TUMSZ"
+      notes = "Required input. Median baseline SLD across the four studies in Hansson 2013 Table 1: 194 mm (study 1004), 108 mm (study 1047), 166 mm (study 1045), 255 mm (study 013). Figure 4 caption: median baseline tumor size = 195 mm.",
+      source_name = "TUMSZ"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 303L,
-    n_studies      = 4L,
-    age_range      = "adults with imatinib-resistant GIST (Hansson 2013 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the trimmed PDF Methods section)",
-    weight_range   = "not reported in the on-disk paper trimmed text",
+    species = "human",
+    n_subjects = 303L,
+    n_studies = 4L,
+    age_range = "adults with imatinib-resistant GIST (Hansson 2013 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the trimmed PDF Methods section)",
+    weight_range = "not reported in the on-disk paper trimmed text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
-    dose_range     = "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib (study 1004 only).",
-    regions        = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the trimmed paper text.",
-    biomarkers     = "Survival endpoint: time-to-death (overall survival, OS). Time-varying covariate for OS: model-predicted relative change in sVEGFR-3 from individual baseline (driven by an in-model sVEGFR-3 indirect-response sub-model). Time-fixed covariate for OS: observed baseline SLD (mm).",
-    notes          = "n_subjects = 303 reported in Hansson 2013 Methods. Figure 4 caption reports median baseline tumor size = 195 mm and median steady-state decrease in sVEGFR-3_REL = -0.32 -- these are useful anchors for verifying typical-value simulations against the published Kaplan-Meier plot. Detailed baseline demographics (age, weight, sex, race) at the cohort level are not transcribed because the trimmed paper text does not provide them at the per-study or pooled level."
+    disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
+    dose_range = "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib (study 1004 only).",
+    regions = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the trimmed paper text.",
+    biomarkers = "Survival endpoint: time-to-death (overall survival, OS). Time-varying covariate for OS: model-predicted relative change in sVEGFR-3 from individual baseline (driven by an in-model sVEGFR-3 indirect-response sub-model). Time-fixed covariate for OS: observed baseline SLD (mm).",
+    notes = "n_subjects = 303 reported in Hansson 2013 Methods. Figure 4 caption reports median baseline tumor size = 195 mm and median steady-state decrease in sVEGFR-3_REL = -0.32 -- these are useful anchors for verifying typical-value simulations against the published Kaplan-Meier plot. Detailed baseline demographics (age, weight, sex, race) at the cohort level are not transcribed because the trimmed paper text does not provide them at the per-study or pooled level."
   )
 
   ini({

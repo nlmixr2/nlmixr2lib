@@ -8,35 +8,35 @@ Xu_2011_sirukumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "sirukumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "sirukumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sirukumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling with reference weight 70 kg per Xu 2011 Table 4 and the population PK final-model equations. Exponents are 0.75 for CL and Q and 1 for V1 and V2 (fixed in the source).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling with reference weight 70 kg per Xu 2011 Table 4 and the population PK final-model equations. Exponents are 0.75 for CL and Q and 1 for V1 and V2 (fixed in the source).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "18-54 years",
-    age_median     = "30 years",
-    weight_range   = "49-99 kg",
-    weight_median  = "71.3 kg",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "18-54 years",
+    age_median = "30 years",
+    weight_range = "49-99 kg",
+    weight_median = "71.3 kg",
     sex_female_pct = 16,
     race_ethnicity = c(White = 71, Black = 16, Asian = 9, Other = 4),
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = "0.3, 1, 3, 6 (male and female cohorts), or 10 mg/kg as a single 10-15 min IV infusion",
-    regions        = "Single-center study conducted in the United States",
+    disease_state = "Healthy adult volunteers",
+    dose_range = "0.3, 1, 3, 6 (male and female cohorts), or 10 mg/kg as a single 10-15 min IV infusion",
+    regions = "Single-center study conducted in the United States",
     ada_positive_pct = 0,
-    notes          = "Baseline demographics from Xu 2011 Table 1 and Section 'Subject demographic and baseline characteristics'. Double-blind, placebo-controlled, ascending single-dose first-in-human study (C0524T01). Forty-five subjects enrolled; 34 received sirukumab (6 per cohort for cohorts 1-5 in 0.3, 1, 3, 6 mg/kg male, and 6 mg/kg female groups; 4 in the 10 mg/kg cohort) and 11 received placebo. Population PK dataset was the 34 sirukumab-treated subjects. No subject developed antibodies to sirukumab."
+    notes = "Baseline demographics from Xu 2011 Table 1 and Section 'Subject demographic and baseline characteristics'. Double-blind, placebo-controlled, ascending single-dose first-in-human study (C0524T01). Forty-five subjects enrolled; 34 received sirukumab (6 per cohort for cohorts 1-5 in 0.3, 1, 3, 6 mg/kg male, and 6 mg/kg female groups; 4 in the 10 mg/kg cohort) and 11 received placebo. Population PK dataset was the 34 sirukumab-treated subjects. No subject developed antibodies to sirukumab."
   )
 
   ini({

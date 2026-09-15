@@ -21,44 +21,44 @@ Panetta_2024_palbociclib <- function() {
   #   amt [mg/m^2] = dose [mg] / BSA [m^2].
 
   compartmentData <- list(
-    depot   = list(analyte = "palbociclib", units = "mg/m^2", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "palbociclib", units = "mg/m^2", specimen = "administration site", verified = TRUE),
     central = list(analyte = "palbociclib", units = "mg/m^2", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     AST = list(
-      description        = "Baseline serum aspartate aminotransferase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum aspartate aminotransferase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Panetta 2024 section 2.3.1: continuous covariates were modelled with a power model scaled to the population median covariate value. The cohort median AST is 25 U/L (range 11-93 U/L, Table 1), which is the centring value. AST was the only covariate retained by the stepwise forward inclusion (Table S1); age, body weight, BSA, gender, serum creatinine, serum albumin, eGFR, total bilirubin and eleven concomitant medications were screened and rejected. The exponent is negative, so clearance falls as AST rises.",
-      source_name        = "AST"
+      notes = "Panetta 2024 section 2.3.1: continuous covariates were modelled with a power model scaled to the population median covariate value. The cohort median AST is 25 U/L (range 11-93 U/L, Table 1), which is the centring value. AST was the only covariate retained by the stepwise forward inclusion (Table S1); age, body weight, BSA, gender, serum creatinine, serum albumin, eGFR, total bilirubin and eleven concomitant medications were screened and rejected. The exponent is negative, so clearance falls as AST rises.",
+      source_name = "AST"
     ),
     OCC = list(
-      description        = "Pharmacokinetic sampling-occasion index used by the inter-occasion random effect on CL/F.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Pharmacokinetic sampling-occasion index used by the inter-occasion random effect on CL/F.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Two occasions in PBTC-042 (section 2.2): OCC = 1 is the course 1 day 1 single-dose study (pre-dose and 0.5, 1, 2, 4, 8, 24 and 48 h) and OCC = 2 is the course 1 day 21 steady-state study (pre-dose and 1, 2, 4, 8 and 24 h). Panetta 2024 does not print an occasion column name; OCC is the nlmixr2lib canonical. For a single-occasion simulation set OCC = 1 throughout.",
-      source_name        = NA_character_
+      notes = "Two occasions in PBTC-042 (section 2.2): OCC = 1 is the course 1 day 1 single-dose study (pre-dose and 0.5, 1, 2, 4, 8, 24 and 48 h) and OCC = 2 is the course 1 day 21 steady-state study (pre-dose and 1, 2, 4, 8 and 24 h). Panetta 2024 does not print an occasion column name; OCC is the nlmixr2lib canonical. For a single-occasion simulation set OCC = 1 throughout.",
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "4.9-21.6 years (median 12.8)",
-    weight_range   = "23.8-110.4 kg (median 52.5)",
-    height_range   = "109-185.1 cm (median 147.8)",
-    bsa_range      = "0.8-2.4 m^2 (median 1.5)",
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "4.9-21.6 years (median 12.8)",
+    weight_range = "23.8-110.4 kg (median 52.5)",
+    height_range = "109-185.1 cm (median 147.8)",
+    bsa_range = "0.8-2.4 m^2 (median 1.5)",
     sex_female_pct = 36,
     race_ethnicity = c(Caucasian = 58, Black = 12, Other = 30),
-    disease_state  = "Recurrent, progressive or refractory pediatric brain tumors. Patients were split into two strata: stratum I (21 patients, 64%) were not heavily pretreated and stratum II (12 patients, 36%) were heavily pretreated.",
-    dose_range     = "Oral palbociclib 50 mg/m^2 (6 patients), 75 mg/m^2 (21 patients) or 95 mg/m^2 (6 patients) once daily for 21 days of each 28-day course. The course 1 day 2 dose was held so that a 48 h single-dose sample could be drawn.",
-    regions        = "United States (Pediatric Brain Tumor Consortium)",
-    observations   = "387 palbociclib plasma concentrations from 33 patients. 34 patients enrolled; one was excluded for taking phenytoin and omeprazole against protocol. 33 patients had course 1 day 1 sampling and 26 of them also had course 1 day 21 sampling. Ten of 397 samples were excluded (four late samples in two patients whose 24 h concentration exceeded their 8 h concentration, and six spurious day-21 samples in one patient).",
-    notes          = "Baseline laboratory medians (range), Table 1: albumin 4.2 g/dL (3.2-4.9), AST 25 U/L (11-93), bilirubin 0.4 mg/dL (0.1-1.2), creatinine 0.5 mg/dL (0.2-1.2). Other race comprises Asian (3), Hispanic (4), American Indian / Alaskan (1) and unknown (2). Estimated in Monolix 2023R1 by SAEM with M3 censoring of the below-quantitation-limit samples; precision was assessed by 500-replicate non-parametric bootstrap (Rsmlx 2.0.4)."
+    disease_state = "Recurrent, progressive or refractory pediatric brain tumors. Patients were split into two strata: stratum I (21 patients, 64%) were not heavily pretreated and stratum II (12 patients, 36%) were heavily pretreated.",
+    dose_range = "Oral palbociclib 50 mg/m^2 (6 patients), 75 mg/m^2 (21 patients) or 95 mg/m^2 (6 patients) once daily for 21 days of each 28-day course. The course 1 day 2 dose was held so that a 48 h single-dose sample could be drawn.",
+    regions = "United States (Pediatric Brain Tumor Consortium)",
+    observations = "387 palbociclib plasma concentrations from 33 patients. 34 patients enrolled; one was excluded for taking phenytoin and omeprazole against protocol. 33 patients had course 1 day 1 sampling and 26 of them also had course 1 day 21 sampling. Ten of 397 samples were excluded (four late samples in two patients whose 24 h concentration exceeded their 8 h concentration, and six spurious day-21 samples in one patient).",
+    notes = "Baseline laboratory medians (range), Table 1: albumin 4.2 g/dL (3.2-4.9), AST 25 U/L (11-93), bilirubin 0.4 mg/dL (0.1-1.2), creatinine 0.5 mg/dL (0.2-1.2). Other race comprises Asian (3), Hispanic (4), American Indian / Alaskan (1) and unknown (2). Estimated in Monolix 2023R1 by SAEM with M3 censoring of the below-quantitation-limit samples; precision was assessed by 500-replicate non-parametric bootstrap (Rsmlx 2.0.4)."
   )
 
   ini({

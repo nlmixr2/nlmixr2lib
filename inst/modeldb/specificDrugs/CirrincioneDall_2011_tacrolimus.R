@@ -8,86 +8,86 @@ CirrincioneDall_2011_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject across the post-transplant follow-up. Allometric power scaling with reference 70 kg and theory-based fixed exponents: 0.75 on CL/F and 1.0 on V/F (Cirrincione-Dall 2011 Results, paragraph on the PK model). Cohort weight range 2.6-63.6 kg, median 10.6 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Time-varying within subject across the post-transplant follow-up. Allometric power scaling with reference 70 kg and theory-based fixed exponents: 0.75 on CL/F and 1.0 on V/F (Cirrincione-Dall 2011 Results, paragraph on the PK model). Cohort weight range 2.6-63.6 kg, median 10.6 kg (Table 1).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Centred at 2 years (the cohort median per Table 1) and enters CL/F as (AGE/2)^-0.0310. Cohort range 0.1-15 years.",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Centred at 2 years (the cohort median per Table 1) and enters CL/F as (AGE/2)^-0.0310. Cohort range 0.1-15 years.",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying clinical-laboratory covariate. Centred at 28 g/L (the cohort median per Table 1, range 19.4-42.5 g/L) and enters CL/F as (ALB/28)^-0.357. Cirrincione-Dall 2011 Table 1 reports albumin in g/L (cohort mean 29.1 g/L, median 28 g/L, range 19.4-42.5 g/L); the canonical-register ALB unit is g/L, matching the source.",
-      source_name        = "ALB"
+      notes = "Time-varying clinical-laboratory covariate. Centred at 28 g/L (the cohort median per Table 1, range 19.4-42.5 g/L) and enters CL/F as (ALB/28)^-0.357. Cirrincione-Dall 2011 Table 1 reports albumin in g/L (cohort mean 29.1 g/L, median 28 g/L, range 19.4-42.5 g/L); the canonical-register ALB unit is g/L, matching the source.",
+      source_name = "ALB"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying clinical-laboratory covariate. Centred at 510.5 U/L (the cohort median per Table 1, range 42-3625 U/L) and enters CL/F as (AST/510.5)^-0.0364. Cohort median markedly elevated reflecting the immediate post-transplant period for liver-graft recipients.",
-      source_name        = "AST"
+      notes = "Time-varying clinical-laboratory covariate. Centred at 510.5 U/L (the cohort median per Table 1, range 42-3625 U/L) and enters CL/F as (AST/510.5)^-0.0364. Cohort median markedly elevated reflecting the immediate post-transplant period for liver-graft recipients.",
+      source_name = "AST"
     ),
     HCT = list(
-      description        = "Hematocrit, expressed as a fraction of total blood volume (0-1, L/L)",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Hematocrit, expressed as a fraction of total blood volume (0-1, L/L)",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Cirrincione-Dall 2011 Table 1 reports HCT as a fraction (cohort mean 0.319, median 0.32, range 0.250-0.440), not as percent (0-100); the canonical-register HCT unit (%) is explicitly overridden here so the parameter value 0.993 reproduces the poster's equation 0.993^HCT directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model.",
-      source_name        = "HCT"
+      notes = "Time-varying. Cirrincione-Dall 2011 Table 1 reports HCT as a fraction (cohort mean 0.319, median 0.32, range 0.250-0.440), not as percent (0-100); the canonical-register HCT unit (%) is explicitly overridden here so the parameter value 0.993 reproduces the poster's equation 0.993^HCT directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model.",
+      source_name = "HCT"
     ),
     POD = list(
-      description        = "Days post-transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Days post-transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject; rises from 0 at the day of liver transplant surgery. Centred at 7 days (the cohort median per Table 1, range 0-15 days) and enters CL/F as (POD/7)^0.409. Cirrincione-Dall 2011 source name 'POD'. The poster reports CL/F was 55% lower at POD = 1 day and 36% higher at POD = 15 days relative to the POD = 7 day reference (consistent with (1/7)^0.409 = 0.45 and (15/7)^0.409 = 1.34).",
-      source_name        = "POD"
+      notes = "Time-varying within subject; rises from 0 at the day of liver transplant surgery. Centred at 7 days (the cohort median per Table 1, range 0-15 days) and enters CL/F as (POD/7)^0.409. Cirrincione-Dall 2011 source name 'POD'. The poster reports CL/F was 55% lower at POD = 1 day and 36% higher at POD = 15 days relative to the POD = 7 day reference (consistent with (1/7)^0.409 = 0.45 and (15/7)^0.409 = 1.34).",
+      source_name = "POD"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3 OR if the CYP3A5 genotype was not determined.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3 OR if the CYP3A5 genotype was not determined.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 nonexpresser, or genotype unknown -- Cirrincione-Dall 2011 imputed missing-genotype patients as non-expressers, the predominant category)",
-      notes              = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). Cohort genotype distribution (n = 34 genotyped of 41 total): CYP3A5 *1/*1 = 1 (2.9%), *1/*3 = 12 (35.3%), *3/*3 = 21 (61.8%); 7 patients (14%) with no available genotype were imputed as non-expressers (the predominant category, per the Table 2 footnote) for the canonical model presented here. Enters CL/F as 1.24^CYP3A5_EXPR, so expressers have a 24% higher apparent oral clearance than *3/*3-or-unknown subjects with the same WT, POD, AST, ALB, HCT, and age. The poster also reports a sensitivity analysis with all missing data imputed as expressers (multiplier 1.14 instead of 1.24, 16.4% RSE); only the predominant-category-imputation case is encoded in this model file. The 95% bootstrap CI on the multiplier (1.05-1.52) does not contain 1.0, so the effect is statistically distinguishable from null in this small cohort.",
-      source_name        = "CYP3A"
+      notes = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). Cohort genotype distribution (n = 34 genotyped of 41 total): CYP3A5 *1/*1 = 1 (2.9%), *1/*3 = 12 (35.3%), *3/*3 = 21 (61.8%); 7 patients (14%) with no available genotype were imputed as non-expressers (the predominant category, per the Table 2 footnote) for the canonical model presented here. Enters CL/F as 1.24^CYP3A5_EXPR, so expressers have a 24% higher apparent oral clearance than *3/*3-or-unknown subjects with the same WT, POD, AST, ALB, HCT, and age. The poster also reports a sensitivity analysis with all missing data imputed as expressers (multiplier 1.14 instead of 1.24, 16.4% RSE); only the predominant-category-imputation case is encoded in this model file. The 95% bootstrap CI on the multiplier (1.05-1.52) does not contain 1.0, so the effect is statistically distinguishable from null in this small cohort.",
+      source_name = "CYP3A"
     )
   )
 
   population <- list(
-    species                = "human",
-    n_subjects             = 41L,
-    n_studies              = 1L,
-    n_observations         = 643L,
-    age_range              = "0.1-15 years",
-    age_median             = "2 years",
-    weight_range           = "2.6-63.6 kg",
-    weight_median          = "10.6 kg",
-    sex_female_pct         = 53.7,
-    race_ethnicity         = "Not reported in poster.",
-    disease_state          = "Pediatric liver transplant recipients receiving routine clinical care; the analysis pooled observational therapeutic-drug-monitoring data over the post-transplant follow-up (POD 0-15 days).",
-    dose_range             = "Not reported numerically in the poster; routine oral tacrolimus immunosuppression dosed per institutional protocol with concentrations measured by therapeutic drug monitoring (overall observed range 0.42-61.8 ng/mL tacrolimus whole blood).",
-    regions                = "Multi-site collaboration: Metrum Research Group (Tariffville CT, USA); The Children's Hospital of Philadelphia (Philadelphia PA, USA); Erasmus MC Sophia Children's Hospital (Rotterdam, Netherlands); Georgetown University (Washington DC, USA); The Hospital for Sick Children (Toronto ON, Canada). Source data: pediatric liver-transplant cohort.",
-    samples_per_patient    = "Mean 16, range 7-33 sparse therapeutic-drug-monitoring samples per patient (Table 1).",
-    cyp3a5_distribution    = "Of 34 genotyped patients: *1/*1 = 1 (2.9%), *1/*3 = 12 (35.3%), *3/*3 = 21 (61.8%). 7 patients (14% of 41 total) were ungenotyped; the canonical model presented in poster Table 2 imputes ungenotyped patients as non-expressers (the predominant category).",
-    notes                  = "Conference poster (ACOP 2011), no DOI. Patient population (Table 1): 19 males and 22 females; weights 2.6-63.6 kg (median 10.6); ages 0.1-15 years (median 2); albumin 19.4-42.5 g/L (median 28); AST 42-3625 U/L (median 510.5); hematocrit 0.250-0.440 (median 0.32); POD 0-15 days (median 7); tacrolimus concentrations 0.42-61.8 ng/mL (mean 15.7). Estimation: NONMEM VII with first-order conditional estimation; non-parametric bootstrap (1000 replicates stratified by age, 266 successful convergences) provided empirical 95% CIs. Covariates included in the full model (no stepwise testing): weight, age, ALB, AST, CYP3A genotype, HCT, and POD."
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    n_observations = 643L,
+    age_range = "0.1-15 years",
+    age_median = "2 years",
+    weight_range = "2.6-63.6 kg",
+    weight_median = "10.6 kg",
+    sex_female_pct = 53.7,
+    race_ethnicity = "Not reported in poster.",
+    disease_state = "Pediatric liver transplant recipients receiving routine clinical care; the analysis pooled observational therapeutic-drug-monitoring data over the post-transplant follow-up (POD 0-15 days).",
+    dose_range = "Not reported numerically in the poster; routine oral tacrolimus immunosuppression dosed per institutional protocol with concentrations measured by therapeutic drug monitoring (overall observed range 0.42-61.8 ng/mL tacrolimus whole blood).",
+    regions = "Multi-site collaboration: Metrum Research Group (Tariffville CT, USA); The Children's Hospital of Philadelphia (Philadelphia PA, USA); Erasmus MC Sophia Children's Hospital (Rotterdam, Netherlands); Georgetown University (Washington DC, USA); The Hospital for Sick Children (Toronto ON, Canada). Source data: pediatric liver-transplant cohort.",
+    samples_per_patient = "Mean 16, range 7-33 sparse therapeutic-drug-monitoring samples per patient (Table 1).",
+    cyp3a5_distribution = "Of 34 genotyped patients: *1/*1 = 1 (2.9%), *1/*3 = 12 (35.3%), *3/*3 = 21 (61.8%). 7 patients (14% of 41 total) were ungenotyped; the canonical model presented in poster Table 2 imputes ungenotyped patients as non-expressers (the predominant category).",
+    notes = "Conference poster (ACOP 2011), no DOI. Patient population (Table 1): 19 males and 22 females; weights 2.6-63.6 kg (median 10.6); ages 0.1-15 years (median 2); albumin 19.4-42.5 g/L (median 28); AST 42-3625 U/L (median 510.5); hematocrit 0.250-0.440 (median 0.32); POD 0-15 days (median 7); tacrolimus concentrations 0.42-61.8 ng/mL (mean 15.7). Estimation: NONMEM VII with first-order conditional estimation; non-parametric bootstrap (1000 replicates stratified by age, 266 successful convergences) provided empirical 95% CIs. Covariates included in the full model (no stepwise testing): weight, age, ALB, AST, CYP3A genotype, HCT, and POD."
   )
 
   ini({

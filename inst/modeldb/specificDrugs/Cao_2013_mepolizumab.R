@@ -10,24 +10,24 @@ Cao_2013_mepolizumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "mepolizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "mepolizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "mepolizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "mepolizumab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "mepolizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "mepolizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "mepolizumab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Smith 2011 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Smith 2011 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Mepolizumab anti-IL-5 humanized IgG1 (population per Smith 2011 PK/PD analysis).",
-    dose_range     = "IV; see Cao 2013 Figure 5 mepolizumab panel.",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Smith DA et al. Clin Pharmacokinet 2011;50:215-227 (PMID 21348536). sigma_tight was fixed at 0.950 in Cao 2013 (not estimated; CV reported as not applicable in Table 2)."
+    disease_state = "Mepolizumab anti-IL-5 humanized IgG1 (population per Smith 2011 PK/PD analysis).",
+    dose_range = "IV; see Cao 2013 Figure 5 mepolizumab panel.",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Smith DA et al. Clin Pharmacokinet 2011;50:215-227 (PMID 21348536). sigma_tight was fixed at 0.950 in Cao 2013 (not estimated; CV reported as not applicable in Table 2)."
   )
 
   ini({

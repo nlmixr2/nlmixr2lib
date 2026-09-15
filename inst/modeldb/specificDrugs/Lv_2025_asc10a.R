@@ -34,20 +34,20 @@ Lv_2025_asc10a <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "asc10a", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "asc10a", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "asc10a", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "asc10a", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "asc10a", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "asc10a", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "asc10a", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "asc10a", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "asc10a", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at enrolment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at enrolment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at enrolment. Enters CL/F through an estimated power",
         "(theta_CL-WT = 0.903) and Vc/F through a fixed unit power",
         "(theta_Vc-WT = 1 FIX), both normalised to the population median",
@@ -55,14 +55,14 @@ Lv_2025_asc10a <- function() {
         "screened as an alternative body-size covariate but was not",
         "retained in the final model."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed vs fasted status at dosing",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Fed vs fasted status at dosing",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 = fasted",
-      notes              = paste(
+      notes = paste(
         "1 = fed (postprandial), 0 = fasted. Enters KTR via the",
         "categorical multiplicative form P_i = theta_pop * theta_cov^cov",
         "(Lv 2025 equation 2), so KTR_fed = 7.02 * 0.474 = 3.33 h^-1",
@@ -71,48 +71,48 @@ Lv_2025_asc10a <- function() {
         "bioavailability (F is fixed at 1); AUCss was reported to be",
         "essentially unchanged between fasted and fed."
       ),
-      source_name        = "FED"
+      source_name = "FED"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at enrolment",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a potential covariate but not retained (Lv 2025",
         "Results 'PopPK Model Development'). Range 18-44 y (median 31)."
       )
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Screened as a potential covariate but not retained (Lv 2025",
         "Results 'PopPK Model Development'). Cohort was 42.1% female."
       )
     ),
     BMI = list(
-      description        = "Body mass index at enrolment",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at enrolment",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested as an alternative body-size covariate for CL/F and",
         "Vc/F but did not improve model fit relative to WT (Lv 2025",
         "Results 'PopPK Model Development'). Range 19-25 kg/m^2."
       )
     ),
     RACE_HAN = list(
-      description        = "Han Chinese ethnicity indicator",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Han Chinese ethnicity indicator",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 = non-Han",
-      notes              = paste(
+      notes = paste(
         "Screened as a potential covariate but not retained (Lv 2025",
         "Results 'PopPK Model Development'). Cohort was 96.5% Han."
       )
@@ -120,27 +120,27 @@ Lv_2025_asc10a <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 57L,
+    n_studies = 1L,
     n_observations = 1634L,
-    age_range      = "18-44 years",
-    age_median     = "31 years",
-    weight_range   = "47.1-77.9 kg",
-    weight_median  = "61.4 kg (population median; used as normalisation reference for allometric WT covariate)",
-    bmi_range      = "19-25 kg/m^2",
+    age_range = "18-44 years",
+    age_median = "31 years",
+    weight_range = "47.1-77.9 kg",
+    weight_median = "61.4 kg (population median; used as normalisation reference for allometric WT covariate)",
+    bmi_range = "19-25 kg/m^2",
     sex_female_pct = 42.1,
     race_ethnicity = c(Han = 96.5, Other = 3.5),
-    disease_state  = "Healthy Chinese adult volunteers (no COVID-19 or other disease at enrolment).",
-    dose_range     = paste(
+    disease_state = "Healthy Chinese adult volunteers (no COVID-19 or other disease at enrolment).",
+    dose_range = paste(
       "MAD (n = 45): oral ASC10 tablets 50, 100, 200, 400, 600, or",
       "800 mg twice daily for 5 consecutive days plus a single morning",
       "dose on day 6. FE (n = 12): single 800 mg oral dose in fasted",
       "and fed states with >= 7 day washout (crossover)."
     ),
-    regions        = "Mainland China (Hangzhou; single-centre)",
+    regions = "Mainland China (Hangzhou; single-centre)",
     trial_registration = "ClinicalTrials.gov NCT05523141",
-    bql_handling   = paste(
+    bql_handling = paste(
       "22.6% of observations were below the quantification limit",
       "(LLOQ = 10.0 ng/mL for ASC10-A by UPLC-MS/MS). Handled via the",
       "M3 likelihood-based method with BQL data included as categorical",
@@ -148,7 +148,7 @@ Lv_2025_asc10a <- function() {
       "algorithm in NONMEM 7.4 (Lv 2025 Methods 'PopPK Model",
       "Development' and Results 'Demographics and Data Summary')."
     ),
-    notes          = paste(
+    notes = paste(
       "Modelled analyte is the active nucleoside metabolite ASC10-A",
       "(equivalent to NHC, beta-D-N4-hydroxycytidine). ASC10 is a",
       "double prodrug that is rapidly biotransformed to molnupiravir",

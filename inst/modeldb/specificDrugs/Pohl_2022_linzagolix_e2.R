@@ -31,22 +31,22 @@ Pohl_2022_linzagolix_e2 <- function() {
   paper_specific_residual_sds <- c("expSdPatient", "expSdHealthy")
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "n/a (no drug dosing events; linzagolix exposure enters as the",
       "per-subject AUC_LZGX covariate from the companion population PK model)"
     ),
     concentration = "pg/mL (serum oestradiol; observation output -- not a drug concentration)",
-    AUC_LZGX      = "ng*h/mL (linzagolix AUC over the 24 h once-daily dosing interval)"
+    AUC_LZGX = "ng*h/mL (linzagolix AUC over the 24 h once-daily dosing interval)"
   )
 
   covariateData <- list(
     AUC_LZGX = list(
-      description        = "Linzagolix AUC over the 24 h once-daily dosing interval, supplied as a per-subject drug-exposure covariate from the companion population PK model.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Linzagolix AUC over the 24 h once-daily dosing interval, supplied as a per-subject drug-exposure covariate from the companion population PK model.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The source authors fit the PK-E2 model sequentially: individual daily",
         "AUC is generated from the population PK model of Table 4",
         "(Pohl_2022_linzagolix.R) and passed to this model as the exposure",
@@ -60,14 +60,14 @@ Pohl_2022_linzagolix_e2 <- function() {
         "(= 1000 x the ug*h/mL that the companion PK model's ug/mL",
         "concentrations integrate to)."
       ),
-      source_name        = "linzagolix daily AUC"
+      source_name = "linzagolix daily AUC"
     ),
     BL_E2 = list(
-      description        = "Observed baseline serum oestradiol concentration for the subject.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Observed baseline serum oestradiol concentration for the subject.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The OBSERVED per-subject baseline E2, normalised to 52 pg/mL in the",
         "model equation, and distinct from the model-estimated baseline",
         "(exp(lbl_e2_*)). Supporting Information section 3.2: 'The linzagolix",
@@ -77,30 +77,30 @@ Pohl_2022_linzagolix_e2 <- function() {
         "studies). The 52 pg/mL normalisation constant is printed in the",
         "Supporting Information equation itself, not in any table."
       ),
-      source_name        = "baseline E2"
+      source_name = "baseline E2"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the estimated baseline oestradiol, normalised to a 58 kg reference subject (Supporting Information section 3.2 baseline-E2 equation; Table 5 row 'Baseline E2 ~ (weight 58 kg)' = -0.699).",
-      source_name        = "WT"
+      notes = "Power effect on the estimated baseline oestradiol, normalised to a 58 kg reference subject (Supporting Information section 3.2 baseline-E2 equation; Table 5 row 'Baseline E2 ~ (weight 58 kg)' = -0.699).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the estimated baseline oestradiol, normalised to a 35 year reference subject (Supporting Information section 3.2 baseline-E2 equation; Table 5 row 'Baseline E2 ~ (age 35 y)' = 0.0829). The source reports no statistically significant age effect (95% CI -0.157 to 0.323 spans zero) but retains the term under its full-covariate-model approach, so it is carried here as estimated.",
-      source_name        = "AGE"
+      notes = "Power effect on the estimated baseline oestradiol, normalised to a 35 year reference subject (Supporting Information section 3.2 baseline-E2 equation; Table 5 row 'Baseline E2 ~ (age 35 y)' = 0.0829). The source reports no statistically significant age effect (95% CI -0.157 to 0.323 spans zero) but retains the term under its full-covariate-model approach, so it is carried here as estimated.",
+      source_name = "AGE"
     ),
     RACE_WHITE = list(
-      description        = "Caucasian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Caucasian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (Caucasian; the typical-value reference in this model)",
-      notes              = paste(
+      notes = paste(
         "Source paper dichotomises race as Caucasian vs non-Caucasian (Table 3",
         "'Percent Caucasian'). The Caucasian subgroup is the typical-value",
         "reference, so the effect is implemented on (1 - RACE_WHITE): the",
@@ -112,14 +112,14 @@ Pohl_2022_linzagolix_e2 <- function() {
         "the same effect non-Caucasian. Same reference-category orientation as",
         "the companion Pohl_2022_linzagolix.R and Hu_2014_bapineuzumab.R."
       ),
-      source_name        = "race group (Caucasian / non-Caucasian)"
+      source_name = "race group (Caucasian / non-Caucasian)"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (endometriosis patient)",
-      notes              = paste(
+      notes = paste(
         "1 = healthy volunteer, 0 = endometriosis patient. Selects BOTH the",
         "estimated baseline oestradiol (Supporting Information section 3.2:",
         "theta_BASE = theta_1 if patient, theta_10 if healthy volunteer) and",
@@ -128,14 +128,14 @@ Pohl_2022_linzagolix_e2 <- function() {
         "in Caucasian patients than in Caucasian healthy volunteers",
         "(59.1 vs 26.6 pg/mL)."
       ),
-      source_name        = "health status (healthy volunteer / patient)"
+      source_name = "health status (healthy volunteer / patient)"
     ),
     T_ABT = list(
-      description        = "Time elapsed on hormonal add-back therapy",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Time elapsed on hormonal add-back therapy",
+      units = "weeks",
+      type = "continuous",
       reference_category = "0 (no add-back therapy -- the EDELWEISS phase 2b population and the entire dose-selection analysis)",
-      notes              = paste(
+      notes = paste(
         "Weeks since the start of oestrogen/progestogen add-back therapy; 0 for",
         "subjects never receiving it, which zeroes the term. Add-back therapy",
         "(1 mg oestradiol / 0.5 mg norethisterone acetate) was administered only",
@@ -147,28 +147,33 @@ Pohl_2022_linzagolix_e2 <- function() {
         "the only reading consistent with the published pg/mL/wk unit. See the",
         "vignette Assumptions and deviations section."
       ),
-      source_name        = "add-back therapy"
+      source_name = "add-back therapy"
     )
   )
 
   compartmentData <- list(
-    e2_placebo = list(analyte = "apparent placebo-arm oestradiol drift (fraction of baseline)", units = "(fraction)", specimen = "serum", verified = TRUE)
+    e2_placebo = list(
+      analyte = "apparent placebo-arm oestradiol drift (fraction of baseline)",
+      units = "(fraction)",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 724,
-    n_studies      = 4,
-    age_range      = "18-48 years",
-    weight_range   = "median 53.9-65.5 kg across the contributing studies (Table 3)",
-    weight_median  = "58 kg (model reference weight)",
-    age_median     = "35 years (model reference age); 32-37 years across the contributing studies (Table 3)",
+    species = "human",
+    n_subjects = 724,
+    n_studies = 4,
+    age_range = "18-48 years",
+    weight_range = "median 53.9-65.5 kg across the contributing studies (Table 3)",
+    weight_median = "58 kg (model reference weight)",
+    age_median = "35 years (model reference age); 32-37 years across the contributing studies (Table 3)",
     sex_female_pct = 100,
     race_ethnicity = "0-100% Caucasian by study (Table 3); the non-Caucasian stratum is the Japanese KLH1204 cohort",
-    disease_state  = "endometriosis, or endometriosis with co-existing uterine fibroids, plus healthy premenopausal volunteers (approximately 15% of subjects and of observations were from healthy volunteers)",
-    dose_range     = "placebo and 25-200 mg once daily for 42 days to 24 weeks",
-    regions        = "Europe and Japan",
-    notes          = paste(
+    disease_state = "endometriosis, or endometriosis with co-existing uterine fibroids, plus healthy premenopausal volunteers (approximately 15% of subjects and of observations were from healthy volunteers)",
+    dose_range = "placebo and 25-200 mg once daily for 42 days to 24 weeks",
+    regions = "Europe and Japan",
+    notes = paste(
       "4674 oestradiol observations from 724 subjects (Supporting Information",
       "section 1.2). The PK-E2 analysis set INCLUDED subjects receiving placebo",
       "but EXCLUDED the healthy volunteers of study KLH1101, so it differs from",

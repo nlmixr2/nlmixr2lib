@@ -13,10 +13,10 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "trastuzumab emtansine (T-DM1)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "trastuzumab emtansine (T-DM1)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2      = list(analyte = "trastuzumab emtansine (T-DM1)", units = "mg", specimen = "plasma", verified = FALSE),
-    dar0_central     = list(analyte = "naked trastuzumab (DAR0)", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumab emtansine (T-DM1)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "trastuzumab emtansine (T-DM1)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "trastuzumab emtansine (T-DM1)", units = "mg", specimen = "plasma", verified = FALSE),
+    dar0_central = list(analyte = "naked trastuzumab (DAR0)", units = "mg", specimen = "plasma", verified = FALSE),
     dar0_peripheral1 = list(analyte = "naked trastuzumab (DAR0)", units = "mg", specimen = "plasma", verified = FALSE),
     dar0_peripheral2 = list(analyte = "naked trastuzumab (DAR0)", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -24,43 +24,43 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 18,
-    n_studies      = 1,
-    age_range      = "not reported",
-    weight_range   = "not reported",
+    n_subjects = 18,
+    n_studies = 1,
+    age_range = "not reported",
+    weight_range = "not reported",
     sex_female_pct = NA_real_,
-    species        = "Cynomolgus monkey (Macaca fascicularis); rat parameter set also provided",
-    disease_state  = "Healthy preclinical animals (no tumour xenograft)",
-    dose_range     = "Cynomolgus: 30 mg/kg IV single (n=4) and 10 mg/kg IV q3w x4 infusion (n=14); Rat: 0.3, 3, 20 mg/kg IV single (n=24) plus 10 mg/kg IV stability cohorts (n=10)",
-    regions        = "Preclinical (Genentech/Roche in-house studies)",
-    scope_note     = "Preclinical-only (no human PK). All existing specificDrugs/ entries are human except Grimm_2023_trontinemab and this model; confirmed by the operator as an intentional preclinical addition.",
-    model_variant  = "Reduced T-DM1 model (Bender 2014 Table III). A separate Bender_2014_trastuzumabEmtansine_mechanistic model file encodes the DAR0-DAR7 catenary mechanistic variant (Bender 2014 Table II).",
+    species = "Cynomolgus monkey (Macaca fascicularis); rat parameter set also provided",
+    disease_state = "Healthy preclinical animals (no tumour xenograft)",
+    dose_range = "Cynomolgus: 30 mg/kg IV single (n=4) and 10 mg/kg IV q3w x4 infusion (n=14); Rat: 0.3, 3, 20 mg/kg IV single (n=24) plus 10 mg/kg IV stability cohorts (n=10)",
+    regions = "Preclinical (Genentech/Roche in-house studies)",
+    scope_note = "Preclinical-only (no human PK). All existing specificDrugs/ entries are human except Grimm_2023_trontinemab and this model; confirmed by the operator as an intentional preclinical addition.",
+    model_variant = "Reduced T-DM1 model (Bender 2014 Table III). A separate Bender_2014_trastuzumabEmtansine_mechanistic model file encodes the DAR0-DAR7 catenary mechanistic variant (Bender 2014 Table II).",
     species_parameters = list(
       cynomolgus = list(
-        source   = "Bender 2014 Table III, cynomolgus columns",
-        CL_TT    = "19.9 mL/day (IIV CV 19.8%)",
-        V1       = "154 mL (IIV CV 7.65%)",
-        CLd2     = "56.8 mL/day (no IIV)",
-        V2       = "50.0 mL (no IIV)",
-        CLd3     = "60.4 mL/day (no IIV)",
-        V3       = "84.7 mL (IIV CV 27.3%)",
-        CL_DEC   = "22.0 mL/day (IIV CV 11.9%)",
-        res_err  = "9.64% proportional"
+        source = "Bender 2014 Table III, cynomolgus columns",
+        CL_TT = "19.9 mL/day (IIV CV 19.8%)",
+        V1 = "154 mL (IIV CV 7.65%)",
+        CLd2 = "56.8 mL/day (no IIV)",
+        V2 = "50.0 mL (no IIV)",
+        CLd3 = "60.4 mL/day (no IIV)",
+        V3 = "84.7 mL (IIV CV 27.3%)",
+        CL_DEC = "22.0 mL/day (IIV CV 11.9%)",
+        res_err = "9.64% proportional"
       ),
       rat = list(
-        source   = "Bender 2014 Table III, rat columns",
-        CL_TT    = "2.37 mL/day (IIV CV 24.6%)",
-        V1       = "10.7 mL (IIV CV 19.8%)",
-        CLd2     = "59.7 mL/day (no IIV)",
-        V2       = "2.52 mL (IIV CV 68.0%)",
-        CLd3     = "13.9 mL/day (no IIV)",
-        V3       = "15.5 mL (IIV CV 16.5%)",
-        CL_DEC   = "2.24 mL/day (IIV CV 15.3%)",
-        res_err  = "10.9% proportional",
-        notes    = "Rat fit adds IIV on V2; to switch from the cynomolgus default to the rat parameter set, call ini() on the resulting model with the rat values above (converted from mL/day to L/day by /1000)."
+        source = "Bender 2014 Table III, rat columns",
+        CL_TT = "2.37 mL/day (IIV CV 24.6%)",
+        V1 = "10.7 mL (IIV CV 19.8%)",
+        CLd2 = "59.7 mL/day (no IIV)",
+        V2 = "2.52 mL (IIV CV 68.0%)",
+        CLd3 = "13.9 mL/day (no IIV)",
+        V3 = "15.5 mL (IIV CV 16.5%)",
+        CL_DEC = "2.24 mL/day (IIV CV 15.3%)",
+        res_err = "10.9% proportional",
+        notes = "Rat fit adds IIV on V2; to switch from the cynomolgus default to the rat parameter set, call ini() on the resulting model with the rat values above (converted from mL/day to L/day by /1000)."
       )
     ),
-    notes          = "NONMEM 7.2, FOCE-INTER; residual error reported as additive on log-scale (proportional in linear space). Derived parameters (t1/2 of TT, t1/2 of T-DM1, CL_T-DM1 = CL_TT + CL_DEC) are quoted in Table III but are computed, not fit."
+    notes = "NONMEM 7.2, FOCE-INTER; residual error reported as additive on log-scale (proportional in linear space). Derived parameters (t1/2 of TT, t1/2 of T-DM1, CL_T-DM1 = CL_TT + CL_DEC) are quoted in Table III but are computed, not fit."
   )
 
   ini({

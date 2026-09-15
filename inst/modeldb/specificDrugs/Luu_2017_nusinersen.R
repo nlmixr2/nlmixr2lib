@@ -20,36 +20,36 @@ Luu_2017_nusinersen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    csf         = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
-    cns_tissue  = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
-    central     = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
+    csf = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
+    cns_tissue = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
+    central = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight per Luu 2017 Table 2 / Equations 5-7: power scaling on CL_p (exponent 0.689) and V_CSF (exponent 0.596), and linear proportional-deviation scaling on V_p (coefficient 0.047/kg). Reference body weight MBWT = 15.2 kg (median baseline BWT in the pooled dataset, Table 1).",
-      source_name        = "BWT"
+      notes = "Baseline body weight per Luu 2017 Table 2 / Equations 5-7: power scaling on CL_p (exponent 0.689) and V_CSF (exponent 0.596), and linear proportional-deviation scaling on V_p (coefficient 0.047/kg). Reference body weight MBWT = 15.2 kg (median baseline BWT in the pooled dataset, Table 1).",
+      source_name = "BWT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 72L,
-    n_studies      = 5L,
-    studies        = "Pooled: ISIS 396443-CS1, -CS2, -CS3A, -CS10, -CS12",
-    age_range      = "0.10 to 17 years (median 5)",
-    weight_range   = "5.1 to 83 kg (median 15.2)",
+    species = "human",
+    n_subjects = 72L,
+    n_studies = 5L,
+    studies = "Pooled: ISIS 396443-CS1, -CS2, -CS3A, -CS10, -CS12",
+    age_range = "0.10 to 17 years (median 5)",
+    weight_range = "5.1 to 83 kg (median 15.2)",
     sex_female_pct = 48.6,
     race_ethnicity = c(White = 86.1, Black = 5.6, Asian = 4.2, Other = 4.2),
-    disease_state  = "Pediatric patients with spinal muscular atrophy (SMA) spanning presymptomatic / infantile-onset (likely type I) and later-onset (likely type II/III) phenotypes",
-    dose_range     = "Single or repeated intrathecal doses of 1, 3, 6, 9, or 12 mg",
+    disease_state = "Pediatric patients with spinal muscular atrophy (SMA) spanning presymptomatic / infantile-onset (likely type I) and later-onset (likely type II/III) phenotypes",
+    dose_range = "Single or repeated intrathecal doses of 1, 3, 6, 9, or 12 mg",
     administration_routes = "Intrathecal bolus injection",
-    notes          = "Pooled CSF and plasma data: 279 CSF and 1181 plasma concentration data points across 5 trials (Luu 2017 Table 1). Estimation with NONMEM 7.2 first-order conditional estimation with interaction (FOCE-I)."
+    notes = "Pooled CSF and plasma data: 279 CSF and 1181 plasma concentration data points across 5 trials (Luu 2017 Table 1). Estimation with NONMEM 7.2 first-order conditional estimation with interaction (FOCE-I)."
   )
 
   ini({

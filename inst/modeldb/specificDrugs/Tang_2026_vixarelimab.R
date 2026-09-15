@@ -11,19 +11,24 @@ Tang_2026_vixarelimab <- function() {
   # does (Supporting Information $DES: DADT(3) = KSYN - KDEG*A(3) - ...,
   # with KSYN = KDEG * R0 in nM/h and A_0(3) = R0 in nM).
   compartmentData <- list(
-    depot        = list(analyte = "vixarelimab", units = "nmol", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "vixarelimab", units = "nmol", specimen = "serum", verified = TRUE),
-    peripheral1  = list(analyte = "vixarelimab", units = "nmol", specimen = "serum", verified = TRUE),
-    total_target = list(analyte = "oncostatin M receptor beta (OSMR-beta), free + drug-bound", units = "nM", specimen = "serum", verified = TRUE)
+    depot = list(analyte = "vixarelimab", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "vixarelimab", units = "nmol", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "vixarelimab", units = "nmol", specimen = "serum", verified = TRUE),
+    total_target = list(
+      analyte = "oncostatin M receptor beta (OSMR-beta), free + drug-bound",
+      units = "nM",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline (time-fixed) weight. Entered as a power model centred on 81.7 kg on CL, Vc and Vp",
         "(Supporting Information $PK: CLWT = (WT/81.7)**THETA(11), and likewise for Vc and Vp).",
         "The 81.7 kg centring constant appears only in the deposited control stream; the paper text",
@@ -31,7 +36,7 @@ Tang_2026_vixarelimab <- function() {
         "of 82.1 kg. Body weight was the only statistically significant covariate retained after",
         "backward elimination (Section 3.2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -42,52 +47,52 @@ Tang_2026_vixarelimab <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on CL and Vc (Table S2). Entered forward selection on Vc but was dropped in backward elimination (Table S3 run 6); no point estimate is reported for the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on CL and Vc (Table S2). Entered forward selection on Vc but was dropped in backward elimination (Table S3 run 6); no point estimate is reported for the final model."
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL and Vc (Table S2, coded SEX). Not statistically significant (Section 4); no point estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL and Vc (Table S2, coded SEX). Not statistically significant (Section 4); no point estimate reported."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator (1 = Asian, 0 = all other races)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL and Vc as 'Asian versus others' (Section 2.4, Table S2). Not statistically significant (Section 4); no point estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL and Vc as 'Asian versus others' (Section 2.4, Table S2). Not statistically significant (Section 4); no point estimate reported."
     ),
     ADA_POS = list(
       description = "Anti-drug-antibody-positive indicator (1 = at least one positive post-baseline result, 0 = never positive)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL (Table S2, coded ATA; 18% positive per Table 2). No statistically significant effect on CL (Section 4); no point estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL (Table S2, coded ATA; 18% positive per Table 2). No statistically significant effect on CL (Section 4); no point estimate reported."
     ),
     DISEASE_STATUS = list(
       description = "Patient population indicator (healthy volunteer versus patient with a chronic pruritic skin disorder)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL, F1, Ka and R0 (Table S2, coded DSSTAT). Skin disease was not a significant covariate (Section 4); no point estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL, F1, Ka and R0 (Table S2, coded DSSTAT). Skin disease was not a significant covariate (Section 4); no point estimate reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 274,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 274,
+    n_studies = 3,
     n_observations = "4032 serum concentrations collected; 3328 quantifiable post-dose samples used for model fitting (Section 3.1)",
-    age_range      = "18-79 years",
-    age_median     = "52 years",
-    weight_range   = "48-158 kg",
-    weight_median  = "82 kg",
+    age_range = "18-79 years",
+    age_median = "52 years",
+    weight_range = "48-158 kg",
+    weight_median = "82 kg",
     sex_female_pct = 58,
     race_ethnicity = c(White = 68, Black = 18, Asian = 9.9, Other = 4.3),
-    disease_state  = "Healthy volunteers (14%) and patients with chronic pruritic skin conditions (86%): moderate-to-severe atopic dermatitis, prurigo nodularis, and chronic idiopathic pruritus, chronic idiopathic urticaria, lichen planus, lichen simplex chronicus or plaque psoriasis",
-    dose_range     = "IV single doses 0.3, 1.5, 5, 7.5, 10 and 20 mg/kg; SC single doses 1.5 mg/kg and 360 mg; SC multiple doses 360 mg QW, 720 mg SC loading followed by 360 mg QW, and 120/360/540 mg Q4W (Table 1)",
-    regions        = "Not reported",
+    disease_state = "Healthy volunteers (14%) and patients with chronic pruritic skin conditions (86%): moderate-to-severe atopic dermatitis, prurigo nodularis, and chronic idiopathic pruritus, chronic idiopathic urticaria, lichen planus, lichen simplex chronicus or plaque psoriasis",
+    dose_range = "IV single doses 0.3, 1.5, 5, 7.5, 10 and 20 mg/kg; SC single doses 1.5 mg/kg and 360 mg; SC multiple doses 360 mg QW, 720 mg SC loading followed by 360 mg QW, and 120/360/540 mg Q4W (Table 1)",
+    regions = "Not reported",
     immunogenicity = "50 of 274 participants (18%) had at least one positive post-baseline anti-drug-antibody result (Table 2)",
-    notes          = "Pooled analysis of the Phase 1 study KPL-716-C001 (Parts 1, 3 and 4) and the Phase 2 studies KPL-716-C201 (NCT03816891, Phases 2a and 2b) and KPL-716-C202 (NCT03858634). Baseline demographics from Table 2; study designs and dose regimens from Table 1."
+    notes = "Pooled analysis of the Phase 1 study KPL-716-C001 (Parts 1, 3 and 4) and the Phase 2 studies KPL-716-C201 (NCT03816891, Phases 2a and 2b) and KPL-716-C202 (NCT03858634). Baseline demographics from Table 2; study designs and dose regimens from Table 1."
   )
 
   ini({

@@ -8,32 +8,32 @@ MedellinGaribay_2015_gentamicin <- function() {
     sep = " "
   )
   vignette <- "MedellinGaribay_2015_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline / time-varying as recorded in the medical record).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline / time-varying as recorded in the medical record).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (not allometric power) scaling on both CL and Vc per Table 3",
         "footnote b: CL = theta1 * BW + theta5 * (CLCR/75); Vc = theta2 * BW.",
         "Q (theta3) and Vp (theta4) are absolute (no BW scaling) in the published",
         "parameterisation. Population mean 6.4 +/- 2.2 kg (Table 1, n = 208)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated by the Schwartz equation",
         "CLCR = K * length(cm) / SCr(mg/dL), with K = 0.45 for term infants with",
         "appropriate weight for age, 0.33 for low-weight infants, and 0.55 for",
@@ -41,10 +41,10 @@ MedellinGaribay_2015_gentamicin <- function() {
         "assays (including IDMS-traceable forms, as used here). Reported in",
         "mL/min/1.73 m^2 (BSA-normalised)."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used in an additive linear effect on CL with divisive normalisation to",
         "the reference value 75 mL/min/1.73 m^2 (close to the population mean",
         "76.7 +/- 36.9 reported in Table 1). Effect form CL contribution =",
@@ -52,28 +52,28 @@ MedellinGaribay_2015_gentamicin <- function() {
         "75 is taken directly from the published equation (Table 3 footnote b)",
         "and is not separately rounded."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Postnatal age in months. Screened during covariate model building; not retained in the final two-compartment model. The age range 1-24 months defines the population scope rather than entering as an effect.",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened; not retained. See Results 'Base pharmacokinetic models and covariate additions' and Discussion."
+      units = "months",
+      type = "continuous",
+      notes = "Screened; not retained. See Results 'Base pharmacokinetic models and covariate additions' and Discussion."
     ),
     HT = list(
       description = "Body length (height) in centimetres. Screened during covariate model building; not retained.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; not retained. Height enters the model only indirectly via the Schwartz CLCR derivation."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; not retained. Height enters the model only indirectly via the Schwartz CLCR derivation."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male). Screened during covariate model building; not retained.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened; not retained (Results 'Base pharmacokinetic models and",
         "covariate additions'; Discussion: 'the covariate of sex did not have",
         "any influence on the performance of the model'). The development",
@@ -82,27 +82,27 @@ MedellinGaribay_2015_gentamicin <- function() {
     ),
     BMI = list(
       description = "Body mass index (kg/m^2). Reported as a baseline demographic; not retained as a covariate in the final model.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Tabulated in Table 1 (population mean 15.8 +/- 2.1) but not retained as a model covariate. Captured here for population description only."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Tabulated in Table 1 (population mean 15.8 +/- 2.1) but not retained as a model covariate. Captured here for population description only."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 208L,
-    n_studies      = 1L,
-    age_range      = "1-24 months",
-    age_mean       = "5.8 +/- 4.8 months",
-    weight_range   = "Mean 6.4 +/- 2.2 kg (Table 1); individual range not tabulated.",
-    weight_mean    = "6.4 +/- 2.2 kg",
-    height_mean    = "62.6 +/- 9.1 cm",
-    bmi_mean       = "15.8 +/- 2.1 kg/m^2",
+    species = "human",
+    n_subjects = 208L,
+    n_studies = 1L,
+    age_range = "1-24 months",
+    age_mean = "5.8 +/- 4.8 months",
+    weight_range = "Mean 6.4 +/- 2.2 kg (Table 1); individual range not tabulated.",
+    weight_mean = "6.4 +/- 2.2 kg",
+    height_mean = "62.6 +/- 9.1 cm",
+    bmi_mean = "15.8 +/- 2.1 kg/m^2",
     sex_female_pct = 56,
     race_ethnicity = "Not reported (single-centre Spanish cohort).",
-    crcl_mean      = "76.7 +/- 36.9 mL/min/1.73 m^2 (Schwartz, Jaffe / IDMS-traceable assay)",
-    creat_mean     = "Serum creatinine 0.42 +/- 0.1 mg/dL",
-    disease_state  = paste(
+    crcl_mean = "76.7 +/- 36.9 mL/min/1.73 m^2 (Schwartz, Jaffe / IDMS-traceable assay)",
+    creat_mean = "Serum creatinine 0.42 +/- 0.1 mg/dL",
+    disease_state = paste(
       "Hospitalised infants 1-24 months receiving intravenous gentamicin with",
       "routine therapeutic drug monitoring. Indications included infections by",
       "Gram-negative and Gram-positive bacilli, central nervous system /",
@@ -110,7 +110,7 @@ MedellinGaribay_2015_gentamicin <- function() {
       "endocarditis, and septicaemia; gentamicin was used in combination with",
       "ampicillin as empirical therapy for sepsis in newborns and infants."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Mean total daily dose 6.0 +/- 1.5 mg/kg/day. Regimens recorded in the",
       "development cohort (n = 208): 4 infants on 2.3 mg/kg q6h; 98 on 2.3",
       "mg/kg q8h; 3 on 3.05 mg/kg q12h; 103 on a single 4.8 mg/kg q24h dose.",
@@ -118,8 +118,8 @@ MedellinGaribay_2015_gentamicin <- function() {
       "paper proposes 7 mg/kg q24h with TDM as the optimised regimen for",
       "future practice."
     ),
-    regions        = "Spain (Hospital Universitario Severo Ochoa, Leganes, 1990-2011).",
-    age_classes    = paste(
+    regions = "Spain (Hospital Universitario Severo Ochoa, Leganes, 1990-2011).",
+    age_classes = paste(
       "Pooled-cohort age/weight classes used during covariate exploration:",
       "INF 0 = 1-11 months with low BW (12.1%); INF 1 = 1-11 months with",
       "normal BW (72.9%); INF 2 = > 1 year with normal BW (15%), where 'low'",
@@ -134,7 +134,7 @@ MedellinGaribay_2015_gentamicin <- function() {
       "with 86 gentamicin observations. Mean prediction error (final model)",
       "-0.2 +/- 1.5 (95% CI -0.6, 0.1) confirms no systematic bias."
     ),
-    notes          = paste(
+    notes = paste(
       "Retrospective single-centre cohort study, 1990-2011. The 208-subject",
       "development cohort had 335 serum gentamicin concentrations (mean 4.8",
       "mg/L, range 0.5-15.9 mg/L). Most subjects (96.2%) had 1-2 concentrations",

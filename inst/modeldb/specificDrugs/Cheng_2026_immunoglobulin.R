@@ -8,50 +8,50 @@ Cheng_2026_immunoglobulin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "immunoglobulin", units = "g", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "immunoglobulin", units = "g", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "immunoglobulin", units = "g", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying or baseline; used for theory-based allometric scaling on CL, Q (exponent 0.75) and on V1, V2 (exponent 1) with reference weight 70 kg. Cheng 2026 fixed both exponents in the final model after a base-model evaluation found the empirically estimated exponents (0.788 for CL, 0.743 for V) included the theory-based values within their 95% CIs but caused parameter collinearity.",
-      source_name        = "WT"
+      notes = "Time-varying or baseline; used for theory-based allometric scaling on CL, Q (exponent 0.75) and on V1, V2 (exponent 1) with reference weight 70 kg. Cheng 2026 fixed both exponents in the final model after a base-model evaluation found the empirically estimated exponents (0.788 for CL, 0.743 for V) included the theory-based values within their 95% CIs but caused parameter collinearity.",
+      source_name = "WT"
     ),
     DIS_SAD = list(
-      description        = "Secondary antibody deficiency indicator (1 = SAD, 0 = primary immunodeficiency)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Secondary antibody deficiency indicator (1 = SAD, 0 = primary immunodeficiency)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (primary immunodeficiency, PID)",
-      notes              = "Time-fixed per subject. In the Cheng 2026 cohort the SAD subgroup (n = 20 / 64) is 75% post-rituximab and 25% post-CAR-T cell therapy. Multiplicative theta^DIS_SAD effects on both CL and on the baseline IgG (CBAS).",
-      source_name        = "DIS_SAD"
+      notes = "Time-fixed per subject. In the Cheng 2026 cohort the SAD subgroup (n = 20 / 64) is 75% post-rituximab and 25% post-CAR-T cell therapy. Multiplicative theta^DIS_SAD effects on both CL and on the baseline IgG (CBAS).",
+      source_name = "DIS_SAD"
     ),
     IGM = list(
-      description        = "Baseline serum immunoglobulin M (IgM) concentration (proxy for B-cell humoral capacity)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum immunoglobulin M (IgM) concentration (proxy for B-cell humoral capacity)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline-only. Power scaling (IGM / 0.21)^0.11 on the baseline IgG (CBAS); 0.21 g/L is the pooled PID + SAD pediatric-cohort median in Cheng 2026 Table 2.",
-      source_name        = "IGM"
+      notes = "Baseline-only. Power scaling (IGM / 0.21)^0.11 on the baseline IgG (CBAS); 0.21 g/L is the pooled PID + SAD pediatric-cohort median in Cheng 2026 Table 2.",
+      source_name = "IGM"
     )
   )
 
   population <- list(
-    n_subjects     = 64L,
-    n_studies      = 1L,
-    age_range      = "0.06-16.8 years (3 weeks to 16.8 years)",
-    age_median     = "4.08 years",
-    weight_range   = "3.15-95.3 kg",
-    weight_median  = "18.6 kg",
+    n_subjects = 64L,
+    n_studies = 1L,
+    age_range = "0.06-16.8 years (3 weeks to 16.8 years)",
+    age_median = "4.08 years",
+    weight_range = "3.15-95.3 kg",
+    weight_median = "18.6 kg",
     sex_female_pct = round(100 * (64 - 41) / 64, 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Pediatric patients with primary immunodeficiency (PID, n = 44) or secondary antibody deficiency (SAD, n = 20; 15 post-rituximab, 5 post-CAR-T cell therapy) on intravenous immunoglobulin replacement therapy",
-    dose_range     = "0.24-1.38 g/kg IV every 21 or 28 days (median 0.56 g/kg per dose)",
-    regions        = "United Kingdom (single tertiary pediatric centre)",
-    notes          = "Retrospective electronic-health-record analysis of children treated with intravenous Ig at a tertiary paediatric hospital between April 2019 and April 2024 (Cheng 2026 Table 2). 444 plasma IgG samples, predominantly trough; lower limit of quantification 0.07 g/L. PID patients received 0.3 g/kg every 3 weeks; SAD patients received 0.5 g/kg every 4 weeks. The IVIG products were Privigen (n = 53), Octagam (n = 9), and Gamunex (n = 2) — Cheng 2026 Table 3."
+    disease_state = "Pediatric patients with primary immunodeficiency (PID, n = 44) or secondary antibody deficiency (SAD, n = 20; 15 post-rituximab, 5 post-CAR-T cell therapy) on intravenous immunoglobulin replacement therapy",
+    dose_range = "0.24-1.38 g/kg IV every 21 or 28 days (median 0.56 g/kg per dose)",
+    regions = "United Kingdom (single tertiary pediatric centre)",
+    notes = "Retrospective electronic-health-record analysis of children treated with intravenous Ig at a tertiary paediatric hospital between April 2019 and April 2024 (Cheng 2026 Table 2). 444 plasma IgG samples, predominantly trough; lower limit of quantification 0.07 g/L. PID patients received 0.3 g/kg every 3 weeks; SAD patients received 0.5 g/kg every 4 weeks. The IVIG products were Privigen (n = 53), Octagam (n = 9), and Gamunex (n = 2) — Cheng 2026 Table 3."
   )
 
   ini({

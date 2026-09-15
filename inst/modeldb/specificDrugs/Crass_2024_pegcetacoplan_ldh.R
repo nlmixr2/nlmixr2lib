@@ -6,109 +6,115 @@ Crass_2024_pegcetacoplan_ldh <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Enters only the carried-forward PK layer (power exponents on CL and Vc referenced to 70 kg). Body weight was screened as a covariate on the lactate-dehydrogenase PK/PD parameters and was not retained (Crass 2024 Sect. 3.4.2: 'All other factors (i.e., sex, baseline CrCl, race, age, body weight, and baseline C3 level) did not have meaningful effects on the LDH response').",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline body weight. Enters only the carried-forward PK layer (power exponents on CL and Vc referenced to 70 kg). Body weight was screened as a covariate on the lactate-dehydrogenase PK/PD parameters and was not retained (Crass 2024 Sect. 3.4.2: 'All other factors (i.e., sex, baseline CrCl, race, age, body weight, and baseline C3 level) did not have meaningful effects on the LDH response').",
+      source_name = "BWT"
     ),
     DIS_PNH = list(
-      description        = "Paroxysmal nocturnal hemoglobinuria indicator: 1 = patient with PNH, 0 = non-PNH participant.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paroxysmal nocturnal hemoglobinuria indicator: 1 = patient with PNH, 0 = non-PNH participant.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-PNH participant)",
-      notes              = "Time-fixed per subject. Enters only the carried-forward PK layer, where it applies the fractional clearance increase e_dis_pnh_cl = 0.257. Every subject in the lactate-dehydrogenase PK/PD analysis set is a patient with PNH (DIS_PNH = 1), so the term is inert in this cohort; it is retained so the PK layer is the same structure as the parent model `Crass_2024_pegcetacoplan`.",
-      source_name        = "PNH"
+      notes = "Time-fixed per subject. Enters only the carried-forward PK layer, where it applies the fractional clearance increase e_dis_pnh_cl = 0.257. Every subject in the lactate-dehydrogenase PK/PD analysis set is a patient with PNH (DIS_PNH = 1), so the term is inert in this cohort; it is retained so the PK layer is the same structure as the parent model `Crass_2024_pegcetacoplan`.",
+      source_name = "PNH"
     ),
     FORM_PEGCET_LYOPHILIZED = list(
-      description        = "Pegcetacoplan lyophilized-powder formulation indicator: 1 = lyophilized powder reconstituted before subcutaneous administration, 0 = a ready-to-use solution formulation.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pegcetacoplan lyophilized-powder formulation indicator: 1 = lyophilized powder reconstituted before subcutaneous administration, 0 = a ready-to-use solution formulation.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ready-to-use solution formulations)",
-      notes              = "Per-regimen categorical indicator. Enters only the carried-forward PK layer, scaling subcutaneous bioavailability by (1 + 0.220 x FORM_PEGCET_LYOPHILIZED). Retained so the PK layer matches the parent model `Crass_2024_pegcetacoplan`.",
-      source_name        = "FORM (level 4 = POWDER)"
+      notes = "Per-regimen categorical indicator. Enters only the carried-forward PK layer, scaling subcutaneous bioavailability by (1 + 0.220 x FORM_PEGCET_LYOPHILIZED). Retained so the PK layer matches the parent model `Crass_2024_pegcetacoplan`.",
+      source_name = "FORM (level 4 = POWDER)"
     ),
     CONMED_ECULIZUMAB_BL = list(
-      description        = "Eculizumab (complement C5 inhibitor) treatment status at baseline: 1 = receiving eculizumab at study entry, 0 = eculizumab-naive at study entry.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Eculizumab (complement C5 inhibitor) treatment status at baseline: 1 = receiving eculizumab at study entry, 0 = eculizumab-naive at study entry.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (eculizumab-naive at baseline; the PADDOCK, PALOMINO, and PRINCE cohorts)",
-      notes              = "Time-fixed per subject. Selects BOTH the baseline lactate-dehydrogenase stratum and the maximal-suppression stratum: `IF(BECU.EQ.1) TVBLDH = THETA(2)` and `IF (BECU.EQ.1) TVEMAX = THETA(4) + THETA(8)*ECU` in the ESM Table 1 LDH control stream. Eculizumab-naive patients have a typical baseline of exp(7.56) = 1920 U/L and a maximal 91.7% suppression; patients already on eculizumab at baseline have a typical baseline of exp(5.52) = 249 U/L and a maximal 20.0% suppression, because terminal-complement blockade has already suppressed intravascular hemolysis. The PK/PD analysis set is 54% eculizumab-treated / 46% eculizumab-naive at baseline (Crass 2024 Sect. 3.1.2).",
-      source_name        = "BECU"
+      notes = "Time-fixed per subject. Selects BOTH the baseline lactate-dehydrogenase stratum and the maximal-suppression stratum: `IF(BECU.EQ.1) TVBLDH = THETA(2)` and `IF (BECU.EQ.1) TVEMAX = THETA(4) + THETA(8)*ECU` in the ESM Table 1 LDH control stream. Eculizumab-naive patients have a typical baseline of exp(7.56) = 1920 U/L and a maximal 91.7% suppression; patients already on eculizumab at baseline have a typical baseline of exp(5.52) = 249 U/L and a maximal 20.0% suppression, because terminal-complement blockade has already suppressed intravascular hemolysis. The PK/PD analysis set is 54% eculizumab-treated / 46% eculizumab-naive at baseline (Crass 2024 Sect. 3.1.2).",
+      source_name = "BECU"
     ),
     CONMED_ECULIZUMAB = list(
-      description        = "Concurrent eculizumab (complement C5 inhibitor) co-administration indicator: 1 = receiving eculizumab together with pegcetacoplan at the current time, 0 = pegcetacoplan monotherapy at the current time.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent eculizumab (complement C5 inhibitor) co-administration indicator: 1 = receiving eculizumab together with pegcetacoplan at the current time, 0 = pegcetacoplan monotherapy at the current time.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pegcetacoplan monotherapy at the current time)",
-      notes              = "TIME-VARYING within a subject. Distinct from CONMED_ECULIZUMAB_BL, which is the fixed baseline status. It is non-zero during the PEGASUS dual-therapy periods (the 4-week run-in on eculizumab + pegcetacoplan, and the 4-week transition for patients randomised to eculizumab who later crossed to pegcetacoplan; Crass 2024 Table 1 footnote a). It enters the logit maximal suppression additively but only within the baseline-eculizumab stratum: `IF (BECU.EQ.1) TVEMAX = THETA(4) + THETA(8)*ECU` with THETA(8) = 0.783, which lifts the maximal suppression from inverse-logit(-1.39) = 20.0% during monotherapy to inverse-logit(-1.39 + 0.783) = 35.3% during co-treatment (Crass 2024 Sect. 3.4.2 reports 35.0%). For an eculizumab-naive patient the term is not applied at all, matching the control stream's guard.",
-      source_name        = "ECU"
+      notes = "TIME-VARYING within a subject. Distinct from CONMED_ECULIZUMAB_BL, which is the fixed baseline status. It is non-zero during the PEGASUS dual-therapy periods (the 4-week run-in on eculizumab + pegcetacoplan, and the 4-week transition for patients randomised to eculizumab who later crossed to pegcetacoplan; Crass 2024 Table 1 footnote a). It enters the logit maximal suppression additively but only within the baseline-eculizumab stratum: `IF (BECU.EQ.1) TVEMAX = THETA(4) + THETA(8)*ECU` with THETA(8) = 0.783, which lifts the maximal suppression from inverse-logit(-1.39) = 20.0% during monotherapy to inverse-logit(-1.39 + 0.783) = 35.3% during co-treatment (Crass 2024 Sect. 3.4.2 reports 35.0%). For an eculizumab-naive patient the term is not applied at all, matching the control stream's guard.",
+      source_name = "ECU"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "year",
-      type               = "continuous",
+      description = "Subject age",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the full covariate model on the lactate-dehydrogenase PK/PD parameters and eliminated by the backward-elimination step (alpha = 0.001); no effect is reported in ESM Table 5 or Crass 2024 Table 2. Analysis-set median 45 years (range 19-81 years).",
-      source_name        = "AGE"
+      notes = "Screened in the full covariate model on the lactate-dehydrogenase PK/PD parameters and eliminated by the backward-elimination step (alpha = 0.001); no effect is reported in ESM Table 5 or Crass 2024 Table 2. Analysis-set median 45 years (range 19-81 years).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened and not retained on the lactate-dehydrogenase response (Crass 2024 Sect. 3.4.2). Retained on the hemoglobin response in the sibling model `Crass_2024_pegcetacoplan_hemoglobin`, so the contrast between the two endpoints is a genuine model-selection outcome and not an omission here.",
-      source_name        = "SEXF"
+      notes = "Screened and not retained on the lactate-dehydrogenase response (Crass 2024 Sect. 3.4.2). Retained on the hemoglobin response in the sibling model `Crass_2024_pegcetacoplan_hemoglobin`, so the contrast between the two endpoints is a genuine model-selection outcome and not an omission here.",
+      source_name = "SEXF"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance estimated with the Cockcroft-Gault equation, in mL/min (NOT body-surface-area normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance estimated with the Cockcroft-Gault equation, in mL/min (NOT body-surface-area normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened and not retained on the lactate-dehydrogenase response (Crass 2024 Sect. 3.4.2). Retained on the hemoglobin maximal response in the sibling model `Crass_2024_pegcetacoplan_hemoglobin`.",
-      source_name        = "BCRCL"
+      notes = "Screened and not retained on the lactate-dehydrogenase response (Crass 2024 Sect. 3.4.2). Retained on the hemoglobin maximal response in the sibling model `Crass_2024_pegcetacoplan_hemoglobin`.",
+      source_name = "BCRCL"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Race was screened and not retained on the lactate-dehydrogenase response (Crass 2024 Sect. 3.4.2). The PK/PD analysis set is 39% White and 38% Asian (Sect. 3.1.2). Recorded here for provenance only.",
-      source_name        = "RACE"
+      notes = "Race was screened and not retained on the lactate-dehydrogenase response (Crass 2024 Sect. 3.4.2). The PK/PD analysis set is 39% White and 38% Asian (Sect. 3.1.2). Recorded here for provenance only.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 165,
-    n_studies      = 5,
-    age_median     = "45 years",
-    age_range      = "19-81 years",
+    species = "human",
+    n_subjects = 165,
+    n_studies = 5,
+    age_median = "45 years",
+    age_range = "19-81 years",
     sex_female_pct = 56,
     race_ethnicity = c(White = 39, Asian = 38),
-    disease_state  = "adults with paroxysmal nocturnal hemoglobinuria; 54% receiving eculizumab at baseline (PHAROAH, PEGASUS) and 46% complement C5-inhibitor naive (PADDOCK, PALOMINO, PRINCE)",
-    dose_range     = "Subcutaneous 25-1080 mg, once daily or twice weekly (including the approved 1080 mg twice-weekly regimen)",
-    regions        = "Multinational; the PRINCE cohort is predominantly Asian (36/50, 72%)",
-    notes          = "Crass 2024 Sect. 3.1.2 and Table 1. 3423 lactate-dehydrogenase samples were analysed. The upper limit of normal used by the phase 3 reference laboratory was 226 U/L for the 1.5 x ULN threshold quoted in Sect. 3.4.3. The PK/PD models were fitted sequentially, conditioned on individual empirical Bayes estimates of the PK parameters from the population PK model (Sect. 2.2)."
+    disease_state = "adults with paroxysmal nocturnal hemoglobinuria; 54% receiving eculizumab at baseline (PHAROAH, PEGASUS) and 46% complement C5-inhibitor naive (PADDOCK, PALOMINO, PRINCE)",
+    dose_range = "Subcutaneous 25-1080 mg, once daily or twice weekly (including the approved 1080 mg twice-weekly regimen)",
+    regions = "Multinational; the PRINCE cohort is predominantly Asian (36/50, 72%)",
+    notes = "Crass 2024 Sect. 3.1.2 and Table 1. 3423 lactate-dehydrogenase samples were analysed. The upper limit of normal used by the phase 3 reference laboratory was 226 U/L for the 1.5 x ULN threshold quoted in Sect. 3.4.3. The PK/PD models were fitted sequentially, conditioned on individual empirical Bayes estimates of the PK parameters from the population PK model (Sect. 2.2)."
   )
 
   ini({

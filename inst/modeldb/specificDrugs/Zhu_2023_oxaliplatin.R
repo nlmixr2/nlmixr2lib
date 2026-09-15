@@ -23,12 +23,16 @@ Zhu_2023_oxaliplatin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "ultrafilterable platinum", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "ultrafilterable platinum",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "ultrafilterable platinum", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "ultrafilterable platinum",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 

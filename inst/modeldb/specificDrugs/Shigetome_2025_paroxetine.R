@@ -16,20 +16,20 @@ Shigetome_2025_paroxetine <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at the time of paroxetine treatment",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at the time of paroxetine treatment",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Enters CL/F as the power term (AGE / 41.5)^e_age_cl, normalized to the mean age of the 179-patient PK population (Shigetome 2025 Table 1). The exponent is negative, so older patients have lower apparent clearance. Age reduced the objective function by 17.838 in the univariate screen and was retained through backward elimination (Table S1).",
-      source_name        = "AGE"
+      notes = "Time-fixed. Enters CL/F as the power term (AGE / 41.5)^e_age_cl, normalized to the mean age of the 179-patient PK population (Shigetome 2025 Table 1). The exponent is negative, so older patients have lower apparent clearance. Age reduced the objective function by 17.838 in the univariate screen and was retained through backward elimination (Table S1).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Enters CL/F as the power term (WT / 58.6)^e_wt_cl, normalized to the mean body weight of the 179-patient PK population (Shigetome 2025 Table 1). Sex was also a significant univariate covariate on CL but was dropped because it correlates with body weight (mean weight greater in males); the final model describes CL by age and body weight only. Vd/F was fixed and carries no covariates.",
-      source_name        = "BW"
+      notes = "Time-fixed. Enters CL/F as the power term (WT / 58.6)^e_wt_cl, normalized to the mean body weight of the 179-patient PK population (Shigetome 2025 Table 1). Sex was also a significant univariate covariate on CL but was dropped because it correlates with body weight (mean weight greater in males); the final model describes CL by age and body weight only. Vd/F was fixed and carries no covariates.",
+      source_name = "BW"
     )
   )
 
@@ -38,21 +38,21 @@ Shigetome_2025_paroxetine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 179L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 179L,
+    n_studies = 1L,
     n_observations = 329L,
-    age_range      = "16-80 years",
-    age_mean       = "41.5 years (SD 14.2)",
-    weight_range   = "40-85 kg",
-    weight_mean    = "58.6 kg (SD 10.5)",
+    age_range = "16-80 years",
+    age_mean = "41.5 years (SD 14.2)",
+    weight_range = "40-85 kg",
+    weight_mean = "58.6 kg (SD 10.5)",
     sex_female_pct = 59.2,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "major depressive disorder (DSM-IV), antidepressant-naive at paroxetine initiation, normal renal and hepatic function, no interacting co-medication",
-    dose_range     = "10-40 mg/day orally (mean 22.3 mg/day, SD 11.1); initial dose 10-20 mg/day then weekly increases of 10 mg/day to the maximum tolerated dose",
-    regions        = "Japan (Hirosaki University Hospital and Dokkyo Medical University School of Medicine)",
-    genotype       = "CYP2D6 intermediate metabolizers 121 (67.6%), extensive metabolizers 58 (32.4%), poor metabolizers 0 (0%); *1/*2 functional, *10/*41 reduced function, *5 non-functional",
-    notes          = "Retrospective therapeutic-drug-monitoring cohort; 1.8 samples per patient on average (range 1-5), all drawn at steady state after at least 9 days on a stable dose. Observed plasma paroxetine concentrations 51.9 ng/mL (SD 49.0, range 2.6-286.5). Baseline demographics are Shigetome 2025 Table 1. A separate 50-patient subset with serial MADRS assessments supported the PK-PD model in Shigetome_2025_paroxetine_madrs."
+    disease_state = "major depressive disorder (DSM-IV), antidepressant-naive at paroxetine initiation, normal renal and hepatic function, no interacting co-medication",
+    dose_range = "10-40 mg/day orally (mean 22.3 mg/day, SD 11.1); initial dose 10-20 mg/day then weekly increases of 10 mg/day to the maximum tolerated dose",
+    regions = "Japan (Hirosaki University Hospital and Dokkyo Medical University School of Medicine)",
+    genotype = "CYP2D6 intermediate metabolizers 121 (67.6%), extensive metabolizers 58 (32.4%), poor metabolizers 0 (0%); *1/*2 functional, *10/*41 reduced function, *5 non-functional",
+    notes = "Retrospective therapeutic-drug-monitoring cohort; 1.8 samples per patient on average (range 1-5), all drawn at steady state after at least 9 days on a stable dose. Observed plasma paroxetine concentrations 51.9 ng/mL (SD 49.0, range 2.6-286.5). Baseline demographics are Shigetome 2025 Table 1. A separate 50-patient subset with serial MADRS assessments supported the PK-PD model in Shigetome_2025_paroxetine_madrs."
   )
 
   ini({

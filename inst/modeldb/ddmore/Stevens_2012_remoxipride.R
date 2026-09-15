@@ -23,13 +23,13 @@ Stevens_2012_remoxipride <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "remoxipride", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "remoxipride", units = "mg", specimen = "administration site", verified = FALSE),
     depot_brain = list(analyte = "remoxipride", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "remoxipride", units = "mg", specimen = "plasma", verified = FALSE),
-    brain_csf   = list(analyte = "remoxipride", units = "mg", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "remoxipride", units = "mg", specimen = "plasma", verified = FALSE),
+    brain_csf = list(analyte = "remoxipride", units = "mg", specimen = "tissue", verified = FALSE),
     peripheral1 = list(analyte = "remoxipride", units = "mg", specimen = "plasma", verified = FALSE),
-    lactotroph  = list(analyte = "prolactin", units = "mg", specimen = "not applicable", verified = FALSE),
-    prolactin   = list(analyte = "prolactin", units = "mg", specimen = "plasma", verified = FALSE)
+    lactotroph = list(analyte = "prolactin", units = "mg", specimen = "not applicable", verified = FALSE),
+    prolactin = list(analyte = "prolactin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

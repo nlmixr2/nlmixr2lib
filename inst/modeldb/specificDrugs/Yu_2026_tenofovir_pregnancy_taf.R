@@ -28,11 +28,11 @@ Yu_2026_tenofovir_pregnancy_taf <- function() {
 
   covariateData <- list(
     EGA = list(
-      description        = "Estimated gestational age of the mother",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Estimated gestational age of the mother",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only to derive the paper's second- and third-trimester indicator",
         "variables TRI2 and TRI3; the model has no continuous EGA effect. Per the",
         "EGA register entry, a source paper that reports trimesters rather than",
@@ -48,14 +48,14 @@ Yu_2026_tenofovir_pregnancy_taf <- function() {
         "for 0 < EGA < 14 weeks; such a record is scored as non-pregnant.",
         sep = " "
       ),
-      source_name        = "TRI2 / TRI3 (trimester indicator variables)"
+      source_name = "TRI2 / TRI3 (trimester indicator variables)"
     ),
     TPP = list(
-      description        = "Time postpartum (time elapsed since delivery)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Time postpartum (time elapsed since delivery)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only to derive the paper's postpartum indicator PP; the model has no",
         "continuous TPP effect and applies a single step change for any TPP > 0.",
         "Yu 2026 sampled the postpartum state at 6-12 weeks after delivery, so the",
@@ -64,19 +64,19 @@ Yu_2026_tenofovir_pregnancy_taf <- function() {
         "pregnancy and for non-pregnant subjects.",
         sep = " "
       ),
-      source_name        = "PP (postpartum indicator variable)"
+      source_name = "PP (postpartum indicator variable)"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "tenofovir alafenamide", units = "umol", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tenofovir alafenamide", units = "umol", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tenofovir alafenamide", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 53L,
-    n_studies     = 3L,
+    species = "human",
+    n_subjects = 53L,
+    n_studies = 3L,
     disease_state = paste(
       "Pregnant and postpartum women with HIV taking TAF 25 mg once daily without a",
       "pharmacokinetic booster (25 participants in the IMPAACT P1026s TAF arm and",
@@ -86,8 +86,8 @@ Yu_2026_tenofovir_pregnancy_taf <- function() {
       "25 mg arms).",
       sep = " "
     ),
-    dose_range   = "TAF 25 mg orally once daily (52.5 umol); non-pregnant CONRAD 137 data also include a TAF 10 mg arm",
-    regions      = "USA and international IMPAACT network sites; CONRAD 137 conducted in the USA",
+    dose_range = "TAF 25 mg orally once daily (52.5 umol); non-pregnant CONRAD 137 data also include a TAF 10 mg arm",
+    regions = "USA and international IMPAACT network sites; CONRAD 137 conducted in the USA",
     co_medication = paste(
       "Participants co-administered TAF with a pharmacokinetic booster (cobicistat",
       "or ritonavir) were excluded from the analysis, because P-glycoprotein",

@@ -35,11 +35,11 @@ Rognas_2025_bitopertin <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Sex indicator, 1 = female, 0 = male. Shifts the baseline erythrocyte count only.",
-      units              = NA_character_,
-      type               = "binary",
+      description = "Sex indicator, 1 = female, 0 = male. Shifts the baseline erythrocyte count only.",
+      units = NA_character_,
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = paste(
+      notes = paste(
         "Control stream ($PK): TVRBC0 = (THETA(3) - THETA(10)**SEXF) * 1000, with the $INPUT",
         "column SEX coded 0 = male / 1 = female and re-derived as SEXF. Because THETA(10)**0 = 1,",
         "the male baseline is THETA(3) - 1 = 4.91 x 10^12/L (Table 2) and the female baseline is",
@@ -49,18 +49,18 @@ Rognas_2025_bitopertin <- function() {
         "defines. See the vignette Errata section.",
         "The only covariate effect retained in the final model."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     AUC_BTP = list(
-      description        = paste(
+      description = paste(
         "Individual bitopertin steady-state area under the plasma concentration-time curve over",
         "the 24 h once-daily dosing interval (mg*h/L). Zero for placebo subjects and outside the",
         "treatment window."
       ),
-      units              = "mg*h/L",
-      type               = "continuous",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exposure metric driving the bitopertin drug effect (Methods, 'Individual AUCss values",
         "were used as the exposure metric driving the bitopertin drug effect'). In the control",
         "stream this is computed as DRUG = ADOS_BTP / ICL_BTP * TREAT_BTP -- the actual last dose",
@@ -72,85 +72,115 @@ Rognas_2025_bitopertin <- function() {
         "simulations (Fig. 5) specify exposure as multiples of AUC50 rather than as doses:",
         "0.5 x AUC50 = 8.25 mg*h/L gives 20% and 2 x AUC50 = 33 mg*h/L gives 40% inhibition."
       ),
-      source_name        = "DRUG"
+      source_name = "DRUG"
     )
   )
 
   compartmentData <- list(
     precursor1 = list(
-      analyte = "erythroid precursor cell", units = "10^9/L",
-      specimen = "tissue", verified = TRUE
+      analyte = "erythroid precursor cell",
+      units = "10^9/L",
+      specimen = "tissue",
+      verified = TRUE
     ),
     ret_imm_marrow = list(
-      analyte = "immature reticulocyte", units = "10^9/L",
-      specimen = "tissue", verified = TRUE
+      analyte = "immature reticulocyte",
+      units = "10^9/L",
+      specimen = "tissue",
+      verified = TRUE
     ),
     ret_mat_marrow = list(
-      analyte = "mature reticulocyte", units = "10^9/L",
-      specimen = "tissue", verified = TRUE
+      analyte = "mature reticulocyte",
+      units = "10^9/L",
+      specimen = "tissue",
+      verified = TRUE
     ),
     ret_imm_blood = list(
-      analyte = "immature reticulocyte", units = "10^9/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "immature reticulocyte",
+      units = "10^9/L",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     ret_mat_blood = list(
-      analyte = "mature reticulocyte", units = "10^9/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "mature reticulocyte",
+      units = "10^9/L",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     erythrocytes1 = list(
-      analyte = "erythrocyte", units = "10^9/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "erythrocyte",
+      units = "10^9/L",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     erythrocytes2 = list(
-      analyte = "erythrocyte", units = "10^9/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "erythrocyte",
+      units = "10^9/L",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     erythrocytes3 = list(
-      analyte = "erythrocyte", units = "10^9/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "erythrocyte",
+      units = "10^9/L",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     erythrocytes4 = list(
-      analyte = "erythrocyte", units = "10^9/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "erythrocyte",
+      units = "10^9/L",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     mch1 = list(
-      analyte = "hemoglobin per erythrocyte", units = "pg",
-      specimen = "blood cell", verified = TRUE
+      analyte = "hemoglobin per erythrocyte",
+      units = "pg",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     mch2 = list(
-      analyte = "hemoglobin per erythrocyte", units = "pg",
-      specimen = "blood cell", verified = TRUE
+      analyte = "hemoglobin per erythrocyte",
+      units = "pg",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     mch3 = list(
-      analyte = "hemoglobin per erythrocyte", units = "pg",
-      specimen = "blood cell", verified = TRUE
+      analyte = "hemoglobin per erythrocyte",
+      units = "pg",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     mch4 = list(
-      analyte = "hemoglobin per erythrocyte", units = "pg",
-      specimen = "blood cell", verified = TRUE
+      analyte = "hemoglobin per erythrocyte",
+      units = "pg",
+      specimen = "blood cell",
+      verified = TRUE
     ),
     moderator1 = list(
-      analyte = "erythroid precursor cell", units = "10^9/L",
-      specimen = "not applicable", verified = TRUE
+      analyte = "erythroid precursor cell",
+      units = "10^9/L",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     moderator2 = list(
-      analyte = "erythroid precursor cell", units = "10^9/L",
-      specimen = "not applicable", verified = TRUE
+      analyte = "erythroid precursor cell",
+      units = "10^9/L",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 62,
-    n_studies      = 1,
-    age_range      = "19-45 years (all subjects aged < 50 years by protocol)",
-    age_median     = "31.0 years",
-    weight_range   = "49.4-108 kg",
-    weight_median  = "69.0 kg",
+    species = "human",
+    n_subjects = 62,
+    n_studies = 1,
+    age_range = "19-45 years (all subjects aged < 50 years by protocol)",
+    age_median = "31.0 years",
+    weight_range = "49.4-108 kg",
+    weight_median = "69.0 kg",
     sex_female_pct = 58,
-    disease_state  = "Healthy male and female volunteers",
-    dose_range     = "Bitopertin 10, 30 or 60 mg orally once daily for 120 days, or placebo, followed by a 120-day follow-up period",
-    notes          = paste(
+    disease_state = "Healthy male and female volunteers",
+    dose_range = "Bitopertin 10, 30 or 60 mg orally once daily for 120 days, or placebo, followed by a 120-day follow-up period",
+    notes = paste(
       "Phase 1 multicentre, randomised, double-blind, placebo-controlled, parallel-group trial.",
       "67 subjects enrolled; 62 included in the model (placebo n = 15, 10 mg n = 17, 30 mg n = 16,",
       "60 mg n = 14) -- Results 'Data used for model development' and Table 1.",

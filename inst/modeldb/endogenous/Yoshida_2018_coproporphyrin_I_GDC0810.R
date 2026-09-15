@@ -27,26 +27,26 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
 
   covariateData <- list(
     CP_GDC_UM = list(
-      description        = "Instantaneous GDC-0810 portal-vein unbound concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of the hepatic component of CPI clearance (Yoshida 2018 Methods, Model-based analysis with inhibitor kinetics).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Instantaneous GDC-0810 portal-vein unbound concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of the hepatic component of CPI clearance (Yoshida 2018 Methods, Model-based analysis with inhibitor kinetics).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the GDC-0810 dosing window so the hepatic-inhibition term collapses to the no-inhibition form and the model returns to the steady-state Baseline. The original Yoshida 2018 fit used an in-house Y. Chen et al. PBPK model output for GDC-0810 portal-vein unbound concentration (cited as personal communication in the paper); that profile is not reproducible from on-disk sources and no GDC-0810 PK model is currently registered in nlmixr2lib. Users must supply CP_GDC_UM externally. The paper notes (Discussion) that observed GDC-0810 plasma AUC IIV was about 20 %, so the IIV reported on Ki,u below (30.1 %CV) partially includes per-subject variability in portal-vein exposure rather than purely intrinsic Ki,u variability.",
-      source_name        = "CGDC"
+      notes = "Time-varying. Set to 0 outside the GDC-0810 dosing window so the hepatic-inhibition term collapses to the no-inhibition form and the model returns to the steady-state Baseline. The original Yoshida 2018 fit used an in-house Y. Chen et al. PBPK model output for GDC-0810 portal-vein unbound concentration (cited as personal communication in the paper); that profile is not reproducible from on-disk sources and no GDC-0810 PK model is currently registered in nlmixr2lib. Users must supply CP_GDC_UM externally. The paper notes (Discussion) that observed GDC-0810 plasma AUC IIV was about 20 %, so the IIV reported on Ki,u below (30.1 %CV) partially includes per-subject variability in portal-vein exposure rather than purely intrinsic Ki,u variability.",
+      source_name = "CGDC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = NA_integer_,
-    n_studies       = 1L,
-    age_range       = "Healthy adult female subjects; per-subject demographics not tabulated by Yoshida 2018. The underlying clinical dataset is Liu et al. 2018 (J Clin Pharmacol; effect of OATP1B1/1B3 inhibitor GDC-0810 on the pharmacokinetics of pravastatin and coproporphyrin I/III in healthy female subjects).",
-    weight_range    = "(not extracted; Yoshida 2018 does not tabulate per-subject weights for the GDC-0810-CPI cohort.)",
-    sex_female_pct  = 100,
-    disease_state   = "Healthy female adult volunteers in a GDC-0810 drug-drug-interaction study; CPI monitored as an endogenous biomarker of OATP1B-mediated DDIs.",
-    dose_range      = "Endogenous biomarker (no exogenous CPI dose); GDC-0810 was administered orally per the Liu et al. 2018 study design.",
-    regions         = "(not extracted; Yoshida 2018 does not state the region for the Liu et al. 2018 cohort.)",
-    notes           = "Demographics inferred from Yoshida 2018 Methods and the cited source clinical study Liu et al. 2018. Yoshida 2018 reports that 'both the central trend and variability were described with the estimated parameters including interindividual variability (IIV)' for the GDC-0810-CPI fit, consistent with the IIV estimates on Baseline and Ki,u in Table 2 right column."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "Healthy adult female subjects; per-subject demographics not tabulated by Yoshida 2018. The underlying clinical dataset is Liu et al. 2018 (J Clin Pharmacol; effect of OATP1B1/1B3 inhibitor GDC-0810 on the pharmacokinetics of pravastatin and coproporphyrin I/III in healthy female subjects).",
+    weight_range = "(not extracted; Yoshida 2018 does not tabulate per-subject weights for the GDC-0810-CPI cohort.)",
+    sex_female_pct = 100,
+    disease_state = "Healthy female adult volunteers in a GDC-0810 drug-drug-interaction study; CPI monitored as an endogenous biomarker of OATP1B-mediated DDIs.",
+    dose_range = "Endogenous biomarker (no exogenous CPI dose); GDC-0810 was administered orally per the Liu et al. 2018 study design.",
+    regions = "(not extracted; Yoshida 2018 does not state the region for the Liu et al. 2018 cohort.)",
+    notes = "Demographics inferred from Yoshida 2018 Methods and the cited source clinical study Liu et al. 2018. Yoshida 2018 reports that 'both the central trend and variability were described with the estimated parameters including interindividual variability (IIV)' for the GDC-0810-CPI fit, consistent with the IIV estimates on Baseline and Ki,u in Table 2 right column."
   )
 
   ini({

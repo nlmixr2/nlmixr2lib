@@ -16,27 +16,42 @@ Le_2015_lampalizumab_cyno <- function() {
   # Issue #482: this model spans ocular and systemic matrices, which is
   # exactly the case that must not be pooled with serum-only disposition.
   compartmentData <- list(
-    depot                    = list(analyte = "lampalizumab", units = "nmol", specimen = "administration site", verified = TRUE),
-    total_target             = list(analyte = "complement factor D (total)", units = "nmol", specimen = "vitreous", verified = TRUE),
-    central                  = list(analyte = "lampalizumab", units = "nmol", specimen = "serum",   verified = TRUE),
-    total_target_central     = list(analyte = "complement factor D (total)", units = "nmol", specimen = "serum",   verified = TRUE),
-    peripheral1              = list(analyte = "lampalizumab", units = "nmol", specimen = "tissue",  verified = TRUE),
-    total_target_peripheral1 = list(analyte = "complement factor D (total)", units = "nmol", specimen = "tissue",  verified = TRUE)
+    depot = list(analyte = "lampalizumab", units = "nmol", specimen = "administration site", verified = TRUE),
+    total_target = list(
+      analyte = "complement factor D (total)",
+      units = "nmol",
+      specimen = "vitreous",
+      verified = TRUE
+    ),
+    central = list(analyte = "lampalizumab", units = "nmol", specimen = "serum", verified = TRUE),
+    total_target_central = list(
+      analyte = "complement factor D (total)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    peripheral1 = list(analyte = "lampalizumab", units = "nmol", specimen = "tissue", verified = TRUE),
+    total_target_peripheral1 = list(
+      analyte = "complement factor D (total)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "cynomolgus monkey (Macaca fascicularis)",
-    n_subjects     = 116L,
-    n_studies      = 3L,
-    weight_range   = "2-4 kg (paper Results: serum V_c 127 mL is ~32-64 mL/kg for a 2-4 kg animal)",
+    species = "cynomolgus monkey (Macaca fascicularis)",
+    n_subjects = 116L,
+    n_studies = 3L,
+    weight_range = "2-4 kg (paper Results: serum V_c 127 mL is ~32-64 mL/kg for a 2-4 kg animal)",
     sex_female_pct = NULL,
-    disease_state  = "Healthy cynomolgus monkeys (no disease model).",
-    dose_range     = "Single i.v. 0.2, 2, or 20 mg per animal (study 08-1021, n=9). Single bilateral ITV 1, 2, 3, 5, 10, or 20 mg per eye across studies 08-1021 (n=20), 08-0782 (n=8), and 08-0783 (n=41). Studies conducted at Covance (Madison, WI).",
-    regions        = "Preclinical, US site (Covance, Madison, WI).",
-    notes          = "Naive-pool analysis (no IIV). Data from three GLP studies (08-1021, 08-0782, 08-0783). Sample matrices: serum, vitreous humor, aqueous humor, and retinal tissue (retinal tissue results normalised by tissue weight). Both males and females included; per-study sex distributions in Le 2015 Table 1. See tracking/operator_followups.md if a sex-stratified breakdown is later required.",
-    trial_ids      = "Genentech internal: 08-1021, 08-0782, 08-0783."
+    disease_state = "Healthy cynomolgus monkeys (no disease model).",
+    dose_range = "Single i.v. 0.2, 2, or 20 mg per animal (study 08-1021, n=9). Single bilateral ITV 1, 2, 3, 5, 10, or 20 mg per eye across studies 08-1021 (n=20), 08-0782 (n=8), and 08-0783 (n=41). Studies conducted at Covance (Madison, WI).",
+    regions = "Preclinical, US site (Covance, Madison, WI).",
+    notes = "Naive-pool analysis (no IIV). Data from three GLP studies (08-1021, 08-0782, 08-0783). Sample matrices: serum, vitreous humor, aqueous humor, and retinal tissue (retinal tissue results normalised by tissue weight). Both males and females included; per-study sex distributions in Le 2015 Table 1. See tracking/operator_followups.md if a sex-stratified breakdown is later required.",
+    trial_ids = "Genentech internal: 08-1021, 08-0782, 08-0783."
   )
 
   ini({

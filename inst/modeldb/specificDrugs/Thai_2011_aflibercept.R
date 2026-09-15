@@ -9,25 +9,25 @@ Thai_2011_aflibercept <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "free aflibercept", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "free aflibercept", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "free aflibercept", units = "mg", specimen = "plasma", verified = FALSE),
-    complex     = list(analyte = "bound-aflibercept", units = "mg", specimen = "administration site", verified = FALSE)
+    complex = list(analyte = "bound-aflibercept", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 56L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 56L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = 0,
     race_ethnicity = NA_character_,
-    disease_state  = "Healthy male volunteers from two phase 1 single-dose IV-infusion studies.",
-    dose_range     = "1, 2 or 4 mg/kg as a single 1-h IV infusion. The crossover SC arm (2 mg/kg) of study 2 was excluded from the population analysis.",
-    regions        = "South Africa (study 1; Pharma-Ethics IRB) and Germany (study 2; Ethik-Kommission der Landesarztekammer Baden-Wuerttemberg).",
-    notes          = "Total of 1476 concentrations were analysed (732 free aflibercept + 744 bound aflibercept), of which 242 (32.5%) bound concentrations were below the bound LOQ of 0.0314 ug eq/mL (handled in MONOLIX 3.1 with the SAEM censored-data extension). Bound aflibercept assay concentrations were converted by the authors to free-aflibercept-equivalent concentrations by multiplication by 0.717 (the ratio of MW of free to bound aflibercept), so all bound observations are in ug eq/mL. No covariates were tested because the population is uniformly healthy males. Demographics (precise age, weight, race) are not enumerated in the paper text or Table 1."
+    disease_state = "Healthy male volunteers from two phase 1 single-dose IV-infusion studies.",
+    dose_range = "1, 2 or 4 mg/kg as a single 1-h IV infusion. The crossover SC arm (2 mg/kg) of study 2 was excluded from the population analysis.",
+    regions = "South Africa (study 1; Pharma-Ethics IRB) and Germany (study 2; Ethik-Kommission der Landesarztekammer Baden-Wuerttemberg).",
+    notes = "Total of 1476 concentrations were analysed (732 free aflibercept + 744 bound aflibercept), of which 242 (32.5%) bound concentrations were below the bound LOQ of 0.0314 ug eq/mL (handled in MONOLIX 3.1 with the SAEM censored-data extension). Bound aflibercept assay concentrations were converted by the authors to free-aflibercept-equivalent concentrations by multiplication by 0.717 (the ratio of MW of free to bound aflibercept), so all bound observations are in ug eq/mL. No covariates were tested because the population is uniformly healthy males. Demographics (precise age, weight, race) are not enumerated in the paper text or Table 1."
   )
 
   ini({

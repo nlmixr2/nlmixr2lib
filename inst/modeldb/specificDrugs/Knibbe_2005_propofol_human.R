@@ -27,41 +27,41 @@ Knibbe_2005_propofol_human <- function() {
     sep = " "
   )
   vignette <- "Knibbe_2005_propofol"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human (allometric projection from male Wistar rat)",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = "adult (70 kg reference subject)",
-    weight_range   = "70 kg (reference subject only; scaled point estimate)",
+    species = "human (allometric projection from male Wistar rat)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "adult (70 kg reference subject)",
+    weight_range = "70 kg (reference subject only; scaled point estimate)",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Reference 70 kg adult, intended in Knibbe 2005 as the",
       "starting point for first-in-human dosing simulations and",
       "compared in Figure 2 against observed concentrations in",
       "long-term-sedated critically ill patients (52-79 y, 70-96",
       "kg; Table 1 column 'Critically ill adult patients')."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Validation dosing in Knibbe 2005 used the propofol regimens",
       "given to the long-term-sedated critically ill cohort (4",
       "mg/kg/h, with daily infusion-rate adjustments per Table 1).",
       "The model itself is dose-route agnostic for IV propofol",
       "delivery to the central compartment."
     ),
-    regions        = "the Netherlands",
-    notes          = paste(
+    regions = "the Netherlands",
+    notes = paste(
       "Parameter values come from applying the allometric power",
       "model Y_human = Y_rat * (BW_human / BW_rat)^b to the",
       "rat point estimates of Table 3, using the canonical",

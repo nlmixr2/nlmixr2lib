@@ -11,8 +11,8 @@ Suksai_2026_levodopa <- function() {
   vignette <- "Suksai_2026_levodopa"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -21,11 +21,11 @@ Suksai_2026_levodopa <- function() {
   # Suksai 2026 Equation 4 is written directly in Ce, with no effect-site
   # amount and no volume dividing it -- so its units are mg/L, not mg.
   compartmentData <- list(
-    depot       = list(analyte = "levodopa", units = "mg",   specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levodopa", units = "mg",   specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "levodopa", units = "mg",   specimen = "tissue",              verified = TRUE),
-    brain       = list(analyte = "levodopa", units = "mg",   specimen = "tissue",              verified = TRUE),
-    effect      = list(analyte = "levodopa", units = "mg/L", specimen = "not applicable",      verified = TRUE)
+    depot = list(analyte = "levodopa", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levodopa", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "levodopa", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "levodopa", units = "mg", specimen = "tissue", verified = TRUE),
+    effect = list(analyte = "levodopa", units = "mg/L", specimen = "not applicable", verified = TRUE)
   )
 
   # Suksai 2026 models NO covariate effects. Age, body weight and disease stage
@@ -35,11 +35,11 @@ Suksai_2026_levodopa <- function() {
   # paper. They are therefore documented here rather than in covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Suksai 2026 Methods ('Simulation design') sampled the virtual cohort over 50-80 kg and",
         "the narrative states that 'variations in body weight can modify distribution-related",
         "parameters', but no weight-on-parameter relationship is written down and no allometric",
@@ -50,26 +50,26 @@ Suksai_2026_levodopa <- function() {
         "weight relationship even qualitatively. Screened but not retained; not implemented.",
         sep = " "
       ),
-      source_name        = "Weight (Suksai 2026 Table 3)"
+      source_name = "Weight (Suksai 2026 Table 3)"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort range 50-80 years (Suksai 2026 Methods, 'Simulation design'); Table 3 cases are",
         "60 / 72 / 50 years. No age effect on any parameter is reported or implemented.",
         sep = " "
       ),
-      source_name        = "Age (Suksai 2026 Table 3)"
+      source_name = "Age (Suksai 2026 Table 3)"
     ),
     HY_STAGE = list(
-      description        = "Hoehn-Yahr Parkinson's disease severity stage",
-      units              = "(stage)",
-      type               = "categorical",
+      description = "Hoehn-Yahr Parkinson's disease severity stage",
+      units = "(stage)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Suksai 2026 sampled Hoehn-Yahr stages II-IV across the 100 virtual profiles (Methods,",
         "'Simulation design') and Table 3 labels the three illustrative cases by disease stage,",
         "but disease stage never enters an equation and no stage-specific parameter estimate is",
@@ -78,20 +78,20 @@ Suksai_2026_levodopa <- function() {
         "column by this extraction -- registering it would require a model that actually uses it.",
         sep = " "
       ),
-      source_name        = "Disease stage (Suksai 2026 Table 3)"
+      source_name = "Disease stage (Suksai 2026 Table 3)"
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 100,
-    n_studies     = 0,
-    age_range     = "50-80 years",
-    weight_range  = "50-80 kg",
+    species = "human",
+    n_subjects = 100,
+    n_studies = 0,
+    age_range = "50-80 years",
+    weight_range = "50-80 kg",
     disease_state = "Parkinson's disease, Hoehn-Yahr stages II-IV, including both stable responders and profiles with motor fluctuations",
-    dose_range    = "100 mg orally every 4 h for six doses over 24 h (nominal baseline regimen); 100-300 mg per dose at 4-8 h intervals across the illustrative scenarios of Table 3",
-    regions       = "not applicable (fully in silico)",
-    notes         = paste(
+    dose_range = "100 mg orally every 4 h for six doses over 24 h (nominal baseline regimen); 100-300 mg per dose at 4-8 h intervals across the illustrative scenarios of Table 3",
+    regions = "not applicable (fully in silico)",
+    notes = paste(
       "NO PATIENT DATA. Suksai 2026 Methods ('Literature-based parameter selection'): 'No",
       "individual patient-level data were used; all simulations were conducted entirely in",
       "silico.' The 100 profiles are a virtual cohort generated by independent sampling from",

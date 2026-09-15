@@ -40,25 +40,25 @@ Feng_2008_risperidone <- function() {
     sep = " "
   )
   vignette <- "Feng_2008_risperidone"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = FALSE),
     central_9oh = list(analyte = "9-OH-risperidone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Combined cohort age 18-93 years (mean 49.1, SD 18.8; Table 1).",
         "CATIE-AD subjects 57-93 years (mean 78.3, SD 6.7); CATIE-SZ",
         "subjects 18-65 years (mean 40.6, SD 11.2). Reference age 45 years",
@@ -72,14 +72,14 @@ Feng_2008_risperidone <- function() {
         "value (8.83 L/h) and exponent (-0.378) with reference 45; see the",
         "vignette Assumptions and deviations section."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or extensive metabolizer; both CYP2D6_PM and CYP2D6_EM = 0 indicates IM)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 poor metabolizer, 0 otherwise. Paired with",
         "CYP2D6_EM to encode the three-level PM / IM / EM phenotype; IM is",
         "the implicit reference (both CYP2D6_PM = 0 and CYP2D6_EM = 0).",
@@ -91,54 +91,54 @@ Feng_2008_risperidone <- function() {
         "categorical distribution. Same encoding convention as",
         "Sherwin_2012_risperidone.R."
       ),
-      source_name        = "P1 (mixture-model PM subpopulation fraction); inferred per subject from NONMEM mixture posterior"
+      source_name = "P1 (mixture-model PM subpopulation fraction); inferred per subject from NONMEM mixture posterior"
     ),
     CYP2D6_EM = list(
-      description        = "CYP2D6 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or poor metabolizer; both CYP2D6_PM and CYP2D6_EM = 0 indicates IM)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 extensive metabolizer, 0 otherwise. Paired",
         "with CYP2D6_PM; IM is the implicit reference (both indicators = 0).",
         "In Feng 2008 the mixture-model assignment estimated 41.2% PM",
         "(Table 3 P1), 52.4% EM (Table 3 P2), and 6.4% IM (1 - P1 - P2)."
       ),
-      source_name        = "P2 (mixture-model EM subpopulation fraction); inferred per subject from NONMEM mixture posterior"
+      source_name = "P2 (mixture-model EM subpopulation fraction); inferred per subject from NONMEM mixture posterior"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 490L,
+    species = "human",
+    n_subjects = 490L,
     n_observations = 2472L,
-    n_studies      = 2L,
-    age_range      = "18-93 years (mean 49.1, SD 18.8; combined median approximately 45)",
-    age_median     = "approximately 45 years (mean 49.1 reported; CATIE-SZ dominates the lower half of the combined sample)",
-    weight_range   = "42.7-187.7 kg (mean 84.1, SD 22.5)",
-    weight_median  = "84.1 kg (mean reported, not median)",
+    n_studies = 2L,
+    age_range = "18-93 years (mean 49.1, SD 18.8; combined median approximately 45)",
+    age_median = "approximately 45 years (mean 49.1 reported; CATIE-SZ dominates the lower half of the combined sample)",
+    weight_range = "42.7-187.7 kg (mean 84.1, SD 22.5)",
+    weight_median = "84.1 kg (mean reported, not median)",
     sex_female_pct = 32.4,
     race_ethnicity = c(
-      White                     = 66.9,
+      White = 66.9,
       `Black or African-American` = 28.6,
-      Asian                     = 2.4,
-      `American Indian`         = 1.0,
-      `Two or more races`       = 0.8,
-      `Native Hawaiian`         = 0.2
+      Asian = 2.4,
+      `American Indian` = 1.0,
+      `Two or more races` = 0.8,
+      `Native Hawaiian` = 0.2
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort of two CATIE substudies: 110 outpatients with",
       "Alzheimer disease and behavioural disturbance (CATIE-AD, mean age",
       "78.3 years) and 380 patients with schizophrenia aged 18-65 years",
       "(CATIE-SZ). All received oral risperidone as part of a multi-arm",
       "trial of atypical antipsychotics."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral risperidone tablet, total daily dose 0.5-6.0 mg (CATIE-AD",
       "0.5-3.5 mg/day; CATIE-SZ 0.75-6.0 mg/day). 313 subjects dosed once",
       "daily; 177 subjects dosed twice daily (Results)."
     ),
-    regions        = "USA (multicentre CATIE network)",
+    regions = "USA (multicentre CATIE network)",
     cyp2d6_distribution = paste(
       "Mixture-model assignment in the final model (Table 3): 41.2% PM",
       "(P1), 52.4% EM (P2), 6.4% IM (1 - P1 - P2). Phenotype was inferred",
@@ -158,7 +158,7 @@ Feng_2008_risperidone <- function() {
       "the final model (Methods 'Final model development'; Table 2",
       "section 3-3 model M26 vs M25, dOFV = -72.2, p < 0.005)."
     ),
-    notes          = paste(
+    notes = paste(
       "Random plasma samples (1-6 per subject) collected over the CATIE",
       "follow-up window: CATIE-AD samples at weeks 2, 4, 12 or at",
       "medication-switch points; CATIE-SZ random samples every 3 months",

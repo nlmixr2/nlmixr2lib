@@ -8,43 +8,43 @@ Archary_2018_lopinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling reference 5.6 kg (Archary 2018 study-cohort mean baseline FFM 5.1-5.5 kg per Table 1). FFM is computed from total body weight, height, and sex per Al-Sallami et al. Clin Pharmacokinet 2015;54(11):1169-1178 (paper reference 20). Allometrically scaled FFM gave a better model fit (delta-OFV = -8.7) than total body weight (delta-OFV = -6.6) per paper Results page 6.",
-      source_name        = "FFM"
+      notes = "Allometric scaling reference 5.6 kg (Archary 2018 study-cohort mean baseline FFM 5.1-5.5 kg per Table 1). FFM is computed from total body weight, height, and sex per Al-Sallami et al. Clin Pharmacokinet 2015;54(11):1169-1178 (paper reference 20). Allometrically scaled FFM gave a better model fit (delta-OFV = -8.7) than total body weight (delta-OFV = -6.6) per paper Results page 6.",
+      source_name = "FFM"
     ),
     TCHOL = list(
-      description        = "Total serum cholesterol",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Total serum cholesterol",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear effect on apparent CL/F centered at 3 mmol/L (Archary 2018 Table 1 baseline mean 2.7-2.9 mmol/L). Treated as a surrogate for nutritional / hepatic-function recovery in this severely malnourished pediatric cohort. Paper text describes the effect as 20.7% increase in F (paper Results page 6); the published equation in Table 2 footnote applies the multiplier directly to apparent CL/F -- this model implements the equation as printed in Table 2 (see Assumptions and deviations in the validation vignette).",
-      source_name        = "CHOL"
+      notes = "Linear effect on apparent CL/F centered at 3 mmol/L (Archary 2018 Table 1 baseline mean 2.7-2.9 mmol/L). Treated as a surrogate for nutritional / hepatic-function recovery in this severely malnourished pediatric cohort. Paper text describes the effect as 20.7% increase in F (paper Results page 6); the published equation in Table 2 footnote applies the multiplier directly to apparent CL/F -- this model implements the equation as printed in Table 2 (see Assumptions and deviations in the validation vignette).",
+      source_name = "CHOL"
     )
   )
 
   population <- list(
-    n_subjects     = 62L,
-    n_studies      = 1L,
+    n_subjects = 62L,
+    n_studies = 1L,
     n_observations = 502L,
-    age_range      = "1 month to 12 years (eligibility); enrolled cohort 0.1-3.9 years",
-    age_median     = "0.9 years",
-    weight_range   = "approx 4-12 kg (WHO weight-band dosing range 3-19.9 kg eligible)",
-    weight_mean    = "6.5 kg (early-ART arm) / 6.6 kg (delayed-ART arm) per Table 1",
+    age_range = "1 month to 12 years (eligibility); enrolled cohort 0.1-3.9 years",
+    age_median = "0.9 years",
+    weight_range = "approx 4-12 kg (WHO weight-band dosing range 3-19.9 kg eligible)",
+    weight_mean = "6.5 kg (early-ART arm) / 6.6 kg (delayed-ART arm) per Table 1",
     sex_female_pct = 43,
     race_ethnicity = "African (South African pediatric cohort, Durban / KwaZulu-Natal)",
-    disease_state  = "HIV infection with severe acute malnutrition (weight-for-length Z-score < -3, mid-upper arm circumference < 115 mm, or peripheral edema). 20 of 62 patients on rifampicin-based anti-tuberculosis treatment received super-boosted LPV/rtv (LPV:rtv 1:1 ratio).",
-    dose_range     = "Oral LPV/rtv (liquid) per WHO weight-band dosage charts. Children 3-5.9 kg received approximately 20/25 mg/kg LPV/rtv twice daily; 14-19.9 kg received approximately 11.7/12 mg/kg twice daily. Super-boosted regimen used in TB co-treated patients.",
-    regions        = "South Africa (King Edward VIII Hospital, Durban)",
-    notes          = "MATCH study (Malnutrition and ART Timing in Children with HIV; Clinical trial registry PACTR21609001751384). 56 patients had Day-14 sampling. Day 1 sampling schedule: 1.3-1.8 h, 3-4 h, 5-7 h, 8-10 h post-dose. Day 13 trough (pre-dose). Day 14 schedule: 30 min pre-dose plus 1.3-1.8 h, 3-4 h, 5-7 h, 8-10 h post-dose. LPV LoQ 0.0195 ug/mL. Patients randomized to early (within 14 days of admission) vs delayed (until nutritional recovery to WHZ -2 plus 14 days from admission) ART initiation."
+    disease_state = "HIV infection with severe acute malnutrition (weight-for-length Z-score < -3, mid-upper arm circumference < 115 mm, or peripheral edema). 20 of 62 patients on rifampicin-based anti-tuberculosis treatment received super-boosted LPV/rtv (LPV:rtv 1:1 ratio).",
+    dose_range = "Oral LPV/rtv (liquid) per WHO weight-band dosage charts. Children 3-5.9 kg received approximately 20/25 mg/kg LPV/rtv twice daily; 14-19.9 kg received approximately 11.7/12 mg/kg twice daily. Super-boosted regimen used in TB co-treated patients.",
+    regions = "South Africa (King Edward VIII Hospital, Durban)",
+    notes = "MATCH study (Malnutrition and ART Timing in Children with HIV; Clinical trial registry PACTR21609001751384). 56 patients had Day-14 sampling. Day 1 sampling schedule: 1.3-1.8 h, 3-4 h, 5-7 h, 8-10 h post-dose. Day 13 trough (pre-dose). Day 14 schedule: 30 min pre-dose plus 1.3-1.8 h, 3-4 h, 5-7 h, 8-10 h post-dose. LPV LoQ 0.0195 ug/mL. Patients randomized to early (within 14 days of admission) vs delayed (until nutritional recovery to WHZ -2 plus 14 days from admission) ART initiation."
   )
 
   ini({

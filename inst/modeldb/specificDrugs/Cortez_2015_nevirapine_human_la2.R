@@ -17,7 +17,8 @@ Cortez_2015_nevirapine_human_la2 <- function() {
     "an apparent half-life near 66 days, whereas V/F = 20 L with",
     "CL/F = 0.21 L/h gives the 66 HOURS the same Methods paragraph reports.",
     "See the vignette Assumptions and deviations.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Cortez JM Jr, Quintero R, Moss JA, Beliveau M, Smith TJ, Baum MM.",
     "Pharmacokinetics of injectable, long-acting nevirapine for HIV",
@@ -26,26 +27,27 @@ Cortez_2015_nevirapine_human_la2 <- function() {
     "doi:10.1128/AAC.03906-14.",
     "Presystemic absorption carried from the companion rat fit; see",
     "modellib('Cortez_2015_nevirapine_rat_la2').",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Cortez_2015_nevirapine"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size covariate on the RAT-DERIVED absorption rate",
         "constant only, referenced to the 0.21 kg mean weight of the",
         "study-2 rats. The human systemic parameters V/F and CL/F are the",
@@ -54,24 +56,24 @@ Cortez_2015_nevirapine_human_la2 <- function() {
         "4B for the companion LA-1 projection. Simulated infant weights",
         "were 2.0 and 3.9 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "Neonates from birth (WHO prophylaxis window is birth to 4-6 weeks of age)",
-    weight_range   = "2.0-3.9 kg",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "Neonates from birth (WHO prophylaxis window is birth to 4-6 weeks of age)",
+    weight_range = "2.0-3.9 kg",
+    disease_state = paste(
       "HIV-uninfected breastfeeding infants born to HIV-1-infected mothers,",
       "receiving nevirapine as prophylaxis against mother-to-child",
       "transmission."
     ),
-    dose_range     = "Single 60 mg subcutaneous injection of NVP LA-2 (Cortez 2015 Figure 4C and 4D)",
-    regions        = "Uganda (source of the systemic infant PK estimates)",
-    notes          = paste(
+    dose_range = "Single 60 mg subcutaneous injection of NVP LA-2 (Cortez 2015 Figure 4C and 4D)",
+    regions = "Uganda (source of the systemic infant PK estimates)",
+    notes = paste(
       "Cortez 2015 Methods 'Human simulations': the infant systemic",
       "parameters were V/bioavailability (F) = 20.0 liters, CL/F = 0.21",
       "liters h-1 and t1/2 = 66 h, over a newborn weight range of 2.0 to",

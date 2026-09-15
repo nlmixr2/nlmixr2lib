@@ -15,26 +15,26 @@ ElassaissSchaap_2017_pembrolizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "adults (>=18 years); specific range not reported",
-    age_median     = "not reported",
-    weight_range   = "not reported (mg/kg dosing used)",
-    weight_median  = "not reported",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "adults (>=18 years); specific range not reported",
+    age_median = "not reported",
+    weight_range = "not reported (mg/kg dosing used)",
+    weight_median = "not reported",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported",
-    disease_state  = "Advanced solid tumors (KEYNOTE-001 parts A, A1, A2). PD-1, PD-L1, PD-L2, and CTLA-4 inhibitor-naive; no systemic corticosteroids required.",
-    dose_range     = "0.005, 0.02, 0.06, 0.1, 1, 2, 3, or 10 mg/kg IV over 30 min; Q3W (parts A, A1) or escalated within-patient (part A2)",
-    regions        = "United States (two sites)",
-    notes          = "KEYNOTE-001 (NCT01295827); part A 3 + 3 dose escalation at 1, 3, 10 mg/kg Q2W (n = 9), part A1 expansion at 10 mg/kg Q2W (n = 7 additional), part A2 within-patient escalation from 0.005-0.02 mg/kg up to 2 or 10 mg/kg Q3W (design C; 12 patients). Elassaiss-Schaap 2017 Methods, Results 'Part A2', and Table 2."
+    disease_state = "Advanced solid tumors (KEYNOTE-001 parts A, A1, A2). PD-1, PD-L1, PD-L2, and CTLA-4 inhibitor-naive; no systemic corticosteroids required.",
+    dose_range = "0.005, 0.02, 0.06, 0.1, 1, 2, 3, or 10 mg/kg IV over 30 min; Q3W (parts A, A1) or escalated within-patient (part A2)",
+    regions = "United States (two sites)",
+    notes = "KEYNOTE-001 (NCT01295827); part A 3 + 3 dose escalation at 1, 3, 10 mg/kg Q2W (n = 9), part A1 expansion at 10 mg/kg Q2W (n = 7 additional), part A2 within-patient escalation from 0.005-0.02 mg/kg up to 2 or 10 mg/kg Q3W (design C; 12 patients). Elassaiss-Schaap 2017 Methods, Results 'Part A2', and Table 2."
   )
 
   ini({

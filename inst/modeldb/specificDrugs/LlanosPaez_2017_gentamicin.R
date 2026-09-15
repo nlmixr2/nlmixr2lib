@@ -12,50 +12,50 @@ LlanosPaez_2017_gentamicin <- function() {
     sep = " "
   )
   vignette <- "LlanosPaez_2017_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     renal_cortex = list(analyte = "gentamicin", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Linear allometric scaling on V1 and V2 with reference 70 kg;",
         "power-0.75 scaling on Q and on the GFR-maturation factor used in CL,",
         "per Llanos-Paez 2017 AAC Table 2 footnote."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the Hill-type GFR-maturation function. The source",
         "paper reports PMA in weeks; this model converts the canonical PAGE",
         "(months) back to weeks via PMA_wk = PAGE * 4.35 so the published",
         "55.4-week half-maturation and exponent of 3.33 apply unchanged."
       ),
-      source_name        = "PMA (weeks)"
+      source_name = "PMA (weeks)"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives a power-form effect on CL: (CREAT_REF / CREAT)^0.55 with",
         "CREAT_REF fixed at 34 umol/L (the typical-patient value reported in",
         "Llanos-Paez 2018 Methods, 'Evaluation of Gentamicin Accumulation on",
@@ -66,26 +66,26 @@ LlanosPaez_2017_gentamicin <- function() {
         "fixed-reference simplification is documented as a deviation in the",
         "validation vignette."
       ),
-      source_name        = "Scr"
+      source_name = "Scr"
     )
   )
 
   population <- list(
-    n_subjects     = 475,
-    n_studies      = 1,
-    age_range      = "0.2-18.2 years (postnatal age)",
-    age_median     = "5.2 years (postnatal age)",
-    weight_range   = "4.5-121.0 kg",
-    weight_median  = "19.5 kg",
-    ffm_range      = "3.7-64.8 kg",
-    ffm_median     = "15.3 kg",
-    pma_range      = "Llanos-Paez 2017 AAC building cohort spans PMA 50.9-985 weeks (median 309 weeks); Llanos-Paez 2018 reuses the same population.",
+    n_subjects = 475,
+    n_studies = 1,
+    age_range = "0.2-18.2 years (postnatal age)",
+    age_median = "5.2 years (postnatal age)",
+    weight_range = "4.5-121.0 kg",
+    weight_median = "19.5 kg",
+    ffm_range = "3.7-64.8 kg",
+    ffm_median = "15.3 kg",
+    pma_range = "Llanos-Paez 2017 AAC building cohort spans PMA 50.9-985 weeks (median 309 weeks); Llanos-Paez 2018 reuses the same population.",
     sex_female_pct = "48% female (Llanos-Paez 2017 AAC building cohort, 204/423); sex distribution of the 52-subject external evaluation cohort 58% female; Llanos-Paez 2018 does not re-report sex separately for the combined 475-patient cohort.",
     race_ethnicity = "Not reported.",
-    disease_state  = "Pediatric oncology patients (febrile or fever-only neutropenia). Eighty-eight percent of the building cohort had febrile neutropenia and 12% had fever-only neutropenia.",
-    dose_range     = "Local clinical-practice initial dose 7.5 mg/kg/q24h (<10 yrs) or 6 mg/kg/q24h (>=10 yrs), administered as a 30-min IV infusion. Llanos-Paez 2018 evaluates initial doses 7.1, 9.5, 10.8, 12.8, and 14.6 mg/kg/q24h.",
-    regions        = "Australia (Lady Cilento Children's Hospital, Brisbane).",
-    notes          = paste(
+    disease_state = "Pediatric oncology patients (febrile or fever-only neutropenia). Eighty-eight percent of the building cohort had febrile neutropenia and 12% had fever-only neutropenia.",
+    dose_range = "Local clinical-practice initial dose 7.5 mg/kg/q24h (<10 yrs) or 6 mg/kg/q24h (>=10 yrs), administered as a 30-min IV infusion. Llanos-Paez 2018 evaluates initial doses 7.1, 9.5, 10.8, 12.8, and 14.6 mg/kg/q24h.",
+    regions = "Australia (Lady Cilento Children's Hospital, Brisbane).",
+    notes = paste(
       "475-patient pediatric oncology cohort comprising the 423 model-development",
       "subjects and 52-subject external evaluation cohort from Llanos-Paez 2017",
       "AAC. Llanos-Paez 2018 reuses the AAC PK model and parameter estimates",

@@ -22,312 +22,312 @@ Mandema_2011_anticoagulants_mbma <- function() {
   # convention already used by Vargo_2014_statins_ezetimibe_mbma so that
   # checkModelConventions() sees a parseable dosing / concentration pair.
   units <- list(
-    time          = "day (placeholder; the model is a time-independent per-arm dose-response over the trial's prophylaxis period, not a time course)",
-    dosing        = "mg/day (per-arm TOTAL DAILY dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events. Units are per-drug: mg/day for most agents, IU/kg/day for ardeparin / nadroparin / tinzaparin, kIU/day for bemiparin / dalteparin / heparin / reviparin, and achieved INR for warfarin -- see each covariateData entry)",
+    time = "day (placeholder; the model is a time-independent per-arm dose-response over the trial's prophylaxis period, not a time course)",
+    dosing = "mg/day (per-arm TOTAL DAILY dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events. Units are per-drug: mg/day for most agents, IU/kg/day for ardeparin / nadroparin / tinzaparin, kIU/day for bemiparin / dalteparin / heparin / reviparin, and achieved INR for warfarin -- see each covariateData entry)",
     concentration = "%/arm (per-arm event probability expressed as a percentage of patients in the study arm; the outputs p_* are on the 0-1 fraction scale. Output is NOT a drug concentration; the slash satisfies checkModelConventions parsing)"
   )
 
   covariateData <- list(
     # ---- Enoxaparin (its own drug class; the reference class) ----------------
     CONMED_ENOXAPARIN_DOSE = list(
-      description        = "Per-arm total daily enoxaparin dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily enoxaparin dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an enoxaparin arm. Enoxaparin was the most frequent active control (39% of trials) and is treated by the source as its own drug class, separate from the other LMWHs, so that all relative effects are estimated against it. Reported daily-dose range across the 54 enoxaparin trials is 10-60 mg (Mandema 2011 Table 1); the approved regimens pooled here are 40 mg q.d. (Europe), 30 mg Q12H (North America, i.e. 60 mg/day) and 20 mg b.i.d. (Japan, i.e. 40 mg/day).",
-      source_name        = "Dose (Mandema 2011 Supplementary Data dose-response equations; enoxaparin arms of Table 1)"
+      notes = "0 outside an enoxaparin arm. Enoxaparin was the most frequent active control (39% of trials) and is treated by the source as its own drug class, separate from the other LMWHs, so that all relative effects are estimated against it. Reported daily-dose range across the 54 enoxaparin trials is 10-60 mg (Mandema 2011 Table 1); the approved regimens pooled here are 40 mg q.d. (Europe), 30 mg Q12H (North America, i.e. 60 mg/day) and 20 mg b.i.d. (Japan, i.e. 40 mg/day).",
+      source_name = "Dose (Mandema 2011 Supplementary Data dose-response equations; enoxaparin arms of Table 1)"
     ),
     # ---- LMWHs other than enoxaparin ----------------------------------------
     CONMED_ARDEPARIN_DOSE = list(
-      description        = "Per-arm total daily ardeparin dose.",
-      units              = "IU/kg/day",
-      type               = "continuous",
+      description = "Per-arm total daily ardeparin dose.",
+      units = "IU/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an ardeparin arm. Weight-normalized anti-Xa activity, NOT a mass dose; the matching ED50 (101 IU/kg/day) carries the same units. Daily-dose range 50-100 IU/kg across 3 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
-      source_name        = "Dose (Mandema 2011 Table 1 ardeparin row; Supplementary Data ED50 Ardeparin)"
+      notes = "0 outside an ardeparin arm. Weight-normalized anti-Xa activity, NOT a mass dose; the matching ED50 (101 IU/kg/day) carries the same units. Daily-dose range 50-100 IU/kg across 3 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
+      source_name = "Dose (Mandema 2011 Table 1 ardeparin row; Supplementary Data ED50 Ardeparin)"
     ),
     CONMED_BEMIPARIN_DOSE = list(
-      description        = "Per-arm total daily bemiparin dose.",
-      units              = "kIU/day",
-      type               = "continuous",
+      description = "Per-arm total daily bemiparin dose.",
+      units = "kIU/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a bemiparin arm. Thousands of anti-Xa IU per day; the matching ED50 (3.62 kIU/day) carries the same units. Daily-dose range 3.5-3.5 kIU across 2 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
-      source_name        = "Dose (Mandema 2011 Table 1 bemiparin row; Supplementary Data ED50 Bemiparin)"
+      notes = "0 outside a bemiparin arm. Thousands of anti-Xa IU per day; the matching ED50 (3.62 kIU/day) carries the same units. Daily-dose range 3.5-3.5 kIU across 2 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
+      source_name = "Dose (Mandema 2011 Table 1 bemiparin row; Supplementary Data ED50 Bemiparin)"
     ),
     CONMED_DALTEPARIN_DOSE = list(
-      description        = "Per-arm total daily dalteparin dose.",
-      units              = "kIU/day",
-      type               = "continuous",
+      description = "Per-arm total daily dalteparin dose.",
+      units = "kIU/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a dalteparin arm. Thousands of anti-Xa IU per day; the matching ED50 (5.57 kIU/day) carries the same units. Daily-dose range 5-5 kIU across 8 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
-      source_name        = "Dose (Mandema 2011 Table 1 dalteparin row; Supplementary Data ED50 Dalteparin)"
+      notes = "0 outside a dalteparin arm. Thousands of anti-Xa IU per day; the matching ED50 (5.57 kIU/day) carries the same units. Daily-dose range 5-5 kIU across 8 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
+      source_name = "Dose (Mandema 2011 Table 1 dalteparin row; Supplementary Data ED50 Dalteparin)"
     ),
     CONMED_NADROPARIN_DOSE = list(
-      description        = "Per-arm total daily nadroparin dose.",
-      units              = "IU/kg/day",
-      type               = "continuous",
+      description = "Per-arm total daily nadroparin dose.",
+      units = "IU/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a nadroparin arm. Weight-normalized anti-Xa activity; the matching ED50 (78.4 IU/kg/day) carries the same units. Daily-dose range 43-60 IU/kg across 5 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
-      source_name        = "Dose (Mandema 2011 Table 1 nadroparin row; Supplementary Data ED50 Nadroparin)"
+      notes = "0 outside a nadroparin arm. Weight-normalized anti-Xa activity; the matching ED50 (78.4 IU/kg/day) carries the same units. Daily-dose range 43-60 IU/kg across 5 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
+      source_name = "Dose (Mandema 2011 Table 1 nadroparin row; Supplementary Data ED50 Nadroparin)"
     ),
     CONMED_REVIPARIN_DOSE = list(
-      description        = "Per-arm total daily reviparin dose.",
-      units              = "kIU/day",
-      type               = "continuous",
+      description = "Per-arm total daily reviparin dose.",
+      units = "kIU/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a reviparin arm. Thousands of anti-Xa IU per day; the matching ED50 (6.29 kIU/day) carries the same units. Daily-dose range 2.8-4.2 kIU across 3 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
-      source_name        = "Dose (Mandema 2011 Table 1 reviparin row; Supplementary Data ED50 Reviparin)"
+      notes = "0 outside a reviparin arm. Thousands of anti-Xa IU per day; the matching ED50 (6.29 kIU/day) carries the same units. Daily-dose range 2.8-4.2 kIU across 3 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
+      source_name = "Dose (Mandema 2011 Table 1 reviparin row; Supplementary Data ED50 Reviparin)"
     ),
     CONMED_TINZAPARIN_DOSE = list(
-      description        = "Per-arm total daily tinzaparin dose.",
-      units              = "IU/kg/day",
-      type               = "continuous",
+      description = "Per-arm total daily tinzaparin dose.",
+      units = "IU/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a tinzaparin arm. Weight-normalized anti-Xa activity; the matching ED50 (105 IU/kg/day) carries the same units. Daily-dose range 50-75 IU/kg across 4 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
-      source_name        = "Dose (Mandema 2011 Table 1 tinzaparin row; Supplementary Data ED50 Tinzaparin)"
+      notes = "0 outside a tinzaparin arm. Weight-normalized anti-Xa activity; the matching ED50 (105 IU/kg/day) carries the same units. Daily-dose range 50-75 IU/kg across 4 trials (Mandema 2011 Table 1). Drug class: LMWH other than enoxaparin.",
+      source_name = "Dose (Mandema 2011 Table 1 tinzaparin row; Supplementary Data ED50 Tinzaparin)"
     ),
     # ---- Direct FXa inhibitors ----------------------------------------------
     CONMED_APIXABAN_DOSE = list(
-      description        = "Per-arm total daily apixaban dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily apixaban dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an apixaban arm. Daily-dose range 5-20 mg across 4 trials, 6,686 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 apixaban row; Supplementary Data ED50 Apixaban)"
+      notes = "0 outside an apixaban arm. Daily-dose range 5-20 mg across 4 trials, 6,686 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 apixaban row; Supplementary Data ED50 Apixaban)"
     ),
     CONMED_BETRIXABAN_DOSE = list(
-      description        = "Per-arm total daily betrixaban dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily betrixaban dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a betrixaban arm. Daily-dose range 30-80 mg in 1 trial, 171 patients (Mandema 2011 Table 1); the ED50 is correspondingly imprecise (214 mg/day, 95% CI 41.6-1100). Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 betrixaban row; Supplementary Data ED50 Betrixaban)"
+      notes = "0 outside a betrixaban arm. Daily-dose range 30-80 mg in 1 trial, 171 patients (Mandema 2011 Table 1); the ED50 is correspondingly imprecise (214 mg/day, 95% CI 41.6-1100). Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 betrixaban row; Supplementary Data ED50 Betrixaban)"
     ),
     CONMED_EDOXABAN_DOSE = list(
-      description        = "Per-arm total daily edoxaban dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily edoxaban dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an edoxaban arm. Daily-dose range 5-90 mg across 2 trials (Mandema 2011 Table 1); appears in the source's Methods search list under its development code DU-176b. Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 edoxaban row; Supplementary Data ED50 Edoxaban)"
+      notes = "0 outside an edoxaban arm. Daily-dose range 5-90 mg across 2 trials (Mandema 2011 Table 1); appears in the source's Methods search list under its development code DU-176b. Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 edoxaban row; Supplementary Data ED50 Edoxaban)"
     ),
     CONMED_RAZAXABAN_DOSE = list(
-      description        = "Per-arm total daily razaxaban dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily razaxaban dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a razaxaban arm. Daily-dose range 50-200 mg in 1 trial, 506 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 razaxaban row; Supplementary Data ED50 Razaxaban)"
+      notes = "0 outside a razaxaban arm. Daily-dose range 50-200 mg in 1 trial, 506 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 razaxaban row; Supplementary Data ED50 Razaxaban)"
     ),
     CONMED_RIVAROXABAN_DOSE = list(
-      description        = "Per-arm total daily rivaroxaban dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily rivaroxaban dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a rivaroxaban arm. Daily-dose range 5-60 mg across 7 trials, 7,187 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor. Distinct from the canonical DOSE_RIV_MGKG (per-administration weight-normalized rivaroxaban dose in a paediatric popPK model); this column is a per-arm TOTAL DAILY mass dose in an MBMA.",
-      source_name        = "Dose (Mandema 2011 Table 1 rivaroxaban row; Supplementary Data ED50 Rivaroxaban)"
+      notes = "0 outside a rivaroxaban arm. Daily-dose range 5-60 mg across 7 trials, 7,187 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor. Distinct from the canonical DOSE_RIV_MGKG (per-administration weight-normalized rivaroxaban dose in a paediatric popPK model); this column is a per-arm TOTAL DAILY mass dose in an MBMA.",
+      source_name = "Dose (Mandema 2011 Table 1 rivaroxaban row; Supplementary Data ED50 Rivaroxaban)"
     ),
     CONMED_LY517717_DOSE = list(
-      description        = "Per-arm total daily LY517717 dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily LY517717 dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an LY517717 arm. Investigational oral direct FXa inhibitor with no INN; the development code is used as the column suffix. Daily-dose range 25-150 mg in 1 trial, 417 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 LY517717 row; Supplementary Data ED50 LY517717)"
+      notes = "0 outside an LY517717 arm. Investigational oral direct FXa inhibitor with no INN; the development code is used as the column suffix. Daily-dose range 25-150 mg in 1 trial, 417 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 LY517717 row; Supplementary Data ED50 LY517717)"
     ),
     CONMED_PD0348292_DOSE = list(
-      description        = "Per-arm total daily PD0348292 dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily PD0348292 dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a PD0348292 arm. Investigational oral direct FXa inhibitor with no INN; the development code is used as the column suffix. Daily-dose range 0.1-10 mg in 1 trial, 992 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 PD0348292 row; Supplementary Data ED50 PD0348292)"
+      notes = "0 outside a PD0348292 arm. Investigational oral direct FXa inhibitor with no INN; the development code is used as the column suffix. Daily-dose range 0.1-10 mg in 1 trial, 992 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 PD0348292 row; Supplementary Data ED50 PD0348292)"
     ),
     CONMED_YM150_DOSE = list(
-      description        = "Per-arm total daily YM150 dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily YM150 dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a YM150 arm. Investigational oral direct FXa inhibitor (darexaban) identified in the source only by its development code. Daily-dose range 3-60 mg in 1 trial, 138 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 YM150 row; Supplementary Data ED50 YM150)"
+      notes = "0 outside a YM150 arm. Investigational oral direct FXa inhibitor (darexaban) identified in the source only by its development code. Daily-dose range 3-60 mg in 1 trial, 138 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 YM150 row; Supplementary Data ED50 YM150)"
     ),
     CONMED_AVE5026_DOSE = list(
-      description        = "Per-arm total daily AVE5026 dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily AVE5026 dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an AVE5026 arm. Investigational ultra-low-molecular-weight heparin (semuloparin) that the source classifies as a direct FXa inhibitor and identifies only by its development code. Daily-dose range 5-60 mg in 1 trial, 559 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor per the source's Methods inclusion-criteria list.",
-      source_name        = "Dose (Mandema 2011 Table 1 AVE5026 row; Supplementary Data ED50 AVE5026)"
+      notes = "0 outside an AVE5026 arm. Investigational ultra-low-molecular-weight heparin (semuloparin) that the source classifies as a direct FXa inhibitor and identifies only by its development code. Daily-dose range 5-60 mg in 1 trial, 559 patients (Mandema 2011 Table 1). Drug class: direct FXa inhibitor per the source's Methods inclusion-criteria list.",
+      source_name = "Dose (Mandema 2011 Table 1 AVE5026 row; Supplementary Data ED50 AVE5026)"
     ),
     # ---- Indirect FXa inhibitor ---------------------------------------------
     CONMED_FONDAPARINUX_DOSE = list(
-      description        = "Per-arm total daily fondaparinux dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily fondaparinux dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a fondaparinux arm. Daily-dose range 0.8-8 mg across 6 trials, 6,121 patients (Mandema 2011 Table 1). Fondaparinux is the only member of the indirect-FXa-inhibitor class, so that class's parameters are identified by fondaparinux alone.",
-      source_name        = "Dose (Mandema 2011 Table 1 fondaparinux row; Supplementary Data ED50 Fondaparinux)"
+      notes = "0 outside a fondaparinux arm. Daily-dose range 0.8-8 mg across 6 trials, 6,121 patients (Mandema 2011 Table 1). Fondaparinux is the only member of the indirect-FXa-inhibitor class, so that class's parameters are identified by fondaparinux alone.",
+      source_name = "Dose (Mandema 2011 Table 1 fondaparinux row; Supplementary Data ED50 Fondaparinux)"
     ),
     # ---- Univalent thrombin inhibitors --------------------------------------
     CONMED_DABIGATRAN_DOSE = list(
-      description        = "Per-arm total daily dabigatran dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily dabigatran dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a dabigatran arm. Dose is of dabigatran etexilate as reported by the trials. Daily-dose range 25-600 mg across 6 trials, 7,653 patients (Mandema 2011 Table 1). Drug class: univalent (direct) thrombin inhibitor.",
-      source_name        = "Dose (Mandema 2011 Table 1 dabigatran row; Supplementary Data ED50 Dabigatran)"
+      notes = "0 outside a dabigatran arm. Dose is of dabigatran etexilate as reported by the trials. Daily-dose range 25-600 mg across 6 trials, 7,653 patients (Mandema 2011 Table 1). Drug class: univalent (direct) thrombin inhibitor.",
+      source_name = "Dose (Mandema 2011 Table 1 dabigatran row; Supplementary Data ED50 Dabigatran)"
     ),
     CONMED_XIMELAGATRAN_DOSE = list(
-      description        = "Per-arm total daily ximelagatran dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily ximelagatran dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a ximelagatran arm. Daily-dose range 12-72 mg across 10 trials, 9,249 patients (Mandema 2011 Table 1). Drug class: univalent (direct) thrombin inhibitor. Arms in which ximelagatran was combined with subcutaneous melagatran STARTED BEFORE SURGERY are flagged by FORM_XIMELAGATRAN_PRESURG and use a proportionally lower ED50; the source treated that regimen as a separate drug because its potency differed significantly (P < 0.001).",
-      source_name        = "Dose (Mandema 2011 Table 1 ximelagatran row; Supplementary Data ED50 Ximelagatran)"
+      notes = "0 outside a ximelagatran arm. Daily-dose range 12-72 mg across 10 trials, 9,249 patients (Mandema 2011 Table 1). Drug class: univalent (direct) thrombin inhibitor. Arms in which ximelagatran was combined with subcutaneous melagatran STARTED BEFORE SURGERY are flagged by FORM_XIMELAGATRAN_PRESURG and use a proportionally lower ED50; the source treated that regimen as a separate drug because its potency differed significantly (P < 0.001).",
+      source_name = "Dose (Mandema 2011 Table 1 ximelagatran row; Supplementary Data ED50 Ximelagatran)"
     ),
     FORM_XIMELAGATRAN_PRESURG = list(
-      description        = "Indicator that a ximelagatran arm used the pre-surgery regimen: ximelagatran given in combination with subcutaneous melagatran started BEFORE surgery (1) versus ximelagatran administered alone (0).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that a ximelagatran arm used the pre-surgery regimen: ximelagatran given in combination with subcutaneous melagatran started BEFORE surgery (1) versus ximelagatran administered alone (0).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = ximelagatran administered alone (the reference regimen whose ED50 is the ximelagatran ED50 of 78.8 mg/day).",
-      notes              = "Study-arm-level regimen indicator, not a subject-level covariate. Multiplies the ximelagatran ED50 by 0.365 when set to 1, i.e. the pre-surgery melagatran combination is about 2.7-fold more potent. The source states: 'Ximelagatran given in combination with subcutaneous melagatran started before surgery was treated as a separate drug from ximelagatran when administered alone because of a statistically significant difference in potency between these two treatments (P < 0.001).' Follows the FORM_<drug>_<regimen> family established by FORM_FLV_BID_XR / FORM_LOV_BID_XR, which likewise encode an ED50-ratio regimen switch in an MBMA dose-response model. Has no effect when CONMED_XIMELAGATRAN_DOSE is 0.",
-      source_name        = "'Ximelagatran started before surgery / ED50 Ximelagatran' (Mandema 2011 Supplementary Data parameter table)"
+      notes = "Study-arm-level regimen indicator, not a subject-level covariate. Multiplies the ximelagatran ED50 by 0.365 when set to 1, i.e. the pre-surgery melagatran combination is about 2.7-fold more potent. The source states: 'Ximelagatran given in combination with subcutaneous melagatran started before surgery was treated as a separate drug from ximelagatran when administered alone because of a statistically significant difference in potency between these two treatments (P < 0.001).' Follows the FORM_<drug>_<regimen> family established by FORM_FLV_BID_XR / FORM_LOV_BID_XR, which likewise encode an ED50-ratio regimen switch in an MBMA dose-response model. Has no effect when CONMED_XIMELAGATRAN_DOSE is 0.",
+      source_name = "'Ximelagatran started before surgery / ED50 Ximelagatran' (Mandema 2011 Supplementary Data parameter table)"
     ),
     # ---- Bivalent thrombin inhibitor ----------------------------------------
     CONMED_DESIRUDIN_DOSE = list(
-      description        = "Per-arm total daily desirudin dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily desirudin dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a desirudin arm. Daily-dose range 20-40 mg across 3 trials, 2,095 patients (Mandema 2011 Table 1). Desirudin is the only member of the bivalent-thrombin-inhibitor class. The source excluded this class from the Table 2 pairwise therapeutic-index comparison 'because only limited data are available'; its EDbld ratio (3.72) is estimated but very imprecise (95% CI 0.652-21.3).",
-      source_name        = "Dose (Mandema 2011 Table 1 desirudin row; Supplementary Data ED50 Desirudin)"
+      notes = "0 outside a desirudin arm. Daily-dose range 20-40 mg across 3 trials, 2,095 patients (Mandema 2011 Table 1). Desirudin is the only member of the bivalent-thrombin-inhibitor class. The source excluded this class from the Table 2 pairwise therapeutic-index comparison 'because only limited data are available'; its EDbld ratio (3.72) is estimated but very imprecise (95% CI 0.652-21.3).",
+      source_name = "Dose (Mandema 2011 Table 1 desirudin row; Supplementary Data ED50 Desirudin)"
     ),
     # ---- Synthetic mixed FXa and thrombin inhibitor --------------------------
     CONMED_SR123781A_DOSE = list(
-      description        = "Per-arm total daily SR123781A dose.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily SR123781A dose.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an SR123781A arm. Investigational synthetic mixed FXa and thrombin inhibitor with no INN; the development code is used as the column suffix. Daily-dose range 0.2-4 mg in 1 trial, 843 patients (Mandema 2011 Table 1). Only member of its class, and excluded from the Table 2 pairwise therapeutic-index comparison for the same limited-data reason as desirudin.",
-      source_name        = "Dose (Mandema 2011 Table 1 SR123781A row; Supplementary Data ED50 SR123781A)"
+      notes = "0 outside an SR123781A arm. Investigational synthetic mixed FXa and thrombin inhibitor with no INN; the development code is used as the column suffix. Daily-dose range 0.2-4 mg in 1 trial, 843 patients (Mandema 2011 Table 1). Only member of its class, and excluded from the Table 2 pairwise therapeutic-index comparison for the same limited-data reason as desirudin.",
+      source_name = "Dose (Mandema 2011 Table 1 SR123781A row; Supplementary Data ED50 SR123781A)"
     ),
     # ---- Unfractionated heparin ---------------------------------------------
     CONMED_HEPARIN_DOSE = list(
-      description        = "Per-arm total daily unfractionated heparin dose.",
-      units              = "kIU/day",
-      type               = "continuous",
+      description = "Per-arm total daily unfractionated heparin dose.",
+      units = "kIU/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an unfractionated-heparin arm. Thousands of IU per day; the matching ED50 (57.9 kIU/day) carries the same units. Daily-dose range 10-15 kIU across 18 trials, 3,493 patients (Mandema 2011 Table 1). Heparin is its own drug class and has by far the narrowest therapeutic index in the analysis. Distinct from the canonical DOSE_UFH_UH (a concomitant continuous-infusion heparin dose RATE in U/h); this column is a per-arm total DAILY prophylactic dose in an MBMA.",
-      source_name        = "Dose (Mandema 2011 Table 1 heparin row; Supplementary Data ED50 Heparin)"
+      notes = "0 outside an unfractionated-heparin arm. Thousands of IU per day; the matching ED50 (57.9 kIU/day) carries the same units. Daily-dose range 10-15 kIU across 18 trials, 3,493 patients (Mandema 2011 Table 1). Heparin is its own drug class and has by far the narrowest therapeutic index in the analysis. Distinct from the canonical DOSE_UFH_UH (a concomitant continuous-infusion heparin dose RATE in U/h); this column is a per-arm total DAILY prophylactic dose in an MBMA.",
+      source_name = "Dose (Mandema 2011 Table 1 heparin row; Supplementary Data ED50 Heparin)"
     ),
     # ---- Warfarin ------------------------------------------------------------
     CONMED_WARFARIN_DOSE = list(
-      description        = "Per-arm achieved international normalized ratio (INR) for a warfarin arm, used as the warfarin dose regressor.",
-      units              = "INR",
-      type               = "continuous",
+      description = "Per-arm achieved international normalized ratio (INR) for a warfarin arm, used as the warfarin dose regressor.",
+      units = "INR",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a warfarin arm. Warfarin is dosed to an INR target rather than to a fixed mass dose, so the source uses the arm's achieved INR as the dose variable: Mandema 2011 Table 1 reports the warfarin 'daily dose range' as 2.2-2.5 INR and the Supplementary Data reports 'ED50 Warfarin (INR)' = 4.05. Feeding a milligram warfarin dose into this column would be a units error. Distinct from the canonical INR_BASE, which is a subject-level PRE-medication baseline INR used as a PK/PD model covariate; this column is a per-arm ON-TREATMENT achieved INR used as an MBMA dose surrogate. NOTE: the source could not estimate a bleeding slope (EDbld) for warfarin, so a warfarin arm has NO bleeding dose-response -- the model reports this through the warfarin_bleeding_undefined output.",
-      source_name        = "Dose in INR (Mandema 2011 Table 1 warfarin row 'Daily dose range 2.2-2.5 INR'; Supplementary Data 'ED50 Warfarin (INR)')"
+      notes = "0 outside a warfarin arm. Warfarin is dosed to an INR target rather than to a fixed mass dose, so the source uses the arm's achieved INR as the dose variable: Mandema 2011 Table 1 reports the warfarin 'daily dose range' as 2.2-2.5 INR and the Supplementary Data reports 'ED50 Warfarin (INR)' = 4.05. Feeding a milligram warfarin dose into this column would be a units error. Distinct from the canonical INR_BASE, which is a subject-level PRE-medication baseline INR used as a PK/PD model covariate; this column is a per-arm ON-TREATMENT achieved INR used as an MBMA dose surrogate. NOTE: the source could not estimate a bleeding slope (EDbld) for warfarin, so a warfarin arm has NO bleeding dose-response -- the model reports this through the warfarin_bleeding_undefined output.",
+      source_name = "Dose in INR (Mandema 2011 Table 1 warfarin row 'Daily dose range 2.2-2.5 INR'; Supplementary Data 'ED50 Warfarin (INR)')"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Per-arm mean patient age. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Per-arm mean patient age. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Mandema 2011 Methods lists age among the extracted patient-population characteristics tested on the dose-response parameters. Results: 'None of the covariates significantly influenced the ED50 or Emax of the dose-response relationship' and 'None of the covariates significantly impacted the slope of the bleeding dose-response relationship.' No point estimate is reported for any screened covariate, so no effect parameter is included in ini(). Per-arm mean ages are tabulated in the Supplementary Data trial-overview table.",
-      source_name        = "mean age (Mandema 2011 Methods covariate list; Supplementary Data trial-overview table)"
+      notes = "Mandema 2011 Methods lists age among the extracted patient-population characteristics tested on the dose-response parameters. Results: 'None of the covariates significantly influenced the ED50 or Emax of the dose-response relationship' and 'None of the covariates significantly impacted the slope of the bleeding dose-response relationship.' No point estimate is reported for any screened covariate, so no effect parameter is included in ini(). Per-arm mean ages are tabulated in the Supplementary Data trial-overview table.",
+      source_name = "mean age (Mandema 2011 Methods covariate list; Supplementary Data trial-overview table)"
     ),
     WT = list(
-      description        = "Per-arm mean patient body weight. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Per-arm mean patient body weight. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods ('patient-population characteristics (age, weight, gender, type of anesthesia, type of surgery ...)'); not retained and no point estimate reported. Note that three LMWHs in this model are dosed per kilogram (ardeparin, nadroparin, tinzaparin), so body weight enters those arms through the IU/kg dose units rather than as a covariate effect.",
-      source_name        = "weight (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods ('patient-population characteristics (age, weight, gender, type of anesthesia, type of surgery ...)'); not retained and no point estimate reported. Note that three LMWHs in this model are dosed per kilogram (ardeparin, nadroparin, tinzaparin), so body weight enters those arms through the IU/kg dose units rather than as a covariate effect.",
+      source_name = "weight (Mandema 2011 Methods covariate list)"
     ),
     SEXF = list(
-      description        = "Per-arm proportion female. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(fraction)",
-      type               = "continuous",
+      description = "Per-arm proportion female. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods ('gender'); not retained and no point estimate reported.",
-      source_name        = "gender (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods ('gender'); not retained and no point estimate reported.",
+      source_name = "gender (Mandema 2011 Methods covariate list)"
     ),
     SURG_HIP = list(
-      description        = "Per-arm proportion of patients undergoing total hip replacement rather than total knee replacement. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(fraction)",
-      type               = "continuous",
+      description = "Per-arm proportion of patients undergoing total hip replacement rather than total knee replacement. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods ('type of surgery (hip vs. knee)') and tabulated per arm in the Supplementary Data trial-overview table as '% hip replacement'. NOT retained on the dose-response parameters -- the RELATIVE treatment effect was the same for hip and knee surgery. Surgery type does strongly affect the ABSOLUTE event rate, which the source absorbed into the per-trial placebo intercept rather than into the dose-response: 'knee surgery showing a higher absolute total VTE event rate (28.6% for enoxaparin) than hip surgery (13.5% for enoxaparin)'. A user who wants a knee-specific or hip-specific absolute prediction should therefore shift the e0_* intercepts, not add a covariate effect.",
-      source_name        = "% hip replacement (Mandema 2011 Methods covariate list; Supplementary Data trial-overview table)"
+      notes = "Screened per Mandema 2011 Methods ('type of surgery (hip vs. knee)') and tabulated per arm in the Supplementary Data trial-overview table as '% hip replacement'. NOT retained on the dose-response parameters -- the RELATIVE treatment effect was the same for hip and knee surgery. Surgery type does strongly affect the ABSOLUTE event rate, which the source absorbed into the per-trial placebo intercept rather than into the dose-response: 'knee surgery showing a higher absolute total VTE event rate (28.6% for enoxaparin) than hip surgery (13.5% for enoxaparin)'. A user who wants a knee-specific or hip-specific absolute prediction should therefore shift the e0_* intercepts, not add a covariate effect.",
+      source_name = "% hip replacement (Mandema 2011 Methods covariate list; Supplementary Data trial-overview table)"
     ),
     REGION = list(
-      description        = "Primary geographic location of the trial (Asia, Australia, Europe, or North America). Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Primary geographic location of the trial (Asia, Australia, Europe, or North America). Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods trial-characteristics list; not retained and no point estimate reported. Regional counts per drug are in Mandema 2011 Table 1 and per trial in the Supplementary Data trial-overview table. Region matters clinically because the approved enoxaparin regimen differs by region (40 mg q.d. in Europe, 30 mg Q12H in North America, 20 mg b.i.d. in Japan), but the source handled that through the dose axis rather than through a covariate effect.",
-      source_name        = "primary geographic location (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods trial-characteristics list; not retained and no point estimate reported. Regional counts per drug are in Mandema 2011 Table 1 and per trial in the Supplementary Data trial-overview table. Region matters clinically because the approved enoxaparin regimen differs by region (40 mg q.d. in Europe, 30 mg Q12H in North America, 20 mg b.i.d. in Japan), but the source handled that through the dose axis rather than through a covariate effect.",
+      source_name = "primary geographic location (Mandema 2011 Methods covariate list)"
     ),
     TRT_START_REL_SURGERY = list(
-      description        = "Timing of treatment start relative to surgery. Screened as a dose-response covariate but NOT retained in the final model, EXCEPT for the ximelagatran pre-surgery regimen which was carried as a separate potency.",
-      units              = "h",
-      type               = "continuous",
+      description = "Timing of treatment start relative to surgery. Screened as a dose-response covariate but NOT retained in the final model, EXCEPT for the ximelagatran pre-surgery regimen which was carried as a separate potency.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods treatment-covariate list ('regimen, time of treatment start relative to surgery, treatment duration'). Not retained as a general covariate effect; no point estimate is reported. The one place the source did retain a start-timing effect is the ximelagatran + subcutaneous melagatran started-before-surgery regimen, which is modelled as an ED50 ratio through FORM_XIMELAGATRAN_PRESURG rather than as a continuous covariate.",
-      source_name        = "time of treatment start relative to surgery (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods treatment-covariate list ('regimen, time of treatment start relative to surgery, treatment duration'). Not retained as a general covariate effect; no point estimate is reported. The one place the source did retain a start-timing effect is the ximelagatran + subcutaneous melagatran started-before-surgery regimen, which is modelled as an ED50 ratio through FORM_XIMELAGATRAN_PRESURG rather than as a continuous covariate.",
+      source_name = "time of treatment start relative to surgery (Mandema 2011 Methods covariate list)"
     ),
     TRT_DURATION = list(
-      description        = "Treatment (prophylaxis) duration. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "day",
-      type               = "continuous",
+      description = "Treatment (prophylaxis) duration. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods treatment-covariate list; not retained and no point estimate reported. Trials of extended prophylaxis and trials whose treatment duration differed across arms were excluded at the screening stage, which limits the range over which duration could have acted.",
-      source_name        = "treatment duration (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods treatment-covariate list; not retained and no point estimate reported. Trials of extended prophylaxis and trials whose treatment duration differed across arms were excluded at the screening stage, which limits the range over which duration could have acted.",
+      source_name = "treatment duration (Mandema 2011 Methods covariate list)"
     ),
     VENOGRAPHY_BILATERAL = list(
-      description        = "Method of venography used for VTE ascertainment (bilateral versus unilateral). Screened as a trial-level dose-response covariate but NOT retained in the final model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Method of venography used for VTE ascertainment (bilateral versus unilateral). Screened as a trial-level dose-response covariate but NOT retained in the final model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods trial-characteristics list; not retained and no point estimate reported. Only trials using mandatory venography at the end of the evaluation period were eligible, so this covariate distinguishes ascertainment thoroughness rather than presence.",
-      source_name        = "method of venography (unilateral vs. bilateral) (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods trial-characteristics list; not retained and no point estimate reported. Only trials using mandatory venography at the end of the evaluation period were eligible, so this covariate distinguishes ascertainment thoroughness rather than presence.",
+      source_name = "method of venography (unilateral vs. bilateral) (Mandema 2011 Methods covariate list)"
     ),
     TRIAL_START_YEAR = list(
-      description        = "Calendar year in which the trial started. Screened as a trial-level dose-response covariate but NOT retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Calendar year in which the trial started. Screened as a trial-level dose-response covariate but NOT retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods trial-characteristics list; not retained and no point estimate reported.",
-      source_name        = "year of trial start (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods trial-characteristics list; not retained and no point estimate reported.",
+      source_name = "year of trial start (Mandema 2011 Methods covariate list)"
     ),
     ANESTHESIA_TYPE = list(
-      description        = "Type of anesthesia used for the surgery. Screened as a dose-response covariate but NOT retained in the final model.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Type of anesthesia used for the surgery. Screened as a dose-response covariate but NOT retained in the final model.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened per Mandema 2011 Methods patient-population covariate list ('type of anesthesia'); not retained and no point estimate reported.",
-      source_name        = "type of anesthesia (Mandema 2011 Methods covariate list)"
+      notes = "Screened per Mandema 2011 Methods patient-population covariate list ('type of anesthesia'); not retained and no point estimate reported.",
+      source_name = "type of anesthesia (Mandema 2011 Methods covariate list)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 92543L,
-    n_studies        = 89L,
-    age_range        = "Adults undergoing elective total hip or total knee replacement; per-arm mean ages (roughly 60-70 years for most arms) are tabulated in the Supplementary Data trial-overview table. Age was screened as a covariate and not retained.",
-    weight_range     = "Not tabulated in the main paper. Body weight was screened as a covariate and not retained; three LMWHs (ardeparin, nadroparin, tinzaparin) are dosed per kilogram so weight enters those arms through the IU/kg dose units.",
-    sex_female_pct   = NA_real_,
-    disease_state    = "Prophylaxis of venous thromboembolism after elective total hip replacement (THR) or total knee replacement (TKR) surgery. 61 trials enrolled THR patients and 41 TKR (some trials both); trials required at least 75% of patients to have had hip or knee replacement. Efficacy endpoints: clinical pulmonary embolism (PE), major VTE (proximal DVT + clinical PE +/- all-cause or VTE-related death) and total VTE (distal DVT + major VTE), all ascertained by mandatory end-of-period venography. Safety endpoints: major bleeding (ISTH criteria adapted for surgery), major + clinically-relevant-non-major (CRNM) bleeding, and total bleeding.",
-    dose_range       = "23 anticoagulants across 7 drug classes; per-drug daily-dose ranges are in Mandema 2011 Table 1 (e.g. enoxaparin 10-60 mg, dabigatran 25-600 mg, apixaban 5-20 mg, rivaroxaban 5-60 mg, fondaparinux 0.8-8 mg, heparin 10-15 kIU, warfarin INR 2.2-2.5). 15 trials (1,286 patients) were placebo-controlled.",
-    regions          = "6 trials in Asia, 47 in Europe (including Australia), and 35 in North America (Mandema 2011 Table 1).",
+    species = "human",
+    n_subjects = 92543L,
+    n_studies = 89L,
+    age_range = "Adults undergoing elective total hip or total knee replacement; per-arm mean ages (roughly 60-70 years for most arms) are tabulated in the Supplementary Data trial-overview table. Age was screened as a covariate and not retained.",
+    weight_range = "Not tabulated in the main paper. Body weight was screened as a covariate and not retained; three LMWHs (ardeparin, nadroparin, tinzaparin) are dosed per kilogram so weight enters those arms through the IU/kg dose units.",
+    sex_female_pct = NA_real_,
+    disease_state = "Prophylaxis of venous thromboembolism after elective total hip replacement (THR) or total knee replacement (TKR) surgery. 61 trials enrolled THR patients and 41 TKR (some trials both); trials required at least 75% of patients to have had hip or knee replacement. Efficacy endpoints: clinical pulmonary embolism (PE), major VTE (proximal DVT + clinical PE +/- all-cause or VTE-related death) and total VTE (distal DVT + major VTE), all ascertained by mandatory end-of-period venography. Safety endpoints: major bleeding (ISTH criteria adapted for surgery), major + clinically-relevant-non-major (CRNM) bleeding, and total bleeding.",
+    dose_range = "23 anticoagulants across 7 drug classes; per-drug daily-dose ranges are in Mandema 2011 Table 1 (e.g. enoxaparin 10-60 mg, dabigatran 25-600 mg, apixaban 5-20 mg, rivaroxaban 5-60 mg, fondaparinux 0.8-8 mg, heparin 10-15 kIU, warfarin INR 2.2-2.5). 15 trials (1,286 patients) were placebo-controlled.",
+    regions = "6 trials in Asia, 47 in Europe (including Australia), and 35 in North America (Mandema 2011 Table 1).",
     n_trials_efficacy = 87L,
     n_trials_bleeding = 74L,
-    drug_classes     = "Enoxaparin (treated as its own class, and the reference for all relative effects); other LMWHs (ardeparin, bemiparin, dalteparin, nadroparin, reviparin, tinzaparin); direct FXa inhibitors (apixaban, betrixaban, edoxaban, razaxaban, rivaroxaban, LY517717, PD0348292, YM150, AVE5026); indirect FXa inhibitors (fondaparinux); univalent thrombin inhibitors (dabigatran, ximelagatran); bivalent thrombin inhibitors (desirudin); synthetic mixed FXa and thrombin inhibitors (SR123781A); unfractionated heparin; and warfarin. Certoparin appears in the Methods search list but no certoparin trial met the inclusion criteria, so it has no ED50 and is not a column in this model.",
-    notes            = "Summary-level MBMA: the modelled observations were per-arm event COUNTS (number of patients with the event out of the arm sample size), assumed binomial, with a separate placebo-response intercept estimated for EACH of the 89 trials. Because of those per-trial intercepts the identified response variable is the log odds ratio between the active and control arms, not the absolute event rate; the source reports none of the 89 intercepts. Trial-specific random effects on Emax and ED50 were tested and rejected (estimated variances close to zero), so the model carries NO random effects and NO between-subject variability. Within-arm correlation across the multiple endpoints measured in the same arm was handled by a compound-symmetry structure that is a property of the estimation, not of the predictive model, and is therefore not encoded. Absolute event rates varied enormously across trials (1.7-46% for total VTE and 0-5.3% for major bleeding across all enoxaparin doses), so the e0_* intercepts in this model reproduce the single reference trial drawn in Figures 1 and 2, not any particular study."
+    drug_classes = "Enoxaparin (treated as its own class, and the reference for all relative effects); other LMWHs (ardeparin, bemiparin, dalteparin, nadroparin, reviparin, tinzaparin); direct FXa inhibitors (apixaban, betrixaban, edoxaban, razaxaban, rivaroxaban, LY517717, PD0348292, YM150, AVE5026); indirect FXa inhibitors (fondaparinux); univalent thrombin inhibitors (dabigatran, ximelagatran); bivalent thrombin inhibitors (desirudin); synthetic mixed FXa and thrombin inhibitors (SR123781A); unfractionated heparin; and warfarin. Certoparin appears in the Methods search list but no certoparin trial met the inclusion criteria, so it has no ED50 and is not a column in this model.",
+    notes = "Summary-level MBMA: the modelled observations were per-arm event COUNTS (number of patients with the event out of the arm sample size), assumed binomial, with a separate placebo-response intercept estimated for EACH of the 89 trials. Because of those per-trial intercepts the identified response variable is the log odds ratio between the active and control arms, not the absolute event rate; the source reports none of the 89 intercepts. Trial-specific random effects on Emax and ED50 were tested and rejected (estimated variances close to zero), so the model carries NO random effects and NO between-subject variability. Within-arm correlation across the multiple endpoints measured in the same arm was handled by a compound-symmetry structure that is a property of the estimation, not of the predictive model, and is therefore not encoded. Absolute event rates varied enormously across trials (1.7-46% for total VTE and 0-5.3% for major bleeding across all enoxaparin doses), so the e0_* intercepts in this model reproduce the single reference trial drawn in Figures 1 and 2, not any particular study."
   )
 
   ini({

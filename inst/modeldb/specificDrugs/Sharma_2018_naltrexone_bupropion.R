@@ -5,7 +5,7 @@ Sharma_2018_naltrexone_bupropion <- function() {
   units <- list(
     time = "week",
     dosing = "n/a (body-weight disease-trajectory model; naltrexone / bupropion doses enter as the CONMED_NAL_DOSE / CONMED_BUP_DOSE daily-dose covariates driving the Emax, not as rxode2 dose events)",
-    concentration = "kg"  # body weight (the single-output "Cc" canonical carries kg, not a drug concentration; see model() comment)
+    concentration = "kg" # body weight (the single-output "Cc" canonical carries kg, not a drug concentration; see model() comment)
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what

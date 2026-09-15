@@ -23,74 +23,74 @@ Chandasana_2023_dolutegravir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated allometric power effect on CL/F (exponent 0.455, 95% CI 0.418-0.492) and on V/F (exponent 0.556, 95% CI 0.514-0.598) with reference weight 70 kg (Chandasana 2023 Table 2 and the covariate-relationship equations printed beneath it; NONMEM control stream CLWT = (WT/70)**THETA(5), VWT = (WT/70)**THETA(6)). Neither exponent was fixed at the canonical 0.75 / 1.0; the paper's Discussion notes both came out lower than the canonical values while preserving their relative ratio. Evaluated as a time-varying covariate. Baseline weight 3.9-91.0 kg; across all analysis records weight spanned 4-96 kg (Chandasana 2023 Sect. 3.2).",
-      source_name        = "WT"
+      notes = "Estimated allometric power effect on CL/F (exponent 0.455, 95% CI 0.418-0.492) and on V/F (exponent 0.556, 95% CI 0.514-0.598) with reference weight 70 kg (Chandasana 2023 Table 2 and the covariate-relationship equations printed beneath it; NONMEM control stream CLWT = (WT/70)**THETA(5), VWT = (WT/70)**THETA(6)). Neither exponent was fixed at the canonical 0.75 / 1.0; the paper's Discussion notes both came out lower than the canonical values while preserving their relative ratio. Evaluated as a time-varying covariate. Baseline weight 3.9-91.0 kg; across all analysis records weight spanned 4-96 kg (Chandasana 2023 Sect. 3.2).",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the sigmoidal enzyme-maturation function on CL/F, FMAT = PMA^Hill / (PMA^Hill + TM50^Hill), with TM50 = 52.2 postmenstrual weeks and Hill = 3.43, both FIXED from Anderson and Holford (2009) paracetamol values because paracetamol shares dolutegravir's UGT-dominated clearance pathways (Chandasana 2023 Table 2 footnote a and Sect. 3.2). The source model is written in postmenstrual WEEKS and derives them from postnatal age assuming term birth: PMA (weeks) = PNA (years) * 52 + 40 (Chandasana 2023 covariate-relationship block; control stream PMA = AGE*52+40). The canonical PAGE column is in months, so model() converts months to weeks with 1 month = 30.4375 / 7 = 4.348125 weeks before evaluating FMAT. FMAT saturates towards 1 in older children, so the maturation term is only material in infants; it is what separates the 10 mg (<6 months) and 15 mg (>=6 months) dispersible-tablet doses in the 6 to <10 kg weight band.",
-      source_name        = "PMA (weeks)"
+      notes = "Drives the sigmoidal enzyme-maturation function on CL/F, FMAT = PMA^Hill / (PMA^Hill + TM50^Hill), with TM50 = 52.2 postmenstrual weeks and Hill = 3.43, both FIXED from Anderson and Holford (2009) paracetamol values because paracetamol shares dolutegravir's UGT-dominated clearance pathways (Chandasana 2023 Table 2 footnote a and Sect. 3.2). The source model is written in postmenstrual WEEKS and derives them from postnatal age assuming term birth: PMA (weeks) = PNA (years) * 52 + 40 (Chandasana 2023 covariate-relationship block; control stream PMA = AGE*52+40). The canonical PAGE column is in months, so model() converts months to weeks with 1 month = 30.4375 / 7 = 4.348125 weeks before evaluating FMAT. FMAT saturates towards 1 in older children, so the maturation term is only material in infants; it is what separates the 10 mg (<6 months) and 15 mg (>=6 months) dispersible-tablet doses in the 6 to <10 kg weight band.",
+      source_name = "PMA (weeks)"
     ),
     FORM_DTG_DT = list(
-      description        = "Dolutegravir dispersible-tablet / granule formulation indicator (1 = dispersible tablet or granules for oral suspension, 0 = film-coated tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dolutegravir dispersible-tablet / granule formulation indicator (1 = dispersible tablet or granules for oral suspension, 0 = film-coated tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (film-coated tablet, FCT)",
-      notes              = "The dispersible tablet and the granules share a single set of absorption and bioavailability estimates because a healthy-adult study showed the two to be bioequivalent at the same dose (Chandasana 2023 Sect. 2.3, citing Buchanan 2017), so one indicator covers both. Two simultaneous effects, both multiplicative and both taken from the control stream: the absorption rate constant is multiplied by 2.04, giving Ka = 0.854 * 2.04 = 1.74 1/h for the dispersible tablet / granules against 0.854 1/h for the film-coated tablet (control stream KAFORM = THETA(17)**FORMK with FORMK = 1 when FORM >= 2; Chandasana 2023 covariate-relationship block and Table S1, which prints the product 1.74 with 95% CI 1.20-2.28); and relative bioavailability is multiplied by 1.53 (control stream FFFLAG = THETA(9)**FFLAG). Note that 2.04 and 1.53 are RATIOS to the film-coated-tablet reference, not absolute values.",
-      source_name        = "FORM"
+      notes = "The dispersible tablet and the granules share a single set of absorption and bioavailability estimates because a healthy-adult study showed the two to be bioequivalent at the same dose (Chandasana 2023 Sect. 2.3, citing Buchanan 2017), so one indicator covers both. Two simultaneous effects, both multiplicative and both taken from the control stream: the absorption rate constant is multiplied by 2.04, giving Ka = 0.854 * 2.04 = 1.74 1/h for the dispersible tablet / granules against 0.854 1/h for the film-coated tablet (control stream KAFORM = THETA(17)**FORMK with FORMK = 1 when FORM >= 2; Chandasana 2023 covariate-relationship block and Table S1, which prints the product 1.74 with 95% CI 1.20-2.28); and relative bioavailability is multiplied by 1.53 (control stream FFFLAG = THETA(9)**FFLAG). Note that 2.04 and 1.53 are RATIOS to the film-coated-tablet reference, not absolute values.",
+      source_name = "FORM"
     ),
     FED = list(
-      description        = "Dose administered without regard to food (1 = dosed without regard to food, 0 = dosed fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dose administered without regard to food (1 = dosed without regard to food, 0 = dosed fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Relative bioavailability is multiplied by 1.10 (95% CI 1.03-1.17) when the dose was given without regard to food rather than fasted (Chandasana 2023 Table 2). The effect is NOT formulation-specific: the control stream forms F1 = 1 * THETA(4)**SFLAG * THETA(9)**FFLAG, whose own comment block enumerates fasted FCT = 1, fasted DT = THETA(9), fed FCT = THETA(4) and fed DT = THETA(9) * THETA(4), and Table S1 accordingly prints F for the dispersible tablet without regard to food as 1.68 = 1.10 * 1.53. The source category is 'without regard to food' (the protocol simply did not require fasting) rather than a controlled fed challenge with a defined meal, so the general FED indicator applies rather than FED_HIGHFAT; the paper attributes the smaller pediatric food effect relative to adults to exactly this lack of a defined meal. Operationally SFLAG = 1 for every sparse sample and for P1093 intensive samples from week 4 onward.",
-      source_name        = "SFLAG"
+      notes = "Relative bioavailability is multiplied by 1.10 (95% CI 1.03-1.17) when the dose was given without regard to food rather than fasted (Chandasana 2023 Table 2). The effect is NOT formulation-specific: the control stream forms F1 = 1 * THETA(4)**SFLAG * THETA(9)**FFLAG, whose own comment block enumerates fasted FCT = 1, fasted DT = THETA(9), fed FCT = THETA(4) and fed DT = THETA(9) * THETA(4), and Table S1 accordingly prints F for the dispersible tablet without regard to food as 1.68 = 1.10 * 1.53. The source category is 'without regard to food' (the protocol simply did not require fasting) rather than a controlled fed challenge with a defined meal, so the general FED indicator applies rather than FED_HIGHFAT; the paper attributes the smaller pediatric food effect relative to adults to exactly this lack of a defined meal. Operationally SFLAG = 1 for every sparse sample and for P1093 intensive samples from week 4 onward.",
+      source_name = "SFLAG"
     ),
     STUDY_ODYSSEY = list(
-      description        = "ODYSSEY study indicator (1 = record from the ODYSSEY trial, 0 = record from IMPAACT P1093)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ODYSSEY study indicator (1 = record from the ODYSSEY trial, 0 = record from IMPAACT P1093)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IMPAACT P1093)",
-      notes              = "Selects between the two study-specific residual-error magnitudes of this pooled two-study analysis. Separate residual errors were estimated because the two trials used different bioanalytical methods, with lower limits of quantification of 5 ng/mL (P1093) and 9.7 ng/mL (ODYSSEY) (Chandasana 2023 Sects. 2.2 and 3.2). The control stream writes the combined error as Y = F + F*ERR(1)*(1-STUD) + ERR(2)*(1-STUD) + F*ERR(3)*STUD + ERR(4)*STUD, i.e. a proportional plus additive pair per study. The between-study difference is confined to residual error; no structural or covariate parameter differs between the studies.",
-      source_name        = "STDY"
+      notes = "Selects between the two study-specific residual-error magnitudes of this pooled two-study analysis. Separate residual errors were estimated because the two trials used different bioanalytical methods, with lower limits of quantification of 5 ng/mL (P1093) and 9.7 ng/mL (ODYSSEY) (Chandasana 2023 Sects. 2.2 and 3.2). The control stream writes the combined error as Y = F + F*ERR(1)*(1-STUD) + ERR(2)*(1-STUD) + F*ERR(3)*STUD + ERR(4)*STUD, i.e. a proportional plus additive pair per study. The between-study difference is confined to residual error; no structural or covariate parameter differs between the studies.",
+      source_name = "STDY"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion variability on CL/F and Ka",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion variability on CL/F and Ka",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "The control stream carries FOUR inter-occasion CL/F slots (ETA(4)-ETA(7), $OMEGA BLOCK(1) plus SAME(3)) and TWO inter-occasion Ka slots (ETA(8)-ETA(9), $OMEGA BLOCK(1) plus SAME(1)), matching the four omega^2 IOV,CL rows and two omega^2 IOV,KA rows of Chandasana 2023 Table 2. All slots within a parameter share one magnitude, so occasions after the first are fixed to the first occasion's variance. In the source the Ka occasions were additionally gated on SERIAL = 1, i.e. only intensive-PK occasions carried inter-occasion variability on absorption; that gating is not reproduced here because it is a study-design flag rather than a model parameter. Set OCC = 0 on every record to switch inter-occasion variability off entirely, or OCC = 1 to reproduce the single steady-state occasion simulated for Chandasana 2023 Table 3.",
-      source_name        = "OCC"
+      notes = "The control stream carries FOUR inter-occasion CL/F slots (ETA(4)-ETA(7), $OMEGA BLOCK(1) plus SAME(3)) and TWO inter-occasion Ka slots (ETA(8)-ETA(9), $OMEGA BLOCK(1) plus SAME(1)), matching the four omega^2 IOV,CL rows and two omega^2 IOV,KA rows of Chandasana 2023 Table 2. All slots within a parameter share one magnitude, so occasions after the first are fixed to the first occasion's variance. In the source the Ka occasions were additionally gated on SERIAL = 1, i.e. only intensive-PK occasions carried inter-occasion variability on absorption; that gating is not reproduced here because it is a study-design flag rather than a model parameter. Set OCC = 0 on every record to switch inter-occasion variability off entirely, or OCC = 1 to reproduce the single steady-state occasion simulated for Chandasana 2023 Table 3.",
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 239L,
-    n_studies      = 2L,
-    age_range      = "0.170-17.5 years",
-    age_median     = "6.00 years",
-    weight_range   = "3.9-91.0 kg at baseline (4-96 kg across all analysis records)",
-    weight_median  = "21.1 kg (mean)",
+    species = "human",
+    n_subjects = 239L,
+    n_studies = 2L,
+    age_range = "0.170-17.5 years",
+    age_median = "6.00 years",
+    weight_range = "3.9-91.0 kg at baseline (4-96 kg across all analysis records)",
+    weight_median = "21.1 kg (mean)",
     sex_female_pct = 49.8,
     race_ethnicity = c(White = 6.3, Black = 79.5, Asian = 7.5, Other = 3.8, Unknown = 2.9),
-    disease_state  = "Infants, children and adolescents living with HIV-1, treatment naive or treatment experienced, receiving oral dolutegravir once daily with optimized background antiretroviral therapy",
-    dose_range     = "Oral dolutegravir once daily under fasting conditions: granules 4.8-32 mg, dispersible tablet 5-30 mg and film-coated tablet 20-50 mg across the WHO weight bands tested in P1093 and ODYSSEY (Chandasana 2023 Table S4)",
-    regions        = "North America, Europe, Africa (South Africa, Zimbabwe, Uganda), Asia (Thailand)",
-    notes          = "Pooled analysis of two trials: IMPAACT P1093 (N = 151), a phase I/II multicentre open-label single-arm trial in children and adolescents aged 4 weeks to <18 years, and ODYSSEY / PENTA 20 (N = 88), a phase II/III multicentre open-label randomised non-inferiority trial in children aged at least 28 days and <18 years, including nested PK sub-studies. 240 participants provided 2714 plasma concentrations; 64 were excluded (21 below the limit of quantification, 7 outlier or very low, 4 sample mix-up, 13 haemolysed, 6 non-adherent, 13 from a participant with multiple co-morbidities), leaving 2650 samples (1909 intensive, 741 sparse) from 239 participants (Chandasana 2023 Sect. 3.1 and Table 1). Baseline demographics are Chandasana 2023 Table 1; the ODYSSEY cohort was 100% Black and contributed no albumin, race or ethnicity detail. Estimation used NONMEM 7.3.0 with Monte Carlo importance sampling EM (IMPMAP). Predefined adult-matching exposure targets were a geometric-mean C24 of 0.995 ug/mL (target range 0.697-2.260 ug/mL, individual lower limit 0.500 ug/mL) and a geometric-mean AUC0-24 of 46 ug*h/mL (target range 37-134 ug*h/mL), with C24 the primary target (Chandasana 2023 Sect. 2.3)."
+    disease_state = "Infants, children and adolescents living with HIV-1, treatment naive or treatment experienced, receiving oral dolutegravir once daily with optimized background antiretroviral therapy",
+    dose_range = "Oral dolutegravir once daily under fasting conditions: granules 4.8-32 mg, dispersible tablet 5-30 mg and film-coated tablet 20-50 mg across the WHO weight bands tested in P1093 and ODYSSEY (Chandasana 2023 Table S4)",
+    regions = "North America, Europe, Africa (South Africa, Zimbabwe, Uganda), Asia (Thailand)",
+    notes = "Pooled analysis of two trials: IMPAACT P1093 (N = 151), a phase I/II multicentre open-label single-arm trial in children and adolescents aged 4 weeks to <18 years, and ODYSSEY / PENTA 20 (N = 88), a phase II/III multicentre open-label randomised non-inferiority trial in children aged at least 28 days and <18 years, including nested PK sub-studies. 240 participants provided 2714 plasma concentrations; 64 were excluded (21 below the limit of quantification, 7 outlier or very low, 4 sample mix-up, 13 haemolysed, 6 non-adherent, 13 from a participant with multiple co-morbidities), leaving 2650 samples (1909 intensive, 741 sparse) from 239 participants (Chandasana 2023 Sect. 3.1 and Table 1). Baseline demographics are Chandasana 2023 Table 1; the ODYSSEY cohort was 100% Black and contributed no albumin, race or ethnicity detail. Estimation used NONMEM 7.3.0 with Monte Carlo importance sampling EM (IMPMAP). Predefined adult-matching exposure targets were a geometric-mean C24 of 0.995 ug/mL (target range 0.697-2.260 ug/mL, individual lower limit 0.500 ug/mL) and a geometric-mean AUC0-24 of 46 ug*h/mL (target range 37-134 ug*h/mL), with C24 the primary target (Chandasana 2023 Sect. 2.3)."
   )
 
   ini({

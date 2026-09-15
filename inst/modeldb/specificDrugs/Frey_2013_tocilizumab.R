@@ -9,88 +9,88 @@ Frey_2013_tocilizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    das28       = list(analyte = "DAS28", units = "mg", specimen = "not applicable", verified = FALSE)
+    das28 = list(analyte = "DAS28", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     IL6 = list(
-      description        = "Baseline serum interleukin-6 (IL-6) concentration",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Baseline serum interleukin-6 (IL-6) concentration",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Frey 2013 enters IL-6 on the natural-log scale through the dimensionless ratio (log(IL-6 * 1000) / 9.9), where 9.9 = log(20000) corresponds to a reference IL-6 of ~20 pg/mL (the OPTION/TOWARD median of 19.9-22 pg/mL per Supplementary Table S1). The same log-IL-6 ratio enters three different parameters in the final model (Table 2): ec50 with exponent -4.4, BASE with exponent +0.13, and the DMARD background-effect parameter with exponent -6.4. The canonical column carries the raw IL-6 in pg/mL; the log transform is applied inside model().",
-      source_name        = "IL-6"
+      notes = "Time-fixed at baseline. Frey 2013 enters IL-6 on the natural-log scale through the dimensionless ratio (log(IL-6 * 1000) / 9.9), where 9.9 = log(20000) corresponds to a reference IL-6 of ~20 pg/mL (the OPTION/TOWARD median of 19.9-22 pg/mL per Supplementary Table S1). The same log-IL-6 ratio enters three different parameters in the final model (Table 2): ec50 with exponent -4.4, BASE with exponent +0.13, and the DMARD background-effect parameter with exponent -6.4. The canonical column carries the raw IL-6 in pg/mL; the log transform is applied inside model().",
+      source_name = "IL-6"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = "Frey 2013 Table 2 reports the sex effect on emax with female as the reference (Emax_female = emax * 1.0; Emax_male = emax * 1.1, +11% in males). The canonical SEXF column is 1 = female, 0 = male, so the model applies the equation emax = Emax_typ * (1 + 0.11 * (1 - SEXF)) which preserves the female-as-reference NONMEM parameterization. The +11% male offset is below the known DAS28 measurement error (0.6 units) and is not clinically significant per the paper's Discussion.",
-      source_name        = "SEX"
+      notes = "Frey 2013 Table 2 reports the sex effect on emax with female as the reference (Emax_female = emax * 1.0; Emax_male = emax * 1.1, +11% in males). The canonical SEXF column is 1 = female, 0 = male, so the model applies the equation emax = Emax_typ * (1 + 0.11 * (1 - SEXF)) which preserves the female-as-reference NONMEM parameterization. The +11% male offset is below the known DAS28 measurement error (0.6 units) and is not clinically significant per the paper's Discussion.",
+      source_name = "SEX"
     ),
     RACE_ASIAN_AMIND_OTH = list(
-      description        = "Composite race indicator: 1 = Asian, American Indian / Alaska Native, or Other; 0 = White or Black",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite race indicator: 1 = Asian, American Indian / Alaska Native, or Other; 0 = White or Black",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White or Black)",
-      notes              = "Frey 2013 pools the smaller-N race groups (Asian, American Indian/Alaska Native, Other) into a single Asian-and-others composite and uses White + Black as the reference. The composite covers ~21-27% of the OPTION/TOWARD pool per Supplementary Table S1. Multiplicative effect on kout: kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_AMIND_OTH), i.e., kout is 25% lower in the Asian/AmInd/Other composite than in the White+Black reference. Paper-defined composite grouping; see the canonical RACE_ASIAN_AMIND_OTH register entry for the rationale.",
-      source_name        = "RACE"
+      notes = "Frey 2013 pools the smaller-N race groups (Asian, American Indian/Alaska Native, Other) into a single Asian-and-others composite and uses White + Black as the reference. The composite covers ~21-27% of the OPTION/TOWARD pool per Supplementary Table S1. Multiplicative effect on kout: kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_AMIND_OTH), i.e., kout is 25% lower in the Asian/AmInd/Other composite than in the White+Black reference. Paper-defined composite grouping; see the canonical RACE_ASIAN_AMIND_OTH register entry for the rationale.",
+      source_name = "RACE"
     ),
     BLHAQ = list(
-      description        = "Baseline Health Assessment Questionnaire Disability Index (HAQ-DI; 0-3 score)",
-      units              = "unitless (0-3 composite)",
-      type               = "continuous",
+      description = "Baseline Health Assessment Questionnaire Disability Index (HAQ-DI; 0-3 score)",
+      units = "unitless (0-3 composite)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on the indirect-response BASE parameter: BASE = 6.8 * (BLHAQ/1.6)^0.043 (Frey 2013 Table 2; reference 1.6 is approximately the OPTION/TOWARD pooled median per Supplementary Table S1). Frey 2013 reports a paper-side HAQ floor of 0.010 in Table 2's covariate-range column to keep the power form well-defined when HAQ = 0; the model file applies the same floor inside model().",
-      source_name        = "HAQ"
+      notes = "Time-fixed per subject. Power effect on the indirect-response BASE parameter: BASE = 6.8 * (BLHAQ/1.6)^0.043 (Frey 2013 Table 2; reference 1.6 is approximately the OPTION/TOWARD pooled median per Supplementary Table S1). Frey 2013 reports a paper-side HAQ floor of 0.010 in Table 2's covariate-range column to keep the power form well-defined when HAQ = 0; the model file applies the same floor inside model().",
+      source_name = "HAQ"
     ),
     PAIN = list(
-      description        = "Baseline patient-reported global pain on a 100-mm visual analogue scale",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline patient-reported global pain on a 100-mm visual analogue scale",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on BASE: BASE = 6.8 * (PAIN/60)^0.062 (Frey 2013 Table 2; reference 60 is the OPTION/TOWARD pooled median per Supplementary Table S1). Distinct from BLPHYVAS (the *physician*'s global VAS). Frey 2013 reports a paper-side PAIN floor of 0.010 to keep the power form well-defined when PAIN = 0; the model file applies the same floor inside model().",
-      source_name        = "PAIN"
+      notes = "Time-fixed per subject. Power effect on BASE: BASE = 6.8 * (PAIN/60)^0.062 (Frey 2013 Table 2; reference 60 is the OPTION/TOWARD pooled median per Supplementary Table S1). Distinct from BLPHYVAS (the *physician*'s global VAS). Frey 2013 reports a paper-side PAIN floor of 0.010 to keep the power form well-defined when PAIN = 0; the model file applies the same floor inside model().",
+      source_name = "PAIN"
     ),
     BLPHYVAS = list(
-      description        = "Baseline Physician's Global Assessment of Disease Activity (100-mm visual analogue scale)",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline Physician's Global Assessment of Disease Activity (100-mm visual analogue scale)",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on BASE: BASE = 6.8 * (BLPHYVAS/65)^0.13 (Frey 2013 Table 2; reference 65 is the OPTION/TOWARD pooled median per Supplementary Table S1).",
-      source_name        = "VASP"
+      notes = "Time-fixed per subject. Power effect on BASE: BASE = 6.8 * (BLPHYVAS/65)^0.13 (Frey 2013 Table 2; reference 65 is the OPTION/TOWARD pooled median per Supplementary Table S1).",
+      source_name = "VASP"
     )
   )
 
   population <- list(
-    n_subjects     = 1703L,
+    n_subjects = 1703L,
     n_observations = 12618L,
-    n_studies      = 2L,
-    age_range      = "18-89 years; OPTION median 52, TOWARD median 54",
-    weight_range   = "36-148 kg; OPTION median 68, TOWARD median 70.9",
+    n_studies = 2L,
+    age_range = "18-89 years; OPTION median 52, TOWARD median 54",
+    weight_range = "36-148 kg; OPTION median 68, TOWARD median 70.9",
     sex_female_pct = 82,
     race_ethnicity = c(White = 73.5, "American Indian or Alaska Native" = 9.0, Asian = 10.4, Other = 3.9, Black = 3.6),
-    disease_state  = "Moderate-to-severe rheumatoid arthritis (adults). OPTION: methotrexate-inadequate responders. TOWARD: traditional-DMARD-inadequate responders.",
-    dose_range     = "Tocilizumab 4 or 8 mg/kg by 1-hour IV infusion every 4 weeks for up to 24 weeks, plus a placebo-on-DMARD-background arm. OPTION patients additionally received methotrexate; TOWARD patients additionally received methotrexate or other traditional DMARDs.",
-    regions        = "International multi-regional (OPTION + TOWARD phase III studies pooled).",
+    disease_state = "Moderate-to-severe rheumatoid arthritis (adults). OPTION: methotrexate-inadequate responders. TOWARD: traditional-DMARD-inadequate responders.",
+    dose_range = "Tocilizumab 4 or 8 mg/kg by 1-hour IV infusion every 4 weeks for up to 24 weeks, plus a placebo-on-DMARD-background arm. OPTION patients additionally received methotrexate; TOWARD patients additionally received methotrexate or other traditional DMARDs.",
+    regions = "International multi-regional (OPTION + TOWARD phase III studies pooled).",
     baseline_biomarkers = list(
       IL6_median_pg_mL_OPTION = 22,
       IL6_median_pg_mL_TOWARD = 19.9,
       sIL6R_median_ng_mL_OPTION = 36,
       sIL6R_median_ng_mL_TOWARD = 43.1,
-      BLHAQ_median_OPTION  = 1.6,
-      BLHAQ_median_TOWARD  = 1.5,
-      PAIN_median_OPTION   = 62,
-      PAIN_median_TOWARD   = 60,
+      BLHAQ_median_OPTION = 1.6,
+      BLHAQ_median_TOWARD = 1.5,
+      PAIN_median_OPTION = 62,
+      PAIN_median_TOWARD = 60,
       BLPHYVAS_median_OPTION = 65,
       BLPHYVAS_median_TOWARD = 65,
       RheumatoidFactor_median_U_mL_OPTION = 79,
       RheumatoidFactor_median_U_mL_TOWARD = 112
     ),
-    notes          = "Baseline demographics from Frey 2013 Supplementary Table S1 (OPTION + TOWARD; OPTION N = 572 in the demographics table per the male+female totals of 105 + 467, TOWARD N = 1131 per 200 + 931 -- the paper's PKPD analysis subset n = 1703 reflects the union after restricting to subjects with at least one DAS28 observation and available individual PK estimates). Approximately 80% female and predominantly White; the smaller race groups (Asian, American Indian/Alaska Native, Other) are pooled by the paper into the Asian-and-others composite that drives the RACE_ASIAN_AMIND_OTH covariate. The PD analysis used DAS28-ESR (not DAS28-CRP); the residual error of 0.68 DAS28 units is consistent with the published DAS28 measurement error of 0.60."
+    notes = "Baseline demographics from Frey 2013 Supplementary Table S1 (OPTION + TOWARD; OPTION N = 572 in the demographics table per the male+female totals of 105 + 467, TOWARD N = 1131 per 200 + 931 -- the paper's PKPD analysis subset n = 1703 reflects the union after restricting to subjects with at least one DAS28 observation and available individual PK estimates). Approximately 80% female and predominantly White; the smaller race groups (Asian, American Indian/Alaska Native, Other) are pooled by the paper into the Asian-and-others composite that drives the RACE_ASIAN_AMIND_OTH covariate. The PD analysis used DAS28-ESR (not DAS28-CRP); the residual error of 0.68 DAS28 units is consistent with the published DAS28 measurement error of 0.60."
   )
 
   ini({

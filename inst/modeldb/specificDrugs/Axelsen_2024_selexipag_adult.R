@@ -1,8 +1,8 @@
 Axelsen_2024_selexipag_adult <- function() {
   description <- "Joint two-compartment parent + two-compartment metabolite population PK model for oral selexipag and its active metabolite JNJ-68006861 (ACT-333679) in adults with pulmonary arterial hypertension (Axelsen 2024, adult column of Table 1; the GRIPHON adult model of Krause 2017 re-estimated in NONMEM ahead of the pediatric analysis). First-order absorption into a two-compartment selexipag disposition; selexipag leaves the central compartment by a linear apparent clearance CL/F AND, in parallel, by the first-order metabolite-formation rate constant kmet, so total apparent selexipag clearance is CL/F + Vp/F * kmet. The metabolite has its own two-compartment disposition with first-order elimination km. The absorption lag time is logit-bounded on (0, 2) h with a fixed typical value of 0.668 h. Body weight (power on CL/F, Vp/F and Vm/F), total bilirubin (power on CL/F), male sex (exponential on km) and a four-level PAH-comedication categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5; exponential on km) are the retained covariates."
-  reference   <- "Axelsen LN, Kummel A, Perez Ruixo JJ, Russu A. Population pharmacokinetics of selexipag for dose selection and confirmation in pediatric patients with pulmonary arterial hypertension. CPT Pharmacometrics Syst Pharmacol. 2024;13(12):2185-2195. doi:10.1002/psp4.13231"
-  vignette    <- "Axelsen_2024_selexipag"
-  units       <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+  reference <- "Axelsen LN, Kummel A, Perez Ruixo JJ, Russu A. Population pharmacokinetics of selexipag for dose selection and confirmation in pediatric patients with pulmonary arterial hypertension. CPT Pharmacometrics Syst Pharmacol. 2024;13(12):2185-2195. doi:10.1002/psp4.13231"
+  vignette <- "Axelsen_2024_selexipag"
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   # Unit convention is stated verbatim at the head of the Supplementary
   # Table S3 NONMEM control stream: "Dose: ug / Concentration: ng/mL /
@@ -10,76 +10,76 @@ Axelsen_2024_selexipag_adult <- function() {
   # error "(ug/mL)"; both are typographical slips -- see the vignette
   # Errata section.
   compartmentData <- list(
-    depot           = list(analyte = "selexipag",     units = "ug", specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "selexipag",     units = "ug", specimen = "plasma",              verified = TRUE),
-    peripheral1     = list(analyte = "selexipag",     units = "ug", specimen = "plasma",              verified = TRUE),
-    central_act     = list(analyte = "JNJ-68006861",  units = "ug", specimen = "plasma",              verified = TRUE),
-    peripheral1_act = list(analyte = "JNJ-68006861",  units = "ug", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "selexipag", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = TRUE),
+    central_act = list(analyte = "JNJ-68006861", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1_act = list(analyte = "JNJ-68006861", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects on selexipag CL/F (exponent 0.546), selexipag Vp/F (exponent 1.04) and JNJ-68006861 Vm/F (exponent 0.803). Reference body weight 70 kg, hard-coded as log(WEIGHTBL/70) in the Supplementary Table S3 control stream MU_3 / MU_4 / MU_10 blocks and stated as 'centered around 70 kg' in Axelsen 2024 Table 1. Baseline (not time-varying) weight was used.",
-      source_name        = "WEIGHTBL"
+      notes = "Power-form effects on selexipag CL/F (exponent 0.546), selexipag Vp/F (exponent 1.04) and JNJ-68006861 Vm/F (exponent 0.803). Reference body weight 70 kg, hard-coded as log(WEIGHTBL/70) in the Supplementary Table S3 control stream MU_3 / MU_4 / MU_10 blocks and stated as 'centered around 70 kg' in Axelsen 2024 Table 1. Baseline (not time-varying) weight was used.",
+      source_name = "WEIGHTBL"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin at baseline.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin at baseline.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form negative effect on selexipag CL/F (exponent -0.442); reference 10 umol/L, hard-coded as log(BILIBL/10) in the Supplementary Table S3 control stream MU_3 block and stated as 'centered around 10 umol/L' in Axelsen 2024 Table 1. Hepatic-function marker; higher bilirubin lowers selexipag CL/F. Already in SI units in the source, so no mg/dL conversion is applied.",
-      source_name        = "BILIBL"
+      notes = "Power-form negative effect on selexipag CL/F (exponent -0.442); reference 10 umol/L, hard-coded as log(BILIBL/10) in the Supplementary Table S3 control stream MU_3 block and stated as 'centered around 10 umol/L' in Axelsen 2024 Table 1. Hepatic-function marker; higher bilirubin lowers selexipag CL/F. Already in SI units in the source, so no mg/dL conversion is applied.",
+      source_name = "BILIBL"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female). The Supplementary Table S3 control stream builds SEXN_0 (' ; reference: 1') as the indicator for SEXN == 0, and Axelsen 2024 Table 1 labels the coefficient 'Gender male on km' -- so females are the reference and the coefficient is carried on the male indicator.",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.148 * (1 - SEXF)). To preserve the paper's female-reference parameterisation while using the canonical SEXF column (1 = female), the model() block applies the coefficient to the male indicator (1 - SEXF). Males therefore have ~16% higher km (faster metabolite elimination) and correspondingly lower metabolite exposure than females.",
-      source_name        = "SEXN (0 = male, 1 = female), entering the control stream as the derived indicator SEXN_0 = as.integer(SEXN == 0)"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.148 * (1 - SEXF)). To preserve the paper's female-reference parameterisation while using the canonical SEXF column (1 = female), the model() block applies the coefficient to the male indicator (1 - SEXF). Males therefore have ~16% higher km (faster metabolite elimination) and correspondingly lower metabolite exposure than females.",
+      source_name = "SEXN (0 = male, 1 = female), entering the control stream as the derived indicator SEXN_0 = as.integer(SEXN == 0)"
     ),
     CONMED_ERA = list(
-      description        = "Concomitant endothelin-receptor-antagonist (ERA) monotherapy indicator (1 = on an ERA but not on a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive (all three indicators = 0).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant endothelin-receptor-antagonist (ERA) monotherapy indicator (1 = on an ERA but not on a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive (all three indicators = 0).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the PAH-comedication-naive stratum; mutually exclusive with CONMED_PDE5I and CONMED_ERA_PDE5I).",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.164 * CONMED_ERA), i.e. +17.8% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH1_1) = 0.164, RSE 41.5%). The source data set already carries the decomposed binary columns COPAH1/COPAH2/COPAH3 (the control stream data path is named 'S12_data_binCOPAH'), so no re-coding of a multi-level factor is involved.",
-      source_name        = "COPAH1"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.164 * CONMED_ERA), i.e. +17.8% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH1_1) = 0.164, RSE 41.5%). The source data set already carries the decomposed binary columns COPAH1/COPAH2/COPAH3 (the control stream data path is named 'S12_data_binCOPAH'), so no re-coding of a multi-level factor is involved.",
+      source_name = "COPAH1"
     ),
     CONMED_PDE5I = list(
-      description        = "Concomitant phosphodiesterase type 5 inhibitor (PDE5I) monotherapy indicator (1 = on a PDE5I but not on an ERA, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phosphodiesterase type 5 inhibitor (PDE5I) monotherapy indicator (1 = on a PDE5I but not on an ERA, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the PAH-comedication-naive stratum; mutually exclusive with CONMED_ERA and CONMED_ERA_PDE5I).",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.0633 * CONMED_PDE5I), i.e. +6.5% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH2_1) = 0.0633). The coefficient is imprecise (RSE 96.1%) but is retained because the four-level PAH-comedication categorical was kept intact end-to-end.",
-      source_name        = "COPAH2"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.0633 * CONMED_PDE5I), i.e. +6.5% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH2_1) = 0.0633). The coefficient is imprecise (RSE 96.1%) but is retained because the four-level PAH-comedication categorical was kept intact end-to-end.",
+      source_name = "COPAH2"
     ),
     CONMED_ERA_PDE5I = list(
-      description        = "Concomitant ERA + PDE5-inhibitor combination indicator (1 = on both an ERA and a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ERA + PDE5-inhibitor combination indicator (1 = on both an ERA and a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the PAH-comedication-naive stratum; mutually exclusive with CONMED_ERA and CONMED_PDE5I).",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.358 * CONMED_ERA_PDE5I), i.e. +43.0% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH3_1) = 0.358, RSE 17.2%). The combined stratum carries its own coefficient rather than the sum of the ERA-only and PDE5I-only coefficients, because the control stream adds one THETA per non-reference level of the four-level categorical (Supplementary Table S3, MU7WRAP_1 / MU7WRAP_2).",
-      source_name        = "COPAH3"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.358 * CONMED_ERA_PDE5I), i.e. +43.0% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH3_1) = 0.358, RSE 17.2%). The combined stratum carries its own coefficient rather than the sum of the ERA-only and PDE5I-only coefficients, because the control stream adds one THETA per non-reference level of the four-level categorical (Supplementary Table S3, MU7WRAP_1 / MU7WRAP_2).",
+      source_name = "COPAH3"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 510,
-    n_studies      = 1,
-    age_range      = "Adult PAH patients enrolled in GRIPHON (NCT01106014). Per-subject ages are not tabulated in Axelsen 2024; the adult cohort is characterised in the GRIPHON popPK source (Krause 2017) and the GRIPHON main paper (Sitbon 2015 NEJM).",
-    weight_range   = "40-148 kg -- the body-weight span over which Axelsen 2024 Results ('Selexipag pediatric dose selection based on adult data') states the continuous body-weight-exposure relationship was identified. Reference weight 70 kg.",
+    species = "human",
+    n_subjects = 510,
+    n_studies = 1,
+    age_range = "Adult PAH patients enrolled in GRIPHON (NCT01106014). Per-subject ages are not tabulated in Axelsen 2024; the adult cohort is characterised in the GRIPHON popPK source (Krause 2017) and the GRIPHON main paper (Sitbon 2015 NEJM).",
+    weight_range = "40-148 kg -- the body-weight span over which Axelsen 2024 Results ('Selexipag pediatric dose selection based on adult data') states the continuous body-weight-exposure relationship was identified. Reference weight 70 kg.",
     sex_female_pct = "Not reported in Axelsen 2024; sex was retained as a covariate on the metabolite elimination rate constant km with females as the reference category.",
-    disease_state  = "Pulmonary arterial hypertension (WHO Group I), on stable background PAH comedication (endothelin-receptor antagonist and/or phosphodiesterase type 5 inhibitor) or PAH-comedication-naive.",
-    dose_range     = "Selexipag 200 ug twice daily, up-titrated weekly in 200 ug increments to the individual maximum tolerated dose, maximum 1600 ug twice daily.",
-    regions        = "Multinational phase III GRIPHON study (NCT01106014).",
-    co_medication  = "PAH-specific comedication as a four-level categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5), reference = naive. Approximately 20% of the adult GRIPHON participants received no other PAH comedication (Axelsen 2024 Results, 'PK data collected in pediatric participants').",
-    notes          = "The N = 510 count is the number of adult participants contributing model-based AUCtau,ss,combined values in Axelsen 2024 Table 3, which is the adult reference distribution the pediatric exposures were compared against. The parameter values here are the adult column of Axelsen 2024 Table 1: the Krause 2017 GRIPHON adult model, originally fitted in Monolix, re-estimated in NONMEM because NONMEM was planned for the pediatric analysis. They are reproduced at full precision in the Supplementary Table S3 control stream $THETAP / $OMEGAP / $SIGMAP blocks, where they serve as the Bayesian prior for the pediatric update (see Axelsen_2024_selexipag_pediatric)."
+    disease_state = "Pulmonary arterial hypertension (WHO Group I), on stable background PAH comedication (endothelin-receptor antagonist and/or phosphodiesterase type 5 inhibitor) or PAH-comedication-naive.",
+    dose_range = "Selexipag 200 ug twice daily, up-titrated weekly in 200 ug increments to the individual maximum tolerated dose, maximum 1600 ug twice daily.",
+    regions = "Multinational phase III GRIPHON study (NCT01106014).",
+    co_medication = "PAH-specific comedication as a four-level categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5), reference = naive. Approximately 20% of the adult GRIPHON participants received no other PAH comedication (Axelsen 2024 Results, 'PK data collected in pediatric participants').",
+    notes = "The N = 510 count is the number of adult participants contributing model-based AUCtau,ss,combined values in Axelsen 2024 Table 3, which is the adult reference distribution the pediatric exposures were compared against. The parameter values here are the adult column of Axelsen 2024 Table 1: the Krause 2017 GRIPHON adult model, originally fitted in Monolix, re-estimated in NONMEM because NONMEM was planned for the pediatric analysis. They are reproduced at full precision in the Supplementary Table S3 control stream $THETAP / $OMEGAP / $SIGMAP blocks, where they serve as the Bayesian prior for the pediatric update (see Axelsen_2024_selexipag_pediatric)."
   )
 
   ini({

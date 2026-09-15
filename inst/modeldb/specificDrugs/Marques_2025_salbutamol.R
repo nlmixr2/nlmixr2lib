@@ -36,16 +36,22 @@ Marques_2025_salbutamol <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "salbutamol", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "salbutamol",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "salbutamol", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "salbutamol",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "salbutamol", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "salbutamol",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
@@ -60,11 +66,11 @@ Marques_2025_salbutamol <- function() {
   # recorded here so the paper's headline claim is not lost.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a continuous covariate (Section 2.4) and not retained.",
         "Table S5 reports no significant correlation with any PK parameter",
         "(smallest p = 0.128, on V1). The Discussion states 'the results",
@@ -72,14 +78,14 @@ Marques_2025_salbutamol <- function() {
         "administered salbutamol'. Cohort range 5-65 years (Section 2.2),",
         "mean 39.5 (SD 18.4) years (Table 5)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Section 3.3.2 reports 'a significant impact of weight on V1 and",
         "Cl'; no coefficient is published. Table S5 SUPPORTS only the V1",
         "effect (r = 0.516, p < 0.001) and CONTRADICTS the Cl effect",
@@ -88,14 +94,14 @@ Marques_2025_salbutamol <- function() {
         "geometric means, not covariate coefficients. Cohort mean 60.2",
         "(SD 19.8) kg, range 26-109 kg (Table 5; Discussion)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Section 3.3.2 reports 'BSA effects on V1 and Cl'; no coefficient is",
         "published. Table S5 SUPPORTS only the V1 effect (r = 0.510,",
         "p < 0.001) and CONTRADICTS the Cl effect (r = -0.075, p = 0.646).",
@@ -103,14 +109,14 @@ Marques_2025_salbutamol <- function() {
         "(descriptive only). Cohort mean 1.64 (SD 0.330) m^2, range",
         "0.94-2.37 m^2 (Table 5; Discussion)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Section 3.3.2 reports 'potential gender effects on Mtt and Cl'; no",
         "coefficient is published. This is the one covariate Table S5",
         "supports on both parameters (ANOVA F = 4.378, p = 0.043 on Mtt;",
@@ -121,17 +127,17 @@ Marques_2025_salbutamol <- function() {
         "'Female' / 'Male' categorical; SEXF is the canonical encoding.",
         "Cohort 16 female (40%), 24 male (60%) (Table 5)."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     RACE_ASIAN = list(
-      description        = paste(
+      description = paste(
         "Asian (non-Chinese) heritage indicator (1 = Asian, 0 = American or",
         "Chinese)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = American (the modal group, 50% of the cohort)",
-      notes              = paste(
+      notes = paste(
         "Race was screened (Section 2.4) and explicitly NOT retained: the",
         "Discussion states 'Race was not included as a covariate in the",
         "model, as no significant statistical correlations with PK",
@@ -144,29 +150,29 @@ Marques_2025_salbutamol <- function() {
         "significant impact on kel', which contradicts both the Discussion",
         "and Table S5."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     RACE_CHINESE = list(
-      description        = paste(
+      description = paste(
         "Chinese heritage indicator (1 = Chinese, 0 = American or Asian)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = American (the modal group, 50% of the cohort)",
-      notes              = paste(
+      notes = paste(
         "Second of the two indicators spanning the three-level race",
         "covariate (American / Asian / Chinese; Table 5). Screened and not",
         "retained -- see the RACE_ASIAN entry for the full rationale and the",
         "Figure S4 caption conflict."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     CYP2D6 = list(
-      description        = "CYP2D6 relative expression level",
-      units              = "% (GastroPlus relative expression)",
-      type               = "continuous",
+      description = "CYP2D6 relative expression level",
+      units = "% (GastroPlus relative expression)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a continuous covariate (Section 2.4) and not retained;",
         "Table S5 reports no significant correlation with any PK parameter",
         "(smallest p = 0.211, on V1). The Discussion notes that CYP2D6 is a",
@@ -179,14 +185,14 @@ Marques_2025_salbutamol <- function() {
         "(SD 1.60) % (Table 5). Orientation: higher = higher CYP2D6",
         "activity."
       ),
-      source_name        = "CYP2D6 expression"
+      source_name = "CYP2D6 expression"
     ),
     CYP2C19 = list(
-      description        = "CYP2C19 relative expression level",
-      units              = "% (GastroPlus relative expression)",
-      type               = "continuous",
+      description = "CYP2C19 relative expression level",
+      units = "% (GastroPlus relative expression)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a continuous covariate (Section 2.4) and not retained;",
         "Table S5 reports no significant correlation with any PK parameter",
         "(smallest p = 0.219, on V1). The value is a GastroPlus-assigned",
@@ -195,17 +201,17 @@ Marques_2025_salbutamol <- function() {
         "= higher CYP2C19 activity (the expression-level form, not the",
         "inverted S/R-mephenytoin-ratio form)."
       ),
-      source_name        = "CYP2C19 expression"
+      source_name = "CYP2C19 expression"
     ),
     HEPIMP_MILD = list(
-      description        = paste(
+      description = paste(
         "Mild hepatic impairment indicator (1 = Child-Pugh A cirrhosis,",
         "0 = healthy or obese)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = healthy (non-obese, no comorbidity)",
-      notes              = paste(
+      notes = paste(
         "Section 3.3.2 reports 'a significant impact of health status on",
         "Cl'; no coefficient is published, and Table S5 CONTRADICTS the",
         "claim (ANOVA F = 0.492, p = 0.615 on Cl; no p < 0.05 on any",
@@ -222,37 +228,37 @@ Marques_2025_salbutamol <- function() {
         "future model that actually estimates a health-status effect on this",
         "cohort would need a non-morbid obesity canonical registered first."
       ),
-      source_name        = "Health status"
+      source_name = "Health status"
     )
   )
 
   population <- list(
-    species        = "human (virtual; GastroPlus PBPK-generated, not measured)",
-    n_subjects     = 40,
-    n_studies      = 0,
+    species = "human (virtual; GastroPlus PBPK-generated, not measured)",
+    n_subjects = 40,
+    n_studies = 0,
     n_observations = 838,
-    age_range      = "5-65 years (Section 2.2)",
-    age_median     = "39.5 years (mean, SD 18.4; Table 5)",
-    weight_range   = "26-109 kg (Discussion)",
-    weight_median  = "60.2 kg (mean, SD 19.8; Table 5)",
-    bsa_range      = "0.94-2.37 m^2 (Discussion)",
-    bsa_median     = "1.64 m^2 (mean, SD 0.330; Table 5)",
+    age_range = "5-65 years (Section 2.2)",
+    age_median = "39.5 years (mean, SD 18.4; Table 5)",
+    weight_range = "26-109 kg (Discussion)",
+    weight_median = "60.2 kg (mean, SD 19.8; Table 5)",
+    bsa_range = "0.94-2.37 m^2 (Discussion)",
+    bsa_median = "1.64 m^2 (mean, SD 0.330; Table 5)",
     sex_female_pct = 40,
     race_ethnicity = c(American = 50, Asian = 25, Chinese = 25),
-    disease_state  = paste(
+    disease_state = paste(
       "Mixed virtual cohort: healthy 26 (65%), obese 4 (10%), cirrhosis",
       "Child-Pugh A 10 (25%) (Table 5). Intended indication is asthma, but",
       "no asthma severity or lung-function covariate was simulated."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "4 mg oral salbutamol as an immediate-release tablet every 6 h for",
       "24 h (Section 2.2 and Table S3). Section 3.1 instead states the",
       "regimen was 'adjusted to 4 mg every 4 h'; Table S3's Tmax of",
       "18.8-19.2 h and the Figure 5 VPC x-axis of 0-6 h both pin the",
       "interval at 6 h, so q6h is the regimen encoded and validated."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "FULLY IN SILICO. There are no clinical observations in this dataset.",
       "A GastroPlus 9.9 PBPK model of oral salbutamol (drug parameters from",
       "ADMET Predictor 12.0, Table 1 / Table 3; tissue Kp from Table 2) was",

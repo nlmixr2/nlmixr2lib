@@ -22,10 +22,10 @@ Simpson_2006_artesunate <- function() {
     "artesunate and dihydroartemisinin following intra-rectal dosing of artesunate in",
     "malaria patients. PLoS Med. 2006;3(11):e444. doi:10.1371/journal.pmed.0030444"
   )
-  vignette  <- "Simpson_2006_artesunate"
-  units     <- list(
-    time          = "h",
-    dosing        = "mg",
+  vignette <- "Simpson_2006_artesunate"
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -37,17 +37,17 @@ Simpson_2006_artesunate <- function() {
   # Modelling"). The mass leaving `depot` therefore enters `central` as DHA
   # one-for-one in mass units, and V/F and CL/F are expressed in ARS-dose terms.
   compartmentData <- list(
-    depot   = list(analyte = "artesunate",         units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "artesunate", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at enrolment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at enrolment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Affine (not power) effect on the per-kilogram apparent volume of distribution,",
         "with the covariate entered as WT/70: V/F (L/kg) = 0.57 + 5.77 * (WT/70)",
         "(Simpson 2006 Table 5, 'Intercept' = 0.57 and 'Increase in V/F per unit (l/70 kg)'",
@@ -61,14 +61,14 @@ Simpson_2006_artesunate <- function() {
         "WT * (0.57 + 5.77 * WT/70). Time-fixed at enrolment.",
         "Cohort weights ranged from 7.6 to 86 kg (Table 2)."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 = female (the reference category in this encoding)",
-      notes              = paste(
+      notes = paste(
         "The paper's covariate is 'gender' and its estimated coefficient is the increase",
         "in CL/F for a MALE relative to a female (Simpson 2006 Table 5: 'Increase in CL/F",
         "(l/kg/h) for a male' = 1.14, SE 0.40). To store it under the canonical SEXF",
@@ -80,7 +80,7 @@ Simpson_2006_artesunate <- function() {
         "retained ('There was no significant difference between males and females for the",
         "distribution of eta_V/F', Results). Time-fixed."
       ),
-      source_name        = "gender"
+      source_name = "gender"
     )
   )
 
@@ -90,9 +90,9 @@ Simpson_2006_artesunate <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at enrolment",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened both continuously and dichotomised at 15 years. eta_V/F was higher in",
         "adults than children (p < 0.001) but 'the addition of baseline PCV and age did",
         "not significantly improve the objective function' once weight was in the model",
@@ -102,9 +102,9 @@ Simpson_2006_artesunate <- function() {
     ),
     PCV = list(
       description = "Baseline packed cell volume (haematocrit)",
-      units       = "percent",
-      type        = "continuous",
-      notes       = paste(
+      units = "percent",
+      type = "continuous",
+      notes = paste(
         "Positively correlated with eta_V/F (r = 0.22, p = 0.005) but did not",
         "significantly improve the objective function when added to the final model",
         "(Results). Not retained."
@@ -112,9 +112,9 @@ Simpson_2006_artesunate <- function() {
     ),
     REGION_SEASIA = list(
       description = "Geographic group indicator (Southeast Asia versus Africa)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "'There were no significant differences between patients from Southeast Asia and",
         "Africa, for both the distributions of eta_CL/F and eta_V/F' (Results).",
         "Not retained."
@@ -122,15 +122,15 @@ Simpson_2006_artesunate <- function() {
     ),
     PARASITEMIA = list(
       description = "Baseline asexual Plasmodium falciparum parasitaemia",
-      units       = "parasites/uL",
-      type        = "continuous",
-      notes       = "No correlation with either eta_CL/F or eta_V/F (Results). Not retained."
+      units = "parasites/uL",
+      type = "continuous",
+      notes = "No correlation with either eta_CL/F or eta_V/F (Results). Not retained."
     ),
     LACTATE = list(
       description = "Baseline venous plasma lactate",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "mmol/L",
+      type = "continuous",
+      notes = paste(
         "No correlation with either eta_CL/F or eta_V/F (Results). Not measured at the",
         "Mae-Sot site, whose patients were excluded from the lactate covariate analysis",
         "(Methods, 'Covariates'). Not retained."
@@ -138,18 +138,18 @@ Simpson_2006_artesunate <- function() {
     ),
     GLUC = list(
       description = "Baseline plasma glucose",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "mmol/L",
+      type = "continuous",
+      notes = paste(
         "No correlation with either eta_CL/F or eta_V/F (Results). Not measured at the",
         "Mae-Sot site (Methods, 'Covariates'). Not retained."
       )
     ),
     NSUPP = list(
       description = "Number of artesunate suppositories administered",
-      units       = "count",
-      type        = "count",
-      notes       = paste(
+      units = "count",
+      type = "count",
+      notes = paste(
         "'There were no significant differences between both the distributions of",
         "eta_CL/F and eta_V/F for the number of suppositories given (either one, two, or",
         "three or more)' (Results). Not retained."
@@ -158,19 +158,19 @@ Simpson_2006_artesunate <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 179L,
-    n_studies      = 5L,
-    n_subjects_pk  = "164 of 179 patients had posterior individual estimates of CL/F and V/F; 424 DHA concentrations from 164 patients entered the DHA model (three outliers > 6,000 ng/mL excluded).",
-    age_range      = "11 months to 58 years (Table 1: Bangkok 16-50 y, Ghana 2-7 y, Mae-Sot 11 months-15 y, Malawi 16 months-10 y, South Africa 16-58 y)",
-    weight_range   = "7.6 to 86 kg (Table 2 per-site ranges; site mean weights 14.2 to 61.9 kg)",
+    species = "human",
+    n_subjects = 179L,
+    n_studies = 5L,
+    n_subjects_pk = "164 of 179 patients had posterior individual estimates of CL/F and V/F; 424 DHA concentrations from 164 patients entered the DHA model (three outliers > 6,000 ng/mL excluded).",
+    age_range = "11 months to 58 years (Table 1: Bangkok 16-50 y, Ghana 2-7 y, Mae-Sot 11 months-15 y, Malawi 16 months-10 y, South Africa 16-58 y)",
+    weight_range = "7.6 to 86 kg (Table 2 per-site ranges; site mean weights 14.2 to 61.9 kg)",
     sex_female_pct = 46.0,
     race_ethnicity = "Not reported by race; sites were Thai (Bangkok, Mae-Sot) and African (Ghana, Malawi, South Africa)",
-    disease_state  = "Moderately severe Plasmodium falciparum malaria (asexual parasite density 0.1-27%) in patients unable to tolerate oral medication but without clinical or laboratory features of severe malaria; Mae-Sot enrolled only hyperparasitaemic patients (>= 4%) and Bangkok only patients with parasitaemia > 100,000/uL.",
-    dose_range     = "Single intra-rectal artesunate dose targeting 10 mg/kg (50 mg and 200 mg suppositories, Mepha); per-site mean actual doses 9.2-11.0 mg/kg, individual range approximately 6.9-13.6 mg/kg (Table 2).",
-    sampling       = "Phase II intensive (8 samples over 12 h in Ghana, 9 samples over 12 h in Bangkok); Phase III fixed 5 samples over 8 h in South Africa and randomised sparse sampling (3 samples in randomised time blocks over 24 h, later 12 h) in Malawi and Mae-Sot.",
-    regions        = "Thailand (Bangkok, Mae-Sot), Ghana, Malawi, South Africa",
-    notes          = paste(
+    disease_state = "Moderately severe Plasmodium falciparum malaria (asexual parasite density 0.1-27%) in patients unable to tolerate oral medication but without clinical or laboratory features of severe malaria; Mae-Sot enrolled only hyperparasitaemic patients (>= 4%) and Bangkok only patients with parasitaemia > 100,000/uL.",
+    dose_range = "Single intra-rectal artesunate dose targeting 10 mg/kg (50 mg and 200 mg suppositories, Mepha); per-site mean actual doses 9.2-11.0 mg/kg, individual range approximately 6.9-13.6 mg/kg (Table 2).",
+    sampling = "Phase II intensive (8 samples over 12 h in Ghana, 9 samples over 12 h in Bangkok); Phase III fixed 5 samples over 8 h in South Africa and randomised sparse sampling (3 samples in randomised time blocks over 24 h, later 12 h) in Malawi and Mae-Sot.",
+    regions = "Thailand (Bangkok, Mae-Sot), Ghana, Malawi, South Africa",
+    notes = paste(
       "Demographics from Simpson 2006 Tables 1 and 2; baseline laboratory data in Table 3.",
       "sex_female_pct is derived arithmetic, not a printed value: Table 2 reports percent",
       "male per site (Bangkok 42%, Ghana 55%, Mae-Sot 39%, Malawi 62%, South Africa 58%),",

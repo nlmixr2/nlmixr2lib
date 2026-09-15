@@ -1,46 +1,46 @@
 Yang_2016_dilmapimod <- function() {
   description <- "Three-compartment IV population PK model for dilmapimod (SB-681323, a p38 MAPK inhibitor) coupled with an empirical indirect-response model for the inflammatory biomarker C-reactive protein (CRP) in severe-trauma adults at risk for acute respiratory distress syndrome (Yang 2016). BMI is a power covariate on CL and Q2. No statistically significant dilmapimod effect on CRP was retained in the final PD model, so the CRP component is an empirical post-injury production-decline / first-order-loss profile that is decoupled from dilmapimod exposure (Yang 2016 Results section 3.3.1)."
-  reference   <- "Yang S, Pene Dumitrescu T. Population pharmacokinetics and pharmacodynamics modelling of dilmapimod in severe trauma subjects at risk for acute respiratory distress syndrome. Drugs R D. 2017;17(1):145-156. doi:10.1007/s40268-016-0161-9"
-  vignette    <- "Yang_2016_dilmapimod"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Yang S, Pene Dumitrescu T. Population pharmacokinetics and pharmacodynamics modelling of dilmapimod in severe trauma subjects at risk for acute respiratory distress syndrome. Drugs R D. 2017;17(1):145-156. doi:10.1007/s40268-016-0161-9"
+  vignette <- "Yang_2016_dilmapimod"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
-    crp         = list(analyte = "CRP", units = "mg", specimen = "serum", verified = FALSE)
+    crp = list(analyte = "CRP", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index at baseline.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL and Q2 with reference value 27.4 kg/m^2 (population mean per Yang 2016 Results section 3.2). Applied as (BMI/27.4)^exponent. Time-fixed at baseline.",
-      source_name        = "BMI"
+      notes = "Power covariate on CL and Q2 with reference value 27.4 kg/m^2 (population mean per Yang 2016 Results section 3.2). Applied as (BMI/27.4)^exponent. Time-fixed at baseline.",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
-    n_studies      = 1L,
-    age_range      = "median 39 years (adult trauma population)",
-    age_median     = "39 years",
-    weight_range   = "median 86 kg",
-    weight_median  = "86 kg",
+    species = "human",
+    n_subjects = 57L,
+    n_studies = 1L,
+    age_range = "median 39 years (adult trauma population)",
+    age_median = "39 years",
+    weight_range = "median 86 kg",
+    weight_median = "86 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Severe major-trauma (non-head-injury) adults at risk for acute respiratory distress syndrome; median Injury Severity Score 25, median Glasgow Coma Score 15.",
-    dose_range     = "Cohort 1: 3 mg IV over 4 h x 3 daily doses; cohort 2: 7.5 mg IV over 24 h x 3 daily doses; cohort 3: 7.5 mg IV over 4 h x 3 daily doses; cohort 4: 10 mg IV over 24 h x 3 daily doses (clinicaltrials.gov NCT00996840).",
-    regions        = "United States (six sites)",
-    bmi_median     = "27 kg/m^2 (population mean 27.4 used as the BMI covariate reference)",
+    disease_state = "Severe major-trauma (non-head-injury) adults at risk for acute respiratory distress syndrome; median Injury Severity Score 25, median Glasgow Coma Score 15.",
+    dose_range = "Cohort 1: 3 mg IV over 4 h x 3 daily doses; cohort 2: 7.5 mg IV over 24 h x 3 daily doses; cohort 3: 7.5 mg IV over 4 h x 3 daily doses; cohort 4: 10 mg IV over 24 h x 3 daily doses (clinicaltrials.gov NCT00996840).",
+    regions = "United States (six sites)",
+    bmi_median = "27 kg/m^2 (population mean 27.4 used as the BMI covariate reference)",
     time_since_trauma_to_first_dose = "9-28 h (median 22 h); only 4 of 57 subjects were dosed within 12 h of injury, 41 between 12-24 h, and 28 (with overlap) between 24-36 h.",
-    notes          = "Phase IIa randomised, double-blind, placebo-controlled, parallel-group study at six US sites (NCT00996840). 57 active-treatment subjects supplied 471 dilmapimod concentration records (40, or 8.5%, were excluded as outliers, missing-infusion, or implausible pre-dose). The combined CRP PK/PD analysis comprised 73 subjects (53 active + 20 placebo) and 651 CRP records. Baseline demographics from Yang 2016 section 3.1 and the cited primary clinical paper Christie et al. (reference [10] in Yang 2016)."
+    notes = "Phase IIa randomised, double-blind, placebo-controlled, parallel-group study at six US sites (NCT00996840). 57 active-treatment subjects supplied 471 dilmapimod concentration records (40, or 8.5%, were excluded as outliers, missing-infusion, or implausible pre-dose). The combined CRP PK/PD analysis comprised 73 subjects (53 active + 20 placebo) and 651 CRP records. Baseline demographics from Yang 2016 section 3.1 and the cited primary clinical paper Christie et al. (reference [10] in Yang 2016)."
   )
 
   ini({

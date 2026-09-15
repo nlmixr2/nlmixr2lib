@@ -7,7 +7,7 @@ PK_2cmt_tdcl_des <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

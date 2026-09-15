@@ -46,7 +46,7 @@ Levitt_2005_propofol_pbpk <- function() {
     sep = " "
   )
   vignette <- "Levitt_2005_propofol_pbpk"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("lung_seq")
 
@@ -55,29 +55,29 @@ Levitt_2005_propofol_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    muscle    = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney    = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    brain     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    heart     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    skin      = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    other     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    adipose   = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    bone      = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    brain = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    skin = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    bone = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
     intestine = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    liver     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    lung      = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
-    arterial  = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
-    venous    = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
-    lung_seq  = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE)
+    liver = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    arterial = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    venous = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    lung_seq = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject body weight (Schnider 1998 Table 1 baseline",
         "demographics reproduced in Levitt 2005). WT scales lean tissue",
         "weights and blood flows by lean_mass / 52.5 kg (where 52.5 kg =",
@@ -86,27 +86,27 @@ Levitt_2005_propofol_pbpk <- function() {
         "weight as WT * BODYFAT_PCT / 100. Reference weight 70 kg matches",
         "Table 1 standard human."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject height (Schnider 1998 Table 1). Enters the Gallagher",
         "1996 body-fat regression via BMI = WT / (HT/100)^2 (paper eq 2).",
         "HT must be supplied in centimetres; the model converts to",
         "metres internally for BMI."
       ),
-      source_name        = "HT"
+      source_name = "HT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject age (Schnider 1998 study spans 18-34, 35-65, and",
         ">65 year groups, 8 subjects each). AGE enters the body-fat",
         "regression (paper eq 2). AGE is also documented as the driver",
@@ -115,44 +115,44 @@ Levitt_2005_propofol_pbpk <- function() {
         "is applied externally via a second dose row on cmt = 'lung_seq'",
         "(see vignette). frdose does not appear in the ODEs."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex, female indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, female indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Per-subject sex (1 = female, 0 = male). Enters the Gallagher",
         "1996 body-fat regression as (1 - SEXF), i.e. the paper's Sex",
         "coding is 0 = female / 1 = male, so SEXM = 1 - SEXF is derived",
         "internally. Reference category 0 = male."
       ),
-      source_name        = "SEXF"
+      source_name = "SEXF"
     ),
     RACE_ASIAN = list(
-      description        = "Race, Asian indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race, Asian indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-Asian",
-      notes              = paste(
+      notes = paste(
         "Per-subject Asian race indicator (1 = Asian, 0 = other). Enters",
         "the Gallagher body-fat regression via the additive Asian",
         "correction term (95 / BMI - 0.044 * AGE) at paper eq 2. Source",
         "Gallagher DA 2000 Am J Clin Nutr 72:694-701."
       ),
-      source_name        = "RACE_ASIAN"
+      source_name = "RACE_ASIAN"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "18-34, 35-65, and >65 years (8 subjects per age group)",
-    weight_range   = "not tabulated per subject in Levitt 2005; Schnider 1998 Table 1 lists individual weights",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "18-34, 35-65, and >65 years (8 subjects per age group)",
+    weight_range = "not tabulated per subject in Levitt 2005; Schnider 1998 Table 1 lists individual weights",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers. Data are the individual arterial",
       "propofol concentrations of Schnider TW et al. 1998 Anesthesiology",
       "88:1170-1182 pooled across 24 subjects (8 per age group). Two",
@@ -160,7 +160,7 @@ Levitt_2005_propofol_pbpk <- function() {
       "the two visits were averaged since no meaningful difference was",
       "observed."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IV bolus (~20-second injection) of 2 mg/kg for subjects <65",
       "years or 1 mg/kg for subjects >65 years, followed 60 minutes",
       "later by a 60-minute constant infusion at 25, 50, 100, or 200",
@@ -169,8 +169,8 @@ Levitt_2005_propofol_pbpk <- function() {
       "300, and 600 minutes; the first sample used in the PBPK fit was",
       "at 2 minutes because of mixing-time effects."
     ),
-    regions        = "USA (Stanford University Medical Center)",
-    notes          = paste(
+    regions = "USA (Stanford University Medical Center)",
+    notes = paste(
       "The PBPK model uses the PKQuest standard-human physiology (organ",
       "weights, blood flows, and fraction lipid) from Table 1. Only the",
       "average parameter set (Table 4 and Figs 9-11) is implemented",

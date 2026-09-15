@@ -1,76 +1,76 @@
 Galluppi_2021_ulotaront <- function() {
   description <- "Two-compartment population PK model with first-order oral absorption for ulotaront (SEP-363856), a trace amine-associated receptor 1 (TAAR1) agonist with 5-HT1A agonist activity in phase III development for schizophrenia. Pooled analysis of nine studies (seven phase I, one phase II acute, one 6-month open-label extension) in 404 adult subjects (99 healthy volunteers and 305 patients with schizophrenia). Body weight was estimated as a power-form covariate on the clearance parameters (CL/F, Q/F) and the volume parameters (Vc/F, Vp/F); disease status, sex, race (Asian vs non-Asian), and age were retained as full-model covariates on CL/F only. IIV on CL/F, Vc/F, ka, Vp/F is modelled as a full 4x4 correlated BLOCK. Residual error is proportional-only per AIC/BIC (Galluppi 2021)."
-  reference   <- "Galluppi GR, Polhamus DG, Fisher JM, Hopkins SC, Koblan KS. Population pharmacokinetic analysis of ulotaront in subjects with schizophrenia. CPT Pharmacometrics Syst Pharmacol. 2021;10(10):1245-1254. doi:10.1002/psp4.12692"
-  vignette    <- "Galluppi_2021_ulotaront"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Galluppi GR, Polhamus DG, Fisher JM, Hopkins SC, Koblan KS. Population pharmacokinetic analysis of ulotaront in subjects with schizophrenia. CPT Pharmacometrics Syst Pharmacol. 2021;10(10):1245-1254. doi:10.1002/psp4.12692"
+  vignette <- "Galluppi_2021_ulotaront"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ulotaront", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ulotaront", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ulotaront", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ulotaront", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ulotaront", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at study entry. Full-model power exponents estimated on the clearance parameters (CL/F, Q/F: 0.821) and the volume parameters (Vc/F, Vp/F: 0.610). Reference weight 70 kg (rounded standard; paper does not state the reference explicitly, but the base-model allometric relationship was fixed at 0.75 on clearances and 1 on volumes -- a standard 70 kg-anchored allometric parameterisation). Analysis-set weight range 45.2-135.9 kg (mean [SD] = 77.7 [15.7] kg); Galluppi 2021 Results 'Population pharmacokinetic analysis dataset'.",
-      source_name        = "WT"
+      notes = "Time-fixed at study entry. Full-model power exponents estimated on the clearance parameters (CL/F, Q/F: 0.821) and the volume parameters (Vc/F, Vp/F: 0.610). Reference weight 70 kg (rounded standard; paper does not state the reference explicitly, but the base-model allometric relationship was fixed at 0.75 on clearances and 1 on volumes -- a standard 70 kg-anchored allometric parameterisation). Analysis-set weight range 45.2-135.9 kg (mean [SD] = 77.7 [15.7] kg); Galluppi 2021 Results 'Population pharmacokinetic analysis dataset'.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at study entry. Full-model power exponent on CL/F = -0.154 (95% CI -0.322, 0.0147); 95% CI includes zero and Galluppi 2021 Discussion concludes no clinically meaningful age effect. Reference age 35 years (rounded to the analysis-set mean of 33.3 years; paper does not state the reference explicitly). Analysis-set age range 18-55 years (mean [SD] = 33.3 [8.7] years).",
-      source_name        = "AGE"
+      notes = "Time-fixed at study entry. Full-model power exponent on CL/F = -0.154 (95% CI -0.322, 0.0147); 95% CI includes zero and Galluppi 2021 Discussion concludes no clinically meaningful age effect. Reference age 35 years (rounded to the analysis-set mean of 33.3 years; paper does not state the reference explicitly). Analysis-set age range 18-55 years (mean [SD] = 33.3 [8.7] years).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Full-model multiplicative effect on CL/F = 0.938 (95% CI 0.843, 1.04); 95% CI includes 1.0 and the paper concludes no clinically meaningful sex effect. Analysis set: 118 women (29.2%) / 286 men.",
-      source_name        = "SEX"
+      notes = "Full-model multiplicative effect on CL/F = 0.938 (95% CI 0.843, 1.04); 95% CI includes 1.0 and the paper concludes no clinically meaningful sex effect. Analysis set: 118 women (29.2%) / 286 men.",
+      source_name = "SEX"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator (1 = Asian, 0 = other)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (1 = Asian, 0 = other)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Full-model multiplicative effect on CL/F = 0.987 (95% CI 0.874, 1.12); 95% CI includes 1.0 and the paper concludes no clinically meaningful race effect. Over 80% of Asian subjects in the analysis set were from the Japanese studies (Galluppi 2021 Results 'Population pharmacokinetic analysis dataset'); the paper's 'Asian vs non-Asian' contrast should be interpreted primarily as Japanese vs non-Asian. Analysis-set race distribution: 53.7% White, 31.4% Black, 10.9% Asian, 3.9% Other/Mixed.",
-      source_name        = "ASIAN"
+      notes = "Full-model multiplicative effect on CL/F = 0.987 (95% CI 0.874, 1.12); 95% CI includes 1.0 and the paper concludes no clinically meaningful race effect. Over 80% of Asian subjects in the analysis set were from the Japanese studies (Galluppi 2021 Results 'Population pharmacokinetic analysis dataset'); the paper's 'Asian vs non-Asian' contrast should be interpreted primarily as Japanese vs non-Asian. Analysis-set race distribution: 53.7% White, 31.4% Black, 10.9% Asian, 3.9% Other/Mixed.",
+      source_name = "ASIAN"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator: 1 = healthy adult volunteer, 0 = adult patient with schizophrenia.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator: 1 = healthy adult volunteer, 0 = adult patient with schizophrenia.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (schizophrenia patient)",
-      notes              = "Time-fixed per subject. Galluppi 2021 Table 1 encodes the effect with a PATIENT flag (1 = schizophrenia patient) and reports Patient CL = 0.809 (95% CI 0.720, 0.908) with typical values referenced to the healthy-volunteer state. The canonical DIS_HEALTHY convention uses 0 = patient as reference; the structural typical lcl below is shifted to the patient state and the covariate coefficient is negated so the model is mathematically identical: at DIS_HEALTHY = 0 (patient reference), CL/F = 32.5 * 0.809 = 26.29 L/h; at DIS_HEALTHY = 1, exp(+log(1/0.809)) restores the paper's HV-typical 32.5 L/h. Analysis set: 99 healthy volunteers (24.5%) / 305 patients with schizophrenia (75.5%). Disease status is the only clinically meaningful non-weight covariate in the full model (Galluppi 2021 Discussion).",
-      source_name        = "PATIENT"
+      notes = "Time-fixed per subject. Galluppi 2021 Table 1 encodes the effect with a PATIENT flag (1 = schizophrenia patient) and reports Patient CL = 0.809 (95% CI 0.720, 0.908) with typical values referenced to the healthy-volunteer state. The canonical DIS_HEALTHY convention uses 0 = patient as reference; the structural typical lcl below is shifted to the patient state and the covariate coefficient is negated so the model is mathematically identical: at DIS_HEALTHY = 0 (patient reference), CL/F = 32.5 * 0.809 = 26.29 L/h; at DIS_HEALTHY = 1, exp(+log(1/0.809)) restores the paper's HV-typical 32.5 L/h. Analysis set: 99 healthy volunteers (24.5%) / 305 patients with schizophrenia (75.5%). Disease status is the only clinically meaningful non-weight covariate in the full model (Galluppi 2021 Discussion).",
+      source_name = "PATIENT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 404L,
-    n_studies      = 9L,
+    species = "human",
+    n_subjects = 404L,
+    n_studies = 9L,
     n_observations = 4149L,
-    age_range      = "18-55 years",
-    age_median     = "not reported (mean [SD] = 33.3 [8.7] years)",
-    weight_range   = "45.2-135.9 kg",
-    weight_median  = "not reported (mean [SD] = 77.7 [15.7] kg)",
+    age_range = "18-55 years",
+    age_median = "not reported (mean [SD] = 33.3 [8.7] years)",
+    weight_range = "45.2-135.9 kg",
+    weight_median = "not reported (mean [SD] = 77.7 [15.7] kg)",
     sex_female_pct = 29.2,
     race_ethnicity = c(White = 53.7, Black = 31.4, Asian = 10.9, `Other/Mixed` = 3.9),
-    disease_state  = "Adult subjects: healthy adult volunteers (n = 99) and adult patients with schizophrenia (n = 305) meeting DSM-IV-TR or DSM-5 criteria with baseline CGI-S <= 4 and PANSS total <= 80.",
-    dose_range     = "5-150 mg once-daily oral (capsule or tablet), single and multiple dose (up to 7 days in phase I; up to 12 weeks in phase II acute; 6-month open-label extension at 25/50/75 mg flexible dosing).",
-    regions        = "United States, global multi-regional (phase II), Japan (Studies DA801002 and DA801004).",
-    notes          = "Pooled analysis of seven phase I studies (SEP-361-101, SEP-361-103, SEP-361-105, SEP-361-106, SEP-361-111, DA801002, SEP-361-1004), one phase II acute schizophrenia study (SEP-361-201), and one 6-month open-label extension (SEP-361-202). Two bioanalytical assays: LLQ 0.02 ng/mL for the earlier phase I studies (SEP-361-101/103/105/106/111) and 0.25 ng/mL for the Japanese studies (DA801002, DA801004) and phase II. 9.4% of active-drug samples were below the LLQ, mostly at later time points (>48 h post last dose); BLQ observations were not included in the model fit. Baseline demographics from Galluppi 2021 Results 'Population pharmacokinetic analysis dataset' and supplement Table S1."
+    disease_state = "Adult subjects: healthy adult volunteers (n = 99) and adult patients with schizophrenia (n = 305) meeting DSM-IV-TR or DSM-5 criteria with baseline CGI-S <= 4 and PANSS total <= 80.",
+    dose_range = "5-150 mg once-daily oral (capsule or tablet), single and multiple dose (up to 7 days in phase I; up to 12 weeks in phase II acute; 6-month open-label extension at 25/50/75 mg flexible dosing).",
+    regions = "United States, global multi-regional (phase II), Japan (Studies DA801002 and DA801004).",
+    notes = "Pooled analysis of seven phase I studies (SEP-361-101, SEP-361-103, SEP-361-105, SEP-361-106, SEP-361-111, DA801002, SEP-361-1004), one phase II acute schizophrenia study (SEP-361-201), and one 6-month open-label extension (SEP-361-202). Two bioanalytical assays: LLQ 0.02 ng/mL for the earlier phase I studies (SEP-361-101/103/105/106/111) and 0.25 ng/mL for the Japanese studies (DA801002, DA801004) and phase II. 9.4% of active-drug samples were below the LLQ, mostly at later time points (>48 h post last dose); BLQ observations were not included in the model fit. Baseline demographics from Galluppi 2021 Results 'Population pharmacokinetic analysis dataset' and supplement Table S1."
   )
 
   ini({

@@ -8,59 +8,65 @@ Xu_2020_daratumumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL (exponent 0.451) and on V1 (exponent 0.375). Reference 78.6 kg (Xu 2020 Online Resource 6 footnote).",
-      source_name        = "WT"
+      notes = "Power covariate on CL (exponent 0.451) and on V1 (exponent 0.375). Reference 78.6 kg (Xu 2020 Online Resource 6 footnote).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on linear CL (exponent -1.149). Reference 37.0 g/L (Xu 2020 Online Resource 6 footnote). Units inferred from the reference value (a value of 37 corresponds to g/L; albumin reported in g/dL would be around 3.7).",
-      source_name        = "ALB"
+      notes = "Power covariate on linear CL (exponent -1.149). Reference 37.0 g/L (Xu 2020 Online Resource 6 footnote). Units inferred from the reference value (a value of 37 corresponds to g/L; albumin reported in g/dL would be around 3.7).",
+      source_name = "ALB"
     ),
     MM_NIGG = list(
-      description        = "Multiple-myeloma immunoglobulin type indicator: 1 = non-IgG MM, 0 = IgG MM",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiple-myeloma immunoglobulin type indicator: 1 = non-IgG MM, 0 = IgG MM",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (non-IgG MM) -- in Xu 2020 the typical-value CL is anchored to non-IgG MM and an IgG-MM patient receives an additive shift of +0.806 (i.e., 80.6% higher CL); this is the opposite reference orientation from Fau 2020 isatuximab. The canonical MM_NIGG column semantics are preserved (1 = non-IgG, 0 = IgG); only the model's reference category differs.",
-      notes              = "Additive (linear) shift on CL: TPMMCL = 1 + e_igg_cl * (1 - MM_NIGG), with e_igg_cl = 0.806 from Xu 2020 Online Resource 6. IgG MM patients have 80.6% higher linear clearance than non-IgG MM patients, hypothesised to reflect FcRn-mediated competition between endogenous IgG M-protein and the therapeutic IgG1k mAb.",
-      source_name        = "Type of MM (IgG vs non-IgG)"
+      notes = "Additive (linear) shift on CL: TPMMCL = 1 + e_igg_cl * (1 - MM_NIGG), with e_igg_cl = 0.806 from Xu 2020 Online Resource 6. IgG MM patients have 80.6% higher linear clearance than non-IgG MM patients, hypothesised to reflect FcRn-mediated competition between endogenous IgG M-protein and the therapeutic IgG1k mAb.",
+      source_name = "Type of MM (IgG vs non-IgG)"
     ),
     SEXF = list(
-      description        = "Biological sex indicator: 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator: 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Additive (linear) shift on V1: SEXV1 = 1 + e_sexf_vc * SEXF, with e_sexf_vc = -0.205 from Xu 2020 Online Resource 6. Females have 20.5% lower central volume than males.",
-      source_name        = "Sex"
+      notes = "Additive (linear) shift on V1: SEXV1 = 1 + e_sexf_vc * SEXF, with e_sexf_vc = -0.205 from Xu 2020 Online Resource 6. Females have 20.5% lower central volume than males.",
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 107L,
-    n_studies      = 1L,
-    age_range      = "34-85 years",
-    age_median     = "65 years",
-    weight_range   = "45.0-160.8 kg",
-    weight_median  = "70.0 kg (D-Kd cohort); 79.9 kg (D-KRd cohort) per Xu 2020 Table 1",
+    species = "human",
+    n_subjects = 107L,
+    n_studies = 1L,
+    age_range = "34-85 years",
+    age_median = "65 years",
+    weight_range = "45.0-160.8 kg",
+    weight_median = "70.0 kg (D-Kd cohort); 79.9 kg (D-KRd cohort) per Xu 2020 Table 1",
     sex_female_pct = 45.8,
-    race_ethnicity = c(White = 81.3, Black_or_African_American = 3.7, Asian = 2.8, American_Indian_or_Alaska_Native = 0.9, Not_reported = 11.2),
-    disease_state  = "Multiple myeloma; D-Kd cohort (n=85) relapsed/refractory MM with 1-3 prior lines of therapy including bortezomib and an IMiD; D-KRd cohort (n=22) newly diagnosed MM. ECOG 0/1/2: ~42% / ~52% / ~8%.",
-    dose_range     = "Daratumumab 16 mg/kg IV; first dose given as either a single 16-mg/kg infusion on Cycle 1 Day 1 (D-Kd n=10) or as two 8-mg/kg infusions on Cycle 1 Days 1 and 2 (D-Kd n=75, D-KRd n=22). Subsequent doses 16 mg/kg weekly for Cycles 1-2, every 2 weeks for Cycles 3-6, every 4 weeks thereafter.",
-    regions        = "Multinational (MMY1001 phase 1b sites in France, Spain, and the United States; ClinicalTrials.gov NCT01998971).",
-    notes          = "MMY1001 D-Kd and D-KRd cohorts; baseline demographics from Xu 2020 Table 1. Reference covariates for the typical-value equations (Online Resource 6 footnote): WT 78.6 kg, ALB 37.0 g/L, non-IgG MM, male. Model objective function value -1577.363; final-model condition number 27.80."
+    race_ethnicity = c(
+      White = 81.3,
+      Black_or_African_American = 3.7,
+      Asian = 2.8,
+      American_Indian_or_Alaska_Native = 0.9,
+      Not_reported = 11.2
+    ),
+    disease_state = "Multiple myeloma; D-Kd cohort (n=85) relapsed/refractory MM with 1-3 prior lines of therapy including bortezomib and an IMiD; D-KRd cohort (n=22) newly diagnosed MM. ECOG 0/1/2: ~42% / ~52% / ~8%.",
+    dose_range = "Daratumumab 16 mg/kg IV; first dose given as either a single 16-mg/kg infusion on Cycle 1 Day 1 (D-Kd n=10) or as two 8-mg/kg infusions on Cycle 1 Days 1 and 2 (D-Kd n=75, D-KRd n=22). Subsequent doses 16 mg/kg weekly for Cycles 1-2, every 2 weeks for Cycles 3-6, every 4 weeks thereafter.",
+    regions = "Multinational (MMY1001 phase 1b sites in France, Spain, and the United States; ClinicalTrials.gov NCT01998971).",
+    notes = "MMY1001 D-Kd and D-KRd cohorts; baseline demographics from Xu 2020 Table 1. Reference covariates for the typical-value equations (Online Resource 6 footnote): WT 78.6 kg, ALB 37.0 g/L, non-IgG MM, male. Model objective function value -1577.363; final-model condition number 27.80."
   )
 
   ini({

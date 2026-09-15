@@ -8,49 +8,51 @@ Othman_2014_daclizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "daclizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "daclizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling of CL, Q, Vc, and Vp with reference 70 kg; exponents estimated (not fixed to 0.75/1.0): 0.54 for CL and Q, 0.64 for Vc and Vp (Othman 2014 Table 2).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling of CL, Q, Vc, and Vp with reference 70 kg; exponents estimated (not fixed to 0.75/1.0): 0.54 for CL and Q, 0.64 for Vc and Vp (Othman 2014 Table 2).",
+      source_name = "WT"
     ),
     DOSE_50MG = list(
-      description        = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (100, 150, 200, or 300 mg SC dose, or any IV dose)",
-      notes              = "Othman 2014 estimated two separate absolute bioavailabilities for SC administration because dose-normalized exposure at 50 mg SC was lower than at higher SC doses. F = 0.84 for the clinical 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded as a dose-record-level covariate so that `e_dose_50mg_f * DOSE_50MG` reduces bioavailability only on 50 mg SC dose events. For Phase III clinical simulations (150 mg SC every 4 weeks) leave DOSE_50MG = 0. Derived from AMT; not a column in the source dataset.",
-      source_name        = "(derived from AMT)"
+      notes = "Othman 2014 estimated two separate absolute bioavailabilities for SC administration because dose-normalized exposure at 50 mg SC was lower than at higher SC doses. F = 0.84 for the clinical 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded as a dose-record-level covariate so that `e_dose_50mg_f * DOSE_50MG` reduces bioavailability only on 50 mg SC dose events. For Phase III clinical simulations (150 mg SC every 4 weeks) leave DOSE_50MG = 0. Derived from AMT; not a column in the source dataset.",
+      source_name = "(derived from AMT)"
     )
   )
 
   population <- list(
-    n_subjects     = 70,
-    n_studies      = 3,
-    study_names    = c("Study 1 (SC single dose 50/150/300 mg)",
-                       "Study 2 (SC multiple dose 100 or 200 mg biweekly with 200 mg load)",
-                       "Study 3 (IV single dose 200 or 400 mg)"),
-    age_range      = "18-66 years",
-    age_mean       = "35.9 years (SD 15.4)",
-    weight_range   = "55.7-127 kg",
-    weight_mean    = "77.7 kg (SD 16.1)",
-    bmi_range      = "18.1-44.2 kg/m^2",
-    bmi_mean       = "26.7 kg/m^2 (SD 5.3)",
+    n_subjects = 70,
+    n_studies = 3,
+    study_names = c(
+      "Study 1 (SC single dose 50/150/300 mg)",
+      "Study 2 (SC multiple dose 100 or 200 mg biweekly with 200 mg load)",
+      "Study 3 (IV single dose 200 or 400 mg)"
+    ),
+    age_range = "18-66 years",
+    age_mean = "35.9 years (SD 15.4)",
+    weight_range = "55.7-127 kg",
+    weight_mean = "77.7 kg (SD 16.1)",
+    bmi_range = "18.1-44.2 kg/m^2",
+    bmi_mean = "26.7 kg/m^2 (SD 5.3)",
     sex_female_pct = 50.7,
     race_ethnicity = c(`Caucasian/Hispanic` = 88.7, Asian = 9.9, Other = 1.4),
-    disease_state  = "Healthy volunteers (Phase I safety / tolerability / PK)",
-    dose_range     = "50, 150, or 300 mg SC single dose; 100 or 200 mg SC every 2 weeks (200 mg loading dose); 200 or 400 mg IV single dose",
-    regions        = "Australia (all three studies conducted at CMAX, Adelaide)",
+    disease_state = "Healthy volunteers (Phase I safety / tolerability / PK)",
+    dose_range = "50, 150, or 300 mg SC single dose; 100 or 200 mg SC every 2 weeks (200 mg loading dose); 200 or 400 mg IV single dose",
+    regions = "Australia (all three studies conducted at CMAX, Adelaide)",
     n_observations = 925,
-    notes          = "Healthy-volunteer integrated analysis pooling three Phase I studies (N = 71 dosed, 70 analyzable after exclusion of one subject with a likely 150 mg SC dosing error). Baseline demographics per Othman 2014 Table 1."
+    notes = "Healthy-volunteer integrated analysis pooling three Phase I studies (N = 71 dosed, 70 analyzable after exclusion of one subject with a likely 150 mg SC dosing error). Baseline demographics per Othman 2014 Table 1."
   )
 
   ini({

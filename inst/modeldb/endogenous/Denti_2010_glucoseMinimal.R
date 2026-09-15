@@ -21,7 +21,7 @@ Denti_2010_glucoseMinimal <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central        = list(analyte = "Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
     insulin_action = list(analyte = "Insulin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

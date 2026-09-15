@@ -8,56 +8,56 @@ Qi_2014_sapropterin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "sapropterin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; constant within an individual in the source dataset).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; constant within an individual in the source dataset).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent clearance and apparent central volume, normalized to a reference weight of 70 kg (a typical adult). Source: Qi 2014 Equation 6.",
-      source_name        = "WT"
+      notes = "Power-form effect on apparent clearance and apparent central volume, normalized to a reference weight of 70 kg (a typical adult). Source: Qi 2014 Equation 6.",
+      source_name = "WT"
     ),
     STUDY_PKU015 = list(
-      description        = "Indicator for study PKU-015 (pediatric infants and young children 0-6 years) of the Qi 2014 pooled analysis.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for study PKU-015 (pediatric infants and young children 0-6 years) of the Qi 2014 pooled analysis.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (study PKU-004, adolescent / adult >= 9 years)",
-      notes              = "Selects the PKU-015 log-scale residual-error magnitude (30.2% CV) under the LTBS approach; STUDY_PKU015 = 0 selects the PKU-004 residual (21.1% CV). Source: Qi 2014 Table 3 reports separate residual error per study.",
-      source_name        = "STUDY"
+      notes = "Selects the PKU-015 log-scale residual-error magnitude (30.2% CV) under the LTBS approach; STUDY_PKU015 = 0 selects the PKU-004 residual (21.1% CV). Source: Qi 2014 Table 3 reports separate residual error per study.",
+      source_name = "STUDY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 156L,
-    n_studies      = 2L,
-    age_range      = "0.107-50 years",
-    age_mean       = "12 years (SD 11.3)",
-    weight_range   = "4.5-144 kg",
-    weight_mean    = "40.9 kg (SD 30.3)",
+    species = "human",
+    n_subjects = 156L,
+    n_studies = 2L,
+    age_range = "0.107-50 years",
+    age_mean = "12 years (SD 11.3)",
+    weight_range = "4.5-144 kg",
+    weight_mean = "40.9 kg (SD 30.3)",
     sex_female_pct = 51.3,
     race_ethnicity = c(Non_Hispanic = 97.4, Hispanic = 2.6),
-    disease_state  = "Phenylketonuria (PKU); BH4-responsive subset enrolled in two BioMarin clinical studies.",
-    dose_range     = "5 or 20 mg/kg oral sapropterin once daily.",
-    regions        = "North America (USA, Canada) and Europe (France, Germany, Ireland, Italy, Poland, UK).",
+    disease_state = "Phenylketonuria (PKU); BH4-responsive subset enrolled in two BioMarin clinical studies.",
+    dose_range = "5 or 20 mg/kg oral sapropterin once daily.",
+    regions = "North America (USA, Canada) and Europe (France, Germany, Ireland, Italy, Poland, UK).",
     baseline_covariates = list(
-      bsa_range_m2          = "0.259-2.65",
-      bsa_mean_m2           = 1.17,
-      alt_range_IU_L        = "11-127",
-      alt_mean_IU_L         = 25.4,
-      ast_range_IU_L        = "14-63",
-      ast_mean_IU_L         = 32.2,
-      albumin_range_g_dL    = "3.6-5.0",
-      albumin_mean_g_dL     = 4.33,
-      crcl_range_mL_min     = "9.39-276",
-      crcl_mean_mL_min      = 87.8,
-      baseline_phe_umol_L   = "53-2190 (mean 562, SD 378)"
+      bsa_range_m2 = "0.259-2.65",
+      bsa_mean_m2 = 1.17,
+      alt_range_IU_L = "11-127",
+      alt_mean_IU_L = 25.4,
+      ast_range_IU_L = "14-63",
+      ast_mean_IU_L = 32.2,
+      albumin_range_g_dL = "3.6-5.0",
+      albumin_mean_g_dL = 4.33,
+      crcl_range_mL_min = "9.39-276",
+      crcl_mean_mL_min = 87.8,
+      baseline_phe_umol_L = "53-2190 (mean 562, SD 378)"
     ),
-    notes          = "Baseline demographics from Qi 2014 Table 2. 156 subjects (80 from PKU-015, 78 from PKU-004), 475 plasma concentrations. Age strata in the pooled dataset (Section 3.1): <1 year (n=10), 1-<2 y (n=14), 2-<4 y (n=28), 4-<7 y (n=28), 7-<12 y (n=10), >=12 y (n=66). BH4 plasma concentrations measured indirectly by oxidation to L-biopterin with a validated LC-MS/MS assay; LLOQ = 10.7 ng/mL for BH4 (5.00 ng/mL for L-biopterin) per Section 2.3. Only body weight was retained as a significant covariate; race, sex, age, and laboratory values were screened but not retained (Electronic Supplementary Material Table 1S)."
+    notes = "Baseline demographics from Qi 2014 Table 2. 156 subjects (80 from PKU-015, 78 from PKU-004), 475 plasma concentrations. Age strata in the pooled dataset (Section 3.1): <1 year (n=10), 1-<2 y (n=14), 2-<4 y (n=28), 4-<7 y (n=28), 7-<12 y (n=10), >=12 y (n=66). BH4 plasma concentrations measured indirectly by oxidation to L-biopterin with a validated LC-MS/MS assay; LLOQ = 10.7 ng/mL for BH4 (5.00 ng/mL for L-biopterin) per Section 2.3. Only body weight was retained as a significant covariate; race, sex, age, and laboratory values were screened but not retained (Electronic Supplementary Material Table 1S)."
   )
 
   ini({

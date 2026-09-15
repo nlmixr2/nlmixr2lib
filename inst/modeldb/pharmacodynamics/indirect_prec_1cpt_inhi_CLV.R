@@ -1,4 +1,4 @@
-indirect_prec_1cpt_inhi_CLV  <- function() {
+indirect_prec_1cpt_inhi_CLV <- function() {
   description <- "One compartment precursor-dependent indirect response model with inhibition of drug response. Parameterized with clearance and volume. (effect)."
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
@@ -7,10 +7,10 @@ indirect_prec_1cpt_inhi_CLV  <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
     precursor1 = list(analyte = "precursor", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    effect     = list(analyte = "effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   ini({
@@ -49,4 +49,4 @@ indirect_prec_1cpt_inhi_CLV  <- function() {
     
     Cc ~ prop(propSd)
   })
-}       
+}

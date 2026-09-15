@@ -36,22 +36,22 @@ Richardson_2025_olaparib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "olaparib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "olaparib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "olaparib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Administered dose amount of the current dosing record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered dose amount of the current dosing record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a power model on Vc, normalised to a reference dose:",
         "Vc = TVVc * (DOSE / 100)^e_dose_vc. The authors' NONMEM data set",
         "carried DOSE and a separate DOSEREF column and the model term was",
@@ -69,17 +69,17 @@ Richardson_2025_olaparib <- function() {
         "dose dependence unchanged.",
         sep = " "
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 296,
-    n_studies     = 5,
+    species = "human",
+    n_subjects = 296,
+    n_studies = 5,
     disease_state = "not reported (Phase 1 oncology studies)",
-    dose_range    = "not reported",
-    notes         = paste(
+    dose_range = "not reported",
+    notes = paste(
       "296 participants after filtering to the tablet formulation only,",
       "contributing 7,397 observation records, pooled from NCT01813474,",
       "NCT01921140, NCT01900028, NCT01929603 and NCT00777582 (Richardson 2025",

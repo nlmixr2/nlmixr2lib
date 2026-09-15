@@ -51,31 +51,31 @@ Ivaturi_2017_RBP_7000 <- function() {
     sep = " "
   )
   vignette <- "Ivaturi_2017_RBP_7000"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "Risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Risperidone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "9-OH-Risperidone", units = "mg", specimen = "plasma", verified = FALSE),
     central_9oh = list(analyte = "9-OH-Risperidone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, intermediate, or inconclusive metabolizer; both CYP2D6_PM and CYP2D6_IM = 0 indicates the pooled EM + Inconclusive reference)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 poor metabolizer (genotype encoding no",
         "functional enzyme activity), 0 otherwise. Paired with CYP2D6_IM to",
         "encode the three-level PM / IM / EM phenotype following the Ivaturi",
@@ -89,14 +89,14 @@ Ivaturi_2017_RBP_7000 <- function() {
         "Phase 3 cohort: 82-88% EM, 3.6-7.1% IM, 0.9-2.6% PM, 5.2-7.1%",
         "Inconclusive (Table 1)."
       ),
-      source_name        = "CYP2D6 phenotype (Table 1; from CYP2D6 genotyping in pharmacogenetic sub-study)"
+      source_name = "CYP2D6 phenotype (Table 1; from CYP2D6 genotyping in pharmacogenetic sub-study)"
     ),
     CYP2D6_IM = list(
-      description        = "CYP2D6 intermediate-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 intermediate-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, poor, or inconclusive metabolizer; both CYP2D6_PM and CYP2D6_IM = 0 indicates the pooled EM + Inconclusive reference)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 intermediate metabolizer (genotype encoding",
         "reduced enzyme activity), 0 otherwise. Paired with CYP2D6_PM with",
         "the pooled EM + Inconclusive reference (both indicators 0).",
@@ -104,64 +104,64 @@ Ivaturi_2017_RBP_7000 <- function() {
         "kr9_typical * (1 + e_cyp2d6_im_kmet) with e_cyp2d6_im_kmet = -0.76",
         "(Table 2; 76% lower metabolite formation than EM / Inconclusive)."
       ),
-      source_name        = "CYP2D6 phenotype (Table 1; from CYP2D6 genotyping in pharmacogenetic sub-study)"
+      source_name = "CYP2D6 phenotype (Table 1; from CYP2D6 genotyping in pharmacogenetic sub-study)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the full PK and PK/PD covariate analyses but not retained in the final model (Results, 'No covariates were identified' on the absorption / disposition / PD parameters)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the full PK and PK/PD covariate analyses but not retained in the final model (Results, 'No covariates were identified' on the absorption / disposition / PD parameters)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained (Results)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained (Results)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on absorption rate constants (significant in the upstream Gomeni 2013 and Laffont 2014 papers; lower ka1 in subjects with higher BMI was attributed to fat-abdominal-tissue effects on absorption of the lipophilic risperidone) but not retained in the Ivaturi 2017 Phase 3 final model (Results)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on absorption rate constants (significant in the upstream Gomeni 2013 and Laffont 2014 papers; lower ka1 in subjects with higher BMI was attributed to fat-abdominal-tissue effects on absorption of the lipophilic risperidone) but not retained in the Ivaturi 2017 Phase 3 final model (Results)."
     ),
     WTH = list(
       description = "Waist-to-hip ratio",
-      units       = "unitless",
-      type        = "continuous",
-      notes       = "Screened on absorption rate constants but not retained (Results)."
+      units = "unitless",
+      type = "continuous",
+      notes = "Screened on absorption rate constants but not retained (Results)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a liver-function predictor but not retained (Results)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a liver-function predictor but not retained (Results)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a liver-function predictor but not retained (Results)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a liver-function predictor but not retained (Results)."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened as a renal-function predictor but not retained (Results)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as a renal-function predictor but not retained (Results)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (male = reference per Methods) but not retained on either PK or PK/PD parameters (Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (male = reference per Methods) but not retained on either PK or PK/PD parameters (Results)."
     ),
     RACE_BLACK = list(
       description = "Black or African-American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was tested in two encodings: graphical EBE-vs-covariate plots",
         "showed a correlation between race and the absorption rate constants",
         "ka1 and ka2 (so race was carried forward into NONMEM covariate",
@@ -174,26 +174,26 @@ Ivaturi_2017_RBP_7000 <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 337L,
-    n_studies       = 1L,
-    age_range       = "approximately 18-65 years; mean 41-43 years across treatment arms (Table 1)",
-    age_median      = "approximately 41 years (means 42.76, 40.45, 40.41 years for placebo, 90 mg, 120 mg arms)",
-    weight_range    = "mean 88.5-92.6 kg; SD 18.9-22.9 kg across arms (Table 1)",
-    weight_median   = "approximately 90 kg (mean values reported, not medians)",
-    sex_female_pct  = 23.4,
-    race_ethnicity  = c(
+    species = "human",
+    n_subjects = 337L,
+    n_studies = 1L,
+    age_range = "approximately 18-65 years; mean 41-43 years across treatment arms (Table 1)",
+    age_median = "approximately 41 years (means 42.76, 40.45, 40.41 years for placebo, 90 mg, 120 mg arms)",
+    weight_range = "mean 88.5-92.6 kg; SD 18.9-22.9 kg across arms (Table 1)",
+    weight_median = "approximately 90 kg (mean values reported, not medians)",
+    sex_female_pct = 23.4,
+    race_ethnicity = c(
       `Black or African-American` = 72.1,
-      Other                       = 27.9
+      Other = 27.9
     ),
-    ethnicity       = "91.5% non-Hispanic / non-Latino, 8.3% Hispanic / Latino (Table 1)",
-    disease_state   = paste(
+    ethnicity = "91.5% non-Hispanic / non-Latino, 8.3% Hispanic / Latino (Table 1)",
+    disease_state = paste(
       "Adults with acute schizophrenia, acute psychotic state, or relapse",
       "with acute schizophrenic symptoms; baseline PANSS 80-120 and at least",
       "two of four positive subscale items scoring >4 at screening (Methods).",
       "Mean baseline PANSS 94 across arms (Table 3)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Two subcutaneous injections of RBP-7000 (90 mg or 120 mg)",
       "administered 28 days apart on Day 1 and Day 29 (Methods)."
     ),
@@ -201,8 +201,8 @@ Ivaturi_2017_RBP_7000 <- function() {
       "Table 1: 82.1-88.2% extensive, 3.6-7.1% intermediate, 0.9-2.6% poor,",
       "5.2-7.1% inconclusive, ~1% missing across treatment arms."
     ),
-    regions         = "USA (35 clinical sites)",
-    notes           = paste(
+    regions = "USA (35 clinical sites)",
+    notes = paste(
       "ITT population n = 337: 112 placebo, 111 90 mg, 114 120 mg. 234",
       "subjects in the RBP-7000 treatment arms contributed 3154 PK samples",
       "(1577 risperidone + 1577 9-OH-risperidone) over the 8-week study;",

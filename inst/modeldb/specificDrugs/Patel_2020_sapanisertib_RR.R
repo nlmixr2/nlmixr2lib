@@ -45,18 +45,18 @@ Patel_2020_sapanisertib_RR <- function() {
   vignette <- "Patel_2020_sapanisertib"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; PD-only model fed by an external sapanisertib plasma-concentration covariate)",
+    time = "h",
+    dosing = "(none; PD-only model fed by an external sapanisertib plasma-concentration covariate)",
     concentration = "(observation d_rr is the change from time-matched day -1 baseline in the RR interval, msec; driving covariate CP_SAPANISERTIB_NGML is in ng/mL)"
   )
 
   covariateData <- list(
     CP_SAPANISERTIB_NGML = list(
-      description        = "Instantaneous sapanisertib plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous sapanisertib plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the linear concentration-",
         "DeltaRR expression DeltaRR = e0 + slope *",
         "CP_SAPANISERTIB_NGML.",
@@ -84,21 +84,21 @@ Patel_2020_sapanisertib_RR <- function() {
         "Set to 0 outside the drug-exposure window (the concentration-",
         "slope term then collapses to the intercept e0)."
       ),
-      source_name        = "sapanisertib plasma concentration"
+      source_name = "sapanisertib plasma concentration"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 44L,
-    n_studies        = 1L,
-    age_range        = "22-79 years",
-    age_median       = "59.5 years",
-    weight_range     = "49-122 kg",
-    weight_median    = "70.6 kg",
-    sex_female_pct   = round(100 * 28 / 44, 1),
-    race_ethnicity   = c(White = 68, Black = 20, `Not reported` = 11),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
+    age_range = "22-79 years",
+    age_median = "59.5 years",
+    weight_range = "49-122 kg",
+    weight_median = "70.6 kg",
+    sex_female_pct = round(100 * 28 / 44, 1),
+    race_ethnicity = c(White = 68, Black = 20, `Not reported` = 11),
+    disease_state = paste(
       "Adults with a radiographically or clinically evaluable advanced",
       "solid tumor and ECOG performance status 0 (30%), 1 (68%) or 2",
       "(2%). 42 of 44 patients (95%) had received prior antineoplastic",
@@ -118,7 +118,7 @@ Patel_2020_sapanisertib_RR <- function() {
       "patients (Patel 2020 Table 1 and Supplemental Methods",
       "'Patients')."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Single 40 mg oral dose of sapanisertib (immediate-release",
       "capsules) on cycle 1 day 1 in the fasted state or >= 2 h after a",
       "light meal -- the single-agent maximum tolerated dose on the",
@@ -129,8 +129,8 @@ Patel_2020_sapanisertib_RR <- function() {
       "day 3 window contributes to the concentration-RR analysis",
       "(Patel 2020 Methods 'Study Design and Patients')."
     ),
-    regions          = "United States (5 centers: Montefiore Medical Center, Bronx NY; Washington University School of Medicine, St. Louis MO; Stephenson Cancer Center, University of Oklahoma, Oklahoma City OK; Mary Crowley Cancer Research Center, Dallas TX; Florida Cancer Specialists / Sarah Cannon Research Institute, Sarasota FL).",
-    notes            = paste(
+    regions = "United States (5 centers: Montefiore Medical Center, Bronx NY; Washington University School of Medicine, St. Louis MO; Stephenson Cancer Center, University of Oklahoma, Oklahoma City OK; Mary Crowley Cancer Research Center, Dallas TX; Florida Cancer Specialists / Sarah Cannon Research Institute, Sarasota FL).",
+    notes = paste(
       "NCT02197572. Open-label, single-arm, dedicated QTc (DQT) study.",
       "Time-matched baseline design: serial triplicate 12-lead ECGs were",
       "recorded on day -1 by Holter H12+ recorder at the same clock",

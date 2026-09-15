@@ -8,39 +8,43 @@ Haynes_2025_cephalexin <- function() {
   # biological matrix.
   compartmentData <- list(
     depot = list(
-      analyte = "cephalexin", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "cephalexin",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "cephalexin", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "cephalexin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F with the exponent fixed to 0.75 and linear scaling on Vd/F with the exponent fixed to 1.0, both normalized to a 70 kg reference weight (Haynes 2025 Results 'Final Model' and Table 2 rows 'beta WT_CL' / 'beta WT_V'). The study cohort weighed 2.20-5.39 kg (median 3.36 kg; Table 1), so the 70 kg reference is far outside the observed range and is a normalization constant only.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL/F with the exponent fixed to 0.75 and linear scaling on Vd/F with the exponent fixed to 1.0, both normalized to a 70 kg reference weight (Haynes 2025 Results 'Final Model' and Table 2 rows 'beta WT_CL' / 'beta WT_V'). The study cohort weighed 2.20-5.39 kg (median 3.36 kg; Table 1), so the 70 kg reference is far outside the observed range and is a normalization constant only.",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological age since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological age since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives an estimated power effect on the absorption rate constant: ka = ka_pop * (PNA_days / 29.14)^0.92 (Haynes 2025 Results 'Final Model' equation 2). The canonical PNA column is carried in MONTHS per inst/references/covariate-columns.md, whereas the source equation is written in days, so model() recovers days as PNA * 30.4375 before forming the age ratio. This is the same reparameterisation used by Zhao_2018_omeprazole.R (days) and Bardhi_2026_ampicillin_foal.R (hours). The 29.14-day reference corresponds to 0.9574 months.",
-      source_name        = "PNA"
+      notes = "Time-varying. Drives an estimated power effect on the absorption rate constant: ka = ka_pop * (PNA_days / 29.14)^0.92 (Haynes 2025 Results 'Final Model' equation 2). The canonical PNA column is carried in MONTHS per inst/references/covariate-columns.md, whereas the source equation is written in days, so model() recovers days as PNA * 30.4375 before forming the age ratio. This is the same reparameterisation used by Zhao_2018_omeprazole.R (days) and Bardhi_2026_ampicillin_foal.R (hours). The 29.14-day reference corresponds to 0.9574 months.",
+      source_name = "PNA"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, carried in WEEKS rather than the register-default months because the source equation and its 41.06-week reference constant are written in weeks (permitted by the PAGE register entry; same convention as Germovsek_2018_meropenem.R and Riccobene_2017_ceftaroline.R). Drives an estimated power effect on CL/F: CL/F = CL/F_pop * (WT/70)^0.75 * (PMA / 41.06)^2.92 (Haynes 2025 Results 'Final Model' equation 4). PMA was selected over eGFR for the final model because it is the more physiologically appropriate marker of renal maturation and eGFR added no predictive value beyond PMA.",
-      source_name        = "PMA"
+      notes = "Time-varying, carried in WEEKS rather than the register-default months because the source equation and its 41.06-week reference constant are written in weeks (permitted by the PAGE register entry; same convention as Germovsek_2018_meropenem.R and Riccobene_2017_ceftaroline.R). Drives an estimated power effect on CL/F: CL/F = CL/F_pop * (WT/70)^0.75 * (PMA / 41.06)^2.92 (Haynes 2025 Results 'Final Model' equation 4). PMA was selected over eGFR for the final model because it is the more physiologically appropriate marker of renal maturation and eGFR added no predictive value beyond PMA.",
+      source_name = "PMA"
     )
   )
 
@@ -54,52 +58,55 @@ Haynes_2025_cephalexin <- function() {
   # (capillary vs venous vs arterial).
   covariatesDataExcluded <- list(
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a covariate and not retained in the final model; postmenstrual age (PAGE) carries the maturational signal instead. GA is still required to CONSTRUCT PAGE (PAGE = GA + postnatal age in weeks), and the dosing simulations stratified the virtual population by GA (30-34 weeks vs >= 35 weeks; Haynes 2025 Methods 'Dosing Simulations' and Table 3). Cohort range 29 3/7 to 40 6/7 weeks, median 37 2/7 weeks (Table 1)."
+      notes = "Screened as a covariate and not retained in the final model; postmenstrual age (PAGE) carries the maturational signal instead. GA is still required to CONSTRUCT PAGE (PAGE = GA + postnatal age in weeks), and the dosing simulations stratified the virtual population by GA (30-34 weeks vs >= 35 weeks; Haynes 2025 Methods 'Dosing Simulations' and Table 3). Cohort range 29 3/7 to 40 6/7 weeks, median 37 2/7 weeks (Table 1)."
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and SIGNIFICANT: eGFR and PMA gave similar reductions in objective function value, but PMA was selected for the final model as the more physiologically appropriate marker of renal maturation, and eGFR provided no additional predictive value beyond PMA (Haynes 2025 Results 'Final Model'). No eGFR coefficient is reported for the final model, so none is encoded here. Cohort median 68.8 mL/min/1.73 m^2 (range 37.8-126.1; Table 1), available within 48 h of dosing for 25 of 33 subjects."
+      notes = "Screened on CL/F and SIGNIFICANT: eGFR and PMA gave similar reductions in objective function value, but PMA was selected for the final model as the more physiologically appropriate marker of renal maturation, and eGFR provided no additional predictive value beyond PMA (Haynes 2025 Results 'Final Model'). No eGFR coefficient is reported for the final model, so none is encoded here. Cohort median 68.8 mL/min/1.73 m^2 (range 37.8-126.1; Table 1), available within 48 h of dosing for 25 of 33 subjects."
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a covariate and not retained; the eGFR derived from it was also screened and not retained (see CRCL). Only clinically obtained creatinine results were used, so 8 of 33 subjects had no creatinine within 48 h of dosing (Haynes 2025 Methods 'Study design' and Table 1). Units not stated in the source; mg/dL is the conventional US reporting unit for the study site."
+      notes = "Screened as a covariate and not retained; the eGFR derived from it was also screened and not retained (see CRCL). Only clinically obtained creatinine results were used, so 8 of 33 subjects had no creatinine within 48 h of dosing (Haynes 2025 Methods 'Study design' and Table 1). Units not stated in the source; mg/dL is the conventional US reporting unit for the study site."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
     n_observations = 144L,
-    age_range      = "9.49-56.54 days postnatal",
-    age_median     = "31.16 days postnatal",
-    ga_range       = "29 3/7 to 40 6/7 weeks gestational age at birth",
-    ga_median      = "37 2/7 weeks gestational age at birth",
-    weight_range   = "2.20-5.39 kg",
-    weight_median  = "3.36 kg",
+    age_range = "9.49-56.54 days postnatal",
+    age_median = "31.16 days postnatal",
+    ga_range = "29 3/7 to 40 6/7 weeks gestational age at birth",
+    ga_median = "37 2/7 weeks gestational age at birth",
+    weight_range = "2.20-5.39 kg",
+    weight_median = "3.36 kg",
     sex_female_pct = 30,
     race_ethnicity = c(
-      White = 70, Black = 0, Asian = 9,
+      White = 70,
+      Black = 0,
+      Asian = 9,
       `Native Hawaiian/Other Pacific Islander` = 0,
       `Unknown or not reported` = 21,
-      Hispanic = 30, `Non-Hispanic` = 58,
+      Hispanic = 30,
+      `Non-Hispanic` = 58,
       `Ethnicity unknown or not reported` = 12
     ),
-    disease_state  = "Hospitalized neonates and young infants receiving antibiotics, enrolled either while receiving enteral cephalexin as standard of care (9 of 33) or while receiving IV antibiotics and given a single 25 mg/kg enteral research dose of cephalexin (24 of 33). Common indications include bacteremic pyelonephritis and other Enterobacterales or MSSA infections.",
+    disease_state = "Hospitalized neonates and young infants receiving antibiotics, enrolled either while receiving enteral cephalexin as standard of care (9 of 33) or while receiving IV antibiotics and given a single 25 mg/kg enteral research dose of cephalexin (24 of 33). Common indications include bacteremic pyelonephritis and other Enterobacterales or MSSA infections.",
     renal_function = "eGFR median 68.8 mL/min/1.73 m^2 (range 37.8-126.1); available within 48 h of dosing for 25 of 33 subjects",
-    dose_range     = "12.0-29.5 mg/kg per dose as an oral suspension (median 24.7 mg/kg); one subject received 12.0 mg/kg and all others 22.5-29.5 mg/kg. Administered by mouth (10 of 33), via nasogastric / orogastric / gastric tube (20 of 33) or via post-pyloric tube (3 of 33).",
-    regions        = "United States (single center: Children's Hospital Colorado, Aurora, CO)",
-    notes          = "Baseline demographics, dosing, sampling and laboratory availability are in Haynes 2025 Table 1 (with Tables S1-S2). 33 subjects contributed 144 plasma concentrations after data cleaning. Sampling was 3-5 samples per subject across 1-5 dosing intervals. NOTE: the earlier IDWeek 2024 conference abstract of this work (Open Forum Infect Dis 2025;12(Suppl 1):S781, abstract P-1222, doi:10.1093/ofid/ofae631.1404) reported a preliminary analysis of 27 subjects / 114 concentrations with eGFR (not PMA) on CL/F and 15% protein binding; the values encoded here are the FINAL peer-reviewed estimates."
+    dose_range = "12.0-29.5 mg/kg per dose as an oral suspension (median 24.7 mg/kg); one subject received 12.0 mg/kg and all others 22.5-29.5 mg/kg. Administered by mouth (10 of 33), via nasogastric / orogastric / gastric tube (20 of 33) or via post-pyloric tube (3 of 33).",
+    regions = "United States (single center: Children's Hospital Colorado, Aurora, CO)",
+    notes = "Baseline demographics, dosing, sampling and laboratory availability are in Haynes 2025 Table 1 (with Tables S1-S2). 33 subjects contributed 144 plasma concentrations after data cleaning. Sampling was 3-5 samples per subject across 1-5 dosing intervals. NOTE: the earlier IDWeek 2024 conference abstract of this work (Open Forum Infect Dis 2025;12(Suppl 1):S781, abstract P-1222, doi:10.1093/ofid/ofae631.1404) reported a preliminary analysis of 27 subjects / 114 concentrations with eGFR (not PMA) on CL/F and 15% protein binding; the values encoded here are the FINAL peer-reviewed estimates."
   )
 
   ini({

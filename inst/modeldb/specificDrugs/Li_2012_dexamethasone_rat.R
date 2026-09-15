@@ -12,14 +12,24 @@ Li_2012_dexamethasone_rat <- function() {
 
   paper_specific_compartments <- c(
     "stim_cyp3a1_1",
-    "stim_cyp3a2_1", "stim_cyp3a2_2", "stim_cyp3a2_3", "stim_cyp3a2_4",
-    "stim_cyp3a2_5", "stim_cyp3a2_6", "stim_cyp3a2_7", "stim_cyp3a2_8",
-    "mrna_cyp3a1", "mrna_cyp3a2",
-    "prot_cyp3a1", "prot_cyp3a2"
+    "stim_cyp3a2_1",
+    "stim_cyp3a2_2",
+    "stim_cyp3a2_3",
+    "stim_cyp3a2_4",
+    "stim_cyp3a2_5",
+    "stim_cyp3a2_6",
+    "stim_cyp3a2_7",
+    "stim_cyp3a2_8",
+    "mrna_cyp3a1",
+    "mrna_cyp3a2",
+    "prot_cyp3a1",
+    "prot_cyp3a2"
   )
   paper_specific_residual_sds <- c(
-    "propSd_mrna_cyp3a1", "propSd_mrna_cyp3a2",
-    "propSd_prot_cyp3a1", "propSd_prot_cyp3a2",
+    "propSd_mrna_cyp3a1",
+    "propSd_mrna_cyp3a2",
+    "propSd_prot_cyp3a1",
+    "propSd_prot_cyp3a2",
     "propSd_EA"
   )
 
@@ -28,36 +38,81 @@ Li_2012_dexamethasone_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central       = list(analyte = "DEX", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1   = list(analyte = "DEX", units = NA_character_, specimen = "plasma", verified = FALSE),
-    stim_cyp3a1_1 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_1 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_2 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_3 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_4 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_5 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_6 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_7 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stim_cyp3a2_8 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
-    mrna_cyp3a1   = list(analyte = "CYP3A1 mRNA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    mrna_cyp3a2   = list(analyte = "CYP3A2 mRNA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    prot_cyp3a1   = list(analyte = "CYP3A1 protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    prot_cyp3a2   = list(analyte = "CYP3A2 protein", units = NA_character_, specimen = "tissue", verified = FALSE)
+    central = list(analyte = "DEX", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "DEX", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stim_cyp3a1_1 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_1 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_2 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_3 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_4 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_5 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_6 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_7 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    stim_cyp3a2_8 = list(
+      analyte = "DEX-PXR",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    mrna_cyp3a1 = list(analyte = "CYP3A1 mRNA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mrna_cyp3a2 = list(analyte = "CYP3A2 mRNA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    prot_cyp3a1 = list(analyte = "CYP3A1 protein", units = NA_character_, specimen = "tissue", verified = FALSE),
+    prot_cyp3a2 = list(analyte = "CYP3A2 protein", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    sex            = "male",
-    n_subjects_pk  = 3L,
-    n_subjects_pd  = 84L,
-    n_studies      = 1L,
-    weight_range   = "200-250 g",
-    disease_state  = "healthy (normal rats; CYP3A induction by exogenous corticosteroid challenge)",
-    dose_range     = "100 mg/kg DEX in 5 mL/kg corn oil, single intraperitoneal dose after 12 h fast",
-    regions        = "China (Peking University Health Science Center, Beijing)",
-    notes          = paste(
+    species = "rat (Sprague-Dawley)",
+    sex = "male",
+    n_subjects_pk = 3L,
+    n_subjects_pd = 84L,
+    n_studies = 1L,
+    weight_range = "200-250 g",
+    disease_state = "healthy (normal rats; CYP3A induction by exogenous corticosteroid challenge)",
+    dose_range = "100 mg/kg DEX in 5 mL/kg corn oil, single intraperitoneal dose after 12 h fast",
+    regions = "China (Peking University Health Science Center, Beijing)",
+    notes = paste(
       "PK cohort: serial blood samples from 3 treated rats at 16 time points (0.083, 0.25, 0.5,",
       "0.75, 1, 2, 3, 4, 6, 8, 12, 16, 24, 30, 36, 48 h). PD cohort: 84 rats randomized to DEX or",
       "vehicle (corn oil) and sacrificed at 14 time points (0, 1, 2, 4, 8, 12, 16, 24, 30, 36, 42,",

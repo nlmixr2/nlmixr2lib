@@ -36,18 +36,18 @@ Claret_2014_motesanib_OS_nonevaluable <- function() {
   )
   vignette <- "Claret_2014_motesanib_nsclc"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; this model has no drug-effect term -- survival depends only on baseline serum albumin)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; this model has no drug-effect term -- survival depends only on baseline serum albumin)",
     concentration = "probability (the model output sur is a survival probability, not a drug concentration)"
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Baseline serum albumin concentration. The only independent prognostic factor retained in the final OS model for TS-nonevaluable patients, and the strongest factor in the corresponding univariate Cox screen (P < 0.0001).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration. The only independent prognostic factor retained in the final OS model for TS-nonevaluable patients, and the strongest factor in the corresponding univariate Cox screen (P < 0.0001).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Required input; NOT centred -- the coefficient applies to the raw g/L value, so mu_OS = 0.681 + 0.108 * ALB.",
         "Supplementary Table S2 labels the row 'Baseline albumin (g/L)', i.e. SI units, which is also the register's canonical unit for ALB, so no conversion is applied.",
         "The units are self-checking: at a typical 38 g/L the model gives a median OS of exp(0.681 + 0.108 * 38) = 120 days, consistent with the poor outcome expected of patients with no evaluable postbaseline tumor assessment;",
@@ -55,7 +55,7 @@ Claret_2014_motesanib_OS_nonevaluable <- function() {
         "Claret 2014 Results ('Nonevaluable patients') reports that an imbalance in baseline albumin could account for the better outcome in the CP-plus-placebo arm than in the CP-plus-motesanib arm among these patients.",
         sep = " "
       ),
-      source_name        = "Baseline albumin"
+      source_name = "Baseline albumin"
     )
   )
 
@@ -65,37 +65,37 @@ Claret_2014_motesanib_OS_nonevaluable <- function() {
   covariatesDataExcluded <- list(
     ALT = list(
       description = "Baseline alanine aminotransferase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Results ('Nonevaluable patients'): univariate Cox P = 0.0041, but baseline albumin was the only factor with independent predictive value in the multivariate model."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Results ('Nonevaluable patients'): univariate Cox P = 0.0041, but baseline albumin was the only factor with independent predictive value in the multivariate model."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Results ('Nonevaluable patients'): univariate Cox P < 0.02; not retained."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Results ('Nonevaluable patients'): univariate Cox P < 0.02; not retained."
     ),
     LDH = list(
       description = "Baseline lactate dehydrogenase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Results ('Nonevaluable patients'): univariate Cox P < 0.02; not retained."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Results ('Nonevaluable patients'): univariate Cox P < 0.02; not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 146L,
-    n_studies      = 1L,
-    age_range      = "adults with advanced nonsquamous NSCLC; the age distribution is reported in the MONET1 primary publication (Scagliotti 2012, J Clin Oncol 30:2829-2836) rather than in Claret 2014",
-    weight_range   = "not reported in Claret 2014",
+    species = "human",
+    n_subjects = 146L,
+    n_studies = 1L,
+    age_range = "adults with advanced nonsquamous NSCLC; the age distribution is reported in the MONET1 primary publication (Scagliotti 2012, J Clin Oncol 30:2829-2836) rather than in Claret 2014",
+    weight_range = "not reported in Claret 2014",
     sex_female_pct = NA_real_,
     race_ethnicity = "21 of the 219 Asian MONET1 patients resampled for the virtual phase III simulations were TS-nonevaluable and were simulated with this model.",
-    disease_state  = "Advanced (stage IIIB with pleural effusion or stage IV) or recurrent nonsquamous NSCLC, previously untreated, whose tumor-size response could not be modelled: 115 patients had no postbaseline tumor assessment and 41 had only nontarget lesions.",
-    dose_range     = "Carboplatin/paclitaxel (CP) plus motesanib 125 mg orally once daily, vs. CP plus placebo. Treatment arm is NOT a term in this model.",
-    regions        = "MONET1, an international, randomized, placebo-controlled, double-blind phase III study (so described in the title of Claret 2014's reference 13, Scagliotti 2012, J Clin Oncol 30:2829-2836). Claret 2014 does not print a trial-registry identifier, so none is recorded here.",
-    biomarkers     = "Overall survival (OS, days); baseline serum albumin (g/L) as the sole prognostic covariate.",
-    notes          = paste(
+    disease_state = "Advanced (stage IIIB with pleural effusion or stage IV) or recurrent nonsquamous NSCLC, previously untreated, whose tumor-size response could not be modelled: 115 patients had no postbaseline tumor assessment and 41 had only nontarget lesions.",
+    dose_range = "Carboplatin/paclitaxel (CP) plus motesanib 125 mg orally once daily, vs. CP plus placebo. Treatment arm is NOT a term in this model.",
+    regions = "MONET1, an international, randomized, placebo-controlled, double-blind phase III study (so described in the title of Claret 2014's reference 13, Scagliotti 2012, J Clin Oncol 30:2829-2836). Claret 2014 does not print a trial-registry identifier, so none is recorded here.",
+    biomarkers = "Overall survival (OS, days); baseline serum albumin (g/L) as the sole prognostic covariate.",
+    notes = paste(
       "n_subjects is taken as 146 from the Supplementary Table S2 title, 'Parameter Estimates from the Final OS Model for Non-evaluable Patients (n = 146)'.",
       "The main text instead reports 156 nonevaluable patients (88 in the motesanib arm and 68 in the placebo arm; 115 with no postbaseline tumor assessment plus 41 with only nontarget lesions, which also sums to 156).",
       "The paper does not reconcile the two figures; the most likely explanation is that 10 of the 156 lacked a baseline albumin measurement and so could not enter the albumin regression.",

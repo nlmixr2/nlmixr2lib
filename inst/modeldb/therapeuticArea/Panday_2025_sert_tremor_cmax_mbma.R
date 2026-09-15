@@ -10,66 +10,66 @@ Panday_2025_sert_tremor_cmax_mbma <- function() {
   # dimensionally consistent dose-vs-concentration pair; the same device is used
   # by Yoshioka_2018_FXa_inhibitors_mbma, the other algebraic MBMA in the library.
   units <- list(
-    time          = "h",
-    dosing        = "percent",
+    time = "h",
+    dosing = "percent",
     concentration = "percent/percent"
   )
 
   covariateData <- list(
     CMAX = list(
-      description        = "Study-arm-level steady-state MAXIMUM total (bound + unbound) plasma concentration of the SERT inhibitor at the dose for which tremor incidence was reported.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Study-arm-level steady-state MAXIMUM total (bound + unbound) plasma concentration of the SERT inhibitor at the dose for which tremor incidence was reported.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Total, not unbound: Eq. S1 applies FU internally. Collated per drug and dose from the primary literature and FDA labels (Panday 2025 Table S2, parameter rows 'plasma steady state total Cmax' / 'steady state plasma total Cmax' / 'plasma steady state cmax'). For drugs with a SERT-active metabolite (amitriptyline/nortriptyline, fluoxetine/norfluoxetine, venlafaxine/O-desmethylvenlafaxine) the paper computed target coverage separately for parent and metabolite and SUMMED the two coverages (Supplemental Methods, 'Estimating SERT target coverage for drugs with active metabolites'); that summation is NOT performed inside this model -- evaluate the model once per moiety and add the resulting coverages, or use the parameter set fitted excluding drugs with active metabolites (the default here), which is the paper's preferred relationship.",
-      source_name        = "C_pl,ss (Panday 2025 Supplemental Methods Eq. S1); 'Cmax,ub,ss' after the unbound/brain corrections"
+      notes = "Total, not unbound: Eq. S1 applies FU internally. Collated per drug and dose from the primary literature and FDA labels (Panday 2025 Table S2, parameter rows 'plasma steady state total Cmax' / 'steady state plasma total Cmax' / 'plasma steady state cmax'). For drugs with a SERT-active metabolite (amitriptyline/nortriptyline, fluoxetine/norfluoxetine, venlafaxine/O-desmethylvenlafaxine) the paper computed target coverage separately for parent and metabolite and SUMMED the two coverages (Supplemental Methods, 'Estimating SERT target coverage for drugs with active metabolites'); that summation is NOT performed inside this model -- evaluate the model once per moiety and add the resulting coverages, or use the parameter set fitted excluding drugs with active metabolites (the default here), which is the paper's preferred relationship.",
+      source_name = "C_pl,ss (Panday 2025 Supplemental Methods Eq. S1); 'Cmax,ub,ss' after the unbound/brain corrections"
     ),
     FU = list(
-      description        = "Fraction of the SERT inhibitor unbound in human plasma.",
-      units              = "(unitless fraction)",
-      type               = "continuous",
+      description = "Fraction of the SERT inhibitor unbound in human plasma.",
+      units = "(unitless fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Unitless fraction (e.g. 0.02 for sertraline, 0.7 for desvenlafaxine), NOT percent. Derived from analysis of human plasma samples (Panday 2025 Supplemental Methods, 'Model development for estimating the in vivo brain exposure'); values collated in Table S2 parameter rows 'plasma fu'. Enters Eq. S1 multiplicatively.",
-      source_name        = "f_u,pl (Panday 2025 Supplemental Methods Eq. S1)"
+      notes = "Unitless fraction (e.g. 0.02 for sertraline, 0.7 for desvenlafaxine), NOT percent. Derived from analysis of human plasma samples (Panday 2025 Supplemental Methods, 'Model development for estimating the in vivo brain exposure'); values collated in Table S2 parameter rows 'plasma fu'. Enters Eq. S1 multiplicatively.",
+      source_name = "f_u,pl (Panday 2025 Supplemental Methods Eq. S1)"
     ),
     MW = list(
-      description        = "Molecular weight of the SERT inhibitor, used to convert the reported mass-per-volume plasma concentration to a molar concentration so that it is commensurate with the nanomolar in vitro potency.",
-      units              = "g/mol",
-      type               = "continuous",
+      description = "Molecular weight of the SERT inhibitor, used to convert the reported mass-per-volume plasma concentration to a molar concentration so that it is commensurate with the nanomolar in vitro potency.",
+      units = "g/mol",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters Eq. S1 as the factor 1000/MW, which converts ng/mL to nM. Values in Panday 2025 Table S2 parameter rows 'MW' (e.g. 298.4 for vortioxetine, 306.2 for sertraline, 263.37 for desvenlafaxine).",
-      source_name        = "MW (Panday 2025 Supplemental Methods Eq. S1)"
+      notes = "Enters Eq. S1 as the factor 1000/MW, which converts ng/mL to nM. Values in Panday 2025 Table S2 parameter rows 'MW' (e.g. 298.4 for vortioxetine, 306.2 for sertraline, 263.37 for desvenlafaxine).",
+      source_name = "MW (Panday 2025 Supplemental Methods Eq. S1)"
     ),
     KPUU_BRAIN = list(
-      description        = "Unbound-brain to unbound-plasma partition coefficient (Kp,uu) of the SERT inhibitor.",
-      units              = "(unitless ratio)",
-      type               = "continuous",
+      description = "Unbound-brain to unbound-plasma partition coefficient (Kp,uu) of the SERT inhibitor.",
+      units = "(unitless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Typically derived from rat or mouse studies (Panday 2025 Supplemental Methods). The paper preferred the 'Kp,uu * f_u,pl' route (Eq. S2b, encoded here) over the 'Kp * f_u,br' route (Eq. S2a) because it considered plasma fraction-unbound measurements more reliable than brain fraction-unbound measurements. When only a total brain-to-plasma ratio Kp and a brain fraction unbound f_u,br are available, the two routes are algebraically identical for KPUU_BRAIN = Kp * f_u,br / f_u,pl, so supply that product. Brain fraction-unbound values measured in brain homogenate were first pH-partition corrected per Friden et al. (Eqs. S3-S6) before that conversion; the corrected values are tabulated in Panday 2025 Table S2 parameter rows 'brain fu corrected'.",
-      source_name        = "K_p,uu (Panday 2025 Supplemental Methods Eq. S2b)"
+      notes = "Typically derived from rat or mouse studies (Panday 2025 Supplemental Methods). The paper preferred the 'Kp,uu * f_u,pl' route (Eq. S2b, encoded here) over the 'Kp * f_u,br' route (Eq. S2a) because it considered plasma fraction-unbound measurements more reliable than brain fraction-unbound measurements. When only a total brain-to-plasma ratio Kp and a brain fraction unbound f_u,br are available, the two routes are algebraically identical for KPUU_BRAIN = Kp * f_u,br / f_u,pl, so supply that product. Brain fraction-unbound values measured in brain homogenate were first pH-partition corrected per Friden et al. (Eqs. S3-S6) before that conversion; the corrected values are tabulated in Panday 2025 Table S2 parameter rows 'brain fu corrected'.",
+      source_name = "K_p,uu (Panday 2025 Supplemental Methods Eq. S2b)"
     ),
     IC50_SERT = list(
-      description        = "In vitro SERT inhibitory potency of the drug, corrected to the free (unbound) drug concentration in the assay.",
-      units              = "nM",
-      type               = "continuous",
+      description = "In vitro SERT inhibitory potency of the drug, corrected to the free (unbound) drug concentration in the assay.",
+      units = "nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Where an assay was reported to contain serum, the measured IC50 was corrected to a free-drug basis via Eq. S7 before use; where no serum was reported the measured potency was taken to be the free potency. Where several literature values existed for one drug the GEOMETRIC MEAN was used (Panday 2025 Supplemental Methods). Values in Panday 2025 Table S2 parameter rows 'SERT IC50' / 'SERT IC50 derived'. Substituting a free-corrected SERT K_D here instead of an IC50 is a supported variant of the paper's analysis, but it requires the K_D-based parameter set from Table S4 rather than the IC50-based default shipped in ini() -- see the vignette.",
-      source_name        = "IC50_SERT (Panday 2025 Supplemental Methods Eqs. S7 and S8)"
+      notes = "Where an assay was reported to contain serum, the measured IC50 was corrected to a free-drug basis via Eq. S7 before use; where no serum was reported the measured potency was taken to be the free potency. Where several literature values existed for one drug the GEOMETRIC MEAN was used (Panday 2025 Supplemental Methods). Values in Panday 2025 Table S2 parameter rows 'SERT IC50' / 'SERT IC50 derived'. Substituting a free-corrected SERT K_D here instead of an IC50 is a supported variant of the paper's analysis, but it requires the K_D-based parameter set from Table S4 rather than the IC50-based default shipped in ini() -- see the vignette.",
+      source_name = "IC50_SERT (Panday 2025 Supplemental Methods Eqs. S7 and S8)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 29677L,
-    n_studies        = 33L,
-    age_range        = "Adults; per-study demographics are not re-tabulated by the meta-analysis (each arm's source study is cited by PubMed ID or FDA label URL in Panday 2025 Table S2).",
-    weight_range     = "Not a model covariate; one source study normalised tapentadol IR exposure to a 77 kg body weight (Panday 2025 Table S2).",
-    sex_female_pct   = NA_real_,
-    disease_state    = "Mixed: major depressive disorder, generalised anxiety disorder, fibromyalgia, obsessive-compulsive disorder, chronic pain and opioid dependence -- whichever indication the source study of each arm enrolled. The modelled endpoint is the treatment-emergent incidence proportion of tremor, used as a representative manifestation of serotonin syndrome.",
-    dose_range       = "33 drug/dose arms across 20 SERT inhibitors (Panday 2025 Table S1): amitriptyline+nortriptyline 75 and 111 mg QD; citalopram 40 mg QD; desvenlafaxine 50, 100, 200 and 400 mg QD; duloxetine 60 and 90 mg QD; escitalopram 10 mg QD; fluoxetine+norfluoxetine 20, 25 and 40 mg QD; fluvoxamine 100 mg BID and 100 mg QD; imipramine 110 mg BID; methadone 100 mg QD; milnacipran 50 mg BID and 100 and 200 mg QD; nortriptyline 100 mg QD; paroxetine (and CR) 12.5, 22, 22.9, 25 and 30 mg QD; sertraline 50, 100, 144 and 200 mg QD; tapentadol (ER, IR) 75 mg Q6H and 175 mg BID; tramadol ER 200 mg QD; venlafaxine+O-desmethylvenlafaxine 50 and 75 mg BID and 75, 225 and 375 mg QD; venlafaxine XR 85, 150 and 225 mg QD; vilazodone 40 mg QD; vortioxetine 5 and 10 mg QD.",
-    regions          = "Not reported; the arms are drawn from the published literature and from US FDA product labels.",
-    drug_classes     = "Five SERT-inhibitor classes represented: selective serotonin reuptake inhibitors (SSRI), serotonin and norepinephrine reuptake inhibitors (SNRI), serotonin modulator and stimulator (SMS), tricyclic antidepressants (TCA) and opioids (Panday 2025 Figure 1b and Table S1).",
-    notes            = "Summary-level MBMA: the modelled observations are per-arm tremor incidence proportions weighted by study-group size, NOT individual-patient data. n_subjects (29,677) and n_studies (33) are the sum and the count of the treatment-arm group sizes tabulated in Panday 2025 Table S2 ('tremor percent - treatment' rows); the paper itself does not print a pooled total. Placebo-arm group sizes total 20,381 records but double-count shared placebo groups across dose levels of the same trial, so they are not added here. Clinical tremor incidences and plasma fractions unbound are human; the brain distribution parameters (Kp, Kp,uu, brain fraction unbound) are predominantly rat or mouse, and the SERT potencies are in vitro -- this cross-species integration is the 'translational' element of the analysis."
+    species = "human",
+    n_subjects = 29677L,
+    n_studies = 33L,
+    age_range = "Adults; per-study demographics are not re-tabulated by the meta-analysis (each arm's source study is cited by PubMed ID or FDA label URL in Panday 2025 Table S2).",
+    weight_range = "Not a model covariate; one source study normalised tapentadol IR exposure to a 77 kg body weight (Panday 2025 Table S2).",
+    sex_female_pct = NA_real_,
+    disease_state = "Mixed: major depressive disorder, generalised anxiety disorder, fibromyalgia, obsessive-compulsive disorder, chronic pain and opioid dependence -- whichever indication the source study of each arm enrolled. The modelled endpoint is the treatment-emergent incidence proportion of tremor, used as a representative manifestation of serotonin syndrome.",
+    dose_range = "33 drug/dose arms across 20 SERT inhibitors (Panday 2025 Table S1): amitriptyline+nortriptyline 75 and 111 mg QD; citalopram 40 mg QD; desvenlafaxine 50, 100, 200 and 400 mg QD; duloxetine 60 and 90 mg QD; escitalopram 10 mg QD; fluoxetine+norfluoxetine 20, 25 and 40 mg QD; fluvoxamine 100 mg BID and 100 mg QD; imipramine 110 mg BID; methadone 100 mg QD; milnacipran 50 mg BID and 100 and 200 mg QD; nortriptyline 100 mg QD; paroxetine (and CR) 12.5, 22, 22.9, 25 and 30 mg QD; sertraline 50, 100, 144 and 200 mg QD; tapentadol (ER, IR) 75 mg Q6H and 175 mg BID; tramadol ER 200 mg QD; venlafaxine+O-desmethylvenlafaxine 50 and 75 mg BID and 75, 225 and 375 mg QD; venlafaxine XR 85, 150 and 225 mg QD; vilazodone 40 mg QD; vortioxetine 5 and 10 mg QD.",
+    regions = "Not reported; the arms are drawn from the published literature and from US FDA product labels.",
+    drug_classes = "Five SERT-inhibitor classes represented: selective serotonin reuptake inhibitors (SSRI), serotonin and norepinephrine reuptake inhibitors (SNRI), serotonin modulator and stimulator (SMS), tricyclic antidepressants (TCA) and opioids (Panday 2025 Figure 1b and Table S1).",
+    notes = "Summary-level MBMA: the modelled observations are per-arm tremor incidence proportions weighted by study-group size, NOT individual-patient data. n_subjects (29,677) and n_studies (33) are the sum and the count of the treatment-arm group sizes tabulated in Panday 2025 Table S2 ('tremor percent - treatment' rows); the paper itself does not print a pooled total. Placebo-arm group sizes total 20,381 records but double-count shared placebo groups across dose levels of the same trial, so they are not added here. Clinical tremor incidences and plasma fractions unbound are human; the brain distribution parameters (Kp, Kp,uu, brain fraction unbound) are predominantly rat or mouse, and the SERT potencies are in vitro -- this cross-species integration is the 'translational' element of the analysis."
   )
 
   ini({

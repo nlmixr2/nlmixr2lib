@@ -5,92 +5,94 @@ Shoji_2011_pregabalin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_residual_sds <- c(
-    "propSdHealthy", "addSdHealthy",
-    "propSdPatient", "addSdPatient"
+    "propSdHealthy",
+    "addSdHealthy",
+    "propSdPatient",
+    "addSdPatient"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "pregabalin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "pregabalin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "pregabalin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance by the Cockcroft-Gault equation. NOT BSA-normalized; raw Cockcroft-Gault mL/min. Capped at the estimated break point th_bp = 107 mL/min when entering CL/F (the paper's saturation knot above which CL/F no longer scales linearly with CLcr).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance by the Cockcroft-Gault equation. NOT BSA-normalized; raw Cockcroft-Gault mL/min. Capped at the estimated break point th_bp = 107 mL/min when entering CL/F (the paper's saturation knot above which CL/F no longer scales linearly with CLcr).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per visit; covariate values from the earliest visit are carried forward in the source dataset (Methods, Inclusion of covariates paragraph). Cohort range 10.0-230 mL/min, mean 86 mL/min (Table 1, All Total row). CL/F is modelled as a strict linear function of min(CRCL, th_bp); there is no intercept term (Methods, Base model development; the intercept 95% CI -0.00628 to 0.240 included zero so was dropped). Same canonical CRCL form used in Delattre 2010 amikacin (raw Cockcroft-Gault, NOT BSA-normalized).",
-      source_name        = "CLcr"
+      notes = "Time-fixed per visit; covariate values from the earliest visit are carried forward in the source dataset (Methods, Inclusion of covariates paragraph). Cohort range 10.0-230 mL/min, mean 86 mL/min (Table 1, All Total row). CL/F is modelled as a strict linear function of min(CRCL, th_bp); there is no intercept term (Methods, Base model development; the intercept 95% CI -0.00628 to 0.240 included zero so was dropped). Same canonical CRCL form used in Delattre 2010 amikacin (raw Cockcroft-Gault, NOT BSA-normalized).",
+      source_name = "CLcr"
     ),
     IBW = list(
-      description        = "Ideal body weight derived from total body weight, height, and sex per the formula in Methods (the Cockcroft-Gault context formula). Time-fixed.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight derived from total body weight, height, and sex per the formula in Methods (the Cockcroft-Gault context formula). Time-fixed.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 62 kg (the population-mean IBW called out explicitly in the Discussion: 'even when IBW became extremely low (i.e. half of the mean 62 kg) CL/F deceased by 22%'). Enters CL/F and V/F as a power scalar (IBW / 62)^e_ibw_<param>. The paper's Methods equation for IBW is from reference [12] (Devine-family variant); the per-paper formula should be applied when assembling a virtual cohort if only TBW + HT + SEXF are available.",
-      source_name        = "IBW"
+      notes = "Reference value 62 kg (the population-mean IBW called out explicitly in the Discussion: 'even when IBW became extremely low (i.e. half of the mean 62 kg) CL/F deceased by 22%'). Enters CL/F and V/F as a power scalar (IBW / 62)^e_ibw_<param>. The paper's Methods equation for IBW is from reference [12] (Devine-family variant); the per-paper formula should be applied when assembling a virtual cohort if only TBW + HT + SEXF are available.",
+      source_name = "IBW"
     ),
     BMI = list(
-      description        = "Body mass index (kg/m^2) from total body weight and height, time-fixed per subject. Enters V/F as a power scalar (BMI / 25)^e_bmi_vc.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index (kg/m^2) from total body weight and height, time-fixed per subject. Enters V/F as a power scalar (BMI / 25)^e_bmi_vc.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 25 kg/m^2, approximately equal to the population-mean BMI (mean TBW 71 kg, mean HT ~167 cm -> BMI ~25.4 kg/m^2). The reference value 25 is the comparator used in the paper's own Discussion sensitivity test ('The V/F decreased to 84% when BMI changed from 25 to 18 kg/m^2'). The two-subject HT imputation to 167 cm (Methods, Demographic data) keeps the cohort-mean BMI ~25.",
-      source_name        = "BMI"
+      notes = "Reference value 25 kg/m^2, approximately equal to the population-mean BMI (mean TBW 71 kg, mean HT ~167 cm -> BMI ~25.4 kg/m^2). The reference value 25 is the comparator used in the paper's own Discussion sensitivity test ('The V/F decreased to 84% when BMI changed from 25 to 18 kg/m^2'). The two-subject HT imputation to 167 cm (Methods, Demographic data) keeps the cohort-mean BMI ~25.",
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Subject age at study entry (years). Time-fixed. Enters V/F as a power scalar (AGE / 59)^e_age_vc.",
-      units              = "year",
-      type               = "continuous",
+      description = "Subject age at study entry (years). Time-fixed. Enters V/F as a power scalar (AGE / 59)^e_age_vc.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 59 years (the population-mean age called out explicitly in the Discussion: 'it decreased only 6.5% from the mean age (59 years) to the maximal observed age (101 years)'). Cohort range 19-101 years (Table 1, All Total row).",
-      source_name        = "AGE"
+      notes = "Reference value 59 years (the population-mean age called out explicitly in the Discussion: 'it decreased only 6.5% from the mean age (59 years) to the maximal observed age (101 years)'). Cohort range 19-101 years (Table 1, All Total row).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed. Shoji 2011 codes SEX as 'male = 0, female = 1' in Figure 2 caption, matching the canonical SEXF orientation directly. Enters V/F as the categorical multiplicative factor e_sexf_vc^SEXF; the female-vs-male V/F ratio is 0.906 (Table 3, q_Gender on V/F final model). Cohort 37.2% female, 62.8% male (Table 2).",
-      source_name        = "SEX"
+      notes = "Time-fixed. Shoji 2011 codes SEX as 'male = 0, female = 1' in Figure 2 caption, matching the canonical SEXF orientation directly. Enters V/F as the categorical multiplicative factor e_sexf_vc^SEXF; the female-vs-male V/F ratio is 0.906 (Table 3, q_Gender on V/F final model). Cohort 37.2% female, 62.8% male (Table 2).",
+      source_name = "SEX"
     ),
     FED = list(
-      description        = "Per-dose fed-vs-fasted indicator (1 = dose given with food within 2 h of the meal, or food but exact meal time unknown; 0 = fasted).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-dose fed-vs-fasted indicator (1 = dose given with food within 2 h of the meal, or food but exact meal time unknown; 0 = fasted).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Per-dose-event indicator, time-varying within subject across multiple dosing events. Self-reported food status (Methods, Inclusion of covariates paragraph). Enters ka and tlag as multiplicative shifts: ka_fed = ka * (1 + e_food_ka) -> ~93% reduction (NONMEM (1 + theta * FED) parameterisation); tlag_fed = tlag * (1 + e_food_tlag) -> ~81% increase. Consistent with the published high-fat-meal slowing of pregabalin absorption.",
-      source_name        = "FOOD"
+      notes = "Per-dose-event indicator, time-varying within subject across multiple dosing events. Self-reported food status (Methods, Inclusion of covariates paragraph). Enters ka and tlag as multiplicative shifts: ka_fed = ka * (1 + e_food_ka) -> ~93% reduction (NONMEM (1 + theta * FED) parameterisation); tlag_fed = tlag * (1 + e_food_tlag) -> ~81% increase. Consistent with the published high-fat-meal slowing of pregabalin absorption.",
+      source_name = "FOOD"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator (1 = healthy subject from studies HV01-HV09 or impaired-renal-function / elderly substudies HV05 / HV07; 0 = patient with post-herpetic neuralgia or diabetic peripheral neuropathy from studies PT01-PT05).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator (1 = healthy subject from studies HV01-HV09 or impaired-renal-function / elderly substudies HV05 / HV07; 0 = patient with post-herpetic neuralgia or diabetic peripheral neuropathy from studies PT01-PT05).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient cohort)",
-      notes              = "Time-fixed per subject. Used in model() to switch the proportional + additive residual error magnitudes between the two paper-defined groups; the healthy-volunteer arms had richly-sampled PK and lower residual variability (CV 22%, SD 0.0239 ug/mL), while patient arms had sparse outpatient sampling and higher residual variability (CV 28.5%, SD 0.236 ug/mL) (Table 3, residual variability rows final model). The patient-type variable was tested as a covariate on CL/F but did not remain in the final model (ratio patient/healthy 92.5% with 95% CI 85.2-99.9% fell within the 80-125% clinically-less-significant range; Discussion paragraph 5).",
-      source_name        = "(derived from study identifier; HV studies = 1, PT studies = 0)"
+      notes = "Time-fixed per subject. Used in model() to switch the proportional + additive residual error magnitudes between the two paper-defined groups; the healthy-volunteer arms had richly-sampled PK and lower residual variability (CV 22%, SD 0.0239 ug/mL), while patient arms had sparse outpatient sampling and higher residual variability (CV 28.5%, SD 0.236 ug/mL) (Table 3, residual variability rows final model). The patient-type variable was tested as a covariate on CL/F but did not remain in the final model (ratio patient/healthy 92.5% with 95% CI 85.2-99.9% fell within the 80-125% clinically-less-significant range; Discussion paragraph 5).",
+      source_name = "(derived from study identifier; HV studies = 1, PT studies = 0)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 616L,
-    n_studies      = 14L,
-    age_range      = "19-101 years",
-    age_median     = "59.1 years (mean; Table 1, All Total row)",
-    weight_range   = "31-142 kg",
-    weight_median  = "71.0 kg (mean total body weight; Table 1, All Total row)",
+    species = "human",
+    n_subjects = 616L,
+    n_studies = 14L,
+    age_range = "19-101 years",
+    age_median = "59.1 years (mean; Table 1, All Total row)",
+    weight_range = "31-142 kg",
+    weight_median = "71.0 kg (mean total body weight; Table 1, All Total row)",
     sex_female_pct = 37.2,
     race_ethnicity = c(White = 52.9, Black = 0.97, Asian = 41.6, Other = 4.55),
-    disease_state  = "Pooled healthy-volunteer (n=195, 31.7%), post-herpetic neuralgia (n=267, 43.3%), and painful diabetic peripheral neuropathy (n=154, 25.0%) cohorts drawn from 14 clinical trials. Five phase-1 studies (HV01-HV09) used dense PK sampling in healthy adults including substudies in subjects with impaired renal function (HV05) and elderly subjects (HV07). Four post-herpetic neuralgia trials (PT01-PT04) and one diabetic peripheral neuropathy trial (PT05) used sparse outpatient PK sampling (1-2 samples per patient).",
-    dose_range     = "Single doses 1-300 mg oral; multiple-dose 75-300 mg BID or 25-200 mg TID (up to 600 mg/day in efficacy studies, up to 900 mg/day in phase-1). PT05 included a CrCl-based dose reduction to 150 mg BID for patients allocated to 300 mg BID who had 30 <= CrCl < 60 mL/min.",
-    regions        = "United States, Japan, European countries, Australia, Canada (per Table 1 study identifiers).",
-    bioanalysis    = "Plasma pregabalin quantified by validated HPLC-UV (LLQ 0.005-0.05 ug/mL across studies) or LC-MS/MS (LLQ 0.025 ug/mL; HV08, HV09, PT04, PT05). Precision and accuracy 1.7-5.5% and -4.4 to +4.0% across assays (Methods, Clinical studies and assay methods).",
-    notes          = "Total 5275 plasma pregabalin concentrations: 4650 (88.2%) from healthy subjects and 625 (11.8%) from patients. Sparse-sample distribution: 36 observations in the absorption phase (<= 0.75 h), 358 around Cmax (0.75-3.00 h), and 231 in the elimination phase (> 3.0 h). Two subjects with missing height were imputed to 167 cm (the cohort-mean height). Estimation used NONMEM V Level 1.1 with key results confirmed in NONMEM 7 Level 1.2; first-order conditional estimation with eta-epsilon interaction (FOCE-I)."
+    disease_state = "Pooled healthy-volunteer (n=195, 31.7%), post-herpetic neuralgia (n=267, 43.3%), and painful diabetic peripheral neuropathy (n=154, 25.0%) cohorts drawn from 14 clinical trials. Five phase-1 studies (HV01-HV09) used dense PK sampling in healthy adults including substudies in subjects with impaired renal function (HV05) and elderly subjects (HV07). Four post-herpetic neuralgia trials (PT01-PT04) and one diabetic peripheral neuropathy trial (PT05) used sparse outpatient PK sampling (1-2 samples per patient).",
+    dose_range = "Single doses 1-300 mg oral; multiple-dose 75-300 mg BID or 25-200 mg TID (up to 600 mg/day in efficacy studies, up to 900 mg/day in phase-1). PT05 included a CrCl-based dose reduction to 150 mg BID for patients allocated to 300 mg BID who had 30 <= CrCl < 60 mL/min.",
+    regions = "United States, Japan, European countries, Australia, Canada (per Table 1 study identifiers).",
+    bioanalysis = "Plasma pregabalin quantified by validated HPLC-UV (LLQ 0.005-0.05 ug/mL across studies) or LC-MS/MS (LLQ 0.025 ug/mL; HV08, HV09, PT04, PT05). Precision and accuracy 1.7-5.5% and -4.4 to +4.0% across assays (Methods, Clinical studies and assay methods).",
+    notes = "Total 5275 plasma pregabalin concentrations: 4650 (88.2%) from healthy subjects and 625 (11.8%) from patients. Sparse-sample distribution: 36 observations in the absorption phase (<= 0.75 h), 358 around Cmax (0.75-3.00 h), and 231 in the elimination phase (> 3.0 h). Two subjects with missing height were imputed to 167 cm (the cohort-mean height). Estimation used NONMEM V Level 1.1 with key results confirmed in NONMEM 7 Level 1.2; first-order conditional estimation with eta-epsilon interaction (FOCE-I)."
   )
 
   ini({

@@ -7,7 +7,13 @@ LopezArguello_2023_meropenem_qsp <- function() {
   # Mechanistic per-cell molecule counts: six penicillin-binding proteins plus the
   # periplasmic drug pool. None map onto a canonical PK compartment name.
   paper_specific_compartments <- c(
-    "npbp1a", "npbp1b", "npbp2", "npbp3", "npbp4", "npbp56", "nperi"
+    "npbp1a",
+    "npbp1b",
+    "npbp2",
+    "npbp3",
+    "npbp4",
+    "npbp56",
+    "nperi"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -15,13 +21,43 @@ LopezArguello_2023_meropenem_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    npbp1a = list(analyte = "meropenem-PBP 1a complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp1b = list(analyte = "meropenem-PBP 1b complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp2  = list(analyte = "meropenem-PBP 2 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp3  = list(analyte = "meropenem-PBP 3 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp4  = list(analyte = "meropenem-PBP 4 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp56 = list(analyte = "meropenem-PBP 5/6 complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nperi  = list(analyte = "meropenem in periplasm", units = NA_character_, specimen = "bile", verified = FALSE)
+    npbp1a = list(
+      analyte = "meropenem-PBP 1a complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp1b = list(
+      analyte = "meropenem-PBP 1b complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp2 = list(
+      analyte = "meropenem-PBP 2 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp3 = list(
+      analyte = "meropenem-PBP 3 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp4 = list(
+      analyte = "meropenem-PBP 4 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    npbp56 = list(
+      analyte = "meropenem-PBP 5/6 complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nperi = list(analyte = "meropenem in periplasm", units = NA_character_, specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list(

@@ -44,17 +44,17 @@ Zhang_2026_tebipenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tebipenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; converts the weight-normalized apparent clearance (L/h/kg) and weight-normalized apparent volume (L/kg) of the Sato 2008 parameterization into whole-body CL/F (L/h) and V/F (L)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; converts the weight-normalized apparent clearance (L/h/kg) and weight-normalized apparent volume (L/kg) of the Sato 2008 parameterization into whole-body CL/F (L/h) and V/F (L)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters model() as a plain linear multiplier on both CL/F and V/F, not",
         "as an allometric power term: Sato 2008 fitted 'Basic Model 2', whose",
         "primary parameters are weight-normalized apparent clearance CL/F",
@@ -69,14 +69,14 @@ Zhang_2026_tebipenem <- function() {
         "kg in girls and 12.42 (2.58) kg in boys aged 24-59 months",
         "(Zhang 2026 Table 1). Weight also sets the mg/kg dose."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age in years; power covariate on weight-normalized apparent volume of distribution",
-      units              = "years",
-      type               = "continuous",
+      description = "Age in years; power covariate on weight-normalized apparent volume of distribution",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as the uncentred power term AGE^-0.132 (Sato 2008 Table 4:",
         "Vd/F (L/kg) = 1.18 x Age^-0.132), so the multiplier is 1 at age 1 year",
         "and the coefficient 1.18 L/kg is the 1-year-old value. No reference age",
@@ -87,14 +87,14 @@ Zhang_2026_tebipenem <- function() {
         "Table 1); the model is therefore extrapolated only mildly within the",
         "Sato 2008 age range."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CRCL = list(
-      description        = "Weight-normalized creatinine clearance; linear covariate on weight-normalized apparent clearance",
-      units              = "mL/min/kg",
-      type               = "continuous",
+      description = "Weight-normalized creatinine clearance; linear covariate on weight-normalized apparent clearance",
+      units = "mL/min/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "WEIGHT-normalized (mL/min/kg), NOT the BSA-normalized mL/min/1.73 m^2",
         "form that is the CRCL register default. Sato 2008 derived it from",
         "serum creatinine with the pediatric Schwartz-type predictive equations",
@@ -116,7 +116,7 @@ Zhang_2026_tebipenem <- function() {
         "in L/h/kg and the slope multiplied by 1000/60; this file uses Sato's",
         "native mL/min/kg so the published slope 0.104 applies directly."
       ),
-      source_name        = "Ccr"
+      source_name = "Ccr"
     )
   )
 
@@ -126,11 +126,11 @@ Zhang_2026_tebipenem <- function() {
   # is not a covariate on any PK parameter in Sato 2008's final model.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex, 1 = female",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Not a PK covariate. Used only to construct the Zhang 2026 virtual",
         "population: virtual participants were assigned male with probability",
         "0.6 (Zhang 2026 Methods 2.3), and the age-to-height and",
@@ -142,25 +142,25 @@ Zhang_2026_tebipenem <- function() {
         "the Full Model by the likelihood-ratio test (Sato 2008 Table 3 Final",
         "Model, which retains only theta2 + theta3 x Ccr on CL/F)."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 217L,
-    n_studies      = 5L,
-    age_range      = "0.67-15.23 years",
-    age_median     = "4.50 years",
-    weight_range   = "7.06-49.5 kg",
-    weight_median  = "15.4 kg",
+    species = "human",
+    n_subjects = 217L,
+    n_studies = 5L,
+    age_range = "0.67-15.23 years",
+    age_median = "4.50 years",
+    weight_range = "7.06-49.5 kg",
+    weight_median = "15.4 kg",
     sex_female_pct = 48.4,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = "pediatric otolaryngological infection or bacterial / mycoplasmal pneumonia",
-    dose_range     = "Oral tebipenem pivoxil 4 or 6 mg/kg twice daily",
-    regions        = "Japan",
+    disease_state = "pediatric otolaryngological infection or bacterial / mycoplasmal pneumonia",
+    dose_range = "Oral tebipenem pivoxil 4 or 6 mg/kg twice daily",
+    regions = "Japan",
     renal_function = "Weight-normalized creatinine clearance mean (SD) 3.72 (0.97) mL/min/kg, median 3.73, range 1.46-6.97 (Sato 2008 Table 2)",
-    notes          = paste(
+    notes = paste(
       "The PARAMETER-ESTIMATION population is Sato 2008's: 217 Japanese",
       "children (112 boys, 105 girls) pooled from five clinical studies,",
       "median age 4.50 years, median weight 15.4 kg, median serum creatinine",

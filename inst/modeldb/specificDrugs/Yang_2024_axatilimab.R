@@ -9,80 +9,80 @@ Yang_2024_axatilimab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "axatilimab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "axatilimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "axatilimab", units = "mg", specimen = "plasma", verified = FALSE),
-    csf1        = list(analyte = "CSF-1", units = "mg", specimen = "plasma", verified = FALSE),
-    ncmc        = list(analyte = "NCMC", units = "mg", specimen = "plasma", verified = FALSE),
-    ast         = list(analyte = "AST", units = "mg", specimen = "serum", verified = FALSE),
-    cpk         = list(analyte = "CPK", units = "mg", specimen = "serum", verified = FALSE)
+    csf1 = list(analyte = "CSF-1", units = "mg", specimen = "plasma", verified = FALSE),
+    ncmc = list(analyte = "NCMC", units = "mg", specimen = "plasma", verified = FALSE),
+    ast = list(analyte = "AST", units = "mg", specimen = "serum", verified = FALSE),
+    cpk = list(analyte = "CPK", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on volume of distribution (Vd) with reference 73.6 kg (overall pooled-cohort median, Yang 2024 Table S3); exponent 0.7. Time-fixed at baseline; the paper states continuous covariates were adjusted to the population median.",
-      source_name        = "WT"
+      notes = "Power effect on volume of distribution (Vd) with reference 73.6 kg (overall pooled-cohort median, Yang 2024 Table S3); exponent 0.7. Time-fixed at baseline; the paper states continuous covariates were adjusted to the population median.",
+      source_name = "WT"
     ),
     CSF1 = list(
-      description        = "Baseline plasma CSF-1 (M-CSF) concentration; time-fixed at the pre-dose value",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Baseline plasma CSF-1 (M-CSF) concentration; time-fixed at the pre-dose value",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear clearance (CL, exponent 0.912) and on the typical baseline CSF-1 model parameter BL_CSF1 (exponent 0.656); reference value 549 pg/mL (overall pooled-cohort median, Yang 2024 Table S3, reported there as 549 ng/L which equals 549 pg/mL). Distinct from the model state csf1 (time-course of CSF-1 in nM driven by axatilimab/CSF-1R competitive binding).",
-      source_name        = "BLCSF1"
+      notes = "Power effect on linear clearance (CL, exponent 0.912) and on the typical baseline CSF-1 model parameter BL_CSF1 (exponent 0.656); reference value 549 pg/mL (overall pooled-cohort median, Yang 2024 Table S3, reported there as 549 ng/L which equals 549 pg/mL). Distinct from the model state csf1 (time-course of CSF-1 in nM driven by axatilimab/CSF-1R competitive binding).",
+      source_name = "BLCSF1"
     ),
     CPK = list(
-      description        = "Baseline serum creatine phosphokinase (CPK / creatine kinase)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum creatine phosphokinase (CPK / creatine kinase)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on baseline NCMC parameter BL_NCMC; exponent 0.376; reference 63 U/L (overall pooled-cohort median, Yang 2024 Table S3). Distinct from the model state cpk (time-course of CPK in U/L driven by NCMC-dependent indirect response).",
-      source_name        = "BLCPK"
+      notes = "Power effect on baseline NCMC parameter BL_NCMC; exponent 0.376; reference 63 U/L (overall pooled-cohort median, Yang 2024 Table S3). Distinct from the model state cpk (time-course of CPK in U/L driven by NCMC-dependent indirect response).",
+      source_name = "BLCPK"
     ),
     DIS_CANCER = list(
-      description        = "Advanced-solid-tumor cohort indicator (1 = solid-tumor patient)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Advanced-solid-tumor cohort indicator (1 = solid-tumor patient)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cGVHD or healthy volunteer)",
-      notes              = "One of two orthogonal indicators (with DIS_HEALTHY) decomposing the three-level participant population categorical (cGVHD reference, advanced solid tumor, healthy volunteer). Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HEALTHY); reference category cGVHD when both indicators are 0. Yang 2024 Table 1 row 'Population with cancer on BLNCMC'.",
-      source_name        = "POPULATION (Population type = 'Patients with cancer')"
+      notes = "One of two orthogonal indicators (with DIS_HEALTHY) decomposing the three-level participant population categorical (cGVHD reference, advanced solid tumor, healthy volunteer). Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HEALTHY); reference category cGVHD when both indicators are 0. Yang 2024 Table 1 row 'Population with cancer on BLNCMC'.",
+      source_name = "POPULATION (Population type = 'Patients with cancer')"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cGVHD or advanced solid tumor)",
-      notes              = "Paired with DIS_CANCER. Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HEALTHY); reference category cGVHD. Yang 2024 Table 1 row 'Healthy population on BLNCMC'.",
-      source_name        = "POPULATION (Population type = 'Healthy participants')"
+      notes = "Paired with DIS_CANCER. Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HEALTHY); reference category cGVHD. Yang 2024 Table 1 row 'Healthy population on BLNCMC'.",
+      source_name = "POPULATION (Population type = 'Healthy participants')"
     ),
     ADA_POS = list(
-      description        = "Time-varying antidrug-antibody (ADA) positivity (1 = positive at time t, 0 = negative)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Time-varying antidrug-antibody (ADA) positivity (1 = positive at time t, 0 = negative)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative; typical patient)",
-      notes              = "Time-varying covariate on linear clearance: CL * (1 + 0.489 * ADA_POS(t)). When ADA_POS(t) = 1 the linear clearance increases by ~50.6% relative to the ADA-negative reference (Yang 2024 final covariate-effect summary). Source MLXTRAN regressor name 'ADACN'.",
-      source_name        = "ADA"
+      notes = "Time-varying covariate on linear clearance: CL * (1 + 0.489 * ADA_POS(t)). When ADA_POS(t) = 1 the linear clearance increases by ~50.6% relative to the ADA-negative reference (Yang 2024 final covariate-effect summary). Source MLXTRAN regressor name 'ADACN'.",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = 325L,
-    n_studies      = 4L,
-    age_range      = "7-81 years (7 children aged 7-15 with cGVHD)",
-    age_median     = "55 years",
-    weight_range   = "18.1-151 kg",
-    weight_median  = "73.6 kg",
+    n_subjects = 325L,
+    n_studies = 4L,
+    age_range = "7-81 years (7 children aged 7-15 with cGVHD)",
+    age_median = "55 years",
+    weight_range = "18.1-151 kg",
+    weight_median = "73.6 kg",
     sex_female_pct = 39.4,
     race_ethnicity = c(White = 82.5, Asian = 5.5, Black = 4.3, Other = 1.8, Unknown = 5.8),
-    disease_state  = "Pooled cohort: 14 healthy adults (SNDX-6352-0001), 33 adults with advanced or metastatic solid tumors (SNDX-6352-0502), 271 adults with chronic graft-versus-host disease (cGVHD) and 7 children with cGVHD aged 7-15 (SNDX-6352-0503 phase 1/2 dose-finding; AGAVE-201 phase 2).",
-    dose_range     = "0.15 to 6 mg/kg IV; single dose, every 2 weeks (Q2W), or every 4 weeks (Q4W); 0.3 mg/kg Q2W is the approved cGVHD regimen.",
-    regions        = "Multi-regional (multi-center US-led trials; phase 1 healthy-volunteer study had EudraCT registration in Europe).",
+    disease_state = "Pooled cohort: 14 healthy adults (SNDX-6352-0001), 33 adults with advanced or metastatic solid tumors (SNDX-6352-0502), 271 adults with chronic graft-versus-host disease (cGVHD) and 7 children with cGVHD aged 7-15 (SNDX-6352-0503 phase 1/2 dose-finding; AGAVE-201 phase 2).",
+    dose_range = "0.15 to 6 mg/kg IV; single dose, every 2 weeks (Q2W), or every 4 weeks (Q4W); 0.3 mg/kg Q2W is the approved cGVHD regimen.",
+    regions = "Multi-regional (multi-center US-led trials; phase 1 healthy-volunteer study had EudraCT registration in Europe).",
     n_observations = list(PK = 5048L, CSF1 = 1659L, NCMC = 1683L, AST = 4966L, CPK = 4571L),
     n_observations_below_LOQ_pct = 35.5,
-    notes          = "Baseline demographics from Yang 2024 Tables S3 and S4. ADA prevalence (ever-positive) 40% overall. Plasma axatilimab measured by ELISA with LLOQ 157 ng/mL (phase 1 studies) or 150 ng/mL (phase 1/2 + phase 2 cGVHD studies); CSF-1 measured by R&D Systems Quantikine human M-CSF ELISA; NCMC measured by qualified flow-cytometry assay. Below-quantification PK samples (35.5% of all PK observations, almost all post-first-dose tail) handled by the M4 method (Beal 2001); the structural / statistical model carries all BLOQ data."
+    notes = "Baseline demographics from Yang 2024 Tables S3 and S4. ADA prevalence (ever-positive) 40% overall. Plasma axatilimab measured by ELISA with LLOQ 157 ng/mL (phase 1 studies) or 150 ng/mL (phase 1/2 + phase 2 cGVHD studies); CSF-1 measured by R&D Systems Quantikine human M-CSF ELISA; NCMC measured by qualified flow-cytometry assay. Below-quantification PK samples (35.5% of all PK observations, almost all post-first-dose tail) handled by the M4 method (Beal 2001); the structural / statistical model carries all BLOQ data."
   )
 
   ini({

@@ -23,16 +23,23 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     sep = " "
   )
   vignette <- "vandenBerg_2021_uprifosbuvir"
-  units    <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   paper_specific_compartments <- c(
-    "gut", "gut_m5", "gut_m6",
-    "liver", "portal_vein",
-    "uxp", "cxp",
-    "central_m5", "central_m6",
+    "gut",
+    "gut_m5",
+    "gut_m6",
+    "liver",
+    "portal_vein",
+    "uxp",
+    "cxp",
+    "central_m5",
+    "central_m6",
     "transit_cxp_m5",
-    "transit_gut_m5_1", "transit_gut_m5_2",
-    "transit_gut_m5_3", "transit_gut_m5_4",
+    "transit_gut_m5_1",
+    "transit_gut_m5_2",
+    "transit_gut_m5_3",
+    "transit_gut_m5_4",
     "transit_gut_par",
     "pseudo_m4_gut"
   )
@@ -42,32 +49,32 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "uprifosbuvir", units = "nmol", specimen = "administration site", verified = FALSE),
-    depot2           = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
-    gut              = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
-    gut_m6           = list(analyte = "M6", units = "nmol", specimen = "tissue", verified = FALSE),
-    liver            = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
-    central          = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
-    uxp              = list(analyte = "UXP", units = "nmol", specimen = "not applicable", verified = FALSE),
-    central_m6       = list(analyte = "M6", units = "nmol", specimen = "plasma", verified = FALSE),
-    transit_cxp_m5   = list(analyte = "CXP", units = "nmol", specimen = "administration site", verified = FALSE),
-    cxp              = list(analyte = "CXP", units = "nmol", specimen = "not applicable", verified = FALSE),
-    central_m5       = list(analyte = "M5", units = "nmol", specimen = "plasma", verified = FALSE),
-    portal_vein      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
-    gut_m5           = list(analyte = "M5", units = "nmol", specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "uprifosbuvir", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    gut = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
+    gut_m6 = list(analyte = "M6", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    uxp = list(analyte = "UXP", units = "nmol", specimen = "not applicable", verified = FALSE),
+    central_m6 = list(analyte = "M6", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit_cxp_m5 = list(analyte = "CXP", units = "nmol", specimen = "administration site", verified = FALSE),
+    cxp = list(analyte = "CXP", units = "nmol", specimen = "not applicable", verified = FALSE),
+    central_m5 = list(analyte = "M5", units = "nmol", specimen = "plasma", verified = FALSE),
+    portal_vein = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    gut_m5 = list(analyte = "M5", units = "nmol", specimen = "tissue", verified = FALSE),
     transit_gut_m5_1 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
     transit_gut_m5_2 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
     transit_gut_m5_3 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
     transit_gut_m5_4 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit_gut_par  = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral2      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
-    pseudo_m4_gut    = list(analyte = "M4", units = "nmol", specimen = "tissue", verified = FALSE)
+    transit_gut_par = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    pseudo_m4_gut = list(analyte = "M4", units = "nmol", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = paste(
+      description = paste(
         "Nominal dose level in mg per administration. Enters the model as a per-",
         "dose covariate: it centres the dose-dependent slope on absorption rate",
         "KA2 (all formulations) and, for the capsule formulation only, on",
@@ -75,35 +82,35 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
         "dose is 150 mg; the effect is `exp(coeff * (DOSE - 150))`. Set DOSE per",
         "dose event in the event table."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference dose 150 mg per van den Berg 2021 supplement Table 1 note (a)",
         "and NONMEM code KA2 = TVKA2 * EXP(DOSF * (DOSE - 150))."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation indicator (1 = capsule, 0 = tablet or IV).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation indicator (1 = capsule, 0 = tablet or IV).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet or IV = reference)",
-      notes              = paste(
+      notes = paste(
         "The capsule formulation used in Phase 1 studies P001/P003 had different",
         "absorption kinetics: 91% of the capsule dose is absorbed via the fast",
         "KA1 route (vs 67% for the tablet), KA1 is 2.02-fold higher, apparent",
         "bioavailability is 1.17-fold higher, and gut-M6 elimination follows a",
         "separate parameter set. Set FORM_CAPSULE = 0 for tablet and IV records."
       ),
-      source_name        = "FORM (2 = capsule; recode)"
+      source_name = "FORM (2 = capsule; recode)"
     ),
     ROUTE_IV = list(
-      description        = "Intravenous administration indicator (1 = IV, 0 = oral).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intravenous administration indicator (1 = IV, 0 = oral).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral = reference)",
-      notes              = paste(
+      notes = paste(
         "When 1, the absorbed fractions F1/F2 (fast/slow oral) are set to 0 so",
         "the depot compartments contribute no mass; the dose must be placed in",
         "the central compartment via cmt = 'central' on the dose event. When 0,",
@@ -111,54 +118,54 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
         "logic in the model. Corresponds to FORM = 10 in the NONMEM control",
         "stream (i.v.)."
       ),
-      source_name        = "FORM (10 = IV; recode to binary)"
+      source_name = "FORM (10 = IV; recode to binary)"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Co-administered itraconazole indicator (1 = with itraconazole, 0 = alone).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Co-administered itraconazole indicator (1 = with itraconazole, 0 = alone).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (uprifosbuvir alone = reference)",
-      notes              = paste(
+      notes = paste(
         "Itraconazole 200 mg QD reduces uprifosbuvir gut CYP3A4 / P-gp metabolism,",
         "delaying and reducing early gut-mediated M6 formation, and it delays the",
         "second uprifosbuvir absorption peak. Encoded as multipliers on CLiG,",
         "CLintH, ALAG2, KA2, Ktr1, KM6g, FrM6g, and KelM6g per Table 3."
       ),
-      source_name        = "INTR"
+      source_name = "INTR"
     ),
     HCV_POS = list(
-      description        = "HCV infection status (1 = HCV-seropositive patient, 0 = healthy volunteer).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HCV infection status (1 = HCV-seropositive patient, 0 = healthy volunteer).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer = reference)",
-      notes              = paste(
+      notes = paste(
         "In HCV-positive patients M5 clearance is 28.4% lower than in HV",
         "(multiplicative factor 0.716 on CLM5). Attributed to a higher prevalence",
         "of impaired hepatic function among chronic HCV patients."
       ),
-      source_name        = "HCVSTAT"
+      source_name = "HCVSTAT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 220L,
-    n_studies      = 6L,
-    age_range      = "adults",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 220L,
+    n_studies = 6L,
+    age_range = "adults",
+    disease_state = paste(
       "Pooled healthy volunteers and chronic HCV-infected patients across six",
       "Phase 1/1-2a studies (PN001, PN002, PN003, PN010, PN013, PN026).",
       "HCV cohort included multiple HCV genotypes (GT1a/1b/2/3), no cirrhosis,",
       "no HIV co-infection."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Uprifosbuvir 25 mg IV (single dose, PN026); tablet 150-750 mg single or",
       "multiple oral doses (PN001/PN002/PN003/PN010/PN013/PN026); capsule",
       "50-400 mg single or multiple oral doses (PN001/PN003). Itraconazole",
       "200 mg QD co-administered in the DDI arms (PN001 Group F, PN010)."
     ),
-    regions        = "PN001-026 multinational Phase 1 programme",
-    notes          = paste(
+    regions = "PN001-026 multinational Phase 1 programme",
+    notes = paste(
       "See van den Berg 2021 Table 1 and supplementary Table S1 for the full",
       "per-study breakdown (25 mg IV: N=14; tablet SD/MD: N=88; capsule SD/MD:",
       "N=111; itraconazole DDI: N=19). The model was fit simultaneously to",

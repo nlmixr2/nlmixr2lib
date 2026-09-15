@@ -28,11 +28,11 @@ Lamoth_2009_imipenem <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in Lamoth 2009 (single covariate snapshot",
         "around the imipenem sampling occasion). Enters central volume of",
         "distribution via a linear scaling V_i = V_70kg * (WT / 70) with",
@@ -40,14 +40,14 @@ Lamoth_2009_imipenem <- function() {
         "= 33.5'). Reference weight 70 kg.",
         "Population median 73 kg (range 41-135 kg; paper Table 1)."
       ),
-      source_name        = "body weight (paper Table 1; covariate model in Results paragraph 3)"
+      source_name = "body weight (paper Table 1; covariate model in Results paragraph 3)"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'GFR' in Lamoth 2009; computed by the Cockcroft-Gault",
         "equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2; the",
         "paper Methods explicitly cites the Cockcroft-Gault formula derived",
@@ -60,36 +60,36 @@ Lamoth_2009_imipenem <- function() {
         "cl_renal = exp(lcl_renal) * (CRCL / 100). Population median",
         "105 mL/min (range 38-285 mL/min; paper Table 1)."
       ),
-      source_name        = "GFR (paper Methods and Table 1; calculated by the Cockcroft-Gault formula)"
+      source_name = "GFR (paper Methods and Table 1; calculated by the Cockcroft-Gault formula)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
-    n_studies      = 1L,
-    age_range      = "17-78 years",
-    age_median     = "58 years",
-    weight_range   = "41-135 kg",
-    weight_median  = "73 kg",
+    species = "human",
+    n_subjects = 57L,
+    n_studies = 1L,
+    age_range = "17-78 years",
+    age_median = "58 years",
+    weight_range = "41-135 kg",
+    weight_median = "73 kg",
     sex_female_pct = 22.8,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Febrile neutropenic adults with hematological malignancies",
       "(64.9% acute myeloid leukemia, 5.3% acute lymphoblastic leukemia,",
       "7% multiple myeloma, 8.8% lymphoma, 14% other). 47.8% of",
       "chemotherapy courses were induction for acute leukemia, 27.5%",
       "consolidation, and 14.5% autologous stem cell transplantation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Recommended schedule 500 mg imipenem IV infused over 30 min every",
       "6 h (2 g/day total), adjusted to calculated GFR per local renal",
       "dose-adjustment guidance. Observed daily doses 0.75-4 g/day",
       "(median 2 g/day, paper Table 1)."
     ),
-    regions        = "Single centre: Centre Hospitalier Universitaire Vaudois and University of Lausanne, Lausanne, Switzerland",
+    regions = "Single centre: Centre Hospitalier Universitaire Vaudois and University of Lausanne, Lausanne, Switzerland",
     renal_function = "Cockcroft-Gault GFR median 105 mL/min (range 38-285 mL/min; raw mL/min, not BSA-normalized; paper Table 1)",
-    notes          = paste(
+    notes = paste(
       "159 plasma imipenem concentrations (86 troughs + 73 peaks) drawn",
       "around a single dose at steady state (median 3 days after start of",
       "therapy or the last dosing change, range 1-9 days). Trough samples",

@@ -9,43 +9,49 @@ AitOudhia_2024_sotatercept <- function() {
   # biological matrix.
   compartmentData <- list(
     depot = list(
-      analyte = "sotatercept", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "sotatercept",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "sotatercept", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "sotatercept",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "sotatercept", units = "mg",
-      specimen = "tissue", verified = FALSE
+      analyte = "sotatercept",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Ait-Oudhia 2024 uses the time-varying weight column (source name WTKGT) rather than the baseline weight, so a body weight recorded at each visit drives both CL and VC over the ~150-week follow-up. Enters as a power (allometric-style) term with a 70 kg reference: (WT/70)^0.814 on CL and (WT/70)^1.02 on VC (Table 2 footnotes a and c). Both exponents were estimated, not fixed at the canonical 0.75 / 1.0 allometric values, but the paper notes they came out 'close to the allometry scaling factors' (Discussion). Baseline weight in the analysis population was 71 kg mean (SD 17.6), range 39.6-136 kg (Table 1).",
-      source_name        = "WTKGT"
+      notes = "Time-varying. Ait-Oudhia 2024 uses the time-varying weight column (source name WTKGT) rather than the baseline weight, so a body weight recorded at each visit drives both CL and VC over the ~150-week follow-up. Enters as a power (allometric-style) term with a 70 kg reference: (WT/70)^0.814 on CL and (WT/70)^1.02 on VC (Table 2 footnotes a and c). Both exponents were estimated, not fixed at the canonical 0.75 / 1.0 allometric values, but the paper notes they came out 'close to the allometry scaling factors' (Discussion). Baseline weight in the analysis population was 71 kg mean (SD 17.6), range 39.6-136 kg (Table 1).",
+      source_name = "WTKGT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (time-fixed), not time-varying. Enters CL as a power term (ALB/45)^-0.849 (Table 2 footnote a). IMPORTANT UNIT NOTE: the canonical register stores ALB in SI g/L, whereas Ait-Oudhia 2024 reports albumin in US-convention g/dL and writes the reference as 4.5 g/dL. Because the covariate enters only as a reference-normalised ratio, the ratio is scale-invariant -- (ALB_gL / 45) is identically equal to (ALB_gdL / 4.5) -- so model() uses a 45 g/L reference and reproduces the published equation exactly with no conversion line. Baseline albumin in the analysis population was 4.43 g/dL mean (SD 0.33), range 2.9-5.8 g/dL, i.e. 44.3 g/L mean, range 29-58 g/L (Table 1). The negative exponent means CL decreases as albumin rises; the paper attributes this to FcRn-mediated protection from catabolism shared between albumin and IgG (Discussion).",
-      source_name        = "ALB"
+      notes = "Baseline (time-fixed), not time-varying. Enters CL as a power term (ALB/45)^-0.849 (Table 2 footnote a). IMPORTANT UNIT NOTE: the canonical register stores ALB in SI g/L, whereas Ait-Oudhia 2024 reports albumin in US-convention g/dL and writes the reference as 4.5 g/dL. Because the covariate enters only as a reference-normalised ratio, the ratio is scale-invariant -- (ALB_gL / 45) is identically equal to (ALB_gdL / 4.5) -- so model() uses a 45 g/L reference and reproduces the published equation exactly with no conversion line. Baseline albumin in the analysis population was 4.43 g/dL mean (SD 0.33), range 2.9-5.8 g/dL, i.e. 44.3 g/L mean, range 29-58 g/L (Table 1). The negative exponent means CL decreases as albumin rises; the paper attributes this to FcRn-mediated protection from catabolism shared between albumin and IgG (Discussion).",
+      source_name = "ALB"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with pulmonary arterial hypertension, from PULSAR / SPECTRA / STELLAR)",
-      notes              = "1 = healthy post-menopausal woman from one of the two phase 1 trials (SAD or MAD); 0 = patient with PAH from PULSAR, SPECTRA, or STELLAR. Time-fixed per subject. Used ONLY to select the residual-error magnitude: Results 'Population PK model' states 'Two separate log error models were used to describe the RV for healthy and PAH participants', giving log-scale SD 0.239 in healthy participants and 0.189 in patients with PAH (Table 2). Disease status was also tested as a covariate on the structural PK parameters and entered during forward selection, but was NOT retained during backward elimination (Discussion), so it has no effect on CL, VC, VP, Q, KA, or F1 in the final model.",
-      source_name        = "Healthy vs PAH study population"
+      notes = "1 = healthy post-menopausal woman from one of the two phase 1 trials (SAD or MAD); 0 = patient with PAH from PULSAR, SPECTRA, or STELLAR. Time-fixed per subject. Used ONLY to select the residual-error magnitude: Results 'Population PK model' states 'Two separate log error models were used to describe the RV for healthy and PAH participants', giving log-scale SD 0.239 in healthy participants and 0.189 in patients with PAH (Table 2). Disease status was also tested as a covariate on the structural PK parameters and entered during forward selection, but was NOT retained during backward elimination (Discussion), so it has no effect on CL, VC, VP, Q, KA, or F1 in the final model.",
+      source_name = "Healthy vs PAH study population"
     )
   )
 
@@ -56,112 +62,114 @@ AitOudhia_2024_sotatercept <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested (Table 1) and reported in the Figure 4 forest plot, but not a statistically significant source of IIV in sotatercept PK (Discussion). The Figure 4 GMR for age was 0.998, well inside the (0.8, 1.25) bioequivalence bounds. Population mean 50.2 years (SD 14.4), range 18-81 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested (Table 1) and reported in the Figure 4 forest plot, but not a statistically significant source of IIV in sotatercept PK (Discussion). The Figure 4 GMR for age was 0.998, well inside the (0.8, 1.25) bioequivalence bounds. Population mean 50.2 years (SD 14.4), range 18-81 (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested (Table 1) and shown in the Figure 4 forest plot; not statistically significant (Discussion). The cohort was 85.1% female (298 of 350) because both phase 1 trials enrolled only post-menopausal women, so the male stratum is small (52 subjects)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested (Table 1) and shown in the Figure 4 forest plot; not statistically significant (Discussion). The cohort was 85.1% female (298 of 350) because both phase 1 trials enrolled only post-menopausal women, so the male stratum is small (52 subjects)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Listed among the tested covariates (Table 1); not retained. Population mean 26.5 kg/m^2 (SD 5.48), range 15.1-50.3; not recorded in the SAD trial (Table 1 reports NA for that study). Body size entered the final model through WT rather than BMI."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Listed among the tested covariates (Table 1); not retained. Population mean 26.5 kg/m^2 (SD 5.48), range 15.1-50.3; not recorded in the SAD trial (Table 1 reports NA for that study). Body size entered the final model through WT rather than BMI."
     ),
     CRCL = list(
       description = "Baseline estimated glomerular filtration rate (BSA-normalized renal function)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Tested as a continuous baseline eGFR (Table 1) and, separately, as a renal-function category; neither was significant (Discussion). Population mean 84.9 mL/min/1.73 m^2 (SD 28.8), range 31.3-255. The paper notes sotatercept is a large fusion protein not expected to undergo renal filtration, and that severe impairment (eGFR < 30) was an exclusion criterion, so the tested range does not extend to severe renal impairment."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Tested as a continuous baseline eGFR (Table 1) and, separately, as a renal-function category; neither was significant (Discussion). Population mean 84.9 mL/min/1.73 m^2 (SD 28.8), range 31.3-255. The paper notes sotatercept is a large fusion protein not expected to undergo renal filtration, and that severe impairment (eGFR < 30) was an exclusion criterion, so the tested range does not extend to severe renal impairment."
     ),
     RENALIMP_MILD = list(
       description = "Mild renal impairment indicator (eGFR 60-90 mL/min/1.73 m^2)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Level of the tested 'Renal function category' covariate (Table 1) and a Figure 4 forest-plot stratum; not significant (Discussion). 183 of 350 subjects (52.3%) were in this category."
+      units = "(binary)",
+      type = "binary",
+      notes = "Level of the tested 'Renal function category' covariate (Table 1) and a Figure 4 forest-plot stratum; not significant (Discussion). 183 of 350 subjects (52.3%) were in this category."
     ),
     RENALIMP_MOD = list(
       description = "Moderate renal impairment indicator (eGFR 30-60 mL/min/1.73 m^2)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Level of the tested 'Renal function category' covariate (Table 1) and a Figure 4 forest-plot stratum; not significant (Discussion). 51 of 350 subjects (14.6%) were in this category. The reference stratum was normal renal function (eGFR 90-120), 116 subjects (33.1%). No subject had severe impairment (an exclusion criterion), so RENALIMP_SEV was not testable."
+      units = "(binary)",
+      type = "binary",
+      notes = "Level of the tested 'Renal function category' covariate (Table 1) and a Figure 4 forest-plot stratum; not significant (Discussion). 51 of 350 subjects (14.6%) were in this category. The reference stratum was normal renal function (eGFR 90-120), 116 subjects (33.1%). No subject had severe impairment (an exclusion criterion), so RENALIMP_SEV was not testable."
     ),
     RACE_WHITE = list(
       description = "White / Caucasian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Level of the tested 'Racial classification' covariate (Table 1) and a Figure 4 forest-plot stratum; not significant (Discussion). 290 of 350 subjects (82.9%). Because the effect was not retained, the paper does not report which race level served as the reference category in the tested parameterisation."
+      units = "(binary)",
+      type = "binary",
+      notes = "Level of the tested 'Racial classification' covariate (Table 1) and a Figure 4 forest-plot stratum; not significant (Discussion). 290 of 350 subjects (82.9%). Because the effect was not retained, the paper does not report which race level served as the reference category in the tested parameterisation."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Level of the tested 'Racial classification' covariate (Table 1); not significant (Discussion). 11 of 350 subjects (3.14%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Level of the tested 'Racial classification' covariate (Table 1); not significant (Discussion). 11 of 350 subjects (3.14%)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Level of the tested 'Racial classification' covariate (Table 1); not significant (Discussion). 25 of 350 subjects (7.14%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Level of the tested 'Racial classification' covariate (Table 1); not significant (Discussion). 25 of 350 subjects (7.14%)."
     ),
     RACE_OTHER = list(
       description = "Race-category 'Other' indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Level of the tested 'Racial classification' covariate (Table 1); not significant (Discussion). 19 of 350 subjects (5.43%) self-identified as Other. Table 1 additionally reports 1 subject (0.286%) as American Indian or Alaska Native and 4 (1.14%) as Native Hawaiian or other Pacific Islander; the paper does not state how these very small strata were grouped for covariate testing, so they are not given separate entries here."
+      units = "(binary)",
+      type = "binary",
+      notes = "Level of the tested 'Racial classification' covariate (Table 1); not significant (Discussion). 19 of 350 subjects (5.43%) self-identified as Other. Table 1 additionally reports 1 subject (0.286%) as American Indian or Alaska Native and 4 (1.14%) as Native Hawaiian or other Pacific Islander; the paper does not state how these very small strata were grouped for covariate testing, so they are not given separate entries here."
     ),
     ADA_POS = list(
       description = "Anti-drug-antibody-positive status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a TIME-VARYING covariate and not statistically significant on sotatercept PK (Discussion). The paper reports similar PK time profiles, trough concentrations, and clearance across ADA-negative, ADA-positive / neutralizing-antibody-negative, and ADA-positive / NAb-positive participants (Discussion, citing reference 34). Immunogenicity therefore has no effect in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a TIME-VARYING covariate and not statistically significant on sotatercept PK (Discussion). The paper reports similar PK time profiles, trough concentrations, and clearance across ADA-negative, ADA-positive / neutralizing-antibody-negative, and ADA-positive / NAb-positive participants (Discussion, citing reference 34). Immunogenicity therefore has no effect in the final model."
     ),
     CONMED_ERA = list(
       description = "Concomitant endothelin-receptor antagonist alone as background PAH standard-of-care therapy",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The paper tested background PAH therapy as mono, double, and triple combination with standard of care and found no statistically significant effect on sotatercept PK (Discussion, Figure 4). The paper reports the covariate at the level of the NUMBER of background agents rather than by drug class, so this class-specific indicator is a documentation-only mapping onto the existing canonical family (founded by Krause 2017 selexipag, also a PAH population); Ait-Oudhia 2024 does not report a per-class coefficient."
+      units = "(binary)",
+      type = "binary",
+      notes = "The paper tested background PAH therapy as mono, double, and triple combination with standard of care and found no statistically significant effect on sotatercept PK (Discussion, Figure 4). The paper reports the covariate at the level of the NUMBER of background agents rather than by drug class, so this class-specific indicator is a documentation-only mapping onto the existing canonical family (founded by Krause 2017 selexipag, also a PAH population); Ait-Oudhia 2024 does not report a per-class coefficient."
     ),
     CONMED_PDE5I = list(
       description = "Concomitant phosphodiesterase type 5 inhibitor alone as background PAH standard-of-care therapy",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "See the CONMED_ERA note: background PAH therapy was tested as mono / double / triple combination with standard of care and was not significant (Discussion, Figure 4). No per-class coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "See the CONMED_ERA note: background PAH therapy was tested as mono / double / triple combination with standard of care and was not significant (Discussion, Figure 4). No per-class coefficient is reported."
     ),
     CONMED_ERA_PDE5I = list(
       description = "Concomitant endothelin-receptor antagonist plus phosphodiesterase type 5 inhibitor as background PAH standard-of-care therapy",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "See the CONMED_ERA note: background PAH therapy was tested as mono / double / triple combination with standard of care and was not significant (Discussion, Figure 4). The paper concludes sotatercept is not a victim of drug-drug interaction with background PAH therapies. No per-class coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "See the CONMED_ERA note: background PAH therapy was tested as mono / double / triple combination with standard of care and was not significant (Discussion, Figure 4). The paper concludes sotatercept is not a victim of drug-drug interaction with background PAH therapies. No per-class coefficient is reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 350L,
-    n_studies      = 5L,
-    age_range      = "18-81 years",
-    age_mean       = "50.2 years (SD 14.4) (Table 1)",
-    weight_range   = "39.6-136 kg (baseline)",
-    weight_mean    = "71.0 kg (SD 17.6) at the baseline visit (Table 1)",
+    species = "human",
+    n_subjects = 350L,
+    n_studies = 5L,
+    age_range = "18-81 years",
+    age_mean = "50.2 years (SD 14.4) (Table 1)",
+    weight_range = "39.6-136 kg (baseline)",
+    weight_mean = "71.0 kg (SD 17.6) at the baseline visit (Table 1)",
     sex_female_pct = 85.1,
     race_ethnicity = c(
-      White = 82.9, Black = 3.14, Asian = 7.14,
+      White = 82.9,
+      Black = 3.14,
+      Asian = 7.14,
       `American Indian or Alaska Native` = 0.286,
       `Native Hawaiian or Other Pacific Islander` = 1.14,
       Other = 5.43
     ),
-    disease_state  = "Pooled healthy participants and patients with pulmonary arterial hypertension. The two phase 1 trials (a single-ascending-dose and a multiple-ascending-dose study) enrolled healthy post-menopausal women; the two phase 2 trials (PULSAR, SPECTRA) and the phase 3 trial (STELLAR) enrolled participants with PAH on background standard-of-care therapy. Disease status was tested as a PK covariate and entered during forward selection but was not retained during backward elimination; it is retained in the final model only as the switch between the two residual-error magnitudes.",
+    disease_state = "Pooled healthy participants and patients with pulmonary arterial hypertension. The two phase 1 trials (a single-ascending-dose and a multiple-ascending-dose study) enrolled healthy post-menopausal women; the two phase 2 trials (PULSAR, SPECTRA) and the phase 3 trial (STELLAR) enrolled participants with PAH on background standard-of-care therapy. Disease status was tested as a PK covariate and entered during forward selection but was not retained during backward elimination; it is retained in the final model only as the switch between the two residual-error magnitudes.",
     renal_function = "Normal (eGFR 90-120 mL/min/1.73 m^2) 116 (33.1%); mild impairment (60-90) 183 (52.3%); moderate impairment (30-60) 51 (14.6%). Severe impairment (eGFR < 30) was an exclusion criterion. Baseline eGFR mean 84.9 mL/min/1.73 m^2 (SD 28.8), range 31.3-255 (Table 1).",
-    albumin        = "Baseline albumin mean 4.43 g/dL (SD 0.33), range 2.9-5.8 g/dL, i.e. mean 44.3 g/L, range 29-58 g/L (Table 1).",
-    bmi            = "Mean 26.5 kg/m^2 (SD 5.48), range 15.1-50.3; not collected in the SAD trial (Table 1).",
-    dose_range     = "Single IV or SC doses 0.01-3.0 mg/kg (phase 1 SAD) and multiple SC doses 0.03-1.0 mg/kg Q4W (phase 1 MAD); SC 0.3 or 0.7 mg/kg Q3W in phase 2 (PULSAR, SPECTRA); SC 0.3 mg/kg initial dose followed by the 0.7 mg/kg Q3W target dose in phase 3 (STELLAR). 30 participants received sotatercept IV and 320 SC.",
-    regions        = "Not reported by the paper. STELLAR, PULSAR, and SPECTRA were multinational PAH trials.",
-    notes          = "Baseline demographics are from Table 1, which reports them per study (SAD n = 40, MAD n = 24, PULSAR n = 103, SPECTRA n = 21, STELLAR n = 162) and overall (n = 350). Rich PK sampling in the two phase 1 studies, sparse PK in the phase 2 and phase 3 studies (Figure 1); PK samples were collected up to a maximum of about 150 weeks. Below-limit-of-quantitation samples were under 5% of records and were excluded (M1 method). Estimation used NONMEM 7 level 3.0 FOCE with interaction. Minimum value of the objective function -6707.007; condition number 124. Qualification was by prediction-corrected VPC (500 replicates) and a 1000-replicate bootstrap in which 99.3% of runs minimized successfully and every final estimate fell inside its bootstrap 95% CI (Table 2, Results 'Model qualification')."
+    albumin = "Baseline albumin mean 4.43 g/dL (SD 0.33), range 2.9-5.8 g/dL, i.e. mean 44.3 g/L, range 29-58 g/L (Table 1).",
+    bmi = "Mean 26.5 kg/m^2 (SD 5.48), range 15.1-50.3; not collected in the SAD trial (Table 1).",
+    dose_range = "Single IV or SC doses 0.01-3.0 mg/kg (phase 1 SAD) and multiple SC doses 0.03-1.0 mg/kg Q4W (phase 1 MAD); SC 0.3 or 0.7 mg/kg Q3W in phase 2 (PULSAR, SPECTRA); SC 0.3 mg/kg initial dose followed by the 0.7 mg/kg Q3W target dose in phase 3 (STELLAR). 30 participants received sotatercept IV and 320 SC.",
+    regions = "Not reported by the paper. STELLAR, PULSAR, and SPECTRA were multinational PAH trials.",
+    notes = "Baseline demographics are from Table 1, which reports them per study (SAD n = 40, MAD n = 24, PULSAR n = 103, SPECTRA n = 21, STELLAR n = 162) and overall (n = 350). Rich PK sampling in the two phase 1 studies, sparse PK in the phase 2 and phase 3 studies (Figure 1); PK samples were collected up to a maximum of about 150 weeks. Below-limit-of-quantitation samples were under 5% of records and were excluded (M1 method). Estimation used NONMEM 7 level 3.0 FOCE with interaction. Minimum value of the objective function -6707.007; condition number 124. Qualification was by prediction-corrected VPC (500 replicates) and a 1000-replicate bootstrap in which 99.3% of runs minimized successfully and every final estimate fell inside its bootstrap 95% CI (Table 2, Results 'Model qualification')."
   )
 
   ini({

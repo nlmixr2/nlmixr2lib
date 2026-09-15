@@ -33,26 +33,31 @@ Moein_2024_apitolisib_mouse <- function() {
   covariateData <- list()
 
   compartmentData <- list(
-    depot     = list(analyte = "apitolisib", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central   = list(analyte = "apitolisib", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    pakt      = list(analyte = "phosphorylated Akt (serine 473), percent of drug-free control", units = "%", specimen = "tumor", verified = TRUE),
+    depot = list(analyte = "apitolisib", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "apitolisib", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    pakt = list(
+      analyte = "phosphorylated Akt (serine 473), percent of drug-free control",
+      units = "%",
+      specimen = "tumor",
+      verified = TRUE
+    ),
     tumor_vol = list(analyte = "tumour size", units = "mm^3", specimen = "tumor", verified = TRUE)
   )
 
   population <- list(
-    species        = "mouse (female beige nude XID, bg.nu.xid Harlan; subcutaneous 786-O human renal cell adenocarcinoma xenograft)",
-    n_subjects     = 64L,
-    n_studies      = 3L,
+    species = "mouse (female beige nude XID, bg.nu.xid Harlan; subcutaneous 786-O human renal cell adenocarcinoma xenograft)",
+    n_subjects = 64L,
+    n_studies = 3L,
     sex_female_pct = 100,
-    disease_state  = "subcutaneous 786-O human renal cell adenocarcinoma (RCC) xenograft",
-    dose_range     = paste(
+    disease_state = "subcutaneous 786-O human renal cell adenocarcinoma (RCC) xenograft",
+    dose_range = paste(
       "Efficacy study: vehicle plus apitolisib 0.008, 0.026, 0.085, 0.256, 1,",
       "2.5, 5, 7, 8.5, 10 and 11 mg/kg PO once daily for 17 days (n=6 per",
       "group). pAkt study: single oral dose of vehicle, 0.3, 3 or 10 mg/kg.",
       "PK study: single oral doses of 1, 5 and 10 mg/kg."
     ),
-    regions        = "Preclinical (Genentech, Inc., South San Francisco, CA, USA)",
-    notes          = paste(
+    regions = "Preclinical (Genentech, Inc., South San Francisco, CA, USA)",
+    notes = paste(
       "The integrated PK-PD-efficacy model was fitted to n = 64 xenograft mice",
       "contributing 381 tumor-volume observations (Results Sect. 3.3). Median",
       "baseline tumor volume was 173.5 mm^3; the mean across all groups was",

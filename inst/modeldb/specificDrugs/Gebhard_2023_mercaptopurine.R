@@ -13,8 +13,8 @@ Gebhard_2023_mercaptopurine <- function() {
   )
   vignette <- "Gebhard_2023_leukemia_maintenance_therapy"
   units <- list(
-    time          = "day",
-    dosing        = "umol/m^2",
+    time = "day",
+    dosing = "umol/m^2",
     concentration = "umol/L"
   )
   # Unit note. Gebhard 2023 states that the E-TGN OBSERVATIONS were converted to
@@ -35,34 +35,44 @@ Gebhard_2023_mercaptopurine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "6-mercaptopurine", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "6-mercaptopurine",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "6-mercaptopurine", units = NA_character_, specimen = "plasma", verified = FALSE),
-    rbc_tgn = list(analyte = "6-thioguanine nucleotides", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    rbc_tgn = list(
+      analyte = "6-thioguanine nucleotides",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     BL_TGN_RBC = list(
-      description        = "Baseline (first observed) erythrocyte 6-thioguanine-nucleotide concentration, used as the initial condition of the rbc_tgn compartment.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline (first observed) erythrocyte 6-thioguanine-nucleotide concentration, used as the initial condition of the rbc_tgn compartment.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Gebhard 2023 Methods: 'we again assume the influx and efflux of 6MP into and out of the red blood cells to not influence plasma kinetics and initialize the compartments similar to the MTX PK model with the first observation INITGN', giving X_E^6MP(0) = INITGN. Every patient's record begins after weeks of maintenance therapy, 28 days after the last high-dose intravenous MTX course, so the red-cell pool has already accumulated and cannot be initialised at zero. Cohort median 0.83 umol/L, range 0-7.6 umol/L (Table 1). Originally measured in nmol/mmol hemoglobin and converted to umol/L assuming Hb MW 64458 g/mol and 330 g Hb/L erythrocytes (Gebhard 2023 Methods).",
-      source_name        = "INITGN"
+      notes = "Gebhard 2023 Methods: 'we again assume the influx and efflux of 6MP into and out of the red blood cells to not influence plasma kinetics and initialize the compartments similar to the MTX PK model with the first observation INITGN', giving X_E^6MP(0) = INITGN. Every patient's record begins after weeks of maintenance therapy, 28 days after the last high-dose intravenous MTX course, so the red-cell pool has already accumulated and cannot be initialised at zero. Cohort median 0.83 umol/L, range 0-7.6 umol/L (Table 1). Originally measured in nmol/mmol hemoglobin and converted to umol/L assuming Hb MW 64458 g/mol and 330 g Hb/L erythrocytes (Gebhard 2023 Methods).",
+      source_name = "INITGN"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 452L,
-    n_studies      = 1L,
-    age_range      = "2.4-16.9 years (median 5.9)",
-    weight_range   = "10.3-105.5 kg (median 21.5)",
-    height_range   = "81.5-180.0 cm (median 114.0)",
-    disease_state  = "Precursor-B-cell acute lymphoblastic leukemia in children, during oral maintenance therapy with 6-mercaptopurine plus low-dose oral methotrexate. Treated on the NOPHO ALL-92 protocol (Nordic Society for Paediatric Haematology and Oncology); Copenhagen ethics approval V.200.2080/91.",
-    dose_range     = "6-Mercaptopurine 5.4-175.0 mg/m^2 daily by mouth (median 57.1 mg/m^2); the concurrent methotrexate dose was 1.3-45.0 mg/m^2 weekly (median 15.0 mg/m^2). Doses were titrated to a target white-blood-cell count of 1.5-3.5 G/L.",
-    regions        = "Nordic countries (NOPHO ALL-92)",
-    observations   = "4624 E-TGN observations across 452 patients; the full data set also holds 4192 E-MTX and 9808 ANC observations (Table 1).",
-    notes          = "Each patient's record begins with the first paired E-TGN / E-MTX measurement taken 28 days after the last high-dose intravenous methotrexate course, so the high-dose-MTX period is excluded. Patients were dropped when parameter estimation would have been impossible: fewer than two E-TGN or E-MTX observations, no 6MP or MTX dose, or no height, weight or ANC observation. Estimation used NONMEM 7.5 with FOCEi for this PK submodel."
+    species = "human",
+    n_subjects = 452L,
+    n_studies = 1L,
+    age_range = "2.4-16.9 years (median 5.9)",
+    weight_range = "10.3-105.5 kg (median 21.5)",
+    height_range = "81.5-180.0 cm (median 114.0)",
+    disease_state = "Precursor-B-cell acute lymphoblastic leukemia in children, during oral maintenance therapy with 6-mercaptopurine plus low-dose oral methotrexate. Treated on the NOPHO ALL-92 protocol (Nordic Society for Paediatric Haematology and Oncology); Copenhagen ethics approval V.200.2080/91.",
+    dose_range = "6-Mercaptopurine 5.4-175.0 mg/m^2 daily by mouth (median 57.1 mg/m^2); the concurrent methotrexate dose was 1.3-45.0 mg/m^2 weekly (median 15.0 mg/m^2). Doses were titrated to a target white-blood-cell count of 1.5-3.5 G/L.",
+    regions = "Nordic countries (NOPHO ALL-92)",
+    observations = "4624 E-TGN observations across 452 patients; the full data set also holds 4192 E-MTX and 9808 ANC observations (Table 1).",
+    notes = "Each patient's record begins with the first paired E-TGN / E-MTX measurement taken 28 days after the last high-dose intravenous methotrexate course, so the high-dose-MTX period is excluded. Patients were dropped when parameter estimation would have been impossible: fewer than two E-TGN or E-MTX observations, no 6MP or MTX dose, or no height, weight or ANC observation. Estimation used NONMEM 7.5 with FOCEi for this PK submodel."
   )
 
   ini({

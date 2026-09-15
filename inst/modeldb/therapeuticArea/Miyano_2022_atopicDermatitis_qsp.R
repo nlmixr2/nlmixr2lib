@@ -31,14 +31,25 @@ Miyano_2022_atopicDermatitis_qsp <- function() {
   # 14 ODE states, all paper-mechanistic (no canonical PK compartment role).
   # AD_QSP_model.py diff_eq() docstring lines 68-83.
   paper_specific_compartments <- c(
-    "barrier", "pathogens",
-    "th1", "th2", "th17", "th22",
-    "il4", "il13", "il17", "il22", "il31", "ifng", "tslp", "ox40l"
+    "barrier",
+    "pathogens",
+    "th1",
+    "th2",
+    "th17",
+    "th22",
+    "il4",
+    "il13",
+    "il17",
+    "il22",
+    "il31",
+    "ifng",
+    "tslp",
+    "ox40l"
   )
 
   units <- list(
-    time          = "week",
-    dosing        = "n/a (drug effects enter algebraically via inhibition fractions and additive rIFNg concentration; no explicit PK compartment)",
+    time = "week",
+    dosing = "n/a (drug effects enter algebraically via inhibition fractions and additive rIFNg concentration; no explicit PK compartment)",
     concentration = "fold-change vs healthy skin (cytokines, OX40L); count fold-change (T cells); unitless [0,1] fraction (skin barrier); unitless fold-change (pathogens); 0-72 (EASI score)"
   )
 
@@ -52,42 +63,52 @@ Miyano_2022_atopicDermatitis_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    barrier   = list(analyte = "skin barrier integrity", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    pathogens = list(analyte = "infiltrated pathogens", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    th1       = list(analyte = "Th1 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    th2       = list(analyte = "Th2 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    th17      = list(analyte = "Th17 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    th22      = list(analyte = "Th22 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    il4       = list(analyte = "IL-4 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    il13      = list(analyte = "IL-13 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    il17      = list(analyte = "IL-17A cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    il22      = list(analyte = "IL-22 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    il31      = list(analyte = "IL-31 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    ifng      = list(analyte = "IFN-gamma cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    tslp      = list(analyte = "TSLP cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
-    ox40l     = list(analyte = "OX40L cytokine", units = NA_character_, specimen = "serum", verified = FALSE)
+    barrier = list(
+      analyte = "skin barrier integrity",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    pathogens = list(
+      analyte = "infiltrated pathogens",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    th1 = list(analyte = "Th1 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    th2 = list(analyte = "Th2 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    th17 = list(analyte = "Th17 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    th22 = list(analyte = "Th22 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    il4 = list(analyte = "IL-4 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il13 = list(analyte = "IL-13 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il17 = list(analyte = "IL-17A cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il22 = list(analyte = "IL-22 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il31 = list(analyte = "IL-31 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    ifng = list(analyte = "IFN-gamma cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    tslp = list(analyte = "TSLP cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    ox40l = list(analyte = "OX40L cytokine", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = "1000 virtual patients per simulation; MBMA pool 663 placebo + 848 drug-arm patients across 9 published trials (Miyano 2022 Table 1)",
-    n_studies      = 9L,
-    age_range      = "adults with moderate-to-severe atopic dermatitis (MBMA source trials, e.g. Simpson 2016 dupilumab Ph3 adults >=18 years)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = "1000 virtual patients per simulation; MBMA pool 663 placebo + 848 drug-arm patients across 9 published trials (Miyano 2022 Table 1)",
+    n_studies = 9L,
+    age_range = "adults with moderate-to-severe atopic dermatitis (MBMA source trials, e.g. Simpson 2016 dupilumab Ph3 adults >=18 years)",
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Moderate-to-severe atopic dermatitis (MBMA of biologics-treatment trials; virtual patients defined only by pathophysiologic parameter heterogeneity, not demographics)",
-    dose_range     = paste0(
+    disease_state = "Moderate-to-severe atopic dermatitis (MBMA of biologics-treatment trials; virtual patients defined only by pathophysiologic parameter heterogeneity, not demographics)",
+    dose_range = paste0(
       "Highest-dose arm per drug (Miyano 2022 Table 1): dupilumab 300 mg qw SC + TCS; ",
       "lebrikizumab 250 mg q2w SC + TCS; tralokinumab 300 mg q2w SC + TCS; ",
       "secukinumab 300 mg qw x4 then 300 mg q4w; fezakinumab 600 mg d0 then 300 mg q2w IV; ",
       "nemolizumab 60 mg q4w SC; tezepelumab 280 mg q2w SC + TCS; ",
       "GBR 830 10 mg/kg q4w IV; rIFNg 50 ug/m^2 qd SC + TCS."
     ),
-    regions        = "multi-national (source-trial dependent)",
-    notes          = paste0(
+    regions = "multi-national (source-trial dependent)",
+    notes = paste0(
       "Model-based meta-analysis pools 9 randomised placebo-controlled trials ",
       "of investigational biologics for AD (Miyano 2022 Table 1). The QSP layer ",
       "describes system-level AD pathogenesis independently of demographics; ",

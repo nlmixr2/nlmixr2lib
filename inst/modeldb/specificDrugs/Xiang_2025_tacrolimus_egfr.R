@@ -13,8 +13,8 @@ Xiang_2025_tacrolimus_egfr <- function() {
   )
   vignette <- "Xiang_2025_tacrolimus"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -22,50 +22,50 @@ Xiang_2025_tacrolimus_egfr <- function() {
   # population PK step. The estimated glomerular filtration rate is an
   # algebraic direct effect of the predicted concentration and is not a state.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     POD = list(
-      description        = "Post-operative day: days elapsed since renal transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-operative day: days elapsed since renal transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-VARYING within subject. Enters the fixed PK layer as the power scaling (POD / 34)^0.109 on CL/F; 34 days is the median post-operative day of the index cohort (Xiang 2025 Table 1). The power form is undefined at POD = 0, so supply POD >= 1. It has no direct effect on eGFR; it acts only through the predicted tacrolimus concentration. Note the eGFR model's own time origin is different from the PK model's: eGFR0 is anchored at the day renal function became stable, taken as post-operative day 7 (Xiang 2025 Methods, 'Simulations'). POD was significant on eGFR0 in forward inclusion but failed backward elimination; see covariatesDataExcluded.",
-      source_name        = "POD"
+      notes = "TIME-VARYING within subject. Enters the fixed PK layer as the power scaling (POD / 34)^0.109 on CL/F; 34 days is the median post-operative day of the index cohort (Xiang 2025 Table 1). The power form is undefined at POD = 0, so supply POD >= 1. It has no direct effect on eGFR; it acts only through the predicted tacrolimus concentration. Note the eGFR model's own time origin is different from the PK model's: eGFR0 is anchored at the day renal function became stable, taken as post-operative day 7 (Xiang 2025 Methods, 'Simulations'). POD was significant on eGFR0 in forward inclusion but failed backward elimination; see covariatesDataExcluded.",
+      source_name = "POD"
     ),
     CONMED_WUZHI = list(
-      description        = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant Wuzhi capsule)",
-      notes              = "Source column WZ, defined below Xiang 2025 Eq. 6 as 'WZ = 1 if WZ is present; otherwise = 0'. Enters the fixed PK layer as exp(-0.211 * CONMED_WUZHI) on CL/F. It has no direct effect on eGFR; it acts only through the predicted tacrolimus concentration, which is the paper's mechanism for the headline result that CYP3A5*3/*3 patients taking the Wuzhi capsule can lose more than 20% of baseline eGFR even at 2 mg q12h.",
-      source_name        = "WZ"
+      notes = "Source column WZ, defined below Xiang 2025 Eq. 6 as 'WZ = 1 if WZ is present; otherwise = 0'. Enters the fixed PK layer as exp(-0.211 * CONMED_WUZHI) on CL/F. It has no direct effect on eGFR; it acts only through the predicted tacrolimus concentration, which is the paper's mechanism for the headline result that CYP3A5*3/*3 patients taking the Wuzhi capsule can lose more than 20% of baseline eGFR even at 2 mg q12h.",
+      source_name = "WZ"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 non-expresser)",
-      notes              = "VALUE INVERSION relative to the source: Xiang 2025 codes 'Genotype = 1 if the genotype is CYP3A5*3/*3' below Eq. 6, so CYP3A5_EXPR = 1 - Genotype and the model applies the published coefficient to (1 - CYP3A5_EXPR). Enters the fixed PK layer only; it has no direct effect on eGFR.",
-      source_name        = "Genotype"
+      notes = "VALUE INVERSION relative to the source: Xiang 2025 codes 'Genotype = 1 if the genotype is CYP3A5*3/*3' below Eq. 6, so CYP3A5_EXPR = 1 - Genotype and the model applies the published coefficient to (1 - CYP3A5_EXPR). Enters the fixed PK layer only; it has no direct effect on eGFR.",
+      source_name = "Genotype"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Enters as the power scaling (AGE / 38)^-0.403 on the stable post-transplant baseline eGFR (Xiang 2025 Eq. 8); 38 years is the median age of the index cohort. Retained with dOFV = 39.013, df = 1, p < 0.001. Age does not modify the tacrolimus effect on eGFR, only its baseline.",
-      source_name        = "Age"
+      notes = "Time-fixed. Enters as the power scaling (AGE / 38)^-0.403 on the stable post-transplant baseline eGFR (Xiang 2025 Eq. 8); 38 years is the median age of the index cohort. Retained with dOFV = 39.013, df = 1, p < 0.001. Age does not modify the tacrolimus effect on eGFR, only its baseline.",
+      source_name = "Age"
     ),
     HGB = list(
-      description        = "Blood hemoglobin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Blood hemoglobin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed in this model. Enters as the power scaling (HGB / 111)^0.254 on the stable post-transplant baseline eGFR (Xiang 2025 Eq. 8); 111 g/L is the median hemoglobin of the index cohort (range 50-178 g/L, Table 1). Units are SI g/L, not g/dL. Retained with dOFV = 17.784, df = 1, p < 0.001. The paper reads hemoglobin as an indirect marker of renal function, because erythropoietin secretion falls as the graft's function declines (Xiang 2025 Discussion).",
-      source_name        = "HB"
+      notes = "Time-fixed in this model. Enters as the power scaling (HGB / 111)^0.254 on the stable post-transplant baseline eGFR (Xiang 2025 Eq. 8); 111 g/L is the median hemoglobin of the index cohort (range 50-178 g/L, Table 1). Units are SI g/L, not g/dL. Retained with dOFV = 17.784, df = 1, p < 0.001. The paper reads hemoglobin as an indirect marker of renal function, because erythropoietin secretion falls as the graft's function declines (Xiang 2025 Discussion).",
+      source_name = "HB"
     )
   )
 
@@ -76,28 +76,28 @@ Xiang_2025_tacrolimus_egfr <- function() {
   # no point estimate is published for either.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on baseline eGFR and significant in forward inclusion only (dOFV = -8.451, p < 0.01; Xiang 2025 Discussion and Supplementary Table 4). It did not meet the backward-elimination criterion (p < 0.001) and is absent from the final model, with no published point estimate. Index-cohort weight 31-99 kg (median 60)."
+      notes = "Screened on baseline eGFR and significant in forward inclusion only (dOFV = -8.451, p < 0.01; Xiang 2025 Discussion and Supplementary Table 4). It did not meet the backward-elimination criterion (p < 0.001) and is absent from the final model, with no published point estimate. Index-cohort weight 31-99 kg (median 60)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 1L,
-    age_range      = "19-65 years (median 38)",
-    age_median     = "38 years",
-    weight_range   = "31-99 kg (median 60)",
-    weight_median  = "60 kg",
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
+    age_range = "19-65 years (median 38)",
+    age_median = "38 years",
+    weight_range = "31-99 kg (median 60)",
+    weight_median = "60 kg",
     sex_female_pct = 36.0,
     race_ethnicity = c(Han = 92.0, Other = 8.0),
-    disease_state  = "Adult renal transplant recipients on a tacrolimus-based immunosuppressive regimen; observed eGFR 3.1-171.3 mL/min/1.73 m^2 (mean 55.18, median 54.5) and hemoglobin 50-178 g/L (median 111)",
-    dose_range     = "Oral tacrolimus started within 24 h of transplantation at 0.05-0.15 mg/kg/day divided q12h, then dose-adjusted to the trough TDM target; observed doses 0.5-5.5 mg per administration (median 2.5)",
-    regions        = "Single centre, Chongqing, People's Republic of China",
-    notes          = "Retrospective cohort of 126 renal transplant recipients randomly split 4:1 into an index group (n = 100) used to build the model and an external validation group (n = 26). 2334 eGFR observations. Baseline demographics from Xiang 2025 Table 1 (index dataset column). Estimated in Phoenix NLME 8.3.5, sequentially on the population PK step. The paper's renal-injury endpoint is a relative fall in eGFR from baseline of more than 20%, computed as ReGFR = (eGFR0 - eGFR) / eGFR0 * 100% (Eq. 4)."
+    disease_state = "Adult renal transplant recipients on a tacrolimus-based immunosuppressive regimen; observed eGFR 3.1-171.3 mL/min/1.73 m^2 (mean 55.18, median 54.5) and hemoglobin 50-178 g/L (median 111)",
+    dose_range = "Oral tacrolimus started within 24 h of transplantation at 0.05-0.15 mg/kg/day divided q12h, then dose-adjusted to the trough TDM target; observed doses 0.5-5.5 mg per administration (median 2.5)",
+    regions = "Single centre, Chongqing, People's Republic of China",
+    notes = "Retrospective cohort of 126 renal transplant recipients randomly split 4:1 into an index group (n = 100) used to build the model and an external validation group (n = 26). 2334 eGFR observations. Baseline demographics from Xiang 2025 Table 1 (index dataset column). Estimated in Phoenix NLME 8.3.5, sequentially on the population PK step. The paper's renal-injury endpoint is a relative fall in eGFR from baseline of more than 20%, computed as ReGFR = (eGFR0 - eGFR) / eGFR0 * 100% (Eq. 4)."
   )
 
   ini({

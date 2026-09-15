@@ -34,36 +34,36 @@ Bhatnagar_2024_upadacitinib_asas20_nraxspa <- function() {
   vignette <- "Bhatnagar_2024_upadacitinib"
 
   units <- list(
-    time          = "week",
-    dosing        = "(none; treatment enters as the binary ON_TREATMENT covariate, not as dosing events)",
+    time = "week",
+    dosing = "(none; treatment enters as the binary ON_TREATMENT covariate, not as dosing events)",
     concentration = "(probability, 0-1; the observation prob_asas20 is the probability of an ASAS20 response at week 14, not a drug concentration)"
   )
 
   covariateData <- list(
     ON_TREATMENT = list(
-      description        = "Randomized treatment-arm indicator (1 = upadacitinib 15 mg once daily, extended-release tablet; 0 = placebo).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Randomized treatment-arm indicator (1 = upadacitinib 15 mg once daily, extended-release tablet; 0 = placebo).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm). The intercept is therefore the placebo log-odds of an ASAS20 response at week 14.",
-      notes              = "Time-fixed per subject; patients were randomized 1:1 to upadacitinib 15 mg once daily or placebo, and the model uses only the double-blind placebo-controlled period through week 14. SELECT-AXIS 2 study 2 ran a 52-week placebo-controlled period, but the exposure-response analyses were deliberately restricted to the week-14 primary end point so that all three studies could be analysed on the same timeframe. This is the pooled on/off switch rather than an exposure-driven effect, which is exactly the case ON_TREATMENT is registered for: Bhatnagar 2024 evaluated treatment-effect, linear and nonlinear exposure models (Equations 3-5) and the treatment-effect model was selected. Model-estimated average plasma concentration was set to zero for placebo patients, so in the source the treatment indicator and a positive exposure are perfectly confounded and only one of them is identifiable.",
-      source_name        = "Active treatment"
+      notes = "Time-fixed per subject; patients were randomized 1:1 to upadacitinib 15 mg once daily or placebo, and the model uses only the double-blind placebo-controlled period through week 14. SELECT-AXIS 2 study 2 ran a 52-week placebo-controlled period, but the exposure-response analyses were deliberately restricted to the week-14 primary end point so that all three studies could be analysed on the same timeframe. This is the pooled on/off switch rather than an exposure-driven effect, which is exactly the case ON_TREATMENT is registered for: Bhatnagar 2024 evaluated treatment-effect, linear and nonlinear exposure models (Equations 3-5) and the treatment-effect model was selected. Model-estimated average plasma concentration was set to zero for placebo patients, so in the source the treatment indicator and a positive exposure are perfectly confounded and only one of them is identifiable.",
+      source_name = "Active treatment"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 143L,
-    n_studies      = 1L,
-    age_range      = "19-79 years (Table S2, nr-axSpA column)",
-    age_median     = "43 years (Table S2, nr-axSpA column; mean 44, SD 12)",
-    weight_range   = "49.3-144 kg (Table S2, nr-axSpA column)",
-    weight_median  = "79.8 kg (Table S2, nr-axSpA column; mean 81.1, SD 19.5)",
+    species = "human",
+    n_subjects = 143L,
+    n_studies = 1L,
+    age_range = "19-79 years (Table S2, nr-axSpA column)",
+    age_median = "43 years (Table S2, nr-axSpA column; mean 44, SD 12)",
+    weight_range = "49.3-144 kg (Table S2, nr-axSpA column)",
+    weight_median = "79.8 kg (Table S2, nr-axSpA column; mean 81.1, SD 19.5)",
     sex_female_pct = 64,
     race_ethnicity = "Not tabulated in Bhatnagar 2024.",
-    disease_state  = "Active non-radiographic axial spondyloarthritis (SELECT-AXIS 2 study 2). Unlike the ankylosing spondylitis cohorts, this population is predominantly female (64%).",
-    dose_range     = "Upadacitinib 15 mg once daily, extended-release tablet, versus placebo (1:1 randomization).",
-    regions        = "Multinational phase III study; not broken out in Bhatnagar 2024.",
-    notes          = "ASAS20 is the Assessment of SpondyloArthritis International Society 20% response criterion, evaluated at week 14 alongside the primary ASAS40 end point; Bhatnagar 2024 Methods spells out the domain-level definition for ASAS40 only. The exposure-response analysis population is larger than the population PK analysis population (143 versus 71 patients with nr-axSpA) because PK samples were collected in only about 30% of SELECT-AXIS 2 patients. Fitted with the glm function in R 4.2.0; model selection by Akaike Information Criterion plus visual checks."
+    disease_state = "Active non-radiographic axial spondyloarthritis (SELECT-AXIS 2 study 2). Unlike the ankylosing spondylitis cohorts, this population is predominantly female (64%).",
+    dose_range = "Upadacitinib 15 mg once daily, extended-release tablet, versus placebo (1:1 randomization).",
+    regions = "Multinational phase III study; not broken out in Bhatnagar 2024.",
+    notes = "ASAS20 is the Assessment of SpondyloArthritis International Society 20% response criterion, evaluated at week 14 alongside the primary ASAS40 end point; Bhatnagar 2024 Methods spells out the domain-level definition for ASAS40 only. The exposure-response analysis population is larger than the population PK analysis population (143 versus 71 patients with nr-axSpA) because PK samples were collected in only about 30% of SELECT-AXIS 2 patients. Fitted with the glm function in R 4.2.0; model selection by Akaike Information Criterion plus visual checks."
   )
 
   ini({

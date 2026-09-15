@@ -26,27 +26,27 @@ Truong_2025_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated by the Cockcroft-Gault equation.",
         "The review's abbreviation list glosses 'CLcrCG' with no",
         "normalisation mentioned, so raw mL/min is used here."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 87.6 mL/min. Enters CL as the power term",
         "(CLcr_CG/87.6)^0.462 (Zhang 2025 Table 3). The review does not",
         "report this cohort's renal function distribution, so whether",
@@ -61,7 +61,7 @@ Truong_2025_imipenem <- function() {
         "Cockcroft-Gault mL/min when the source does not BSA-normalise --",
         "precedent: Bai 2024 imipenem, Wang 2024 imipenem."
       ),
-      source_name        = "CLcr CG"
+      source_name = "CLcr CG"
     )
   )
 
@@ -69,29 +69,59 @@ Truong_2025_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    AGE  = list(description = "Age",                 units = "years",    type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 63 years, IQR 51-72 (Table 1)."),
-    SEXF = list(description = "Female sex",          units = "(binary)", type = "binary",     notes = "Screened, not retained (Zhang 2025 Table 3). Zhang 2025 Table 1 records the sex split as 151/0, i.e. an all-male modelling cohort; if that is correct the covariate is unidentifiable by construction rather than merely non-significant, and the figure should be re-checked against the primary."),
-    WT   = list(description = "Total body weight",   units = "kg",       type = "continuous", notes = "Screened as TBW, not retained (Zhang 2025 Table 3). Cohort median 70 kg, IQR 61.2-82 (Table 1). Adjusted and ideal body weight were screened separately and also not retained."),
-    HT   = list(description = "Height",              units = "cm",       type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    BMI  = list(description = "Body mass index",     units = "kg/m^2",   type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    BSA  = list(description = "Body surface area",   units = "m^2",      type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3).")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 63 years, IQR 51-72 (Table 1)."
+    ),
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Zhang 2025 Table 1 records the sex split as 151/0, i.e. an all-male modelling cohort; if that is correct the covariate is unidentifiable by construction rather than merely non-significant, and the figure should be re-checked against the primary."
+    ),
+    WT = list(
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as TBW, not retained (Zhang 2025 Table 3). Cohort median 70 kg, IQR 61.2-82 (Table 1). Adjusted and ideal body weight were screened separately and also not retained."
+    ),
+    HT = list(
+      description = "Height",
+      units = "cm",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    BMI = list(
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    BSA = list(
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 151L,
-    n_studies        = 1L,
-    age_median       = "63 years (IQR 51-72)",
-    weight_median    = "70 kg (IQR 61.2-82)",
-    sex_female_pct   = 0.0,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 151L,
+    n_studies = 1L,
+    age_median = "63 years (IQR 51-72)",
+    weight_median = "70 kg (IQR 61.2-82)",
+    sex_female_pct = 0.0,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Critically ill AND non-critically ill adults receiving",
       "imipenem-cilastatin. This is the only study among the 18 in the",
       "Zhang 2025 review to pool both, and the second largest cohort after",
       "Chen 2020."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Not reported. Zhang 2025 Supplementary Table S1 records 'NR' for",
       "this study's dosage, and the review's Results text calls it out",
       "explicitly: 'the imipenem dosage was not specified in Truong et al.",
@@ -99,9 +129,9 @@ Truong_2025_imipenem <- function() {
       "regimen rather than reproduce the study's own; the Dutch sibling",
       "study de Velde 2020 used 500 mg every 6 h."
     ),
-    regions          = "Netherlands",
+    regions = "Netherlands",
     n_concentrations = 322L,
-    notes            = paste(
+    notes = paste(
       "Retrospective study (Zhang 2025 Table 1, study 17); 151 patients,",
       "322 samples. Zhang 2025 Table 1 records the sex split as 151 male /",
       "0 female, which would make this an all-male cohort; the review does",

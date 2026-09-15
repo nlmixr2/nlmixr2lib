@@ -34,11 +34,11 @@ DominguezMore_2024_rutin_human <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference weight 70 kg -- the human weight Dominguez More 2024",
         "Section 2.3.3 states the allometry was evaluated at ('W is the human",
         "weight, typically set at 70 kg'). Both V and Cl scale as a power of",
@@ -46,33 +46,33 @@ DominguezMore_2024_rutin_human <- function() {
         "prediction at a weight other than 70 kg diverges between the pure",
         "rutin and extract arms by more than the fixed 70 kg ratio."
       ),
-      source_name        = "W"
+      source_name = "W"
     ),
     FORM_RUTIN_EXTRACT = list(
-      description        = "Source of the administered rutin: within the Physalis peruviana calyx extract matrix versus the isolated pure compound",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Source of the administered rutin: within the Physalis peruviana calyx extract matrix versus the isolated pure compound",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pure rutin)",
-      notes              = paste(
+      notes = paste(
         "Selects the RUT (pure rutin) or EXT (rutin within the extract) row",
         "of Dominguez More 2024 Table 5. Because the allometric coefficient a",
         "AND the exponent b both differ between the arms, the covariate acts",
         "on the typical value and on the weight exponent, not on the typical",
         "value alone."
       ),
-      source_name        = "source of rutin"
+      source_name = "source of rutin"
     )
   )
 
   population <- list(
-    species        = "human (projected by allometry from rat and rabbit)",
-    n_subjects     = 0L,
-    n_studies      = 0L,
-    weight_range   = "70 kg reference (Section 2.3.3)",
-    disease_state  = "not applicable -- forward projection, no human subjects were studied",
-    dose_range     = "not applicable -- no human dose was administered or proposed",
-    regions        = "not applicable",
-    notes          = paste(
+    species = "human (projected by allometry from rat and rabbit)",
+    n_subjects = 0L,
+    n_studies = 0L,
+    weight_range = "70 kg reference (Section 2.3.3)",
+    disease_state = "not applicable -- forward projection, no human subjects were studied",
+    dose_range = "not applicable -- no human dose was administered or proposed",
+    regions = "not applicable",
+    notes = paste(
       "Simple allometry, Y = a * W^b (Eq. 6), fitted across two species: the",
       "Wistar rat individual parameters of Dominguez-More 2021 and the New",
       "Zealand White rabbit individual parameters of the present paper. Table",

@@ -8,55 +8,55 @@ Bellanti_2014_deferiprone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "deferiprone", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "deferiprone", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "deferiprone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Final-model covariate on V/F: females show a ~17% lower apparent volume of distribution relative to males (Bellanti 2014 Table 1: V/F males = 78.4 L, V/F females = 65.3 L). Encoded as multiplicative effect e_sexf_vc on V_typical (reference category = male).",
-      source_name        = "Gender"
+      notes = "Final-model covariate on V/F: females show a ~17% lower apparent volume of distribution relative to males (Bellanti 2014 Table 1: V/F males = 78.4 L, V/F females = 65.3 L). Encoded as multiplicative effect e_sexf_vc on V_typical (reference category = male).",
+      source_name = "Gender"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight (kg).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested as a continuous covariate on CL/F and V/F during univariate covariate selection (Bellanti 2014 Results). Significant on both parameters when entered separately, but excluded from the final model because inclusion destabilised the bootstrap, attributed by the authors to the narrow weight range (52-92 kg) of the healthy-adult cohort. Documented here so the provenance of the screen is preserved without triggering a `declared but not referenced` convention warning."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested as a continuous covariate on CL/F and V/F during univariate covariate selection (Bellanti 2014 Results). Significant on both parameters when entered separately, but excluded from the final model because inclusion destabilised the bootstrap, attributed by the authors to the narrow weight range (52-92 kg) of the healthy-adult cohort. Documented here so the provenance of the screen is preserved without triggering a `declared but not referenced` convention warning."
     ),
     AGE = list(
       description = "Subject age (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested in the covariate screen on CL/F and V/F (Bellanti 2014 Results). Not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Tested in the covariate screen on CL/F and V/F (Bellanti 2014 Results). Not retained in the final model."
     ),
     CRCL = list(
       description = "Creatinine-based renal function (mL/min/1.73 m^2).",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Tested on CL/F in the covariate screen but the adult healthy cohort lacked the renal-function spread needed to estimate the effect (Bellanti 2014 Discussion: 'the population available for the analysis was limited to healthy subjects, the impact of another important covariate could not be estimated'). The renal-impairment dosing recommendations in Bellanti 2014 Table 2 come from a simulation exercise that reduces CL/F to 80%, 50% and 25% of the healthy-population value rather than from an estimated covariate effect; not a parameter of the structural model."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Tested on CL/F in the covariate screen but the adult healthy cohort lacked the renal-function spread needed to estimate the effect (Bellanti 2014 Discussion: 'the population available for the analysis was limited to healthy subjects, the impact of another important covariate could not be estimated'). The renal-impairment dosing recommendations in Bellanti 2014 Table 2 come from a simulation exercise that reduces CL/F to 80%, 50% and 25% of the healthy-population value rather than from an estimated covariate effect; not a parameter of the structural model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55,
-    n_studies      = 2,
-    age_range      = "19-55 years",
-    age_median     = "39 years",
-    weight_range   = "52-92 kg",
-    weight_median  = "72 kg",
+    species = "human",
+    n_subjects = 55,
+    n_studies = 2,
+    age_range = "19-55 years",
+    age_median = "39 years",
+    weight_range = "52-92 kg",
+    weight_median = "72 kg",
     sex_female_pct = 16 / 55 * 100,
-    disease_state  = "Healthy adult subjects",
-    dose_range     = "Single oral dose of 1500 mg deferiprone as a 100 mg/mL solution (LA20-BA, LA21-BE studies). The model is also applied via simulation to 25 mg/kg single doses and 75 mg/kg/day b.i.d. dosing scenarios in the paper.",
-    regions        = "Not reported in the publication; data supplied by ApoPharma Inc. (Canada) and shared within the DEEP consortium (FP7).",
-    notes          = "39 males and 16 females. Up to 17 post-dose plasma samples per subject (median 15) over 14 h; analytical method HPLC-UV with LLOQ 1 microM (0.14 microg/mL). NONMEM v7.2 FOCE-I; bootstrap 500 runs in PsN v3.5.3. See Bellanti 2014 Methods - Data."
+    disease_state = "Healthy adult subjects",
+    dose_range = "Single oral dose of 1500 mg deferiprone as a 100 mg/mL solution (LA20-BA, LA21-BE studies). The model is also applied via simulation to 25 mg/kg single doses and 75 mg/kg/day b.i.d. dosing scenarios in the paper.",
+    regions = "Not reported in the publication; data supplied by ApoPharma Inc. (Canada) and shared within the DEEP consortium (FP7).",
+    notes = "39 males and 16 females. Up to 17 post-dose plasma samples per subject (median 15) over 14 h; analytical method HPLC-UV with LLOQ 1 microM (0.14 microg/mL). NONMEM v7.2 FOCE-I; bootstrap 500 runs in PsN v3.5.3. See Bellanti 2014 Methods - Data."
   )
 
   ini({

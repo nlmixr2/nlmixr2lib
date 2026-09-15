@@ -10,24 +10,24 @@ Cao_2013_GNbAC1 <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "GNbAC1", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "GNbAC1", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "GNbAC1", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "GNbAC1", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "GNbAC1", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "GNbAC1", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "GNbAC1", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "healthy adult volunteers (first-in-human; per Curtin 2012)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "healthy adult volunteers (first-in-human; per Curtin 2012)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "First-in-human single-dose escalation of GNbAC1 (humanized IgG4 against MSRV envelope protein, evaluated as a candidate therapy for Multiple Sclerosis-associated endogenous retrovirus).",
-    dose_range     = "0.15, 0.6, 2, 6 mg/kg IV (Cao 2013 Figure 5 GNbAC1 panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Curtin F et al. Clin Ther 2012;34:2268-2278 (PMID 23200102). GNbAC1 is the only IgG4 mAb in the Cao 2013 human cohort; native IgG4 has a lower available ISF fraction (Kp = 0.4 per Cao 2013 Methods, refs 22-23) than IgG1 (Kp = 0.8). Cao 2013 Table 2 does not state the Kp used per drug; this model file uses the IgG1 default Kp = 0.8 for consistency with the rest of the Cao 2013 cohort. Users wanting an IgG4-specific representation should refit sigma_tight/sigma_leaky/CLp with Kp = 0.4."
+    disease_state = "First-in-human single-dose escalation of GNbAC1 (humanized IgG4 against MSRV envelope protein, evaluated as a candidate therapy for Multiple Sclerosis-associated endogenous retrovirus).",
+    dose_range = "0.15, 0.6, 2, 6 mg/kg IV (Cao 2013 Figure 5 GNbAC1 panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Curtin F et al. Clin Ther 2012;34:2268-2278 (PMID 23200102). GNbAC1 is the only IgG4 mAb in the Cao 2013 human cohort; native IgG4 has a lower available ISF fraction (Kp = 0.4 per Cao 2013 Methods, refs 22-23) than IgG1 (Kp = 0.8). Cao 2013 Table 2 does not state the Kp used per drug; this model file uses the IgG1 default Kp = 0.8 for consistency with the rest of the Cao 2013 cohort. Users wanting an IgG4-specific representation should refit sigma_tight/sigma_leaky/CLp with Kp = 0.4."
   )
 
   ini({

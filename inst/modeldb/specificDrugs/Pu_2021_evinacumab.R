@@ -1,85 +1,85 @@
 Pu_2021_evinacumab <- function() {
   description <- "Population PK/PD model for evinacumab in healthy volunteers and adults / pediatric patients with homozygous familial hypercholesterolemia (Pu 2021): two-compartment PK with first-order SC absorption (with lag time) and parallel linear plus Michaelis-Menten elimination from the central compartment, linked to a Type 1 indirect-response model for low-density lipoprotein cholesterol (LDL-C) where evinacumab inhibits LDL-C production."
-  reference   <- "Pu X, Sale M, Yang F, Zhang Y, Davis JD, Al-Huniti N. Population pharmacokinetics and exposure-response modeling for evinacumab in homozygous familial hypercholesterolemia. CPT Pharmacometrics Syst Pharmacol. 2021;10(11):1412-1421. doi:10.1002/psp4.12711"
-  vignette    <- "Pu_2021_evinacumab"
+  reference <- "Pu X, Sale M, Yang F, Zhang Y, Davis JD, Al-Huniti N. Population pharmacokinetics and exposure-response modeling for evinacumab in homozygous familial hypercholesterolemia. CPT Pharmacometrics Syst Pharmacol. 2021;10(11):1412-1421. doi:10.1002/psp4.12711"
+  vignette <- "Pu_2021_evinacumab"
   paper_specific_compartments <- c("LDL")
 
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "evinacumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "evinacumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "evinacumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "evinacumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "evinacumab", units = "mg", specimen = "plasma", verified = FALSE),
-    LDL         = list(analyte = "low-density lipoprotein cholesterol", units = "mg", specimen = "plasma", verified = FALSE)
+    LDL = list(analyte = "low-density lipoprotein cholesterol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Allometric power scaling on linear CL with reference 74.1 kg (PK reference; Table 1) and on Vc, Vp, and Q with the same 74.1 kg reference (the Pu 2021 K23, K32 rate constants are weight-invariant, so Vp = Q / K32 inherits the Vc allometric exponent). Power effect on Imax with reference 71 kg (PD reference; Table 2 footnote, equal to the median weight of the patients with HoFH in the PK/PD analysis set).",
-      source_name        = "WGTBL"
+      notes = "Time-fixed at baseline. Allometric power scaling on linear CL with reference 74.1 kg (PK reference; Table 1) and on Vc, Vp, and Q with the same 74.1 kg reference (the Pu 2021 K23, K32 rate constants are weight-invariant, so Vp = Q / K32 inherits the Vc allometric exponent). Power effect on Imax with reference 71 kg (PD reference; Table 2 footnote, equal to the median weight of the patients with HoFH in the PK/PD analysis set).",
+      source_name = "WGTBL"
     ),
     DIS_HOFH = list(
-      description        = "Homozygous familial hypercholesterolemia disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Homozygous familial hypercholesterolemia disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer reference)",
-      notes              = "Time-fixed per subject. Multiplicative log-effect on Vmax: HoFH patients exhibit ~25% lower target-mediated Vmax than the HV reference (Pu 2021 Table 1: theta = -0.289, exp(-0.289) ~= 0.749). Renamed from source column DISTYPN to canonical DIS_HOFH per inst/references/covariate-columns.md.",
-      source_name        = "DISTYPN"
+      notes = "Time-fixed per subject. Multiplicative log-effect on Vmax: HoFH patients exhibit ~25% lower target-mediated Vmax than the HV reference (Pu 2021 Table 1: theta = -0.289, exp(-0.289) ~= 0.749). Renamed from source column DISTYPN to canonical DIS_HOFH per inst/references/covariate-columns.md.",
+      source_name = "DISTYPN"
     ),
     ANGPTL3 = list(
-      description        = "Baseline total serum angiopoietin-like protein 3 concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline total serum angiopoietin-like protein 3 concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline only (per-subject time-fixed). Power-form effect on Vmax with reference 0.08 mg/L (Pu 2021 typical-patient median, paper text). Higher baseline target predicts a faster saturable elimination; biologically consistent with evinacumab being co-cleared along with bound ANGPTL3. Bioanalytical assay detects free + target-bound ANGPTL3 after acid pretreatment of serum (Pu 2021 Methods, LLOQ 0.0195 mg/L). Renamed from source column ANGBL to canonical ANGPTL3 per inst/references/covariate-columns.md.",
-      source_name        = "ANGBL"
+      notes = "Baseline only (per-subject time-fixed). Power-form effect on Vmax with reference 0.08 mg/L (Pu 2021 typical-patient median, paper text). Higher baseline target predicts a faster saturable elimination; biologically consistent with evinacumab being co-cleared along with bound ANGPTL3. Bioanalytical assay detects free + target-bound ANGPTL3 after acid pretreatment of serum (Pu 2021 Methods, LLOQ 0.0195 mg/L). Renamed from source column ANGBL to canonical ANGPTL3 per inst/references/covariate-columns.md.",
+      source_name = "ANGBL"
     ),
     LDLC = list(
-      description        = "Baseline serum low-density lipoprotein cholesterol concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum low-density lipoprotein cholesterol concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline only (per-subject time-fixed). Used in two roles in this model: (1) initialises the indirect-response LDL state (LDL(0) <- LDLC), and (2) drives a power-form effect on IC50 with reference 211 mg/dL (Pu 2021 Table 2 footnote). Patients with higher baseline LDL-C are more sensitive to evinacumab (smaller IC50). Renamed from source column LDLBL to canonical LDLC per inst/references/covariate-columns.md.",
-      source_name        = "LDLBL"
+      notes = "Baseline only (per-subject time-fixed). Used in two roles in this model: (1) initialises the indirect-response LDL state (LDL(0) <- LDLC), and (2) drives a power-form effect on IC50 with reference 211 mg/dL (Pu 2021 Table 2 footnote). Patients with higher baseline LDL-C are more sensitive to evinacumab (smaller IC50). Renamed from source column LDLBL to canonical LDLC per inst/references/covariate-columns.md.",
+      source_name = "LDLBL"
     ),
     RACE_WHITE = list(
-      description        = "White (Caucasian) race indicator (1 = White, 0 = non-White / Other)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White (Caucasian) race indicator (1 = White, 0 = non-White / Other)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (White; reference for the typical-value PD parameter Imax = 0.7435)",
-      notes              = "Multiplicative effect on Imax: non-White subjects have a lower maximum drug-induced inhibitory effect on LDL-C production than the White reference (Pu 2021 Table 2: theta = -0.191, exp(-0.191) ~= 0.83 multiplier when non-White). Source paper (and supplementary control stream) used a binary White-vs-other dichotomy; the typical-value reference is the White (RACE_WHITE = 1) subgroup, which is the inverse of the Lin 2024 use of the same canonical column. Renamed from source column RAC1 (where RAC1 = 1 means non-White / others) to canonical RACE_WHITE per inst/references/covariate-columns.md; the model uses (1 - RACE_WHITE) inline so the parameter values reproduce the published equations as-is.",
-      source_name        = "RAC1"
+      notes = "Multiplicative effect on Imax: non-White subjects have a lower maximum drug-induced inhibitory effect on LDL-C production than the White reference (Pu 2021 Table 2: theta = -0.191, exp(-0.191) ~= 0.83 multiplier when non-White). Source paper (and supplementary control stream) used a binary White-vs-other dichotomy; the typical-value reference is the White (RACE_WHITE = 1) subgroup, which is the inverse of the Lin 2024 use of the same canonical column. Renamed from source column RAC1 (where RAC1 = 1 means non-White / others) to canonical RACE_WHITE per inst/references/covariate-columns.md; the model uses (1 - RACE_WHITE) inline so the parameter values reproduce the published equations as-is.",
+      source_name = "RAC1"
     )
   )
 
   population <- list(
-    n_subjects                 = 278L,
-    n_subjects_pk              = 278L,
-    n_subjects_pkpd            = 95L,
-    n_studies                  = 6L,
-    n_studies_pkpd             = 3L,
-    phases                     = "Pooled phase I, II, and III (PK); pooled phase II + two phase III (PK/PD)",
-    age_range                  = "12 years and older (FDA-approved population includes adolescents and adults; the analysis set spans the phase I HV cohorts and the HoFH phase II/III studies)",
-    weight_range               = "42.4-152 kg (Pu 2021 Figure 2 covariate ranges)",
-    weight_median              = "74.1 kg (PK analysis set median; Pu 2021 Table 1 typical-patient definition); 71 kg (PK/PD analysis set median; Pu 2021 Table 2 footnote)",
-    sex_female_pct             = NA_real_,
-    race_ethnicity             = "Pooled across HoFH phase II/III + HV phase I cohorts; race coded as White (RAC1 = 0) vs Other (RAC1 = 1) per the source NM-TRAN dataset.",
-    disease_state              = "Healthy volunteers (n = 183) and patients with homozygous familial hypercholesterolemia (n = 95).",
-    dose_range                 = "IV: 5-20 mg/kg single dose or repeated weekly, every 4 weeks, or every 12 weeks. SC: 75-450 mg single dose or repeated weekly or every 2 weeks. Approved adult/adolescent (>= 12 y) HoFH dose is 15 mg/kg IV every 4 weeks.",
-    regions                    = "Multi-regional pool of six Regeneron-sponsored clinical trials (NCT01749878, NCT03146416, NCT02107872, NCT02265952, NCT03399786) and one phase I HV study referenced in the paper.",
-    angptl3_baseline_median    = "0.08 mg/L (paper text; comparable between HoFH and HV cohorts)",
-    ldlc_baseline_typical      = "211 mg/dL (PK/PD typical patient)",
-    samples_pk                 = "Total evinacumab serum concentrations measured by validated ELISA (LLOQ 0.078 mg/L; assay detects free evinacumab + evinacumab bound to one or two ANGPTL3 molecules).",
-    samples_pkpd               = "1194 LDL-C concentration timepoints from 95 HoFH patients (after removing 9 outliers with CWRES > 5) used for the PK/PD model.",
-    notes                      = "PK and PK/PD reference covariates differ slightly: PK reference is 74.1 kg with 0.08 mg/L baseline ANGPTL3 (Table 1 caption: 'CL, L/day for 74.1 kg subject'); PK/PD reference is 71 kg with 211 mg/dL baseline LDL-C (Table 2 footnote). The model file preserves both reference values to reproduce the published parameter equations exactly. Disease-state effect on Vmax was estimated from the pooled HV+HoFH PK dataset; the PK/PD layer was estimated only from HoFH patients (no DIS_HOFH covariate appears at the PD level). Race effect on Imax was tested only at the PK/PD level. The bioanalytical assay for ANGPTL3 included acid pretreatment of serum and detected both free and bound ANGPTL3."
+    n_subjects = 278L,
+    n_subjects_pk = 278L,
+    n_subjects_pkpd = 95L,
+    n_studies = 6L,
+    n_studies_pkpd = 3L,
+    phases = "Pooled phase I, II, and III (PK); pooled phase II + two phase III (PK/PD)",
+    age_range = "12 years and older (FDA-approved population includes adolescents and adults; the analysis set spans the phase I HV cohorts and the HoFH phase II/III studies)",
+    weight_range = "42.4-152 kg (Pu 2021 Figure 2 covariate ranges)",
+    weight_median = "74.1 kg (PK analysis set median; Pu 2021 Table 1 typical-patient definition); 71 kg (PK/PD analysis set median; Pu 2021 Table 2 footnote)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Pooled across HoFH phase II/III + HV phase I cohorts; race coded as White (RAC1 = 0) vs Other (RAC1 = 1) per the source NM-TRAN dataset.",
+    disease_state = "Healthy volunteers (n = 183) and patients with homozygous familial hypercholesterolemia (n = 95).",
+    dose_range = "IV: 5-20 mg/kg single dose or repeated weekly, every 4 weeks, or every 12 weeks. SC: 75-450 mg single dose or repeated weekly or every 2 weeks. Approved adult/adolescent (>= 12 y) HoFH dose is 15 mg/kg IV every 4 weeks.",
+    regions = "Multi-regional pool of six Regeneron-sponsored clinical trials (NCT01749878, NCT03146416, NCT02107872, NCT02265952, NCT03399786) and one phase I HV study referenced in the paper.",
+    angptl3_baseline_median = "0.08 mg/L (paper text; comparable between HoFH and HV cohorts)",
+    ldlc_baseline_typical = "211 mg/dL (PK/PD typical patient)",
+    samples_pk = "Total evinacumab serum concentrations measured by validated ELISA (LLOQ 0.078 mg/L; assay detects free evinacumab + evinacumab bound to one or two ANGPTL3 molecules).",
+    samples_pkpd = "1194 LDL-C concentration timepoints from 95 HoFH patients (after removing 9 outliers with CWRES > 5) used for the PK/PD model.",
+    notes = "PK and PK/PD reference covariates differ slightly: PK reference is 74.1 kg with 0.08 mg/L baseline ANGPTL3 (Table 1 caption: 'CL, L/day for 74.1 kg subject'); PK/PD reference is 71 kg with 211 mg/dL baseline LDL-C (Table 2 footnote). The model file preserves both reference values to reproduce the published parameter equations exactly. Disease-state effect on Vmax was estimated from the pooled HV+HoFH PK dataset; the PK/PD layer was estimated only from HoFH patients (no DIS_HOFH covariate appears at the PD level). Race effect on Imax was tested only at the PK/PD level. The bioanalytical assay for ANGPTL3 included acid pretreatment of serum and detected both free and bound ANGPTL3."
   )
 
   ini({

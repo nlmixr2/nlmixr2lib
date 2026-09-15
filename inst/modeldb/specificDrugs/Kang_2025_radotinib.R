@@ -28,26 +28,32 @@ Kang_2025_radotinib <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "radotinib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "radotinib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "radotinib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "radotinib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "radotinib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "radotinib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     DIS_CML = list(
-      description        = "Chronic-phase chronic myeloid leukemia disease-state indicator: 1 = patient with CML-CP, 0 = healthy volunteer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic-phase chronic myeloid leukemia disease-state indicator: 1 = patient with CML-CP, 0 = healthy volunteer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (patient with CML-CP) -- see notes; the published typical CL/F of 23.0 L/h is the CML-CP value, and the estimated coefficient is the healthy-volunteer increment",
-      notes              = paste(
+      notes = paste(
         "Kang 2025 equation 1 and Table 2 footnote a: CL/F (L/h) = 23.0 *",
         "[1 + 0.646 * (1 - CML)] * [1 + 0.683 * (circadian effect)], with",
         "'disease status: 0 = healthy volunteers, 1 = patients with chronic",
@@ -65,14 +71,14 @@ Kang_2025_radotinib <- function() {
         "per subject.",
         sep = " "
       ),
-      source_name        = "CML"
+      source_name = "CML"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Kang 2025 equation 2 and Table 2 footnote b: Vc/F (L) = 383 *",
         "[1 - 0.0129 * (age - 31)]. Centred at 31 years, the pooled cohort",
         "median (Table 1: median 31, range 20-72 years). Results section",
@@ -86,14 +92,14 @@ Kang_2025_radotinib <- function() {
         "exposure is governed by clearance, not by Vc/F.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     OCC = list(
-      description        = "Sampling-occasion indicator: 1 = day-1 (non-steady-state) occasion, 2 = day-14 (steady-state) occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion indicator: 1 = day-1 (non-steady-state) occasion, 2 = day-14 (steady-state) occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Kang 2025 Methods section 4.3: 'Interoccasion variability (IOV)",
         "was incorporated in the model assuming a log-normal distribution",
         "..., where each occasion was defined as a distinct pharmacokinetic",
@@ -107,39 +113,39 @@ Kang_2025_radotinib <- function() {
         "(Table 2 reports one 'omega IOV' row).",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 2L,
     n_observations = 640L,
-    age_range      = "20-72 years (Table 1: pooled median 31; healthy volunteers median 29, range 20-51; CML-CP patients median 32, range 21-72)",
-    age_median     = "31 years",
-    weight_range   = "47.0-96.0 kg (Table 1: pooled median 65.7 kg)",
-    weight_median  = "65.7 kg",
-    height_range   = "155-186 cm (Table 1: pooled median 171 cm)",
-    bmi_range      = "18.4-30.3 kg/m^2 (Table 1: pooled median 22.8 kg/m^2)",
+    age_range = "20-72 years (Table 1: pooled median 31; healthy volunteers median 29, range 20-51; CML-CP patients median 32, range 21-72)",
+    age_median = "31 years",
+    weight_range = "47.0-96.0 kg (Table 1: pooled median 65.7 kg)",
+    weight_median = "65.7 kg",
+    height_range = "155-186 cm (Table 1: pooled median 171 cm)",
+    bmi_range = "18.4-30.3 kg/m^2 (Table 1: pooled median 22.8 kg/m^2)",
     sex_female_pct = 23.4,
     race_ethnicity = c(Korean = 49, Chinese = 51),
     hepatic_function = "ALT 7-80 IU/L (pooled median 20); AST 11-76 IU/L (pooled median 20) (Table 1)",
     renal_function = "Cockcroft-Gault creatinine clearance 72-200 mL/min (pooled median 114 mL/min) (Table 1)",
-    disease_state  = paste(
+    disease_state = paste(
       "23 healthy adult male volunteers (Korean) and 24 patients with",
       "Philadelphia-chromosome-positive chronic-phase chronic myeloid",
       "leukemia (Chinese) diagnosed within the preceding 6 months, with",
       "typical BCR-ABL1 transcript type and normal organ function;",
       "T315I-mutation carriers were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Healthy volunteers: single oral 400 mg radotinib under fasting",
       "conditions. CML-CP patients: 300 mg orally twice daily under fasting",
       "conditions, sampled on days 1 and 14."
     ),
-    regions        = "Republic of Korea (healthy volunteers) and China (CML-CP patients); all 47 participants of Asian descent",
-    notes          = paste(
+    regions = "Republic of Korea (healthy volunteers) and China (CML-CP patients); all 47 participants of Asian descent",
+    notes = paste(
       "Pooled analysis of two clinical PK studies, ClinicalTrials.gov",
       "NCT06461078 (healthy volunteers, 306 concentrations) and",
       "NCT03722420 (CML-CP patients, 334 concentrations); 640",

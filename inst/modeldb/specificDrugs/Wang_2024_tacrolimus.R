@@ -29,11 +29,11 @@ Wang_2024_tacrolimus <- function() {
 
   covariateData <- list(
     HCT = list(
-      description        = "Hematocrit -- packed red blood cell volume fraction",
-      units              = "L/L (volume fraction)",
-      type               = "continuous",
+      description = "Hematocrit -- packed red blood cell volume fraction",
+      units = "L/L (volume fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-varying; recorded on each day of tacrolimus therapeutic drug ",
         "monitoring (Wang 2024 Methods 2.1). Wang 2024 Table 1 reports HCT as ",
         "a volume FRACTION (training set 0.29 +/- 0.056, test set 0.27 +/- ",
@@ -56,14 +56,14 @@ Wang_2024_tacrolimus <- function() {
         "reports that adding HCT decreased the inter-individual variability ",
         "in CL/F by 6.21%."
       ),
-      source_name        = "HCT"
+      source_name = "HCT"
     ),
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not a *1/*3 heterozygote)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype at rs776746, determined by ",
         "PCR-sequencing; Wang 2024 Methods 2.2). 1 = subject is CYP3A5*1/*3; ",
         "0 = otherwise (the union of *1/*1 homozygotes and *3/*3 ",
@@ -81,14 +81,14 @@ Wang_2024_tacrolimus <- function() {
         "under the CYP3A5_EXPR entry. Wang 2024 Table 1: 35/103 (34%) of the ",
         "training set and 8/24 (33.3%) of the test set were *1/*3."
       ),
-      source_name        = "CYP3A5 *1/*3"
+      source_name = "CYP3A5 *1/*3"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not a *1/*1 homozygote)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype at rs776746). 1 = subject ",
         "is CYP3A5*1/*1; 0 = otherwise (the union of *1/*3 heterozygotes and ",
         "*3/*3 nonexpressers). Paired with CYP3A5_STAR1_HET; see that entry ",
@@ -102,7 +102,7 @@ Wang_2024_tacrolimus <- function() {
         "10/103 (9.7%) of the training set and 2/24 (8.3%) of the test set ",
         "were *1/*1."
       ),
-      source_name        = "CYP3A5 *1/*1"
+      source_name = "CYP3A5 *1/*1"
     )
   )
 
@@ -120,69 +120,69 @@ Wang_2024_tacrolimus <- function() {
   covariatesDataExcluded <- list(
     POD = list(
       description = "Postoperative date -- days between the transplant operation and the day of data collection",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened as a covariate on CL/F and V/F but not retained in the final model. Wang 2024 Table 1: 130 +/- 231 days (training), 175 +/- 242 days (test); overall range 3-1622 days. Ranked second (behind the PPK basic model's post hoc IPRE) in the SHAP importance analysis of the machine-learning layer."
+      units = "days",
+      type = "continuous",
+      notes = "Screened as a covariate on CL/F and V/F but not retained in the final model. Wang 2024 Table 1: 130 +/- 231 days (training), 175 +/- 242 days (test); overall range 3-1622 days. Ranked second (behind the PPK basic model's post hoc IPRE) in the SHAP importance analysis of the machine-learning layer."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained. Wang 2024 Table 1: 63.3 +/- 12.9 kg (training), 62.6 +/- 11.0 kg (test). No allometric scaling appears in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained. Wang 2024 Table 1: 63.3 +/- 12.9 kg (training), 62.6 +/- 11.0 kg (test). No allometric scaling appears in the final model."
     ),
     AGE = list(
       description = "Recipient age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained. Wang 2024 Table 1: 41.2 +/- 11.2 years (training), 44.7 +/- 8.91 years (test)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained. Wang 2024 Table 1: 41.2 +/- 11.2 years (training), 44.7 +/- 8.91 years (test)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. Wang 2024 Methods 2.3 codes sex as 0 for male and 1 for female, which matches the canonical SEXF orientation. Table 1: 39/103 female (training), 7/24 female (test)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. Wang 2024 Methods 2.3 codes sex as 0 for male and 1 for female, which matches the canonical SEXF orientation. Table 1: 39/103 female (training), 7/24 female (test)."
     ),
     RBC = list(
       description = "Red blood cell count",
-      units       = "10^12 cells/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Wang 2024 Table 1: 3.06 +/- 0.61 (training), 2.98 +/- 0.51 (test). Correlated with the retained HCT covariate."
+      units = "10^12 cells/L",
+      type = "continuous",
+      notes = "Screened but not retained. Wang 2024 Table 1: 3.06 +/- 0.61 (training), 2.98 +/- 0.51 (test). Correlated with the retained HCT covariate."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Wang 2024 Table 1: 34.0 +/- 3.69 g/L (training), 33.1 +/- 4.04 g/L (test)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained. Wang 2024 Table 1: 34.0 +/- 3.69 g/L (training), 33.1 +/- 4.04 g/L (test)."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Wang 2024 Table 1 reports ALP with the units 'mmol/L', which is not a valid unit for an enzyme activity; U/L is the standard reporting unit and the tabulated magnitudes (58.2 +/- 24.9 training, 63.0 +/- 44.6 test) are consistent with U/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained. Wang 2024 Table 1 reports ALP with the units 'mmol/L', which is not a valid unit for an enzyme activity; U/L is the standard reporting unit and the tabulated magnitudes (58.2 +/- 24.9 training, 63.0 +/- 44.6 test) are consistent with U/L."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained. Wang 2024 Methods 2.1 lists creatinine clearance among the collected clinical data; Table 1 tabulates serum creatinine (212.5 +/- 208.5 umol/L training, 305.5 +/- 340.6 umol/L test) rather than the derived clearance."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened but not retained. Wang 2024 Methods 2.1 lists creatinine clearance among the collected clinical data; Table 1 tabulates serum creatinine (212.5 +/- 208.5 umol/L training, 305.5 +/- 340.6 umol/L test) rather than the derived clearance."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 103L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 103L,
+    n_studies = 1L,
     n_concentrations = 2041L,
-    age_range        = "adults; Table 1 mean +/- SD 41.2 +/- 11.2 years (training set), 44.7 +/- 8.91 years (test set); 42.2 +/- 11.0 years across all 127 recipients",
-    weight_range     = "Table 1 mean +/- SD 63.3 +/- 12.9 kg (training set), 62.6 +/- 11.0 kg (test set); 62.6 +/- 12.2 kg across all 127 recipients",
-    sex_female_pct   = 37.9,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = paste0(
+    age_range = "adults; Table 1 mean +/- SD 41.2 +/- 11.2 years (training set), 44.7 +/- 8.91 years (test set); 42.2 +/- 11.0 years across all 127 recipients",
+    weight_range = "Table 1 mean +/- SD 63.3 +/- 12.9 kg (training set), 62.6 +/- 11.0 kg (test set); 62.6 +/- 12.2 kg across all 127 recipients",
+    sex_female_pct = 37.9,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste0(
       "Adult Chinese recipients of a first renal transplant meeting standard ",
       "renal donor criteria, on a triple immunosuppressive regimen of ",
       "tacrolimus + mycophenolate mofetil + corticosteroids. Excluded: ",
@@ -191,16 +191,16 @@ Wang_2024_tacrolimus <- function() {
       "medications in the training set: calcium antagonists 81 (78.6%), ",
       "proton pump inhibitors 102 (99%), voriconazole 21 (20.4%)."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral tacrolimus (Prograf, Astellas) started at 0.1 mg/kg/day given as ",
       "two divided doses q12h, then titrated to a trough target of 10-13 ",
       "ng/mL during the first month post-transplant and 5-9 ng/mL ",
       "thereafter. Tacrolimus was administered between 3 and 1622 days after ",
       "transplantation."
     ),
-    regions          = "China (single centre: Ruijin Hospital, Shanghai Jiaotong University School of Medicine)",
-    cyp3a5_genotype  = c(`*1/*1` = 9.7, `*1/*3` = 34.0, `*3/*3` = 56.3),
-    sampling_design  = paste0(
+    regions = "China (single centre: Ruijin Hospital, Shanghai Jiaotong University School of Medicine)",
+    cyp3a5_genotype = c(`*1/*1` = 9.7, `*1/*3` = 34.0, `*3/*3` = 56.3),
+    sampling_design = paste0(
       "Routine therapeutic drug monitoring only: a single pre-dose trough ",
       "sample (C0) drawn at 08:00 immediately before the morning dose. No ",
       "post-dose or rich sampling was collected, which is why a ",
@@ -209,7 +209,7 @@ Wang_2024_tacrolimus <- function() {
       "was assayed by enzyme-multiplied immunoassay (Syva VivaEmit 2000, ",
       "Siemens), quantification range 2-50 ng/mL."
     ),
-    notes            = paste0(
+    notes = paste0(
       "2041 trough concentrations from 127 recipients were split at random ",
       "into a training set (103 patients, 80%) and a test set (24 patients, ",
       "20%). The parameter estimates encoded here are the 'Final model' ",

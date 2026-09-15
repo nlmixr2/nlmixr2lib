@@ -15,7 +15,7 @@ Edstein_2001_tafenoquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tafenoquine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tafenoquine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tafenoquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -31,45 +31,45 @@ Edstein_2001_tafenoquine <- function() {
   # no-covariate base model as final.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at the population mean 60.3 kg (Table 1 mean). Tested on V/F (Table 2 model number 4): reduction in OFV of 12 (P < 0.01) over base model. Not retained in the final model -- typical V/F at the weight extremes 45 kg and 90 kg differed by ~9 % (1633 L vs 1947 L) and was judged insufficient to alter dosing.",
-      source_name        = "WT"
+      notes = "Centred at the population mean 60.3 kg (Table 1 mean). Tested on V/F (Table 2 model number 4): reduction in OFV of 12 (P < 0.01) over base model. Not retained in the final model -- typical V/F at the weight extremes 45 kg and 90 kg differed by ~9 % (1633 L vs 1947 L) and was judged insufficient to alter dosing.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at the population mean 28.9 y (Table 1 mean). Tested on V/F (Table 2 model number 5): reduction in OFV of 8 (P < 0.01) over base model. Removed in backwards stepwise elimination (Table 2 model number 11) with OFV increase of only 2 vs the combined WT+AGE model.",
-      source_name        = "AGE"
+      notes = "Centred at the population mean 28.9 y (Table 1 mean). Tested on V/F (Table 2 model number 5): reduction in OFV of 8 (P < 0.01) over base model. Removed in backwards stepwise elimination (Table 2 model number 11) with OFV increase of only 2 vs the combined WT+AGE model.",
+      source_name = "AGE"
     ),
     MAL = list(
-      description        = "Indicator of contracting malaria during the placebo phase of the trial (1 = subject contracted malaria and was re-treated; 0 = malaria-free subject on monthly prophylaxis throughout)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator of contracting malaria during the placebo phase of the trial (1 = subject contracted malaria and was re-treated; 0 = malaria-free subject on monthly prophylaxis throughout)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (malaria-free monthly cohort)",
-      notes              = "Tested on CL/F as a piecewise effect 'CL/F = theta_1 * MAL + theta_2 * (1 - MAL)' (Table 2 models 6 and 8). Reduction in OFV of 58 when added (model 6), but the typical CL/F values for the two groups were similar (4.0 L/h malaria-affected vs 3.1 L/h not affected; ~28 % increase). Not retained because the authors adopted 'the parsimonious approach' (Discussion).",
-      source_name        = "MAL"
+      notes = "Tested on CL/F as a piecewise effect 'CL/F = theta_1 * MAL + theta_2 * (1 - MAL)' (Table 2 models 6 and 8). Reduction in OFV of 58 when added (model 6), but the typical CL/F values for the two groups were similar (4.0 L/h malaria-affected vs 3.1 L/h not affected; ~28 % increase). Not retained because the authors adopted 'the parsimonious approach' (Discussion).",
+      source_name = "MAL"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 135L,
-    n_studies       = 1L,
-    age_range       = "21-46 years",
-    age_median      = "28.9 years (mean; median not tabulated)",
-    weight_range    = "45-90 kg",
-    weight_median   = "60.3 kg (mean; median not tabulated)",
-    sex_female_pct  = 0,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = "healthy adult male Thai soldiers, G6PD-normal, on tafenoquine malaria prophylaxis; 104 received monthly prophylaxis and 31 who contracted malaria during the placebo phase were re-treated and then maintained on weekly prophylaxis",
-    dose_range      = "400 mg tafenoquine base orally: loading 400 mg daily for 3 days, then 400 mg monthly for 5 consecutive months (n = 104, monthly cohort); for the 31 subjects who contracted malaria during the placebo period, re-treatment with the same artesunate+doxycycline regime followed by 400 mg loading daily for 3 days and then 400 mg weekly (weekly cohort)",
-    regions         = "Thailand (Thai-Cambodian border, Ubol Ratchatani province), Phase II clinical trial Apr-Oct 1998",
-    notes           = "Demographics from Edstein 2001 Table 1 (mean and range). All subjects were deployed on security operations. Pre-treatment for parasite clearance: artesunate (300 mg day 1, 120 mg days 2-3) plus 200 mg daily doxycycline for 7 days before tafenoquine. Doses were taken with food (cake and biscuits) and 80-100 mL water. Plasma tafenoquine assayed by reversed-phase HPLC with fluorescence detection (LLOQ 10 ng/mL); interday and intraday CVs <= 8.4 %, mean recovery 81 %. Blood sampling was sparse and randomised in the field (mean 12.6 +/- 7.1 volunteers per collection)."
+    species = "human",
+    n_subjects = 135L,
+    n_studies = 1L,
+    age_range = "21-46 years",
+    age_median = "28.9 years (mean; median not tabulated)",
+    weight_range = "45-90 kg",
+    weight_median = "60.3 kg (mean; median not tabulated)",
+    sex_female_pct = 0,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "healthy adult male Thai soldiers, G6PD-normal, on tafenoquine malaria prophylaxis; 104 received monthly prophylaxis and 31 who contracted malaria during the placebo phase were re-treated and then maintained on weekly prophylaxis",
+    dose_range = "400 mg tafenoquine base orally: loading 400 mg daily for 3 days, then 400 mg monthly for 5 consecutive months (n = 104, monthly cohort); for the 31 subjects who contracted malaria during the placebo period, re-treatment with the same artesunate+doxycycline regime followed by 400 mg loading daily for 3 days and then 400 mg weekly (weekly cohort)",
+    regions = "Thailand (Thai-Cambodian border, Ubol Ratchatani province), Phase II clinical trial Apr-Oct 1998",
+    notes = "Demographics from Edstein 2001 Table 1 (mean and range). All subjects were deployed on security operations. Pre-treatment for parasite clearance: artesunate (300 mg day 1, 120 mg days 2-3) plus 200 mg daily doxycycline for 7 days before tafenoquine. Doses were taken with food (cake and biscuits) and 80-100 mL water. Plasma tafenoquine assayed by reversed-phase HPLC with fluorescence detection (LLOQ 10 ng/mL); interday and intraday CVs <= 8.4 %, mean recovery 81 %. Blood sampling was sparse and randomised in the field (mean 12.6 +/- 7.1 volunteers per collection)."
   )
 
   ini({

@@ -13,58 +13,58 @@ Jonsson_2011_ethambutol_ddmore <- function() {
   )
   vignette <- "Jonsson_2011_ethambutol_ddmore"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000220"
+  ddmore_id <- "DDMODEL00000220"
   replicate_of <- "inst/modeldb/specificDrugs/Jonsson_2011_ethambutol.R"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    transit1    = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
-    depot       = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with theory-based exponents (0.75 on CL and Q, 1.0 on Vc and Vp) and a 50 kg reference weight. Mean WT 47 kg, range 29-86 kg per the DDMODEL00000220 RDF model-has-description-long abstract.",
-      source_name        = "WT"
+      notes = "Allometric scaling with theory-based exponents (0.75 on CL and Q, 1.0 on Vc and Vp) and a 50 kg reference weight. Mean WT 47 kg, range 29-86 kg per the DDMODEL00000220 RDF model-has-description-long abstract.",
+      source_name = "WT"
     ),
     HIV_POS = list(
-      description        = "HIV-1 antibody-positive comorbidity indicator (1 = HIV-positive, 0 = HIV-negative).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 antibody-positive comorbidity indicator (1 = HIV-positive, 0 = HIV-negative).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative)",
-      notes              = "12% HIV-positive in the Jonsson 2011 cohort per the RDF abstract. Multiplicative shift on bioavailability `f(transit1) <- 1 + e_hiv_pos_f * HIV_POS`; the source THETA(9) = -0.155 corresponds to a 15.5% reduction in ethambutol bioavailability for HIV-positive subjects.",
-      source_name        = "HIV"
+      notes = "12% HIV-positive in the Jonsson 2011 cohort per the RDF abstract. Multiplicative shift on bioavailability `f(transit1) <- 1 + e_hiv_pos_f * HIV_POS`; the source THETA(9) = -0.155 corresponds to a 15.5% reduction in ethambutol bioavailability for HIV-positive subjects.",
+      source_name = "HIV"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4 identify the dosing / sampling occasion within subject. Decomposed inside `model()` into binary indicators `oc1` .. `oc4` that multiplex the 4 IOV etas on log-CL.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4 identify the dosing / sampling occasion within subject. Decomposed inside `model()` into binary indicators `oc1` .. `oc4` that multiplex the 4 IOV etas on log-CL.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    n_subjects     = 189L,
-    n_studies      = 2L,
-    age_range      = "16-72 years (mean 36)",
-    age_median     = "36 years (mean reported)",
-    weight_range   = "29-86 kg (mean 47)",
-    weight_median  = "47 kg (mean reported)",
+    n_subjects = 189L,
+    n_studies = 2L,
+    age_range = "16-72 years (mean 36)",
+    age_median = "36 years (mean reported)",
+    weight_range = "29-86 kg (mean 47)",
+    weight_median = "47 kg (mean reported)",
     sex_female_pct = 46,
-    disease_state  = "Adults with pulmonary tuberculosis. 12% HIV-positive (HIV is a within-cohort comorbidity rather than the primary indication).",
-    dose_range     = "Oral ethambutol 800-1500 mg daily, multiple-dose at steady state, combined with a standard antitubercular backbone.",
-    regions        = "South Africa (two centers).",
-    notes          = "Population descriptors are reproduced from the DDMODEL00000220 RDF `model-has-description-long` abstract, which mirrors the Jonsson 2011 paper's Methods. Estimated baseline creatinine clearance 79 mL/min (range 23-150 mL/min); renal function was not retained as a PK covariate. The Jonsson 2011 publication itself is not on disk in this worktree, so the demographics here come from the RDF abstract rather than the paper's Table 1; see the validation vignette's Errata section for the full caveat list."
+    disease_state = "Adults with pulmonary tuberculosis. 12% HIV-positive (HIV is a within-cohort comorbidity rather than the primary indication).",
+    dose_range = "Oral ethambutol 800-1500 mg daily, multiple-dose at steady state, combined with a standard antitubercular backbone.",
+    regions = "South Africa (two centers).",
+    notes = "Population descriptors are reproduced from the DDMODEL00000220 RDF `model-has-description-long` abstract, which mirrors the Jonsson 2011 paper's Methods. Estimated baseline creatinine clearance 79 mL/min (range 23-150 mL/min); renal function was not retained as a PK covariate. The Jonsson 2011 publication itself is not on disk in this worktree, so the demographics here come from the RDF abstract rather than the paper's Table 1; see the validation vignette's Errata section for the full caveat list."
   )
 
   ini({

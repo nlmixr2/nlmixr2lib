@@ -39,25 +39,25 @@ Kim_2008_aripiprazole <- function() {
     sep = " "
   )
   vignette <- "Kim_2008_aripiprazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
     central_dehyari = list(analyte = "dehydroaripiprazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2D6_EM = list(
-      description        = "CYP2D6 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or poor metabolizer; both CYP2D6_PM and CYP2D6_EM = 0 indicates IM)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 extensive metabolizer carrying at least one",
         "functional CYP2D6 allele (*1 or *2) without a multiplicated allele;",
         "0 otherwise. In Kim 2008 the EM stratum is further subdivided by the",
@@ -71,14 +71,14 @@ Kim_2008_aripiprazole <- function() {
         "Group III 12/80 (15.0%), Group IV (IM) 27/80 (33.8%); the EM",
         "indicator is 1 for Groups I/II/III combined (53/80, 66.3%)."
       ),
-      source_name        = "Group I, II, or III in the paper's CYP2D6 stratification (Kim 2008 Table 2)"
+      source_name = "Group I, II, or III in the paper's CYP2D6 stratification (Kim 2008 Table 2)"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, intermediate, or ultrarapid metabolizer)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 poor metabolizer; 0 otherwise. Carried",
         "alongside CYP2D6_EM so the paired-indicator three-level encoding",
         "(EM = 1; PM = 1; both = 0 -> IM) generalises to cohorts that",
@@ -90,14 +90,14 @@ Kim_2008_aripiprazole <- function() {
         "or re-fit cohort that includes PMs, the typical CL/F for the PM",
         "stratum must be supplied externally."
       ),
-      source_name        = "Not used in the Kim 2008 cohort (no PM subjects); included for paired-indicator generality"
+      source_name = "Not used in the Kim 2008 cohort (no PM subjects); included for paired-indicator generality"
     ),
     CYP2D6_EM_1FUNC_1PD = list(
-      description        = "CYP2D6 extensive-metabolizer with 1 functional + 1 partially-deficient allele indicator (Kim 2008 Group II)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer with 1 functional + 1 partially-deficient allele indicator (Kim 2008 Group II)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-Group-II stratum). When paired with CYP2D6_EM = 1, CYP2D6_PM = 0, CYP2D6_EM_1FUNC_1NULL = 0, identifies Group II.",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 extensive metabolizer carrying one fully",
         "functional allele (*1, *2) paired with one partially-deficient",
         "allele (*10, *41); 0 otherwise. The paired *10 (100 C>T, P34S) and",
@@ -109,14 +109,14 @@ Kim_2008_aripiprazole <- function() {
         "typical-value clearance (2.66 L/h) instead of the Group I reference",
         "lcl_em_2func (3.15 L/h)."
       ),
-      source_name        = "Group II (Kim 2008 Table 2)"
+      source_name = "Group II (Kim 2008 Table 2)"
     ),
     CYP2D6_EM_1FUNC_1NULL = list(
-      description        = "CYP2D6 extensive-metabolizer with 1 functional + 1 null allele indicator (Kim 2008 Group III)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer with 1 functional + 1 null allele indicator (Kim 2008 Group III)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-Group-III stratum). When paired with CYP2D6_EM = 1, CYP2D6_PM = 0, CYP2D6_EM_1FUNC_1PD = 0, identifies Group III.",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 extensive metabolizer carrying one fully",
         "functional allele (*1, *2) paired with one null allele (*4, *5, *14,",
         "*36); 0 otherwise. The *4 (1846 G>A), *5 (gene deletion), *14",
@@ -128,16 +128,16 @@ Kim_2008_aripiprazole <- function() {
         "lcl_em_1f1null typical-value clearance (2.27 L/h) instead of the",
         "Group I reference lcl_em_2func (3.15 L/h)."
       ),
-      source_name        = "Group III (Kim 2008 Table 2)"
+      source_name = "Group III (Kim 2008 Table 2)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened by stepwise forward addition (Kim 2008 Table 4) and not",
         "retained: dOFV = -0.23 on CL/F (p = 0.632) and -0.17 on CL(m)/fm",
         "(p = 0.680). Cohort range 17-61 years (median 34, mean 35.2 +/- 9.8;",
@@ -146,9 +146,9 @@ Kim_2008_aripiprazole <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened by stepwise forward addition (Kim 2008 Table 4) on CL/F",
         "(dOFV = -1.75, p = 0.186), CL(m)/fm (dOFV = -2.84, p = 0.092), and",
         "V/F (dOFV = -1.33, p = 0.249) and not retained. Cohort range",
@@ -160,9 +160,9 @@ Kim_2008_aripiprazole <- function() {
     ),
     SEXF = list(
       description = "Biological sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened by stepwise forward addition (Kim 2008 Table 4) on CL/F",
         "(dOFV = -0.07, p = 0.791) and CL(m)/fm (dOFV = -0.29, p = 0.590)",
         "and not retained. Cohort distribution: 34 male / 46 female",
@@ -171,9 +171,9 @@ Kim_2008_aripiprazole <- function() {
     ),
     CYP3A5_EXPR = list(
       description = "CYP3A5 expresser status (1 = carries at least one functional CYP3A5*1 allele)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened by stepwise forward addition (Kim 2008 Table 4) on CL/F",
         "(dOFV = -1.69, p = 0.194) and CL(m)/fm (dOFV = -0.55, p = 0.458)",
         "and not retained. The non-significant CYP3A5 finding is",
@@ -186,29 +186,29 @@ Kim_2008_aripiprazole <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 80L,
-    n_studies      = 1L,
-    n_sites        = 15L,
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 1L,
+    n_sites = 15L,
     n_observations = 141L,
-    age_range      = "17-61 years (median 34, mean 35.2 +/- 9.8; Kim 2008 Table 1, excluding one subject of unknown age)",
-    age_median     = "34 years",
-    weight_range   = "38.0-95.0 kg (median 61.9, mean 60.8 +/- 10.9; Kim 2008 Table 1)",
-    weight_median  = "61.9 kg",
+    age_range = "17-61 years (median 34, mean 35.2 +/- 9.8; Kim 2008 Table 1, excluding one subject of unknown age)",
+    age_median = "34 years",
+    weight_range = "38.0-95.0 kg (median 61.9, mean 60.8 +/- 10.9; Kim 2008 Table 1)",
+    weight_median = "61.9 kg",
     sex_female_pct = 57.5,
     race_ethnicity = c(Korean = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Psychiatric patients with schizophrenia, schizophreniform disorder,",
       "or schizoaffective disorder enrolled in a multicentre Phase IV",
       "clinical trial in Korea (Kim 2008 Methods 'Study population')."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral aripiprazole 10-30 mg once daily at steady state (mean dose",
       "24.3 +/- 6.7 mg; Kim 2008 Table 1). Initial titration from 15 mg",
       "with up-titration over the first several days, then maintained at",
       "steady state."
     ),
-    regions        = "Republic of Korea (30 sites enrolled, 15 sites contributed sampled patients).",
+    regions = "Republic of Korea (30 sites enrolled, 15 sites contributed sampled patients).",
     cyp2d6_distribution = paste(
       "Group I 15/80 (18.8%, 2 functional alleles), Group II 26/80 (32.5%,",
       "1 functional + 1 partially deficient), Group III 12/80 (15.0%, 1",
@@ -223,7 +223,7 @@ Kim_2008_aripiprazole <- function() {
       "33 *1/*3). CYP3A5 non-expressers (Group B): 44/80 (55.0%, all",
       "*3/*3). Kim 2008 Table 2."
     ),
-    notes          = paste(
+    notes = paste(
       "Sparse-sampling pop PK design: 141 plasma samples from 80 patients",
       "(1-2 samples per patient) drawn at steady state, mostly trough and",
       "approximately 6 h post-dose (5 trough-only patients, 14",

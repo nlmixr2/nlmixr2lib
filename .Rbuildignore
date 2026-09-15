@@ -13,3 +13,5 @@
 ^\.lintr$
 ^vignettes/articles$
 ^post_merge_advance\.sh$
+^air\.toml$
+^\.git-blame-ignore-revs$

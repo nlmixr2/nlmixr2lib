@@ -28,7 +28,8 @@ Kamal_2014_oseltamivir <- function() {
     "proportional plus additive for OC (11.8% CV + 39.5 ng/mL). The",
     "model supported the US Food and Drug Administration approval of a",
     "3 mg/kg twice-daily oseltamivir dose for infants aged 2 weeks",
-    "through 11 months.")
+    "through 11 months."
+  )
   reference <- paste(
     "Kamal MA, Acosta EP, Kimberlin DW, Gibiansky L, Jester P,",
     "Niranjan V, Rath B, Clinch B, Sanchez PJ, Ampofo K, Whitley R,",
@@ -36,7 +37,8 @@ Kamal_2014_oseltamivir <- function() {
     "infection using a population pharmacokinetic approach.",
     "Clin Pharmacol Ther. 2014;96(3):380-389.",
     "doi:10.1038/clpt.2014.120. PMID 24865390.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Kamal_2014_oseltamivir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
@@ -47,28 +49,28 @@ Kamal_2014_oseltamivir <- function() {
   # and 50 ng/ml"), so analyte and specimen are confirmed against the
   # source.
   compartmentData <- list(
-    depot            = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1      = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = TRUE),
     central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling of every clearance term (CL/F, Q/F, CLM/F) as (WT/8)^0.75 and every volume term (V2/F, V3/F, VM/F) as (WT/8), per the Kamal 2014 Table 3 footnote (page 383) and the Figure 2 caption. Both exponents were FIXED mechanistically rather than estimated: Kamal 2014 Methods, 'Allometric scaling and covariate model development' -- 'Clearance and volume parameters were scaled allometrically with fixed power coefficients of 0.75 and 1, respectively, using body weight'; and 'Body weight and age were strongly correlated, and their effects on model parameters could not be estimated simultaneously. Body weight dependencies were therefore fixed mechanistically, while the remaining parameter dependencies on body size and age were explained by age effects.' The 8 kg reference is stated twice: Table 3 footnote ('(WT/8)0.75 and (WT/8)') and the Figure 2 caption ('CLM*(WT/8)0.75, where WT is infant body weight in kilograms and the median body weight is 8 kg'). Note the 8 kg reference is NOT the cohort mean, which Table 2 gives as 6.5 kg (SD 2.1, range 2.9-12.4); see the vignette Assumptions and deviations. Kamal 2014 Discussion page 384 notes 'Scaling to an adult weight (70 kg) instead of the median weight would not have altered the model because the power of the weight dependence was fixed', so the reference weight is a re-centering constant only.",
-      source_name        = "WT"
+      notes = "Allometric scaling of every clearance term (CL/F, Q/F, CLM/F) as (WT/8)^0.75 and every volume term (V2/F, V3/F, VM/F) as (WT/8), per the Kamal 2014 Table 3 footnote (page 383) and the Figure 2 caption. Both exponents were FIXED mechanistically rather than estimated: Kamal 2014 Methods, 'Allometric scaling and covariate model development' -- 'Clearance and volume parameters were scaled allometrically with fixed power coefficients of 0.75 and 1, respectively, using body weight'; and 'Body weight and age were strongly correlated, and their effects on model parameters could not be estimated simultaneously. Body weight dependencies were therefore fixed mechanistically, while the remaining parameter dependencies on body size and age were explained by age effects.' The 8 kg reference is stated twice: Table 3 footnote ('(WT/8)0.75 and (WT/8)') and the Figure 2 caption ('CLM*(WT/8)0.75, where WT is infant body weight in kilograms and the median body weight is 8 kg'). Note the 8 kg reference is NOT the cohort mean, which Table 2 gives as 6.5 kg (SD 2.1, range 2.9-12.4); see the vignette Assumptions and deviations. Kamal 2014 Discussion page 384 notes 'Scaling to an adult weight (70 kg) instead of the median weight would not have altered the model because the power of the weight dependence was fixed', so the reference weight is a re-centering constant only.",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological age since birth) at baseline.",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological age since birth) at baseline.",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear (additive-in-the-multiplier, NOT power) effect on the two OC parameters: CLM/F ~ 1 + CLM,AGE*(AGE/24 - 1) and VM/F ~ 1 + VM,AGE*(AGE/24 - 1) with VM,AGE = CLM,AGE, per the Kamal 2014 Table 3 footnote (page 383). A SINGLE estimated coefficient (theta11 = 0.33) therefore drives both OC clearance and OC volume; the equality is a structural constraint of the published model, not two coincidentally equal estimates. The source column is the infant's chronological age in WEEKS with a reference of 24 weeks; the canonical PNA carries months, so the reference is reparameterised inside model() as ref_pna = 24 * 7 / 30.4375 = 5.5195 months (the same days-to-months reparameterisation the register documents for Zhao_2018_omeprazole). Mapped to canonical PNA rather than canonical AGE because Kamal 2014 explicitly distinguishes 'age' from 'postconceptual age' in its covariate list (Methods, 'Allometric scaling and covariate model development': 'Covariates were weight, age or postconceptual age, study, and sex'), which is exactly the register's PNA (postnatal) versus PAGE (postmenstrual) distinction; and because the cohort spans only 1.9-49.9 weeks, where a years scale loses resolution. Kamal 2014 Results page 381 reports the effect as OC clearance and volume 'increasing linearly with age (~72% per year)', which reproduces from 0.33*(52.1775/24) = 0.717. Baseline-only here: the analysis used a single baseline age per subject over a 5- to 10-day treatment course. Kamal 2014 Discussion page 384 cautions that 'This dependence should not be extrapolated beyond the range of the analysis data (<1 year).'",
-      source_name        = "AGE"
+      notes = "Linear (additive-in-the-multiplier, NOT power) effect on the two OC parameters: CLM/F ~ 1 + CLM,AGE*(AGE/24 - 1) and VM/F ~ 1 + VM,AGE*(AGE/24 - 1) with VM,AGE = CLM,AGE, per the Kamal 2014 Table 3 footnote (page 383). A SINGLE estimated coefficient (theta11 = 0.33) therefore drives both OC clearance and OC volume; the equality is a structural constraint of the published model, not two coincidentally equal estimates. The source column is the infant's chronological age in WEEKS with a reference of 24 weeks; the canonical PNA carries months, so the reference is reparameterised inside model() as ref_pna = 24 * 7 / 30.4375 = 5.5195 months (the same days-to-months reparameterisation the register documents for Zhao_2018_omeprazole). Mapped to canonical PNA rather than canonical AGE because Kamal 2014 explicitly distinguishes 'age' from 'postconceptual age' in its covariate list (Methods, 'Allometric scaling and covariate model development': 'Covariates were weight, age or postconceptual age, study, and sex'), which is exactly the register's PNA (postnatal) versus PAGE (postmenstrual) distinction; and because the cohort spans only 1.9-49.9 weeks, where a years scale loses resolution. Kamal 2014 Results page 381 reports the effect as OC clearance and volume 'increasing linearly with age (~72% per year)', which reproduces from 0.33*(52.1775/24) = 0.717. Baseline-only here: the analysis used a single baseline age per subject over a 5- to 10-day treatment course. Kamal 2014 Discussion page 384 cautions that 'This dependence should not be extrapolated beyond the range of the analysis data (<1 year).'",
+      source_name = "AGE"
     )
   )
 
@@ -78,56 +80,56 @@ Kamal_2014_oseltamivir <- function() {
   # without declaring covariates that model() never references.
   covariatesDataExcluded <- list(
     PAGE = list(
-      description        = "Postmenstrual (the paper's 'postconceptual') age.",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual (the paper's 'postconceptual') age.",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as an alternative to postnatal age and not retained: Kamal 2014 Results page 381 -- 'Use of postconceptual age instead of age did not improve the model (it should be noted that infants who were premature but of postconceptual age >=36 weeks were included in both studies, but no infants were diagnosed or started on treatment until after attainment of ages beyond full term).' Table 2 reports it in WEEKS: mean 61.6 (SD 15.3), range 38.4-90.0 across all 133 subjects. No point estimate is available because the effect was rejected.",
-      source_name        = "PCA"
+      notes = "Screened as an alternative to postnatal age and not retained: Kamal 2014 Results page 381 -- 'Use of postconceptual age instead of age did not improve the model (it should be noted that infants who were premature but of postconceptual age >=36 weeks were included in both studies, but no infants were diagnosed or started on treatment until after attainment of ages beyond full term).' Table 2 reports it in WEEKS: mean 61.6 (SD 15.3), range 38.4-90.0 across all 133 subjects. No point estimate is available because the effect was rejected.",
+      source_name = "PCA"
     ),
     GA = list(
-      description        = "Gestational age at birth.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported as a baseline descriptor in Kamal 2014 Table 2 (all subjects: mean 38.1 weeks, SD 4.5, range 24.0-43.0) and used to derive postconceptual age, but not itself listed among the screened covariates in Methods, 'Allometric scaling and covariate model development'. Retained here for provenance only. Preterm neonates of postmenstrual age <36 weeks were excluded from both trials (Kamal 2014 Discussion page 385).",
-      source_name        = "GA"
+      notes = "Reported as a baseline descriptor in Kamal 2014 Table 2 (all subjects: mean 38.1 weeks, SD 4.5, range 24.0-43.0) and used to derive postconceptual age, but not itself listed among the screened covariates in Methods, 'Allometric scaling and covariate model development'. Retained here for provenance only. Preterm neonates of postmenstrual age <36 weeks were excluded from both trials (Kamal 2014 Discussion page 385).",
+      source_name = "GA"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened in the full covariate model (Kamal 2014 Methods, 'Allometric scaling and covariate model development': 'Covariates were weight, age or postconceptual age, study, and sex') and not retained. Results page 381 states the final model contained exactly 'two significant covariate effects, with OC apparent clearance and volume increasing linearly with age'. Cohort split per Table 2: 59 female (44.4%), 74 male (55.6%). No point estimate is available because the effect was rejected.",
-      source_name        = "SEX"
+      notes = "Screened in the full covariate model (Kamal 2014 Methods, 'Allometric scaling and covariate model development': 'Covariates were weight, age or postconceptual age, study, and sex') and not retained. Results page 381 states the final model contained exactly 'two significant covariate effects, with OC apparent clearance and volume increasing linearly with age'. Cohort split per Table 2: 59 female (44.4%), 74 male (55.6%). No point estimate is available because the effect was rejected.",
+      source_name = "SEX"
     ),
     STUDY_CASG114 = list(
-      description        = "Indicator for the CASG114 study arm (1 = CASG114, 0 = WP22849).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the CASG114 study arm (1 = CASG114, 0 = WP22849).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (WP22849)",
-      notes              = "Screened as a relative-bioavailability (F1) effect to test for a formulation difference between the two trials -- CASG114 used a proprietary 12 mg/mL powder-for-oral-suspension formulation and WP22849 used a 10 mg/mL suspension compounded from 75 mg capsules (Kamal 2014 Methods, first paragraph). Not retained: Results page 381 -- 'Addition of the effect of study CASG114 to F1 (relative bioavailability) showed no evidence that the differing formulations used in the two studies (CASG114 and WP22849) had any effect on the pharmacokinetics of the parent drug or its metabolite.' Cohort split per Table 2: CASG114 68 subjects (51.1%), WP22849 65 subjects (48.9%). No point estimate is available because the effect was rejected; relative bioavailability is therefore 1 for both studies and no F term appears in model().",
-      source_name        = "STUDY"
+      notes = "Screened as a relative-bioavailability (F1) effect to test for a formulation difference between the two trials -- CASG114 used a proprietary 12 mg/mL powder-for-oral-suspension formulation and WP22849 used a 10 mg/mL suspension compounded from 75 mg capsules (Kamal 2014 Methods, first paragraph). Not retained: Results page 381 -- 'Addition of the effect of study CASG114 to F1 (relative bioavailability) showed no evidence that the differing formulations used in the two studies (CASG114 and WP22849) had any effect on the pharmacokinetics of the parent drug or its metabolite.' Cohort split per Table 2: CASG114 68 subjects (51.1%), WP22849 65 subjects (48.9%). No point estimate is available because the effect was rejected; relative bioavailability is therefore 1 for both studies and no F term appears in model().",
+      source_name = "STUDY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 133L,
-    n_studies      = 2L,
-    age_range      = "1.9-49.9 weeks postnatal age (0-12 months); label indication is 2 weeks through 11 months",
-    age_mean       = "23.5 weeks (SD 14.9)",
-    weight_range   = "2.9-12.4 kg",
-    weight_mean    = "6.5 kg (SD 2.1)",
+    species = "human",
+    n_subjects = 133L,
+    n_studies = 2L,
+    age_range = "1.9-49.9 weeks postnatal age (0-12 months); label indication is 2 weeks through 11 months",
+    age_mean = "23.5 weeks (SD 14.9)",
+    weight_range = "2.9-12.4 kg",
+    weight_mean = "6.5 kg (SD 2.1)",
     sex_female_pct = 44.4,
     race_ethnicity = c(White = 78.9, Black = 10.5, Other = 9.0, Unknown = 1.5),
-    disease_state  = "Infants aged 0-12 months with influenza confirmed by rapid diagnostic testing, RT-PCR, or viral culture, with influenza-like symptoms of <=96 h duration at enrolment.",
-    dose_range     = "Oral suspension twice daily, weight-based and age-stratified: 2 mg/kg (0-1 month), 2.5 mg/kg (1-3 months), 3 mg/kg (3-12 months) in WP22849; 3 mg/kg (3-8 months) and 3 or 3.5 mg/kg (>=9 months) in CASG114. Ten doses (5 days) total, extendable by a further 5 days if clinically indicated.",
-    regions        = "United States (CASG114, 2006-2010) and Europe, 11 academic centres (WP22849, 2011 and 2012 influenza seasons).",
-    ga_range       = "24.0-43.0 weeks gestational age at birth (mean 38.1, SD 4.5); preterm neonates of postmenstrual age <36 weeks were excluded from both trials",
-    pca_range      = "38.4-90.0 weeks postconceptual age (mean 61.6, SD 15.3)",
+    disease_state = "Infants aged 0-12 months with influenza confirmed by rapid diagnostic testing, RT-PCR, or viral culture, with influenza-like symptoms of <=96 h duration at enrolment.",
+    dose_range = "Oral suspension twice daily, weight-based and age-stratified: 2 mg/kg (0-1 month), 2.5 mg/kg (1-3 months), 3 mg/kg (3-12 months) in WP22849; 3 mg/kg (3-8 months) and 3 or 3.5 mg/kg (>=9 months) in CASG114. Ten doses (5 days) total, extendable by a further 5 days if clinically indicated.",
+    regions = "United States (CASG114, 2006-2010) and Europe, 11 academic centres (WP22849, 2011 and 2012 influenza seasons).",
+    ga_range = "24.0-43.0 weeks gestational age at birth (mean 38.1, SD 4.5); preterm neonates of postmenstrual age <36 weeks were excluded from both trials",
+    pca_range = "38.4-90.0 weeks postconceptual age (mean 61.6, SD 15.3)",
     n_observations = "604 oseltamivir and 648 oseltamivir carboxylate plasma samples (Kamal 2014 Results, first paragraph).",
-    notes          = "Cohort statistics from Kamal 2014 Tables 1 and 2 (page 382). Study identifiers: CASG114 = NCT00391768 (NIAID Collaborative Antiviral Study Group, United States); WP22849 = NCT01286142 (Europe). Age-band enrolment per Table 1: <=30 days 13 subjects (9.8%), 31-90 days 33 (24.8%), 91-180 days 23 (17.3%), 181-270 days 35 (26.3%), >=271 days 29 (21.8%). NONMEM 7.2.0 was used for the population analysis (Methods, 'Population pharmacokinetic analysis'). Assay limits of quantitation were 1 ng/mL for oseltamivir and 50 ng/mL for OC; assay coefficients of variation were about 3% and 6% respectively. CAUTION on the Table 2 ethnicity rows as printed: Hispanic 34 (25.6%), Non-Hispanic/Latino 93 (69.9%), Other 12 (9.0%), Unknown 6 (4.5%) sum to 145 subjects and 109%, which exceeds the analysis N of 133; the values are recorded verbatim from the source and the discrepancy is unresolved in the publication. The race rows are internally consistent (105 + 14 + 12 + 2 = 133) and are the ones carried into race_ethnicity above. Ethnicity and race were not screened as covariates."
+    notes = "Cohort statistics from Kamal 2014 Tables 1 and 2 (page 382). Study identifiers: CASG114 = NCT00391768 (NIAID Collaborative Antiviral Study Group, United States); WP22849 = NCT01286142 (Europe). Age-band enrolment per Table 1: <=30 days 13 subjects (9.8%), 31-90 days 33 (24.8%), 91-180 days 23 (17.3%), 181-270 days 35 (26.3%), >=271 days 29 (21.8%). NONMEM 7.2.0 was used for the population analysis (Methods, 'Population pharmacokinetic analysis'). Assay limits of quantitation were 1 ng/mL for oseltamivir and 50 ng/mL for OC; assay coefficients of variation were about 3% and 6% respectively. CAUTION on the Table 2 ethnicity rows as printed: Hispanic 34 (25.6%), Non-Hispanic/Latino 93 (69.9%), Other 12 (9.0%), Unknown 6 (4.5%) sum to 145 subjects and 109%, which exceeds the analysis N of 133; the values are recorded verbatim from the source and the discrepancy is unresolved in the publication. The race rows are internally consistent (105 + 14 + 12 + 2 = 133) and are the ones carried into race_ethnicity above. Ethnicity and race were not screened as covariates."
   )
 
   ini({

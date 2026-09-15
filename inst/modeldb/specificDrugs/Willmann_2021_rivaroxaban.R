@@ -28,9 +28,9 @@ Willmann_2021_rivaroxaban <- function() {
     "doi:10.1002/psp4.12688"
   )
   vignette <- "Willmann_2021_rivaroxaban"
-  units    <- list(
-    time          = "h",
-    dosing        = "mg",
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -38,18 +38,18 @@ Willmann_2021_rivaroxaban <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying (paper Methods 'Covariate analysis' p. 1197 states",
         "bodyweight was treated as time-varying in children). Used for",
         "estimated allometric scaling centred on the 82.48 kg reference (the",
@@ -61,14 +61,14 @@ Willmann_2021_rivaroxaban <- function() {
         "shared across Vc and Vp (Willmann 2021 Table 2 footnote and",
         "control-stream THETA(5))."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     ),
     FORM_UNDILUTED_SUSP = list(
-      description        = "Undiluted ready-to-use oral suspension formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Undiluted ready-to-use oral suspension formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet, granules for oral suspension, or diluted ready-to-use oral suspension; share the same ka)",
-      notes              = paste(
+      notes = paste(
         "1 = subject received the ready-to-use oral suspension administered",
         "undiluted (directly into the mouth); 0 = subject received any of the",
         "three rapidly-absorbed formulations (tablet, granules for oral",
@@ -88,14 +88,14 @@ Willmann_2021_rivaroxaban <- function() {
         "1/h)'. PROPOSED NEW CANONICAL pending PR review; sibling of the",
         "FORM_* drug-product / preparation-state family."
       ),
-      source_name        = "FORM,DILU (composite: FD = 2 if FORM=2 and DILU=1)"
+      source_name = "FORM,DILU (composite: FD = 2 if FORM=2 and DILU=1)"
     ),
     DOSE_RIV_MGKG = list(
-      description        = "Per-administration rivaroxaban dose per kg body weight",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-administration rivaroxaban dose per kg body weight",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record rivaroxaban dose given per administration in mg per",
         "kg of body weight (mg/kg). Used in the dose-dependent relative oral",
         "bioavailability formula carried over from the integrated adult popPK",
@@ -115,16 +115,16 @@ Willmann_2021_rivaroxaban <- function() {
         "CANONICAL pending PR review; sibling of DOSE_RTV_MGKG (Zhang 2012)",
         "and DOSE_PHT_MGKGD (Yukawa 1990)."
       ),
-      source_name        = "DW (= DOSE/WGHT in supplement S2 $PK block)"
+      source_name = "DW (= DOSE/WGHT in supplement S2 $PK block)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested as an additional covariate on CL and on F1 in the forward",
         "inclusion / backward deletion procedure (Willmann 2021 p. 1197).",
         "No effect of age on CL or F1 could be identified by the model",
@@ -135,9 +135,9 @@ Willmann_2021_rivaroxaban <- function() {
     ),
     EGFR_SCHWARTZ = list(
       description = "Estimated glomerular filtration rate by the Schwartz formula (height and serum creatinine)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Tested as a covariate on CL (Willmann 2021 p. 1197 Methods 'Renal",
         "function'). Range in the pooled pediatric population 43.8-456",
         "mL/min/1.73 m^2 (median 150). 'None of the four methods to test",
@@ -148,36 +148,36 @@ Willmann_2021_rivaroxaban <- function() {
     ),
     EGFR_RHODIN = list(
       description = "Estimated glomerular filtration rate by the Rhodin formula (body size + postmenstrual age, creatinine-independent)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Tested as a covariate on CL (Willmann 2021 p. 1197 Methods 'Renal",
         "function'). Not retained in the final model."
       )
     ),
     SCR_ULN_RATIO = list(
       description = "Ratio of individual serum creatinine to the upper limit of normal",
-      units       = "(unitless ratio)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(unitless ratio)",
+      type = "continuous",
+      notes = paste(
         "Tested as a covariate on CL (Willmann 2021 p. 1197 Methods 'Renal",
         "function'). Not retained in the final model."
       )
     ),
     SCR_CAT = list(
       description = "Categorical score for serum creatinine (above vs at or below the upper limit of normal)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested as a covariate on CL (Willmann 2021 p. 1197 Methods 'Renal",
         "function'). Not retained in the final model."
       )
     ),
     CONMED_CYP3A4_INHIB_WEAK = list(
       description = "Weak CYP3A4 inhibitor co-medication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested exploratively on CL and F1 (only 41 subjects / 7.8% of the",
         "dataset; Willmann 2021 Table 3). No significant effect identified",
         "(Willmann 2021 Results p. 1199). Not retained."
@@ -185,9 +185,9 @@ Willmann_2021_rivaroxaban <- function() {
     ),
     CONMED_CYP3A4_INHIB_MOD = list(
       description = "Moderate CYP3A4 inhibitor co-medication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested exploratively on CL and F1 (only 18 subjects / 3.4%;",
         "Willmann 2021 Table 3). No significant effect identified. Not",
         "retained."
@@ -195,18 +195,18 @@ Willmann_2021_rivaroxaban <- function() {
     ),
     CONMED_CYP3A4_IND = list(
       description = "CYP3A4 inducer co-medication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested exploratively on CL and F1 (16 subjects / 3.1%; Willmann",
         "2021 Table 3). No significant effect identified. Not retained."
       )
     ),
     FONTAN = list(
       description = "Post-Fontan-procedure patient indicator (UNIVERSE study) vs venous thromboembolism patient (EINSTEIN-Jr)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested on CL (Willmann 2021 p. 1199). Showed a small but",
         "statistically significant drop in OFV in univariate forward",
         "inclusion, but not significant in backward elimination under the",
@@ -216,16 +216,16 @@ Willmann_2021_rivaroxaban <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 524L,
-    n_observations  = 1988L,
-    n_studies       = 7L,
-    age_range       = "birth to <18 years (median 9.0)",
-    age_median      = "9.0 years",
-    weight_range    = "2.7-194 kg (median 29.5)",
-    weight_median   = "29.5 kg",
-    sex_female_pct  = (109 + 47 + 53 + 30 + 8) / 524 * 100,
-    race_ethnicity  = paste(
+    species = "human",
+    n_subjects = 524L,
+    n_observations = 1988L,
+    n_studies = 7L,
+    age_range = "birth to <18 years (median 9.0)",
+    age_median = "9.0 years",
+    weight_range = "2.7-194 kg (median 29.5)",
+    weight_median = "29.5 kg",
+    sex_female_pct = (109 + 47 + 53 + 30 + 8) / 524 * 100,
+    race_ethnicity = paste(
       "Multi-regional pooled cohort spanning EINSTEIN-Jr (phase I, I-II, II,",
       "III) and UNIVERSE phase III part A. Race / ethnicity subgroups",
       "explored graphically (Japanese, Chinese, Asian outside Japan and",
@@ -233,12 +233,12 @@ Willmann_2021_rivaroxaban <- function() {
       "race/ethnicity subgroup at exposure extremes was observed (Willmann",
       "2021 Results p. 1199 and Supplementary Figures S7-S9)."
     ),
-    disease_state   = paste(
+    disease_state = paste(
       "Acute venous thromboembolism (EINSTEIN-Jr) and post-Fontan",
       "thromboprophylaxis (UNIVERSE part A). 512/524 (97.7%) participated",
       "in EINSTEIN-Jr; 12/524 (2.3%) in UNIVERSE."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Bodyweight-adjusted, 0.4-20 mg per dose; absolute single or daily",
       "doses 0.4-20 mg. Bodyweight-normalised single doses ~0.1-0.5 mg/kg",
       "(Willmann 2021 Results p. 1199). Once-daily, twice-daily, or",
@@ -246,13 +246,13 @@ Willmann_2021_rivaroxaban <- function() {
       "for body weight >=30 kg, twice-daily for 12-<30 kg, thrice-daily for",
       "<12 kg (Willmann 2021 Discussion p. 1201)."
     ),
-    regions         = "Multi-regional (EINSTEIN-Jr phase III recruited globally; supplementary subgroup analyses include Japanese, Chinese, and other Asian subjects).",
-    age_group_n     = "12-<18 years: 193; 6-<12 years: 135; 2-<6 years: 110; 6 mo-<2 years: 63; birth-<6 mo: 23 (supplement Table S1)",
+    regions = "Multi-regional (EINSTEIN-Jr phase III recruited globally; supplementary subgroup analyses include Japanese, Chinese, and other Asian subjects).",
+    age_group_n = "12-<18 years: 193; 6-<12 years: 135; 2-<6 years: 110; 6 mo-<2 years: 63; birth-<6 mo: 23 (supplement Table S1)",
     n_subjects_under_2_years = 86L,
-    formulations    = "Tablet, granules for oral suspension, ready-to-use oral suspension (administered diluted or undiluted). Tablets and granules for oral suspension were the phase III formulations.",
-    bloq_handling   = "Not reported in the main paper; standard EINSTEIN-Jr / UNIVERSE PK assay LLOQ procedures apply per the integrated dataset.",
-    sampling        = "Sparse PK sampling per study phase; up to 5 samples per subject in older adolescents and 2 samples in <2 yr olds during the single-dose phase I; sparse 1-2 samples per child per study day in the multiple-dose phases (supplement Table S1).",
-    notes           = paste(
+    formulations = "Tablet, granules for oral suspension, ready-to-use oral suspension (administered diluted or undiluted). Tablets and granules for oral suspension were the phase III formulations.",
+    bloq_handling = "Not reported in the main paper; standard EINSTEIN-Jr / UNIVERSE PK assay LLOQ procedures apply per the integrated dataset.",
+    sampling = "Sparse PK sampling per study phase; up to 5 samples per subject in older adolescents and 2 samples in <2 yr olds during the single-dose phase I; sparse 1-2 samples per child per study day in the multiple-dose phases (supplement Table S1).",
+    notes = paste(
       "Sex split derived from supplement Table S1 per-age-group counts:",
       "247 female / 277 male (47.1% female). Demographics summarised from",
       "Willmann 2021 Table 1 and supplement Table S1."

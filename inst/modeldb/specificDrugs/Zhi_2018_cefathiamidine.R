@@ -15,34 +15,34 @@ Zhi_2018_cefathiamidine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefathiamidine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefathiamidine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefathiamidine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight (day of study)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight (day of study)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q (exponent 0.75) and V1, V2 (exponent 1) with reference weight 17.75 kg (Zhi 2018 Table 2 formula and Note: median current weight in the cohort was 17.78 kg, rounded to 17.75 kg in the model).",
-      source_name        = "CW"
+      notes = "Allometric scaling on CL, Q (exponent 0.75) and V1, V2 (exponent 1) with reference weight 17.75 kg (Zhi 2018 Table 2 formula and Note: median current weight in the cohort was 17.78 kg, rounded to 17.75 kg in the model).",
+      source_name = "CW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 1L,
-    age_range      = "2.0-11.8 years",
-    age_median     = "4.9 years",
-    weight_range   = "8.0-36.0 kg",
-    weight_median  = "17.8 kg",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 1L,
+    age_range = "2.0-11.8 years",
+    age_median = "4.9 years",
+    weight_range = "8.0-36.0 kg",
+    weight_median = "17.8 kg",
     sex_female_pct = 31.5,
-    disease_state  = "Children with hematologic disease (leukemia n=23, immune thrombocytopenia n=10, anemia n=9, infectious mononucleosis syndrome n=2, neuroblastoma n=2, hemophagocytic syndrome n=2, others n=6) with confirmed or suspected bacterial infection; serum creatinine 10-47 micromol/L; Cockcroft-Gault-style creatinine clearance 130-462 mL/min.",
-    dose_range     = "Cefathiamidine 100 mg/kg/day IV given as q12h infusion over 3-5 minutes (median 950 mg/dose, range 500-1800 mg/dose); 28-112 mg/kg/dose (median 50)",
-    regions        = "Single-centre, Children's Hospital of Hebei Province, Shijiazhuang, China; enrolment April 2015 - March 2016",
-    notes          = "Baseline demographics from Zhi 2018 Table 1 (54 patients, 120 samples). Mean age 5.2 (SD 2.4) years; mean current weight 18.4 (SD 6.5) kg. Concentrations were quantified by UPLC-MS/MS with LLOQ 30 ng/mL; observed range in the dataset was 65-245000 ng/mL (= 0.065-245 mg/L). All subjects received the same dosing regimen (100 mg/kg/day q12h)."
+    disease_state = "Children with hematologic disease (leukemia n=23, immune thrombocytopenia n=10, anemia n=9, infectious mononucleosis syndrome n=2, neuroblastoma n=2, hemophagocytic syndrome n=2, others n=6) with confirmed or suspected bacterial infection; serum creatinine 10-47 micromol/L; Cockcroft-Gault-style creatinine clearance 130-462 mL/min.",
+    dose_range = "Cefathiamidine 100 mg/kg/day IV given as q12h infusion over 3-5 minutes (median 950 mg/dose, range 500-1800 mg/dose); 28-112 mg/kg/dose (median 50)",
+    regions = "Single-centre, Children's Hospital of Hebei Province, Shijiazhuang, China; enrolment April 2015 - March 2016",
+    notes = "Baseline demographics from Zhi 2018 Table 1 (54 patients, 120 samples). Mean age 5.2 (SD 2.4) years; mean current weight 18.4 (SD 6.5) kg. Concentrations were quantified by UPLC-MS/MS with LLOQ 30 ng/mL; observed range in the dataset was 65-245000 ng/mL (= 0.065-245 mg/L). All subjects received the same dosing regimen (100 mg/kg/day q12h)."
   )
 
   ini({

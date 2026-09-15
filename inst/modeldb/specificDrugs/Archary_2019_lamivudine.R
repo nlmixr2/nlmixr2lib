@@ -8,59 +8,59 @@ Archary_2019_lamivudine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; used for allometric scaling on CL/F (exponent 0.75) and Vc/F (exponent 1) with reference weight 7 kg (population median).",
-      source_name        = "WT"
+      notes = "Time-varying; used for allometric scaling on CL/F (exponent 0.75) and Vc/F (exponent 1) with reference weight 7 kg (population median).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (chronological time since birth)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (chronological time since birth)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; drives the CL/F maturation function (sigmoid Emax with Hill coefficient 1.47 and TM50 = 0.25 y).",
-      source_name        = "AGE"
+      notes = "Time-varying; drives the CL/F maturation function (sigmoid Emax with Hill coefficient 1.47 and TM50 = 0.25 y).",
+      source_name = "AGE"
     ),
     TRIG = list(
-      description        = "Serum triglyceride concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum triglyceride concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying or baseline (paper does not separate). Linear-deviation effect on Vc/F centred at 5.3 mmol/L (paper-reported cohort average per the equation; cohort median in Table 1 is 2.2-2.3 mmol/L -- see Errata).",
-      source_name        = "TRIG"
+      notes = "Time-varying or baseline (paper does not separate). Linear-deviation effect on Vc/F centred at 5.3 mmol/L (paper-reported cohort average per the equation; cohort median in Table 1 is 2.2-2.3 mmol/L -- see Errata).",
+      source_name = "TRIG"
     ),
     DAY14 = list(
-      description        = "Day-14-post-ART landmark indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Day-14-post-ART landmark indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (day 1 / pre-rehabilitation)",
-      notes              = "Within-subject step indicator: 0 on day 1 of antiretroviral treatment (acute malnutrition baseline), 1 on day 14 (post-nutritional-rehabilitation steady state). Gates the day-1 (0.30) vs day-14 (0.34) typical ka step reported in Table 2 of the source.",
-      source_name        = "DAY14"
+      notes = "Within-subject step indicator: 0 on day 1 of antiretroviral treatment (acute malnutrition baseline), 1 on day 14 (post-nutritional-rehabilitation steady state). Gates the day-1 (0.30) vs day-14 (0.34) typical ka step reported in Table 2 of the source.",
+      source_name = "DAY14"
     )
   )
 
   population <- list(
-    n_subjects     = 75,
-    n_studies      = 1,
-    age_range      = "0.1-10.8 years (median 1.4)",
-    age_median     = "1.4 years",
-    weight_range   = "1.88-19.6 kg",
-    weight_median  = "7 kg",
+    n_subjects = 75,
+    n_studies = 1,
+    age_range = "0.1-10.8 years (median 1.4)",
+    age_median = "1.4 years",
+    weight_range = "1.88-19.6 kg",
+    weight_median = "7 kg",
     sex_female_pct = 41,
     race_ethnicity = "South African paediatric cohort (race not stratified in source).",
-    disease_state  = "Severely malnourished HIV-infected children (weight-for-length Z-scores < -3, mid-upper arm circumference < 115 mm, or peripheral oedema) initiating antiretroviral treatment.",
-    dose_range     = "WHO weight-band paediatric oral lamivudine + abacavir + LPV/r dosing; liquid formulation for children < 14 kg, solid formulation > 14 kg (only 2 patients received solid formulations).",
-    regions        = "South Africa (King Edward VIII Hospital, Durban).",
+    disease_state = "Severely malnourished HIV-infected children (weight-for-length Z-scores < -3, mid-upper arm circumference < 115 mm, or peripheral oedema) initiating antiretroviral treatment.",
+    dose_range = "WHO weight-band paediatric oral lamivudine + abacavir + LPV/r dosing; liquid formulation for children < 14 kg, solid formulation > 14 kg (only 2 patients received solid formulations).",
+    regions = "South Africa (King Edward VIII Hospital, Durban).",
     n_observations = 627,
-    notes          = "MATCH (Malnutrition and ART Timing in Children with HIV) trial, PACTR201609001751384; 75 patients with day-1 abacavir + lamivudine concentrations, 69 of whom had day-14 samples; 627 lamivudine concentrations sampled 0.8-12.4 h post-dose. Demographics summarised in Table 1 of the source."
+    notes = "MATCH (Malnutrition and ART Timing in Children with HIV) trial, PACTR201609001751384; 75 patients with day-1 abacavir + lamivudine concentrations, 69 of whom had day-14 samples; 627 lamivudine concentrations sampled 0.8-12.4 h post-dose. Demographics summarised in Table 1 of the source."
   )
 
   ini({

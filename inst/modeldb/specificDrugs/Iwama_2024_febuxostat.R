@@ -13,18 +13,18 @@ Iwama_2024_febuxostat <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL/F centered on the pooled-analysis median of",
         "60.6 kg: (WT / 60.6)^0.584 per the Section 3.3 CL/F equation.",
         "The 60.6 kg centering value is stated in Results Section 3.3",
@@ -38,14 +38,14 @@ Iwama_2024_febuxostat <- function() {
         "failed to detect it because their weight distributions were",
         "clustered above 60-70 kg."
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     CRCL = list(
-      description        = "BSA-normalized estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "BSA-normalized estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL/F centered on the pooled-analysis median of",
         "98.6 mL/min/1.73 m^2: (CRCL / 98.6)^0.324 per the Section 3.3 CL/F",
         "equation; the centering value is restated in Section 3.5 and in the",
@@ -60,17 +60,17 @@ Iwama_2024_febuxostat <- function() {
         "cohort range 20.9-145.3 mL/min/1.73 m^2, spanning normal through",
         "severe renal dysfunction."
       ),
-      source_name        = "EGFR"
+      source_name = "EGFR"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (1 = fed, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (1 = fed, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (fasted), which the paper fixes as the bioavailability anchor:",
         "'F (FASTED) = 1' in Section 3.3"
       ),
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Methods Section 2.1 gives the",
         "operational definition: 'fed: orally administered within 0.5 h",
         "after a meal; fasted: orally administered under fasting conditions",
@@ -86,16 +86,16 @@ Iwama_2024_febuxostat <- function() {
         "was NOT retained on ka; the Discussion flags that omission as a",
         "likely reason for the very poor precision of the ka IIV."
       ),
-      source_name        = "FED"
+      source_name = "FED"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Methods Section 2.2.2) but not",
         "retained: 'Age was not included as a significant covariate'",
         "(Section 3.3). This is the load-bearing negative result of the",
@@ -105,9 +105,9 @@ Iwama_2024_febuxostat <- function() {
     ),
     CLCR_RAW = list(
       description = "Creatinine clearance by the Cockcroft-Gault formula (not BSA-normalized)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate on CL/F and rejected in favour of",
         "eGFR: 'the impact of renal function on CL/F was represented by",
         "incorporating eGFR, which showed a greater reduction in the OFV",
@@ -119,9 +119,9 @@ Iwama_2024_febuxostat <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Not considered as a candidate covariate because the cohort was",
         "overwhelmingly male: 'there were only 9 females (6 children and 3",
         "adults) compared to 133 males' (Discussion). Post hoc CL/F adjusted",
@@ -131,28 +131,28 @@ Iwama_2024_febuxostat <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 142,
-    n_studies      = 6,
-    age_range      = "8-72 years (pediatric 8-18; adult 20-72)",
-    age_median     = "13.0 years (pediatric); 24.0 years (adult)",
-    weight_range   = "26.7-94.3 kg",
-    weight_median  = "46.70 kg (pediatric); 61.30 kg (adult); 60.6 kg (pooled analysis median used for covariate centering)",
+    species = "human",
+    n_subjects = 142,
+    n_studies = 6,
+    age_range = "8-72 years (pediatric 8-18; adult 20-72)",
+    age_median = "13.0 years (pediatric); 24.0 years (adult)",
+    weight_range = "26.7-94.3 kg",
+    weight_median = "46.70 kg (pediatric); 61.30 kg (adult); 60.6 kg (pooled analysis median used for covariate centering)",
     sex_female_pct = 6.3,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "29 pediatric patients with hyperuricemia including gout;",
       "113 adults who were healthy or had renal dysfunction.",
       "Renal function by eGFR category across the whole analysis set:",
       "87 normal, 34 mild, 19 moderate, 2 severe."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Pediatric: 5, 10, 20 or 30 mg once daily orally for body weight",
       "< 40 kg and 10, 20, 40 or 60 mg once daily for body weight >= 40 kg,",
       "for 52 weeks with up-titration as needed.",
       "Adult: 10-160 mg as single or repeated oral doses."
     ),
-    regions        = "Japan",
+    regions = "Japan",
     n_observations = 2611,
     renal_function = paste(
       "Deliberately enriched for renal impairment. Pediatric eGFR median",
@@ -160,7 +160,7 @@ Iwama_2024_febuxostat <- function() {
       "(range 20.9-143.6). The proportion with reduced renal function was",
       "higher among the pediatric patients than the adults (Section 3.1)."
     ),
-    notes          = paste(
+    notes = paste(
       "Pooled analysis of six Japanese studies: two Phase 2 pediatric",
       "studies (Study 1 evaluation phase, Study 2 continuation phase),",
       "three Phase 1 studies in healthy adult males (Studies 3, 4, 5), and",

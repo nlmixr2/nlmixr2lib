@@ -13,77 +13,77 @@ Solms_2020_BAY94_9027 <- function() {
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body weight (canonical column LBM; source paper uses LBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight (canonical column LBM; source paper uses LBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference LBW = 49.1 kg, per the Solms 2020 Table 2 footnotes b and c (CL = 1.09 * (LBW/49.1)^0.707 * (VWF/110)^-0.604; Vc = 26.2 * (LBW/49.1)^0.887). Solms 2020 Table 1 reports the cohort median LBW as 49.4 kg (range 10-75 kg); the 49.1 kg used in the centering footnote is the value the authors used in the fitted model and is preserved here exactly. Body-composition formula is not specified in the paper; in haemophilia popPK literature LBW is most commonly computed via the Hume (1966) or James (1976) formula. Stored under canonical LBM (lean body mass); LBW and LBM refer to the same quantity (Garmann_2017_BAY81_8973 follows the same convention). Body weight, height, BMI, and age were screened during covariate analysis but only LBW was retained in the final model (LBW gave the largest OFV decrease, -509.92, of all size-related covariates).",
-      source_name        = "LBW"
+      notes = "Power scaling on CL and Vc with reference LBW = 49.1 kg, per the Solms 2020 Table 2 footnotes b and c (CL = 1.09 * (LBW/49.1)^0.707 * (VWF/110)^-0.604; Vc = 26.2 * (LBW/49.1)^0.887). Solms 2020 Table 1 reports the cohort median LBW as 49.4 kg (range 10-75 kg); the 49.1 kg used in the centering footnote is the value the authors used in the fitted model and is preserved here exactly. Body-composition formula is not specified in the paper; in haemophilia popPK literature LBW is most commonly computed via the Hume (1966) or James (1976) formula. Stored under canonical LBM (lean body mass); LBW and LBM refer to the same quantity (Garmann_2017_BAY81_8973 follows the same convention). Body weight, height, BMI, and age were screened during covariate analysis but only LBW was retained in the final model (LBW gave the largest OFV decrease, -509.92, of all size-related covariates).",
+      source_name = "LBW"
     ),
     VWF = list(
-      description        = "Plasma von Willebrand factor (VWF) antigen concentration; FVIII-protective carrier protein.",
-      units              = "IU/dL",
-      type               = "continuous",
+      description = "Plasma von Willebrand factor (VWF) antigen concentration; FVIII-protective carrier protein.",
+      units = "IU/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL only with reference 110 IU/dL (Solms 2020 Table 2 footnote b: CL = 1.09 * (LBW/49.1)^0.707 * (VWF/110)^-0.604). The centering value 110 IU/dL matches the cohort median (Solms 2020 Table 1, n=145; range 47-366 IU/dL). The exponent is negative: higher VWF protects FVIII from clearance. VWF was measured at baseline in the phase I and PROTECT VIII studies; no VWF measurements were available in PROTECT VIII Kids, and the CL-VWF relationship is informed by adult and adolescent data only. The authors note (Discussion) that the adult/adolescent VWF range (47-366 IU/dL) covers the paediatric range typically observed (Yee et al. ref 17), so the relationship is expected to extend across the modelled age range. The paper does not characterise within-subject VWF time course; simulations should treat VWF as a time-fixed baseline covariate. VWF assay was antigen-based (VWF:Ag); record per-model in covariateData[[VWF]]$notes when reusing this covariate for other FVIII products."
+      notes = "Power scaling on CL only with reference 110 IU/dL (Solms 2020 Table 2 footnote b: CL = 1.09 * (LBW/49.1)^0.707 * (VWF/110)^-0.604). The centering value 110 IU/dL matches the cohort median (Solms 2020 Table 1, n=145; range 47-366 IU/dL). The exponent is negative: higher VWF protects FVIII from clearance. VWF was measured at baseline in the phase I and PROTECT VIII studies; no VWF measurements were available in PROTECT VIII Kids, and the CL-VWF relationship is informed by adult and adolescent data only. The authors note (Discussion) that the adult/adolescent VWF range (47-366 IU/dL) covers the paediatric range typically observed (Yee et al. ref 17), so the relationship is expected to extend across the modelled age range. The paper does not characterise within-subject VWF time course; simulations should treat VWF as a time-fixed baseline covariate. VWF assay was antigen-based (VWF:Ag); record per-model in covariateData[[VWF]]$notes when reusing this covariate for other FVIII products."
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened for effects on CL and Vc in the univariate analysis; LBW had the largest OFV decrease among the size-related covariates (BW, height, BMI, LBW) and was retained in preference. After LBW was added to CL and Vc, no visible residual effect of weight remained on either parameter (Solms 2020 Results, base-model section)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened for effects on CL and Vc in the univariate analysis; LBW had the largest OFV decrease among the size-related covariates (BW, height, BMI, LBW) and was retained in preference. After LBW was added to CL and Vc, no visible residual effect of weight remained on either parameter (Solms 2020 Results, base-model section)."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a size-related covariate; LBW preferred. No residual effect of height after LBW inclusion (Solms 2020 Results, base-model section)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a size-related covariate; LBW preferred. No residual effect of height after LBW inclusion (Solms 2020 Results, base-model section)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a size-related covariate; LBW preferred. No residual effect of BMI after LBW inclusion (Solms 2020 Results, base-model section)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a size-related covariate; LBW preferred. No residual effect of BMI after LBW inclusion (Solms 2020 Results, base-model section)."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Univariate analysis identified age as eligible for the multivariate step alongside LBW and VWF, but in the stepwise deletion process the best covariate model retained only LBW on CL and Vc and VWF on CL. After LBW and VWF were added, no visible effect of age remained on either parameter (Solms 2020 Results, covariate-analysis section)."
+      units = "years",
+      type = "continuous",
+      notes = "Univariate analysis identified age as eligible for the multivariate step alongside LBW and VWF, but in the stepwise deletion process the best covariate model retained only LBW on CL and Vc and VWF on CL. After LBW and VWF were added, no visible effect of age remained on either parameter (Solms 2020 Results, covariate-analysis section)."
     ),
     RACE = list(
       description = "Race",
-      units       = NA_character_,
-      type        = "categorical",
-      notes       = "Screened (white 144/198; Asian 35/198; black 9/198; Native American 1/198; not reported 9/198). 'There was no significant relationship between CL or Vc and race or geographic region (Asia vs. other)' (Solms 2020 Results, covariate-analysis section)."
+      units = NA_character_,
+      type = "categorical",
+      notes = "Screened (white 144/198; Asian 35/198; black 9/198; Native American 1/198; not reported 9/198). 'There was no significant relationship between CL or Vc and race or geographic region (Asia vs. other)' (Solms 2020 Results, covariate-analysis section)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 198L,
-    n_studies      = 3L,
-    age_range      = "2-62 years (final-model n = 198 including 53 patients aged < 12 years; phase I 21-58 years, PROTECT VIII 12-62 years, PROTECT VIII Kids 2-11 years)",
-    age_median     = "28.5 years (mean 28.2, SD 17.6)",
-    weight_range   = "12-126 kg",
-    weight_median  = "67.0 kg (mean 62.5, SD 27.3)",
-    height_range   = "87-192 cm",
-    height_median  = "171 cm (mean 160, SD 26.8)",
-    bmi_range      = "13-42 kg/m^2",
-    bmi_median     = "22.0 kg/m^2 (mean 22.7, SD 5.6)",
-    lbw_range      = "10-75 kg",
-    lbw_median     = "49.4 kg (mean 44.5, SD 16.1); the model-centering footnote uses 49.1 kg (Solms 2020 Table 2)",
-    vwf_range      = "47-366 IU/dL (n = 145; not measured in 53 patients from PROTECT VIII Kids)",
-    vwf_median     = "110 IU/dL (mean 122, SD 55.3); used as the VWF covariate-centering reference",
+    species = "human",
+    n_subjects = 198L,
+    n_studies = 3L,
+    age_range = "2-62 years (final-model n = 198 including 53 patients aged < 12 years; phase I 21-58 years, PROTECT VIII 12-62 years, PROTECT VIII Kids 2-11 years)",
+    age_median = "28.5 years (mean 28.2, SD 17.6)",
+    weight_range = "12-126 kg",
+    weight_median = "67.0 kg (mean 62.5, SD 27.3)",
+    height_range = "87-192 cm",
+    height_median = "171 cm (mean 160, SD 26.8)",
+    bmi_range = "13-42 kg/m^2",
+    bmi_median = "22.0 kg/m^2 (mean 22.7, SD 5.6)",
+    lbw_range = "10-75 kg",
+    lbw_median = "49.4 kg (mean 44.5, SD 16.1); the model-centering footnote uses 49.1 kg (Solms 2020 Table 2)",
+    vwf_range = "47-366 IU/dL (n = 145; not measured in 53 patients from PROTECT VIII Kids)",
+    vwf_median = "110 IU/dL (mean 122, SD 55.3); used as the VWF covariate-centering reference",
     sex_female_pct = 0,
     race_ethnicity = c(White = 144L, Asian = 35L, Black = 9L, NativeAmerican = 1L, NotReported = 9L),
-    disease_state  = "Severe haemophilia A (FVIII activity < 1 IU/dL) in previously treated patients with no history or current evidence of FVIII inhibitors. >= 150 prior FVIII exposure days for phase I and PROTECT VIII; > 50 prior exposure days for PROTECT VIII Kids.",
-    dose_range     = "Intravenous BAY 94-9027 across phase I single-dose pharmacokinetic profiling, PROTECT VIII prophylaxis (twice weekly, every-5-day, weekly schedules with 25-60 IU/kg), and PROTECT VIII Kids (paediatric dosing). Simulation analyses in the paper used single 25-60 IU/kg doses and steady-state prophylaxis with 25-60 IU/kg.",
-    regions        = "Multinational (phase I, PROTECT VIII, PROTECT VIII Kids)",
-    notes          = "Final model dataset: 2196 chromogenic-assay observations (455 / 21% BLQ) from 198 male patients across the three BAY 94-9027 trials. Eight patients (seven with anti-PEG antibodies and/or perceived loss of efficacy; one with drug hypersensitivity) were excluded from the final model. A separate fit to 1648 one-stage assay observations from 146 phase I and PROTECT VIII subjects gave parameter estimates similar but not identical to the chromogenic fit (Solms 2020 Table 2, one-stage assay column); only the chromogenic fit is encoded here. Haemophilia A is X-linked recessive and the BAY 94-9027 trials enrolled males; sex_female_pct = 0 reflects this. BAY 94-9027 is approved for prophylaxis and on-demand treatment in patients aged >= 12 years, so inferences from this model are limited to the >= 12-year subpopulation even though the model was fit using all 2-62 year data."
+    disease_state = "Severe haemophilia A (FVIII activity < 1 IU/dL) in previously treated patients with no history or current evidence of FVIII inhibitors. >= 150 prior FVIII exposure days for phase I and PROTECT VIII; > 50 prior exposure days for PROTECT VIII Kids.",
+    dose_range = "Intravenous BAY 94-9027 across phase I single-dose pharmacokinetic profiling, PROTECT VIII prophylaxis (twice weekly, every-5-day, weekly schedules with 25-60 IU/kg), and PROTECT VIII Kids (paediatric dosing). Simulation analyses in the paper used single 25-60 IU/kg doses and steady-state prophylaxis with 25-60 IU/kg.",
+    regions = "Multinational (phase I, PROTECT VIII, PROTECT VIII Kids)",
+    notes = "Final model dataset: 2196 chromogenic-assay observations (455 / 21% BLQ) from 198 male patients across the three BAY 94-9027 trials. Eight patients (seven with anti-PEG antibodies and/or perceived loss of efficacy; one with drug hypersensitivity) were excluded from the final model. A separate fit to 1648 one-stage assay observations from 146 phase I and PROTECT VIII subjects gave parameter estimates similar but not identical to the chromogenic fit (Solms 2020 Table 2, one-stage assay column); only the chromogenic fit is encoded here. Haemophilia A is X-linked recessive and the BAY 94-9027 trials enrolled males; sex_female_pct = 0 reflects this. BAY 94-9027 is approved for prophylaxis and on-demand treatment in patients aged >= 12 years, so inferences from this model are limited to the >= 12-year subpopulation even though the model was fit using all 2-62 year data."
   )
 
   ini({

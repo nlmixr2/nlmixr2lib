@@ -28,8 +28,8 @@ Kakara_2014_pitavastatin <- function() {
   )
   vignette <- "Kakara_2014_statins_LDLC"
   units <- list(
-    time          = "day",
-    dosing        = "mg/day (DOSE covariate)",
+    time = "day",
+    dosing = "mg/day (DOSE covariate)",
     concentration = "mg/dL (LDL-C)"
   )
 
@@ -43,11 +43,11 @@ Kakara_2014_pitavastatin <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age in years (time-fixed; baseline value).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years (time-fixed; baseline value).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline LDL-C is scaled by (AGE/62)^(-0.240), with the reference",
         "age 62 years the median of the study cohort (Kakara 2014 Table 1).",
         "Older subjects therefore have lower predicted baseline LDL-C; the",
@@ -55,19 +55,19 @@ Kakara_2014_pitavastatin <- function() {
         "is shared across atorvastatin, pitavastatin, and rosuvastatin",
         "files."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     DOSE = list(
-      description        = paste(
+      description = paste(
         "Current administered pitavastatin daily dose (mg/day) carried as",
         "a time-varying data column. Set to 0 before treatment initiation",
         "or during drug holidays so the dose-driven inhibition INH becomes",
         "0 and LDL-C stays at the age-adjusted baseline."
       ),
-      units              = "mg/day",
-      type               = "continuous",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "K-PD-style usage (covariate-columns.md DOSE 'use case (b)'):",
         "the daily dose drives the inhibition function INH = Imax * DOSE",
         "/ (ID50 + DOSE) directly without a PK ODE. The Kakara 2014 study",
@@ -78,17 +78,17 @@ Kakara_2014_pitavastatin <- function() {
         "events are represented by stepping DOSE as a step function",
         "across records."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     CONMED_EZE = list(
-      description        = paste(
+      description = paste(
         "Concomitant ezetimibe coadministration indicator (1 = on",
         "ezetimibe, 0 = pitavastatin monotherapy)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ezetimibe coadministration)",
-      notes              = paste(
+      notes = paste(
         "In the Kakara 2014 dataset no pitavastatin-treated patient",
         "received ezetimibe coadministration (Table 1: ezetimibe row =",
         "0 for pitavastatin); the indicator is retained here for",
@@ -99,28 +99,28 @@ Kakara_2014_pitavastatin <- function() {
         "subgroup (n=12) and applied across all three statins in the",
         "joint model."
       ),
-      source_name        = "Ezetimibe"
+      source_name = "Ezetimibe"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 45L,
-    n_studies        = 1L,
-    age_range        = "42-84 years",
-    age_median       = "64 years",
-    sex_female_pct   = 40.0,
-    race_ethnicity   = c(Japanese = 100),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = "42-84 years",
+    age_median = "64 years",
+    sex_female_pct = 40.0,
+    race_ethnicity = c(Japanese = 100),
+    disease_state = paste(
       "Adults with hypercholesterolaemia requiring pitavastatin therapy,",
       "enrolled retrospectively from electronic medical records at the",
       "Fukuoka Tokushukai Medical Center, Japan."
     ),
-    dose_range       = "1, 2, 3, or 4 mg pitavastatin once daily (Kakara 2014 Table 1)",
-    regions          = "Japan",
-    n_observations   = 2863L,
-    biomarker        = "Low-density lipoprotein cholesterol (LDL-C, mg/dL)",
-    notes            = paste(
+    dose_range = "1, 2, 3, or 4 mg pitavastatin once daily (Kakara 2014 Table 1)",
+    regions = "Japan",
+    n_observations = 2863L,
+    biomarker = "Low-density lipoprotein cholesterol (LDL-C, mg/dL)",
+    notes = paste(
       "Pitavastatin cohort of the Kakara 2014 retrospective EMR study.",
       "Across the full study 378 patients contributed 2863 LDL-C samples;",
       "the pitavastatin subcohort had n=45 patients (Table 1) with median",

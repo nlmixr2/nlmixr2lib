@@ -8,68 +8,77 @@ Kuchimanchi_2018_evolocumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "evolocumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "evolocumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "evolocumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate (WT/84)^exponent on CL (0.276), V (1.04), and Vmax (0.145). Reference 84 kg = mean body weight of the pooled phase 1-3 analysis population (Kuchimanchi 2018 Table 2 and Methods, reference-patient definition).",
-      source_name        = "WT"
+      notes = "Power covariate (WT/84)^exponent on CL (0.276), V (1.04), and Vmax (0.145). Reference 84 kg = mean body weight of the pooled phase 1-3 analysis population (Kuchimanchi 2018 Table 2 and Methods, reference-patient definition).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Female-sex exponent on V (1.11) — multiplicative factor of 1.11 on V for female subjects (Kuchimanchi 2018 Table 3). Reference patient is male (Methods, exposure-response reference patient).",
-      source_name        = "SEXF"
+      notes = "Female-sex exponent on V (1.11) — multiplicative factor of 1.11 on V for female subjects (Kuchimanchi 2018 Table 3). Reference patient is male (Methods, exposure-response reference patient).",
+      source_name = "SEXF"
     ),
     CONMED_STATIN_MONO = list(
-      description        = "Concomitant conmed_statin monotherapy indicator, 1 = patient on a conmed_statin only (no other lipid-lowering comedication), 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant conmed_statin monotherapy indicator, 1 = patient on a conmed_statin only (no other lipid-lowering comedication), 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on conmed_statin monotherapy)",
-      notes              = "Kuchimanchi 2018 defines the conmed_statin covariate narrowly as 'patients on a conmed_statin only and no other comedication' (Methods, PopPK analysis). Multiplicative exponent 1.13 on Vmax (Table 3). Reference patient is not on any lipid-lowering medication. Mutually compatible with CONMED_EZE (a patient can be 1 on CONMED_STATIN_MONO xor 1 on CONMED_EZE).",
-      source_name        = "CONMED_STATIN_MONO"
+      notes = "Kuchimanchi 2018 defines the conmed_statin covariate narrowly as 'patients on a conmed_statin only and no other comedication' (Methods, PopPK analysis). Multiplicative exponent 1.13 on Vmax (Table 3). Reference patient is not on any lipid-lowering medication. Mutually compatible with CONMED_EZE (a patient can be 1 on CONMED_STATIN_MONO xor 1 on CONMED_EZE).",
+      source_name = "CONMED_STATIN_MONO"
     ),
     CONMED_EZE = list(
-      description        = "Concomitant ezetimibe indicator, 1 = patient taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ezetimibe indicator, 1 = patient taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on ezetimibe)",
-      notes              = "Kuchimanchi 2018 defines the ezetimibe covariate as 'all patients on ezetimibe, regardless of comedications' (Methods, PopPK analysis). In the popPK dataset ~79% of ezetimibe users were also on a conmed_statin, so the effect effectively captures conmed_statin+ezetimibe combination therapy (the paper notates the exponent as 'Statin + ezetimibe' in Table 3). Multiplicative exponent 1.20 on Vmax (Table 3). Reference patient is not on ezetimibe.",
-      source_name        = "CONMED_EZE"
+      notes = "Kuchimanchi 2018 defines the ezetimibe covariate as 'all patients on ezetimibe, regardless of comedications' (Methods, PopPK analysis). In the popPK dataset ~79% of ezetimibe users were also on a conmed_statin, so the effect effectively captures conmed_statin+ezetimibe combination therapy (the paper notates the exponent as 'Statin + ezetimibe' in Table 3). Multiplicative exponent 1.20 on Vmax (Table 3). Reference patient is not on ezetimibe.",
+      source_name = "CONMED_EZE"
     ),
     PCSK9 = list(
-      description        = "Baseline unbound PCSK9 (proprotein convertase subtilisin/kexin type 9) serum concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline unbound PCSK9 (proprotein convertase subtilisin/kexin type 9) serum concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate (PCSK9/425)^0.194 on Vmax (Kuchimanchi 2018 Table 3). Reference 425 ng/mL (= 5.9 nM) is the population median used for the reference patient (Methods, exposure-response reference patient). PCSK9 is reported in Kuchimanchi 2018 Table 2 in ng/mL; the nM equivalent uses a PCSK9 molecular weight of ~72 kDa. Baseline (time-fixed) covariate; patients with missing baseline PCSK9 were excluded from analyses that included PCSK9 as a covariate.",
-      source_name        = "PCSK9"
+      notes = "Power covariate (PCSK9/425)^0.194 on Vmax (Kuchimanchi 2018 Table 3). Reference 425 ng/mL (= 5.9 nM) is the population median used for the reference patient (Methods, exposure-response reference patient). PCSK9 is reported in Kuchimanchi 2018 Table 2 in ng/mL; the nM equivalent uses a PCSK9 molecular weight of ~72 kDa. Baseline (time-fixed) covariate; patients with missing baseline PCSK9 were excluded from analyses that included PCSK9 as a covariate.",
+      source_name = "PCSK9"
     )
   )
 
   population <- list(
-    n_subjects       = 3414L,
-    n_observations   = 16179L,
-    n_studies        = 11L,
-    age_range        = "18-80 years",
-    age_median       = "57 years (mean; Table 2 reports SD 58 which appears to be a typographical error)",
-    weight_range     = "41-175 kg",
-    weight_median    = "84.2 kg (mean)",
-    sex_female_pct   = 50,
-    race_ethnicity   = c(White = 87, Black = 7, Asian = 4, Hispanic = 0, Other = 1, AmericanIndianAlaska = 0, NativeHawaiianPacific = 0, Multiple = 0),
-    disease_state    = "Pooled adults: healthy volunteers (phase 1a) and patients with hypercholesterolemia (phase 1b, 2, and 3), including patients with heterozygous familial hypercholesterolemia (9%), diabetes (11%), and conmed_statin-intolerance cohorts. Most subjects received concomitant lipid-lowering therapy (statins 72%, ezetimibe 12%).",
-    dose_range       = "Evolocumab 7-420 mg IV or SC, single- and multiple-dose across Q2W and QM regimens. Phase 3 studies used the commercial regimens 140 mg SC Q2W and 420 mg SC QM.",
-    regions          = "Multi-regional (11 pooled clinical studies spanning phase 1, 2, and 3).",
-    pcsk9_baseline   = "Mean 402 ng/mL (SD 375), range 15.5-1233 ng/mL; median used for reference patient = 425 ng/mL (= 5.9 nM).",
-    notes            = "Baseline characteristics from Kuchimanchi 2018 Table 2 (phase 1, 2, and 3 pooled column; N = 3414). Of the 5474 patients contributing data, 3414 received evolocumab and were included in the final popPK analysis; 1312 from 4 phase 2 studies were included in the exposure-response analysis (a separate Emax model on LDL-C; not packaged here — nlmixr2lib focuses on the popPK model)."
+    n_subjects = 3414L,
+    n_observations = 16179L,
+    n_studies = 11L,
+    age_range = "18-80 years",
+    age_median = "57 years (mean; Table 2 reports SD 58 which appears to be a typographical error)",
+    weight_range = "41-175 kg",
+    weight_median = "84.2 kg (mean)",
+    sex_female_pct = 50,
+    race_ethnicity = c(
+      White = 87,
+      Black = 7,
+      Asian = 4,
+      Hispanic = 0,
+      Other = 1,
+      AmericanIndianAlaska = 0,
+      NativeHawaiianPacific = 0,
+      Multiple = 0
+    ),
+    disease_state = "Pooled adults: healthy volunteers (phase 1a) and patients with hypercholesterolemia (phase 1b, 2, and 3), including patients with heterozygous familial hypercholesterolemia (9%), diabetes (11%), and conmed_statin-intolerance cohorts. Most subjects received concomitant lipid-lowering therapy (statins 72%, ezetimibe 12%).",
+    dose_range = "Evolocumab 7-420 mg IV or SC, single- and multiple-dose across Q2W and QM regimens. Phase 3 studies used the commercial regimens 140 mg SC Q2W and 420 mg SC QM.",
+    regions = "Multi-regional (11 pooled clinical studies spanning phase 1, 2, and 3).",
+    pcsk9_baseline = "Mean 402 ng/mL (SD 375), range 15.5-1233 ng/mL; median used for reference patient = 425 ng/mL (= 5.9 nM).",
+    notes = "Baseline characteristics from Kuchimanchi 2018 Table 2 (phase 1, 2, and 3 pooled column; N = 3414). Of the 5474 patients contributing data, 3414 received evolocumab and were included in the final popPK analysis; 1312 from 4 phase 2 studies were included in the exposure-response analysis (a separate Emax model on LDL-C; not packaged here — nlmixr2lib focuses on the popPK model)."
   )
 
   ini({

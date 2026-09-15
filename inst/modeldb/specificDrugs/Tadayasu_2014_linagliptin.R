@@ -8,38 +8,42 @@ Tadayasu_2014_linagliptin <- function() {
     "doi:10.18433/j3s304."
   )
   vignette <- "Tadayasu_2014_linagliptin"
-  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
+  units <- list(
+    time = "h",
+    dosing = "mg",
+    concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 36L,
-    n_subjects_pk   = 36L,
-    n_subjects_pd   = 36L,
-    n_studies       = 1L,
-    studies         = "Phase II trial of linagliptin in Japanese patients with T2DM (Horie 2011 [ref 14]); 28-day randomised double-blind placebo-controlled multiple-dose study with 0.5, 2.5, or 10 mg QD arms. The 0.5 mg arm failed the quasi-equilibrium assumption and was excluded from the final model.",
-    age_range       = "40-69 years (range across both modelled dose groups; Tadayasu 2014 Methods)",
-    age_median      = "60.2 years in the 2.5 mg arm; 59.1 years in the 10 mg arm (Tadayasu 2014 Methods)",
-    bmi_range       = "18.4-34.4 kg/m^2 (range across both modelled dose groups)",
-    bmi_median      = "26.0 kg/m^2 in the 2.5 mg arm; 23.8 kg/m^2 in the 10 mg arm",
-    sex_female_pct  = 25,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = "Type 2 diabetes mellitus (T2DM); baseline HbA1c 7.1 +/- 0.5 % in the 2.5 mg arm and 7.2 +/- 0.9 % in the 10 mg arm; baseline fasting plasma glucose 154.7 +/- 25.1 mg/dL and 158.4 +/- 28.6 mg/dL respectively. Patients with hepatic, renal, neurological, cardiovascular, gastrointestinal, metabolic, hormonal disorders, hyperlipidemia, or hypertension were excluded.",
-    dose_range      = "2.5 mg or 10 mg PO once daily for 28 days (final model excludes the 0.5 mg arm; Table 2)",
-    regions         = "Japan (5 clinical sites)",
-    co_medication   = "Individual antidiabetic treatment discontinued 14 days prior to first drug administration; no concomitant antidiabetic drugs during the trial.",
-    n_observations  = "1018 linagliptin plasma concentrations + 1058 DPP-4 inhibition observations across 36 patients in the 2.5 mg and 10 mg arms used for analysis (Tadayasu 2014 Table 2).",
-    notes           = "Demographics summarised in Tadayasu 2014 Methods (Patient population); modelled population includes only the 2.5 mg and 10 mg arms. The model structure (TMDD-QE with binding in both compartments) was carried over from the prior non-Japanese analysis of Friedrich 2011 [ref 18 in Tadayasu 2014]; all parameter values were re-estimated in the Japanese cohort."
+    species = "human",
+    n_subjects = 36L,
+    n_subjects_pk = 36L,
+    n_subjects_pd = 36L,
+    n_studies = 1L,
+    studies = "Phase II trial of linagliptin in Japanese patients with T2DM (Horie 2011 [ref 14]); 28-day randomised double-blind placebo-controlled multiple-dose study with 0.5, 2.5, or 10 mg QD arms. The 0.5 mg arm failed the quasi-equilibrium assumption and was excluded from the final model.",
+    age_range = "40-69 years (range across both modelled dose groups; Tadayasu 2014 Methods)",
+    age_median = "60.2 years in the 2.5 mg arm; 59.1 years in the 10 mg arm (Tadayasu 2014 Methods)",
+    bmi_range = "18.4-34.4 kg/m^2 (range across both modelled dose groups)",
+    bmi_median = "26.0 kg/m^2 in the 2.5 mg arm; 23.8 kg/m^2 in the 10 mg arm",
+    sex_female_pct = 25,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Type 2 diabetes mellitus (T2DM); baseline HbA1c 7.1 +/- 0.5 % in the 2.5 mg arm and 7.2 +/- 0.9 % in the 10 mg arm; baseline fasting plasma glucose 154.7 +/- 25.1 mg/dL and 158.4 +/- 28.6 mg/dL respectively. Patients with hepatic, renal, neurological, cardiovascular, gastrointestinal, metabolic, hormonal disorders, hyperlipidemia, or hypertension were excluded.",
+    dose_range = "2.5 mg or 10 mg PO once daily for 28 days (final model excludes the 0.5 mg arm; Table 2)",
+    regions = "Japan (5 clinical sites)",
+    co_medication = "Individual antidiabetic treatment discontinued 14 days prior to first drug administration; no concomitant antidiabetic drugs during the trial.",
+    n_observations = "1018 linagliptin plasma concentrations + 1058 DPP-4 inhibition observations across 36 patients in the 2.5 mg and 10 mg arms used for analysis (Tadayasu 2014 Table 2).",
+    notes = "Demographics summarised in Tadayasu 2014 Methods (Patient population); modelled population includes only the 2.5 mg and 10 mg arms. The model structure (TMDD-QE with binding in both compartments) was carried over from the prior non-Japanese analysis of Friedrich 2011 [ref 18 in Tadayasu 2014]; all parameter values were re-estimated in the Japanese cohort."
   )
 
   ini({

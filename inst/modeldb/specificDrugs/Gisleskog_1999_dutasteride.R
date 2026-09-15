@@ -8,27 +8,27 @@ Gisleskog_1999_dutasteride <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dutasteride", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dutasteride", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dutasteride", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dutasteride", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dutasteride", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "20-57 years (parent 48-subject cohort; same range applies to the 32 GI198745 recipients)",
-    age_median     = "37 years (parent cohort median)",
-    weight_range   = "56.3-102 kg (parent cohort)",
-    weight_median  = "76.1 kg (parent cohort)",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "20-57 years (parent 48-subject cohort; same range applies to the 32 GI198745 recipients)",
+    age_median = "37 years (parent cohort median)",
+    weight_range = "56.3-102 kg (parent cohort)",
+    weight_median = "76.1 kg (parent cohort)",
     sex_female_pct = 0,
     race_ethnicity = "Not reported",
-    disease_state  = "Healthy male volunteers in a single-dose escalation study.",
-    dose_range     = "Single oral solution dose of 0.01, 0.1, 1, 2.5, 5, 10, 20, or 40 mg of GI198745 (4 subjects per dose level). Vehicle: PEG400 + TWEEN80 0.01% in 7.5 mL water (15 mL for the 40 mg dose), administered with 240 mL of water.",
-    regions        = "United Kingdom (study approved by the institutional review board of Besselaar Ltd.).",
-    notes          = "Source: Gisleskog 1999 Methods, p54. The parent study enrolled 48 healthy males aged 20-57 (median 37 y, weight 56.3-102 kg, median 76.1 kg) to receive GI198745, finasteride, or placebo; the 32 GI198745 recipients comprise the modelling analysis. Sampling: predose and at 0.5, 1, 2, 3, 4, 6, 8, 12, 16, 24 hours and 2, 3, 7, 14, 21, 28 days post-dose (and 56 days in three subjects). The 0.01 mg dose was below the LC/MS assay LLOQ (0.1 ng/mL) so produced no measurable concentrations; all other dose levels contributed observations. No covariates were tested -- the cohort was too small per the authors (Methods, Variability model, p55 and Discussion, p57)."
+    disease_state = "Healthy male volunteers in a single-dose escalation study.",
+    dose_range = "Single oral solution dose of 0.01, 0.1, 1, 2.5, 5, 10, 20, or 40 mg of GI198745 (4 subjects per dose level). Vehicle: PEG400 + TWEEN80 0.01% in 7.5 mL water (15 mL for the 40 mg dose), administered with 240 mL of water.",
+    regions = "United Kingdom (study approved by the institutional review board of Besselaar Ltd.).",
+    notes = "Source: Gisleskog 1999 Methods, p54. The parent study enrolled 48 healthy males aged 20-57 (median 37 y, weight 56.3-102 kg, median 76.1 kg) to receive GI198745, finasteride, or placebo; the 32 GI198745 recipients comprise the modelling analysis. Sampling: predose and at 0.5, 1, 2, 3, 4, 6, 8, 12, 16, 24 hours and 2, 3, 7, 14, 21, 28 days post-dose (and 56 days in three subjects). The 0.01 mg dose was below the LC/MS assay LLOQ (0.1 ng/mL) so produced no measurable concentrations; all other dose levels contributed observations. No covariates were tested -- the cohort was too small per the authors (Methods, Variability model, p55 and Discussion, p57)."
   )
 
   ini({

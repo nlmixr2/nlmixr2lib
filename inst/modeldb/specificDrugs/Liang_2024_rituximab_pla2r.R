@@ -15,8 +15,8 @@ Liang_2024_rituximab_pla2r <- function() {
     # Serum anti-PLA2R titer assayed by ELISA (Euroimmun, Lubeck, Germany);
     # Liang 2024 Section 2.2.
     antipla2r = list(
-      analyte  = "anti-PLA2R IgG autoantibody titer",
-      units    = "U/mL",
+      analyte = "anti-PLA2R IgG autoantibody titer",
+      units = "U/mL",
       specimen = "serum",
       verified = TRUE
     )
@@ -50,17 +50,17 @@ Liang_2024_rituximab_pla2r <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "19-76 years (mean 52.8 +/- 14.9) in the parent cohort of 41",
-    weight_range   = "50-101 kg (mean 75.4 +/- 11.3) in the parent cohort of 41",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "19-76 years (mean 52.8 +/- 14.9) in the parent cohort of 41",
+    weight_range = "50-101 kg (mean 75.4 +/- 11.3) in the parent cohort of 41",
     sex_female_pct = 24.4,
-    disease_state  = "Adults with primary membranous nephropathy (PMN) treated off-label with rituximab. Baseline anti-PLA2R antibody titer 260.3 +/- 453.2 U/mL (range 5.4-2695) with 17/41 (41.5%) above the 150 U/mL high-titer threshold (Table 1).",
+    disease_state = "Adults with primary membranous nephropathy (PMN) treated off-label with rituximab. Baseline anti-PLA2R antibody titer 260.3 +/- 453.2 U/mL (range 5.4-2695) with 17/41 (41.5%) above the 150 U/mL high-titer threshold (Table 1).",
     renal_function = "eGFR 92.0 +/- 24.6 mL/min/1.73 m^2 (range 32-151) in the parent cohort of 41.",
-    dose_range     = "Most patients received a monthly mini-dose of 100 mg IV rituximab; 10/41 received 200-500 mg for some months. The titer model itself is not dose-driven.",
-    regions        = "Single centre: Department of Nephrology, Peking University Third Hospital, Beijing, China; retrospective cohort treated March 2019 to December 2021. Registered as ChiCTR2200057381.",
-    notes          = paste(
+    dose_range = "Most patients received a monthly mini-dose of 100 mg IV rituximab; 10/41 received 200-500 mg for some months. The titer model itself is not dose-driven.",
+    regions = "Single centre: Department of Nephrology, Peking University Third Hospital, Beijing, China; retrospective cohort treated March 2019 to December 2021. Registered as ChiCTR2200057381.",
+    notes = paste(
       "Anti-PLA2R titers from 36 of the 41 patients were analysable (Liang 2024 Section 3.6); 276 titer",
       "observations were collected in total (Section 3.2). Only the DESCENDING stage was fitted: serologic",
       "relapse (defined as two consecutive ascending titers), titers separated by more than 3 months, and",

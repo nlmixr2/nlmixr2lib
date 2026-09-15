@@ -20,7 +20,7 @@ Janssen_2023_epirubicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE)
   )

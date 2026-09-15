@@ -23,34 +23,39 @@ Chen_2023_tilmicosin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact = list(analyte = "Pasteurella multocida serovar D:7", units = NA_character_, specimen = "tissue", verified = FALSE)
+    bact = list(
+      analyte = "Pasteurella multocida serovar D:7",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AUC_TILM = list(
-      description        = "Tilmicosin area under the tissue-cage-fluid concentration-time curve over the current 24 h dosing interval",
-      units              = "ug*h/mL",
-      type               = "continuous",
+      description = "Tilmicosin area under the tissue-cage-fluid concentration-time curve over the current 24 h dosing interval",
+      units = "ug*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-24-h-interval tilmicosin exposure in infected tissue-cage fluid, supplied as a piecewise-constant time-varying covariate (one value per 24 h interval). Chen 2023 obtained these by non-compartmental analysis in WinNonlin 6.1 (Section 2.5) and reports them in Table 1 for each dose group and each of the three dosing days, plus in Section 3.2 for the 24-48 h window after the final dose. Set to 0 for the untreated control group so the sigmoid term vanishes and the predicted change equals E0. Because the paper published no structural PK model, this covariate is the model's only route for drug exposure.",
-      source_name        = "AUC0-24h (Chen 2023 Table 1; and Section 3.2 for the 24-48 h post-final-dose interval)"
+      notes = "Per-24-h-interval tilmicosin exposure in infected tissue-cage fluid, supplied as a piecewise-constant time-varying covariate (one value per 24 h interval). Chen 2023 obtained these by non-compartmental analysis in WinNonlin 6.1 (Section 2.5) and reports them in Table 1 for each dose group and each of the three dosing days, plus in Section 3.2 for the 24-48 h window after the final dose. Set to 0 for the untreated control group so the sigmoid term vanishes and the predicted change equals E0. Because the paper published no structural PK model, this covariate is the model's only route for drug exposure.",
+      source_name = "AUC0-24h (Chen 2023 Table 1; and Section 3.2 for the 24-48 h post-final-dose interval)"
     )
   )
 
   population <- list(
-    species             = "pig (crossbred piglet, Duroc x Landrace x Yorkshire)",
-    n_subjects          = 10L,
-    n_studies           = 1L,
-    weight_range        = "25-30 kg",
-    sex_female_pct      = 50,
-    organism            = "Pasteurella multocida strain C44-15, serovar D:7 (China Institute of Veterinary Drug Control, Beijing); tilmicosin MIC = 0.25 ug/mL in BOTH tissue-cage fluid and tryptic soy broth by CLSI (2013) microdilution",
-    system              = "Subcutaneous tissue-cage infection model. Food-grade silicone tissue cages (65 mm long, 13 mm inner / 18 mm outer diameter, twelve holes at each end) implanted subcutaneously on both sides of the neck, equidistant between the jugular vein and the spinal cord, under pentobarbital-sodium general and procainamide-hydrochloride local anaesthesia; 4-week recovery before use",
-    disease_state       = "Healthy piglets with an experimentally induced localised P. multocida infection: each sterile tissue cage inoculated with 1 mL of ~1.5 x 10^8 CFU/mL suspension, incubated 48 h, and only cages reaching ~10^7 CFU/mL entered the experiment",
-    dose_range          = "30, 40, 50 and 60 mg/kg body weight tilmicosin (tilmicosin phosphate, 80.4% purity) orally, once daily for 3 days; plus an infected untreated control group given the same volume of normal saline",
-    design              = "Ten piglets randomised to four treatment groups and one control group (two piglets and four tissue cages per group, one male and one female per group)",
-    sampling            = "PK: ~0.5 mL tissue-cage fluid at 1, 3, 6, 9, 12 and 24 h after each administration, plus 48 and 72 h after the final dose. PD: ~0.1 mL for bacterial counting at 24 h after each administration, plus 48 and 72 h after the final dose",
-    regions             = "China (South China Agricultural University, Guangzhou)",
-    notes               = "Ethics approval 2018A001 (Committee on the Ethics of Animals of South China Agricultural University). The PK/PD index magnitudes reported in Chen 2023 Table 2 apply to a single 24 h dosing interval. The paper's headline total bacterial reductions after the three-day course (1.48, 2.82, 3.39 and 3.52 log10 CFU/mL at 30, 40, 50 and 60 mg/kg; Section 3.3) accumulate over FOUR consecutive 24 h intervals, i.e. through 96 h -- the three dosing intervals plus the 24-48 h window after the final dose (Discussion: 'the number of bacteria could be reduced by 3 log10CFU/mL within 96 h after administration'). See the vignette for the numerical reproduction."
+    species = "pig (crossbred piglet, Duroc x Landrace x Yorkshire)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    weight_range = "25-30 kg",
+    sex_female_pct = 50,
+    organism = "Pasteurella multocida strain C44-15, serovar D:7 (China Institute of Veterinary Drug Control, Beijing); tilmicosin MIC = 0.25 ug/mL in BOTH tissue-cage fluid and tryptic soy broth by CLSI (2013) microdilution",
+    system = "Subcutaneous tissue-cage infection model. Food-grade silicone tissue cages (65 mm long, 13 mm inner / 18 mm outer diameter, twelve holes at each end) implanted subcutaneously on both sides of the neck, equidistant between the jugular vein and the spinal cord, under pentobarbital-sodium general and procainamide-hydrochloride local anaesthesia; 4-week recovery before use",
+    disease_state = "Healthy piglets with an experimentally induced localised P. multocida infection: each sterile tissue cage inoculated with 1 mL of ~1.5 x 10^8 CFU/mL suspension, incubated 48 h, and only cages reaching ~10^7 CFU/mL entered the experiment",
+    dose_range = "30, 40, 50 and 60 mg/kg body weight tilmicosin (tilmicosin phosphate, 80.4% purity) orally, once daily for 3 days; plus an infected untreated control group given the same volume of normal saline",
+    design = "Ten piglets randomised to four treatment groups and one control group (two piglets and four tissue cages per group, one male and one female per group)",
+    sampling = "PK: ~0.5 mL tissue-cage fluid at 1, 3, 6, 9, 12 and 24 h after each administration, plus 48 and 72 h after the final dose. PD: ~0.1 mL for bacterial counting at 24 h after each administration, plus 48 and 72 h after the final dose",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Ethics approval 2018A001 (Committee on the Ethics of Animals of South China Agricultural University). The PK/PD index magnitudes reported in Chen 2023 Table 2 apply to a single 24 h dosing interval. The paper's headline total bacterial reductions after the three-day course (1.48, 2.82, 3.39 and 3.52 log10 CFU/mL at 30, 40, 50 and 60 mg/kg; Section 3.3) accumulate over FOUR consecutive 24 h intervals, i.e. through 96 h -- the three dosing intervals plus the 24-48 h window after the final dose (Discussion: 'the number of bacteria could be reduced by 3 log10CFU/mL within 96 h after administration'). See the vignette for the numerical reproduction."
   )
 
   ini({

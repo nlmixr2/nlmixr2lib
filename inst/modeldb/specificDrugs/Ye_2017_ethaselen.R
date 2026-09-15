@@ -36,8 +36,8 @@ Ye_2017_ethaselen <- function() {
   paper_specific_compartments <- c("trxr", "trxr_ctrl", "tumor_volume")
 
   units <- list(
-    time          = "day",
-    dosing        = "mg/kg (administered as a per-record DOSE covariate; no PK ODE)",
+    time = "day",
+    dosing = "mg/kg (administered as a per-record DOSE covariate; no PK ODE)",
     concentration = "n/a (TrxR activity in U/mL and tumor volume in mm^3 are the two observed outputs)"
   )
 
@@ -46,34 +46,44 @@ Ye_2017_ethaselen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    trxr         = list(analyte = "thioredoxin reductase (TrxR) activity", units = NA_character_, specimen = "plasma", verified = FALSE),
-    trxr_ctrl    = list(analyte = "thioredoxin reductase (TrxR) activity", units = NA_character_, specimen = "tumor", verified = FALSE),
+    trxr = list(
+      analyte = "thioredoxin reductase (TrxR) activity",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    trxr_ctrl = list(
+      analyte = "thioredoxin reductase (TrxR) activity",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
     tumor_volume = list(analyte = "tumor volume", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Time-varying current administered daily dose of ethaselen (mg/kg/day). Drives the sigmoidal Emax inhibition of TrxR Kout. Set to 0 outside the dosing window (vehicle control and post-treatment days).",
-      units              = "mg/kg/day",
-      type               = "continuous",
+      description = "Time-varying current administered daily dose of ethaselen (mg/kg/day). Drives the sigmoidal Emax inhibition of TrxR Kout. Set to 0 outside the dosing window (vehicle control and post-treatment days).",
+      units = "mg/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Published study uses DOSE in {0, 36, 72, 108} mg/kg/day during days 0-9 (oral gavage QD x10 d) and DOSE = 0 thereafter. The drug-effect term collapses to zero when DOSE = 0 because DOSE^hill = 0 (hill = 2.29 > 0), so the shadow control state trxr_ctrl coincides with the treated state trxr in vehicle subjects and P = 0.",
-      source_name        = "D"
+      notes = "Published study uses DOSE in {0, 36, 72, 108} mg/kg/day during days 0-9 (oral gavage QD x10 d) and DOSE = 0 thereafter. The drug-effect term collapses to zero when DOSE = 0 because DOSE^hill = 0 (hill = 2.29 > 0), so the shadow control state trxr_ctrl coincides with the treated state trxr in vehicle subjects and P = 0.",
+      source_name = "D"
     )
   )
 
   population <- list(
-    species        = "mouse (female BALB/c nude, 5 weeks old, with subcutaneous A549 human non-small cell lung cancer xenograft)",
-    n_subjects     = 160L,
-    n_studies      = 2L,
-    age_range      = "5 weeks at randomisation",
-    weight_range   = "not reported",
+    species = "mouse (female BALB/c nude, 5 weeks old, with subcutaneous A549 human non-small cell lung cancer xenograft)",
+    n_subjects = 160L,
+    n_studies = 2L,
+    age_range = "5 weeks at randomisation",
+    weight_range = "not reported",
     sex_female_pct = 100,
     race_ethnicity = NA,
-    disease_state  = "subcutaneous A549 NSCLC xenograft (5x10^6 cells / 0.2 mL inoculated into the right armpit); modelling started when tumor volume reached approximately 100 mm^3",
-    dose_range     = "vehicle (0.5% CMC-Na, pH 7.4), 36, 72, or 108 mg/kg ethaselen ig QD x10 d",
-    regions        = "preclinical (in-vivo xenograft); Peking University Health Science Center animal facility",
-    notes          = "Two sub-studies pooled into one model dataset: (i) TrxR biomarker assay -- 132 mice (4 groups x 33 mice; n=3 sacrificed per day per group across 10 dosing days plus follow-up); (ii) tumor-volume study -- 28 mice (4 groups x 7 mice; volumes recorded daily by Vernier calipers, V = (length x width^2) / 2). Total = 160 mice. Tumor TrxR was measured by the DTNB-reducing assay (linear range 0-1000 U/mL). The integrated dose-biomarker-response model in Table 1 was fit to all four dose arms using NONMEM 7.1.2 / FOCEI with PsN 3.5.3 and Pirana 2.8.0; validation via 1000-replicate VPC."
+    disease_state = "subcutaneous A549 NSCLC xenograft (5x10^6 cells / 0.2 mL inoculated into the right armpit); modelling started when tumor volume reached approximately 100 mm^3",
+    dose_range = "vehicle (0.5% CMC-Na, pH 7.4), 36, 72, or 108 mg/kg ethaselen ig QD x10 d",
+    regions = "preclinical (in-vivo xenograft); Peking University Health Science Center animal facility",
+    notes = "Two sub-studies pooled into one model dataset: (i) TrxR biomarker assay -- 132 mice (4 groups x 33 mice; n=3 sacrificed per day per group across 10 dosing days plus follow-up); (ii) tumor-volume study -- 28 mice (4 groups x 7 mice; volumes recorded daily by Vernier calipers, V = (length x width^2) / 2). Total = 160 mice. Tumor TrxR was measured by the DTNB-reducing assay (linear range 0-1000 U/mL). The integrated dose-biomarker-response model in Table 1 was fit to all four dose arms using NONMEM 7.1.2 / FOCEI with PsN 3.5.3 and Pirana 2.8.0; validation via 1000-replicate VPC."
   )
 
   ini({

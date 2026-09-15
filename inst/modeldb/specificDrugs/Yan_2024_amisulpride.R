@@ -1,23 +1,23 @@
 Yan_2024_amisulpride <- function() {
   description <- "Population PK model for oral amisulpride in Chinese adult inpatients with schizophrenia (Yan 2024). One-compartment disposition with first-order absorption and first-order elimination, parameterised on the apparent (oral) scale as CL/F and V/F because the therapeutic-drug-monitoring dataset was oral-only and bioavailability was not identifiable. The absorption rate constant Ka was fixed to 0.18 1/h, carried from earlier amisulpride work in Chinese patients, because the data are almost entirely steady-state pre-dose troughs and the absorption phase could not support an estimate. Estimated creatinine clearance (Cockcroft-Gault, raw mL/min) enters apparent clearance as a power function centred on the cohort median 114.42 mL/min; it was the only covariate retained after forward inclusion and backward elimination. Inter-individual variability is exponential on CL/F only, and residual variability is proportional. The paper's primary purpose was an external evaluation of five previously published amisulpride popPK models against this cohort; all five showed unacceptable simulation-based bias, and this model was then developed on the same independent dataset and used in Monte Carlo simulations of remedial dosing after a delayed or missed dose."
-  reference   <- "Yan D, Ju G, Liu X, Shao Q, Zhang Y, Wang N, Yan K. External Validation of the Population Pharmacokinetic Models of Amisulpride and Remedial Strategies for Delayed or Missed Doses. Drug Des Devel Ther. 2024;18:6345-6358. doi:10.2147/DDDT.S469149."
-  vignette    <- "Yan_2024_amisulpride"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Yan D, Ju G, Liu X, Shao Q, Zhang Y, Wang N, Yan K. External Validation of the Population Pharmacokinetic Models of Amisulpride and Remedial Strategies for Delayed or Missed Doses. Drug Des Devel Ther. 2024;18:6345-6358. doi:10.2147/DDDT.S469149."
+  vignette <- "Yan_2024_amisulpride"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "amisulpride", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "amisulpride", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "amisulpride", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance calculated with the Cockcroft-Gault equation. NOT body-surface-area normalised: the source reports raw Cockcroft-Gault mL/min (Yan 2024 Methods, 'Data Accumulation and Blood Sampling': 'the eCLcr calculated using the Cockcroft-Gault formula', citing Cockcroft & Gault 1976). The paper separately tabulates a CKD-EPI eGFR column computed without the race component, which was screened but not retained in the final model.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance calculated with the Cockcroft-Gault equation. NOT body-surface-area normalised: the source reports raw Cockcroft-Gault mL/min (Yan 2024 Methods, 'Data Accumulation and Blood Sampling': 'the eCLcr calculated using the Cockcroft-Gault formula', citing Cockcroft & Gault 1976). The paper separately tabulates a CKD-EPI eGFR column computed without the race component, which was screened but not retained in the final model.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the source analysis. The only covariate retained by the forward-inclusion /",
         "backward-elimination search (Yan 2024 Results, 'PopPK Model Development and Validation':",
         "dOFV = -27.9, p < 0.001, dAIC = 28). Applied to apparent clearance as a power function centred on",
@@ -36,72 +36,72 @@ Yan_2024_amisulpride <- function() {
         "which this note does.",
         sep = " "
       ),
-      source_name        = "eCLcr"
+      source_name = "eCLcr"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate but not retained in the final model (Yan 2024 Results, 'PopPK Model Development and Validation'; Supplementary Table S1). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. Yan 2024 explicitly compared a model using eCLcr against one using age, sex, weight and creatinine as separate covariates and 'found no significant differences in the parameter fitting result' (Supplementary Table S2). Cohort median 32 years, range 18-67, mean 34.42 +/- 10.56 (Yan 2024 Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a candidate covariate but not retained in the final model (Yan 2024 Results, 'PopPK Model Development and Validation'; Supplementary Table S1). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. Yan 2024 explicitly compared a model using eCLcr against one using age, sex, weight and creatinine as separate covariates and 'found no significant differences in the parameter fitting result' (Supplementary Table S2). Cohort median 32 years, range 18-67, mean 34.42 +/- 10.56 (Yan 2024 Table 1)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained (Yan 2024 Results; Supplementary Tables S1 and S2). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. Cohort median 62 kg, range 40-109, mean 62.93 +/- 11.71 (Yan 2024 Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained (Yan 2024 Results; Supplementary Tables S1 and S2). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. Cohort median 62 kg, range 40-109, mean 62.93 +/- 11.71 (Yan 2024 Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Yan 2024 Results; Supplementary Tables S1 and S2). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. 211 of 361 patients were female (Yan 2024 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Yan 2024 Results; Supplementary Tables S1 and S2). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. 211 of 361 patients were female (Yan 2024 Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Yan 2024 Results; Supplementary Tables S1 and S2). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. The Discussion states that eCLcr predicted amisulpride clearance better than serum creatinine alone. Cohort median 60 umol/L, range 30-148.9, mean 66.34 +/- 15.7 (Yan 2024 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Yan 2024 Results; Supplementary Tables S1 and S2). Enters the retained covariate indirectly, as an input to the Cockcroft-Gault eCLcr. The Discussion states that eCLcr predicted amisulpride clearance better than serum creatinine alone. Cohort median 60 umol/L, range 30-148.9, mean 66.34 +/- 15.7 (Yan 2024 Table 1)."
     ),
     UA = list(
       description = "Serum uric acid",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Yan 2024 Methods, 'Data Accumulation and Blood Sampling', lists uric acid among the renal-function laboratory indicators collected; Supplementary Table S1). Cohort median 297 umol/L, range 81-698.9, mean 305.03 +/- 89.86 (Yan 2024 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Yan 2024 Methods, 'Data Accumulation and Blood Sampling', lists uric acid among the renal-function laboratory indicators collected; Supplementary Table S1). Cohort median 297 umol/L, range 81-698.9, mean 305.03 +/- 89.86 (Yan 2024 Table 1)."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Yan 2024 Methods and Supplementary Table S1). Cohort median 3.5 mmol/L, range 0.6-10.1, mean 3.72 +/- 1.37 (Yan 2024 Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Yan 2024 Methods and Supplementary Table S1). Cohort median 3.5 mmol/L, range 0.6-10.1, mean 3.72 +/- 1.37 (Yan 2024 Table 1)."
     ),
     DOSE_AMISULPRIDE_MGD = list(
       description = "Daily amisulpride dose",
-      units       = "mg/day",
-      type        = "continuous",
-      notes       = "Daily dosage was included among the screened covariates (Yan 2024 Results, 'PopPK Model Development and Validation': 'the demographic factors, laboratory indicators, and daily dosage were considered as covariates') but was not retained, i.e. the final model is dose-linear. Cohort median 600 mg/day, Table 1 range 200-1200 mg/day, mean 555.90 +/- 192.56."
+      units = "mg/day",
+      type = "continuous",
+      notes = "Daily dosage was included among the screened covariates (Yan 2024 Results, 'PopPK Model Development and Validation': 'the demographic factors, laboratory indicators, and daily dosage were considered as covariates') but was not retained, i.e. the final model is dose-linear. Cohort median 600 mg/day, Table 1 range 200-1200 mg/day, mean 555.90 +/- 192.56."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 361L,
-    n_studies      = 1L,
-    age_range      = "18-67 years (median 32, mean 34.42 +/- 10.56; Yan 2024 Table 1)",
-    age_median     = "32 years",
-    weight_range   = "40-109 kg (median 62, mean 62.93 +/- 11.71; Yan 2024 Table 1)",
-    weight_median  = "62 kg",
+    species = "human",
+    n_subjects = 361L,
+    n_studies = 1L,
+    age_range = "18-67 years (median 32, mean 34.42 +/- 10.56; Yan 2024 Table 1)",
+    age_median = "32 years",
+    weight_range = "40-109 kg (median 62, mean 62.93 +/- 11.71; Yan 2024 Table 1)",
+    weight_median = "62 kg",
     sex_female_pct = 58.4,
     race_ethnicity = "Chinese (single-centre cohort at the Xi'an Mental Health Center, Xi'an, Shaanxi)",
-    disease_state  = "Adult inpatients diagnosed with schizophrenia, treated with oral amisulpride for at least 72 h (at least five half-lives) before therapeutic drug monitoring.",
-    dose_range     = "200-1200 mg/day oral amisulpride (median 600 mg/day, mean 555.90 +/- 192.56; Yan 2024 Table 1). 302 of 361 patients received twice-daily dosing and 59 received once-daily dosing. The Yan 2024 Results text states a daily dosage range of 200-2000 mg, which disagrees with the 200-1200 mg range printed in its own Table 1; see the vignette Errata.",
-    regions        = "China (Xi'an, Shaanxi), 2017 to 2021",
+    disease_state = "Adult inpatients diagnosed with schizophrenia, treated with oral amisulpride for at least 72 h (at least five half-lives) before therapeutic drug monitoring.",
+    dose_range = "200-1200 mg/day oral amisulpride (median 600 mg/day, mean 555.90 +/- 192.56; Yan 2024 Table 1). 302 of 361 patients received twice-daily dosing and 59 received once-daily dosing. The Yan 2024 Results text states a daily dosage range of 200-2000 mg, which disagrees with the 200-1200 mg range printed in its own Table 1; see the vignette Errata.",
+    regions = "China (Xi'an, Shaanxi), 2017 to 2021",
     n_observations = "390 steady-state serum concentrations from 361 patients. Samples were drawn at 06:00 immediately before the next dose, i.e. trough concentrations only. Observed concentrations 54.7-1955.7 ng/mL (median 471.8, mean 546.03 +/- 341.76); dose-corrected concentrations 0.17-3.26 ng/mL per mg (median 0.88, mean 0.970 +/- 0.474) (Yan 2024 Table 1).",
     renal_function = "Cockcroft-Gault eCLcr median 114.42 mL/min (range 23.29-239.51, mean 116.7 +/- 33.53); CKD-EPI eGFR (no race component) median 118.5 (range 79.9-146.5); serum creatinine median 60 umol/L (range 30-148.9) (Yan 2024 Table 1).",
-    co_medication  = "Concomitant medication was recorded but could not be entered as a covariate: the group sizes were too small and 'significant differences between the groups' prevented its inclusion (Yan 2024 Results and Discussion). The Discussion notes published reports of elevated amisulpride concentrations under co-treatment with clozapine or lithium, attributed to competition in the renal clearance pathway.",
-    notes          = paste(
+    co_medication = "Concomitant medication was recorded but could not be entered as a covariate: the group sizes were too small and 'significant differences between the groups' prevented its inclusion (Yan 2024 Results and Discussion). The Discussion notes published reports of elevated amisulpride concentrations under co-treatment with clozapine or lithium, attributed to competition in the renal clearance pathway.",
+    notes = paste(
       "Retrospective single-centre therapeutic-drug-monitoring study. Amisulpride was quantified by a validated",
       "LC-MS/MS assay (Shimadzu 8050) with a linear range of 20-2000 ng/mL and intra- and inter-day RSD within",
       "5 percent (Yan 2024 Methods).",

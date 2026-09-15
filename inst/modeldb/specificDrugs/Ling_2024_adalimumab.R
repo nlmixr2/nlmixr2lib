@@ -17,7 +17,7 @@ Ling_2024_adalimumab <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
@@ -32,54 +32,54 @@ Ling_2024_adalimumab <- function() {
   # carried into model(); they are recorded here for provenance only.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at treatment initiation",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at treatment initiation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F; not retained. Cohort median 50.5 years (IQR 46-61), Ling 2024 Table 1.",
-      source_name        = "age"
+      notes = "Screened on CL/F and V/F; not retained. Cohort median 50.5 years (IQR 46-61), Ling 2024 Table 1.",
+      source_name = "age"
     ),
     WT = list(
-      description        = "Body weight at treatment initiation",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at treatment initiation",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F; not retained. Cohort median 85.5 kg (IQR 66-111), Ling 2024 Table 1. The Discussion notes this adalimumab-biosimilar cohort was heavier than the etanercept-biosimilar cohort (85.5 vs 70.5 kg) and speculates that increased adiposity may have impaired subcutaneous absorption, but no weight effect was estimable in n = 10.",
-      source_name        = "body weight"
+      notes = "Screened on CL/F and V/F; not retained. Cohort median 85.5 kg (IQR 66-111), Ling 2024 Table 1. The Discussion notes this adalimumab-biosimilar cohort was heavier than the etanercept-biosimilar cohort (85.5 vs 70.5 kg) and speculates that increased adiposity may have impaired subcutaneous absorption, but no weight effect was estimable in n = 10.",
+      source_name = "body weight"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened; not retained. 9 of 10 subjects were female (Ling 2024 Table 1). The Discussion states explicitly that 'due to the skew between female and male participants, we cannot distinguish between BSV and the effect of sex', so this covariate is unidentifiable in this cohort rather than merely non-significant.",
-      source_name        = "sex"
+      notes = "Screened; not retained. 9 of 10 subjects were female (Ling 2024 Table 1). The Discussion states explicitly that 'due to the skew between female and male participants, we cannot distinguish between BSV and the effect of sex', so this covariate is unidentifiable in this cohort rather than merely non-significant.",
+      source_name = "sex"
     ),
     CONMED_CSDMARD = list(
-      description        = "Concurrent conventional synthetic DMARD therapy indicator, 1 = on a csDMARD, 0 = not",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent conventional synthetic DMARD therapy indicator, 1 = on a csDMARD, 0 = not",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concurrent csDMARD)",
-      notes              = "Screened; not retained. 8 of 10 subjects (80%) were on a concurrent csDMARD (Ling 2024 Table 1); the paper does not name the individual agents. Documentation-only label: because the covariate was rejected and no coefficient is published, no entry was added to inst/references/covariate-columns.md. A future extraction that RETAINS a csDMARD-class indicator should register the canonical then; it would be a class-level member of the existing CONMED_* family (cf. CONMED_ABX, CONMED_AED, CONMED_IMMUNOMOD).",
-      source_name        = "concurrent csDMARD"
+      notes = "Screened; not retained. 8 of 10 subjects (80%) were on a concurrent csDMARD (Ling 2024 Table 1); the paper does not name the individual agents. Documentation-only label: because the covariate was rejected and no coefficient is published, no entry was added to inst/references/covariate-columns.md. A future extraction that RETAINS a csDMARD-class indicator should register the canonical then; it would be a class-level member of the existing CONMED_* family (cf. CONMED_ABX, CONMED_AED, CONMED_IMMUNOMOD).",
+      source_name = "concurrent csDMARD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,                                                # Ling 2024 Section 3.1: ten RA patients commencing Amgevita
-    n_observations = 58L,                                                # Ling 2024 Section 3.2: 58 serum samples available for analysis
-    n_studies      = 1L,                                                 # BRAGGSS-PD sub-study, single prospective cohort
-    age_range      = "median 50.5 years (IQR 46-61); inclusion required age >= 18 years",  # Ling 2024 Table 1
-    age_median     = "50.5 years",                                       # Ling 2024 Table 1
-    weight_range   = "median 85.5 kg (IQR 66-111)",                      # Ling 2024 Table 1
-    weight_median  = "85.5 kg",                                          # Ling 2024 Table 1
-    sex_female_pct = 90,                                                 # Ling 2024 Table 1: 9 of 10 female
-    race_ethnicity = "100% White",                                       # Ling 2024 Section 3.1: "All patients were white."
-    disease_state  = "Rheumatoid arthritis by the 1987 American College of Rheumatology criteria; bDMARD-naive; pre-treatment DAS28 >= 5.1 required for entry (cohort median DAS28 5.71, IQR 5.20-6.09).",
-    dose_range     = "40 mg subcutaneously every 14 days (licensed Amgevita regimen), self-administered by pre-filled auto-injector; followed for 12 weeks.",
-    regions        = "United Kingdom (three rheumatology centres in Greater Manchester)",
-    notes          = "Baseline demographics are Ling 2024 Table 1. Real-world NHS patients recruited to the Personalised Dosing sub-study of BRAGGSS (BRAGGSS-PD) between January 2019 and August 2021; recruitment was curtailed by the COVID-19 pandemic below the planned sample size. Serum adalimumab was measured by Promonitor-ADL-1DV ELISA (Grifols). Optimal sampling times (baseline, 1 h, then 2, 4, 6 and 12 weeks, all pre-dose troughs after the second sample) were designed in PopDes. Samples were NOT tested for anti-drug antibodies, which the paper lists as a limitation; the model therefore carries no immunogenicity term. Doses self-administered between study visits were recorded at their nominal times."
+    species = "human",
+    n_subjects = 10L, # Ling 2024 Section 3.1: ten RA patients commencing Amgevita
+    n_observations = 58L, # Ling 2024 Section 3.2: 58 serum samples available for analysis
+    n_studies = 1L, # BRAGGSS-PD sub-study, single prospective cohort
+    age_range = "median 50.5 years (IQR 46-61); inclusion required age >= 18 years", # Ling 2024 Table 1
+    age_median = "50.5 years", # Ling 2024 Table 1
+    weight_range = "median 85.5 kg (IQR 66-111)", # Ling 2024 Table 1
+    weight_median = "85.5 kg", # Ling 2024 Table 1
+    sex_female_pct = 90, # Ling 2024 Table 1: 9 of 10 female
+    race_ethnicity = "100% White", # Ling 2024 Section 3.1: "All patients were white."
+    disease_state = "Rheumatoid arthritis by the 1987 American College of Rheumatology criteria; bDMARD-naive; pre-treatment DAS28 >= 5.1 required for entry (cohort median DAS28 5.71, IQR 5.20-6.09).",
+    dose_range = "40 mg subcutaneously every 14 days (licensed Amgevita regimen), self-administered by pre-filled auto-injector; followed for 12 weeks.",
+    regions = "United Kingdom (three rheumatology centres in Greater Manchester)",
+    notes = "Baseline demographics are Ling 2024 Table 1. Real-world NHS patients recruited to the Personalised Dosing sub-study of BRAGGSS (BRAGGSS-PD) between January 2019 and August 2021; recruitment was curtailed by the COVID-19 pandemic below the planned sample size. Serum adalimumab was measured by Promonitor-ADL-1DV ELISA (Grifols). Optimal sampling times (baseline, 1 h, then 2, 4, 6 and 12 weeks, all pre-dose troughs after the second sample) were designed in PopDes. Samples were NOT tested for anti-drug antibodies, which the paper lists as a limitation; the model therefore carries no immunogenicity term. Doses self-administered between study visits were recorded at their nominal times."
   )
 
   ini({

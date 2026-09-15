@@ -1,8 +1,8 @@
 Standing_2012_oseltamivir <- function() {
   description <- "Population PK model for oral oseltamivir and its active metabolite oseltamivir carboxylate in preterm and term neonates and infants (Standing 2012). One-compartment parent + one-compartment metabolite with first-order absorption, an empirical transit compartment delaying first-pass metabolite appearance, well-stirred-model hepatic first-pass conversion (FM derived from CLI / liver-blood-flow FQ), and physiologically scaled clearances combining (WT/70)^0.75 allometry with a Rhodin 2009 renal-maturation Hill sigmoid on CLU/CLM and a fitted HCE1 Hill sigmoid (PM50 86.1 wk, Hill 3.17) on intrinsic clearance CLI. Volumes (VD, VDM) and liver blood flow (FQ) fixed from external references."
-  reference   <- "Standing JF, Nika A, Tsagris V, Kapetanakis I, Maltezou HC, Kafetzis DA, Tsolia MN. Oseltamivir pharmacokinetics and clinical experience in neonates and infants during an outbreak of H1N1 influenza A virus infection in a neonatal intensive care unit. Antimicrob Agents Chemother. 2012;56(7):3833-3840. doi:10.1128/AAC.00290-12"
-  vignette    <- "Standing_2012_oseltamivir"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  reference <- "Standing JF, Nika A, Tsagris V, Kapetanakis I, Maltezou HC, Kafetzis DA, Tsolia MN. Oseltamivir pharmacokinetics and clinical experience in neonates and infants during an outbreak of H1N1 influenza A virus infection in a neonatal intensive care unit. Antimicrob Agents Chemother. 2012;56(7):3833-3840. doi:10.1128/AAC.00290-12"
+  vignette <- "Standing_2012_oseltamivir"
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Standing 2012 Fig 1 compartment 3 is an empirical transit compartment that
   # delays first-pass metabolite appearance (causing flip-flop kinetics). It is
@@ -14,46 +14,51 @@ Standing_2012_oseltamivir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "oseltamivir", units = "nmol", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "oseltamivir", units = "nmol", specimen = "plasma", verified = FALSE),
-    transit_oselcarb = list(analyte = "oseltamivir carboxylate", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "oseltamivir", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oseltamivir", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit_oselcarb = list(
+      analyte = "oseltamivir carboxylate",
+      units = "nmol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (kg). Used for allometric size scaling on every disposition parameter: (WT/70)^0.75 on CLU, CLM, CLI, and liver blood flow FQ; (WT/70)^1.0 on VD and VDM. Reference weight 70 kg.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (kg). Used for allometric size scaling on every disposition parameter: (WT/70)^0.75 on CLU, CLM, CLI, and liver blood flow FQ; (WT/70)^1.0 on VD and VDM. Reference weight 70 kg.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying in principle but constant within an individual over the 4-sample sparse sampling window of the source study. Source paper Methods (Pharmacokinetic modeling paragraph): 'all volume parameters were scaled with linear weight, and clearance of unchanged oseltamivir and oseltamivir carboxylate was scaled with a renal maturation model published by Rhodin et al. ... For the intrinsic clearance of oseltamivir to oseltamivir carboxylate, weight scaling used a power of 0.75.'",
-      source_name        = "WT"
+      notes = "Time-varying in principle but constant within an individual over the 4-sample sparse sampling window of the source study. Source paper Methods (Pharmacokinetic modeling paragraph): 'all volume parameters were scaled with linear weight, and clearance of unchanged oseltamivir and oseltamivir carboxylate was scaled with a renal maturation model published by Rhodin et al. ... For the intrinsic clearance of oseltamivir to oseltamivir carboxylate, weight scaling used a power of 0.75.'",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age in months (gestational age in weeks / 4.348 + postnatal months). Drives two maturation Hill sigmoids: a Rhodin (2009) renal maturation function applied to CLU and CLM, and a Standing-fitted HCE1 maturation function applied to intrinsic clearance CLI.",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age in months (gestational age in weeks / 4.348 + postnatal months). Drives two maturation Hill sigmoids: a Rhodin (2009) renal maturation function applied to CLU and CLM, and a Standing-fitted HCE1 maturation function applied to intrinsic clearance CLI.",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Range in the Standing 2012 cohort (Table 1) converted to months: ~6.4-12.0 months PAGE (Standing reports postmenstrual age in weeks; here it is rendered in months to match the canonical PAGE convention). The model converts PAGE back to weeks internally for the maturation Hill sigmoids because Standing 2012 and Rhodin 2009 published their TM50 values in weeks. Renal maturation: F_renal(PMA_wk) = PMA_wk^3.4 / (47.7^3.4 + PMA_wk^3.4) from Rhodin et al. 2009 doi:10.1007/s00228-008-0577-4 Table 1 (referenced by Standing 2012 ref 23; the TM50 and Hill values are not reproduced in the Standing text). HCE1 maturation: F_HCE1(PMA_wk) = PMA_wk^3.17 / (86.1^3.17 + PMA_wk^3.17), fitted by Standing 2012 to HCE1 expression data from Yang et al. 2009 (Standing 2012 Fig 2 caption: PM50 = 86.1 weeks; Hill = 3.17).",
-      source_name        = "PMA (weeks)"
+      notes = "Range in the Standing 2012 cohort (Table 1) converted to months: ~6.4-12.0 months PAGE (Standing reports postmenstrual age in weeks; here it is rendered in months to match the canonical PAGE convention). The model converts PAGE back to weeks internally for the maturation Hill sigmoids because Standing 2012 and Rhodin 2009 published their TM50 values in weeks. Renal maturation: F_renal(PMA_wk) = PMA_wk^3.4 / (47.7^3.4 + PMA_wk^3.4) from Rhodin et al. 2009 doi:10.1007/s00228-008-0577-4 Table 1 (referenced by Standing 2012 ref 23; the TM50 and Hill values are not reproduced in the Standing text). HCE1 maturation: F_HCE1(PMA_wk) = PMA_wk^3.17 / (86.1^3.17 + PMA_wk^3.17), fitted by Standing 2012 to HCE1 expression data from Yang et al. 2009 (Standing 2012 Fig 2 caption: PM50 = 86.1 weeks; Hill = 3.17).",
+      source_name = "PMA (weeks)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9,
-    n_studies      = 1,
-    age_range      = "PMA 28-52 weeks (postnatal age 2-86 days; gestational age 24-40 weeks)",
-    age_median     = "PMA 36 weeks",
-    weight_range   = "1.22-3.35 kg",
-    weight_median  = "2.37 kg",
+    species = "human",
+    n_subjects = 9,
+    n_studies = 1,
+    age_range = "PMA 28-52 weeks (postnatal age 2-86 days; gestational age 24-40 weeks)",
+    age_median = "PMA 36 weeks",
+    weight_range = "1.22-3.35 kg",
+    weight_median = "2.37 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Preterm and term neonates / infants in a level-3 NICU during an A(H1N1) influenza outbreak. One subject had laboratory-confirmed H1N1 and received treatment dosing; the remaining eight received prophylaxis. Comorbidities included prematurity, respiratory distress syndrome, patent ductus arteriosus, necrotizing enterocolitis, chronic lung disease, intraventricular hemorrhage, and congenital heart disease.",
-    dose_range     = "Oseltamivir suspension 1 mg/kg every 12 h for PMA <= 37 weeks; 3 mg/kg every 12 h (treatment) or every 24 h (prophylaxis) for PMA > 37 weeks. Administered via nasogastric tube (capsule contents suspended in water per manufacturer instructions).",
-    regions        = "Greece (P. & A. Kyriakou Children's Hospital NICU, Athens).",
+    disease_state = "Preterm and term neonates / infants in a level-3 NICU during an A(H1N1) influenza outbreak. One subject had laboratory-confirmed H1N1 and received treatment dosing; the remaining eight received prophylaxis. Comorbidities included prematurity, respiratory distress syndrome, patent ductus arteriosus, necrotizing enterocolitis, chronic lung disease, intraventricular hemorrhage, and congenital heart disease.",
+    dose_range = "Oseltamivir suspension 1 mg/kg every 12 h for PMA <= 37 weeks; 3 mg/kg every 12 h (treatment) or every 24 h (prophylaxis) for PMA > 37 weeks. Administered via nasogastric tube (capsule contents suspended in water per manufacturer instructions).",
+    regions = "Greece (P. & A. Kyriakou Children's Hospital NICU, Athens).",
     n_observations = "72 plasma observations total (36 oseltamivir + 36 oseltamivir carboxylate). 6 of 36 oseltamivir samples (5 troughs + one 8-h sample) were below the LOQ of 1 ng/mL (~3.20 nM) and were handled by the NONMEM M3 method in the original fit. No carboxylate samples were below the carboxylate LOQ of 10 ng/mL (~35.2 nM).",
-    sampling       = "Predose and 1, 4, and 8 h postdose at presumed steady state (variable numbers of preceding doses across subjects).",
-    notes          = "Demographics and dosing summary from Standing 2012 Table 1. Three subjects had necrotizing enterocolitis and three were receiving total parenteral nutrition without enteral feeding; none showed compromised carboxylate exposure relative to the cohort."
+    sampling = "Predose and 1, 4, and 8 h postdose at presumed steady state (variable numbers of preceding doses across subjects).",
+    notes = "Demographics and dosing summary from Standing 2012 Table 1. Three subjects had necrotizing enterocolitis and three were receiving total parenteral nutrition without enteral feeding; none showed compromised carboxylate exposure relative to the cohort."
   )
 
   ini({

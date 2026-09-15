@@ -39,24 +39,24 @@ Kay_2020_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kay_2020_lumefantrine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; treated as time-fixed within an episode)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; treated as time-fixed within an episode)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Body weight enters on all clearance and volume terms via",
         "allometric power scaling (V exponent 1; CL exponent piecewise on",
         "AGE in months). Reference weight WT_REF = 14 kg approximates the",
@@ -65,14 +65,14 @@ Kay_2020_lumefantrine <- function() {
         "documented as an assumption in the vignette Errata.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (used both for the age-dependent allometric exponent on CL/F and as a continuous covariate on relative bioavailability F)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (used both for the age-dependent allometric exponent on CL/F and as a continuous covariate on relative bioavailability F)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "AGE is supplied in years (canonical units); the model converts",
         "to months internally (AGE * 12) to evaluate the piecewise",
         "allometric exponent breakpoints stated by Kay 2020 (>60, >24-60,",
@@ -83,14 +83,14 @@ Kay_2020_lumefantrine <- function() {
         "Errata.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz-based ART indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz-based ART indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = HIV-infected child receiving efavirenz (EFV)-based ART at",
         "the time of antimalarial dosing; 0 = no concomitant EFV. The",
         "Kay 2020 cohort had 13 HIV+ children on EFV-based ART (of 38",
@@ -106,14 +106,14 @@ Kay_2020_lumefantrine <- function() {
         "(reference [1] of the poster).",
         sep = " "
       ),
-      source_name        = "EFV"
+      source_name = "EFV"
     ),
     CONMED_LPV = list(
-      description        = "Concomitant lopinavir/ritonavir-based ART indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant lopinavir/ritonavir-based ART indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = HIV-infected child receiving lopinavir/ritonavir (LPV/r)-",
         "based ART at the time of antimalarial dosing; 0 = no concomitant",
         "LPV/r. The Kay 2020 cohort had 11 HIV+ children on LPV/r-based",
@@ -129,14 +129,14 @@ Kay_2020_lumefantrine <- function() {
         "exposure reported by Parikh 2016 (reference [1] of the poster).",
         sep = " "
       ),
-      source_name        = "LPVr"
+      source_name = "LPVr"
     ),
     CONMED_NVP = list(
-      description        = "Concomitant nevirapine-based ART indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant nevirapine-based ART indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = HIV-infected child receiving nevirapine (NVP)-based ART at",
         "the time of antimalarial dosing; 0 = no concomitant NVP. The",
         "Kay 2020 cohort had 14 HIV+ children on NVP-based ART (of 38",
@@ -151,29 +151,29 @@ Kay_2020_lumefantrine <- function() {
         "retained in the final model as reported in Table 1.",
         sep = " "
       ),
-      source_name        = "NVP"
+      source_name = "NVP"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 277L,
-    n_studies       = 1L,
-    n_episodes      = 364L,
-    n_hiv_neg       = 161L,
-    n_hiv_pos       = 116L,
-    age_range       = "3 months to ~10 years (paediatric; piecewise allometric exponent breakpoints at 3, 24, and 60 months)",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 277L,
+    n_studies = 1L,
+    n_episodes = 364L,
+    n_hiv_neg = 161L,
+    n_hiv_pos = 116L,
+    age_range = "3 months to ~10 years (paediatric; piecewise allometric exponent breakpoints at 3, 24, and 60 months)",
+    disease_state = paste(
       "Uncomplicated malaria; HIV-infected children additionally on daily",
       "ART (EFV, LPV/r, or NVP) and on trimethoprim-sulfamethoxazole (TS)",
       "prophylaxis against opportunistic infections."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Artemether-lumefantrine (AL) standard pediatric weight-band",
       "dosing per WHO guidelines, BID for 3 days (6 doses)."
     ),
-    regions         = "Uganda (high-malaria-transmission area of eastern Uganda)",
-    notes           = paste(
+    regions = "Uganda (high-malaria-transmission area of eastern Uganda)",
+    notes = paste(
       "Demographics summarized from Kay 2020 ASTMH poster 2167 Methods.",
       "Sub-population genotyped for pfcrt K76 status: 102 HIV- children",
       "(119 episodes) + 38 HIV+ children (57 episodes: 13 EFV, 11 LPV/r,",

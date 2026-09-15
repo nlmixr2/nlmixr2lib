@@ -8,44 +8,44 @@ Hu_2014_bapineuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "bapineuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bapineuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bapineuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; power scaling on CL and Vc with reference 70 kg standardized weight (Hu 2014 abstract and Reduced Covariate Model paragraph). Mean +/- SD body weight in the analysis population was 72.6 +/- 15.2 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Baseline; power scaling on CL and Vc with reference 70 kg standardized weight (Hu 2014 abstract and Reduced Covariate Model paragraph). Mean +/- SD body weight in the analysis population was 72.6 +/- 15.2 kg (Table 1).",
+      source_name = "WT"
     ),
     RACE_WHITE = list(
-      description        = "White (Caucasian) race indicator (1 = Caucasian, 0 = non-Caucasian)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White (Caucasian) race indicator (1 = Caucasian, 0 = non-Caucasian)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (Caucasian; reference for the typical-value parameters CL = 0.17 L/day and Vc = 3.13 L)",
-      notes              = "Multiplicative effect on CL: non-Caucasian subjects have 15% higher CL than the Caucasian reference (Hu 2014 Table 2 'Race on CL' = 1.15). Source paper used a binary Caucasian-vs-non-Caucasian dichotomy without further decomposition. Renamed from the source descriptor 'race' (Caucasian vs non-Caucasian) to canonical RACE_WHITE per inst/references/covariate-columns.md; the typical-value reference is the Caucasian (RACE_WHITE = 1) subgroup, which is the inverse of the Lin 2024 use of the same canonical column.",
-      source_name        = "RACE"
+      notes = "Multiplicative effect on CL: non-Caucasian subjects have 15% higher CL than the Caucasian reference (Hu 2014 Table 2 'Race on CL' = 1.15). Source paper used a binary Caucasian-vs-non-Caucasian dichotomy without further decomposition. Renamed from the source descriptor 'race' (Caucasian vs non-Caucasian) to canonical RACE_WHITE per inst/references/covariate-columns.md; the typical-value reference is the Caucasian (RACE_WHITE = 1) subgroup, which is the inverse of the Lin 2024 use of the same canonical column.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    n_subjects     = 1458,
-    n_studies      = 2,
-    age_range      = "Mean +/- SD 73.0 +/- 8.8 years (Hu 2014 Table 1, overall)",
-    weight_range   = "Mean +/- SD 72.6 +/- 15.2 kg (Hu 2014 Table 1, overall)",
+    n_subjects = 1458,
+    n_studies = 2,
+    age_range = "Mean +/- SD 73.0 +/- 8.8 years (Hu 2014 Table 1, overall)",
+    weight_range = "Mean +/- SD 72.6 +/- 15.2 kg (Hu 2014 Table 1, overall)",
     sex_female_pct = 30.7,
     race_ethnicity = "Predominantly Caucasian (Study 301: 93.6% Caucasian per Hu 2014 Methods; Study 302 was similarly composed). Non-Caucasian subjects pooled into the model's non-Caucasian indicator.",
-    disease_state  = "Mild-to-moderate Alzheimer's disease (baseline SCORE_MMSE 16-26)",
-    dose_range     = "0.5 or 1.0 mg/kg IV (1-hour infusion) every 13 weeks for up to six infusions; an additional 141 patients in Study 301 received 2.0 mg/kg before the protocol was amended and they were transitioned to 1.0 mg/kg",
-    regions        = "Study 301 (APOE4 non-carriers) and Study 302 (APOE4 carriers); both Phase 3 multinational trials (ELN115727-301 and ELN115727-302).",
-    apoe4_status   = "Study 301 enrolled APOE*E4 non-carriers; Study 302 enrolled APOE*E4 carriers. APOE*E4 carrier status was tested as a covariate and had no meaningful effect on PK.",
+    disease_state = "Mild-to-moderate Alzheimer's disease (baseline SCORE_MMSE 16-26)",
+    dose_range = "0.5 or 1.0 mg/kg IV (1-hour infusion) every 13 weeks for up to six infusions; an additional 141 patients in Study 301 received 2.0 mg/kg before the protocol was amended and they were transitioned to 1.0 mg/kg",
+    regions = "Study 301 (APOE4 non-carriers) and Study 302 (APOE4 carriers); both Phase 3 multinational trials (ELN115727-301 and ELN115727-302).",
+    apoe4_status = "Study 301 enrolled APOE*E4 non-carriers; Study 302 enrolled APOE*E4 carriers. APOE*E4 carrier status was tested as a covariate and had no meaningful effect on PK.",
     n_observations = 8040,
     n_blq_excluded = 100,
     bapineuzumab_subjects_only = TRUE,
-    notes          = "n_subjects = 1458 reflects the bapineuzumab-treated subjects whose serum samples (8040 measurements) were analyzed (Hu 2014 abstract and Results). Hu 2014 Table 1 reports n = 1937 for the wider covariate-evaluation dataset that includes placebo subjects. Sex breakdown: Study 301 enrolled 69.3% male per Hu 2014 Methods; Study 302 sex split is not reported in the trimmed text but the paper's Table 1 covers continuous variables only. The 30.7% female value here is computed from the Study 301 male fraction and is documented as an approximation in the vignette."
+    notes = "n_subjects = 1458 reflects the bapineuzumab-treated subjects whose serum samples (8040 measurements) were analyzed (Hu 2014 abstract and Results). Hu 2014 Table 1 reports n = 1937 for the wider covariate-evaluation dataset that includes placebo subjects. Sex breakdown: Study 301 enrolled 69.3% male per Hu 2014 Methods; Study 302 sex split is not reported in the trimmed text but the paper's Table 1 covers continuous variables only. The 30.7% female value here is computed from the Study 301 male fraction and is documented as an approximation in the vignette."
   )
 
   ini({

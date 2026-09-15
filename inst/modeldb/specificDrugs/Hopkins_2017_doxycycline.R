@@ -1,81 +1,81 @@
 Hopkins_2017_doxycycline <- function() {
   description <- "Two-compartment oral population PK model for doxycycline with two transit absorption compartments, fat-free-mass allometric scaling (CL exponent 0.75, V exponent 1.0, reference 70 kg FFM), and Doryx tablet (reference) / Doryx MPC delayed-release tablet / Doryx capsule formulation effects on relative bioavailability and absorption rate, plus a food (fed-status) effect on relative bioavailability and a formulation-dependent food effect on transit rate, plus a 14.4% increase in CL for female sex. Pooled from eight phase 1 healthy-volunteer trials (n = 178)."
-  reference   <- paste(
+  reference <- paste(
     "Hopkins AM, Wojciechowski J, Abuhelwa AY, Mudge S, Upton RN, Foster DJR (2017).",
     "Population pharmacokinetic model of doxycycline plasma concentrations using pooled study data.",
     "Antimicrobial Agents and Chemotherapy 61(5):e02401-16.",
     "doi:10.1128/AAC.02401-16."
   )
   vignette <- "Hopkins_2017_doxycycline"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "doxycycline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "doxycycline", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "doxycycline", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "doxycycline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "doxycycline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "doxycycline", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "doxycycline", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass at baseline; drives allometric scaling.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass at baseline; drives allometric scaling.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 70 kg FFM. Janmahasatian formula (Hopkins 2017 Methods 'General modeling strategy' paragraph 5 citing Janmahasatian 2005). Exponent 0.75 on CL and CLP1; exponent 1.0 on V and VP1.",
-      source_name        = "FFM"
+      notes = "Reference 70 kg FFM. Janmahasatian formula (Hopkins 2017 Methods 'General modeling strategy' paragraph 5 citing Janmahasatian 2005). Exponent 0.75 on CL and CLP1; exponent 1.0 on V and VP1.",
+      source_name = "FFM"
     ),
     SEXF = list(
-      description        = "Female-sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female-sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male).",
-      notes              = "Multiplicative effect on CL: female sex increases CL by 14.4% (Hopkins 2017 Table 3 COVSEX = 0.144).",
-      source_name        = "Sex"
+      notes = "Multiplicative effect on CL: female sex increases CL by 14.4% (Hopkins 2017 Table 3 COVSEX = 0.144).",
+      source_name = "Sex"
     ),
     FED = list(
-      description        = "Dose-record fed-vs-fasted indicator (1 = fed, 0 = fasted).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dose-record fed-vs-fasted indicator (1 = fed, 0 = fasted).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted).",
-      notes              = "Reduces relative bioavailability by 10.5% irrespective of formulation (Table 3 COVFEDF = 0.105 with the paper-reported -10.5% effect direction). Adds 0.203 h to the absorption lag (Table 3 FTLAG2). Reduces KTR by 20.9% for Doryx tablet / Doryx capsule (Table 3 COVFED = -0.209) and by 54.9% for Doryx MPC (Table 3 COVFED2 = -0.549).",
-      source_name        = "Fed status"
+      notes = "Reduces relative bioavailability by 10.5% irrespective of formulation (Table 3 COVFEDF = 0.105 with the paper-reported -10.5% effect direction). Adds 0.203 h to the absorption lag (Table 3 FTLAG2). Reduces KTR by 20.9% for Doryx tablet / Doryx capsule (Table 3 COVFED = -0.209) and by 54.9% for Doryx MPC (Table 3 COVFED2 = -0.549).",
+      source_name = "Fed status"
     ),
     FORM_DOX_DORYX_MPC = list(
-      description        = "Doryx MPC delayed-release tablet formulation indicator (1 = Doryx MPC, 0 = Doryx tablet / Doryx capsule).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Doryx MPC delayed-release tablet formulation indicator (1 = Doryx MPC, 0 = Doryx tablet / Doryx capsule).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Doryx tablet; the reference formulation in Hopkins 2017).",
-      notes              = "Relative bioavailability vs Doryx tablet = 0.863 (Table 3 F1MPC). Adds 0.115 h absorption lag (Table 3 ALAG1, shared with Doryx capsule). Strengthens the food effect on KTR (-54.9% in fed state vs -20.9% for tablet / capsule).",
-      source_name        = "FMPC"
+      notes = "Relative bioavailability vs Doryx tablet = 0.863 (Table 3 F1MPC). Adds 0.115 h absorption lag (Table 3 ALAG1, shared with Doryx capsule). Strengthens the food effect on KTR (-54.9% in fed state vs -20.9% for tablet / capsule).",
+      source_name = "FMPC"
     ),
     FORM_CAPSULE = list(
-      description        = "Doryx (conventional-release) capsule formulation indicator (1 = Doryx capsule, 0 = Doryx tablet / Doryx MPC).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Doryx (conventional-release) capsule formulation indicator (1 = Doryx capsule, 0 = Doryx tablet / Doryx MPC).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Doryx tablet).",
-      notes              = "Relative bioavailability vs Doryx tablet = 0.978 (Table 3 F1CAP). Adds 0.115 h absorption lag (Table 3 ALAG1, shared with Doryx MPC). Capsule shares the food effect on KTR with the Doryx tablet (-20.9% in fed state).",
-      source_name        = "FCAP"
+      notes = "Relative bioavailability vs Doryx tablet = 0.978 (Table 3 F1CAP). Adds 0.115 h absorption lag (Table 3 ALAG1, shared with Doryx MPC). Capsule shares the food effect on KTR with the Doryx tablet (-20.9% in fed state).",
+      source_name = "FCAP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 178L,
-    n_studies      = 8L,
-    age_range      = "18-73 years",
-    age_median     = "28 years (mean)",
-    weight_range   = "47.2-114.4 kg",
-    weight_median  = "75.9 kg (mean)",
+    species = "human",
+    n_subjects = 178L,
+    n_studies = 8L,
+    age_range = "18-73 years",
+    age_median = "28 years (mean)",
+    weight_range = "47.2-114.4 kg",
+    weight_median = "75.9 kg (mean)",
     sex_female_pct = 32.6,
     race_ethnicity = c(`Caucasian/White` = 55.6, Other = 44.4),
-    disease_state  = "Healthy volunteers (no disease state).",
-    dose_range     = "Single or multiple oral doses of 75 / 100 / 120 / 150 / 200 mg as Doryx tablet, Doryx MPC delayed-release tablet, or Doryx capsule.",
-    regions        = "United States",
-    notes          = "Pooled eight phase 1 trials conducted by Mayne Pharma International (study IDs 10, 20, 30, 40, 50, 60, 70, 80). 651 oral doses; 7,093 plasma observations; 12.7% BLOQ (handled via M1 method). Hopkins 2017 Table 1 (demographics) and Table 6 (study designs / LLOQs). Age mean 28 yr; FFM mean 56.3 kg (range 32.3-80.1)."
+    disease_state = "Healthy volunteers (no disease state).",
+    dose_range = "Single or multiple oral doses of 75 / 100 / 120 / 150 / 200 mg as Doryx tablet, Doryx MPC delayed-release tablet, or Doryx capsule.",
+    regions = "United States",
+    notes = "Pooled eight phase 1 trials conducted by Mayne Pharma International (study IDs 10, 20, 30, 40, 50, 60, 70, 80). 651 oral doses; 7,093 plasma observations; 12.7% BLOQ (handled via M1 method). Hopkins 2017 Table 1 (demographics) and Table 6 (study designs / LLOQs). Age mean 28 yr; FFM mean 56.3 kg (range 32.3-80.1)."
   )
 
   ini({

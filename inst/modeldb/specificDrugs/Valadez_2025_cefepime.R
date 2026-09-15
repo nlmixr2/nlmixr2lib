@@ -9,54 +9,54 @@ Valadez_2025_cefepime <- function() {
   # and total (not unbound) plasma cefepime was assayed by LC-MS/MS
   # (Valadez 2025, "Cefepime dosing, sample collection, and bioanalysis").
   compartmentData <- list(
-    central     = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the Cockcroft-Gault equation from serum creatinine, age, sex and total body weight",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the Cockcroft-Gault equation from serum creatinine, age, sex and total body weight",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "RAW Cockcroft-Gault creatinine clearance in mL/min -- NOT BSA-normalized to mL/min/1.73 m^2 (Valadez 2025 Methods, 'Design and patients': 'Creatinine clearance (CrCl) was calculated using the method of Cockcroft and Gault equation'). Enters clearance as the non-linear power term (CRCL / 120)^beta1 with beta1 = 0.76 (Eq 1); the 120 mL/min standardisation is stated in the Table 2 footnote ('creatinine clearance normalized clearance ... (CrCl/120 mL/min)^beta1'). Cohort baseline mean +/- SD 115.8 +/- 88.6 mL/min (Table 1); the very large SD reflects an ICU population spanning renal impairment to augmented renal clearance. Patients on hemodialysis, peritoneal dialysis or CRRT were EXCLUDED from the analysis, so the covariate is never paired with a renal-replacement indicator in this model. Covariates were carried at multiple time points in the source analysis (Fig. 1 legend: 'the Bayesian posterior distribution based on covariate values across all time points'), so CRCL is naturally time-varying; the Results text quotes posterior estimates 'based on covariate values at time zero'. Must be strictly positive -- the covariate enters a power term.",
-      source_name        = "CrCl"
+      notes = "RAW Cockcroft-Gault creatinine clearance in mL/min -- NOT BSA-normalized to mL/min/1.73 m^2 (Valadez 2025 Methods, 'Design and patients': 'Creatinine clearance (CrCl) was calculated using the method of Cockcroft and Gault equation'). Enters clearance as the non-linear power term (CRCL / 120)^beta1 with beta1 = 0.76 (Eq 1); the 120 mL/min standardisation is stated in the Table 2 footnote ('creatinine clearance normalized clearance ... (CrCl/120 mL/min)^beta1'). Cohort baseline mean +/- SD 115.8 +/- 88.6 mL/min (Table 1); the very large SD reflects an ICU population spanning renal impairment to augmented renal clearance. Patients on hemodialysis, peritoneal dialysis or CRRT were EXCLUDED from the analysis, so the covariate is never paired with a renal-replacement indicator in this model. Covariates were carried at multiple time points in the source analysis (Fig. 1 legend: 'the Bayesian posterior distribution based on covariate values across all time points'), so CRCL is naturally time-varying; the Results text quotes posterior estimates 'based on covariate values at time zero'. Must be strictly positive -- the covariate enters a power term.",
+      source_name = "CrCl"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Total body weight (TBW), not ideal or adjusted body weight (Valadez 2025 Table 1 footnote: 'Total body weight (TBW)'). Enters central volume LINEARLY as the ratio (WT / 70), i.e. an allometric exponent fixed at exactly 1 rather than an estimated or 0.75 exponent (Eq 2, and the Table 2 footnote 'weight-normalized (WT/70 kg) volume of distribution (V1 in L)'). Cohort baseline mean +/- SD 83.3 +/- 26.5 kg (Table 1). Weight was extracted from the electronic health record alongside the other covariates and is treated as available at each covariate time point.",
-      source_name        = "TBW"
+      notes = "Total body weight (TBW), not ideal or adjusted body weight (Valadez 2025 Table 1 footnote: 'Total body weight (TBW)'). Enters central volume LINEARLY as the ratio (WT / 70), i.e. an allometric exponent fixed at exactly 1 rather than an estimated or 0.75 exponent (Eq 2, and the Table 2 footnote 'weight-normalized (WT/70 kg) volume of distribution (V1 in L)'). Cohort baseline mean +/- SD 83.3 +/- 26.5 kg (Table 1). Weight was extracted from the electronic health record alongside the other covariates and is treated as available at each covariate time point.",
+      source_name = "TBW"
     ),
     ECMO_STATUS = list(
-      description        = "Extracorporeal membrane oxygenation treatment-status indicator (1 = cannulated onto ECMO, 0 = not on ECMO)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extracorporeal membrane oxygenation treatment-status indicator (1 = cannulated onto ECMO, 0 = not on ECMO)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not receiving ECMO)",
-      notes              = "Binary classifier, stated explicitly in the source: 'ECMO is treated as a binary classifier (0 = no ECMO, 1 = ECMO)' (Valadez 2025 Results, 'Model development and selection'). 9 of 70 patients (12.9%) required ECMO during treatment (Table 1). Modality was predominantly veno-venous (VV) ECMO for respiratory support (Discussion). Enters central volume as the EXPONENTIAL multiplier exp(beta2 * ECMO_STATUS) -- see Eq 2 and Table S1 run 8 ('Model 6 with ECMO on V: V1 * e(beta2*ECMO)'). Retained on Vd only: an ECMO effect on CL improved fit individually (dOFV = 10.2) but was rejected for low precision (CV > 200%) with point estimates near zero, and the combined CL + Vd model was worse than Vd alone (Table S1 runs 7 and 9). Patients on concurrent renal replacement therapy were excluded, so this indicator is not confounded by CRRT in this cohort. Treated as a subject-level indicator here, matching how the source reports it; the source does not resolve within-subject cannulation / decannulation timing (the Discussion lists 'the timing of ECMO initiation ... was not standardized across patients' as a limitation).",
-      source_name        = "ECMO"
+      notes = "Binary classifier, stated explicitly in the source: 'ECMO is treated as a binary classifier (0 = no ECMO, 1 = ECMO)' (Valadez 2025 Results, 'Model development and selection'). 9 of 70 patients (12.9%) required ECMO during treatment (Table 1). Modality was predominantly veno-venous (VV) ECMO for respiratory support (Discussion). Enters central volume as the EXPONENTIAL multiplier exp(beta2 * ECMO_STATUS) -- see Eq 2 and Table S1 run 8 ('Model 6 with ECMO on V: V1 * e(beta2*ECMO)'). Retained on Vd only: an ECMO effect on CL improved fit individually (dOFV = 10.2) but was rejected for low precision (CV > 200%) with point estimates near zero, and the combined CL + Vd model was worse than Vd alone (Table S1 runs 7 and 9). Patients on concurrent renal replacement therapy were excluded, so this indicator is not confounded by CRRT in this cohort. Treated as a subject-level indicator here, matching how the source reports it; the source does not resolve within-subject cannulation / decannulation timing (the Discussion lists 'the timing of ECMO initiation ... was not standardized across patients' as a limitation).",
+      source_name = "ECMO"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 70L,
-    n_studies        = 1L,
-    n_samples        = 114L,
-    age_mean_sd      = "62.1 +/- 14.4 years (mean +/- SD; Table 1). Full range not reported.",
-    weight_mean_sd   = "83.3 +/- 26.5 kg total body weight (mean +/- SD; Table 1). Full range not reported.",
-    bsa_mean_sd      = "1.96 +/- 0.33 m^2 (mean +/- SD; Table 1)",
-    sex_female_pct   = 40,
-    race_ethnicity   = "Not reported. The source tabulates only age, total body weight, BSA, serum creatinine, creatinine clearance, ECMO status and sex (Table 1).",
-    disease_state    = "Mechanically ventilated adults admitted to the Medical Intensive Care Unit at Northwestern Memorial Hospital with suspected pneumonia, treated with cefepime. 9 of 70 (12.9%) required ECMO during treatment, predominantly veno-venous for severe respiratory failure. Baseline serum creatinine 1.12 +/- 0.66 mg/dL and Cockcroft-Gault creatinine clearance 115.8 +/- 88.6 mL/min (Table 1).",
-    renal_function   = "Patients requiring concurrent hemodialysis, peritoneal dialysis or continuous renal replacement therapy were EXCLUDED, which the authors identify as the design feature that let them isolate an ECMO-specific effect uncontaminated by RRT. Renal function spans impairment to augmented renal clearance (CrCl mean 115.8, SD 88.6 mL/min).",
-    dose_range       = "Institutional renal-function-based cefepime protocols; mean +/- SD initial 24 h dose 4.2 +/- 1.7 g/day. Monte Carlo simulations evaluated 2 g IV every 8 h as a 0.5 h intermittent infusion or a 4 h extended infusion, with and without a 2 g or 3 g loading dose given over 0.5 h.",
-    regions          = "United States (single centre, Chicago, Illinois)",
-    protein_binding  = "Not fitted. Total cefepime was quantified in plasma; unbound concentrations for the PK/PD target analysis were derived post hoc by applying a published protein binding of 20% (unbound fraction 0.80) (Valadez 2025 Methods, 'Individual PK/PD target attainment'). The model therefore outputs TOTAL plasma cefepime as Cc; multiply by 0.80 to obtain the free concentration the paper's fT>MIC targets are evaluated against.",
-    sampling         = "Opportunistic residual plasma sampling, 1-14 samples per patient (median 2 in both the ECMO and non-ECMO groups). Measured concentrations 1.7-142.9 mg/L; mean +/- SD time after dose 7.8 +/- 6 h. Assay linear 1-100 mg/L by LC-MS/MS.",
-    notes            = "Retrospective PK/PD study nested within the prospective SCRIPT study (Successful Clinical Response in Pneumonia Treatment), samples collected June 2018 - March 2024. Model estimated with the NPAG non-parametric algorithm in Pmetrics 2.1.1 for R 4.1.2. Final model diagnostics: population predictions R^2 = 0.611, slope 0.901, intercept 6.97, bias 0.213 mg/L, imprecision 8.42 mg^2/L^2; individual posterior predictions R^2 = 0.896, slope 1.02, intercept 1.05, bias -0.0736 mg/L, imprecision 0.989 mg^2/L^2."
+    species = "human",
+    n_subjects = 70L,
+    n_studies = 1L,
+    n_samples = 114L,
+    age_mean_sd = "62.1 +/- 14.4 years (mean +/- SD; Table 1). Full range not reported.",
+    weight_mean_sd = "83.3 +/- 26.5 kg total body weight (mean +/- SD; Table 1). Full range not reported.",
+    bsa_mean_sd = "1.96 +/- 0.33 m^2 (mean +/- SD; Table 1)",
+    sex_female_pct = 40,
+    race_ethnicity = "Not reported. The source tabulates only age, total body weight, BSA, serum creatinine, creatinine clearance, ECMO status and sex (Table 1).",
+    disease_state = "Mechanically ventilated adults admitted to the Medical Intensive Care Unit at Northwestern Memorial Hospital with suspected pneumonia, treated with cefepime. 9 of 70 (12.9%) required ECMO during treatment, predominantly veno-venous for severe respiratory failure. Baseline serum creatinine 1.12 +/- 0.66 mg/dL and Cockcroft-Gault creatinine clearance 115.8 +/- 88.6 mL/min (Table 1).",
+    renal_function = "Patients requiring concurrent hemodialysis, peritoneal dialysis or continuous renal replacement therapy were EXCLUDED, which the authors identify as the design feature that let them isolate an ECMO-specific effect uncontaminated by RRT. Renal function spans impairment to augmented renal clearance (CrCl mean 115.8, SD 88.6 mL/min).",
+    dose_range = "Institutional renal-function-based cefepime protocols; mean +/- SD initial 24 h dose 4.2 +/- 1.7 g/day. Monte Carlo simulations evaluated 2 g IV every 8 h as a 0.5 h intermittent infusion or a 4 h extended infusion, with and without a 2 g or 3 g loading dose given over 0.5 h.",
+    regions = "United States (single centre, Chicago, Illinois)",
+    protein_binding = "Not fitted. Total cefepime was quantified in plasma; unbound concentrations for the PK/PD target analysis were derived post hoc by applying a published protein binding of 20% (unbound fraction 0.80) (Valadez 2025 Methods, 'Individual PK/PD target attainment'). The model therefore outputs TOTAL plasma cefepime as Cc; multiply by 0.80 to obtain the free concentration the paper's fT>MIC targets are evaluated against.",
+    sampling = "Opportunistic residual plasma sampling, 1-14 samples per patient (median 2 in both the ECMO and non-ECMO groups). Measured concentrations 1.7-142.9 mg/L; mean +/- SD time after dose 7.8 +/- 6 h. Assay linear 1-100 mg/L by LC-MS/MS.",
+    notes = "Retrospective PK/PD study nested within the prospective SCRIPT study (Successful Clinical Response in Pneumonia Treatment), samples collected June 2018 - March 2024. Model estimated with the NPAG non-parametric algorithm in Pmetrics 2.1.1 for R 4.1.2. Final model diagnostics: population predictions R^2 = 0.611, slope 0.901, intercept 6.97, bias 0.213 mg/L, imprecision 8.42 mg^2/L^2; individual posterior predictions R^2 = 0.896, slope 1.02, intercept 1.05, bias -0.0736 mg/L, imprecision 0.989 mg^2/L^2."
   )
 
   ini({

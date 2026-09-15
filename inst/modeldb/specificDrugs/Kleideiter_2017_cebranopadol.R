@@ -13,126 +13,126 @@ Kleideiter_2017_cebranopadol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cebranopadol", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cebranopadol", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cebranopadol", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on Vp/F with reference weight 82 kg (Table 14 reference covariate values).",
-      source_name        = "WT"
+      notes = "Power scaling on Vp/F with reference weight 82 kg (Table 14 reference covariate values).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on Vc/F with reference age 55 years (Table 14 reference covariate values).",
-      source_name        = "AGE"
+      notes = "Power scaling on Vc/F with reference age 55 years (Table 14 reference covariate values).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the paper's reference category was female and the canonical reference is male, so the model carries a derived `male` indicator and applies the male effect when SEXF = 0)",
-      notes              = "Kleideiter 2017 uses female sex as the typical-value reference (CL_ref = 74.3 L/h) and reports a male CL of 87.4 L/h. The model derives a male indicator as (1 - SEXF) and applies `e_male_lcl = log(87.4 / 74.3) = 0.162` to it.",
-      source_name        = "SEX"
+      notes = "Kleideiter 2017 uses female sex as the typical-value reference (CL_ref = 74.3 L/h) and reports a male CL of 87.4 L/h. The model derives a male indicator as (1 - SEXF) and applies `e_male_lcl = log(87.4 / 74.3) = 0.162` to it.",
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Methods Section 2.4.1 states CrCl was derived from observed data via Cockcroft-Gault (raw mL/min). Power scaling on CL with reference 106.4 mL/min (Table 14 reference covariate value). Distinct from the canonical CRCL unit (mL/min/1.73 m^2) - follow the `Delattre_2010_amikacin` precedent of using `CRCL` with a per-model unit note.",
-      source_name        = "CRCL"
+      notes = "Methods Section 2.4.1 states CrCl was derived from observed data via Cockcroft-Gault (raw mL/min). Power scaling on CL with reference 106.4 mL/min (Table 14 reference covariate value). Distinct from the canonical CRCL unit (mL/min/1.73 m^2) - follow the `Delattre_2010_amikacin` precedent of using `CRCL` with a per-model unit note.",
+      source_name = "CRCL"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 19 U/L (Table 14 reference covariate value).",
-      source_name        = "ALT"
+      notes = "Power scaling on CL with reference 19 U/L (Table 14 reference covariate value).",
+      source_name = "ALT"
     ),
     CYP2C9_EM = list(
-      description        = "CYP2C9 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C9 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate / poor metabolizer OR unknown phenotype, when paired with CYP2C9_PM_IM)",
-      notes              = "Kleideiter 2017 has three CYP2C9 strata: unknown (most common, reference), extensive metabolizer (EM), and pooled poor/intermediate metabolizer (PM/IM). CYP2C9_EM = 1 only for confirmed EM; CYP2C9_PM_IM = 1 only for confirmed PM/IM; both = 0 indicates unknown phenotype (which the paper's covariate model treats as the typical-value reference, CL = 74.3 L/h).",
-      source_name        = "CYP2C9"
+      notes = "Kleideiter 2017 has three CYP2C9 strata: unknown (most common, reference), extensive metabolizer (EM), and pooled poor/intermediate metabolizer (PM/IM). CYP2C9_EM = 1 only for confirmed EM; CYP2C9_PM_IM = 1 only for confirmed PM/IM; both = 0 indicates unknown phenotype (which the paper's covariate model treats as the typical-value reference, CL = 74.3 L/h).",
+      source_name = "CYP2C9"
     ),
     CYP2C9_PM_IM = list(
-      description        = "CYP2C9 poor-or-intermediate-metabolizer pooled phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C9 poor-or-intermediate-metabolizer pooled phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive metabolizer OR unknown phenotype)",
-      notes              = "Pairs with CYP2C9_EM to encode the three-level Kleideiter 2017 CYP2C9 stratification (unknown reference / EM / PM-IM). PM and IM are pooled in Kleideiter; downstream papers that distinguish PM from IM should register a separate CYP2C9_PM canonical and split this group.",
-      source_name        = "CYP2C9"
+      notes = "Pairs with CYP2C9_EM to encode the three-level Kleideiter 2017 CYP2C9 stratification (unknown reference / EM / PM-IM). PM and IM are pooled in Kleideiter; downstream papers that distinguish PM from IM should register a separate CYP2C9_PM canonical and split this group.",
+      source_name = "CYP2C9"
     ),
     FORM_TABLET = list(
-      description        = "Film-coated tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Film-coated tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (tablet is the typical-value reference for ka, klag, and bioavailability)",
-      notes              = "Kleideiter 2017 has three formulation strata: tablet (reference), oral solution, and liquid-filled capsules. FORM_TABLET = 1 for tablet, FORM_CAPSULE = 1 for capsule, both = 0 indicates oral solution. Tablet is the reference category; absorption-rate, klag, and bioavailability covariate effects are zero at FORM_TABLET = 1, FORM_CAPSULE = 0.",
-      source_name        = "FORMULATION"
+      notes = "Kleideiter 2017 has three formulation strata: tablet (reference), oral solution, and liquid-filled capsules. FORM_TABLET = 1 for tablet, FORM_CAPSULE = 1 for capsule, both = 0 indicates oral solution. Tablet is the reference category; absorption-rate, klag, and bioavailability covariate effects are zero at FORM_TABLET = 1, FORM_CAPSULE = 0.",
+      source_name = "FORMULATION"
     ),
     FORM_CAPSULE = list(
-      description        = "Liquid-filled capsule formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Liquid-filled capsule formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the paired reference is tablet via FORM_TABLET = 1; the third level - oral solution - is encoded as FORM_TABLET = 0 AND FORM_CAPSULE = 0)",
-      notes              = "Pairs with FORM_TABLET to encode the three-level Kleideiter 2017 formulation stratification.",
-      source_name        = "FORMULATION"
+      notes = "Pairs with FORM_TABLET to encode the three-level Kleideiter 2017 formulation stratification.",
+      source_name = "FORMULATION"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy participant indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy participant indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (chronic-low-back-pain / osteoarthritis patient; the most common 'nociceptive pain' category and the bioavailability reference in Table 13)",
-      notes              = "Pairs with DIS_DPN and DIS_BUNIONECTOMY to encode the four-level disease-status stratification (LBP/OA reference, healthy, DPN, bunionectomy).",
-      source_name        = "DIS"
+      notes = "Pairs with DIS_DPN and DIS_BUNIONECTOMY to encode the four-level disease-status stratification (LBP/OA reference, healthy, DPN, bunionectomy).",
+      source_name = "DIS"
     ),
     DIS_DPN = list(
-      description        = "Diabetic polyneuropathy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diabetic polyneuropathy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (LBP/OA reference; complement includes healthy, bunionectomy, LBP, OA)",
-      notes              = "Pairs with DIS_HEALTHY and DIS_BUNIONECTOMY to encode the Kleideiter 2017 disease-status stratification.",
-      source_name        = "DIS"
+      notes = "Pairs with DIS_HEALTHY and DIS_BUNIONECTOMY to encode the Kleideiter 2017 disease-status stratification.",
+      source_name = "DIS"
     ),
     DIS_BUNIONECTOMY = list(
-      description        = "Post-bunionectomy acute-pain indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Post-bunionectomy acute-pain indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (LBP/OA reference; complement includes healthy, DPN, LBP, OA)",
-      notes              = "Pairs with DIS_HEALTHY and DIS_DPN to encode the Kleideiter 2017 disease-status stratification. The 2018 correction swaps the Table 13 row labels for bunionectomy and DPN bioavailability: bunionectomy patients have F = 1.801 (this entry) and DPN patients have F = 1.132 (corrected; the uncorrected paper had these values swapped).",
-      source_name        = "DIS"
+      notes = "Pairs with DIS_HEALTHY and DIS_DPN to encode the Kleideiter 2017 disease-status stratification. The 2018 correction swaps the Table 13 row labels for bunionectomy and DPN bioavailability: bunionectomy patients have F = 1.801 (this entry) and DPN patients have F = 1.132 (corrected; the uncorrected paper had these values swapped).",
+      source_name = "DIS"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1293L,
-    n_studies      = 14L,
-    age_range      = "18-79 years (Phase I 18-64, Phase II 18-79)",
-    age_median     = "33 years Phase I; 58 years Phase II (Section 3.2.7)",
-    weight_range   = "45.4-197 kg (across pooled Trials 1-14, Table 12)",
-    weight_median  = "73.9-99 kg per trial (Table 12); covariate-model reference 82 kg",
+    species = "human",
+    n_subjects = 1293L,
+    n_studies = 14L,
+    age_range = "18-79 years (Phase I 18-64, Phase II 18-79)",
+    age_median = "33 years Phase I; 58 years Phase II (Section 3.2.7)",
+    weight_range = "45.4-197 kg (across pooled Trials 1-14, Table 12)",
+    weight_median = "73.9-99 kg per trial (Table 12); covariate-model reference 82 kg",
     sex_female_pct = 52.3,
     race_ethnicity = "Not reported in this paper.",
-    disease_state  = "Healthy adults (Phase I, Trials 1-8) and patients with chronic pain conditions: bunionectomy acute pain (Trial 9), diabetic polyneuropathy (Trials 10, 12, 14), osteoarthritis (Trial 11), chronic low back pain (Trials 4, 13).",
-    dose_range     = "0.8 ug single dose to 1600 ug/day multiple dose, oral immediate-release (tablet, liquid-filled capsule, oral solution).",
-    regions        = "Not specified (sponsor Gruenenthal GmbH and Forest Research Institute; EudraCT and ClinicalTrials.gov registrations).",
-    notes          = "Pooled population PK analysis across 8 Phase I and 6 Phase II trials. Table 12 lists per-trial demographics; reference covariate values (Table 14): age = 55 y, CrCl = 106.4 mL/min, weight = 82 kg, ALT = 19 U/L; most common categorical values: female sex, tablet formulation, nociceptive-pain disease status (LBP/OA), unknown CYP2C9 phenotype. Sex composition (~52% female) is approximate from Table 12 per-trial counts."
+    disease_state = "Healthy adults (Phase I, Trials 1-8) and patients with chronic pain conditions: bunionectomy acute pain (Trial 9), diabetic polyneuropathy (Trials 10, 12, 14), osteoarthritis (Trial 11), chronic low back pain (Trials 4, 13).",
+    dose_range = "0.8 ug single dose to 1600 ug/day multiple dose, oral immediate-release (tablet, liquid-filled capsule, oral solution).",
+    regions = "Not specified (sponsor Gruenenthal GmbH and Forest Research Institute; EudraCT and ClinicalTrials.gov registrations).",
+    notes = "Pooled population PK analysis across 8 Phase I and 6 Phase II trials. Table 12 lists per-trial demographics; reference covariate values (Table 14): age = 55 y, CrCl = 106.4 mL/min, weight = 82 kg, ALT = 19 U/L; most common categorical values: female sex, tablet formulation, nociceptive-pain disease status (LBP/OA), unknown CYP2C9 phenotype. Sex composition (~52% female) is approximate from Table 12 per-trial counts."
   )
 
   ini({

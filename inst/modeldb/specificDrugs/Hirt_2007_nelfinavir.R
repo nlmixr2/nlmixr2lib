@@ -29,12 +29,16 @@ Hirt_2007_nelfinavir <- function() {
   )
   vignette <- "Hirt_2007_nelfinavir"
   paper_specific_compartments <- c(
-    "mother_m8", "cord_n", "cord_m8", "af_n", "af_m8"
+    "mother_m8",
+    "cord_n",
+    "cord_m8",
+    "af_n",
+    "af_m8"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -43,28 +47,28 @@ Hirt_2007_nelfinavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot     = list(analyte = "nelfinavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central   = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nelfinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
     mother_m8 = list(analyte = "M8 metabolite of nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
-    cord_n    = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
-    cord_m8   = list(analyte = "M8 metabolite of nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
-    af_n      = list(analyte = "nelfinavir", units = "mg", specimen = "faeces", verified = FALSE),
-    af_m8     = list(analyte = "M8 metabolite of nelfinavir", units = "mg", specimen = "faeces", verified = FALSE)
+    cord_n = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    cord_m8 = list(analyte = "M8 metabolite of nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    af_n = list(analyte = "nelfinavir", units = "mg", specimen = "faeces", verified = FALSE),
+    af_m8 = list(analyte = "M8 metabolite of nelfinavir", units = "mg", specimen = "faeces", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = paste(
+      description = paste(
         "Body weight. Used as a continuous covariate through two power",
         "scalings: on the maternal nelfinavir clearance CL_Nm_No within",
         "the day-of-delivery cohort only ((WT/73)^2.81), and on the M8",
         "maternal elimination rate k_M8m_M8o on the full database",
         "((WT/63)^1.41)."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Two reference body weights apply: 73 kg for the delivery-group",
         "CL effect (paper Results: '10 kg increase from mean bodyweight",
         "increased CL_Nm_No 1.44 fold'; Table 1 reports mean weight",
@@ -74,10 +78,10 @@ Hirt_2007_nelfinavir <- function() {
         "1.23'). Treat as time-fixed at the value recorded at the",
         "sampling occasion."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PREG = list(
-      description        = paste(
+      description = paste(
         "Pregnancy indicator. 1 = pregnant (sampled before the day of",
         "delivery); 0 = non-pregnant. In Hirt 2007 the indicator is",
         "explicitly turned off on the day of delivery (paper Methods:",
@@ -85,10 +89,10 @@ Hirt_2007_nelfinavir <- function() {
         "one for delivery'), so PREG and DAY_DELIVERY are mutually",
         "exclusive in the source coding."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-pregnant)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect (1 + theta_PREG * PREG) on the M8",
         "maternal elimination rate k_M8m_M8o, with theta_PREG = 0.67",
         "(67 percent higher M8 elimination in pregnant non-delivery",
@@ -97,10 +101,10 @@ Hirt_2007_nelfinavir <- function() {
         "(OFV penalty of 5 units, below the 7-unit retention threshold)",
         "so the final model carries PREG only on k_M8m_M8o."
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     DAY_DELIVERY = list(
-      description        = paste(
+      description = paste(
         "Day-of-delivery indicator. 1 = sample collected on the day of",
         "delivery; 0 = otherwise. Per the paper's coding the indicator",
         "is mutually exclusive with PREG = 1. Affects maternal nelfinavir",
@@ -108,10 +112,10 @@ Hirt_2007_nelfinavir <- function() {
         "volume (+92 percent), and gates a body-weight power effect on",
         "CL within the delivery cohort only."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not day of delivery)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect (1 + theta_DEL * DAY_DELIVERY) on both",
         "CL_Nm_No and V with the shared theta_DEL = 1.92 (paper Results:",
         "'the same delivery effect on both V and CL_Nm_No, acting in",
@@ -124,10 +128,10 @@ Hirt_2007_nelfinavir <- function() {
         "future placental-transfer / labour-PK papers can ratify general",
         "scope."
       ),
-      source_name        = "DEL"
+      source_name = "DEL"
     ),
     CONMED_NNRTI = list(
-      description        = paste(
+      description = paste(
         "Concomitant non-nucleoside reverse-transcriptase inhibitor",
         "(NNRTI) coadministration indicator. 1 = subject is on any",
         "NNRTI (efavirenz, nevirapine, delavirdine, etravirine, or",
@@ -136,10 +140,10 @@ Hirt_2007_nelfinavir <- function() {
         "increase clearance of co-administered drugs metabolised by",
         "these pathways."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no NNRTI)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect (1 + theta_NNRTI * CONMED_NNRTI) on the",
         "M8 maternal elimination rate k_M8m_M8o with theta_NNRTI = 1.48",
         "(148 percent higher M8 elimination in NNRTI-exposed women).",
@@ -148,18 +152,18 @@ Hirt_2007_nelfinavir <- function() {
         "therapy. The indicator is a class-level CYP-induction flag",
         "rather than a single-drug indicator."
       ),
-      source_name        = "NNRTI"
+      source_name = "NNRTI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 196L,
-    n_studies      = 2L,
-    age_range      = "32-34 years (mean 32.7 +/- 4.4 at delivery; 33.4 +/- 4.5 non-delivery cohorts)",
-    weight_range   = "approx 50-90 kg (mean 73 +/- 14 kg at delivery; 65 +/- 15 kg non-delivery cohorts)",
+    species = "human",
+    n_subjects = 196L,
+    n_studies = 2L,
+    age_range = "32-34 years (mean 32.7 +/- 4.4 at delivery; 33.4 +/- 4.5 non-delivery cohorts)",
+    weight_range = "approx 50-90 kg (mean 73 +/- 14 kg at delivery; 65 +/- 15 kg non-delivery cohorts)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult women with HIV-1 infection receiving oral nelfinavir as part",
       "of antiretroviral therapy. 75 women were sampled on the day of",
       "delivery (gestational age 31-41 weeks, median 38 weeks); 53",
@@ -170,13 +174,13 @@ Hirt_2007_nelfinavir <- function() {
       "the subject total). Four women co-administered with ritonavir were",
       "excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "750 mg three times daily or 1250 mg twice daily, oral. 92 percent",
       "of delivery-cohort women and 82 percent of non-delivery-cohort",
       "women were on the twice-daily regimen."
     ),
-    regions        = "France (Port Royal Hospital, Paris; Louis Mourier Hospital, Colombes)",
-    notes          = paste(
+    regions = "France (Port Royal Hospital, Paris; Louis Mourier Hospital, Colombes)",
+    notes = paste(
       "Demographics from Hirt 2007 Table 1. The model was fit to 292",
       "nelfinavir / M8 samples in maternal plasma (77 at delivery + 215",
       "from pregnant / non-pregnant cohorts), 77 umbilical-plasma",

@@ -5,21 +5,21 @@ LledoGarcia_2022_rozanolixizumab_cyno <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "rozanolixizumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "rozanolixizumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rozanolixizumab", units = "mg", specimen = "tissue", verified = TRUE),
-    total_igg   = list(analyte = "endogenous immunoglobulin G", units = "g/L", specimen = "plasma", verified = TRUE)
+    total_igg = list(analyte = "endogenous immunoglobulin G", units = "g/L", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "cynomolgus monkey (Macaca fascicularis)",
-    n_subjects    = 12L,
-    n_studies     = 1L,
+    species = "cynomolgus monkey (Macaca fascicularis)",
+    n_subjects = 12L,
+    n_studies = 1L,
     sex_female_pct = 0,
     disease_state = "healthy young adult animals",
-    dose_range    = "5, 10 and 30 mg/kg single intravenous infusion",
-    weight_range  = "at least 2.3 kg",
-    age_range     = "approximately 135-185 weeks at first dose",
-    notes         = paste(
+    dose_range = "5, 10 and 30 mg/kg single intravenous infusion",
+    weight_range = "at least 2.3 kg",
+    age_range = "approximately 135-185 weeks at first dose",
+    notes = paste(
       "Only single-dose intravenous data were used for model development; multiple-dose data collected before",
       "antidrug antibodies were detected were used for external validation (Lledo-Garcia 2022 Methods, and",
       "Figure S2 of the supplement). The underlying animal study is Smith B, Kiessling A, Lledo-Garcia R, et al.",

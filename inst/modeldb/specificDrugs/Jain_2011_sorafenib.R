@@ -17,103 +17,103 @@ Jain_2011_sorafenib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sorafenib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sorafenib", units = "mg", specimen = "plasma", verified = FALSE),
     gallbladder = list(analyte = "sorafenib", units = "mg", specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on V/F with the exponent FIXED to 1 (linear) and reference weight 80 kg (the cohort median). Body weight was the only covariate retained in the final PPK model (Table 3, p. 300). The paper notes that inclusion of WT on V/F explained only ~4% of IIV in V/F but reached the OFV-significance threshold during the stepwise forward-addition step.",
-      source_name        = "WT"
+      notes = "Allometric scaling on V/F with the exponent FIXED to 1 (linear) and reference weight 80 kg (the cohort median). Body weight was the only covariate retained in the final PPK model (Table 3, p. 300). The paper notes that inclusion of WT on V/F explained only ~4% of IIV in V/F but reached the OFV-significance threshold during the stepwise forward-addition step.",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     BSA = list(
       description = "Body surface area (Dubois & Dubois formula)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened during covariate model building but not retained in the final model (Table 2 / Results, p. 300)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened during covariate model building but not retained in the final model (Table 2 / Results, p. 300)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (p. 300)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (p. 300)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Mean body weight was higher for males (87 kg vs 71 kg, p < 0.0001). Tested as a covariate but not retained in the final model after stepwise backward elimination (p. 300)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Mean body weight was higher for males (87 kg vs 71 kg, p < 0.0001). Tested as a covariate but not retained in the final model after stepwise backward elimination (p. 300)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Identified as significant on V/F during initial covariate evaluation but not retained in the final model because of statistically insignificant increases in OFV during stepwise backward elimination (p. 300)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Identified as significant on V/F during initial covariate evaluation but not retained in the final model because of statistically insignificant increases in OFV during stepwise backward elimination (p. 300)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Identified as significant on V/F during initial covariate evaluation but not retained in the final model (p. 300)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Identified as significant on V/F during initial covariate evaluation but not retained in the final model (p. 300)."
     ),
     CLCR = list(
       description = "Creatinine clearance (Cockcroft-Gault formula)",
-      units       = "mL/s",
-      type        = "continuous",
-      notes       = "Screened but not retained (p. 300)."
+      units = "mL/s",
+      type = "continuous",
+      notes = "Screened but not retained (p. 300)."
     ),
     CYP3A4_1B = list(
       description = "CYP3A4*1B genotype (heterozygous/homozygous variant indicator)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened but not retained; genetic polymorphisms in CYP3A4*1B, CYP3A5*3C, and UGT1A9*3 did not have any significant effect on PK model parameters (p. 300). UGT1A9*5 was non-polymorphic in the cohort."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened but not retained; genetic polymorphisms in CYP3A4*1B, CYP3A5*3C, and UGT1A9*3 did not have any significant effect on PK model parameters (p. 300). UGT1A9*5 was non-polymorphic in the cohort."
     ),
     CYP3A5_3C = list(
       description = "CYP3A5*3C genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened but not retained (p. 300)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened but not retained (p. 300)."
     ),
     UGT1A9_3 = list(
       description = "UGT1A9*3 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened but not retained (p. 300). The UGT1A9*3 polymorphism did not follow Hardy-Weinberg equilibrium in the cohort due to small numbers of variant carriers."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened but not retained (p. 300). The UGT1A9*3 polymorphism did not follow Hardy-Weinberg equilibrium in the cohort due to small numbers of variant carriers."
     ),
     UGT1A9_5 = list(
       description = "UGT1A9*5 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "None of the patients carried the variant allele for UGT1A9*5; not evaluable (p. 300)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "None of the patients carried the variant allele for UGT1A9*5; not evaluable (p. 300)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 111L,
-    n_studies      = 5L,
-    age_range      = "30.3-84.9 years",
-    age_median     = "63.9 years",
-    weight_range   = "50.1-132.5 kg",
-    weight_median  = "81.4 kg",
+    species = "human",
+    n_subjects = 111L,
+    n_studies = 5L,
+    age_range = "30.3-84.9 years",
+    age_median = "63.9 years",
+    weight_range = "50.1-132.5 kg",
+    weight_median = "81.4 kg",
     sex_female_pct = 31,
     race_ethnicity = c(Caucasian = 81, AfricanAmerican = 11, Other = 8),
-    disease_state  = "Adults with metastatic castrate-resistant prostate cancer (PC, n=46), non-small cell lung cancer (NSCLC, n=18), colorectal cancer (CRC, n=18), other solid tumours (ST, n=28), or Kaposi's sarcoma (KS, n=2). Five phase I/II open-label, single-arm, single-centre trials at the US NCI.",
-    dose_range     = "Sorafenib 200 or 400 mg twice daily (oral, continuous cycles) as a single agent or in combination with cetuximab, bevacizumab, or a protease inhibitor.",
-    regions        = "USA (National Cancer Institute, Bethesda MD).",
-    notes          = "Baseline demographics from Table 2 (n = 111 total). Median (range) bodyweight 81.4 (35.2-132.5) kg; the ST and KS cohorts in Table 2 also list small numbers within-cohort ranges (e.g. ST 92.3-94.0). The cohort was predominantly male Caucasian. All patients were genotyped for CYP3A4*1B, CYP3A5*3C, UGT1A9*3, and UGT1A9*5 SNPs. A total of 1249 sorafenib concentrations were used for PPK model building, of which 3.3% were below the LLOQ and reported as actual values (p. 298). One patient was excluded from analysis because of extremely low plasma concentrations (Results, p. 298)."
+    disease_state = "Adults with metastatic castrate-resistant prostate cancer (PC, n=46), non-small cell lung cancer (NSCLC, n=18), colorectal cancer (CRC, n=18), other solid tumours (ST, n=28), or Kaposi's sarcoma (KS, n=2). Five phase I/II open-label, single-arm, single-centre trials at the US NCI.",
+    dose_range = "Sorafenib 200 or 400 mg twice daily (oral, continuous cycles) as a single agent or in combination with cetuximab, bevacizumab, or a protease inhibitor.",
+    regions = "USA (National Cancer Institute, Bethesda MD).",
+    notes = "Baseline demographics from Table 2 (n = 111 total). Median (range) bodyweight 81.4 (35.2-132.5) kg; the ST and KS cohorts in Table 2 also list small numbers within-cohort ranges (e.g. ST 92.3-94.0). The cohort was predominantly male Caucasian. All patients were genotyped for CYP3A4*1B, CYP3A5*3C, UGT1A9*3, and UGT1A9*5 SNPs. A total of 1249 sorafenib concentrations were used for PPK model building, of which 3.3% were below the LLOQ and reported as actual values (p. 298). One patient was excluded from analysis because of extremely low plasma concentrations (Results, p. 298)."
   )
 
   ini({

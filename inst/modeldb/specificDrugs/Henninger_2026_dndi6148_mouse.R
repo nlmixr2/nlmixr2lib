@@ -35,59 +35,64 @@ Henninger_2026_dndi6148_mouse <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling of Vmax/F (exponent 0.75) and V/F (exponent 1) about the",
         "cohort median mouse weight of 22 g = 0.022 kg (Henninger 2026 Equations 1-2",
         "and Table 1 footnote b). The paper writes WT in grams; the canonical WT",
         "column is in kg, so the reference is 0.022 kg and the RATIO is unchanged."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_DNDI6148_MGKG = list(
-      description        = "Administered DNDI-6148 oral dose level",
-      units              = "mg/kg (free base)",
-      type               = "continuous",
+      description = "Administered DNDI-6148 oral dose level",
+      units = "mg/kg (free base)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on relative oral bioavailability normalised to the lowest",
         "studied dose level, F = (DOSE_DNDI6148_MGKG / 6.25)^e_dose_fdepot",
         "(Table 1 footnote c). Time-fixed per animal: each mouse stays on one dose",
         "level for the whole 10-day bid course. Needed as a data column because",
         "rxode2 cannot read the amt of the dose record it is scaling."
       ),
-      source_name        = "dose"
+      source_name = "dose"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "DNDI-6148", units = "ug",        specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "DNDI-6148", units = "ug",        specimen = "plasma",              verified = TRUE),
-    skin        = list(analyte = "DNDI-6148", units = "ug/L",      specimen = "tissue",              verified = TRUE),
-    liver       = list(analyte = "DNDI-6148", units = "ug/L",      specimen = "tissue",              verified = TRUE),
-    spleen      = list(analyte = "DNDI-6148", units = "ug/L",      specimen = "tissue",              verified = TRUE),
-    parasites   = list(analyte = "Leishmania major bioluminescence", units = "photons/s", specimen = "tissue", verified = TRUE),
-    lesion_size = list(analyte = "cutaneous lesion area",           units = "mm^2",      specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "DNDI-6148", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "DNDI-6148", units = "ug", specimen = "plasma", verified = TRUE),
+    skin = list(analyte = "DNDI-6148", units = "ug/L", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "DNDI-6148", units = "ug/L", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "DNDI-6148", units = "ug/L", specimen = "tissue", verified = TRUE),
+    parasites = list(
+      analyte = "Leishmania major bioluminescence",
+      units = "photons/s",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    lesion_size = list(analyte = "cutaneous lesion area", units = "mm^2", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "mouse (female BALB/c, Leishmania major Friedlin:Luc infected)",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    weight_median  = "22 g (0.022 kg), the median used to normalise the allometric terms",
+    species = "mouse (female BALB/c, Leishmania major Friedlin:Luc infected)",
+    n_subjects = 30L,
+    n_studies = 1L,
+    weight_median = "22 g (0.022 kg), the median used to normalise the allometric terms",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Cutaneous leishmaniasis. Mice were infected in the rump with 4e7 stationary-phase",
       "L. major Friedlin REH promastigotes (0.2 mL subcutaneous) and randomised once they",
       "had developed a mean lesion diameter of 6.12 +/- 0.90 mm and a bioluminescence",
       "signal of 1.35e8 +/- 7.64e7 photons/s (Supplementary methods S1). Treatment started",
       "14 days post-infection."
     ),
-    dose_range     = "6.25, 12.5, 25 and 50 mg/kg DNDI-6148 arginine monohydrate (free-base basis) by oral gavage, twice daily for 10 days; dose intervals 8-12 h",
-    notes          = paste(
+    dose_range = "6.25, 12.5, 25 and 50 mg/kg DNDI-6148 arginine monohydrate (free-base basis) by oral gavage, twice daily for 10 days; dose intervals 8-12 h",
+    notes = paste(
       "36 mice were infected in six groups of six (Supplementary methods S1); the 30",
       "animals in this model are the 24 DNDI-6148-treated mice plus the 6 vehicle",
       "controls. The sixth group (paromomycin 50 mg/kg qd IP) was an active comparator",

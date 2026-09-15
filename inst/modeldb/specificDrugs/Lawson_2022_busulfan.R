@@ -8,52 +8,52 @@ Lawson_2022_busulfan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (TBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (TBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in the source analysis. Combined with FFM to compute parameter-specific normal fat mass (NFM = FFM + Ffat * (WT - FFM)) for allometric scaling. Reference adult TBW corresponds to 70 kg (Lawson 2022 Methods, Equation 2 and Table 3 footnote).",
-      source_name        = "TBW"
+      notes = "Time-fixed at baseline in the source analysis. Combined with FFM to compute parameter-specific normal fat mass (NFM = FFM + Ffat * (WT - FFM)) for allometric scaling. Reference adult TBW corresponds to 70 kg (Lawson 2022 Methods, Equation 2 and Table 3 footnote).",
+      source_name = "TBW"
     ),
     FFM = list(
-      description        = "Fat-free mass (Al-Sallami 2015 pediatric extension of the Janmahasatian 2005 semi-mechanistic model, derived from TBW, height, age, and sex)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Al-Sallami 2015 pediatric extension of the Janmahasatian 2005 semi-mechanistic model, derived from TBW, height, age, and sex)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Combined with WT to compute parameter-specific NFM. NFM reference values for a 70 kg TBW adult are 62 kg for CL (Ffat = 0.509), 59 kg for V1 and V2 (Ffat = 0.203), and 56.1 kg for Q (Ffat = 0); Ffat values are fixed a priori per McCune 2014 (Lawson 2022 Methods + Table 3).",
-      source_name        = "FFM"
+      notes = "Time-fixed at baseline. Combined with WT to compute parameter-specific NFM. NFM reference values for a 70 kg TBW adult are 62 kg for CL (Ffat = 0.509), 59 kg for V1 and V2 (Ffat = 0.203), and 56.1 kg for Q (Ffat = 0); Ffat values are fixed a priori per McCune 2014 (Lawson 2022 Methods + Table 3).",
+      source_name = "FFM"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Subjects in the source dataset were assumed to have been born at term, so PAGE = postnatal age + 40 weeks. Drives the Hill maturation function on CL with TM50 = 45.6 weeks and Hill = 2.3 (both fixed; Lawson 2022 Methods Equation 3 and Table 3). PAGE is canonical in months and is converted to weeks inside the model.",
-      source_name        = "PMA"
+      notes = "Subjects in the source dataset were assumed to have been born at term, so PAGE = postnatal age + 40 weeks. Drives the Hill maturation function on CL with TM50 = 45.6 weeks and Hill = 2.3 (both fixed; Lawson 2022 Methods Equation 3 and Table 3). PAGE is canonical in months and is converted to weeks inside the model.",
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    n_subjects     = 95,
-    n_studies      = 1,
-    n_centers      = 4,
-    age_range      = "0.735-17.2 years",
-    age_median     = "4.20 years",
-    weight_range   = "7.77-83.3 kg",
-    weight_median  = "17.0 kg",
-    bmi_range      = "13.35-32.39 kg/m^2",
-    bmi_median     = "18.2 kg/m^2",
+    n_subjects = 95,
+    n_studies = 1,
+    n_centers = 4,
+    age_range = "0.735-17.2 years",
+    age_median = "4.20 years",
+    weight_range = "7.77-83.3 kg",
+    weight_median = "17.0 kg",
+    bmi_range = "13.35-32.39 kg/m^2",
+    bmi_median = "18.2 kg/m^2",
     sex_female_pct = 48.4,
-    disease_state  = "Pediatric hematopoietic stem cell transplant (HSCT) recipients (80 with malignant disease, 15 non-malignant) receiving once-daily IV busulfan as part of conditioning",
-    dose_range     = "Initial 3.2-4.8 mg/kg/dose IV over ~3 h per Australian Busulfex product information weight bands (<9 kg: 4 mg/kg; 9 to <16 kg: 4.8 mg/kg; 16-23 kg: 4.4 mg/kg; >23-34 kg: 3.8 mg/kg; >34 kg: 3.2 mg/kg). Subsequent doses across 4 days were individualized to a cumulative AUC target near 90 mg.h/L.",
-    regions        = "Australia (Brisbane, Perth, Sydney) and New Zealand (Auckland)",
-    notes          = "Lawson 2022 Tables 1-2 and Subjects/data section; data collected 2016-2021 across 4 children's hospitals (80/95 from Queensland Children's Hospital). Conditioning regimens included Bu/Flu (25.3%), Bu/Flu/TT (25.3%), Bu/Mel (22.1%), Bu/Flu/Mel (20%), Bu/Cy (5.3%), and other (2.1%). Final dataset: 379 dosing days, 2491 plasma busulfan concentrations."
+    disease_state = "Pediatric hematopoietic stem cell transplant (HSCT) recipients (80 with malignant disease, 15 non-malignant) receiving once-daily IV busulfan as part of conditioning",
+    dose_range = "Initial 3.2-4.8 mg/kg/dose IV over ~3 h per Australian Busulfex product information weight bands (<9 kg: 4 mg/kg; 9 to <16 kg: 4.8 mg/kg; 16-23 kg: 4.4 mg/kg; >23-34 kg: 3.8 mg/kg; >34 kg: 3.2 mg/kg). Subsequent doses across 4 days were individualized to a cumulative AUC target near 90 mg.h/L.",
+    regions = "Australia (Brisbane, Perth, Sydney) and New Zealand (Auckland)",
+    notes = "Lawson 2022 Tables 1-2 and Subjects/data section; data collected 2016-2021 across 4 children's hospitals (80/95 from Queensland Children's Hospital). Conditioning regimens included Bu/Flu (25.3%), Bu/Flu/TT (25.3%), Bu/Mel (22.1%), Bu/Flu/Mel (20%), Bu/Cy (5.3%), and other (2.1%). Final dataset: 379 dosing days, 2491 plasma busulfan concentrations."
   )
 
   ini({

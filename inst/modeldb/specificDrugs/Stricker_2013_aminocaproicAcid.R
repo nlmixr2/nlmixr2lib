@@ -20,8 +20,8 @@ Stricker_2013_aminocaproicAcid <- function() {
   )
   vignette <- "Stricker_2013_aminocaproicAcid"
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -29,17 +29,17 @@ Stricker_2013_aminocaproicAcid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "aminocaproicAcid", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "aminocaproicAcid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "aminocaproicAcid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study inclusion",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study inclusion",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed within the surgical window. Allometric scaling per",
         "Stricker 2013 Table 4 footnote: CL and Q are scaled by",
         "(WT/8.82)^0.75 and V1 and V2 by (WT/8.82)^1.0. Reference weight",
@@ -47,14 +47,14 @@ Stricker_2013_aminocaproicAcid <- function() {
         "(Methods 'Base model'). The allometric exponents 0.75 and 1 are",
         "fixed per physiologic-size convention (Anderson and Holford 2008)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     PNA = list(
-      description        = "Postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed within the surgical window. The paper reports postnatal",
         "age in weeks and models an asymptotically increasing maturation",
         "effect on CL: CL_age = AGE / (7.36 + AGE) with AGE in weeks (Table",
@@ -65,14 +65,14 @@ Stricker_2013_aminocaproicAcid <- function() {
         "precedent established this PNA-unit-reparameterisation pattern.",
         "Source column 'age (weeks)' -> canonical PNA in months."
       ),
-      source_name        = "age (weeks)"
+      source_name = "age (weeks)"
     ),
     INTRAOP = list(
-      description        = "Intra-operative period indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intra-operative period indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pre- or post-operative)",
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. 1 = the observation falls within the",
         "intra-operative period (between the post-loading-dose PK sample",
         "and skin closure / end of surgery, per Stricker 2013 Methods 'PK",
@@ -81,20 +81,20 @@ Stricker_2013_aminocaproicAcid <- function() {
         "during the intra-operative window: CL_intraop = 0.89 * CL_postop,",
         "V1_intraop = 0.80 * V1_postop (Table 4)."
       ),
-      source_name        = "intra-operative period"
+      source_name = "intra-operative period"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_range      = "27-107 weeks postnatal (2-24 months)",
-    age_median     = "39 weeks",
-    weight_range   = "6.7-11.8 kg",
-    weight_median  = "8.8 kg",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "27-107 weeks postnatal (2-24 months)",
+    age_median = "39 weeks",
+    weight_range = "6.7-11.8 kg",
+    weight_median = "8.8 kg",
     sex_female_pct = 55.6,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy infants 2-24 months of age undergoing craniofacial",
       "reconstruction surgery (most commonly fronto-orbital advancement",
       "for unicoronal, metopic, lambdoid or sagittal synostosis, and a",
@@ -102,7 +102,7 @@ Stricker_2013_aminocaproicAcid <- function() {
       "Patients with abnormal renal function or known coagulation",
       "disorders were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Three dose-escalation cohorts of 6 infants each. Each subject",
       "received an IV loading dose over 10 min followed by a continuous IV",
       "infusion that ran until skin closure. Cohort 1: 25 mg/kg loading +",
@@ -111,8 +111,8 @@ Stricker_2013_aminocaproicAcid <- function() {
       "duration of CIVI was 230 (111-342) min in Cohort 1, 227 (169-365)",
       "in Cohort 2, and 254 (219-280) in Cohort 3."
     ),
-    regions        = "USA (single-centre, Children's Hospital of Philadelphia)",
-    notes          = paste(
+    regions = "USA (single-centre, Children's Hospital of Philadelphia)",
+    notes = paste(
       "Open-label, non-randomised, dose-escalation PK trial conducted",
       "under FDA IND 105,301. 18 infants enrolled in three sequential",
       "cohorts; up to 12 PK samples per subject collected via arterial or",

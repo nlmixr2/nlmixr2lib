@@ -32,18 +32,18 @@ Wu_2024_gfr_maturation <- function() {
   )
   vignette <- "Wu_2024_gfr_maturation"
   units <- list(
-    time          = "day (postnatal age, PNA)",
-    dosing        = "n/a (no exogenous dosing; endogenous GFR / Scr model)",
+    time = "day (postnatal age, PNA)",
+    dosing = "n/a (no exogenous dosing; endogenous GFR / Scr model)",
     concentration = "mL/min (inulin CL = GFR); mg/dL (serum creatinine Scr)"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight (CW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight (CW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the allometric scaling of GFRmax with",
         "reference 1.75 kg (= 1,750 g) per Wu 2024 Table II. The paper",
         "expresses the reference as '1,750 g'; this model uses canonical",
@@ -51,39 +51,39 @@ Wu_2024_gfr_maturation <- function() {
         "(WT / 1.75)^fCW. Cohort range across the inulin / Scr datasets:",
         "0.4 kg to 83.3 kg (Wu 2024 Table I)."
       ),
-      source_name        = "CW"
+      source_name = "CW"
     ),
     WT_BIRTH = list(
-      description        = "Birth weight (Bwb), time-fixed per subject",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth weight (Bwb), time-fixed per subject",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at birth. Drives a linear effect on GFRbirth with",
         "reference 1.75 kg (= 1,750 g) per Wu 2024 Eq. 3 and Table II.",
         "Cohort range: 0.43 kg to 5.24 kg (Wu 2024 Table I)."
       ),
-      source_name        = "Bwb"
+      source_name = "Bwb"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at birth. Drives a power effect on PNA50",
         "(PNA50 = TVPNA50 * (GA/34)^GAPNA50) with reference 34 weeks",
         "per Wu 2024 Table II. Higher GA accelerates maturation",
         "(GAPNA50 negative). Cohort range: 23 to 44 weeks (Table I)."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     HT = list(
-      description        = "Subject height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Subject height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Enters the Pierce 2021 creatinine synthesis",
         "rate equation linearly: syn_rate ~ k * HT / 88.4 * (BSA/1.73)",
         "(Wu 2024 supplement Table S1). When measured height was",
@@ -91,27 +91,27 @@ Wu_2024_gfr_maturation <- function() {
         "extrapolation or growth-chart imputation (Methods, Imputation",
         "of Missing Demographic Information)."
       ),
-      source_name        = "Height"
+      source_name = "Height"
     ),
     BSA = list(
-      description        = "Body surface area, Haycock-equation",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area, Haycock-equation",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Computed from WT and HT via the Haycock",
         "equation in the source data assembly (Wu 2024 Methods). Enters",
         "the Pierce 2021 creatinine synthesis rate via (BSA/1.73)",
         "(reference 1.73 m^2 = the standardised adult body surface)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed. Selects between the male and female branches of",
         "the Pierce 2021 k(age) constant in the creatinine synthesis",
         "rate (Wu 2024 supplement Table S1). Female:male ratio in the",
@@ -120,20 +120,20 @@ Wu_2024_gfr_maturation <- function() {
         "Missing sex (n=7 in the inulin CL dataset) was imputed by",
         "random binomial draw with probability 0.5 (Methods)."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 383L + 71L + 98L + 125L + 100L,
-    n_studies      = 5L,
-    age_range      = "PNA 0 to 6,570 days (0 days to 18 years) across the combined inulin CL and Scr datasets",
-    weight_range   = "Current weight 0.4 to 83.3 kg; birthweight 430 to 5,000 g",
+    species = "human",
+    n_subjects = 383L + 71L + 98L + 125L + 100L,
+    n_studies = 5L,
+    age_range = "PNA 0 to 6,570 days (0 days to 18 years) across the combined inulin CL and Scr datasets",
+    weight_range = "Current weight 0.4 to 83.3 kg; birthweight 430 to 5,000 g",
     gestational_age_range = "23 to 44 weeks (Wu 2024 Table I)",
     sex_female_pct = round(100 * (229 + 36 + 46 + 59 + 60) / (383 + 71 + 98 + 125 + 100), 1),
     race_ethnicity = "Not reported (pooled European / North American cohorts: Belgium, Netherlands, Poland, USA)",
-    disease_state  = paste(
+    disease_state = paste(
       "Preterm and term-born neonates, infants, children and",
       "adolescents. The inulin clearance subset (n=383) covers the",
       "infancy-to-adolescence range with the bulk of measurements in",
@@ -148,11 +148,11 @@ Wu_2024_gfr_maturation <- function() {
       "definition) were excluded for the duration of the AKI episode",
       "(Methods, Exclusion of Scr During AKI)."
     ),
-    dose_range     = "n/a (no exogenous drug PK modelled)",
-    regions        = "Europe (Netherlands, Belgium, Poland) and United States (Dayton OH); pooled literature inulin CL data (Methods reference 12 and 39-44)",
+    dose_range = "n/a (no exogenous drug PK modelled)",
+    regions = "Europe (Netherlands, Belgium, Poland) and United States (Dayton OH); pooled literature inulin CL data (Methods reference 12 and 39-44)",
     samples_inulin_cl = "431 inulin clearance values from 383 subjects",
-    samples_scr    = "2,181 serum creatinine concentrations from 394 subjects (1,391 + 565 + 125 + 100 across datasets 1-4 per Table I)",
-    notes          = paste(
+    samples_scr = "2,181 serum creatinine concentrations from 394 subjects (1,391 + 565 + 125 + 100 across datasets 1-4 per Table I)",
+    notes = paste(
       "Demographics from Wu 2024 Table I. The pooled inulin CL data",
       "include 333 subjects below 90 days PNA from the earlier Wu et",
       "al. analysis (paper reference 12) plus 50 additional subjects",

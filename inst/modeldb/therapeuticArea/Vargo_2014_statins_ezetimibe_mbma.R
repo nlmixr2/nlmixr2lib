@@ -11,143 +11,143 @@ Vargo_2014_statins_ezetimibe_mbma <- function() {
   )
   vignette <- "Vargo_2014_statins_ezetimibe_mbma"
   units <- list(
-    time          = "day (placeholder; the dose-response is steady-state and time-independent)",
-    dosing        = "mg/day (per-arm daily dose of each drug supplied as DOSE_* covariate columns; the model is an MBMA dose-response and does not consume rxode2 dose events)",
+    time = "day (placeholder; the dose-response is steady-state and time-independent)",
+    dosing = "mg/day (per-arm daily dose of each drug supplied as DOSE_* covariate columns; the model is an MBMA dose-response and does not consume rxode2 dose events)",
     concentration = "fraction/fraction (signed fractional change in LDL-C from baseline; e.g. -0.65 = 65 percent LDL-C reduction). Output Cc is NOT a drug concentration; the slash in the unit string is to satisfy checkModelConventions parsing."
   )
 
   covariateData <- list(
     CONMED_ATORVASTATIN_DOSE = list(
-      description        = "Per-arm atorvastatin daily dose (mg/day; 0 if atorvastatin is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm atorvastatin daily dose (mg/day; 0 if atorvastatin is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate (study-arm mean daily dose). The canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm-level dosing columns; this column mirrors the multi-drug Sadouki_2025 precedent (drug-specific dose / presence covariates documented inline rather than registered). Vargo 2014 Table 2 atorvastatin dose range across the 99 atorvastatin-monotherapy trials was 2.5-80 mg/day (median 20 mg/day).",
-      source_name        = "Atorvastatin Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate (study-arm mean daily dose). The canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm-level dosing columns; this column mirrors the multi-drug Sadouki_2025 precedent (drug-specific dose / presence covariates documented inline rather than registered). Vargo 2014 Table 2 atorvastatin dose range across the 99 atorvastatin-monotherapy trials was 2.5-80 mg/day (median 20 mg/day).",
+      source_name = "Atorvastatin Dose (Vargo 2014 Table 2)"
     ),
     CONMED_FLV_DOSE = list(
-      description        = "Per-arm fluvastatin daily dose (mg/day; 0 if fluvastatin is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm fluvastatin daily dose (mg/day; 0 if fluvastatin is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Vargo 2014 Table 2 fluvastatin dose range across the 33 fluvastatin-monotherapy trials was 2.5-60 mg/day (median 40 mg/day).",
-      source_name        = "Fluvastatin Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate. Vargo 2014 Table 2 fluvastatin dose range across the 33 fluvastatin-monotherapy trials was 2.5-60 mg/day (median 40 mg/day).",
+      source_name = "Fluvastatin Dose (Vargo 2014 Table 2)"
     ),
     CONMED_LOV_DOSE = list(
-      description        = "Per-arm lovastatin daily dose (mg/day; 0 if lovastatin is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm lovastatin daily dose (mg/day; 0 if lovastatin is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Vargo 2014 Table 2 lovastatin dose range across the 26 lovastatin-monotherapy trials was 10-80 mg/day (median 40 mg/day).",
-      source_name        = "Lovastatin Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate. Vargo 2014 Table 2 lovastatin dose range across the 26 lovastatin-monotherapy trials was 10-80 mg/day (median 40 mg/day).",
+      source_name = "Lovastatin Dose (Vargo 2014 Table 2)"
     ),
     CONMED_PRV_DOSE = list(
-      description        = "Per-arm pravastatin daily dose (mg/day; 0 if pravastatin is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm pravastatin daily dose (mg/day; 0 if pravastatin is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Vargo 2014 Table 2 pravastatin dose range across the 67 pravastatin-monotherapy trials was 5-160 mg/day (median 20 mg/day).",
-      source_name        = "Pravastatin Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate. Vargo 2014 Table 2 pravastatin dose range across the 67 pravastatin-monotherapy trials was 5-160 mg/day (median 20 mg/day).",
+      source_name = "Pravastatin Dose (Vargo 2014 Table 2)"
     ),
     CONMED_RSV_DOSE = list(
-      description        = "Per-arm rosuvastatin daily dose (mg/day; 0 if rosuvastatin is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm rosuvastatin daily dose (mg/day; 0 if rosuvastatin is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Vargo 2014 Table 2 rosuvastatin dose range across the 43 rosuvastatin-monotherapy trials was 1-80 mg/day (median 10 mg/day).",
-      source_name        = "Rosuvastatin Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate. Vargo 2014 Table 2 rosuvastatin dose range across the 43 rosuvastatin-monotherapy trials was 1-80 mg/day (median 10 mg/day).",
+      source_name = "Rosuvastatin Dose (Vargo 2014 Table 2)"
     ),
     CONMED_SMV_DOSE = list(
-      description        = "Per-arm simvastatin daily dose (mg/day; 0 if simvastatin is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm simvastatin daily dose (mg/day; 0 if simvastatin is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Vargo 2014 Table 2 simvastatin dose range across the 91 simvastatin-monotherapy trials was 2.5-160 mg/day (median 20 mg/day).",
-      source_name        = "Simvastatin Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate. Vargo 2014 Table 2 simvastatin dose range across the 91 simvastatin-monotherapy trials was 2.5-160 mg/day (median 20 mg/day).",
+      source_name = "Simvastatin Dose (Vargo 2014 Table 2)"
     ),
     CONMED_EZT_DOSE = list(
-      description        = "Per-arm ezetimibe daily dose (mg/day; 0 if ezetimibe is not in the regimen).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm ezetimibe daily dose (mg/day; 0 if ezetimibe is not in the regimen).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Vargo 2014 Table 2 ezetimibe dose range across the 10 ezetimibe-monotherapy trials was 0.25-10 mg/day (median 10 mg/day). The covariates were not tested on the ezetimibe ED50 because the 10 mg dose (for which most data are available) is at the ezetimibe Emax.",
-      source_name        = "Ezetimibe Dose (Vargo 2014 Table 2)"
+      notes = "MBMA study-arm-level covariate. Vargo 2014 Table 2 ezetimibe dose range across the 10 ezetimibe-monotherapy trials was 0.25-10 mg/day (median 10 mg/day). The covariates were not tested on the ezetimibe ED50 because the 10 mg dose (for which most data are available) is at the ezetimibe Emax.",
+      source_name = "Ezetimibe Dose (Vargo 2014 Table 2)"
     ),
     FORM_FLV_BID_XR = list(
-      description        = "Indicator that the fluvastatin regimen is twice-daily or extended-release.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the fluvastatin regimen is twice-daily or extended-release.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (once-daily immediate-release fluvastatin, the reference regimen)",
-      notes              = "1 if the fluvastatin arm used b.i.d. dosing or an extended-release formulation; 0 otherwise. The model multiplies the fluvastatin ED50 by 0.645 when this flag is 1 (Vargo 2014 Table 3 row 'ED50,fluvastatin (b.i.d.|XR)/ED50,fluvastatin'; same ratio used for either regimen because the paper found b.i.d. and XR ED50 estimates were similar). The flag is meaningful only when CONMED_FLV_DOSE > 0; set to 0 for non-fluvastatin arms.",
-      source_name        = "fluvastatin formulation/regimen (Vargo 2014 Figure 1)"
+      notes = "1 if the fluvastatin arm used b.i.d. dosing or an extended-release formulation; 0 otherwise. The model multiplies the fluvastatin ED50 by 0.645 when this flag is 1 (Vargo 2014 Table 3 row 'ED50,fluvastatin (b.i.d.|XR)/ED50,fluvastatin'; same ratio used for either regimen because the paper found b.i.d. and XR ED50 estimates were similar). The flag is meaningful only when CONMED_FLV_DOSE > 0; set to 0 for non-fluvastatin arms.",
+      source_name = "fluvastatin formulation/regimen (Vargo 2014 Figure 1)"
     ),
     FORM_LOV_BID_XR = list(
-      description        = "Indicator that the lovastatin regimen is twice-daily or extended-release.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the lovastatin regimen is twice-daily or extended-release.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (once-daily immediate-release lovastatin, the reference regimen)",
-      notes              = "1 if the lovastatin arm used b.i.d. dosing or an extended-release formulation; 0 otherwise. The model multiplies the lovastatin ED50 by 0.59 when this flag is 1 (Vargo 2014 Table 3 row 'ED50,lovastatin (b.i.d.|XR)/ED50,lovastatin'). Meaningful only when CONMED_LOV_DOSE > 0.",
-      source_name        = "lovastatin formulation/regimen (Vargo 2014 Figure 1)"
+      notes = "1 if the lovastatin arm used b.i.d. dosing or an extended-release formulation; 0 otherwise. The model multiplies the lovastatin ED50 by 0.59 when this flag is 1 (Vargo 2014 Table 3 row 'ED50,lovastatin (b.i.d.|XR)/ED50,lovastatin'). Meaningful only when CONMED_LOV_DOSE > 0.",
+      source_name = "lovastatin formulation/regimen (Vargo 2014 Figure 1)"
     ),
     LDLC = list(
-      description        = "Study-arm mean baseline (pre-treatment) LDL-C concentration.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Study-arm mean baseline (pre-treatment) LDL-C concentration.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-arm baseline LDL-C used in the statin Emax covariate equation (Vargo 2014 Eq 4): the log-ratio (LDLC/180) modifies Emax_statin. Vargo 2014 Table 2 LDL-C ranged 106-349 mg/dL across treatment groups; overall median 181 mg/dL. The reference 180 mg/dL is the centring constant used by the paper and corresponds to the typical-patient definition in the Results section. Source paper uses 'LDL.base'.",
-      source_name        = "LDL.base (Vargo 2014 Table 2 / Eq 4)"
+      notes = "Per-arm baseline LDL-C used in the statin Emax covariate equation (Vargo 2014 Eq 4): the log-ratio (LDLC/180) modifies Emax_statin. Vargo 2014 Table 2 LDL-C ranged 106-349 mg/dL across treatment groups; overall median 181 mg/dL. The reference 180 mg/dL is the centring constant used by the paper and corresponds to the typical-patient definition in the Results section. Source paper uses 'LDL.base'.",
+      source_name = "LDL.base (Vargo 2014 Table 2 / Eq 4)"
     ),
     TRIG = list(
-      description        = "Study-arm mean baseline (pre-treatment) triglyceride concentration.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Study-arm mean baseline (pre-treatment) triglyceride concentration.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-arm baseline triglyceride used in the statin Emax covariate equation (Vargo 2014 Eq 4): the log-ratio (TRIG/180) modifies Emax_statin. Vargo 2014 Table 2 TG ranged 59-660 mg/dL across treatment groups; overall median 168 mg/dL. The reference 180 mg/dL is the centring constant used by the paper. Source paper uses 'TG.base'.",
-      source_name        = "TG.base (Vargo 2014 Table 2 / Eq 4)"
+      notes = "Per-arm baseline triglyceride used in the statin Emax covariate equation (Vargo 2014 Eq 4): the log-ratio (TRIG/180) modifies Emax_statin. Vargo 2014 Table 2 TG ranged 59-660 mg/dL across treatment groups; overall median 168 mg/dL. The reference 180 mg/dL is the centring constant used by the paper. Source paper uses 'TG.base'.",
+      source_name = "TG.base (Vargo 2014 Table 2 / Eq 4)"
     ),
     DIS_CHD_PERCENT = list(
-      description        = "Percentage of patients in the study arm with coronary heart disease (CHD); range 0-100.",
-      units              = "%",
-      type               = "continuous",
+      description = "Percentage of patients in the study arm with coronary heart disease (CHD); range 0-100.",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate; the canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm aggregate-percentage columns. DIS_CHD_PERCENT enters Vargo 2014 Eq 4 with linear coefficient Emax,4 = -0.000649 per percentage point (so a 24-percent CHD arm reduces statin Emax by 0.000649 x 24 = 0.016). Default 0 in simulation = healthy adult cohort; the paper's typical-patient definition (Figure 2 caption) uses 24 percent CHD.",
-      source_name        = "CHD% (Vargo 2014 Eq 4 / Table 3)"
+      notes = "MBMA study-arm-level covariate; the canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm aggregate-percentage columns. DIS_CHD_PERCENT enters Vargo 2014 Eq 4 with linear coefficient Emax,4 = -0.000649 per percentage point (so a 24-percent CHD arm reduces statin Emax by 0.000649 x 24 = 0.016). Default 0 in simulation = healthy adult cohort; the paper's typical-patient definition (Figure 2 caption) uses 24 percent CHD.",
+      source_name = "CHD% (Vargo 2014 Eq 4 / Table 3)"
     ),
     DIS_ACS = list(
-      description        = "Indicator that the study arm enrolled patients with acute coronary syndrome.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the study arm enrolled patients with acute coronary syndrome.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-DIS_ACS arm)",
-      notes              = "MBMA study-arm-level covariate; 1 if the arm enrolled an DIS_ACS cohort, 0 otherwise. Vargo 2014 Eq 4 gives an additive shift of -0.117 on Emax_statin in DIS_ACS arms (greater statin LDL-C lowering in DIS_ACS patients). Encoded as DIS_ACS in the Vargo source equation (note the Table 3 row label 'Emax,3 (DIS_ACS)' is a transcription typo; the equation in Eq 4 distinguishes this coefficient from the LDL.base and TG.base coefficients).",
-      source_name        = "DIS_ACS=yes (Vargo 2014 Eq 4 / Table 3)"
+      notes = "MBMA study-arm-level covariate; 1 if the arm enrolled an DIS_ACS cohort, 0 otherwise. Vargo 2014 Eq 4 gives an additive shift of -0.117 on Emax_statin in DIS_ACS arms (greater statin LDL-C lowering in DIS_ACS patients). Encoded as DIS_ACS in the Vargo source equation (note the Table 3 row label 'Emax,3 (DIS_ACS)' is a transcription typo; the equation in Eq 4 distinguishes this coefficient from the LDL.base and TG.base coefficients).",
+      source_name = "DIS_ACS=yes (Vargo 2014 Eq 4 / Table 3)"
     ),
     DIS_HEFH = list(
-      description        = "Indicator that the study arm enrolled patients with heterozygous familial hypercholesterolemia.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the study arm enrolled patients with heterozygous familial hypercholesterolemia.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-HeFH arm)",
-      notes              = "MBMA study-arm-level covariate; 1 if the arm enrolled a HeFH cohort, 0 otherwise. Vargo 2014 Eq 4 gives an additive shift of +0.127 on Emax_statin in HeFH arms (smaller statin LDL-C lowering in HeFH patients). Note Table 3 row label 'Emax,3 (HeFH)' is a transcription typo; the equation in Eq 4 distinguishes this coefficient from the DIS_ACS coefficient.",
-      source_name        = "HeFH=yes (Vargo 2014 Eq 4 / Table 3)"
+      notes = "MBMA study-arm-level covariate; 1 if the arm enrolled a HeFH cohort, 0 otherwise. Vargo 2014 Eq 4 gives an additive shift of +0.127 on Emax_statin in HeFH arms (smaller statin LDL-C lowering in HeFH patients). Note Table 3 row label 'Emax,3 (HeFH)' is a transcription typo; the equation in Eq 4 distinguishes this coefficient from the DIS_ACS coefficient.",
+      source_name = "HeFH=yes (Vargo 2014 Eq 4 / Table 3)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 106808L,
-    n_studies       = 245L,
-    n_data_points   = 1267L,
-    age_range       = "26-77 years (overall range across treatment groups per Vargo 2014 Table 2)",
-    age_median      = "57 years (overall median across treatment groups per Vargo 2014 Table 2)",
-    disease_state   = "adults with dyslipidemia (including arms with coronary heart disease, acute coronary syndrome, heterozygous familial hypercholesterolemia, and a placebo reference) -- mixed cohorts pooled at the study-arm level",
-    dose_range      = "atorvastatin 2.5-80 mg/day; fluvastatin 2.5-60 mg/day; lovastatin 10-80 mg/day; pravastatin 5-160 mg/day; rosuvastatin 1-80 mg/day; simvastatin 2.5-160 mg/day; ezetimibe 0.25-10 mg/day (per Vargo 2014 Table 2)",
-    regimens        = "Primarily once-daily immediate-release. Fluvastatin twice-daily in 6 trials (295 patients) and extended-release in 10 trials (1,558 patients); lovastatin twice-daily in 5 trials (3,562 patients) and extended-release in 2 trials (314 patients); pravastatin twice-daily in 6 trials (493 patients). Same fixed ED50 ratio applied for b.i.d. and XR formulations of fluvastatin (0.645) and lovastatin (0.59); no significant b.i.d./XR effect detected for pravastatin.",
-    baseline_ldlc   = "median 181 mg/dL (range across treatment groups 106-349 mg/dL per Vargo 2014 Table 2)",
-    baseline_hdlc   = "median 48 mg/dL (range 24-77 mg/dL per Vargo 2014 Table 2)",
-    baseline_trig   = "median 168 mg/dL (range 59-660 mg/dL per Vargo 2014 Table 2)",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "Asian vs non-Asian was tested as a covariate but not retained in the final model.",
-    regions         = "International; trials from the public literature plus FDA and EMA-registered submissions.",
-    notes           = "MBMA at the study-arm level: each data point is the mean LDL-C response in a group of patients at a particular time point in a single trial arm, with the associated normally distributed variance weighted by arm sample size. The model is intended for simulating study-arm-mean percent change in LDL-C and is NOT suitable for individual-subject simulation. Between-trial variances on Emax and ED50 were estimated and found non-significant; the paper fixed them to zero. Steady-state effect was confirmed after at least 4 weeks of treatment so the model has no time component (time did not significantly modify Emax). See Vargo 2014 Methods and Table 2 for the cohort breakdown by treatment."
+    species = "human",
+    n_subjects = 106808L,
+    n_studies = 245L,
+    n_data_points = 1267L,
+    age_range = "26-77 years (overall range across treatment groups per Vargo 2014 Table 2)",
+    age_median = "57 years (overall median across treatment groups per Vargo 2014 Table 2)",
+    disease_state = "adults with dyslipidemia (including arms with coronary heart disease, acute coronary syndrome, heterozygous familial hypercholesterolemia, and a placebo reference) -- mixed cohorts pooled at the study-arm level",
+    dose_range = "atorvastatin 2.5-80 mg/day; fluvastatin 2.5-60 mg/day; lovastatin 10-80 mg/day; pravastatin 5-160 mg/day; rosuvastatin 1-80 mg/day; simvastatin 2.5-160 mg/day; ezetimibe 0.25-10 mg/day (per Vargo 2014 Table 2)",
+    regimens = "Primarily once-daily immediate-release. Fluvastatin twice-daily in 6 trials (295 patients) and extended-release in 10 trials (1,558 patients); lovastatin twice-daily in 5 trials (3,562 patients) and extended-release in 2 trials (314 patients); pravastatin twice-daily in 6 trials (493 patients). Same fixed ED50 ratio applied for b.i.d. and XR formulations of fluvastatin (0.645) and lovastatin (0.59); no significant b.i.d./XR effect detected for pravastatin.",
+    baseline_ldlc = "median 181 mg/dL (range across treatment groups 106-349 mg/dL per Vargo 2014 Table 2)",
+    baseline_hdlc = "median 48 mg/dL (range 24-77 mg/dL per Vargo 2014 Table 2)",
+    baseline_trig = "median 168 mg/dL (range 59-660 mg/dL per Vargo 2014 Table 2)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Asian vs non-Asian was tested as a covariate but not retained in the final model.",
+    regions = "International; trials from the public literature plus FDA and EMA-registered submissions.",
+    notes = "MBMA at the study-arm level: each data point is the mean LDL-C response in a group of patients at a particular time point in a single trial arm, with the associated normally distributed variance weighted by arm sample size. The model is intended for simulating study-arm-mean percent change in LDL-C and is NOT suitable for individual-subject simulation. Between-trial variances on Emax and ED50 were estimated and found non-significant; the paper fixed them to zero. Steady-state effect was confirmed after at least 4 weeks of treatment so the model has no time component (time did not significantly modify Emax). See Vargo 2014 Methods and Table 2 for the cohort breakdown by treatment."
   )
 
   ini({

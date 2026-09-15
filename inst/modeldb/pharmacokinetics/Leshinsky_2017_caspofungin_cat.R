@@ -13,27 +13,27 @@ Leshinsky_2017_caspofungin_cat <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with reference weight 4 kg (cohort mean per Leshinsky 2017 Methods 'Animals'; Table 1 footnote 'CL * (WT/4)^0.75'). Fixed exponents 0.75 on CL and Q, 1 on V1 and V2.",
-      source_name        = "WT"
+      notes = "Allometric scaling with reference weight 4 kg (cohort mean per Leshinsky 2017 Methods 'Animals'; Table 1 footnote 'CL * (WT/4)^0.75'). Fixed exponents 0.75 on CL and Q, 1 on V1 and V2.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "cat (domestic shorthair)",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "mean 3.94 +/- 1.84 years (healthy adult)",
-    weight_range   = "mean 4.4 +/- 0.56 kg",
+    species = "cat (domestic shorthair)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "mean 3.94 +/- 1.84 years (healthy adult)",
+    weight_range = "mean 4.4 +/- 0.56 kg",
     sex_female_pct = 50.0,
-    disease_state  = "Healthy desexed domestic shorthair cats from a research colony.",
-    dose_range     = "1 mg/kg IV infusion over 1 h; single dose (n=8) and once-daily multiple dose for 7 days (n=6, 3M/3F).",
-    regions        = "Australia (Sydney; Eurofins SCEC research colony).",
-    scope_note     = "Preclinical-only popPK fit. Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because nlmixr2lib's specificDrugs tier is reserved for human drugs.",
-    notes          = "Baseline demographics per Leshinsky 2017 Methods 'Animals' (page on Materials and methods). 8 adult desexed domestic shorthair cats (4F/4M), mean age 3.94 +/- 1.84 years and mean body weight 4.4 +/- 0.56 kg. The multi-dose phase used a subset of 6 cats (3M/3F)."
+    disease_state = "Healthy desexed domestic shorthair cats from a research colony.",
+    dose_range = "1 mg/kg IV infusion over 1 h; single dose (n=8) and once-daily multiple dose for 7 days (n=6, 3M/3F).",
+    regions = "Australia (Sydney; Eurofins SCEC research colony).",
+    scope_note = "Preclinical-only popPK fit. Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because nlmixr2lib's specificDrugs tier is reserved for human drugs.",
+    notes = "Baseline demographics per Leshinsky 2017 Methods 'Animals' (page on Materials and methods). 8 adult desexed domestic shorthair cats (4F/4M), mean age 3.94 +/- 1.84 years and mean body weight 4.4 +/- 0.56 kg. The multi-dose phase used a subset of 6 cats (3M/3F)."
   )
 
   ini({

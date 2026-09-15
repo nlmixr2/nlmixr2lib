@@ -33,11 +33,11 @@ Waalewijn_2024_dolutegravir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor on all four disposition parameters, with",
         "exponents fixed at 0.75 for the flow parameters (CL, Q) and 1.0 for",
         "the volume parameters (Vc, Vp), referenced to a 30 kg child",
@@ -48,14 +48,14 @@ Waalewijn_2024_dolutegravir <- function() {
         "fat-free mass is therefore documented in covariatesDataExcluded.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_TAF = list(
-      description        = "Emtricitabine/tenofovir alafenamide (FTC/TAF) nucleos(t)ide backbone indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Emtricitabine/tenofovir alafenamide (FTC/TAF) nucleos(t)ide backbone indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (standard-of-care backbone: lamivudine/abacavir or lamivudine/zidovudine)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (CHAPAS-4 randomised each child to one",
         "backbone). Applied as a linear additive effect on relative",
         "bioavailability: F *= (1 + e_taf_fdepot * CONMED_TAF) with",
@@ -80,14 +80,14 @@ Waalewijn_2024_dolutegravir <- function() {
         "covariatesDataExcluded rather than carried here.",
         sep = " "
       ),
-      source_name        = "BB"
+      source_name = "BB"
     ),
     OCC = list(
-      description        = "Dosing-occasion index for between-occasion variability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dosing-occasion index for between-occasion variability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Three occasions, matching the NONMEM $PK IF(OCC==1/2/3) blocks that",
         "select the per-occasion BOV etas on relative bioavailability, ka and",
         "mean transit time. Occasion 1 is the occasion whose dose was taken at",
@@ -103,7 +103,7 @@ Waalewijn_2024_dolutegravir <- function() {
         "the value on a record selects that record's occasion etas.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -112,9 +112,9 @@ Waalewijn_2024_dolutegravir <- function() {
   covariatesDataExcluded <- list(
     FFM = list(
       description = "Fat-free mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested against total body weight as the allometric body size",
         "descriptor; total body weight fitted better and was retained",
         "(Results paragraph 2). The control stream retains the FFM machinery",
@@ -128,9 +128,9 @@ Waalewijn_2024_dolutegravir <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance estimated with the Schwartz formula",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Tested on clearance as a renal-function descriptor; did not",
         "significantly improve the fit (Results paragraph 4). Cohort median",
         "113 mL/min, range 71.8-247 (Supplementary Table S2). The control",
@@ -140,9 +140,9 @@ Waalewijn_2024_dolutegravir <- function() {
     ),
     ALT = list(
       description = "Serum alanine transaminase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Liver-function biomarker tested on clearance; not retained",
         "(Results paragraph 4). Control stream imputes missing values to",
         "28.0 U/L.",
@@ -151,9 +151,9 @@ Waalewijn_2024_dolutegravir <- function() {
     ),
     AST = list(
       description = "Serum aspartate transaminase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Liver-function biomarker tested on clearance; not retained",
         "(Results paragraph 4). Control stream imputes missing values to",
         "37.6 U/L.",
@@ -162,9 +162,9 @@ Waalewijn_2024_dolutegravir <- function() {
     ),
     FORM_DTG_DT = list(
       description = "Dolutegravir 25 mg dispersible-tablet formulation indicator (reference: 50 mg film-coated tablet)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested on the absorption parameters including bioavailability and did",
         "not significantly improve the fit (Results paragraph 4). This is a",
         "notable negative result: Chandasana 2024 and the ODYSSEY trial both",
@@ -180,29 +180,29 @@ Waalewijn_2024_dolutegravir <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
     n_observations = 358L,
-    age_range      = "5.46-15.5 years",
-    age_median     = "10.9 years",
-    weight_range   = "15.9-53.0 kg",
-    weight_median  = "27.8 kg",
+    age_range = "5.46-15.5 years",
+    age_median = "10.9 years",
+    weight_range = "15.9-53.0 kg",
+    weight_median = "27.8 kg",
     sex_female_pct = 47.6,
-    disease_state  = paste(
+    disease_state = paste(
       "Children living with HIV taking second-line antiretroviral therapy in",
       "the CHAPAS-4 trial (ISRCTN22964075), randomised to an FTC/TAF",
       "nucleos(t)ide backbone (n = 21) or a standard-of-care backbone",
       "(3TC/ZDV n = 12, 3TC/ABC n = 9).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Once-daily dolutegravir per WHO weight-band recommendations: 25 mg as",
       "five 5 mg dispersible tablets for 14 to <20 kg (n = 10), one 50 mg",
       "film-coated tablet for >20 kg (n = 32). All doses on the",
@@ -210,14 +210,14 @@ Waalewijn_2024_dolutegravir <- function() {
       "breakfast (250 kcal, 5% fat) and observed by study staff.",
       sep = " "
     ),
-    regions        = "Uganda, Zambia, and Zimbabwe.",
-    sampling       = paste(
+    regions = "Uganda, Zambia, and Zimbabwe.",
+    sampling = paste(
       "Steady-state intensive sampling pre-dose and at 1, 2, 4, 6, 8, 12, and",
       "24 h post-dose, with an additional 0.5 h sample for children taking",
       "TAF. Dolutegravir assayed by validated LC-MS/MS.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Enrolment January 2019 to March 2021. 42 children contributed 358",
       "dolutegravir concentrations, 2 of them below the limit of",
       "quantification and handled by Beal's M6 method. Fit in NONMEM 7.5 with",

@@ -34,12 +34,14 @@ Peng_2014_MK3577 <- function() {
   vignette <- "Peng_2014_MK3577"
 
   paper_specific_compartments <- c(
-    "glucose_peripheral", "glucagon", "sandostatin"
+    "glucose_peripheral",
+    "glucagon",
+    "sandostatin"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "Time is in hours; supply infusions via cmt + amt + dur (2 hour",
       "infusions). Glucagon challenge: cmt = glucagon, amt = 360 ng/kg,",
       "dur = 2 (3 ng/kg/min for 2 h converts to 360 ng/kg total). Sandostatin",
@@ -62,17 +64,22 @@ Peng_2014_MK3577 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    glucose            = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucose = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
     glucose_peripheral = list(analyte = "Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect             = list(analyte = "Glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    insulin            = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    glucagon           = list(analyte = "Glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
-    sandostatin        = list(analyte = "Sandostatin", units = NA_character_, specimen = "administration site", verified = FALSE)
+    effect = list(analyte = "Glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    insulin = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucagon = list(analyte = "Glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
+    sandostatin = list(
+      analyte = "Sandostatin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CP_MK3577_NM = list(
-      description        = paste(
+      description = paste(
         "Instantaneous MK-3577 plasma concentration in nM supplied as a",
         "time-varying regressor that drives the Imax inhibition of glucagon",
         "stimulation on glucose production (IC50,MK = 13.9 nM) and the Emax",
@@ -80,10 +87,10 @@ Peng_2014_MK3577 <- function() {
         "for placebo subjects and for time points before any MK-3577 dose.",
         sep = " "
       ),
-      units              = "nM",
-      type               = "continuous",
+      units = "nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Supplied externally because the on-disk Peng 2014 PDF does not",
         "report the MK-3577 absorption rate ka, apparent volume V/F, or",
         "molecular weight needed to derive a mg-dose-to-nM-plasma profile",
@@ -95,18 +102,18 @@ Peng_2014_MK3577 <- function() {
         "documented in the vignette Errata section as illustrative only.",
         sep = " "
       ),
-      source_name        = "CMK"
+      source_name = "CMK"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "FIM cohort 35 +/- 7.1 years (Table I)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "FIM cohort 35 +/- 7.1 years (Table I)",
+    weight_range = NA_character_,
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male subjects undergoing a glucagon challenge study (Peng 2014",
       "Methods, FIM Study). Randomized, double-blind, placebo-controlled,",
       "crossover with balanced incomplete block design (Table II); 36 healthy",
@@ -114,7 +121,7 @@ Peng_2014_MK3577 <- function() {
       "or PM. Body mass index 24.7 +/- 2.5 kg/m^2 (Table I).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "MK-3577 single oral dose 0 (placebo) / 1 / 3 / 10 / 20 / 30 / 40 /",
       "100 / 300 / 600 / 900 mg, AM or PM (Table II). Glucagon challenge:",
       "2-h IV infusions of glucagon (3 ng/kg/min), Sandostatin / octreotide",
@@ -123,8 +130,8 @@ Peng_2014_MK3577 <- function() {
       "glucagon secretion; basal insulin reduces excessive glycemia.",
       sep = " "
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Baseline demographics from Peng 2014 Table I (FIM cohort). PK / PD",
       "samples collected predose and up to 14 h postdose in parts II and",
       "III and up to 32 h postdose in part IV. Glucose, glucagon, and",

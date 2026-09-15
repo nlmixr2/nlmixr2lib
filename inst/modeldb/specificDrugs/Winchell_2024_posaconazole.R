@@ -1,39 +1,39 @@
 Winchell_2024_posaconazole <- function() {
   description <- "One-compartment population PK model for posaconazole intravenous solution and powder for oral suspension (PFS) in pediatric patients aged 2 to 17 years with documented or expected neutropenia (Winchell 2024). First-order absorption from the depot compartment for the PFS formulation; IV doses enter the central compartment directly. Clearance and central volume are allometrically scaled by body weight with estimated (not fixed) exponents. Relative bioavailability of the PFS formulation is estimated on the logit scale so it is constrained to (0, 1), and carries a large logit-domain interindividual variability. No demographic or clinical covariate (age, weight beyond allometry, eGFR, sex, ethnicity) and no food effect was retained, so the base structural model is the final model. Residual variability is additive on the log scale (lnorm)."
-  reference   <- "Winchell G, de Greef R, Ouerdani A, Fauchet F, Wrishko RE, Mangin E, Bruno C, Waskin H. A population pharmacokinetic model for posaconazole intravenous solution and oral powder for suspension formulations in pediatric patients with neutropenia. Antimicrob Agents Chemother. 2024;68(4):e01197-23. doi:10.1128/aac.01197-23."
-  vignette    <- "Winchell_2024_posaconazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Winchell G, de Greef R, Ouerdani A, Fauchet F, Wrishko RE, Mangin E, Bruno C, Waskin H. A population pharmacokinetic model for posaconazole intravenous solution and oral powder for suspension formulations in pediatric patients with neutropenia. Antimicrob Agents Chemother. 2024;68(4):e01197-23. doi:10.1128/aac.01197-23."
+  vignette <- "Winchell_2024_posaconazole"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "posaconazole", units = "mg", specimen = "plasma",                   verified = TRUE)
+    depot = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "posaconazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the source analysis. Enters both CL and Vc as an allometric power effect on (WT / 28.6), with both exponents estimated rather than fixed (Winchell 2024 Table 2: 0.624 for CL, 0.971 for Vc). The normalisation constant 28.6 kg is the overall median body weight of the analysis population (Winchell 2024 Table 1, All N = 114 column); the paper does not print the reference weight used in the NONMEM covariate model, so it was back-solved against the paper's own Supplementary Tables 2 and 3 -- see the vignette Assumptions and deviations section. Body weight was also screened as an ordinary covariate in the stepwise analysis (beyond the allometric terms) and was not retained.",
-      source_name        = "Weight"
+      notes = "Time-fixed per subject in the source analysis. Enters both CL and Vc as an allometric power effect on (WT / 28.6), with both exponents estimated rather than fixed (Winchell 2024 Table 2: 0.624 for CL, 0.971 for Vc). The normalisation constant 28.6 kg is the overall median body weight of the analysis population (Winchell 2024 Table 1, All N = 114 column); the paper does not print the reference weight used in the NONMEM covariate model, so it was back-solved against the paper's own Supplementary Tables 2 and 3 -- see the vignette Assumptions and deviations section. Body weight was also screened as an ordinary covariate in the stepwise analysis (beyond the allometric terms) and was not retained.",
+      source_name = "Weight"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 114L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 114L,
+    n_studies = 1L,
     n_observations = "1,236 plasma posaconazole PK observations (Winchell 2024 Results 'Participant characteristics'). 80 samples were excluded: 33 from 2 participants with incomplete oral PFS dose intakes, 31 with no available sampling time, and 13 with a duplicate sampling time.",
-    age_range      = "2-17 years (median 8; 2-<7 years subgroup median 3, 7-17 years subgroup median 13)",
-    weight_range   = "10.2-102 kg (median 28.6; 2-<7 years subgroup median 16, range 10.2-41.7; 7-17 years subgroup median 45.4, range 18.2-102)",
+    age_range = "2-17 years (median 8; 2-<7 years subgroup median 3, 7-17 years subgroup median 13)",
+    weight_range = "10.2-102 kg (median 28.6; 2-<7 years subgroup median 16, range 10.2-41.7; 7-17 years subgroup median 45.4, range 18.2-102)",
     sex_female_pct = 41,
     race_ethnicity = "83% White; 87% not Hispanic (Winchell 2024 Results 'Participant characteristics')",
-    disease_state  = "Immunocompromised pediatric patients aged 2 to 17 years with documented or anticipated neutropenia in the setting of acute leukemia, myelodysplasia, severe aplastic anemia, autologous HSCT, high-risk neuroblastoma, advanced-stage non-Hodgkin lymphoma, allogeneic HSCT during the pre-engraftment (neutropenic) period, or hemophagocytic lymphohistiocytosis. Posaconazole was given for prophylaxis of invasive fungal disease.",
-    dose_range     = "3.5, 4.5, or 6 mg/kg posaconazole, IV BID on day 1 then IV QD on days 2-10, followed by either oral PFS or IV QD on days 10-28; absolute dose capped at 300 mg. Cohort sizes: 3.5 mg/kg n = 35, 4.5 mg/kg n = 31, 6 mg/kg n = 48; IV only n = 54, IV and PFS n = 60.",
-    regions        = "Not reported (multicenter phase 1b study P097 / MK-5592-097, ClinicalTrials.gov NCT02452034)",
+    disease_state = "Immunocompromised pediatric patients aged 2 to 17 years with documented or anticipated neutropenia in the setting of acute leukemia, myelodysplasia, severe aplastic anemia, autologous HSCT, high-risk neuroblastoma, advanced-stage non-Hodgkin lymphoma, allogeneic HSCT during the pre-engraftment (neutropenic) period, or hemophagocytic lymphohistiocytosis. Posaconazole was given for prophylaxis of invasive fungal disease.",
+    dose_range = "3.5, 4.5, or 6 mg/kg posaconazole, IV BID on day 1 then IV QD on days 2-10, followed by either oral PFS or IV QD on days 10-28; absolute dose capped at 300 mg. Cohort sizes: 3.5 mg/kg n = 35, 4.5 mg/kg n = 31, 6 mg/kg n = 48; IV only n = 54, IV and PFS n = 60.",
+    regions = "Not reported (multicenter phase 1b study P097 / MK-5592-097, ClinicalTrials.gov NCT02452034)",
     renal_function = "Median eGFR 146 mL/min/1.73 m2 (range 12.2-314); eGFR was screened as a covariate and not retained.",
-    notes          = "Fit in NONMEM 7.2 with FOCE and an additive residual-error model on log-transformed concentrations. Observations below the 5.00 ng/mL LLOQ were excluded rather than modelled. Shrinkage was low for CL (5%) but substantial for Vc (34%) and for the logit-scale bioavailability random effect (42%); the paper's own simulations (Supplementary Tables 2 and 3) behave as if the bioavailability random effect were considerably smaller than the reported omega, which is consistent with that 42% shrinkage -- see the vignette Assumptions and deviations section. Food intake within 2 h before to 1 h after a PFS dose (as a binary meal indicator and as light / medium / heavy categories) was tested on bioavailability and showed no significant effect, supporting administration of PFS with or without food."
+    notes = "Fit in NONMEM 7.2 with FOCE and an additive residual-error model on log-transformed concentrations. Observations below the 5.00 ng/mL LLOQ were excluded rather than modelled. Shrinkage was low for CL (5%) but substantial for Vc (34%) and for the logit-scale bioavailability random effect (42%); the paper's own simulations (Supplementary Tables 2 and 3) behave as if the bioavailability random effect were considerably smaller than the reported omega, which is consistent with that 42% shrinkage -- see the vignette Assumptions and deviations section. Food intake within 2 h before to 1 h after a PFS dose (as a binary meal indicator and as light / medium / heavy categories) was tested on bioavailability and showed no significant effect, supporting administration of PFS with or without food."
   )
 
   ini({

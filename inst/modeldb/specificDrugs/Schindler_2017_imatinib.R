@@ -26,13 +26,28 @@ Schindler_2017_imatinib <- function() {
     "doi:10.1002/psp4.12195."
   )
   vignette <- "Schindler_2017_imatinib"
-  paper_specific_compartments <- c("mtd_l1", "mtd_l2", "vactual_l1", "vactual_l2", "vellipsoid_l1", "vellipsoid_l2", "density_l1", "density_l2")
-  paper_specific_residual_sds <- c("propSd_vact_l1", "propSd_vact_l2", "propSd_vell_l1", "propSd_vell_l2", "propSd_dens_l1", "propSd_dens_l2")
-
+  paper_specific_compartments <- c(
+    "mtd_l1",
+    "mtd_l2",
+    "vactual_l1",
+    "vactual_l2",
+    "vellipsoid_l1",
+    "vellipsoid_l2",
+    "density_l1",
+    "density_l2"
+  )
+  paper_specific_residual_sds <- c(
+    "propSd_vact_l1",
+    "propSd_vact_l2",
+    "propSd_vell_l1",
+    "propSd_vell_l2",
+    "propSd_dens_l1",
+    "propSd_dens_l2"
+  )
 
   units <- list(
-    time          = "week",
-    dosing        = "mg/day",
+    time = "week",
+    dosing = "mg/day",
     concentration = "n/a (non-PK outputs: MTD in mm, Vactual / Vellipsoid in mL, density in HU)"
   )
 
@@ -41,29 +56,69 @@ Schindler_2017_imatinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    mtd_l1        = list(analyte = "Maximum transaxial diameter of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
-    mtd_l2        = list(analyte = "Maximum transaxial diameter of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE),
-    vactual_l1    = list(analyte = "Actual volume of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
-    vactual_l2    = list(analyte = "Actual volume of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE),
-    vellipsoid_l1 = list(analyte = "Ellipsoidal volume of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
-    vellipsoid_l2 = list(analyte = "Ellipsoidal volume of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE),
-    density_l1    = list(analyte = "Tumor density of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
-    density_l2    = list(analyte = "Tumor density of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE)
+    mtd_l1 = list(
+      analyte = "Maximum transaxial diameter of lesion 1",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    mtd_l2 = list(
+      analyte = "Maximum transaxial diameter of lesion 2",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    vactual_l1 = list(
+      analyte = "Actual volume of lesion 1",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    vactual_l2 = list(
+      analyte = "Actual volume of lesion 2",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    vellipsoid_l1 = list(
+      analyte = "Ellipsoidal volume of lesion 1",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    vellipsoid_l2 = list(
+      analyte = "Ellipsoidal volume of lesion 2",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    density_l1 = list(
+      analyte = "Tumor density of lesion 1",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    density_l2 = list(
+      analyte = "Tumor density of lesion 2",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = paste(
+      description = paste(
         "Current daily oral imatinib dose level (in mg/day) supplied as a",
         "per-record time-varying covariate. Enters the size and density",
         "models through DOSE / 400 (the median starting dose), so the",
         "drug-effect term Kdrug,S * (DOSE / 400) * exp(-k * t) scales",
         "linearly with dose intensity."
       ),
-      units              = "mg/day",
-      type               = "continuous",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Schindler 2017 Methods 'Maximum transaxial diameter ...' subsection",
         "and Results paragraph after Eq. 2 specify the dose normalisation:",
         "'a linear effect with slope Kdrug,S driven by imatinib daily dose,",
@@ -75,10 +130,10 @@ Schindler_2017_imatinib <- function() {
         "/ drug-holiday record so the drug-effect term vanishes; for a",
         "typical patient on 400 mg/day continuously, DOSE = 400 throughout."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     MIX_LARGE_BASE = list(
-      description        = paste(
+      description = paste(
         "Per-subject binary mixture-model class indicator. 1 = subject",
         "classified to the subpopulation with larger baseline lesions",
         "(typically 76.6 mm MTD / 161 mL Vactual / 187 mL Vellipsoid for",
@@ -86,10 +141,10 @@ Schindler_2017_imatinib <- function() {
         "smaller-baseline subpopulation (20.9 mm / 3.45 mL / 3.93 mL for",
         "lesion 1)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (smaller-baseline subpopulation)",
-      notes              = paste(
+      notes = paste(
         "Not a measured patient covariate. Per-subject latent class",
         "assignment from a NONMEM $MIXTURE block (Schindler 2017 Methods,",
         "Maximum transaxial diameter / actual volumes / ellipsoidal volume",
@@ -107,19 +162,19 @@ Schindler_2017_imatinib <- function() {
         "category (= 0 = smaller baseline) is chosen so the binary",
         "numerically matches the paper's mixture indicator orientation."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment)"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 77L,
-    n_studies      = 2L,
-    age_range      = "34-83 years (median 62)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 77L,
+    n_studies = 2L,
+    age_range = "34-83 years (median 62)",
+    weight_range = NA_character_,
     sex_female_pct = 39.0,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with gastrointestinal stromal tumor (GIST) and at least one",
       "liver metastasis assessed by computed tomography. 77 patients total",
       "with up to two liver target lesions per patient (60 of 77 with two",
@@ -134,14 +189,14 @@ Schindler_2017_imatinib <- function() {
       "for a median of 3.4 years (range 0.25-13); 43 / 77 deaths and",
       "50 / 77 progression events were recorded as of 17 February 2015."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral imatinib first-line therapy at starting dose 400 mg / day",
       "(n = 74) or 800 mg / day (n = 3); dose escalation to a median 800",
       "(range 600-1200) mg / day in 30 patients (39 %); dose reductions to",
       "a median 300 (range 200-300) mg / day in 8 patients (10 %)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Demographics from Schindler 2017 Table 1. The cohort pools two",
       "retrospective, non-interventional datasets previously published by",
       "Schiavon et al. (2014, Eur J Cancer 50:972-980) and used as part of",

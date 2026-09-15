@@ -31,17 +31,17 @@ Ren_2026_rivaroxaban <- function() {
   # daily (Methods 2.1), and measured in citrated plasma by UPLC-MS/MS over
   # 1-500 ng/mL (Methods 2.2).
   compartmentData <- list(
-    depot   = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, Cockcroft-Gault, raw (NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, Cockcroft-Gault, raw (NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Computed with the Cockcroft-Gault equation (Methods 2.1); the paper",
         "reports it in raw mL/min and never normalizes to 1.73 m^2, so a user",
         "supplying BSA-normalized eGFR would mis-scale CL/F. Enters CL/F as",
@@ -54,14 +54,14 @@ Ren_2026_rivaroxaban <- function() {
         "term at 30, 50 and 80 mL/min.",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters V/F as (AGE / 63)^-0.231, where 63 years is the cohort median",
         "(Results 3.2, text following Equation 13). Observed range 21-92 years,",
         "mean 58.8 +/- 15.8 (Table 1). Age was also picked up on CL/F and on ka",
@@ -70,14 +70,14 @@ Ren_2026_rivaroxaban <- function() {
         "final model.",
         sep = " "
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "PD covariate only: enters the concentration-PT slope as",
         "(ALT / 19)^-0.201, where 19 IU/L is the cohort median (Results 3.3,",
         "text following Equation 15). The source reports IU/L; the canonical",
@@ -90,7 +90,7 @@ Ren_2026_rivaroxaban <- function() {
         "it is retained here.",
         sep = " "
       ),
-      source_name        = "ALT"
+      source_name = "ALT"
     )
   )
 
@@ -101,76 +101,76 @@ Ren_2026_rivaroxaban <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Body height at baseline",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 164 cm, range 153-192 (Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 164 cm, range 153-192 (Table 1)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 70 kg, range 49-124 (Table 1). The Discussion notes body weight as a likely driver of the V/F difference against Caucasian cohorts, but it did not survive the paper's own screen."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 70 kg, range 49-124 (Table 1). The Discussion notes body weight as a likely driver of the V/F difference against Caucasian cohorts, but it did not survive the paper's own screen."
     ),
     SEXF = list(
       description = "Biological sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (paper covariate 'gender') and not retained (Methods 2.3). Cohort 121/187 female (64.7%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (paper covariate 'gender') and not retained (Methods 2.3). Cohort 121/187 female (64.7%)."
     ),
     HGB = list(
       description = "Hemoglobin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 132 g/L, range 84-177 (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 132 g/L, range 84-177 (Table 1)."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 39.5%, range 24.1-52 (Table 1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 39.5%, range 24.1-52 (Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 43 g/L, range 32-49 (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 43 g/L, range 32-49 (Table 1)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 10.7 umol/L, range 4.1-50.4 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 10.7 umol/L, range 4.1-50.4 (Table 1)."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.3). Median 3.3 umol/L, range 0.9-16.6 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.3). Median 3.3 umol/L, range 0.9-16.6 (Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained as a covariate in its own right (Methods 2.3); renal function entered the final model through the Cockcroft-Gault CRCL derived from it. Median 68 umol/L, range 36-155 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained as a covariate in its own right (Methods 2.3); renal function entered the final model through the Cockcroft-Gault CRCL derived from it. Median 68 umol/L, range 36-155 (Table 1)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 187L,
-    n_observations   = "517 rivaroxaban plasma concentrations and 376 prothrombin time assays (Results 3.2). The two counts differ because residual plasma volume was sometimes insufficient for the coagulation assay (Results 3.1).",
-    n_studies        = 1L,
-    age_range        = "21-92 years (median 63, mean 58.8 +/- 15.8); 48.1% aged 65 years or older, 12.8% aged 75 years or older",
-    weight_range     = "49-124 kg (median 70, mean 70.8 +/- 14.7)",
-    sex_female_pct   = 64.7,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = "Acute pulmonary embolism (a manifestation of venous thromboembolism), treated in routine clinical care. Patients with Child-Pugh B/C hepatic impairment, creatinine clearance < 15 mL/min, pregnancy or breastfeeding, spontaneous bleeding tendency or platelets < 20 x 10^9/L, contraindications to other factor Xa inhibitors, or hereditary thrombophilia / antiphospholipid syndrome were excluded (Methods 2.1).",
-    dose_range       = "Oral rivaroxaban 5 mg (3.7%), 10 mg (34.2%), 15 mg (8.6%) or 20 mg (53.5%) once daily, taken with a meal for at least 5 days before sampling; dose was chosen by the treating physician (Methods 2.1, Table 1).",
-    regions          = "China (single center: Peking Union Medical College Hospital, Beijing), prospective cohort enrolled April 2021 to August 2024.",
-    renal_function   = "Cockcroft-Gault creatinine clearance: >= 80 mL/min in 58.3%, 50-79 mL/min in 34.2%, 30-49 mL/min in 7.5%; cohort median 88.3 mL/min. 41.7% had mild-to-moderate renal impairment.",
+    species = "human",
+    n_subjects = 187L,
+    n_observations = "517 rivaroxaban plasma concentrations and 376 prothrombin time assays (Results 3.2). The two counts differ because residual plasma volume was sometimes insufficient for the coagulation assay (Results 3.1).",
+    n_studies = 1L,
+    age_range = "21-92 years (median 63, mean 58.8 +/- 15.8); 48.1% aged 65 years or older, 12.8% aged 75 years or older",
+    weight_range = "49-124 kg (median 70, mean 70.8 +/- 14.7)",
+    sex_female_pct = 64.7,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Acute pulmonary embolism (a manifestation of venous thromboembolism), treated in routine clinical care. Patients with Child-Pugh B/C hepatic impairment, creatinine clearance < 15 mL/min, pregnancy or breastfeeding, spontaneous bleeding tendency or platelets < 20 x 10^9/L, contraindications to other factor Xa inhibitors, or hereditary thrombophilia / antiphospholipid syndrome were excluded (Methods 2.1).",
+    dose_range = "Oral rivaroxaban 5 mg (3.7%), 10 mg (34.2%), 15 mg (8.6%) or 20 mg (53.5%) once daily, taken with a meal for at least 5 days before sampling; dose was chosen by the treating physician (Methods 2.1, Table 1).",
+    regions = "China (single center: Peking Union Medical College Hospital, Beijing), prospective cohort enrolled April 2021 to August 2024.",
+    renal_function = "Cockcroft-Gault creatinine clearance: >= 80 mL/min in 58.3%, 50-79 mL/min in 34.2%, 30-49 mL/min in 7.5%; cohort median 88.3 mL/min. 41.7% had mild-to-moderate renal impairment.",
     hepatic_function = "ALT median 19 IU/L (10-157); albumin median 43 g/L (32-49); total bilirubin median 10.7 umol/L (4.1-50.4). Moderate/severe hepatic impairment was an exclusion criterion.",
-    co_medication    = "Statins 26.2%, metformin 5.3%, metoprolol 5.3%, aspirin 3.7%, strong P-glycoprotein inhibitors 3.2%, strong BCRP inhibitors 1.6% (Table 1). Too few patients received strong P-gp or BCRP inhibitors for the interaction to be modelled (Discussion).",
-    notes            = paste(
+    co_medication = "Statins 26.2%, metformin 5.3%, metoprolol 5.3%, aspirin 3.7%, strong P-glycoprotein inhibitors 3.2%, strong BCRP inhibitors 1.6% (Table 1). Too few patients received strong P-gp or BCRP inhibitors for the interaction to be modelled (Discussion).",
+    notes = paste(
       "Baseline prothrombin time in the cohort: median 13.8 s, range 9.6-31.9",
       "(Table 1); PT was assayed with Thromborel S reagent on a Sysmex CS5100",
       "with within-run and inter-run precision < 3.5%. Sparse sampling: 2-4",

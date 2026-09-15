@@ -3,8 +3,8 @@ Minichmayr_2024_ceftaroline <- function() {
   reference <- "Minichmayr IK, Wicha SG, Matzneller P, Kloft C, Zeitlinger M. Impact of key components of intensified ceftaroline dosing on pharmacokinetic/pharmacodynamic target attainment. Clin Pharmacokinet. 2024;63(1):121-131. doi:10.1007/s40262-023-01325-4. Final population PK parameter estimates are Table 1; the structural-model selection narrative (two-compartment, linear elimination, complete and immediate prodrug conversion, no CLcr covariate) is Results section 3.1; the ceftaroline-to-ceftaroline-fosamil molar-mass ratio of 0.883 and the 20% plasma protein binding used for fT>MIC are Methods sections 2.2 and 2.3; published median fT>MIC values across the eight systematically varied dosing regimens are Tables 2 and 3. The electronic supplementary material (ESM) adds baseline demographics (Table S1), the objective function values of the key candidate models explored during model development (Table S2), and the complete 72-cell grid of median fT>MIC across six MIC values, two dosing intervals, two total daily doses and three infusion durations including the 3 h infusions omitted from the main text (Table S3)."
   vignette <- "Minichmayr_2024_ceftaroline"
   units <- list(
-    time          = "h",
-    dosing        = "mg (ceftaroline fosamil, the administered prodrug)",
+    time = "h",
+    dosing = "mg (ceftaroline fosamil, the administered prodrug)",
     concentration = "mg/L (total plasma ceftaroline)"
   )
 
@@ -14,7 +14,7 @@ Minichmayr_2024_ceftaroline <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ceftaroline", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ceftaroline", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ceftaroline", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
@@ -33,32 +33,32 @@ Minichmayr_2024_ceftaroline <- function() {
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Creatinine clearance estimated by the Cockcroft-Gault equation, reported in raw mL/min (not BSA-normalized) for this cohort",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened as a covariate on CL with linear and power functions and with a published healthy-subject CL-CLcr relationship; not statistically significant (delta-OFV < 1) and not retained in the final model. Median 145 mL/min (range 93.2-165). Source column name in the study data was CLCR.",
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as a covariate on CL with linear and power functions and with a published healthy-subject CL-CLcr relationship; not statistically significant (delta-OFV < 1) and not retained in the final model. Median 145 mL/min (range 93.2-165). Source column name in the study data was CLCR.",
       source_name = "CLCR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 12L,
-    n_studies        = 1L,
-    n_observations   = 274L,
-    age_range        = "22-50 years (main text); 5th-95th percentile 23.1-45.6 years (ESM Table S1)",
-    age_median       = "27.5 years",
-    weight_range     = "63-106 kg (main text); 5th-95th percentile 64.4-96.1 kg (ESM Table S1)",
-    weight_median    = "74.5 kg",
-    height_median    = "183 cm (5th-95th percentile 173-194 cm; ESM Table S1)",
-    bsa_median       = "1.92 m^2 (5th-95th percentile 1.79-2.28 m^2; ESM Table S1)",
-    bmi_range        = "19.4-27.6 kg/m^2 (main text); 5th-95th percentile 19.4-25.9 kg/m^2 (ESM Table S1)",
-    bmi_median       = "23.0 kg/m^2",
-    sex_female_pct   = 0,
-    disease_state    = "healthy volunteers (no renal impairment)",
-    renal_function   = "CLcr (Cockcroft-Gault) median 145 mL/min, range 93.2-165 mL/min (main text; 5th-95th percentile 95.4-158 mL/min, ESM Table S1); serum creatinine median 0.88 mg/dL (5th-95th percentile 0.76-1.04 mg/dL, ESM Table S1); no renal impairment",
-    dose_range       = "Ceftaroline fosamil 600 mg every 12 h as a 1 h intravenous infusion (standard dosing, n = 6) or 600 mg every 8 h as a 2 h intravenous infusion (intensified dosing, n = 6)",
-    regions          = "Austria (Medical University of Vienna)",
-    notes            = paste(
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    n_observations = 274L,
+    age_range = "22-50 years (main text); 5th-95th percentile 23.1-45.6 years (ESM Table S1)",
+    age_median = "27.5 years",
+    weight_range = "63-106 kg (main text); 5th-95th percentile 64.4-96.1 kg (ESM Table S1)",
+    weight_median = "74.5 kg",
+    height_median = "183 cm (5th-95th percentile 173-194 cm; ESM Table S1)",
+    bsa_median = "1.92 m^2 (5th-95th percentile 1.79-2.28 m^2; ESM Table S1)",
+    bmi_range = "19.4-27.6 kg/m^2 (main text); 5th-95th percentile 19.4-25.9 kg/m^2 (ESM Table S1)",
+    bmi_median = "23.0 kg/m^2",
+    sex_female_pct = 0,
+    disease_state = "healthy volunteers (no renal impairment)",
+    renal_function = "CLcr (Cockcroft-Gault) median 145 mL/min, range 93.2-165 mL/min (main text; 5th-95th percentile 95.4-158 mL/min, ESM Table S1); serum creatinine median 0.88 mg/dL (5th-95th percentile 0.76-1.04 mg/dL, ESM Table S1); no renal impairment",
+    dose_range = "Ceftaroline fosamil 600 mg every 12 h as a 1 h intravenous infusion (standard dosing, n = 6) or 600 mg every 8 h as a 2 h intravenous infusion (intensified dosing, n = 6)",
+    regions = "Austria (Medical University of Vienna)",
+    notes = paste(
       "Prospective, open-label study; EudraCT 2012-005134-11 (Study Population and Methods 2.1; demographics in ESM Table S1, which reports medians with 5th-95th percentiles, and in the main-text Methods narrative, which reports medians with full ranges).",
       "All 12 participants were male, so sex was not a candidate covariate.",
       "Rich sampling of total plasma ceftaroline on two occasions: after the first dose and after three (q12h group) or four (q8h group) repeated doses; n = 274 concentrations total.",

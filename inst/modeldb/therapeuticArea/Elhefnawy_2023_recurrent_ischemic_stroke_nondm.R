@@ -57,35 +57,35 @@ Elhefnawy_2023_recurrent_ischemic_stroke_nondm <- function() {
   vignette <- "Elhefnawy_2023_recurrent_ischemic_stroke_diabetes"
 
   units <- list(
-    time          = "year",
-    dosing        = "n/a (no dosing events; secondary-prevention therapy enters only through the binary CONMED_LIPIDLOWER covariate)",
+    time = "year",
+    dosing = "n/a (no dosing events; secondary-prevention therapy enters only through the binary CONMED_LIPIDLOWER covariate)",
     concentration = "n/a (the model outputs are a hazard in 1/year, a unitless cumulative hazard and a unitless recurrence-free survivor probability, not a drug concentration)"
   )
 
   covariateData <- list(
     DIS_HYPERLIP = list(
-      description        = "1 = the patient carried a hyperlipidemia (HPLD) diagnosis before the index ischemic stroke; 0 = no hyperlipidemia. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient carried a hyperlipidemia (HPLD) diagnosis before the index ischemic stroke; 0 = no hyperlipidemia. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hyperlipidemia before the index stroke)",
-      notes              = "Ascertained from the National Neurology Registry concurrent-disease fields (Elhefnawy 2023 Methods, 'Data collection'). Prevalence in the 4,204-patient non-diabetic stratum is (63 + 865) / 4,204 = 22.07 percent (Table 1). The strongest predictor in this stratum: aHR = exp(1.03) = 2.80 (95 percent CI 2.00-3.90). The same covariate is retained, more weakly, in the diabetic stratum (aHR 1.88) -- see modellib('Elhefnawy_2023_recurrent_ischemic_stroke_dm').",
-      source_name        = "HPLD"
+      notes = "Ascertained from the National Neurology Registry concurrent-disease fields (Elhefnawy 2023 Methods, 'Data collection'). Prevalence in the 4,204-patient non-diabetic stratum is (63 + 865) / 4,204 = 22.07 percent (Table 1). The strongest predictor in this stratum: aHR = exp(1.03) = 2.80 (95 percent CI 2.00-3.90). The same covariate is retained, more weakly, in the diabetic stratum (aHR 1.88) -- see modellib('Elhefnawy_2023_recurrent_ischemic_stroke_dm').",
+      source_name = "HPLD"
     ),
     DIS_HYPERT = list(
-      description        = "1 = the patient carried a hypertension (HTN) diagnosis before the index ischemic stroke; 0 = no hypertension. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient carried a hypertension (HTN) diagnosis before the index ischemic stroke; 0 = no hypertension. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hypertension before the index stroke)",
-      notes              = "Ascertained the same way as the other concurrent-disease flags. Prevalence in the non-diabetic stratum is (108 + 2,355) / 4,204 = 58.59 percent (Table 1). aHR = exp(0.789) = 2.20 (95 percent CI 1.53-3.14). Retained in this stratum only: Elhefnawy 2023 Discussion reads the absence of an HTN term in the diabetic stratum as collinearity with diabetes, and hypertension prevalence there is 87.1 percent, leaving little contrast. Table 1 additionally stratifies hypertension duration at 5 years; no duration effect was retained.",
-      source_name        = "HTN"
+      notes = "Ascertained the same way as the other concurrent-disease flags. Prevalence in the non-diabetic stratum is (108 + 2,355) / 4,204 = 58.59 percent (Table 1). aHR = exp(0.789) = 2.20 (95 percent CI 1.53-3.14). Retained in this stratum only: Elhefnawy 2023 Discussion reads the absence of an HTN term in the diabetic stratum as collinearity with diabetes, and hypertension prevalence there is 87.1 percent, leaving little contrast. Table 1 additionally stratifies hypertension duration at 5 years; no duration effect was retained.",
+      source_name = "HTN"
     ),
     CONMED_LIPIDLOWER = list(
-      description        = "1 = the patient was prescribed an antihyperlipidemic (lipid-lowering) medication for secondary prevention or concurrent-disease control around the index ischemic stroke admission; 0 = no antihyperlipidemic prescribed. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient was prescribed an antihyperlipidemic (lipid-lowering) medication for secondary prevention or concurrent-disease control around the index ischemic stroke admission; 0 = no antihyperlipidemic prescribed. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no antihyperlipidemic prescribed)",
-      notes              = "Elhefnawy 2023 Methods, 'Data collection': the registry recorded 'medications for secondary prevention or concurrent disease control', and Table 1 tabulates the class as 'Antihyperlipidemic' under 'Received medication for concurrent disease control and/or secondary prevention'. The paper does not enumerate which agents were pooled into the class, so the class composition is unknown here; the Discussion argues the effect specifically in terms of statins, but the covariate as fitted is the broader antihyperlipidemic indicator. Prevalence in the non-diabetic stratum is (120 + 3,682) / 4,204 = 90.44 percent (Table 1). This is the only protective term retained in either stratum: aHR = exp(-0.835) = 0.434 (the paper prints the interval descending, '0.433(0.65-0.28)'), i.e. Results, 'receiving antihyperlipidemic medication among IS patients with non-DM decreased recurrent IS by 43.3%'. Because the indicator is fixed at the index admission it encodes prescription rather than adherence, and the model carries no time-varying exposure term.",
-      source_name        = "Antihyperlipidemic"
+      notes = "Elhefnawy 2023 Methods, 'Data collection': the registry recorded 'medications for secondary prevention or concurrent disease control', and Table 1 tabulates the class as 'Antihyperlipidemic' under 'Received medication for concurrent disease control and/or secondary prevention'. The paper does not enumerate which agents were pooled into the class, so the class composition is unknown here; the Discussion argues the effect specifically in terms of statins, but the covariate as fitted is the broader antihyperlipidemic indicator. Prevalence in the non-diabetic stratum is (120 + 3,682) / 4,204 = 90.44 percent (Table 1). This is the only protective term retained in either stratum: aHR = exp(-0.835) = 0.434 (the paper prints the interval descending, '0.433(0.65-0.28)'), i.e. Results, 'receiving antihyperlipidemic medication among IS patients with non-DM decreased recurrent IS by 43.3%'. Because the indicator is fixed at the index admission it encodes prescription rather than adherence, and the model carries no time-varying exposure term.",
+      source_name = "Antihyperlipidemic"
     )
   )
 
@@ -109,93 +109,108 @@ Elhefnawy_2023_recurrent_ischemic_stroke_nondm <- function() {
   covariatesDataExcluded <- list(
     DIS_IHD = list(
       description = "Ischemic heart disease (IHD) before the index stroke; (25 + 382) / 4,204 = 9.68 percent of the non-diabetic stratum.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened but not retained in the non-diabetic stratum, while it IS the strongest predictor in the diabetic stratum (aHR 2.40). Prevalence here is also lower (9.68 vs 13.51 percent). Registered canonical DIS_IHD is used for it in the sister DM model file."
     ),
     DIS_HYPERURICEMIA = list(
       description = "Hyperuricemia before the index stroke; (6 + 97) / 4,204 = 2.45 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Named among the investigated concurrent diseases in Methods, 'Data collection' and tabulated in Table 1; no effect retained in Table 3."
     ),
     DIS_AF = list(
       description = "Atrial fibrillation before the index stroke; (5 + 172) / 4,204 = 4.21 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Named among the investigated concurrent diseases and tabulated in Table 1; no effect retained."
     ),
     AGE = list(
       description = "Age at the index ischemic stroke; median 62.9 years across the whole study, dichotomised at 60 years in Table 1.",
-      units = "year", type = "continuous",
+      units = "year",
+      type = "continuous",
       notes = "Screened as a demographic covariate (Methods, 'Data collection'); not retained. Table 1: 57.97 percent of recurrent and 60.45 percent of non-recurrent non-diabetic patients were older than 60 years."
     ),
     SEXF = list(
       description = "Female sex; (53 + 1,607) / 4,204 = 39.49 percent of the non-diabetic stratum.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as a demographic covariate; not retained. Table 1 shows near-identical proportions in the recurrent (38.40 percent) and non-recurrent (39.52 percent) non-diabetic groups."
     ),
     SMOKER = list(
       description = "Current smoker at the index stroke; (89 + 1,917) / 4,204 = 47.72 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1 with a sizeable unadjusted imbalance (64.49 percent of recurrent vs 47.14 percent of non-recurrent non-diabetic patients); no effect retained in Table 3."
     ),
     FAMHX_STROKE = list(
       description = "Family history of stroke; (11 + 247) / 4,204 = 6.14 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1; no effect retained."
     ),
     NIHSS = list(
       description = "National Institutes of Health Stroke Scale severity of the index stroke, dichotomised by the paper into minor vs moderate/severe.",
-      units = "(score)", type = "continuous",
+      units = "(score)",
+      type = "continuous",
       notes = "Tabulated in Table 1 (46.37 percent minor among recurrent non-diabetic patients vs 46.06 percent among non-recurrent); no NIHSS term appears in Table 3."
     ),
     RACE = list(
       description = "Ethnicity, recorded by the registry as Malay / Chinese / Indian / Others.",
-      units = "(categorical)", type = "categorical",
+      units = "(categorical)",
+      type = "categorical",
       notes = "Tabulated in Table 1 with a large unadjusted imbalance (54.34 percent Malay among recurrent non-diabetic patients vs 19.23 percent among non-recurrent); no ethnicity effect appears in Table 3."
     ),
     CONMED_ANTIPLATELET = list(
       description = "Antiplatelet (APLT) prescribed for secondary prevention; (118 + 3,635) / 4,204 = 89.27 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1; no effect retained in Table 3 for either stratum. Contrast the companion pooled-cohort publication (Elhefnawy 2023, Front Neurol 14:1118711), where antiplatelet at discharge IS the single protective covariate retained (aHR 0.59)."
     ),
     CONMED_ANTIDIABETIC = list(
       description = "Antidiabetic (ADM) prescribed; (15 + 301) / 4,204 = 7.52 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1 even for the non-diabetic stratum (these are patients without a registry diabetes diagnosis who nonetheless received an antidiabetic); no effect retained."
     ),
     CONMED_ACEI = list(
       description = "Angiotensin-converting-enzyme inhibitor prescribed; (37 + 1,154) / 4,204 = 28.33 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1; no effect retained."
     ),
     CONMED_BETABLOCKER = list(
       description = "Beta-blocker prescribed; (15 + 343) / 4,204 = 8.52 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1; no effect retained."
     ),
     CONMED_CCB = list(
       description = "Calcium-channel blocker prescribed; (21 + 736) / 4,204 = 18.01 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1; no effect retained."
     ),
     CONMED_DIURETIC = list(
       description = "Diuretic prescribed; (7 + 170) / 4,204 = 4.21 percent.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Tabulated in Table 1; no effect retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4204L,
-    n_events       = 138L,
-    n_studies      = 1L,
-    age_range      = "adults; median 62.9 years at the index stroke across the whole study population. In the non-diabetic stratum 57.97 percent of the patients who recurred and 60.45 percent of those who did not were older than 60 years (Table 1).",
+    species = "human",
+    n_subjects = 4204L,
+    n_events = 138L,
+    n_studies = 1L,
+    age_range = "adults; median 62.9 years at the index stroke across the whole study population. In the non-diabetic stratum 57.97 percent of the patients who recurred and 60.45 percent of those who did not were older than 60 years (Table 1).",
     sex_female_pct = 39.49,
     race_ethnicity = "Multiethnic Malaysian registry cohort. Elhefnawy 2023 Table 1 reports Malay / Chinese / Indian / Others separately for the recurrent (54.34 / 1.44 / 0 / 44.20 percent) and non-recurrent (19.23 / 2.90 / 0.74 / 77.15 percent) non-diabetic groups; ethnicity was screened but not retained.",
-    disease_state  = "Adults WITHOUT diabetes mellitus who had a first (index) ischemic stroke diagnosed by WHO criteria and confirmed by brain CT or MRI. Diabetes status was assigned from physician diagnosis, antidiabetic medication history, the patient's electronic record, or antidiabetic medications prescribed at discharge; patients with none of these formed this stratum. The endpoint is a subsequent ischemic stroke recorded in the registry after the index event.",
-    dose_range     = "n/a (no drug exposure is modelled; secondary prevention enters only as the binary antihyperlipidemic indicator)",
-    regions        = "Malaysia -- National Neurology Registry (NNEUR), a hospital-based registry covering 13 states; index strokes registered August 2009 to December 2016.",
-    notes          = paste(
+    disease_state = "Adults WITHOUT diabetes mellitus who had a first (index) ischemic stroke diagnosed by WHO criteria and confirmed by brain CT or MRI. Diabetes status was assigned from physician diagnosis, antidiabetic medication history, the patient's electronic record, or antidiabetic medications prescribed at discharge; patients with none of these formed this stratum. The endpoint is a subsequent ischemic stroke recorded in the registry after the index event.",
+    dose_range = "n/a (no drug exposure is modelled; secondary prevention enters only as the binary antihyperlipidemic indicator)",
+    regions = "Malaysia -- National Neurology Registry (NNEUR), a hospital-based registry covering 13 states; index strokes registered August 2009 to December 2016.",
+    notes = paste(
       "138 of 4,204 non-diabetic patients (3.28 percent) had a recurrent",
       "ischemic stroke within the maximum 7.37 years of follow-up.",
       "Baseline concurrent-disease prevalences in this stratum, computed from",

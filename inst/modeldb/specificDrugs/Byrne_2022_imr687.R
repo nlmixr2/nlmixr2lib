@@ -12,8 +12,8 @@ Byrne_2022_imr687 <- function() {
   )
   vignette <- "Byrne_2022_imr687"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -22,9 +22,9 @@ Byrne_2022_imr687 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "IMR-687", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "IMR-687", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "IMR-687", units = "mg", specimen = "plasma", verified = FALSE),
-    cumhaz  = list(analyte = "VOC events", units = "mg", specimen = "not applicable", verified = FALSE)
+    cumhaz = list(analyte = "VOC events", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
@@ -32,44 +32,44 @@ Byrne_2022_imr687 <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "The poster Results-PK-ER text identifies 'body weight on clearance (CL/F) and volume (V/F)' as covariates retained in the final population PK model, but reports no parameter estimate, no functional form (allometric vs linear), and no reference weight. The model file therefore documents WT in covariatesDataExcluded and does NOT scale CL/F or V/F by body weight. A future re-extraction with the underlying NONMEM control stream should promote WT into covariateData and add e_wt_cl / e_wt_vc effects."
+      units = "kg",
+      type = "continuous",
+      notes = "The poster Results-PK-ER text identifies 'body weight on clearance (CL/F) and volume (V/F)' as covariates retained in the final population PK model, but reports no parameter estimate, no functional form (allometric vs linear), and no reference weight. The model file therefore documents WT in covariatesDataExcluded and does NOT scale CL/F or V/F by body weight. A future re-extraction with the underlying NONMEM control stream should promote WT into covariateData and add e_wt_cl / e_wt_vc effects."
     ),
     FORM_CAPSULE = list(
       description = "Capsule formulation indicator: 1 = capsule, 0 = tablet (the per-paper comparator).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The poster Results-PK-ER text reports a 'formulation effect: 0.239 (0.143, 0.401)' on absorption (Ka), with capsule vs tablet as the contrast. The functional form (multiplicative on Ka? log-additive? change in Ka magnitude?) and the reference category (capsule = 0 or tablet = 0) are not stated. The model file therefore documents FORM_CAPSULE in covariatesDataExcluded and does NOT encode it as a Ka effect. Reference category and functional form must be confirmed from the underlying NONMEM control stream before promotion."
+      units = "(binary)",
+      type = "binary",
+      notes = "The poster Results-PK-ER text reports a 'formulation effect: 0.239 (0.143, 0.401)' on absorption (Ka), with capsule vs tablet as the contrast. The functional form (multiplicative on Ka? log-additive? change in Ka magnitude?) and the reference category (capsule = 0 or tablet = 0) are not stated. The model file therefore documents FORM_CAPSULE in covariatesDataExcluded and does NOT encode it as a Ka effect. Reference category and functional form must be confirmed from the underlying NONMEM control stream before promotion."
     ),
     DOSE = list(
       description = "Capsule daily dose (mg) entered as a covariate effect on absorption (Ka) in the source PPK model. Distinct from the dose-event AMT carried in the dosing records.",
-      units       = "mg",
-      type        = "continuous",
-      notes       = "The poster Results-PK-ER text reports a 'dose effect: -0.602 (-0.908, -0.296)' on absorption (Ka) for the capsule formulation. The functional form, reference dose, and whether the covariate is per-dose or per-subject are not stated. The model file therefore documents DOSE in covariatesDataExcluded and does NOT encode the dose-on-Ka effect; the dose amount still enters the simulation through the standard rxode2 dosing-event AMT. Promotion requires the underlying control stream."
+      units = "mg",
+      type = "continuous",
+      notes = "The poster Results-PK-ER text reports a 'dose effect: -0.602 (-0.908, -0.296)' on absorption (Ka) for the capsule formulation. The functional form, reference dose, and whether the covariate is per-dose or per-subject are not stated. The model file therefore documents DOSE in covariatesDataExcluded and does NOT encode the dose-on-Ka effect; the dose amount still enters the simulation through the standard rxode2 dosing-event AMT. Promotion requires the underlying control stream."
     ),
     FED_HIGHFAT = list(
       description = "High-fat-meal indicator at time of dosing: 1 = high-fat meal, 0 = fasted or low-fat reference.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The poster Results-PK-ER text reports a 'high fat meal effect: 0.176, (0.121, .254)' on absorption (Ka) for the capsule formulation only. The functional form and reference category are not stated. The model file therefore documents FED_HIGHFAT in covariatesDataExcluded and does NOT encode it as a Ka effect. Promotion requires the underlying control stream."
+      units = "(binary)",
+      type = "binary",
+      notes = "The poster Results-PK-ER text reports a 'high fat meal effect: 0.176, (0.121, .254)' on absorption (Ka) for the capsule formulation only. The functional form and reference category are not stated. The model file therefore documents FED_HIGHFAT in covariatesDataExcluded and does NOT encode it as a Ka effect. Promotion requires the underlying control stream."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 112L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 112L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Healthy adult subjects (Phase 1a, IMR-SCD-101 or related FIH study) and adult patients with sickle cell disease (SCD; Phase 2a study IMR-SCD-102). The Phase 2a SCD cohort enrolled 92 subjects across placebo, 50 mg, 100 mg, 50-100 mg up-titrated, and 100-200 mg up-titrated arms (Figure 2 dose-cohort tabulation). VOC events were the efficacy endpoint.",
-    dose_range     = "Phase 2a: oral 50, 100, or 200 mg IMR-687 once daily for 24 weeks; titration arms started at 50 mg or 100 mg and up-titrated to 100 mg or 200 mg respectively. Simulated higher doses considered in the poster: 300, 400, and 600 mg QD.",
-    regions        = NA_character_,
-    notes          = "The PPK dataset pooled Phase 1a (healthy subjects) and Phase 2a (SCD patients) for a total of 112 subjects. The PD dataset for the RTTE exposure-response analysis comprised 92 Phase 2a subjects (placebo n=30, 50 mg n=15, 100 mg n=12, 50-100 mg n=21, 100-200 mg n=14; per Figure 2). The poster reports baseline demographic distributions only graphically (Figure 2 dot-plot tabulation), so per-field demographic ranges and medians are not reproduced here."
+    disease_state = "Healthy adult subjects (Phase 1a, IMR-SCD-101 or related FIH study) and adult patients with sickle cell disease (SCD; Phase 2a study IMR-SCD-102). The Phase 2a SCD cohort enrolled 92 subjects across placebo, 50 mg, 100 mg, 50-100 mg up-titrated, and 100-200 mg up-titrated arms (Figure 2 dose-cohort tabulation). VOC events were the efficacy endpoint.",
+    dose_range = "Phase 2a: oral 50, 100, or 200 mg IMR-687 once daily for 24 weeks; titration arms started at 50 mg or 100 mg and up-titrated to 100 mg or 200 mg respectively. Simulated higher doses considered in the poster: 300, 400, and 600 mg QD.",
+    regions = NA_character_,
+    notes = "The PPK dataset pooled Phase 1a (healthy subjects) and Phase 2a (SCD patients) for a total of 112 subjects. The PD dataset for the RTTE exposure-response analysis comprised 92 Phase 2a subjects (placebo n=30, 50 mg n=15, 100 mg n=12, 50-100 mg n=21, 100-200 mg n=14; per Figure 2). The poster reports baseline demographic distributions only graphically (Figure 2 dot-plot tabulation), so per-field demographic ranges and medians are not reproduced here."
   )
 
   ini({

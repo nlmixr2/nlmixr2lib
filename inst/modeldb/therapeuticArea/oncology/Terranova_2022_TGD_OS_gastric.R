@@ -43,8 +43,8 @@ Terranova_2022_TGD_OS_gastric <- function() {
   vignette <- "Terranova_2022_TGD_OS_gastric"
 
   units <- list(
-    time          = "days (both sub-models run on a single days time axis; the paper reports Kg / Kd in 1/year but converts to 1/day inside the model equations, and the OS TTE was fit with time in days)",
-    dosing        = "n/a (no PK sub-model; avelumab dose 10 mg/kg every 2 weeks and chemotherapy regimen are encoded implicitly via the TRT covariate)",
+    time = "days (both sub-models run on a single days time axis; the paper reports Kg / Kd in 1/year but converts to 1/day inside the model equations, and the OS TTE was fit with time in days)",
+    dosing = "n/a (no PK sub-model; avelumab dose 10 mg/kg every 2 weeks and chemotherapy regimen are encoded implicitly via the TRT covariate)",
     concentration = "mm (TGD observable = sum of longest diameters of RECIST 1.1 target lesions); probability (OS sub-model output `sur`)"
   )
 
@@ -53,17 +53,17 @@ Terranova_2022_TGD_OS_gastric <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    tumor  = list(analyte = "tumour-size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor = list(analyte = "tumour-size", units = NA_character_, specimen = "tumor", verified = FALSE),
     cumhaz = list(analyte = "hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     TRT = list(
       description = "Per-subject treatment-arm integer indicator selecting the per-arm shape parameter of the log-logistic OS hazard and enabling an ML-screened but ultimately not-detected treatment effect on TGD.",
-      units       = "(categorical / integer-coded)",
-      type        = "categorical",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       source_name = "treatment arm",
-      notes       = paste(
+      notes = paste(
         "Integer coding (Terranova 2022 Methods 'JAVELIN Gastric 100'):",
         "  1 = CHEMO (continued chemotherapy; oxaliplatin + fluoropyrimidine or best supportive care only if ineligible; n = 250) -- reference arm.",
         "  2 = AVEL (avelumab 10 mg/kg IV every 2 weeks; n = 249).",
@@ -74,26 +74,26 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     T_DIAG_CANCER = list(
       description = "Time since primary gastric-cancer / GEJC diagnosis at re-baseline (randomization).",
-      units       = "days",
-      type        = "continuous",
+      units = "days",
+      type = "continuous",
       source_name = "Tdiag",
-      notes       = "Power effect on the Gompertz tumor-growth rate constant Kg: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`. Reference 53 days = avelumab-arm median at randomization (Terranova 2022 Supplementary Methods). Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`. Broad range (both arms combined: 3 to 9080 days; median 48; Table S3). Supply at least a small floor value (>= 1 day) for newly-diagnosed subjects in simulation to keep the power form well-defined."
+      notes = "Power effect on the Gompertz tumor-growth rate constant Kg: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`. Reference 53 days = avelumab-arm median at randomization (Terranova 2022 Supplementary Methods). Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`. Broad range (both arms combined: 3 to 9080 days; median 48; Table S3). Supply at least a small floor value (>= 1 day) for newly-diagnosed subjects in simulation to keep the power form well-defined."
     ),
 
     LMET = list(
       description = "Baseline liver-metastasis indicator (radiologically or biopsy-documented) at re-baseline.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "LIVER",
-      notes       = "Exponential effect on Kg via a multiplicative (1 + LIVER*0.0164) term in the Terranova 2022 Supplementary Methods equation. Prevalence 32.7% pooled (Table S6)."
+      notes = "Exponential effect on Kg via a multiplicative (1 + LIVER*0.0164) term in the Terranova 2022 Supplementary Methods equation. Prevalence 32.7% pooled (Table S6)."
     ),
 
     MET_GE3 = list(
       description = "Baseline number of metastatic sites >= 3 indicator (derived from the source NONMEM continuous count column NumMet).",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "NumMet",
-      notes       = paste(
+      notes = paste(
         "Derived via `MET_GE3 = as.integer(NumMet >= 3)` at data-assembly time.",
         "Terranova 2022 encodes the source paper's continuous count `NumMet` as `exp(0.143 * (NumMet - 3))` on baseline tumor size BASE (Supplementary Methods).",
         "Per the nlmixr2lib count-covariate-decomposed-to-binary policy, the continuous count is binarised at the paper's reference value of 3.",
@@ -106,10 +106,10 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     RESP_SD = list(
       description = "Best RECIST 1.1 response at re-baseline is stable disease (SD).",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "RES_SD",
-      notes       = paste(
+      notes = paste(
         "Coded 1 = SD, 0 = any other RECIST category (CR, PR, PD, NED, NE, non-CR/non-PD) at re-baseline.",
         "Enters BOTH sub-models: (a) TGD BASE covariate equation (Terranova 2022 Supplementary Methods): `BASE = ... * (1 + 0.644 * RESP_SD)`; (b) OS TTE (Table S2): `log_median_OS += -0.0919 * RESP_SD`.",
         "Prevalence 34.3% pooled at re-baseline (Table S6).",
@@ -119,10 +119,10 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     RESP_NONPDCR = list(
       description = "Best RECIST 1.1 response at re-baseline is NEITHER complete response (CR) NOR partial response (PR) -- i.e., non-responder by RECIST.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "RES_nonPR/nonCR",
-      notes       = paste(
+      notes = paste(
         "Coded 1 = not CR and not PR (any of SD, non-CR/non-PD, NED, PD, NE), 0 = responder (CR or PR).",
         "Enters TGD BASE only (Terranova 2022 Supplementary Methods): `BASE = ... * (1 - 0.0769 * RESP_NONPDCR)`.",
         "Distinct from `RESP_SD` (proper subset when both indicators = 1 would be a coding inconsistency) and `RESP_RESPONDER` (which uses the opposite reference-category framing).",
@@ -132,10 +132,10 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     RESP_RESPONDER = list(
       description = "Best RECIST 1.1 response at re-baseline is responder (CR or PR).",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "Re-baseline responder vs other",
-      notes       = paste(
+      notes = paste(
         "Coded 1 = CR or PR at re-baseline, 0 = non-responder (any of SD, non-CR/non-PD, NED, PD, NE).",
         "Enters OS TTE only (Table S2): `log_median_OS += 0.146 * RESP_RESPONDER`.",
         "Complement of RESP_NONPDCR with a different reference category; both are needed because TGD and OS use different reference-category framings.",
@@ -146,34 +146,34 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     AGE = list(
       description = "Baseline age in years.",
-      units       = "years",
-      type        = "continuous",
+      units = "years",
+      type = "continuous",
       source_name = "AGE",
-      notes       = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.418 * log(AGE)`. Older age is prognostic for longer OS. Cohort AGE: mean 60.6, median 62, range 21-88 (both arms combined; Table S3)."
+      notes = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.418 * log(AGE)`. Older age is prognostic for longer OS. Cohort AGE: mean 60.6, median 62, range 21-88 (both arms combined; Table S3)."
     ),
 
     HR = list(
       description = "Baseline heart rate (beats per minute).",
-      units       = "beats/min",
-      type        = "continuous",
+      units = "beats/min",
+      type = "continuous",
       source_name = "HR",
-      notes       = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0879 * log(HR)`. Time-invariant re-baseline value used. Cohort HR: mean 77.6, median 76, range 42-128 (both arms combined; Table S3)."
+      notes = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0879 * log(HR)`. Time-invariant re-baseline value used. Cohort HR: mean 77.6, median 76, range 42-128 (both arms combined; Table S3)."
     ),
 
     SBP = list(
       description = "Baseline systolic blood pressure (mmHg).",
-      units       = "mmHg",
-      type        = "continuous",
+      units = "mmHg",
+      type = "continuous",
       source_name = "SBP",
-      notes       = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.532 * log(SBP)`. Cohort SBP: mean 122, median 120, range 82-183 (both arms combined; Table S3). Time-invariant re-baseline value used."
+      notes = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.532 * log(SBP)`. Cohort SBP: mean 122, median 120, range 82-183 (both arms combined; Table S3). Time-invariant re-baseline value used."
     ),
 
     ALB = list(
       description = "Serum albumin concentration.",
-      units       = "g/dL",
-      type        = "continuous",
+      units = "g/dL",
+      type = "continuous",
       source_name = "ALB",
-      notes       = paste(
+      notes = paste(
         "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(-1.26 * ALB)`.",
         "Terranova 2022 uses ALB in g/dL (Table S3 cohort mean 40.8 g/dL is g/L numerically but the units column of Table S3 reports 'g/dL'; treated here as g/dL per the paper's stated units).",
         "Cohort ALB (both arms): mean 40.8, median 41, range 27-49 (units per Table S3).",
@@ -183,74 +183,74 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     ALP = list(
       description = "Alkaline phosphatase activity.",
-      units       = "IU/L",
-      type        = "continuous",
+      units = "IU/L",
+      type = "continuous",
       source_name = "ALP",
-      notes       = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.0364 * ALP)`. Cohort ALP: mean 115, median 87, range 31-1540 (both arms combined; Table S3)."
+      notes = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.0364 * ALP)`. Cohort ALP: mean 115, median 87, range 31-1540 (both arms combined; Table S3)."
     ),
 
     AST = list(
       description = "Aspartate aminotransferase activity.",
-      units       = "IU/L",
-      type        = "continuous",
+      units = "IU/L",
+      type = "continuous",
       source_name = "AST",
-      notes       = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.165 * AST)`. Time-varying re-baseline value used."
+      notes = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.165 * AST)`. Time-varying re-baseline value used."
     ),
 
     CRP = list(
       description = "C-reactive protein.",
-      units       = "mg/L",
-      type        = "continuous",
+      units = "mg/L",
+      type = "continuous",
       source_name = "CRP",
-      notes       = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.258 * CRP)`. Largest time-varying effect in the OS model: 5th-95th-percentile CRP change (0.5-34.9 mg/L) gives hazard ratio 0.699-2.01 at cohort median 2.0 mg/L."
+      notes = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.258 * CRP)`. Largest time-varying effect in the OS model: 5th-95th-percentile CRP change (0.5-34.9 mg/L) gives hazard ratio 0.699-2.01 at cohort median 2.0 mg/L."
     ),
 
     LDH = list(
       description = "Serum lactate dehydrogenase activity.",
-      units       = "IU/L",
-      type        = "continuous",
+      units = "IU/L",
+      type = "continuous",
       source_name = "LDH",
-      notes       = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.618 * LDH)`. Cohort LDH: mean 210, median 175, range 83-1480 (both arms combined; Table S3)."
+      notes = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.618 * LDH)`. Cohort LDH: mean 210, median 175, range 83-1480 (both arms combined; Table S3)."
     ),
 
     NLR = list(
       description = "Neutrophil-to-lymphocyte ratio.",
-      units       = "ratio (unitless)",
-      type        = "continuous",
+      units = "ratio (unitless)",
+      type = "continuous",
       source_name = "NLR",
-      notes       = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.339 * NLR)`. Cohort NLR: mean 4.13, median 3.30, range 0.667-32 (both arms combined; Table S3). Only NLR was retained among four highly correlated time-varying inflammation indices."
+      notes = "Enters OS TTE as a TIME-VARYING proportional-hazards multiplier (Table S2): `hazard *= exp(0.339 * NLR)`. Cohort NLR: mean 4.13, median 3.30, range 0.667-32 (both arms combined; Table S3). Only NLR was retained among four highly correlated time-varying inflammation indices."
     ),
 
     CPK = list(
       description = "Serum creatine phosphokinase (creatine kinase).",
-      units       = "IU/L",
-      type        = "continuous",
+      units = "IU/L",
+      type = "continuous",
       source_name = "CK",
-      notes       = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0968 * log(CPK)`. Cohort CPK: mean 72.3, median 60.5, range 11-567 (both arms combined; Table S3). Time-invariant re-baseline value used."
+      notes = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0968 * log(CPK)`. Cohort CPK: mean 72.3, median 60.5, range 11-567 (both arms combined; Table S3). Time-invariant re-baseline value used."
     ),
 
     CRCL = list(
       description = "Estimated glomerular filtration rate (eGFR); reported in Table S3 as mL/min/1.73 m^2 per unit conventions of the JAVELIN Gastric 100 clinical database (values 0.412-3.08 in Table S3 suggest the raw units are mL/s/1.73 m^2 or scaled). Encoded here in the paper's reported units.",
-      units       = "mL/min/1.73 m^2 (units as reported; document any conversion applied at data-assembly time)",
-      type        = "continuous",
+      units = "mL/min/1.73 m^2 (units as reported; document any conversion applied at data-assembly time)",
+      type = "continuous",
       source_name = "eGFR",
-      notes       = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.237 * log(CRCL)`. Time-invariant re-baseline value used. Table S3 reports eGFR values in an unusual numeric range (0.412-3.08), suggesting they may be pre-normalised; document the unit conversion applied at simulation time in the vignette Errata section."
+      notes = "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.237 * log(CRCL)`. Time-invariant re-baseline value used. Table S3 reports eGFR values in an unusual numeric range (0.412-3.08), suggesting they may be pre-normalised; document the unit conversion applied at simulation time in the vignette Errata section."
     ),
 
     PRIOR_GAST = list(
       description = "Prior gastrectomy (surgical removal of part or all of the stomach) indicator at baseline.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "PRIOR_GAST",
-      notes       = "Additive effect on log-median OS (Table S2): `log_median_OS += -0.0313 * PRIOR_GAST`. Prevalence 27.1% pooled (Table S6)."
+      notes = "Additive effect on log-median OS (Table S2): `log_median_OS += -0.0313 * PRIOR_GAST`. Prevalence 27.1% pooled (Table S6)."
     ),
 
     GGT = list(
       description = "Gamma-glutamyl transferase activity.",
-      units       = "IU/L",
-      type        = "continuous",
+      units = "IU/L",
+      type = "continuous",
       source_name = "GGT",
-      notes       = paste(
+      notes = paste(
         "Additive-log effect on log-median OS (Table S2): `log_median_OS += 0.0968 * log(GGT)`.",
         "Higher GGT paradoxically prognostic for LONGER OS in this cohort (contrary to prior gastric-cancer literature); flagged as one of the largest time-invariant covariate effects (17% longer OS at 95th percentile vs median).",
         "Cohort GGT: mean 62.4, median 25, range 4-1070 (both arms combined; Table S3).",
@@ -260,34 +260,34 @@ Terranova_2022_TGD_OS_gastric <- function() {
 
     PERIT_CARC = list(
       description = "Peritoneal carcinomatosis (diffuse peritoneal-surface metastatic spread) at baseline / re-baseline.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "Peritoneal carcinomatosis",
-      notes       = "Additive effect on log-median OS (Table S2): `log_median_OS += -0.181 * PERIT_CARC`. One of the meaningful effects (credible interval excludes zero and the posterior median exceeds the paper's +/-15% threshold). Prevalence 29.9% pooled (Table S6)."
+      notes = "Additive effect on log-median OS (Table S2): `log_median_OS += -0.181 * PERIT_CARC`. One of the meaningful effects (credible interval excludes zero and the posterior median exceeds the paper's +/-15% threshold). Prevalence 29.9% pooled (Table S6)."
     ),
 
     TUM_SLD = list(
       description = "Baseline tumor size measured as the sum of longest diameters (SLD) of RECIST 1.1 target lesions.",
-      units       = "mm",
-      type        = "continuous",
+      units = "mm",
+      type = "continuous",
       source_name = "SLD baseline",
-      notes       = "Additive effect on log-median OS (Table S2): `log_median_OS += 0.00102 * TUM_SLD`. Cohort baseline SLD: mean 43.5, median 32, range 0-310 mm (both arms combined; Table S3). Time-invariant baseline value used in the OS sub-model; the TGD sub-model separately estimates the individual BASE parameter as a random effect (not the same as this covariate)."
+      notes = "Additive effect on log-median OS (Table S2): `log_median_OS += 0.00102 * TUM_SLD`. Cohort baseline SLD: mean 43.5, median 32, range 0-310 mm (both arms combined; Table S3). Time-invariant baseline value used in the OS sub-model; the TGD sub-model separately estimates the individual BASE parameter as a random effect (not the same as this covariate)."
     ),
 
     TRIG = list(
       description = "Serum triglyceride concentration.",
-      units       = "mg/dL",
-      type        = "continuous",
+      units = "mg/dL",
+      type = "continuous",
       source_name = "TRIG",
-      notes       = "Additive-log effect on log-median OS (Table S2): `log_median_OS += -0.0151 * log(TRIG)`. Time-invariant re-baseline value used."
+      notes = "Additive-log effect on log-median OS (Table S2): `log_median_OS += -0.0151 * log(TRIG)`. Time-invariant re-baseline value used."
     ),
 
     WHO_PS = list(
       description = "Eastern Cooperative Oncology Group (ECOG) performance status at re-baseline. In this Terranova 2022 model the covariate enters as a binary contrast (ECOG >= 1 vs ECOG 0) rather than as the raw ordinal 0/1/2 integer.",
-      units       = "(integer score with per-model binarisation; document via covariateData[[WHO_PS]]$notes)",
-      type        = "categorical",
+      units = "(integer score with per-model binarisation; document via covariateData[[WHO_PS]]$notes)",
+      type = "categorical",
       source_name = "Re-baseline ECOG PS: >=1 vs 0",
-      notes       = paste(
+      notes = paste(
         "The source model binarises the ordinal WHO_PS to ECOG >= 1 (vs ECOG 0 reference) for the OS TTE covariate list.",
         "Derive an intermediate `ECOG_GE1 = as.integer(WHO_PS >= 1)` at data-assembly time (paper reports 40.2% ECOG 0, 58.8% ECOG 1, 0.6% ECOG 2; Table S6).",
         "Additive effect on log-median OS (Table S2): `log_median_OS += -0.155 * ECOG_GE1`.",
@@ -297,17 +297,17 @@ Terranova_2022_TGD_OS_gastric <- function() {
   )
 
   population <- list(
-    species         = "human (adults with unresectable, HER2-negative, locally advanced or metastatic gastric cancer / gastroesophageal junction cancer who did not progress after 12 weeks of induction chemotherapy with oxaliplatin + a fluoropyrimidine)",
-    n_subjects      = 499L,
-    n_studies       = 1L,
-    age_range       = "21-88 years (median 62, mean 60.6; Table S3 both-arms row)",
-    weight_range    = "not reported at the pooled level in this paper (weight was included in the ML covariate screen per Table S1 but was not retained in either final model)",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "Asian (Japan / Republic of Korea / Taiwan / Thailand) vs non-Asian; per-region distribution not tabulated at the pooled level. Asian-vs-non-Asian was a stratification factor in the JAVELIN Gastric 100 randomization; the paper explicitly reports Asian vs non-Asian region was NOT identified as a covariate in either OS or TGD models (Figures S3 and S8).",
-    disease_state   = "advanced (unresectable, locally advanced or metastatic) HER2-negative gastric cancer / gastroesophageal junction cancer; all patients received 12 weeks of first-line induction chemotherapy with oxaliplatin + a fluoropyrimidine before randomization and had no progressive disease at re-baseline (complete response, partial response, or stable disease at re-baseline required for enrollment).",
-    dose_range      = "n/a (no drug PK sub-model). Avelumab dose was 10 mg/kg IV every 2 weeks in the maintenance phase; chemotherapy dose per the induction regimen (or best supportive care only if ineligible for further chemotherapy). Encoded implicitly via the TRT covariate.",
-    regions         = "multiregional phase III trial (JAVELIN Gastric 100), including Asian and non-Asian regions as a randomization stratification factor.",
-    notes           = paste(
+    species = "human (adults with unresectable, HER2-negative, locally advanced or metastatic gastric cancer / gastroesophageal junction cancer who did not progress after 12 weeks of induction chemotherapy with oxaliplatin + a fluoropyrimidine)",
+    n_subjects = 499L,
+    n_studies = 1L,
+    age_range = "21-88 years (median 62, mean 60.6; Table S3 both-arms row)",
+    weight_range = "not reported at the pooled level in this paper (weight was included in the ML covariate screen per Table S1 but was not retained in either final model)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Asian (Japan / Republic of Korea / Taiwan / Thailand) vs non-Asian; per-region distribution not tabulated at the pooled level. Asian-vs-non-Asian was a stratification factor in the JAVELIN Gastric 100 randomization; the paper explicitly reports Asian vs non-Asian region was NOT identified as a covariate in either OS or TGD models (Figures S3 and S8).",
+    disease_state = "advanced (unresectable, locally advanced or metastatic) HER2-negative gastric cancer / gastroesophageal junction cancer; all patients received 12 weeks of first-line induction chemotherapy with oxaliplatin + a fluoropyrimidine before randomization and had no progressive disease at re-baseline (complete response, partial response, or stable disease at re-baseline required for enrollment).",
+    dose_range = "n/a (no drug PK sub-model). Avelumab dose was 10 mg/kg IV every 2 weeks in the maintenance phase; chemotherapy dose per the induction regimen (or best supportive care only if ineligible for further chemotherapy). Encoded implicitly via the TRT covariate.",
+    regions = "multiregional phase III trial (JAVELIN Gastric 100), including Asian and non-Asian regions as a randomization stratification factor.",
+    notes = paste(
       "TGD sub-model: Gompertzian ODE `dy/dt = Kg*y - Kd*y*log(y)` with y(0) = BASE, using the Vaghi 2020 reformulation Kd = slope*Kg + intercept so a single random effect (etalKg) drives both Kg and Kd with perfect correlation.",
       "  Kg  (year^-1): typical value 0.271; power form `(T_DIAG_CANCER/53)^-0.00291 * (1 + LIVER*0.0164)`; IIV etalKg ~ N(0, 0.00163).",
       "  Kd  (1/(year*mm)): derived as `-18.8*Kg + 5.18`; IIV inherited fully from etalKg.",

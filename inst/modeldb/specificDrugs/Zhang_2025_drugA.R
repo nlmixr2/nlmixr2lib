@@ -39,38 +39,51 @@ Zhang_2025_drugA <- function() {
   vignette <- "Zhang_2025_drugA"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   compartmentData <- list(
     depot = list(
       analyte = "drug A (anti-IL-17 receptor monoclonal antibody; brodalumab per the cited source models)",
-      units = "mg", specimen = "administration site", verified = TRUE
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "drug A", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "drug A",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "drug A", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "drug A",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     pasi = list(
-      analyte = "none", units = "PASI units (0-72 clinical score)",
-      specimen = "not applicable", verified = TRUE
+      analyte = "none",
+      units = "PASI units (0-72 clinical score)",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     effect = list(
-      analyte = "drug A", units = "mg", specimen = "not applicable", verified = TRUE
+      analyte = "drug A",
+      units = "mg",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     REGION_CHINA = list(
-      description        = "1 = subject enrolled at a study site in the region of interest, 0 = enrolled elsewhere.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled at a study site in the region of interest, 0 = enrolled elsewhere.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Region X / rest of world)",
-      notes              = paste(
+      notes = paste(
         "The published article refers to this region only as 'Region X' and",
         "stresses the generality of the method. The region is identified as",
         "China by the authors' own deposited Data S4 R code comments",
@@ -79,24 +92,24 @@ Zhang_2025_drugA <- function() {
         "article body. Encoded from the control stream's POP column as",
         "REGION_CHINA = POP - 1, matching COV_CN**(POP-1) in $PK."
       ),
-      source_name        = "POP"
+      source_name = "POP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 175L,
-    n_studies      = 1L,
-    age_range      = "not reported (adult psoriasis population)",
-    weight_range   = "not reported",
-    disease_state  = "moderate-to-severe plaque psoriasis",
-    dose_range     = paste(
+    species = "human",
+    n_subjects = 175L,
+    n_studies = 1L,
+    age_range = "not reported (adult psoriasis population)",
+    weight_range = "not reported",
+    disease_state = "moderate-to-severe plaque psoriasis",
+    dose_range = paste(
       "Drug A 70, 140 or 210 mg SC at day 1 and weeks 1, 2, 4, 6, 8 and 10;",
       "or 280 mg SC at day 1 and weeks 4 and 8; or placebo.",
       "Randomization 1:1:1:1:1."
     ),
-    regions        = "multi-regional; a designated 'Region X' (China, per the Data S4 code comments) versus the rest of the world",
-    notes          = paste(
+    regions = "multi-regional; a designated 'Region X' (China, per the Data S4 code comments) versus the rest of the world",
+    notes = paste(
       "This is a SIMULATION model, not a fit to the Phase 2 data. The N = 175",
       "is the planned size of the hypothetical multi-regional Phase 2",
       "dose-ranging trial that Zhang 2025 simulates (Methods 2.1); the",

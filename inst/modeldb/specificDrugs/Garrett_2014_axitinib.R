@@ -1,61 +1,61 @@
 Garrett_2014_axitinib <- function() {
   description <- "Two-compartment population PK model for axitinib in healthy volunteers (Garrett 2014). First-order absorption with fixed lag time, allometric power-form effect of body weight on the central volume of distribution (reference 75 kg), linear-proportional fasting effects on the first-order absorption rate constant ka and on bioavailability F, and a linear-proportional reduction in F for the marketed crystal polymorph Form XLI relative to the earlier Form IV reference. Pooled data from 337 healthy subjects across ten Pfizer Phase I studies."
-  reference   <- "Garrett M, Poland B, Brennan M, Hee B, Pithavala YK, Amantea MA. Population pharmacokinetic analysis of axitinib in healthy volunteers. Br J Clin Pharmacol. 2014;77(3):480-492. doi:10.1111/bcp.12206"
-  vignette    <- "Garrett_2014_axitinib"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Garrett M, Poland B, Brennan M, Hee B, Pithavala YK, Amantea MA. Population pharmacokinetic analysis of axitinib in healthy volunteers. Br J Clin Pharmacol. 2014;77(3):480-492. doi:10.1111/bcp.12206"
+  vignette <- "Garrett_2014_axitinib"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "axitinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "axitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form allometric effect on Vc with reference 75 kg (population median); the exponent 0.758 was freely estimated rather than fixed at 1. Garrett 2014 Results 'Full model and final model' and Table 3.",
-      source_name        = "WT"
+      notes = "Power-form allometric effect on Vc with reference 75 kg (population median); the exponent 0.758 was freely estimated rather than fixed at 1. Garrett 2014 Results 'Full model and final model' and Table 3.",
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed-vs-fasted indicator at the dose record.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted indicator at the dose record.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (fed; the typical-value reference for ka and F in this model).",
-      notes              = "The fasting effect is applied internally as (1 - FED), so FED = 1 fed leaves ka and F at their typical-value Form IV / fed estimates and FED = 0 fasted activates the linear-proportional fasting increases (Garrett 2014 Results 'Full model and final model' and Table 3). Per-record covariate.",
-      source_name        = "FED"
+      notes = "The fasting effect is applied internally as (1 - FED), so FED = 1 fed leaves ka and F at their typical-value Form IV / fed estimates and FED = 0 fasted activates the linear-proportional fasting increases (Garrett 2014 Results 'Full model and final model' and Table 3). Per-record covariate.",
+      source_name = "FED"
     ),
     FORM_AXI_XLI = list(
-      description        = "Crystal polymorph form indicator for axitinib (Form XLI marketed vs Form IV earlier).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crystal polymorph form indicator for axitinib (Form XLI marketed vs Form IV earlier).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Form IV; the typical-value F reference in Garrett 2014 Table 3).",
-      notes              = "1 = Form XLI (marketed commercial crystal polymorph); 0 = Form IV (earlier Phase I crystal polymorph and the typical-value F reference). Linear-proportional effect on F only (no effect on ka or any other parameter retained in the final model). Garrett 2014 Results 'Full model and final model' and Table 3.",
-      source_name        = "FORM"
+      notes = "1 = Form XLI (marketed commercial crystal polymorph); 0 = Form IV (earlier Phase I crystal polymorph and the typical-value F reference). Linear-proportional effect on F only (no effect on ka or any other parameter retained in the final model). Garrett 2014 Results 'Full model and final model' and Table 3.",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 337L,
-    n_studies       = 10L,
-    age_range       = "18+ years (healthy volunteers)",
-    age_median      = "31.0 years (mean 34.1 +/- 11.6)",
-    weight_range    = "approximately 50-110 kg (median 75.0; mean 76.7 +/- 11.6)",
-    weight_median   = "75.0 kg",
-    sex_female_pct  = 7,
-    race_ethnicity  = c(White = 62, Black = 8, Asian = 18, Japanese = 6, Hispanic = 3, Other = 3),
-    disease_state   = "Healthy volunteers (no axitinib indication; pooled Phase I clinical pharmacology studies).",
-    dose_range      = "Single 5 mg oral dose (Form IV or Form XLI) in fed or fasted state; one study additionally administered a 1 mg intravenous dose of Form IV (n = 16) to estimate absolute bioavailability.",
-    regions         = "United States (Austin TX, Fargo ND, La Mesa CA, Plantation FL), Belgium (Bruxelles), and Singapore.",
-    n_observations  = "Pooled from ten Phase I clinical studies (Table 1). Study designs included single-dose absolute-bioavailability, food-effect, formulation-comparison (Form IV vs Form XLI), and drug-drug-interaction arms; analyses included only the single-dose-axitinib alone records, excluding doses administered with rifampicin or ketoconazole.",
-    smoking_status  = c(`Non-smoker` = 88, `Ex-smoker` = 12),
-    notes           = "Demographic counts reproduced from Garrett 2014 Table 2 (n = 337 unique subjects across ten studies). Genetic covariates UGT1A1*28 and CYP2C19 inferred phenotype were tested but not retained as significant in the final model; ALT, AST, bilirubin, creatinine clearance, age, sex, race, and smoking status were likewise tested and dropped (Garrett 2014 Results 'Full model and final model')."
+    species = "human",
+    n_subjects = 337L,
+    n_studies = 10L,
+    age_range = "18+ years (healthy volunteers)",
+    age_median = "31.0 years (mean 34.1 +/- 11.6)",
+    weight_range = "approximately 50-110 kg (median 75.0; mean 76.7 +/- 11.6)",
+    weight_median = "75.0 kg",
+    sex_female_pct = 7,
+    race_ethnicity = c(White = 62, Black = 8, Asian = 18, Japanese = 6, Hispanic = 3, Other = 3),
+    disease_state = "Healthy volunteers (no axitinib indication; pooled Phase I clinical pharmacology studies).",
+    dose_range = "Single 5 mg oral dose (Form IV or Form XLI) in fed or fasted state; one study additionally administered a 1 mg intravenous dose of Form IV (n = 16) to estimate absolute bioavailability.",
+    regions = "United States (Austin TX, Fargo ND, La Mesa CA, Plantation FL), Belgium (Bruxelles), and Singapore.",
+    n_observations = "Pooled from ten Phase I clinical studies (Table 1). Study designs included single-dose absolute-bioavailability, food-effect, formulation-comparison (Form IV vs Form XLI), and drug-drug-interaction arms; analyses included only the single-dose-axitinib alone records, excluding doses administered with rifampicin or ketoconazole.",
+    smoking_status = c(`Non-smoker` = 88, `Ex-smoker` = 12),
+    notes = "Demographic counts reproduced from Garrett 2014 Table 2 (n = 337 unique subjects across ten studies). Genetic covariates UGT1A1*28 and CYP2C19 inferred phenotype were tested but not retained as significant in the final model; ALT, AST, bilirubin, creatinine clearance, age, sex, race, and smoking status were likewise tested and dropped (Garrett 2014 Results 'Full model and final model')."
   )
 
   ini({

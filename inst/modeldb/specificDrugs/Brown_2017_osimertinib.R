@@ -9,91 +9,91 @@ Brown_2017_osimertinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = FALSE),
     central_az5104 = list(analyte = "AZ5104", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; reported in kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; reported in kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects on parent CL/F (exponent 0.56), parent Vc/F (exponent 0.65), and AZ5104 CL/F (exponent 0.99); reference body weight 62 kg per Brown 2017 Table 1 baseline median.",
-      source_name        = "WT"
+      notes = "Power-form effects on parent CL/F (exponent 0.56), parent Vc/F (exponent 0.65), and AZ5104 CL/F (exponent 0.99); reference body weight 62 kg per Brown 2017 Table 1 baseline median.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on parent Vc/F (exponent 1.33); reference albumin 39 g/L per Brown 2017 Table 1 baseline median.",
-      source_name        = "Albumin"
+      notes = "Power-form effect on parent Vc/F (exponent 1.33); reference albumin 39 g/L per Brown 2017 Table 1 baseline median.",
+      source_name = "Albumin"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator (1 = Study 5 healthy volunteer, 0 = NSCLC patient pooled from AURA / AURA2).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator (1 = Study 5 healthy volunteer, 0 = NSCLC patient pooled from AURA / AURA2).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NSCLC patient; reference cohort is the pooled AURA + AURA2 advanced-NSCLC population).",
-      notes              = "Linear effects (1 + 0.44 * DIS_HEALTHY) on parent CL/F and (1 + 1.25 * DIS_HEALTHY) on AZ5104 CL/F. The healthy-volunteer cohort is Study 5 (D5160C00005, 32 subjects). The reference NSCLC values for clearance are the published typical values 14.2 L/h (parent) and 31.5 L/h (AZ5104); HV subjects therefore have ~44 percent higher parent CL/F and ~125 percent higher AZ5104 CL/F (35 percent and 55 percent lower AUCss, respectively).",
-      source_name        = "POP"
+      notes = "Linear effects (1 + 0.44 * DIS_HEALTHY) on parent CL/F and (1 + 1.25 * DIS_HEALTHY) on AZ5104 CL/F. The healthy-volunteer cohort is Study 5 (D5160C00005, 32 subjects). The reference NSCLC values for clearance are the published typical values 14.2 L/h (parent) and 31.5 L/h (AZ5104); HV subjects therefore have ~44 percent higher parent CL/F and ~125 percent higher AZ5104 CL/F (35 percent and 55 percent lower AUCss, respectively).",
+      source_name = "POP"
     ),
     RACE_CHINESE = list(
-      description        = "Chinese-heritage race indicator (1 = Chinese, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chinese-heritage race indicator (1 = Chinese, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Chinese; the paper-defined reference category for race is Caucasian).",
-      notes              = "Linear additive effect (1 + 0.17 * RACE_CHINESE) on AZ5104 CL/F; ~14.5 percent decrease in AZ5104 AUCss vs Caucasian. Brown 2017 carries Chinese, Japanese, Asian-other, and non-Asian-non-Caucasian as four mutually exclusive race indicators with Caucasian as the reference; subjects with missing race are encoded as 0 for every indicator (i.e., treated as the Caucasian reference).",
-      source_name        = "Ethnic Asian Chinese (Brown 2017 Table 2)"
+      notes = "Linear additive effect (1 + 0.17 * RACE_CHINESE) on AZ5104 CL/F; ~14.5 percent decrease in AZ5104 AUCss vs Caucasian. Brown 2017 carries Chinese, Japanese, Asian-other, and non-Asian-non-Caucasian as four mutually exclusive race indicators with Caucasian as the reference; subjects with missing race are encoded as 0 for every indicator (i.e., treated as the Caucasian reference).",
+      source_name = "Ethnic Asian Chinese (Brown 2017 Table 2)"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage race indicator (1 = Japanese, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage race indicator (1 = Japanese, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese; the paper-defined reference category for race is Caucasian).",
-      notes              = "Linear additive effect (1 + 0.20 * RACE_JAPANESE) on AZ5104 CL/F; ~16.7 percent decrease in AZ5104 AUCss vs Caucasian.",
-      source_name        = "Ethnic Asian Japanese (Brown 2017 Table 2)"
+      notes = "Linear additive effect (1 + 0.20 * RACE_JAPANESE) on AZ5104 CL/F; ~16.7 percent decrease in AZ5104 AUCss vs Caucasian.",
+      source_name = "Ethnic Asian Japanese (Brown 2017 Table 2)"
     ),
     RACE_ASIAN_OTH = list(
-      description        = "Asian-other race indicator (1 = Asian heritage other than Chinese or Japanese, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian-other race indicator (1 = Asian heritage other than Chinese or Japanese, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian-other; the paper-defined reference category for race is Caucasian).",
-      notes              = "Linear additive effect (1 + 0.21 * RACE_ASIAN_OTH) on AZ5104 CL/F; ~17.4 percent decrease in AZ5104 AUCss vs Caucasian. Maps onto Brown 2017's 'Asian (not Japanese or Chinese)' category. Dominant reference cohort is Caucasian (not Chinese).",
-      source_name        = "Ethnic Asian other (Brown 2017 Table 2)"
+      notes = "Linear additive effect (1 + 0.21 * RACE_ASIAN_OTH) on AZ5104 CL/F; ~17.4 percent decrease in AZ5104 AUCss vs Caucasian. Maps onto Brown 2017's 'Asian (not Japanese or Chinese)' category. Dominant reference cohort is Caucasian (not Chinese).",
+      source_name = "Ethnic Asian other (Brown 2017 Table 2)"
     ),
     RACE_OTHER = list(
-      description        = "Other-race indicator (1 = race category Other, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Other-race indicator (1 = race category Other, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the paper-defined reference category for race is Caucasian).",
-      notes              = "Linear additive effect (1 + 0.10 * RACE_OTHER) on AZ5104 CL/F; ~9.1 percent decrease in AZ5104 AUCss vs Caucasian. Maps onto Brown 2017's non-Asian non-Caucasian 'Other' category.",
-      source_name        = "Ethnic non-Asian non-Caucasian (Brown 2017 Table 2)"
+      notes = "Linear additive effect (1 + 0.10 * RACE_OTHER) on AZ5104 CL/F; ~9.1 percent decrease in AZ5104 AUCss vs Caucasian. Maps onto Brown 2017's non-Asian non-Caucasian 'Other' category.",
+      source_name = "Ethnic non-Asian non-Caucasian (Brown 2017 Table 2)"
     )
   )
 
   population <- list(
-    n_subjects     = 780,
-    n_studies      = 3,
-    age_range      = "21-89 years",
-    age_median     = "61 years",
-    weight_range   = "33-122 kg",
-    weight_median  = "62 kg",
+    n_subjects = 780,
+    n_studies = 3,
+    age_range = "21-89 years",
+    age_median = "61 years",
+    weight_range = "33-122 kg",
+    weight_median = "62 kg",
     sex_female_pct = 36.9,
     race_ethnicity = c(
-      White            = 24.2,
-      Asian_other      = 24.2,
-      Japanese         = 18.8,
-      Chinese          = 15.3,
-      Other            = 6.4,
-      Missing          = 11.2
+      White = 24.2,
+      Asian_other = 24.2,
+      Japanese = 18.8,
+      Chinese = 15.3,
+      Other = 6.4,
+      Missing = 11.2
     ),
-    disease_state  = "Advanced EGFR-mutation-positive non-small cell lung cancer (NSCLC; n = 748, 95.9 percent) pooled with healthy adult volunteers (n = 32, 4.1 percent). NSCLC patients enrolled in AURA (D5160C00001, phase I/II) or AURA2 (D5160C00002, phase II); HV cohort enrolled in Study 5 (D5160C00005, phase I).",
-    dose_range     = "Once-daily oral osimertinib 20-240 mg in NSCLC patients (predominantly capsule in AURA escalation/expansion, film-coated tablet in AURA extension and AURA2); single 20 mg oral dose in healthy volunteers (capsule, phase 1 tablet, or oral solution; one fed cohort). 80 mg once daily was the approved dose at the time of analysis.",
-    regions        = "Multiregional (AURA / AURA2 enrolled at sites in North America, Europe, and Asia; Study 5 was a single-centre HV study).",
+    disease_state = "Advanced EGFR-mutation-positive non-small cell lung cancer (NSCLC; n = 748, 95.9 percent) pooled with healthy adult volunteers (n = 32, 4.1 percent). NSCLC patients enrolled in AURA (D5160C00001, phase I/II) or AURA2 (D5160C00002, phase II); HV cohort enrolled in Study 5 (D5160C00005, phase I).",
+    dose_range = "Once-daily oral osimertinib 20-240 mg in NSCLC patients (predominantly capsule in AURA escalation/expansion, film-coated tablet in AURA extension and AURA2); single 20 mg oral dose in healthy volunteers (capsule, phase 1 tablet, or oral solution; one fed cohort). 80 mg once daily was the approved dose at the time of analysis.",
+    regions = "Multiregional (AURA / AURA2 enrolled at sites in North America, Europe, and Asia; Study 5 was a single-centre HV study).",
     n_observations = "21 930 plasma concentrations from 780 individuals included in the final popPK; sub-LLOQ concentrations were excluded. LLOQ = 0.05 nmol/L (osimertinib) and 0.0515 nmol/L (AZ5104).",
-    notes          = "Demographic counts and ranges reproduced from Brown 2017 Table 1 (continuous covariates: mean, SD, median, range, n, missing; categorical covariates: counts and percentages). Race percentages do not sum to 100 because a Missing category is reported separately; subjects with missing race are encoded as 0 for every RACE_* indicator in this implementation, i.e., treated as the Caucasian reference."
+    notes = "Demographic counts and ranges reproduced from Brown 2017 Table 1 (continuous covariates: mean, SD, median, range, n, missing; categorical covariates: counts and percentages). Race percentages do not sum to 100 because a Missing category is reported separately; subjects with missing race are encoded as 0 for every RACE_* indicator in this implementation, i.e., treated as the Caucasian reference."
   )
 
   ini({

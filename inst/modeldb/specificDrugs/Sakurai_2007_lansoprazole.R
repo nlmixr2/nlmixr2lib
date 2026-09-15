@@ -1,8 +1,8 @@
 Sakurai_2007_lansoprazole <- function() {
   description <- "Two-compartment population PK model for intravenously administered lansoprazole in 56 healthy Japanese adult males (Sakurai 2007). Volumes (V1, V2) and clearances (CL, Q) scale linearly with body weight via per-kg reference values; systemic clearance is stratified by CYP2C19 metabolizer phenotype using two binary indicators (homoEM reference; heteroEM and PM groups carry multiplicative factors of 0.612 and 0.212 respectively). Inter-individual variability is log-normal on V1, CL, V2 (no IIV on Q); residual error is combined proportional plus additive."
-  reference   <- "Sakurai Y, Hirayama M, Hashimoto M, Tanaka T, Hasegawa S, Irie S, Ashida K, Kayano Y, Taguchi M, Hashimoto Y. Population pharmacokinetics and proton pump inhibitory effects of intravenous lansoprazole in healthy Japanese males. Biol Pharm Bull. 2007;30(12):2238-2243. doi:10.1248/bpb.30.2238"
-  vignette    <- "Sakurai_2007_lansoprazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Sakurai Y, Hirayama M, Hashimoto M, Tanaka T, Hasegawa S, Irie S, Ashida K, Kayano Y, Taguchi M, Hashimoto Y. Population pharmacokinetics and proton pump inhibitory effects of intravenous lansoprazole in healthy Japanese males. Biol Pharm Bull. 2007;30(12):2238-2243. doi:10.1248/bpb.30.2238"
+  vignette <- "Sakurai_2007_lansoprazole"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -13,46 +13,46 @@ Sakurai_2007_lansoprazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (current).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (current).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-kg linear scaling on V1, V2, CL, Q (Sakurai 2007 Equations 1-4). Cohort mean (S.D.) 61.8 (6.0) kg. The per-kg parameter values reported in Table 1 are multiplied by the subject's body weight to obtain individual totals; no reference / normalisation weight is used.",
-      source_name        = "WT"
+      notes = "Per-kg linear scaling on V1, V2, CL, Q (Sakurai 2007 Equations 1-4). Cohort mean (S.D.) 61.8 (6.0) kg. The per-kg parameter values reported in Table 1 are multiplied by the subject's body weight to obtain individual totals; no reference / normalisation weight is used.",
+      source_name = "WT"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator (Sakurai 2007 heteroEM group).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator (Sakurai 2007 heteroEM group).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive metabolizer; CYP2C19*1/*1, when both CYP2C19_IM = 0 and CYP2C19_PM = 0)",
-      notes              = "1 = subject is a CYP2C19 intermediate metabolizer (Sakurai 2007 heteroEM group, CYP2C19*1/*2 or *1/*3, one functional and one loss-of-function allele); 0 = otherwise. Paired with CYP2C19_PM to encode the three-level EM (homoEM, reference) / IM (heteroEM) / PM phenotype with two binary indicators. Cohort distribution (Methods 'Subjects' and Results paragraph 2): homoEM 28.6% (16/56), heteroEM 57.1% (32/56), PM 14.3% (8/56). Time-fixed per subject (germline CYP2C19 genotype determined by allele-specific PCR or PCR-RFLP).",
-      source_name        = "CYP2C19_IM"
+      notes = "1 = subject is a CYP2C19 intermediate metabolizer (Sakurai 2007 heteroEM group, CYP2C19*1/*2 or *1/*3, one functional and one loss-of-function allele); 0 = otherwise. Paired with CYP2C19_PM to encode the three-level EM (homoEM, reference) / IM (heteroEM) / PM phenotype with two binary indicators. Cohort distribution (Methods 'Subjects' and Results paragraph 2): homoEM 28.6% (16/56), heteroEM 57.1% (32/56), PM 14.3% (8/56). Time-fixed per subject (germline CYP2C19 genotype determined by allele-specific PCR or PCR-RFLP).",
+      source_name = "CYP2C19_IM"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive or intermediate metabolizer)",
-      notes              = "1 = subject is a CYP2C19 poor metabolizer (Sakurai 2007 PM group, CYP2C19*2/*2, *2/*3, or *3/*3; two loss-of-function alleles); 0 = otherwise. Paired with CYP2C19_IM to encode the three-level EM (reference) / IM / PM phenotype with two binary indicators. Time-fixed per subject (germline genotype).",
-      source_name        = "CYP2C19_PM"
+      notes = "1 = subject is a CYP2C19 poor metabolizer (Sakurai 2007 PM group, CYP2C19*2/*2, *2/*3, or *3/*3; two loss-of-function alleles); 0 = otherwise. Paired with CYP2C19_IM to encode the three-level EM (reference) / IM / PM phenotype with two binary indicators. Time-fixed per subject (germline genotype).",
+      source_name = "CYP2C19_PM"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 56L,
-    n_studies       = 1L,
-    n_observations  = "1069 serum lansoprazole concentrations across single-dose and multiple-dose intravenous trials (Sakurai 2007 Results paragraph 2). HPLC-UV assay with lower limit of quantification 10 ng/mL in 500 uL of human serum; linearity 5-2000 ng/mL.",
-    age_range       = "20-34 years",
-    age_median      = "24.0 years (mean +/- S.D.: 24.0 +/- 4.0)",
-    weight_range    = "approximately 55.8-67.8 kg (1 SD around the mean; individual extremes not reported)",
-    weight_median   = "61.8 kg (mean +/- S.D.: 61.8 +/- 6.0)",
-    sex_female_pct  = 0,
-    race_ethnicity  = c(Japanese = 100),
-    disease_state   = "Healthy Japanese adult males enrolled in single-dose and multiple-dose intravenous lansoprazole pharmacokinetic trials.",
-    dose_range      = "Lansoprazole 15 mg or 30 mg by 30-min intravenous drip infusion; 30 mg as a single intravenous bolus; 30 mg twice-daily 30-min infusions for 5 days in a 16-subject multiple-dose subset.",
-    regions         = "Japan (Ohsaki Clinic [Tokyo]; Sekino Clinical Pharmacology Clinic [Tokyo]; Kyushu Clinical Pharmacology Research Clinic [Fukuoka]).",
-    notes           = "All subjects were genotyped for CYP2C19*1, *2, *3 by allele-specific PCR (SNP Typing Kit, Toyobo) or PCR-RFLP. Cohort genotype counts: 16 homoEM (CYP2C19*1/*1), 32 heteroEM (*1/*2 or *1/*3), 8 PM (*2/*2, *2/*3, or *3/*3). Multiple study arms were pooled in the popPK fit: single 30-min IV infusion of 30 mg (all 56 subjects); twice-daily 30-min IV infusion of 30 mg for 5 d (16 subjects: 8 PMs, 7 heteroEMs, 1 homoEM); single 30 mg IV bolus (8 subjects: 3 heteroEMs, 5 homoEMs); single 30-min IV infusion of 15 mg (8 subjects: 5 heteroEMs, 3 homoEMs). NONMEM V (level 1.1) on ThinkCentre A50p; first-order conditional estimation with ADVAN3 and TRANS4 PREDPP subroutines."
+    species = "human",
+    n_subjects = 56L,
+    n_studies = 1L,
+    n_observations = "1069 serum lansoprazole concentrations across single-dose and multiple-dose intravenous trials (Sakurai 2007 Results paragraph 2). HPLC-UV assay with lower limit of quantification 10 ng/mL in 500 uL of human serum; linearity 5-2000 ng/mL.",
+    age_range = "20-34 years",
+    age_median = "24.0 years (mean +/- S.D.: 24.0 +/- 4.0)",
+    weight_range = "approximately 55.8-67.8 kg (1 SD around the mean; individual extremes not reported)",
+    weight_median = "61.8 kg (mean +/- S.D.: 61.8 +/- 6.0)",
+    sex_female_pct = 0,
+    race_ethnicity = c(Japanese = 100),
+    disease_state = "Healthy Japanese adult males enrolled in single-dose and multiple-dose intravenous lansoprazole pharmacokinetic trials.",
+    dose_range = "Lansoprazole 15 mg or 30 mg by 30-min intravenous drip infusion; 30 mg as a single intravenous bolus; 30 mg twice-daily 30-min infusions for 5 days in a 16-subject multiple-dose subset.",
+    regions = "Japan (Ohsaki Clinic [Tokyo]; Sekino Clinical Pharmacology Clinic [Tokyo]; Kyushu Clinical Pharmacology Research Clinic [Fukuoka]).",
+    notes = "All subjects were genotyped for CYP2C19*1, *2, *3 by allele-specific PCR (SNP Typing Kit, Toyobo) or PCR-RFLP. Cohort genotype counts: 16 homoEM (CYP2C19*1/*1), 32 heteroEM (*1/*2 or *1/*3), 8 PM (*2/*2, *2/*3, or *3/*3). Multiple study arms were pooled in the popPK fit: single 30-min IV infusion of 30 mg (all 56 subjects); twice-daily 30-min IV infusion of 30 mg for 5 d (16 subjects: 8 PMs, 7 heteroEMs, 1 homoEM); single 30 mg IV bolus (8 subjects: 3 heteroEMs, 5 homoEMs); single 30-min IV infusion of 15 mg (8 subjects: 5 heteroEMs, 3 homoEMs). NONMEM V (level 1.1) on ThinkCentre A50p; first-order conditional estimation with ADVAN3 and TRANS4 PREDPP subroutines."
   )
 
   ini({

@@ -26,77 +26,77 @@ Robarge_2017_efavirenz <- function() {
     sep = " "
   )
   vignette <- "Robarge_2017_efavirenz"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass derived from total body weight, height and sex via the Janmahasatian et al. (2005) semimechanistic formula; FFM = TBW - FM.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass derived from total body weight, height and sex via the Janmahasatian et al. (2005) semimechanistic formula; FFM = TBW - FM.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Drives allometric scaling on CL/F with exponent 3/4 (fixed) and reference value 56 kg = the cohort median calculated FFM per Robarge 2017 Table 1. Janmahasatian formula citation: Clin Pharmacokinet 2005;44(10):1051-1065.",
-      source_name        = "FFM"
+      notes = "Time-fixed (baseline). Drives allometric scaling on CL/F with exponent 3/4 (fixed) and reference value 56 kg = the cohort median calculated FFM per Robarge 2017 Table 1. Janmahasatian formula citation: Clin Pharmacokinet 2005;44(10):1051-1065.",
+      source_name = "FFM"
     ),
     FM = list(
-      description        = "Fat mass derived as the difference between total body weight and calculated fat-free mass (FM = TBW - FFM), where FFM is computed by the Janmahasatian et al. (2005) formula.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat mass derived as the difference between total body weight and calculated fat-free mass (FM = TBW - FFM), where FFM is computed by the Janmahasatian et al. (2005) formula.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Drives allometric scaling on V_p/F with exponent 1 (fixed) and reference value 19 kg = the cohort median calculated FM per Robarge 2017 Table 1. Robarge 2017 Materials and Methods 'Covariate model development' paragraph 2: 'FM = TBW - FFM'.",
-      source_name        = "FM"
+      notes = "Time-fixed (baseline). Drives allometric scaling on V_p/F with exponent 1 (fixed) and reference value 19 kg = the cohort median calculated FM per Robarge 2017 Table 1. Robarge 2017 Materials and Methods 'Covariate model development' paragraph 2: 'FM = TBW - FFM'.",
+      source_name = "FM"
     ),
     CYP2B6_IM = list(
-      description        = "1 = CYP2B6 intermediate-metabolizer phenotype (one CYP2B6 reduced-function star allele), 0 = otherwise. Reference category (both CYP2B6_IM and CYP2B6_SM equal to 0) is the CYP2B6 normal-metabolizer (extensive) phenotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = CYP2B6 intermediate-metabolizer phenotype (one CYP2B6 reduced-function star allele), 0 = otherwise. Reference category (both CYP2B6_IM and CYP2B6_SM equal to 0) is the CYP2B6 normal-metabolizer (extensive) phenotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Normal / extensive metabolizer (CYP2B6_IM = 0 and CYP2B6_SM = 0)",
-      notes              = "Time-fixed (germline genotype). Star alleles assigned per the Human Cytochrome P450 Allele Nomenclature Database; functional consequence per Robarge 2017 Materials and Methods 'CYP nomenclature and predicted metabolizer status' and Table S1 in the supplemental material. The intermediate phenotype includes for example a CYP2B6 *1/*18 genotype (Robarge 2017 Discussion paragraph 2). The Robarge 2017 cohort frequency for intermediate metabolizers is summarised in Table S1; the canonical reference category is the unmodified CL/F (reduction factor 1.0).",
-      source_name        = "CYP2B6 metabolizer status (intermediate level)"
+      notes = "Time-fixed (germline genotype). Star alleles assigned per the Human Cytochrome P450 Allele Nomenclature Database; functional consequence per Robarge 2017 Materials and Methods 'CYP nomenclature and predicted metabolizer status' and Table S1 in the supplemental material. The intermediate phenotype includes for example a CYP2B6 *1/*18 genotype (Robarge 2017 Discussion paragraph 2). The Robarge 2017 cohort frequency for intermediate metabolizers is summarised in Table S1; the canonical reference category is the unmodified CL/F (reduction factor 1.0).",
+      source_name = "CYP2B6 metabolizer status (intermediate level)"
     ),
     CYP2B6_SM = list(
-      description        = "1 = CYP2B6 slow-metabolizer phenotype (Robarge's poor-metabolizer level, e.g. CYP2B6 *6/*6), 0 = otherwise. Reference category is the CYP2B6 normal-metabolizer (extensive) phenotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = CYP2B6 slow-metabolizer phenotype (Robarge's poor-metabolizer level, e.g. CYP2B6 *6/*6), 0 = otherwise. Reference category is the CYP2B6 normal-metabolizer (extensive) phenotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Normal / extensive metabolizer (CYP2B6_IM = 0 and CYP2B6_SM = 0)",
-      notes              = "Time-fixed (germline genotype). Robarge 2017 uses 'slow' for what other authors call 'poor' (CYP2B6 *6/*6 homozygotes etc.). Star allele assignment per Robarge 2017 Materials and Methods 'CYP nomenclature and predicted metabolizer status' and Table S1.",
-      source_name        = "CYP2B6 metabolizer status (slow / poor level)"
+      notes = "Time-fixed (germline genotype). Robarge 2017 uses 'slow' for what other authors call 'poor' (CYP2B6 *6/*6 homozygotes etc.). Star allele assignment per Robarge 2017 Materials and Methods 'CYP nomenclature and predicted metabolizer status' and Table S1.",
+      source_name = "CYP2B6 metabolizer status (slow / poor level)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 73L,
-    n_studies      = 1L,
-    age_range      = "18-50 years (median 24)",
-    age_median     = "24 years",
-    weight_range   = "53.0-103.6 kg (median 72.7)",
-    weight_median  = "72.7 kg",
-    height_range   = "1.55-1.98 m (median 1.76)",
-    bmi_range      = "17.8-32.2 kg/m^2 (median 24.0); 9 of 73 subjects (12%) clinically obese (BMI > 30)",
-    ffm_range      = "35.6-75.1 kg (median 56.4)",
-    fm_range       = "6.3-42.7 kg (median 18.8)",
+    species = "human",
+    n_subjects = 73L,
+    n_studies = 1L,
+    age_range = "18-50 years (median 24)",
+    age_median = "24 years",
+    weight_range = "53.0-103.6 kg (median 72.7)",
+    weight_median = "72.7 kg",
+    height_range = "1.55-1.98 m (median 1.76)",
+    bmi_range = "17.8-32.2 kg/m^2 (median 24.0); 9 of 73 subjects (12%) clinically obese (BMI > 30)",
+    ffm_range = "35.6-75.1 kg (median 56.4)",
+    fm_range = "6.3-42.7 kg (median 18.8)",
     sex_female_pct = 100 * 27 / 73,
     race_ethnicity = c(
-      Caucasian        = 100 * 52 / 73,
-      AfricanAmerican  = 100 * 16 / 73,
-      Asian            = 100 * 3  / 73,
-      Indian           = 100 * 1  / 73,
-      AmericanIndian   = 100 * 1  / 73
+      Caucasian = 100 * 52 / 73,
+      AfricanAmerican = 100 * 16 / 73,
+      Asian = 100 * 3 / 73,
+      Indian = 100 * 1 / 73,
+      AmericanIndian = 100 * 1 / 73
     ),
-    disease_state  = "HIV-seronegative healthy volunteers free of significant medical conditions; nonsmokers or willing to refrain from tobacco / marijuana for >= 1 month prior to and during the study; female subjects confirmed non-pregnant.",
-    dose_range     = "Single oral 600 mg efavirenz dose (Sustiva tablet; Bristol-Myers Squibb) administered in the morning after overnight fasting, followed 1 hour later by an unrelated CYP drug cocktail (250 mg tolbutamide + 20 mg omeprazole + 150 mg caffeine + 1 mg midazolam) used for separate CYP-activity phenotyping.",
-    regions        = "United States (Indiana University School of Medicine Clinical Research Center, Indianapolis, IN)",
-    sampling       = "1,132 plasma efavirenz concentrations from 73 subjects: nominal 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12, 16, 24, 48, 72, and 144 h post-dose; 14-16 samples per subject in 69 of 73 subjects (3 early-withdrawal subjects with 8, 8 and 14 samples; one subject with a single 145 h sample due to misplaced samples). 2 of 1,134 concentrations were below the LLOQ of 1 ng/mL and were excluded.",
-    notes          = "ClinicalTrials.gov NCT00668395; subjects enrolled between August 2007 and April 2010. Body composition (FFM, FM) calculated by the Janmahasatian et al. (2005) semimechanistic formula from total body weight, height and sex. Estimation method FOCE-I in NONMEM 7.3."
+    disease_state = "HIV-seronegative healthy volunteers free of significant medical conditions; nonsmokers or willing to refrain from tobacco / marijuana for >= 1 month prior to and during the study; female subjects confirmed non-pregnant.",
+    dose_range = "Single oral 600 mg efavirenz dose (Sustiva tablet; Bristol-Myers Squibb) administered in the morning after overnight fasting, followed 1 hour later by an unrelated CYP drug cocktail (250 mg tolbutamide + 20 mg omeprazole + 150 mg caffeine + 1 mg midazolam) used for separate CYP-activity phenotyping.",
+    regions = "United States (Indiana University School of Medicine Clinical Research Center, Indianapolis, IN)",
+    sampling = "1,132 plasma efavirenz concentrations from 73 subjects: nominal 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 12, 16, 24, 48, 72, and 144 h post-dose; 14-16 samples per subject in 69 of 73 subjects (3 early-withdrawal subjects with 8, 8 and 14 samples; one subject with a single 145 h sample due to misplaced samples). 2 of 1,134 concentrations were below the LLOQ of 1 ng/mL and were excluded.",
+    notes = "ClinicalTrials.gov NCT00668395; subjects enrolled between August 2007 and April 2010. Body composition (FFM, FM) calculated by the Janmahasatian et al. (2005) semimechanistic formula from total body weight, height and sex. Estimation method FOCE-I in NONMEM 7.3."
   )
 
   ini({

@@ -19,8 +19,17 @@ Schindler_2017_likert_pain <- function() {
   )
   vignette <- "Schindler_2017_mCTMM"
   paper_specific_compartments <- c(
-    "pscore0", "pscore1", "pscore2", "pscore3", "pscore4",
-    "pscore5", "pscore6", "pscore7", "pscore8", "pscore9", "pscore10"
+    "pscore0",
+    "pscore1",
+    "pscore2",
+    "pscore3",
+    "pscore4",
+    "pscore5",
+    "pscore6",
+    "pscore7",
+    "pscore8",
+    "pscore9",
+    "pscore10"
   )
 
   units <- list(
@@ -34,44 +43,99 @@ Schindler_2017_likert_pain <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    pscore0  = list(analyte = "11-point Likert pain score 0", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore1  = list(analyte = "11-point Likert pain score 1", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore2  = list(analyte = "11-point Likert pain score 2", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore3  = list(analyte = "11-point Likert pain score 3", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore4  = list(analyte = "11-point Likert pain score 4", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore5  = list(analyte = "11-point Likert pain score 5", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore6  = list(analyte = "11-point Likert pain score 6", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore7  = list(analyte = "11-point Likert pain score 7", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore8  = list(analyte = "11-point Likert pain score 8", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore9  = list(analyte = "11-point Likert pain score 9", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pscore10 = list(analyte = "11-point Likert pain score 10", units = NA_character_, specimen = "administration site", verified = FALSE)
+    pscore0 = list(
+      analyte = "11-point Likert pain score 0",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore1 = list(
+      analyte = "11-point Likert pain score 1",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore2 = list(
+      analyte = "11-point Likert pain score 2",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore3 = list(
+      analyte = "11-point Likert pain score 3",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore4 = list(
+      analyte = "11-point Likert pain score 4",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore5 = list(
+      analyte = "11-point Likert pain score 5",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore6 = list(
+      analyte = "11-point Likert pain score 6",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore7 = list(
+      analyte = "11-point Likert pain score 7",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore8 = list(
+      analyte = "11-point Likert pain score 8",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore9 = list(
+      analyte = "11-point Likert pain score 9",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pscore10 = list(
+      analyte = "11-point Likert pain score 10",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONMED_PARA = list(
-      description        = "Concomitant paracetamol (acetaminophen) rescue-medication indicator on the current day: 1 = subject took acetaminophen, 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant paracetamol (acetaminophen) rescue-medication indicator on the current day: 1 = subject took acetaminophen, 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant paracetamol)",
-      notes              = "Time-varying per-observation flag. Enters the steady-state cumulative logit as an additive shift theta_ace * CONMED_PARA; a positive theta_ace shifts the logit upward, meaning acetaminophen use is associated with higher pain scores (rescue medication is taken because of pain, not vice versa; see paper Discussion). Matches the CONMED_PARA convention already used in modellib('Plan_2012_pain').",
-      source_name        = "ACE"
+      notes = "Time-varying per-observation flag. Enters the steady-state cumulative logit as an additive shift theta_ace * CONMED_PARA; a positive theta_ace shifts the logit upward, meaning acetaminophen use is associated with higher pain scores (rescue medication is taken because of pain, not vice versa; see paper Discussion). Matches the CONMED_PARA convention already used in modellib('Plan_2012_pain').",
+      source_name = "ACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 231L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 231L,
+    n_studies = 3L,
     n_observations = 22492L,
-    age_range      = "adults with painful distal diabetic neuropathy",
-    weight_range   = "not reported in Schindler 2017 (data reference is Plan 2012)",
+    age_range = "adults with painful distal diabetic neuropathy",
+    weight_range = "not reported in Schindler 2017 (data reference is Plan 2012)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Painful distal diabetic neuropathy, placebo arm of three phase III trials.",
-    dose_range     = "Placebo arm only (no active-drug exposure). Rescue acetaminophen recorded via the CONMED_PARA indicator.",
-    regions        = "multinational (three pooled phase III trials).",
-    biomarkers     = "Daily Likert pain score (0-10, 11-point scale) recorded in the evening. Median follow-up 124.5 days (range 2.5-125.5).",
-    notes          = "Same 231-patient placebo-arm cohort as modellib('Plan_2012_pain') (Plan 2012 count model / DDMODEL00000194). Detailed baseline demographics are in Plan 2012 CPT."
+    disease_state = "Painful distal diabetic neuropathy, placebo arm of three phase III trials.",
+    dose_range = "Placebo arm only (no active-drug exposure). Rescue acetaminophen recorded via the CONMED_PARA indicator.",
+    regions = "multinational (three pooled phase III trials).",
+    biomarkers = "Daily Likert pain score (0-10, 11-point scale) recorded in the evening. Median follow-up 124.5 days (range 2.5-125.5).",
+    notes = "Same 231-patient placebo-arm cohort as modellib('Plan_2012_pain') (Plan 2012 count model / DDMODEL00000194). Detailed baseline demographics are in Plan 2012 CPT."
   )
 
   ini({

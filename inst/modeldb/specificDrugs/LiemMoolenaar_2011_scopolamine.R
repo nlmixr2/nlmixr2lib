@@ -30,36 +30,36 @@ LiemMoolenaar_2011_scopolamine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "scopolamine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "scopolamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "scopolamine", units = "mg", specimen = "plasma", verified = FALSE),
-    effect1     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect2     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect3     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect4     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect5     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect6     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect7     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect8     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect9     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect10    = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect1 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect2 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect3 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect4 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect5 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect6 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect7 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect8 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect9 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect10 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 85L,
-    n_studies      = 2L,
-    age_range      = "18-55 years",
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 85L,
+    n_studies = 2L,
+    age_range = "18-55 years",
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 0,
     race_ethnicity = NULL,
-    disease_state  = "Healthy male volunteers (90 enrolled across two studies; 85 evaluable for PK/PD).",
-    dose_range     = "0.5 mg scopolamine IV infusion over 15 min, single dose (placebo period within a four-way crossover; placebo arm not modelled here).",
-    regions        = "Netherlands (Centre for Human Drug Research, Leiden)",
-    notes          = paste(
+    disease_state = "Healthy male volunteers (90 enrolled across two studies; 85 evaluable for PK/PD).",
+    dose_range = "0.5 mg scopolamine IV infusion over 15 min, single dose (placebo period within a four-way crossover; placebo arm not modelled here).",
+    regions = "Netherlands (Centre for Human Drug Research, Leiden)",
+    notes = paste(
       "BMI inclusion range 18-28.5 kg/m^2. Subjects were medically screened",
       "within 3 weeks prior to enrolment and were not allowed to use",
       "CNS-active medication, smoke, or consume caffeine/alcohol during the",

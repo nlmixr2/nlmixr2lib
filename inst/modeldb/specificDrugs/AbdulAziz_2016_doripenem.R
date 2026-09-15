@@ -10,23 +10,23 @@ AbdulAziz_2016_doripenem <- function() {
     sep = " "
   )
   vignette <- "AbdulAziz_2016_doripenem"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "doripenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "doripenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "doripenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling fixed a priori at 0.75 on clearances (CL, Q)",
         "and 1 on volumes (V1, V2), all standardised to a body weight of",
         "70 kg (Abdul-Aziz 2016 Methods, citing Anderson and Holford 2008).",
@@ -34,14 +34,14 @@ AbdulAziz_2016_doripenem <- function() {
         "weight is referred to as WT throughout. BMI range 16.7-29.7 kg/m^2",
         "(Table 1) implies approximately 45-90 kg for the recruited cohort."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalised)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalised)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Estimated on each sampling occasion using the Cockcroft-Gault",
         "formula (Abdul-Aziz 2016 Methods). Cohort range 30-161 mL/min,",
         "median 85 mL/min, IQR 49-118 mL/min (Table 1). Exponential",
@@ -54,34 +54,34 @@ AbdulAziz_2016_doripenem <- function() {
         "Cockcroft-Gault form when the source paper does not apply",
         "BSA-normalisation)."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 12L,
-    n_studies        = 1L,
-    age_range        = "19-74 years",
-    age_median       = "52 years (IQR 33-60)",
-    weight_range     = "Not directly reported; BMI range 16.7-29.7 kg/m^2 (Table 1)",
-    weight_median    = "Not directly reported; BMI median 22.9 kg/m^2 (Table 1)",
-    sex_female_pct   = 17,
-    race_ethnicity   = "Malaysian (single-centre ICU in Pahang, Malaysia)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "19-74 years",
+    age_median = "52 years (IQR 33-60)",
+    weight_range = "Not directly reported; BMI range 16.7-29.7 kg/m^2 (Table 1)",
+    weight_median = "Not directly reported; BMI median 22.9 kg/m^2 (Table 1)",
+    sex_female_pct = 17,
+    race_ethnicity = "Malaysian (single-centre ICU in Pahang, Malaysia)",
+    disease_state = paste(
       "Critically ill adult ICU patients (>=18 years) with sepsis,",
       "two thirds with ventilator-associated pneumonia and the remainder",
       "with intra-abdominal sepsis; all required invasive mechanical",
       "ventilation and vasopressor support. Patients on extracorporeal",
       "renal support were excluded."
     ),
-    dose_range       = "500 mg doripenem IV infusion over 1 hour, every 8 hours",
-    regions          = "Malaysia (single tertiary-hospital adult ICU in Pahang)",
+    dose_range = "500 mg doripenem IV infusion over 1 hour, every 8 hours",
+    regions = "Malaysia (single tertiary-hospital adult ICU in Pahang)",
     n_concentrations = 140L,
     apache_ii_median = "19 (IQR 15-22)",
-    sofa_median      = "6 (IQR 5-7)",
-    crcl_range       = "30-161 mL/min (Cockcroft-Gault; median 85, IQR 49-118; cohort mean 82.5 mL/min used as the model reference)",
-    notes            = paste(
+    sofa_median = "6 (IQR 5-7)",
+    crcl_range = "30-161 mL/min (Cockcroft-Gault; median 85, IQR 49-118; cohort mean 82.5 mL/min used as the model reference)",
+    notes = paste(
       "Prospective open-label PK study (Abdul-Aziz 2016 Table 1), November",
       "2012 to October 2013. 140 plasma doripenem concentrations across",
       "two sampling occasions (day 1 and day 3 of therapy); samples drawn",

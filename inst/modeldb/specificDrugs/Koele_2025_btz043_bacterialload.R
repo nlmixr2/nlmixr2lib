@@ -28,35 +28,35 @@ Koele_2025_btz043_bacterialload <- function() {
 
   covariateData <- list(
     AUC_BTZ043TOT = list(
-      description        = "Individual model-predicted BTZ-043total (BTZ-043 plus metabolite M2, expressed as BTZ-043 equivalents) area under the plasma concentration-time curve over the 24 h dosing interval, used as the driver of the first-phase bacterial-load decline.",
-      units              = "ng/mL*h",
-      type               = "continuous",
+      description = "Individual model-predicted BTZ-043total (BTZ-043 plus metabolite M2, expressed as BTZ-043 equivalents) area under the plasma concentration-time curve over the 24 h dosing interval, used as the driver of the first-phase bacterial-load decline.",
+      units = "ng/mL*h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "This is the EXMET data item of the supplementary pharmacodynamic control stream. Koele 2025 Methods 'PD model development': 'The exposure-response relationship of BTZ-043 was investigated using individual model-derived estimates of the AUC0-24 and Cmax during the intensive PK sampling on Day 12 for Stage 1 and Day 14 for Stage 2', and Results: 'BTZ-043total AUC0-24 and the M2 AUC0-24 were identified as the most significant drivers of the decrease in bacterial load during the first 2 days of treatment (dOFV = -12.1 and -13.1, respectively) ... As the BTZ-043total AUC0-24 is easier to quantify in future studies, the exposure-response model using this parameter as driver was selected.' Time-fixed per subject: one steady-state AUC per participant, carried on every bacterial-load record. UNITS ARE LOAD-BEARING and are mass-based even though the companion PK model works in molar units: the estimated EC50 is 16 900 ng/mL*h. To generate this column from modellib('Koele_2025_btz043'), integrate Cc + Cc_m2 (nmol/L) over the 24 h interval and multiply by the BTZ-043 molecular weight in ng per nmol, 431.39/1000 = 0.43139; the bioanalytical method converts all M2 back to BTZ-043 before quantification, so BTZ-043total is the molar sum reported as BTZ-043 mass. Observed range is not tabulated in Koele 2025; the estimated EC50 is stated to be 'similar to the exposure obtained after a 500 mg BTZ-043 dose following a standard breakfast'.",
-      source_name        = "EXMET"
+      notes = "This is the EXMET data item of the supplementary pharmacodynamic control stream. Koele 2025 Methods 'PD model development': 'The exposure-response relationship of BTZ-043 was investigated using individual model-derived estimates of the AUC0-24 and Cmax during the intensive PK sampling on Day 12 for Stage 1 and Day 14 for Stage 2', and Results: 'BTZ-043total AUC0-24 and the M2 AUC0-24 were identified as the most significant drivers of the decrease in bacterial load during the first 2 days of treatment (dOFV = -12.1 and -13.1, respectively) ... As the BTZ-043total AUC0-24 is easier to quantify in future studies, the exposure-response model using this parameter as driver was selected.' Time-fixed per subject: one steady-state AUC per participant, carried on every bacterial-load record. UNITS ARE LOAD-BEARING and are mass-based even though the companion PK model works in molar units: the estimated EC50 is 16 900 ng/mL*h. To generate this column from modellib('Koele_2025_btz043'), integrate Cc + Cc_m2 (nmol/L) over the 24 h interval and multiply by the BTZ-043 molecular weight in ng per nmol, 431.39/1000 = 0.43139; the bioanalytical method converts all M2 back to BTZ-043 before quantification, so BTZ-043total is the molar sum reported as BTZ-043 mass. Observed range is not tabulated in Koele 2025; the estimated EC50 is stated to be 'similar to the exposure obtained after a 500 mg BTZ-043 dose following a standard breakfast'.",
+      source_name = "EXMET"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 68L,
-    n_studies      = 1L,
-    age_range      = "18-57 years",
-    age_median     = "27 years",
-    weight_range   = "42-81 kg",
-    weight_median  = "54 kg",
+    species = "human",
+    n_subjects = 68L,
+    n_studies = 1L,
+    age_range = "18-57 years",
+    age_median = "27 years",
+    weight_range = "42-81 kg",
+    weight_median = "54 kg",
     sex_female_pct = 16.2,
     race_ethnicity = c(
-      Black            = 64.7,
-      `Cape-coloured`  = 33.8,
-      White            = 1.5
+      Black = 64.7,
+      `Cape-coloured` = 33.8,
+      White = 1.5
     ),
-    hiv_status     = "HIV-1 negative, 68/68 (100%)",
-    disease_state  = "Adults aged 18-64 years with drug-susceptible pulmonary tuberculosis enrolled in the sequential Phase 1b/2a trial NCT04044001, receiving BTZ-043 monotherapy for 14 days.",
-    dose_range     = "Oral BTZ-043 250-1750 mg once daily for 14 days.",
-    sampling       = "Overnight sputum collected before treatment and on Days 2, 3, 4, 6, 8, 11 and 14; each sample cultured for colony-forming units on solid medium and for time to positivity in the MGIT liquid system, in duplicate.",
-    regions        = "South Africa (TASK, Cape Town; University of Cape Town Lung Institute)",
-    notes          = "Koele 2025 Results 'PD model': 921 cfu and 1113 TTP measurements were available, of which 7 cfu and 2 TTP observations were culture negative (cfu < 1.0 cfu/mL or TTP > 25 days). The proportion of culture-negative observations at baseline (defined as the first 2 days on treatment) was 0.9% for cfu and 0.0% for TTP. No effect of age, weight or study site was identified in the stepwise covariate search (forward inclusion P < 0.05, backward elimination P < 0.01). Demographics are those of the combined Stage 1 + 2 PK/PD analysis population, Koele 2025 Table 1."
+    hiv_status = "HIV-1 negative, 68/68 (100%)",
+    disease_state = "Adults aged 18-64 years with drug-susceptible pulmonary tuberculosis enrolled in the sequential Phase 1b/2a trial NCT04044001, receiving BTZ-043 monotherapy for 14 days.",
+    dose_range = "Oral BTZ-043 250-1750 mg once daily for 14 days.",
+    sampling = "Overnight sputum collected before treatment and on Days 2, 3, 4, 6, 8, 11 and 14; each sample cultured for colony-forming units on solid medium and for time to positivity in the MGIT liquid system, in duplicate.",
+    regions = "South Africa (TASK, Cape Town; University of Cape Town Lung Institute)",
+    notes = "Koele 2025 Results 'PD model': 921 cfu and 1113 TTP measurements were available, of which 7 cfu and 2 TTP observations were culture negative (cfu < 1.0 cfu/mL or TTP > 25 days). The proportion of culture-negative observations at baseline (defined as the first 2 days on treatment) was 0.9% for cfu and 0.0% for TTP. No effect of age, weight or study site was identified in the stepwise covariate search (forward inclusion P < 0.05, backward elimination P < 0.01). Demographics are those of the combined Stage 1 + 2 PK/PD analysis population, Koele 2025 Table 1."
   )
 
   ini({

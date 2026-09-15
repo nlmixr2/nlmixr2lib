@@ -25,11 +25,11 @@ Kollo_2026_selumetinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight measured at the sampling visit (Methods 2.2; individual values in Table S1).",
         "Enters LINEARLY and without a reference weight on the central volume: V = V0 * WT",
         "(Figure 4; Table S4 model C). Because the scaling is multiplicative rather than divisive there is",
@@ -37,33 +37,33 @@ Kollo_2026_selumetinib <- function() {
         "best statistical performance of the 11 models compared; allometric WT/70 (model D), BMI (E),",
         "BSA (F) and age (B) scaling all performed worse (Tables S9 and S10)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "selumetinib", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "selumetinib", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "selumetinib", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "selumetinib", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "selumetinib", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22,
-    n_studies      = 1,
-    age_range      = "61-192 months (5.1-16.0 years)",
-    age_median     = "140.5 months (11.7 years)",
-    weight_range   = "17.0-70.0 kg",
-    weight_median  = "39.35 kg",
+    species = "human",
+    n_subjects = 22,
+    n_studies = 1,
+    age_range = "61-192 months (5.1-16.0 years)",
+    age_median = "140.5 months (11.7 years)",
+    weight_range = "17.0-70.0 kg",
+    weight_median = "39.35 kg",
     sex_female_pct = 45.5,
-    disease_state  = "inoperable neurofibromatosis type I (NF-1) or plexiform neurofibromas",
-    dose_range     = paste(
+    disease_state = "inoperable neurofibromatosis type I (NF-1) or plexiform neurofibromas",
+    dose_range = paste(
       "10-35 mg orally per administration, q12h fixed or morning/evening alternating doses;",
       "initial doses set from body surface area per the Koselugo label and later individualised on",
       "clinical response and tolerability (Table S1)"
     ),
-    regions        = "Hungary (single centre, Semmelweis University, Budapest)",
-    notes          = paste(
+    regions = "Hungary (single centre, Semmelweis University, Budapest)",
+    notes = paste(
       "Twenty-eight children were recruited (July 2023-October 2024); 22 contributed 156 steady-state",
       "selumetinib concentrations (5-8 samples each) to model construction, and 6 further patients",
       "(S1-S5 and #18) contributed 10 samples to a limited external validation (Table S5).",

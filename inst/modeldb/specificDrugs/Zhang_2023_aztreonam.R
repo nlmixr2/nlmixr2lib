@@ -28,20 +28,20 @@ Zhang_2023_aztreonam <- function() {
     sep = " "
   )
   vignette <- "Zhang_2023_aztreonam_amoxicillin_clavulanate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, normalized to 1.73 m2 body surface area",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, normalized to 1.73 m2 body surface area",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on clearance, (CRCL/100)^0.43, printed identically in Section 2.4 of the main text",
         "and in the Supplementary Materials equation and RxODE script. Zhang 2023 sampled CRCL from a",
         "uniform distribution over 10-150 mL/min normalized to 1.73 m2 (Section 2.4); the lower bound of",
@@ -50,14 +50,14 @@ Zhang_2023_aztreonam <- function() {
         "Source variable name CrCL.",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on central volume, (WT/70)^1.99. The exponent is near-quadratic rather than the",
         "conventional allometric 1, and is transcribed as printed; both the main text (Section 2.4) and",
         "the Supplementary Materials equation and RxODE script give 1.99. Weight is not a covariate on",
@@ -66,7 +66,7 @@ Zhang_2023_aztreonam <- function() {
         "distribution (see covariatesDataExcluded for HT and SEXF).",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -75,11 +75,11 @@ Zhang_2023_aztreonam <- function() {
   # can be reconstructed without re-reading the supplement.
   covariatesDataExcluded <- list(
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Not a covariate on any model parameter. Supplementary Materials: heights were drawn as",
         "male N(176.3, 0.17*sqrt(4482)) cm and female N(162.2, 0.16*sqrt(4857)) cm, then converted to",
         "weight by WT = exp(3.28 + 1.92*log(HT/100))*exp(eta), eta ~ N(0, 0.14) for males and",
@@ -87,42 +87,42 @@ Zhang_2023_aztreonam <- function() {
         "from cm to m appears only in the RxODE script, not in the typeset equation.",
         sep = " "
       ),
-      source_name        = "HT"
+      source_name = "HT"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Not a covariate on any model parameter. Selects which of the two height and weight equations",
         "above applies. Section 2.4 states the virtual population consisted of males and females in",
         "equal proportion; the script draws SEX as round(runif(n, 0, 1)).",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10000,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 10000,
+    n_studies = 1,
     sex_female_pct = 50,
     renal_function = "creatinine clearance 10-150 mL/min/1.73 m2, uniformly distributed",
-    disease_state  = paste(
+    disease_state = paste(
       "simulated adults; the source population PK analysis was conducted in patients with normal and",
       "impaired renal function, and the dosing regimens simulated are those studied in complicated",
       "intra-abdominal infection",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "3 h intravenous infusions by renal function category (Table 1): 2 g loading dose then 1.5 g q6h",
       "for CRCL > 50-150 mL/min; 2 g loading dose then 750 mg q6h for CRCL > 30-50 mL/min; 2 g loading",
       "dose then 500 mg q8h for CRCL 10-30 mL/min. The high-dose regimens do not exceed 6 g daily.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "The 10,000 subjects are a VIRTUAL population constructed by Zhang 2023 (Section 2.4 and the",
       "Supplementary Materials script), not an observed cohort: sex 50/50, height sampled from US",
       "anthropometric reference data, weight derived from height, and creatinine clearance sampled",

@@ -10,8 +10,8 @@ Hwang_2023_carvedilol <- function() {
   vignette <- "Hwang_2023_carvedilol"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -19,17 +19,17 @@ Hwang_2023_carvedilol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2D6_STAR10_HOM = list(
-      description        = "CYP2D6*10 (rs1065852) homozygous-mutant indicator; 1 = CYP2D6*10/*10 (the paper's intermediate-metabolizer-2, IM-2, group), 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6*10 (rs1065852) homozygous-mutant indicator; 1 = CYP2D6*10/*10 (the paper's intermediate-metabolizer-2, IM-2, group), 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled CYP2D6*1/*1, *1/*2 extensive metabolizers and CYP2D6*1/*10, *2/*10 intermediate-metabolizer-1 subjects)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed germline genotype. Hwang 2023 stratified the 21 subjects into three",
         "phenotype groups -- EM (*1/*1, *1/*2; n = 6), IM-1 (*1/*10, *2/*10; n = 7) and IM-2",
         "(*10/*10; n = 8) -- but the final covariate model distinguished only IM-2 from the",
@@ -43,14 +43,14 @@ Hwang_2023_carvedilol <- function() {
         "covariatesDataExcluded instead.",
         sep = " "
       ),
-      source_name        = "GT (Hwang 2023 Table 2 footnote a); CYP2D6 phenotype group IM-2 in Table 1"
+      source_name = "GT (Hwang 2023 Table 2 footnote a); CYP2D6 phenotype group IM-2 in Table 1"
     ),
     DOSE_ISOPROTERENOL_UG = list(
-      description        = "Per-observation intravenous isoproterenol challenge dose administered during the isoproterenol sensitivity test (IST), ug",
-      units              = "ug",
-      type               = "continuous",
+      description = "Per-observation intravenous isoproterenol challenge dose administered during the isoproterenol sensitivity test (IST), ug",
+      units = "ug",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-observation challenge-dose column that drives the algebraic direct-effect Emax",
         "term; it is NOT an rxode2 dosing event (the PD model is algebraic in D, with no",
         "isoproterenol PK compartment and no isoproterenol elimination rate constant reported).",
@@ -62,17 +62,17 @@ Hwang_2023_carvedilol <- function() {
         "BuchwalderCsajka_1999_angiotensin.R.",
         sep = " "
       ),
-      source_name        = "D (Hwang 2023 equations 3-4 and Fig. 1; 'isoproterenol dose')"
+      source_name = "D (Hwang 2023 equations 3-4 and Fig. 1; 'isoproterenol dose')"
     )
   )
 
   covariatesDataExcluded <- list(
     CYP2D6_STAR10_HET = list(
-      description        = "CYP2D6*10 (rs1065852) heterozygote indicator; 1 = CYP2D6*1/*10 or *2/*10 (the paper's IM-1 group)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6*10 (rs1065852) heterozygote indicator; 1 = CYP2D6*1/*10 or *2/*10 (the paper's IM-1 group)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6*1/*1, *1/*2)",
-      notes              = paste(
+      notes = paste(
         "Hwang 2023 genotyped and analysed the heterozygous *10 group (IM-1, n = 7) as a",
         "distinct phenotype stratum, but the final PK covariate model pooled IM-1 with the EM",
         "group as the reference: only the *10/*10 homozygotes had a detectably lower CL/F",
@@ -81,50 +81,50 @@ Hwang_2023_carvedilol <- function() {
         "unused covariateData entry.",
         sep = " "
       ),
-      source_name        = "CYP2D6 phenotype group IM-1 (Hwang 2023 Table 1)"
+      source_name = "CYP2D6 phenotype group IM-1 (Hwang 2023 Table 1)"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on both the PK and the PK-PD parameters via the median-normalised power model of Hwang 2023 equation (6); not significant and not retained (Results 'PK modeling' and 'PK-PD modeling'). Cohort mean (SD) 27.3 (4.7) years (Table 1).",
-      source_name        = "Age (Hwang 2023 Table 1)"
+      notes = "Screened on both the PK and the PK-PD parameters via the median-normalised power model of Hwang 2023 equation (6); not significant and not retained (Results 'PK modeling' and 'PK-PD modeling'). Cohort mean (SD) 27.3 (4.7) years (Table 1).",
+      source_name = "Age (Hwang 2023 Table 1)"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on both the PK and the PK-PD parameters; not significant and not retained (Results 'PK modeling' and 'PK-PD modeling'). Cohort mean (SD) 174.2 (6.6) cm (Table 1).",
-      source_name        = "Height (Hwang 2023 Table 1)"
+      notes = "Screened on both the PK and the PK-PD parameters; not significant and not retained (Results 'PK modeling' and 'PK-PD modeling'). Cohort mean (SD) 174.2 (6.6) cm (Table 1).",
+      source_name = "Height (Hwang 2023 Table 1)"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on both the PK and the PK-PD parameters; not significant and not retained (Results 'PK modeling' and 'PK-PD modeling'). Cohort mean (SD) 70.4 (9.6) kg (Table 1). Hwang 2023 Discussion notes that other carvedilol popPK analyses in congestive-heart-failure patients did retain total body weight, and attributes the difference to the narrow demographic range of this healthy-volunteer cohort.",
-      source_name        = "Weight (Hwang 2023 Table 1)"
+      notes = "Screened on both the PK and the PK-PD parameters; not significant and not retained (Results 'PK modeling' and 'PK-PD modeling'). Cohort mean (SD) 70.4 (9.6) kg (Table 1). Hwang 2023 Discussion notes that other carvedilol popPK analyses in congestive-heart-failure patients did retain total body weight, and attributes the difference to the narrow demographic range of this healthy-volunteer cohort.",
+      source_name = "Weight (Hwang 2023 Table 1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
     n_observations = "450 carvedilol plasma concentrations and 1003 heart-rate observations (Hwang 2023 Results 'Study population')",
-    age_range      = "mean (SD) 27.3 (4.7) years; group means 24.4-29.6 years",
-    weight_range   = "mean (SD) 70.4 (9.6) kg; group means 64.5-79.3 kg",
-    height_range   = "mean (SD) 174.2 (6.6) cm",
-    bmi_range      = "mean (SD) 23.1 (2.4) kg/m^2",
+    age_range = "mean (SD) 27.3 (4.7) years; group means 24.4-29.6 years",
+    weight_range = "mean (SD) 70.4 (9.6) kg; group means 64.5-79.3 kg",
+    height_range = "mean (SD) 174.2 (6.6) cm",
+    bmi_range = "mean (SD) 23.1 (2.4) kg/m^2",
     sex_female_pct = 0,
     race_ethnicity = "Korean",
-    disease_state  = "Healthy adult male volunteers",
-    dose_range     = "Carvedilol 12.5 mg oral single dose followed by 25 mg oral once daily multiple dosing; isoproterenol sensitivity test boluses of 0.25, 0.5, 1 and 2 ug at baseline and 5, 10, 20 and 40 ug after single and multiple carvedilol doses",
-    regions        = "Republic of Korea (Seoul National University Bundang Hospital, single centre)",
-    genotype       = "CYP2D6 extensive metabolizer (*1/*1, *1/*2) n = 6; intermediate metabolizer-1 (*1/*10, *2/*10) n = 7; intermediate metabolizer-2 (*10/*10) n = 8",
-    notes          = paste(
+    disease_state = "Healthy adult male volunteers",
+    dose_range = "Carvedilol 12.5 mg oral single dose followed by 25 mg oral once daily multiple dosing; isoproterenol sensitivity test boluses of 0.25, 0.5, 1 and 2 ug at baseline and 5, 10, 20 and 40 ug after single and multiple carvedilol doses",
+    regions = "Republic of Korea (Seoul National University Bundang Hospital, single centre)",
+    genotype = "CYP2D6 extensive metabolizer (*1/*1, *1/*2) n = 6; intermediate metabolizer-1 (*1/*10, *2/*10) n = 7; intermediate metabolizer-2 (*10/*10) n = 8",
+    notes = paste(
       "Open-label, one-sequence, multiple-dosing study; all 21 subjects were male",
       "(Hwang 2023 Table 1). PK sampling at 0, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 12 and 24 h",
       "after the single 12.5 mg dose and after multiple 25 mg once-daily doses. There were",

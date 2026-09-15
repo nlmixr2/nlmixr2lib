@@ -50,15 +50,15 @@ Rayner_2013_oseltamivir_symptomalleviation <- function() {
 
   covariateData <- list(
     AUC_OSELCARB = list(
-      description        = paste(
+      description = paste(
         "Steady-state area under the plasma concentration-time curve from 0 to 24 h",
         "of oseltamivir carboxylate (OC), the active metabolite of the prodrug",
         "oseltamivir. Per-subject, time-fixed."
       ),
-      units              = "ng*h/mL",
-      type               = "continuous",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Rayner 2013 Methods, 'Determination of plasma drug exposures': individual",
         "post hoc PK parameter estimates from the companion Kamal 2013 population PK",
         "model were used to generate individual predicted steady-state concentrations",
@@ -73,18 +73,18 @@ Rayner_2013_oseltamivir_symptomalleviation <- function() {
         "75 mg BID regimen is about 6,000 ng*h/mL (Discussion).",
         "Generate this column with modellib('Kamal_2013_oseltamivir')."
       ),
-      source_name        = "AUC0-24"
+      source_name = "AUC0-24"
     ),
     IC50_NEURAMINIDASE = list(
-      description        = paste(
+      description = paste(
         "Concentration of the neuraminidase inhibitor that reduces neuraminidase",
         "activity of the infecting influenza virus by 50%, measured in vitro.",
         "Per-subject, time-fixed (a property of the inoculating strain)."
       ),
-      units              = "nM",
-      type               = "continuous",
+      units = "nM",
+      type = "continuous",
       reference_category = "0.18 nM (influenza A/Texas/36/91 (H1N1), study 1 / PV15616)",
-      notes              = paste(
+      notes = paste(
         "Takes exactly two values in this dataset: 0.18 +/- 0.11 nM for influenza",
         "A/Texas/36/91 (H1N1) inoculated in study 1, and 16.76 +/- 4.10 nM for",
         "influenza B/Yamagata/16/88 inoculated in study 2 (Rayner 2013 Methods,",
@@ -98,21 +98,21 @@ Rayner_2013_oseltamivir_symptomalleviation <- function() {
         "(P = 0.494) and its confidence interval spans 1; it is retained because",
         "IC50 is collinear with OC AUC0-24 across the two studies."
       ),
-      source_name        = "IC50"
+      source_name = "IC50"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 2L,
-    age_range      = "18 years and older by inclusion criterion; mean 23.4 years (CV 25.4%) pooled, 22.3 years (CV 20.3%) in study 1 and 25.0 years (CV 29.3%) in study 2 (Rayner 2013 Table 1)",
-    weight_range   = "mean 70.6 kg (CV 18.0%) pooled, 68.6 kg (CV 20.5%) in study 1 and 73.7 kg (CV 13.4%) in study 2 (Rayner 2013 Table 1)",
-    height_mean    = "172 cm (CV 5.45%) pooled (Rayner 2013 Table 1)",
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 2L,
+    age_range = "18 years and older by inclusion criterion; mean 23.4 years (CV 25.4%) pooled, 22.3 years (CV 20.3%) in study 1 and 25.0 years (CV 29.3%) in study 2 (Rayner 2013 Table 1)",
+    weight_range = "mean 70.6 kg (CV 18.0%) pooled, 68.6 kg (CV 20.5%) in study 1 and 73.7 kg (CV 13.4%) in study 2 (Rayner 2013 Table 1)",
+    height_mean = "172 cm (CV 5.45%) pooled (Rayner 2013 Table 1)",
     sex_female_pct = 51.0,
     race_ethnicity = c(White = 84.4, Black = 6.96, Other = 8.70),
     renal_function = "Creatinine clearance mean 114 mL/min/1.73 m^2 (CV 22.2%) pooled (Rayner 2013 Table 1). Healthy volunteers with normal renal function.",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers experimentally inoculated with influenza virus by",
       "nasal drops (TCID50 10^6) and housed in an isolation unit. Study 1 (PV15616)",
       "used influenza A/Texas/36/91 (H1N1) with treatment started 28 h after",
@@ -120,12 +120,12 @@ Rayner_2013_oseltamivir_symptomalleviation <- function() {
       "required a pre-existing influenza antibody titre of 1:8 or less (study 1) or",
       "below 1:10 (study 2)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Study 1: placebo, oseltamivir 20 mg BID, 100 mg BID, 200 mg QD or 200 mg BID",
       "orally for 5 days. Study 2: placebo, oseltamivir 75 mg BID or 150 mg BID",
       "orally for 5 days (Rayner 2013 Table 1)."
     ),
-    notes          = paste(
+    notes = paste(
       "115 subjects were evaluable overall (69 in study 1, 46 in study 2).",
       "n_subjects = 64 here is the number contributing to THIS endpoint, from the",
       "Table 4 subgroup counts for time to alleviation of composite symptom score",

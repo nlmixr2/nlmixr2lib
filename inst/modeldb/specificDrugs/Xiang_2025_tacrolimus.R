@@ -12,8 +12,8 @@ Xiang_2025_tacrolimus <- function() {
   )
   vignette <- "Xiang_2025_tacrolimus"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -23,51 +23,51 @@ Xiang_2025_tacrolimus <- function() {
   # trough concentrations measured by enzyme-amplified immunoassay), so V/F and
   # CL/F are whole-blood apparent parameters.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     POD = list(
-      description        = "Post-operative day: days elapsed since renal transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-operative day: days elapsed since renal transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-VARYING within subject. Enters as the power scaling (POD / 34)^0.109 on CL/F; 34 days is the median post-operative day of the index cohort (Xiang 2025 Table 1). Apparent clearance therefore RISES with time since transplantation, which is why simulated C0 falls over the first post-operative month at a constant dose (Xiang 2025 Results, 'Simulations'). Unlike the linear centred form used by some transplant popPK models, the power form is undefined at POD = 0: CL/F collapses to zero on the day of surgery. Supply POD >= 1 (tacrolimus was started within 24 h of transplantation, so POD = 1 is the first dosing day). The index cohort spans POD 0-182 days and no upper cap was applied.",
-      source_name        = "POD"
+      notes = "TIME-VARYING within subject. Enters as the power scaling (POD / 34)^0.109 on CL/F; 34 days is the median post-operative day of the index cohort (Xiang 2025 Table 1). Apparent clearance therefore RISES with time since transplantation, which is why simulated C0 falls over the first post-operative month at a constant dose (Xiang 2025 Results, 'Simulations'). Unlike the linear centred form used by some transplant popPK models, the power form is undefined at POD = 0: CL/F collapses to zero on the day of surgery. Supply POD >= 1 (tacrolimus was started within 24 h of transplantation, so POD = 1 is the first dosing day). The index cohort spans POD 0-182 days and no upper cap was applied.",
+      source_name = "POD"
     ),
     CONMED_WUZHI = list(
-      description        = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant Wuzhi capsule)",
-      notes              = "Source column WZ, defined in Xiang 2025 immediately below Eq. 6 as 'WZ = 1 if WZ is present; otherwise = 0'. Enters as exp(-0.211 * CONMED_WUZHI) on CL/F, a 19% reduction in apparent clearance. 33 of 100 index-cohort subjects (33%) took Wuzhi capsules. This co-medication is prescribed deliberately to raise tacrolimus exposure and is therefore confounded with genotype in the source cohort: Xiang 2025 Discussion notes it is 'often prescribed for patients with CYP3A5*1/*1 but rarely for patients with CYP3A5*3/*3', with only 11 subjects in the CYP3A5*3/*3 + Wuzhi cell (Supplementary Table 6).",
-      source_name        = "WZ"
+      notes = "Source column WZ, defined in Xiang 2025 immediately below Eq. 6 as 'WZ = 1 if WZ is present; otherwise = 0'. Enters as exp(-0.211 * CONMED_WUZHI) on CL/F, a 19% reduction in apparent clearance. 33 of 100 index-cohort subjects (33%) took Wuzhi capsules. This co-medication is prescribed deliberately to raise tacrolimus exposure and is therefore confounded with genotype in the source cohort: Xiang 2025 Discussion notes it is 'often prescribed for patients with CYP3A5*1/*1 but rarely for patients with CYP3A5*3/*3', with only 11 subjects in the CYP3A5*3/*3 + Wuzhi cell (Supplementary Table 6).",
+      source_name = "WZ"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 non-expresser)",
-      notes              = "VALUE INVERSION relative to the source. Xiang 2025 codes the opposite orientation immediately below Eq. 6: 'Genotype = 1 if the genotype is CYP3A5*3/*3; otherwise, it = 0'. The canonical register mandates the expresser-equals-1 orientation, so CYP3A5_EXPR = 1 - Genotype and the model applies the published coefficient to (1 - CYP3A5_EXPR). The direction of the effect is unchanged from the paper: non-expressers have exp(-0.381) = 0.68 times the apparent clearance of expressers, i.e. 32% lower CL/F, matching Xiang 2025 Results ('CYP3A5*3/*3 genotype reduced the tacrolimus CL/F'). Xiang 2025 pooled *1/*1 (8%) and *1/*3 (31%) into a single CYP3A5*1 expresser group because the three-level genotype effect could not be estimated precisely (RSE > 30%; Discussion); 61% of the index cohort are *3/*3 non-expressers.",
-      source_name        = "Genotype"
+      notes = "VALUE INVERSION relative to the source. Xiang 2025 codes the opposite orientation immediately below Eq. 6: 'Genotype = 1 if the genotype is CYP3A5*3/*3; otherwise, it = 0'. The canonical register mandates the expresser-equals-1 orientation, so CYP3A5_EXPR = 1 - Genotype and the model applies the published coefficient to (1 - CYP3A5_EXPR). The direction of the effect is unchanged from the paper: non-expressers have exp(-0.381) = 0.68 times the apparent clearance of expressers, i.e. 32% lower CL/F, matching Xiang 2025 Results ('CYP3A5*3/*3 genotype reduced the tacrolimus CL/F'). Xiang 2025 pooled *1/*1 (8%) and *1/*3 (31%) into a single CYP3A5*1 expresser group because the three-level genotype effect could not be estimated precisely (RSE > 30%; Discussion); 61% of the index cohort are *3/*3 non-expressers.",
+      source_name = "Genotype"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 1L,
-    age_range      = "19-65 years (median 38)",
-    age_median     = "38 years",
-    weight_range   = "31-99 kg (median 60)",
-    weight_median  = "60 kg",
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
+    age_range = "19-65 years (median 38)",
+    age_median = "38 years",
+    weight_range = "31-99 kg (median 60)",
+    weight_median = "60 kg",
     sex_female_pct = 36.0,
     race_ethnicity = c(Han = 92.0, Other = 8.0),
-    disease_state  = "Adult renal transplant recipients on a tacrolimus-based immunosuppressive regimen, from the day of transplantation through the first post-operative months (post-operative day 0-182, median 34)",
-    dose_range     = "Oral tacrolimus started within 24 h of transplantation at 0.05-0.15 mg/kg/day divided q12h, then dose-adjusted to the trough TDM target (8-12 ng/mL in month 1, 6-10 ng/mL months 1-3, 4-10 ng/mL months 3-12); observed doses 0.5-5.5 mg per administration (median 2.5)",
-    regions        = "Single centre, Chongqing, People's Republic of China",
-    notes          = "Retrospective cohort of 126 renal transplant recipients (September 2021 to March 2024) randomly split 4:1 into an index group (n = 100) used to build the model and an external validation group (n = 26); the parameter values here are the index-group fit. 2279 tacrolimus trough concentrations. Baseline demographics from Xiang 2025 Table 1 (index dataset column). Genotype distribution CYP3A5*1/*1 8%, *1/*3 31%, *3/*3 61%; 33% took Wuzhi capsules, 73% amlodipine, 65% metoprolol, 99% omeprazole. Estimated in Phoenix NLME 8.3.5 by FOCE. Registered as NCT05872815."
+    disease_state = "Adult renal transplant recipients on a tacrolimus-based immunosuppressive regimen, from the day of transplantation through the first post-operative months (post-operative day 0-182, median 34)",
+    dose_range = "Oral tacrolimus started within 24 h of transplantation at 0.05-0.15 mg/kg/day divided q12h, then dose-adjusted to the trough TDM target (8-12 ng/mL in month 1, 6-10 ng/mL months 1-3, 4-10 ng/mL months 3-12); observed doses 0.5-5.5 mg per administration (median 2.5)",
+    regions = "Single centre, Chongqing, People's Republic of China",
+    notes = "Retrospective cohort of 126 renal transplant recipients (September 2021 to March 2024) randomly split 4:1 into an index group (n = 100) used to build the model and an external validation group (n = 26); the parameter values here are the index-group fit. 2279 tacrolimus trough concentrations. Baseline demographics from Xiang 2025 Table 1 (index dataset column). Genotype distribution CYP3A5*1/*1 8%, *1/*3 31%, *3/*3 61%; 33% took Wuzhi capsules, 73% amlodipine, 65% metoprolol, 99% omeprazole. Estimated in Phoenix NLME 8.3.5 by FOCE. Registered as NCT05872815."
   )
 
   ini({

@@ -25,7 +25,7 @@ Mao_2012_vernakalant <- function() {
     sep = " "
   )
   vignette <- "Mao_2012_vernakalant"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amounts are mg of vernakalant FREE BASE -- a dose
@@ -33,17 +33,17 @@ Mao_2012_vernakalant <- function() {
   # 385.93 / 349.50 g/mol salt-to-base molecular weight ratio given in
   # Mao 2012 Results, "Model Development") before it is passed as `amt`.
   compartmentData <- list(
-    central     = list(analyte = "vernakalant", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "vernakalant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vernakalant", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mao 2012 estimated every structural parameter on a per-kilogram",
         "basis (CL and Q in L/h/kg, Vc and Vp in L/kg), so weight enters",
         "as a LINEAR multiplier rather than an allometric power. This",
@@ -59,14 +59,14 @@ Mao_2012_vernakalant <- function() {
         "with weight, simulated concentrations after a mg/kg dose are",
         "weight-invariant in this model."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL, entered on the log scale as",
         "theta8 * log(AGE / 60) so that CL scales as (AGE / 60)^-0.284.",
         "The reference of 60 years is the base case used throughout Mao",
@@ -80,14 +80,14 @@ Mao_2012_vernakalant <- function() {
         "years for the healthy volunteers (Mao 2012 Table I). Time-fixed",
         "at baseline."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL, entered on the log scale as",
         "theta9 * log(CREAT / 100) so that CL scales as",
         "(CREAT / 100)^-0.345. The reference of 100 umol/L is the base",
@@ -102,14 +102,14 @@ Mao_2012_vernakalant <- function() {
         "umol/L, not mg/dL; divide mg/dL by 0.0113 to convert.",
         "Time-fixed at baseline."
       ),
-      source_name        = "serum creatinine"
+      source_name = "serum creatinine"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with atrial fibrillation or atrial flutter)",
-      notes              = paste(
+      notes = paste(
         "Mao 2012 calls this covariate 'subject status' and codes it as",
         "(Subject = Volunteer), which is already the canonical",
         "DIS_HEALTHY orientation -- no re-expression was needed. It has",
@@ -134,14 +134,14 @@ Mao_2012_vernakalant <- function() {
         "volunteers were men) and dosing (a flat 240 mg rather than",
         "mg/kg)."
       ),
-      source_name        = "Subject = Volunteer"
+      source_name = "Subject = Volunteer"
     ),
     CYP2D6_EM = list(
-      description        = "CYP2D6 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (poor, ultrarapid, or ungenotyped subject)",
-      notes              = paste(
+      notes = paste(
         "Part of the three-indicator CYP2D6 encoding used here",
         "(CYP2D6_EM, CYP2D6_PM, CYP2D6_UM). Mao 2012 fits FOUR clearance",
         "strata and the IMPLICIT REFERENCE -- all three indicators 0 --",
@@ -164,14 +164,14 @@ Mao_2012_vernakalant <- function() {
         "URM (1.3%) of 311 (Mao 2012 Results, 'Study Population').",
         "Time-fixed per subject (germline genotype-derived phenotype)."
       ),
-      source_name        = "EM"
+      source_name = "EM"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, ultrarapid, or ungenotyped subject)",
-      notes              = paste(
+      notes = paste(
         "Single main effect on CL (theta7 = -0.535), applied to poor",
         "metabolizers regardless of subject status -- unlike the",
         "extensive-metabolizer effect, which interacts with",
@@ -186,14 +186,14 @@ Mao_2012_vernakalant <- function() {
         "predominantly white cohort. Time-fixed per subject (germline",
         "genotype-derived phenotype)."
       ),
-      source_name        = "PM"
+      source_name = "PM"
     ),
     CYP2D6_UM = list(
-      description        = "CYP2D6 ultrarapid-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 ultrarapid-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, poor, or ungenotyped subject)",
-      notes              = paste(
+      notes = paste(
         "Mao 2012 POOLS ultrarapid with extensive metabolizers for the",
         "patient clearance stratum (theta6 applies to",
         "'Patient & EM/URM'), so in this model CYP2D6_UM enters CL only",
@@ -209,29 +209,29 @@ Mao_2012_vernakalant <- function() {
         "the data. Time-fixed per subject (germline genotype-derived",
         "phenotype)."
       ),
-      source_name        = "URM"
+      source_name = "URM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 605L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 605L,
+    n_studies = 6L,
     n_observations = 2524L,
-    age_range      = "study means 60.9-68.3 years in patients; 31.2 years in healthy volunteers",
-    age_median     = "60 years (model reference / base case)",
-    weight_range   = "study means 75.8-87.4 kg",
-    weight_median  = "80 kg (the paper's reference body weight for reporting L/h and L)",
+    age_range = "study means 60.9-68.3 years in patients; 31.2 years in healthy volunteers",
+    age_median = "60 years (model reference / base case)",
+    weight_range = "study means 75.8-87.4 kg",
+    weight_median = "80 kg (the paper's reference body weight for reporting L/h and L)",
     sex_female_pct = 29.8,
     race_ethnicity = c(White = 96.1, Black = 1.0, Asian = 1.3, Other = 1.5),
-    disease_state  = paste(
+    disease_state = paste(
       "597 patients with atrial fibrillation (90.1%) or atrial flutter",
       "(9.9%) lasting >3 hours to <=45 days, including post-cardiac-surgery",
       "AF/AFL (ACT II); 15.6% had a history of congestive heart failure,",
       "27.5% coronary artery disease, and 50.9% hypertension. Plus 8",
       "healthy male volunteers from the phase 1 study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Patients: vernakalant hydrochloride 3 mg/kg as a 10-minute IV",
       "infusion; if AF/AFL persisted after a 15-minute observation period,",
       "a second 10-minute infusion of 2 mg/kg (i.e. starting 25 minutes",
@@ -242,14 +242,14 @@ Mao_2012_vernakalant <- function() {
       "this model expects."
     ),
     renal_function = "serum creatinine study means 83.5-105.3 umol/L; 5th-95th percentile 62-133 umol/L",
-    cyp2d6_status  = paste(
+    cyp2d6_status = paste(
       "Genotyped in 311 of 605 subjects (51.4%): 291 extensive (93.6%),",
       "16 poor (5.1%), 4 ultrarapid (1.3%). The remaining 294 subjects",
       "(48.6%) were not genotyped and form the model's reference stratum."
     ),
-    cohort_split   = "597 patients (98.7%) + 8 healthy volunteers (1.3%) = 605 total",
-    regions        = "Not stated; multicenter phase 2/3 program (Scene 2, ACT I-IV) plus a phase 1 study",
-    notes          = paste(
+    cohort_split = "597 patients (98.7%) + 8 healthy volunteers (1.3%) = 605 total",
+    regions = "Not stated; multicenter phase 2/3 program (Scene 2, ACT I-IV) plus a phase 1 study",
+    notes = paste(
       "Baseline demographics from Mao 2012 Table I (six per-study",
       "columns). Of 4518 plasma concentrations from 818 enrolled",
       "subjects, 904 placebo samples, 160 oral-dose samples, 902",

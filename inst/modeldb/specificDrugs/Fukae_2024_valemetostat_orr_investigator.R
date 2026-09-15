@@ -46,84 +46,84 @@ Fukae_2024_valemetostat_orr_investigator <- function() {
   )
   vignette <- "Fukae_2024_valemetostat_exposure_response"
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUCU_VALE covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUCU_VALE covariate column)",
     concentration = "prob_orr_investigator (probability of overall response, 0-1; also logit_orr_investigator)"
   )
 
   covariateData <- list(
     AUCU_VALE = list(
-      description        = "Unbound (free) valemetostat plasma AUC over the once-daily 24 h dosing interval at steady state, per subject. Supplied as data: this model has no PK layer, and the source analysis used empirical-Bayes individual predictions from the companion population PK model (Fukae 2024, doi:10.1002/psp4.13201).",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Unbound (free) valemetostat plasma AUC over the once-daily 24 h dosing interval at steady state, per subject. Supplied as data: this model has no PK layer, and the source analysis used empirical-Bayes individual predictions from the companion population PK model (Fukae 2024, doi:10.1002/psp4.13201).",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 375 ng*h/mL and scaled by 250 ng*h/mL inside model(). 375 is the reference patient's exposure (Fukae 2024 Table 2 footnote), approximately the typical unbound AUCss at the approved 200 mg once-daily dose; 250 is the increment every published odds ratio is expressed per (Table 2 row 'Unbound valemetostat AUCSS: 250 ng*h/mL increase'). Observed 5th-95th percentile of the pooled exposure distribution 184-887 ng*h/mL. Unbound, not total: the coefficients would be badly mis-scaled if a total AUCss were supplied.",
-      source_name        = "unbound valemetostat AUCSS"
+      notes = "Centred at 375 ng*h/mL and scaled by 250 ng*h/mL inside model(). 375 is the reference patient's exposure (Fukae 2024 Table 2 footnote), approximately the typical unbound AUCss at the approved 200 mg once-daily dose; 250 is the increment every published odds ratio is expressed per (Table 2 row 'Unbound valemetostat AUCSS: 250 ng*h/mL increase'). Observed 5th-95th percentile of the pooled exposure distribution 184-887 ng*h/mL. Unbound, not total: the coefficients would be badly mis-scaled if a total AUCss were supplied.",
+      source_name = "unbound valemetostat AUCSS"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 65 years and scaled by 10 years inside model() (Fukae 2024 Table 2 footnote reference patient; Table 2 row 'Age: 10 years increase'). ATLL efficacy analysis set median 69.0 years, range 37-84 (Table 1).",
-      source_name        = "Age"
+      notes = "Centred at 65 years and scaled by 10 years inside model() (Fukae 2024 Table 2 footnote reference patient; Table 2 row 'Age: 10 years increase'). ATLL efficacy analysis set median 69.0 years, range 37-84 (Table 1).",
+      source_name = "Age"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase concentration.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase concentration.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 250 U/L and scaled by 300 U/L inside model() (Fukae 2024 Table 2 footnote reference patient; Table 2 row 'LDH: 300 U/L increase'). ATLL efficacy analysis set median 315 U/L, range 143-2000 (Table 1).",
-      source_name        = "LDH"
+      notes = "Centred at 250 U/L and scaled by 300 U/L inside model() (Fukae 2024 Table 2 footnote reference patient; Table 2 row 'LDH: 300 U/L increase'). ATLL efficacy analysis set median 315 U/L, range 143-2000 (Table 1).",
+      source_name = "LDH"
     ),
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 63 kg and scaled by 20 kg inside model() (Fukae 2024 Table 2 footnote reference patient; Table 2 row 'Weight: 20 kg increase'). ATLL efficacy analysis set median 61.5 kg, range 34.5-111 (Table 1).",
-      source_name        = "Weight"
+      notes = "Centred at 63 kg and scaled by 20 kg inside model() (Fukae 2024 Table 2 footnote reference patient; Table 2 row 'Weight: 20 kg increase'). ATLL efficacy analysis set median 61.5 kg, range 34.5-111 (Table 1).",
+      source_name = "Weight"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. Binary covariates are NOT centred or scaled in this model -- Fukae 2024 Methods states that centring and scaling were applied to 'continuous covariates only'.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. Binary covariates are NOT centred or scaled in this model -- Fukae 2024 Methods states that centring and scaling were applied to 'continuous covariates only'.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the reference patient is male per the Table 2 footnote)",
-      notes              = "Enters as a log-odds shift on the logit intercept (e_sexf_logit) and as a modifier of the exposure slope (e_sexf_slope). ATLL efficacy analysis set 48.7% female (Table 1).",
-      source_name        = "Sex: female"
+      notes = "Enters as a log-odds shift on the logit intercept (e_sexf_logit) and as a modifier of the exposure slope (e_sexf_slope). ATLL efficacy analysis set 48.7% female (Table 1).",
+      source_name = "Sex: female"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline Eastern Cooperative Oncology Group performance status indicator; 1 = ECOG PS >= 1, 0 = ECOG PS 0. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline Eastern Cooperative Oncology Group performance status indicator; 1 = ECOG PS >= 1, 0 = ECOG PS 0. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG PS 0; the reference patient has ECOG PS 0 per the Table 2 footnote)",
-      notes              = "The paper collapses ECOG PS to '0' versus '1+' (Fukae 2024 Methods and Table 1). The investigator-assessed model regularizes this effect much more strongly than the central-assessment model does (odds ratio 0.903 vs 0.378), which the authors attribute to the larger analysis set. ATLL efficacy analysis set 46.2% with ECOG PS >= 1 (Table 1).",
-      source_name        = "ECOG PS score: >= 1"
+      notes = "The paper collapses ECOG PS to '0' versus '1+' (Fukae 2024 Methods and Table 1). The investigator-assessed model regularizes this effect much more strongly than the central-assessment model does (odds ratio 0.903 vs 0.378), which the authors attribute to the larger analysis set. ATLL efficacy analysis set 46.2% with ECOG PS >= 1 (Table 1).",
+      source_name = "ECOG PS score: >= 1"
     )
   )
 
   covariatesDataExcluded <- list(
     DIS_NHL_STAGE4 = list(
       description = "Non-Hodgkin lymphoma disease stage indicator; 1 = stage IV, 0 = stage I/II/III.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Named by Fukae 2024 Methods as a candidate categorical covariate for the exposure-efficacy analysis ('NHL disease stage (I-III/IV)'), but NOT reported in Table 2 and therefore not retained in the final model -- no point estimate exists anywhere on disk. Stage was heavily missing in the source cohort (14 of 39 ATLL patients, 35.9%; Table 1), the likely reason it was dropped. Documented here to preserve the covariate screen without carrying a convention warning."
+      units = "(binary)",
+      type = "binary",
+      notes = "Named by Fukae 2024 Methods as a candidate categorical covariate for the exposure-efficacy analysis ('NHL disease stage (I-III/IV)'), but NOT reported in Table 2 and therefore not retained in the final model -- no point estimate exists anywhere on disk. Stage was heavily missing in the source cohort (14 of 39 ATLL patients, 35.9%; Table 1), the likely reason it was dropped. Documented here to preserve the covariate screen without carrying a convention warning."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 2L,
     n_observations = "38 binary response records (one per patient; landmark analysis, no repeated measures)",
-    age_range      = "median 69.0 years, range 37-84 across the 39-patient ATLL set (Fukae 2024 Table 1)",
-    weight_range   = "median 61.5 kg, range 34.5-111 (Fukae 2024 Table 1)",
+    age_range = "median 69.0 years, range 37-84 across the 39-patient ATLL set (Fukae 2024 Table 1)",
+    weight_range = "median 61.5 kg, range 34.5-111 (Fukae 2024 Table 1)",
     sex_female_pct = 48.7,
     race_ethnicity = c(Asian = 87.2, Black = 12.8),
-    disease_state  = "relapsed or refractory adult T-cell leukemia/lymphoma (ATLL); responses per modified 2009 ATLL response criteria, ORR = complete response (including uncertified CR) or partial response",
-    dose_range     = "valemetostat 150-200 mg orally once daily until progressive disease or unacceptable toxicity (J101 dose escalation contributed 150 and 200 mg; J201 was 200 mg throughout)",
-    regions        = "Japan and the United States (J101, phase I first-in-human) and Japan (J201, DS3201-A-J201, NCT04102150)",
-    notes          = paste0(
+    disease_state = "relapsed or refractory adult T-cell leukemia/lymphoma (ATLL); responses per modified 2009 ATLL response criteria, ORR = complete response (including uncertified CR) or partial response",
+    dose_range = "valemetostat 150-200 mg orally once daily until progressive disease or unacceptable toxicity (J101 dose escalation contributed 150 and 200 mg; J201 was 200 mg throughout)",
+    regions = "Japan and the United States (J101, phase I first-in-human) and Japan (J201, DS3201-A-J201, NCT04102150)",
+    notes = paste0(
       "Investigator assessment was available in both trials, so this ",
       "model's analysis set (38) is larger than the central-assessment ",
       "companion's (25). One of the 39 ATLL patients had a missing ORR ",

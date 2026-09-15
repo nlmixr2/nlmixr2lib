@@ -2,7 +2,17 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
   description <- "QSP. Mechanistic systems pharmacology model of the NO metabolome (nitrite, nitrate) and methemoglobin (MetHb) in healthy adults receiving a 48-hour intravenous infusion of sodium nitrite. Nine ODEs covering plasma/RBC/tissue nitrite and nitrate, MetHb, NO and methemoglobin reductase activity; nonlinear nitrite/nitrate renal clearance (linear slope), entero-salivary nitrate-to-nitrite recycling, and indirect-response stimulation of MetHb reductase. Time in minutes; amounts in umol; concentrations in umol/L."
   reference <- "Vega-Villa K, Pluta R, Lonser R, Woo S. Quantitative Systems Pharmacology Model of NO Metabolome and Methemoglobin Following Long-Term Infusion of Sodium Nitrite in Humans. CPT Pharmacometrics Syst Pharmacol. 2013;2(8):e60. doi:10.1038/psp.2013.35"
   vignette <- "VegaVilla_2013_sodium_nitrite_qsp"
-  paper_specific_compartments <- c("nitrite_p", "nitrite_r", "nitrate_p", "nitrate_r", "methb", "nitrite_t", "nitrate_t", "kmr", "no_r")
+  paper_specific_compartments <- c(
+    "nitrite_p",
+    "nitrite_r",
+    "nitrate_p",
+    "nitrate_r",
+    "methb",
+    "nitrite_t",
+    "nitrate_t",
+    "kmr",
+    "no_r"
+  )
 
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
 
@@ -15,26 +25,26 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
     nitrite_r = list(analyte = "Nitrite", units = "umol", specimen = "blood cell", verified = FALSE),
     nitrate_p = list(analyte = "Nitrate", units = "umol", specimen = "plasma", verified = FALSE),
     nitrate_r = list(analyte = "Nitrate", units = "umol", specimen = "blood cell", verified = FALSE),
-    methb     = list(analyte = "Methemoglobin", units = "umol", specimen = "blood cell", verified = FALSE),
+    methb = list(analyte = "Methemoglobin", units = "umol", specimen = "blood cell", verified = FALSE),
     nitrite_t = list(analyte = "Nitrite", units = "umol", specimen = "tissue", verified = FALSE),
     nitrate_t = list(analyte = "Nitrate", units = "umol", specimen = "tissue", verified = FALSE),
-    kmr       = list(analyte = "NO", units = "umol", specimen = "blood cell", verified = FALSE),
-    no_r      = list(analyte = "NO", units = "umol", specimen = "administration site", verified = FALSE)
+    kmr = list(analyte = "NO", units = "umol", specimen = "blood cell", verified = FALSE),
+    no_r = list(analyte = "NO", units = "umol", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "21-56 years (mean 39, SD 9)",
-    weight_range   = "49-115 kg (mean 77.8, SD 19)",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "21-56 years (mean 39, SD 9)",
+    weight_range = "49-115 kg (mean 77.8, SD 19)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = "Sodium nitrite IV infusion 4.2-533.8 ug/kg/h for 48 h (escalating, single-dose-level per subject)",
-    regions        = "United States",
-    notes          = "Phase I dose-escalation cohort (Pluta et al. 2011 PLoS ONE 6:e14504; clinical protocol). Twelve subjects each receiving one of 4.2, 8.3, 16.7, 33.4, 66.8, 133.4, 266.9 (n=3, maximal-tolerated dose), 445.7 (n=2), or 533.8 (n=1) ug/kg/h IV for 48 h. Methods section cites Pluta 2011 for the demographics and study design. 333 plasma + 147 RBC nitrite/nitrate observations and 333 methemoglobin observations used for model development."
+    disease_state = "Healthy adult volunteers",
+    dose_range = "Sodium nitrite IV infusion 4.2-533.8 ug/kg/h for 48 h (escalating, single-dose-level per subject)",
+    regions = "United States",
+    notes = "Phase I dose-escalation cohort (Pluta et al. 2011 PLoS ONE 6:e14504; clinical protocol). Twelve subjects each receiving one of 4.2, 8.3, 16.7, 33.4, 66.8, 133.4, 266.9 (n=3, maximal-tolerated dose), 445.7 (n=2), or 533.8 (n=1) ug/kg/h IV for 48 h. Methods section cites Pluta 2011 for the demographics and study design. 333 plasma + 147 RBC nitrite/nitrate observations and 333 methemoglobin observations used for model development."
   )
 
   ini({

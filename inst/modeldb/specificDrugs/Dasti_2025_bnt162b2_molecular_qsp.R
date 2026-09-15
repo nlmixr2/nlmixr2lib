@@ -33,14 +33,20 @@ Dasti_2025_bnt162b2_molecular_qsp <- function() {
   )
   vignette <- "Dasti_2025_mrna_vaccines"
   units <- list(
-    time          = "min",
-    dosing        = "not applicable (mRNA enters as the endosomal initial condition, M)",
+    time = "min",
+    dosing = "not applicable (mRNA enters as the endosomal initial condition, M)",
     concentration = "molecules per cell (peptide-MHC-II complexes on the plasma membrane)"
   )
   # Every state is a paper-mechanistic intracellular species.
   paper_specific_compartments <- c(
-    "mRNAe", "mRNAc", "Ag", "P",
-    "MHCunPM", "MHCunINT", "MHCbPM", "MHCbINT"
+    "mRNAe",
+    "mRNAc",
+    "Ag",
+    "P",
+    "MHCunPM",
+    "MHCunINT",
+    "MHCbPM",
+    "MHCbINT"
   )
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Descriptions transcribed from SI Table S4;
@@ -48,22 +54,57 @@ Dasti_2025_bnt162b2_molecular_qsp <- function() {
   # mapped onto the controlled specimen vocabulary; the analyte text carries
   # the precise location.
   compartmentData <- list(
-    mRNAe    = list(analyte = "mRNA in the endosome", units = "M", specimen = "endosome", verified = TRUE),
-    mRNAc    = list(analyte = "mRNA in the cytosol of an antigen-presenting cell", units = "M", specimen = "tissue", verified = TRUE),
-    Ag       = list(analyte = "translated antigen protein in the cytosol of an antigen-presenting cell", units = "M", specimen = "tissue", verified = TRUE),
-    P        = list(analyte = "free antigenic peptide in the cytosol of an antigen-presenting cell", units = "M", specimen = "tissue", verified = TRUE),
-    MHCunPM  = list(analyte = "unbound MHC-II on the antigen-presenting cell plasma membrane", units = "molecules", specimen = "tissue", verified = TRUE),
-    MHCunINT = list(analyte = "unbound internalized MHC-II", units = "molecules", specimen = "endosome", verified = TRUE),
-    MHCbINT  = list(analyte = "internalized MHC-II/peptide complex", units = "molecules", specimen = "endosome", verified = TRUE),
-    MHCbPM   = list(analyte = "MHC-II/peptide complex on the antigen-presenting cell plasma membrane", units = "molecules", specimen = "tissue", verified = TRUE)
+    mRNAe = list(analyte = "mRNA in the endosome", units = "M", specimen = "endosome", verified = TRUE),
+    mRNAc = list(
+      analyte = "mRNA in the cytosol of an antigen-presenting cell",
+      units = "M",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    Ag = list(
+      analyte = "translated antigen protein in the cytosol of an antigen-presenting cell",
+      units = "M",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    P = list(
+      analyte = "free antigenic peptide in the cytosol of an antigen-presenting cell",
+      units = "M",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    MHCunPM = list(
+      analyte = "unbound MHC-II on the antigen-presenting cell plasma membrane",
+      units = "molecules",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    MHCunINT = list(
+      analyte = "unbound internalized MHC-II",
+      units = "molecules",
+      specimen = "endosome",
+      verified = TRUE
+    ),
+    MHCbINT = list(
+      analyte = "internalized MHC-II/peptide complex",
+      units = "molecules",
+      specimen = "endosome",
+      verified = TRUE
+    ),
+    MHCbPM = list(
+      analyte = "MHC-II/peptide complex on the antigen-presenting cell plasma membrane",
+      units = "molecules",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
   covariateData <- list()
   population <- list(
-    species       = "human (single antigen-presenting cell; intracellular model)",
+    species = "human (single antigen-presenting cell; intracellular model)",
     disease_state = "not applicable (subcellular antigen-processing model)",
-    vaccine       = "Pfizer-BioNTech BNT162b2",
-    n_subjects    = NA_integer_,
-    notes         = paste(
+    vaccine = "Pfizer-BioNTech BNT162b2",
+    n_subjects = NA_integer_,
+    notes = paste(
       "Not fitted to data. Rate constants were taken from the antigen-",
       "presentation literature (Table S6 references 19-27) except the antigen",
       "production rate kp, which the authors computed for the BNT162b2 mRNA",

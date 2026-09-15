@@ -1,6 +1,6 @@
 Smuszkiewicz_2017_dexmedetomidine <- function() {
   description <- "Two-compartment population PK model for intravenous dexmedetomidine continuous infusion in adult ICU patients undergoing analgosedation (Smuszkiewicz 2017). 27 medical and surgical ICU patients (17 male, 10 female; median age 59.5 y, median weight 75 kg) received continuous infusions of 0.1-1.5 ug/kg/h for 23.7-102 h. Age, sex, body weight, infusion duration, pretreatment SOFA score, and inotrope use were screened as covariates but none reached statistical significance, so the final model contains no covariate effects. IIVs on Vc, CL, Vp, and Q are diagonal (no clear correlations). Proportional residual error."
-  reference   <- paste(
+  reference <- paste(
     "Smuszkiewicz P, Wiczling P, Ber J, Warzybok J, Malkiewicz T, Matysiak J,",
     "Klupczynska A, Trojanowska I, Kokot Z, Grzeskowiak E, Krzyzanski W, Bienert A.",
     "Pharmacokinetics of dexmedetomidine during analgosedation in ICU patients.",
@@ -10,8 +10,8 @@ Smuszkiewicz_2017_dexmedetomidine <- function() {
   )
   vignette <- "Smuszkiewicz_2017_dexmedetomidine"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
@@ -19,25 +19,25 @@ Smuszkiewicz_2017_dexmedetomidine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27L,
-    n_studies      = 1L,
-    age_range      = "19-84 years (median 59.5)",
-    age_median     = "59.5 years",
-    weight_range   = "45-100 kg (median 75)",
-    weight_median  = "75 kg",
+    species = "human",
+    n_subjects = 27L,
+    n_studies = 1L,
+    age_range = "19-84 years (median 59.5)",
+    age_median = "59.5 years",
+    weight_range = "45-100 kg (median 75)",
+    weight_median = "75 kg",
     sex_female_pct = 37.0,
-    disease_state  = "Adults staying in a mixed medical and surgical intensive care unit; respiratory insufficiency requiring analgosedation and mechanical ventilation, or hyperactive delirium / agitation refractory to haloperidol in intubated and/or extubated ICU patients. Pretreatment SOFA score median 12 (range 5-16); inotrope use in 21 of 27.",
-    dose_range     = "Continuous intravenous infusion of dexmedetomidine (Dexdor) without a loading dose. Initial infusion rate 0.8-1 ug/kg/h followed by maintenance infusion 0.4-1.5 ug/kg/h, titrated to a modified Ramsay sedation score of 2-3 and stopped on significant hemodynamic instability, after extubation, or at physician discretion. Median infusion duration 42.8 h (23.7-102), median total dose 1.55 mg (0.29-6.67), median rate 0.51 ug/kg/h (0.1-1.5).",
-    regions        = "Poland (Poznan University of Medical Sciences)",
-    notes          = "Single-center observational study; bioethics permissions 213/13 and 572/16. 368 dexmedetomidine concentrations from 27 patients (Fig. 1, Table 1). 22 patients sampled at 0, 1, 4, 8, 12, 16, 20 h after infusion start and 0, 5, 10, 20, 60 min and 2, 4, 6 h after infusion cessation; 5 patients followed a longer protocol (0, 2, 8, 24, 32, 48, 56, 72, 80 h on infusion and 0, 5, 10, 15, 30, 60 min and 2, 4, 6, 12 h post-infusion). Plasma assay: LC-MS/MS, calibration range 0.05-20 ng/mL, within-day CV < 10%, no measurements below the LLOQ. Model estimation: NONMEM 7.3.0 with gfortran 9.0, FOCE-style discrimination via likelihood-ratio test and AIC, 1000-replicate nonparametric bootstrap, prediction-corrected VPC. Covariates screened: WT, AGE, SEXF, infusion duration, pretreatment SOFA, inotrope use; none retained."
+    disease_state = "Adults staying in a mixed medical and surgical intensive care unit; respiratory insufficiency requiring analgosedation and mechanical ventilation, or hyperactive delirium / agitation refractory to haloperidol in intubated and/or extubated ICU patients. Pretreatment SOFA score median 12 (range 5-16); inotrope use in 21 of 27.",
+    dose_range = "Continuous intravenous infusion of dexmedetomidine (Dexdor) without a loading dose. Initial infusion rate 0.8-1 ug/kg/h followed by maintenance infusion 0.4-1.5 ug/kg/h, titrated to a modified Ramsay sedation score of 2-3 and stopped on significant hemodynamic instability, after extubation, or at physician discretion. Median infusion duration 42.8 h (23.7-102), median total dose 1.55 mg (0.29-6.67), median rate 0.51 ug/kg/h (0.1-1.5).",
+    regions = "Poland (Poznan University of Medical Sciences)",
+    notes = "Single-center observational study; bioethics permissions 213/13 and 572/16. 368 dexmedetomidine concentrations from 27 patients (Fig. 1, Table 1). 22 patients sampled at 0, 1, 4, 8, 12, 16, 20 h after infusion start and 0, 5, 10, 20, 60 min and 2, 4, 6 h after infusion cessation; 5 patients followed a longer protocol (0, 2, 8, 24, 32, 48, 56, 72, 80 h on infusion and 0, 5, 10, 15, 30, 60 min and 2, 4, 6, 12 h post-infusion). Plasma assay: LC-MS/MS, calibration range 0.05-20 ng/mL, within-day CV < 10%, no measurements below the LLOQ. Model estimation: NONMEM 7.3.0 with gfortran 9.0, FOCE-style discrimination via likelihood-ratio test and AIC, 1000-replicate nonparametric bootstrap, prediction-corrected VPC. Covariates screened: WT, AGE, SEXF, infusion duration, pretreatment SOFA, inotrope use; none retained."
   )
 
   ini({

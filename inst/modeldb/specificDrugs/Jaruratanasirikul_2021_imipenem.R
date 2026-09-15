@@ -31,19 +31,19 @@ Jaruratanasirikul_2021_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central      = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "imipenem", units = "mg", specimen = "tissue", verified = FALSE)
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Glomerular filtration rate estimated by the CKD-EPI equation.",
         "Zhang 2025's abbreviation list distinguishes 'eGFR CKD-EPI' from",
         "'CKD-EPI-abs, absolute CKD-EPI (i.e., CKD-EPI, multiplied by",
@@ -54,10 +54,10 @@ Jaruratanasirikul_2021_imipenem <- function() {
         "normal renal function, whereas 89 mL/min absolute would be an odd",
         "centring constant."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 89 mL/min/1.73 m^2. Enters CL as the LINEAR-DEVIATION",
         "term CL = 13.3 + 0.112 * (eGFR_CKD-EPI - 89) L/h (Zhang 2025",
         "Table 3), NOT as a power of a ratio -- the slope 0.112 therefore",
@@ -75,10 +75,10 @@ Jaruratanasirikul_2021_imipenem <- function() {
         "models' CRCL columns are on different scales and their reference",
         "values are not comparable)."
       ),
-      source_name        = "eGFR CKD-EPI"
+      source_name = "eGFR CKD-EPI"
     ),
     ABW = list(
-      description        = paste(
+      description = paste(
         "Adjusted body weight, the obesity-dosing size descriptor",
         "conventionally computed as ABW = IBW + 0.4 * (TBW - IBW).",
         "Zhang 2025's Table 3 footnote glosses the abbreviation as",
@@ -86,10 +86,10 @@ Jaruratanasirikul_2021_imipenem <- function() {
         "and 'ideal BW' as separately screened covariates, so ABW here is",
         "the interpolated dosing weight and not an alias of either."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 60 kg. Enters the central volume as the",
         "LINEAR-DEVIATION term V1 = 13.8 - 0.348 * (ABW - 60) L (Zhang",
         "2025 Table 3), so the slope -0.348 carries units of L per kg.",
@@ -110,7 +110,7 @@ Jaruratanasirikul_2021_imipenem <- function() {
         "column registered in inst/references/covariate-columns.md with",
         "this extraction."
       ),
-      source_name        = "ABW"
+      source_name = "ABW"
     )
   )
 
@@ -120,42 +120,97 @@ Jaruratanasirikul_2021_imipenem <- function() {
   # screened covariates that have a canonical column are listed here; the
   # remainder are recorded in population$notes.
   covariatesDataExcluded <- list(
-    AGE         = list(description = "Age",                              units = "years",    type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 56.2 years, IQR 40.95-66.6 (Table 1)."),
-    SEXF        = list(description = "Female sex",                       units = "(binary)", type = "binary",     notes = "Screened as 'gender', not retained (Zhang 2025 Table 3). Cohort is 35 male / 15 female (Table 1)."),
-    WT          = list(description = "Total (actual) body weight",       units = "kg",       type = "continuous", notes = "Screened as 'actual BW', not retained (Zhang 2025 Table 3); the adjusted body weight ABW won the body-size comparison and is the retained descriptor on V1. Cohort median 62.9 kg, IQR 52.8-70.0 (Table 1)."),
-    IBW         = list(description = "Ideal body weight",                units = "kg",       type = "continuous", notes = "Screened as 'ideal BW', not retained (Zhang 2025 Table 3). Lost to ABW on V1."),
-    BMI         = list(description = "Body mass index",                  units = "kg/m^2",   type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    ECMO_STATUS = list(description = "ECMO treatment status",            units = "(binary)", type = "binary",     notes = "Screened as 'the use of ECMO support', not retained (Zhang 2025 Table 3). This is the substantive negative result of the study: the cohort is explicitly assembled with and without ECMO, and neither ECMO status nor ECMO type, flow rate or duration reached significance on any parameter."),
-    Q_ECMO      = list(description = "ECMO circuit blood flow rate",     units = "L/min",    type = "continuous", notes = "Screened as 'ECMO flow rate', not retained (Zhang 2025 Table 3). Applies only to the ECMO-supported subset."),
-    T_ECMO      = list(description = "Time since ECMO cannulation",      units = "h",        type = "continuous", notes = "Screened as 'duration of ECMO', not retained (Zhang 2025 Table 3). Applies only to the ECMO-supported subset."),
-    APACHE_II   = list(description = "APACHE II score at ICU admission", units = "(score)",  type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    MECH_VENT   = list(description = "Invasive mechanical ventilation",  units = "(binary)", type = "binary",     notes = "Screened as 'mechanical ventilation support', not retained (Zhang 2025 Table 3)."),
-    ALB         = list(description = "Serum albumin",                    units = "g/L",      type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Contrast Por 2021, the one study in this review that does retain albumin, on both volumes.")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 56.2 years, IQR 40.95-66.6 (Table 1)."
+    ),
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'gender', not retained (Zhang 2025 Table 3). Cohort is 35 male / 15 female (Table 1)."
+    ),
+    WT = list(
+      description = "Total (actual) body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as 'actual BW', not retained (Zhang 2025 Table 3); the adjusted body weight ABW won the body-size comparison and is the retained descriptor on V1. Cohort median 62.9 kg, IQR 52.8-70.0 (Table 1)."
+    ),
+    IBW = list(
+      description = "Ideal body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as 'ideal BW', not retained (Zhang 2025 Table 3). Lost to ABW on V1."
+    ),
+    BMI = list(
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    ECMO_STATUS = list(
+      description = "ECMO treatment status",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'the use of ECMO support', not retained (Zhang 2025 Table 3). This is the substantive negative result of the study: the cohort is explicitly assembled with and without ECMO, and neither ECMO status nor ECMO type, flow rate or duration reached significance on any parameter."
+    ),
+    Q_ECMO = list(
+      description = "ECMO circuit blood flow rate",
+      units = "L/min",
+      type = "continuous",
+      notes = "Screened as 'ECMO flow rate', not retained (Zhang 2025 Table 3). Applies only to the ECMO-supported subset."
+    ),
+    T_ECMO = list(
+      description = "Time since ECMO cannulation",
+      units = "h",
+      type = "continuous",
+      notes = "Screened as 'duration of ECMO', not retained (Zhang 2025 Table 3). Applies only to the ECMO-supported subset."
+    ),
+    APACHE_II = list(
+      description = "APACHE II score at ICU admission",
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    MECH_VENT = list(
+      description = "Invasive mechanical ventilation",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'mechanical ventilation support', not retained (Zhang 2025 Table 3)."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Contrast Por 2021, the one study in this review that does retain albumin, on both volumes."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 50L,
-    n_studies        = 1L,
-    age_median       = "56.2 years (IQR 40.95-66.6)",
-    weight_median    = "62.9 kg (IQR 52.8-70.0)",
-    sex_female_pct   = 30.0,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_median = "56.2 years (IQR 40.95-66.6)",
+    weight_median = "62.9 kg (IQR 52.8-70.0)",
+    sex_female_pct = 30.0,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Critically ill adults in an intensive care unit with",
       "life-threatening severe infections, supported with or without",
       "extracorporeal membrane oxygenation (ECMO). This is one of two",
       "studies in the Zhang 2025 review that enrol ECMO-supported",
       "patients; the other is Chen 2020."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "250-500 mg imipenem intravenously every 6-12 h, 500 mg every 6 h,",
       "and 1000 mg every 6 or 8 h (Zhang 2025 Supplementary Table S1).",
       "The infusion duration is not reported by the review."
     ),
-    regions          = "Thailand",
+    regions = "Thailand",
     n_concentrations = 534L,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 11); 50 patients, 534",
       "samples, sex split 35 male / 15 female. Blood was sampled at 0,",
       "0-0.5, 0.5-2, 2-4 and 4-12 h after administration and assayed by",

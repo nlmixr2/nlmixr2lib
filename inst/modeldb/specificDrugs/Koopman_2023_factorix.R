@@ -8,44 +8,44 @@ Koopman_2023_factorix <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorix", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorix", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorix", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q, V1, V2 with reference weight 73 kg (Koopman 2023 Table 2 footnote and equations on p. 226). Exponents fixed at 0.75 for CL and Q, 1.00 for V1 and V2.",
-      source_name        = "BW"
+      notes = "Allometric scaling on CL, Q, V1, V2 with reference weight 73 kg (Koopman 2023 Table 2 footnote and equations on p. 226). Exponents fixed at 0.75 for CL and Q, 1.00 for V1 and V2.",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age in years",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on CL centered at 15.8 years (median age of the development cohort). Effect form: CL multiplied by (1 - 0.0047 * (AGE - 15.8)) (Koopman 2023 equations on p. 226).",
-      source_name        = "AGE"
+      notes = "Linear-deviation effect on CL centered at 15.8 years (median age of the development cohort). Effect form: CL multiplied by (1 - 0.0047 * (AGE - 15.8)) (Koopman 2023 equations on p. 226).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    n_subjects     = 37L,
-    n_studies      = 2L,
-    age_range      = "2-71 years",
-    age_median     = "15.8 years (IQR 11-30)",
-    weight_range   = "12-103 kg",
-    weight_median  = "65.4 kg (IQR 33-77)",
+    n_subjects = 37L,
+    n_studies = 2L,
+    age_range = "2-71 years",
+    age_median = "15.8 years (IQR 11-30)",
+    weight_range = "12-103 kg",
+    weight_median = "65.4 kg (IQR 33-77)",
     sex_female_pct = 0,
     race_ethnicity = "Not reported",
-    disease_state  = "Severe (n = 35) or moderately severe (n = 2) haemophilia B; baseline FIX < 1 IU/dL in severe patients (median baseline FIX 1.0 IU/dL in non-severe).",
-    dose_range     = "Median 36 IU/kg rFIX-Fc IV (range 10-132 IU/kg) prophylactically administered",
-    regions        = "Netherlands (OPTI-CLOT TARGET, NTR7523) and United Kingdom (UK-EHL Outcomes Registry, NCT02938156)",
+    disease_state = "Severe (n = 35) or moderately severe (n = 2) haemophilia B; baseline FIX < 1 IU/dL in severe patients (median baseline FIX 1.0 IU/dL in non-severe).",
+    dose_range = "Median 36 IU/kg rFIX-Fc IV (range 10-132 IU/kg) prophylactically administered",
+    regions = "Netherlands (OPTI-CLOT TARGET, NTR7523) and United Kingdom (UK-EHL Outcomes Registry, NCT02938156)",
     paediatric_breakdown = "19 patients < 18 years (51%), 14 patients < 12 years (38%), 7 patients < 6 years (19%); paediatric median age 11 years (IQR 4-12, range 2-16); paediatric median weight 32.8 kg (IQR 16-32, range 12-52)",
-    blood_samples  = "Median 5 FIX activity levels per PK profile (range 3-7); 287 measurements total, 3 below LLOQ excluded",
-    notes          = "Real-world prospective + retrospective data pooled from OPTI-CLOT TARGET (NL) and UK-EHL Outcomes Registry; baseline demographics per Koopman 2023 Table 1. Hemophilia B is X-linked, so the cohort is essentially all male (sex_female_pct = 0)."
+    blood_samples = "Median 5 FIX activity levels per PK profile (range 3-7); 287 measurements total, 3 below LLOQ excluded",
+    notes = "Real-world prospective + retrospective data pooled from OPTI-CLOT TARGET (NL) and UK-EHL Outcomes Registry; baseline demographics per Koopman 2023 Table 1. Hemophilia B is X-linked, so the cohort is essentially all male (sex_female_pct = 0)."
   )
 
   ini({

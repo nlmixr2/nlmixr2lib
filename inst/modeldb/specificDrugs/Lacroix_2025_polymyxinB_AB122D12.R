@@ -16,8 +16,8 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
   )
   vignette <- "Lacroix_2025_polymyxinB_mucin"
   units <- list(
-    time          = "h",
-    dosing        = "none (PMB is held at a static total concentration supplied by the CONC_PMB_MGL covariate; the TK tubes receive no dosing events)",
+    time = "h",
+    dosing = "none (PMB is held at a static total concentration supplied by the CONC_PMB_MGL covariate; the TK tubes receive no dosing events)",
     concentration = "log10 CFU/mL (log_cfu, total viable count of bact_s + bact_r)"
   )
 
@@ -30,8 +30,18 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
   # biological matrix. Bacterial subpopulations are PD states, not a
   # biological matrix, so specimen is "not applicable" (see conventions.R).
   compartmentData <- list(
-    bact_s = list(analyte = "Acinetobacter baumannii AB122-D12 polymyxin-B-susceptible subpopulation", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_r = list(analyte = "Acinetobacter baumannii AB122-D12 polymyxin-B-resistant subpopulation", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    bact_s = list(
+      analyte = "Acinetobacter baumannii AB122-D12 polymyxin-B-susceptible subpopulation",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_r = list(
+      analyte = "Acinetobacter baumannii AB122-D12 polymyxin-B-resistant subpopulation",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

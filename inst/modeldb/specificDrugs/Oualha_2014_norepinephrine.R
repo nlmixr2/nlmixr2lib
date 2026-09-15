@@ -32,25 +32,25 @@ Oualha_2014_norepinephrine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL and q0 with paper-FIXED exponent 0.75,",
         "and linear scaling on Vc (Vc = 0.08 * WT L per the circulating-",
         "volume rule cited by Oualha 2014, Methods PK/PD modelling). Cohort",
         "WT range 2-85 kg (median 6.7 kg), Table 1.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Oualha 2014 uses 'post-conceptional age (PCA)', which in",
         "paediatric clinical-pharmacology literature of that era is used",
         "synonymously with postmenstrual age (PNA + GA from LMP). The",
@@ -63,14 +63,14 @@ Oualha_2014_norepinephrine <- function() {
         "data).",
         sep = " "
       ),
-      source_name        = "PCA"
+      source_name = "PCA"
     ),
     ORG_FAIL_COUNT = list(
-      description        = "Number of failing organs in a critically ill patient.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Number of failing organs in a critically ill patient.",
+      units = "(count)",
+      type = "categorical",
       reference_category = "<=3 organ dysfunctions (typical-value dMAP = 32 mmHg).",
-      notes              = paste(
+      notes = paste(
         "Oualha 2014 pools the integer count into two strata: <=3",
         "(reference) versus >=4. dMAP = 32 mmHg for the reference stratum",
         "and 12 mmHg for the >=4 stratum (Table 3). Decomposed inside",
@@ -79,34 +79,34 @@ Oualha_2014_norepinephrine <- function() {
         "children with >3 dysfunctions (Table 1 / Patient data).",
         sep = " "
       ),
-      source_name        = "number of organ dysfunctions"
+      source_name = "number of organ dysfunctions"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38L,
-    n_studies      = 1L,
-    age_range      = "0-182 months (paediatric; including 7 premature neonates at GA 32-36 weeks)",
-    age_median     = "7.6 months",
-    weight_range   = "2-85 kg",
-    weight_median  = "6.7 kg",
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 1L,
+    age_range = "0-182 months (paediatric; including 7 premature neonates at GA 32-36 weeks)",
+    age_median = "7.6 months",
+    weight_range = "2-85 kg",
+    weight_median = "6.7 kg",
     sex_female_pct = 29.0,
     race_ethnicity = "Not reported (single-centre French paediatric ICU).",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children with systemic arterial hypotension",
       "(septic shock n=16, non-traumatic cerebral injury n=6, heavy",
       "sedation n=8, severe congenital diaphragmatic defect n=8)",
       "requiring continuous IV norepinephrine for haemodynamic support.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Continuous IV infusion 0.05-2 ug/kg/min (median 0.5) via central",
       "venous catheter; infusion duration median 1.5 days (range 1-13).",
       sep = " "
     ),
-    regions        = "France (Hopital Necker Enfants-Malades, Paris).",
-    notes          = paste(
+    regions = "France (Hopital Necker Enfants-Malades, Paris).",
+    notes = paste(
       "Per Table 1 of Oualha 2014. 27 of 38 patients were male (71%); 14",
       "were malnourished (< -2 SD); 17 (45%) died during ICU stay; PELOD",
       "score median 31. ORG_FAIL_COUNT distribution: 14 of 38 with >3",

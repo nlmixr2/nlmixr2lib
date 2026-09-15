@@ -8,59 +8,62 @@ Bausch_2024_cefazolin <- function() {
   # biological matrix.
   compartmentData <- list(
     central = list(
-      analyte = "cefazolin", units = "mg", specimen = "plasma", verified = TRUE,
+      analyte = "cefazolin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE,
       notes = "Holds the administered cefazolin amount. Dividing by V yields the UNBOUND plasma concentration Cu, not the total: V is the unbound-referenced volume, and CL the unbound-referenced clearance. The measured total concentration is the algebraic sum Cu + Cb. This reading is what makes the parameter magnitudes physiological -- a total-referenced cefazolin volume is roughly 10 L and a total-referenced clearance roughly 4 L/h, whereas Table S2 reports 67.2 L and 15.6 L/h, i.e. both inflated by about the reciprocal of the 27% unbound fraction the paper reports. It also reproduces all four of the paper's own Table 2 concentration medians (see the vignette)."
     )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation (eGFR-CG), raw mL/min and NOT BSA-normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation (eGFR-CG), raw mL/min and NOT BSA-normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 80.1634 mL/min, the weighted mean eGFR-CG of the cohort, given verbatim in the Bausch 2024 Supplementary Table S2 legend. Enters as the power term (CRCL / 80.1634)^1.2 on unbound clearance; the exponent 1.2 is estimated (5.0% RSE, bootstrap 95% CI 0.9-1.4), so the renal effect is slightly MORE than proportional. Cockcroft-Gault returns mL/min and is not indexed to body surface area, so this column is a raw clearance and is NOT interchangeable with the BSA-normalized eGFR reported in Bausch 2024 Table 1 (median 76 mL/min/1.73 m^2, IQR 41-91), which was computed by CKD-EPI. The paper tested both equations and Supplementary Table S3 records that Cockcroft-Gault won on objective function value (2833.13 vs 2845.04 for CKD-EPI in the joint fu-parameterized model), which is why eGFR-CG and not eGFR-CKD-EPI is the covariate carried here. Patients on renal replacement therapy were excluded by design and none required it during the study, so the model carries no information about dialysis. The paper's own Monte Carlo simulations (Figure 2) extrapolate this term across 20-100 mL/min.",
-      source_name        = "eGFR-CG"
+      notes = "Reference 80.1634 mL/min, the weighted mean eGFR-CG of the cohort, given verbatim in the Bausch 2024 Supplementary Table S2 legend. Enters as the power term (CRCL / 80.1634)^1.2 on unbound clearance; the exponent 1.2 is estimated (5.0% RSE, bootstrap 95% CI 0.9-1.4), so the renal effect is slightly MORE than proportional. Cockcroft-Gault returns mL/min and is not indexed to body surface area, so this column is a raw clearance and is NOT interchangeable with the BSA-normalized eGFR reported in Bausch 2024 Table 1 (median 76 mL/min/1.73 m^2, IQR 41-91), which was computed by CKD-EPI. The paper tested both equations and Supplementary Table S3 records that Cockcroft-Gault won on objective function value (2833.13 vs 2845.04 for CKD-EPI in the joint fu-parameterized model), which is why eGFR-CG and not eGFR-CKD-EPI is the covariate carried here. Patients on renal replacement therapy were excluded by design and none required it during the study, so the model carries no information about dialysis. The paper's own Monte Carlo simulations (Figure 2) extrapolate this term across 20-100 mL/min.",
+      source_name = "eGFR-CG"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 70 kg, printed as the literal denominator of the Bausch 2024 Supplementary Table S2 volume covariate equation (it is a rounded standard, not the cohort median of 73 kg from Table 1). Enters as the power term (WT / 70)^1.0 on unbound volume of distribution with the exponent FIXED at 1.0 -- Table S2 marks the row 'Weight_V (fixed)' and reports no RSE and no bootstrap interval for it -- so the effect is simple linear proportionality, not the 0.75/1.0 allometric pair. Cohort median 73 kg (IQR 67-93); BMI median 24.5 kg/m^2 (IQR 21.8-29.6), so the model was not fitted in an obese cohort.",
-      source_name        = "Weight"
+      notes = "Reference 70 kg, printed as the literal denominator of the Bausch 2024 Supplementary Table S2 volume covariate equation (it is a rounded standard, not the cohort median of 73 kg from Table 1). Enters as the power term (WT / 70)^1.0 on unbound volume of distribution with the exponent FIXED at 1.0 -- Table S2 marks the row 'Weight_V (fixed)' and reports no RSE and no bootstrap interval for it -- so the effect is simple linear proportionality, not the 0.75/1.0 allometric pair. Cohort median 73 kg (IQR 67-93); BMI median 24.5 kg/m^2 (IQR 21.8-29.6), so the model was not fitted in an obese cohort.",
+      source_name = "Weight"
     ),
     ALB = list(
-      description        = "Serum albumin concentration measured in the same blood sample as the cefazolin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration measured in the same blood sample as the cefazolin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 24.0844 g/L, the weighted mean albumin, given verbatim in the Bausch 2024 Supplementary Table S2 legend and re-used as the fixed albumin of the paper's own Monte Carlo virtual patients (Methods Sect. 4.7). Enters as the power term (ALB / 24.0844)^2.4 on the NON-SATURABLE binding constant NS. The exponent is steep (2.4, 12.0% RSE, bootstrap 95% CI 1.8-3.9), so albumin drives the unbound fraction strongly, which is the paper's central clinical message. Note the reference is markedly below a healthy 35-50 g/L: the cohort median albumin at onset of infection was 29.0 g/L (Table 1) and 25 g/L at first drug measurement (Table S1), i.e. this is a hypoalbuminaemic acute-infection population, and the weighted mean is pulled further down by the repeated sampling of the sickest patients. Albumin was measured at every visit but the authors explicitly chose NOT to treat it as time-varying (Methods Sect. 4.7: the parameters 'did not change substantially across occasions', so only the first measurement per patient and occasion was used).",
-      source_name        = "Albumin"
+      notes = "Reference 24.0844 g/L, the weighted mean albumin, given verbatim in the Bausch 2024 Supplementary Table S2 legend and re-used as the fixed albumin of the paper's own Monte Carlo virtual patients (Methods Sect. 4.7). Enters as the power term (ALB / 24.0844)^2.4 on the NON-SATURABLE binding constant NS. The exponent is steep (2.4, 12.0% RSE, bootstrap 95% CI 1.8-3.9), so albumin drives the unbound fraction strongly, which is the paper's central clinical message. Note the reference is markedly below a healthy 35-50 g/L: the cohort median albumin at onset of infection was 29.0 g/L (Table 1) and 25 g/L at first drug measurement (Table S1), i.e. this is a hypoalbuminaemic acute-infection population, and the weighted mean is pulled further down by the repeated sampling of the sickest patients. Albumin was measured at every visit but the authors explicitly chose NOT to treat it as time-varying (Methods Sect. 4.7: the parameters 'did not change substantially across occasions', so only the first measurement per patient and occasion was used).",
+      source_name = "Albumin"
     ),
     OCC = list(
-      description        = "Therapeutic-drug-monitoring sampling occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Therapeutic-drug-monitoring sampling occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1-4 identify the four protocol sampling days on which cefazolin concentrations were drawn: study day 1, day 3 (+/- 1), day 7 (+/- 2) and day 14 (+/- 5) (Bausch 2024 Methods Sect. 4.4 and Supplementary Figure S6). The paper introduced inter-occasion variability precisely because 'blood concentrations [were] measured in different inter-dose intervals' (Methods Sect. 4.7) and fits ONE shared IOV magnitude per parameter across occasions rather than a per-occasion set, so the encoding below carries the estimated variance on occasion 1 and fixes occasions 2-4 to the same value (the registered `$OMEGA BLOCK(1) SAME`-equivalent idiom). Unlike Stoschus 2025 and Ding 2026, where the occasion count had to be inferred, the count of four is set by the paper's own protocol schedule. For single-occasion records pass OCC = 1 so the first IOV eta applies.",
-      source_name        = "occasion"
+      notes = "Values 1-4 identify the four protocol sampling days on which cefazolin concentrations were drawn: study day 1, day 3 (+/- 1), day 7 (+/- 2) and day 14 (+/- 5) (Bausch 2024 Methods Sect. 4.4 and Supplementary Figure S6). The paper introduced inter-occasion variability precisely because 'blood concentrations [were] measured in different inter-dose intervals' (Methods Sect. 4.7) and fits ONE shared IOV magnitude per parameter across occasions rather than a per-occasion set, so the encoding below carries the estimated variance on occasion 1 and fixes occasions 2-4 to the same value (the registered `$OMEGA BLOCK(1) SAME`-equivalent idiom). Unlike Stoschus 2025 and Ding 2026, where the occasion count had to be inferred, the count of four is set by the paper's own protocol schedule. For single-occasion records pass OCC = 1 so the first IOV eta applies.",
+      source_name = "occasion"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51,
-    n_studies      = 1,
-    age_range      = "median 74.1 years (IQR 56.6-81.8)",
-    weight_range   = "median 73 kg (IQR 67-93)",
+    species = "human",
+    n_subjects = 51,
+    n_studies = 1,
+    age_range = "median 74.1 years (IQR 56.6-81.8)",
+    weight_range = "median 73 kg (IQR 67-93)",
     sex_female_pct = 25.5,
     race_ethnicity = "Not reported (single-centre Swiss tertiary-care cohort)",
-    disease_state  = "Adults with invasive methicillin-susceptible Staphylococcus aureus infection (76.5% bloodstream infection; foci included endocarditis 19.6%, osteomyelitis or septic arthritis 19.6%, catheter or prosthetic material 25.5%). Median Charlson comorbidity score 5, median SOFA score 1, 19.6% ICU admission, 30-day mortality 5.9%.",
+    disease_state = "Adults with invasive methicillin-susceptible Staphylococcus aureus infection (76.5% bloodstream infection; foci included endocarditis 19.6%, osteomyelitis or septic arthritis 19.6%, catheter or prosthetic material 25.5%). Median Charlson comorbidity score 5, median SOFA score 1, 19.6% ICU admission, 30-day mortality 5.9%.",
     renal_function = "Median eGFR (CKD-EPI) 76 mL/min/1.73 m^2 (IQR 41-91) at onset of infection; chronic kidney disease stage G3 in 9.8% and G4 in 9.8%; acute kidney injury in 11.8%. Haemodialysis was an exclusion criterion and no patient required renal replacement therapy during the study.",
-    dose_range     = "Cefazolin 2 g as a 30-minute intermittent bolus infusion every 6 or 8 h (2 g q12h if eGFR 10-30 and 2 g q24h if eGFR < 10 mL/min/1.73 m^2); 92% of patients received 6 g/day and 8% 4 g/day",
-    regions        = "Switzerland (University Hospital Basel, single centre, January 2020 - December 2021; ClinicalTrials.gov NCT04503252)",
-    notes          = "226 paired total and unbound cefazolin plasma concentrations (mean 4.4 per patient) measured by HPLC-MS/MS with ultracentrifugation for the unbound fraction; LLOQ 0.5 mg/L for both, assay linear 0.5-100.0 mg/L, and no observation fell below the LLOQ. Median serum albumin 29.0 g/L (IQR 24.0-32.8) at onset of infection. The mean unbound fraction was 27.0% (SD 13.4, range 8.9-79.7%), far above and far more variable than the 20% conventionally assumed. Fitted in Monolix 2023R1 and validated by a 1000-replicate non-parametric bootstrap (Supplementary Table S2). Note the population is elderly, hypoalbuminaemic and predominantly male, and the observed S. aureus MIC distribution was narrow (median 1.0 mg/L, IQR 0.75-1.0, maximum 1.5 mg/L) and from a single geographical area."
+    dose_range = "Cefazolin 2 g as a 30-minute intermittent bolus infusion every 6 or 8 h (2 g q12h if eGFR 10-30 and 2 g q24h if eGFR < 10 mL/min/1.73 m^2); 92% of patients received 6 g/day and 8% 4 g/day",
+    regions = "Switzerland (University Hospital Basel, single centre, January 2020 - December 2021; ClinicalTrials.gov NCT04503252)",
+    notes = "226 paired total and unbound cefazolin plasma concentrations (mean 4.4 per patient) measured by HPLC-MS/MS with ultracentrifugation for the unbound fraction; LLOQ 0.5 mg/L for both, assay linear 0.5-100.0 mg/L, and no observation fell below the LLOQ. Median serum albumin 29.0 g/L (IQR 24.0-32.8) at onset of infection. The mean unbound fraction was 27.0% (SD 13.4, range 8.9-79.7%), far above and far more variable than the 20% conventionally assumed. Fitted in Monolix 2023R1 and validated by a 1000-replicate non-parametric bootstrap (Supplementary Table S2). Note the population is elderly, hypoalbuminaemic and predominantly male, and the observed S. aureus MIC distribution was narrow (median 1.0 mg/L, IQR 0.75-1.0, maximum 1.5 mg/L) and from a single geographical area."
   )
 
   ini({

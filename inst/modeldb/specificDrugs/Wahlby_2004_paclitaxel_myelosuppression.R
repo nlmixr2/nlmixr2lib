@@ -12,79 +12,79 @@ Wahlby_2004_paclitaxel_myelosuppression <- function() {
     sep = " "
   )
   vignette <- "Wahlby_2004_time_varying_covariates"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L", neutrophils = "10^9/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L", neutrophils = "10^9/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
-    circ        = list(analyte = "neutrophils", units = "umol", specimen = "whole blood", verified = FALSE),
-    precursor1  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE)
+    circ = list(analyte = "neutrophils", units = "umol", specimen = "whole blood", verified = FALSE),
+    precursor1 = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CL_INDIV = list(
-      description        = "Per-subject empirical-Bayes paclitaxel clearance",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Per-subject empirical-Bayes paclitaxel clearance",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Individual paclitaxel CL EBE supplied per-subject as a data column following the Friberg 2002 paclitaxel convention. Reference values: median ~285 L/h, range ~160-540 L/h.",
-      source_name        = "CLI"
+      notes = "Individual paclitaxel CL EBE supplied per-subject as a data column following the Friberg 2002 paclitaxel convention. Reference values: median ~285 L/h, range ~160-540 L/h.",
+      source_name = "CLI"
     ),
     VC_INDIV = list(
-      description        = "Per-subject empirical-Bayes paclitaxel central volume of distribution",
-      units              = "L",
-      type               = "continuous",
+      description = "Per-subject empirical-Bayes paclitaxel central volume of distribution",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Individual paclitaxel V1 EBE supplied per-subject as a data column. Reference values: median ~290 L.",
-      source_name        = "V1I"
+      notes = "Individual paclitaxel V1 EBE supplied per-subject as a data column. Reference values: median ~290 L.",
+      source_name = "V1I"
     ),
     VP_INDIV = list(
-      description        = "Per-subject empirical-Bayes paclitaxel peripheral volume of distribution",
-      units              = "L",
-      type               = "continuous",
+      description = "Per-subject empirical-Bayes paclitaxel peripheral volume of distribution",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Individual paclitaxel V2 EBE supplied per-subject as a data column. Reference values: median ~995 L.",
-      source_name        = "V2I"
+      notes = "Individual paclitaxel V2 EBE supplied per-subject as a data column. Reference values: median ~995 L.",
+      source_name = "V2I"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin, time-varying.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin, time-varying.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Table 4: mean 8.8, median 6, range 2-41 umol/L. The BIL effect on MTT is centered at the BIL median = 6 umol/L per Wahlby 2004 Eq 1 convention.",
-      source_name        = "BIL"
+      notes = "Time-varying. Table 4: mean 8.8, median 6, range 2-41 umol/L. The BIL effect on MTT is centered at the BIL median = 6 umol/L per Wahlby 2004 Eq 1 convention.",
+      source_name = "BIL"
     ),
     TBILI_BASE = list(
-      description        = "Per-subject baseline total serum bilirubin (BBIL in the source paper), time-fixed.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Per-subject baseline total serum bilirubin (BBIL in the source paper), time-fixed.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject constant. Median across 45 subjects = 6 umol/L (Table 4, BBIL row). Used together with TBILI to compute the within-subject delta (paper's DBIL term) inside model() as (TBILI - TBILI_BASE).",
-      source_name        = "BBIL"
+      notes = "Per-subject constant. Median across 45 subjects = 6 umol/L (Table 4, BBIL row). Used together with TBILI to compute the within-subject delta (paper's DBIL term) inside model() as (TBILI - TBILI_BASE).",
+      source_name = "BBIL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adult cancer patients receiving paclitaxel chemotherapy as a 3-hour intravenous infusion every third week. Wahlby 2004 re-analyses a previously-described cohort.",
-    dose_range     = NA_character_,
+    disease_state = "Adult cancer patients receiving paclitaxel chemotherapy as a 3-hour intravenous infusion every third week. Wahlby 2004 re-analyses a previously-described cohort.",
+    dose_range = NA_character_,
     n_observations = 530L,
-    n_courses      = 196L,
-    follow_up      = "One to 18 courses per patient (median three).",
-    regions        = NA_character_,
-    notes          = "One individual with a large and constant DBIL trend over time was identified as influential (Sadray, Jonsson, Karlsson - Pharm Res 1999;16(8):1260-9) and was excluded from the BIL-relationship analyses; the final-model parameter estimates in Table 8 include all 45 individuals."
+    n_courses = 196L,
+    follow_up = "One to 18 courses per patient (median three).",
+    regions = NA_character_,
+    notes = "One individual with a large and constant DBIL trend over time was identified as influential (Sadray, Jonsson, Karlsson - Pharm Res 1999;16(8):1260-9) and was excluded from the BIL-relationship analyses; the final-model parameter estimates in Table 8 include all 45 individuals."
   )
 
   ini({

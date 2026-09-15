@@ -13,61 +13,61 @@ Blackman_2026_methotrexate <- function() {
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate (Methods 'Data and processing': 'Weight, height, and BSA varied over time and were also included as time-varying covariates in the popPK modeling'). Normalized to the cohort median of 1.97 m^2, which matches the Table 1 median BSA of 1.97 m^2 in both the training and test datasets. Enters every one of the six disposition parameters: the exponent on CL (`e_bsa_cl`) is estimated at 0.61, while the exponents on V1, Q2, V2, Q3, and V3 are fixed at 1 per Methods 'Population PK analysis': 'The effect of BSA on clearance was estimated, whereas its effect on all other PK parameters was fixed with an exponent of 1.' Cohort BSA range 1.32-3.01 m^2 (Table 1).",
-      source_name        = "BSA"
+      notes = "Time-varying covariate (Methods 'Data and processing': 'Weight, height, and BSA varied over time and were also included as time-varying covariates in the popPK modeling'). Normalized to the cohort median of 1.97 m^2, which matches the Table 1 median BSA of 1.97 m^2 in both the training and test datasets. Enters every one of the six disposition parameters: the exponent on CL (`e_bsa_cl`) is estimated at 0.61, while the exponents on V1, Q2, V2, Q3, and V3 are fixed at 1 per Methods 'Population PK analysis': 'The effect of BSA on clearance was estimated, whereas its effect on all other PK parameters was fixed with an exponent of 1.' Cohort BSA range 1.32-3.01 m^2 (Table 1).",
+      source_name = "BSA"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate measured concurrently with the methotrexate concentrations; when no concurrent value existed the closest available value was carried (Methods 'Data and processing': 'SCR concentrations, typically measured concurrently with MTX concentrations, were used as a time-varying covariate. If an SCR measurement was not available at the time of MTX sampling, the closest available value was used'). Source values were reported in mg/dL and converted to umol/L by the authors; this model expects umol/L. Normalized to 68.08 umol/L in the Table 2 Final Model equation, close to but not identical with the Table 1 training-set median of 68.5 umol/L (overall median 68.1 umol/L) -- the model's centering constant is the per-record median rather than the per-subject median. Cohort range 44.2-132 umol/L (Table 1). Enters clearance only, as a power term with the estimated exponent `e_creat_cl` = -0.56.",
-      source_name        = "SCR"
+      notes = "Time-varying covariate measured concurrently with the methotrexate concentrations; when no concurrent value existed the closest available value was carried (Methods 'Data and processing': 'SCR concentrations, typically measured concurrently with MTX concentrations, were used as a time-varying covariate. If an SCR measurement was not available at the time of MTX sampling, the closest available value was used'). Source values were reported in mg/dL and converted to umol/L by the authors; this model expects umol/L. Normalized to 68.08 umol/L in the Table 2 Final Model equation, close to but not identical with the Table 1 training-set median of 68.5 umol/L (overall median 68.1 umol/L) -- the model's centering constant is the per-record median rather than the per-subject median. Cohort range 44.2-132 umol/L (Table 1). Enters clearance only, as a power term with the estimated exponent `e_creat_cl` = -0.56.",
+      source_name = "SCR"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Non-time-varying covariate (Methods 'Data and processing': 'age, which changed minimally over the data collection period, and sex were treated as non-time-varying covariates'). The Table 2 Final Model equation carries the female indicator directly as exp(theta9 * I(female)), so male is the reference category and no value inversion is needed. 60.0% female in the training dataset used to fit this model, 55.8% female overall (Table 1). See the model file comment on `e_sexf_cl` and the vignette Errata for the internal inconsistency between the near-zero point estimate and the reported drop in objective function value.",
-      source_name        = "Sex"
+      notes = "Non-time-varying covariate (Methods 'Data and processing': 'age, which changed minimally over the data collection period, and sex were treated as non-time-varying covariates'). The Table 2 Final Model equation carries the female indicator directly as exp(theta9 * I(female)), so male is the reference category and no value inversion is needed. 60.0% female in the training dataset used to fit this model, 55.8% female overall (Table 1). See the model file comment on `e_sexf_cl` and the vignette Errata for the internal inconsistency between the near-zero point estimate and the reported drop in objective function value.",
+      source_name = "Sex"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4 identify the high-dose methotrexate treatment cycle within a subject. The paper fits a single inter-occasion variance on clearance shared across all occasions (Table 2 row 'delta CL (%CV)'), and does not state a fixed occasion count; patients contributed a median of 3 cycles (range 1-12) and a median of 4 dosing events (range 1-13) per Table 1. Four occasions are encoded here to span the cohort median, following the registered idiom in Jonsson_2011_ethambutol.R; because the variance is common to every occasion, extending the chain to more occasions is a mechanical copy of the `fix()` lines. Decomposed inside `model()` into binary indicators `oc1` .. `oc4` that multiplex the four IOV etas on log-CL. For single-occasion records pass OCC = 1 so the first IOV eta applies.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4 identify the high-dose methotrexate treatment cycle within a subject. The paper fits a single inter-occasion variance on clearance shared across all occasions (Table 2 row 'delta CL (%CV)'), and does not state a fixed occasion count; patients contributed a median of 3 cycles (range 1-12) and a median of 4 dosing events (range 1-13) per Table 1. Four occasions are encoded here to span the cohort median, following the registered idiom in Jonsson_2011_ethambutol.R; because the variance is common to every occasion, extending the chain to more occasions is a mechanical copy of the `fix()` lines. Decomposed inside `model()` into binary indicators `oc1` .. `oc4` that multiplex the four IOV etas on log-CL. For single-occasion records pass OCC = 1 so the first IOV eta applies.",
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 145L,
-    n_studies      = 1L,
-    age_range      = "18-84 years (median 56)",
-    age_median     = "56 years",
-    weight_range   = "42.4-141.0 kg (median 82.4)",
-    weight_median  = "82.4 kg",
-    bsa_range      = "1.32-2.66 m^2 (median 1.97)",
-    bsa_median     = "1.97 m^2",
+    species = "human",
+    n_subjects = 145L,
+    n_studies = 1L,
+    age_range = "18-84 years (median 56)",
+    age_median = "56 years",
+    weight_range = "42.4-141.0 kg (median 82.4)",
+    weight_median = "82.4 kg",
+    bsa_range = "1.32-2.66 m^2 (median 1.97)",
+    bsa_median = "1.97 m^2",
     sex_female_pct = 60.0,
     renal_function = "Serum creatinine 44.2-132 umol/L (median 68.5). Patients who received glucarpidase were excluded because it alters methotrexate clearance.",
-    disease_state  = "Adults receiving a high-dose methotrexate-containing regimen for lymphoma (51.0%), leukemia (40.7%), or sarcoma (6.9%); disease missing for 1.4%.",
-    dose_range     = "Intravenous methotrexate 200 mg/m^2 or higher; excluding loading doses the training-set dose was a median of 3.5 g/m^2 (range 0.2-12.1). Infusion duration median 4.7 h (range 2.0-27.9). Dosing intervals typically 2-4 weeks (median 3.4). Infusions were given as short-term single doses (59%), long-term single doses (19%), or a loading dose plus maintenance dose (22%).",
-    regions        = "United States (single center: Vanderbilt University Medical Center), November 2017 through December 2022.",
-    notes          = "Electronic-health-record cohort of 208 adults split randomly 70:30 into training (N = 145) and test (N = 63) datasets; the model in this file was fit to the TRAINING dataset only, so `n_subjects` is 145 rather than the 208-patient full cohort. Of 2,448 measured methotrexate concentrations, 53 (2.2%) were excluded in processing, leaving 2,395; concentrations beyond 96 h post-dose were excluded as sparse and typically below the quantification limit. Training-set patients contributed a median of 9 drug levels (range 2-52) and 4 dosing events (range 1-13) across a median of 3 cycles (range 1-12). Leucovorin was given to all patients starting 24 h after the methotrexate dose per institutional protocol; it is not represented in the model. Estimation was by SAEM in Monolix 2024R. Demographics from Table 1; final parameter estimates from Table 2 (Final Model column)."
+    disease_state = "Adults receiving a high-dose methotrexate-containing regimen for lymphoma (51.0%), leukemia (40.7%), or sarcoma (6.9%); disease missing for 1.4%.",
+    dose_range = "Intravenous methotrexate 200 mg/m^2 or higher; excluding loading doses the training-set dose was a median of 3.5 g/m^2 (range 0.2-12.1). Infusion duration median 4.7 h (range 2.0-27.9). Dosing intervals typically 2-4 weeks (median 3.4). Infusions were given as short-term single doses (59%), long-term single doses (19%), or a loading dose plus maintenance dose (22%).",
+    regions = "United States (single center: Vanderbilt University Medical Center), November 2017 through December 2022.",
+    notes = "Electronic-health-record cohort of 208 adults split randomly 70:30 into training (N = 145) and test (N = 63) datasets; the model in this file was fit to the TRAINING dataset only, so `n_subjects` is 145 rather than the 208-patient full cohort. Of 2,448 measured methotrexate concentrations, 53 (2.2%) were excluded in processing, leaving 2,395; concentrations beyond 96 h post-dose were excluded as sparse and typically below the quantification limit. Training-set patients contributed a median of 9 drug levels (range 2-52) and 4 dosing events (range 1-13) across a median of 3 cycles (range 1-12). Leucovorin was given to all patients starting 24 h after the methotrexate dose per institutional protocol; it is not represented in the model. Estimation was by SAEM in Monolix 2024R. Demographics from Table 1; final parameter estimates from Table 2 (Final Model column)."
   )
 
   ini({

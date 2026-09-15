@@ -8,36 +8,36 @@ Timmermann_2019_brodalumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "brodalumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "brodalumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "brodalumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "brodalumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "brodalumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, V1 (central volume) and Vmax, each normalized as WT/90 kg per Timmermann 2019 Table 3 and final-model narrative (reference patient body-weight 90 kg).",
-      source_name        = "WT"
+      notes = "Power effect on CL, V1 (central volume) and Vmax, each normalized as WT/90 kg per Timmermann 2019 Table 3 and final-model narrative (reference patient body-weight 90 kg).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 622L,
+    n_subjects = 622L,
     n_observations = 7725L,
-    n_studies      = 6L,
-    age_range      = "18-75 years",
-    age_median     = "46 years",
-    weight_range   = "43-186 kg",
-    weight_median  = "87.8 kg",
+    n_studies = 6L,
+    age_range = "18-75 years",
+    age_median = "46 years",
+    weight_range = "43-186 kg",
+    weight_median = "87.8 kg",
     sex_female_pct = 33,
     race_ethnicity = c(White = 93, Other = 7),
-    disease_state  = "Moderate-to-severe plaque psoriasis (adults). Median baseline PASI 17.7 (range 8.8-60.6); phase III trials required baseline PASI >= 12.",
-    dose_range     = "70-700 mg; SC at 70, 140, 210 or 280 mg (Q2W, Q2W+1, Q4W, Q8W) and IV at 700 mg (phase I single dose). Approved regimen is 210 mg SC at weeks 0, 1, 2 followed by 210 mg Q2W.",
-    regions        = "Multi-regional (six pooled phase I/II/III trials: NCT00867100, NCT01937260, NCT00975637 with long-term extension NCT01101100, NCT01708590 AMAGINE-1, NCT01708603 AMAGINE-2, NCT01708629 AMAGINE-3).",
-    notes          = "Baseline demographics from Timmermann 2019 Table 2 (PK analysis set of 622 psoriasis patients with rich non-trough sampling; 7725 quantifiable and 2508 BLQ concentrations). BMI median 29.6 kg/m^2 (16.7-66.1). Healthy volunteers were deliberately excluded from this analysis because IL-17RA expression (and therefore target-mediated disposition) differs between diseased and healthy populations. Race not tested as a covariate because 93% of patients were Caucasian. Binding ADA not tested due to low ADA incidence and transient nature of positive samples."
+    disease_state = "Moderate-to-severe plaque psoriasis (adults). Median baseline PASI 17.7 (range 8.8-60.6); phase III trials required baseline PASI >= 12.",
+    dose_range = "70-700 mg; SC at 70, 140, 210 or 280 mg (Q2W, Q2W+1, Q4W, Q8W) and IV at 700 mg (phase I single dose). Approved regimen is 210 mg SC at weeks 0, 1, 2 followed by 210 mg Q2W.",
+    regions = "Multi-regional (six pooled phase I/II/III trials: NCT00867100, NCT01937260, NCT00975637 with long-term extension NCT01101100, NCT01708590 AMAGINE-1, NCT01708603 AMAGINE-2, NCT01708629 AMAGINE-3).",
+    notes = "Baseline demographics from Timmermann 2019 Table 2 (PK analysis set of 622 psoriasis patients with rich non-trough sampling; 7725 quantifiable and 2508 BLQ concentrations). BMI median 29.6 kg/m^2 (16.7-66.1). Healthy volunteers were deliberately excluded from this analysis because IL-17RA expression (and therefore target-mediated disposition) differs between diseased and healthy populations. Race not tested as a covariate because 93% of patients were Caucasian. Binding ADA not tested due to low ADA incidence and transient nature of positive samples."
   )
 
   ini({

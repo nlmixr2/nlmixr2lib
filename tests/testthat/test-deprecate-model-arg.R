@@ -2,7 +2,9 @@
 # ui= and model= code paths can be compared on model structure alone,
 # ignoring enclosing environments that legitimately differ.
 .asUi <- function(x) {
-  if (inherits(x, "rxUi")) return(x)
+  if (inherits(x, "rxUi")) {
+    return(x)
+  }
   rxode2::rxode2(x)
 }
 

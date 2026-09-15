@@ -17,31 +17,31 @@ Zhang_2024_olanzapine <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with a 70 kg reference weight, exponent 0.75 on CL/F and 1 on V/F,",
         "both fixed to the Anderson & Holford (2008) canonical values rather than estimated",
         "(Methods, Equation 3, and Results, Equations 6-7). Cohort mean 63.16 kg (SD 10.57;",
         "Table 1). Treated as a baseline, time-fixed covariate: the paper draws weight from a",
         "retrospective medical log and reports a single value per patient."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     CONMED_ARIPIPRAZOLE = list(
-      description        = "Concomitant aripiprazole indicator (1 = patient co-prescribed aripiprazole orally disintegrating tablets, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant aripiprazole indicator (1 = patient co-prescribed aripiprazole orally disintegrating tablets, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant aripiprazole)",
-      notes              = paste(
+      notes = paste(
         "The paper's `ARI` variable (Results, Equation 6: 'ARI was aripiprazole, when patients",
         "took aripiprazole, ARI was 1, otherwise ARI was 0'). 4 of the 65 patients were on",
         "aripiprazole orally disintegrating tablets (Table 2). This was the only one of the 30",
@@ -50,102 +50,102 @@ Zhang_2024_olanzapine <- function() {
         "it is an empirical exposure shift, not a mechanistically parameterised interaction.",
         "Time-fixed at the analysis baseline in this source."
       ),
-      source_name        = "ARI"
+      source_name = "ARI"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a potential covariate (Methods, Covariate model) but not retained; cohort mean 45.92 years (SD 15.79; Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a potential covariate (Methods, Covariate model) but not retained; cohort mean 45.92 years (SD 15.79; Table 1)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained; 29 women / 36 men (Table 1). The paper reports 'Gender (men/women)', so a SEXM-oriented source column would need value inversion."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained; 29 women / 36 men (Table 1). The paper reports 'Gender (men/women)', so a SEXM-oriented source column would need value inversion."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 41.53 g/L (SD 3.65; Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 41.53 g/L (SD 3.65; Table 1)."
     ),
     ALT = list(
       description = "Alanine transaminase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 23.52 IU/L (SD 22.73; Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 23.52 IU/L (SD 22.73; Table 1)."
     ),
     AST = list(
       description = "Aspartate transaminase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 23.10 IU/L (SD 13.20; Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 23.10 IU/L (SD 13.20; Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 66.16 umol/L (SD 13.79; Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 66.16 umol/L (SD 13.79; Table 1)."
     ),
     BUN = list(
       description = "Serum urea",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 4.54 mmol/L (SD 1.39; Table 1). The paper's Table 1 row is labelled 'Urea (mmol/L)'."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 4.54 mmol/L (SD 1.39; Table 1). The paper's Table 1 row is labelled 'Urea (mmol/L)'."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 10.56 umol/L (SD 4.59; Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 10.56 umol/L (SD 4.59; Table 1)."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 4.14 umol/L (SD 1.94; Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 4.14 umol/L (SD 1.94; Table 1)."
     ),
     TCHOL = list(
       description = "Total cholesterol",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 4.15 mmol/L (SD 0.99; Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 4.15 mmol/L (SD 0.99; Table 1)."
     ),
     TRIG = list(
       description = "Serum triglyceride",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 1.54 mmol/L (SD 1.08; Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 1.54 mmol/L (SD 1.08; Table 1)."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 39.30% (SD 4.67; Table 1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 39.30% (SD 4.67; Table 1)."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; cohort mean 128.66 g/L (SD 16.53; Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained; cohort mean 128.66 g/L (SD 16.53; Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 65,
-    n_studies      = 1,
-    age_mean       = "45.92 years (SD 15.79)",
-    weight_mean    = "63.16 kg (SD 10.57)",
+    species = "human",
+    n_subjects = 65,
+    n_studies = 1,
+    age_mean = "45.92 years (SD 15.79)",
+    weight_mean = "63.16 kg (SD 10.57)",
     sex_female_pct = 44.6,
-    disease_state  = "Schizophrenia; inpatients on routine oral olanzapine therapy.",
-    dose_range     = "Not reported. Concentrations came from a routine therapeutic-drug-monitoring database and the paper tabulates no administered olanzapine doses or sampling times.",
-    regions        = "China (single centre: Xuzhou Oriental Hospital Affiliated to Xuzhou Medical University, Jiangsu)",
-    notes          = paste(
+    disease_state = "Schizophrenia; inpatients on routine oral olanzapine therapy.",
+    dose_range = "Not reported. Concentrations came from a routine therapeutic-drug-monitoring database and the paper tabulates no administered olanzapine doses or sampling times.",
+    regions = "China (single centre: Xuzhou Oriental Hospital Affiliated to Xuzhou Medical University, Jiangsu)",
+    notes = paste(
       "Retrospective analysis of olanzapine therapeutic-drug-monitoring concentrations",
       "collected between July 2020 and October 2022 (Methods, Data Collection).",
       "Baseline demographics and laboratory values are Table 1; concomitant medication",

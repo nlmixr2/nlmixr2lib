@@ -38,64 +38,64 @@ Onita_2025_sulbactam <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power term on CL with a fixed exponent of 0.75, and a",
         "linear (exponent 1) term on central volume, both normalised to the",
         "cohort median of 22.45 kg (Table S1 footnote a). Cohort range 4-77 kg,",
         "mean 24.7 kg (Table 1). Not a covariate on Q or peripheral volume."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power term on CL with a fixed exponent of 0.75, normalised",
         "to the cohort median of 8 years (Table S1 footnote b). Cohort range",
         "0.083-16.42 years, mean 7.5 years (Table 1). Age acting on CL is the",
         "novel feature of this model relative to prior sulbactam analyses",
         "(Discussion). Not a covariate on any volume term."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 122L,
-    n_studies      = 23L,
+    species = "human",
+    n_subjects = 122L,
+    n_studies = 23L,
     n_observations = 690L,
-    age_range      = "0.083-16.42 years",
-    age_median     = "8 years",
-    age_mean       = "7.5 years (SD 4.0)",
-    weight_range   = "4-77 kg",
-    weight_median  = "22.45 kg",
-    weight_mean    = "24.7 kg (SD 13.4)",
+    age_range = "0.083-16.42 years",
+    age_median = "8 years",
+    age_mean = "7.5 years (SD 4.0)",
+    weight_range = "4-77 kg",
+    weight_median = "22.45 kg",
+    weight_mean = "24.7 kg (SD 13.4)",
     sex_female_pct = 40.2,
-    age_strata     = c(
+    age_strata = c(
       "infant (4 weeks to 11 months)" = 10L,
-      "child (1-6 years)"             = 44L,
-      "pediatric (7-16 years)"        = 68L
+      "child (1-6 years)" = 44L,
+      "pediatric (7-16 years)" = 68L
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Not reported. The pooled source publications did not record underlying",
       "disease, treatment indication, or renal function (serum creatinine,",
       "blood urea nitrogen); the paper lists this as its principal limitation."
     ),
-    dose_range     = "4.9-41.7 mg/kg IV, given as a bolus or a 0.5-hour or 1-hour infusion",
-    regions        = "Not reported; source publications identified by MEDLINE search",
-    notes          = paste(
+    dose_range = "4.9-41.7 mg/kg IV, given as a bolus or a 0.5-hour or 1-hour infusion",
+    regions = "Not reported; source publications identified by MEDLINE search",
+    notes = paste(
       "Baseline demographics are Table 1 of Onita 2025 (N = 122; sex",
       "male/female/not-applicable 69:49:4, so the female percentage is",
       "49/122 = 40.2%). Concentrations were measured by bioassay in 20 of the",

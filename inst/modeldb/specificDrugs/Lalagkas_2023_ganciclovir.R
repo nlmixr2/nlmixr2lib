@@ -23,37 +23,37 @@ Lalagkas_2023_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling referenced to 70 kg: exponent 0.75 on CL and Q,",
         "exponent 1 (linear) on Vc and Vp. Cohort median 68 kg, range 43-131 kg",
         "(Yang 2023 Table 2).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "CKD-EPI-estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI-estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Renal function estimated with the Chronic Kidney Disease Epidemiology",
         "Collaboration (CKD-EPI) equation, which returns mL/min/1.73 m^2. Power",
         "effect on CL referenced to 55 mL/min/1.73 m^2. The primary publication",
@@ -62,33 +62,33 @@ Lalagkas_2023_ganciclovir <- function() {
         "encoded here.",
         sep = " "
       ),
-      source_name        = "CKD-EPI"
+      source_name = "CKD-EPI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
     n_observations = 640L,
-    age_median     = "57 years (range 22-78)",
-    weight_median  = "68 kg (range 43-131)",
+    age_median = "57 years (range 22-78)",
+    weight_median = "68 kg (range 43-131)",
     sex_female_pct = 35,
     race_ethnicity = "Caucasian (all subjects).",
-    disease_state  = paste(
+    disease_state = paste(
       "Caucasian patients with established CMV infection undergoing allogeneic",
       "solid-organ transplantation (kidney, liver and heart).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IV ganciclovir for CMV infection at 2.5 mg/kg/12 h, 2.5 mg/kg/24 h, or",
       "1.25 mg/kg/24 h. Oral valganciclovir for CMV infection at 450 mg every 12,",
       "24 or 48 h; for prophylaxis 450 mg every 24, 48 or 84 h.",
       sep = " "
     ),
-    regions        = "Spain (prospective study).",
-    bioassay       = "HPLC, LLOQ 0.5 mg/L.",
-    notes          = paste(
+    regions = "Spain (prospective study).",
+    bioassay = "HPLC, LLOQ 0.5 mg/L.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2 (the ganciclovir /",
       "valganciclovir model-repository review). Sampling was both intensive",
       "(0 pre-dose, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10 and 12 h post dose) and sparse",

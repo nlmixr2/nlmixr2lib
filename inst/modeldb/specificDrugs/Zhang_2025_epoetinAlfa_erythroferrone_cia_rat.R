@@ -43,14 +43,14 @@ Zhang_2025_epoetinAlfa_erythroferrone_cia_rat <- function() {
   vignette <- "Zhang_2025_erythroferrone"
 
   units <- list(
-    time                      = "h",
-    dosing                    = "mIU/kg",
-    concentration             = "mIU/mL",
-    dosing_carboplatin        = "ug/kg",
+    time = "h",
+    dosing = "mIU/kg",
+    concentration = "mIU/mL",
+    dosing_carboplatin = "ug/kg",
     concentration_carboplatin = "ug/mL",
-    erythroferrone            = "ng/mL",
-    hemoglobin                = "g/dL",
-    red_blood_cells           = "1e12 cells/L"
+    erythroferrone = "ng/mL",
+    hemoglobin = "g/dL",
+    red_blood_cells = "1e12 cells/L"
   )
 
   # Two groups of paper-specific states. (a) The three erythroferrone states
@@ -66,35 +66,39 @@ Zhang_2025_epoetinAlfa_erythroferrone_cia_rat <- function() {
   # vignette "Assumptions and deviations" section for the naming proposal
   # left for the register maintainer.
   paper_specific_compartments <- c(
-    "erfe", "erfe_base", "erfe_induced",
-    "central_carb", "peripheral1_carb", "peripheral2_carb"
+    "erfe",
+    "erfe_base",
+    "erfe_induced",
+    "central_carb",
+    "peripheral1_carb",
+    "peripheral2_carb"
   )
 
   compartmentData <- list(
-    central          = list(analyte = "epoetin alfa",    units = "mIU/kg",       specimen = "plasma",         verified = TRUE),
-    peripheral1      = list(analyte = "epoetin alfa",    units = "mIU/kg",       specimen = "plasma",         verified = TRUE),
-    central_carb     = list(analyte = "carboplatin",     units = "ug/kg",        specimen = "plasma",         verified = TRUE),
-    peripheral1_carb = list(analyte = "carboplatin",     units = "ug/kg",        specimen = "plasma",         verified = TRUE),
-    peripheral2_carb = list(analyte = "carboplatin",     units = "ug/kg",        specimen = "plasma",         verified = TRUE),
-    precursor1       = list(analyte = "BFU-E cells",     units = "1e12 cells/L", specimen = "not applicable",    verified = TRUE),
-    precursor2       = list(analyte = "CFU-E cells",     units = "1e12 cells/L", specimen = "not applicable",    verified = TRUE),
-    precursor3       = list(analyte = "erythroblasts",   units = "1e12 cells/L", specimen = "not applicable",    verified = TRUE),
-    precursor4       = list(analyte = "reticulocytes",   units = "1e12 cells/L", specimen = "blood cell",     verified = TRUE),
-    erythrocytes     = list(analyte = "red blood cells", units = "1e12 cells/L", specimen = "blood cell",     verified = TRUE),
-    erfe_base        = list(analyte = "erythroferrone",  units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    erfe_induced     = list(analyte = "erythroferrone",  units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    transit1         = list(analyte = "erythroferrone",  units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    transit2         = list(analyte = "erythroferrone",  units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    erfe             = list(analyte = "erythroferrone",  units = "ng/mL",        specimen = "plasma",         verified = TRUE)
+    central = list(analyte = "epoetin alfa", units = "mIU/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "epoetin alfa", units = "mIU/kg", specimen = "plasma", verified = TRUE),
+    central_carb = list(analyte = "carboplatin", units = "ug/kg", specimen = "plasma", verified = TRUE),
+    peripheral1_carb = list(analyte = "carboplatin", units = "ug/kg", specimen = "plasma", verified = TRUE),
+    peripheral2_carb = list(analyte = "carboplatin", units = "ug/kg", specimen = "plasma", verified = TRUE),
+    precursor1 = list(analyte = "BFU-E cells", units = "1e12 cells/L", specimen = "not applicable", verified = TRUE),
+    precursor2 = list(analyte = "CFU-E cells", units = "1e12 cells/L", specimen = "not applicable", verified = TRUE),
+    precursor3 = list(analyte = "erythroblasts", units = "1e12 cells/L", specimen = "not applicable", verified = TRUE),
+    precursor4 = list(analyte = "reticulocytes", units = "1e12 cells/L", specimen = "blood cell", verified = TRUE),
+    erythrocytes = list(analyte = "red blood cells", units = "1e12 cells/L", specimen = "blood cell", verified = TRUE),
+    erfe_base = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    erfe_induced = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    transit1 = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    transit2 = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    erfe = list(analyte = "erythroferrone", units = "ng/mL", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley, male)",
-    n_subjects     = 27L,
-    n_studies      = 1L,
-    weight_range   = "250-300 g at study entry",
+    species = "rat (Sprague-Dawley, male)",
+    n_subjects = 27L,
+    n_studies = 1L,
+    weight_range = "250-300 g at study entry",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Carboplatin-induced (chemotherapy-induced) anemia. A single",
       "intravenous carboplatin dose of 60 mg/kg via the tail vein",
       "produced a rapid fall in RBC and hemoglobin to a nadir of about",
@@ -104,15 +108,15 @@ Zhang_2025_epoetinAlfa_erythroferrone_cia_rat <- function() {
       "splenic precursors (Figure 3C). Model baseline hemoglobin",
       "MCH * RBC0 / 10 = 13.6 g/dL."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intravenous carboplatin 60 mg/kg at study time zero, then a",
       "single intravenous rHuEPO (EPOGEN, epoetin alfa) dose of",
       "1350 IU/kg (n = 9) or 450 IU/kg (n = 9) or saline (n = 9) one week",
       "later ('Week 0'). Doses enter the model as 6e4 ug/kg carboplatin",
       "and 1.35e6 or 4.5e5 mIU/kg rHuEPO."
     ),
-    regions        = "Hong Kong SAR, China (The Chinese University of Hong Kong)",
-    notes          = paste(
+    regions = "Hong Kong SAR, China (The Chinese University of Hong Kong)",
+    notes = paste(
       "ERFE assayed at 0, 1, 2, 4, 6, 8, 10, 12 and 24 h after the rHuEPO",
       "or saline injection by validated ELISA (FineTest ER1573);",
       "hemoglobin and RBC on 'Week -1' days -8, -6, -4, -2, 0, 3, 6, 9,",

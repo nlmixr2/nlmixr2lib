@@ -30,82 +30,87 @@ Ohara_2014_warfarin_s <- function() {
   # which is numerically identical to the mg/L used here (and used by Shi 2024
   # Table 3 for the same constants).
   compartmentData <- list(
-    depot   = list(analyte = "S-warfarin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "S-warfarin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = TRUE),
-    npt     = list(analyte = "normal (fully carboxylated) prothrombin", units = "mg/L", specimen = "plasma", verified = TRUE)
+    npt = list(
+      analyte = "normal (fully carboxylated) prothrombin",
+      units = "mg/L",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at baseline",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Power model on CL(S) normalised to the cohort median BSA of 1.74 m^2 (Shi 2024 Table 3 footnote b; Ohara 2014 Table 1 reports BSA 1.74 +/- 0.18 m^2, n = 99). Ohara 2014 selected BSA over body weight and age, which were collinear with it.",
-      source_name        = "BSA"
+      notes = "Time-fixed at baseline. Power model on CL(S) normalised to the cohort median BSA of 1.74 m^2 (Shi 2024 Table 3 footnote b; Ohara 2014 Table 1 reports BSA 1.74 +/- 0.18 m^2, n = 99). Ohara 2014 selected BSA over body weight and age, which were collinear with it.",
+      source_name = "BSA"
     ),
     CYP2C9_S3_COUNT = list(
-      description        = "Count of CYP2C9*3 (rs1057910) reduced-function alleles per subject (0, 1 or 2)",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Count of CYP2C9*3 (rs1057910) reduced-function alleles per subject (0, 1 or 2)",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = "*1/*1 (count 0) is the reference; CL(S) for *1/*1 is 0.240 L/h at BSA 1.74 m^2.",
-      notes              = "Ohara 2014 and Shi 2024 both dichotomise this to a carriage flag rather than a per-allele dosage: Shi 2024 Table 3 footnote b states 'CYP2C9*3 = 0 in patients with CYP2C9*1/*1 and CYP2C9*3 = 1 in patients with CYP2C9*1/*3 or CYP2C9*3/*3'. The model therefore derives the carrier indicator as CYP2C9_S3_COUNT > 0, so a *3/*3 homozygote receives the same 0.543x CL(S) multiplier as a *1/*3 heterozygote. Ohara 2014 Table 1 cohort distribution (n = 99): 88 wild-type, 11 heterozygous, 0 homozygous (MAF 0.056).",
-      source_name        = "CYP2C9*3"
+      notes = "Ohara 2014 and Shi 2024 both dichotomise this to a carriage flag rather than a per-allele dosage: Shi 2024 Table 3 footnote b states 'CYP2C9*3 = 0 in patients with CYP2C9*1/*1 and CYP2C9*3 = 1 in patients with CYP2C9*1/*3 or CYP2C9*3/*3'. The model therefore derives the carrier indicator as CYP2C9_S3_COUNT > 0, so a *3/*3 homozygote receives the same 0.543x CL(S) multiplier as a *1/*3 heterozygote. Ohara 2014 Table 1 cohort distribution (n = 99): 88 wild-type, 11 heterozygous, 0 homozygous (MAF 0.056).",
+      source_name = "CYP2C9*3"
     ),
     VKORC1_1639G_COUNT = list(
-      description        = "Count of VKORC1 -1639G (rs9923231) alleles per subject (0, 1 or 2). The complementary -1639A count is 2 - VKORC1_1639G_COUNT.",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Count of VKORC1 -1639G (rs9923231) alleles per subject (0, 1 or 2). The complementary -1639A count is 2 - VKORC1_1639G_COUNT.",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = "-1639 A/A (G count 0) is the reference; typical IC50 for A/A is 0.0725 mg/L.",
-      notes              = "The source papers label this indicator 'VKORC1*2', but per Shi 2024 Table 3 footnote c it flags carriage of the -1639G allele: 'VKORC1*2 = 0 in patients with VKORC1-1639 AA and VKORC1*2 = 1 in patients with VKORC1-1639 AG or VKORC1-1639 GG'. The model derives the carrier indicator as VKORC1_1639G_COUNT > 0. Note this is the opposite orientation to the Hamberg 2007 / Xia 2024 parameterisation, which treats G/G as the reference: here the warfarin-sensitive -1639A/A genotype is the reference and a G allele raises IC50 2.07-fold (i.e. reduces sensitivity), which is the same biology expressed from the other end. Ohara 2014 Table 1 cohort distribution (n = 99, reported as wild/hetero/homo for the -1639G>A substitution): 1 G/G, 17 A/G, 81 A/A (A allele frequency 0.904), a strongly A-predominant East-Asian cohort.",
-      source_name        = "VKORC1*2 (rs9923231, -1639G>A)"
+      notes = "The source papers label this indicator 'VKORC1*2', but per Shi 2024 Table 3 footnote c it flags carriage of the -1639G allele: 'VKORC1*2 = 0 in patients with VKORC1-1639 AA and VKORC1*2 = 1 in patients with VKORC1-1639 AG or VKORC1-1639 GG'. The model derives the carrier indicator as VKORC1_1639G_COUNT > 0. Note this is the opposite orientation to the Hamberg 2007 / Xia 2024 parameterisation, which treats G/G as the reference: here the warfarin-sensitive -1639A/A genotype is the reference and a G allele raises IC50 2.07-fold (i.e. reduces sensitivity), which is the same biology expressed from the other end. Ohara 2014 Table 1 cohort distribution (n = 99, reported as wild/hetero/homo for the -1639G>A substitution): 1 G/G, 17 A/G, 81 A/A (A allele frequency 0.904), a strongly A-predominant East-Asian cohort.",
+      source_name = "VKORC1*2 (rs9923231, -1639G>A)"
     ),
     SNP_CYP4F2_RS2108622_T_COUNT = list(
-      description        = "Count of CYP4F2 c.1297C>T (rs2108622, p.V433M; the CYP4F2*3 allele) T alleles per subject (0, 1 or 2)",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Count of CYP4F2 c.1297C>T (rs2108622, p.V433M; the CYP4F2*3 allele) T alleles per subject (0, 1 or 2)",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = "CYP4F2*1/*1 (T count 0) is the reference; typical IC50 for *1/*1 is 0.0725 mg/L.",
-      notes              = "CYP4F2 is the vitamin-K1 oxidase; the *3 (433M) variant has reduced activity, raising hepatic vitamin K and so raising the warfarin concentration required for half-maximal inhibition of prothrombin synthesis. Ohara 2014 estimated a 1.30-fold IC50 increase in *3 carriers (Table 2). As with the other two genotypes the source papers dichotomise to carriage: Shi 2024 Table 3 footnote c gives 'CYP4F2*3 = 0' for *1/*1 and 1 otherwise, so the model derives the carrier indicator as SNP_CYP4F2_RS2108622_T_COUNT > 0. Ohara 2014 Table 1 cohort distribution (n = 99): 50 wild-type, 43 heterozygous, 6 homozygous (MAF 0.278). Shi 2024 assumed every simulated Chinese patient to be CYP4F2*1/*1, i.e. this column is 0 throughout their simulations (Table 3 footnote c).",
-      source_name        = "CYP4F2*3"
+      notes = "CYP4F2 is the vitamin-K1 oxidase; the *3 (433M) variant has reduced activity, raising hepatic vitamin K and so raising the warfarin concentration required for half-maximal inhibition of prothrombin synthesis. Ohara 2014 estimated a 1.30-fold IC50 increase in *3 carriers (Table 2). As with the other two genotypes the source papers dichotomise to carriage: Shi 2024 Table 3 footnote c gives 'CYP4F2*3 = 0' for *1/*1 and 1 otherwise, so the model derives the carrier indicator as SNP_CYP4F2_RS2108622_T_COUNT > 0. Ohara 2014 Table 1 cohort distribution (n = 99): 50 wild-type, 43 heterozygous, 6 homozygous (MAF 0.278). Shi 2024 assumed every simulated Chinese patient to be CYP4F2*1/*1, i.e. this column is 0 throughout their simulations (Table 3 footnote c).",
+      source_name = "CYP4F2*3"
     ),
     NPT_BASE = list(
-      description        = "Baseline plasma normal (fully carboxylated) prothrombin concentration measured before the first warfarin dose",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline plasma normal (fully carboxylated) prothrombin concentration measured before the first warfarin dose",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject and load-bearing in three places: it is the initial condition of the npt state, it sets the zero-order synthesis rate kin = kout * NPT_BASE, and it is the covariate on the INR exponent lambda (lambda = 3.48 * exp(0.00588 * (NPT_BASE - 119)); Shi 2024 Table 3 footnote d, whose centering value of 119 mg/L is the cohort median). NPT_BASE is measured data rather than an estimated parameter: Ohara 2014 fitted no inter-individual variance term for it and excluded the three patients whose NPT0 was missing. Ohara 2014 Table 1 reports NPT0 = 118.2 +/- 22.1 ug/mL (= mg/L) in n = 99. Assayed by the carinactivase-1 method (Ohara 2014 Methods), which measures only the fully carboxylated, coagulation-competent fraction of prothrombin and therefore falls with warfarin exposure while total factor II is comparatively unchanged.",
-      source_name        = "NPT0"
+      notes = "Time-fixed per subject and load-bearing in three places: it is the initial condition of the npt state, it sets the zero-order synthesis rate kin = kout * NPT_BASE, and it is the covariate on the INR exponent lambda (lambda = 3.48 * exp(0.00588 * (NPT_BASE - 119)); Shi 2024 Table 3 footnote d, whose centering value of 119 mg/L is the cohort median). NPT_BASE is measured data rather than an estimated parameter: Ohara 2014 fitted no inter-individual variance term for it and excluded the three patients whose NPT0 was missing. Ohara 2014 Table 1 reports NPT0 = 118.2 +/- 22.1 ug/mL (= mg/L) in n = 99. Assayed by the carinactivase-1 method (Ohara 2014 Methods), which measures only the fully carboxylated, coagulation-competent fraction of prothrombin and therefore falls with warfarin exposure while total factor II is comparatively unchanged.",
+      source_name = "NPT0"
     ),
     INR_BASE = list(
-      description        = "Pre-medication baseline INR measured before the first warfarin dose",
-      units              = "(unitless ratio; INR has no units)",
-      type               = "continuous",
+      description = "Pre-medication baseline INR measured before the first warfarin dose",
+      units = "(unitless ratio; INR has no units)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters Ohara 2014 Eq 3 as an additive constant so simulated INR returns to the subject's own baseline when NPT recovers to NPT_BASE. Ohara 2014 Table 1 reports INR0 = 1.05 +/- 0.10 in n = 99. Like NPT_BASE this is measured data, not an estimated parameter.",
-      source_name        = "INR_Base (INR0)"
+      notes = "Time-fixed per subject. Enters Ohara 2014 Eq 3 as an additive constant so simulated INR returns to the subject's own baseline when NPT recovers to NPT_BASE. Ohara 2014 Table 1 reports INR0 = 1.05 +/- 0.10 in n = 99. Like NPT_BASE this is measured data, not an estimated parameter.",
+      source_name = "INR_Base (INR0)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 99L,
-    n_studies      = 1L,
-    age_range      = "not reported (mean 64.5 +/- 15.2 years)",
-    age_median     = "64.5 years (mean)",
-    weight_range   = "not reported (mean 68.4 +/- 12.4 kg)",
-    weight_median  = "68.4 kg (mean)",
+    species = "human",
+    n_subjects = 99L,
+    n_studies = 1L,
+    age_range = "not reported (mean 64.5 +/- 15.2 years)",
+    age_median = "64.5 years (mean)",
+    weight_range = "not reported (mean 68.4 +/- 12.4 kg)",
+    weight_median = "68.4 kg (mean)",
     sex_female_pct = 39.4,
     race_ethnicity = "Han Chinese (Taiwan)",
-    disease_state  = "Adults starting warfarin induction therapy; indications atrial fibrillation 54.5%, stroke 29.3%, deep vein thrombosis 25.3%, pulmonary embolism 8.1%. Hypertension 66.7%, chronic kidney disease 16.2%, diabetes 19.2%, hepatic disease 10.1%.",
-    dose_range     = "Racemic warfarin, mean starting dose 4.34 +/- 0.98 mg/day and mean maintenance dose 2.94 +/- 1.35 mg/day; target INR 2.0-3.0",
-    regions        = "Taiwan (Chang Gung Memorial Hospital and Academia Sinica outpatient clinics)",
-    cyp2c9_freq    = "CYP2C9*3 (rs1057910) wild/hetero/homo 88/11/0, MAF 0.056 (Ohara 2014 Table 1)",
-    vkorc1_freq    = "VKORC1 -1639G>A (rs9923231) 1 G/G, 17 A/G, 81 A/A; A allele frequency 0.904 (Ohara 2014 Table 1)",
-    cyp4f2_freq    = "CYP4F2*3 (rs2108622) wild/hetero/homo 50/43/6, MAF 0.278 (Ohara 2014 Table 1)",
-    biomarkers     = "Baseline NPT 118.2 +/- 22.1 mg/L; baseline INR 1.05 +/- 0.10; peak INR during induction 2.25 +/- 0.88. 35 of 99 patients (35%) reached INR >= 4 during induction.",
-    n_pd_records   = "NPT and INR analyses used n = 96 (three patients excluded for missing baseline NPT); the Cp(S) analysis used all n = 99",
-    software       = "NONMEM via Wings for NONMEM 7.2.0; ADVAN6 for the NPT indirect-response model. Bootstrap: 1000 resamples for Cp(S) and INR, 100 for NPT.",
-    notes          = paste(
+    disease_state = "Adults starting warfarin induction therapy; indications atrial fibrillation 54.5%, stroke 29.3%, deep vein thrombosis 25.3%, pulmonary embolism 8.1%. Hypertension 66.7%, chronic kidney disease 16.2%, diabetes 19.2%, hepatic disease 10.1%.",
+    dose_range = "Racemic warfarin, mean starting dose 4.34 +/- 0.98 mg/day and mean maintenance dose 2.94 +/- 1.35 mg/day; target INR 2.0-3.0",
+    regions = "Taiwan (Chang Gung Memorial Hospital and Academia Sinica outpatient clinics)",
+    cyp2c9_freq = "CYP2C9*3 (rs1057910) wild/hetero/homo 88/11/0, MAF 0.056 (Ohara 2014 Table 1)",
+    vkorc1_freq = "VKORC1 -1639G>A (rs9923231) 1 G/G, 17 A/G, 81 A/A; A allele frequency 0.904 (Ohara 2014 Table 1)",
+    cyp4f2_freq = "CYP4F2*3 (rs2108622) wild/hetero/homo 50/43/6, MAF 0.278 (Ohara 2014 Table 1)",
+    biomarkers = "Baseline NPT 118.2 +/- 22.1 mg/L; baseline INR 1.05 +/- 0.10; peak INR during induction 2.25 +/- 0.88. 35 of 99 patients (35%) reached INR >= 4 during induction.",
+    n_pd_records = "NPT and INR analyses used n = 96 (three patients excluded for missing baseline NPT); the Cp(S) analysis used all n = 99",
+    software = "NONMEM via Wings for NONMEM 7.2.0; ADVAN6 for the NPT indirect-response model. Bootstrap: 1000 resamples for Cp(S) and INR, 100 for NPT.",
+    notes = paste(
       "Prospective randomized trial of genotype-guided (n = 77) versus standard (n = 22) warfarin",
       "initiation in Taiwan; recruitment September 2009 to December 2013, samples analysed July 2010",
       "to February 2012. See Ohara 2014 Table 1 for baseline demographics. Shi 2024 applied this model",

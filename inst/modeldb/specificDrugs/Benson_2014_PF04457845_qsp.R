@@ -52,25 +52,54 @@ Benson_2014_PF04457845_qsp <- function() {
 
   paper_specific_compartments <- c(
     # Brain states (12)
-    "aea_brain", "oea_brain", "pea_brain", "lea_brain", "sea_brain",
-    "nape_brain", "nope_brain", "nppe_brain", "nlpe_brain", "nspe_brain",
-    "faah_brain", "faahinh_brain",
+    "aea_brain",
+    "oea_brain",
+    "pea_brain",
+    "lea_brain",
+    "sea_brain",
+    "nape_brain",
+    "nope_brain",
+    "nppe_brain",
+    "nlpe_brain",
+    "nspe_brain",
+    "faah_brain",
+    "faahinh_brain",
     # Rest-of-body states (12)
-    "aea_rob", "oea_rob", "pea_rob", "lea_rob", "sea_rob",
-    "nape_rob", "nope_rob", "nppe_rob", "nlpe_rob", "nspe_rob",
-    "faah_rob", "faahinh_rob",
+    "aea_rob",
+    "oea_rob",
+    "pea_rob",
+    "lea_rob",
+    "sea_rob",
+    "nape_rob",
+    "nope_rob",
+    "nppe_rob",
+    "nlpe_rob",
+    "nspe_rob",
+    "faah_rob",
+    "faahinh_rob",
     # BBB microvascular endothelial cell states (7)
-    "aea_mec", "oea_mec", "pea_mec", "lea_mec", "sea_mec",
-    "faah_mec", "faahinh_mec",
+    "aea_mec",
+    "oea_mec",
+    "pea_mec",
+    "lea_mec",
+    "sea_mec",
+    "faah_mec",
+    "faahinh_mec",
     # Plasma ethanolamide states (5)
-    "aea_plasma", "oea_plasma", "pea_plasma", "lea_plasma", "sea_plasma",
+    "aea_plasma",
+    "oea_plasma",
+    "pea_plasma",
+    "lea_plasma",
+    "sea_plasma",
     # PF-04457845 drug states (3)
-    "pf_gut", "pf_p_amt", "pf_r_amt"
+    "pf_gut",
+    "pf_p_amt",
+    "pf_r_amt"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "PF-04457845 dose into the pf_gut compartment must be in ng",
       "(convert from mg via amt_ng = amt_mg * 1e6).",
       "Bioavailability (Benson 2014 supplement Table S1 saturable Emax:",
@@ -99,60 +128,190 @@ Benson_2014_PF04457845_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    aea_brain     = list(analyte = "anandamide AEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    oea_brain     = list(analyte = "N-oleoyl-ethanolamide OEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    pea_brain     = list(analyte = "N-palmitoyl-ethanolamide PEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    lea_brain     = list(analyte = "N-linoleoyl-ethanolamide LEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    sea_brain     = list(analyte = "N-stearoyl-ethanolamide SEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nape_brain    = list(analyte = "NAPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nope_brain    = list(analyte = "N-oleoyl-phosphatidylethanolamine NOPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nppe_brain    = list(analyte = "N-palmitoyl-phosphatidylethanolamine NPPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nlpe_brain    = list(analyte = "N-linoleoyl-phosphatidylethanolamine NLPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nspe_brain    = list(analyte = "N-stearoyl-phosphatidylethanolamine NSPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    faah_brain    = list(analyte = "FAAH protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    faahinh_brain = list(analyte = "Inhibited FAAH protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    aea_rob       = list(analyte = "anandamide AEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    oea_rob       = list(analyte = "N-oleoyl-ethanolamide OEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    pea_rob       = list(analyte = "N-palmitoyl-ethanolamide PEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    lea_rob       = list(analyte = "N-linoleoyl-ethanolamide LEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    sea_rob       = list(analyte = "N-stearoyl-ethanolamide SEA", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nape_rob      = list(analyte = "NAPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nope_rob      = list(analyte = "N-oleoyl-phosphatidylethanolamine NOPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nppe_rob      = list(analyte = "N-palmitoyl-phosphatidylethanolamine NPPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nlpe_rob      = list(analyte = "N-linoleoyl-phosphatidylethanolamine NLPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    nspe_rob      = list(analyte = "N-stearoyl-phosphatidylethanolamine NSPE", units = NA_character_, specimen = "tissue", verified = FALSE),
-    faah_rob      = list(analyte = "FAAH protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    faahinh_rob   = list(analyte = "Inhibited FAAH protein", units = NA_character_, specimen = "tissue", verified = FALSE),
-    aea_mec       = list(analyte = "anandamide AEA", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    oea_mec       = list(analyte = "N-oleoyl-ethanolamide OEA", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    pea_mec       = list(analyte = "N-palmitoyl-ethanolamide PEA", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    lea_mec       = list(analyte = "N-linoleoyl-ethanolamide LEA", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    sea_mec       = list(analyte = "N-stearoyl-ethanolamide SEA", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    faah_mec      = list(analyte = "FAAH protein", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    faahinh_mec   = list(analyte = "Inhibited FAAH protein", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    aea_plasma    = list(analyte = "anandamide AEA", units = NA_character_, specimen = "plasma", verified = FALSE),
-    oea_plasma    = list(analyte = "N-oleoyl-ethanolamide OEA", units = NA_character_, specimen = "plasma", verified = FALSE),
-    pea_plasma    = list(analyte = "N-palmitoyl-ethanolamide PEA", units = NA_character_, specimen = "plasma", verified = FALSE),
-    lea_plasma    = list(analyte = "N-linoleoyl-ethanolamide LEA", units = NA_character_, specimen = "plasma", verified = FALSE),
-    sea_plasma    = list(analyte = "N-stearoyl-ethanolamide SEA", units = NA_character_, specimen = "plasma", verified = FALSE),
-    pf_gut        = list(analyte = "PF-04457845", units = NA_character_, specimen = "tissue", verified = FALSE),
-    pf_p_amt      = list(analyte = "PF-04457845", units = NA_character_, specimen = "plasma", verified = FALSE),
-    pf_r_amt      = list(analyte = "PF-04457845", units = NA_character_, specimen = "tissue", verified = FALSE)
+    aea_brain = list(analyte = "anandamide AEA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    oea_brain = list(
+      analyte = "N-oleoyl-ethanolamide OEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    pea_brain = list(
+      analyte = "N-palmitoyl-ethanolamide PEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    lea_brain = list(
+      analyte = "N-linoleoyl-ethanolamide LEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    sea_brain = list(
+      analyte = "N-stearoyl-ethanolamide SEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nape_brain = list(analyte = "NAPE", units = NA_character_, specimen = "tissue", verified = FALSE),
+    nope_brain = list(
+      analyte = "N-oleoyl-phosphatidylethanolamine NOPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nppe_brain = list(
+      analyte = "N-palmitoyl-phosphatidylethanolamine NPPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nlpe_brain = list(
+      analyte = "N-linoleoyl-phosphatidylethanolamine NLPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nspe_brain = list(
+      analyte = "N-stearoyl-phosphatidylethanolamine NSPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    faah_brain = list(analyte = "FAAH protein", units = NA_character_, specimen = "tissue", verified = FALSE),
+    faahinh_brain = list(
+      analyte = "Inhibited FAAH protein",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    aea_rob = list(analyte = "anandamide AEA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    oea_rob = list(analyte = "N-oleoyl-ethanolamide OEA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    pea_rob = list(
+      analyte = "N-palmitoyl-ethanolamide PEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    lea_rob = list(
+      analyte = "N-linoleoyl-ethanolamide LEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    sea_rob = list(
+      analyte = "N-stearoyl-ethanolamide SEA",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nape_rob = list(analyte = "NAPE", units = NA_character_, specimen = "tissue", verified = FALSE),
+    nope_rob = list(
+      analyte = "N-oleoyl-phosphatidylethanolamine NOPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nppe_rob = list(
+      analyte = "N-palmitoyl-phosphatidylethanolamine NPPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nlpe_rob = list(
+      analyte = "N-linoleoyl-phosphatidylethanolamine NLPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nspe_rob = list(
+      analyte = "N-stearoyl-phosphatidylethanolamine NSPE",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    faah_rob = list(analyte = "FAAH protein", units = NA_character_, specimen = "tissue", verified = FALSE),
+    faahinh_rob = list(
+      analyte = "Inhibited FAAH protein",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    aea_mec = list(analyte = "anandamide AEA", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    oea_mec = list(
+      analyte = "N-oleoyl-ethanolamide OEA",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    pea_mec = list(
+      analyte = "N-palmitoyl-ethanolamide PEA",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    lea_mec = list(
+      analyte = "N-linoleoyl-ethanolamide LEA",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    sea_mec = list(
+      analyte = "N-stearoyl-ethanolamide SEA",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    faah_mec = list(analyte = "FAAH protein", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    faahinh_mec = list(
+      analyte = "Inhibited FAAH protein",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    aea_plasma = list(analyte = "anandamide AEA", units = NA_character_, specimen = "plasma", verified = FALSE),
+    oea_plasma = list(
+      analyte = "N-oleoyl-ethanolamide OEA",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    pea_plasma = list(
+      analyte = "N-palmitoyl-ethanolamide PEA",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    lea_plasma = list(
+      analyte = "N-linoleoyl-ethanolamide LEA",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    sea_plasma = list(
+      analyte = "N-stearoyl-ethanolamide SEA",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    pf_gut = list(analyte = "PF-04457845", units = NA_character_, specimen = "tissue", verified = FALSE),
+    pf_p_amt = list(analyte = "PF-04457845", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pf_r_amt = list(analyte = "PF-04457845", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = paste(
+      description = paste(
         "PF-04457845 single-dose amount used to compute the",
         "saturable oral bioavailability F_PFM =",
         "Emax_PFM * DOSE / (ED50 + DOSE) (Benson 2014",
         "supplement Table S1). Must be recorded per subject",
         "and per dose event because F_PFM is dose-dependent."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Use case (a) 'per-subject assigned dose' from the DOSE canonical.",
         "The paper fitted the model to single oral doses of 1 mg",
         "and 10 mg (Figure 4). Figure 5 additionally simulated",
@@ -160,19 +319,19 @@ Benson_2014_PF04457845_qsp <- function() {
         "10 / (0.53 + 10) = 0.734; for a 1 mg dose F_PFM = 0.773 *",
         "1 / (0.53 + 1) = 0.505."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "healthy adult",
-    weight_range   = "average 70 kg (Peters & Hultin 2008 reference PBPK physiology)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "healthy adult",
+    weight_range = "average 70 kg (Peters & Hultin 2008 reference PBPK physiology)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult subjects in the PF-04457845 Phase I clinical",
       "trial reported by Li et al. 2012 (Br J Clin Pharmacol",
       "73, 706-716). PF-04457845 was originally being developed",
@@ -180,14 +339,14 @@ Benson_2014_PF04457845_qsp <- function() {
       "osteoarthritis Phase II by Huggins et al. 2012 Pain 153,",
       "1837-1846 with no analgesic effect observed)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral doses of 1 mg and 10 mg were fitted (Benson",
       "2014 Figure 4). The paper additionally simulated CB1",
       "occupancy at doses of 0.1, 1, 5, 10, 20, and 40 mg",
       "(Figure 5)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "The four physiological compartment volumes (BRAIN = 1.45 L,",
       "PLASMA = 2.649 L, ROB = 65.3 L, MEC = 1.5e-5 L) and the twelve",
       "individual tissue sub-compartment volumes (LIVER, Gut, Spleen,",

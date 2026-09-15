@@ -1,155 +1,155 @@
 Waterhouse_2024_vedolizumab <- function() {
   description <- "Two-compartment population PK model with first-order (linear) elimination for vedolizumab (humanised anti-alpha4-beta7 integrin IgG1 monoclonal antibody) as acute graft-versus-host disease (aGvHD) prophylaxis in adults undergoing allogeneic hematopoietic stem cell transplantation (allo-HSCT) (Waterhouse 2024)."
-  reference   <- "Waterhouse T, Baron K, Eure W, Chen C, Akbari M, Dirks NL, Jansson J, Mehrotra S. Population pharmacokinetic modeling of vedolizumab for graft-versus-host disease prophylaxis in adults with allogeneic hematopoietic stem cell transplant. Pharmacol Res Perspect. 2024;12(6):e1257. doi:10.1002/prp2.1257"
-  vignette    <- "Waterhouse_2024_vedolizumab"
-  units       <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  reference <- "Waterhouse T, Baron K, Eure W, Chen C, Akbari M, Dirks NL, Jansson J, Mehrotra S. Population pharmacokinetic modeling of vedolizumab for graft-versus-host disease prophylaxis in adults with allogeneic hematopoietic stem cell transplant. Pharmacol Res Perspect. 2024;12(6):e1257. doi:10.1002/prp2.1257"
+  vignette <- "Waterhouse_2024_vedolizumab"
+  units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Estimated power exponents on CL (0.713) and Vc (0.659); fixed allometric exponents on Q (0.75) and Vp (1.00). Reference 75 kg per Waterhouse 2024 Table 2 footnote (reference patient).",
-      source_name        = "WT"
+      notes = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Estimated power exponents on CL (0.713) and Vc (0.659); fixed allometric exponents on Q (0.75) and Vp (1.00). Reference 75 kg per Waterhouse 2024 Table 2 footnote (reference patient).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Power-form effect on CL: (ALB / 40)^(-1.35). Reference 40 g/L (equivalently 4 g/dL) per Waterhouse 2024 Table 2 footnote (reference patient) and Supplement Equation S2. Canonical unit is SI g/L; the paper reports the reference value in both units.",
-      source_name        = "ALB"
+      notes = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Power-form effect on CL: (ALB / 40)^(-1.35). Reference 40 g/L (equivalently 4 g/dL) per Waterhouse 2024 Table 2 footnote (reference patient) and Supplement Equation S2. Canonical unit is SI g/L; the paper reports the reference value in both units.",
+      source_name = "ALB"
     ),
     LYMPH_ABS = list(
-      description        = "Absolute lymphocyte count (total peripheral-blood lymphocytes)",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Absolute lymphocyte count (total peripheral-blood lymphocytes)",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Power-form effect on CL: (max(LYMPH_ABS, 10) / 100)^(-0.0180). Reference 100 cells/uL (= 0.1 K/uL) per Waterhouse 2024 Table 2 footnote. Waterhouse 2024 Supplement Equation S2 substitutes any zero LYMPH_ABS with 10 cells/uL (= 0.01 K/uL) before evaluating the power form, to avoid log(0).",
-      source_name        = "LYMPH"
+      notes = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Power-form effect on CL: (max(LYMPH_ABS, 10) / 100)^(-0.0180). Reference 100 cells/uL (= 0.1 K/uL) per Waterhouse 2024 Table 2 footnote. Waterhouse 2024 Supplement Equation S2 substitutes any zero LYMPH_ABS with 10 cells/uL (= 0.01 K/uL) before evaluating the power form, to avoid log(0).",
+      source_name = "LYMPH"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline / time-fixed. Power-form effect on CL: (AGE / 53)^(-0.130). Reference 53 years per Waterhouse 2024 Table 2 footnote (reference patient).",
-      source_name        = "AGE"
+      notes = "Baseline / time-fixed. Power-form effect on CL: (AGE / 53)^(-0.130). Reference 53 years per Waterhouse 2024 Table 2 footnote (reference patient).",
+      source_name = "AGE"
     ),
     AGVHD_LIVER = list(
-      description        = "Acute GvHD -- liver involvement (any grade) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute GvHD -- liver involvement (any grade) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no documented liver aGvHD)",
-      notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated across pre- and post-diagnosis intervals). Multiplicative power-form effect on CL: 1.05^AGVHD_LIVER. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.834-1.26 crosses 1).",
-      source_name        = "LIVGVHD"
+      notes = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated across pre- and post-diagnosis intervals). Multiplicative power-form effect on CL: 1.05^AGVHD_LIVER. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.834-1.26 crosses 1).",
+      source_name = "LIVGVHD"
     ),
     AGVHD_SKIN = list(
-      description        = "Acute GvHD -- skin involvement (any grade) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute GvHD -- skin involvement (any grade) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no documented skin aGvHD)",
-      notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Multiplicative power-form effect on CL: 1.03^AGVHD_SKIN. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.940-1.12 crosses 1).",
-      source_name        = "SKGVHD"
+      notes = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Multiplicative power-form effect on CL: 1.03^AGVHD_SKIN. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.940-1.12 crosses 1).",
+      source_name = "SKGVHD"
     ),
     AGVHD_INTESTINE = list(
-      description        = "Acute GvHD -- intestinal involvement (any grade) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute GvHD -- intestinal involvement (any grade) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no documented intestinal aGvHD)",
-      notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Multiplicative power-form effect on CL: 1.07^AGVHD_INTESTINE. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.870-1.27 crosses 1). Mechanistically on-target for vedolizumab (integrin alpha-4 beta-7 blockade of gut-homing leukocyte trafficking).",
-      source_name        = "INTGVHD"
+      notes = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Multiplicative power-form effect on CL: 1.07^AGVHD_INTESTINE. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.870-1.27 crosses 1). Mechanistically on-target for vedolizumab (integrin alpha-4 beta-7 blockade of gut-homing leukocyte trafficking).",
+      source_name = "INTGVHD"
     ),
     OCC = list(
-      description        = "Integer-valued dosing-occasion indicator for inter-occasion-variability multiplexing on CL",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued dosing-occasion indicator for inter-occasion-variability multiplexing on CL",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Waterhouse 2024 Methods 2.2.2 defines an occasion as each administered vedolizumab dose with subsequent PK observations taking place prior to the next administered dose. Values 1..7 cover the phase 3 VEDO-3035 schedule (Days -1, +13, +41, +69, +97, +125, +153); the phase 1b VEDO-1015 schedule (Days -1, +13, +42) uses values 1..3 only. Records preceding the first dose take OCC = 1. Decomposed inside `model()` into binary indicators `oc1`..`oc7` that multiplex the seven IOV etas on log-CL.",
-      source_name        = "OCC"
+      notes = "Waterhouse 2024 Methods 2.2.2 defines an occasion as each administered vedolizumab dose with subsequent PK observations taking place prior to the next administered dose. Values 1..7 cover the phase 3 VEDO-3035 schedule (Days -1, +13, +41, +69, +97, +125, +153); the phase 1b VEDO-1015 schedule (Days -1, +13, +42) uses values 1..3 only. Records preceding the first dose take OCC = 1. Decomposed inside `model()` into binary indicators `oc1`..`oc7` that multiplex the seven IOV etas on log-CL.",
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female-sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (43.0% female overall) and screened during covariate exploration. Not retained in the final model per Section 3.2.2 -- the paper attributes the observed sex effect on random effects to correlation with body weight rather than an independent sex mechanism, so sex was not carried into the final covariate model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (43.0% female overall) and screened during covariate exploration. Not retained in the final model per Section 3.2.2 -- the paper attributes the observed sex effect on random effects to correlation with body weight rather than an independent sex mechanism, so sex was not carried into the final covariate model."
     ),
     RACE_ASIAN = list(
       description = "Race indicator (1 = Asian, 0 = other)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (15.5% Asian overall). Screened during covariate exploration but not retained in the final model per Section 3.2.2 -- the paper attributes the observed race effect on random effects to correlation with body weight rather than an independent race mechanism."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (15.5% Asian overall). Screened during covariate exploration but not retained in the final model per Section 3.2.2 -- the paper attributes the observed race effect on random effects to correlation with body weight rather than an independent race mechanism."
     ),
     RACE_BLACK = list(
       description = "Race indicator (1 = Black, 0 = other)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (2.1% Black overall). Screened during covariate exploration but not retained in the final model per Section 3.2.2."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (2.1% Black overall). Screened during covariate exploration but not retained in the final model per Section 3.2.2."
     ),
     CONMED_MTX = list(
       description = "Concomitant methotrexate use (any time during study)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (76.7% overall). Screened in the post-hoc concomitant-medication analysis (Section 2.2.2 and Discussion) but not retained in the final model: 'no relationships between vedolizumab disposition and methotrexate, tacrolimus, cyclosporine, and ursodeoxycholic acid'."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (76.7% overall). Screened in the post-hoc concomitant-medication analysis (Section 2.2.2 and Discussion) but not retained in the final model: 'no relationships between vedolizumab disposition and methotrexate, tacrolimus, cyclosporine, and ursodeoxycholic acid'."
     ),
     CONMED_TAC = list(
       description = "Concomitant tacrolimus use (any time during study)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (56.0% overall). Screened in the post-hoc concomitant-medication analysis but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (56.0% overall). Screened in the post-hoc concomitant-medication analysis but not retained in the final model."
     ),
     CONMED_CSA = list(
       description = "Concomitant cyclosporine use (any time during study)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (44.0% overall). Screened in the post-hoc concomitant-medication analysis but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (44.0% overall). Screened in the post-hoc concomitant-medication analysis but not retained in the final model."
     ),
     CONMED_UDCA = list(
       description = "Concomitant ursodeoxycholic acid use (any time during study)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in Waterhouse 2024 Table 1 (81.3% overall). Screened in the post-hoc concomitant-medication analysis but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in Waterhouse 2024 Table 1 (81.3% overall). Screened in the post-hoc concomitant-medication analysis but not retained in the final model."
     ),
     ADA_POS = list(
       description = "Anti-vedolizumab antibody positivity",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Only 2 of 193 subjects (1.0%) had a positive AVA test during the dosing period, both at the first day of dosing. Waterhouse 2024 Section 3.2.2: 'The effect of antidrug antibodies on vedolizumab PK was not evaluated due to the limited number of subjects with positive ADA tests.' Not screened; recorded here as an observation-only covariate for completeness."
+      units = "(binary)",
+      type = "binary",
+      notes = "Only 2 of 193 subjects (1.0%) had a positive AVA test during the dosing period, both at the first day of dosing. Waterhouse 2024 Section 3.2.2: 'The effect of antidrug antibodies on vedolizumab PK was not evaluated due to the limited number of subjects with positive ADA tests.' Not screened; recorded here as an observation-only covariate for completeness."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 193L,
-    n_studies        = 2L,
-    age_range        = "18-72 years",
-    age_median       = "50.8 years mean (SD 14.9); reference 53 years",
-    weight_range     = "not reported (SD 19.1 kg)",
-    weight_median    = "78.5 kg mean (SD 19.1); reference 75 kg",
-    sex_female_pct   = 43,
-    race_ethnicity   = c(White = 74.1, Asian = 15.5, Black = 2.1, NotReported = 8.3),
-    disease_state    = "Adults undergoing allogeneic hematopoietic stem cell transplantation (allo-HSCT) for hematologic malignancy or myeloproliferative disorder; vedolizumab administered for prophylaxis of acute graft-versus-host disease (aGvHD).",
-    dose_range       = "75 mg IV (3 subjects, phase 1b) or 300 mg IV (190 subjects, phase 1b + phase 3), given as a 30-minute infusion. Phase 1b schedule: Days -1, +13, +42 relative to transplantation. Phase 3 schedule: Days -1, +13, +41, +69, +97, +125, +153.",
-    regions          = "not reported in this paper (multinational phase 1b VEDO-1015 [NCT02728895] + phase 3 VEDO-3035 GRAPHITE [NCT03657160]).",
-    baseline_alb     = "mean 39.7 g/L (SD 5.60); reference 40 g/L",
-    baseline_lymph   = "mean 426 cells/uL (SD 739); reference 100 cells/uL",
-    liver_gvhd_pct   = 3.1,
-    skin_gvhd_pct    = 32.1,
+    species = "human",
+    n_subjects = 193L,
+    n_studies = 2L,
+    age_range = "18-72 years",
+    age_median = "50.8 years mean (SD 14.9); reference 53 years",
+    weight_range = "not reported (SD 19.1 kg)",
+    weight_median = "78.5 kg mean (SD 19.1); reference 75 kg",
+    sex_female_pct = 43,
+    race_ethnicity = c(White = 74.1, Asian = 15.5, Black = 2.1, NotReported = 8.3),
+    disease_state = "Adults undergoing allogeneic hematopoietic stem cell transplantation (allo-HSCT) for hematologic malignancy or myeloproliferative disorder; vedolizumab administered for prophylaxis of acute graft-versus-host disease (aGvHD).",
+    dose_range = "75 mg IV (3 subjects, phase 1b) or 300 mg IV (190 subjects, phase 1b + phase 3), given as a 30-minute infusion. Phase 1b schedule: Days -1, +13, +42 relative to transplantation. Phase 3 schedule: Days -1, +13, +41, +69, +97, +125, +153.",
+    regions = "not reported in this paper (multinational phase 1b VEDO-1015 [NCT02728895] + phase 3 VEDO-3035 GRAPHITE [NCT03657160]).",
+    baseline_alb = "mean 39.7 g/L (SD 5.60); reference 40 g/L",
+    baseline_lymph = "mean 426 cells/uL (SD 739); reference 100 cells/uL",
+    liver_gvhd_pct = 3.1,
+    skin_gvhd_pct = 32.1,
     intestine_gvhd_pct = 8.8,
     concomitant_meds = "Methotrexate 76.7%; tacrolimus 56.0%; cyclosporine 44.0%; ursodeoxycholic acid 81.3%",
-    notes            = "Pooled VEDO-1015 (phase 1b, n=24) + VEDO-3035 GRAPHITE (phase 3, n=169); 2380 vedolizumab observations. Baseline demographics from Waterhouse 2024 Table 1."
+    notes = "Pooled VEDO-1015 (phase 1b, n=24) + VEDO-3035 GRAPHITE (phase 3, n=169); 2380 vedolizumab observations. Baseline demographics from Waterhouse 2024 Table 1."
   )
 
   ini({

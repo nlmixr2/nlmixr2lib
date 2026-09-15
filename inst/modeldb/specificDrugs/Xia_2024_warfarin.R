@@ -20,99 +20,99 @@ Xia_2024_warfarin <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     depot_kpd = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
-    coag_s1   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
-    coag_s2   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
-    coag_s3   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
-    coag_l1   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
-    coag_l2   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
-    coag_l3   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE)
+    coag_s1 = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s2 = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s3 = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l1 = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l2 = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l3 = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline; power scaling on EC50 with reference 60 kg (cohort median; Xia 2024 supplement Section 1.3 Eq 8).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline; power scaling on EC50 with reference 60 kg (cohort median; Xia 2024 supplement Section 1.3 Eq 8).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline; linear scale model on CL with reference age 71 years (Xia 2024 supplement Eq 7; Hamberg literature value).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline; linear scale model on CL with reference age 71 years (Xia 2024 supplement Eq 7; Hamberg literature value).",
+      source_name = "AGE"
     ),
     CYP2C9_S1_COUNT = list(
-      description        = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "CYP2C9_S1_COUNT + CYP2C9_S2_COUNT + CYP2C9_S3_COUNT = 2. Each *1 allele contributes 0.174 L/h to CL (Hamberg fixed value).",
-      source_name        = "CYP2C9 (genotype string mapped to per-allele counts)"
+      notes = "CYP2C9_S1_COUNT + CYP2C9_S2_COUNT + CYP2C9_S3_COUNT = 2. Each *1 allele contributes 0.174 L/h to CL (Hamberg fixed value).",
+      source_name = "CYP2C9 (genotype string mapped to per-allele counts)"
     ),
     CYP2C9_S2_COUNT = list(
-      description        = "Count of CYP2C9*2 alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*2 alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Each *2 allele contributes 0.0879 L/h to CL (Hamberg fixed value). No *2 carriers were reported in the Xia 2024 Han cohort (Table 1) but the model retains the term for general use.",
-      source_name        = "CYP2C9 (genotype string mapped to per-allele counts)"
+      notes = "Each *2 allele contributes 0.0879 L/h to CL (Hamberg fixed value). No *2 carriers were reported in the Xia 2024 Han cohort (Table 1) but the model retains the term for general use.",
+      source_name = "CYP2C9 (genotype string mapped to per-allele counts)"
     ),
     CYP2C9_S3_COUNT = list(
-      description        = "Count of CYP2C9*3 alleles per subject (0, 1, or 2)",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2C9*3 alleles per subject (0, 1, or 2)",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Each *3 allele contributes 0.0422 L/h to CL (Hamberg fixed value). Xia 2024 reported 5.7% of subjects as *1/*3 heterozygous (Table 1).",
-      source_name        = "CYP2C9 (genotype string mapped to per-allele counts)"
+      notes = "Each *3 allele contributes 0.0422 L/h to CL (Hamberg fixed value). Xia 2024 reported 5.7% of subjects as *1/*3 heterozygous (Table 1).",
+      source_name = "CYP2C9 (genotype string mapped to per-allele counts)"
     ),
     VKORC1_1639G_COUNT = list(
-      description        = "Count of VKORC1 -1639G alleles per subject (0, 1, or 2). The complementary -1639A count is 2 - VKORC1_1639G_COUNT.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of VKORC1 -1639G alleles per subject (0, 1, or 2). The complementary -1639A count is 2 - VKORC1_1639G_COUNT.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Each -1639G allele typical EC50 contribution is estimated at 4.3 mg/L; each -1639A allele contribution is 1.14 mg/L. Xia 2024 Han cohort distribution (Table 1): AA 80.3%, GA 18.7%, GG 0.9%.",
-      source_name        = "VKORC1 (genotype string mapped to G allele count)"
+      notes = "Each -1639G allele typical EC50 contribution is estimated at 4.3 mg/L; each -1639A allele contribution is 1.14 mg/L. Xia 2024 Han cohort distribution (Table 1): AA 80.3%, GA 18.7%, GG 0.9%.",
+      source_name = "VKORC1 (genotype string mapped to G allele count)"
     ),
     CONMED_AMIO = list(
-      description        = "Concomitant amiodarone use indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant amiodarone use indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant amiodarone)",
-      notes              = "Multiplicative piecewise effect on EC50: ec50 *= (1 + e_amio_ec50 * CONMED_AMIO) per Xia 2024 supplement Section 1.3 Eq 9 with e_amio_ec50 = -0.602. Xia 2024 Han cohort prevalence (Table 1): 25.7% on amiodarone.",
-      source_name        = "CM1"
+      notes = "Multiplicative piecewise effect on EC50: ec50 *= (1 + e_amio_ec50 * CONMED_AMIO) per Xia 2024 supplement Section 1.3 Eq 9 with e_amio_ec50 = -0.602. Xia 2024 Han cohort prevalence (Table 1): 25.7% on amiodarone.",
+      source_name = "CM1"
     ),
     INR_BASE = list(
-      description        = "Subject-specific baseline INR measured before warfarin administration",
-      units              = "(unitless)",
-      type               = "continuous",
+      description = "Subject-specific baseline INR measured before warfarin administration",
+      units = "(unitless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (pre-medication INR). Added directly to the predicted INR equation; simulation default uses the Xia 2024 total-cohort mean of 1.13 (supplement Section 1.6).",
-      source_name        = "INR_BASE"
+      notes = "Time-fixed per subject (pre-medication INR). Added directly to the predicted INR equation; simulation default uses the Xia 2024 total-cohort mean of 1.13 (supplement Section 1.6).",
+      source_name = "INR_BASE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 646,
-    n_studies      = 9,
-    age_range      = "1-82 years",
-    age_median     = "55.2 years (mean +/- SD 54.7 +/- 12.5 in the total cohort)",
-    weight_range   = "7-106 kg",
-    weight_median  = "59.7 kg (mean +/- SD 59.7 +/- 11.6 in the total cohort)",
+    species = "human",
+    n_subjects = 646,
+    n_studies = 9,
+    age_range = "1-82 years",
+    age_median = "55.2 years (mean +/- SD 54.7 +/- 12.5 in the total cohort)",
+    weight_range = "7-106 kg",
+    weight_median = "59.7 kg (mean +/- SD 59.7 +/- 11.6 in the total cohort)",
     sex_female_pct = 48.9,
     race_ethnicity = "Han Chinese (100%)",
-    disease_state  = "Adults requiring warfarin anticoagulation for valvular disease, post-valve replacement, non-valvular atrial fibrillation, or deep-vein thrombosis",
-    dose_range     = "0.625-6.25 mg orally once daily",
-    regions        = "China (Fujian Medical University Union Hospital plus 8 sub-centres, 2016-2020)",
-    cyp2c9_freq    = "CYP2C9*1/*1 94.3%, *1/*3 5.7% (Xia 2024 Table 1, total cohort)",
-    vkorc1_freq    = "VKORC1 -1639AA 80.3%, AG 18.7%, GG 0.9% (Xia 2024 Table 1, total cohort)",
-    inr_baseline   = "1.13 +/- 0.59 (total cohort mean +/- SD; Xia 2024 Table 1)",
-    n_inr_records  = 5467,
-    notes          = "Pooled dataset across 9 Chinese centres; n=537 used for modelling, n=109 for external validation. Baseline demographics from Xia 2024 Table 1."
+    disease_state = "Adults requiring warfarin anticoagulation for valvular disease, post-valve replacement, non-valvular atrial fibrillation, or deep-vein thrombosis",
+    dose_range = "0.625-6.25 mg orally once daily",
+    regions = "China (Fujian Medical University Union Hospital plus 8 sub-centres, 2016-2020)",
+    cyp2c9_freq = "CYP2C9*1/*1 94.3%, *1/*3 5.7% (Xia 2024 Table 1, total cohort)",
+    vkorc1_freq = "VKORC1 -1639AA 80.3%, AG 18.7%, GG 0.9% (Xia 2024 Table 1, total cohort)",
+    inr_baseline = "1.13 +/- 0.59 (total cohort mean +/- SD; Xia 2024 Table 1)",
+    n_inr_records = 5467,
+    notes = "Pooled dataset across 9 Chinese centres; n=537 used for modelling, n=109 for external validation. Baseline demographics from Xia 2024 Table 1."
   )
 
   ini({

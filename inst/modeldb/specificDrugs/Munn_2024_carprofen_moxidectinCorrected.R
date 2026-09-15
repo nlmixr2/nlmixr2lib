@@ -12,7 +12,8 @@ Munn_2024_carprofen_moxidectinCorrected <- function() {
     "central question of the source paper; the authors conclude the",
     "correction did not alter the estimated parameters or their",
     "uncertainty.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Munn R, Whittem T.",
     "Moxidectin is a candidate for use as an in vivo internal standard in",
@@ -28,7 +29,8 @@ Munn_2024_carprofen_moxidectinCorrected <- function() {
     "pharmacodynamic parameters in the subcutaneous tissue cage model:",
     "as illustrated by carprofen in sheep.",
     "Front Vet Sci. 2022;9:905797. doi:10.3389/fvets.2022.905797.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Munn_2024_carprofen_moxidectin_internal_standard"
 
   # See Munn_2024_carprofen_raw for why the tissue cage is a
@@ -36,37 +38,37 @@ Munn_2024_carprofen_moxidectinCorrected <- function() {
   paper_specific_compartments <- c("cage6", "cage10")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg",
+    time = "h",
+    dosing = "mg/kg",
     concentration = "ug/mL"
   )
 
   # Per-kg normalisation, as in the raw fit: Vc is L/kg, CL is L/h/kg and
   # the dose is 4 mg/kg, so central/vc is mg/L == ug/mL.
   compartmentData <- list(
-    central     = list(analyte = "carprofen", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "carprofen", units = "mg/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "carprofen", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    cage6       = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    cage10      = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE)
+    cage6 = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    cage10 = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "sheep (merino wether)",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "approximately 18 months",
-    weight_range   = "42-51.5 kg",
+    species = "sheep (merino wether)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "approximately 18 months",
+    weight_range = "42-51.5 kg",
     sex_female_pct = 0,
-    disease_state  = "Healthy (veterinary clinical examination plus routine haematology and biochemistry before enrolment)",
-    dose_range     = paste(
+    disease_state = "Healthy (veterinary clinical examination plus routine haematology and biochemistry before enrolment)",
+    dose_range = paste(
       "Single 4 mg/kg carprofen intravenous bolus into a cephalic vein at",
       "time zero, with 0.2 mg/kg moxidectin given subcutaneously 14 days",
       "earlier as the in vivo internal standard."
     ),
-    regions        = "Australia (University of Melbourne, Werribee, Victoria)",
-    notes          = paste(
+    regions = "Australia (University of Melbourne, Werribee, Victoria)",
+    notes = paste(
       "Same eight animals and same samples as the raw fit; only the",
       "carprofen concentrations differ. Correction was applied only where",
       "a valid concurrent moxidectin result existed (Results 3). Plasma",

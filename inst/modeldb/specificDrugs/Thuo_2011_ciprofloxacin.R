@@ -1,58 +1,58 @@
 Thuo_2011_ciprofloxacin <- function() {
   description <- "One-compartment population PK model with first-order absorption and absorption lag for oral ciprofloxacin in Kenyan children with severe malnutrition (Thuo 2011). Apparent CL and apparent Vc are allometrically scaled to body weight (exponents 0.75 and 1) and modified by linear deviations from a serum sodium reference of 136 mmol/L; apparent CL is further reduced by 28.3% in the paper-defined high-mortality-risk stratum."
-  reference   <- "Thuo N, Ungphakorn W, Karisa J, Muchohi S, Muturi A, Kokwaro G, Thomson AH, Maitland K. Dosing regimens of oral ciprofloxacin for children with severe malnutrition: a population pharmacokinetic study with Monte Carlo simulation. J Antimicrob Chemother. 2011 Oct;66(10):2336-45. doi:10.1093/jac/dkr314"
-  vignette    <- "Thuo_2011_ciprofloxacin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Thuo N, Ungphakorn W, Karisa J, Muchohi S, Muturi A, Kokwaro G, Thomson AH, Maitland K. Dosing regimens of oral ciprofloxacin for children with severe malnutrition: a population pharmacokinetic study with Monte Carlo simulation. J Antimicrob Chemother. 2011 Oct;66(10):2336-45. doi:10.1093/jac/dkr314"
+  vignette <- "Thuo_2011_ciprofloxacin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ciprofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ciprofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at study entry in Thuo 2011 (single 48 h dosing window). Used for allometric scaling on apparent CL (exponent 0.75) and apparent Vc (exponent 1) with reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Time-fixed at study entry in Thuo 2011 (single 48 h dosing window). Used for allometric scaling on apparent CL (exponent 0.75) and apparent Vc (exponent 1) with reference weight 70 kg.",
+      source_name = "WT"
     ),
     SOD = list(
-      description        = "Serum sodium concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum sodium concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline serum sodium at study entry; Thuo 2011 cohort median 136 mmol/L (range 120-160). Enters apparent CL and apparent Vc as linear centered-deviation effects (1 + e * (SOD - 136)).",
-      source_name        = "Na+"
+      notes = "Baseline serum sodium at study entry; Thuo 2011 cohort median 136 mmol/L (range 120-160). Enters apparent CL and apparent Vc as linear centered-deviation effects (1 + e * (SOD - 136)).",
+      source_name = "Na+"
     ),
     MORTRISK_HIGH = list(
-      description        = "High-mortality-risk composite indicator (Berkley 2003 criteria)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-mortality-risk composite indicator (Berkley 2003 criteria)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = low or intermediate mortality risk",
-      notes              = "Thuo 2011 / Berkley 2003 paediatric severe-malnutrition risk stratum: 1 if depressed conscious state OR bradycardia (HR < 80) OR shock (capillary refill >= 2 s, temperature gradient or weak pulse) OR hypoglycaemia (glucose < 3 mmol/L); 0 otherwise. Intermediate-risk children (deep acidotic breathing, severe dehydration with diarrhoea, lethargy, hyponatraemia, or hypokalaemia) are pooled with low-risk into the 0 reference because the final model only contrasts high-vs-not-high.",
-      source_name        = "high risk"
+      notes = "Thuo 2011 / Berkley 2003 paediatric severe-malnutrition risk stratum: 1 if depressed conscious state OR bradycardia (HR < 80) OR shock (capillary refill >= 2 s, temperature gradient or weak pulse) OR hypoglycaemia (glucose < 3 mmol/L); 0 otherwise. Intermediate-risk children (deep acidotic breathing, severe dehydration with diarrhoea, lethargy, hyponatraemia, or hypokalaemia) are pooled with low-risk into the 0 reference because the final model only contrasts high-vs-not-high.",
+      source_name = "high risk"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52,
-    n_studies      = 1,
-    age_range      = "8-102 months",
-    age_median     = "23 months (IQR 15-33)",
-    weight_range   = "4.1-14.5 kg",
-    weight_median  = "6.9 kg (IQR 6.1-8.4)",
+    species = "human",
+    n_subjects = 52,
+    n_studies = 1,
+    age_range = "8-102 months",
+    age_median = "23 months (IQR 15-33)",
+    weight_range = "4.1-14.5 kg",
+    weight_median = "6.9 kg (IQR 6.1-8.4)",
     sex_female_pct = 44,
     race_ethnicity = "Kenyan paediatric inpatients (sub-Saharan African); ethnic subdivisions not reported.",
-    disease_state  = "Severe malnutrition (weight-for-height z-score <= -3, mid-upper arm circumference < 11 cm, or bilateral pedal oedema); 46% with kwashiorkor; 15% HIV-antibody-positive; risk strata 42% low / 27% intermediate / 31% high mortality risk.",
-    dose_range     = "10 mg/kg oral ciprofloxacin every 12 h for 48 h (tablets reformulated into an aqueous suspension by the study pharmacist).",
-    regions        = "Kenya (Kilifi District Hospital, Coast Province; KEMRI-Wellcome Trust Research Programme).",
-    notes          = "Sparse-sampling popPK study; 202 plasma concentrations from 52 children; baseline median (range): serum sodium 136 (120-160) mmol/L, serum creatinine 44 (27-676) umol/L, estimated CrCl 85.8 (5.0-128.7) mL/min/1.73 m^2 (only one subject with severe renal impairment). Demographics and covariate distributions reproduced from Thuo 2011 Table 1."
+    disease_state = "Severe malnutrition (weight-for-height z-score <= -3, mid-upper arm circumference < 11 cm, or bilateral pedal oedema); 46% with kwashiorkor; 15% HIV-antibody-positive; risk strata 42% low / 27% intermediate / 31% high mortality risk.",
+    dose_range = "10 mg/kg oral ciprofloxacin every 12 h for 48 h (tablets reformulated into an aqueous suspension by the study pharmacist).",
+    regions = "Kenya (Kilifi District Hospital, Coast Province; KEMRI-Wellcome Trust Research Programme).",
+    notes = "Sparse-sampling popPK study; 202 plasma concentrations from 52 children; baseline median (range): serum sodium 136 (120-160) mmol/L, serum creatinine 44 (27-676) umol/L, estimated CrCl 85.8 (5.0-128.7) mL/min/1.73 m^2 (only one subject with severe renal impairment). Demographics and covariate distributions reproduced from Thuo 2011 Table 1."
   )
 
   ini({

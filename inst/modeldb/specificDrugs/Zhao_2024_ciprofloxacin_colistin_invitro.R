@@ -15,11 +15,21 @@ Zhao_2024_ciprofloxacin_colistin_invitro <- function() {
   # pre-existing resting ("persister") subpopulation, present only in C47.
   # cst_unbound / cst_bound are the free and labware-bound colistin in the tube.
   paper_specific_compartments <- c(
-    "bact_s1", "bact_r1", "bact_nc1",
-    "bact_s2", "bact_r2", "bact_nc2",
-    "bact_s3", "bact_r3", "bact_nc3",
-    "bact_s4", "bact_r4", "bact_nc4",
-    "bact_pr", "cst_unbound", "cst_bound"
+    "bact_s1",
+    "bact_r1",
+    "bact_nc1",
+    "bact_s2",
+    "bact_r2",
+    "bact_nc2",
+    "bact_s3",
+    "bact_r3",
+    "bact_nc3",
+    "bact_s4",
+    "bact_r4",
+    "bact_nc4",
+    "bact_pr",
+    "cst_unbound",
+    "cst_bound"
   )
 
   # Every state is a concentration (CFU/mL or mg/L) in the 2 mL time-kill
@@ -28,21 +38,96 @@ Zhao_2024_ciprofloxacin_colistin_invitro <- function() {
   # clinical matrices only; the actual matrix is cation-adjusted Mueller
   # Hinton II broth (and, for cst_bound, the polypropylene tube wall).
   compartmentData <- list(
-    bact_s1 = list(analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-susceptible subpopulation, growing (S) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_r1 = list(analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-susceptible subpopulation, resting (R) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_nc1 = list(analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-susceptible subpopulation, non-colony-forming (Nc) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_s2 = list(analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-resistant subpopulation, growing (S) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_r2 = list(analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-resistant subpopulation, resting (R) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_nc2 = list(analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-resistant subpopulation, non-colony-forming (Nc) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_s3 = list(analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-susceptible subpopulation, growing (S) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_r3 = list(analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-susceptible subpopulation, resting (R) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_nc3 = list(analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-susceptible subpopulation, non-colony-forming (Nc) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_s4 = list(analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-resistant subpopulation, growing (S) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_r4 = list(analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-resistant subpopulation, resting (R) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_nc4 = list(analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-resistant subpopulation, non-colony-forming (Nc) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_pr = list(analyte = "Escherichia coli, pre-existing resting (persister) subpopulation, present only in strain C47", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    cst_unbound = list(analyte = "colistin, unbound in the broth", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    cst_bound = list(analyte = "colistin, adsorbed to the polypropylene tube wall", units = "mg/L", specimen = "not applicable", verified = TRUE)
+    bact_s1 = list(
+      analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-susceptible subpopulation, growing (S) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_r1 = list(
+      analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-susceptible subpopulation, resting (R) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_nc1 = list(
+      analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-susceptible subpopulation, non-colony-forming (Nc) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s2 = list(
+      analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-resistant subpopulation, growing (S) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_r2 = list(
+      analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-resistant subpopulation, resting (R) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_nc2 = list(
+      analyte = "Escherichia coli, ciprofloxacin-susceptible and colistin-resistant subpopulation, non-colony-forming (Nc) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s3 = list(
+      analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-susceptible subpopulation, growing (S) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_r3 = list(
+      analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-susceptible subpopulation, resting (R) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_nc3 = list(
+      analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-susceptible subpopulation, non-colony-forming (Nc) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s4 = list(
+      analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-resistant subpopulation, growing (S) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_r4 = list(
+      analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-resistant subpopulation, resting (R) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_nc4 = list(
+      analyte = "Escherichia coli, ciprofloxacin-resistant and colistin-resistant subpopulation, non-colony-forming (Nc) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_pr = list(
+      analyte = "Escherichia coli, pre-existing resting (persister) subpopulation, present only in strain C47",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cst_unbound = list(
+      analyte = "colistin, unbound in the broth",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cst_bound = list(
+      analyte = "colistin, adsorbed to the polypropylene tube wall",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

@@ -16,19 +16,24 @@ Zhang_2023_brazikumab_il22 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "brazikumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "brazikumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
-    cdai        = list(analyte = "Crohn's Disease Activity Index (CDAI)", units = "mg", specimen = "not applicable", verified = FALSE)
+    cdai = list(
+      analyte = "Crohn's Disease Activity Index (CDAI)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     IL22 = list(
-      description        = "Baseline serum interleukin-22 concentration",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Baseline serum interleukin-22 concentration",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "BASELINE ONLY (pre-dose, day 0); not time-varying. Drives the sigmoid drug effect on",
         "the CDAI input rate via Equation 5:",
         "idrug = imax * IL22^hill / (ec50^hill + IL22^hill), with the paper's IB50 mapped to the",
@@ -40,14 +45,14 @@ Zhang_2023_brazikumab_il22 <- function() {
         "quantifiable range 10-800 pg/mL in 100% serum (Appendix S1).",
         sep = " "
       ),
-      source_name        = "BIL22"
+      source_name = "BIL22"
     ),
     ON_TREATMENT = list(
-      description        = "Active brazikumab treatment-arm indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active brazikumab treatment-arm indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm)",
-      notes              = paste(
+      notes = paste(
         "Gates the drug effect entirely: the source control stream",
         "PSP-2023-0072-T-s04.mod encodes 'EFF = 0' followed by",
         "'IF(ARM.EQ.1) EFF = EMAX*BIL22**GAM/(EC50**GAM+BIL22**GAM)', so idrug is exactly zero",
@@ -63,40 +68,40 @@ Zhang_2023_brazikumab_il22 <- function() {
         "verified against the supplement analysis dataset.",
         sep = " "
       ),
-      source_name        = "ARM"
+      source_name = "ARM"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL centred at 39 g/L, carried unchanged from the final population PK model; see modellib('Zhang_2023_brazikumab') for the units caveat on the paper's 'mg/dL' label. Affects the PK layer only -- the CDAI drug effect is not exposure-driven.",
-      source_name        = "BALBU"
+      notes = "Power-form effect on CL centred at 39 g/L, carried unchanged from the final population PK model; see modellib('Zhang_2023_brazikumab') for the units caveat on the paper's 'mg/dL' label. Affects the PK layer only -- the CDAI drug effect is not exposure-driven.",
+      source_name = "BALBU"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with Crohn's disease)",
-      notes              = "Linear fractional effect on CL, carried unchanged from the final population PK model. Every subject in the phase IIa efficacy dataset is a patient with CD, so DIS_HEALTHY = 0 throughout that cohort; the term is retained so the PK layer stays identical to modellib('Zhang_2023_brazikumab').",
-      source_name        = "GRP"
+      notes = "Linear fractional effect on CL, carried unchanged from the final population PK model. Every subject in the phase IIa efficacy dataset is a patient with CD, so DIS_HEALTHY = 0 throughout that cohort; the term is retained so the PK layer stays identical to modellib('Zhang_2023_brazikumab').",
+      source_name = "GRP"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the reference category of the published Vc typical value)",
-      notes              = "Linear fractional effect on Vc applied to the male category as (1 + 0.214 * (1 - SEXF)), carried unchanged from the final population PK model. Source column GNDR is male = 1 / female = 0, so SEXF = 1 - GNDR.",
-      source_name        = "GNDR"
+      notes = "Linear fractional effect on Vc applied to the male category as (1 + 0.214 * (1 - SEXF)), carried unchanged from the final population PK model. Source column GNDR is male = 1 / female = 0, so SEXF = 1 - GNDR.",
+      source_name = "GNDR"
     )
   )
 
   covariatesDataExcluded <- list(
     SCORE_CDAI = list(
       description = "Baseline Crohn's Disease Activity Index (BCDAI)",
-      units       = "(score, 0-600)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(score, 0-600)",
+      type = "continuous",
+      notes = paste(
         "Zhang 2023's prognostic biomarker, but NOT a covariate in this model. The paper does",
         "not put a BCDAI covariate effect on any structural parameter; instead the baseline",
         "CDAI is an estimated model parameter (`lrbase`, typical value 318) carrying its own",
@@ -112,61 +117,61 @@ Zhang_2023_brazikumab_il22 <- function() {
     ),
     CRP = list(
       description = "Baseline C-reactive protein concentration",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "The alternative predictive biomarker. Zhang 2023 fit BIL22- and BCRP-dependent drug effects as two SEPARATE models rather than jointly (Discussion: adding both 'did not result in a more statistically significant relationship ... possibly due to the small sample size of the treatment arm and that BIL22 and BCRP are 60% correlated (p = 5.332e-13)'). The BCRP variant is modellib('Zhang_2023_brazikumab_crp')."
+      units = "mg/L",
+      type = "continuous",
+      notes = "The alternative predictive biomarker. Zhang 2023 fit BIL22- and BCRP-dependent drug effects as two SEPARATE models rather than jointly (Discussion: adding both 'did not result in a more statistically significant relationship ... possibly due to the small sample size of the treatment arm and that BIL22 and BCRP are 60% correlated (p = 5.332e-13)'). The BCRP variant is modellib('Zhang_2023_brazikumab_crp')."
     ),
     FCP = list(
       description = "Baseline faecal calprotectin",
-      units       = "ug/g",
-      type        = "continuous",
-      notes       = "Screened as a candidate predictive/prognostic biomarker in the efficacy model (Methods) and reported in Table 1 (median 628.5 ug/g, treatment arm); not statistically significant and not retained. Only BIL22, BCRP, and BCDAI met the screening criteria."
+      units = "ug/g",
+      type = "continuous",
+      notes = "Screened as a candidate predictive/prognostic biomarker in the efficacy model (Methods) and reported in Table 1 (median 628.5 ug/g, treatment arm); not statistically significant and not retained. Only BIL22, BCRP, and BCDAI met the screening criteria."
     ),
     IL17 = list(
       description = "Baseline serum interleukin-17",
-      units       = "ng/dL",
-      type        = "continuous",
-      notes       = "Screened as a candidate biomarker (Methods 'BIL17'); Table 1 median 0.48 ng/dL. Not retained in the final model."
+      units = "ng/dL",
+      type = "continuous",
+      notes = "Screened as a candidate biomarker (Methods 'BIL17'); Table 1 median 0.48 ng/dL. Not retained in the final model."
     ),
     LCN2 = list(
       description = "Baseline serum lipocalin-2",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = "Screened as a candidate biomarker (Methods 'BLCN2'); Table 1 median 215.4 ng/mL. Not retained in the final model."
+      units = "ng/mL",
+      type = "continuous",
+      notes = "Screened as a candidate biomarker (Methods 'BLCN2'); Table 1 median 215.4 ng/mL. Not retained in the final model."
     ),
     MIP3A = list(
       description = "Baseline macrophage inflammatory protein-3 alpha (CCL20)",
-      units       = "pg/mL",
-      type        = "continuous",
-      notes       = "Screened as a candidate biomarker (Methods 'BMIP3A'); Table 1 median 22.7 pg/mL. Not retained in the final model."
+      units = "pg/mL",
+      type = "continuous",
+      notes = "Screened as a candidate biomarker (Methods 'BMIP3A'); Table 1 median 22.7 pg/mL. Not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 119L,
-    n_studies      = 1L,
-    age_range      = "18-61 years",
-    age_median     = "35 years (34 treatment arm, 36 placebo arm)",
-    weight_range   = "44.0-158.8 kg",
-    weight_median  = "66.9 kg (65.8 treatment arm, 69.3 placebo arm)",
+    species = "human",
+    n_subjects = 119L,
+    n_studies = 1L,
+    age_range = "18-61 years",
+    age_median = "35 years (34 treatment arm, 36 placebo arm)",
+    weight_range = "44.0-158.8 kg",
+    weight_median = "66.9 kg (65.8 treatment arm, 69.3 placebo arm)",
     sex_female_pct = 62.2,
     race_ethnicity = c(White = 93.3, Black = 5.0, Other = 1.7),
-    disease_state  = "Moderately to severely active Crohn's disease in adults who had failed or were intolerant to anti-TNF-alpha therapy",
-    dose_range     = "700 mg brazikumab IV over at least 60 min on day 1 and day 29, or matching placebo, during the 12-week double-blind induction period",
-    regions        = "Multinational (NCT01714726)",
-    trials         = "NCT01714726 (phase IIa)",
+    disease_state = "Moderately to severely active Crohn's disease in adults who had failed or were intolerant to anti-TNF-alpha therapy",
+    dose_range = "700 mg brazikumab IV over at least 60 min on day 1 and day 29, or matching placebo, during the 12-week double-blind induction period",
+    regions = "Multinational (NCT01714726)",
+    trials = "NCT01714726 (phase IIa)",
     baseline_covariates = list(
-      cdai_median_all       = 317,
+      cdai_median_all = 317,
       cdai_median_treatment = 330,
-      cdai_median_placebo   = 304,
-      il22_median_all_pg_mL  = 15.6,
-      il22_median_treatment  = 15.9,
-      il22_median_placebo    = 14.1,
-      crp_median_all_mg_L    = 15.7,
-      albumin_median_g_L     = 39
+      cdai_median_placebo = 304,
+      il22_median_all_pg_mL = 15.6,
+      il22_median_treatment = 15.9,
+      il22_median_placebo = 14.1,
+      crp_median_all_mg_L = 15.7,
+      albumin_median_g_L = 39
     ),
-    notes          = paste(
+    notes = paste(
       "Efficacy analysis population: the 119 patients of the phase IIa double-blind",
       "placebo-controlled induction period only (59 brazikumab, 60 placebo), with a median of 5",
       "CDAI observations per subject (range 1-5 treatment, 3-5 placebo; Table 1). Data from the",

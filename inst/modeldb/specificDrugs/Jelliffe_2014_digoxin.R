@@ -8,41 +8,41 @@ Jelliffe_2014_digoxin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "digoxin", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "digoxin", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "digoxin", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "digoxin", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "digoxin", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-kg model. The central volume Vc and the peripheral state amount-per-kg both scale linearly with WT (allometric exponent 1). Reuning 1973 used 70 kg as the assumed average adult body weight when computing Vc = 110 L (1.5714 L/kg).",
-      source_name        = "WT"
+      notes = "Per-kg model. The central volume Vc and the peripheral state amount-per-kg both scale linearly with WT (allometric exponent 1). Reuning 1973 used 70 kg as the assumed average adult body weight when computing Vc = 110 L (1.5714 L/kg).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated creatinine clearance, BSA-normalized.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated creatinine clearance, BSA-normalized.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive effect on the renal component of elimination: kel = knr + kr * CRCL. The paper estimated CRCL using the method of Jelliffe 2002 (Am J Nephrol 22:320-324). At a CRCL of 100 mL/min/1.73 m^2 the renal rate constant equals 0.0451 1/h, equivalent to kr = 0.000451 1/h per mL/min/1.73 m^2 (Methods, p3).",
-      source_name        = "CCr"
+      notes = "Linear additive effect on the renal component of elimination: kel = knr + kr * CRCL. The paper estimated CRCL using the method of Jelliffe 2002 (Am J Nephrol 22:320-324). At a CRCL of 100 mL/min/1.73 m^2 the renal rate constant equals 0.0451 1/h, equivalent to kr = 0.000451 1/h per mL/min/1.73 m^2 (Methods, p3).",
+      source_name = "CCr"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 3,
-    age_range      = "Adults",
-    weight_range   = "Reference adult 70 kg (Reuning 1973 assumption)",
+    n_subjects = NA_integer_,
+    n_studies = 3,
+    age_range = "Adults",
+    weight_range = "Reference adult 70 kg (Reuning 1973 assumption)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Adults requiring digoxin therapy (e.g., congestive heart failure with sinus rhythm; atrial fibrillation or flutter); model spans normal to anephric renal function via the CRCL covariate.",
-    dose_range     = "Oral and intravenous; the paper illustrates loading doses of 0.875-1.149 mg given in 3 split doses 6 h apart followed by maintenance doses of 125-345 ug/day, but the structural model itself is dose-agnostic.",
-    regions        = "Not specified",
-    notes          = "The structural parameters (Vc, Knr, Kr, Kcp, Kpc) are carried from the three normal-renal-function studies pooled by Reuning, Sams, and Notari (J Clin Pharmacol 1973;13:127-141, Table 1, p 129; Vc = 110 L for a 70 kg adult, total elimination rate 0.0747 1/h split 39% nonrenal / 61% renal). The absorption rate Ka and oral bioavailability F = 0.65 are stated by Jelliffe 2014 (Methods, p2). Per-parameter variability was assumed at 20% CV (Methods, p3). Jelliffe 2014 then converted the continuous parameter distributions into a 64-point discrete distribution via the maximum-entropy method of Milman, Jiang, and Jelliffe (Comput Biol Med 2001;31:197-214) for use in the BestDose / USC RightDose adaptive-control software."
+    disease_state = "Adults requiring digoxin therapy (e.g., congestive heart failure with sinus rhythm; atrial fibrillation or flutter); model spans normal to anephric renal function via the CRCL covariate.",
+    dose_range = "Oral and intravenous; the paper illustrates loading doses of 0.875-1.149 mg given in 3 split doses 6 h apart followed by maintenance doses of 125-345 ug/day, but the structural model itself is dose-agnostic.",
+    regions = "Not specified",
+    notes = "The structural parameters (Vc, Knr, Kr, Kcp, Kpc) are carried from the three normal-renal-function studies pooled by Reuning, Sams, and Notari (J Clin Pharmacol 1973;13:127-141, Table 1, p 129; Vc = 110 L for a 70 kg adult, total elimination rate 0.0747 1/h split 39% nonrenal / 61% renal). The absorption rate Ka and oral bioavailability F = 0.65 are stated by Jelliffe 2014 (Methods, p2). Per-parameter variability was assumed at 20% CV (Methods, p3). Jelliffe 2014 then converted the continuous parameter distributions into a 64-point discrete distribution via the maximum-entropy method of Milman, Jiang, and Jelliffe (Comput Biol Med 2001;31:197-214) for use in the BestDose / USC RightDose adaptive-control software."
   )
 
   ini({

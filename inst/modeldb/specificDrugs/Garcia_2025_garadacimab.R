@@ -20,60 +20,60 @@ Garcia_2025_garadacimab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (the source column is baseline weight, BLWT). Enters CL and Q with one shared power exponent and Vc and Vp with a second shared power exponent, both centred at 70 kg: `(WT / 70)^e_wt_cl` and `(WT / 70)^e_wt_vc` (Methods S1 PopPK code: LCLWT = THETA(7)*LOG(BLWT/70), LQWT = THETA(7)*LOG(BLWT/70), LV2WT = THETA(8)*LOG(BLWT/70), LV3WT = THETA(8)*LOG(BLWT/70)). Note that the FINAL model ESTIMATES both exponents (1.16 and 0.843); the fixed-allometry values 0.75 and 1 belong to the BASE model only (Table S4). Observed range 43.3-153 kg, median 79.2 kg.",
-      source_name        = "BLWT"
+      notes = "Time-fixed per subject (the source column is baseline weight, BLWT). Enters CL and Q with one shared power exponent and Vc and Vp with a second shared power exponent, both centred at 70 kg: `(WT / 70)^e_wt_cl` and `(WT / 70)^e_wt_vc` (Methods S1 PopPK code: LCLWT = THETA(7)*LOG(BLWT/70), LQWT = THETA(7)*LOG(BLWT/70), LV2WT = THETA(8)*LOG(BLWT/70), LV3WT = THETA(8)*LOG(BLWT/70)). Note that the FINAL model ESTIMATES both exponents (1.16 and 0.843); the fixed-allometry values 0.75 and 1 belong to the BASE model only (Table S4). Observed range 43.3-153 kg, median 79.2 kg.",
+      source_name = "BLWT"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage indicator: 1 = Japanese, 0 = non-Japanese.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage indicator: 1 = Japanese, 0 = non-Japanese.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = "Time-fixed per subject. Multiplicative effect on CL (Methods S1 PopPK code: IF (JPN.EQ.1) LCLJPN = THETA(9), added in the log domain). Japanese subjects enter the pooled analysis from the phase I ethnobridging study NCT04580654. The paper concludes this effect is NOT clinically meaningful: although the point estimate falls marginally outside the 80-125% reference range, EBE simulations showed no difference between Japanese and non-Japanese patients with HAE (Results Section 3.2).",
-      source_name        = "JPN"
+      notes = "Time-fixed per subject. Multiplicative effect on CL (Methods S1 PopPK code: IF (JPN.EQ.1) LCLJPN = THETA(9), added in the log domain). Japanese subjects enter the pooled analysis from the phase I ethnobridging study NCT04580654. The paper concludes this effect is NOT clinically meaningful: although the point estimate falls marginally outside the 80-125% reference range, EBE simulations showed no difference between Japanese and non-Japanese patients with HAE (Results Section 3.2).",
+      source_name = "JPN"
     ),
     RACE_CHINESE = list(
-      description        = "Chinese-heritage indicator: 1 = Chinese, 0 = non-Chinese.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chinese-heritage indicator: 1 = Chinese, 0 = non-Chinese.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Chinese)",
-      notes              = "Time-fixed per subject. Multiplicative effect on CL (Methods S1 PopPK code: IF (CHN.EQ.1) LCLCHN = THETA(10), added in the log domain). The estimated effect is 1.02-fold, i.e. essentially null (Table S4).",
-      source_name        = "CHN"
+      notes = "Time-fixed per subject. Multiplicative effect on CL (Methods S1 PopPK code: IF (CHN.EQ.1) LCLCHN = THETA(10), added in the log domain). The estimated effect is 1.02-fold, i.e. essentially null (Table S4).",
+      source_name = "CHN"
     ),
     DIS_HAE = list(
-      description        = "Hereditary angioedema patient indicator: 1 = patient with HAE (HAE-C1INH-Type1, HAE-C1INH-Type2, or HAE-nC1INH), 0 = healthy volunteer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hereditary angioedema patient indicator: 1 = patient with HAE (HAE-C1INH-Type1, HAE-C1INH-Type2, or HAE-nC1INH), 0 = healthy volunteer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = "Time-fixed per subject. Multiplicative effect on CL (Methods S1 PopPK code: IF (PAT.EQ.2) LCLPAT = THETA(11), added in the log domain; the source column PAT codes 2 = patient with HAE). The estimated effect is 1.05-fold; the paper reports model-predicted CL, Vc, and AUCtau,ss to be generally similar in patients with HAE and healthy volunteers (Results Section 3.3).",
-      source_name        = "PAT"
+      notes = "Time-fixed per subject. Multiplicative effect on CL (Methods S1 PopPK code: IF (PAT.EQ.2) LCLPAT = THETA(11), added in the log domain; the source column PAT codes 2 = patient with HAE). The estimated effect is 1.05-fold; the paper reports model-predicted CL, Vc, and AUCtau,ss to be generally similar in patients with HAE and healthy volunteers (Results Section 3.3).",
+      source_name = "PAT"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum creatinine.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on CL centred at 0.75 mg/dL (Methods S1 PopPK code: LCLCREAT = THETA(12)*LOG(BLCREAT/0.75)). US-convention units, NOT the SI umol/L: the reference subject is defined in Section 2.4 as having 'baseline serum creatinine of 0.75 mg/dL', and Figure 1 varies sCr over 0.6-1.0 mg/dL. The estimated exponent is -0.0343 with a 95% CI spanning zero, and the paper concludes there is no clinically meaningful effect on CL or AUCtau,ss (Results Section 3.2).",
-      source_name        = "BLCREAT"
+      notes = "Time-fixed per subject. Power effect on CL centred at 0.75 mg/dL (Methods S1 PopPK code: LCLCREAT = THETA(12)*LOG(BLCREAT/0.75)). US-convention units, NOT the SI umol/L: the reference subject is defined in Section 2.4 as having 'baseline serum creatinine of 0.75 mg/dL', and Figure 1 varies sCr over 0.6-1.0 mg/dL. The estimated exponent is -0.0343 with a 95% CI spanning zero, and the paper concludes there is no clinically meaningful effect on CL or AUCtau,ss (Results Section 3.2).",
+      source_name = "BLCREAT"
     ),
     ALT = list(
-      description        = "Baseline serum alanine aminotransferase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alanine aminotransferase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on CL centred at 25 U/L (Methods S1 PopPK code: LCLALT = THETA(13)*LOG(BLALT/25)). Reference subject baseline ALT 25 U/L (Section 2.4); Figure 1 varies ALT over 10-40 U/L. The paper concludes there is no clinically meaningful effect (Results Section 3.2).",
-      source_name        = "BLALT"
+      notes = "Time-fixed per subject. Power effect on CL centred at 25 U/L (Methods S1 PopPK code: LCLALT = THETA(13)*LOG(BLALT/25)). Reference subject baseline ALT 25 U/L (Section 2.4); Figure 1 varies ALT over 10-40 U/L. The paper concludes there is no clinically meaningful effect (Results Section 3.2).",
+      source_name = "BLALT"
     ),
     TBILI = list(
-      description        = "Baseline total serum bilirubin.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total serum bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on CL centred at 8 umol/L (Methods S1 PopPK code: LCLBILI = THETA(14)*LOG(BLBILI/8)). SI units: the reference subject is defined in Section 2.4 as having 'baseline bilirubin of 8 umol/L', and Figure 1 varies bilirubin over 4-13 umol/L, a range consistent with TOTAL rather than direct bilirubin. The paper concludes there is no clinically meaningful effect (Results Section 3.2).",
-      source_name        = "BLBILI"
+      notes = "Time-fixed per subject. Power effect on CL centred at 8 umol/L (Methods S1 PopPK code: LCLBILI = THETA(14)*LOG(BLBILI/8)). SI units: the reference subject is defined in Section 2.4 as having 'baseline bilirubin of 8 umol/L', and Figure 1 varies bilirubin over 4-13 umol/L, a range consistent with TOTAL rather than direct bilirubin. The paper concludes there is no clinically meaningful effect (Results Section 3.2).",
+      source_name = "BLBILI"
     )
   )
 
@@ -83,33 +83,33 @@ Garcia_2025_garadacimab <- function() {
   # referenced in model().
   covariatesDataExcluded <- list(
     PKK_ACTIVITY_BL = list(
-      description        = "Baseline FXIIa-mediated kallikrein activity (the PD assay readout at baseline), reference value 0.134 POB.",
-      units              = "POB (proportion of baseline, chromogenic S-2302 assay)",
-      type               = "continuous",
+      description = "Baseline FXIIa-mediated kallikrein activity (the PD assay readout at baseline), reference value 0.134 POB.",
+      units = "POB (proportion of baseline, chromogenic S-2302 assay)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "RETAINED in the source's final PopPK/PD model as a power covariate on BOTH E0 and EC50, centred at 0.134 (Methods S1 PopPK/PD code: LE0PD = THETA(5)*LOG(BLPD2/0.134); LEC50PD = THETA(6)*LOG(BLPD2/0.134); missing values imputed to the 0.134 median). However, THETA(5) and THETA(6) are NOT reported: Table S6 tabulates only the four structural PD parameters, and the only rendering of the effect is the Figure S6 forest plot (EC50 only, no E0 panel), which is an image with no accompanying data table and whose x-axis anchors -- the 10th and 90th percentiles of baseline kallikrein activity -- are not tabulated in Table S3 or anywhere else on disk. The coefficients are therefore not digitisable. This model file is accordingly the REFERENCE-SUBJECT PopPK/PD model at baseline kallikrein activity = 0.134 POB, where both covariate terms are exactly zero by construction and the Table S6 structural estimates apply directly. The source's own conclusion is that this covariate is not clinically meaningful: the EC50 point estimates and 95% CIs normalised to the reference subject were almost fully contained within the 80-125% reference range (Results Section 3.4; Discussion). No canonical covariate column is proposed because the coefficient cannot be populated; note that the existing register entry PKK_BL is a DIFFERENT concept (baseline plasma prekallikrein CONCENTRATION in mg/L), not an enzymatic activity readout."
+      notes = "RETAINED in the source's final PopPK/PD model as a power covariate on BOTH E0 and EC50, centred at 0.134 (Methods S1 PopPK/PD code: LE0PD = THETA(5)*LOG(BLPD2/0.134); LEC50PD = THETA(6)*LOG(BLPD2/0.134); missing values imputed to the 0.134 median). However, THETA(5) and THETA(6) are NOT reported: Table S6 tabulates only the four structural PD parameters, and the only rendering of the effect is the Figure S6 forest plot (EC50 only, no E0 panel), which is an image with no accompanying data table and whose x-axis anchors -- the 10th and 90th percentiles of baseline kallikrein activity -- are not tabulated in Table S3 or anywhere else on disk. The coefficients are therefore not digitisable. This model file is accordingly the REFERENCE-SUBJECT PopPK/PD model at baseline kallikrein activity = 0.134 POB, where both covariate terms are exactly zero by construction and the Table S6 structural estimates apply directly. The source's own conclusion is that this covariate is not clinically meaningful: the EC50 point estimates and 95% CIs normalised to the reference subject were almost fully contained within the 80-125% reference range (Results Section 3.4; Discussion). No canonical covariate column is proposed because the coefficient cannot be populated; note that the existing register entry PKK_BL is a DIFFERENT concept (baseline plasma prekallikrein CONCENTRATION in mg/L), not an enzymatic activity readout."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "garadacimab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "garadacimab", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "garadacimab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "garadacimab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "garadacimab", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 242L,
-    n_studies      = 5L,
-    age_range      = "12-73 years (median 41)",
-    weight_range   = "43.3-153 kg (median 79.2)",
+    species = "human",
+    n_subjects = 242L,
+    n_studies = 5L,
+    age_range = "12-73 years (median 41)",
+    weight_range = "43.3-153 kg (median 79.2)",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
-    disease_state  = "Pooled healthy volunteers and patients with hereditary angioedema due to C1-inhibitor deficiency or dysfunction (HAE-C1INH-Type1/Type2) or with normal C1 inhibitor (HAE-nC1INH, including HAE-FXII and HAE-PLG subtypes).",
-    dose_range     = "Phase I single intravenous doses up to 10 mg/kg and subcutaneous doses; phase II subcutaneous 75, 200, or 600 mg once monthly (28 +/- 2 days); phase III subcutaneous 200 mg once monthly (30 +/- 4 days) after a loading dose of two 200 mg subcutaneous injections.",
-    regions        = "multinational",
-    biomarkers     = "FXIIa-mediated kallikrein activity, expressed as percent of baseline (POB), measured with an in-house chromogenic substrate (S-2302) enzymatic assay. Garadacimab plasma concentration measured by a validated clinical ELISA.",
-    notes          = "PK analysis dataset: 242 unique participants who received at least one dose of garadacimab prior to one evaluable PK sample. The PopPK/PD (FXIIa-mediated kallikrein activity) dataset adds 20 unique placebo recipients to the same 242 garadacimab recipients. Pooled from five studies (Table S1): two phase I studies in healthy volunteers (ACTRN 12616001438448 and NCT04580654, the Japanese/White ethnobridging study), one phase II study in patients with HAE including its randomized placebo-controlled and open-label periods (NCT03712228), and two phase III studies in patients with HAE-C1INH (pivotal VANGUARD NCT04656418 and the open-label extension NCT04739059). Sex ratios were comparable across studies EXCEPT the phase I study ACTRN 12616001438448, which enrolled only healthy male volunteers per protocol, so no single pooled female percentage is reported by the source (Results Section 3.1; per-study counts in Table S3). Observations below the limit of quantification were excluded; covariates with >30% missing values were excluded and those with 10-30% missing were imputed by regression (Section 2.3)."
+    disease_state = "Pooled healthy volunteers and patients with hereditary angioedema due to C1-inhibitor deficiency or dysfunction (HAE-C1INH-Type1/Type2) or with normal C1 inhibitor (HAE-nC1INH, including HAE-FXII and HAE-PLG subtypes).",
+    dose_range = "Phase I single intravenous doses up to 10 mg/kg and subcutaneous doses; phase II subcutaneous 75, 200, or 600 mg once monthly (28 +/- 2 days); phase III subcutaneous 200 mg once monthly (30 +/- 4 days) after a loading dose of two 200 mg subcutaneous injections.",
+    regions = "multinational",
+    biomarkers = "FXIIa-mediated kallikrein activity, expressed as percent of baseline (POB), measured with an in-house chromogenic substrate (S-2302) enzymatic assay. Garadacimab plasma concentration measured by a validated clinical ELISA.",
+    notes = "PK analysis dataset: 242 unique participants who received at least one dose of garadacimab prior to one evaluable PK sample. The PopPK/PD (FXIIa-mediated kallikrein activity) dataset adds 20 unique placebo recipients to the same 242 garadacimab recipients. Pooled from five studies (Table S1): two phase I studies in healthy volunteers (ACTRN 12616001438448 and NCT04580654, the Japanese/White ethnobridging study), one phase II study in patients with HAE including its randomized placebo-controlled and open-label periods (NCT03712228), and two phase III studies in patients with HAE-C1INH (pivotal VANGUARD NCT04656418 and the open-label extension NCT04739059). Sex ratios were comparable across studies EXCEPT the phase I study ACTRN 12616001438448, which enrolled only healthy male volunteers per protocol, so no single pooled female percentage is reported by the source (Results Section 3.1; per-study counts in Table S3). Observations below the limit of quantification were excluded; covariates with >30% missing values were excluded and those with 10-30% missing were imputed by regression (Section 2.3)."
   )
 
   ini({

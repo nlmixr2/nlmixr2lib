@@ -11,23 +11,23 @@ ObrinkHansen_2015_piperacillin <- function() {
     sep = " "
   )
   vignette <- "ObrinkHansen_2015_piperacillin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CREAT = list(
-      description        = "Plasma creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Plasma creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at the level measured on the day of piperacillin sampling.",
         "Enters CL additively (linear-deviation form):",
         "CL_i = (TVCL + beta_Pcrea * (CREAT - 170)) * exp(eta_CL),",
@@ -36,29 +36,29 @@ ObrinkHansen_2015_piperacillin <- function() {
         "(Table 1, IQR 119-282 umol/L; observed range 53-446 umol/L).",
         "Source paper column 'p-creatinine'."
       ),
-      source_name        = "p-creatinine"
+      source_name = "p-creatinine"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15,
-    n_studies      = 1,
-    age_range      = "59-79 years (IQR); cohort min/max not reported",
-    age_median     = "66 years",
-    weight_range   = "70.2-95 kg (IQR); cohort min/max not reported",
-    weight_median  = "80 kg",
+    species = "human",
+    n_subjects = 15,
+    n_studies = 1,
+    age_range = "59-79 years (IQR); cohort min/max not reported",
+    age_median = "66 years",
+    weight_range = "70.2-95 kg (IQR); cohort min/max not reported",
+    weight_median = "80 kg",
     sex_female_pct = 27,
     race_ethnicity = "Not reported",
-    disease_state  = "Critically ill adults with known or suspected septic shock requiring noradrenaline infusion, treated empirically with piperacillin-tazobactam; patients on renal replacement therapy and those under 18 years were excluded",
-    dose_range     = "4 g piperacillin (with 0.5 g tazobactam) as a 3-min IV infusion every 8 h; samples drawn during the third consecutive dosing interval",
-    regions        = "Denmark (single-centre intensive care unit, Aarhus University Hospital, Skejby; ClinicalTrials.gov NCT02306928)",
+    disease_state = "Critically ill adults with known or suspected septic shock requiring noradrenaline infusion, treated empirically with piperacillin-tazobactam; patients on renal replacement therapy and those under 18 years were excluded",
+    dose_range = "4 g piperacillin (with 0.5 g tazobactam) as a 3-min IV infusion every 8 h; samples drawn during the third consecutive dosing interval",
+    regions = "Denmark (single-centre intensive care unit, Aarhus University Hospital, Skejby; ClinicalTrials.gov NCT02306928)",
     apache_score_median = "19 (IQR 14-23)",
-    sofa_score_median   = "9 (IQR 7-10)",
-    aki_pct             = 67,
-    creat_range         = "53-446 umol/L observed; cohort median 170 umol/L (IQR 119-282)",
-    albumin_median      = "30 g/L (IQR 27-32)",
-    notes          = paste(
+    sofa_score_median = "9 (IQR 7-10)",
+    aki_pct = 67,
+    creat_range = "53-446 umol/L observed; cohort median 170 umol/L (IQR 119-282)",
+    albumin_median = "30 g/L (IQR 27-32)",
+    notes = paste(
       "15 critically ill adults sampled prospectively September 2014 -",
       "January 2015 during the third consecutive piperacillin-tazobactam",
       "(4 g/0.5 g) dose. Eight free-piperacillin plasma concentrations per",

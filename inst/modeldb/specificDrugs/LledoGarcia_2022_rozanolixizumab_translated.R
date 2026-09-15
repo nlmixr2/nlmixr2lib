@@ -5,18 +5,18 @@ LledoGarcia_2022_rozanolixizumab_translated <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "rozanolixizumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "rozanolixizumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rozanolixizumab", units = "mg", specimen = "tissue", verified = TRUE),
-    total_igg   = list(analyte = "endogenous immunoglobulin G", units = "g/L", specimen = "plasma", verified = TRUE)
+    total_igg = list(analyte = "endogenous immunoglobulin G", units = "g/L", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "human (predicted; no human data used)",
-    n_subjects    = 0L,
-    n_studies     = 0L,
+    species = "human (predicted; no human data used)",
+    n_subjects = 0L,
+    n_studies = 0L,
     disease_state = "healthy adults (simulated 75 kg reference subject)",
-    dose_range    = "1, 4 and 7 mg/kg single intravenous infusion simulated",
-    notes         = paste(
+    dose_range = "1, 4 and 7 mg/kg single intravenous infusion simulated",
+    notes = paste(
       "This is a forward prediction, not a fit. The typical values are the cynomolgus monkey estimates of",
       "LledoGarcia_2022_rozanolixizumab_cyno scaled to a 75 kg human (Supplementary Text S4:",
       "Y = Ycyno*(BWhuman/BWcyno)^b, with b = 0.75 for clearance-related parameters and b = 1 for volumes),",

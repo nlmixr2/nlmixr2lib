@@ -8,67 +8,67 @@ Papachristos_2020_bevacizumab_pk <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed in source analysis (single baseline value used per subject); applied as power-form covariate on CL with reference weight 70 kg.",
-      source_name        = "weight"
+      notes = "Time-fixed in source analysis (single baseline value used per subject); applied as power-form covariate on CL with reference weight 70 kg.",
+      source_name = "weight"
     ),
     SNP_ICAM1_RS1799969 = list(
-      description        = "ICAM-1 rs1799969 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ICAM-1 rs1799969 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type)",
-      notes              = "Time-fixed per subject. Multiplicative effect on CL. Mutant carriers (20% of the cohort) have lower bevacizumab clearance and higher trough concentrations.",
-      source_name        = "cat (Papachristos 2020 Table 1 narrative; the paper does not name the data column)"
+      notes = "Time-fixed per subject. Multiplicative effect on CL. Mutant carriers (20% of the cohort) have lower bevacizumab clearance and higher trough concentrations.",
+      source_name = "cat (Papachristos 2020 Table 1 narrative; the paper does not name the data column)"
     ),
     SNP_VEGFA_RS1570360 = list(
-      description        = "VEGF-A rs1570360 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "VEGF-A rs1570360 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type)",
-      notes              = "Time-fixed per subject. Multiplicative effect on inter-compartmental clearance Q. Mutant carriers (33% of the cohort) have higher Q.",
-      source_name        = "cat1 (Papachristos 2020 Table 1 narrative)"
+      notes = "Time-fixed per subject. Multiplicative effect on inter-compartmental clearance Q. Mutant carriers (33% of the cohort) have higher Q.",
+      source_name = "cat1 (Papachristos 2020 Table 1 narrative)"
     ),
     SNP_VEGFA_RS699947 = list(
-      description        = "VEGF-A rs699947 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "VEGF-A rs699947 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type)",
-      notes              = "Time-fixed per subject. Multiplicative effect on Q. Mutant carriers (52% of the cohort) have lower Q.",
-      source_name        = "cat2 (Papachristos 2020 Table 1 narrative)"
+      notes = "Time-fixed per subject. Multiplicative effect on Q. Mutant carriers (52% of the cohort) have lower Q.",
+      source_name = "cat2 (Papachristos 2020 Table 1 narrative)"
     )
   )
 
   population <- list(
-    n_subjects        = 46,
-    n_studies         = 1,
-    age_range         = "IQR 53-72 years (full range not reported)",
-    age_median        = "63 years",
-    weight_range      = "IQR 64.15-81.75 kg (full range not reported)",
-    weight_median     = "74.5 kg",
-    sex_female_pct    = 39,
-    race_ethnicity    = "Greek (single-centre study at the University Hospital of Patras, Greece); race not formally reported.",
-    disease_state     = "Adults with histologically confirmed metastatic colorectal cancer (mCRC); ECOG performance status 0-2.",
-    dose_range        = "5 mg/kg IV every 2 weeks (76% of patients) or 7.5 mg/kg IV every 3 weeks (24%) in combination with oxaliplatin/fluoropyrimidine or irinotecan/fluoropyrimidine chemotherapy.",
-    regions           = "Greece",
-    n_observations    = 156,
-    co_medication     = "BEV-FOLFIRI, BEV-FOLFOX, BEV-CapIRI, or BEV-CapOX (chemotherapy partner did not have a statistically significant effect on PK parameters).",
+    n_subjects = 46,
+    n_studies = 1,
+    age_range = "IQR 53-72 years (full range not reported)",
+    age_median = "63 years",
+    weight_range = "IQR 64.15-81.75 kg (full range not reported)",
+    weight_median = "74.5 kg",
+    sex_female_pct = 39,
+    race_ethnicity = "Greek (single-centre study at the University Hospital of Patras, Greece); race not formally reported.",
+    disease_state = "Adults with histologically confirmed metastatic colorectal cancer (mCRC); ECOG performance status 0-2.",
+    dose_range = "5 mg/kg IV every 2 weeks (76% of patients) or 7.5 mg/kg IV every 3 weeks (24%) in combination with oxaliplatin/fluoropyrimidine or irinotecan/fluoropyrimidine chemotherapy.",
+    regions = "Greece",
+    n_observations = 156,
+    co_medication = "BEV-FOLFIRI, BEV-FOLFOX, BEV-CapIRI, or BEV-CapOX (chemotherapy partner did not have a statistically significant effect on PK parameters).",
     snp_carrier_rates = c(
       ICAM1_rs1799969_mutant = 20,
       VEGFA_rs1570360_mutant = 33,
-      VEGFA_rs699947_mutant  = 52,
-      ICAM1_rs5498_mutant    = 70,
+      VEGFA_rs699947_mutant = 52,
+      ICAM1_rs5498_mutant = 70,
       VEGFA_rs2010963_mutant = 41
     ),
-    notes             = "Single-centre prospective observational study (Papachristos 2020 section 2.1 and 4.1). The non-significant SNPs (ICAM-1 rs5498 and VEGF-A rs2010963) are listed for completeness; only the three SNPs in covariateData entered the final PK model."
+    notes = "Single-centre prospective observational study (Papachristos 2020 section 2.1 and 4.1). The non-significant SNPs (ICAM-1 rs5498 and VEGF-A rs2010963) are listed for completeness; only the three SNPs in covariateData entered the final PK model."
   )
 
   ini({

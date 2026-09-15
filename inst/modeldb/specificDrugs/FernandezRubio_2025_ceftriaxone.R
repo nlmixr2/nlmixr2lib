@@ -6,20 +6,20 @@ FernandezRubio_2025_ceftriaxone <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation and standardised to a body surface area of 1.73 m^2",
-      units              = "mL/min/1.73m^2",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation and standardised to a body surface area of 1.73 m^2",
+      units = "mL/min/1.73m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per treatment episode in the source analysis. Fernandez Rubio 2025 Methods Sect. 4.3 states creatinine clearance was estimated with Cockcroft-Gault (reference [37], Cockcroft & Gault 1976) and 'standardized for 1.73 m2', so this column carries the BSA-normalised variant of the CRCL canonical rather than a raw mL/min value. Enters as the median-normalised power term (CRCL / 59.5)^0.62 on clearance (Results Sect. 2.2, first displayed equation). The 59.5 centring constant is the cohort median in Table 1 (IQR 48.5-88.4), so unlike several sibling entries in this register the printed equation constant and the tabulated median agree exactly. Eligibility excluded serum creatinine > 1.5 mg/dL and CrCl < 10 mL/min (Methods Sect. 4.2), so the model carries no information about severe renal impairment; the cohort is mildly-to-moderately impaired, consistent with its age (median 77 years). The bootstrap IQR of the exponent spans zero (0.5, -0.32-1.1), which the authors nonetheless retained on the -2LL / BIC criterion; the point estimate is carried here as printed.",
-      source_name        = "CrCl"
+      notes = "Time-fixed per treatment episode in the source analysis. Fernandez Rubio 2025 Methods Sect. 4.3 states creatinine clearance was estimated with Cockcroft-Gault (reference [37], Cockcroft & Gault 1976) and 'standardized for 1.73 m2', so this column carries the BSA-normalised variant of the CRCL canonical rather than a raw mL/min value. Enters as the median-normalised power term (CRCL / 59.5)^0.62 on clearance (Results Sect. 2.2, first displayed equation). The 59.5 centring constant is the cohort median in Table 1 (IQR 48.5-88.4), so unlike several sibling entries in this register the printed equation constant and the tabulated median agree exactly. Eligibility excluded serum creatinine > 1.5 mg/dL and CrCl < 10 mL/min (Methods Sect. 4.2), so the model carries no information about severe renal impairment; the cohort is mildly-to-moderately impaired, consistent with its age (median 77 years). The bootstrap IQR of the exponent spans zero (0.5, -0.32-1.1), which the authors nonetheless retained on the -2LL / BIC criterion; the point estimate is carried here as printed.",
+      source_name = "CrCl"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per treatment episode. Enters as the median-normalised power term (BMI / 29.3)^2.52 on the central volume of distribution (Fernandez Rubio 2025 Results Sect. 2.2, second displayed equation). The 29.3 centring constant is the cohort median in Table 1 (IQR 26.7-33.3, an overweight-to-obese elderly cohort), matching the printed equation exactly. The exponent 2.52 is unusually steep for a body-size term on volume -- far above the allometric 1 -- and it is estimated on 24 episodes with 37.3% RSE and a bootstrap IQR that spans zero (2.83, -0.26-6.13); it is carried here exactly as printed but should not be extrapolated outside the observed 26.7-33.3 interquartile band without care. Body weight, age and sex were also screened as covariates (Methods Sect. 4.5) but were not retained; see covariatesDataExcluded.",
-      source_name        = "BMI"
+      notes = "Time-fixed per treatment episode. Enters as the median-normalised power term (BMI / 29.3)^2.52 on the central volume of distribution (Fernandez Rubio 2025 Results Sect. 2.2, second displayed equation). The 29.3 centring constant is the cohort median in Table 1 (IQR 26.7-33.3, an overweight-to-obese elderly cohort), matching the printed equation exactly. The exponent 2.52 is unusually steep for a body-size term on volume -- far above the allometric 1 -- and it is estimated on 24 episodes with 37.3% RSE and a bootstrap IQR that spans zero (2.83, -0.26-6.13); it is carried here exactly as printed but should not be extrapolated outside the observed 26.7-33.3 interquartile band without care. Body weight, age and sex were also screened as covariates (Methods Sect. 4.5) but were not retained; see covariatesDataExcluded.",
+      source_name = "BMI"
     )
   )
 
@@ -33,52 +33,52 @@ FernandezRubio_2025_ceftriaxone <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a covariate on each structural parameter (Methods Sect. 4.5) but not retained in the final model. Cohort median 90 kg (IQR 69.8-99.5), Table 1. Body size enters the final model only through BMI on V1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a covariate on each structural parameter (Methods Sect. 4.5) but not retained in the final model. Cohort median 90 kg (IQR 69.8-99.5), Table 1. Body size enters the final model only through BMI on V1."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a covariate (Methods Sect. 4.5) but not retained. Cohort median 77 years (IQR 71-78), Table 1; the enrolment floor was 55 years (Methods Sect. 4.2). Age is effectively constant across this cohort, which is itself the reason the study exists -- the paper's framing is that elderly-specific ceftriaxone PK is under-studied, not that age is a within-cohort covariate."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a covariate (Methods Sect. 4.5) but not retained. Cohort median 77 years (IQR 71-78), Table 1; the enrolment floor was 55 years (Methods Sect. 4.2). Age is effectively constant across this cohort, which is itself the reason the study exists -- the paper's framing is that elderly-specific ceftriaxone PK is under-studied, not that age is a within-cohort covariate."
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "The only categorical covariate screened (Methods Sect. 4.5), tested through the exponential form theta_i = theta_pop * exp(beta_sex * SEX) with the source coding SEX 0 = female, 1 = male. Not retained in the final model, so no coefficient is published. Recorded here on the canonical SEXF orientation (1 = female), which is the inverse of the source's coding; had the effect been retained, the sign would need to be flipped. Cohort 18 of 24 episodes male (75%), Table 1."
+      notes = "The only categorical covariate screened (Methods Sect. 4.5), tested through the exponential form theta_i = theta_pop * exp(beta_sex * SEX) with the source coding SEX 0 = female, 1 = male. Not retained in the final model, so no coefficient is published. Recorded here on the canonical SEXF orientation (1 = female), which is the inverse of the source's coding; had the effect been retained, the sign would need to be flipped. Cohort 18 of 24 episodes male (75%), Table 1."
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 16L,
-    n_episodes       = 24L,
-    n_studies        = 1L,
-    n_samples        = 72L,
-    age_median       = "77 years (IQR 71-78); enrolment floor 55 years",
-    weight_median    = "90 kg (IQR 69.8-99.5)",
-    height_median    = "168 cm (IQR 161-180)",
-    bmi_median       = "29.3 kg/m^2 (IQR 26.7-33.3)",
+    species = "human",
+    n_subjects = 16L,
+    n_episodes = 24L,
+    n_studies = 1L,
+    n_samples = 72L,
+    age_median = "77 years (IQR 71-78); enrolment floor 55 years",
+    weight_median = "90 kg (IQR 69.8-99.5)",
+    height_median = "168 cm (IQR 161-180)",
+    bmi_median = "29.3 kg/m^2 (IQR 26.7-33.3)",
     # Patient-level, to match n_subjects: 10 of 16 patients (63%) were male,
     # so 6 of 16 (37.5%) were female. Fernandez Rubio 2025 Table 1 reports the
     # EPISODE-level figure instead (18 of 24 episodes, 75%, male -> 25%
     # female); the two differ because a patient who received more than one
     # regimen contributed more than one episode.
-    sex_female_pct   = 37.5,
-    disease_state    = "Enterococcus faecalis infective endocarditis caused by ampicillin-susceptible strains (24/24 episodes), treated with ampicillin plus high-dose ceftriaxone. Baseline laboratory values (median, IQR): serum protein 5.8 g/dL (5.5-6.5), serum creatinine 1.1 mg/dL (0.8-1.2). Ten of the 16 patients (63%) were male, accounting for 18 of the 24 episodes (75%).",
-    renal_function   = "Creatinine clearance (Cockcroft-Gault, standardised to 1.73 m^2) median 59.5 mL/min/1.73 m^2 (IQR 48.5-88.4). Exclusion criteria removed serum creatinine > 1.5 mg/dL and severe renal impairment (CrCl < 10 mL/min), so no dialysis or severely impaired patient is represented.",
-    dose_range       = "Ceftriaxone at least 4 g/day for more than 48 h: 2 g every 12 h in 18 episodes (75%), 4 g every 24 h in 3 episodes (12.5%), and 6 g every 24 h in 3 episodes (12.5%). All episodes also received ampicillin, which is not part of this model.",
-    protein_binding  = "Measured directly rather than assumed. Mean plasma protein binding was 85.7 +/- 6.4% pre-dose, 74.7 +/- 10.1% at +2 h, and 79.6 +/- 9.3% at +4 h -- markedly lower (i.e. a higher free fraction) than the 79-94% quoted for healthy young individuals, which the authors attribute to the hypoproteinaemia of ageing plus binding saturation at these high doses. Mean TOTAL ceftriaxone concentrations were 51.6 +/- 21.9 mg/L pre-dose, 129 +/- 53.2 mg/L at +2 h and 105.2 +/- 49.4 mg/L at +4 h; the corresponding mean FREE concentrations, which are what this model was fitted to, were 7.8 +/- 6.5, 34 +/- 26.5 and 22.7 +/- 19.7 mg/L.",
-    regions          = "Spain (two tertiary teaching hospitals in Seville), 2021-2022",
-    notes            = "Prospective observational PK study. Three blood samples were drawn per treatment episode at steady state (at least 48 h after treatment start): immediately pre-dose (Cmin), 2 +/- 0.5 h after the dose (C2) and 4 +/- 0.5 h after the dose (C4); a patient who received more than one regimen contributed one sample set per regimen, which is why 16 patients yield 24 episodes. Total and free ceftriaxone were quantified by LC-MS/MS, the free fraction isolated by 37 C ultrafiltration (Amicon Ultra 0.5 mL 30 K); the free standard curve was linear over 0.5-200 mg/L with a 0.5 mg/L lower limit of quantification. Albumin was NOT recorded (a stated limitation); total plasma protein was recorded instead and was not tested as a covariate."
+    sex_female_pct = 37.5,
+    disease_state = "Enterococcus faecalis infective endocarditis caused by ampicillin-susceptible strains (24/24 episodes), treated with ampicillin plus high-dose ceftriaxone. Baseline laboratory values (median, IQR): serum protein 5.8 g/dL (5.5-6.5), serum creatinine 1.1 mg/dL (0.8-1.2). Ten of the 16 patients (63%) were male, accounting for 18 of the 24 episodes (75%).",
+    renal_function = "Creatinine clearance (Cockcroft-Gault, standardised to 1.73 m^2) median 59.5 mL/min/1.73 m^2 (IQR 48.5-88.4). Exclusion criteria removed serum creatinine > 1.5 mg/dL and severe renal impairment (CrCl < 10 mL/min), so no dialysis or severely impaired patient is represented.",
+    dose_range = "Ceftriaxone at least 4 g/day for more than 48 h: 2 g every 12 h in 18 episodes (75%), 4 g every 24 h in 3 episodes (12.5%), and 6 g every 24 h in 3 episodes (12.5%). All episodes also received ampicillin, which is not part of this model.",
+    protein_binding = "Measured directly rather than assumed. Mean plasma protein binding was 85.7 +/- 6.4% pre-dose, 74.7 +/- 10.1% at +2 h, and 79.6 +/- 9.3% at +4 h -- markedly lower (i.e. a higher free fraction) than the 79-94% quoted for healthy young individuals, which the authors attribute to the hypoproteinaemia of ageing plus binding saturation at these high doses. Mean TOTAL ceftriaxone concentrations were 51.6 +/- 21.9 mg/L pre-dose, 129 +/- 53.2 mg/L at +2 h and 105.2 +/- 49.4 mg/L at +4 h; the corresponding mean FREE concentrations, which are what this model was fitted to, were 7.8 +/- 6.5, 34 +/- 26.5 and 22.7 +/- 19.7 mg/L.",
+    regions = "Spain (two tertiary teaching hospitals in Seville), 2021-2022",
+    notes = "Prospective observational PK study. Three blood samples were drawn per treatment episode at steady state (at least 48 h after treatment start): immediately pre-dose (Cmin), 2 +/- 0.5 h after the dose (C2) and 4 +/- 0.5 h after the dose (C4); a patient who received more than one regimen contributed one sample set per regimen, which is why 16 patients yield 24 episodes. Total and free ceftriaxone were quantified by LC-MS/MS, the free fraction isolated by 37 C ultrafiltration (Amicon Ultra 0.5 mL 30 K); the free standard curve was linear over 0.5-200 mg/L with a 0.5 mg/L lower limit of quantification. Albumin was NOT recorded (a stated limitation); total plasma protein was recorded instead and was not tested as a covariate."
   )
 
   ini({

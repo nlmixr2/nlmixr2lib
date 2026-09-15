@@ -36,13 +36,18 @@ PillaReddy_2013_ziprasidone_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ziprasidone panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "ziprasidone panss subscales",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "ziprasidone panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -51,38 +56,38 @@ PillaReddy_2013_ziprasidone_panss_subscales <- function() {
   covariatesDataExcluded <- list(
     DIS = list(
       description = "Disease state at entry (acute vs chronic schizophrenia)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II placebo-model covariate; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II placebo-model covariate; not implemented."
     ),
     USA = list(
       description = "Study geographic origin (USA vs non-USA)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II placebo-model covariate; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II placebo-model covariate; not implemented."
     ),
     REG = list(
       description = "Dosing regimen (qd vs bid)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II residual-error covariate on PANSS negative; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II residual-error covariate on PANSS negative; not implemented."
     ),
     DUR = list(
       description = "Study duration (short vs long)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II residual-error covariate on PANSS positive; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II residual-error covariate on PANSS positive; not implemented."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 741L,
-    n_studies       = 12L,
-    age_range       = "Adults with schizophrenia (specific range not tabulated in Part II).",
-    weight_range    = "Adult schizophrenia population.",
-    sex_female_pct  = NA_real_,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 741L,
+    n_studies = 12L,
+    age_range = "Adults with schizophrenia (specific range not tabulated in Part II).",
+    weight_range = "Adult schizophrenia population.",
+    sex_female_pct = NA_real_,
+    disease_state = paste(
       "Adults with schizophrenia recruited into acute and chronic-stable",
       "Phase II / III double-blind clinical trials. Ziprasidone arms in",
       "Part I Table 1: 128-114 (40-80 mg bid), 128-115 (20-100 mg bid),",
@@ -91,9 +96,9 @@ PillaReddy_2013_ziprasidone_panss_subscales <- function() {
       "PANSS general 44 for the atypical-antipsychotic pool (Part II Table",
       "2)."
     ),
-    dose_range      = "Oral ziprasidone 20-100 mg/day, qd or bid (Part I Table 1).",
-    regions         = "Pooled across multinational schizophrenia trials 1989-2009.",
-    notes           = paste(
+    dose_range = "Oral ziprasidone 20-100 mg/day, qd or bid (Part I Table 1).",
+    regions = "Pooled across multinational schizophrenia trials 1989-2009.",
+    notes = paste(
       "Ziprasidone showed the slowest onset to maximum drug effect on the",
       "negative subscale among the five compared drugs (t1/2 to Emax =",
       "log(2)/0.0073 = ~95 days), and the highest EC50 values across all",

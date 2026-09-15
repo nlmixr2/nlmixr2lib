@@ -39,21 +39,21 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_pyra       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
-    central_pyra     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at dosing",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at dosing",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per dosing occasion (re-collected when women were",
         "redosed in the third trimester). Pyrimethamine apparent V2/F",
         "is scaled exponentially as V2 = V2_TV * exp(0.0084 * (WT -",
@@ -63,14 +63,14 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
         "not reach statistical significance and is not retained for",
         "sulfadoxine."
       ),
-      source_name        = "Body weight (kg)"
+      source_name = "Body weight (kg)"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per dosing occasion. Pyrimethamine apparent CL/F",
         "is shifted additively by 0.016 L/h per year of age, centred",
         "at the population-median reference 23 years (cohort mean",
@@ -79,14 +79,14 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
         "Age was tested as a covariate on sulfadoxine CL/F but was not",
         "retained in the final model."
       ),
-      source_name        = "Age (years)"
+      source_name = "Age (years)"
     ),
     ALB = list(
-      description        = "Serum albumin concentration at dosing",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration at dosing",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per dosing occasion. Sulfadoxine apparent CL/F is",
         "shifted additively by 0.013 L/h per unit decrease in serum",
         "albumin (Odongo 2015 Discussion: 'a unit decrease in the",
@@ -104,14 +104,14 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
         "with the per-trimester Bayesian post-hoc estimates in Table",
         "3 of the paper, also flagged in vignette Errata."
       ),
-      source_name        = "Serum albumin (g/L per Table 1 plausibility; reported as g/dL)"
+      source_name = "Serum albumin (g/L per Table 1 plausibility; reported as g/dL)"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester); 0 = non-pregnant.",
         "Both sulfadoxine and pyrimethamine apparent CL/F are shifted",
         "additively (in L/h) by a pregnancy step: +0.0284 L/h for",
@@ -119,14 +119,14 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
         "Pregnancy-CL rows). Reference category is the non-pregnant",
         "state."
       ),
-      source_name        = "Pregnancy status"
+      source_name = "Pregnancy status"
     ),
     GA = list(
-      description        = "Gestational age at the time of dosing",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at the time of dosing",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject across the second- and",
         "third-trimester visits (per-occasion gestational age at",
         "dose, NOT gestational age at birth). For non-pregnant",
@@ -145,28 +145,28 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
         "from menstrual start) are identical; only the time of",
         "recording differs."
       ),
-      source_name        = "Gestational age (weeks)"
+      source_name = "Gestational age (weeks)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 199,
+    species = "human",
+    n_subjects = 199,
     n_subjects_unique = 121,
-    n_studies      = 1,
-    age_range      = paste(
+    n_studies = 1,
+    age_range = paste(
       "Adult women of reproductive age (means 23.7 / 22.8 / 23.5",
       "years across non-pregnant / T2 / T3 cohorts; Table 1 of",
       "Odongo 2015)."
     ),
-    weight_range   = paste(
+    weight_range = paste(
       "Adult women (per-group median 58.0 / 60.0 / 63.5 kg across",
       "non-pregnant / T2 / T3; cohort median 60 kg, the second-",
       "trimester median; Table 1 of Odongo 2015)."
     ),
     sex_female_pct = 100,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy Ugandan women dosed as part of an intermittent",
       "preventive treatment in pregnancy (IPTp) study. Inclusion:",
       "pregnancy of at least 16 weeks (median GA 20 weeks in T2 and",
@@ -177,7 +177,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
       "T3; the same women were sequentially redosed in T3 after a",
       "wash-out of 2-6 weeks following the T2 follow-up window."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral dose of three fixed-dose combination tablets",
       "(Malaren brand; Rene Industries, Kampala, Uganda) containing",
       "a total of 1500 mg sulfadoxine and 75 mg pyrimethamine,",
@@ -185,8 +185,8 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
       "after an overnight fast. Subjects in the pregnant cohort",
       "received a second matched dose during the third trimester."
     ),
-    regions        = "East Africa (Uganda; Mulago Hospital, Kampala)",
-    notes          = paste(
+    regions = "East Africa (Uganda; Mulago Hospital, Kampala)",
+    notes = paste(
       "Demographics and dataset composition from Odongo 2015 Table",
       "1 and Section 2.5.1. 34 non-pregnant women contributed 172",
       "sulfadoxine and 172 pyrimethamine concentration records",

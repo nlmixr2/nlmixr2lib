@@ -47,18 +47,18 @@ Chen_2021_lorlatinib_teae_grade3 <- function() {
   )
   vignette <- "Chen_2021_lorlatinib_exposure_response"
   units <- list(
-    time          = "n/a (static landmark exposure-safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark exposure-safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_teae_grade3 (probability of any grade >= 3 treatment-emergent adverse event, 0-1; also logit_teae_grade3)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual lorlatinib trough plasma concentration at steady state (Ctrough,ss), per subject. Supplied as data: this model has no PK layer, and the source analysis used individual predictions from the companion lorlatinib population PK model with time-varying clearance (Chen 2021, doi:10.1002/psp4.12585).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual lorlatinib trough plasma concentration at steady state (Ctrough,ss), per subject. Supplied as data: this model has no PK layer, and the source analysis used individual predictions from the companion lorlatinib population PK model with time-varying clearance (Chen 2021, doi:10.1002/psp4.12585).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma concentration, at STEADY STATE rather",
         "than at the end of cycle 1 -- Chen 2021 screened both Ctrough,ss",
         "and Ctrough,cycle 1 in the univariate exposure-metric forward",
@@ -78,14 +78,14 @@ Chen_2021_lorlatinib_teae_grade3 <- function() {
         "ALK-inhibitor-pretreated patients with baseline CNS metastasis",
         "dosed at 100 mg q.d. (Chen 2021 Results, Exposure-efficacy)."
       ),
-      source_name        = "Ctrough ss (trough concentration at steady-state)"
+      source_name = "Ctrough ss (trough concentration at steady-state)"
     ),
     TCHOL = list(
-      description        = "Baseline total serum cholesterol (BCHOL).",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline total serum cholesterol (BCHOL).",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "NOT centred: Chen 2021 fits the raw covariate value, so the",
         "intercept -7.995 is the logit at TCHOL = 0, TE = 0 and",
         "CTROUGH = 1 ng/mL rather than at any clinically meaningful",
@@ -100,14 +100,14 @@ Chen_2021_lorlatinib_teae_grade3 <- function() {
         "hypercholesterolemia itself is the dominant contributor to that",
         "composite in this trial."
       ),
-      source_name        = "BCHOL (baseline cholesterol)"
+      source_name = "BCHOL (baseline cholesterol)"
     ),
     T_FIRSTDOSE = list(
-      description        = "Time on study from the first lorlatinib dose up to the event (TE).",
-      units              = "h",
-      type               = "continuous",
+      description = "Time on study from the first lorlatinib dose up to the event (TE).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Canonical units are hours, so model() divides by 24 to recover",
         "the DAYS in which Chen 2021 estimates the coefficient (0.012 per",
         "day, odds ratio 1.012 per day) -- exactly the convention the",
@@ -122,16 +122,16 @@ Chen_2021_lorlatinib_teae_grade3 <- function() {
         "the hypercholesterolemia model's (0.004 per day), i.e. cumulative",
         "on-study time matters far more for the composite endpoint."
       ),
-      source_name        = "TE (time from first dose up to the event, days)"
+      source_name = "TE (time from first dose up to the event, days)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened across all four safety endpoints (Chen 2021 Table S4",
         "candidate-covariate list) but retained only in the companion",
         "weight-gain model. Safety analysis set median 66.79 kg, range",
@@ -140,9 +140,9 @@ Chen_2021_lorlatinib_teae_grade3 <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator; 1 = Asian, 0 = other.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained for this endpoint; retained only in the",
         "companion hypertriglyceridemia model. Safety analysis set Asian",
         "110/328 (34%) (Chen 2021 Table 1)."
@@ -151,20 +151,20 @@ Chen_2021_lorlatinib_teae_grade3 <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 328L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 328L,
+    n_studies = 1L,
     n_observations = "328 binary any-grade->=-3-TEAE records (one per patient); this is the only one of the four Chen 2021 safety models fitted to the complete safety analysis set (Table 3 n/N = 328/328), because it needs no baseline laboratory covariate that could be missing",
-    age_range      = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
-    weight_range   = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
+    age_range = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
+    weight_range = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
     sex_female_pct = 58.0,
     race_ethnicity = c(White = 51.0, Asian = 34.0, Other = 4.0, Black = 2.0, Missing = 9.0),
-    disease_state  = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
-    dose_range     = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
-    regions        = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
+    disease_state = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
+    dose_range = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
+    regions = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
     baseline_total_cholesterol = "median 193.00 mg/dL, range 3.00-321.00, mean 192.95 (SD 44.06), 28 missing (Chen 2021 Table 2, safety population)",
-    concomitant_medication     = "concomitant statin therapy 266/328 (81%), steroid therapy 139 (42%), narcotics 164 (50%) (Chen 2021 Table 1)",
-    notes          = paste0(
+    concomitant_medication = "concomitant statin therapy 266/328 (81%), steroid therapy 139 (42%), narcotics 164 (50%) (Chen 2021 Table 1)",
+    notes = paste0(
       "Chen 2021 assessed exposure-response only for safety endpoints ",
       "with an incidence above 10% in all treated patients. This ",
       "composite endpoint is a SUPERSET of the paper's three ",

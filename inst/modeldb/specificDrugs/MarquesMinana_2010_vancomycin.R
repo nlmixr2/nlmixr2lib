@@ -9,7 +9,7 @@ MarquesMinana_2010_vancomycin <- function() {
     sep = " "
   )
   vignette <- "MarquesMinana_2010_vancomycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -20,11 +20,11 @@ MarquesMinana_2010_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Marques-Minana 2010 Table 2 original-group: mean 1.7 kg",
         "(range 0.7-3.7, SD 0.8). Enters CL and V_d linearly with the published",
         "per-kg coefficients (no separately estimated allometric exponent);",
@@ -32,14 +32,14 @@ MarquesMinana_2010_vancomycin <- function() {
         "and TVV = (theta3 * (1 - theta4 * SPI)) * wt come directly from",
         "Table 3 legend."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Marques-Minana 2010 Table 2 original-group: mean 34.6",
         "weeks (range 25.1-48.1, SD 5.3). The source paper carries PMA in weeks",
         "and the published TVCL formula uses PMA in weeks directly; this model",
@@ -48,14 +48,14 @@ MarquesMinana_2010_vancomycin <- function() {
         "applies unchanged. Reference category n/a (linear effect, no centring).",
         "Drives CL maturation through the linear PMA term in Table 3."
       ),
-      source_name        = "PMA (weeks)"
+      source_name = "PMA (weeks)"
     ),
     CONMED_AMOXCLAV = list(
-      description        = "Concomitant amoxicillin-clavulanic acid coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant amoxicillin-clavulanic acid coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant amoxicillin-clavulanic acid)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject's vancomycin course. Marques-Minana 2010",
         "Table 3 theta2 = 0.650: multiplicative deviation on CL when",
         "amoxicillin-clavulanic acid is coadministered (+65% CL vs no",
@@ -66,14 +66,14 @@ MarquesMinana_2010_vancomycin <- function() {
         "increase vancomycin renal clearance. Population prevalence not",
         "tabulated in the paper (one of 21 co-administered drugs evaluated)."
       ),
-      source_name        = "AMX"
+      source_name = "AMX"
     ),
     CONMED_SPIRON = list(
-      description        = "Concomitant spironolactone coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant spironolactone coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant spironolactone)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject's vancomycin course. Marques-Minana 2010",
         "Table 3 theta4 = 0.344: multiplicative fractional decrease in",
         "weight-normalized V_d when spironolactone is coadministered",
@@ -83,27 +83,27 @@ MarquesMinana_2010_vancomycin <- function() {
         "vancomycin distribute primarily into ECF, so the V_d shrinks.",
         "Population prevalence not tabulated in the paper."
       ),
-      source_name        = "SPI"
+      source_name = "SPI"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 70L,
-    n_studies        = 1L,
-    age_range        = "postmenstrual age 25.1-48.1 weeks; gestational age 24.0-42.0 weeks; postnatal age 4.0-63.0 days",
-    age_median       = "postmenstrual age 34.6 weeks; gestational age 32.2 weeks; postnatal age 16.9 days",
-    weight_range     = "0.7-3.7 kg",
-    weight_median    = "1.7 kg",
-    sex_female_pct   = 53,
-    race_ethnicity   = "Not reported (single-center cohort at 'Hospital La Fe', Valencia, Spain)",
-    disease_state    = "Neonates in the neonatal intensive care unit with proven or suspected gram-positive infections treated with intravenous vancomycin",
-    dose_range       = "15 mg/kg per dose IV (constant-rate infusion over 60 min); dosing interval 8, 12, 18, or 24 h depending on weight and postnatal age (Table 1)",
-    regions          = "Spain ('Hospital La Fe', Valencia)",
+    species = "human",
+    n_subjects = 70L,
+    n_studies = 1L,
+    age_range = "postmenstrual age 25.1-48.1 weeks; gestational age 24.0-42.0 weeks; postnatal age 4.0-63.0 days",
+    age_median = "postmenstrual age 34.6 weeks; gestational age 32.2 weeks; postnatal age 16.9 days",
+    weight_range = "0.7-3.7 kg",
+    weight_median = "1.7 kg",
+    sex_female_pct = 53,
+    race_ethnicity = "Not reported (single-center cohort at 'Hospital La Fe', Valencia, Spain)",
+    disease_state = "Neonates in the neonatal intensive care unit with proven or suspected gram-positive infections treated with intravenous vancomycin",
+    dose_range = "15 mg/kg per dose IV (constant-rate infusion over 60 min); dosing interval 8, 12, 18, or 24 h depending on weight and postnatal age (Table 1)",
+    regions = "Spain ('Hospital La Fe', Valencia)",
     gestational_age_range = "24.0-42.0 weeks (mean 32.2, SD 5.0)",
-    postnatal_age_range   = "4.0-63.0 days (mean 16.9, SD 10.9)",
-    bsa_range        = "0.1-0.3 m^2 (mean 0.15, SD 0.04)",
-    notes            = paste(
+    postnatal_age_range = "4.0-63.0 days (mean 16.9, SD 10.9)",
+    bsa_range = "0.1-0.3 m^2 (mean 0.15, SD 0.04)",
+    notes = paste(
       "Patient characteristics from Marques-Minana 2010 Table 2 (original",
       "group n = 70; a separate validation group of 41 neonates with similar",
       "demographics was used for external evaluation but not for model",

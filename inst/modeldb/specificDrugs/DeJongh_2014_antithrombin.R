@@ -20,8 +20,8 @@ DeJongh_2014_antithrombin <- function() {
   )
   vignette <- "DeJongh_2014_antithrombin"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "% of normal"
   )
 
@@ -29,17 +29,17 @@ DeJongh_2014_antithrombin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "antithrombin", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "antithrombin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "antithrombin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     PREG = list(
-      description        = "Pregnancy status (delivery-vs-surgery cohort indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status (delivery-vs-surgery cohort indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-pregnant surgery-cohort patient; canonical reference)",
-      notes              = paste(
+      notes = paste(
         "1 = delivery patient (peripartum pregnant woman treated for",
         "peripartum VTE prevention); 0 = surgery patient (non-pregnant",
         "adult receiving perioperative treatment). The DeJongh 2014",
@@ -51,18 +51,18 @@ DeJongh_2014_antithrombin <- function() {
         "volume expansion, altered hepatic clearance) rather than to",
         "the delivery event itself."
       ),
-      source_name        = "DELIVERY"
+      source_name = "DELIVERY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 3L,
-    age_range      = "adults (specific range not reported by the paper)",
-    weight_range   = "not reported (simulations used typical WT = 76 kg with variance 204 kg^2)",
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 3L,
+    age_range = "adults (specific range not reported by the paper)",
+    weight_range = "not reported (simulations used typical WT = 76 kg with variance 204 kg^2)",
     sex_female_pct = 87,
-    disease_state  = paste(
+    disease_state = paste(
       "Hereditary antithrombin (AT) deficiency (HD).",
       "Development: 15 non-high-risk HD patients receiving a single",
       "IV bolus dose of rhAT (AT III 009-00; 50 or 100 IU/kg;",
@@ -72,15 +72,15 @@ DeJongh_2014_antithrombin <- function() {
       "AT HD 012-04 (NCT00110513). Mean baseline AT activity",
       "46-54% of normal across cohorts."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single-dose PK: 50 or 100 IU/kg IV bolus (15-min infusion).",
       "Clinical trials: individualized loading (15-min infusion)",
       "followed immediately by continuous infusion maintenance;",
       "median total dose 523-1194 IU/kg (surgery cohorts) and",
       "726-973 IU/kg (delivery cohorts) over 3-19 days."
     ),
-    regions        = "European Union (development PK study AT III 009-00)",
-    notes          = paste(
+    regions = "European Union (development PK study AT III 009-00)",
+    notes = paste(
       "Baseline demographics from paper Methods 'Studies and",
       "Patients' and Table 1. NONMEM versions V.2 and 7.2 (Icon)",
       "with FOCE-I. Proportional residual error model. Population",

@@ -20,23 +20,23 @@ Ku_2018_diazepam <- function() {
     sep = " "
   )
   vignette <- "Ku_2018_diazepam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "diazepam", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "diazepam", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "diazepam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling with reference weight 70 kg and",
         "fixed theory-based exponents (Ku 2018 Methods / Results 'Population",
         "PK model development'): 0.75 on CL and Q, 1.0 on V1 and V2.",
@@ -44,36 +44,36 @@ Ku_2018_diazepam <- function() {
         "99.7%) and was rejected. Cohort median 15 kg, range 5-89 kg",
         "(Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 87L,
-    n_studies       = 1L,
-    n_observations  = 162L,
-    age_range       = "0.4-17.8 years",
-    age_median      = "3.9 years",
-    age_groups      = "3 months to <3 years 45%; 3 to <13 years 44%; 13-18 years 11%",
-    weight_range    = "5-89 kg",
-    weight_median   = "15 kg",
-    sex_female_pct  = 48,
-    race_ethnicity  = c(White = 57, Hispanic_ethnicity = 38),
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 87L,
+    n_studies = 1L,
+    n_observations = 162L,
+    age_range = "0.4-17.8 years",
+    age_median = "3.9 years",
+    age_groups = "3 months to <3 years 45%; 3 to <13 years 44%; 13-18 years 11%",
+    weight_range = "5-89 kg",
+    weight_median = "15 kg",
+    sex_female_pct = 48,
+    race_ethnicity = c(White = 57, Hispanic_ethnicity = 38),
+    disease_state = paste(
       "Generalized convulsive status epilepticus presenting to the emergency",
       "department. Patients excluded for pregnancy, hypotensive shock,",
       "significant cardiac dysrhythmia, need for emergent surgery or general",
       "anesthesia, known contraindication to benzodiazepines, or",
       "benzodiazepine use within 7 days of presentation."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Initial IV diazepam 0.2 mg/kg (maximum 8 mg) by slow push over 1",
       "minute. Patients with continued convulsions received a second dose of",
       "0.1 mg/kg (maximum 4 mg). 28% of subjects received a second dose."
     ),
-    regions         = "United States (11 large academic pediatric hospitals)",
-    notes           = paste(
+    regions = "United States (11 large academic pediatric hospitals)",
+    notes = paste(
       "Multicenter double-blind randomized clinical trial NCT00621478 /",
       "IND #79,010 comparing IV diazepam vs IV lorazepam for pediatric",
       "status epilepticus (Chamberlain 2014 JAMA). Patients enrolled under",

@@ -8,69 +8,76 @@ Melhem_2022_dostarlimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling (WT / 70)^exponent on CL (exponent 0.470) and on Vc/Vp (exponent 0.419). Reference 70 kg.",
-      source_name        = "WT"
+      notes = "Allometric power scaling (WT / 70)^exponent on CL (exponent 0.470) and on Vc/Vp (exponent 0.419). Reference 70 kg.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (AGE / 64)^-0.227 on CL. Reference 64 years (median of analysis set; reference patient described in Melhem 2022 Methods, 'PopPK model development').",
-      source_name        = "AGE"
+      notes = "Power scaling (AGE / 64)^-0.227 on CL. Reference 64 years (median of analysis set; reference patient described in Melhem 2022 Methods, 'PopPK model development').",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Serum albumin (time-varying)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (time-varying)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate. Power scaling (ALB / 39)^-1.01 on CL and (ALB / 39)^-0.153 on Vc. Reference 39 g/L (median of analysis set, Table 2; the Methods text writes 'g dL-1' but this is a typo — Table 2 lists albumin in g/L with median 39).",
-      source_name        = "ALB"
+      notes = "Time-varying covariate. Power scaling (ALB / 39)^-1.01 on CL and (ALB / 39)^-0.153 on Vc. Reference 39 g/L (median of analysis set, Table 2; the Methods text writes 'g dL-1' but this is a typo — Table 2 lists albumin in g/L with median 39).",
+      source_name = "ALB"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase (time-varying)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase (time-varying)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate. Power scaling (ALT / 18)^-0.0585 on CL. Reference 18 U/L (median of analysis set, Table 2).",
-      source_name        = "ALT"
+      notes = "Time-varying covariate. Power scaling (ALT / 18)^-0.0585 on CL. Reference 18 U/L (median of analysis set, Table 2).",
+      source_name = "ALT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the most common group, 77.3% of the analysis set)",
-      notes              = "Female is the reference category in Melhem 2022 (theta_CL_SEX and theta_Vc_SEX are 0 for females and estimated for males). Implemented here as multiplicative (1 + theta * (1 - SEXF)) so that the male effect (SEXF = 0) gives 1 + theta and female (SEXF = 1) gives 1.",
-      source_name        = "SEX (paper codes male indicator; mapped to canonical SEXF via 1 - SEXM)"
+      notes = "Female is the reference category in Melhem 2022 (theta_CL_SEX and theta_Vc_SEX are 0 for females and estimated for males). Implemented here as multiplicative (1 + theta * (1 - SEXF)) so that the male effect (SEXF = 0) gives 1 + theta and female (SEXF = 1) gives 1.",
+      source_name = "SEX (paper codes male indicator; mapped to canonical SEXF via 1 - SEXM)"
     )
   )
 
   population <- list(
-    n_subjects     = 546L,
-    n_studies      = 1L,
-    age_range      = "24-86 years",
-    age_median     = "64 years",
-    weight_range   = "34.0-182.0 kg",
-    weight_median  = "71.4 kg",
+    n_subjects = 546L,
+    n_studies = 1L,
+    age_range = "24-86 years",
+    age_median = "64 years",
+    weight_range = "34.0-182.0 kg",
+    weight_median = "71.4 kg",
     sex_female_pct = 77.3,
-    race_ethnicity = c(White = 75.1, Black_AfricanAmerican = 3.5, Asian = 2.4, Other = 1.1, Unknown = 0.9, NotReported = 16.3),
-    disease_state  = "Advanced or recurrent solid tumours (mismatch repair-proficient/deficient endometrial cancer, NSCLC, non-EC dMMR/MSI-H or POLE-mutant tumours, ovarian cancer)",
-    dose_range     = "1, 3 or 10 mg/kg IV Q2W (Part 1); 500 mg Q3W or 1000 mg Q6W (Part 2A); 500 mg Q3W x 4 cycles followed by 1000 mg Q6W (Part 2B; recommended therapeutic dose)",
-    regions        = "Multinational phase 1 (GARNET, NCT02715284)",
+    race_ethnicity = c(
+      White = 75.1,
+      Black_AfricanAmerican = 3.5,
+      Asian = 2.4,
+      Other = 1.1,
+      Unknown = 0.9,
+      NotReported = 16.3
+    ),
+    disease_state = "Advanced or recurrent solid tumours (mismatch repair-proficient/deficient endometrial cancer, NSCLC, non-EC dMMR/MSI-H or POLE-mutant tumours, ovarian cancer)",
+    dose_range = "1, 3 or 10 mg/kg IV Q2W (Part 1); 500 mg Q3W or 1000 mg Q6W (Part 2A); 500 mg Q3W x 4 cycles followed by 1000 mg Q6W (Part 2B; recommended therapeutic dose)",
+    regions = "Multinational phase 1 (GARNET, NCT02715284)",
     ada_positive_pct = 18.5,
     hepatic_impairment_pct = c(none = 89.0, mild = 10.1, moderate = 0.9, severe = 0),
-    renal_impairment_pct   = c(none = 38.3, mild = 43.0, moderate = 18.3, severe = 0.4),
-    notes          = "Baseline demographics from Melhem 2022 Table 2 (analysis set, N = 546). 4783 PK observations used in the final model after excluding 21 records with |CWRES| > 5. Hepatic and renal impairment did not affect dostarlimab PK. Reference patient (Methods, last paragraph): female, 70 kg, 64 years, ALB 39 g/L, ALT 18 U/L."
+    renal_impairment_pct = c(none = 38.3, mild = 43.0, moderate = 18.3, severe = 0.4),
+    notes = "Baseline demographics from Melhem 2022 Table 2 (analysis set, N = 546). 4783 PK observations used in the final model after excluding 21 records with |CWRES| > 5. Hepatic and renal impairment did not affect dostarlimab PK. Reference patient (Methods, last paragraph): female, 70 kg, 64 years, ALB 39 g/L, ALT 18 U/L."
   )
 
   ini({

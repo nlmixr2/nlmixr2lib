@@ -10,12 +10,12 @@ Yu_2023_vancomycin <- function() {
 
   covariateData <- list(
     URINE_VOL_24H = list(
-      description        = "Residual diuresis: total urine volume produced over 24 hours, measured on the day of vancomycin concentration monitoring",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "Residual diuresis: total urine volume produced over 24 hours, measured on the day of vancomycin concentration monitoring",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2023 Methods ('24-h urine volume (UV)') and Table 1: median 160 mL/24h (IQR 7.00-780, range 0.00-6220); 33/71 (46.5%) at or below 100 mL, 12/71 (16.9%) 100-500 mL, 6/71 (8.45%) at or above 2500 mL. The only covariate retained in the final model (Supplementary Table S1 forward-inclusion / backward-elimination sequence: adding UV on CL drops OFV by 16.14, p < 0.001; removing it raises OFV by 16.14). Enters CL as the multiplicative power term e_urine_vol_24h_cl^(log10(URINE_VOL_24H + 10) / 2.3), printed in the Table 2 footnote as 'CL (L/h)=1.05*1.90^(LOG(UV+10)/2.3)'. The +10 mL offset keeps the term finite for the anuric subjects (UV = 0) that make up nearly half the cohort. The divisor 2.3 is the cohort median-normalising constant log10(160 + 10) = 2.230 rounded to two significant figures, consistent with Yu 2023 Methods ('the effects of continuous covariates were modeled using a median-normalized model'), so LOG in the footnote is base-10 and not the NONMEM natural log. The natural-log reading is falsified by the paper's own Figure 3: it would put CL at 9.79 L/h for a 3000 mL/24h subject, giving 1500 mg q12h a probability of AUC >= 400 mg*h/L of about 22%, whereas Figure 3A places 1500 mg q12h at 100% across every simulated urine volume. See the vignette section 'Which logarithm?' for the full adjudication.",
-      source_name        = "UV"
+      notes = "Yu 2023 Methods ('24-h urine volume (UV)') and Table 1: median 160 mL/24h (IQR 7.00-780, range 0.00-6220); 33/71 (46.5%) at or below 100 mL, 12/71 (16.9%) 100-500 mL, 6/71 (8.45%) at or above 2500 mL. The only covariate retained in the final model (Supplementary Table S1 forward-inclusion / backward-elimination sequence: adding UV on CL drops OFV by 16.14, p < 0.001; removing it raises OFV by 16.14). Enters CL as the multiplicative power term e_urine_vol_24h_cl^(log10(URINE_VOL_24H + 10) / 2.3), printed in the Table 2 footnote as 'CL (L/h)=1.05*1.90^(LOG(UV+10)/2.3)'. The +10 mL offset keeps the term finite for the anuric subjects (UV = 0) that make up nearly half the cohort. The divisor 2.3 is the cohort median-normalising constant log10(160 + 10) = 2.230 rounded to two significant figures, consistent with Yu 2023 Methods ('the effects of continuous covariates were modeled using a median-normalized model'), so LOG in the footnote is base-10 and not the NONMEM natural log. The natural-log reading is falsified by the paper's own Figure 3: it would put CL at 9.79 L/h for a 3000 mL/24h subject, giving 1500 mg q12h a probability of AUC >= 400 mg*h/L of about 22%, whereas Figure 3A places 1500 mg q12h at 100% across every simulated urine volume. See the vignette section 'Which logarithm?' for the full adjudication.",
+      source_name = "UV"
     )
   )
 
@@ -26,71 +26,71 @@ Yu_2023_vancomycin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened as a demographic covariate; not retained. Yu 2023 Table 1: mean 61.6 (SD 14.6) years, range 24-87."
+      units = "year",
+      type = "continuous",
+      notes = "Screened as a demographic covariate; not retained. Yu 2023 Table 1: mean 61.6 (SD 14.6) years, range 24-87."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "binary",
-      type        = "categorical",
-      notes       = "Screened on V (Supplementary Table S1 step 8: dOFV -0.023, p > 0.05); not retained. Yu 2023 Table 1: 27/71 female (38.0%), 44/71 male (62.0%)."
+      units = "binary",
+      type = "categorical",
+      notes = "Screened on V (Supplementary Table S1 step 8: dOFV -0.023, p > 0.05); not retained. Yu 2023 Table 1: 27/71 female (38.0%), 44/71 male (62.0%)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on V as a power term (Supplementary Table S1 step 6: dOFV -1.435, p > 0.05); not retained. Yu 2023 Table 1: mean 64.2 (SD 14.7) kg, range 32.1-100. Note that this model does NOT scale either CL or V with body weight."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on V as a power term (Supplementary Table S1 step 6: dOFV -1.435, p > 0.05); not retained. Yu 2023 Table 1: mean 64.2 (SD 14.7) kg, range 32.1-100. Note that this model does NOT scale either CL or V with body weight."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on CL as a linear term (Supplementary Table S1 step 4: dOFV -9.4, p < 0.01) and on V as a power term (step 7: dOFV -2.679, p > 0.05); the CL effect entered on forward inclusion but was removed on backward elimination (step 10: dOFV +9.405, p > 0.001). Yu 2023 Table 1: mean 23.3 (SD 3.97) kg/m^2, range 12.7-33.8."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on CL as a linear term (Supplementary Table S1 step 4: dOFV -9.4, p < 0.01) and on V as a power term (step 7: dOFV -2.679, p > 0.05); the CL effect entered on forward inclusion but was removed on backward elimination (step 10: dOFV +9.405, p > 0.001). Yu 2023 Table 1: mean 23.3 (SD 3.97) kg/m^2, range 12.7-33.8."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened on CL as a power term (Supplementary Table S1 step 3: dOFV -6.136, p < 0.05); entered on forward inclusion, removed on backward elimination (step 11: dOFV +6.136, p > 0.001). Yu 2023 Table 1: median 104 umol/L (IQR 62.0-202, range 5.97-661). The Discussion notes that serum creatinine may not reflect renal function in patients with AKI receiving CRRT, which is the paper's motivation for using residual diuresis instead."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened on CL as a power term (Supplementary Table S1 step 3: dOFV -6.136, p < 0.05); entered on forward inclusion, removed on backward elimination (step 11: dOFV +6.136, p > 0.001). Yu 2023 Table 1: median 104 umol/L (IQR 62.0-202, range 5.97-661). The Discussion notes that serum creatinine may not reflect renal function in patients with AKI receiving CRRT, which is the paper's motivation for using residual diuresis instead."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened as a renal-function covariate; never reached the model. Yu 2023 Table 1: median 7.80 mmol/L (IQR 5.20-13.4, range 0.93-45.2)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened as a renal-function covariate; never reached the model. Yu 2023 Table 1: median 7.80 mmol/L (IQR 5.20-13.4, range 0.93-45.2)."
     ),
     DOSE_VANCOMYCIN_MGD = list(
       description = "Total daily vancomycin dose",
-      units       = "mg/day",
-      type        = "continuous",
-      notes       = "Screened as a dosing-regimen covariate; never reached the model. Yu 2023 Table 1: median 1000 mg/day (IQR 500-2000, range 500-3000), equal to a median 15.4 mg/kg/day (range 5.26-50.0)."
+      units = "mg/day",
+      type = "continuous",
+      notes = "Screened as a dosing-regimen covariate; never reached the model. Yu 2023 Table 1: median 1000 mg/day (IQR 500-2000, range 500-3000), equal to a median 15.4 mg/kg/day (range 5.26-50.0)."
     ),
     RRT_CVVHDF_STATUS = list(
       description = "CRRT modality indicator: 1 = continuous venovenous hemodiafiltration (CVVHDF), 0 = continuous venovenous hemofiltration (CVVH)",
-      units       = "binary",
-      type        = "categorical",
-      notes       = "Screened on CL as a power term (Supplementary Table S1 step 5: dOFV -4.982, p < 0.05); entered on forward inclusion, removed on backward elimination (step 9: dOFV +4.977, p > 0.001). Yu 2023 coded CVVH as 1 and CVVHDF as 2; recorded here as a 0/1 indicator with CVVH as the reference. Table 1: CVVH 40/71 (56.3%), CVVHDF 31/71 (43.7%). Documentation only, so this name is NOT registered in inst/references/covariate-columns.md; the RRT_CRRT_STATUS entry there anticipates modality-specific siblings for a future model that actually retains one. Every subject in this cohort was on CRRT, so an on/off RRT_CRRT_STATUS column would be constant at 1 and carries no information here."
+      units = "binary",
+      type = "categorical",
+      notes = "Screened on CL as a power term (Supplementary Table S1 step 5: dOFV -4.982, p < 0.05); entered on forward inclusion, removed on backward elimination (step 9: dOFV +4.977, p > 0.001). Yu 2023 coded CVVH as 1 and CVVHDF as 2; recorded here as a 0/1 indicator with CVVH as the reference. Table 1: CVVH 40/71 (56.3%), CVVHDF 31/71 (43.7%). Documentation only, so this name is NOT registered in inst/references/covariate-columns.md; the RRT_CRRT_STATUS entry there anticipates modality-specific siblings for a future model that actually retains one. Every subject in this cohort was on CRRT, so an on/off RRT_CRRT_STATUS column would be constant at 1 and carries no information here."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 71L,
-    n_studies        = 1L,
-    n_centers        = 4L,
+    species = "human",
+    n_subjects = 71L,
+    n_studies = 1L,
+    n_centers = 4L,
     n_concentrations = 113L,
-    age_range        = "24-87 years",
-    age_mean         = "61.6 years (SD 14.6)",
-    weight_range     = "32.1-100 kg",
-    weight_mean      = "64.2 kg (SD 14.7)",
-    sex_female_pct   = 38.0,
-    race_ethnicity   = "Not reported (four-center Chinese ICU cohort)",
-    disease_state    = "Critically ill ICU adults receiving intermittent intravenous vancomycin while on continuous renal replacement therapy. BMI mean 23.3 kg/m^2 (SD 3.97, range 12.7-33.8). Infection site: pulmonary 31/71 (43.7%), bloodstream 18/71 (25.4%), intra-abdominal 17/71 (23.9%), skin and soft tissue 3/71 (4.23%), other or undefined 17/71 (23.9%). Pathogen: undefined 35/71 (49.3%), other 16/71 (22.5%), Enterococcus 10/71 (14.1%), coagulase-negative staphylococci 7/71 (9.86%), MRSA 6/71 (8.45%), MSSA 2/71 (2.82%).",
-    renal_function   = "All subjects on CRRT: CVVH 40/71 (56.3%), CVVHDF 31/71 (43.7%). 24-h urine volume median 160 mL (IQR 7.00-780, range 0.00-6220); 33/71 (46.5%) at or below 100 mL, 12/71 (16.9%) 100-500 mL, 6/71 (8.45%) at or above 2500 mL. Serum creatinine median 104 umol/L (IQR 62.0-202, range 5.97-661). Blood urea nitrogen median 7.80 mmol/L (IQR 5.20-13.4, range 0.93-45.2). CRRT settings (effluent / blood / dialysate flow rates) were not collected, which the paper lists as a study limitation.",
-    dose_range       = "Intermittent intravenous vancomycin; total daily dose median 1000 mg/day (IQR 500-2000, range 500-3000), equal to a median 15.4 mg/kg/day (range 5.26-50.0).",
-    regions          = "China (Sir Run Run Shaw Hospital and the Second Affiliated Hospital, Zhejiang University School of Medicine; Affiliated Xiaoshan Hospital, Hangzhou Normal University; Zhejiang Zhoushan Hospital). Retrospective, January 2019 to October 2022.",
-    notes            = "Demographics from Yu 2023 Table 1. 191 trough concentrations from 101 patients were measured; after exclusions (age < 18, missing data, non-continuous CRRT, sampling more than 48 h after the last dose) 113 trough concentrations from 71 patients entered the model. Vancomycin measured by LC-MS/MS at all four centers. NONMEM 7.5.0 with PDxPop 5.3.1, FOCE with interaction. Model selection compared one- and two-compartment structures (AIC 800.588 vs 803.682, favouring one compartment). Bootstrap: 1000 replicates, 100% success rate (Table 2). Sampling was almost entirely trough-only, which is why interindividual variability on V could not be estimated."
+    age_range = "24-87 years",
+    age_mean = "61.6 years (SD 14.6)",
+    weight_range = "32.1-100 kg",
+    weight_mean = "64.2 kg (SD 14.7)",
+    sex_female_pct = 38.0,
+    race_ethnicity = "Not reported (four-center Chinese ICU cohort)",
+    disease_state = "Critically ill ICU adults receiving intermittent intravenous vancomycin while on continuous renal replacement therapy. BMI mean 23.3 kg/m^2 (SD 3.97, range 12.7-33.8). Infection site: pulmonary 31/71 (43.7%), bloodstream 18/71 (25.4%), intra-abdominal 17/71 (23.9%), skin and soft tissue 3/71 (4.23%), other or undefined 17/71 (23.9%). Pathogen: undefined 35/71 (49.3%), other 16/71 (22.5%), Enterococcus 10/71 (14.1%), coagulase-negative staphylococci 7/71 (9.86%), MRSA 6/71 (8.45%), MSSA 2/71 (2.82%).",
+    renal_function = "All subjects on CRRT: CVVH 40/71 (56.3%), CVVHDF 31/71 (43.7%). 24-h urine volume median 160 mL (IQR 7.00-780, range 0.00-6220); 33/71 (46.5%) at or below 100 mL, 12/71 (16.9%) 100-500 mL, 6/71 (8.45%) at or above 2500 mL. Serum creatinine median 104 umol/L (IQR 62.0-202, range 5.97-661). Blood urea nitrogen median 7.80 mmol/L (IQR 5.20-13.4, range 0.93-45.2). CRRT settings (effluent / blood / dialysate flow rates) were not collected, which the paper lists as a study limitation.",
+    dose_range = "Intermittent intravenous vancomycin; total daily dose median 1000 mg/day (IQR 500-2000, range 500-3000), equal to a median 15.4 mg/kg/day (range 5.26-50.0).",
+    regions = "China (Sir Run Run Shaw Hospital and the Second Affiliated Hospital, Zhejiang University School of Medicine; Affiliated Xiaoshan Hospital, Hangzhou Normal University; Zhejiang Zhoushan Hospital). Retrospective, January 2019 to October 2022.",
+    notes = "Demographics from Yu 2023 Table 1. 191 trough concentrations from 101 patients were measured; after exclusions (age < 18, missing data, non-continuous CRRT, sampling more than 48 h after the last dose) 113 trough concentrations from 71 patients entered the model. Vancomycin measured by LC-MS/MS at all four centers. NONMEM 7.5.0 with PDxPop 5.3.1, FOCE with interaction. Model selection compared one- and two-compartment structures (AIC 800.588 vs 803.682, favouring one compartment). Bootstrap: 1000 replicates, 100% success rate (Table 2). Sampling was almost entirely trough-only, which is why interindividual variability on V could not be estimated."
   )
 
   ini({

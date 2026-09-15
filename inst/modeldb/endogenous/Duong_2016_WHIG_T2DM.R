@@ -51,8 +51,8 @@ Duong_2016_WHIG_T2DM <- function() {
   paper_specific_compartments <- c("hba1c_1", "hba1c_2", "hba1c_3")
 
   units <- list(
-    time          = "day",
-    dosing        = "none (placebo-only; no drug administration)",
+    time = "day",
+    dosing = "none (placebo-only; no drug administration)",
     concentration = paste(
       "Weight in kg; FSI in microU/mL (equivalent to mIU/L on the SI",
       "convention used in Duong 2017 Table 2); FPG in mmol/L; HbA1c in %"
@@ -64,24 +64,39 @@ Duong_2016_WHIG_T2DM <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    weight  = list(analyte = "body-weight", units = NA_character_, specimen = "administration site", verified = FALSE),
-    hba1c_1 = list(analyte = "glycated haemoglobin (HbA1c)", units = NA_character_, specimen = "faeces", verified = FALSE),
-    hba1c_2 = list(analyte = "glycated haemoglobin (HbA1c)", units = NA_character_, specimen = "urine", verified = FALSE),
-    hba1c_3 = list(analyte = "glycated haemoglobin (HbA1c)", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    weight = list(analyte = "body-weight", units = NA_character_, specimen = "administration site", verified = FALSE),
+    hba1c_1 = list(
+      analyte = "glycated haemoglobin (HbA1c)",
+      units = NA_character_,
+      specimen = "faeces",
+      verified = FALSE
+    ),
+    hba1c_2 = list(
+      analyte = "glycated haemoglobin (HbA1c)",
+      units = NA_character_,
+      specimen = "urine",
+      verified = FALSE
+    ),
+    hba1c_3 = list(
+      analyte = "glycated haemoglobin (HbA1c)",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     STUDY_1 = list(
-      description        = paste(
+      description = paste(
         "Binary indicator for enrolment in Study 1 (NCT00236600) of the",
         "Duong 2017 pooled analysis (newly diagnosed, treatment-naive,",
         "obese T2DM subjects with a 6-week placebo run-in and 60-week",
         "placebo treatment phase, weight-loss diet-and-exercise arm)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Study 2 NCT01071850 or Study 3 NCT01117584 -- advanced T2DM cohorts)",
-      notes              = paste(
+      notes = paste(
         "Switches two parameters in the model:",
         "(a) baseline b-cell-function logit b0 (Duong 2017 Table 4:",
         "-0.298 for Study 1 vs 0.677 for Studies 2 and 3); and",
@@ -90,17 +105,17 @@ Duong_2016_WHIG_T2DM <- function() {
         "additional placebo effect during the treatment phase for",
         "Studies 2 and 3 was not significant). Time-fixed per subject."
       ),
-      source_name        = "STUDY"
+      source_name = "STUDY"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at study entry (screened, not retained in final model)",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry (screened, not retained in final model)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened against b0, s0, rB, EFDE, EFPL, EFB via stepwise",
         "inclusion at P < 0.01 (Duong 2017 Methods (iii) Covariate",
         "modelling). Not significant; not in the final model.",
@@ -108,27 +123,27 @@ Duong_2016_WHIG_T2DM <- function() {
         "54 years (IQR 48-60), Study 2 median 55 (48-60),",
         "Study 3 median 57 (51-63)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male; screened, not retained in final model)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male; screened, not retained in final model)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened against baseline and treatment-effect parameters.",
         "Not significant; not in the final model. Baseline",
         "demographics (Duong 2017 Table 2): Study 1 63 pct female,",
         "Study 2 56 pct, Study 3 45 pct. Paper uses 'gender'."
       ),
-      source_name        = "gender"
+      source_name = "gender"
     ),
     T_DIAG_DIAB = list(
-      description        = "Time since T2DM diagnosis at study entry (screened, not retained in final model)",
-      units              = "years",
-      type               = "continuous",
+      description = "Time since T2DM diagnosis at study entry (screened, not retained in final model)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened against b-cell parameters b0, s0, rB. Not",
         "significant despite a Discussion-noted trend towards",
         "lower b-cell function with longer T2DM duration.",
@@ -139,14 +154,14 @@ Duong_2016_WHIG_T2DM <- function() {
         "diagnosis delay of up to 6 years can obscure the",
         "biological effect."
       ),
-      source_name        = "DIABDUR"
+      source_name = "DIABDUR"
     ),
     ADHERENCE_PLACEBO_PCT = list(
-      description        = "Placebo pill count adherence at end of study (screened, not retained in final model)",
-      units              = "%",
-      type               = "continuous",
+      description = "Placebo pill count adherence at end of study (screened, not retained in final model)",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened against EFDE (placebo run-in effect on weight).",
         "Not significant. Baseline (Duong 2017 Results):",
         "Study 2 median 99.8 pct (range 61.3-100), Study 3",
@@ -154,39 +169,39 @@ Duong_2016_WHIG_T2DM <- function() {
         "verify that low adherence did not confound the placebo",
         "response."
       ),
-      source_name        = "COMPL"
+      source_name = "COMPL"
     ),
     RACE = list(
-      description        = "Race / ethnicity category (screened, not retained in final model)",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Race / ethnicity category (screened, not retained in final model)",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened against baseline parameters b0, s0. Not",
         "significant. Underlying race distribution not tabulated",
         "in the paper; the covariate was tested at the coarse",
         "categorical level Duong 2017 Methods used (paper term",
         "'ethnicity')."
       ),
-      source_name        = "ETH"
+      source_name = "ETH"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 305L,
-    n_studies      = 3L,
-    age_range      = paste(
+    species = "human",
+    n_subjects = 305L,
+    n_studies = 3L,
+    age_range = paste(
       "Median 54-57 years across studies (Duong 2017 Table 2:",
       "Study 1 median 54, IQR 48-60; Study 2 median 55, IQR 48-60;",
       "Study 3 median 57, IQR 51-63)"
     ),
-    weight_range   = paste(
+    weight_range = paste(
       "Study 1 median 104.2 kg (IQR 94.3-115.4); Study 2 median",
       "79.3 kg (68.6-87.9); Study 3 median 89.0 kg (81.2-97.6)."
     ),
     sex_female_pct = 55,
-    disease_state  = paste(
+    disease_state = paste(
       "Type 2 diabetes mellitus (T2DM). Study 1: newly diagnosed",
       "obese (BMI 27-50 kg / m^2), treatment-naive, HbA1c < 10.5 pct.",
       "Study 2: mixed treatment-naive (n = 28) and prior-treatment",
@@ -197,9 +212,9 @@ Duong_2016_WHIG_T2DM <- function() {
       "newly-diagnosed obese (Study 1) vs advanced T2DM (Studies 2",
       "and 3)."
     ),
-    dose_range     = "None (placebo-only disease-progression model, no drug).",
-    regions        = "Not tabulated in Duong 2017; the underlying three trials were multicentre.",
-    notes          = paste(
+    dose_range = "None (placebo-only disease-progression model, no drug).",
+    regions = "Not tabulated in Duong 2017; the underlying three trials were multicentre.",
+    notes = paste(
       "Cohort demographics from Duong 2017 Table 2. Study 1 sample",
       "size is n = 181 (66-week trial, weight-loss counselling arm);",
       "Study 2 n = 59-66 (14-week trial, stable diet-and-exercise);",

@@ -40,40 +40,40 @@ Babel_2026_telisotuzumab_orr <- function() {
   vignette <- "Babel_2026_telisotuzumab"
 
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CAV covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CAV covariate column)",
     concentration = "prob_orr_central (probability of overall response by Independent Central Review, 0-1)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average serum concentration of the telisotuzumab vedotin CONJUGATE, computed up to the time of the response assessment or up to the end of treatment. Supplied as data: this model has no PK layer.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual average serum concentration of the telisotuzumab vedotin CONJUGATE, computed up to the time of the response assessment or up to the end of treatment. Supplied as data: this model has no PK layer.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Babel 2026 Methods, Exposure-Response Analyses: 'Individual exposure metrics for Teliso-V conjugate and unconjugated MMAE payload were estimated based on post hoc estimates from the population PK models, utilizing actual doses received by patients', with Cavg defined 'up to the time of the event or up to the end of treatment if no event occurred'. Reproduce the column with the companion popPK model modellib('Babel_2026_telisotuzumab'). Because actual rather than planned doses are used, this Cavg is systematically LOWER than the nominal steady-state Dose/(CL*tau): the median implied by the Table 1 simulation is about 6.2 ug/mL at 1.9 mg/kg Q2W against a nominal 7.0 ug/mL at the median 68.9 kg weight. Babel 2026 Figure 2 shows the analysis-set range spanning roughly 2.2 to 10.8 ug/mL, with binned quartile medians near 3.6, 5.1, 6.6 and 8.5 ug/mL. Enters on the NATURAL-LOG scale and UNCENTRED. The conjugate, not the payload, is the efficacy driver.",
-      source_name        = "CavgADC"
+      notes = "Babel 2026 Methods, Exposure-Response Analyses: 'Individual exposure metrics for Teliso-V conjugate and unconjugated MMAE payload were estimated based on post hoc estimates from the population PK models, utilizing actual doses received by patients', with Cavg defined 'up to the time of the event or up to the end of treatment if no event occurred'. Reproduce the column with the companion popPK model modellib('Babel_2026_telisotuzumab'). Because actual rather than planned doses are used, this Cavg is systematically LOWER than the nominal steady-state Dose/(CL*tau): the median implied by the Table 1 simulation is about 6.2 ug/mL at 1.9 mg/kg Q2W against a nominal 7.0 ug/mL at the median 68.9 kg weight. Babel 2026 Figure 2 shows the analysis-set range spanning roughly 2.2 to 10.8 ug/mL, with binned quartile medians near 3.6, 5.1, 6.6 and 8.5 ug/mL. Enters on the NATURAL-LOG scale and UNCENTRED. The conjugate, not the payload, is the efficacy driver.",
+      source_name = "CavgADC"
     )
   )
 
   covariatesDataExcluded <- list(
     CMET_HIGH = list(
       description = "c-Met protein overexpression level indicator; 1 = high (at least 50% of tumour cells with strong 3+ immunohistochemistry staining), 0 = intermediate (at least 25% to below 50%).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed in Babel 2026 Table S2 as a covariate of interest for the exposure-efficacy regression, but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. Documented here to preserve the covariate screen without carrying a convention warning; the same applies to the remaining Table S2 efficacy covariates (age, sex, race, ethnicity, body weight, prior therapy, number of prior systemic therapies, baseline ECOG status, treatment-emergent ADA status and nAb status)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed in Babel 2026 Table S2 as a covariate of interest for the exposure-efficacy regression, but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. Documented here to preserve the covariate screen without carrying a convention warning; the same applies to the remaining Table S2 efficacy covariates (age, sex, race, ethnicity, body weight, prior therapy, number of prior systemic therapies, baseline ECOG status, treatment-emergent ADA status and nAb status)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 193L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 193L,
+    n_studies = 1L,
     n_observations = "193 binary response records (one per patient; landmark analysis, no repeated measures)",
-    disease_state  = "c-Met protein overexpressing, EGFR wild-type, non-squamous non-small cell lung cancer, previously treated; c-Met high defined as at least 50% of tumour cells with strong 3+ immunohistochemistry staining and c-Met intermediate as at least 25% to below 50%",
-    dose_range     = "telisotuzumab vedotin 1.6 mg/kg (n = 25) or 1.9 mg/kg (n = 168) every 2 weeks as an intravenous infusion",
-    regions        = "LUMINOSITY (NCT03539536) international sites",
-    notes          = paste0(
+    disease_state = "c-Met protein overexpressing, EGFR wild-type, non-squamous non-small cell lung cancer, previously treated; c-Met high defined as at least 50% of tumour cells with strong 3+ immunohistochemistry staining and c-Met intermediate as at least 25% to below 50%",
+    dose_range = "telisotuzumab vedotin 1.6 mg/kg (n = 25) or 1.9 mg/kg (n = 168) every 2 weeks as an intravenous infusion",
+    regions = "LUMINOSITY (NCT03539536) international sites",
+    notes = paste0(
       "Baseline demographics of this analysis set are in Babel 2026 ",
       "Table S5. Responses were adjudicated by Independent Central ",
       "Review; the phase 1 study was deliberately excluded from the ",

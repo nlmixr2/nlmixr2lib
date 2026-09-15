@@ -35,21 +35,21 @@ Hoglund_2017_piperaquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with fixed exponents 0.75 on apparent",
         "clearances (CL/F, Q1/F, Q2/F) and 1.0 on apparent volumes",
         "(Vc/F, Vp1/F, Vp2/F), centred on the published reference",
@@ -61,14 +61,14 @@ Hoglund_2017_piperaquine <- function() {
         "for forward simulation.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used in the enzyme maturation function on elimination clearance",
         "(Hoglund 2017 Eq 3 and Methods page 5):",
         "CL_i = theta_CL * AGE^Hill / (AGE^Hill + MF50^Hill).",
@@ -79,14 +79,14 @@ Hoglund_2017_piperaquine <- function() {
         "~2 y of age.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     OCC = list(
-      description        = "Dose-occasion counter (1 = first dose, 2 = second, 3 = third)",
-      units              = "(count)",
-      type               = "count",
+      description = "Dose-occasion counter (1 = first dose, 2 = second, 3 = third)",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Hoglund 2017 retained a categorical dose-occasion covariate on",
         "relative bioavailability (Methods page 5, Results page 7,",
         "Table 3: 'Dose F (percent) = 23.7'). The published model",
@@ -101,29 +101,29 @@ Hoglund_2017_piperaquine <- function() {
         "f(depot) at dose-administration time.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 728L,
-    n_studies       = 11L,
-    n_pregnant      = 36L,
-    n_healthy       = 50L,
-    age_range       = "0.56-55 years (pooled across 11 studies, Table 1)",
-    age_min         = "0.56 y (infant cohort, Sambol 2009 and Tarning 2014)",
-    weight_range    = "5.1-81 kg (pooled across 11 studies, Table 1)",
-    sex_female_pct  = 43.3,
-    pregnant_pct    = 4.9,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 728L,
+    n_studies = 11L,
+    n_pregnant = 36L,
+    n_healthy = 50L,
+    age_range = "0.56-55 years (pooled across 11 studies, Table 1)",
+    age_min = "0.56 y (infant cohort, Sambol 2009 and Tarning 2014)",
+    weight_range = "5.1-81 kg (pooled across 11 studies, Table 1)",
+    sex_female_pct = 43.3,
+    pregnant_pct = 4.9,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria infection in adults,",
       "children, and pregnant women (n = 678), plus healthy volunteer",
       "cohorts from Viet Nam (n = 50). Most pediatric data come from",
       "African sites (Burkina Faso, Kenya, Uganda); adult / pregnant",
       "cohorts span Thailand, Sudan, Viet Nam."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Dihydroartemisinin-piperaquine fixed-dose combination administered",
       "as 1-3 daily doses (one course over 1, 2, or 3 days depending on",
       "the contributing study). Piperaquine administered as piperaquine",
@@ -131,9 +131,9 @@ Hoglund_2017_piperaquine <- function() {
       "(Methods page 4). Manufacturer-recommended dose regimens",
       "(Sigma-Tau and Beijing Holley-Cotec) summarised in Table 2."
     ),
-    regions         = "Thailand, Sudan, Viet Nam, Burkina Faso, Kenya, Uganda",
-    venous_pct      = "Capillary samples used in pediatric African cohorts (Kenya, Burkina Faso, Uganda); venous in adult and pregnancy cohorts.",
-    notes           = paste(
+    regions = "Thailand, Sudan, Viet Nam, Burkina Faso, Kenya, Uganda",
+    venous_pct = "Capillary samples used in pediatric African cohorts (Kenya, Burkina Faso, Uganda); venous in adult and pregnancy cohorts.",
+    notes = paste(
       "Demographics from Hoglund 2017 Table 1. Total observations 8,776",
       "(141 below the lower limit of quantification omitted). 11 clinical",
       "studies pooled from the WWARN repository. Inclusion criteria:",

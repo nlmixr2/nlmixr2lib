@@ -8,61 +8,61 @@ Knights_2015_aripiprazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Knights 2015. Centred at 74.19 kg (the supplement NONMEM control stream centring value matches the population mean of the 448-subject 24-study pooled aripiprazole dataset). The weight effect on CL/F, Q/F, and Vp/F is gated by an indicator that is 1 only when WT < 115 kg and 0 otherwise (supplement variables WTA, WTPA, WTOKQ -- all three are identical 'WT-below-115' thresholds, plus a defensive non-missing guard WT > 0 that is not needed when WT is non-missing in modern datasets). The paper's Eq. 2 prose phrases the threshold as 'WT <= 115 kg' but the supplement control stream uses strict WT < 115; the strict-inequality form is used here as the more authoritative source.",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline in Knights 2015. Centred at 74.19 kg (the supplement NONMEM control stream centring value matches the population mean of the 448-subject 24-study pooled aripiprazole dataset). The weight effect on CL/F, Q/F, and Vp/F is gated by an indicator that is 1 only when WT < 115 kg and 0 otherwise (supplement variables WTA, WTPA, WTOKQ -- all three are identical 'WT-below-115' thresholds, plus a defensive non-missing guard WT > 0 that is not needed when WT is non-missing in modern datasets). The paper's Eq. 2 prose phrases the threshold as 'WT <= 115 kg' but the supplement control stream uses strict WT < 115; the strict-inequality form is used here as the more authoritative source.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Knights 2015. Centred at 32 years (Knights 2015 Eq. 2 and supplement NONMEM control stream). Linear-deviation effect on CL/F (per year) and on Vp/F (per year). Studied population age range 18-55 years (Knights 2015 Clinical data section, 47-patient validation cohort; the 24-study 448-subject popPK building cohort is described as having a wider but unspecified age distribution).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline in Knights 2015. Centred at 32 years (Knights 2015 Eq. 2 and supplement NONMEM control stream). Linear-deviation effect on CL/F (per year) and on Vp/F (per year). Studied population age range 18-55 years (Knights 2015 Clinical data section, 47-patient validation cohort; the 24-study 448-subject popPK building cohort is described as having a wider but unspecified age distribution).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex, female indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, female indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "1 = female, 0 = male. The Knights 2015 source dataset's SEX column uses the opposite convention (SEX = 0 -> female, SEX = 1 -> male) confirmed by the supplement cross-tabulation of SEX vs. MMAS04 / MMAS06 in the clinical-trial 47-subject cohort: the supplement reports 31 SEX=1 subjects and 16 SEX=0 subjects, matching the paper's text 'enrolled 47 patients (31 male)'. The supplement control stream's intermediate variable SEXO = (SEX == 0) therefore equals 1 for females, which is identical to the nlmixr2lib canonical SEXF. To use a dataset that encodes SEX with 0 = male / 1 = female, pass the value unchanged as SEXF; to use a dataset that follows the Knights 2015 source convention (0 = female / 1 = male), pass SEXF = 1 - SEX.",
-      source_name        = "SEX (0 = female, 1 = male in the source) recoded to SEXF = 1 - SEX"
+      notes = "1 = female, 0 = male. The Knights 2015 source dataset's SEX column uses the opposite convention (SEX = 0 -> female, SEX = 1 -> male) confirmed by the supplement cross-tabulation of SEX vs. MMAS04 / MMAS06 in the clinical-trial 47-subject cohort: the supplement reports 31 SEX=1 subjects and 16 SEX=0 subjects, matching the paper's text 'enrolled 47 patients (31 male)'. The supplement control stream's intermediate variable SEXO = (SEX == 0) therefore equals 1 for females, which is identical to the nlmixr2lib canonical SEXF. To use a dataset that encodes SEX with 0 = male / 1 = female, pass the value unchanged as SEXF; to use a dataset that follows the Knights 2015 source convention (0 = female / 1 = male), pass SEXF = 1 - SEX.",
+      source_name = "SEX (0 = female, 1 = male in the source) recoded to SEXF = 1 - SEX"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, intermediate, or ultrarapid metabolizer)",
-      notes              = "1 = subject is a CYP2D6 poor metabolizer (genotype encoding no functional CYP2D6 activity), 0 otherwise. Knights 2015 Eq. 2 reports the binary as `2D6PM` (PM = 1, non-PM = 0). The supplement NONMEM control stream stores the dataset column as CYP2D6EM (extensive-metabolizer indicator) and derives PM internally as PM = (CYP2D6EM == 0); the supplement explicitly treats CYP2D6EM = -99 (missing genotype) as not-extensive (i.e. PM = 1 if EM = 0 OR genotype is missing). In modern datasets without the -99 missing-value sentinel, set CYP2D6_PM = 1 only for genotypes encoding no functional CYP2D6 activity and CYP2D6_PM = 0 otherwise (including unknowns where defaulting to non-PM is the safer choice). CYP2D6 PMs have 47.8% lower apparent oral aripiprazole clearance than non-PMs in the Knights 2015 final popPK model.",
-      source_name        = "2D6PM (paper text and Figure 1B); derived in the supplement control stream from CYP2D6EM as `PM = (CYP2D6EM == 0)`"
+      notes = "1 = subject is a CYP2D6 poor metabolizer (genotype encoding no functional CYP2D6 activity), 0 otherwise. Knights 2015 Eq. 2 reports the binary as `2D6PM` (PM = 1, non-PM = 0). The supplement NONMEM control stream stores the dataset column as CYP2D6EM (extensive-metabolizer indicator) and derives PM internally as PM = (CYP2D6EM == 0); the supplement explicitly treats CYP2D6EM = -99 (missing genotype) as not-extensive (i.e. PM = 1 if EM = 0 OR genotype is missing). In modern datasets without the -99 missing-value sentinel, set CYP2D6_PM = 1 only for genotypes encoding no functional CYP2D6 activity and CYP2D6_PM = 0 otherwise (including unknowns where defaulting to non-PM is the safer choice). CYP2D6 PMs have 47.8% lower apparent oral aripiprazole clearance than non-PMs in the Knights 2015 final popPK model.",
+      source_name = "2D6PM (paper text and Figure 1B); derived in the supplement control stream from CYP2D6EM as `PM = (CYP2D6EM == 0)`"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 448L,
-    n_studies        = 24L,
-    n_observations   = 13500L,
-    age_range        = "Studied range not reported numerically for the 24-study popPK cohort. The 47-subject MMAS8 validation cohort spanned 18-55 years (Knights 2015 Clinical data).",
-    weight_range     = "Studied range not reported numerically; the supplement covariate-effect equations and the WT < 115 kg gating indicator both imply that the cohort included subjects with WT both below and at-or-above 115 kg (otherwise the WTPA / WTOKQ indicators would never have differentiated subjects).",
-    sex_female_pct   = NA_real_,
-    sex_balance      = "Not reported for the 24-study popPK cohort. The 47-subject MMAS8 validation cohort was 16 female / 31 male (34.0% female).",
-    race_ethnicity   = "Not reported in the Knights 2015 abstract, methods, or supplement.",
-    disease_state    = "Pooled across the 24 clinical studies (referred to as 'the entire family of PK studies that were conducted during the approval process'); spans healthy volunteers and patients with psychiatric disorders treated with oral aripiprazole. The 47-subject MMAS8 validation cohort had a current diagnosis of bipolar 1 disorder (n = 15) or schizophrenia (n = 32) per DSM-IV-TR criteria.",
-    dose_range       = "Oral aripiprazole, dose levels and dosing regimens spanning the family of 24 clinical studies. The 47-subject MMAS8 validation cohort had been on stable oral doses of 10, 15, 20, or 30 mg once daily for at least 2 weeks before sampling.",
-    regions          = "Not specified (multi-study pooled dataset).",
-    cyp2d6_pm_pct    = NA_real_,
-    notes            = "Knights 2015 was designed to apply, rather than to develop, the underlying popPK model: the paper focuses on a novel 'reverse' application of the popPK model to compute an aggregate adherence metric (ADHMET) from steady-state sparse-sample plasma concentrations. The popPK model itself was built from 24 clinical studies, 448 individuals, and over 13,500 plasma aripiprazole observations submitted as part of the original aripiprazole new-drug-application package; the per-study composition is not separately tabulated in the paper. Parameter point estimates were transcribed from Figure 1B and the explicit Eq. 2 (CL/F equation); covariate-effect functional forms came from the supplement NONMEM control stream ($PK block)."
+    species = "human",
+    n_subjects = 448L,
+    n_studies = 24L,
+    n_observations = 13500L,
+    age_range = "Studied range not reported numerically for the 24-study popPK cohort. The 47-subject MMAS8 validation cohort spanned 18-55 years (Knights 2015 Clinical data).",
+    weight_range = "Studied range not reported numerically; the supplement covariate-effect equations and the WT < 115 kg gating indicator both imply that the cohort included subjects with WT both below and at-or-above 115 kg (otherwise the WTPA / WTOKQ indicators would never have differentiated subjects).",
+    sex_female_pct = NA_real_,
+    sex_balance = "Not reported for the 24-study popPK cohort. The 47-subject MMAS8 validation cohort was 16 female / 31 male (34.0% female).",
+    race_ethnicity = "Not reported in the Knights 2015 abstract, methods, or supplement.",
+    disease_state = "Pooled across the 24 clinical studies (referred to as 'the entire family of PK studies that were conducted during the approval process'); spans healthy volunteers and patients with psychiatric disorders treated with oral aripiprazole. The 47-subject MMAS8 validation cohort had a current diagnosis of bipolar 1 disorder (n = 15) or schizophrenia (n = 32) per DSM-IV-TR criteria.",
+    dose_range = "Oral aripiprazole, dose levels and dosing regimens spanning the family of 24 clinical studies. The 47-subject MMAS8 validation cohort had been on stable oral doses of 10, 15, 20, or 30 mg once daily for at least 2 weeks before sampling.",
+    regions = "Not specified (multi-study pooled dataset).",
+    cyp2d6_pm_pct = NA_real_,
+    notes = "Knights 2015 was designed to apply, rather than to develop, the underlying popPK model: the paper focuses on a novel 'reverse' application of the popPK model to compute an aggregate adherence metric (ADHMET) from steady-state sparse-sample plasma concentrations. The popPK model itself was built from 24 clinical studies, 448 individuals, and over 13,500 plasma aripiprazole observations submitted as part of the original aripiprazole new-drug-application package; the per-study composition is not separately tabulated in the paper. Parameter point estimates were transcribed from Figure 1B and the explicit Eq. 2 (CL/F equation); covariate-effect functional forms came from the supplement NONMEM control stream ($PK block)."
   )
 
   ini({

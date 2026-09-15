@@ -44,15 +44,15 @@ Groenendaal_2007_morphine_brain_rat <- function() {
   paper_specific_residual_sds <- c("propSd_Cbrain_ecf")
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
+    central = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
     peripheral2 = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
     # NOTE the units on brain_ecf: this state is a CONCENTRATION, not an
@@ -61,16 +61,21 @@ Groenendaal_2007_morphine_brain_rat <- function() {
     # published brain parameter is already volume-aggregated and the state
     # variable that they act on is Cecf in ng/mL. Encoding an amount here
     # would require inventing Vecf, which the paper does not report.
-    brain_ecf   = list(analyte = "morphine", units = "ng/mL (concentration state; see note)", specimen = "brain ISF", verified = TRUE)
+    brain_ecf = list(
+      analyte = "morphine",
+      units = "ng/mL (concentration state; see note)",
+      specimen = "brain ISF",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the start of the experiment.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the start of the experiment.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal. Enters CL and V2 (peripheral 1) through the",
         "paper's centred LINEAR covariate form (equation 7),",
         "P_i = theta1 * (1 + theta2 * (BW_i - median BW)), NOT a power /",
@@ -81,14 +86,14 @@ Groenendaal_2007_morphine_brain_rat <- function() {
         "Keep simulated weights inside 0.25-0.35 kg: the linear form drives",
         "V2 negative below BW = 0.182 kg and CL negative below 0.113 kg."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CONMED_ELACRIDAR = list(
-      description        = "Indicator for co-infusion of the P-glycoprotein inhibitor GF120918 (elacridar): 1 = elacridar arm, 0 = vehicle arm.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for co-infusion of the P-glycoprotein inhibitor GF120918 (elacridar): 1 = elacridar arm, 0 = vehicle arm.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (vehicle co-infusion, no elacridar)",
-      notes              = paste(
+      notes = paste(
         "Groenendaal 2007 regimen: a 1 min bolus infusion of 6 mg/kg",
         "GF120918 in dimethyl sulphoxide followed by a continuous infusion",
         "of 25 ng/min in DMSO / glucose / cyclodextrine 5/5/10% in saline,",
@@ -102,19 +107,19 @@ Groenendaal_2007_morphine_brain_rat <- function() {
         "NO effect of GF120918 on the blood disposition, so the covariate",
         "acts on keff alone."
       ),
-      source_name        = "(paper treatment-arm indicator: 'GF120918' vs 'Vehicle' in Table 1; paper equation 8 defines the factor as 1 when GF120918 is co-infused and 0 when vehicle is co-infused)"
+      source_name = "(paper treatment-arm indicator: 'GF120918' vs 'Vehicle' in Table 1; paper equation 8 defines the factor as 1 when GF120918 is co-infused and 0 when vehicle is co-infused)"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar, Charles River, Maastricht, The Netherlands)",
-    n_subjects     = 71L,
-    n_studies      = 1L,
-    age_range      = "adult (age not reported; animals housed at least 7 days after arrival, then 10 days of recovery after electrode / cannula implantation)",
-    weight_range   = "250-350 g body weight; per-group means 0.260-0.306 kg (paper Table 1)",
+    species = "rat (male Wistar, Charles River, Maastricht, The Netherlands)",
+    n_subjects = 71L,
+    n_studies = 1L,
+    age_range = "adult (age not reported; animals housed at least 7 days after arrival, then 10 days of recovery after electrode / cannula implantation)",
+    weight_range = "250-350 g body weight; per-group means 0.260-0.306 kg (paper Table 1)",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy rats prepared with four indwelling cannulas (right femoral",
       "artery for serial arterial blood sampling; both left jugular veins",
       "for morphine and midazolam; right femoral vein for GF120918 /",
@@ -130,14 +135,14 @@ Groenendaal_2007_morphine_brain_rat <- function() {
       "morphine infusion, with intravenous vecuronium bromide (0.15 mg,",
       "then 0.10 mg as needed) for muscle relaxation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 10 min zero-order intravenous infusion of morphine",
       "hydrochloride in saline at 4, 10 or 40 mg/kg. The 4 mg/kg level was",
       "run both with vehicle and with the Pgp inhibitor GF120918",
       "(elacridar); the 10 and 40 mg/kg levels were vehicle only."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden University, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden University, The Netherlands",
+    notes = paste(
       "Two model layers, fitted sequentially in NONMEM V level 1.1 with",
       "FOCE INTERACTION. (1) The blood three-compartment model (Table 2) was",
       "fitted to the arterial blood morphine concentrations of all 71 rats",

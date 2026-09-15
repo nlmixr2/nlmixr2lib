@@ -12,73 +12,73 @@ Mercier_2014_tramadol_tapentadol_mbma <- function() {
   vignette <- "Mercier_2014_tramadol_tapentadol"
 
   units <- list(
-    time          = "week (time since randomization; the paper reports k in 1/week)",
-    dosing        = "mg/day (per-arm daily tramadol dose supplied as CONMED_TRAMADOL_DOSE covariate; this MBMA does not consume rxode2 dose events)",
+    time = "week (time since randomization; the paper reports k in 1/week)",
+    dosing = "mg/day (per-arm daily tramadol dose supplied as CONMED_TRAMADOL_DOSE covariate; this MBMA does not consume rxode2 dose events)",
     concentration = "score/score (arm-mean pain intensity on the 0-10 normalized scale; the observation `score` is NOT a drug concentration; the slash in the unit string satisfies checkModelConventions parsing)"
   )
 
   covariateData <- list(
     PAIN = list(
-      description        = "Per-arm mean baseline pain intensity on the 0-10 normalized scale used across the pooled Mercier 2014 trials (converted per Table 1 from 13+ raw scales including VAS 0-100 mm, VAS 0-10 cm, various Likert scales, BS11 11-point box score, NAS 0-100 mm, and 0-3/0-4/1-5 categorical scales; all rescaled linearly to 0-10 per the paper's conversion rules).",
-      units              = "score (0-10)",
-      type               = "continuous",
+      description = "Per-arm mean baseline pain intensity on the 0-10 normalized scale used across the pooled Mercier 2014 trials (converted per Table 1 from 13+ raw scales including VAS 0-100 mm, VAS 0-10 cm, various Likert scales, BS11 11-point box score, NAS 0-100 mm, and 0-3/0-4/1-5 categorical scales; all rescaled linearly to 0-10 per the paper's conversion rules).",
+      units = "score (0-10)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-arm baseline (pre-treatment). Enters the R equation as logit(PAIN/10) (see paper Table 3 covariate effect theta_Base = 0.158). Note the SCALE: the canonical PAIN register entry (inst/references/covariate-columns.md) documents PAIN in mm on a 0-100 VAS scale; this MBMA uses arm-level values already converted to the 0-10 normalized scale, so downstream users assembling covariate data for this model must supply PAIN on the 0-10 scale (multiply mm VAS values by 0.1). Mercier 2014 Results reports the mean baseline pain intensity across studies was 6.9 (SD 0.72). PAIN can equal 0 or 10 in edge cases; the logit(PAIN/10) form maps 0 -> -Inf and 10 -> +Inf, so simulation code should clamp PAIN to (0 + eps, 10 - eps) if extreme values are supplied.",
-      source_name        = "PI0 (Mercier 2014 Eq. R and Table 3 theta_Base row)"
+      notes = "Per-arm baseline (pre-treatment). Enters the R equation as logit(PAIN/10) (see paper Table 3 covariate effect theta_Base = 0.158). Note the SCALE: the canonical PAIN register entry (inst/references/covariate-columns.md) documents PAIN in mm on a 0-100 VAS scale; this MBMA uses arm-level values already converted to the 0-10 normalized scale, so downstream users assembling covariate data for this model must supply PAIN on the 0-10 scale (multiply mm VAS values by 0.1). Mercier 2014 Results reports the mean baseline pain intensity across studies was 6.9 (SD 0.72). PAIN can equal 0 or 10 in edge cases; the logit(PAIN/10) form maps 0 -> -Inf and 10 -> +Inf, so simulation code should clamp PAIN to (0 + eps, 10 - eps) if extreme values are supplied.",
+      source_name = "PI0 (Mercier 2014 Eq. R and Table 3 theta_Base row)"
     ),
     TRAMADOL = list(
-      description        = "Binary study-arm treatment indicator: 1 = the arm received tramadol, 0 otherwise (placebo, tapentadol, or oxycodone active-control arm).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary study-arm treatment indicator: 1 = the arm received tramadol, 0 otherwise (placebo, tapentadol, or oxycodone active-control arm).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (arm did not receive tramadol)",
-      notes              = "MBMA study-arm-level treatment indicator (a property of the trial arm, not of an individual patient). Documented inline per the Vargo_2014_statins_ezetimibe_mbma / Sadouki_2025 in-file-documentation precedent for MBMA drug-arm indicators. Enters the extent-of-reduction R via the tramadol Emax-in-dose term theta_Trm * Dose_trm / (Dose_trm + ED50) * TRAMADOL. The tramadol dose (mg/day; qd and bid arms have been rescaled to the total daily dose in the CONMED_TRAMADOL_DOSE column). Of the 81 study arms in the Mercier 2014 database, 43 were tramadol arms (30 osteoarthritis + 7 back pain + 2 neuropathic pain + 4 miscellaneous per Table 2).",
-      source_name        = "Tramadol arm indicator (Mercier 2014 Eq. R)"
+      notes = "MBMA study-arm-level treatment indicator (a property of the trial arm, not of an individual patient). Documented inline per the Vargo_2014_statins_ezetimibe_mbma / Sadouki_2025 in-file-documentation precedent for MBMA drug-arm indicators. Enters the extent-of-reduction R via the tramadol Emax-in-dose term theta_Trm * Dose_trm / (Dose_trm + ED50) * TRAMADOL. The tramadol dose (mg/day; qd and bid arms have been rescaled to the total daily dose in the CONMED_TRAMADOL_DOSE column). Of the 81 study arms in the Mercier 2014 database, 43 were tramadol arms (30 osteoarthritis + 7 back pain + 2 neuropathic pain + 4 miscellaneous per Table 2).",
+      source_name = "Tramadol arm indicator (Mercier 2014 Eq. R)"
     ),
     TAPENTADOL = list(
-      description        = "Binary study-arm treatment indicator: 1 = the arm received tapentadol, 0 otherwise (placebo, tramadol, or oxycodone active-control arm).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary study-arm treatment indicator: 1 = the arm received tapentadol, 0 otherwise (placebo, tramadol, or oxycodone active-control arm).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (arm did not receive tapentadol)",
-      notes              = "MBMA study-arm-level treatment indicator. Documented inline per the Vargo_2014_statins_ezetimibe_mbma / Sadouki_2025 precedent. Enters R additively via theta_Tap * TAPENTADOL. Mercier 2014 could not fit a tapentadol dose-response because tapentadol was studied only over the narrow 100-250 mg bid range; the effect is therefore encoded as a fixed per-arm additive term rather than an Emax-in-dose form. Of the 81 study arms, 8 were tapentadol arms (5 osteoarthritis + 2 back pain + 1 neuropathic pain per Table 2). Simulations with TAPENTADOL = 1 should restrict the tapentadol daily dose to the 100-250 mg bid range that constitutes the domain of validity per the paper Discussion.",
-      source_name        = "Tapentadol arm indicator (Mercier 2014 Eq. R)"
+      notes = "MBMA study-arm-level treatment indicator. Documented inline per the Vargo_2014_statins_ezetimibe_mbma / Sadouki_2025 precedent. Enters R additively via theta_Tap * TAPENTADOL. Mercier 2014 could not fit a tapentadol dose-response because tapentadol was studied only over the narrow 100-250 mg bid range; the effect is therefore encoded as a fixed per-arm additive term rather than an Emax-in-dose form. Of the 81 study arms, 8 were tapentadol arms (5 osteoarthritis + 2 back pain + 1 neuropathic pain per Table 2). Simulations with TAPENTADOL = 1 should restrict the tapentadol daily dose to the 100-250 mg bid range that constitutes the domain of validity per the paper Discussion.",
+      source_name = "Tapentadol arm indicator (Mercier 2014 Eq. R)"
     ),
     CONMED_TRAMADOL_DOSE = list(
-      description        = "Per-arm daily tramadol dose (mg/day; 0 for arms that did not receive tramadol).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm daily tramadol dose (mg/day; 0 for arms that did not receive tramadol).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate. Documented inline per the Vargo_2014_statins_ezetimibe_mbma CONMED_<INN>_DOSE precedent. Enters the tramadol dose-response as theta_Trm * Dose_trm / (Dose_trm + ED50) * TRAMADOL. The Mercier 2014 database included tramadol arms at doses from ~100 mg/day up to ~400 mg/day (the paper's Discussion cites tramadol 300 mg qd as a typical dose for the tramadol-vs-tapentadol simulation comparison); the estimated ED50 was 184 mg (SE 66). Set to 0 for non-tramadol arms; the TRAMADOL indicator handles the arm-selection.",
-      source_name        = "Tramadol daily dose (Mercier 2014 Table 3 ED50 row and Discussion)"
+      notes = "MBMA study-arm-level covariate. Documented inline per the Vargo_2014_statins_ezetimibe_mbma CONMED_<INN>_DOSE precedent. Enters the tramadol dose-response as theta_Trm * Dose_trm / (Dose_trm + ED50) * TRAMADOL. The Mercier 2014 database included tramadol arms at doses from ~100 mg/day up to ~400 mg/day (the paper's Discussion cites tramadol 300 mg qd as a typical dose for the tramadol-vs-tapentadol simulation comparison); the estimated ED50 was 184 mg (SE 66). Set to 0 for non-tramadol arms; the TRAMADOL indicator handles the arm-selection.",
+      source_name = "Tramadol daily dose (Mercier 2014 Table 3 ED50 row and Discussion)"
     )
   )
 
   covariatesDataExcluded <- list(
     SCALE_CATEGORICAL = list(
-      description        = "Study-arm scale-type indicator: 1 = arm-mean pain intensity was reported on a categorical scale (Likert / box-score / 0-3 / 0-4 / 1-5 / 16-point), 0 = arm-mean was reported on a continuous VAS scale.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm scale-type indicator: 1 = arm-mean pain intensity was reported on a categorical scale (Likert / box-score / 0-3 / 0-4 / 1-5 / 16-point), 0 = arm-mean was reported on a continuous VAS scale.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (continuous VAS scale)",
-      notes              = "Mercier 2014 Methods reports two scale-dependent residual variances (VAS/continuous sigma_1 = 0.260 and categorical sigma_2 = 0.205); the scale-type indicator selects between them. This model uses the dominant VAS residual as the encoded addSd; SCALE_CATEGORICAL is documented in covariatesDataExcluded so that users assembling arm-level data can preserve the scale-type provenance without triggering an 'unused covariate' checkModelConventions warning. See the vignette Assumptions and Deviations section for the dominant-residual rationale."
+      notes = "Mercier 2014 Methods reports two scale-dependent residual variances (VAS/continuous sigma_1 = 0.260 and categorical sigma_2 = 0.205); the scale-type indicator selects between them. This model uses the dominant VAS residual as the encoded addSd; SCALE_CATEGORICAL is documented in covariatesDataExcluded so that users assembling arm-level data can preserve the scale-type provenance without triggering an 'unused covariate' checkModelConventions warning. See the vignette Assumptions and Deviations section for the dominant-residual rationale."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12985L,
-    n_studies      = 45L,
-    n_arms         = 81L,
+    species = "human",
+    n_subjects = 12985L,
+    n_studies = 45L,
+    n_arms = 81L,
     n_observations = 534L,
-    age_range      = "median 58 years (range across trial medians 47-72 years)",
-    weight_range   = "not reported at arm level",
+    age_range = "median 58 years (range across trial medians 47-72 years)",
+    weight_range = "not reported at arm level",
     sex_female_pct = 64,
     race_ethnicity = "not reported",
-    disease_state  = "adults with chronic non-malignant pain: osteoarthritis (63.2% of arms), back pain (22.6%), neuropathic pain (8.5%), and other chronic non-malignant pain (5.7% -- rheumatoid arthritis, non-cancer chronic pain, fibromyalgia)",
-    dose_range     = "tramadol arms ranged from ~100 to ~400 mg/day (paper's typical-dose simulation uses 300 mg qd); tapentadol arms 100-250 mg bid; placebo arms carried no drug",
-    regimens       = "tramadol qd (once-daily controlled-release) and bid/tid (immediate-release) rescaled to total daily dose; tapentadol 100-250 mg bid",
-    treatments     = "placebo, tramadol, tapentadol (six of the tapentadol trials were active-controlled against oxycodone; only the tramadol/tapentadol/placebo arms are modeled)",
-    timepoints     = "arm-mean pain intensity reported at multiple timepoints per trial; median follow-up 9.0 weeks (SD 6.8), range up to 52 weeks (Wild et al. 2010)",
-    regions        = "not reported at arm level",
-    notes          = "MBMA at the study-arm level: each modeled data point is the arm-mean pain intensity in one trial arm at one timepoint, weighted by arm sample size N (residual variance scales as sigma^2 / N per Mercier 2014 Methods). Total 534 arm-timepoint observations pooled across 81 arms and 45 trials. The model is intended for simulating arm-mean pain-intensity time-courses and is NOT suitable for individual-subject simulation. Adverse-event and drop-out logistic sub-models are described in the paper but their coefficient values are reported only as graphical odds ratios in Figures 3-4 with no tabulated intercepts or slopes; those sub-models are NOT extracted -- see vignette Errata for the omission and the digitized Fig 3/4 odds-ratio ranges."
+    disease_state = "adults with chronic non-malignant pain: osteoarthritis (63.2% of arms), back pain (22.6%), neuropathic pain (8.5%), and other chronic non-malignant pain (5.7% -- rheumatoid arthritis, non-cancer chronic pain, fibromyalgia)",
+    dose_range = "tramadol arms ranged from ~100 to ~400 mg/day (paper's typical-dose simulation uses 300 mg qd); tapentadol arms 100-250 mg bid; placebo arms carried no drug",
+    regimens = "tramadol qd (once-daily controlled-release) and bid/tid (immediate-release) rescaled to total daily dose; tapentadol 100-250 mg bid",
+    treatments = "placebo, tramadol, tapentadol (six of the tapentadol trials were active-controlled against oxycodone; only the tramadol/tapentadol/placebo arms are modeled)",
+    timepoints = "arm-mean pain intensity reported at multiple timepoints per trial; median follow-up 9.0 weeks (SD 6.8), range up to 52 weeks (Wild et al. 2010)",
+    regions = "not reported at arm level",
+    notes = "MBMA at the study-arm level: each modeled data point is the arm-mean pain intensity in one trial arm at one timepoint, weighted by arm sample size N (residual variance scales as sigma^2 / N per Mercier 2014 Methods). Total 534 arm-timepoint observations pooled across 81 arms and 45 trials. The model is intended for simulating arm-mean pain-intensity time-courses and is NOT suitable for individual-subject simulation. Adverse-event and drop-out logistic sub-models are described in the paper but their coefficient values are reported only as graphical odds ratios in Figures 3-4 with no tabulated intercepts or slopes; those sub-models are NOT extracted -- see vignette Errata for the omission and the digitized Fig 3/4 odds-ratio ranges."
   )
 
   ini({

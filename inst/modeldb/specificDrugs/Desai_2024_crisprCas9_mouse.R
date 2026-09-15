@@ -44,14 +44,33 @@ Desai_2024_crisprCas9_mouse <- function() {
   # sub-compartment. Naming scheme is <molecule>_<region> for the three
   # disposition species, plus the intracellular / receptor states.
   paper_specific_compartments <- c(
-    "lnp_plasma", "lnp_lymph", "lnp_livervas", "lnp_mps", "lnp_opsonin",
-    "lnp_liverendo", "lnp_ldlr", "lnp_liverinter", "lnp_kidney", "lnp_rem",
+    "lnp_plasma",
+    "lnp_lymph",
+    "lnp_livervas",
+    "lnp_mps",
+    "lnp_opsonin",
+    "lnp_liverendo",
+    "lnp_ldlr",
+    "lnp_liverinter",
+    "lnp_kidney",
+    "lnp_rem",
     "ldlr",
-    "sgrna_plasma", "sgrna_lymph", "sgrna_livervas", "sgrna_liverendo",
-    "sgrna_liverinter", "sgrna_kidney", "sgrna_rem", "sgrna_cell",
-    "mrna_plasma", "mrna_lymph", "mrna_livervas", "mrna_liverendo",
-    "mrna_liverinter", "mrna_rem",
-    "cas9", "rnp"
+    "sgrna_plasma",
+    "sgrna_lymph",
+    "sgrna_livervas",
+    "sgrna_liverendo",
+    "sgrna_liverinter",
+    "sgrna_kidney",
+    "sgrna_rem",
+    "sgrna_cell",
+    "mrna_plasma",
+    "mrna_lymph",
+    "mrna_livervas",
+    "mrna_liverendo",
+    "mrna_liverinter",
+    "mrna_rem",
+    "cas9",
+    "rnp"
   )
 
   units <- list(
@@ -78,7 +97,12 @@ Desai_2024_crisprCas9_mouse <- function() {
     lnp_lymph = list(analyte = "lipid nanoparticle", units = "ug", specimen = "lymph", verified = TRUE),
     lnp_livervas = list(analyte = "lipid nanoparticle", units = "ug", specimen = "plasma", verified = TRUE),
     lnp_mps = list(analyte = "lipid nanoparticle", units = "ug", specimen = "tissue", verified = TRUE),
-    lnp_opsonin = list(analyte = "opsonin-bound lipid nanoparticle", units = "ug", specimen = "plasma", verified = TRUE),
+    lnp_opsonin = list(
+      analyte = "opsonin-bound lipid nanoparticle",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
+    ),
     lnp_liverendo = list(analyte = "lipid nanoparticle", units = "ug", specimen = "endosome", verified = TRUE),
     lnp_ldlr = list(analyte = "LNP-LDL receptor complex", units = "ug", specimen = "endosome", verified = TRUE),
     lnp_liverinter = list(analyte = "lipid nanoparticle", units = "ug", specimen = "tissue", verified = TRUE),

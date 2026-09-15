@@ -36,20 +36,25 @@ vanRongen_2015_midazolam <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central           = list(analyte = "midazolam", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "midazolam", units = "umol", specimen = "plasma", verified = FALSE),
-    central_1ohm      = list(analyte = "1-OH-midazolam", units = "umol", specimen = "plasma", verified = FALSE),
-    central_1ohmg     = list(analyte = "1-OH-midazolam glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_1ohmg = list(analyte = "1-OH-midazolam glucuronide", units = "umol", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "midazolam", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "midazolam", units = "umol", specimen = "plasma", verified = FALSE),
+    central_1ohm = list(analyte = "1-OH-midazolam", units = "umol", specimen = "plasma", verified = FALSE),
+    central_1ohmg = list(analyte = "1-OH-midazolam glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_1ohmg = list(
+      analyte = "1-OH-midazolam glucuronide",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-function scaling on the midazolam peripheral volume of",
         "distribution V_mdz_peripheral with reference TBW = 104.7 kg",
         "(cohort median) and estimated exponent X = 1.68 (paper Table 2",
@@ -57,21 +62,21 @@ vanRongen_2015_midazolam <- function() {
         "No other PK parameter retained TBW as a covariate in the final",
         "model. Time-fixed at baseline."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 19L,
-    n_studies      = 1L,
-    age_range      = "12.5-18.9 years",
-    age_median     = "15.9 years (mean +/- 1.6 SD)",
-    weight_range   = "62-149.8 kg",
-    weight_median  = "102.7 kg (mean +/- 24.9 SD); 104.7 kg (model reference)",
+    species = "human",
+    n_subjects = 19L,
+    n_studies = 1L,
+    age_range = "12.5-18.9 years",
+    age_median = "15.9 years (mean +/- 1.6 SD)",
+    weight_range = "62-149.8 kg",
+    weight_median = "102.7 kg (mean +/- 24.9 SD); 104.7 kg (model reference)",
     sex_female_pct = 68.4,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Overweight and obese adolescents (BMI for age >=85th percentile",
       "overweight; >=95th percentile obese) undergoing general surgery",
       "(orthopaedics, tonsillectomy, bariatric surgery) with ASA",
@@ -80,15 +85,15 @@ vanRongen_2015_midazolam <- function() {
       "prior benzodiazepine exposure, liver or renal disease, or CYP3A-",
       "modulating co-medication were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intravenous bolus dose of 2 mg (n = 16) or 3 mg (n = 3)",
       "midazolam administered a few minutes before transfer to the",
       "operating room. Blood samples at t = 0, (5), 15, 30 min and 1, 2,",
       "4, 6, occasionally 8 h post-dose; 129 midazolam, 118",
       "1-OH-midazolam, and 128 1-OH-midazolam glucuronide samples."
     ),
-    regions        = "United States (Children's National Medical Center, Washington DC)",
-    notes          = paste(
+    regions = "United States (Children's National Medical Center, Washington DC)",
+    notes = paste(
       "Demographics from Table 1 of van Rongen 2015. Cohort median TBW",
       "104.7 kg is the reference used in the power-function TBW effect",
       "on V_mdz_peripheral (Table 2 final model). 1-OH-midazolam apparent",

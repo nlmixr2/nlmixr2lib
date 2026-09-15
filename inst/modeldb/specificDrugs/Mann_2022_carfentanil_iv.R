@@ -37,8 +37,8 @@ Mann_2022_carfentanil_iv <- function() {
   )
   vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -47,31 +47,31 @@ Mann_2022_carfentanil_iv <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "carfentanil", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "carfentanil", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "carfentanil", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "carfentanil", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "carfentanil", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "carfentanil", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (Mann 2022 simulations fix WT = 70 kg; the allometric scaling block keeps WT exposed as a covariate so subject-level body weight can vary in downstream composition)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (Mann 2022 simulations fix WT = 70 kg; the allometric scaling block keeps WT exposed as a covariate so subject-level body weight can vary in downstream composition)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling inherited from the fentanyl PK model that",
         "carfentanil was derived from: CL = CL_TV * (WT/70)^0.75 and",
         "V = V_TV * (WT/70). Reference weight 70 kg."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     Q_TOTAL_LPM = list(
-      description        = "Total cardiac output Qb + Qt feeding the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback that concentrates the opioid in the biophase compartment as hyperperfusion raises Q above baseline.",
-      units              = "L/min",
-      type               = "continuous",
+      description = "Total cardiac output Qb + Qt feeding the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback that concentrates the opioid in the biophase compartment as hyperperfusion raises Q above baseline.",
+      units = "L/min",
+      type = "continuous",
       reference_category = "4.87 (baseline; gives Q_Scale ~ 1, no amplification)",
-      notes              = paste(
+      notes = paste(
         "Same semantics as the Mann_2022_fentanyl_iv Q_TOTAL_LPM",
         "covariate. Standalone: pass 4.87 to keep Q_Scale = 1.",
         "In a composed overdose chain: pass Mann_2022_respiratory_",
@@ -80,33 +80,33 @@ Mann_2022_carfentanil_iv <- function() {
         "central volume halves, doubling the effect-site",
         "concentration in line with FDA delaymymod.c."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1L,
-    n_studies      = 1L,
-    age_range      = "Adult (Minkowski 2012 microdose single-subject anchor)",
-    weight_range   = "Mann 2022 virtual-population simulations assume 70 kg",
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
+    age_range = "Adult (Minkowski 2012 microdose single-subject anchor)",
+    weight_range = "Mann 2022 virtual-population simulations assume 70 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "No carfentanil-specific popPK clinical study exists. The Mann",
       "2022 carfentanil PK model is a structural derivative of the",
       "Algera 2021 fentanyl PK with hand-set rate-constant modifications",
       "calibrated to reproduce the ~45 minute plasma half-life observed",
       "in the single Minkowski 2012 microdose case report."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Minkowski 2012 microdose anchor; Mann 2022 simulates IV bolus",
       "overdose scenarios at 0.012 mg (medium) and 0.022 mg (high) in",
       "chronic users (dose equivalence derived from the carfentanil-to-",
       "fentanyl ratio of minimum cardiac-arrest-inducing dose)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "PK micro-constants from FDA simulateToGetOD_IM.R lines 169-183:",
       "k_el (kout) = fentanyl k_el / 10; k13 = fentanyl k13 / 10;",
       "k21 = fentanyl k21 * 10; k31 = fentanyl k31 * 10; k1 = 10/min",

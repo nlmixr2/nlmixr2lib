@@ -33,23 +33,23 @@ Kloprogge_2013_lumefantrine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester), 0 = non-pregnant.",
         "Time-fixed per subject. Kloprogge 2013 enrolled 116 pregnant women",
         "(26 with dense venous sampling, 90 with sparse capillary sampling)",
@@ -62,14 +62,14 @@ Kloprogge_2013_lumefantrine <- function() {
         "Table 2 'Pregnancy on Q'.",
         sep = " "
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     BODYTEMP = list(
-      description        = "Body temperature at admission",
-      units              = "degC",
-      type               = "continuous",
+      description = "Body temperature at admission",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission body temperature, time-fixed per subject. Population",
         "median 36.9 degC (Table 1, all-cohort column); range 36.0-39.8",
         "degC. Kloprogge 2013 applies a linear-deviation effect on the",
@@ -82,36 +82,36 @@ Kloprogge_2013_lumefantrine <- function() {
         "should not be extrapolated outside that window.",
         sep = " "
       ),
-      source_name        = "TEMP"
+      source_name = "TEMP"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 132L,
-    n_studies       = 1L,
-    n_pregnant      = 115L,
-    n_nonpregnant   = 17L,
-    age_range       = "15.0-38.0 years (all-cohort range, Table 1)",
-    age_median      = "21.0 years (all-cohort, Table 1)",
-    weight_range    = "40.0-83.0 kg (all-cohort range, Table 1)",
-    weight_median   = "56.0 kg (all-cohort, Table 1)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 132L,
+    n_studies = 1L,
+    n_pregnant = 115L,
+    n_nonpregnant = 17L,
+    age_range = "15.0-38.0 years (all-cohort range, Table 1)",
+    age_median = "21.0 years (all-cohort, Table 1)",
+    weight_range = "40.0-83.0 kg (all-cohort range, Table 1)",
+    weight_median = "56.0 kg (all-cohort, Table 1)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; second- or",
       "third-trimester pregnancy compared with non-pregnant post-partum",
       "controls (matched on history of fever, axillary temperature,",
       "smoking, and parasitemia stratum)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per",
       "tablet; four tablets per dose (480 mg lumefantrine) given twice",
       "daily for 3 days (oral; dose times 0, 8, 24, 36, 48, 60 hours)",
       "with 200 mL milk tea to optimise oral bioavailability."
     ),
-    regions         = "Uganda (Mbarara National Referral Hospital antenatal clinic)",
+    regions = "Uganda (Mbarara National Referral Hospital antenatal clinic)",
     trial_registration = "ClinicalTrials.gov NCT00495508",
-    notes           = paste(
+    notes = paste(
       "Demographics from Kloprogge 2013 Table 1. Pregnant cohort spans",
       "venous (n = 26) and capillary (n = 89; one subject excluded for",
       "an unexplained baseline lumefantrine of 7,717 ng/mL) sampling",

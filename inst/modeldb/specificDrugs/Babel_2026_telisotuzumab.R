@@ -35,8 +35,8 @@ Babel_2026_telisotuzumab <- function() {
   vignette <- "Babel_2026_telisotuzumab"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -44,96 +44,96 @@ Babel_2026_telisotuzumab <- function() {
   # mg divided by a volume in L gives mg/L == ug/mL, which is the scale
   # of the CavgADC axis in Babel 2026 Figures 2 and 4 (0 to 10 ug/mL).
   compartmentData <- list(
-    central     = list(analyte = "telisotuzumab vedotin conjugate", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "telisotuzumab vedotin conjugate", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "telisotuzumab vedotin conjugate", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalised to the overall-population median of 68.9 kg inside model(). Babel 2026 Methods: 'Continuous covariates were normalized to the median of the overall population and incorporated into the model using a power function'. The median is read from Table S4 (All Participants, N = 304, Body Weight median 68.9 kg) and is corroborated by Table S3, whose forest-plot reference group is 'Body Weight <= 68.9 kg'. Range 36.0-144 kg. One exponent is shared by CL and Q and a second by Vc and Vp, exactly as Table S7 tabulates them ('Body Weight on CL and Q', 'Body Weight on Vc and Vp').",
-      source_name        = "Body Weight"
+      notes = "Normalised to the overall-population median of 68.9 kg inside model(). Babel 2026 Methods: 'Continuous covariates were normalized to the median of the overall population and incorporated into the model using a power function'. The median is read from Table S4 (All Participants, N = 304, Body Weight median 68.9 kg) and is corroborated by Table S3, whose forest-plot reference group is 'Body Weight <= 68.9 kg'. Range 36.0-144 kg. One exponent is shared by CL and Q and a second by Vc and Vp, exactly as Table S7 tabulates them ('Body Weight on CL and Q', 'Body Weight on Vc and Vp').",
+      source_name = "Body Weight"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalised to the overall-population median of 65 years inside model() (Babel 2026 Table S4, All Participants median 65, range 30-87). Acts on Vc only in the conjugate model. Babel 2026 Table S3 describes the forest-plot reference stratum as 'Age 40-65 years', which is a binning of the same continuous covariate, not a different centring.",
-      source_name        = "Age"
+      notes = "Normalised to the overall-population median of 65 years inside model() (Babel 2026 Table S4, All Participants median 65, range 30-87). Acts on Vc only in the conjugate model. Babel 2026 Table S3 describes the forest-plot reference stratum as 'Age 40-65 years', which is a binning of the same continuous covariate, not a different centring.",
+      source_name = "Age"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalised to the overall-population median of 41.6 g/L inside model() (Babel 2026 Table S4, All Participants median 41.6 g/L, range 29.0-52.0; corroborated by the Table S3 reference group 'Baseline Albumin <= 41.6 g/L'). Enters as a power function on both CL and Vc, with negative exponents in each case, so a higher albumin lowers clearance and volume and therefore raises exposure - the direction shown in Babel 2026 Figure 1A, where albumin > 41.6 g/L versus <= 41.6 g/L gives an AUCtau ratio of 1.18.",
-      source_name        = "Baseline Albumin"
+      notes = "Normalised to the overall-population median of 41.6 g/L inside model() (Babel 2026 Table S4, All Participants median 41.6 g/L, range 29.0-52.0; corroborated by the Table S3 reference group 'Baseline Albumin <= 41.6 g/L'). Enters as a power function on both CL and Vc, with negative exponents in each case, so a higher albumin lowers clearance and volume and therefore raises exposure - the direction shown in Babel 2026 Figure 1A, where albumin > 41.6 g/L versus <= 41.6 g/L gives an AUCtau ratio of 1.18.",
+      source_name = "Baseline Albumin"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; Babel 2026 Table S3 reference group 'Sex: Male')",
-      notes              = "Multiplicative factor on Vc only. Babel 2026 Table S4: 115 of 304 (38%) female. The tabulated factor 0.925 is the female-versus-male value: a smaller central volume in women raises Cmax, matching the Figure 1A 'Female : Male' Cmax ratio of 1.07 while leaving AUCtau essentially unchanged at 1.01 (Vc does not enter AUCtau).",
-      source_name        = "Sex"
+      notes = "Multiplicative factor on Vc only. Babel 2026 Table S4: 115 of 304 (38%) female. The tabulated factor 0.925 is the female-versus-male value: a smaller central volume in women raises Cmax, matching the Figure 1A 'Female : Male' Cmax ratio of 1.07 while leaving AUCtau essentially unchanged at 1.01 (Vc does not enter AUCtau).",
+      source_name = "Sex"
     ),
     RACE_BLACK = list(
-      description        = "Black or African American race indicator; 1 = Black or African American, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black or African American race indicator; 1 = Black or African American, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; Babel 2026 Table S3 reference group 'Race: White')",
-      notes              = "Multiplicative factor on CL. Babel 2026 Table S4: 8 of 304 (3%) Black or African American versus 198 of 304 (65%) White. The authors caution that the small n limits conclusions: the model-predicted AUCtau increase of about 56% relative to White patients (Figure 1A) sits inside the observed spread of White patients, and no dose adjustment by race is recommended.",
-      source_name        = "Race: Black or African American"
+      notes = "Multiplicative factor on CL. Babel 2026 Table S4: 8 of 304 (3%) Black or African American versus 198 of 304 (65%) White. The authors caution that the small n limits conclusions: the model-predicted AUCtau increase of about 56% relative to White patients (Figure 1A) sits inside the observed spread of White patients, and no dose adjustment by race is recommended.",
+      source_name = "Race: Black or African American"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator; 1 = Asian, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator; 1 = Asian, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; Babel 2026 Table S3 reference group 'Race: White')",
-      notes              = "Multiplicative factor on CL. Babel 2026 Table S4: 98 of 304 (32%) Asian. The factor 0.887 implies an AUCtau ratio of 1/0.887 = 1.13 relative to White patients, matching the 1.10 shown in Figure 1A. RACE_BLACK and RACE_ASIAN are mutually exclusive; a White patient carries 0 for both.",
-      source_name        = "Race: Asian"
+      notes = "Multiplicative factor on CL. Babel 2026 Table S4: 98 of 304 (32%) Asian. The factor 0.887 implies an AUCtau ratio of 1/0.887 = 1.13 relative to White patients, matching the 1.10 shown in Figure 1A. RACE_BLACK and RACE_ASIAN are mutually exclusive; a White patient carries 0 for both.",
+      source_name = "Race: Asian"
     ),
     ADA_POS = list(
-      description        = "Treatment-emergent anti-drug antibody status; 1 = positive, 0 = negative.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Treatment-emergent anti-drug antibody status; 1 = positive, 0 = negative.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA negative; Babel 2026 Table S3 reference group 'Treatment-emergent ADA: Negative')",
-      notes              = "Multiplicative factor on CL. Babel 2026 Table S2 footnote c defines treatment-emergent ADA as either (1) baseline ADA negative or missing with at least one post-baseline ADA positive, or (2) baseline ADA positive with at least one post-baseline positive result at least 3.3 x baseline in LUMINOSITY or 2 x baseline in NCT02099058, per each study's assay. Nominally time-varying (a patient becomes ADA positive at seroconversion); Babel 2026 does not state whether the covariate was implemented as a time-varying flag or as an ever-positive subject-level flag, so it is carried here as a subject-level indicator. The factor 1.17 implies an AUCtau ratio of 1/1.17 = 0.855 for ADA-positive patients, matching the 0.846 in Figure 1A. Figure 1A reports n = 61 positive versus n = 243 negative.",
-      source_name        = "Treatment-emergent ADA status"
+      notes = "Multiplicative factor on CL. Babel 2026 Table S2 footnote c defines treatment-emergent ADA as either (1) baseline ADA negative or missing with at least one post-baseline ADA positive, or (2) baseline ADA positive with at least one post-baseline positive result at least 3.3 x baseline in LUMINOSITY or 2 x baseline in NCT02099058, per each study's assay. Nominally time-varying (a patient becomes ADA positive at seroconversion); Babel 2026 does not state whether the covariate was implemented as a time-varying flag or as an ever-positive subject-level flag, so it is carried here as a subject-level indicator. The factor 1.17 implies an AUCtau ratio of 1/1.17 = 0.855 for ADA-positive patients, matching the 0.846 in Figure 1A. Figure 1A reports n = 61 positive versus n = 243 negative.",
+      source_name = "Treatment-emergent ADA status"
     )
   )
 
   covariatesDataExcluded <- list(
     RENALIMP = list(
       description = "Baseline renal-function category derived from Cockcroft-Gault creatinine clearance (normal, mild, moderate/severe).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened against conjugate CL in the Babel 2026 Table S2 covariate sweep but NOT retained in the final conjugate model (Table S7 lists no renal term for the conjugate). Renal function WAS retained on unconjugated MMAE payload clearance; see Babel_2026_telisotuzumab_mmae, which carries RENALIMP_MILD, RENALIMP_MOD and RENALIMP_SEV."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened against conjugate CL in the Babel 2026 Table S2 covariate sweep but NOT retained in the final conjugate model (Table S7 lists no renal term for the conjugate). Renal function WAS retained on unconjugated MMAE payload clearance; see Babel_2026_telisotuzumab_mmae, which carries RENALIMP_MILD, RENALIMP_MOD and RENALIMP_SEV."
     ),
     HEPIMP_MILD = list(
       description = "Mild hepatic impairment indicator by National Cancer Institute criteria.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on conjugate CL and Vc (Babel 2026 Table S2) but not retained; the Discussion states mild hepatic impairment 'was not identified as a significant covariate on Teliso-V conjugate or free MMAE payload clearance'. No patient with moderate or severe hepatic impairment was enrolled, so those strata are unidentified."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on conjugate CL and Vc (Babel 2026 Table S2) but not retained; the Discussion states mild hepatic impairment 'was not identified as a significant covariate on Teliso-V conjugate or free MMAE payload clearance'. No patient with moderate or severe hepatic impairment was enrolled, so those strata are unidentified."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 304L,
-    n_studies      = 2L,
-    age_range      = "median 65 years, range 30-87 (Babel 2026 Table S4, All Participants)",
-    weight_range   = "median 68.9 kg, range 36.0-144 (Babel 2026 Table S4, All Participants)",
+    species = "human",
+    n_subjects = 304L,
+    n_studies = 2L,
+    age_range = "median 65 years, range 30-87 (Babel 2026 Table S4, All Participants)",
+    weight_range = "median 68.9 kg, range 36.0-144 (Babel 2026 Table S4, All Participants)",
     sex_female_pct = 37.8,
     race_ethnicity = c(White = 65, Asian = 32, `Black or African American` = 3),
-    disease_state  = "Advanced solid tumours likely to express c-Met (phase 1, NCT02099058, n = 35, all tumour types, monotherapy cohorts receiving Process II drug material only) and locally advanced or metastatic c-Met protein overexpressing non-small cell lung cancer (LUMINOSITY phase 2, NCT03539536, n = 269).",
-    dose_range     = "Phase 1: 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks. LUMINOSITY: 1.6 or 1.9 mg/kg every 2 weeks. Approved regimen 1.9 mg/kg Q2W as an intravenous infusion, capped at 190 mg for patients weighing at least 100 kg.",
-    regions        = "Europe 26%, North America 26%, Asia 28%, rest of world 20% (Babel 2026 Table S4)",
-    notes          = paste0(
+    disease_state = "Advanced solid tumours likely to express c-Met (phase 1, NCT02099058, n = 35, all tumour types, monotherapy cohorts receiving Process II drug material only) and locally advanced or metastatic c-Met protein overexpressing non-small cell lung cancer (LUMINOSITY phase 2, NCT03539536, n = 269).",
+    dose_range = "Phase 1: 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks. LUMINOSITY: 1.6 or 1.9 mg/kg every 2 weeks. Approved regimen 1.9 mg/kg Q2W as an intravenous infusion, capped at 190 mg for patients weighing at least 100 kg.",
+    regions = "Europe 26%, North America 26%, Asia 28%, rest of world 20% (Babel 2026 Table S4)",
+    notes = paste0(
       "Baseline albumin median 41.6 g/L (range 29.0-52.0); baseline ",
       "renal function normal 36%, mild 43%, moderate 19%, severe 1%, ",
       "missing less than 1%; baseline hepatic function normal 88% with ",

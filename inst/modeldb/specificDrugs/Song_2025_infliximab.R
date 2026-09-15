@@ -9,43 +9,43 @@ Song_2025_infliximab <- function() {
   # compartments with first-order absorption from the subcutaneous site and
   # first-order elimination) and section 5 (serum infliximab assay).
   compartmentData <- list(
-    depot       = list(analyte = "infliximab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "infliximab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index (time-varying; recorded at every outpatient visit)",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index (time-varying; recorded at every outpatient visit)",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on BOTH clearance and subcutaneous bioavailability, normalised to 22.5 kg/m^2: CL includes (BMI/22.5)^0.360 and F includes (BMI/22.5)^-0.832 (Song 2025 p. 380 final-model equations; Table 2 theta BMI-CL and theta BMI-CL). Song 2025 evaluated body weight and BMI head-to-head on CL and reports BMI as the better descriptor (Discussion: 'BMI provides a superior explanation of infliximab PK'), so WT is not in the final model. The 22.5 normalising value is the cohort mean per Methods section 6 ('Continuous covariates were normalized to the mean value of the data') and coincides with the BMI implied by the Table 1 medians (65.0 kg / 1.700 m^2 = 22.5 kg/m^2); BMI itself is not tabulated in Table 1.",
-      source_name        = "BMI"
+      notes = "Power effect on BOTH clearance and subcutaneous bioavailability, normalised to 22.5 kg/m^2: CL includes (BMI/22.5)^0.360 and F includes (BMI/22.5)^-0.832 (Song 2025 p. 380 final-model equations; Table 2 theta BMI-CL and theta BMI-CL). Song 2025 evaluated body weight and BMI head-to-head on CL and reports BMI as the better descriptor (Discussion: 'BMI provides a superior explanation of infliximab PK'), so WT is not in the final model. The 22.5 normalising value is the cohort mean per Methods section 6 ('Continuous covariates were normalized to the mean value of the data') and coincides with the BMI implied by the Table 1 medians (65.0 kg / 1.700 m^2 = 22.5 kg/m^2); BMI itself is not tabulated in Table 1.",
+      source_name = "BMI"
     ),
     ALB = list(
-      description        = "Serum albumin (time-varying; measured at every outpatient visit)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (time-varying; measured at every outpatient visit)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance only: (ALB_gdL/4.4)^-0.372 (Song 2025 p. 380 final-model equation; Table 2 theta ALB-CL = -0.372). Song 2025 reports albumin in US-convention g/dL (Table 1 median 4.4 g/dL, IQR 4.2-4.6) and calibrated the exponent on that scale, so model() applies the inline conversion alb_gdL <- ALB * 0.1 required by the ALB register entry's Units note; the canonical column stays SI g/L, i.e. the reference 4.4 g/dL is 44 g/L. The 4.4 g/dL normalising value is the cohort mean per Methods section 6 and happens to equal the Table 1 median.",
-      source_name        = "ALB"
+      notes = "Power effect on clearance only: (ALB_gdL/4.4)^-0.372 (Song 2025 p. 380 final-model equation; Table 2 theta ALB-CL = -0.372). Song 2025 reports albumin in US-convention g/dL (Table 1 median 4.4 g/dL, IQR 4.2-4.6) and calibrated the exponent on that scale, so model() applies the inline conversion alb_gdL <- ALB * 0.1 required by the ALB register entry's Units note; the canonical column stays SI g/L, i.e. the reference 4.4 g/dL is 44 g/L. The 4.4 g/dL normalising value is the cohort mean per Methods section 6 and happens to equal the Table 1 median.",
+      source_name = "ALB"
     ),
     CRP = list(
-      description        = "C-reactive protein, standard (non-high-sensitivity) assay (time-varying; measured at every outpatient visit)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein, standard (non-high-sensitivity) assay (time-varying; measured at every outpatient visit)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance only: (CRP_mgdL/0.18)^0.022 (Song 2025 p. 380 final-model equation; Table 2 theta CRP-CL = 0.022). Song 2025 reports CRP in US-convention mg/dL (Table 1 median 0.06 mg/dL, IQR 0.06-0.15) and calibrated the exponent on that scale, so model() applies the inline conversion crp_mgdL <- CRP * 0.1; the canonical column stays SI mg/L, i.e. the reference 0.18 mg/dL is 1.8 mg/L. The 0.18 mg/dL normalising value is the cohort MEAN per Methods section 6 and is materially above the Table 1 median of 0.06 mg/dL, as expected for a right-skewed acute-phase reactant -- do not substitute the median. Standard assay: Song 2025 Methods section 4 lists CRP among routine laboratory findings with no high-sensitivity qualifier.",
-      source_name        = "CRP"
+      notes = "Power effect on clearance only: (CRP_mgdL/0.18)^0.022 (Song 2025 p. 380 final-model equation; Table 2 theta CRP-CL = 0.022). Song 2025 reports CRP in US-convention mg/dL (Table 1 median 0.06 mg/dL, IQR 0.06-0.15) and calibrated the exponent on that scale, so model() applies the inline conversion crp_mgdL <- CRP * 0.1; the canonical column stays SI mg/L, i.e. the reference 0.18 mg/dL is 1.8 mg/L. The 0.18 mg/dL normalising value is the cohort MEAN per Methods section 6 and is materially above the Table 1 median of 0.06 mg/dL, as expected for a right-skewed acute-phase reactant -- do not substitute the median. Standard assay: Song 2025 Methods section 4 lists CRP among routine laboratory findings with no high-sensitivity qualifier.",
+      source_name = "CRP"
     ),
     CONC_ADA_NGML = list(
-      description        = "Total (free plus drug-bound) anti-infliximab antibody concentration measured by a drug-tolerant precipitation / acid-dissociation immunoassay (time-varying; drawn with each pre-dose PK sample)",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Total (free plus drug-bound) anti-infliximab antibody concentration measured by a drug-tolerant precipitation / acid-dissociation immunoassay (time-varying; drawn with each pre-dose PK sample)",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on BOTH clearance and subcutaneous bioavailability, normalised to 10 ng/mL: CL includes (CONC_ADA_NGML/10)^0.022 and F includes (CONC_ADA_NGML/10)^-0.213 (Song 2025 p. 380 final-model equations; Table 2 theta ADA-CL = 0.022, theta ADA-F = -0.213). This column is a calibrated MASS CONCENTRATION, not a dilution titer: every subject carries a strictly positive measured value, ADA-negatives included (Song 2025 Results: median 8.0 ng/mL, IQR 7.1-9.0 for ADA-negative vs median 12.6 ng/mL, IQR 11.0-19.0 for ADA-positive; overall Table 1 median 9.3 ng/mL, IQR 7.6-11.6). There is therefore NO zero- or one-encoding for ADA-negative subjects, and the power form (CONC_ADA_NGML/10)^theta is undefined at 0 -- which is why this is not ADA_TITER. Positivity, where the paper reports it, is a derived dichotomy at the assay cutoff of 10 ng/mL (Methods section 5), the same value the authors used as the normalising constant. Song 2025 treats the continuous encoding as the paper's central methodological contribution (Discussion: 'the distinctive feature of our model was that ADA levels were chosen as covariates rather than the presence of ADA ... while binary classification is intuitive, it can lead to information loss'), so do NOT dichotomise onto ADA_POS. Assay is drug-tolerant, so the measurement is not confounded by circulating infliximab.",
-      source_name        = "ADA"
+      notes = "Power effect on BOTH clearance and subcutaneous bioavailability, normalised to 10 ng/mL: CL includes (CONC_ADA_NGML/10)^0.022 and F includes (CONC_ADA_NGML/10)^-0.213 (Song 2025 p. 380 final-model equations; Table 2 theta ADA-CL = 0.022, theta ADA-F = -0.213). This column is a calibrated MASS CONCENTRATION, not a dilution titer: every subject carries a strictly positive measured value, ADA-negatives included (Song 2025 Results: median 8.0 ng/mL, IQR 7.1-9.0 for ADA-negative vs median 12.6 ng/mL, IQR 11.0-19.0 for ADA-positive; overall Table 1 median 9.3 ng/mL, IQR 7.6-11.6). There is therefore NO zero- or one-encoding for ADA-negative subjects, and the power form (CONC_ADA_NGML/10)^theta is undefined at 0 -- which is why this is not ADA_TITER. Positivity, where the paper reports it, is a derived dichotomy at the assay cutoff of 10 ng/mL (Methods section 5), the same value the authors used as the normalising constant. Song 2025 treats the continuous encoding as the paper's central methodological contribution (Discussion: 'the distinctive feature of our model was that ADA levels were chosen as covariates rather than the presence of ADA ... while binary classification is intuitive, it can lead to information loss'), so do NOT dichotomise onto ADA_POS. Assay is drug-tolerant, so the measurement is not confounded by circulating infliximab.",
+      source_name = "ADA"
     )
   )
 
@@ -61,71 +61,71 @@ Song_2025_infliximab <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained. Cohort median 36 years (IQR 30-47) per Song 2025 Table 1."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL; not retained. Cohort median 36 years (IQR 30-47) per Song 2025 Table 1."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL; not retained. Song 2025 Table 1 reports 130/181 (71.8%) male, i.e. 28.2% female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL; not retained. Song 2025 Table 1 reports 130/181 (71.8%) male, i.e. 28.2% female."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL and on F; not retained in either. Song 2025 evaluated body weight and BMI head-to-head and reports BMI as the better descriptor of infliximab PK (Discussion), so the retained covariate is BMI. Note weight still enters the DOSING regimen (5 or 10 mg/kg IV) even though it is absent from the parameter model. Cohort median 65.0 kg (IQR 55.0-73.6) per Table 1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL and on F; not retained in either. Song 2025 evaluated body weight and BMI head-to-head and reports BMI as the better descriptor of infliximab PK (Discussion), so the retained covariate is BMI. Note weight still enters the DOSING regimen (5 or 10 mg/kg IV) even though it is absent from the parameter model. Cohort median 65.0 kg (IQR 55.0-73.6) per Table 1."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained (its information enters through BMI). Cohort median 170.0 cm (IQR 162.8-174.2) per Song 2025 Table 1."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened on CL; not retained (its information enters through BMI). Cohort median 170.0 cm (IQR 162.8-174.2) per Song 2025 Table 1."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained. Cohort median 5.7 x 10^9/L (IQR 4.7-6.8) per Song 2025 Table 1."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened on CL; not retained. Cohort median 5.7 x 10^9/L (IQR 4.7-6.8) per Song 2025 Table 1."
     ),
     DIS_CD = list(
       description = "Crohn's disease indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Diagnosis (CD vs UC) was screened on CL and not retained; Song 2025 Discussion reads this as 'no significant PK differences between the diseases'. 149/181 (82.3%) CD per Table 1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Diagnosis (CD vs UC) was screened on CL and not retained; Song 2025 Discussion reads this as 'no significant PK differences between the diseases'. 149/181 (82.3%) CD per Table 1."
     ),
     DIS_UC = list(
       description = "Ulcerative colitis indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Complementary level of the screened diagnosis covariate; not retained. 32/181 (17.7%) UC per Song 2025 Table 1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Complementary level of the screened diagnosis covariate; not retained. 32/181 (17.7%) UC per Song 2025 Table 1."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 181L,
-    n_studies        = 1L,
-    age_range        = "Age at diagnosis <16 years in 7.7%, 17-40 years in 79.0%, >40 years in 13.3% (adults at the time of sampling)",
-    age_median       = "36 years (IQR 30-47)",
-    weight_range     = "IQR 55.0-73.6 kg (full range not reported)",
-    weight_median    = "65.0 kg",
-    height_median    = "170.0 cm (IQR 162.8-174.2)",
-    bmi_reference    = "22.5 kg/m^2 (cohort mean used as the covariate normalising value; BMI is not tabulated in Table 1)",
-    sex_female_pct   = 28.2,
-    race_ethnicity   = "All Korean (single-centre Korean cohort); the authors list the resulting limited generalisability to other ethnicities as a study limitation.",
-    disease_state    = "Inflammatory bowel disease on maintenance infliximab: Crohn's disease 149/181 (82.3%), ulcerative colitis 32/181 (17.7%). Remnant disease burden at enrolment: transmural healing (global sMaRIA = 0) in 16/106 CD, complete endoscopic remission (SES-CD = 0) in 8/43 CD, endoscopic remission (Mayo endoscopic score = 0) in 16/32 UC.",
-    dose_range       = "Maintenance only. IV: 5 mg/kg every 8 weeks (139/181 patients at enrolment) or 10 mg/kg every 8 weeks after dose escalation (42/181 at enrolment). SC: Remsima SC 120 mg fixed dose by prefilled pen every 2 weeks. Induction (5 mg/kg IV at weeks 0, 2 and 6) preceded enrolment and is NOT covered by this model -- the authors list inapplicability to induction as a study limitation.",
-    regions          = "Single centre, Samsung Medical Center, Seoul, Korea; enrolment February 2020 to December 2022.",
+    species = "human",
+    n_subjects = 181L,
+    n_studies = 1L,
+    age_range = "Age at diagnosis <16 years in 7.7%, 17-40 years in 79.0%, >40 years in 13.3% (adults at the time of sampling)",
+    age_median = "36 years (IQR 30-47)",
+    weight_range = "IQR 55.0-73.6 kg (full range not reported)",
+    weight_median = "65.0 kg",
+    height_median = "170.0 cm (IQR 162.8-174.2)",
+    bmi_reference = "22.5 kg/m^2 (cohort mean used as the covariate normalising value; BMI is not tabulated in Table 1)",
+    sex_female_pct = 28.2,
+    race_ethnicity = "All Korean (single-centre Korean cohort); the authors list the resulting limited generalisability to other ethnicities as a study limitation.",
+    disease_state = "Inflammatory bowel disease on maintenance infliximab: Crohn's disease 149/181 (82.3%), ulcerative colitis 32/181 (17.7%). Remnant disease burden at enrolment: transmural healing (global sMaRIA = 0) in 16/106 CD, complete endoscopic remission (SES-CD = 0) in 8/43 CD, endoscopic remission (Mayo endoscopic score = 0) in 16/32 UC.",
+    dose_range = "Maintenance only. IV: 5 mg/kg every 8 weeks (139/181 patients at enrolment) or 10 mg/kg every 8 weeks after dose escalation (42/181 at enrolment). SC: Remsima SC 120 mg fixed dose by prefilled pen every 2 weeks. Induction (5 mg/kg IV at weeks 0, 2 and 6) preceded enrolment and is NOT covered by this model -- the authors list inapplicability to induction as a study limitation.",
+    regions = "Single centre, Samsung Medical Center, Seoul, Korea; enrolment February 2020 to December 2022.",
     concomitant_immunomodulator = "95/181 (52.5%) at enrolment.",
     infliximab_product = "Remicade 112/181 (61.9%), Remsima 58/181 (32.0%), Remaloce 11/181 (6.1%) at enrolment; SC product is Remsima SC.",
-    prior_surgery    = "53/181 (29.3%) with previous intestinal surgery.",
-    smoking          = "25/181 (13.8%) current smokers.",
-    ada_incidence    = "ADA positive (>10 ng/mL) at least once in 171 patients, covering 861 of the 2,132 measurements.",
-    n_observations   = 2132L,
-    sampling         = "Sparse, pre-dose trough samples only, drawn under a proactive therapeutic-drug-monitoring protocol: IV troughs at 8 +/- 2 weeks after the last dose, SC troughs at 14 +/- 4 days after the last dose. Concentrations below the 3 ng/mL limit of quantitation were substituted with 1.5 ng/mL.",
-    notes            = "Baseline demographics from Song 2025 Table 1 (n = 181, 2,132 samples). 212 patients were screened; 31 excluded (1 withdrew consent, 5 drug holiday >4 months, 25 switched to SC maintenance immediately after IV induction). Reference covariate values for the typical patient (the cohort MEANS per Methods section 6, which differ from the Table 1 medians for CRP): ALB = 4.4 g/dL (44 g/L), CRP = 0.18 mg/dL (1.8 mg/L), ADA = 10 ng/mL, BMI = 22.5 kg/m^2. Because only sparse trough data were available, Vp and Q were fixed to literature values taken from Hanzel 2021 (see modellib('Hanzel_2021_infliximab'))."
+    prior_surgery = "53/181 (29.3%) with previous intestinal surgery.",
+    smoking = "25/181 (13.8%) current smokers.",
+    ada_incidence = "ADA positive (>10 ng/mL) at least once in 171 patients, covering 861 of the 2,132 measurements.",
+    n_observations = 2132L,
+    sampling = "Sparse, pre-dose trough samples only, drawn under a proactive therapeutic-drug-monitoring protocol: IV troughs at 8 +/- 2 weeks after the last dose, SC troughs at 14 +/- 4 days after the last dose. Concentrations below the 3 ng/mL limit of quantitation were substituted with 1.5 ng/mL.",
+    notes = "Baseline demographics from Song 2025 Table 1 (n = 181, 2,132 samples). 212 patients were screened; 31 excluded (1 withdrew consent, 5 drug holiday >4 months, 25 switched to SC maintenance immediately after IV induction). Reference covariate values for the typical patient (the cohort MEANS per Methods section 6, which differ from the Table 1 medians for CRP): ALB = 4.4 g/dL (44 g/L), CRP = 0.18 mg/dL (1.8 mg/L), ADA = 10 ng/mL, BMI = 22.5 kg/m^2. Because only sparse trough data were available, Vp and Q were fixed to literature values taken from Hanzel 2021 (see modellib('Hanzel_2021_infliximab'))."
   )
 
   ini({

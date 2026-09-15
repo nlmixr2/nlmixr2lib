@@ -17,132 +17,132 @@ Majid_2024_lenvatinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric exponent fixed at 0.75 on CL/F, Q1/F and Q2/F and at 1.0 on V1/F, V2/F and V3/F, both normalised to the 73.2 kg PK-population median (Majid 2024 Table 1 footnote equations; Table S2 PK-population median weight 73.2 kg). Supplement Text S1 confirms THETA(12) = 0.75 FIX and THETA(13) = 1 FIX.",
-      source_name        = "WGT"
+      notes = "Allometric exponent fixed at 0.75 on CL/F, Q1/F and Q2/F and at 1.0 on V1/F, V2/F and V3/F, both normalised to the 73.2 kg PK-population median (Majid 2024 Table 1 footnote equations; Table S2 PK-population median weight 73.2 kg). Supplement Text S1 confirms THETA(12) = 0.75 FIX and THETA(13) = 1 FIX.",
+      source_name = "WGT"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = concomitant CYP3A4 inhibitor; 0 = none).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = concomitant CYP3A4 inhibitor; 0 = none).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant CYP3A4 inhibitor).",
-      notes              = "Multiplicative power-form effect on CL/F: 0.896^CONMED_CYP3A4_INH (-10.4 percent when 1), Majid 2024 Table 1. 37 of 1921 PK-population subjects were positive (Table S2). Concomitant CYP3A4 inducers were carried in the Gupta 2016 predecessor model but are NOT in the Majid 2024 final model (only 6 of 1921 subjects were exposed; Table 1 lists no inducer term and Text S1 TVCL2 has no inducer factor).",
-      source_name        = "INHIB"
+      notes = "Multiplicative power-form effect on CL/F: 0.896^CONMED_CYP3A4_INH (-10.4 percent when 1), Majid 2024 Table 1. 37 of 1921 PK-population subjects were positive (Table S2). Concomitant CYP3A4 inducers were carried in the Gupta 2016 predecessor model but are NOT in the Majid 2024 final model (only 6 of 1921 subjects were exposed; Table 1 lists no inducer term and Text S1 TVCL2 has no inducer factor).",
+      source_name = "INHIB"
     ),
     ALB = list(
-      description        = "Serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Binarized inline as alb_low <- (ALB < 30) per Majid 2024 Table 1 note ('ALB, 0 (>= ALB 30 g/L) or 1 (< ALB 30 g/L)') and Text S1 ('IF(ALB.LT.30) ALBC=1'). Multiplicative power-form effect on CL/F: 0.900^alb_low (-10.0 percent when 1). The Table 1 row is printed as 'Albumin (> ULN) ~ CL/F' but the table note and the Discussion ('CL/F decreased by 10.0 percent with albumin levels below 30 g/L') both make the < 30 g/L direction unambiguous.",
-      source_name        = "ALB"
+      notes = "Binarized inline as alb_low <- (ALB < 30) per Majid 2024 Table 1 note ('ALB, 0 (>= ALB 30 g/L) or 1 (< ALB 30 g/L)') and Text S1 ('IF(ALB.LT.30) ALBC=1'). Multiplicative power-form effect on CL/F: 0.900^alb_low (-10.0 percent when 1). The Table 1 row is printed as 'Albumin (> ULN) ~ CL/F' but the table note and the Discussion ('CL/F decreased by 10.0 percent with albumin levels below 30 g/L') both make the < 30 g/L direction unambiguous.",
+      source_name = "ALB"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Binarized inline as alp_high <- (ALP > alp_uln) per Majid 2024 Table 1 note ('ALP, Alkaline phosphatase (IU/L) 0 (<= upper limit of normal) or 1 (> upper limit of normal value)'); Text S1 codes it from the ALP/ULN ratio column ALPR ('IF(ALPR.GT.1) ALPC=1'). Multiplicative power-form effect on CL/F: 0.910^alp_high (-9.0 percent when 1). The 120 U/L threshold used inline is a representative adult ULN and matches the choice made in Gupta_2016_lenvatinib.R; downstream users whose data carry an ALP/ULN ratio should scale the threshold to their own laboratory ULN.",
-      source_name        = "ALP"
+      notes = "Binarized inline as alp_high <- (ALP > alp_uln) per Majid 2024 Table 1 note ('ALP, Alkaline phosphatase (IU/L) 0 (<= upper limit of normal) or 1 (> upper limit of normal value)'); Text S1 codes it from the ALP/ULN ratio column ALPR ('IF(ALPR.GT.1) ALPC=1'). Multiplicative power-form effect on CL/F: 0.910^alp_high (-9.0 percent when 1). The 120 U/L threshold used inline is a representative adult ULN and matches the choice made in Gupta_2016_lenvatinib.R; downstream users whose data carry an ALP/ULN ratio should scale the threshold to their own laboratory ULN.",
+      source_name = "ALP"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-subject cohort indicator (1 = healthy volunteer from a phase 1 clinical pharmacology study; 0 = cancer patient).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-subject cohort indicator (1 = healthy volunteer from a phase 1 clinical pharmacology study; 0 = cancer patient).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cancer patient).",
-      notes              = "Multiplicative power-form effect on CL/F: 1.19^DIS_HEALTHY (+19 percent when 1), Majid 2024 Table 1. Text S1 sets HV = 1 for studies numbered below 100. 199 of 1921 PK-population subjects were healthy volunteers (Table S2).",
-      source_name        = "HV"
+      notes = "Multiplicative power-form effect on CL/F: 1.19^DIS_HEALTHY (+19 percent when 1), Majid 2024 Table 1. Text S1 sets HV = 1 for studies numbered below 100. 199 of 1921 PK-population subjects were healthy volunteers (Table S2).",
+      source_name = "HV"
     ),
     TUMTP_DTC = list(
-      description        = "Differentiated thyroid cancer tumor-type indicator (1 = DTC; 0 = other tumor type or healthy subject).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Differentiated thyroid cancer tumor-type indicator (1 = DTC; 0 = other tumor type or healthy subject).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the reference stratum is cancer patients with a solid tumor other than DTC, RCC or HCC; Figure S2 legend).",
-      notes              = "Multiplicative power-form effect on CL/F: 0.951^TUMTP_DTC (-4.9 percent when 1), Majid 2024 Table 1. Text S1 sets DTC = 1 for studies 303, 211 and 201. DTC, RCC, HCC and DIS_HEALTHY are mutually exclusive in the source dataset; setting all four to 0 recovers the other-solid-tumor reference.",
-      source_name        = "DTC"
+      notes = "Multiplicative power-form effect on CL/F: 0.951^TUMTP_DTC (-4.9 percent when 1), Majid 2024 Table 1. Text S1 sets DTC = 1 for studies 303, 211 and 201. DTC, RCC, HCC and DIS_HEALTHY are mutually exclusive in the source dataset; setting all four to 0 recovers the other-solid-tumor reference.",
+      source_name = "DTC"
     ),
     TUMTP_HCC = list(
-      description        = "Hepatocellular carcinoma tumor-type indicator (1 = HCC; 0 = other tumor type or healthy subject).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatocellular carcinoma tumor-type indicator (1 = HCC; 0 = other tumor type or healthy subject).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cancer patients with a solid tumor other than DTC, RCC or HCC).",
-      notes              = "Multiplicative power-form effect on CL/F: 0.862^TUMTP_HCC (-13.8 percent when 1), Majid 2024 Table 1. Text S1 sets HCC = 1 for studies 202 and 304.",
-      source_name        = "HCC"
+      notes = "Multiplicative power-form effect on CL/F: 0.862^TUMTP_HCC (-13.8 percent when 1), Majid 2024 Table 1. Text S1 sets HCC = 1 for studies 202 and 304.",
+      source_name = "HCC"
     ),
     TUMTP_RCC = list(
-      description        = "Renal cell carcinoma tumor-type indicator (1 = RCC; 0 = other tumor type or healthy subject).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Renal cell carcinoma tumor-type indicator (1 = RCC; 0 = other tumor type or healthy subject).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cancer patients with a solid tumor other than DTC, RCC or HCC).",
-      notes              = "Multiplicative power-form effect on CL/F: 0.851^TUMTP_RCC (-14.9 percent when 1), Majid 2024 Table 1. Text S1 sets RCC = 1 for studies 205, 218, 221 and 112. Concomitant everolimus (given with lenvatinib in the RCC studies) was tested and was NOT statistically significant on lenvatinib PK (Majid 2024 Results and Discussion), so no everolimus term appears in the final model.",
-      source_name        = "RCC"
+      notes = "Multiplicative power-form effect on CL/F: 0.851^TUMTP_RCC (-14.9 percent when 1), Majid 2024 Table 1. Text S1 sets RCC = 1 for studies 205, 218, 221 and 112. Concomitant everolimus (given with lenvatinib in the RCC studies) was tested and was NOT statistically significant on lenvatinib PK (Majid 2024 Results and Discussion), so no everolimus term appears in the final model.",
+      source_name = "RCC"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule versus tablet formulation indicator (1 = capsule; 0 = tablet).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule versus tablet formulation indicator (1 = capsule; 0 = tablet).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet; relative bioavailability fixed at 1 for the tablet reference arm).",
-      notes              = "Relative bioavailability F1 = 0.882^FORM_CAPSULE (Majid 2024 Table 1 footnote equation 'F1 = 1 * 0.882^FORM'; Text S1 sets FM = 1 when FORM < 4 and F1 = THETA(9)^FM). Unlike Gupta 2016, Majid 2024 estimates no inter-individual variability on F1. 1561 of 1921 PK-population subjects received capsules (Table S2).",
-      source_name        = "FORM"
+      notes = "Relative bioavailability F1 = 0.882^FORM_CAPSULE (Majid 2024 Table 1 footnote equation 'F1 = 1 * 0.882^FORM'; Text S1 sets FM = 1 when FORM < 4 and F1 = THETA(9)^FM). Unlike Gupta 2016, Majid 2024 estimates no inter-individual variability on F1. 1561 of 1921 PK-population subjects received capsules (Table S2).",
+      source_name = "FORM"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "lenvatinib",
-      units    = "mg",
+      analyte = "lenvatinib",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "lenvatinib",
-      units    = "mg",
+      analyte = "lenvatinib",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "lenvatinib",
-      units    = "mg",
+      analyte = "lenvatinib",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral2 = list(
-      analyte  = "lenvatinib",
-      units    = "mg",
+      analyte = "lenvatinib",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1921L,
-    n_studies      = 19L,
-    age_range      = "18-92 years",
-    age_median     = "61.0 years",
-    weight_range   = "32.6-190 kg",
-    weight_median  = "73.2 kg",
+    species = "human",
+    n_subjects = 1921L,
+    n_studies = 19L,
+    age_range = "18-92 years",
+    age_median = "61.0 years",
+    weight_range = "32.6-190 kg",
+    weight_median = "73.2 kg",
     sex_female_pct = 32.2,
     race_ethnicity = c(
-      White                          = 61.6,
-      Japanese                       = 10.8,
+      White = 61.6,
+      Japanese = 10.8,
       Asian_other_than_Chinese_Japanese = 9.0,
-      Chinese                        = 8.8,
-      Black_African_American         = 4.2,
-      Other                          = 3.9,
-      Missing                        = 1.7
+      Chinese = 8.8,
+      Black_African_American = 4.2,
+      Other = 3.9,
+      Missing = 1.7
     ),
-    disease_state  = "Pooled cohort of 1921 subjects: HCC n = 534, DTC n = 542, RCC n = 491, other solid tumor n = 155, healthy subjects n = 199 (Table S2).",
-    dose_range     = "3.2-32 mg oral lenvatinib as tablet or capsule; once-daily and twice-daily regimens across phase 1-3 studies. Subjects with a starting dose below 3.2 mg were excluded from the PK dataset (Table S1 footnote; Text S1 IGNORE=(DGRP.LT.3.2)).",
-    regions        = "Multiregional; 19 pooled studies (Table S1).",
+    disease_state = "Pooled cohort of 1921 subjects: HCC n = 534, DTC n = 542, RCC n = 491, other solid tumor n = 155, healthy subjects n = 199 (Table S2).",
+    dose_range = "3.2-32 mg oral lenvatinib as tablet or capsule; once-daily and twice-daily regimens across phase 1-3 studies. Subjects with a starting dose below 3.2 mg were excluded from the PK dataset (Table S1 footnote; Text S1 IGNORE=(DGRP.LT.3.2)).",
+    regions = "Multiregional; 19 pooled studies (Table S1).",
     n_observations = "17550 lenvatinib plasma concentrations from 1921 subjects across 19 studies.",
-    lab_summary    = "Albumin 40.2 (4.9) g/L, median 40, range 19-58; ALP 121.5 (103.7) IU/L, median 88, range 19-1135; ALT 28.2 (27.4) IU/L; AST 33.3 (35.5) IU/L; bilirubin 9.8 (6.7) umol/L; creatinine clearance 93.2 (35.2) mL/min, median 89, range 17-305 (Table S2).",
-    co_medication  = "Concomitant everolimus in 442 of 1921 subjects (RCC studies); CYP3A4 inhibitors in 37; CYP3A4 inducers in 6 (Table S2).",
+    lab_summary = "Albumin 40.2 (4.9) g/L, median 40, range 19-58; ALP 121.5 (103.7) IU/L, median 88, range 19-1135; ALT 28.2 (27.4) IU/L; AST 33.3 (35.5) IU/L; bilirubin 9.8 (6.7) umol/L; creatinine clearance 93.2 (35.2) mL/min, median 89, range 17-305 (Table S2).",
+    co_medication = "Concomitant everolimus in 442 of 1921 subjects (RCC studies); CYP3A4 inhibitors in 37; CYP3A4 inducers in 6 (Table S2).",
     ecog_distribution = "ECOG 0: 1029; 1: 601; 2: 24; 3: 1; missing: 265 (Table S2).",
-    notes          = "Demographics reproduced from Majid 2024 Table S2 (PK population, N = 1921). Sex 1302 male / 619 female gives 32.2 percent female. Race percentages computed from the Table S2 counts (White 1183, Japanese 207, Asian other than Chinese and Japanese 173, Chinese 170, Black/Afro-American 81, Others 75, Missing 32) over N = 1921. The PK/PD biomarker and tumor sub-populations are different, smaller cohorts; see Majid_2024_lenvatinib_biomarkers.R and Majid_2024_lenvatinib_tumor.R."
+    notes = "Demographics reproduced from Majid 2024 Table S2 (PK population, N = 1921). Sex 1302 male / 619 female gives 32.2 percent female. Race percentages computed from the Table S2 counts (White 1183, Japanese 207, Asian other than Chinese and Japanese 173, Chinese 170, Black/Afro-American 81, Others 75, Missing 32) over N = 1921. The PK/PD biomarker and tumor sub-populations are different, smaller cohorts; see Majid_2024_lenvatinib_biomarkers.R and Majid_2024_lenvatinib_tumor.R."
   )
 
   ini({

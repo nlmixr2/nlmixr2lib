@@ -22,7 +22,7 @@ Niloy_2026_MTMSATrp_mouse <- function() {
     sep = " "
   )
   vignette <- "Niloy_2026_MTMSATrp_mouse"
-  units    <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -33,11 +33,11 @@ Niloy_2026_MTMSATrp_mouse <- function() {
 
   covariateData <- list(
     COHDOSE = list(
-      description        = "Per-subject IV bolus dose cohort, expressed in mg/kg",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-subject IV bolus dose cohort, expressed in mg/kg",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling on apparent clearance with reference value",
         "3 mg/kg and exponent beta = -0.30 (Niloy 2026 Methods,",
         "Model development, Eq. 2 and Table 1). Each mouse received",
@@ -50,22 +50,22 @@ Niloy_2026_MTMSATrp_mouse <- function() {
         "explored but did not yield stable estimates and was not",
         "retained (Methods, Model development)."
       ),
-      source_name        = "Dose_i"
+      source_name = "Dose_i"
     )
   )
 
   population <- list(
-    species         = "mouse (female athymic nu/nu, Envigo RMS)",
-    n_subjects      = 70L,
-    n_observations  = 121L,
-    n_studies       = 1L,
-    age_range       = "(not tabulated; adult athymic nude mice acclimated >= 1 week prior to dosing)",
-    weight_range    = "(not tabulated; parameters expressed in per-kg units)",
-    sex_female_pct  = 100,
-    disease_state   = "Healthy female athymic nu/nu mice (PK dataset; xenograft-naive)",
-    dose_range      = "Single IV bolus at 0.3, 1, 3, 5, or 10 mg/kg",
-    regions         = "United States (St. Jude Children's Research Hospital, Memphis TN; University of Kentucky, Lexington KY)",
-    notes           = paste(
+    species = "mouse (female athymic nu/nu, Envigo RMS)",
+    n_subjects = 70L,
+    n_observations = 121L,
+    n_studies = 1L,
+    age_range = "(not tabulated; adult athymic nude mice acclimated >= 1 week prior to dosing)",
+    weight_range = "(not tabulated; parameters expressed in per-kg units)",
+    sex_female_pct = 100,
+    disease_state = "Healthy female athymic nu/nu mice (PK dataset; xenograft-naive)",
+    dose_range = "Single IV bolus at 0.3, 1, 3, 5, or 10 mg/kg",
+    regions = "United States (St. Jude Children's Research Hospital, Memphis TN; University of Kentucky, Lexington KY)",
+    notes = paste(
       "Athymic nu/nu mice from Envigo RMS housed under AAALAC",
       "guidelines (12 h light-dark cycle, ad libitum food and",
       "water). Plasma quantified by validated LC-MS/MS (Niloy 2026",

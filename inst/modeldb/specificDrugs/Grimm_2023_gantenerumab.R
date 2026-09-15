@@ -9,38 +9,38 @@ Grimm_2023_gantenerumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central              = list(analyte = "gantenerumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1          = list(analyte = "gantenerumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    brain_cerebellum     = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_hippocampus    = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_striatum       = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_cortex         = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    central = list(analyte = "gantenerumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "gantenerumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_cerebellum = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_hippocampus = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_striatum = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_cortex = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
     brain_choroid_plexus = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    csf                  = list(analyte = "gantenerumab", units = NA_character_, specimen = "CSF", verified = FALSE)
+    csf = list(analyte = "gantenerumab", units = NA_character_, specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling of CL, Vc, Vp, and Q; reference weight 5 kg (cynomolgus monkey).",
-      source_name        = "WT"
+      notes = "Allometric scaling of CL, Vc, Vp, and Q; reference weight 5 kg (cynomolgus monkey).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    species        = "cynomolgus monkey",
-    age_range      = "TODO: from source paper",
-    weight_range   = "TODO: from source paper (reference weight 5 kg)",
+    n_subjects = "TODO: from source paper",
+    n_studies = "TODO: from source paper",
+    species = "cynomolgus monkey",
+    age_range = "TODO: from source paper",
+    weight_range = "TODO: from source paper (reference weight 5 kg)",
     sex_female_pct = "TODO: from source paper",
-    disease_state  = "Healthy non-human primates (cynomolgus monkey) used for gantenerumab brain-distribution PK characterization.",
-    dose_range     = "TODO: from source paper",
-    regions        = "Preclinical (non-human primate study)",
-    notes          = "Model is the reference gantenerumab (non-Brainshuttle) arm of Grimm 2023, used for comparison against trontinemab. Structural parameters from Table 1; brain-region parameters from Supplementary Table 1."
+    disease_state = "Healthy non-human primates (cynomolgus monkey) used for gantenerumab brain-distribution PK characterization.",
+    dose_range = "TODO: from source paper",
+    regions = "Preclinical (non-human primate study)",
+    notes = "Model is the reference gantenerumab (non-Brainshuttle) arm of Grimm 2023, used for comparison against trontinemab. Structural parameters from Table 1; brain-region parameters from Supplementary Table 1."
   )
 
   ini({

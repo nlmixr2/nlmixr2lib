@@ -30,8 +30,8 @@ Chi_2018_propofol <- function() {
   )
   vignette <- "Chi_2018_propofol"
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "ug/mL"
   )
   # Dose units mg; central / vc has units mg/L = ug/mL, matching the
@@ -42,17 +42,17 @@ Chi_2018_propofol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Enters CL via the additive linear form",
         "CL (L/min) = 0.737 + 0.0163 * WT per Chi 2018 page 6930 final",
         "regression model. The intercept is non-zero at WT = 0, so this is",
@@ -62,14 +62,14 @@ Chi_2018_propofol <- function() {
         "A), 66.1 +/- 16.4 kg (CTP B), 63.1 +/- 8.4 kg (CTP C) per Table 1;",
         "pooled range approximately 40-100 kg."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CTP_SCORE = list(
-      description        = "Composite Child-Turcotte-Pugh score (integer 5-15 points)",
-      units              = "points",
-      type               = "continuous",
+      description = "Composite Child-Turcotte-Pugh score (integer 5-15 points)",
+      units = "points",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Sum of five subscores (total bilirubin,",
         "serum albumin, INR / prothrombin time, ascites severity, hepatic",
         "encephalopathy severity). Class A = 5-6, Class B = 7-9, Class C",
@@ -83,33 +83,33 @@ Chi_2018_propofol <- function() {
         "pattern to shunted portal blood flow and altered tissue",
         "redistribution in cirrhosis."
       ),
-      source_name        = "CTP"
+      source_name = "CTP"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 32L,
-    n_studies        = 1L,
-    age_range        = "18-65 years (inclusion); group means 43.7 +/- 7.4 (CTP A), 48.3 +/- 8.5 (CTP B), 46.4 +/- 8.7 (CTP C)",
-    weight_range     = "Group means 58.6 +/- 11.2 kg (CTP A), 66.1 +/- 16.4 kg (CTP B), 63.1 +/- 8.4 kg (CTP C)",
-    sex_female_pct   = 100 * 5 / 32,
-    race_ethnicity   = "Chinese (Han majority; not separately reported)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "18-65 years (inclusion); group means 43.7 +/- 7.4 (CTP A), 48.3 +/- 8.5 (CTP B), 46.4 +/- 8.7 (CTP C)",
+    weight_range = "Group means 58.6 +/- 11.2 kg (CTP A), 66.1 +/- 16.4 kg (CTP B), 63.1 +/- 8.4 kg (CTP C)",
+    sex_female_pct = 100 * 5 / 32,
+    race_ethnicity = "Chinese (Han majority; not separately reported)",
+    disease_state = paste(
       "Chinese adults with hepatic insufficiency scheduled for elective",
       "liver transplantation, ASA II-IV. Underlying liver disease was",
       "cirrhosis in 18 of 32 (56%) and hepatic carcinoma in 14 of 32",
       "(44%). Stratified by Child-Turcotte-Pugh (CTP) class: A n = 11",
       "(34.4%), B n = 10 (31.2%), C n = 11 (34.4%)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Propofol target-controlled IV infusion via Diprifusor TCI pump",
       "(P6003, Alaris, USA) with Marsh parameters; 3 ug/mL plasma target",
       "for the 30-minute induction window, then discontinued for 30",
       "minutes of washout sampling."
     ),
-    regions          = "China (Third Affiliated Hospital, Sun Yat-sen University, Guangzhou; trial registration ChiCTR-OCH-12002255)",
-    notes            = paste(
+    regions = "China (Third Affiliated Hospital, Sun Yat-sen University, Guangzhou; trial registration ChiCTR-OCH-12002255)",
+    notes = paste(
       "Single-center prospective observational study at the Third",
       "Affiliated Hospital of Sun Yat-sen University, conducted between",
       "May 2014 and March 2016 in patients undergoing elective liver",

@@ -39,50 +39,49 @@ Beguin_2024_carboplatin_thrombocytopenia_dog <- function() {
   # Assmus_2025_benznidazole_qpcr.R; not a biological compartment.
   paper_specific_compartments <- c("auc_central")
 
-
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ug/L"
   )
 
   compartmentData <- list(
-    central     = list(analyte = "carboplatin", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "carboplatin", units = "ug", specimen = "plasma", verified = TRUE),
     auc_central = list(analyte = "carboplatin", units = "ug*h/L", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     CREAT = list(
-      description        = "Plasma creatinine concentration on the day of carboplatin administration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Plasma creatinine concentration on the day of carboplatin administration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Uncentred; enters clearance as CREAT^-0.25 per Beguin 2024",
         "Eq. (3) and Table 1. In this second, toxicity cohort the",
         "mean was 10.9 +/- 3.6 mg/L, appreciably higher than the",
         "7.32 +/- 1.86 mg/L of the PK cohort."
       ),
-      source_name        = "plasma creatinine concentration"
+      source_name = "plasma creatinine concentration"
     ),
     NEUTERED = list(
-      description        = "Neutering status (1 = surgically neutered, i.e. spayed female or castrated male; 0 = sexually intact)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Neutering status (1 = surgically neutered, i.e. spayed female or castrated male; 0 = sexually intact)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sexually intact)",
-      notes              = paste(
+      notes = paste(
         "Beguin 2024 'sterilization status'. In the toxicity cohort",
         "only 2 of 14 dogs were neutered, both female; all 9 males",
         "were intact."
       ),
-      source_name        = "neutered status"
+      source_name = "neutered status"
     ),
     DOSE_CARBOPLATIN_MGKG = list(
-      description        = "Administered carboplatin dose per kilogram of body weight",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered carboplatin dose per kilogram of body weight",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The explanatory variable X of the dose arm of Beguin 2024",
         "Eq. (4) and the second column of Table 2. Carried as a",
         "covariate rather than derived from the event table so that",
@@ -92,34 +91,34 @@ Beguin_2024_carboplatin_thrombocytopenia_dog <- function() {
         "infusion record. Toxicity cohort mean 11.5 +/- 2.4 mg/kg,",
         "corresponding to 306.1 +/- 22.6 mg/m2."
       ),
-      source_name        = "Dose (mg/kg)"
+      source_name = "Dose (mg/kg)"
     ),
     OCC = list(
-      description        = "Occasion index; retained so the PK layer matches the companion model",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index; retained so the PK layer matches the companion model",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Every dog in the toxicity cohort contributed a single",
         "carboplatin administration, so OCC = 1 throughout this",
         "cohort. The five-occasion structure is kept so that the PK",
         "layer is bit-identical to Beguin_2024_carboplatin_dog."
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
   population <- list(
-    species      = "dog (client-owned, mixed breeds)",
-    n_subjects   = 14L,
-    n_studies    = 1L,
-    age_range    = "mean 9.34 +/- 2.91 years",
+    species = "dog (client-owned, mixed breeds)",
+    n_subjects = 14L,
+    n_studies = 1L,
+    age_range = "mean 9.34 +/- 2.91 years",
     weight_range = "mean 22.43 +/- 11.28 kg",
     disease_state = "Solid tumours treated with carboplatin; a separate cohort from the 16 dogs used to fit the PK model",
-    dose_range   = "mean 306.1 +/- 22.6 mg/m2, equal to 11.5 +/- 2.4 mg/kg, single administration",
-    regions      = "France (National Veterinary School of Alfort and Oniris VetAgroBio)",
+    dose_range = "mean 306.1 +/- 22.6 mg/m2, equal to 11.5 +/- 2.4 mg/kg, single administration",
+    regions = "France (National Veterinary School of Alfort and Oniris VetAgroBio)",
     renal_function = "Mean plasma creatinine 10.9 +/- 3.6 mg/L",
-    notes        = paste(
+    notes = paste(
       "Recruited January 2022 to June 2023. 17 dogs enrolled, 3",
       "excluded for loss to follow-up, 14 analysed. Thrombocyte and",
       "neutrophil counts were taken on the day of treatment and again",

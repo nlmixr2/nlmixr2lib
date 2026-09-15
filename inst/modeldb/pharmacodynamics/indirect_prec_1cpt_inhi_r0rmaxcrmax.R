@@ -1,4 +1,4 @@
-indirect_prec_1cpt_inhi_r0rmaxcrmax  <- function() {
+indirect_prec_1cpt_inhi_r0rmaxcrmax <- function() {
   description <- "One compartment precursor-dependent indirect response model with inhibition of drug response (effect)."
   depends <- c("kin", "crmax")
   reference <- "nlmixr2lib template"
@@ -8,10 +8,10 @@ indirect_prec_1cpt_inhi_r0rmaxcrmax  <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
     precursor1 = list(analyte = "precursor", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    effect     = list(analyte = "effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   ini({

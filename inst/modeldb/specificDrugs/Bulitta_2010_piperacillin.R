@@ -14,39 +14,39 @@ Bulitta_2010_piperacillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "piperacillin", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "piperacillin", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight; used for allometric scaling with reference weight 70 kg. Exponent 0.75 on clearances (CL_NR, CL_R, CL_ic_shallow, CL_ic_deep) and on V_max (Table 3 footnote *); exponent 1.0 on volumes V_1, V_2, V_3 (Table 3 footnote +). Source paper cohort: median 77.5 kg, range 67-85 kg.",
-      source_name        = "WT"
+      notes = "Baseline body weight; used for allometric scaling with reference weight 70 kg. Exponent 0.75 on clearances (CL_NR, CL_R, CL_ic_shallow, CL_ic_deep) and on V_max (Table 3 footnote *); exponent 1.0 on volumes V_1, V_2, V_3 (Table 3 footnote +). Source paper cohort: median 77.5 kg, range 67-85 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 4L,
-    n_studies       = 1L,
-    n_occasions     = 5L,
-    age_range       = "22 to 24 years (Table 1)",
-    age_median      = "23 years (Table 1)",
-    weight_range    = "67 to 85 kg (Table 1)",
-    weight_median   = "77.5 kg (Table 1)",
-    height_range    = "164 to 178 cm (Table 1)",
-    sex_female_pct  = 50,
-    race_ethnicity  = c(White = 100),
-    disease_state   = "Healthy Caucasian adult volunteers",
-    dose_range      = "Single 4 g intravenous 5-min infusion of piperacillin in each of five study periods (occasions) at days 1, 3, 10, 24, 52",
-    regions         = "Single-centre Germany (University Hospital of Essen)",
-    notes           = "4 subjects (2 female, 2 male) each studied on five replicate occasions; the analysis treated the dataset as 20 effective profiles. Baseline demographics from Table 1. Sampling: 21 plasma and 9 urine windows per occasion after each 5-min infusion. Piperacillin given alone (no tazobactam). Renal function inferred normal (healthy volunteers); creatinine clearance not tabulated."
+    species = "human",
+    n_subjects = 4L,
+    n_studies = 1L,
+    n_occasions = 5L,
+    age_range = "22 to 24 years (Table 1)",
+    age_median = "23 years (Table 1)",
+    weight_range = "67 to 85 kg (Table 1)",
+    weight_median = "77.5 kg (Table 1)",
+    height_range = "164 to 178 cm (Table 1)",
+    sex_female_pct = 50,
+    race_ethnicity = c(White = 100),
+    disease_state = "Healthy Caucasian adult volunteers",
+    dose_range = "Single 4 g intravenous 5-min infusion of piperacillin in each of five study periods (occasions) at days 1, 3, 10, 24, 52",
+    regions = "Single-centre Germany (University Hospital of Essen)",
+    notes = "4 subjects (2 female, 2 male) each studied on five replicate occasions; the analysis treated the dataset as 20 effective profiles. Baseline demographics from Table 1. Sampling: 21 plasma and 9 urine windows per occasion after each 5-min infusion. Piperacillin given alone (no tazobactam). Renal function inferred normal (healthy volunteers); creatinine clearance not tabulated."
   )
 
   ini({

@@ -34,135 +34,140 @@ He_2025_lidocaine <- function() {
   )
   vignette <- "He_2025_lidocaine"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   covariateData <- list(
     TUMSZ = list(
-      description        = "Preoperative liver tumour size, measured by imaging as the largest lesion diameter. Enters lidocaine clearance as a power term (TUMSZ / 50 mm)^e_tumsz_cl with a negative exponent, so clearance falls as tumour size rises; the authors read this as an indirect surrogate for the remaining functional liver mass (Discussion, p. 6266).",
-      units              = "mm",
-      type               = "continuous",
+      description = "Preoperative liver tumour size, measured by imaging as the largest lesion diameter. Enters lidocaine clearance as a power term (TUMSZ / 50 mm)^e_tumsz_cl with a negative exponent, so clearance falls as tumour size rises; the authors read this as an indirect surrogate for the remaining functional liver mass (Discussion, p. 6266).",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column `SIZE`, reported in cm (Table 1 median 5 cm, range 1.5-15 cm). Converted to the canonical mm unit on ingestion (median 50 mm, range 15-150 mm) and the model's normalisation constant scaled to match, so (TUMSZ / 50)^exponent is numerically identical to (SIZE_cm / 5)^exponent. The normalisation constant is NOT stated in the paper; 50 mm is the Table 1 median. Single largest-lesion diameter, not a RECIST sum of diameters, hence TUMSZ rather than TUM_SLD.",
-      source_name        = "SIZE"
+      notes = "Source column `SIZE`, reported in cm (Table 1 median 5 cm, range 1.5-15 cm). Converted to the canonical mm unit on ingestion (median 50 mm, range 15-150 mm) and the model's normalisation constant scaled to match, so (TUMSZ / 50)^exponent is numerically identical to (SIZE_cm / 5)^exponent. The normalisation constant is NOT stated in the paper; 50 mm is the Table 1 median. Single largest-lesion diameter, not a RECIST sum of diameters, hence TUMSZ rather than TUM_SLD.",
+      source_name = "SIZE"
     ),
     DOSE_LIDOCAINE_MG = list(
-      description        = "Total lidocaine dose administered to the subject over the whole treatment episode (loading infusion plus continuous intraoperative infusion), in mg. Time-fixed per subject. Enters three parameters as power terms in (DOSE_LIDOCAINE_MG / 312 mg): the lidocaine-to-MEGX fraction metabolised, the peripheral volume, and GX clearance.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Total lidocaine dose administered to the subject over the whole treatment episode (loading infusion plus continuous intraoperative infusion), in mg. Time-fixed per subject. Enters three parameters as power terms in (DOSE_LIDOCAINE_MG / 312 mg): the lidocaine-to-MEGX fraction metabolised, the peripheral volume, and GX clearance.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column `DOSE` (Table S2 abbreviation list: 'DOSE, Total doses of lidocaine'). A drug-specific member of the `DOSE_<drug>_<units>` family is used rather than the bare `DOSE` canonical because rxode2's event-table translator (`etTrans()`) consumes a column literally named `DOSE` and never exposes it to `model()`; a model reading this covariate from an event table fails at solve time with 'The following parameter(s) are required for solving: DOSE'. Confirmed for this model. The normalisation constant is NOT stated in the paper; 312 mg is derived from Table 1 as the mean short-infusion (loading) dose 86.07 mg plus the median continuous infusion rate 57.97 mg/h times the mean continuous infusion time 3.90 h. See vignette Errata for the reproduction of the paper's observed lidocaine and metabolite concentrations that supports this value.",
-      source_name        = "DOSE"
+      notes = "Source column `DOSE` (Table S2 abbreviation list: 'DOSE, Total doses of lidocaine'). A drug-specific member of the `DOSE_<drug>_<units>` family is used rather than the bare `DOSE` canonical because rxode2's event-table translator (`etTrans()`) consumes a column literally named `DOSE` and never exposes it to `model()`; a model reading this covariate from an event table fails at solve time with 'The following parameter(s) are required for solving: DOSE'. Confirmed for this model. The normalisation constant is NOT stated in the paper; 312 mg is derived from Table 1 as the mean short-infusion (loading) dose 86.07 mg plus the median continuous infusion rate 57.97 mg/h times the mean continuous infusion time 3.90 h. See vignette Errata for the reproduction of the paper's observed lidocaine and metabolite concentrations that supports this value.",
+      source_name = "DOSE"
     ),
     WT = list(
-      description        = "Total body weight at baseline. Enters the lidocaine-to-MEGX fraction metabolised as a power term (WT / 60 kg)^e_wt_cl_fm_megx with a negative exponent.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline. Enters the lidocaine-to-MEGX fraction metabolised as a power term (WT / 60 kg)^e_wt_cl_fm_megx with a negative exponent.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column `TBW` (Table S2 abbreviation list: 'TBW, Total body weight'). Table 1 reports mean 60.32 kg (SD 8.27). The normalisation constant is NOT stated in the paper; 60 kg is used, matching both the Table 1 mean and the 'typical 60 kg, 55-year-old individual' the authors simulate in Results / Simulation and Weighted Lidocaine Exposure. Distinct from `IBW` (ideal body weight), which the paper also records and uses to express mg/kg dosing but which did NOT survive covariate selection.",
-      source_name        = "TBW"
+      notes = "Source column `TBW` (Table S2 abbreviation list: 'TBW, Total body weight'). Table 1 reports mean 60.32 kg (SD 8.27). The normalisation constant is NOT stated in the paper; 60 kg is used, matching both the Table 1 mean and the 'typical 60 kg, 55-year-old individual' the authors simulate in Results / Simulation and Weighted Lidocaine Exposure. Distinct from `IBW` (ideal body weight), which the paper also records and uses to express mg/kg dosing but which did NOT survive covariate selection.",
+      source_name = "TBW"
     )
   )
 
   covariatesDataExcluded <- list(
     IBW = list(
       description = "Ideal body weight. Screened on lidocaine clearance and on the central and peripheral volumes (Table S2 models 5, 35, 44) and carried through forward addition (models 48, 67, 82, 96, 107) but removed at backward elimination (Table S2 model 112, dOFV +6.532, not significant at p < 0.01).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model; no point estimate is reported for it."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained in the final model; no point estimate is reported for it."
     ),
     HEIGHT = list(
       description = "Body height. Screened on lidocaine clearance and peripheral volume (Table S2 models 3, 42, 46, 65, 80, 94); never reached the final model.",
-      units       = "m",
-      type        = "continuous",
-      notes       = "Screened but not retained; source column `HEI`."
+      units = "m",
+      type = "continuous",
+      notes = "Screened but not retained; source column `HEI`."
     ),
     HGB = list(
       description = "Haemoglobin concentration. Screened on lidocaine clearance, MEGX clearance, the fraction metabolised, and both volumes (Table S2 models 4, 16, 28, 34, 43, 47, 53, 66, 71, 81, 86, 95, 106, 110); never reached the final model.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase activity. Screened on inter-compartmental clearance, GX clearance and both volumes (Table S2 models 9, 19, 32; Table S3 sensitivity models); never significant.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     AGE = list(
       description = "Age at surgery. Screened on the central volume (Table S2 model 31, dOFV -2.63, not significant).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     APTT = list(
       description = "Activated partial thromboplastin time. Screened on MEGX clearance and the fraction metabolised (Table S2 models 12, 25, 50, 58, 68, 83, 97, 108) and entered forward addition at model 111, but removed at backward elimination (model 114, dOFV +4.624, not significant at p < 0.01).",
-      units       = "s",
-      type        = "continuous",
-      notes       = "Screened but not retained; no point estimate is reported for it."
+      units = "s",
+      type = "continuous",
+      notes = "Screened but not retained; no point estimate is reported for it."
     ),
     INR = list(
       description = "International normalised ratio of prothrombin time. Screened on MEGX and GX clearance (Table S2 models 17, 22, 54, 56, 72, 74, 87, 88, 101); never reached the final model.",
-      units       = "(ratio)",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "(ratio)",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     PT = list(
       description = "Prothrombin time. Screened on MEGX and GX clearance (Table S2 models 18, 23, 57, 75, 89); never reached the final model.",
-      units       = "s",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "s",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     WBC = list(
       description = "White blood cell count. Screened on inter-compartmental clearance (Table S2 model 11, dOFV -2.215, not significant).",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     CIRR = list(
       description = "Presence or absence of liver cirrhosis (Child-Pugh grading). Screened on inter-compartmental clearance, MEGX clearance, GX clearance, the central volume and the peripheral volume (Table S2 models 10, 13, 20, 33, 39, 51, 63, 69, 84, 98, 109); never reached the final model.",
-      units       = "(binary indicator)",
-      type        = "categorical",
-      notes       = "Screened but not retained. 32 of 33 graded patients were Child-Pugh A and 1 was Child-Pugh B (Table 1), so the split carries very little information."
+      units = "(binary indicator)",
+      type = "categorical",
+      notes = "Screened but not retained. 32 of 33 graded patients were Child-Pugh A and 1 was Child-Pugh B (Table 1), so the split carries very little information."
     ),
     TYPE = list(
       description = "Extent of liver resection, segment (26 patients) versus lobe (9 patients) resection. Screened on lidocaine clearance, GX clearance and both volumes (Table S2 models 8, 24, 38; Table S3 sensitivity models); never significant.",
-      units       = "(binary indicator)",
-      type        = "categorical",
-      notes       = "Screened but not retained."
+      units = "(binary indicator)",
+      type = "categorical",
+      notes = "Screened but not retained."
     ),
     DURA = list(
       description = "Total duration of Pringle manoeuvres during the operation. Screened on lidocaine clearance, MEGX clearance, the fraction metabolised and the peripheral volume (Table S2 models 2, 15, 27, 41, 60, 64, 77, 91, 102); never reached the final model.",
-      units       = "h",
-      type        = "continuous",
-      notes       = "Screened but not retained. The paper nevertheless fixes it at 0.63 h when describing the 'typical' simulated individual (Results / Simulation and Weighted Lidocaine Exposure); because it is not in the final model it has no effect on any prediction."
+      units = "h",
+      type = "continuous",
+      notes = "Screened but not retained. The paper nevertheless fixes it at 0.63 h when describing the 'typical' simulated individual (Results / Simulation and Weighted Lidocaine Exposure); because it is not in the final model it has no effect on any prediction."
     )
   )
 
   compartmentData <- list(
-    central      = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1  = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = TRUE),
-    central_megx = list(analyte = "monoethylglycinexylidide (MEGX)", units = "mg", specimen = "plasma", verified = TRUE),
-    central_gx   = list(analyte = "glycinexylidide (GX)", units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_megx = list(
+      analyte = "monoethylglycinexylidide (MEGX)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central_gx = list(analyte = "glycinexylidide (GX)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35L,
-    n_studies      = 1L,
-    age_range      = "20-65 years",
-    age_median     = "54 years (Table 1; the Results text states 53 years -- the source is internally inconsistent by one year, and neither value enters the model since age was screened but not retained)",
-    weight_range   = "not reported as a range; mean 60.32 kg (SD 8.27)",
-    weight_median  = "60.32 kg (mean)",
+    species = "human",
+    n_subjects = 35L,
+    n_studies = 1L,
+    age_range = "20-65 years",
+    age_median = "54 years (Table 1; the Results text states 53 years -- the source is internally inconsistent by one year, and neither value enters the model since age was screened but not retained)",
+    weight_range = "not reported as a range; mean 60.32 kg (SD 8.27)",
+    weight_median = "60.32 kg (mean)",
     sex_female_pct = 20,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Partial hepatectomy for an initial diagnosis of liver tumour: 27 hepatocellular carcinoma, 5 cholangiocarcinoma, 2 benign focal hyperplasia, 1 metastatic liver cancer. Child-Pugh A in 32 of 33 graded patients, Child-Pugh B in 1. Lobe resection in 9 (26%), segment resection in 26 (74%). Median tumour size 5 cm (range 1.5-15 cm); median duration of Pringle manoeuvres 0.62 h (range 0.20-1.84 h). Severe hepatic insufficiency (total bilirubin > 2 mg/dL), severe renal dysfunction (GFR < 30 mL/min/1.73 m^2), severe cardiac disease, ideal body weight < 40 kg and any long-term co-medication affecting lidocaine metabolism were exclusion criteria.",
-    dose_range     = "Intravenous loading infusion of 1.5 mg/kg ideal body weight given over more than 10 min at anaesthesia induction (mean 86.07 mg, SD 9.57), followed by a continuous intraoperative infusion targeting 1.0 mg/kg/h ideal body weight (median achieved rate 0.99 mg/kg/h, range 0.62-1.54; median 57.97 mg/h, range 38.83-100.00) for a mean of 3.90 h (SD 1.62).",
-    regions        = "China (single centre, Affiliated Hospital of North Sichuan Medical College, Nanchong, Sichuan)",
-    bmi_range      = "18-30 kg/m^2 by inclusion criterion; observed mean 22.87 kg/m^2 (SD 2.67)",
-    notes          = "Demographics from Table 1. Single-centre, prospective, open-label study conducted January-December 2021; Chinese Clinical Trial Registry ChiCTR2100042730. Plasma lidocaine, MEGX and GX were measured by UPLC-MS/MS with LLOQs of 10, 2 and 2 ng/mL and calibration ranges of 10-5000, 2-1000 and 2-500 ng/mL respectively. Samples were drawn at baseline, 0.5 h and every 1 h after the start of surgery, and at 0, 0.5, 1, 2, 4, 8 and 12 h after the end of surgery. Estimation was FOCE with interaction in NONMEM 7.2.0. Table S2 traces the stepwise search from a base model at OFV 10208.285 to the last forward-addition model 111 at OFV 10144.856; backward elimination (Table S2 models 112-118) then dropped IBW on CL and APTT on CLE, and the OFV of the resulting final model is not tabulated. The five covariate effects reported in Table 2 -- SIZE on CL, DOSE on CL_FM, TBW on CL_FM, DOSE on V2 and DOSE on CLG -- are what this model encodes."
+    disease_state = "Partial hepatectomy for an initial diagnosis of liver tumour: 27 hepatocellular carcinoma, 5 cholangiocarcinoma, 2 benign focal hyperplasia, 1 metastatic liver cancer. Child-Pugh A in 32 of 33 graded patients, Child-Pugh B in 1. Lobe resection in 9 (26%), segment resection in 26 (74%). Median tumour size 5 cm (range 1.5-15 cm); median duration of Pringle manoeuvres 0.62 h (range 0.20-1.84 h). Severe hepatic insufficiency (total bilirubin > 2 mg/dL), severe renal dysfunction (GFR < 30 mL/min/1.73 m^2), severe cardiac disease, ideal body weight < 40 kg and any long-term co-medication affecting lidocaine metabolism were exclusion criteria.",
+    dose_range = "Intravenous loading infusion of 1.5 mg/kg ideal body weight given over more than 10 min at anaesthesia induction (mean 86.07 mg, SD 9.57), followed by a continuous intraoperative infusion targeting 1.0 mg/kg/h ideal body weight (median achieved rate 0.99 mg/kg/h, range 0.62-1.54; median 57.97 mg/h, range 38.83-100.00) for a mean of 3.90 h (SD 1.62).",
+    regions = "China (single centre, Affiliated Hospital of North Sichuan Medical College, Nanchong, Sichuan)",
+    bmi_range = "18-30 kg/m^2 by inclusion criterion; observed mean 22.87 kg/m^2 (SD 2.67)",
+    notes = "Demographics from Table 1. Single-centre, prospective, open-label study conducted January-December 2021; Chinese Clinical Trial Registry ChiCTR2100042730. Plasma lidocaine, MEGX and GX were measured by UPLC-MS/MS with LLOQs of 10, 2 and 2 ng/mL and calibration ranges of 10-5000, 2-1000 and 2-500 ng/mL respectively. Samples were drawn at baseline, 0.5 h and every 1 h after the start of surgery, and at 0, 0.5, 1, 2, 4, 8 and 12 h after the end of surgery. Estimation was FOCE with interaction in NONMEM 7.2.0. Table S2 traces the stepwise search from a base model at OFV 10208.285 to the last forward-addition model 111 at OFV 10144.856; backward elimination (Table S2 models 112-118) then dropped IBW on CL and APTT on CLE, and the OFV of the resulting final model is not tabulated. The five covariate effects reported in Table 2 -- SIZE on CL, DOSE on CL_FM, TBW on CL_FM, DOSE on V2 and DOSE on CLG -- are what this model encodes."
   )
 
   ini({

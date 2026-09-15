@@ -46,11 +46,29 @@ Guiastrennec_2016_gastric_emptying <- function() {
     sep = " "
   )
   vignette <- "Guiastrennec_2016_gastric_emptying"
-  paper_specific_compartments <- c("upper_si", "stom_fat", "stom_prot", "stom_carb", "fat_usi", "prot_usi", "carb_usi", "fat_duod", "prot_duod", "carb_duod", "fat_jej", "prot_jej", "carb_jej", "pool_f", "cckf", "pool_l", "cckl")
+  paper_specific_compartments <- c(
+    "upper_si",
+    "stom_fat",
+    "stom_prot",
+    "stom_carb",
+    "fat_usi",
+    "prot_usi",
+    "carb_usi",
+    "fat_duod",
+    "prot_duod",
+    "carb_duod",
+    "fat_jej",
+    "prot_jej",
+    "carb_jej",
+    "pool_f",
+    "cckf",
+    "pool_l",
+    "cckl"
+  )
 
   units <- list(
-    time          = "min",
-    dosing        = "mg (acetaminophen) and g (fats / proteins / carbohydrates) into the per-substrate stomach compartments",
+    time = "min",
+    dosing = "mg (acetaminophen) and g (fats / proteins / carbohydrates) into the per-substrate stomach compartments",
     concentration = "umol/L (acetaminophen Cc); secondary outputs in pmol/L (TCCK) and mL (gallbladder volume GVol)"
   )
 
@@ -59,93 +77,128 @@ Guiastrennec_2016_gastric_emptying <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    stomach     = list(analyte = "acetaminophen", units = NA_character_, specimen = "administration site", verified = FALSE),
-    upper_si    = list(analyte = "acetaminophen", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stomach = list(
+      analyte = "acetaminophen",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    upper_si = list(
+      analyte = "acetaminophen",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
-    stom_fat    = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stom_prot   = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
-    stom_carb   = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
-    fat_usi     = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
-    prot_usi    = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
-    carb_usi    = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
-    fat_duod    = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
-    prot_duod   = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
-    carb_duod   = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
-    fat_jej     = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
-    prot_jej    = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
-    carb_jej    = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pool_f      = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    cckf        = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    pool_l      = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    cckl        = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    gallbladder = list(analyte = "bile salts", units = NA_character_, specimen = "administration site", verified = FALSE)
+    stom_fat = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stom_prot = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stom_carb = list(
+      analyte = "carbohydrates",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    fat_usi = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_usi = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_usi = list(
+      analyte = "carbohydrates",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    fat_duod = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_duod = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_duod = list(
+      analyte = "carbohydrates",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    fat_jej = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_jej = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_jej = list(
+      analyte = "carbohydrates",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pool_f = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cckf = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pool_l = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cckl = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gallbladder = list(
+      analyte = "bile salts",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline. Linear-deviation effect on the baseline gallbladder volume (BASEBILE_eff = BASEBILE * (1 + 0.0119 * (WT - 88))).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline. Linear-deviation effect on the baseline gallbladder volume (BASEBILE_eff = BASEBILE * (1 + 0.0119 * (WT - 88))).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 88 kg, set to the pooled study-population median (Studies A-C: Hansen 89.9, Bagger 89.6, Sonne 86.2 kg). The supplementary control stream that would unambiguously fix the reference is not on disk; see vignette Errata.",
-      source_name        = "WT"
+      notes = "Reference weight 88 kg, set to the pooled study-population median (Studies A-C: Hansen 89.9, Bagger 89.6, Sonne 86.2 kg). The supplementary control stream that would unambiguously fix the reference is not on disk; see vignette Errata.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline. Linear-deviation effect on the gallbladder S50_BILE (S50_BILE_eff = S50_BILE * (1 + 0.0215 * (AGE - 58))).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline. Linear-deviation effect on the gallbladder S50_BILE (S50_BILE_eff = S50_BILE * (1 + 0.0215 * (AGE - 58))).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference age 58 years, set to the pooled study-population median (Studies A-C: Hansen 62, Bagger 57, Sonne 60). The supplementary control stream that would unambiguously fix the reference is not on disk; see vignette Errata.",
-      source_name        = "AGE"
+      notes = "Reference age 58 years, set to the pooled study-population median (Studies A-C: Hansen 62, Bagger 57, Sonne 60). The supplementary control stream that would unambiguously fix the reference is not on disk; see vignette Errata.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male). Multiplicative effect on the caloric-feedback slope SLPCAL: SLPCAL_eff = SLPCAL * (1 + SEX_SLPCAL * SEXF) with SEX_SLPCAL = 0.407, meaning the caloric inhibition of gastric emptying is 40.7% stronger in females.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male). Multiplicative effect on the caloric-feedback slope SLPCAL: SLPCAL_eff = SLPCAL * (1 + SEX_SLPCAL * SEXF) with SEX_SLPCAL = 0.407, meaning the caloric inhibition of gastric emptying is 40.7% stronger in females.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "SEXF = 0 (male)",
-      notes              = "Paper uses an FEM flag with FEM = 1 for females; the canonical alias is SEXF.",
-      source_name        = "FEM"
+      notes = "Paper uses an FEM flag with FEM = 1 for females; the canonical alias is SEXF.",
+      source_name = "FEM"
     ),
     DIS_DIAB = list(
-      description        = "Type-2-diabetes-mellitus indicator (1 = DIS_DIAB patient, 0 = nondiabetic control). Multiplicative -81.1% depression of POTcarbC (the carbohydrate potency on CCK release): POTcarbC_eff = POTcarbC * (1 - 0.811 * DIS_DIAB). All other parameters are common between cohorts.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type-2-diabetes-mellitus indicator (1 = DIS_DIAB patient, 0 = nondiabetic control). Multiplicative -81.1% depression of POTcarbC (the carbohydrate potency on CCK release): POTcarbC_eff = POTcarbC * (1 - 0.811 * DIS_DIAB). All other parameters are common between cohorts.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "DIS_DIAB = 0 (nondiabetic control)",
-      notes              = "Same canonical name as NA_NA_paracetamol.R. Paper uses a flag set to 1 for T2D and 0 for matched controls.",
-      source_name        = "T2D"
+      notes = "Same canonical name as NA_NA_paracetamol.R. Paper uses a flag set to 1 for T2D and 0 for matched controls.",
+      source_name = "T2D"
     ),
     DRINK_OGTT = list(
-      description        = "Binary indicator that the test drink is glucose-only (oral glucose tolerance test, OGTT). Selects T50OGTT (15.7 min) as the half-onset time of the gastric-emptying delay Hill function. Mutually exclusive with DRINK_FAT.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator that the test drink is glucose-only (oral glucose tolerance test, OGTT). Selects T50OGTT (15.7 min) as the half-onset time of the gastric-emptying delay Hill function. Mutually exclusive with DRINK_FAT.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "DRINK_OGTT = 0 (not a glucose-only drink)",
-      notes              = "Set to 1 for Study B's 25 / 75 / 125 g OGTT drinks and the Study C 75 g OGTT arm. Set to 0 for water (Study A) and all fat-containing drinks (Study C low / medium / high fat, Study D medium-high fat).",
-      source_name        = "DRINK_OGTT"
+      notes = "Set to 1 for Study B's 25 / 75 / 125 g OGTT drinks and the Study C 75 g OGTT arm. Set to 0 for water (Study A) and all fat-containing drinks (Study C low / medium / high fat, Study D medium-high fat).",
+      source_name = "DRINK_OGTT"
     ),
     DRINK_FAT = list(
-      description        = "Binary indicator that the test drink contains fat (any nonzero fat content). Selects T50Fat (23.1 min) as the half-onset time of the gastric-emptying delay Hill function. Mutually exclusive with DRINK_OGTT.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator that the test drink contains fat (any nonzero fat content). Selects T50Fat (23.1 min) as the half-onset time of the gastric-emptying delay Hill function. Mutually exclusive with DRINK_OGTT.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "DRINK_FAT = 0 (no fat in the drink)",
-      notes              = "Set to 1 for Study C low / medium / high fat and Study D medium-high fat drinks. Set to 0 for water and pure OGTT drinks.",
-      source_name        = "DRINK_FAT"
+      notes = "Set to 1 for Study C low / medium / high fat and Study D medium-high fat drinks. Set to 0 for water and pure OGTT drinks.",
+      source_name = "DRINK_FAT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66L,
-    n_studies      = 3L,
-    age_range      = "Pooled across Studies A-C: 38-75 years (Bagger 38-75, Sonne 42-71, Hansen 44-74); medians ~57-62 y per study",
-    age_median     = "58 years (pooled study-population median; reference for AGE-S50_BILE effect)",
-    weight_range   = "63.6-122 kg pooled across Studies A-C",
-    weight_median  = "88 kg (pooled study-population median; reference for WT-BASEBILE effect)",
+    species = "human",
+    n_subjects = 66L,
+    n_studies = 3L,
+    age_range = "Pooled across Studies A-C: 38-75 years (Bagger 38-75, Sonne 42-71, Hansen 44-74); medians ~57-62 y per study",
+    age_median = "58 years (pooled study-population median; reference for AGE-S50_BILE effect)",
+    weight_range = "63.6-122 kg pooled across Studies A-C",
+    weight_median = "88 kg (pooled study-population median; reference for WT-BASEBILE effect)",
     sex_female_pct = 39,
-    disease_state  = "33 patients with type 2 diabetes and 33 matched (gender, age, BMI) nondiabetic controls. Cross-over test-drink challenge (water, glucose only at 25/75/125 g, or isocaloric fat-mixed drinks at low/medium/high fat) after an overnight (10 h) fast. An external validation cohort (Study D, 10 nondiabetic controls, medium-high fat drink) was used for the GE / CCK predictive checks but not pooled into the model-development fit.",
-    dose_range     = "Acetaminophen 1.5 g oral (1-min infusion into stomach in Study A via a nasogastric tube; bolus in Studies B / C / D). Test-drink macronutrient composition spans 0-125 g carbohydrate, 0-13 g protein, 0-40 g fat (Table 2 of the paper); caloric range 0-506 kcal.",
-    regions        = "Denmark (Studies A-D conducted in Copenhagen / Hellerup); fits performed in Sweden (Uppsala).",
-    notes          = "Subject demographics, study design, and assessment times come from Table 1 of Guiastrennec 2016. Subject counts and study counts reflect the model-development pool (Studies A + B + C); the Study D external-validation cohort is not pooled in. Pooled medians for WT and AGE were derived from the per-study median ranges; the NONMEM control stream that would unambiguously fix the covariate-effect reference values is in Supplementary Material S1 (not on disk; see vignette Errata)."
+    disease_state = "33 patients with type 2 diabetes and 33 matched (gender, age, BMI) nondiabetic controls. Cross-over test-drink challenge (water, glucose only at 25/75/125 g, or isocaloric fat-mixed drinks at low/medium/high fat) after an overnight (10 h) fast. An external validation cohort (Study D, 10 nondiabetic controls, medium-high fat drink) was used for the GE / CCK predictive checks but not pooled into the model-development fit.",
+    dose_range = "Acetaminophen 1.5 g oral (1-min infusion into stomach in Study A via a nasogastric tube; bolus in Studies B / C / D). Test-drink macronutrient composition spans 0-125 g carbohydrate, 0-13 g protein, 0-40 g fat (Table 2 of the paper); caloric range 0-506 kcal.",
+    regions = "Denmark (Studies A-D conducted in Copenhagen / Hellerup); fits performed in Sweden (Uppsala).",
+    notes = "Subject demographics, study design, and assessment times come from Table 1 of Guiastrennec 2016. Subject counts and study counts reflect the model-development pool (Studies A + B + C); the Study D external-validation cohort is not pooled in. Pooled medians for WT and AGE were derived from the per-study median ranges; the NONMEM control stream that would unambiguously fix the covariate-effect reference values is in Supplementary Material S1 (not on disk; see vignette Errata)."
   )
 
   ini({

@@ -28,26 +28,26 @@ Yoshida_2018_coproporphyrin_I_rifampin <- function() {
 
   covariateData <- list(
     CP_RIF_UM = list(
-      description        = "Instantaneous rifampin portal-vein unbound concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of the hepatic component of CPI clearance (Yoshida 2018 Methods, Model-based analysis with inhibitor kinetics).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Instantaneous rifampin portal-vein unbound concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of the hepatic component of CPI clearance (Yoshida 2018 Methods, Model-based analysis with inhibitor kinetics).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the rifampin dosing window so the hepatic-inhibition term collapses to the no-inhibition form and the model returns to the steady-state Baseline. The original Yoshida 2018 fit used the Simcyp v16r1 default single-dose rifampin model file output for portal-vein unbound concentration; that PBPK profile is not reproducible from on-disk sources. The paper itself reports (Discussion) that a preliminary refit with a different rifampin PK model that matched an alternative observed time-course produced an estimated Ki,u about 5-fold higher, so the calibrated Ki,u below is conditional on the choice of perpetrator-PK model. Users must supply CP_RIF_UM externally.",
-      source_name        = "CRIF"
+      notes = "Time-varying. Set to 0 outside the rifampin dosing window so the hepatic-inhibition term collapses to the no-inhibition form and the model returns to the steady-state Baseline. The original Yoshida 2018 fit used the Simcyp v16r1 default single-dose rifampin model file output for portal-vein unbound concentration; that PBPK profile is not reproducible from on-disk sources. The paper itself reports (Discussion) that a preliminary refit with a different rifampin PK model that matched an alternative observed time-course produced an estimated Ki,u about 5-fold higher, so the calibrated Ki,u below is conditional on the choice of perpetrator-PK model. Users must supply CP_RIF_UM externally.",
+      source_name = "CRIF"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 12L,
-    n_studies       = 1L,
-    age_range       = "Healthy adult subjects; per-subject demographics not tabulated by Yoshida 2018. The underlying clinical dataset is Lai et al. 2016 (J Pharmacol Exp Ther 358:397-404), 12 healthy male SLCO1B1 c.521 T>C wildtype subjects.",
-    weight_range    = "(not extracted; Yoshida 2018 does not tabulate per-subject weights for the rifampin-CPI cohort.)",
-    sex_female_pct  = 0,
-    disease_state   = "Healthy male adult volunteers in a single-dose rifampin drug-drug-interaction study; CPI monitored as a candidate endogenous biomarker of OATP1B-mediated DDIs.",
-    dose_range      = "Endogenous biomarker (no exogenous CPI dose); rifampin co-administered as a 600 mg oral dose (per Lai et al. 2016 study design).",
-    regions         = "(not extracted; Yoshida 2018 does not state the region for the Lai et al. 2016 cohort.)",
-    notes           = "Demographics inferred from Yoshida 2018 Methods and the cited source clinical study Lai et al. 2016. Yoshida 2018 reports kinetic profiles of CPI 'in the presence of rifampin' as the input data for the model-based analysis; the rifampin-CPI fit (Table 2 left column) does not report IIV, consistent with a typical-value fit of the n=12 cohort."
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "Healthy adult subjects; per-subject demographics not tabulated by Yoshida 2018. The underlying clinical dataset is Lai et al. 2016 (J Pharmacol Exp Ther 358:397-404), 12 healthy male SLCO1B1 c.521 T>C wildtype subjects.",
+    weight_range = "(not extracted; Yoshida 2018 does not tabulate per-subject weights for the rifampin-CPI cohort.)",
+    sex_female_pct = 0,
+    disease_state = "Healthy male adult volunteers in a single-dose rifampin drug-drug-interaction study; CPI monitored as a candidate endogenous biomarker of OATP1B-mediated DDIs.",
+    dose_range = "Endogenous biomarker (no exogenous CPI dose); rifampin co-administered as a 600 mg oral dose (per Lai et al. 2016 study design).",
+    regions = "(not extracted; Yoshida 2018 does not state the region for the Lai et al. 2016 cohort.)",
+    notes = "Demographics inferred from Yoshida 2018 Methods and the cited source clinical study Lai et al. 2016. Yoshida 2018 reports kinetic profiles of CPI 'in the presence of rifampin' as the input data for the model-based analysis; the rifampin-CPI fit (Table 2 left column) does not report IIV, consistent with a typical-value fit of the n=12 cohort."
   )
 
   ini({

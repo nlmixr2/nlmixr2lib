@@ -49,8 +49,8 @@ Claret_2014_motesanib_tumorsize_OS <- function() {
   )
   vignette <- "Claret_2014_motesanib_nsclc"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the simplified TS model is not exposure-driven -- the motesanib 125 mg q.d. regimen enters only through the estimated kdrug and lambda)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the simplified TS model is not exposure-driven -- the motesanib 125 mg q.d. regimen enters only through the estimated kdrug and lambda)",
     concentration = "mm (tumor size, the sum of longest diameters of the target lesions; not a drug concentration)"
   )
 
@@ -58,25 +58,30 @@ Claret_2014_motesanib_tumorsize_OS <- function() {
   # biological matrix. Verified against Claret 2014 Methods ("TS denotes the
   # tumor size (sum of longest diameters of the target lesions, in mm)").
   compartmentData <- list(
-    tumor_size = list(analyte = "tumor size (RECIST sum of longest diameters of target lesions)", units = "mm", specimen = "not applicable", verified = TRUE)
+    tumor_size = list(
+      analyte = "tumor size (RECIST sum of longest diameters of target lesions)",
+      units = "mm",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     RACE_ASIAN = list(
-      description        = "1 = Asian patient, 0 = non-Asian. Independent baseline prognostic factor in the final OS model; Asian patients had longer OS that none of the other available baseline covariates explained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = Asian patient, 0 = non-Asian. Independent baseline prognostic factor in the final OS model; Asian patients had longer OS that none of the other available baseline covariates explained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Additive on the log-survival-time (AFT) scale: mu_os = ... + 0.319 * RACE_ASIAN, i.e. a exp(0.319) = 1.38-fold longer median OS in Asian patients at equal TTG, baseline TS and smoking history (Claret 2014 Table 3). 227 of the 1,090 MONET1 patients were Asian; 219 Asian patients were used for the phase III simulations, of whom 21 were TS-nonevaluable.",
-      source_name        = "Asian ethnicity"
+      notes = "Additive on the log-survival-time (AFT) scale: mu_os = ... + 0.319 * RACE_ASIAN, i.e. a exp(0.319) = 1.38-fold longer median OS in Asian patients at equal TTG, baseline TS and smoking history (Claret 2014 Table 3). 227 of the 1,090 MONET1 patients were Asian; 219 Asian patients were used for the phase III simulations, of whom 21 were TS-nonevaluable.",
+      source_name = "Asian ethnicity"
     ),
     SMOKE_NEVER = list(
-      description        = "1 = never smoker at baseline, 0 = former or current smoker. Claret 2014 dichotomises smoking history the other way round (its indicator is 1 for former OR current smokers); the canonical register column is SMOKE_NEVER, so model() forms the paper's ever-smoker indicator as its complement, (1 - SMOKE_NEVER).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = never smoker at baseline, 0 = former or current smoker. Claret 2014 dichotomises smoking history the other way round (its indicator is 1 for former OR current smokers); the canonical register column is SMOKE_NEVER, so model() forms the paper's ever-smoker indicator as its complement, (1 - SMOKE_NEVER).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (former or current smoker) -- note this is the COMPLEMENT of the paper's reference category, which is the never-smoker group",
-      notes              = "The published coefficient is -0.264 on an ever-smoker (former or current) indicator, relative to never smokers (Claret 2014 Table 3 and footnote d). Encoding it as e_smoke_ever_mu_os * (1 - SMOKE_NEVER) keeps BOTH the published intercept (1.079) and the published coefficient (-0.264) numerically intact, so they correspond directly to the Supplementary Table S3 covariance matrix. Re-parameterising onto SMOKE_NEVER directly would instead require shifting the intercept to 1.079 - 0.264 = 0.815 and would break that correspondence.",
-      source_name        = "Smoking history"
+      notes = "The published coefficient is -0.264 on an ever-smoker (former or current) indicator, relative to never smokers (Claret 2014 Table 3 and footnote d). Encoding it as e_smoke_ever_mu_os * (1 - SMOKE_NEVER) keeps BOTH the published intercept (1.079) and the published coefficient (-0.264) numerically intact, so they correspond directly to the Supplementary Table S3 covariance matrix. Re-parameterising onto SMOKE_NEVER directly would instead require shifting the intercept to 1.079 - 0.264 = 0.815 and would break that correspondence.",
+      source_name = "Smoking history"
     )
   )
 
@@ -88,85 +93,85 @@ Claret_2014_motesanib_tumorsize_OS <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex (female indicator).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Claret 2014 Table 2: significant in the univariate Cox analysis (P < 0.0001) but eliminated in the backward stepwise selection of the parametric multivariate model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Claret 2014 Table 2: significant in the univariate Cox analysis (P < 0.0001) but eliminated in the backward stepwise selection of the parametric multivariate model."
     ),
     HT = list(
       description = "Height.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.0005; not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.0005; not retained."
     ),
     BSA = list(
       description = "Body surface area.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.1307 (not significant at P < 0.05); not carried into the full model."
+      units = "m^2",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.1307 (not significant at P < 0.05); not carried into the full model."
     ),
     WHO_PS = list(
       description = "Eastern Cooperative Oncology Group (ECOG) performance status.",
-      units       = "(integer score)",
-      type        = "categorical",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.0022; not retained in the updated OS model, although it IS the sole prognostic factor in the historical first-line NSCLC OS model that this paper set out to improve on."
+      units = "(integer score)",
+      type = "categorical",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.0022; not retained in the updated OS model, although it IS the sole prognostic factor in the historical first-line NSCLC OS model that this paper set out to improve on."
     ),
     ALB = list(
       description = "Baseline serum albumin.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P < 0.0001. Retained only in the laboratory-data version of the model (n = 848), which the authors did NOT adopt as final because it was developed on fewer patients (Results, 'Updated survival model development'). Baseline albumin IS the sole prognostic factor of the companion nonevaluable-patient model -- see modellib('Claret_2014_motesanib_OS_nonevaluable')."
+      units = "g/L",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P < 0.0001. Retained only in the laboratory-data version of the model (n = 848), which the authors did NOT adopt as final because it was developed on fewer patients (Results, 'Updated survival model development'). Baseline albumin IS the sole prognostic factor of the companion nonevaluable-patient model -- see modellib('Claret_2014_motesanib_OS_nonevaluable')."
     ),
     ALP = list(
       description = "Baseline alkaline phosphatase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.1083; not significant."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.1083; not significant."
     ),
     TBILI = list(
       description = "Baseline total bilirubin.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.1153; not significant."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.1153; not significant."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.2892; not significant."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.2892; not significant."
     ),
     LDH = list(
       description = "Baseline lactate dehydrogenase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P < 0.0001. Retained only in the non-final laboratory-data version of the model (n = 848)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P < 0.0001. Retained only in the non-final laboratory-data version of the model (n = 848)."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.0276; not retained."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.0276; not retained."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase.",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Claret 2014 Table 2: univariate Cox P = 0.0032; not retained."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Claret 2014 Table 2: univariate Cox P = 0.0032; not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 934L,
-    n_studies      = 1L,
-    age_range      = "adults with advanced nonsquamous NSCLC; the age distribution is reported in the MONET1 primary publication (Scagliotti 2012, J Clin Oncol 30:2829-2836) rather than in Claret 2014",
-    weight_range   = "not reported in Claret 2014",
+    species = "human",
+    n_subjects = 934L,
+    n_studies = 1L,
+    age_range = "adults with advanced nonsquamous NSCLC; the age distribution is reported in the MONET1 primary publication (Scagliotti 2012, J Clin Oncol 30:2829-2836) rather than in Claret 2014",
+    weight_range = "not reported in Claret 2014",
     sex_female_pct = NA_real_,
     race_ethnicity = "227 of the 1,090 enrolled MONET1 patients (21 percent) were Asian; 219 Asian patients were resampled for the virtual phase III simulations, of whom 21 were TS-nonevaluable.",
-    disease_state  = "Advanced (stage IIIB with pleural effusion or stage IV) or recurrent nonsquamous non-small cell lung cancer, previously untreated (first line).",
-    dose_range     = "Carboplatin/paclitaxel (CP) plus motesanib 125 mg orally once daily, vs. CP plus placebo. The simplified TS model is not exposure-driven, so dose does not appear in the model equations.",
-    regions        = "MONET1 was an international, randomized, placebo-controlled, double-blind phase III study (so described in the title of Claret 2014's reference 13, Scagliotti 2012, J Clin Oncol 30:2829-2836); the Asian subgroup is the subpopulation of interest in this paper. Claret 2014 does not print a trial-registry identifier, so none is recorded here.",
-    biomarkers     = "Longitudinal tumor size (TS; RECIST sum of longest diameters of target lesions, mm) and overall survival (OS, days). Derived TS-response metrics: time to tumor growth (TTG, days) and the week-8 TS ratio (TSratio, unitless).",
-    notes          = paste(
+    disease_state = "Advanced (stage IIIB with pleural effusion or stage IV) or recurrent nonsquamous non-small cell lung cancer, previously untreated (first line).",
+    dose_range = "Carboplatin/paclitaxel (CP) plus motesanib 125 mg orally once daily, vs. CP plus placebo. The simplified TS model is not exposure-driven, so dose does not appear in the model equations.",
+    regions = "MONET1 was an international, randomized, placebo-controlled, double-blind phase III study (so described in the title of Claret 2014's reference 13, Scagliotti 2012, J Clin Oncol 30:2829-2836); the Asian subgroup is the subpopulation of interest in this paper. Claret 2014 does not print a trial-registry identifier, so none is recorded here.",
+    biomarkers = "Longitudinal tumor size (TS; RECIST sum of longest diameters of target lesions, mm) and overall survival (OS, days). Derived TS-response metrics: time to tumor growth (TTG, days) and the week-8 TS ratio (TSratio, unitless).",
+    notes = paste(
       "Of 1,090 enrolled patients, 934 (86 percent) were TS-evaluable: 453 of 541 in the motesanib arm and 481 of 549 in the placebo arm.",
       "The remaining 156 (14 percent) were nonevaluable and are covered by the companion model modellib('Claret_2014_motesanib_OS_nonevaluable').",
       "A median of four TS measurements were available per patient (range 2-27).",

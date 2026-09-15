@@ -47,19 +47,19 @@ Walsh_2024_buprenorphine_drugLiking <- function() {
   depends <- c("CP_BPN_NGML")
 
   units <- list(
-    time          = "day",
-    dosing        = "N/A (PD-only; buprenorphine plasma concentration is a required input covariate)",
+    time = "day",
+    dosing = "N/A (PD-only; buprenorphine plasma concentration is a required input covariate)",
     concentration = "VAS units (observation: period-corrected drug liking Emax bipolar VAS score); ng/mL (CP_BPN_NGML input covariate)"
   )
 
   covariateData <- list(
     CP_BPN_NGML = list(
-      description        = "Time-matched buprenorphine plasma concentration driving the Imax inhibition of the drug liking Emax VAS score. Time-varying; supplied per observation record in the event table rather than computed from a coupled PK model.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Time-matched buprenorphine plasma concentration driving the Imax inhibition of the drug liking Emax VAS score. Time-varying; supplied per observation record in the event table rather than computed from a coupled PK model.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Paper Methods: 'Plasma samples to quantify BPN concentration were collected approximately 60 min before each hydromorphone administration'; the analysis used one BPN concentration per challenge day, time-matched to the drug liking Emax VAS score. Observed BPN plasma concentration range across the phase 2 study was 0.636-12.3 ng/mL (Supplementary Methods, 'Model application'). Member of the canonical CP_<DRUG>_<UNITS> plasma-PD-driver family (siblings CP_MORPH_NGML, CP_OXY_NGML, CP_FBX_NGML). The upstream CAM2038 popPK model is not reported in this paper and is not packaged in nlmixr2lib; concentrations must be supplied externally.",
-      source_name        = "Cp (Walsh 2024 Methods, structural Imax equation)"
+      notes = "Paper Methods: 'Plasma samples to quantify BPN concentration were collected approximately 60 min before each hydromorphone administration'; the analysis used one BPN concentration per challenge day, time-matched to the drug liking Emax VAS score. Observed BPN plasma concentration range across the phase 2 study was 0.636-12.3 ng/mL (Supplementary Methods, 'Model application'). Member of the canonical CP_<DRUG>_<UNITS> plasma-PD-driver family (siblings CP_MORPH_NGML, CP_OXY_NGML, CP_FBX_NGML). The upstream CAM2038 popPK model is not reported in this paper and is not packaged in nlmixr2lib; concentrations must be supplied externally.",
+      source_name = "Cp (Walsh 2024 Methods, structural Imax equation)"
     )
   )
 
@@ -74,64 +74,64 @@ Walsh_2024_buprenorphine_drugLiking <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age in years.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on IC50 by single forward step in PsN stepwise covariate modelling (Methods, 'Covariate model building'); not retained (p > 0.2). Cohort median 36.0 (18.0-54.0) years, mean 35.8 (SD 9.1) (Table S1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on IC50 by single forward step in PsN stepwise covariate modelling (Methods, 'Covariate model building'); not retained (p > 0.2). Cohort median 36.0 (18.0-54.0) years, mean 35.8 (SD 9.1) (Table S1)."
     ),
     WT = list(
       description = "Body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on IC50 as a power model; not retained (p > 0.2). Cohort median 73.4 (53.0-110.0) kg, mean 75.9 (SD 14.0) (Table S1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on IC50 as a power model; not retained (p > 0.2). Cohort median 73.4 (53.0-110.0) kg, mean 75.9 (SD 14.0) (Table S1)."
     ),
     HT = list(
       description = "Height.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened on IC50 as a power model; not retained (p > 0.2). Cohort median 176 (154-192) cm (Table S1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened on IC50 as a power model; not retained (p > 0.2). Cohort median 176 (154-192) cm (Table S1)."
     ),
     BMI = list(
       description = "Body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on IC50 as a power model; not retained (p > 0.2). Cohort median 24.3 (16.8-34.0) kg/m^2 (Table S1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on IC50 as a power model; not retained (p > 0.2). Cohort median 24.3 (16.8-34.0) kg/m^2 (Table S1)."
     ),
     SEXF = list(
       description = "Sex, 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on IC50 as a fractional difference to the most common category (male); not retained (p > 0.2). 12/47 (26%) female (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on IC50 as a fractional difference to the most common category (male); not retained (p > 0.2). 12/47 (26%) female (Table S1)."
     ),
     RACE_BLACK = list(
       description = "Race indicator, 1 = Black or African American.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on IC50 as a fractional difference to the most common category; not retained (p > 0.2). 24/47 (51%) Black or African American, 22/47 (47%) White, 1/47 (2%) Other (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on IC50 as a fractional difference to the most common category; not retained (p > 0.2). 24/47 (51%) Black or African American, 22/47 (47%) White, 1/47 (2%) Other (Table S1)."
     ),
     ETHNIC_HISPANIC = list(
       description = "Ethnicity indicator, 1 = Hispanic or Latino.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on IC50 as a fractional difference to the most common category (not Hispanic or Latino); not retained (p > 0.2). 1/47 (2%) Hispanic or Latino (Table S1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on IC50 as a fractional difference to the most common category (not Hispanic or Latino); not retained (p > 0.2). 1/47 (2%) Hispanic or Latino (Table S1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
     n_observations = 231L,
-    age_range      = "18-54 years (median 36.0; mean 35.8, SD 9.1)",
-    age_median     = "36.0 years",
-    weight_range   = "53.0-110.0 kg (median 73.4; mean 75.9, SD 14.0)",
-    weight_median  = "73.4 kg",
+    age_range = "18-54 years (median 36.0; mean 35.8, SD 9.1)",
+    age_median = "36.0 years",
+    weight_range = "53.0-110.0 kg (median 73.4; mean 75.9, SD 14.0)",
+    weight_median = "73.4 kg",
     sex_female_pct = 25.5,
     race_ethnicity = c(Black = 51, White = 47, Other = 2),
-    disease_state  = "Non-treatment-seeking adults with moderate to severe opioid use disorder (DSM-5), physically dependent on opioids.",
-    dose_range     = "CAM2038 (subcutaneous long-acting buprenorphine) 24 mg (n = 22) or 32 mg (n = 25) once weekly on days 0 and 7. Intramuscular hydromorphone challenges of 0, 6 or 18 mg once daily over each of the day -3 to -1, 1-3, 4-6, 8-10 and 11-13 periods; only the 18 mg challenge sessions contributed to this model.",
-    regions        = "USA (multisite: University of Kentucky; Columbia University / New York State Psychiatric Institute)",
-    biomarkers     = "Period-corrected drug liking Emax bipolar VAS score (0-100, 50 = neutral), recorded 30 min before and at 15 timepoints up to 300 min after each hydromorphone challenge; the Emax (maximum post-challenge value) was period-corrected against the pre-challenge value.",
-    notes          = "Baseline demographics from Supplementary Table S1; observation counts from Supplementary Table S2 (drug liking: 231 PK and 231 PD records, 109 + 122 across the 24 mg and 32 mg arms). Study NCT02611752. Table S1 reports arm sizes 22 / 25; the Fig. 1 caption's '32 mg: n = 24' refers to the PK-evaluable subset. Data from the hydromorphone 0 mg and 6 mg challenges were excluded from PK/PD modelling because they produced no or lower drug liking responses."
+    disease_state = "Non-treatment-seeking adults with moderate to severe opioid use disorder (DSM-5), physically dependent on opioids.",
+    dose_range = "CAM2038 (subcutaneous long-acting buprenorphine) 24 mg (n = 22) or 32 mg (n = 25) once weekly on days 0 and 7. Intramuscular hydromorphone challenges of 0, 6 or 18 mg once daily over each of the day -3 to -1, 1-3, 4-6, 8-10 and 11-13 periods; only the 18 mg challenge sessions contributed to this model.",
+    regions = "USA (multisite: University of Kentucky; Columbia University / New York State Psychiatric Institute)",
+    biomarkers = "Period-corrected drug liking Emax bipolar VAS score (0-100, 50 = neutral), recorded 30 min before and at 15 timepoints up to 300 min after each hydromorphone challenge; the Emax (maximum post-challenge value) was period-corrected against the pre-challenge value.",
+    notes = "Baseline demographics from Supplementary Table S1; observation counts from Supplementary Table S2 (drug liking: 231 PK and 231 PD records, 109 + 122 across the 24 mg and 32 mg arms). Study NCT02611752. Table S1 reports arm sizes 22 / 25; the Fig. 1 caption's '32 mg: n = 24' refers to the PK-evaluable subset. Data from the hydromorphone 0 mg and 6 mg challenges were excluded from PK/PD modelling because they produced no or lower drug liking responses."
   )
 
   ini({

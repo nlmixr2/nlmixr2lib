@@ -42,15 +42,15 @@ Kang_2023_artesunate_hamster_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    blood              = list(analyte = "artesunate", units = "nmol", specimen = "blood cell", verified = FALSE),
-    lung               = list(analyte = "artesunate", units = "nmol", specimen = "tissue", verified = FALSE),
-    trachea            = list(analyte = "artesunate", units = "nmol", specimen = "tissue", verified = FALSE),
-    other              = list(analyte = "artesunate", units = "nmol", specimen = "tissue", verified = FALSE),
-    blood_dihydroart   = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "blood cell", verified = FALSE),
-    lung_dihydroart    = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    blood = list(analyte = "artesunate", units = "nmol", specimen = "blood cell", verified = FALSE),
+    lung = list(analyte = "artesunate", units = "nmol", specimen = "tissue", verified = FALSE),
+    trachea = list(analyte = "artesunate", units = "nmol", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "artesunate", units = "nmol", specimen = "tissue", verified = FALSE),
+    blood_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "blood cell", verified = FALSE),
+    lung_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "tissue", verified = FALSE),
     trachea_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "tissue", verified = FALSE),
-    other_dihydroart   = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "tissue", verified = FALSE)
+    other_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()

@@ -22,7 +22,8 @@ Chu_2024_allopurinol <- function() {
     "variability is carried on allopurinol clearance and oxypurinol volume,",
     "and between-occasion variability on both clearances across the three",
     "periods. Residual error is proportional plus an additive component fixed",
-    "to LLOQ/2 for each analyte.")
+    "to LLOQ/2 for each analyte."
+  )
   reference <- paste(
     "Chu WY, Nijman M, Stegeman R, Breur JMPJ, Jansen NJG, Nijman J, van Loon K,",
     "Koomen E, Allegaert K, Benders MJNL, Dorlo TPC, Huitema ADR;",
@@ -42,51 +43,51 @@ Chu_2024_allopurinol <- function() {
   # ($MODEL COMP=(ALL1)/(OXY)/(ALL2) with S1 = V1, S2 = VO*(136.11/152.11),
   # S3 = VA), which fixes both the analyte and the mass units of each state.
   compartmentData <- list(
-    central     = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = TRUE),
-    central_oxy = list(analyte = "oxypurinol",  units = "mg", specimen = "plasma", verified = TRUE)
+    central_oxy = list(analyte = "oxypurinol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor on every clearance and every volume, normalised to 3.5 kg with fixed exponents 0.75 (clearances) and 1 (volumes) per Chu 2024 Sect. 2.3 and the ESM S3 control stream (`(WT/3.5)**0.75` / `(WT/3.5)**1`). The 3.5 kg reference was chosen to permit comparison with the authors' earlier models in neonates with hypoxic-ischemic encephalopathy, not because it is the cohort median: Chu 2024 Table 1 reports a median BIRTH weight of 3.16 kg (IQR 2.75-3.73). Time-varying in the source dataset (ESM S3 $INPUT `WT ; Weight (kg)`).",
-      source_name        = "WT"
+      notes = "Allometric size descriptor on every clearance and every volume, normalised to 3.5 kg with fixed exponents 0.75 (clearances) and 1 (volumes) per Chu 2024 Sect. 2.3 and the ESM S3 control stream (`(WT/3.5)**0.75` / `(WT/3.5)**1`). The 3.5 kg reference was chosen to permit comparison with the authors' earlier models in neonates with hypoxic-ischemic encephalopathy, not because it is the cohort median: Chu 2024 Table 1 reports a median BIRTH weight of 3.16 kg (IQR 2.75-3.73). Time-varying in the source dataset (ESM S3 $INPUT `WT ; Weight (kg)`).",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Chu 2024 reports postnatal age in DAYS (TM50 = 4.2 days); the canonical PNA column carries months, so `model()` recovers days with `PNA * 30.4375` before forming the sigmoidal recovery term (the same reparameterisation used by Zhao_2018_omeprazole.R and Bardhi_2026_ampicillin_foal.R). Drives the recovery of BOTH allopurinol and oxypurinol clearance during the postnatal-preoperative period ONLY -- during CPB and after CPB the clearances are fixed multiples of the at-birth value and the recovery term drops out entirely (ESM S3: `TVCLA = (CLA_PNA**FLAG1) * (CLA_CPB**FLAG2) * (CLA_POST**FLAG3)` with `CLA_CPB = CLA_PRE * FA_CPB1`, i.e. the CPB and post-CPB fractions multiply the PNA-free baseline). Cohort postnatal age at start of surgery: median 5.60 days, IQR 4.78-7.81 (Chu 2024 Table 1).",
-      source_name        = "PNA"
+      notes = "Time-varying. Chu 2024 reports postnatal age in DAYS (TM50 = 4.2 days); the canonical PNA column carries months, so `model()` recovers days with `PNA * 30.4375` before forming the sigmoidal recovery term (the same reparameterisation used by Zhao_2018_omeprazole.R and Bardhi_2026_ampicillin_foal.R). Drives the recovery of BOTH allopurinol and oxypurinol clearance during the postnatal-preoperative period ONLY -- during CPB and after CPB the clearances are fixed multiples of the at-birth value and the recovery term drops out entirely (ESM S3: `TVCLA = (CLA_PNA**FLAG1) * (CLA_CPB**FLAG2) * (CLA_POST**FLAG3)` with `CLA_CPB = CLA_PRE * FA_CPB1`, i.e. the CPB and post-CPB fractions multiply the PNA-free baseline). Cohort postnatal age at start of surgery: median 5.60 days, IQR 4.78-7.81 (Chu 2024 Table 1).",
+      source_name = "PNA"
     ),
     CPB_ON = list(
-      description        = "Cardiopulmonary bypass phase indicator (on bypass, before rewarming begins)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cardiopulmonary bypass phase indicator (on bypass, before rewarming begins)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (postnatal-preoperative period, when CPB_POST is also 0)",
-      notes              = "Time-varying. Chu 2024 did NOT separate a rewarming phase: its 'intraoperative period' is the whole bypass run, delimited by the start and end times of CPB (Sect. 2.2). This model therefore consumes the on-bypass window as the sum `CPB_ON + CPB_REWARM`, which is the idiom the covariate register prescribes for an effect spanning both sub-windows; widening CPB_ON itself is explicitly forbidden there. Because only the sum enters, it does not matter how a user's data splits the run -- setting CPB_ON = 1 for the entire bypass run with CPB_REWARM = 0 gives the same predictions as an accurate split. Corresponds to ESM S3 `FLAG2` (`IF(OOC.EQ.3) FLAG2=1`).",
-      source_name        = "OCC == 3"
+      notes = "Time-varying. Chu 2024 did NOT separate a rewarming phase: its 'intraoperative period' is the whole bypass run, delimited by the start and end times of CPB (Sect. 2.2). This model therefore consumes the on-bypass window as the sum `CPB_ON + CPB_REWARM`, which is the idiom the covariate register prescribes for an effect spanning both sub-windows; widening CPB_ON itself is explicitly forbidden there. Because only the sum enters, it does not matter how a user's data splits the run -- setting CPB_ON = 1 for the entire bypass run with CPB_REWARM = 0 gives the same predictions as an accurate split. Corresponds to ESM S3 `FLAG2` (`IF(OOC.EQ.3) FLAG2=1`).",
+      source_name = "OCC == 3"
     ),
     CPB_REWARM = list(
-      description        = "Cardiopulmonary bypass rewarming phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cardiopulmonary bypass rewarming phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not in the rewarming phase)",
-      notes              = "Time-varying and mutually exclusive with CPB_ON. Carried only so that the on-bypass window can be written as `CPB_ON + CPB_REWARM` without widening CPB_ON. Chu 2024 fitted no rewarming-specific effect, so this column has no independent effect in this model and may be left at 0 throughout when the rewarming boundary is unknown (see the CPB_ON notes). The cohort was cooled to a median lowest rectal temperature of 27.7 C during CPB (Chu 2024 Table 1), so rewarming did occur; it simply was not modelled separately.",
-      source_name        = "OCC == 3"
+      notes = "Time-varying and mutually exclusive with CPB_ON. Carried only so that the on-bypass window can be written as `CPB_ON + CPB_REWARM` without widening CPB_ON. Chu 2024 fitted no rewarming-specific effect, so this column has no independent effect in this model and may be left at 0 throughout when the rewarming boundary is unknown (see the CPB_ON notes). The cohort was cooled to a median lowest rectal temperature of 27.7 C during CPB (Chu 2024 Table 1), so rewarming did occur; it simply was not modelled separately.",
+      source_name = "OCC == 3"
     ),
     CPB_POST = list(
-      description        = "Post-cardiopulmonary-bypass (postoperative) period indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Post-cardiopulmonary-bypass (postoperative) period indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (postnatal-preoperative period, when CPB_ON and CPB_REWARM are also 0)",
-      notes              = "Time-varying; 1 from separation from the bypass circuit onward. Chu 2024 estimated a distinct postoperative clearance and volume for both analytes rather than letting the postoperative phase collapse onto the pre-CPB reference, which is the condition under which the covariate register directs a sibling CPB_POST to be registered. Corresponds to ESM S3 `FLAG3` (`IF(POC.EQ.4) FLAG3=1`). The postoperative oxypurinol clearance (0.05 L/h per 3.5 kg) is LOWER than the at-birth value, which the authors attribute to CPB-induced acute kidney injury (Chu 2024 Sect. 4).",
-      source_name        = "OCC == 4"
+      notes = "Time-varying; 1 from separation from the bypass circuit onward. Chu 2024 estimated a distinct postoperative clearance and volume for both analytes rather than letting the postoperative phase collapse onto the pre-CPB reference, which is the condition under which the covariate register directs a sibling CPB_POST to be registered. Corresponds to ESM S3 `FLAG3` (`IF(POC.EQ.4) FLAG3=1`). The postoperative oxypurinol clearance (0.05 L/h per 3.5 kg) is LOWER than the at-birth value, which the authors attribute to CPB-induced acute kidney injury (Chu 2024 Sect. 4).",
+      source_name = "OCC == 4"
     )
   )
 
@@ -96,34 +97,34 @@ Chu_2024_allopurinol <- function() {
   # the ESM S2 model-development table lists no screening step for these two.
   covariatesDataExcluded <- list(
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Present in the ESM S3 $INPUT record as `GAW ; Gestational age (week)` and summarised in Chu 2024 Table 1 (median 38.0 weeks, IQR 38.0-38.8), but no covariate effect of gestational age is reported and none is present in the published $PK block. The cohort is near-uniformly term, so the data would carry little information about prematurity in any case."
+      notes = "Present in the ESM S3 $INPUT record as `GAW ; Gestational age (week)` and summarised in Chu 2024 Table 1 (median 38.0 weeks, IQR 38.0-38.8), but no covariate effect of gestational age is reported and none is present in the published $PK block. The cohort is near-uniformly term, so the data would carry little information about prematurity in any case."
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Present in the ESM S3 $INPUT record as `SEX ; Sex` and summarised in Chu 2024 Table 1 (10 of 14, 71.4%, male; hence 28.6% female), but no covariate effect of sex is reported and none is present in the published $PK block."
+      notes = "Present in the ESM S3 $INPUT record as `SEX ; Sex` and summarised in Chu 2024 Table 1 (10 of 14, 71.4%, male; hence 28.6% female), but no covariate effect of sex is reported and none is present in the published $PK block."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 14L,
-    n_studies      = 1L,
-    age_range      = "Neonates. Gestational age at birth median 38.0 weeks (IQR 38.0-38.8). Postnatal age at the start of cardiac surgery median 5.60 days (IQR 4.78-7.81); dosing and sampling span birth to roughly 1.5 weeks of life.",
-    weight_range   = "Birth weight median 3.16 kg (IQR 2.75-3.73). Model parameters are reported at a 3.5 kg reference weight.",
+    species = "human",
+    n_subjects = 14L,
+    n_studies = 1L,
+    age_range = "Neonates. Gestational age at birth median 38.0 weeks (IQR 38.0-38.8). Postnatal age at the start of cardiac surgery median 5.60 days (IQR 4.78-7.81); dosing and sampling span birth to roughly 1.5 weeks of life.",
+    weight_range = "Birth weight median 3.16 kg (IQR 2.75-3.73). Model parameters are reported at a 3.5 kg reference weight.",
     sex_female_pct = 28.6,
     race_ethnicity = NA_character_,
-    disease_state  = "Critical congenital heart disease (CCHD) requiring cardiac surgery with cardiopulmonary bypass within the first month of life. Cardiac pathology: transposition of the great arteries 6 (42.9%), single ventricle physiology 4 (28.6%), aortic arch anomaly 2 (14.3%), other 2 (14.3%). Median total duration of cardiac surgery with CPB 320 min (IQR 280-368); median lowest rectal temperature during CPB 27.7 C (IQR 23.7-28); deep hypothermic cardiac arrest in 1 of 13 (7.7%) and antegrade cerebral perfusion in 4 of 13 (30.8%).",
-    dose_range     = "Five intravenous allopurinol doses of 20 mg/kg each, delivered over 10 min by syringe pump: within 45-60 min after birth (DOSE 1), 12 h later (DOSE 2), 12 h before cardiac surgery (DOSE 3), at the start of CPB (DOSE 4), and 24 h after surgery (DOSE 5). The 10-min infusion duration is from the CRUCIAL study protocol (Stegeman 2022 Trials, doi:10.1186/s13063-022-06098-y), which Chu 2024 cites as reference 6 and as the source of its Fig. 1 dosing schedule; the PK paper itself does not restate it.",
-    regions        = "The Netherlands. The CRUCIAL trial runs in four Dutch academic centres; this PK substudy was performed exclusively at Wilhelmina Children's Hospital, University Medical Center Utrecht.",
+    disease_state = "Critical congenital heart disease (CCHD) requiring cardiac surgery with cardiopulmonary bypass within the first month of life. Cardiac pathology: transposition of the great arteries 6 (42.9%), single ventricle physiology 4 (28.6%), aortic arch anomaly 2 (14.3%), other 2 (14.3%). Median total duration of cardiac surgery with CPB 320 min (IQR 280-368); median lowest rectal temperature during CPB 27.7 C (IQR 23.7-28); deep hypothermic cardiac arrest in 1 of 13 (7.7%) and antegrade cerebral perfusion in 4 of 13 (30.8%).",
+    dose_range = "Five intravenous allopurinol doses of 20 mg/kg each, delivered over 10 min by syringe pump: within 45-60 min after birth (DOSE 1), 12 h later (DOSE 2), 12 h before cardiac surgery (DOSE 3), at the start of CPB (DOSE 4), and 24 h after surgery (DOSE 5). The 10-min infusion duration is from the CRUCIAL study protocol (Stegeman 2022 Trials, doi:10.1186/s13063-022-06098-y), which Chu 2024 cites as reference 6 and as the source of its Fig. 1 dosing schedule; the PK paper itself does not restate it.",
+    regions = "The Netherlands. The CRUCIAL trial runs in four Dutch academic centres; this PK substudy was performed exclusively at Wilhelmina Children's Hospital, University Medical Center Utrecht.",
     n_observations = "140 allopurinol and oxypurinol plasma observations: 60 postnatal-preoperative, 36 intraoperative, 44 postoperative; median 10 samples per patient (IQR 9-12). 5.8% of allopurinol concentrations were below the LLOQ (0.05 mg/L allopurinol, 0.0467 mg/L oxypurinol) and were imputed at LLOQ/2 with an additive residual component fixed to LLOQ/2.",
-    notes          = "PK substudy of the CRUCIAL trial (ClinicalTrials.gov NCT04217421; EudraCT 2017-004596-31), a phase III randomised quadruple-blinded placebo-controlled multicentre trial of postnatal and perioperative allopurinol for postoperative brain injury in neonates with CCHD. One of the 14 neonates had cardiac surgery at a non-participating centre and contributed postnatal-period samples only, so the 13 surgical patients underpin the intraoperative and postoperative parameters. Estimation by NONMEM 7.5 FOCE-I with ADVAN13; parameter precision by sampling importance resampling."
+    notes = "PK substudy of the CRUCIAL trial (ClinicalTrials.gov NCT04217421; EudraCT 2017-004596-31), a phase III randomised quadruple-blinded placebo-controlled multicentre trial of postnatal and perioperative allopurinol for postoperative brain injury in neonates with CCHD. One of the 14 neonates had cardiac surgery at a non-participating centre and contributed postnatal-period samples only, so the 13 surgical patients underpin the intraoperative and postoperative parameters. Estimation by NONMEM 7.5 FOCE-I with ADVAN13; parameter precision by sampling importance resampling."
   )
 
   ini({

@@ -19,67 +19,72 @@ Bihorel_2023_molnupiravir <- function() {
   # depot accordingly holds dosed prodrug on a molar basis and the systemic
   # states hold NHC.
   compartmentData <- list(
-    depot       = list(analyte = "molnupiravir", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "beta-D-N4-hydroxycytidine (NHC)", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "beta-D-N4-hydroxycytidine (NHC)", units = "nmol", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "molnupiravir", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "beta-D-N4-hydroxycytidine (NHC)", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(
+      analyte = "beta-D-N4-hydroxycytidine (NHC)",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Less-than-proportional power effect on apparent elimination clearance, referenced to 80 kg: cl <- cl_typ * (WT / 80)^0.412 (Bihorel 2023 Table 2, 'Apparent central clearance in 80kg participants' and 'Power of body weight effect'). The 80 kg reference is stated in the Table 2 row label; the cohort median body weight was 85 kg (Table 1). The paper deliberately applies no allometry to the apparent distribution clearance Q/F or the apparent peripheral volume Vp/F, and flags that omission in Limitations as the reason the model should not be extrapolated to children.",
-      source_name        = "WT"
+      notes = "Less-than-proportional power effect on apparent elimination clearance, referenced to 80 kg: cl <- cl_typ * (WT / 80)^0.412 (Bihorel 2023 Table 2, 'Apparent central clearance in 80kg participants' and 'Power of body weight effect'). The 80 kg reference is stated in the Table 2 row label; the cohort median body weight was 85 kg (Table 1). The paper deliberately applies no allometry to the apparent distribution clearance Q/F or the apparent peripheral volume Vp/F, and flags that omission in Limitations as the reason the model should not be extrapolated to children.",
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on apparent central volume, referenced to 28 kg/m^2: vc <- vc_typ * (BMI / 28)^0.997 (Bihorel 2023 Table 2, 'Apparent central volume in 28kg/m 2 BMI male participants' and 'Power of BMI effect'). The 28 kg/m^2 reference is stated in the Table 2 row label and matches the reference individual used for the Discussion typical-profile simulation; the cohort median BMI was 30.4 kg/m^2 (Table 1). The estimated power of 0.997 is indistinguishable from 1, i.e. Vc/F is effectively proportional to BMI, but it is carried as estimated because Table 2 reports it with an RSE of 13.1% and no FIX flag.",
-      source_name        = "BMI"
+      notes = "Power effect on apparent central volume, referenced to 28 kg/m^2: vc <- vc_typ * (BMI / 28)^0.997 (Bihorel 2023 Table 2, 'Apparent central volume in 28kg/m 2 BMI male participants' and 'Power of BMI effect'). The 28 kg/m^2 reference is stated in the Table 2 row label and matches the reference individual used for the Discussion typical-profile simulation; the cohort median BMI was 30.4 kg/m^2 (Table 1). The estimated power of 0.997 is indistinguishable from 1, i.e. Vc/F is effectively proportional to BMI, but it is carried as estimated because Table 2 reports it with an RSE of 13.1% and no FIX flag.",
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Linear proportional shift on apparent central volume: vc <- vc_typ * (1 + (-0.330) * SEXF), i.e. a 33% lower Vc/F in women than in men at the same BMI (Bihorel 2023 Table 2, 'Proportional shift in female participants' = -0.330, RSE 11.8%; Results 'Base model refinement using phase III data' states '33% decrease in V C /F in women compared with men'). Male is the reference because the Table 2 typical value row is labelled 'male participants'. The effect raises Cmax in women by about 15% (Discussion) but does not change AUC(0-12), which depends only on CL/F.",
-      source_name        = "SEX"
+      notes = "Linear proportional shift on apparent central volume: vc <- vc_typ * (1 + (-0.330) * SEXF), i.e. a 33% lower Vc/F in women than in men at the same BMI (Bihorel 2023 Table 2, 'Proportional shift in female participants' = -0.330, RSE 11.8%; Results 'Base model refinement using phase III data' states '33% decrease in V C /F in women compared with men'). Male is the reference because the Table 2 typical value row is labelled 'male participants'. The effect raises Cmax in women by about 15% (Discussion) but does not change AUC(0-12), which depends only on CL/F.",
+      source_name = "SEX"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal-at-dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal-at-dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted or standard meal)",
-      notes              = "Linear proportional shift on the absorption mean transit time: mtt <- mtt_typ * (1 + 4.22 * FED_HIGHFAT), i.e. a 422% increase in MTT after a high-fat meal (Bihorel 2023 Table 2, 'Proportional shift due to high-fat meal' = 4.22, RSE 6.29%; Results states '422% increase in MTT following a high-fat meal compared with fasting or a standard meal'). Time-varying per dose record: the food-effect part of MK-4482-004 dosed the same participants fasted and after a high-fat breakfast on two separate occasions in a balanced crossover. Food status was NOT collected in the phase II and III trials (Table 1, 'Food status collection' = No for all 1107 participants with COVID-19); Bihorel 2023 used mixture modelling at analysis stage 2 to assign a food status and, after a small-scale sensitivity analysis, FIXED the fraction of unknown-food-status participants treated as having eaten a high-fat meal at 25%, then hard-coded that assignment into the analysis dataset. Downstream users simulating a COVID-19 cohort should therefore draw FED_HIGHFAT ~ Bernoulli(0.25); see the vignette Assumptions and deviations. The high-fat meal changes Tmax and Cmax but not AUC, so molnupiravir may be given without regard to food (Discussion).",
-      source_name        = "FOOD"
+      notes = "Linear proportional shift on the absorption mean transit time: mtt <- mtt_typ * (1 + 4.22 * FED_HIGHFAT), i.e. a 422% increase in MTT after a high-fat meal (Bihorel 2023 Table 2, 'Proportional shift due to high-fat meal' = 4.22, RSE 6.29%; Results states '422% increase in MTT following a high-fat meal compared with fasting or a standard meal'). Time-varying per dose record: the food-effect part of MK-4482-004 dosed the same participants fasted and after a high-fat breakfast on two separate occasions in a balanced crossover. Food status was NOT collected in the phase II and III trials (Table 1, 'Food status collection' = No for all 1107 participants with COVID-19); Bihorel 2023 used mixture modelling at analysis stage 2 to assign a food status and, after a small-scale sensitivity analysis, FIXED the fraction of unknown-food-status participants treated as having eaten a high-fat meal at 25%, then hard-coded that assignment into the analysis dataset. Downstream users simulating a COVID-19 cohort should therefore draw FED_HIGHFAT ~ Bernoulli(0.25); see the vignette Assumptions and deviations. The high-fat meal changes Tmax and Cmax but not AUC, so molnupiravir may be given without regard to food (Discussion).",
+      source_name = "FOOD"
     ),
     FORM_SOLUTION = list(
-      description        = "Oral-solution formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral-solution formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capsule or suspension)",
-      notes              = "Linear proportional shift on the absorption mean transit time: mtt <- mtt_typ * (1 + (-0.616) * FORM_SOLUTION), i.e. a 61.6% shorter MTT for the oral solution than for the capsule reference (Bihorel 2023 Table 2, 'Proportional shift in oral solution' = -0.616, RSE 5.49%; Results states '61.6% decrease in MTT for oral solution compared with capsule or suspension'). The oral solution was used only in 36 of the 100 phase I MK-4482-004 participants (Table 1, 'Formulation'); all 1171 remaining participants, including every participant in MOVe-IN, MOVe-OUT and MK-4482-006, received capsules, so this indicator is 0 throughout any phase II/III simulation. Formulation affected the rate but not the extent of absorption (Discussion: 'Food status and formulation were not found to influence the extent of molnupiravir bioavailability').",
-      source_name        = "FORM"
+      notes = "Linear proportional shift on the absorption mean transit time: mtt <- mtt_typ * (1 + (-0.616) * FORM_SOLUTION), i.e. a 61.6% shorter MTT for the oral solution than for the capsule reference (Bihorel 2023 Table 2, 'Proportional shift in oral solution' = -0.616, RSE 5.49%; Results states '61.6% decrease in MTT for oral solution compared with capsule or suspension'). The oral solution was used only in 36 of the 100 phase I MK-4482-004 participants (Table 1, 'Formulation'); all 1171 remaining participants, including every participant in MOVe-IN, MOVe-OUT and MK-4482-006, received capsules, so this indicator is 0 throughout any phase II/III simulation. Formulation affected the rate but not the extent of absorption (Discussion: 'Food status and formulation were not found to influence the extent of molnupiravir bioavailability').",
+      source_name = "FORM"
     ),
     OCC = list(
-      description        = "Occasion index for inter-occasion variability on the absorption mean transit time",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for inter-occasion variability on the absorption mean transit time",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1 and 2. Bihorel 2023 Table 2 note: 'The different occasions for IOV in MTT were labeled as occasion 1 and occasion 2. Participants were assumed to have only one occasion for IOV in MTT, except those enrolled in the food effect and MAD part of MK-4482-004.' The occasion count of exactly two is therefore stated by the source and is not an extraction-side construct. Decomposed inside model() into binary indicators oc1 and oc2 that multiplex the two IOV etas on log-MTT; the second variance is fixed equal to the first, encoding the shared NONMEM $OMEGA BLOCK(1) SAME. Records for participants with a single dosing occasion (every participant with COVID-19, and the single-ascending-dose part of MK-4482-004) take OCC = 1. Registered idiom; closest precedent is the two-occasion Chen_2023_nemonoxacin.R.",
-      source_name        = "OCC"
+      notes = "Values 1 and 2. Bihorel 2023 Table 2 note: 'The different occasions for IOV in MTT were labeled as occasion 1 and occasion 2. Participants were assumed to have only one occasion for IOV in MTT, except those enrolled in the food effect and MAD part of MK-4482-004.' The occasion count of exactly two is therefore stated by the source and is not an extraction-side construct. Decomposed inside model() into binary indicators oc1 and oc2 that multiplex the two IOV etas on log-MTT; the second variance is fixed equal to the first, encoding the shared NONMEM $OMEGA BLOCK(1) SAME. Records for participants with a single dosing occasion (every participant with COVID-19, and the single-ascending-dose part of MK-4482-004) take OCC = 1. Registered idiom; closest precedent is the two-occasion Chen_2023_nemonoxacin.R.",
+      source_name = "OCC"
     ),
     STUDY_MOV_PHASE23 = list(
-      description        = "Phase II / phase II-III trial residual-error stratum indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase II / phase II-III trial residual-error stratum indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase I trial MK-4482-004 observation)",
-      notes              = "Record-level study-design property, not a subject-level covariate: it selects only the proportional residual-error magnitude. 1 = the NHC observation comes from MK-4482-006, MOVe-IN or MOVe-OUT (sparse sampling: 1-5 samples per participant, drawn around the ninth or tenth dose); 0 = the observation comes from the densely sampled phase I trial MK-4482-004 (7-26 samples per participant). Bihorel 2023 Table 2 reports two residual-variability rows, 'Phase I trials' = 0.0652 (25.5% CV) and 'Phase II/III trials' = 0.247 (49.7% CV); Results 'Base structural model development' notes that 'distinct residual variability models being estimated for the phase I and II studies' was one of the stage-2 refinements. Follows the paper-specific STUDY_<drug>_<phase> convention; the closest analogue is STUDY_NMV_PHASE23 for the Chan 2023 nirmatrelvir COVID-19 antiviral pooled analysis.",
-      source_name        = "STUDY"
+      notes = "Record-level study-design property, not a subject-level covariate: it selects only the proportional residual-error magnitude. 1 = the NHC observation comes from MK-4482-006, MOVe-IN or MOVe-OUT (sparse sampling: 1-5 samples per participant, drawn around the ninth or tenth dose); 0 = the observation comes from the densely sampled phase I trial MK-4482-004 (7-26 samples per participant). Bihorel 2023 Table 2 reports two residual-variability rows, 'Phase I trials' = 0.0652 (25.5% CV) and 'Phase II/III trials' = 0.247 (49.7% CV); Results 'Base structural model development' notes that 'distinct residual variability models being estimated for the phase I and II studies' was one of the stage-2 refinements. Follows the paper-specific STUDY_<drug>_<phase> convention; the closest analogue is STUDY_NMV_PHASE23 for the Chan 2023 nirmatrelvir COVID-19 antiviral pooled analysis.",
+      source_name = "STUDY"
     )
   )
 
@@ -91,79 +96,83 @@ Bihorel_2023_molnupiravir <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not statistically significant on any PK parameter. Discussion: 'Age was not a statistically significant covariate and predicted NHC exposures were consistent even in the oldest participants (Figure 3).' Cohort median (range) 46 (18-91) years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not statistically significant on any PK parameter. Discussion: 'Age was not a statistically significant covariate and predicted NHC exposures were consistent even in the oldest participants (Figure 3).' Cohort median (range) 46 (18-91) years."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (CKD-EPI / MDRD-style, BSA-normalized)",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Screened; not retained. Discussion: 'Renal impairment was not identified as a statistically significant covariate in the analysis, which included 48% and 7% of participants with mild or moderate renal impairment, respectively. The predicted modest 18% AUC(0-12) increase with moderate renal impairment was not considered to be clinically relevant.' Reported only as impairment strata (normal / mild 60-89 / moderate 30-59 mL/min/1.73 m^2, Table 1), never as a continuous coefficient, so no usable point estimate exists."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Screened; not retained. Discussion: 'Renal impairment was not identified as a statistically significant covariate in the analysis, which included 48% and 7% of participants with mild or moderate renal impairment, respectively. The predicted modest 18% AUC(0-12) increase with moderate renal impairment was not considered to be clinically relevant.' Reported only as impairment strata (normal / mild 60-89 / moderate 30-59 mL/min/1.73 m^2, Table 1), never as a continuous coefficient, so no usable point estimate exists."
     ),
     HEPIMP_MILD = list(
       description = "Mild hepatic impairment indicator (modified Child-Pugh)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested after the formal covariate screen using modified Child-Pugh criteria (Table S2) approximated from total bilirubin and albumin, with encephalopathy, ascites and INR assumed normal because they were not collected. Not retained: 'the available data in participants with mild (n = 60) and moderate (n = 3) hepatic impairment did not identify a distinguishable trend in NHC exposures with hepatic dysfunction' (Discussion). No coefficient reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested after the formal covariate screen using modified Child-Pugh criteria (Table S2) approximated from total bilirubin and albumin, with encephalopathy, ascites and INR assumed normal because they were not collected. Not retained: 'the available data in participants with mild (n = 60) and moderate (n = 3) hepatic impairment did not identify a distinguishable trend in NHC exposures with hepatic dysfunction' (Discussion). No coefficient reported."
     ),
     HEPIMP_MOD = list(
       description = "Moderate hepatic impairment indicator (modified Child-Pugh)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "See HEPIMP_MILD. Only 3 of 1207 participants (0.2%) were classified moderate; Limitations flags the small subgroup explicitly. No coefficient reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "See HEPIMP_MILD. Only 3 of 1207 participants (0.2%) were classified moderate; Limitations flags the small subgroup explicitly. No coefficient reported."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Reported only as a post hoc forest-plot AUC(0-12) geometric mean ratio of 0.825 (Figure 3), which Discussion attributes to higher body weight / BMI in this subpopulation rather than to race itself. A forest-plot GMR is a geometric mean over shrunken empirical Bayes estimates, not a typical-value contrast, so it cannot be inverted into a coefficient. n = 63 (5.2%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Reported only as a post hoc forest-plot AUC(0-12) geometric mean ratio of 0.825 (Figure 3), which Discussion attributes to higher body weight / BMI in this subpopulation rather than to race itself. A forest-plot GMR is a geometric mean over shrunken empirical Bayes estimates, not a typical-value contrast, so it cannot be inverted into a coefficient. n = 63 (5.2%)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Post hoc forest-plot AUC(0-12) GMR 1.01 (Figure 3), i.e. no meaningful difference. A separate sensitivity analysis (Figure S10) compared Japanese with weight-matched non-Japanese participants and found no clear difference after accounting for body weight. n = 43 (3.6%). Not invertible into a coefficient; see RACE_BLACK."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Post hoc forest-plot AUC(0-12) GMR 1.01 (Figure 3), i.e. no meaningful difference. A separate sensitivity analysis (Figure S10) compared Japanese with weight-matched non-Japanese participants and found no clear difference after accounting for body weight. n = 43 (3.6%). Not invertible into a coefficient; see RACE_BLACK."
     ),
     DIS_HOSPITALIZED = list(
       description = "Hospitalized-with-COVID-19 indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "This is the one covariate that entered the model and was then removed. A shift in the absorption parameter for hospitalized patients was carried through analysis stage 2 (on the zero-order duration D1) but, after the stage-3 reversion to the transit-compartment absorption model, 'the shift in MTT in hospitalized patients was close to 0 and poorly estimated (RSE: 87.2%)' and it was the single relationship dropped by the stage-3 backward elimination (Results, 'Base model refinement using phase III data' and 'Final model'). No final estimate is reported, so it cannot be encoded. n = 196 (16.2%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "This is the one covariate that entered the model and was then removed. A shift in the absorption parameter for hospitalized patients was carried through analysis stage 2 (on the zero-order duration D1) but, after the stage-3 reversion to the transit-compartment absorption model, 'the shift in MTT in hospitalized patients was close to 0 and poorly estimated (RSE: 87.2%)' and it was the single relationship dropped by the stage-3 backward elimination (Results, 'Base model refinement using phase III data' and 'Final model'). No final estimate is reported, so it cannot be encoded. n = 196 (16.2%)."
     ),
     CONMED_REMDESIVIR = list(
       description = "Baseline remdesivir use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Recorded in Table 1 (48 of 196 hospitalized participants, 4.0% overall; no non-hospitalized participant received remdesivir) but not reported as a tested or retained covariate anywhere in the paper. No coefficient exists."
+      units = "(binary)",
+      type = "binary",
+      notes = "Recorded in Table 1 (48 of 196 hospitalized participants, 4.0% overall; no non-hospitalized participant received remdesivir) but not reported as a tested or retained covariate anywhere in the paper. No coefficient exists."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 1207L,
-    n_studies        = 4L,
-    n_observations   = 4202L,
-    age_range        = "18-91 years",
-    age_median       = "46 years",
-    weight_range     = "36.1-172 kg",
-    weight_median    = "85 kg",
-    bmi_range        = "14.3-68.6 kg/m^2",
-    bmi_median       = "30.4 kg/m^2",
-    sex_female_pct   = 48.3,
-    race_ethnicity   = c(
-      White = 66.7, Other = 19.0, NativeAmericanOrAlaskaNative = 5.5,
-      BlackOrAfricanAmerican = 5.2, Asian = 3.6, HawaiianOrPacificIslander = 0.1
+    species = "human",
+    n_subjects = 1207L,
+    n_studies = 4L,
+    n_observations = 4202L,
+    age_range = "18-91 years",
+    age_median = "46 years",
+    weight_range = "36.1-172 kg",
+    weight_median = "85 kg",
+    bmi_range = "14.3-68.6 kg/m^2",
+    bmi_median = "30.4 kg/m^2",
+    sex_female_pct = 48.3,
+    race_ethnicity = c(
+      White = 66.7,
+      Other = 19.0,
+      NativeAmericanOrAlaskaNative = 5.5,
+      BlackOrAfricanAmerican = 5.2,
+      Asian = 3.6,
+      HawaiianOrPacificIslander = 0.1
     ),
-    ethnicity        = c(NonHispanicOrLatino = 59.2, HispanicOrLatino = 40.8),
-    disease_state    = "Healthy adults (100; 8.3%) and adults with COVID-19 (1107; 91.7%), the latter comprising 911 non-hospitalized (75.5%) and 196 hospitalized (16.2%) participants",
-    dose_range       = "MK-4482-004 (phase I, healthy): 50-1600 mg single oral dose fasted, a fasted-vs-high-fat-breakfast balanced crossover food-effect part, and 50-800 mg every 12 h for 6 days. MK-4482-006, MOVe-IN and MOVe-OUT part 1: 200, 400 or 800 mg every 12 h for 5 days. MOVe-OUT part 2 (phase II/III): 800 mg every 12 h for 5 days.",
-    regions          = c(Europe = 41.0, AsiaPacific = 29.3, NorthAmerica = 20.5, Africa = 7.0, LatinAmerica = 2.2),
-    renal_function   = "Normal 45.0%; mild impairment (eGFR 60-89 mL/min/1.73 m^2) 48.1%; moderate impairment (eGFR 30-59 mL/min/1.73 m^2) 7.0%",
+    ethnicity = c(NonHispanicOrLatino = 59.2, HispanicOrLatino = 40.8),
+    disease_state = "Healthy adults (100; 8.3%) and adults with COVID-19 (1107; 91.7%), the latter comprising 911 non-hospitalized (75.5%) and 196 hospitalized (16.2%) participants",
+    dose_range = "MK-4482-004 (phase I, healthy): 50-1600 mg single oral dose fasted, a fasted-vs-high-fat-breakfast balanced crossover food-effect part, and 50-800 mg every 12 h for 6 days. MK-4482-006, MOVe-IN and MOVe-OUT part 1: 200, 400 or 800 mg every 12 h for 5 days. MOVe-OUT part 2 (phase II/III): 800 mg every 12 h for 5 days.",
+    regions = c(Europe = 41.0, AsiaPacific = 29.3, NorthAmerica = 20.5, Africa = 7.0, LatinAmerica = 2.2),
+    renal_function = "Normal 45.0%; mild impairment (eGFR 60-89 mL/min/1.73 m^2) 48.1%; moderate impairment (eGFR 30-59 mL/min/1.73 m^2) 7.0%",
     hepatic_function = "Normal 94.8%; mild impairment 5.0%; moderate impairment 0.2%. Hepatic function was not captured directly; the degree of impairment was approximated with a modified Child-Pugh score (Table S2) from total bilirubin and albumin, with encephalopathy, ascites and INR assumed normal because they were not collected.",
-    formulation      = "Capsule 97.0% (1171); oral solution 3.0% (36, all in MK-4482-004)",
-    co_medication    = "48 of 196 hospitalized participants (24.5%; 4.0% overall) had taken or were receiving remdesivir when molnupiravir was started; no non-hospitalized participant received remdesivir",
-    notes            = "Demographics and baseline characteristics from Bihorel 2023 Table 1. Four randomized, double-blind, placebo-controlled trials: MK-4482-004 (phase I, NCT04392219, n = 100), MK-4482-006 (phase IIa non-hospitalized, NCT04405570, n = 66), MK-4482-001 / MOVe-IN (phase II hospitalized, NCT04575584, n = 196) and MK-4482-002 / MOVe-OUT (phase II/III non-hospitalized, NCT04575597, n = 845 across parts 1 and 2). 4847 plasma NHC records were collected and 4202 (88%) were analysed; exclusions were mostly below-LLOQ samples from the low-dose phase I arms (LLOQ 5 ng/mL in MK-4482-004 and MK-4482-006, 1 ng/mL in MOVe-IN and MOVe-OUT). Sampling was dense in healthy participants (7-26 samples each) and sparse in participants with COVID-19 (1-5 samples each), so 72.8% of the overall population contributed at most two samples. Estimation was FOCE with interaction in NONMEM 7 level 3."
+    formulation = "Capsule 97.0% (1171); oral solution 3.0% (36, all in MK-4482-004)",
+    co_medication = "48 of 196 hospitalized participants (24.5%; 4.0% overall) had taken or were receiving remdesivir when molnupiravir was started; no non-hospitalized participant received remdesivir",
+    notes = "Demographics and baseline characteristics from Bihorel 2023 Table 1. Four randomized, double-blind, placebo-controlled trials: MK-4482-004 (phase I, NCT04392219, n = 100), MK-4482-006 (phase IIa non-hospitalized, NCT04405570, n = 66), MK-4482-001 / MOVe-IN (phase II hospitalized, NCT04575584, n = 196) and MK-4482-002 / MOVe-OUT (phase II/III non-hospitalized, NCT04575597, n = 845 across parts 1 and 2). 4847 plasma NHC records were collected and 4202 (88%) were analysed; exclusions were mostly below-LLOQ samples from the low-dose phase I arms (LLOQ 5 ng/mL in MK-4482-004 and MK-4482-006, 1 ng/mL in MOVe-IN and MOVe-OUT). Sampling was dense in healthy participants (7-26 samples each) and sparse in participants with COVID-19 (1-5 samples each), so 72.8% of the overall population contributed at most two samples. Estimation was FOCE with interaction in NONMEM 7 level 3."
   )
 
   ini({

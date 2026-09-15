@@ -33,18 +33,18 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
   )
   vignette <- "Moein_2025_etrolizumab"
   units <- list(
-    time          = "n/a (static landmark logistic regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark logistic regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_endorem (probability of endoscopic remission at end of induction, 0-1)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE dose (Ctrough,W4,adjusted)",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE dose (Ctrough,W4,adjusted)",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "TOTAL etrolizumab, entering the logit LINEARLY and ",
         "UNCENTERED, so logite0 is the logit at zero exposure -- the ",
         "placebo arm (a single intercept is shared by placebo and ",
@@ -61,14 +61,14 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
         "induction and maintenance, even though only the maintenance ",
         "slope reaches significance."
       ),
-      source_name        = "Ctrough,W4,adjusted"
+      source_name = "Ctrough,W4,adjusted"
     ),
     PRIOR_TNF = list(
-      description        = "Prior anti-TNF biologic therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anti-TNF biologic therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (TNF-experienced) -- the PAPER's reference, the complement of the canonical column's 0 level",
-      notes              = paste0(
+      notes = paste0(
         "The published coefficient is on the TNF-NAIVE side of the ",
         "contrast (Table S8 'TNF-naive' = 0.785, RSE 48.4%, P < 0.05), ",
         "with TNF-experienced absorbed into the intercept (footnote b). ",
@@ -79,14 +79,14 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
         "parameter covariance. Analysis set (Table S7): 205 ",
         "TNF-experienced (53%), 179 TNF-naive (47%)."
       ),
-      source_name        = "TNF status"
+      source_name = "TNF status"
     ),
     DISLOC_ILEUM = list(
-      description        = "Crohn's disease located in the ileum only (Montreal L1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crohn's disease located in the ileum only (Montreal L1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ileocolonic disease, Montreal L3, the paper's reference; implies DISLOC_COLON = 0 as well)",
-      notes              = paste0(
+      notes = paste0(
         "Log-odds shift versus ileocolonic disease (-1.03 here). Paired ",
         "with DISLOC_COLON to encode the three-level Montreal ",
         "disease-location categorical, with both indicators zero ",
@@ -98,14 +98,14 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
         "it. Analysis set (Table S7): 230 ileum and colon (60%), 72 ",
         "ileum only (19%), 82 colon only (21%)."
       ),
-      source_name        = "Disease location"
+      source_name = "Disease location"
     ),
     DISLOC_COLON = list(
-      description        = "Crohn's disease located in the colon only (Montreal L2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crohn's disease located in the colon only (Montreal L2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ileocolonic disease, Montreal L3)",
-      notes              = paste0(
+      notes = paste0(
         "Log-odds shift versus ileocolonic disease (+0.881 here). ",
         "Mutually exclusive with DISLOC_ILEUM; both zero means ",
         "ileocolonic. Colon-only disease predicts HIGHER endoscopic ",
@@ -113,14 +113,14 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
         "penalty, consistent with the Discussion's observation of lower ",
         "efficacy in ileal Crohn's disease."
       ),
-      source_name        = "Disease location"
+      source_name = "Disease location"
     ),
     SCORE_SESCD = list(
-      description        = "Baseline Simple Endoscopic Score for Crohn's Disease (SES-CD)",
-      units              = "(score, 0-56)",
-      type               = "continuous",
+      description = "Baseline Simple Endoscopic Score for Crohn's Disease (SES-CD)",
+      units = "(score, 0-56)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Linear effect on the logit, CENTERED at the reference score of ",
         "12.0: e_sescd_endorem * (SCORE_SESCD - 12.0). The centering is ",
         "load-bearing and is what makes the printed intercept a ",
@@ -133,14 +133,14 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
         "given the endpoint's absolute SES-CD threshold. Analysis-set ",
         "distribution (Table S6): median 12.0, range 4.00-43.0."
       ),
-      source_name        = "SES-CD score"
+      source_name = "SES-CD score"
     ),
     SCORE_CDAI = list(
-      description        = "Baseline Crohn's Disease Activity Index (CDAI) score",
-      units              = "(score, 0-600)",
-      type               = "continuous",
+      description = "Baseline Crohn's Disease Activity Index (CDAI) score",
+      units = "(score, 0-600)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Linear effect on the logit, CENTERED at the INDUCTION ",
         "reference score of 322: e_cdai_endorem * (SCORE_CDAI - 322). ",
         "Note that the reference differs between phases -- Table S8 ",
@@ -150,24 +150,24 @@ Moein_2025_etrolizumab_induction_endorem <- function() {
         "favourable outcome. Analysis-set distribution (Table S6): ",
         "median 322, range 215-481."
       ),
-      source_name        = "CDAI score"
+      source_name = "CDAI score"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 384L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 384L,
+    n_studies = 1L,
     n_observations = "384 binary outcome records, one per patient (landmark analysis at end of induction)",
-    age_range      = "18.0-79.0 years",
-    age_median     = "35.0 years",
-    weight_range   = "40.4-160 kg",
-    weight_median  = "71.8 kg",
+    age_range = "18.0-79.0 years",
+    age_median = "35.0 years",
+    weight_range = "40.4-160 kg",
+    weight_median = "71.8 kg",
     sex_female_pct = 46,
-    disease_state  = "Moderately-to-severely active Crohn's disease; baseline CDAI median 322, SES-CD median 12.0",
-    dose_range     = "Placebo, etrolizumab 105 mg SC Q4W, or etrolizumab 210 mg SC Q4W with an additional 210 mg loading dose at week 2; 14-week induction phase",
-    regions        = "Multinational (BERGAMOT, NCT02394028)",
-    notes          = paste0(
+    disease_state = "Moderately-to-severely active Crohn's disease; baseline CDAI median 322, SES-CD median 12.0",
+    dose_range = "Placebo, etrolizumab 105 mg SC Q4W, or etrolizumab 210 mg SC Q4W with an additional 210 mg loading dose at week 2; 14-week induction phase",
+    regions = "Multinational (BERGAMOT, NCT02394028)",
+    notes = paste0(
       "Same induction analysis set as the two companion induction ",
       "models. Baseline characteristics from Moein 2025 Tables S6 and ",
       "S7, induction column. Table S8 footnote b reference patient: ",

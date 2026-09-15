@@ -1,54 +1,54 @@
 Rodrigues_2017_oxcarbazepine <- function() {
   description <- "Parent-metabolite population PK model for oral oxcarbazepine (OXC) and its active monohydroxy derivative (MHD) in epileptic children aged 2-12 years (Rodrigues 2017). Two-compartment OXC + one-compartment MHD with first-order absorption, complete metabolic conversion (Fm fixed to 1), reversible MHD-to-OXC back-transformation (KBT), empirical allometric weight scaling on CL_OXC/F, Vc_OXC/F, CL_MHD/F, and Vc_MHD/F (no scaling on Q_OXC/F or Vp_OXC/F), and a 29.3% increase in MHD clearance under concomitant enzyme-inducing antiepileptic drugs."
-  reference   <- "Rodrigues C, Chiron C, Rey E, Dulac O, Comets E, Pons G, Jullien V. Population pharmacokinetics of oxcarbazepine and its monohydroxy derivative in epileptic children. Br J Clin Pharmacol. 2017 Dec;83(12):2695-2708. doi:10.1111/bcp.13392"
-  vignette    <- "Rodrigues_2017_oxcarbazepine"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Rodrigues C, Chiron C, Rey E, Dulac O, Comets E, Pons G, Jullien V. Population pharmacokinetics of oxcarbazepine and its monohydroxy derivative in epileptic children. Br J Clin Pharmacol. 2017 Dec;83(12):2695-2708. doi:10.1111/bcp.13392"
+  vignette <- "Rodrigues_2017_oxcarbazepine"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "oxcarbazepine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "oxcarbazepine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = FALSE),
     central_mhd = list(analyte = "monohydroxy derivative (MHD)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; constant within an individual in the source dataset).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; constant within an individual in the source dataset).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Empirical allometric exponents on CL_OXC/F (0.798), Vc_OXC/F (2.4), CL_MHD/F (0.549), and Vc_MHD/F (1.09); Q_OXC/F and Vp_OXC/F are not weight-scaled in the final empirical model (Rodrigues 2017 Table 3 and final-model equation block, page 2699). Reference weight 70 kg.",
-      source_name        = "WT"
+      notes = "Empirical allometric exponents on CL_OXC/F (0.798), Vc_OXC/F (2.4), CL_MHD/F (0.549), and Vc_MHD/F (1.09); Q_OXC/F and Vp_OXC/F are not weight-scaled in the final empirical model (Rodrigues 2017 Table 3 and final-model equation block, page 2699). Reference weight 70 kg.",
+      source_name = "WT"
     ),
     CONMED_EIAED = list(
-      description        = "Concomitant enzyme-inducing antiepileptic drug indicator: 1 = patient is taking carbamazepine, phenobarbital, or phenytoin; 0 = none of these EIAEDs.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant enzyme-inducing antiepileptic drug indicator: 1 = patient is taking carbamazepine, phenobarbital, or phenytoin; 0 = none of these EIAEDs.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no EIAED coadministration; in the source paper this is the perturbation arm via MED = 1 -> CL_MHD reduced 22.7%).",
-      notes              = "Source paper uses MED with the inverted value convention (MED = 1 if EIAEDs are ABSENT, 0 if present). The canonical CONMED_EIAED column inverts this so 1 = on EIAED (matching the CONMED_* convention). The model() block applies the source coefficient via the absence indicator (1 - CONMED_EIAED), so CL_MHD = 4.11 L/h/70 kg with EIAEDs and 4.11 * exp(-0.257) = 3.18 L/h/70 kg without. Rodrigues 2017 Table 1 enumerates the per-subject AED comedication; vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, and progabide are NOT counted as EIAEDs.",
-      source_name        = "MED"
+      notes = "Source paper uses MED with the inverted value convention (MED = 1 if EIAEDs are ABSENT, 0 if present). The canonical CONMED_EIAED column inverts this so 1 = on EIAED (matching the CONMED_* convention). The model() block applies the source coefficient via the absence indicator (1 - CONMED_EIAED), so CL_MHD = 4.11 L/h/70 kg with EIAEDs and 4.11 * exp(-0.257) = 3.18 L/h/70 kg without. Rodrigues 2017 Table 1 enumerates the per-subject AED comedication; vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, and progabide are NOT counted as EIAEDs.",
+      source_name = "MED"
     )
   )
 
   population <- list(
-    n_subjects     = 31,
-    n_studies      = 1,
-    age_range      = "2.25-12.5 years",
-    age_median     = "8.08 years",
-    weight_range   = "12.7-56 kg",
-    weight_median  = "23 kg",
+    n_subjects = 31,
+    n_studies = 1,
+    age_range = "2.25-12.5 years",
+    age_median = "8.08 years",
+    weight_range = "12.7-56 kg",
+    weight_median = "23 kg",
     sex_female_pct = 41.9,
     race_ethnicity = "Not reported (single-center French paediatric epilepsy cohort).",
-    disease_state  = "Children with inadequately controlled partial-onset and/or generalised atonic, tonic, or tonic-clonic seizures (>= 1 seizure/week despite 1-3 background AEDs unchanged for >= 1 month). 24 of 31 patients were comedicated with at least one enzyme-inducing AED (carbamazepine, phenobarbital, or phenytoin).",
-    dose_range     = "Single oral OXC dose of 5 or 15 mg/kg as oral suspension after an overnight fast (14 patients received 5 mg/kg, 17 patients received 15 mg/kg).",
-    regions        = "France (Cochin, Saint-Vincent de Paul, and Saint-Anne hospitals).",
+    disease_state = "Children with inadequately controlled partial-onset and/or generalised atonic, tonic, or tonic-clonic seizures (>= 1 seizure/week despite 1-3 background AEDs unchanged for >= 1 month). 24 of 31 patients were comedicated with at least one enzyme-inducing AED (carbamazepine, phenobarbital, or phenytoin).",
+    dose_range = "Single oral OXC dose of 5 or 15 mg/kg as oral suspension after an overnight fast (14 patients received 5 mg/kg, 17 patients received 15 mg/kg).",
+    regions = "France (Cochin, Saint-Vincent de Paul, and Saint-Anne hospitals).",
     n_observations = "277 OXC and 279 MHD plasma samples (sampling at baseline, ~1, 2, 4, 6, 8, 12, 24, 36, 48 h post-dose); LLOQ 0.05 mg/L for OXC and 0.10 mg/L for MHD. After keeping only the first BLQ per patient (M3 method), 13.7% of OXC and 6.5% of MHD observations remained BLQ.",
-    co_medication  = "Background AEDs reported in Table 1: carbamazepine 61.3%, vigabatrin 45.2%, clobazam 25.8%, phenytoin 16.1%, valproic acid 12.9%, clonazepam 9.7%, lamotrigine 9.7%, diazepam 6.5%, phenobarbital 6.5%, ethosuccimide 3.2%, progabide 3.2%. Six patients on one AED, 19 on two AEDs, six on three AEDs.",
-    notes          = "Patients with renal or hepatic failure, untreated hypothyroidism, congenital metabolic disease, or body weight outside +/- 2 SD of normal were excluded. The model is reported by the authors to apply only to 2-12-year-old patients within the inclusion-criteria weight range. Demographics from Rodrigues 2017 Patient characteristics paragraph and Table 1."
+    co_medication = "Background AEDs reported in Table 1: carbamazepine 61.3%, vigabatrin 45.2%, clobazam 25.8%, phenytoin 16.1%, valproic acid 12.9%, clonazepam 9.7%, lamotrigine 9.7%, diazepam 6.5%, phenobarbital 6.5%, ethosuccimide 3.2%, progabide 3.2%. Six patients on one AED, 19 on two AEDs, six on three AEDs.",
+    notes = "Patients with renal or hepatic failure, untreated hypothyroidism, congenital metabolic disease, or body weight outside +/- 2 SD of normal were excluded. The model is reported by the authors to apply only to 2-12-year-old patients within the inclusion-criteria weight range. Demographics from Rodrigues 2017 Patient characteristics paragraph and Table 1."
   )
 
   ini({

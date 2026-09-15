@@ -48,13 +48,17 @@ Minucci_2024_CART_qsp <- function() {
   # inst/references/compartment-names.md (see that file's
   # "Paper-specific compartments" section). `tumor` is canonical.
   paper_specific_compartments <- c(
-    "t_cd8_inf", "t_cd8_eff", "t_cd8_mem",
-    "t_cd4_inf", "t_cd4_eff", "t_cd4_mem",
+    "t_cd8_inf",
+    "t_cd8_eff",
+    "t_cd8_mem",
+    "t_cd4_inf",
+    "t_cd4_eff",
+    "t_cd4_mem",
     "endo"
   )
   units <- list(
-    time          = "day",
-    dosing        = "cells (CAR T-cells; input as amt on t_cd8_inf and t_cd4_inf compartments)",
+    time = "day",
+    dosing = "cells (CAR T-cells; input as amt on t_cd8_inf and t_cd4_inf compartments)",
     concentration = "cells/uL (CAR T-cell density in blood; matches Ying et al. 2021 Figure 2A units)"
   )
 
@@ -64,71 +68,91 @@ Minucci_2024_CART_qsp <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     t_cd8_inf = list(analyte = "CD8+ CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    t_cd8_eff = list(analyte = "CD8+ effector CAR T-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    t_cd8_mem = list(analyte = "CD8+ memory CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    t_cd8_eff = list(
+      analyte = "CD8+ effector CAR T-cells",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    t_cd8_mem = list(
+      analyte = "CD8+ memory CAR T-cells",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
     t_cd4_inf = list(analyte = "CD4+ CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    t_cd4_eff = list(analyte = "CD4+ effector CAR T-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    t_cd4_mem = list(analyte = "CD4+ memory CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    tumor     = list(analyte = "B cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    endo      = list(analyte = "endogenous lymphocytes", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    t_cd4_eff = list(
+      analyte = "CD4+ effector CAR T-cells",
+      units = NA_character_,
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    t_cd4_mem = list(
+      analyte = "CD4+ memory CAR T-cells",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    tumor = list(analyte = "B cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    endo = list(analyte = "endogenous lymphocytes", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient body weight from Table S1 (Minucci 2024 Supplementary Material `params-case-study-final` sheet).",
-      source_name        = "BW"
+      notes = "Per-patient body weight from Table S1 (Minucci 2024 Supplementary Material `params-case-study-final` sheet).",
+      source_name = "BW"
     ),
     FCD8TDP = list(
-      description        = "Fraction of the infused CAR T-cell drug product that is CD8+ (remainder is CD4+)",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Fraction of the infused CAR T-cell drug product that is CD8+ (remainder is CD4+)",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drug-product characterisation covariate specific to CAR T-cell therapy; per-patient CD4:CD8 ratio of the infused product from Ying et al. 2021 as reproduced in Table S1 of the source paper. Registered as a scope: specific canonical in inst/references/covariate-columns.md; a drug-product characterisation covariate rather than a patient covariate, since CAR T-cell product composition has no analogue in traditional small-molecule / mAb popPK. Used only to split the total infused CAR T-cell dose between the t_cd8_inf and t_cd4_inf depot compartments; the value flows via the dose amt (computed as FCD8TDP * WT * dose_per_kg for CD8+, (1 - FCD8TDP) * WT * dose_per_kg for CD4+).",
-      source_name        = "fCD8Tdp"
+      notes = "Drug-product characterisation covariate specific to CAR T-cell therapy; per-patient CD4:CD8 ratio of the infused product from Ying et al. 2021 as reproduced in Table S1 of the source paper. Registered as a scope: specific canonical in inst/references/covariate-columns.md; a drug-product characterisation covariate rather than a patient covariate, since CAR T-cell product composition has no analogue in traditional small-molecule / mAb popPK. Used only to split the total infused CAR T-cell dose between the t_cd8_inf and t_cd4_inf depot compartments; the value flows via the dose amt (computed as FCD8TDP * WT * dose_per_kg for CD8+, (1 - FCD8TDP) * WT * dose_per_kg for CD4+).",
+      source_name = "fCD8Tdp"
     ),
     TUM_CELLS0 = list(
-      description        = "Initial tumor (malignant B-cell) burden -- # cells",
-      units              = "cells",
-      type               = "continuous",
+      description = "Initial tumor (malignant B-cell) burden -- # cells",
+      units = "cells",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient fitted initial condition for the Tumor compartment. Values from Table S1 of Minucci 2024. This is a fit-derived per-patient parameter, not a measured baseline; the paper obtained it by trust-region optimisation against individual CAR T CK trajectories. Registered as a scope: specific canonical in inst/references/covariate-columns.md; distinct from the length/volume-based TUMSZ / TUM_SLD / TUM_VOL family because this column's currency is an absolute cell count.",
-      source_name        = "N0_tumorCells"
+      notes = "Per-patient fitted initial condition for the Tumor compartment. Values from Table S1 of Minucci 2024. This is a fit-derived per-patient parameter, not a measured baseline; the paper obtained it by trust-region optimisation against individual CAR T CK trajectories. Registered as a scope: specific canonical in inst/references/covariate-columns.md; distinct from the length/volume-based TUMSZ / TUM_SLD / TUM_VOL family because this column's currency is an absolute cell count.",
+      source_name = "N0_tumorCells"
     ),
     NDIV = list(
-      description        = "Number of divisions per activated CAR T-cell before differentiation into effector cells",
-      units              = "divisions",
-      type               = "continuous",
+      description = "Number of divisions per activated CAR T-cell before differentiation into effector cells",
+      units = "divisions",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient fitted CAR T-cell expansion parameter. Governs the effective amplification factor 2^NDIV applied to the T_inf -> T_eff flux (after T_act quasi-steady-state reduction; see the file header). Values from Table S1 of Minucci 2024. Registered as a scope: specific canonical in inst/references/covariate-columns.md.",
-      source_name        = "ndiv"
+      notes = "Per-patient fitted CAR T-cell expansion parameter. Governs the effective amplification factor 2^NDIV applied to the T_inf -> T_eff flux (after T_act quasi-steady-state reduction; see the file header). Values from Table S1 of Minucci 2024. Registered as a scope: specific canonical in inst/references/covariate-columns.md.",
+      source_name = "ndiv"
     ),
     FMEM = list(
-      description        = "Fraction of effector CAR T-cells that convert to memory cells upon effector death (remainder truly die)",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Fraction of effector CAR T-cells that convert to memory cells upon effector death (remainder truly die)",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient fitted CAR T-cell persistence parameter. Values from Table S1 of Minucci 2024. Registered as a scope: specific canonical in inst/references/covariate-columns.md.",
-      source_name        = "fmem"
+      notes = "Per-patient fitted CAR T-cell persistence parameter. Values from Table S1 of Minucci 2024. Registered as a scope: specific canonical in inst/references/covariate-columns.md.",
+      source_name = "fmem"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "adult (Ying et al. 2021 recruited adults >= 18 y for the IM19 phase I trial; individual ages not reproduced in the Minucci 2024 supplement)",
-    weight_range   = "48-88 kg (Minucci 2024 Table S1)",
-    weight_median  = "67 kg (Minucci 2024 Table S1, patient F0110)",
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "adult (Ying et al. 2021 recruited adults >= 18 y for the IM19 phase I trial; individual ages not reproduced in the Minucci 2024 supplement)",
+    weight_range = "48-88 kg (Minucci 2024 Table S1)",
+    weight_median = "67 kg (Minucci 2024 Table S1, patient F0110)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Relapsed or refractory B-cell non-Hodgkin lymphoma (NHL). Two days prior to CAR T-cell infusion, patients were lymphodepleted with fludarabine + cyclophosphamide for 3 days (assumed to deplete 90 percent of endogenous lymphocytes; Ying et al. 2019).",
-    dose_range     = "3e5, 1e6, or 3e6 CAR T-cells / kg body weight, single infusion",
-    regions        = "China (Ying et al. 2021 was a single-centre phase I study)",
-    notes          = "Cellular-kinetic (CK) and pharmacodynamic (PD; B-cell aplasia) data were digitised from Ying et al. 2021 with WebPlotDigitizer (Rohatgi 2022). Of the 13 patients, only 6 had B-cell aplasia trajectories distinguishable enough to digitise. Individual-level fitted parameters (initial tumor burden N0_tumorCells, number of divisions ndiv, memory fraction fmem) live in the Minucci 2024 supplementary Table S1; global parameters (time per T-cell division tdivCD8T_h, drug-product lifespan CARTdpLifespan_d, effector lifespan CARTeffLifespan_d) were fitted jointly to all patient data."
+    disease_state = "Relapsed or refractory B-cell non-Hodgkin lymphoma (NHL). Two days prior to CAR T-cell infusion, patients were lymphodepleted with fludarabine + cyclophosphamide for 3 days (assumed to deplete 90 percent of endogenous lymphocytes; Ying et al. 2019).",
+    dose_range = "3e5, 1e6, or 3e6 CAR T-cells / kg body weight, single infusion",
+    regions = "China (Ying et al. 2021 was a single-centre phase I study)",
+    notes = "Cellular-kinetic (CK) and pharmacodynamic (PD; B-cell aplasia) data were digitised from Ying et al. 2021 with WebPlotDigitizer (Rohatgi 2022). Of the 13 patients, only 6 had B-cell aplasia trajectories distinguishable enough to digitise. Individual-level fitted parameters (initial tumor burden N0_tumorCells, number of divisions ndiv, memory fraction fmem) live in the Minucci 2024 supplementary Table S1; global parameters (time per T-cell division tdivCD8T_h, drug-product lifespan CARTdpLifespan_d, effector lifespan CARTeffLifespan_d) were fitted jointly to all patient data."
   )
 
   ini({

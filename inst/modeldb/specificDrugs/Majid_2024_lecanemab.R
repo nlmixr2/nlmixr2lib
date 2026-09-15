@@ -38,23 +38,23 @@ Majid_2024_lecanemab <- function() {
   vignette <- "Majid_2024_lecanemab"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg (intravenous infusion into central over 60 +/- 10 minutes in every contributing study; weight-based mg/kg regimens, so a 10 mg/kg dose for a 72 kg subject is 720 mg)",
+    time = "h",
+    dosing = "mg (intravenous infusion into central over 60 +/- 10 minutes in every contributing study; weight-based mg/kg regimens, so a 10 mg/kg dose for a 72 kg subject is 720 mg)",
     concentration = "ug/mL (equivalently mg/L; dose in mg divided by a volume in L)"
   )
 
   compartmentData <- list(
-    central     = list(analyte = "lecanemab", units = "mg", specimen = "serum", verified = FALSE),
+    central = list(analyte = "lecanemab", units = "mg", specimen = "serum", verified = FALSE),
     peripheral1 = list(analyte = "lecanemab", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a power function normalized to 72 kg on BOTH CL and V1,",
         "with separately estimated exponents (0.353 and 0.513) rather than",
         "the fixed 0.75 / 1 allometric pair. The 72 kg normalization",
@@ -68,14 +68,14 @@ Majid_2024_lecanemab <- function() {
         "conclusion is nonetheless that the net effect stays inside the",
         "0.8-1.25 acceptance interval."
       ),
-      source_name        = "WGT (supplement Text S1 $INPUT); BW (printed CL and V1 equations)"
+      source_name = "WGT (supplement Text S1 $INPUT); BW (printed CL and V1 equations)"
     ),
     ALB = list(
-      description        = "Serum albumin concentration at the time of the PK sample.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration at the time of the PK sample.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a power function normalized to 43 g/L on CL with a",
         "NEGATIVE exponent (-0.374): clearance DECLINES as albumin rises.",
         "The paper's Discussion states the sign in words ('Lecanemab",
@@ -91,14 +91,14 @@ Majid_2024_lecanemab <- function() {
         "percentiles. Register units are g/L (SI), which is exactly what",
         "this paper reports -- no conversion needed."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     SEXF = list(
-      description        = "Female sex indicator; 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator; 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "The source column SEXN is already coded 0 = male / 1 = female (the",
         "footnote under the printed equations states 'SEX, 0 (male) or 1",
         "(female)'), so SEXF equals it directly with no 1 - x inversion and",
@@ -109,14 +109,14 @@ Majid_2024_lecanemab <- function() {
         "males are the reference. PK analysis set: 800 females (49.4%), 819",
         "males (50.6%) (Table S2)."
       ),
-      source_name        = "SEXN"
+      source_name = "SEXN"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positive status; 1 = ADA-positive, 0 = ADA-negative.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positive status; 1 = ADA-positive, 0 = ADA-negative.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING at the SAMPLE level, not a per-subject flag: the",
         "Methods specify 'ADA status at sample level (positive or",
         "negative)', so a subject who seroconverts mid-study switches this",
@@ -130,14 +130,14 @@ Majid_2024_lecanemab <- function() {
         "S2). ADA titer at the time of the sample was screened separately",
         "and not retained; see covariatesDataExcluded."
       ),
-      source_name        = "ADA"
+      source_name = "ADA"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese race/ethnicity indicator; 1 = Japanese, 0 = non-Japanese.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese race/ethnicity indicator; 1 = Japanese, 0 = non-Japanese.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = paste(
+      notes = paste(
         "Japanese heritage is broken out on its own, NOT pooled with other",
         "Asian groups: supplement Text S1 $PK derives the indicator as",
         "'RACE=0; IF (RACEN.EQ.3.1) RACE=1', and Figure S3 gives the RACEN",
@@ -152,14 +152,14 @@ Majid_2024_lecanemab <- function() {
         "dropped the objective function from 173,949.983 to 169,260.786. PK",
         "analysis set: 138 Japanese subjects (8.5%) (Table S2)."
       ),
-      source_name        = "RACEN == 3.1 (raw); RACE (derived indicator in $PK); JPN (printed equations)"
+      source_name = "RACEN == 3.1 (raw); RACE (derived indicator in $PK); JPN (printed equations)"
     ),
     FORM_LEC_PROCESSB = list(
-      description        = "Lecanemab manufacturing Process B drug-product indicator; 1 = Process B, 0 = Process A.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Lecanemab manufacturing Process B drug-product indicator; 1 = Process B, 0 = Process A.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Process A, the earlier drug product; F fixed at 1)",
-      notes              = paste(
+      notes = paste(
         "Per-DOSE-RECORD indicator, not a per-subject flag: subjects in the",
         "Study 201 open-label extension switched from Process A to Process B",
         "part-way through (United States, Canada and South Korea from May",
@@ -178,16 +178,16 @@ Majid_2024_lecanemab <- function() {
         "to simulate the earlier drug product and to 1 for the commercial",
         "material used in Clarity AD."
       ),
-      source_name        = "FORM"
+      source_name = "FORM"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry.",
-      units       = "year",
-      type        = "continuous",
-      notes       = paste(
+      units = "year",
+      type = "continuous",
+      notes = paste(
         "Screened on CL, V1 and V2 and retained on none of them. This is a",
         "headline published NULL result rather than a reporting gap: the",
         "Abstract states 'Importantly, age, a well-recognized risk factor",
@@ -201,9 +201,9 @@ Majid_2024_lecanemab <- function() {
     ),
     ADA_TITER = list(
       description = "Anti-drug antibody titer at the time of the PK sample.",
-      units       = "(titer)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(titer)",
+      type = "continuous",
+      notes = paste(
         "Screened on CL as a graded alternative to the binary ADA_POS",
         "indicator and not retained; the binary sample-level status is what",
         "the final model carries. PK analysis set median titer 16, range",
@@ -213,9 +213,9 @@ Majid_2024_lecanemab <- function() {
     ),
     DOSE = list(
       description = "Administered lecanemab dose level.",
-      units       = "mg/kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/kg",
+      type = "continuous",
+      notes = paste(
         "Screened on CL as a test for dose-nonlinearity across the 0.3-15",
         "mg/kg range and not retained, supporting the linear two-compartment",
         "structure. The Results note a possible nonlinearity at the very low",
@@ -226,9 +226,9 @@ Majid_2024_lecanemab <- function() {
     ),
     RACE_ASIAN = list(
       description = "Non-Japanese Asian race indicator (Chinese, Korean, or Other Asian).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race/ethnicity was screened as a whole on CL, V1 and V2, and only",
         "the Japanese level survived backward elimination. The Chinese (n =",
         "6, 0.4%), Korean (n = 54, 3.3%) and Other Asian (n = 21, 1.3%)",
@@ -241,27 +241,29 @@ Majid_2024_lecanemab <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1619L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 1619L,
+    n_studies = 4L,
     n_observations = "21,929 serum lecanemab concentrations retained: 653 (3.0%) from Study 101, 395 (1.8%) from Study 104, 7991 (36.4%) from Study 201 Core + OLE, 12,890 (58.8%) from Study 301 Core + OLE. 614 samples were excluded (337 BLQ or BLQ with time-after-dose over 2000 h, 61 missing sampling time, 107 with CWRES > 5, 46 above 600 ug/mL as within-subject outliers, 30 with time-after-dose over 2000 h)",
-    age_range      = "median 72 years, range 50-93 (Table S2)",
-    weight_range   = "median 72 kg, range 37.7-130.5 (Table S2)",
+    age_range = "median 72 years, range 50-93 (Table S2)",
+    weight_range = "median 72 kg, range 37.7-130.5 (Table S2)",
     sex_female_pct = 49.4,
     race_ethnicity = c(
-      White = 80.7, Japanese = 8.5, Korean = 3.3,
+      White = 80.7,
+      Japanese = 8.5,
+      Korean = 3.3,
       `Black/African American` = 3.0,
       `Asian excluding Chinese/Japanese/Korean` = 1.3,
       Chinese = 0.4,
       `American Indian/Alaskan/Other/Missing` = 2.8
     ),
-    disease_state  = "early Alzheimer's disease -- mild cognitive impairment due to AD or mild AD dementia, with confirmed amyloid-beta pathology (studies 201 and 301); studies 101 and 104 also contributed subjects with mild-to-moderate AD",
-    dose_range     = "0.3, 1, 3, 10 and 15 mg/kg as single intravenous doses; 2.5, 5 and 10 mg/kg bi-weekly; 0.3, 1, 3, 5 and 10 mg/kg monthly. Every infusion ran over 60 +/- 10 minutes. The approved regimen is 10 mg/kg bi-weekly (1113 of 1619 subjects)",
-    regions        = "multicentre international; United States, Canada, Japan, South Korea and Europe across studies 101, 104, 201 and 301 (Clarity AD, NCT03887455)",
-    albumin_range  = "median 43 g/L, range 35-54 (Table S2)",
-    ada_status     = "sample level: 20,703 observations (94.4%) ADA-negative, 1225 (5.6%) ADA-positive; median ADA titer 16, range 1-50,000 (Table S2)",
-    drug_product   = "8595 observations (39.2%) Process A, 13,334 (60.8%) Process B (Table S2)",
-    notes          = paste(
+    disease_state = "early Alzheimer's disease -- mild cognitive impairment due to AD or mild AD dementia, with confirmed amyloid-beta pathology (studies 201 and 301); studies 101 and 104 also contributed subjects with mild-to-moderate AD",
+    dose_range = "0.3, 1, 3, 10 and 15 mg/kg as single intravenous doses; 2.5, 5 and 10 mg/kg bi-weekly; 0.3, 1, 3, 5 and 10 mg/kg monthly. Every infusion ran over 60 +/- 10 minutes. The approved regimen is 10 mg/kg bi-weekly (1113 of 1619 subjects)",
+    regions = "multicentre international; United States, Canada, Japan, South Korea and Europe across studies 101, 104, 201 and 301 (Clarity AD, NCT03887455)",
+    albumin_range = "median 43 g/L, range 35-54 (Table S2)",
+    ada_status = "sample level: 20,703 observations (94.4%) ADA-negative, 1225 (5.6%) ADA-positive; median ADA titer 16, range 1-50,000 (Table S2)",
+    drug_product = "8595 observations (39.2%) Process A, 13,334 (60.8%) Process B (Table S2)",
+    notes = paste(
       "The base structural model was inherited from the previously",
       "published lecanemab population PK analysis and re-estimated on this",
       "larger pooled dataset; every parameter in ini() is a FINAL estimate",

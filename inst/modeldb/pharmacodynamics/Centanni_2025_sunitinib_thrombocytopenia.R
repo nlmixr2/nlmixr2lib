@@ -34,47 +34,82 @@ Centanni_2025_sunitinib_thrombocytopenia <- function() {
   # verified = FALSE means NOT checked against the source paper (the source
   # gives the chain only by reference to the ANC model).
   compartmentData <- list(
-    prol     = list(analyte = "megakaryocyte progenitor cells", units = "10^9 cells/L", specimen = "blood cell", verified = FALSE),
-    transit1 = list(analyte = "maturing megakaryocyte precursors (stage 1)", units = "10^9 cells/L", specimen = "blood cell", verified = FALSE),
-    transit2 = list(analyte = "maturing megakaryocyte precursors (stage 2)", units = "10^9 cells/L", specimen = "blood cell", verified = FALSE),
-    transit3 = list(analyte = "maturing megakaryocyte precursors (stage 3)", units = "10^9 cells/L", specimen = "blood cell", verified = FALSE),
-    transit4 = list(analyte = "maturing megakaryocyte precursors (stage 4)", units = "10^9 cells/L", specimen = "blood cell", verified = FALSE),
-    transit5 = list(analyte = "maturing megakaryocyte precursors (stage 5)", units = "10^9 cells/L", specimen = "blood cell", verified = FALSE),
-    circ     = list(analyte = "absolute thrombocyte count", units = "10^9 cells/L", specimen = "whole blood", verified = FALSE)
+    prol = list(
+      analyte = "megakaryocyte progenitor cells",
+      units = "10^9 cells/L",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    transit1 = list(
+      analyte = "maturing megakaryocyte precursors (stage 1)",
+      units = "10^9 cells/L",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    transit2 = list(
+      analyte = "maturing megakaryocyte precursors (stage 2)",
+      units = "10^9 cells/L",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    transit3 = list(
+      analyte = "maturing megakaryocyte precursors (stage 3)",
+      units = "10^9 cells/L",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    transit4 = list(
+      analyte = "maturing megakaryocyte precursors (stage 4)",
+      units = "10^9 cells/L",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    transit5 = list(
+      analyte = "maturing megakaryocyte precursors (stage 5)",
+      units = "10^9 cells/L",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    circ = list(
+      analyte = "absolute thrombocyte count",
+      units = "10^9 cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during a dose interruption or for untreated subjects so the derived AUC = DOSE / CLI becomes 0 and the drug effect vanishes.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during a dose interruption or for untreated subjects so the derived AUC = DOSE / CLI becomes 0 and the drug effect vanishes.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centanni 2025 simulated a continuous 37.5 mg once-daily sunitinib regimen (Methods 2.1), with protocol dose reductions to 25, 12.5 or 0 mg on unacceptable adverse events (Methods 2.1, citing the prescribing information). For typical-cohort vignette simulations the value is held at 37.5 mg, matching the paper's base-case comparator arm.",
-      source_name        = "DOSE"
+      notes = "Centanni 2025 simulated a continuous 37.5 mg once-daily sunitinib regimen (Methods 2.1), with protocol dose reductions to 25, 12.5 or 0 mg on unacceptable adverse events (Methods 2.1, citing the prescribing information). For typical-cohort vignette simulations the value is held at 37.5 mg, matching the paper's base-case comparator arm.",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the upstream popPK fit. Per-subject, time-fixed. Used only to form the exposure driver AUC = DOSE / CLI.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the upstream popPK fit. Per-subject, time-fixed. Used only to form the exposure driver AUC = DOSE / CLI.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Centanni 2025 did not re-estimate the PK; it reuses the Hansson 2013 framework, whose upstream popPK is Houk et al. 2009 Clin Cancer Res 15:2497-2506 (not packaged in nlmixr2lib at extraction time). The sibling Hansson_2013_sunitinib_myelosuppression, Hansson_2013a_sunitinib and Hansson_2013c_sunitinib model files use a typical-value reference of 32.819 L/h; the same value is used in this model's vignette so the exposure driver is consistent across the framework.",
-      source_name        = "CL"
+      notes = "Required input. Centanni 2025 did not re-estimate the PK; it reuses the Hansson 2013 framework, whose upstream popPK is Houk et al. 2009 Clin Cancer Res 15:2497-2506 (not packaged in nlmixr2lib at extraction time). The sibling Hansson_2013_sunitinib_myelosuppression, Hansson_2013a_sunitinib and Hansson_2013c_sunitinib model files use a typical-value reference of 32.819 L/h; the same value is used in this model's vignette so the exposure driver is consistent across the framework.",
+      source_name = "CL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1000L,
-    n_studies      = 1L,
-    age_range      = "adults with GIST; Centanni 2025 generated virtual patients from the covariate distributions in Methods section 2.1 rather than reporting an observed baseline-demographics table",
-    weight_range   = "not reported in the source",
+    species = "human",
+    n_subjects = 1000L,
+    n_studies = 1L,
+    age_range = "adults with GIST; Centanni 2025 generated virtual patients from the covariate distributions in Methods section 2.1 rather than reporting an observed baseline-demographics table",
+    weight_range = "not reported in the source",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported in the source",
-    disease_state  = "imatinib-resistant gastrointestinal stromal tumours (GIST)",
-    dose_range     = "sunitinib 37.5 mg orally once daily, continuous dosing, with protocol dose reductions to 25, 12.5 or 0 mg on unacceptable adverse events; comparator arm received no treatment",
-    regions        = "not reported in the source",
-    biomarkers     = "absolute thrombocyte (platelet) count, evaluated every 6 weeks in the simulation per established clinical protocols (Methods 2.1). Unacceptable thrombocytopenia was defined as a platelet count < 50 x 10^9/L, aggregated per 6-week cycle.",
-    notes          = "IMPORTANT PROVENANCE NOTE. Centanni 2025 is a health-economics methods-comparison study; the N=1,000 above is the size of the simulated two-arm virtual trial that the pharmacoeconomic comparison ran on, NOT an observed cohort for this PD model. The thrombocyte model itself is described in Online Resource 1 as 'developed' and is the one component of the framework that Centanni 2025 newly estimated (main text Methods 2.2: 'The pharmacometric-based models were not re-estimated, except for the thrombocytopenia model, which was newly developed'). The source does not state which patient dataset the thrombocyte model was estimated on; by construction of the framework it is the pooled four-study imatinib-resistant GIST sunitinib dataset (n = 303) underlying Hansson 2013. Treat the estimation-population description as inherited rather than reported."
+    disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST)",
+    dose_range = "sunitinib 37.5 mg orally once daily, continuous dosing, with protocol dose reductions to 25, 12.5 or 0 mg on unacceptable adverse events; comparator arm received no treatment",
+    regions = "not reported in the source",
+    biomarkers = "absolute thrombocyte (platelet) count, evaluated every 6 weeks in the simulation per established clinical protocols (Methods 2.1). Unacceptable thrombocytopenia was defined as a platelet count < 50 x 10^9/L, aggregated per 6-week cycle.",
+    notes = "IMPORTANT PROVENANCE NOTE. Centanni 2025 is a health-economics methods-comparison study; the N=1,000 above is the size of the simulated two-arm virtual trial that the pharmacoeconomic comparison ran on, NOT an observed cohort for this PD model. The thrombocyte model itself is described in Online Resource 1 as 'developed' and is the one component of the framework that Centanni 2025 newly estimated (main text Methods 2.2: 'The pharmacometric-based models were not re-estimated, except for the thrombocytopenia model, which was newly developed'). The source does not state which patient dataset the thrombocyte model was estimated on; by construction of the framework it is the pooled four-study imatinib-resistant GIST sunitinib dataset (n = 303) underlying Hansson 2013. Treat the estimation-population description as inherited rather than reported."
   )
 
   ini({

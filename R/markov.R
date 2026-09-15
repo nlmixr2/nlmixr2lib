@@ -92,9 +92,13 @@ createMarkovModel <- function(..., ignoreProbLt = 0, ignoreProbGt = 1, transitio
   modelParts[length(modelParts) + 1] <-
     sprintf(
       "llMarkov <- %s",
-      paste(sprintf(
-        "ll%s", names(transitioningStates)
-      ), collapse = " + ")
+      paste(
+        sprintf(
+          "ll%s",
+          names(transitioningStates)
+        ),
+        collapse = " + "
+      )
     )
   modelParts[length(modelParts) + 1] <- "ll(err) ~ llMarkov"
 
@@ -152,8 +156,11 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
   retIni <-
     sprintf(
       '%s <- %g; label("Probability of transition from state %s to %s (%s)")',
-      iniParams, signif(iniValue, digits = 4),
-      fromStateEscaped, toStateEscaped, iniUnit
+      iniParams,
+      signif(iniValue, digits = 4),
+      fromStateEscaped,
+      toStateEscaped,
+      iniUnit
     )
 
   # Setup the model() part
@@ -171,7 +178,9 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
     } else {
       retModel[length(retModel) + 1] <- sprintf(
         "%s <- %s + exp(%s)",
-        modelLinkParams[idx], modelLinkParams[idx - 1], iniParams[idx]
+        modelLinkParams[idx],
+        modelLinkParams[idx - 1],
+        iniParams[idx]
       )
     }
     retModel[length(retModel) + 1] <- sprintf("%s <- expit(%s)", modelCumProbParams[idx], modelLinkParams[idx])
@@ -189,13 +198,17 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
     } else {
       retModel[length(retModel) + 1] <- sprintf(
         "%s <- %s - %s",
-        modelProbParams[idx], modelCumProbParams[[idx]], modelCumProbParams[[idx - 1]]
+        modelProbParams[idx],
+        modelCumProbParams[[idx]],
+        modelCumProbParams[[idx - 1]]
       )
     }
     retModel[length(retModel)] <-
       sprintf(
         "%s # Probability of transition from state %s to %s",
-        retModel[length(retModel)], fromState, toState[idx]
+        retModel[length(retModel)],
+        fromState,
+        toState[idx]
       )
   }
 
@@ -204,7 +217,8 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
   retModel[length(retModel) + 1] <-
     sprintf(
       "ll%s <- prev%s*(%s)",
-      fromStateName, fromStateName,
+      fromStateName,
+      fromStateName,
       paste(
         sprintf("cur%s*log(%s)", toStateName, modelProbParams),
         collapse = " + "
@@ -230,10 +244,13 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
 #'   rows are the prior state and columns are the current state.
 #' @family Markov models
 #' @export
-createMarkovTransitionMatrix <- function(colPrev, colCur,
-                                         estimateZeroTransitions = FALSE,
-                                         estimateZeroTransitionsInitial = FALSE,
-                                         ...) {
+createMarkovTransitionMatrix <- function(
+  colPrev,
+  colCur,
+  estimateZeroTransitions = FALSE,
+  estimateZeroTransitionsInitial = FALSE,
+  ...
+) {
   # Create the transition matrix
   if (any(is.na(colPrev))) {
     stop("`colPrev` cannot be `NA`")
@@ -248,7 +265,8 @@ createMarkovTransitionMatrix <- function(colPrev, colCur,
   transitionCount <-
     matrix(
       NA_real_,
-      nrow = length(allStates), ncol = length(allStates),
+      nrow = length(allStates),
+      ncol = length(allStates),
       dimnames = list(as.character(allStates), as.character(allStates))
     )
   # From state is the row, to state is the column

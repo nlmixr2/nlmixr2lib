@@ -8,45 +8,45 @@ Suleiman_2018_risankizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "risankizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "risankizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, Q, Vc, and Vp; normalized as WT/70 per Suleiman 2018 Eq. 3 (reference 70 kg explicitly stated). One exponent (0.93) is shared between CL and Q; another (0.99) is shared between Vc and Vp.",
-      source_name        = "WT"
+      notes = "Power effect on CL, Q, Vc, and Vp; normalized as WT/70 per Suleiman 2018 Eq. 3 (reference 70 kg explicitly stated). One exponent (0.93) is shared between CL and Q; another (0.99) is shared between Vc and Vp.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALB/40 per Eq. 4 (reference 40 g/L, the overall cohort median from Table 2; verified by back-calculating the paper's typical-subject CL: 0.30 * (90/70)^0.93 * (42/40)^-1.54 = 0.351 L/day matches the paper's 0.35 L/day for a typical 90 kg psoriasis subject with 42 g/L albumin). Source uses SI units (g/L); convert g/dL to g/L by x10 if needed. Baseline-only, time-fixed per subject (paper evaluates ALB as a baseline covariate; ADAs were tested as time-varying, ALB was not).",
-      source_name        = "ALB"
+      notes = "Power effect on CL; normalized as ALB/40 per Eq. 4 (reference 40 g/L, the overall cohort median from Table 2; verified by back-calculating the paper's typical-subject CL: 0.30 * (90/70)^0.93 * (42/40)^-1.54 = 0.351 L/day matches the paper's 0.35 L/day for a typical 90 kg psoriasis subject with 42 g/L albumin). Source uses SI units (g/L); convert g/dL to g/L by x10 if needed. Baseline-only, time-fixed per subject (paper evaluates ALB as a baseline covariate; ADAs were tested as time-varying, ALB was not).",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 272L,
+    species = "human",
+    n_subjects = 272L,
     n_observations = 2831L,
-    n_studies      = 3L,
-    age_range      = "19-74 years (median 42.5)",
-    age_median     = "42.5 years",
-    weight_range   = "36-138 kg (median 79)",
-    weight_median  = "79 kg",
+    n_studies = 3L,
+    age_range = "19-74 years (median 42.5)",
+    age_median = "42.5 years",
+    weight_range = "36-138 kg (median 79)",
+    weight_median = "79 kg",
     sex_female_pct = 44.1,
     race_ethnicity = c(White = 89.0, Hispanic = 7.0, Black = 2.6, Asian = 0.7, "American Indian/Alaska Native" = 0.7),
-    disease_state  = "Pooled moderate-to-severe plaque psoriasis (n=157 from Studies 1 and 2, phase I single-ascending-dose and phase II multiple-dose) and moderate-to-severe Crohn's disease (n=115 from Study 3, phase II two-stage IV induction + SC maintenance). Baseline PASI median 16.2 (psoriasis); baseline CDAI median 297 (Crohn's).",
-    dose_range     = "Study 1 (psoriasis, phase I): single dose 0.01-5 mg/kg IV or 0.25-1 mg/kg SC. Study 2 (psoriasis, phase II): 18 mg SC single dose, or 90 or 180 mg SC at weeks 0, 4, and 16. Study 3 (Crohn's, phase II): 200 or 600 mg IV every 4 weeks (induction) followed by 180 mg SC every 8 weeks (maintenance).",
-    regions        = "Multi-center global (three studies).",
-    notes          = "Baseline demographics from Suleiman 2018 Table 2 (n=272 pooled). 152/272 (55.9%) male, 120/272 (44.1%) female. Baseline albumin all-subject median 40 g/L (range 24-51; psoriasis median 42, Crohn's median 37). Baseline CRP all-subject median 4.3 mg/L. 30/272 (11%) developed treatment-emergent ADAs. Reference covariate values used in the covariate power terms: WT = 70 kg (explicitly stated in Sect. 2.3.2 / Eq. 3), ALB = 40 g/L (overall median, back-calculated against typical-subject CL values reported in the Abstract and Results Sect. 3.2). Below-quantification samples (169/3000, 5.63%) were excluded from the fit."
+    disease_state = "Pooled moderate-to-severe plaque psoriasis (n=157 from Studies 1 and 2, phase I single-ascending-dose and phase II multiple-dose) and moderate-to-severe Crohn's disease (n=115 from Study 3, phase II two-stage IV induction + SC maintenance). Baseline PASI median 16.2 (psoriasis); baseline CDAI median 297 (Crohn's).",
+    dose_range = "Study 1 (psoriasis, phase I): single dose 0.01-5 mg/kg IV or 0.25-1 mg/kg SC. Study 2 (psoriasis, phase II): 18 mg SC single dose, or 90 or 180 mg SC at weeks 0, 4, and 16. Study 3 (Crohn's, phase II): 200 or 600 mg IV every 4 weeks (induction) followed by 180 mg SC every 8 weeks (maintenance).",
+    regions = "Multi-center global (three studies).",
+    notes = "Baseline demographics from Suleiman 2018 Table 2 (n=272 pooled). 152/272 (55.9%) male, 120/272 (44.1%) female. Baseline albumin all-subject median 40 g/L (range 24-51; psoriasis median 42, Crohn's median 37). Baseline CRP all-subject median 4.3 mg/L. 30/272 (11%) developed treatment-emergent ADAs. Reference covariate values used in the covariate power terms: WT = 70 kg (explicitly stated in Sect. 2.3.2 / Eq. 3), ALB = 40 g/L (overall median, back-calculated against typical-subject CL values reported in the Abstract and Results Sect. 3.2). Below-quantification samples (169/3000, 5.63%) were excluded from the fit."
   )
 
   ini({

@@ -35,34 +35,84 @@ Poels_2025_elranatamab_qsp <- function() {
   paper_specific_compartments <- c("cauc")
 
   compartmentData <- list(
-    depot              = list(analyte = "elranatamab",                     units = "pmol", specimen = "administration site", verified = TRUE),
-    central            = list(analyte = "elranatamab",                     units = "pM",   specimen = "serum",               verified = TRUE),
-    peripheral1        = list(analyte = "elranatamab",                     units = "pM",   specimen = "serum",               verified = TRUE),
-    target      = list(analyte = "soluble BCMA",                    units = "pM",   specimen = "serum",               verified = TRUE),
-    complex = list(analyte = "elranatamab-soluble BCMA dimer",  units = "pM",   specimen = "serum",               verified = TRUE),
-    drug_cd3_central   = list(analyte = "elranatamab-CD3 dimer",           units = "pM",   specimen = "serum",               verified = TRUE),
-    tcell_central      = list(analyte = "CD3+ T cells",                    units = "cells/uL", specimen = "whole blood",           verified = TRUE),
-    cytokine_central   = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "serum",             verified = TRUE),
-    mprotein           = list(analyte = "monoclonal M-protein",            units = "g/L",  specimen = "serum",               verified = TRUE),
-    flc                = list(analyte = "involved serum free light chain", units = "mg/L", specimen = "serum",               verified = TRUE),
-    bonemarrow              = list(analyte = "elranatamab",                     units = "pM",   specimen = "tumor",         verified = TRUE),
-    target_bonemarrow        = list(analyte = "soluble BCMA",                    units = "pM",   specimen = "tumor",         verified = TRUE),
-    drug_bcma_bonemarrow    = list(analyte = "elranatamab-membrane BCMA dimer", units = "pM",   specimen = "tumor",         verified = TRUE),
-    complex_bonemarrow   = list(analyte = "elranatamab-soluble BCMA dimer",  units = "pM",   specimen = "tumor",         verified = TRUE),
-    drug_cd3_bonemarrow     = list(analyte = "elranatamab-CD3 dimer",           units = "pM",   specimen = "tumor",         verified = TRUE),
-    trimer             = list(analyte = "elranatamab-CD3-BCMA trimer",     units = "pM",   specimen = "tumor",         verified = TRUE),
-    cycling_cells      = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    damaged_cells1     = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    damaged_cells2     = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    damaged_cells3     = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    tcell_bonemarrow        = list(analyte = "CD3+ T cells",                    units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    cytokine_bonemarrow     = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "tumor",       verified = TRUE),
-    cytokine_transit1  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
-    cytokine_transit2  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
-    cytokine_transit3  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
-    cytokine_transit4  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
-    cytokine_transit5  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
-    cauc       = list(analyte = "cumulative cytokine exposure",    units = "pg/mL*h", specimen = "not applicable",   verified = TRUE)
+    depot = list(analyte = "elranatamab", units = "pmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "elranatamab", units = "pM", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "elranatamab", units = "pM", specimen = "serum", verified = TRUE),
+    target = list(analyte = "soluble BCMA", units = "pM", specimen = "serum", verified = TRUE),
+    complex = list(analyte = "elranatamab-soluble BCMA dimer", units = "pM", specimen = "serum", verified = TRUE),
+    drug_cd3_central = list(analyte = "elranatamab-CD3 dimer", units = "pM", specimen = "serum", verified = TRUE),
+    tcell_central = list(analyte = "CD3+ T cells", units = "cells/uL", specimen = "whole blood", verified = TRUE),
+    cytokine_central = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    mprotein = list(analyte = "monoclonal M-protein", units = "g/L", specimen = "serum", verified = TRUE),
+    flc = list(analyte = "involved serum free light chain", units = "mg/L", specimen = "serum", verified = TRUE),
+    bonemarrow = list(analyte = "elranatamab", units = "pM", specimen = "tumor", verified = TRUE),
+    target_bonemarrow = list(analyte = "soluble BCMA", units = "pM", specimen = "tumor", verified = TRUE),
+    drug_bcma_bonemarrow = list(
+      analyte = "elranatamab-membrane BCMA dimer",
+      units = "pM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_bonemarrow = list(
+      analyte = "elranatamab-soluble BCMA dimer",
+      units = "pM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    drug_cd3_bonemarrow = list(analyte = "elranatamab-CD3 dimer", units = "pM", specimen = "tumor", verified = TRUE),
+    trimer = list(analyte = "elranatamab-CD3-BCMA trimer", units = "pM", specimen = "tumor", verified = TRUE),
+    cycling_cells = list(analyte = "multiple myeloma cells", units = "cells/uL", specimen = "tumor", verified = TRUE),
+    damaged_cells1 = list(analyte = "multiple myeloma cells", units = "cells/uL", specimen = "tumor", verified = TRUE),
+    damaged_cells2 = list(analyte = "multiple myeloma cells", units = "cells/uL", specimen = "tumor", verified = TRUE),
+    damaged_cells3 = list(analyte = "multiple myeloma cells", units = "cells/uL", specimen = "tumor", verified = TRUE),
+    tcell_bonemarrow = list(analyte = "CD3+ T cells", units = "cells/uL", specimen = "tumor", verified = TRUE),
+    cytokine_bonemarrow = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    cytokine_transit1 = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cytokine_transit2 = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cytokine_transit3 = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cytokine_transit4 = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cytokine_transit5 = list(
+      analyte = "pro-inflammatory cytokine (IL-6)",
+      units = "pg/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cauc = list(
+      analyte = "cumulative cytokine exposure",
+      units = "pg/mL*h",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   # The published model carries no covariate columns: patient-to-patient
@@ -74,9 +124,9 @@ Poels_2025_elranatamab_qsp <- function() {
   covariatesDataExcluded <- list(
     SBCMA = list(
       description = "Baseline soluble BCMA concentration used to stratify response (high >= 100 ng/mL vs low < 100 ng/mL).",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ng/mL",
+      type = "continuous",
+      notes = paste(
         "Not a data covariate in this model: baseline sBCMA enters as the",
         "initial condition of the `target` state via the",
         "`sbcma0_central` parameter (pM). Convert with the paper's own scale,",
@@ -88,13 +138,13 @@ Poels_2025_elranatamab_qsp <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = "120 virtual patients per virtual population; 10 virtual populations calibrated (1200 virtual patients total), drawn from >4000 plausible patients out of 10000 sampled parametrizations",
-    n_studies      = 2,
-    disease_state  = "Relapsed or refractory multiple myeloma (RRMM); triple-class refractory and BCMA-treatment naive",
-    dose_range     = "Subcutaneous 80, 130, 215, 360, 600 and 1000 ug/kg QW (MagnetisMM-1 Part 1); 600 then 1000 ug/kg QW or Q2W (Part 1.1); 44 mg then 76 mg QW (Part 2A); 12/32/76 mg on C1D1/C1D4/C1D8 then 76 mg QW, stepping down to 76 mg Q2W after cycle 6 and 76 mg Q4W after cycle 12 (MagnetisMM-3 Cohort A). Simulated dose-escalation arms 16, 28, 44, 76 and 152 mg QW plus 76 mg Q2W.",
-    regions        = "Multicentre international (MagnetisMM-1 C1071001; MagnetisMM-3 C1071003)",
-    notes          = paste(
+    species = "human",
+    n_subjects = "120 virtual patients per virtual population; 10 virtual populations calibrated (1200 virtual patients total), drawn from >4000 plausible patients out of 10000 sampled parametrizations",
+    n_studies = 2,
+    disease_state = "Relapsed or refractory multiple myeloma (RRMM); triple-class refractory and BCMA-treatment naive",
+    dose_range = "Subcutaneous 80, 130, 215, 360, 600 and 1000 ug/kg QW (MagnetisMM-1 Part 1); 600 then 1000 ug/kg QW or Q2W (Part 1.1); 44 mg then 76 mg QW (Part 2A); 12/32/76 mg on C1D1/C1D4/C1D8 then 76 mg QW, stepping down to 76 mg Q2W after cycle 6 and 76 mg Q4W after cycle 12 (MagnetisMM-3 Cohort A). Simulated dose-escalation arms 16, 28, 44, 76 and 152 mg QW plus 76 mg Q2W.",
+    regions = "Multicentre international (MagnetisMM-1 C1071001; MagnetisMM-3 C1071003)",
+    notes = paste(
       "Calibration data are summarised in Supplementary Table 4: MagnetisMM-1",
       "(C1071001) Part 1 IV n = 23, Part 1 SC n = 30, Part 1 C-D n = 13,",
       "Part 1.1 QW n = 7, Part 1.1 Q2W n = 13, Part 2A n = 15; MagnetisMM-3",

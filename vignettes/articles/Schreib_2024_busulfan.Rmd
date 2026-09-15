@@ -148,23 +148,28 @@ tibble::tibble(
 
 # Time-varying clearance and the `linCmt()` conversion
 
-**Every `rxSolve()` call in this vignette passes `useLinCmt = FALSE`.** On a
-current rxode2 that is belt-and-braces rather than a requirement, but it keeps
-the vignette correct on older installations -- see below.
+**Every `rxSolve()` call in this vignette passes `useLinCmt = FALSE`.** That is
+now belt and braces rather than a necessity, and it is kept deliberately -- see
+below.
 
-Schreib 2024 is a one-compartment model with linear elimination, which is
-structurally what `rxSolve()` used to recognise and rewrite into a closed-form
-`linCmt()` solution by default. That closed form can only carry a **constant**
-elimination rate constant, so on rxode2 5.1.7 and earlier the rewrite silently
-substituted `kel` at `t = 0` for all time and discarded the entire time
-dependence -- which is the whole subject of this paper. Every dosing interval
-collapsed to exactly `Dose / (kel(0) * vc)`, an under-prediction reaching 16.5%
-by the eighth interval, with no error and no warning.
+Schreib 2024 is a one-compartment model with linear elimination, which is the
+structure `rxSolve()` recognises and can rewrite into a closed-form `linCmt()`
+solution. That closed form can only carry a **constant** elimination rate
+constant, so through rxode2 5.1.6 the rewrite silently substituted `kel` at
+`t = 0` for all time and discarded the entire time dependence -- the whole
+subject of this paper. The failure was silent, one-sided and large: under the
+default flag every interval collapsed to exactly `Dose / (kel(0) * vc)`.
 
-rxode2 now refuses the conversion when it would change the model
-(rxode2 issue 1370), so both flags give the same answer. The check below solves
-the same regimen both ways: the two columns must agree, and the AUC must rise
-across intervals as clearance falls.
+rxode2 5.1.7 closed that hole from the other side. It now refuses the
+ODE-to-`linCmt()` conversion when the conversion would change a rate or when
+the model carries an exogenous input term, which covers this model, so the
+rewrite no longer happens and both flags give the same answer. The check below
+solves the same regimen both ways and asserts exactly that: the time
+dependence survives, and the two paths agree.
+
+Passing the flag explicitly is still worth doing. It states which solver path
+the numbers came from instead of inheriting a package default -- and that
+default itself changed in rxode2 5.1.8, from `TRUE` to `FALSE`.
 
 ```{r load-model}
 # rxode2() turns the model function returned by readModelDb() into the rxUi
@@ -201,16 +206,18 @@ tibble::tibble(
 ) |>
   knitr::kable(
     caption = paste(
-      "Both flags now give the same answer, and the AUC rises across intervals",
-      "as clearance falls. On rxode2 5.1.7 and earlier the first column was",
-      "flat from the second interval on, under-predicting by up to 16.5%."
+      "From rxode2 5.1.7 the ODE-to-linCmt conversion is refused for this",
+      "model, so both columns rise as clearance falls and the under-prediction",
+      "is zero. Before 5.1.7 the converted column did not move after the first",
+      "interval, holding kel at its t = 0 value."
     )
   )
 
-# Two standing gates. The first is the physiology: clearance falls over the
-# course, so exposure must accumulate faster than proportionally. The second
-# catches any reintroduction of the constant-kel conversion (rxode2 issue
-# 1370), which would flatten the useLinCmt = TRUE column.
+# Regression guard, in two parts. The first is the physics and has always held:
+# clearance falls with time, so interval AUC must rise. The second used to
+# assert the linCmt column was FLAT -- the defect. rxode2 5.1.7 refuses the
+# conversion for this model, so the two paths now agree instead, and asserting
+# that catches both a reintroduced rewrite and a silent divergence.
 stopifnot(trap_ode[8] / trap_ode[1] > 1.15,
           max(abs(trap_default / trap_ode - 1)) < 1e-6)
 ```
@@ -782,7 +789,7 @@ Section 2.2 rather than a transcribed NCA table.
 
 # Assumptions and deviations
 
-* **`useLinCmt = FALSE` on rxode2 5.1.7 and earlier.** The model is
+* **`useLinCmt = FALSE` on rxode2 5.1.6 and earlier.** The model is
   one-compartment with linear elimination, so `rxSolve()`'s default
   ODE-to-`linCmt()` conversion used to replace it with a closed form that can
   only hold a constant elimination rate constant, silently discarding the time
@@ -790,7 +797,7 @@ Section 2.2 rather than a transcribed NCA table.
   17% (45% in the HLH/XLP group). Rewriting the ODE did not help: an explicit
   rate variable and a clearance-form denominator were both tested and were
   converted identically, so the flag was the only mitigation. rxode2 now
-  refuses the conversion when it would change the model (rxode2 issue 1370)
+  5.1.7 refuses the conversion when it would change the model (rxode2 issue 1370)
   and the flag is no longer required; this vignette keeps it so that it stays
   correct on older installations. This was always a property of the solver's
   default, not of the published model.

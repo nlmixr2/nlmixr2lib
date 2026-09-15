@@ -27,8 +27,8 @@ Saeheng_2024_atractylodesLancea_group2day14 <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte  = "Atractylodes lancea (Thunb.) DC. total bioactivity",
-      units    = "mg",
+      analyte = "Atractylodes lancea (Thunb.) DC. total bioactivity",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
@@ -40,9 +40,9 @@ Saeheng_2024_atractylodesLancea_group2day14 <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened as a candidate covariate in Saeheng 2024 but not retained: 'None of the ",
         "investigated covariates (sex, age, weight, and height) improved the model.' The ",
         "cohort's sex distribution is not tabulated in this paper; it is reported in the parent ",
@@ -51,43 +51,43 @@ Saeheng_2024_atractylodesLancea_group2day14 <- function() {
     ),
     AGE = list(
       description = "Patient age at study entry.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste0(
+      units = "years",
+      type = "continuous",
+      notes = paste0(
         "Screened but not retained (Saeheng 2024 Results). No age summary is tabulated in this ",
         "paper; see the parent phase 2A trial publication (reference [8])."
       )
     ),
     WT = list(
       description = "Body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg",
+      type = "continuous",
+      notes = paste0(
         "Screened but not retained (Saeheng 2024 Results). Because weight was not retained, V/F ",
         "and CL/F carry no allometric scaling and are absolute (L, L/h), not per-kg."
       )
     ),
     HT = list(
       description = "Body height.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Saeheng 2024 Results)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Saeheng 2024 Results)."
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 16L,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
     disease_state = "advanced-stage intrahepatic cholangiocarcinoma (iCCA)",
-    dose_range    = paste0(
+    dose_range = paste0(
       "Group 2 dose-escalating regimen: 1,000 mg once daily (9 capsules) for 14 days, then ",
       "1,500 mg once daily (14 capsules) for 14 days, then 2,000 mg once daily (18 capsules) for ",
       "62 days, plus standard supportive care; this model is the day-14 fit, i.e. the last day of ",
       "the 1,000 mg once-daily lead-in"
     ),
     regions = "Thailand (Sakhon Na-Kon Hospital, Sakhon Na-Kon)",
-    notes   = paste0(
+    notes = paste0(
       "Group 2 arm of a single-centre, open-label, randomized, controlled phase 2A trial ",
       "(TCTR20210129007). Sixteen patients were randomized to Group 2 (Saeheng 2024 Results). ",
       "Plasma sampling on day 14 at 0, 0.25, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6 and 8 h post-dose ",

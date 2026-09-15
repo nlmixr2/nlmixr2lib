@@ -31,17 +31,17 @@ Wang_2019_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as the power function (WT/70)^0.228 (Yang 2025 Table ",
         "1). The reference 70 kg is the centring constant printed inside ",
         "the covariate term. The exponent is well below the allometric ",
@@ -56,21 +56,21 @@ Wang_2019_imatinib <- function() {
         "of only four whose median prediction error met Yang 2025's ",
         "+/- 15% bias criterion (-12.65%, Table 3)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 170L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 170L,
+    n_studies = 1L,
     n_observations = "229 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "16-82 years",
-    disease_state  = "Chinese adults with chronic myeloid leukemia (CML)",
-    dose_range     = "Oral imatinib 400 mg total daily dose",
-    regions        = "China",
-    bioanalytical  = "UPLC-MS/MS, limit of quantification 2.6 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "16-82 years",
+    disease_state = "Chinese adults with chronic myeloid leukemia (CML)",
+    dose_range = "Oral imatinib 400 mg total daily dose",
+    regions = "China",
+    bioanalytical = "UPLC-MS/MS, limit of quantification 2.6 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "Sparse sampling: 229 samples from 170 patients, under 1.5 per ",
       "subject, which is consistent with the absence of any random effect ",
       "on Vc/F. Demographic detail beyond the row above (weight range, ",

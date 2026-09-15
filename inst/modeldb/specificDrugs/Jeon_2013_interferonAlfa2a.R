@@ -46,29 +46,39 @@ Jeon_2013_interferonAlfa2a <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "plasma", verified = FALSE),
-    transit1 = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "administration site", verified = FALSE),
-    effect   = list(analyte = "neopterin response", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    depot = list(
+      analyte = "interferon alfa-2a",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1 = list(
+      analyte = "interferon alfa-2a",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    effect = list(analyte = "neopterin response", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "18-43 years",
-    age_median     = "approximately 22 years (median of group medians 21.5, 22, 22, 24)",
-    weight_range   = "53.8-98.8 kg",
-    weight_median  = "approximately 75 kg (median of group medians 78.65, 76.15, 74.40, 74.40)",
-    height_range   = "168.0-193.0 cm",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "18-43 years",
+    age_median = "approximately 22 years (median of group medians 21.5, 22, 22, 24)",
+    weight_range = "53.8-98.8 kg",
+    weight_median = "approximately 75 kg (median of group medians 78.65, 76.15, 74.40, 74.40)",
+    height_range = "168.0-193.0 cm",
     sex_female_pct = 0,
     race_ethnicity = "Not explicitly reported; study conducted at Kendle International BV, Utrecht, Netherlands.",
-    disease_state  = "Healthy adult male volunteers, BMI 19-29 kg/m^2, no clinically relevant conditions on medical history, physical examination, lab tests, or ECG; subjects with possible alteration in IFN-alpha metabolism or hypersensitivity to IFN-alpha were excluded.",
-    dose_range     = "Single subcutaneous dose of SR-IFN-alpha at 9, 18, 27, or 36 MIU (six subjects per dose group). An 8-subject active-control group received 3 MIU Roferon-A (immediate-release IFN-alpha-2a) and was excluded from the PK-PD model build.",
-    regions        = "Netherlands (single-center Phase I; Kendle International BV, Utrecht).",
-    notes          = "Randomized, double-blind, active-controlled, dose-escalation Phase I clinical study; PK sampling at pre-dose and 0.75, 1.5, 3, 6, 8, 10, 12, 18, 24, 30, 36, 48, 60, 72, 96, 120, 144, 168, 192 h post-injection; PD (neopterin) sampling at pre-dose and 3, 8, 12, 18, 24, 36, 48, 72, 96, 120, 144, 168, 192, 264 h post-injection. Demographics summarised in Jeon 2013 Table 1; only the four SR-IFN-alpha groups (n = 24) contributed to the PK-PD model."
+    disease_state = "Healthy adult male volunteers, BMI 19-29 kg/m^2, no clinically relevant conditions on medical history, physical examination, lab tests, or ECG; subjects with possible alteration in IFN-alpha metabolism or hypersensitivity to IFN-alpha were excluded.",
+    dose_range = "Single subcutaneous dose of SR-IFN-alpha at 9, 18, 27, or 36 MIU (six subjects per dose group). An 8-subject active-control group received 3 MIU Roferon-A (immediate-release IFN-alpha-2a) and was excluded from the PK-PD model build.",
+    regions = "Netherlands (single-center Phase I; Kendle International BV, Utrecht).",
+    notes = "Randomized, double-blind, active-controlled, dose-escalation Phase I clinical study; PK sampling at pre-dose and 0.75, 1.5, 3, 6, 8, 10, 12, 18, 24, 30, 36, 48, 60, 72, 96, 120, 144, 168, 192 h post-injection; PD (neopterin) sampling at pre-dose and 3, 8, 12, 18, 24, 36, 48, 72, 96, 120, 144, 168, 192, 264 h post-injection. Demographics summarised in Jeon 2013 Table 1; only the four SR-IFN-alpha groups (n = 24) contributed to the PK-PD model."
   )
 
   ini({

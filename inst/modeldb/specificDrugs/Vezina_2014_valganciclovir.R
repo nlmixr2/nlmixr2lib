@@ -1,56 +1,61 @@
 Vezina_2014_valganciclovir <- function() {
   description <- "Two-compartment population PK model for ganciclovir after oral valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients (Vezina 2014). First-order absorption with fixed lag time and rate, allometric (WT/70 kg) scaling on apparent CL/F and Q/F (exponent 0.75) and on V2/F and V3/F (exponent 1.0), and a power-form effect of body-weight-adjusted creatinine clearance on CL/F (reference 60 mL/min)."
-  reference   <- "Vezina HE, Brundage RC, Balfour HH Jr. Population pharmacokinetics of valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients. Br J Clin Pharmacol. 2014;78(2):343-352. doi:10.1111/bcp.12343"
-  vignette    <- "Vezina_2014_valganciclovir"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Vezina HE, Brundage RC, Balfour HH Jr. Population pharmacokinetics of valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients. Br J Clin Pharmacol. 2014;78(2):343-352. doi:10.1111/bcp.12343"
+  vignette <- "Vezina_2014_valganciclovir"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (most-recent value at the sampling occasion; piecewise-constant within subject between blood draws, with linear interpolation when no same-day measurement was recorded).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (most-recent value at the sampling occasion; piecewise-constant within subject between blood draws, with linear interpolation when no same-day measurement was recorded).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used for allometric scaling on CL/F and Q/F (exponent 0.75) and on V2/F and V3/F (exponent 1.0), with reference 70 kg fixed (Vezina 2014 Methods 'Population pharmacokinetic analysis'). Study median 71.6 kg in adults (range 8.05-115) and 33.0 kg in children (range 6.9-61.1) per Table 1.",
-      source_name        = "WT"
+      notes = "Time-varying. Used for allometric scaling on CL/F and Q/F (exponent 0.75) and on V2/F and V3/F (exponent 1.0), with reference 70 kg fixed (Vezina 2014 Methods 'Population pharmacokinetic analysis'). Study median 71.6 kg in adults (range 8.05-115) and 33.0 kg in children (range 6.9-61.1) per Table 1.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, in mL/min, NOT BSA-normalized to 1.73 m^2. Computed by Cockcroft-Gault for subjects 18 years of age or older and by the Schwartz equation for subjects under 18 years; the inherent BSA standardization in the Schwartz output was reverse-corrected so that all CRCL values are expressed in mL/min directly comparable to the Cockcroft-Gault output.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, in mL/min, NOT BSA-normalized to 1.73 m^2. Computed by Cockcroft-Gault for subjects 18 years of age or older and by the Schwartz equation for subjects under 18 years; the inherent BSA standardization in the Schwartz output was reverse-corrected so that all CRCL values are expressed in mL/min directly comparable to the Cockcroft-Gault output.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Power-form effect on CL/F as ((CRCL / 60))^0.492 with reference 60 mL/min (Vezina 2014 Methods: 'standardized to the approximate population median value (i.e. 60 ml min-1) and adjusted by body weight'). The body-weight adjustment described in the Methods is what produces the (WT/70)^0.75 allometric term on CL/F; it is not a second factor on CRCL itself. The CRCL canonical register entry is BSA-normalized; in this model the per-model unit override 'mL/min' is load-bearing -- to use a dataset whose creatinine clearance is BSA-normalized to 1.73 m^2, divide by 1.73 and multiply by the patient BSA before passing it to this model.",
-      source_name        = "CrCL"
+      notes = "Time-varying within subject. Power-form effect on CL/F as ((CRCL / 60))^0.492 with reference 60 mL/min (Vezina 2014 Methods: 'standardized to the approximate population median value (i.e. 60 ml min-1) and adjusted by body weight'). The body-weight adjustment described in the Methods is what produces the (WT/70)^0.75 allometric term on CL/F; it is not a second factor on CRCL itself. The CRCL canonical register entry is BSA-normalized; in this model the per-model unit override 'mL/min' is load-bearing -- to use a dataset whose creatinine clearance is BSA-normalized to 1.73 m^2, divide by 1.73 and multiply by the patient BSA before passing it to this model.",
+      source_name = "CrCL"
     )
   )
 
   population <- list(
-    n_subjects        = 95L,
-    n_studies         = 1L,
-    n_observations    = 269L,
+    n_subjects = 95L,
+    n_studies = 1L,
+    n_observations = 269L,
     age_range_overall = "6 months - 78 years",
-    age_range_children   = "6 months - 17 years (median 7 years; n = 13: 3 aged 0-24 months, 4 aged 2-11 years, 6 aged 12-17 years)",
-    age_range_adults     = "18 - 78 years (median 53 years; n = 82)",
+    age_range_children = "6 months - 17 years (median 7 years; n = 13: 3 aged 0-24 months, 4 aged 2-11 years, 6 aged 12-17 years)",
+    age_range_adults = "18 - 78 years (median 53 years; n = 82)",
     weight_range_children = "6.9 - 61.1 kg (median 33.0 kg)",
-    weight_range_adults   = "8.05 - 115 kg (median 71.6 kg)",
-    sex_female_pct    = 36.8,
-    race_ethnicity    = c(`Caucasian/White` = 87.4, `African American or Black` = 7.4, `Asian` = 4.2, `American Indian or Alaska Native` = 1.0),
-    disease_state     = "First-time solid organ transplant recipients (kidney 56.8%, liver 25.3%, lung 11.6%, kidney/pancreas 4.2%, pancreas 1.1%, kidney/liver 1.1%) on valganciclovir prophylaxis for cytomegalovirus (CMV) or Epstein-Barr virus (EBV) prevention. Maintenance immunosuppression with tacrolimus, ciclosporin, or sirolimus plus mycophenolate.",
-    dose_range        = "Tablet: 900 mg every 24 h, or 450 mg every 12, 24, or 48 h (most subjects). Oral solution: 350, 300, 270, 225, 150, or 75 mg every 24 h (n = 8, primarily children). Doses adjusted by Cockcroft-Gault or Schwartz creatinine clearance per the Valcyte package insert.",
+    weight_range_adults = "8.05 - 115 kg (median 71.6 kg)",
+    sex_female_pct = 36.8,
+    race_ethnicity = c(
+      `Caucasian/White` = 87.4,
+      `African American or Black` = 7.4,
+      `Asian` = 4.2,
+      `American Indian or Alaska Native` = 1.0
+    ),
+    disease_state = "First-time solid organ transplant recipients (kidney 56.8%, liver 25.3%, lung 11.6%, kidney/pancreas 4.2%, pancreas 1.1%, kidney/liver 1.1%) on valganciclovir prophylaxis for cytomegalovirus (CMV) or Epstein-Barr virus (EBV) prevention. Maintenance immunosuppression with tacrolimus, ciclosporin, or sirolimus plus mycophenolate.",
+    dose_range = "Tablet: 900 mg every 24 h, or 450 mg every 12, 24, or 48 h (most subjects). Oral solution: 350, 300, 270, 225, 150, or 75 mg every 24 h (n = 8, primarily children). Doses adjusted by Cockcroft-Gault or Schwartz creatinine clearance per the Valcyte package insert.",
     crcl_range_children = "30.2 - 154 mL/min (median 72.1)",
-    crcl_range_adults   = "29 - 108 mL/min (median 60.7)",
-    donor_source      = c(Deceased = 52.6, `Living unrelated` = 21.1, `Living related` = 26.3),
-    regions           = "Single centre, University of Minnesota Medical Center, Fairview (USA).",
-    co_medications    = "All subjects also received mycophenolate as part of maintenance immunosuppression (not tested as a covariate). Induction immunosuppression with thymoglobulin, basiliximab, or methylprednisolone; maintenance with tacrolimus, ciclosporin, or sirolimus.",
-    notes             = "Prospective natural-history study enrolling between February 2010 and June 2011. Sparse sampling at approximately weeks 2, 4, 8, and 12 post-transplant (and additionally at months 4, 6, 8, and 12 in subjects on prophylaxis longer than 3 months); samples drawn opportunistically at routine post-transplant clinic visits with self-reported dosing histories. 269 of 333 measurements were retained for the population PK analysis; 64 (19.2%) were excluded as below LOD (n = 21), CWRES > 3 SD (n = 6), or internally inconsistent (n = 37). Methods text reports 82 adults + 13 children = 95 analysed; Table 1 lists 83 adult and 13 children baseline rows (96), so the population figures here use the analysis-set N from the Methods narrative."
+    crcl_range_adults = "29 - 108 mL/min (median 60.7)",
+    donor_source = c(Deceased = 52.6, `Living unrelated` = 21.1, `Living related` = 26.3),
+    regions = "Single centre, University of Minnesota Medical Center, Fairview (USA).",
+    co_medications = "All subjects also received mycophenolate as part of maintenance immunosuppression (not tested as a covariate). Induction immunosuppression with thymoglobulin, basiliximab, or methylprednisolone; maintenance with tacrolimus, ciclosporin, or sirolimus.",
+    notes = "Prospective natural-history study enrolling between February 2010 and June 2011. Sparse sampling at approximately weeks 2, 4, 8, and 12 post-transplant (and additionally at months 4, 6, 8, and 12 in subjects on prophylaxis longer than 3 months); samples drawn opportunistically at routine post-transplant clinic visits with self-reported dosing histories. 269 of 333 measurements were retained for the population PK analysis; 64 (19.2%) were excluded as below LOD (n = 21), CWRES > 3 SD (n = 6), or internally inconsistent (n = 37). Methods text reports 82 adults + 13 children = 95 analysed; Table 1 lists 83 adult and 13 children baseline rows (96), so the population figures here use the analysis-set N from the Methods narrative."
   )
 
   ini({

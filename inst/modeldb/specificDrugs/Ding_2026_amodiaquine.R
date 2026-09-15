@@ -43,21 +43,21 @@ Ding_2026_amodiaquine <- function() {
   # scheme', 'Drug quantification': venous plasma amodiaquine and
   # desethylamodiaquine by LC-MS/MS) and Figure S5.
   compartmentData <- list(
-    depot            = list(analyte = "amodiaquine",         units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "amodiaquine",         units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1      = list(analyte = "amodiaquine",         units = "mg", specimen = "plasma",              verified = TRUE),
-    central_deaq     = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral2_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Ding 2026 Methods ('Covariates model'):",
         "'bodyweight was included on all clearance and volume parameters",
         "using a conventional allometric function with fixed exponents of",
@@ -70,14 +70,14 @@ Ding_2026_amodiaquine <- function() {
         "(TRACII) and 52.2 kg (TACT-CV); range 9.0-98.8 kg (Table 1).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     OCC = list(
-      description        = "Dose occasion index, 1 to 6 across the six-dose amodiaquine regimen",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dose occasion index, 1 to 6 across the six-dose amodiaquine regimen",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (the first dose, at hour 0)",
-      notes              = paste(
+      notes = paste(
         "Integer occasion column taking value k on the interval starting at",
         "the k-th dose. Amodiaquine is given together with",
         "artemether-lumefantrine at 0, 8, 24, 36, 48 and 60 h (Methods,",
@@ -94,16 +94,16 @@ Ding_2026_amodiaquine <- function() {
         "no absorption event.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     STUDY_TACTCV = list(
       description = "TACT-CV trial indicator (1 = TACT-CV, 0 = TRACII)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "The only covariate the stepwise search identified for this model,",
         "and it was deliberately discarded: Ding 2026 Results 3.1.2, 'The",
         "only covariate identified in the covariate search was a difference",
@@ -119,24 +119,24 @@ Ding_2026_amodiaquine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 302L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 302L,
+    n_studies = 2L,
     n_observations = paste(
       "352 amodiaquine concentrations from the 39 dense-PK patients (21",
       "TRACII, 18 TACT-CV) and 725 desethylamodiaquine concentrations from",
       "all 302 patients (150 TRACII, 152 TACT-CV) (Results 3.1.2)"
     ),
-    age_range      = "17.0 years (TRACII) and 25.0 years (TACT-CV), medians (range 2.1-62.0 years) (Table 1)",
-    weight_range   = "41.5 kg (TRACII) and 52.2 kg (TACT-CV), medians (range 9.0-98.8 kg) (Table 1)",
+    age_range = "17.0 years (TRACII) and 25.0 years (TACT-CV), medians (range 2.1-62.0 years) (Table 1)",
+    weight_range = "41.5 kg (TRACII) and 52.2 kg (TACT-CV), medians (range 9.0-98.8 kg) (Table 1)",
     sex_female_pct = 23.8,
-    disease_state  = paste(
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum malaria. Median admission",
       "asexual parasite count 52,500 parasites/uL (TRACII) and 21,500",
       "parasites/uL (TACT-CV); median admission body temperature 37.5 and",
       "37.7 degC respectively (Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Amodiaquine 150 mg base per tablet, target 10 mg base per kg per day",
       "given as a split dose twice daily together with",
       "artemether-lumefantrine at 0, 8, 24, 36, 48 and 60 h, directly",
@@ -146,13 +146,13 @@ Ding_2026_amodiaquine <- function() {
       "cohort median amodiaquine dose 8.6-9.0 mg/kg/day (range 5.8-12.2)",
       "(Table S3)."
     ),
-    regions        = paste(
+    regions = paste(
       "TRACII (NCT02453308): Bangladesh, India, Myanmar, Democratic",
       "Republic of Congo and Lao PDR. TACT-CV (NCT03355664): western and",
       "eastern Cambodia and Vietnam. Dense PK sampling was feasible at one",
       "site per trial (Bangladesh and Vietnam)."
     ),
-    notes          = paste(
+    notes = paste(
       "Only patients randomised to the artemether-lumefantrine plus",
       "amodiaquine arm contribute. Amodiaquine parent data come from the",
       "dense-PK sub-cohort only; desethylamodiaquine data come from the",

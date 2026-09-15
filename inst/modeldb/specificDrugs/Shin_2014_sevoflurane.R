@@ -10,41 +10,41 @@ Shin_2014_sevoflurane <- function() {
   )
   vignette <- "Shin_2014_sevoflurane"
   units <- list(
-    time          = "min",
-    dosing        = "(none; volatile anesthetic discontinuation at start of emergence)",
+    time = "min",
+    dosing = "(none; volatile anesthetic discontinuation at start of emergence)",
     concentration = "vol % (end-tidal sevoflurane, ETSEVO)"
   )
 
   covariateData <- list(
     MENT_DISABLED = list(
-      description        = "Severe mental disability indicator (1 = mentally disabled per the pediatrics-department diagnosis described in Shin 2014 Methods 'Subjects'; 0 = mentally intact, ASA class 1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe mental disability indicator (1 = mentally disabled per the pediatrics-department diagnosis described in Shin 2014 Methods 'Subjects'; 0 = mentally intact, ASA class 1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (mentally intact)",
-      notes              = "Source column MEN in Shin 2014 Appendix 1 ($INPUT MEN). Identical orientation: MEN = 1 mentally disabled, MEN = 0 mentally intact. Time-fixed per subject. New canonical entry registered in inst/references/covariate-columns.md alongside this model.",
-      source_name        = "MEN"
+      notes = "Source column MEN in Shin 2014 Appendix 1 ($INPUT MEN). Identical orientation: MEN = 1 mentally disabled, MEN = 0 mentally intact. Time-fixed per subject. New canonical entry registered in inst/references/covariate-columns.md alongside this model.",
+      source_name = "MEN"
     ),
     ETSEVO = list(
-      description        = "End-tidal sevoflurane concentration recorded continuously during emergence from general anesthesia (vol %, monitored by GE Healthcare Datex-Ohmeda S5 Collect software per Shin 2014 Methods).",
-      units              = "vol % (volume percent in the breathing circuit)",
-      type               = "continuous",
+      description = "End-tidal sevoflurane concentration recorded continuously during emergence from general anesthesia (vol %, monitored by GE Healthcare Datex-Ohmeda S5 Collect software per Shin 2014 Methods).",
+      units = "vol % (volume percent in the breathing circuit)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The DOSE column in Shin 2014 Appendix 1 ($PRED 'PROB = 1 - DOSE**GAM/(CE50**GAM + DOSE**GAM)') is the per-record Etsevo concentration -- not an administered dose. Decreases from approximately the 1 MAC maintenance value to 0 during emergence; sampled per observation record (per Shin 2014 Methods, ROC was observed every 15 seconds). New canonical entry registered in inst/references/covariate-columns.md alongside this model.",
-      source_name        = "DOSE"
+      notes = "The DOSE column in Shin 2014 Appendix 1 ($PRED 'PROB = 1 - DOSE**GAM/(CE50**GAM + DOSE**GAM)') is the per-record Etsevo concentration -- not an administered dose. Decreases from approximately the 1 MAC maintenance value to 0 during emergence; sampled per observation record (per Shin 2014 Methods, ROC was observed every 15 seconds). New canonical entry registered in inst/references/covariate-columns.md alongside this model.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    age_range      = "3-15 years (median 6 in both groups; Table 1 reports range 2-8 in normal and 2-12 in mentally disabled)",
-    weight_range   = "9.5-35 kg (Table 1 median 22 kg normal, 15 kg mentally disabled)",
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    age_range = "3-15 years (median 6 in both groups; Table 1 reports range 2-8 in normal and 2-12 in mentally disabled)",
+    weight_range = "9.5-35 kg (Table 1 median 22 kg normal, 15 kg mentally disabled)",
     sex_female_pct = 45,
-    disease_state  = "Pediatric patients scheduled for dental treatment under general anesthesia; ten with severe mental disability (clinical diagnosis from the pediatrics department) and ten ASA class 1 mentally intact controls.",
-    dose_range     = "Induction sevoflurane 8 vol % at 6 L/min; maintenance at age-adjusted 1 MAC with 50% N2O until end of dental procedure, then discontinuation. No drug dose modeled.",
-    regions        = "Korea (Seoul National University Dental College)",
-    notes          = "Total 476 binary ROC observations (Shin 2014 Results). Duration of sevoflurane anesthesia 70 min (60-155) in normal vs 120 min (90-230) in disabled (Table 1; p = 0.08). Hemodynamic variables not significantly different between groups. Excluded prior adverse reaction to anesthetics and cardiac / pulmonary / hepatic / renal disease."
+    disease_state = "Pediatric patients scheduled for dental treatment under general anesthesia; ten with severe mental disability (clinical diagnosis from the pediatrics department) and ten ASA class 1 mentally intact controls.",
+    dose_range = "Induction sevoflurane 8 vol % at 6 L/min; maintenance at age-adjusted 1 MAC with 50% N2O until end of dental procedure, then discontinuation. No drug dose modeled.",
+    regions = "Korea (Seoul National University Dental College)",
+    notes = "Total 476 binary ROC observations (Shin 2014 Results). Duration of sevoflurane anesthesia 70 min (60-155) in normal vs 120 min (90-230) in disabled (Table 1; p = 0.08). Hemodynamic variables not significantly different between groups. Excluded prior adverse reaction to anesthetics and cardiac / pulmonary / hepatic / renal disease."
   )
 
   ini({

@@ -30,17 +30,17 @@ vonHentig_2009_saquinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "saquinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "saquinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "saquinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_ATAZANAVIR = list(
-      description        = "Concomitant atazanavir coadministration indicator (1 = on ATV 300 mg QD, 0 = no ATV)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant atazanavir coadministration indicator (1 = on ATV 300 mg QD, 0 = no ATV)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant atazanavir; nucleosidic reverse-transcriptase inhibitors backbone)",
-      notes              = paste(
+      notes = paste(
         "Per-subject time-fixed in von Hentig 2009. 49 of 136 patients",
         "(36%) received atazanavir 300 mg once daily as part of a boosted",
         "double-protease-inhibitor regimen because reverse-transcriptase",
@@ -53,14 +53,14 @@ vonHentig_2009_saquinavir <- function() {
         "CYP3A4 inhibitor and the reduction is attributed to CYP3A",
         "competition with saquinavir metabolism."
       ),
-      source_name        = "atazanavir"
+      source_name = "atazanavir"
     ),
     CONMED_RTV_AUC_12H = list(
-      description        = "Per-subject ritonavir AUC over the 12 h dosing interval (BID ritonavir 100 mg)",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Per-subject ritonavir AUC over the 12 h dosing interval (BID ritonavir 100 mg)",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject ritonavir AUC over the 12 h dosing interval, computed",
         "by the source authors from the observed ritonavir concentration",
         "profile (predose and 1, 2, 4, 6, 9, 12 h) using the",
@@ -71,16 +71,16 @@ vonHentig_2009_saquinavir <- function() {
         "model). At the cohort median the power term evaluates to 1 and",
         "CL/F equals the typical 60.4 L/h (without atazanavir)."
       ),
-      source_name        = "AUCritonavir"
+      source_name = "AUCritonavir"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Median 41.5 years for men (range 20-71), 32.5 years for women",
         "(range 19-64) per Methods. Screened on CL/F and V/F per Table 1;",
         "did not meet the dOFV thresholds (delta-2LL < 6.63 to enter, or",
@@ -89,9 +89,9 @@ vonHentig_2009_saquinavir <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Median 74 kg for men (range 51-116), 68.5 kg for women",
         "(range 42-100) per Methods. Screened on CL/F and V/F per Table 1;",
         "did not meet retention thresholds and was not in the final model."
@@ -99,9 +99,9 @@ vonHentig_2009_saquinavir <- function() {
     ),
     SEXF = list(
       description = "Sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "32 of 136 patients (24%) female per Methods. Screened on CL/F and",
         "V/F per Table 1 as (theta_sex)^sex with sex = 0 male / 1 female;",
         "did not meet retention thresholds and was not in the final model."
@@ -109,9 +109,9 @@ vonHentig_2009_saquinavir <- function() {
     ),
     PREG = list(
       description = "Pregnancy status indicator (1 = pregnant at PK sample)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "13 of 32 women pregnant (mean gestational age 32 weeks + 4 days,",
         "range 24 wk 3 d to 36 wk 5 d) per Methods. Screened on CL/F and",
         "V/F per Table 1; pregnancy met the entry threshold for V/F",
@@ -122,9 +122,9 @@ vonHentig_2009_saquinavir <- function() {
     ),
     SAQ_FORMULATION = list(
       description = "Saquinavir formulation (0 = Invirase hard gel, 1 = Fortovase soft gel)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "84 of 136 patients received Invirase (hard gel), 52 received",
         "Fortovase (soft gel). Screened on CL/F and V/F per Table 1; on",
         "backward elimination the V/F effect produced delta-2LL +4.72,",
@@ -135,9 +135,9 @@ vonHentig_2009_saquinavir <- function() {
     ),
     CONMED_RTV_AUC_12H_AUCATAZ = list(
       description = "Per-subject atazanavir AUC over the 24 h dosing interval (when CONMED_ATAZANAVIR = 1)",
-      units       = "ng/ml*h",
-      type        = "continuous",
-      notes       = paste(
+      units = "ng/ml*h",
+      type = "continuous",
+      notes = paste(
         "Cohort median 24029.6 ng/ml*h per Table 1 footnote. Tested as a",
         "continuous centred power-form covariate on CL/F and V/F in",
         "addition to (or instead of) the binary CONMED_ATAZANAVIR. Did not",
@@ -151,17 +151,17 @@ vonHentig_2009_saquinavir <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 136L,
-    n_studies       = 1L,
-    n_observations  = NA_integer_,
-    age_range       = "19-71 years (median 41.5 men, 32.5 women)",
-    weight_range    = "42-116 kg (median 74 men, 68.5 women)",
-    sex_female_pct  = 23.5,
-    disease_state   = "HIV-1 infection; Child-Pugh class B/C and CYP3A4-modulating non-antiretroviral cotherapies excluded; 13 of 32 women pregnant (mean GA 32 wk 4 d)",
-    dose_range      = "Saquinavir 1000 mg BID (Invirase hard gel n=84 or Fortovase soft gel n=52) + ritonavir 100 mg BID; 49 of 136 patients additionally received atazanavir 300 mg QD; 87 received nucleosidic reverse-transcriptase inhibitors instead of atazanavir",
-    regions         = "Germany (Goethe-University, Frankfurt am Main)",
-    notes           = paste(
+    species = "human",
+    n_subjects = 136L,
+    n_studies = 1L,
+    n_observations = NA_integer_,
+    age_range = "19-71 years (median 41.5 men, 32.5 women)",
+    weight_range = "42-116 kg (median 74 men, 68.5 women)",
+    sex_female_pct = 23.5,
+    disease_state = "HIV-1 infection; Child-Pugh class B/C and CYP3A4-modulating non-antiretroviral cotherapies excluded; 13 of 32 women pregnant (mean GA 32 wk 4 d)",
+    dose_range = "Saquinavir 1000 mg BID (Invirase hard gel n=84 or Fortovase soft gel n=52) + ritonavir 100 mg BID; 49 of 136 patients additionally received atazanavir 300 mg QD; 87 received nucleosidic reverse-transcriptase inhibitors instead of atazanavir",
+    regions = "Germany (Goethe-University, Frankfurt am Main)",
+    notes = paste(
       "Single 12-h sparse PK profile per patient (predose and 1, 2, 4, 6,",
       "9, 12 h post-dose) taken between the 9th and 2303rd",
       "saquinavir-ritonavir dose (median 61st) at steady state, after an",

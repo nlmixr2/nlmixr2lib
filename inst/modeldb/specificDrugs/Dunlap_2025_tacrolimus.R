@@ -26,28 +26,28 @@ Dunlap_2025_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed at baseline in Dunlap 2025 (Table 1 reports a single ",
         "TBW per subject). Allometric power scaling on CL/F and Q/F with ",
         "exponent 0.75 fixed (theoretical), and on V1/F and V2/F with ",
         "exponent 1 fixed; reference 70 kg (Dunlap 2025 Methods 2.4 / Eqs. ",
         "5-8 / Table 2). Cohort median 84 kg [IQR 71-97]."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     CYP3A5_EXPR = list(
-      description        = paste0(
+      description = paste0(
         "CYP3A5 expresser indicator: 1 if the patient has a CYP3A5 ",
         "intermediate-metabolizer (IM) or normal-metabolizer (NM) phenotype ",
         "(at least one functional CYP3A5*1 allele -- diplotypes *1/*1 or ",
@@ -55,10 +55,10 @@ Dunlap_2025_tacrolimus <- function() {
         "with two non-functional alleles (*3/*3, *3/*6, *3/*7, *6/*6, ",
         "*6/*7, or *7/*7). Time-fixed germline genotype."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 PM, the reference category in Dunlap 2025 Eq. 6 / Table 2)",
-      notes              = paste0(
+      notes = paste0(
         "Dunlap 2025 reports a three-level CYP3A5 metabolizer phenotype ",
         "(PM / IM / NM) per CPIC nomenclature (Dunlap 2025 Methods 2.2). ",
         "After fitting both a three-level full covariate model and a ",
@@ -71,18 +71,18 @@ Dunlap_2025_tacrolimus <- function() {
         "(Dunlap 2025 Table 1): PM 70%, IM 25%, NM 5%; CYP3A5_EXPR = 1 in ",
         "30% of subjects."
       ),
-      source_name        = "CYP3A5"
+      source_name = "CYP3A5"
     ),
     HCT_COND_RIC = list(
-      description        = paste0(
+      description = paste0(
         "Reduced-intensity conditioning regimen indicator: 1 if the patient ",
         "received reduced-intensity conditioning (RIC) chemotherapy prior to ",
         "allo-HCT, 0 if myeloablative conditioning (MAC) was used."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MAC, myeloablative conditioning)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (the conditioning regimen is completed ",
         "before transplant and is invariant across the post-transplant ",
         "tacrolimus PK observations). Per Dunlap 2025 Methods 2.4, the ",
@@ -90,21 +90,21 @@ Dunlap_2025_tacrolimus <- function() {
         "of conditioning intensity. Cohort split (Dunlap 2025 Table 1): MAC ",
         "49%, RIC 51%."
       ),
-      source_name        = "RIC"
+      source_name = "RIC"
     )
   )
 
   population <- list(
-    n_subjects        = 290L,
-    n_studies         = 2L,
-    n_observations    = 906L,
-    age_range         = "44-63 years (overall IQR; UNC16-1480 IQR 44-62, UNC19-3328 IQR 44-66)",
-    age_median        = "54 years (overall; UNC16-1480 54, UNC19-3328 61)",
-    weight_range      = "71-97 kg (overall IQR)",
-    weight_median     = "84 kg (overall; UNC16-1480 85, UNC19-3328 79)",
-    sex_female_pct    = 43.0,
-    race_ethnicity    = c(White = 84.0, Black = 11.0, Other = 5.0),
-    disease_state     = paste0(
+    n_subjects = 290L,
+    n_studies = 2L,
+    n_observations = 906L,
+    age_range = "44-63 years (overall IQR; UNC16-1480 IQR 44-62, UNC19-3328 IQR 44-66)",
+    age_median = "54 years (overall; UNC16-1480 54, UNC19-3328 61)",
+    weight_range = "71-97 kg (overall IQR)",
+    weight_median = "84 kg (overall; UNC16-1480 85, UNC19-3328 79)",
+    sex_female_pct = 43.0,
+    race_ethnicity = c(White = 84.0, Black = 11.0, Other = 5.0),
+    disease_state = paste0(
       "Adult allogeneic hematopoietic cell transplant (allo-HCT) recipients ",
       "treated at the University of North Carolina Medical Center (UNCMC) ",
       "for malignant or non-malignant haematologic disease, receiving oral ",
@@ -113,22 +113,22 @@ Dunlap_2025_tacrolimus <- function() {
       "55%, MDS 17%, lymphoma 12%, chronic leukemia 7%, MPN 6%, aplastic ",
       "anaemia 2%, myeloma 1%."
     ),
-    dose_range        = paste0(
+    dose_range = paste0(
       "Per UNCMC institutional protocol: oral immediate-release tacrolimus ",
       "0.045 mg/kg twice daily for the first two days starting three days ",
       "prior to transplant (D-3), followed by 0.03 mg/kg twice daily ",
       "thereafter (Methods 2.2). Therapeutic drug monitoring deviations ",
       "from this protocol were retained in the analysis dataset."
     ),
-    regions           = "United States (single centre, University of North Carolina Medical Center, Chapel Hill, NC)",
+    regions = "United States (single centre, University of North Carolina Medical Center, Chapel Hill, NC)",
     cyp3a5_distribution = "PM 70% (n=202), IM 25% (n=73), NM 5% (n=15) per CPIC nomenclature; *1/*1, *1/*3, *3/*3 etc. determined by TaqMan assays for CYP3A5*1, *3, *6, *7 (Methods 2.2).",
     conditioning_distribution = "MAC 49% (n=143), RIC 51% (n=147)",
-    hla_status        = "Full match 80% (n=231), mismatch 18% (n=54), haploidentical 2% (n=5)",
-    donor_status      = "Related 30% (n=88), unrelated 70% (n=202)",
-    stem_cell_source  = "Peripheral blood stem cells 94% (n=273), bone marrow 6% (n=16), cord <1% (n=1)",
+    hla_status = "Full match 80% (n=231), mismatch 18% (n=54), haploidentical 2% (n=5)",
+    donor_status = "Related 30% (n=88), unrelated 70% (n=202)",
+    stem_cell_source = "Peripheral blood stem cells 94% (n=273), bone marrow 6% (n=16), cord <1% (n=1)",
     n_observations_unc16_1480 = 252L,
     n_observations_unc19_3328 = 652L,
-    notes             = paste0(
+    notes = paste0(
       "Pooled retrospective (UNC16-1480, n=252) and prospective (UNC19-3328, ",
       "n=38) clinical pharmacology cohorts (clinicaltrials.gov NCT04645667). ",
       "UNC16-1480 contributed a single therapeutic-drug-monitoring trough ",

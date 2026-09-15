@@ -34,7 +34,7 @@ Yau_2023_diazepam_rat_pbpk <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_middle_out_pbpk_translation"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. `central` lumps arterial blood, venous blood and lung
@@ -46,35 +46,35 @@ Yau_2023_diazepam_rat_pbpk <- function() {
   # of Table 1. verified = TRUE: identities read off the paper's Table 1
   # tissue groupings and the model's own equations.
   compartmentData <- list(
-    central  = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
-    adipose  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
     pancreas = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
+    skin = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Wistar and Sprague-Dawley)",
-    n_subjects     = NA_integer_,
-    n_studies      = 5L,
-    age_range      = "adult; one study contributed middle-aged and old Wistar rats",
-    weight_range   = "250 g reference rat for the physiology (Table S6)",
+    species = "rat (Wistar and Sprague-Dawley)",
+    n_subjects = NA_integer_,
+    n_studies = 5L,
+    age_range = "adult; one study contributed middle-aged and old Wistar rats",
+    weight_range = "250 g reference rat for the physiology (Table S6)",
     sex_female_pct = 0,
-    disease_state  = "healthy rats",
-    dose_range     = "1 mg to 5 mg/kg intravenous, bolus or 5 min infusion (Table S2)",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "healthy rats",
+    dose_range = "1 mg to 5 mg/kg intravenous, bolus or 5 min infusion (Table S2)",
+    regions = NA_character_,
+    notes = paste(
       "Five published rat intravenous studies (Yau 2023 Table S2),",
       "contributing a mixture of average and individual plasma or blood",
       "concentration-time profiles digitised with WebPlotDigitizer. All",

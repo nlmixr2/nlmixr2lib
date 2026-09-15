@@ -8,46 +8,46 @@ Horita_2018_isoniazid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F and Q/F with fixed exponent 0.75 and on V1/F and V2/F with fixed exponent 1.0 (Horita 2018 Results 'INH' paragraph 1: 'The fixed exponents were 0.75 for CL/F and clearance between compartments (Q/F) and 1.0 for V1/F and V2/F'). Reference weight is the cohort median 14.3 kg; see the vignette Errata for the reference-weight derivation.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL/F and Q/F with fixed exponent 0.75 and on V1/F and V2/F with fixed exponent 1.0 (Horita 2018 Results 'INH' paragraph 1: 'The fixed exponents were 0.75 for CL/F and clearance between compartments (Q/F) and 1.0 for V1/F and V2/F'). Reference weight is the cohort median 14.3 kg; see the vignette Errata for the reference-weight derivation.",
+      source_name = "WT"
     ),
     NAT2_SLOW = list(
-      description        = "NAT2 slow-acetylator phenotype indicator (1 = slow, 0 = intermediate or rapid (pooled as 'nonslow'))",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NAT2 slow-acetylator phenotype indicator (1 = slow, 0 = intermediate or rapid (pooled as 'nonslow'))",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (nonslow: intermediate or rapid acetylator pooled)",
-      notes              = "Horita 2018 Results 'INH' paragraph 1: 'NAT2 genotype was detected as a significant covariate for clearance. In light of the findings obtained from NCA that there were no significant differences in t1/2, CL/F, and AUC0-8 between NAT2 fast and intermediate genotypes, those were combined and named the nonslow group.' Cohort distribution (Table 1): 51 slow, 50 intermediate, 12 rapid -- so 51/113 = 45.1% slow. NAT2 genotyping via TaqMan PCR for SNPs rs1801279, rs1801280, rs1799930, rs1799931 (Methods 'Arylamine N-acetyltransferase 2 genotyping'). The slow phenotype reduces typical-value CL/F (4.44 L/h slow vs 8.08 L/h nonslow); see model() for the selection mechanism.",
-      source_name        = "NAT2"
+      notes = "Horita 2018 Results 'INH' paragraph 1: 'NAT2 genotype was detected as a significant covariate for clearance. In light of the findings obtained from NCA that there were no significant differences in t1/2, CL/F, and AUC0-8 between NAT2 fast and intermediate genotypes, those were combined and named the nonslow group.' Cohort distribution (Table 1): 51 slow, 50 intermediate, 12 rapid -- so 51/113 = 45.1% slow. NAT2 genotyping via TaqMan PCR for SNPs rs1801279, rs1801280, rs1799930, rs1799931 (Methods 'Arylamine N-acetyltransferase 2 genotyping'). The slow phenotype reduces typical-value CL/F (4.44 L/h slow vs 8.08 L/h nonslow); see model() for the selection mechanism.",
+      source_name = "NAT2"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 113L,
-    n_studies      = 1L,
-    age_range      = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
-    age_median     = "5.00 years",
-    weight_range   = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
-    weight_median  = "14.3 kg",
+    species = "human",
+    n_subjects = 113L,
+    n_studies = 1L,
+    age_range = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
+    age_median = "5.00 years",
+    weight_range = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
+    weight_median = "14.3 kg",
     sex_female_pct = 44.2,
     hiv_positive_pct = 52.2,
     nat2_distribution = c(slow = 51L, intermediate = 50L, rapid = 12L),
-    nat2_slow_pct  = 45.1,
-    disease_state  = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
-    dose_range     = "Isoniazid 7-15 mg/kg orally daily (median 11.0 mg/kg, IQR 9.06-12.8). Administered as part of standard four-drug anti-TB regimen.",
-    regions        = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
-    notes          = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. INH concentrations 0.0977-26 ug/mL by LC-MS/MS. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 2."
+    nat2_slow_pct = 45.1,
+    disease_state = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
+    dose_range = "Isoniazid 7-15 mg/kg orally daily (median 11.0 mg/kg, IQR 9.06-12.8). Administered as part of standard four-drug anti-TB regimen.",
+    regions = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
+    notes = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. INH concentrations 0.0977-26 ug/mL by LC-MS/MS. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 2."
   )
 
   ini({

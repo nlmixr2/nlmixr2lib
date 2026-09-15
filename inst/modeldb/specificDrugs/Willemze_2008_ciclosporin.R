@@ -8,8 +8,8 @@ Willemze_2008_ciclosporin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -18,43 +18,43 @@ Willemze_2008_ciclosporin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Figure 2; Results 'Ciclosporin pharmacokinetics'). No correlation between clearance (or distribution volume) and body weight was observed (Pearson r = -0.10, Spearman r = -0.00, n = 17). The authors explicitly conclude that 'dosing ciclosporin per kg bodyweight is not supported by the results of this study' (Conclusion). Cohort range 10 to ~60 kg, mean ~35 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Figure 2; Results 'Ciclosporin pharmacokinetics'). No correlation between clearance (or distribution volume) and body weight was observed (Pearson r = -0.10, Spearman r = -0.00, n = 17). The authors explicitly conclude that 'dosing ciclosporin per kg bodyweight is not supported by the results of this study' (Conclusion). Cohort range 10 to ~60 kg, mean ~35 kg."
     ),
     HT = list(
       description = "Body length (height)",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Results 'Ciclosporin pharmacokinetics'). No correlation found; not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Results 'Ciclosporin pharmacokinetics'). No correlation found; not retained."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Results 'Ciclosporin pharmacokinetics'). Cohort range 1.8-16.1 years. No correlation found; not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Results 'Ciclosporin pharmacokinetics'). Cohort range 1.8-16.1 years. No correlation found; not retained."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (Schwartz and Cockcroft-Gault formulas)",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Methods 'Pharmacokinetics and statistical analysis'). No correlation between renal function and CL/V was observed; not retained. Patients with severe renal dysfunction (serum creatinine > 2x ULN) were excluded by protocol."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Screened in the empirical Bayes regression vs CL and V (Willemze 2008 Methods 'Pharmacokinetics and statistical analysis'). No correlation between renal function and CL/V was observed; not retained. Patients with severe renal dysfunction (serum creatinine > 2x ULN) were excluded by protocol."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 17L,
-    n_studies      = 1L,
-    age_range      = "1.8-16.1 years",
-    weight_range   = ">10 kg (cohort mean approximately 35 kg per Discussion paragraph 4)",
+    species = "human",
+    n_subjects = 17L,
+    n_studies = 1L,
+    age_range = "1.8-16.1 years",
+    weight_range = ">10 kg (cohort mean approximately 35 kg per Discussion paragraph 4)",
     sex_female_pct = NA_real_,
-    disease_state  = "Paediatric allogeneic haematopoietic stem cell transplantation (SCT); ciclosporin given as GVHD prophylaxis. Exclusions: severe renal dysfunction (serum creatinine > 2x ULN), severe liver dysfunction (bilirubin > 50 umol/L) or coagulopathy, veno-occlusive disease, respiratory insufficiency, haemodynamic instability.",
-    dose_range     = "Intravenous Sandimmune 2 mg/kg/day in two short 2-h infusions starting the day before graft infusion, then oral Neoral microemulsion twice daily (every 12 h) with the daily dose tripled to compensate for oral bioavailability; doses adjusted to keep trough between 50 and 200 ug/L.",
-    regions        = "Netherlands (single centre, Leiden University Medical Centre)",
-    study_period   = "Prospective enrolment January 2002 to October 2005",
-    formulations   = "Sandimmune (intravenous) and Neoral microemulsion (oral); Novartis Pharma, Basel, Switzerland",
-    notes          = "Patients enrolled in the paediatric SCT unit at Leiden University Medical Centre. Inclusion required body weight > 10 kg and at least 2 days of ciclosporin treatment before sampling. Whole-blood ciclosporin was measured by fluorescence polarization immunoassay (Abbott AxSYM). Trough was sampled before each dose; additional samples were taken at multiple post-dose time points (see Figure 1 of the source). Baseline demographics in Table 1 of the source."
+    disease_state = "Paediatric allogeneic haematopoietic stem cell transplantation (SCT); ciclosporin given as GVHD prophylaxis. Exclusions: severe renal dysfunction (serum creatinine > 2x ULN), severe liver dysfunction (bilirubin > 50 umol/L) or coagulopathy, veno-occlusive disease, respiratory insufficiency, haemodynamic instability.",
+    dose_range = "Intravenous Sandimmune 2 mg/kg/day in two short 2-h infusions starting the day before graft infusion, then oral Neoral microemulsion twice daily (every 12 h) with the daily dose tripled to compensate for oral bioavailability; doses adjusted to keep trough between 50 and 200 ug/L.",
+    regions = "Netherlands (single centre, Leiden University Medical Centre)",
+    study_period = "Prospective enrolment January 2002 to October 2005",
+    formulations = "Sandimmune (intravenous) and Neoral microemulsion (oral); Novartis Pharma, Basel, Switzerland",
+    notes = "Patients enrolled in the paediatric SCT unit at Leiden University Medical Centre. Inclusion required body weight > 10 kg and at least 2 days of ciclosporin treatment before sampling. Whole-blood ciclosporin was measured by fluorescence polarization immunoassay (Abbott AxSYM). Trough was sampled before each dose; additional samples were taken at multiple post-dose time points (see Figure 1 of the source). Baseline demographics in Table 1 of the source."
   )
 
   ini({

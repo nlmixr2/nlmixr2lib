@@ -29,30 +29,36 @@ Huang_2025_dexmedetomidine <- function() {
     sep = " "
   )
   vignette <- "Huang_2025_dexmedetomidine"
-  units    <- list(time = "h", dosing = "ug", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
   compartmentData <- list(
     depot = list(
-      analyte = "dexmedetomidine", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "dexmedetomidine",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "dexmedetomidine", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "dexmedetomidine",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "dexmedetomidine", units = "ug",
-      specimen = "tissue", verified = TRUE
+      analyte = "dexmedetomidine",
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives theory-based allometric scaling of CL and Q (exponent 0.75)",
         "and of Vc and Vp (exponent 1), both fixed a priori rather than",
         "estimated. Huang 2025 Results 'Pharamcokinetic modeling': 'with BW",
@@ -83,14 +89,14 @@ Huang_2025_dexmedetomidine <- function() {
         "content -- see the validation vignette Errata for the full scoring",
         "tables and the Figure 5 defect."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient undergoing elective abdominal surgery, phase III NCT04383418)",
-      notes              = paste(
+      notes = paste(
         "Source column 'state (HV vs. patients)'. Applied to the absorption",
         "rate constant only, in the Methods Eq. 7 piecewise categorical form",
         "Pi = PTV if COV = type1, PTV * (1 + theta) if COV = type2. Table 4",
@@ -115,7 +121,7 @@ Huang_2025_dexmedetomidine <- function() {
         "true difference 'might be less pronounced as compared to the",
         "estimated value'."
       ),
-      source_name        = "state"
+      source_name = "state"
     )
   )
 
@@ -130,9 +136,9 @@ Huang_2025_dexmedetomidine <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on KA and CL and not retained. Table 3 median 38 years",
         "(range 18-65); the phase III cohort is materially older (median 44)",
         "than the phase I cohort (median 22)."
@@ -141,9 +147,9 @@ Huang_2025_dexmedetomidine <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on KA and CL and not retained. Table 3 reports 132 female",
         "and 64 male of 196 (67.3% female), with a higher female proportion",
         "in phase III (108/148) than phase I (24/48). Source column GENDER."
@@ -152,9 +158,9 @@ Huang_2025_dexmedetomidine <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Excluded before stepwise screening because of multicollinearity",
         "with body weight (Results: 'Due to the multicollinearity between",
         "BW, BSA and BMI, BSA and BMI were not considered during the",
@@ -165,9 +171,9 @@ Huang_2025_dexmedetomidine <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Excluded before stepwise screening because of multicollinearity",
         "with body weight (same Results sentence as BMI). Table 3 median",
         "1.6 m^2 (range 1.32-2.19)."
@@ -177,28 +183,28 @@ Huang_2025_dexmedetomidine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 196,
-    n_studies      = 2,
+    species = "human",
+    n_subjects = 196,
+    n_studies = 2,
     n_observations = 1225,
-    age_range      = "18-65 years",
-    age_median     = "38 years",
-    weight_range   = "45.2-97 kg",
-    weight_median  = "60 kg",
+    age_range = "18-65 years",
+    age_median = "38 years",
+    weight_range = "45.2-97 kg",
+    weight_median = "60 kg",
     sex_female_pct = 67.3,
     race_ethnicity = "Chinese (all subjects enrolled in China; the paper reports no race/ethnicity breakdown)",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers (phase I, n = 48) and adults undergoing elective",
       "abdominal surgery excluding liver surgery, requiring general",
       "anaesthesia, endotracheal intubation and mechanical ventilation",
       "(phase III, n = 148)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Phase I: 20 and 40 ug intravenous over 15 min; 150 ug and 100/20 ug",
       "intranasal. Phase III: 75 and 100 ug intranasal (single dose)"
     ),
-    regions        = "China",
-    notes          = paste(
+    regions = "China",
+    notes = paste(
       "Baseline demographics from Huang 2025 Table 3 (medians with min-max).",
       "Study designs from Table 1: phase I registrations CTR20191868 and",
       "CTR20171118 (three parts, intensive sampling to 10-24 h) and phase III",

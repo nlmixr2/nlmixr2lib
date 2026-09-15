@@ -1,12 +1,12 @@
 Yang_2025_matrine_pig_pbpk <- function() {
   description <- "PBPK (minimal, flow-limited; pig). Four-compartment physiologically based pharmacokinetic model for the quinolizidine alkaloid matrine in the intestinal lumen of pigs after oral administration, comprising the intestinal lumen (the sampled matrix, reached from a first-order gastric-emptying depot), liver, a lumped 'other organs' compartment carrying renal excretion, and a single well-mixed blood pool. Liver and other organs are perfusion (flow) limited with tissue-to-blood partition coefficients driven by the unbound blood concentration; drug leaves the intestinal lumen by first-order absorption into blood in competition with first-order faecal excretion, and re-enters it by first-order biliary excretion from the liver, which is what produces the observed two-phase luminal decay. Built to support dosage-regimen design against enterotoxigenic Escherichia coli colonising the small intestine, the site of infection in porcine colibacillosis (Yang 2025)."
-  reference   <- "Yang B, Jia Y, Wang F, Lv X, Ma S, Tan Y, Zhang W, Wan D, Li R, Zhou D, Yu D. The kinetic behavior of matrine in pig intestinal lumen after oral administration and its physiologically based pharmacokinetic modeling. Front Vet Sci. 2025;12:1620161. doi:10.3389/fvets.2025.1620161"
-  vignette    <- "Yang_2025_matrine_pig_pbpk"
-  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  reference <- "Yang B, Jia Y, Wang F, Lv X, Ma S, Tan Y, Zhang W, Wan D, Li R, Zhou D, Yu D. The kinetic behavior of matrine in pig intestinal lumen after oral administration and its physiologically based pharmacokinetic modeling. Front Vet Sci. 2025;12:1620161. doi:10.3389/fvets.2025.1620161"
+  vignette <- "Yang_2025_matrine_pig_pbpk"
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
   # Oral dose lands on the reconstructed gastric depot, not on `depot` or
   # `central`, so buildModelDb() cannot infer the route - state it explicitly
   # or the registry records dosing = NA.
-  dosing      <- "stomach"
+  dosing <- "stomach"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Every state integrates a drug AMOUNT in ug; the
@@ -15,40 +15,40 @@ Yang_2025_matrine_pig_pbpk <- function() {
     # `stomach` is the reconstructed gastric depot - see the Errata note in the
     # vignette and the lfdepot comment below. It holds swallowed drug that has
     # not yet reached a sampled matrix.
-    stomach   = list(analyte = "matrine", units = "ug", specimen = "administration site", verified = TRUE),
+    stomach = list(analyte = "matrine", units = "ug", specimen = "administration site", verified = TRUE),
     # The intestinal lumen IS the sampled matrix in this paper (ileal digesta
     # drawn through a T-cannula). The specimen vocabulary has no
     # 'intestinal contents' token; 'faeces' is its closest luminal-digesta
     # member and is the matrix this state drains into.
     gut_lumen = list(analyte = "matrine", units = "ug", specimen = "faeces", verified = TRUE),
-    liver     = list(analyte = "matrine", units = "ug", specimen = "tissue", verified = TRUE),
-    other     = list(analyte = "matrine", units = "ug", specimen = "tissue", verified = TRUE),
-    blood     = list(analyte = "matrine", units = "ug", specimen = "whole blood", verified = TRUE)
+    liver = list(analyte = "matrine", units = "ug", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "matrine", units = "ug", specimen = "tissue", verified = TRUE),
+    blood = list(analyte = "matrine", units = "ug", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Scales every compartment volume (Vx = Vcx * WT), the cardiac output (Qtot = Qcar * WT) and the renal clearance (CLrenal = Clrenal * WT), all of which Yang 2025 Table 5 reports as fractions of body weight or per-kilogram rates. Because the dose is also given per kilogram, luminal concentrations are body-weight invariant - which is exactly what Yang 2025 Section 4 found by sensitivity analysis (the normalised sensitivity coefficient for body weight was far below 0.1, and the model built on 24.3-31.1 kg pigs predicted the 9.8-10.3 kg experiment 2 cohort without adjustment).",
-      source_name        = "BW"
+      notes = "Scales every compartment volume (Vx = Vcx * WT), the cardiac output (Qtot = Qcar * WT) and the renal clearance (CLrenal = Clrenal * WT), all of which Yang 2025 Table 5 reports as fractions of body weight or per-kilogram rates. Because the dose is also given per kilogram, luminal concentrations are body-weight invariant - which is exactly what Yang 2025 Section 4 found by sensitivity analysis (the normalised sensitivity coefficient for body weight was far below 0.1, and the model built on 24.3-31.1 kg pigs predicted the 9.8-10.3 kg experiment 2 cohort without adjustment).",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "pig (crossbred Landrace x Large White x Duroc for experiment 1; Landrace x Large White for experiment 2)",
-    n_subjects     = 37L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = "24.3-31.1 kg (experiment 1, n = 12); 9.8-10.3 kg (experiment 2, n = 25) (Yang 2025 Section 2.2 and Table 2)",
+    species = "pig (crossbred Landrace x Large White x Duroc for experiment 1; Landrace x Large White for experiment 2)",
+    n_subjects = 37L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = "24.3-31.1 kg (experiment 1, n = 12); 9.8-10.3 kg (experiment 2, n = 25) (Yang 2025 Section 2.2 and Table 2)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy pigs; matrine given as a potential resistance-reversal agent for porcine colibacillosis rather than as treatment of an established infection",
-    dose_range     = "Experiment 1: single oral 40 mg/kg and, after a 2-week washout, 70 mg/kg, each given alone (group A) or with amoxicillin 40 mg/kg (group B), n = 6 per group. Experiment 2: 50 mg/kg/day by oral gavage for 5 consecutive days, n = 25 (Yang 2025 Section 2.3 and Table 2)",
-    regions        = "China",
+    disease_state = "Healthy pigs; matrine given as a potential resistance-reversal agent for porcine colibacillosis rather than as treatment of an established infection",
+    dose_range = "Experiment 1: single oral 40 mg/kg and, after a 2-week washout, 70 mg/kg, each given alone (group A) or with amoxicillin 40 mg/kg (group B), n = 6 per group. Experiment 2: 50 mg/kg/day by oral gavage for 5 consecutive days, n = 25 (Yang 2025 Section 2.3 and Table 2)",
+    regions = "China",
     n_observations = NA_integer_,
-    notes          = "Model parameterised against a single arm - matrine alone, 40 mg/kg, experiment 1 (Yang 2025 Table 2, 'Model parameterization') - and evaluated against the other four arms. Experiment 1 pigs carried a sterile T-cannula implanted in the terminal ileum about 15 cm cranial to the ileocecal valve, through which roughly 2 g of intestinal contents were drawn at 0.25, 0.5, 1, 2, 3, 4, 5, 8, 12, 16, 24, 36, 48, 72 and 120 h post-dose; the 0.25 h samples could not be collected because the pigs had been fasted for 12 h, so the reported absorption phase begins at 0.5 h (Yang 2025 Section 4). Experiment 2 sacrificed five pigs at each of 0.5, 1, 3, 6 and 12 days after the last dose. Physiological parameters are pig population means from the literature (Yang 2025 refs 22-24); compound-specific parameters were seeded from rat studies (refs 14, 15) and then optimised in acslXtreme 2.5.0.6 by Nelder-Mead maximum likelihood against the 40 mg/kg matrine-alone arm. No individual-level fit was performed, so the model carries no inter-individual random effects and no residual-error model; Yang 2025 evaluated it by linear regression and Pearson correlation of predicted against observed concentrations (Table 6) plus a one-sample t-test on the derived PK parameters."
+    notes = "Model parameterised against a single arm - matrine alone, 40 mg/kg, experiment 1 (Yang 2025 Table 2, 'Model parameterization') - and evaluated against the other four arms. Experiment 1 pigs carried a sterile T-cannula implanted in the terminal ileum about 15 cm cranial to the ileocecal valve, through which roughly 2 g of intestinal contents were drawn at 0.25, 0.5, 1, 2, 3, 4, 5, 8, 12, 16, 24, 36, 48, 72 and 120 h post-dose; the 0.25 h samples could not be collected because the pigs had been fasted for 12 h, so the reported absorption phase begins at 0.5 h (Yang 2025 Section 4). Experiment 2 sacrificed five pigs at each of 0.5, 1, 3, 6 and 12 days after the last dose. Physiological parameters are pig population means from the literature (Yang 2025 refs 22-24); compound-specific parameters were seeded from rat studies (refs 14, 15) and then optimised in acslXtreme 2.5.0.6 by Nelder-Mead maximum likelihood against the 40 mg/kg matrine-alone arm. No individual-level fit was performed, so the model carries no inter-individual random effects and no residual-error model; Yang 2025 evaluated it by linear regression and Pearson correlation of predicted against observed concentrations (Table 6) plus a one-sample t-test on the derived PK parameters."
   )
 
   ini({

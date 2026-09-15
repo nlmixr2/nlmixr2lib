@@ -40,11 +40,11 @@ Gotta_2014_imatinib <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as the multiplicative factor (1 + (-0.152 if ",
         "Female)), i.e. (1 - 0.152 * SEXF) (Yang 2025 Table 1). Women ",
         "therefore have a 15.2% lower typical apparent oral clearance than ",
@@ -55,14 +55,14 @@ Gotta_2014_imatinib <- function() {
         "(1 = female) matches the published contrast directly, so no sign ",
         "flip is needed."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as the HINGED LINEAR factor (1 + (AGE - 40) * ",
         "theta_Age), where Yang 2025 Table 1 footnote e supplies the two ",
         "branches: 'When Age < 40 the theta_Age = 0.00475, else theta_Age ",
@@ -81,21 +81,21 @@ Gotta_2014_imatinib <- function() {
         "to children, for whom the cohort provides no support (the study ",
         "age range is 18-91 years)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2478L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 2478L,
+    n_studies = 1L,
     n_observations = "4095 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "18-91 years",
-    disease_state  = "Adults with chronic myeloid leukemia (CML) under routine care conditions",
-    dose_range     = "Oral imatinib 100-1200 mg total daily dose",
-    regions        = "Europe",
-    bioanalytical  = "LC-MS/MS, limit of quantification 25 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "18-91 years",
+    disease_state = "Adults with chronic myeloid leukemia (CML) under routine care conditions",
+    dose_range = "Oral imatinib 100-1200 mg total daily dose",
+    regions = "Europe",
+    bioanalytical = "LC-MS/MS, limit of quantification 25 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "By far the largest cohort among the 15 models evaluated by Yang ",
       "2025 -- 2478 patients against a median of about 60 for the rest -- ",
       "and the widest dose range (100-1200 mg/day). Yang 2025 Results ",

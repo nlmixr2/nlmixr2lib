@@ -31,8 +31,8 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
   )
   vignette <- "Song_2013_olmesartan_amlodipine_hydrochlorothiazide"
   units <- list(
-    time          = "h",
-    dosing        = "n/a (no drug-dosing events; exposure enters as the covariates AUC_OLM, AUC_AML, AUC_HCTZ)",
+    time = "h",
+    dosing = "n/a (no drug-dosing events; exposure enters as the covariates AUC_OLM, AUC_AML, AUC_HCTZ)",
     concentration = "change from baseline in seated trough systolic blood pressure, in mmHg (not a drug concentration)"
   )
 
@@ -43,11 +43,11 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
 
   covariateData <- list(
     AUC_OLM = list(
-      description        = "Steady-state area under the olmesartan plasma concentration-time curve over the 24 h dosing interval.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Steady-state area under the olmesartan plasma concentration-time curve over the 24 h dosing interval.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Song 2013 M&S Methods: 'area-under-the-curve (AUCss), calculated as Dose divided by Apparent",
         "Clearance', taken from the post hoc Bayesian individual clearance of the companion population PK model",
         "modellib('Song_2013_olmesartan'). Time-fixed per subject and per regimen. Enters as the saturable Emax",
@@ -55,28 +55,28 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
         "here against 1850 in the diastolic sibling. Set AUC_OLM = 0 to remove olmesartan from the regimen.",
         "Worked typical value: 40 mg / 6.32 L/h = 6329 ng*h/mL."
       ),
-      source_name        = "AUCOM"
+      source_name = "AUCOM"
     ),
     AUC_AML = list(
-      description        = "Steady-state area under the amlodipine plasma concentration-time curve over the 24 h dosing interval.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Steady-state area under the amlodipine plasma concentration-time curve over the 24 h dosing interval.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Dose / (CL/F) from modellib('Song_2013_amlodipine'). Enters as the saturable Emax term",
         "emax_aml * AUC_AML / (AUC_AML + eauc50_aml), with eauc50_aml = 309 ng*h/mL against 453 in the",
         "diastolic sibling -- the systolic amlodipine response saturates sooner.",
         "Worked typical value: 10 mg / 23.4 L/h = 427 ng*h/mL.",
         "Set AUC_AML = 0 to remove amlodipine from the regimen."
       ),
-      source_name        = "AUCAML"
+      source_name = "AUCAML"
     ),
     AUC_HCTZ = list(
-      description        = "Steady-state area under the hydrochlorothiazide plasma concentration-time curve over the 24 h dosing interval.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Steady-state area under the hydrochlorothiazide plasma concentration-time curve over the 24 h dosing interval.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Dose / (CL/F) from modellib('Song_2013_hydrochlorothiazide'). Enters LINEARLY as",
         "slope_hctz * AUC_HCTZ / 1000 (Song 2013 Equation 4); the slope is reported in mmHg per 1000 ng*h/mL,",
         "so the division is mandatory. The systolic slope of -9.38 mmHg per 1000 ng*h/mL is nearly three times",
@@ -85,14 +85,14 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
         "Worked typical value: 25 mg / 20.3 L/h = 1232 ng*h/mL.",
         "Set AUC_HCTZ = 0 to remove hydrochlorothiazide from the regimen."
       ),
-      source_name        = "AUCHCTZ"
+      source_name = "AUCHCTZ"
     ),
     SBP = list(
-      description        = "Baseline seated trough systolic blood pressure.",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Baseline seated trough systolic blood pressure.",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (pre-treatment baseline). Measured after 5 minutes seated, as the mean of three",
         "readings (two in study 866-318) taken at 1-minute intervals at approximately the same time of day at",
         "each visit. Enters in power form on the placebo term, (SBP / 165)^4.08, and on all THREE drug-effect",
@@ -103,41 +103,41 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
         "'All data' row, n = 4873), used as a proxy for the median that Song 2013 specifies in Equation 6 but",
         "never prints."
       ),
-      source_name        = "Baseline BP"
+      source_name = "Baseline BP"
     ),
     AGE = list(
-      description        = "Subject age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters in power form on the placebo term ONLY, (AGE / 54.8)^-0.746 -- note the",
         "sign is opposite to the diastolic sibling's +1.37, so older subjects show a SMALLER systolic placebo",
         "response and a LARGER diastolic one. No age effect was retained on any systolic drug-effect term.",
         "The centering value 54.8 years is the mean age of the pooled exposure-response dataset",
         "(Song 2013 Table 2, 'All data' row)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters in power form on the amlodipine drug-effect term only,",
         "(WT / 94.9)^-0.586, i.e. 'Treatment effects of AML were lower in subjects with higher body weights'",
         "(Song 2013 Results). The centering value 94.9 kg is the mean body weight of the pooled",
         "exposure-response dataset (Song 2013 Table 2, 'All data' row), used as a proxy for the unprinted median."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters additively-fractionally (Song 2013 Equation 7) on the AMLODIPINE",
         "drug-effect term, factor (1 + 0.301), i.e. female subjects show about 30% greater systolic",
         "blood-pressure lowering from amlodipine -- the Supplemental Results narrative confirms the reading:",
@@ -146,14 +146,14 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
         "Table S7 labels it 'Effect of sex on Drug Effect of AML' and the narrative agrees with Table S7, so",
         "the effect is placed on the amlodipine term here. No sex effect was retained in the diastolic model."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator, 1 = Black, 0 = other.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator, 1 = Black, 0 = other.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters additively-fractionally (Song 2013 Equation 7) on the olmesartan",
         "drug-effect term, factor (1 - 0.393): Black subjects have less renin-angiotensin-system activation and",
         "respond less well to angiotensin receptor blockers. The systolic attenuation (39.3%) is larger than the",
@@ -162,14 +162,14 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
         "and the Supplemental Results quotes '26 and 50 %' for the same two endpoints; both parameter tables",
         "agree on -0.393 (systolic) and -0.263 (diastolic), so the tabulated values are used."
       ),
-      source_name        = "Black race"
+      source_name = "Black race"
     ),
     RACE_HISPANIC = list(
-      description        = "Hispanic / Latino ethnicity indicator, 1 = Hispanic, 0 = non-Hispanic.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hispanic / Latino ethnicity indicator, 1 = Hispanic, 0 = non-Hispanic.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Hispanic)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters additively-fractionally (Song 2013 Equation 7) on the PLACEBO term for",
         "subjects in CS8635-A-U301 only, factor (1 - 0.554): Hispanic subjects in that study showed roughly half",
         "the placebo response of the rest of the study. Song 2013 reports race and ethnicity in a single",
@@ -177,62 +177,62 @@ Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp <- function() {
         "than a separate ethnicity dimension; the canonical binary encoding is nonetheless identical. Retained",
         "in the systolic model only. n = 365 Hispanic subjects in CS8635-A-U301."
       ),
-      source_name        = "Hispanic race"
+      source_name = "Hispanic race"
     ),
     STUDY_CS8635_A_U301 = list(
-      description        = "Indicator for enrolment in study CS8635-A-U301 (TRINITY), the pivotal phase III CS-8635 triple-combination trial.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for enrolment in study CS8635-A-U301 (TRINITY), the pivotal phase III CS-8635 triple-combination trial.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the other two pooled phase III studies)",
-      notes              = paste(
+      notes = paste(
         "Selects the study-specific placebo effect of -4.20 mmHg AND gates the Hispanic-ethnicity effect on the",
         "placebo term, which Song 2013 retained only within this study. The three study indicators partition the",
         "pooled dataset and must sum to 1 for every subject; leaving all three at 0 produces a zero placebo",
         "effect, a state the model was never fitted to. n = 2458 in the exposure-response dataset."
       ),
-      source_name        = "Study CS8635-A-U301"
+      source_name = "Study CS8635-A-U301"
     ),
     STUDY_CS8663_A_U301 = list(
-      description        = "Indicator for enrolment in study CS8663-A-U301 (COACH), the pivotal phase III olmesartan / amlodipine dual-combination trial.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for enrolment in study CS8663-A-U301 (COACH), the pivotal phase III olmesartan / amlodipine dual-combination trial.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the other two pooled phase III studies)",
-      notes              = paste(
+      notes = paste(
         "Selects the study-specific placebo effect of -3.45 mmHg. Unlike the diastolic sibling, the systolic",
         "model carries no study-gated race effect on this study's placebo term.",
         "n = 1920 in the exposure-response dataset."
       ),
-      source_name        = "Study CS8663-A-U301"
+      source_name = "Study CS8663-A-U301"
     ),
     STUDY_866_318 = list(
-      description        = "Indicator for enrolment in study 866-318 (written SE866-318 in the parameter tables), the phase III olmesartan / hydrochlorothiazide dual-combination trial.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for enrolment in study 866-318 (written SE866-318 in the parameter tables), the phase III olmesartan / hydrochlorothiazide dual-combination trial.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the other two pooled phase III studies)",
-      notes              = paste(
+      notes = paste(
         "Selects the study-specific placebo effect of -5.26 mmHg, the largest of the three studies.",
         "n = 495 in the exposure-response dataset; this study also had the lowest mean baseline SBP",
         "(154 mmHg) and took only two rather than three readings per visit."
       ),
-      source_name        = "Study SE866-318"
+      source_name = "Study SE866-318"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4873L,
-    n_studies      = 3L,
-    age_range      = "mean 54.8 (SD 11) years",
-    weight_range   = "mean 94.9 (SD 22) kg",
+    species = "human",
+    n_subjects = 4873L,
+    n_studies = 3L,
+    age_range = "mean 54.8 (SD 11) years",
+    weight_range = "mean 94.9 (SD 22) kg",
     sex_female_pct = 46.1,
     race_ethnicity = c(White = 58.9, Black = 25.0, Hispanic = 13.4, Asian = 1.9, Other = 0.8),
-    disease_state  = "Adults with hypertension; 14.1% diabetic. Mean baseline seated trough BP 165/102 mmHg",
-    dose_range     = paste(
+    disease_state = "Adults with hypertension; 14.1% diabetic. Mean baseline seated trough BP 165/102 mmHg",
+    dose_range = paste(
       "olmesartan medoxomil 0-40 mg, amlodipine 0-10 mg and hydrochlorothiazide 0-25 mg once daily, in the",
       "mono-, dual- and triple-combination arms of three factorial phase III trials"
     ),
-    regions        = "United States and Europe",
-    notes          = paste(
+    regions = "United States and Europe",
+    notes = paste(
       "Demographics from Song 2013 Table 2 'All data' row (n = 4873 = 495 + 1920 + 2458), which is the pooled",
       "exposure-response dataset: 866-318 (n = 495), CS8663-A-U301 / COACH (n = 1920) and CS8635-A-U301 /",
       "TRINITY (n = 2458). Pharmacokinetic data were available for 1471 of these subjects; the remainder",

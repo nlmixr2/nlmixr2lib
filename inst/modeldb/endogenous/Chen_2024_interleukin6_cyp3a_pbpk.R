@@ -1,50 +1,50 @@
 Chen_2024_interleukin6_cyp3a_pbpk <- function() {
   description <- "PBPK (reduced from Simcyp Simulator V17). Interleukin-6 (IL-6) disposition driving concentration- and time-dependent suppression of CYP3A enzyme activity in liver and gut, developed to assess the CYP3A drug-drug interaction risk created by the transient IL-6 elevation that follows mosunetuzumab (CD3/CD20 bispecific antibody) dosing. IL-6 is described as a one-compartment intravenous model (CL 2.8 L/h determined top-down; Vss 0.43 L/kg) reduced from the Simcyp minimal-PBPK-plus-single-adjusting-compartment topology, and is driven by hypothetical zero-order IL-6 infusions rather than by mosunetuzumab pharmacokinetics (mosunetuzumab itself is never modelled). CYP3A activity in each tissue follows the Machavaram enzyme-turnover equation d(ENZact)/dt = kdeg * ENZ0 * [1 + (Emin - 1) * [IL-6] / (EC50 + [IL-6])] - kdeg * ENZact with in vitro suppression constants EC50 43.7 pg/mL and Emin 0.217 (geometric means over five human hepatocyte donors, Dickmann 2011) and Simcyp library degradation rate constants kdeg 0.0193/h (liver) and 0.03/h (gut). The tissue-specific kdeg values are what separate the liver and gut responses to a transient IL-6 pulse. The downstream midazolam and simvastatin exposure-ratio predictions are NOT part of this model: those used unmodified proprietary Simcyp V17 compound files whose in vivo clearances cannot be reconstructed from the published inputs."
-  reference   <- "Chen Y, Ma F, Jones N, Deng R, Li C, Li C-C. Assessment of CYP3A-mediated drug interaction via cytokine (IL-6) elevation for mosunetuzumab using physiologically-based pharmacokinetic modeling. CPT Pharmacometrics Syst Pharmacol. 2024;13(2):234-246. doi:10.1002/psp4.13073. Enzyme-turnover equation and in vitro suppression constants from Appendix S1 (Supplemental Material); equation attributed there to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268, in vitro constants to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422."
-  vignette    <- "Chen_2024_interleukin6_cyp3a_pbpk"
-  units       <- list(time = "h", dosing = "mg", concentration = "pg/mL")
+  reference <- "Chen Y, Ma F, Jones N, Deng R, Li C, Li C-C. Assessment of CYP3A-mediated drug interaction via cytokine (IL-6) elevation for mosunetuzumab using physiologically-based pharmacokinetic modeling. CPT Pharmacometrics Syst Pharmacol. 2024;13(2):234-246. doi:10.1002/psp4.13073. Enzyme-turnover equation and in vitro suppression constants from Appendix S1 (Supplemental Material); equation attributed there to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268, in vitro constants to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422."
+  vignette <- "Chen_2024_interleukin6_cyp3a_pbpk"
+  units <- list(time = "h", dosing = "mg", concentration = "pg/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Vss is reported in L/kg (Table 1), so the central volume is the per-kg value multiplied by body weight; this is a linear (exponent 1) weight scaling implied by the reported unit, not a fitted allometric exponent. Clearance is reported as an absolute 2.8 L/h and is NOT weight-scaled.",
-      source_name        = "WT"
+      notes = "Vss is reported in L/kg (Table 1), so the central volume is the per-kg value multiplied by body weight; this is a linear (exponent 1) weight scaling implied by the reported unit, not a fitted allometric exponent. Clearance is reported as an absolute 2.8 L/h and is NOT weight-scaled.",
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "interleukin-6",
-      units    = "mg",
+      analyte = "interleukin-6",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     enzyme_3a4_liver = list(
-      analyte  = "cytochrome P450 3A4",
-      units    = "pmol/mg microsomal protein",
+      analyte = "cytochrome P450 3A4",
+      units = "pmol/mg microsomal protein",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_3a4_gut = list(
-      analyte  = "cytochrome P450 3A4",
-      units    = "nmol/small intestine",
+      analyte = "cytochrome P450 3A4",
+      units = "nmol/small intestine",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 212,
-    n_studies      = 1,
-    age_range      = "19-75 years (Simcyp healthy-volunteer simulation population)",
+    species = "human",
+    n_subjects = 212,
+    n_studies = 1,
+    age_range = "19-75 years (Simcyp healthy-volunteer simulation population)",
     sex_female_pct = 35,
-    disease_state  = "relapsed/refractory non-Hodgkin lymphoma (source of the observed IL-6 data); CYP3A suppression verified against rheumatoid arthritis and post-hip-surgery cohorts",
-    dose_range     = "mosunetuzumab 1/2/60 mg intravenous on cycle 1 days 1/8/15 (the IL-6 source regimen); IL-6 itself is dosed as hypothetical zero-order infusions of 0.0017-0.0968 mg",
-    notes          = "Observed plasma IL-6 concentration-time profiles come from 212 patients in dose-expansion cohort B11 of study GO29781 (NCT02500407), measured by Quantikine ELISA over a validated range of 3.13-300 pg/mL (Appendix S1). Simulations used Simcyp virtual populations: healthy volunteers 10 trials x 10 subjects, age 19-75 years, 35 percent female for the mosunetuzumab application; rheumatoid arthritis 10 x 12, age 28-72 years, 67 percent female, and healthy volunteers 10 x 10, age 19-75 years, 60 percent female for the verification runs (Methods). The enzyme layer is validated in the vignette against Figure 4c (clamped IL-6) and Figure 4d (transient IL-6 after hip surgery)."
+    disease_state = "relapsed/refractory non-Hodgkin lymphoma (source of the observed IL-6 data); CYP3A suppression verified against rheumatoid arthritis and post-hip-surgery cohorts",
+    dose_range = "mosunetuzumab 1/2/60 mg intravenous on cycle 1 days 1/8/15 (the IL-6 source regimen); IL-6 itself is dosed as hypothetical zero-order infusions of 0.0017-0.0968 mg",
+    notes = "Observed plasma IL-6 concentration-time profiles come from 212 patients in dose-expansion cohort B11 of study GO29781 (NCT02500407), measured by Quantikine ELISA over a validated range of 3.13-300 pg/mL (Appendix S1). Simulations used Simcyp virtual populations: healthy volunteers 10 trials x 10 subjects, age 19-75 years, 35 percent female for the mosunetuzumab application; rheumatoid arthritis 10 x 12, age 28-72 years, 67 percent female, and healthy volunteers 10 x 10, age 19-75 years, 60 percent female for the verification runs (Methods). The enzyme layer is validated in the vignette against Figure 4c (clamped IL-6) and Figure 4d (transient IL-6 after hip surgery)."
   )
 
   ini({

@@ -25,47 +25,48 @@ Pejcic_2024_clopidogrel <- function() {
     "magnitudes and the proportional residual error are all study-",
     "specific, selected by the STUDY_CLO_BE2 indicator; inter-occasion",
     "variability on bioavailability and MTT reflects the crossover",
-    "design.")
+    "design."
+  )
   reference <- "Pejcic Z, Topic Vucenovic V, Miljkovic B, Vucicevic KM. Integrating Clopidogrel's First-Pass Effect in a Joint Semi-Physiological Population Pharmacokinetic Model of the Drug and Its Inactive Carboxylic Acid Metabolite. Pharmaceutics. 2024;16(5):685. doi:10.3390/pharmaceutics16050685"
   vignette <- "Pejcic_2024_clopidogrel"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL for clopidogrel (Cc); ug/mL for clopidogrel carboxylic acid (Cc_cloca)"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling to a 70 kg reference: exponent 0.75 on CLP, CLiaM and QiaM; exponent 1 on Vc,P, Vc,iaM, Vp,iaM and the hepatic volume Vh (Pejcic 2024 Methods section 2.2 final paragraph, and the '/70 kg' unit labels in Table 2). Liver plasma flow Qh is the one flow term NOT scaled: Table 2 labels it 'Qh (L/h)' with no '/70 kg', unlike every other clearance and volume row. Cohort weights were 74.1 +/- 13.56 kg (range 47-100) per Table 1.",
-      source_name        = "Body-weight"
+      notes = "Allometric scaling to a 70 kg reference: exponent 0.75 on CLP, CLiaM and QiaM; exponent 1 on Vc,P, Vc,iaM, Vp,iaM and the hepatic volume Vh (Pejcic 2024 Methods section 2.2 final paragraph, and the '/70 kg' unit labels in Table 2). Liver plasma flow Qh is the one flow term NOT scaled: Table 2 labels it 'Qh (L/h)' with no '/70 kg', unlike every other clearance and volume row. Cohort weights were 74.1 +/- 13.56 kg (range 47-100) per Table 1.",
+      source_name = "Body-weight"
     ),
     STUDY_CLO_BE2 = list(
-      description        = "Bioequivalence-study indicator for the Pejcic 2024 pooled clopidogrel analysis: 1 = Study 2, 0 = Study 1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Bioequivalence-study indicator for the Pejcic 2024 pooled clopidogrel analysis: 1 = Study 2, 0 = Study 1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Study 1; n = 24, sampling to 48 h, 14 samples per subject per period).",
-      notes              = "Selects every study-specific parameter in the joint model: MTT (0.470 vs 0.410 h), the generic relative bioavailability Fgen (1.08 vs 0.960), the fraction parameter FR1 (119 vs 76.8), the IIV on F and FR1, the IOV on F and MTT, and the proportional residual error (41.95% vs 29.39%). Pejcic 2024 Discussion paragraph 3: 'we opted to estimate certain parameters separately for each study ... as the data were derived from different study conditions'. Time-fixed within subject; each subject participated in exactly one study.",
-      source_name        = "Study 1 / Study 2"
+      notes = "Selects every study-specific parameter in the joint model: MTT (0.470 vs 0.410 h), the generic relative bioavailability Fgen (1.08 vs 0.960), the fraction parameter FR1 (119 vs 76.8), the IIV on F and FR1, the IOV on F and MTT, and the proportional residual error (41.95% vs 29.39%). Pejcic 2024 Discussion paragraph 3: 'we opted to estimate certain parameters separately for each study ... as the data were derived from different study conditions'. Time-fixed within subject; each subject participated in exactly one study.",
+      source_name = "Study 1 / Study 2"
     ),
     FORM_CLO_GENERIC = list(
-      description        = "Clopidogrel product indicator: 1 = the study's generic 75 mg film-coated test tablet, 0 = the Plavix 75 mg film-coated reference tablet.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Clopidogrel product indicator: 1 = the study's generic 75 mg film-coated test tablet, 0 = the Plavix 75 mg film-coated reference tablet.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Plavix 75 mg film-coated tablets, Sanofi Winthrop Industrie, Ambares, France -- the reference medicine in both studies, whose bioavailability F is the fixed 100% anchor).",
-      notes              = "Switches bioavailability between the fixed reference value F = 1 and the estimated study-specific relative bioavailability Fgen (Fgen_st1 = 1.08, Fgen_st2 = 0.960; Pejcic 2024 Table 2). Both 95% CIs included one. Each subject received both products, one per period of the 2-way crossover, so this covariate is time-varying within subject and is paired with OCC.",
-      source_name        = "formulation (generic / reference)"
+      notes = "Switches bioavailability between the fixed reference value F = 1 and the estimated study-specific relative bioavailability Fgen (Fgen_st1 = 1.08, Fgen_st2 = 0.960; Pejcic 2024 Table 2). Both 95% CIs included one. Each subject received both products, one per period of the 2-way crossover, so this covariate is time-varying within subject and is paired with OCC.",
+      source_name = "formulation (generic / reference)"
     ),
     OCC = list(
-      description        = "Crossover period indicator used for inter-occasion variability: 1 = first study period, 2 = second study period.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Crossover period indicator used for inter-occasion variability: 1 = first study period, 2 = second study period.",
+      units = "(count)",
+      type = "categorical",
       reference_category = "n/a -- decomposed inside model() into mutually exclusive indicators oc1 = (OCC == 1) and oc2 = (OCC == 2).",
-      notes              = "Both studies used the same 2-treatment, 2-period, 2-sequence crossover design, so there are exactly two occasions per subject. IOV was placed on the absorption parameters F and MTT (Pejcic 2024 Methods section 2.2: 'considering the cross-over design of bioequivalence studies, inter-occasional variability (IOV) was incorporated in the absorption parameters'); adding it reduced OFV by 284.202 and AIC by 264.562.",
-      source_name        = "period"
+      notes = "Both studies used the same 2-treatment, 2-period, 2-sequence crossover design, so there are exactly two occasions per subject. IOV was placed on the absorption parameters F and MTT (Pejcic 2024 Methods section 2.2: 'considering the cross-over design of bioequivalence studies, inter-occasional variability (IOV) was incorporated in the absorption parameters'); adding it reduced OFV by 284.202 and AIC by 264.562.",
+      source_name = "period"
     )
   )
 
@@ -79,85 +80,115 @@ Pejcic_2024_clopidogrel <- function() {
   # real covariate above.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Table 1: 31.94 +/- 8.51 years (range 19-54). Collected, not modelled."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Table 1: 21 of 50 subjects female (42.00%). Collected, not modelled."
     ),
     HT = list(
-      description = "Height", units = "cm", type = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       notes = "Table 1: 177.26 +/- 9.06 cm (range 155-194). Collected, not modelled."
     ),
     BMI = list(
-      description = "Body mass index", units = "kg/m^2", type = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Table 1: 23.40 +/- 2.66 kg/m^2 (range 19.10-29.30). An inclusion criterion (Study 1 19-26, Study 2 19-29), not a model covariate."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Table 1: 9.1 +/- 4.43 umol/L (range 3-25). Collected as a hepatic-function screen, not modelled."
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Table 1: 81.5 +/- 17.70 umol/L (range 53-114). Collected, not modelled."
     ),
     ALT = list(
-      description = "Alanine transaminase", units = "U/L", type = "continuous",
+      description = "Alanine transaminase",
+      units = "U/L",
+      type = "continuous",
       notes = "Table 1: 26.2 +/- 9.85 U/L (range 11-52). Collected as a hepatic-function screen, not modelled."
     ),
     AST = list(
-      description = "Aspartate transaminase", units = "U/L", type = "continuous",
+      description = "Aspartate transaminase",
+      units = "U/L",
+      type = "continuous",
       notes = "Table 1: 23.7 +/- 4.80 U/L (range 16-35). Collected as a hepatic-function screen, not modelled."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "clopidogrel", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "clopidogrel",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "clopidogrel", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "clopidogrel",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "clopidogrel", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "clopidogrel",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     liver = list(
-      analyte = "clopidogrel", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "clopidogrel",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     ),
     central = list(
-      analyte = "clopidogrel", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "clopidogrel",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_cloca = list(
-      analyte = "clopidogrel carboxylic acid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "clopidogrel carboxylic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_cloca = list(
-      analyte = "clopidogrel carboxylic acid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "clopidogrel carboxylic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 2L,
     n_observations = "841 non-zero clopidogrel and 1149 non-zero clopidogrel carboxylic acid plasma concentrations, from 1556 protocol-scheduled samples (54.04% and 73.84% respectively). Samples below the LLOQ were excluded; 87.48% of the excluded clopidogrel BLLOQs were at or after 6 h, and 78.50% of the excluded CLO-CA BLLOQs were at or after 12 h.",
-    age_range      = "19-54 years (Table 1; mean 31.94 +/- 8.51). Per the Methods narrative, Study 1 enrolled subjects aged 21-53 and Study 2 aged 19-42.",
-    weight_range   = "47-100 kg (Table 1; mean 74.1 +/- 13.56)",
-    height_range   = "155-194 cm (Table 1; mean 177.26 +/- 9.06)",
-    bmi_range      = "19.10-29.30 kg/m^2 (Table 1; mean 23.40 +/- 2.66). Inclusion criteria: BMI 19-26 kg/m^2 in Study 1 and 19-29 kg/m^2 in Study 2.",
+    age_range = "19-54 years (Table 1; mean 31.94 +/- 8.51). Per the Methods narrative, Study 1 enrolled subjects aged 21-53 and Study 2 aged 19-42.",
+    weight_range = "47-100 kg (Table 1; mean 74.1 +/- 13.56)",
+    height_range = "155-194 cm (Table 1; mean 177.26 +/- 9.06)",
+    bmi_range = "19.10-29.30 kg/m^2 (Table 1; mean 23.40 +/- 2.66). Inclusion criteria: BMI 19-26 kg/m^2 in Study 1 and 19-29 kg/m^2 in Study 2.",
     sex_female_pct = 42.0,
     race_ethnicity = c(White = 100),
-    disease_state  = "Healthy adult volunteers meeting predefined inclusion / exclusion criteria for a bioequivalence study; no disease. Baseline hepatic and renal screening values were all within the normal range (Table 1: total bilirubin 9.1 +/- 4.43 umol/L, serum creatinine 81.5 +/- 17.70 umol/L, ALT 26.2 +/- 9.85 U/L, AST 23.7 +/- 4.80 U/L).",
-    dose_range     = "Single oral 150 mg dose (2 x 75 mg film-coated tablets) under fasting conditions, given once as the generic test product and once as Plavix 75 mg reference, per the randomisation scheme of a 2-treatment, 2-period, 2-sequence crossover. The 150 mg (double) dose was chosen so that concentrations would be high enough for the assay to quantify.",
-    regions        = "Serbia (Military Medical Academy, Belgrade); subjects of Caucasian origin.",
-    notes          = "Study 1: n = 24, sampling to 48 h post-dose, 14 samples per subject per period (672 samples). Study 2: n = 26, sampling to 36 h post-dose, 17 samples per subject per period (884 samples). Plasma clopidogrel and CLO-CA were assayed by a validated HPLC-MS method with LLOQ 0.5 ng/mL (clopidogrel) and 0.1 ug/mL (CLO-CA). Observed mean maximum concentrations were 7.2 ng/mL for clopidogrel and 4.9 ug/mL for CLO-CA. No statistically significant differences in subject characteristics between the two studies (Table 1). Data were a secondary use of two sponsor-provided bioequivalence datasets; the underlying data are not publicly available."
+    disease_state = "Healthy adult volunteers meeting predefined inclusion / exclusion criteria for a bioequivalence study; no disease. Baseline hepatic and renal screening values were all within the normal range (Table 1: total bilirubin 9.1 +/- 4.43 umol/L, serum creatinine 81.5 +/- 17.70 umol/L, ALT 26.2 +/- 9.85 U/L, AST 23.7 +/- 4.80 U/L).",
+    dose_range = "Single oral 150 mg dose (2 x 75 mg film-coated tablets) under fasting conditions, given once as the generic test product and once as Plavix 75 mg reference, per the randomisation scheme of a 2-treatment, 2-period, 2-sequence crossover. The 150 mg (double) dose was chosen so that concentrations would be high enough for the assay to quantify.",
+    regions = "Serbia (Military Medical Academy, Belgrade); subjects of Caucasian origin.",
+    notes = "Study 1: n = 24, sampling to 48 h post-dose, 14 samples per subject per period (672 samples). Study 2: n = 26, sampling to 36 h post-dose, 17 samples per subject per period (884 samples). Plasma clopidogrel and CLO-CA were assayed by a validated HPLC-MS method with LLOQ 0.5 ng/mL (clopidogrel) and 0.1 ug/mL (CLO-CA). Observed mean maximum concentrations were 7.2 ng/mL for clopidogrel and 4.9 ug/mL for CLO-CA. No statistically significant differences in subject characteristics between the two studies (Table 1). Data were a secondary use of two sponsor-provided bioequivalence datasets; the underlying data are not publicly available."
   )
 
   ini({

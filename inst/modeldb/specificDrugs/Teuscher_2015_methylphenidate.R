@@ -15,34 +15,34 @@ Teuscher_2015_methylphenidate <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "methylphenidate", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "methylphenidate", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "methylphenidate", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "methylphenidate", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "methylphenidate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight; used in the unnormalized power model CL = CL_TV * WT^theta (Eq 4). No reference weight in the published parameterization.",
-      source_name        = "WT"
+      notes = "Baseline body weight; used in the unnormalized power model CL = CL_TV * WT^theta (Eq 4). No reference weight in the published parameterization.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 17L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 17L,
+    n_studies = 1L,
     n_observations = "154 plasma MPH concentrations supplied the pediatric population PK fit (Results).",
-    age_range      = "6-12 years",
-    weight_range   = "Pediatric ADHD cohort; simulations in the source paper spanned 70-150 lb (~32-68 kg).",
+    age_range = "6-12 years",
+    weight_range = "Pediatric ADHD cohort; simulations in the source paper spanned 70-150 lb (~32-68 kg).",
     sex_female_pct = NA_real_,
-    disease_state  = "Children with attention deficit hyperactivity disorder (ADHD).",
-    dose_range     = "Single oral doses of MPH-MLR (Aptensio XR) 10, 15, 20, 30, or 40 mg strengths in a single-center, randomized, open-label, two-way crossover study comparing MPH-MLR with IR methylphenidate. Only the MPH-MLR arm was used for the pediatric PK fit. Sparse plasma sampling at predose and 1, 2, 3, 4, 5, 6, 8, 10, 12, and 24 h postdose.",
-    regions        = "United States.",
-    notes          = "Pediatric PK structure inherited from a separately developed adult PK model (Methods, Population PK modeling); the pediatric fit added body weight as a covariate on CL (Eq 4). Source dataset described in Methods, Data sources."
+    disease_state = "Children with attention deficit hyperactivity disorder (ADHD).",
+    dose_range = "Single oral doses of MPH-MLR (Aptensio XR) 10, 15, 20, 30, or 40 mg strengths in a single-center, randomized, open-label, two-way crossover study comparing MPH-MLR with IR methylphenidate. Only the MPH-MLR arm was used for the pediatric PK fit. Sparse plasma sampling at predose and 1, 2, 3, 4, 5, 6, 8, 10, 12, and 24 h postdose.",
+    regions = "United States.",
+    notes = "Pediatric PK structure inherited from a separately developed adult PK model (Methods, Population PK modeling); the pediatric fit added body weight as a covariate on CL (Eq 4). Source dataset described in Methods, Data sources."
   )
 
   ini({

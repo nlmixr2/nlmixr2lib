@@ -15,17 +15,17 @@ Matcha_2025_amikacin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Enters CL through an UNCENTRED EXPONENTIAL form,",
         "Exp^(WT * 0.308) (Matcha 2025 Eq. 4) -- not the more common",
         "allometric power form. Because the form is uncentred, the lcl",
@@ -39,14 +39,14 @@ Matcha_2025_amikacin <- function() {
         "(Table 3) spans 2.00-4.50 kg.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Measured individual serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Measured individual serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Paired with the internally-derived age-typical",
         "reference creatinine (see the PNA entry): CL carries the factor",
         "(SCrmean / CREAT)^0.397, so a neonate whose creatinine equals the",
@@ -58,14 +58,14 @@ Matcha_2025_amikacin <- function() {
         "are divided.",
         sep = " "
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological age since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological age since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. The canonical PNA column is in MONTHS, but the",
         "published equation takes PNA in DAYS, so model() converts with",
         "PNA_days = PNA * 30.4375 (the same reparameterisation precedent",
@@ -80,28 +80,28 @@ Matcha_2025_amikacin <- function() {
         "sampling 0.62-27.32 days, median 5.02 days (Table 1).",
         sep = " "
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 78,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 78,
+    n_studies = 1,
     n_observations = 100,
-    age_range      = "PNA at start of amikacin 0.04-21.29 days; PNA at sample collection 0.62-27.32 days",
-    age_median     = "PNA 1.70 days at start of amikacin; 5.02 days at sample collection",
-    ga_range       = "Gestational age 37-42 weeks (term only); postmenstrual age at start of amikacin 37.11-42.22 weeks",
-    ga_median      = "Gestational age 39 weeks; postmenstrual age 39.20 weeks",
-    weight_range   = "Current body weight 1.74-4.84 kg; birth weight 1.75-4.50 kg",
-    weight_median  = "Current body weight 2.85 kg; birth weight 2.95 kg",
+    age_range = "PNA at start of amikacin 0.04-21.29 days; PNA at sample collection 0.62-27.32 days",
+    age_median = "PNA 1.70 days at start of amikacin; 5.02 days at sample collection",
+    ga_range = "Gestational age 37-42 weeks (term only); postmenstrual age at start of amikacin 37.11-42.22 weeks",
+    ga_median = "Gestational age 39 weeks; postmenstrual age 39.20 weeks",
+    weight_range = "Current body weight 1.74-4.84 kg; birth weight 1.75-4.50 kg",
+    weight_median = "Current body weight 2.85 kg; birth weight 2.95 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported; single-centre Indian cohort",
-    disease_state  = "Term neonates prescribed amikacin for suspected or confirmed sepsis; clinically unstable neonates were excluded.",
-    dose_range     = "25-110 mg IV (median 40 mg), equivalent to 8.23-51.89 mg/kg (median 12.52 mg/kg)",
-    regions        = "India (single-centre prospective observational study; Kasturba Medical College, Manipal)",
+    disease_state = "Term neonates prescribed amikacin for suspected or confirmed sepsis; clinically unstable neonates were excluded.",
+    dose_range = "25-110 mg IV (median 40 mg), equivalent to 8.23-51.89 mg/kg (median 12.52 mg/kg)",
+    regions = "India (single-centre prospective observational study; Kasturba Medical College, Manipal)",
     renal_function = "Serum creatinine 0.16-1.49 mg/dL (median 0.55); Schwartz-estimated creatinine clearance 12.68-145.0 mL/min (median 40.98), computed with k = 0.45",
-    notes          = paste(
+    notes = paste(
       "Demographics from Matcha 2025 Table 1. 101 concentrations were",
       "collected from 80 neonates; after removing one outlying observation",
       "(154 mg/L) and one subject with all concentrations missing,",
@@ -112,7 +112,7 @@ Matcha_2025_amikacin <- function() {
       "100% success).",
       sep = " "
     ),
-    sex_note       = "Sex distribution not reported in Matcha 2025."
+    sex_note = "Sex distribution not reported in Matcha 2025."
   )
 
   ini({

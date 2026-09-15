@@ -8,75 +8,75 @@ Fau_2020_isatuximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CLinf (steady-state linear clearance, exponent 0.621), Vc (0.472), Vp (0.719), and Q (0.477). Reference 75.6 kg (Fau 2020 Table S1 population median).",
-      source_name        = "WT"
+      notes = "Power covariate on CLinf (steady-state linear clearance, exponent 0.621), Vc (0.472), Vp (0.719), and Q (0.477). Reference 75.6 kg (Fau 2020 Table S1 population median).",
+      source_name = "WT"
     ),
     B2M = list(
-      description        = "Baseline serum beta-2-microglobulin",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline serum beta-2-microglobulin",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CLinf (exponent 0.343). Reference 3.90 mg/L (Fau 2020 Table S1 population median).",
-      source_name        = "B2M"
+      notes = "Power covariate on CLinf (exponent 0.343). Reference 3.90 mg/L (Fau 2020 Table S1 population median).",
+      source_name = "B2M"
     ),
     MM_NIGG = list(
-      description        = "Multiple-myeloma immunoglobulin type indicator: 1 = non-IgG MM, 0 = IgG MM",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiple-myeloma immunoglobulin type indicator: 1 = non-IgG MM, 0 = IgG MM",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IgG MM)",
-      notes              = "Exponential effect on both CLinf (-0.751) and KCL (-0.931). Patients secreting non-IgG monoclonal protein have lower linear clearance and a faster transition to steady-state CL than IgG-secretors; the mechanism proposed by Fau 2020 is that endogenous IgG M-protein in IgG-MM patients competes with the therapeutic mAb for FcRn-mediated salvage, increasing isatuximab clearance. Source column 'Ig_type' takes the value 1 for non-IgG MM and 0 for IgG MM.",
-      source_name        = "Ig_type"
+      notes = "Exponential effect on both CLinf (-0.751) and KCL (-0.931). Patients secreting non-IgG monoclonal protein have lower linear clearance and a faster transition to steady-state CL than IgG-secretors; the mechanism proposed by Fau 2020 is that endogenous IgG M-protein in IgG-MM patients competes with the therapeutic mAb for FcRn-mediated salvage, increasing isatuximab clearance. Source column 'Ig_type' takes the value 1 for non-IgG MM and 0 for IgG MM.",
+      source_name = "Ig_type"
     ),
     FORM_ISA_P2F2 = list(
-      description        = "Drug-material indicator: 1 = P2F2 (phase III / commercial-bound material), 0 = P1F1 (early-phase material)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Drug-material indicator: 1 = P2F2 (phase III / commercial-bound material), 0 = P1F1 (early-phase material)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (P1F1)",
-      notes              = "Exponential effect on Vc (-0.137). The P2F2 material was used in the phase III ICARIA-MM study (EFC14335) and is the intended commercial formulation; P1F1 was used in the earlier phase I/II/Ib studies. Set to 1 to simulate the marketed material.",
-      source_name        = "Drug_mat"
+      notes = "Exponential effect on Vc (-0.137). The P2F2 material was used in the phase III ICARIA-MM study (EFC14335) and is the intended commercial formulation; P1F1 was used in the earlier phase I/II/Ib studies. Set to 1 to simulate the marketed material.",
+      source_name = "Drug_mat"
     ),
     RACE_ASIAN = list(
-      description        = "Race indicator: 1 = Asian, 0 = non-Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: 1 = Asian, 0 = non-Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Exponential effect on Vc (-0.275). Asians made up 5.3% (n=25/476) of the analysis population (Fau 2020 Table S2).",
-      source_name        = "Asian"
+      notes = "Exponential effect on Vc (-0.275). Asians made up 5.3% (n=25/476) of the analysis population (Fau 2020 Table S2).",
+      source_name = "Asian"
     ),
     SEXF = list(
-      description        = "Biological sex indicator: 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator: 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on Vc (-0.126). Females had ~12% lower Vc than males in the typical patient.",
-      source_name        = "Sex"
+      notes = "Exponential effect on Vc (-0.126). Females had ~12% lower Vc than males in the typical patient.",
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    n_subjects     = 476L,
+    n_subjects = 476L,
     n_observations = 7697L,
-    n_studies      = 4L,
-    age_range      = "49.0-79.0 years (5th-95th percentile)",
-    age_median     = "65.0 years",
-    weight_range   = "51.3-110 kg (5th-95th percentile)",
-    weight_median  = "75.6 kg",
+    n_studies = 4L,
+    age_range = "49.0-79.0 years (5th-95th percentile)",
+    age_median = "65.0 years",
+    weight_range = "51.3-110 kg (5th-95th percentile)",
+    weight_median = "75.6 kg",
     sex_female_pct = 43.5,
     race_ethnicity = c(Caucasian = 79.2, Black = 3.8, Asian = 5.3, Other_or_Missing = 11.8),
-    disease_state  = "Relapsed / refractory multiple myeloma (RRMM); 55% IgG MM, 45% non-IgG MM (Fau 2020 Table S2). 76.7% with detectable serum M-protein at baseline. ECOG 0/1/>=2 = 31.9% / 58.2% / 9.9%. ISS stage I/II/III = 36.3% / 38.2% / 25.4%.",
-    dose_range     = "Isatuximab 1-20 mg/kg as ~1-h IV infusion; 91% of subjects received the marketed 10 or 20 mg/kg doses. Phase III combination dose 10 mg/kg q4w (cycle 1, weekly x 4) then q2w with pomalidomide-dexamethasone. Some early-phase cohorts dosed q2w throughout.",
-    regions        = "Multinational pooled across 4 trials: TED10893 (phase I/II monotherapy, n=258), TED14154 (phase I, n=26), TCD14079 (phase Ib combination, n=44), and EFC14335 / ICARIA-MM (phase III combination, n=148).",
-    notes          = "Pooled analysis from 4 clinical trials supporting the FDA approval of isatuximab + pomalidomide + dexamethasone for RRMM (March 2020). Baseline demographics from Fau 2020 Tables S1-S2. Drug material: 40.1% P1F1, 59.9% P2F2 (commercial-bound). Median baseline beta-2-microglobulin 3.90 mg/L. Median baseline serum M-protein 18.0 g/L. eGFR-MDRD median 68.3 mL/min/1.73 m2. The model uses Monolix's combined additive + proportional residual-error parameterization; CLm is normally distributed while all other inter-individual variabilities are log-normal."
+    disease_state = "Relapsed / refractory multiple myeloma (RRMM); 55% IgG MM, 45% non-IgG MM (Fau 2020 Table S2). 76.7% with detectable serum M-protein at baseline. ECOG 0/1/>=2 = 31.9% / 58.2% / 9.9%. ISS stage I/II/III = 36.3% / 38.2% / 25.4%.",
+    dose_range = "Isatuximab 1-20 mg/kg as ~1-h IV infusion; 91% of subjects received the marketed 10 or 20 mg/kg doses. Phase III combination dose 10 mg/kg q4w (cycle 1, weekly x 4) then q2w with pomalidomide-dexamethasone. Some early-phase cohorts dosed q2w throughout.",
+    regions = "Multinational pooled across 4 trials: TED10893 (phase I/II monotherapy, n=258), TED14154 (phase I, n=26), TCD14079 (phase Ib combination, n=44), and EFC14335 / ICARIA-MM (phase III combination, n=148).",
+    notes = "Pooled analysis from 4 clinical trials supporting the FDA approval of isatuximab + pomalidomide + dexamethasone for RRMM (March 2020). Baseline demographics from Fau 2020 Tables S1-S2. Drug material: 40.1% P1F1, 59.9% P2F2 (commercial-bound). Median baseline beta-2-microglobulin 3.90 mg/L. Median baseline serum M-protein 18.0 g/L. eGFR-MDRD median 68.3 mL/min/1.73 m2. The model uses Monolix's combined additive + proportional residual-error parameterization; CLm is normally distributed while all other inter-individual variabilities are log-normal."
   )
 
   ini({

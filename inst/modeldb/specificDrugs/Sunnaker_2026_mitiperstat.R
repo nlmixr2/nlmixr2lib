@@ -11,51 +11,51 @@ Sunnaker_2026_mitiperstat <- function() {
   # amounts in mg and Cc in mg/L (= ug/mL). Dosing the same model in nmol
   # returns Cc directly in nmol/L, which is the scale the paper prints.
   compartmentData <- list(
-    depot       = list(analyte = "mitiperstat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "mitiperstat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "mitiperstat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "mitiperstat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "mitiperstat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline estimated glomerular filtration rate, normalized to a body surface area of 1.73 m^2",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate, normalized to a body surface area of 1.73 m^2",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated with the CKD-EPI equation (Sunnaker 2026 Methods, Structural Base Model; Levey 2009 reference 17). Power effect on CL/F centered on 99 mL/min/1.73 m^2, the population median (Table 3 footnote). This was the only covariate carried in the base model, because renal excretion accounts for roughly 32-45 percent of mitiperstat elimination. Cohort means by study (Table 2): SAD 106, MAD 104, JCMAD 112, SATELLITE 69, renal-impairment cohort 23 and its group-matched controls 97. The paper re-estimated the final model with non-BSA-normalized eGFR (correlation 0.95 with the normalized form) and obtained similar parameter estimates.",
-      source_name        = "baseline eGFR"
+      notes = "Estimated with the CKD-EPI equation (Sunnaker 2026 Methods, Structural Base Model; Levey 2009 reference 17). Power effect on CL/F centered on 99 mL/min/1.73 m^2, the population median (Table 3 footnote). This was the only covariate carried in the base model, because renal excretion accounts for roughly 32-45 percent of mitiperstat elimination. Cohort means by study (Table 2): SAD 106, MAD 104, JCMAD 112, SATELLITE 69, renal-impairment cohort 23 and its group-matched controls 97. The paper re-estimated the final model with non-BSA-normalized eGFR (correlation 0.95 with the normalized form) and obtained similar parameter estimates.",
+      source_name = "baseline eGFR"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (time-fixed), not time-varying. Power effect on CL/F centered on 77.95 kg, the population median (Sunnaker 2026 Table 3 footnote). The exponent 0.78 was ESTIMATED, not held at an allometric 0.75; the paper explicitly tried fixed allometric scaling instead and reports that it slightly worsened the fit (Results, Final Model; Table S2). Baseline BMI correlates strongly with body weight (Pearson 0.8) and was therefore excluded from the covariate search; see covariatesDataExcluded.",
-      source_name        = "baseline body weight"
+      notes = "Baseline (time-fixed), not time-varying. Power effect on CL/F centered on 77.95 kg, the population median (Sunnaker 2026 Table 3 footnote). The exponent 0.78 was ESTIMATED, not held at an allometric 0.75; the paper explicitly tried fixed allometric scaling instead and reports that it slightly worsened the fit (Results, Final Model; Table S2). Baseline BMI correlates strongly with body weight (Pearson 0.8) and was therefore excluded from the covariate search; see covariatesDataExcluded.",
+      source_name = "baseline body weight"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Vc/F centered on 41 years, the population median (Sunnaker 2026 Table 3 footnote). Age and eGFR are negatively correlated in this pooled data set (Pearson -0.7), and age was high only in the SATELLITE cohort, which was also the only cohort with heart failure; the paper states the Vc/F-age association should therefore be interpreted with caution (Discussion).",
-      source_name        = "age"
+      notes = "Power effect on Vc/F centered on 41 years, the population median (Sunnaker 2026 Table 3 footnote). Age and eGFR are negatively correlated in this pooled data set (Pearson -0.7), and age was high only in the SATELLITE cohort, which was also the only cohort with heart failure; the paper states the Vc/F-age association should therefore be interpreted with caution (Discussion).",
+      source_name = "age"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Linear fractional increase of CL/F in Asian relative to non-Asian participants; the canonical 1 = Asian orientation matches the paper's coding, so no value flip is needed. Of the 26 Asian participants, 24 came from the JCMAD study (Japanese and Chinese volunteers, defined as having both parents and four grandparents of that ethnicity) and only 2 from the MAD study, so the paper cautions that the race effect cannot be cleanly separated from other between-study differences (Discussion, limitation 2).",
-      source_name        = "race (Asian or non-Asian)"
+      notes = "Linear fractional increase of CL/F in Asian relative to non-Asian participants; the canonical 1 = Asian orientation matches the paper's coding, so no value flip is needed. Of the 26 Asian participants, 24 came from the JCMAD study (Japanese and Chinese volunteers, defined as having both parents and four grandparents of that ethnicity) and only 2 from the MAD study, so the paper cautions that the race effect cannot be cleanly separated from other between-study differences (Discussion, limitation 2).",
+      source_name = "race (Asian or non-Asian)"
     ),
     DIS_HFPEF = list(
-      description        = "Heart failure with preserved or mildly reduced ejection fraction indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Heart failure with preserved or mildly reduced ejection fraction indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer, or a patient enrolled for renal impairment rather than heart failure)",
-      notes              = "The paper's disease-status covariate, contrasting the 25 SATELLITE patients (symptomatic heart failure, left ventricular ejection fraction at or above 40 percent, elevated B-type natriuretic peptides) against the 103 participants without heart failure. Both the healthy volunteers of the SAD, MAD and JCMAD studies AND the severe-renal-impairment cohort take the value 0, because Table 2 classifies the renal-impairment participants as 'No HFpEF/HFmrEF'. The renal impairment of that cohort enters separately through CRCL, so the two covariates are not redundant.",
-      source_name        = "disease status (healthy volunteers or patients with HFpEF/HFmrEF)"
+      notes = "The paper's disease-status covariate, contrasting the 25 SATELLITE patients (symptomatic heart failure, left ventricular ejection fraction at or above 40 percent, elevated B-type natriuretic peptides) against the 103 participants without heart failure. Both the healthy volunteers of the SAD, MAD and JCMAD studies AND the severe-renal-impairment cohort take the value 0, because Table 2 classifies the renal-impairment participants as 'No HFpEF/HFmrEF'. The renal impairment of that cohort enters separately through CRCL, so the two covariates are not redundant.",
+      source_name = "disease status (healthy volunteers or patients with HFpEF/HFmrEF)"
     )
   )
 
@@ -65,41 +65,41 @@ Sunnaker_2026_mitiperstat <- function() {
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Excluded from the stepwise covariate search a priori because of its strong correlation with baseline body weight (Pearson 0.8); Sunnaker 2026 Results, Covariate Model. Cohort means by study (Table 2): SAD 24.3, MAD 25.2, JCMAD 23.3, SATELLITE 27.3, renal impairment 29.3."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Excluded from the stepwise covariate search a priori because of its strong correlation with baseline body weight (Pearson 0.8); Sunnaker 2026 Results, Covariate Model. Cohort means by study (Table 2): SAD 24.3, MAD 25.2, JCMAD 23.3, SATELLITE 27.3, renal impairment 29.3."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Excluded from the stepwise covariate search a priori because only 22 of 128 participants were female and sex was confounded with both body weight and formulation - the only two studies that enrolled women (SATELLITE and renal impairment) were also the only two that used the tablet; Sunnaker 2026 Results, Covariate Model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Excluded from the stepwise covariate search a priori because only 22 of 128 participants were female and sex was confounded with both body weight and formulation - the only two studies that enrolled women (SATELLITE and renal impairment) were also the only two that used the tablet; Sunnaker 2026 Results, Covariate Model."
     ),
     FORM_TABLET = list(
       description = "Film-coated tablet versus oral suspension formulation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a covariate on the absorption rate constant and found not significant (Sunnaker 2026 Results, Covariate Model and Discussion limitation 1). The reference oral liquid is the oral suspension used in the SAD, MAD and JCMAD studies; SATELLITE and the renal-impairment study used a film-coated tablet. The paper notes that absorption-phase data for the tablet came only from the renal-impairment study, so the power to detect a formulation effect on ka was low."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a covariate on the absorption rate constant and found not significant (Sunnaker 2026 Results, Covariate Model and Discussion limitation 1). The reference oral liquid is the oral suspension used in the SAD, MAD and JCMAD studies; SATELLITE and the renal-impairment study used a film-coated tablet. The paper notes that absorption-phase data for the tablet came only from the renal-impairment study, so the power to detect a formulation effect on ka was low."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 128,
-    n_studies      = 5,
+    species = "human",
+    n_subjects = 128,
+    n_studies = 5,
     n_observations = 2856,
-    age_range      = "18-85 years",
-    age_median     = "not reported; study-level means 33.9-35.5 years in the healthy-volunteer studies, 57.1 years in the renal-impairment study and 75.2 years in SATELLITE (Table 2). The covariate model centers age at a population median of 41 years (Table 3 footnote).",
-    weight_range   = "50-100 kg in the healthy-volunteer studies; at least 50 kg in the renal-impairment study; 54-113 kg observed in SATELLITE",
-    weight_median  = "77.95 kg (the covariate-model centering value, Table 3 footnote)",
+    age_range = "18-85 years",
+    age_median = "not reported; study-level means 33.9-35.5 years in the healthy-volunteer studies, 57.1 years in the renal-impairment study and 75.2 years in SATELLITE (Table 2). The covariate model centers age at a population median of 41 years (Table 3 footnote).",
+    weight_range = "50-100 kg in the healthy-volunteer studies; at least 50 kg in the renal-impairment study; 54-113 kg observed in SATELLITE",
+    weight_median = "77.95 kg (the covariate-model centering value, Table 3 footnote)",
     sex_female_pct = 17.2,
     race_ethnicity = c(Asian = 20.3, `Non-Asian` = 79.7),
-    disease_state  = "Healthy volunteers (83 participants), patients with heart failure with preserved or mildly reduced ejection fraction (25 participants, SATELLITE), and patients with severe renal impairment plus their group-matched normal-renal-function controls (20 participants)",
+    disease_state = "Healthy volunteers (83 participants), patients with heart failure with preserved or mildly reduced ejection fraction (25 participants, SATELLITE), and patients with severe renal impairment plus their group-matched normal-renal-function controls (20 participants)",
     renal_function = "Baseline eGFR study means 104-112 mL/min/1.73 m^2 in healthy volunteers, 69 mL/min/1.73 m^2 in SATELLITE, 23 mL/min/1.73 m^2 in the severe-renal-impairment cohort (eGFR at least 15 and below 30, not on dialysis) and 97 mL/min/1.73 m^2 in its group-matched controls",
-    dose_range     = "Single oral doses of 2.5-405 mg; once-daily oral doses of 2.5-45 mg for 10-14 days, and 2.5 mg for 10 days uptitrated to 5 mg for a further 80 days in SATELLITE",
-    formulation    = "Oral suspension in the SAD, MAD and JCMAD studies; film-coated tablet in SATELLITE and the renal-impairment study",
-    regions        = "Not reported by region; the JCMAD study enrolled Japanese and Chinese volunteers, the remaining studies enrolled a predominantly non-Asian population",
-    notes          = "Pooled from five trials: SAD NCT02712372, MAD NCT03136991, JCMAD NCT04232345, phase 2a SATELLITE NCT03756285 and the severe-renal-impairment study NCT04949438. Participant counts, demographics and baseline characteristics: Sunnaker 2026 Tables 1 and 2. Placebo recipients were excluded, as were 139 samples below the 2 nmol/L (0.2 nmol/L in the renal-impairment study) limit of quantification, 4.9 percent of the total."
+    dose_range = "Single oral doses of 2.5-405 mg; once-daily oral doses of 2.5-45 mg for 10-14 days, and 2.5 mg for 10 days uptitrated to 5 mg for a further 80 days in SATELLITE",
+    formulation = "Oral suspension in the SAD, MAD and JCMAD studies; film-coated tablet in SATELLITE and the renal-impairment study",
+    regions = "Not reported by region; the JCMAD study enrolled Japanese and Chinese volunteers, the remaining studies enrolled a predominantly non-Asian population",
+    notes = "Pooled from five trials: SAD NCT02712372, MAD NCT03136991, JCMAD NCT04232345, phase 2a SATELLITE NCT03756285 and the severe-renal-impairment study NCT04949438. Participant counts, demographics and baseline characteristics: Sunnaker 2026 Tables 1 and 2. Placebo recipients were excluded, as were 139 samples below the 2 nmol/L (0.2 nmol/L in the renal-impairment study) limit of quantification, 4.9 percent of the total."
   )
 
   ini({

@@ -40,24 +40,24 @@ Saleh_2023_quinidine_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot                = list(analyte = "quinidine", units = "ng", specimen = "administration site", verified = TRUE),
-    central              = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "quinidine", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE)
+    depot = list(analyte = "quinidine", units = "ng", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "quinidine", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "quinidine", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (NMRI)",
+    species = "mouse (NMRI)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "40 mg/kg IP (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "40 mg/kg IP (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for quinidine came from ref [18]",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -259,4 +259,3 @@ Saleh_2023_quinidine_mouse_pbpk <- function() {
     Cc ~ add(addSd)
   })
 }
-

@@ -29,17 +29,17 @@ Smythe_2013_gatifloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "gatifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "gatifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "gatifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Raw Cockcroft-Gault creatinine clearance (not BSA-normalised)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Raw Cockcroft-Gault creatinine clearance (not BSA-normalised)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Smythe 2013 equation 2 reports CLCR (mL/min) computed by the",
         "Cockcroft-Gault formula with K = 1.23 for men and K = 1.04 for",
         "women. Cohort median CLCR = 94 mL/min (Table 1). Linear effect on",
@@ -50,14 +50,14 @@ Smythe_2013_gatifloxacin <- function() {
         "raw, non-BSA-normalised Cockcroft-Gault form).",
         sep = " "
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Smythe 2013 equation 9 reports FFM derived from total body weight,",
         "height, and sex via the Janmahasatian semi-mechanistic formula",
         "(WHSMAX = 42.92, WHS50 = 30.93 in men; WHSMAX = 37.99,",
@@ -68,42 +68,42 @@ Smythe_2013_gatifloxacin <- function() {
         "(exponent 0.75) and linear scaling on V/F (exponent 1).",
         sep = " "
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort range 18-58 years, median 29 years (Table 1). Fractional",
         "linear effect on ka centred at 29 years (Smythe 2013 Table 2",
         "footnote: 'AGEka, % increase in ka for every year change from",
         "the median AGE of 29 years').",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex: 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex: 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the cohort majority, 116/169)",
-      notes              = paste(
+      notes = paste(
         "Smythe 2013 Table 2 footnote: 'SEXka, % decrease in ka for female",
         "patients relative to male patients'. Encoded as a fractional",
         "decrease applied when SEXF = 1; reference category is male per",
         "the canonical SEXF orientation.",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     HIV_POS = list(
-      description        = "HIV-1 antibody-positive status indicator: 1 = HIV+, 0 = HIV-",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 antibody-positive status indicator: 1 = HIV+, 0 = HIV-",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative; 115/169 in the cohort)",
-      notes              = paste(
+      notes = paste(
         "Smythe 2013 Table 2 footnote: 'HIV+ -ka (%), % increase in ka for",
         "patients with HIV relative to patients without HIV'. 54/169",
         "subjects HIV-positive (51 of 99 in South Africa, 3 of 25 in",
@@ -111,14 +111,14 @@ Smythe_2013_gatifloxacin <- function() {
         "subjects were antiretroviral-naive at enrolment.",
         sep = " "
       ),
-      source_name        = "HIV"
+      source_name = "HIV"
     ),
     OCC = list(
-      description        = "Sampling-occasion indicator: 1 = first-dose occasion, 2 = steady-state (day-28) occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion indicator: 1 = first-dose occasion, 2 = steady-state (day-28) occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Smythe 2013 sampled three plasma concentrations after the first",
         "dose (occasion 1) and three at steady state on approximately day",
         "28 (occasion 2). Decomposed inside model() into binary indicators",
@@ -129,37 +129,37 @@ Smythe_2013_gatifloxacin <- function() {
         "single-variance IOV reporting per parameter).",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 169L,
-    n_studies       = 1L,
-    n_observations  = 954L,
-    age_range       = "18-58 years (Table 1: median 29 years, IQR 24-35 years)",
-    weight_range    = "35-80 kg (Table 1: median 55 kg, IQR 51-60 kg)",
-    ffm_range       = "Table 1: median 45 kg, IQR 39-49 kg",
-    crcl_range      = "Table 1: median 94 mL/min, IQR 81-110 mL/min (Cockcroft-Gault)",
-    sex_female_pct  = 31.4,
-    n_hiv_positive  = 54L,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 169L,
+    n_studies = 1L,
+    n_observations = 954L,
+    age_range = "18-58 years (Table 1: median 29 years, IQR 24-35 years)",
+    weight_range = "35-80 kg (Table 1: median 55 kg, IQR 51-60 kg)",
+    ffm_range = "Table 1: median 45 kg, IQR 39-49 kg",
+    crcl_range = "Table 1: median 94 mL/min, IQR 81-110 mL/min (Cockcroft-Gault)",
+    sex_female_pct = 31.4,
+    n_hiv_positive = 54L,
+    disease_state = paste(
       "Newly diagnosed drug-sensitive pulmonary tuberculosis;",
       "antiretroviral-naive at enrolment in HIV-positive subjects."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "400 mg gatifloxacin (Lupin Pharmaceuticals) administered orally",
       "once daily for the first 2 months of treatment, irrespective of",
       "body weight, under directly observed therapy (DOT)."
     ),
-    regions         = "Africa: South Africa (n=99), Senegal (n=26), Benin (n=25), Guinea (n=19)",
-    co_medication   = paste(
+    regions = "Africa: South Africa (n=99), Senegal (n=26), Benin (n=25), Guinea (n=19)",
+    co_medication = paste(
       "Fixed-dose-combination rifampin 150 mg + isoniazid 75 mg +",
       "pyrazinamide 400 mg per tablet; 3 tablets if WT < 50 kg, 4 tablets",
       "if WT >= 50 kg. All four drugs given together once daily."
     ),
-    notes           = paste(
+    notes = paste(
       "OFLOTUB phase 3 randomised controlled trial",
       "(ClinicalTrials.gov NCT00216385); subset randomised to the",
       "4-month gatifloxacin-containing regimen. 12 of 954 observations",

@@ -43,11 +43,11 @@ Tsirizani_2025_ritonavir <- function() {
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass, the body-size descriptor for allometric scaling of clearance and volume",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass, the body-size descriptor for allometric scaling of clearance and volume",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference value 21.0 kg, taken from the supplemental NONMEM control",
         "stream (Data S1, $PK block 'TVFFM = 21.0 ;MEDIAN'). Table 3 footnote",
         "b states the typical values 'refer to a child weighing 26 kg', so",
@@ -66,14 +66,14 @@ Tsirizani_2025_ritonavir <- function() {
         "Exponents are fixed at 0.75 on CL and Q and 1 on Vc and Vp.",
         sep = " "
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     CONMED_ATAZANAVIR = list(
-      description        = "Concomitant atazanavir, i.e. the child is in the once-daily atazanavir/ritonavir arm",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant atazanavir, i.e. the child is in the once-daily atazanavir/ritonavir arm",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (darunavir/ritonavir reference arm)",
-      notes              = paste(
+      notes = paste(
         "1 = atazanavir/ritonavir arm (N = 60), 0 = not on atazanavir. Time-fixed:",
         "the companion protease inhibitor was randomised at trial entry and stable",
         "through the week-6 intensive PK day. Carries TWO effects: +137% on relative",
@@ -87,14 +87,14 @@ Tsirizani_2025_ritonavir <- function() {
         "2021 all use the indicator on a different victim drug.",
         sep = " "
       ),
-      source_name        = "PI_BCK_BONE == 2"
+      source_name = "PI_BCK_BONE == 2"
     ),
     CONMED_LOPINAVIR = list(
-      description        = "Concomitant lopinavir, i.e. the child is in the twice-daily lopinavir/ritonavir arm",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant lopinavir, i.e. the child is in the twice-daily lopinavir/ritonavir arm",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (darunavir/ritonavir reference arm)",
-      notes              = paste(
+      notes = paste(
         "1 = lopinavir/ritonavir arm (N = 51), 0 = not on lopinavir. Time-fixed.",
         "Carries -23.4% on relative bioavailability (Table 3). This is also the",
         "only arm dosed twice daily, so it is the only arm in which the evening",
@@ -103,14 +103,14 @@ Tsirizani_2025_ritonavir <- function() {
         "product CONMED_LOPINAVIR * (OCC == 1).",
         sep = " "
       ),
-      source_name        = "PI_BCK_BONE == 3"
+      source_name = "PI_BCK_BONE == 3"
     ),
     OCC = list(
-      description        = "Dosing-occasion indicator distinguishing the unwitnessed dose preceding the sampling window from the witnessed dose",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dosing-occasion indicator distinguishing the unwitnessed dose preceding the sampling window from the witnessed dose",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Two occasions, per the supplemental control stream's OCC-gated ETA",
         "assignments. OCC = 1 is the last dose taken before the intensive PK",
         "sampling window, which was NOT taken under direct observation; in the",
@@ -127,33 +127,33 @@ Tsirizani_2025_ritonavir <- function() {
         "condition, pass OCC = 2.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 170,
-    n_studies      = 1,
-    age_range      = "3.16-15.6 years",
-    age_median     = "10.5 years",
-    weight_range   = "14.2-64.2 kg",
-    weight_median  = "26.0 kg",
-    height_range   = "97.0-169 cm",
-    height_median  = "131 cm",
+    species = "human",
+    n_subjects = 170,
+    n_studies = 1,
+    age_range = "3.16-15.6 years",
+    age_median = "10.5 years",
+    weight_range = "14.2-64.2 kg",
+    weight_median = "26.0 kg",
+    height_range = "97.0-169 cm",
+    height_median = "131 cm",
     sex_female_pct = 51.2,
     race_ethnicity = "not reported by category; all participants enrolled in Zambia, Uganda and Zimbabwe",
-    disease_state  = "HIV-1 infection failing first-line antiretroviral therapy by WHO virological, CD4 or clinical criteria, starting second-line ritonavir-boosted protease-inhibitor ART",
-    dose_range     = "ritonavir 50-200 mg total daily dose (median 100 mg; 1.56-6.90 mg/kg/day) by WHO weight band, as 200/50 mg lopinavir/ritonavir twice daily, 25 mg or 100 mg ritonavir or co-formulated 300/100 mg atazanavir/ritonavir once daily, or 100 mg ritonavir once daily with darunavir",
-    regions        = "Zambia, Uganda, Zimbabwe",
-    co_medication  = "two NRTIs: tenofovir alafenamide/emtricitabine (54.7%), abacavir/lamivudine (25.3%) or zidovudine/lamivudine (20.0%); no NRTI effect on ritonavir PK was found",
-    notes          = paste(
+    disease_state = "HIV-1 infection failing first-line antiretroviral therapy by WHO virological, CD4 or clinical criteria, starting second-line ritonavir-boosted protease-inhibitor ART",
+    dose_range = "ritonavir 50-200 mg total daily dose (median 100 mg; 1.56-6.90 mg/kg/day) by WHO weight band, as 200/50 mg lopinavir/ritonavir twice daily, 25 mg or 100 mg ritonavir or co-formulated 300/100 mg atazanavir/ritonavir once daily, or 100 mg ritonavir once daily with darunavir",
+    regions = "Zambia, Uganda, Zimbabwe",
+    co_medication = "two NRTIs: tenofovir alafenamide/emtricitabine (54.7%), abacavir/lamivudine (25.3%) or zidovudine/lamivudine (20.0%); no NRTI effect on ritonavir PK was found",
+    notes = paste(
       "Baseline characteristics in Table 1, stratified by boosted protease",
       "inhibitor arm (lopinavir N = 51, atazanavir N = 60, darunavir N = 59).",
       "Nested PK sub-study of the CHAPAS-4 trial; intensive sampling after week",

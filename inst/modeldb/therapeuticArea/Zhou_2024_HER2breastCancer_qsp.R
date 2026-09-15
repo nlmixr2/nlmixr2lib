@@ -47,27 +47,68 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
   # Vp_ADC.ADC -> adc_peripheral).
   paper_specific_compartments <- c(
     # --- pharmacokinetics -------------------------------------------
-    "adc_central", "adc_peripheral", "mab_central", "mab_peripheral",
-    "pl_central", "pl_peripheral", "dar",
-    "cap_depot", "cap_central", "dfcr", "dfur", "fu",
-    "lap_depot", "lap_central", "lap_peripheral",
-    "pyr_depot", "pyr_central", "pyr_peripheral",
+    "adc_central",
+    "adc_peripheral",
+    "mab_central",
+    "mab_peripheral",
+    "pl_central",
+    "pl_peripheral",
+    "dar",
+    "cap_depot",
+    "cap_central",
+    "dfcr",
+    "dfur",
+    "fu",
+    "lap_depot",
+    "lap_central",
+    "lap_peripheral",
+    "pyr_depot",
+    "pyr_central",
+    "pyr_peripheral",
     # --- ErbB receptor network --------------------------------------
-    "EGF", "NRG1", "E1", "E2", "E3", "E4",
-    "EGF_E1", "EGF_E1_E2", "EGF_E1_E2p",
-    "E2_E2", "E2_E2p", "E2_E3", "E2_E3p",
-    "NRG1_E3", "NRG1_E2_E3", "NRG1_E2_E3p",
-    "NRG1_E4", "NRG1_E2_E4", "NRG1_E2_E4p",
+    "EGF",
+    "NRG1",
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "EGF_E1",
+    "EGF_E1_E2",
+    "EGF_E1_E2p",
+    "E2_E2",
+    "E2_E2p",
+    "E2_E3",
+    "E2_E3p",
+    "NRG1_E3",
+    "NRG1_E2_E3",
+    "NRG1_E2_E3p",
+    "NRG1_E4",
+    "NRG1_E2_E4",
+    "NRG1_E2_E4p",
     # --- downstream signalling --------------------------------------
-    "Raf", "Raf_p", "ERK", "ERK_p", "PI3K", "PI3K_p", "AKT", "AKT_p",
-    "feedback", "BTK", "BTK_p",
+    "Raf",
+    "Raf_p",
+    "ERK",
+    "ERK_p",
+    "PI3K",
+    "PI3K_p",
+    "AKT",
+    "AKT_p",
+    "feedback",
+    "BTK",
+    "BTK_p",
     # --- tumour ADC handling and growth -----------------------------
-    "ADC_ex", "ADC_E2", "ADC_E2_int", "PL_cell", "PL_ex", "Cells"
+    "ADC_ex",
+    "ADC_E2",
+    "ADC_E2_int",
+    "PL_cell",
+    "PL_ex",
+    "Cells"
   )
 
   units <- list(
-    time          = "day",
-    dosing        = "nmol/L",
+    time = "day",
+    dosing = "nmol/L",
     concentration = "nM"
   )
 
@@ -76,60 +117,125 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
   # relative cell number in vitro).  Source: Supplementary Table S1
   # sheets Species and Compartments.
   compartmentData <- list(
-    adc_central    = list(analyte = "conjugated ADC (T-DM1 or T-DXd)", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    adc_peripheral = list(analyte = "conjugated ADC (T-DM1 or T-DXd)", units = "nmol/L", specimen = "tissue", verified = TRUE),
-    mab_central    = list(analyte = "naked trastuzumab antibody", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    mab_peripheral = list(analyte = "naked trastuzumab antibody", units = "nmol/L", specimen = "tissue", verified = TRUE),
-    pl_central     = list(analyte = "released payload (DM1 or DXd)", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    pl_peripheral  = list(analyte = "released payload (DM1 or DXd)", units = "nmol/L", specimen = "tissue", verified = TRUE),
-    dar            = list(analyte = "drug-antibody ratio", units = "molecules per antibody", specimen = "not applicable", verified = TRUE),
-    cap_depot      = list(analyte = "capecitabine", units = "nmol/L", specimen = "administration site", verified = TRUE),
-    cap_central    = list(analyte = "capecitabine", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    dfcr           = list(analyte = "5'-deoxy-5-fluorocytidine (5'DFCR)", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    dfur           = list(analyte = "5'-deoxy-5-fluorouridine (5'DFUR)", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    fu             = list(analyte = "5-fluorouracil", units = "nmol/L", specimen = "plasma", verified = TRUE),
-    lap_depot      = list(analyte = "lapatinib", units = "nmol/L", specimen = "administration site", verified = TRUE),
-    lap_central    = list(analyte = "lapatinib", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    adc_central = list(
+      analyte = "conjugated ADC (T-DM1 or T-DXd)",
+      units = "nmol/L",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    adc_peripheral = list(
+      analyte = "conjugated ADC (T-DM1 or T-DXd)",
+      units = "nmol/L",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mab_central = list(analyte = "naked trastuzumab antibody", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    mab_peripheral = list(
+      analyte = "naked trastuzumab antibody",
+      units = "nmol/L",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pl_central = list(
+      analyte = "released payload (DM1 or DXd)",
+      units = "nmol/L",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    pl_peripheral = list(
+      analyte = "released payload (DM1 or DXd)",
+      units = "nmol/L",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    dar = list(
+      analyte = "drug-antibody ratio",
+      units = "molecules per antibody",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cap_depot = list(analyte = "capecitabine", units = "nmol/L", specimen = "administration site", verified = TRUE),
+    cap_central = list(analyte = "capecitabine", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    dfcr = list(analyte = "5'-deoxy-5-fluorocytidine (5'DFCR)", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    dfur = list(analyte = "5'-deoxy-5-fluorouridine (5'DFUR)", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    fu = list(analyte = "5-fluorouracil", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    lap_depot = list(analyte = "lapatinib", units = "nmol/L", specimen = "administration site", verified = TRUE),
+    lap_central = list(analyte = "lapatinib", units = "nmol/L", specimen = "plasma", verified = TRUE),
     lap_peripheral = list(analyte = "lapatinib", units = "nmol/L", specimen = "tissue", verified = TRUE),
-    pyr_depot      = list(analyte = "pyrotinib", units = "nmol/L", specimen = "administration site", verified = TRUE),
-    pyr_central    = list(analyte = "pyrotinib", units = "nmol/L", specimen = "plasma", verified = TRUE),
+    pyr_depot = list(analyte = "pyrotinib", units = "nmol/L", specimen = "administration site", verified = TRUE),
+    pyr_central = list(analyte = "pyrotinib", units = "nmol/L", specimen = "plasma", verified = TRUE),
     pyr_peripheral = list(analyte = "pyrotinib", units = "nmol/L", specimen = "tissue", verified = TRUE),
-    EGF            = list(analyte = "epidermal growth factor", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1           = list(analyte = "neuregulin-1 (heregulin)", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E1             = list(analyte = "free EGFR (ErbB1)", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E2             = list(analyte = "free HER2 (ErbB2)", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E3             = list(analyte = "free HER3 (ErbB3)", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E4             = list(analyte = "free HER4 (ErbB4)", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    EGF_E1         = list(analyte = "EGF-bound EGFR", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    EGF_E1_E2      = list(analyte = "EGF:EGFR/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    EGF_E1_E2p     = list(analyte = "phospho-EGF:EGFR/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E2_E2          = list(analyte = "HER2/HER2 homodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E2_E2p         = list(analyte = "phospho-HER2/HER2 homodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E2_E3          = list(analyte = "HER2/HER3 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    E2_E3p         = list(analyte = "phospho-HER2/HER3 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1_E3        = list(analyte = "NRG1-bound HER3", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1_E2_E3     = list(analyte = "NRG1:HER3/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1_E2_E3p    = list(analyte = "phospho-NRG1:HER3/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1_E4        = list(analyte = "NRG1-bound HER4", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1_E2_E4     = list(analyte = "NRG1:HER4/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    NRG1_E2_E4p    = list(analyte = "phospho-NRG1:HER4/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    Raf            = list(analyte = "inactive Raf", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    Raf_p          = list(analyte = "phospho-Raf", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    ERK            = list(analyte = "inactive ERK", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    ERK_p          = list(analyte = "phospho-ERK", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    PI3K           = list(analyte = "inactive PI3K", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    PI3K_p         = list(analyte = "phospho-PI3K", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    AKT            = list(analyte = "inactive AKT", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    AKT_p          = list(analyte = "phospho-AKT", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    feedback       = list(analyte = "AKT-driven negative-feedback protein acting on HER3 synthesis", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    BTK            = list(analyte = "inactive BTK", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    BTK_p          = list(analyte = "phospho-BTK", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    ADC_ex         = list(analyte = "conjugated ADC in tumour extracellular space", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    ADC_E2         = list(analyte = "HER2-bound ADC", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    ADC_E2_int     = list(analyte = "internalised ADC:HER2 complex", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    PL_cell        = list(analyte = "intracellular released payload", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    PL_ex          = list(analyte = "extracellular released payload in the tumour", units = "nmol/L", specimen = "tumor", verified = TRUE),
-    Cells          = list(analyte = "tumour burden", units = "mm3 in vivo or relative cell number in vitro", specimen = "tumor", verified = TRUE)
+    EGF = list(analyte = "epidermal growth factor", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    NRG1 = list(analyte = "neuregulin-1 (heregulin)", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E1 = list(analyte = "free EGFR (ErbB1)", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E2 = list(analyte = "free HER2 (ErbB2)", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E3 = list(analyte = "free HER3 (ErbB3)", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E4 = list(analyte = "free HER4 (ErbB4)", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    EGF_E1 = list(analyte = "EGF-bound EGFR", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    EGF_E1_E2 = list(analyte = "EGF:EGFR/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    EGF_E1_E2p = list(
+      analyte = "phospho-EGF:EGFR/HER2 heterodimer",
+      units = "nmol/L",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    E2_E2 = list(analyte = "HER2/HER2 homodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E2_E2p = list(analyte = "phospho-HER2/HER2 homodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E2_E3 = list(analyte = "HER2/HER3 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    E2_E3p = list(analyte = "phospho-HER2/HER3 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    NRG1_E3 = list(analyte = "NRG1-bound HER3", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    NRG1_E2_E3 = list(analyte = "NRG1:HER3/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    NRG1_E2_E3p = list(
+      analyte = "phospho-NRG1:HER3/HER2 heterodimer",
+      units = "nmol/L",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    NRG1_E4 = list(analyte = "NRG1-bound HER4", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    NRG1_E2_E4 = list(analyte = "NRG1:HER4/HER2 heterodimer", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    NRG1_E2_E4p = list(
+      analyte = "phospho-NRG1:HER4/HER2 heterodimer",
+      units = "nmol/L",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    Raf = list(analyte = "inactive Raf", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    Raf_p = list(analyte = "phospho-Raf", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    ERK = list(analyte = "inactive ERK", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    ERK_p = list(analyte = "phospho-ERK", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    PI3K = list(analyte = "inactive PI3K", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    PI3K_p = list(analyte = "phospho-PI3K", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    AKT = list(analyte = "inactive AKT", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    AKT_p = list(analyte = "phospho-AKT", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    feedback = list(
+      analyte = "AKT-driven negative-feedback protein acting on HER3 synthesis",
+      units = "nmol/L",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    BTK = list(analyte = "inactive BTK", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    BTK_p = list(analyte = "phospho-BTK", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    ADC_ex = list(
+      analyte = "conjugated ADC in tumour extracellular space",
+      units = "nmol/L",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    ADC_E2 = list(analyte = "HER2-bound ADC", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    ADC_E2_int = list(analyte = "internalised ADC:HER2 complex", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    PL_cell = list(analyte = "intracellular released payload", units = "nmol/L", specimen = "tumor", verified = TRUE),
+    PL_ex = list(
+      analyte = "extracellular released payload in the tumour",
+      units = "nmol/L",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    Cells = list(
+      analyte = "tumour burden",
+      units = "mm3 in vivo or relative cell number in vitro",
+      specimen = "tumor",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
@@ -137,14 +243,14 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = paste(
+    species = paste(
       "in vitro (SKBR3 primary; BT-474, NCI-N87 and ZR-75-1",
       "alternates) and mouse (BALB/c nude SKBR3 and BT-474 CDX,",
       "KPL4 CDX and a HER2-overexpressing PDX xenograft)"
     ),
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = paste(
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = paste(
       "HER2-positive breast cancer. Cell-level calibration used SKBR3",
       "(HER2 IHC 3+, 1.5e6 HER2 receptors per cell); generality was",
       "shown in BT-474 (IHC 3+), NCI-N87 (IHC 2+, 0.5e6 receptors) and",
@@ -152,7 +258,7 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
       "SKBR3, KPL4 and BT-474 mouse xenografts plus a",
       "HER2-overexpressing PDX for T-DXd."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "In vivo mouse regimens reproduced by the paper: lapatinib",
       "100 mg/kg PO daily, pyrotinib 10-30 mg/kg PO daily,",
       "capecitabine 200-400 mg/kg PO daily, T-DM1 0.2-20 mg/kg IV",
@@ -160,8 +266,8 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
       "in-house SKBR3 experiment treated from a starting tumour",
       "volume of about 80 mm3 for 14 days."
     ),
-    regions        = "Preclinical (Nanjing Medical University plus digitised literature datasets)",
-    notes          = paste(
+    regions = "Preclinical (Nanjing Medical University plus digitised literature datasets)",
+    notes = paste(
       "Scenario-specific parameter sets from Supplementary Table S1.",
       "T-DXd instead of T-DM1: Vc_PL = 0.0416 L, Vp_ADC = 0.000896 L,",
       "Vp_PL = 0.02 L, CL_ADC = 0.000138 L/day, CL_PL = 1.61088 L/day,",

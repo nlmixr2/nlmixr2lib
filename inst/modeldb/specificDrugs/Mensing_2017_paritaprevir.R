@@ -17,7 +17,7 @@ Mensing_2017_paritaprevir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "paritaprevir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "paritaprevir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "paritaprevir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -25,70 +25,70 @@ Mensing_2017_paritaprevir <- function() {
 
   covariatesDataExcluded <- list(
     HEPIMP_MILD = list(
-      description        = "Compensated cirrhosis (Child-Pugh stage A) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Compensated cirrhosis (Child-Pugh stage A) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cirrhosis)",
-      notes              = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 2.22 (1.97, 2.54) and AUC24,ss ratio of 2.40 (2.11, 2.79) for cirrhotic vs noncirrhotic patients (122-140% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model().",
-      source_name        = "CIRR"
+      notes = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 2.22 (1.97, 2.54) and AUC24,ss ratio of 2.40 (2.11, 2.79) for cirrhotic vs noncirrhotic patients (122-140% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model().",
+      source_name = "CIRR"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.92 (1.74, 2.11) and AUC24,ss ratio of 1.96 (1.76, 2.15) for females vs males (92-96% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model().",
-      source_name        = "SEX"
+      notes = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.92 (1.74, 2.11) and AUC24,ss ratio of 1.96 (1.76, 2.15) for females vs males (92-96% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model().",
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final paritaprevir model as a significant covariate on BOTH CL/F and Vc/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at Age 44 years and Age 64 years vs the cohort median of 54 years (Cmax,ss / AUC24,ss ratios of 0.81/0.83 at age 44 and 1.18/1.17 at age 64); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "AGE"
+      notes = "Retained in the author's final paritaprevir model as a significant covariate on BOTH CL/F and Vc/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at Age 44 years and Age 64 years vs the cohort median of 54 years (Cmax,ss / AUC24,ss ratios of 0.81/0.83 at age 44 and 1.18/1.17 at age 64); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final paritaprevir model as a significant covariate on Vc/F (Table 3, Mensing 2017). Figure 2 reports near-unity exposure ratios at body weight 66 kg and 86 kg vs the cohort median of 76 kg (Cmax,ss / AUC24,ss ratios of 1.01/1.00 at 66 kg and 0.99/1.00 at 86 kg); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "WT"
+      notes = "Retained in the author's final paritaprevir model as a significant covariate on Vc/F (Table 3, Mensing 2017). Figure 2 reports near-unity exposure ratios at body weight 66 kg and 86 kg vs the cohort median of 76 kg (Cmax,ss / AUC24,ss ratios of 1.01/1.00 at 66 kg and 0.99/1.00 at 86 kg); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "WT"
     ),
     CONMED_OPIOID = list(
-      description        = "Concomitant opioid use indicator (methadone, buprenorphine, with or without naloxone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant opioid use indicator (methadone, buprenorphine, with or without naloxone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant opioid)",
-      notes              = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.48 (1.27, 1.74) and AUC24,ss ratio of 1.56 (1.34, 1.86) for opioid users vs non-users (48-56% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model(). The phase II study (NCT01911845) enrolled subjects on stable opioid replacement therapy; methadone/buprenorphine use was 2% in the overall DAA pharmacokinetic data.",
-      source_name        = "OPIOID"
+      notes = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.48 (1.27, 1.74) and AUC24,ss ratio of 1.56 (1.34, 1.86) for opioid users vs non-users (48-56% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model(). The phase II study (NCT01911845) enrolled subjects on stable opioid replacement therapy; methadone/buprenorphine use was 2% in the overall DAA pharmacokinetic data.",
+      source_name = "OPIOID"
     ),
     CONMED_ANTIDIAB = list(
-      description        = "Concomitant antidiabetic-agent use indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant antidiabetic-agent use indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant antidiabetic agent)",
-      notes              = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.40 (1.18, 1.75) and AUC24,ss ratio of 1.46 (1.20, 1.86) for antidiabetic users vs non-users (40-46% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model().",
-      source_name        = "ANTIDIAB"
+      notes = "Retained in the author's final paritaprevir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.40 (1.18, 1.75) and AUC24,ss ratio of 1.46 (1.20, 1.86) for antidiabetic users vs non-users (40-46% higher exposures); the paper does not publish the covariate coefficient point estimate so the effect is not encoded in model().",
+      source_name = "ANTIDIAB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2348L,
-    n_studies      = 7L,
-    age_range      = "18-71 years",
-    age_median     = "54 years",
-    weight_range   = "42-129 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 2348L,
+    n_studies = 7L,
+    age_range = "18-71 years",
+    age_median = "54 years",
+    weight_range = "42-129 kg",
+    weight_median = "76 kg",
     sex_female_pct = 42,
     race_ethnicity = c(Asian = 2, Black = 7, Nonblack_NonAsian = 91),
     ethnicity_hispanic_latino_pct = 6,
-    disease_state  = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
-    dose_range     = "Paritaprevir 150 mg orally once daily coformulated with ritonavir 100 mg and ombitasvir 25 mg, in combination with dasabuvir 250 mg twice daily and optional weight-based ribavirin; 12-week or 24-week treatment courses. Ritonavir is co-dosed as a CYP3A4 pharmacokinetic enhancer for paritaprevir.",
-    regions        = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
-    notes          = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348). The 2% of subjects on methadone/buprenorphine and the 4% on antidiabetic agents drove the opioid-use and antidiabetic-agent covariate effects on paritaprevir CL/F (Mensing 2017 Comedication analysis)."
+    disease_state = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
+    dose_range = "Paritaprevir 150 mg orally once daily coformulated with ritonavir 100 mg and ombitasvir 25 mg, in combination with dasabuvir 250 mg twice daily and optional weight-based ribavirin; 12-week or 24-week treatment courses. Ritonavir is co-dosed as a CYP3A4 pharmacokinetic enhancer for paritaprevir.",
+    regions = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
+    notes = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348). The 2% of subjects on methadone/buprenorphine and the 4% on antidiabetic agents drove the opioid-use and antidiabetic-agent covariate effects on paritaprevir CL/F (Mensing 2017 Comedication analysis)."
   )
 
   ini({

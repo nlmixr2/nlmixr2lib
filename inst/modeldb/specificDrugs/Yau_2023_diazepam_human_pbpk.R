@@ -34,7 +34,7 @@ Yau_2023_diazepam_human_pbpk <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_middle_out_pbpk_translation"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. `central` lumps arterial blood, venous blood and lung
@@ -46,35 +46,35 @@ Yau_2023_diazepam_human_pbpk <- function() {
   # of Table 1. verified = TRUE: identities read off the paper's Table 1
   # tissue groupings and the model's own equations.
   compartmentData <- list(
-    central  = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
-    adipose  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
     pancreas = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
+    skin = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 7L,
-    age_range      = "adults; young and elderly subjects in two studies",
-    weight_range   = "70 kg reference man for the physiology (Table S6)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 7L,
+    age_range = "adults; young and elderly subjects in two studies",
+    weight_range = "70 kg reference man for the physiology (Table S6)",
     sex_female_pct = NA_real_,
-    disease_state  = "healthy volunteers",
-    dose_range     = "0.1 to 0.15 mg/kg or 10 mg intravenous, bolus to 2 min infusion (Table S2)",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "healthy volunteers",
+    dose_range = "0.1 to 0.15 mg/kg or 10 mg intravenous, bolus to 2 min infusion (Table S2)",
+    regions = NA_character_,
+    notes = paste(
       "No human data were fitted for this model: the tissue Kpu scalars",
       "were estimated on rat data and extrapolated. The seven human",
       "intravenous studies of Table S2 provided the observed Vss,b of",

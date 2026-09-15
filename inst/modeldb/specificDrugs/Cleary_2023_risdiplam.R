@@ -16,63 +16,63 @@ Cleary_2023_risdiplam <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "risdiplam", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risdiplam", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "risdiplam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying over the observation period; median PK observation period 358 days in patients with SMA).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying over the observation period; median PK observation period 358 days in patients with SMA).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power covariate with a median reference weight of 33 kg. Two separate exponents were estimated: 0.276 shared by CL/F and Q/F, and 0.860 shared by Vc/F and Vp/F (Cleary 2023 Table 2 footnote: '[WT/33]^0.276 for CL/F and [WT/33]^0.86 for Vc/F'). Time-varying body weight was used so that growth-driven changes in disposition over the multi-year observation window are captured. The CL/F exponent of 0.276 is far below the theory-based 0.75; the authors interpret this as evidence of higher metabolic activity per gram of liver in children (Discussion, ESM Fig. S25-S26).",
-      source_name        = "WT"
+      notes = "Allometric power covariate with a median reference weight of 33 kg. Two separate exponents were estimated: 0.276 shared by CL/F and Q/F, and 0.860 shared by Vc/F and Vp/F (Cleary 2023 Table 2 footnote: '[WT/33]^0.276 for CL/F and [WT/33]^0.86 for Vc/F'). Time-varying body weight was used so that growth-driven changes in disposition over the multi-year observation window are captured. The CL/F exponent of 0.276 is far below the theory-based 0.75; the authors interpret this as evidence of higher metabolic activity per gram of liver in children (Discussion, ESM Fig. S25-S26).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Postnatal age (time-varying over the observation period).",
-      units              = "years",
-      type               = "continuous",
+      description = "Postnatal age (time-varying over the observation period).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives two saturable maturation functions, Age/(Age + Age50), applied to CL/F (Age50 = 0.877 y) and to Vc/F (Age50 = 0.322 y) per the Cleary 2023 Table 2 footnote. Postnatal (not postmenstrual) age was used because most infants in the risdiplam clinical programme were born full term (Sect. 2.3). Time-varying within subject: the analysis used all available time-varying age, body weight and height records. The maturation function is a bare Emax form with no Hill coefficient and no adult normalisation, so it asymptotes to 1 rather than equalling 1 at a reference age.",
-      source_name        = "Age"
+      notes = "Drives two saturable maturation functions, Age/(Age + Age50), applied to CL/F (Age50 = 0.877 y) and to Vc/F (Age50 = 0.322 y) per the Cleary 2023 Table 2 footnote. Postnatal (not postmenstrual) age was used because most infants in the risdiplam clinical programme were born full term (Sect. 2.3). Time-varying within subject: the analysis used all available time-varying age, body weight and height records. The maturation function is a bare Emax form with no Hill coefficient and no adult normalisation, so it asymptotes to 1 rather than equalling 1 at a reference age.",
+      source_name = "Age"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator (1 = healthy adult, 0 = patient with spinal muscular atrophy).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator (1 = healthy adult, 0 = patient with spinal muscular atrophy).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with spinal muscular atrophy)",
-      notes              = "Cleary 2023 Sect. 3.1 introduced 'a factor for CL/F of healthy adults (n = 61)'. All 61 healthy participants in the pooled dataset are adults (26 from NCT02633709 and 35 from NCT03988907); the remaining 464 subjects are patients with SMA types 1, 2 or 3. Table 2 reports the effect only as 'Factor 0.524' and never states how it enters the model, so the encoding is an inferred assumption: CL/F x (1 + 0.524 x DIS_HEALTHY), i.e. healthy adults clear risdiplam 1.524-fold faster than patients with SMA at the same weight and age. The literal multiplicative reading (CL/F x 0.524) is excluded because it would place healthy adults 48% BELOW patients, contradicting ESM Fig. S4 (post-hoc CL/F geometric mean 5.60 L/h healthy vs 3.52 L/h adult SMA), the Discussion ('approximately 30% lower CL/F' in adult SMA) and the Mech-PPK Table 3 adult intrinsic clearances (healthy:SMA ratio 1.374 for CYP3A and 1.375 for FMO3). The linear form was preferred over exp(0.524) = 1.689 because 1.524 sits closer to those in-paper contrasts (1.374-1.59); see the vignette's Assumptions and deviations section. Operator-ratified in sidecar request-002 q2 (option A).",
-      source_name        = "HEALTHY"
+      notes = "Cleary 2023 Sect. 3.1 introduced 'a factor for CL/F of healthy adults (n = 61)'. All 61 healthy participants in the pooled dataset are adults (26 from NCT02633709 and 35 from NCT03988907); the remaining 464 subjects are patients with SMA types 1, 2 or 3. Table 2 reports the effect only as 'Factor 0.524' and never states how it enters the model, so the encoding is an inferred assumption: CL/F x (1 + 0.524 x DIS_HEALTHY), i.e. healthy adults clear risdiplam 1.524-fold faster than patients with SMA at the same weight and age. The literal multiplicative reading (CL/F x 0.524) is excluded because it would place healthy adults 48% BELOW patients, contradicting ESM Fig. S4 (post-hoc CL/F geometric mean 5.60 L/h healthy vs 3.52 L/h adult SMA), the Discussion ('approximately 30% lower CL/F' in adult SMA) and the Mech-PPK Table 3 adult intrinsic clearances (healthy:SMA ratio 1.374 for CYP3A and 1.375 for FMO3). The linear form was preferred over exp(0.524) = 1.689 because 1.524 sits closer to those in-paper contrasts (1.374-1.59); see the vignette's Assumptions and deviations section. Operator-ratified in sidecar request-002 q2 (option A).",
+      source_name = "HEALTHY"
     ),
     SAMPLE_CAPILLARY = list(
-      description        = "Per-observation blood sampling-site indicator (1 = capillary blood sample, 0 = venous blood sample).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation blood sampling-site indicator (1 = capillary blood sample, 0 = venous blood sample).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (venous sample)",
-      notes              = "Record-level indicator that switches the proportional residual-error magnitude per observation: venous 23.4% CV, capillary 34.2% CV (Cleary 2023 Table 2, sigma1 and sigma2). Cleary 2023 Sect. 3.1: 'a separate residual error term for capillary blood samples (3% of the dataset) were introduced.' Both matrices were assayed by the same validated LC-MS/MS method (LLOQ 0.25 ng/mL, ESM 'Bioanalytical method'), so the contrast is the sample matrix / collection site rather than the assay. May vary within a subject. Set SAMPLE_CAPILLARY = 1 on observations drawn as capillary (finger-prick / heel-prick) samples, 0 otherwise.",
-      source_name        = "SAMPLE_CAPILLARY"
+      notes = "Record-level indicator that switches the proportional residual-error magnitude per observation: venous 23.4% CV, capillary 34.2% CV (Cleary 2023 Table 2, sigma1 and sigma2). Cleary 2023 Sect. 3.1: 'a separate residual error term for capillary blood samples (3% of the dataset) were introduced.' Both matrices were assayed by the same validated LC-MS/MS method (LLOQ 0.25 ng/mL, ESM 'Bioanalytical method'), so the contrast is the sample matrix / collection site rather than the assay. May vary within a subject. Set SAMPLE_CAPILLARY = 1 on observations drawn as capillary (finger-prick / heel-prick) samples, 0 otherwise.",
+      source_name = "SAMPLE_CAPILLARY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 525L,
+    species = "human",
+    n_subjects = 525L,
     n_observations = 10205L,
-    n_studies      = 5L,
-    age_range      = "2 months-61 years",
-    age_median     = "7.5 years (model development set), 13.0 years (evaluation/validation set)",
-    weight_range   = "4.1-109 kg",
-    weight_median  = "20.9 kg (model development set), 33.7 kg (evaluation/validation set); 33 kg allometric reference",
+    n_studies = 5L,
+    age_range = "2 months-61 years",
+    age_median = "7.5 years (model development set), 13.0 years (evaluation/validation set)",
+    weight_range = "4.1-109 kg",
+    weight_median = "20.9 kg (model development set), 33.7 kg (evaluation/validation set); 33 kg allometric reference",
     sex_female_pct = 47,
-    disease_state  = "Spinal muscular atrophy types 1, 2 and 3 (n = 464) pooled with healthy adults (n = 61)",
-    dose_range     = "0.00106-18 mg oral solution, single or once-daily. Approved regimens: 0.2 mg/kg (2 months to <2 years), 0.25 mg/kg (>=2 years and <20 kg), 5 mg (>=2 years and >=20 kg)",
-    regions        = "Multinational (NCT02633709, NCT03032172, NCT02908685, NCT02913482, NCT03988907)",
-    notes          = "Pooled analysis of five clinical studies (Cleary 2023 ESM Table S1). Demographics from ESM Table S2: 130 subjects (26 healthy adults, 104 patients with SMA; 2492 observations) formed the model-development set and a further 395 subjects (35 healthy adults, 360 patients with SMA; 7713 observations) formed the evaluation/validation set; the final PPK model reported in Table 2 was fitted to all 525 subjects and 10,205 observations. Sex 278 male : 247 female across both sets. Median PK observation period 358 days in patients with SMA (439 days and up to 3 years in the 382 paediatric patients). Race/ethnicity was not reported. Estimation was FOCE-I in NONMEM 7.4; OFV = 64499; every parameter had RSE < 26% with bootstrap 95% CIs (200 replicates stratified by study, 87.5% converged). Eta-shrinkage was 5.43% (CL/F), 22.9% (ktr) and 10.1% (Vc/F). This file encodes the final PPK model only; the companion mechanistic PPK (Mech-PPK) model of Table 3, which carries the paper's novel in vivo FMO3 ontogeny function, is not yet in nlmixr2lib because it fixes the hepatic CYP3A ontogeny to the closed-access Upreti & Wahlstrom (2016) function, whose coefficients appear in no on-disk source."
+    disease_state = "Spinal muscular atrophy types 1, 2 and 3 (n = 464) pooled with healthy adults (n = 61)",
+    dose_range = "0.00106-18 mg oral solution, single or once-daily. Approved regimens: 0.2 mg/kg (2 months to <2 years), 0.25 mg/kg (>=2 years and <20 kg), 5 mg (>=2 years and >=20 kg)",
+    regions = "Multinational (NCT02633709, NCT03032172, NCT02908685, NCT02913482, NCT03988907)",
+    notes = "Pooled analysis of five clinical studies (Cleary 2023 ESM Table S1). Demographics from ESM Table S2: 130 subjects (26 healthy adults, 104 patients with SMA; 2492 observations) formed the model-development set and a further 395 subjects (35 healthy adults, 360 patients with SMA; 7713 observations) formed the evaluation/validation set; the final PPK model reported in Table 2 was fitted to all 525 subjects and 10,205 observations. Sex 278 male : 247 female across both sets. Median PK observation period 358 days in patients with SMA (439 days and up to 3 years in the 382 paediatric patients). Race/ethnicity was not reported. Estimation was FOCE-I in NONMEM 7.4; OFV = 64499; every parameter had RSE < 26% with bootstrap 95% CIs (200 replicates stratified by study, 87.5% converged). Eta-shrinkage was 5.43% (CL/F), 22.9% (ktr) and 10.1% (Vc/F). This file encodes the final PPK model only; the companion mechanistic PPK (Mech-PPK) model of Table 3, which carries the paper's novel in vivo FMO3 ontogeny function, is not yet in nlmixr2lib because it fixes the hepatic CYP3A ontogeny to the closed-access Upreti & Wahlstrom (2016) function, whose coefficients appear in no on-disk source."
   )
 
   ini({

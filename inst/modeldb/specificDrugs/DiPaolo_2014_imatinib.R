@@ -33,17 +33,17 @@ DiPaolo_2014_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AAG = list(
-      description        = "Alpha-1 acid glycoprotein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Alpha-1 acid glycoprotein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "UNIT CONVERSION IS REQUIRED RELATIVE TO THE PRINTED THRESHOLD. ",
         "Yang 2025 Table 1 prints the effect as ",
         "CL/F = 13.093 x (0.775 if AGP > 94 mg/dL) and ",
@@ -68,14 +68,14 @@ DiPaolo_2014_imatinib <- function() {
         "half-life almost unchanged while raising total-drug exposure by ",
         "about 29%."
       ),
-      source_name        = "AGP"
+      source_name = "AGP"
     ),
     SNP_SLC22A1_RS683369 = list(
-      description        = "SLC22A1 (OCT1) rs683369 c.480C>G L160F variant carrier indicator; 1 = CG or GG, 0 = CC",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLC22A1 (OCT1) rs683369 c.480C>G L160F variant carrier indicator; 1 = CG or GG, 0 = CC",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CC wild-type homozygote, whose CL/F factor is 1)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). Yang 2025 Table 1 ",
         "footnote f gives the coefficient explicitly: 'When SLC22A1 CG or ",
         "GG theta_SLC22A1 = 0.882, else theta_SLC22A1 = 1 when SLC22A1 ",
@@ -91,21 +91,21 @@ DiPaolo_2014_imatinib <- function() {
         "protein alias 'hOCT1'; the primary is titled after this ",
         "association."
       ),
-      source_name        = "hOCT1 c.480C>G (theta_SLC22A1)"
+      source_name = "hOCT1 c.480C>G (theta_SLC22A1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
     n_observations = "117 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "27-79 years",
-    disease_state  = "Adults with chronic myeloid leukemia (CML)",
-    dose_range     = "Oral imatinib 200, 400 or 600 mg total daily dose",
-    regions        = "Italy",
-    bioanalytical  = "HPLC, limit of quantification 25 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "27-79 years",
+    disease_state = "Adults with chronic myeloid leukemia (CML)",
+    dose_range = "Oral imatinib 200, 400 or 600 mg total daily dose",
+    regions = "Italy",
+    bioanalytical = "HPLC, limit of quantification 25 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "The sparsest sampling of the 15 models evaluated by Yang 2025 -- ",
       "117 samples from 60 patients, under two per subject -- which is ",
       "consistent with the absence of any random effect on Vc/F. ",

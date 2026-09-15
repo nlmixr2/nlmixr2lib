@@ -15,35 +15,35 @@ Vinnard_2017_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued sampling-visit occasion for inter-occasion-variability multiplexing on bioavailability F.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued sampling-visit occasion for inter-occasion-variability multiplexing on bioavailability F.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Two occasions in the Vinnard 2017 cohort: OCC = 1 is the first pharmacokinetic study visit (5-28 days after starting anti-TB therapy, prior to ART initiation) and OCC = 2 is the second visit (approximately 4 weeks after ART initiation). Decomposed inside model() into binary indicators oc1 and oc2 that multiplex the two IOV etas on log-F. Vinnard 2017 Methods 'Data collection' paragraph describes the two-visit design.",
-      source_name        = "OCC"
+      notes = "Two occasions in the Vinnard 2017 cohort: OCC = 1 is the first pharmacokinetic study visit (5-28 days after starting anti-TB therapy, prior to ART initiation) and OCC = 2 is the second visit (approximately 4 weeks after ART initiation). Decomposed inside model() into binary indicators oc1 and oc2 that multiplex the two IOV etas on log-F. Vinnard 2017 Methods 'Data collection' paragraph describes the two-visit design.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "21 years and older; median 32 years (IQR 27-43 years)",
-    age_median     = "32 years",
-    weight_range   = "Not directly tabulated; inferred from weight-based rifampicin dosing 7.9-12.5 mg/kg at doses of 300, 450, 600, or 750 mg (median 9.7 mg/kg)",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "21 years and older; median 32 years (IQR 27-43 years)",
+    age_median = "32 years",
+    weight_range = "Not directly tabulated; inferred from weight-based rifampicin dosing 7.9-12.5 mg/kg at doses of 300, 450, 600, or 750 mg (median 9.7 mg/kg)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Citizens of Botswana (sub-Saharan African); detailed ancestry not reported.",
-    disease_state  = "HIV-infected adults newly diagnosed with pulmonary TB and initiating standard first-line antitubercular therapy (isoniazid + rifampicin + ethambutol + pyrazinamide) under directly-observed therapy.",
-    dose_range     = "Oral rifampicin once daily at 300, 450, 600, or 750 mg per WHO weight-based dosing bands (1, 19, 17, and 3 individuals respectively); intensive phase 2 months, intermittent phase additional 4 months on rifampicin + isoniazid. 7.9-12.5 mg/kg, median 9.7 mg/kg.",
-    regions        = "Botswana (Gaborone; 22 public clinics and Princess Marina Hospital).",
-    co_medication  = "First-line antitubercular fixed-dose combinations (isoniazid + ethambutol + pyrazinamide) at visit 1; tenofovir + emtricitabine + efavirenz-based ART at visit 2.",
-    notes          = "40 HIV/TB patients completed visit 1 and 24 completed visit 2 (approximately 4 weeks after ART initiation). Median CD4 T-cell count 238 cells/uL (IQR 105-339). Exclusion criteria included pregnancy, renal insufficiency (CrCl < 50 mL/min), and hepatic dysfunction (ALT or AST > 3x ULN). Pharmacokinetic sampling at 0.3, 0.9, 2.2, 4.5, and 8 h post-dose. The paper evaluated I-FABP, sCD14, %CD38+DR+CD8+, IL-6, CD4 T-cell count, and HIV viral load as covariates on bioavailability and found none significant (Table 2)."
+    disease_state = "HIV-infected adults newly diagnosed with pulmonary TB and initiating standard first-line antitubercular therapy (isoniazid + rifampicin + ethambutol + pyrazinamide) under directly-observed therapy.",
+    dose_range = "Oral rifampicin once daily at 300, 450, 600, or 750 mg per WHO weight-based dosing bands (1, 19, 17, and 3 individuals respectively); intensive phase 2 months, intermittent phase additional 4 months on rifampicin + isoniazid. 7.9-12.5 mg/kg, median 9.7 mg/kg.",
+    regions = "Botswana (Gaborone; 22 public clinics and Princess Marina Hospital).",
+    co_medication = "First-line antitubercular fixed-dose combinations (isoniazid + ethambutol + pyrazinamide) at visit 1; tenofovir + emtricitabine + efavirenz-based ART at visit 2.",
+    notes = "40 HIV/TB patients completed visit 1 and 24 completed visit 2 (approximately 4 weeks after ART initiation). Median CD4 T-cell count 238 cells/uL (IQR 105-339). Exclusion criteria included pregnancy, renal insufficiency (CrCl < 50 mL/min), and hepatic dysfunction (ALT or AST > 3x ULN). Pharmacokinetic sampling at 0.3, 0.9, 2.2, 4.5, and 8 h post-dose. The paper evaluated I-FABP, sCD14, %CD38+DR+CD8+, IL-6, CD4 T-cell count, and HIV viral load as covariates on bioavailability and found none significant (Table 2)."
   )
 
   ini({

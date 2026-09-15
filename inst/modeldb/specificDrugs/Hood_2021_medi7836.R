@@ -9,43 +9,43 @@ Hood_2021_medi7836 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "MEDI7836", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
-    target             = list(analyte = "IL13", units = "mg", specimen = "serum", verified = FALSE),
-    complex            = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "serum", verified = FALSE),
+    depot = list(analyte = "MEDI7836", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "IL13", units = "mg", specimen = "serum", verified = FALSE),
+    complex = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "serum", verified = FALSE),
     complex_peripheral = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ADA_POS = list(
-      description        = "Post-baseline anti-drug antibody (ADA) status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Post-baseline anti-drug antibody (ADA) status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative post-baseline)",
-      notes              = "1 = subject became ADA-positive post-baseline at any visit (Hood 2021 Table 1: 21/24 active subjects, 87.5%); 0 = ADA-negative throughout. Linear fractional effect on apparent clearance per Hood 2021 Eq. 5: CL/F = (CL/F)_pop * (1 + e_ada_pos_cl * ADA_POS). The paper used post-baseline ADA status as a fixed (not time-varying) covariate, which the authors discuss as a limitation that may have biased the estimate.",
-      source_name        = "ADA"
+      notes = "1 = subject became ADA-positive post-baseline at any visit (Hood 2021 Table 1: 21/24 active subjects, 87.5%); 0 = ADA-negative throughout. Linear fractional effect on apparent clearance per Hood 2021 Eq. 5: CL/F = (CL/F)_pop * (1 + e_ada_pos_cl * ADA_POS). The paper used post-baseline ADA status as a fixed (not time-varying) covariate, which the authors discuss as a limitation that may have biased the estimate.",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = 32L,
-    n_active       = 24L,
-    n_placebo      = 8L,
-    n_studies      = 1L,
-    study          = "NCT02388347 first-in-human phase 1 single-ascending-dose trial",
-    age_range      = "18-50 years",
-    age_median     = "35 years (Table 1, overall)",
-    weight_range   = "60.4-95.2 kg (Table 1, overall IQR)",
-    weight_median  = "76.5 kg (Table 1, overall)",
+    n_subjects = 32L,
+    n_active = 24L,
+    n_placebo = 8L,
+    n_studies = 1L,
+    study = "NCT02388347 first-in-human phase 1 single-ascending-dose trial",
+    age_range = "18-50 years",
+    age_median = "35 years (Table 1, overall)",
+    weight_range = "60.4-95.2 kg (Table 1, overall IQR)",
+    weight_median = "76.5 kg (Table 1, overall)",
     sex_female_pct = 0,
-    sex_note       = "Healthy adult males only (study inclusion criterion)",
+    sex_note = "Healthy adult males only (study inclusion criterion)",
     race_ethnicity = "White 19/32 (59.4%), Black/African American 8/32 (25.0%), Asian 5/32 (15.6%) per Table 1.",
-    disease_state  = "Healthy adult male volunteers (no asthma, no other indication).",
-    dose_range     = "Single SC dose: 30, 105, 300, or 600 mg (six active subjects per cohort) or placebo (eight subjects).",
-    regions        = "United Kingdom (single site).",
-    ada_status     = "21/24 active subjects became ADA-positive post-baseline (87.5%); 16/24 (67%) classified as persistent ADA-positive.",
-    notes          = "Demographics from Hood 2021 Table 1. 13.9 PK samples per individual on average across 24 active subjects; 14.9 PD (IL13) samples per individual across all 32 subjects. Two subjects whose PD profiles appeared swapped (one placebo, one 600 mg) were excluded from the PD analysis dataset. Follow-up extended to Day 281 because of the YTE half-life-extension expectation."
+    disease_state = "Healthy adult male volunteers (no asthma, no other indication).",
+    dose_range = "Single SC dose: 30, 105, 300, or 600 mg (six active subjects per cohort) or placebo (eight subjects).",
+    regions = "United Kingdom (single site).",
+    ada_status = "21/24 active subjects became ADA-positive post-baseline (87.5%); 16/24 (67%) classified as persistent ADA-positive.",
+    notes = "Demographics from Hood 2021 Table 1. 13.9 PK samples per individual on average across 24 active subjects; 14.9 PD (IL13) samples per individual across all 32 subjects. Two subjects whose PD profiles appeared swapped (one placebo, one 600 mg) were excluded from the PD analysis dataset. Follow-up extended to Day 281 because of the YTE half-life-extension expectation."
   )
 
   ini({

@@ -10,7 +10,7 @@ Zou_2026_meropenem <- function() {
     sep = " "
   )
   vignette <- "Zou_2026_meropenem"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -21,11 +21,11 @@ Zou_2026_meropenem <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Postoperative Cockcroft-Gault creatinine clearance (raw, not BSA-normalised)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Postoperative Cockcroft-Gault creatinine clearance (raw, not BSA-normalised)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Postoperative creatinine clearance, calculated with the",
         "Cockcroft-Gault equation (Zou 2026 Table 1 footnote a; Table 3",
         "footnote 3), was the only covariate retained by stepwise covariate",
@@ -45,22 +45,22 @@ Zou_2026_meropenem <- function() {
         "Cockcroft-Gault form when the source paper does not apply",
         "BSA-normalisation), following AbdulAziz_2016_doripenem.R."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 44L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
     n_concentrations = 135L,
-    age_range        = "20.0-91.0 years (Section 3.1 prose); Table 1 reports mean 66.0, range 20.0-83.0 years",
-    age_mean         = "68.5 +/- 14.8 years (Section 3.1 prose); 66.0 years (Table 1)",
-    weight_range     = "40.0-81.0 kg (Section 3.1 prose); Table 1 reports mean 58.0, range 45.0-81.0 kg",
-    weight_mean      = "56.7 +/- 9.04 kg (Section 3.1 prose); 58.0 kg (Table 1)",
-    sex_female_pct   = 29.55,
-    race_ethnicity   = "Chinese (single-centre ICU, The Central Hospital of Xiangtan, Hunan, China)",
-    disease_state    = paste(
+    age_range = "20.0-91.0 years (Section 3.1 prose); Table 1 reports mean 66.0, range 20.0-83.0 years",
+    age_mean = "68.5 +/- 14.8 years (Section 3.1 prose); 66.0 years (Table 1)",
+    weight_range = "40.0-81.0 kg (Section 3.1 prose); Table 1 reports mean 58.0, range 45.0-81.0 kg",
+    weight_mean = "56.7 +/- 9.04 kg (Section 3.1 prose); 58.0 kg (Table 1)",
+    sex_female_pct = 29.55,
+    race_ethnicity = "Chinese (single-centre ICU, The Central Hospital of Xiangtan, Hunan, China)",
+    disease_state = paste(
       "Adults (>18 years) with severe postoperative infections requiring",
       "meropenem for more than 3 days, enrolled in a general ICU. Intra-",
       "abdominal infection combined with hospital-acquired pneumonia was",
@@ -71,11 +71,11 @@ Zou_2026_meropenem <- function() {
       "meropenem-treated infection, pregnancy or lactation, carbapenem",
       "allergy, or concomitant sodium valproate were excluded."
     ),
-    dose_range       = "1.0 g meropenem IV every 8 h as a prolonged infusion over 2 h or 2.5 h; dose adjustment permitted at the treating physician's discretion based on TDM",
-    regions          = "China (single tertiary-hospital general ICU in Xiangtan, Hunan)",
-    crcl_range       = "11.9-136 mL/min (Cockcroft-Gault; cohort mean 47.7 mL/min used as the model centring constant)",
-    albumin_range    = "17.7-44.4 g/L (mean 31.9)",
-    notes            = paste(
+    dose_range = "1.0 g meropenem IV every 8 h as a prolonged infusion over 2 h or 2.5 h; dose adjustment permitted at the treating physician's discretion based on TDM",
+    regions = "China (single tertiary-hospital general ICU in Xiangtan, Hunan)",
+    crcl_range = "11.9-136 mL/min (Cockcroft-Gault; cohort mean 47.7 mL/min used as the model centring constant)",
+    albumin_range = "17.7-44.4 g/L (mean 31.9)",
+    notes = paste(
       "Prospective therapeutic drug monitoring cohort enrolled between",
       "March 2023 and January 2025 (Zou 2026 Section 2.1). Samples were",
       "drawn at steady state after at least four consecutive doses, at",

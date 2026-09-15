@@ -229,122 +229,691 @@ Budiansah_2025_dotatate_pbpk <- function() {
   )
 
   compartmentData <- list(
-    pv_tumor_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tumor", verified = TRUE),
-    pv_liver_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_spleen_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_gi_tot             = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_muscle_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_redmarrow_tot      = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_reprod_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_adrenals_tot       = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_rest_tot           = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_kidney_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_lungs_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_skin_tot           = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_adipose_tot        = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_heart_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_bone_tot           = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pv_brain_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pint_tumor_tot        = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tumor", verified = TRUE),
-    pint_liver_tot        = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_spleen_tot       = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_gi_tot           = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_muscle_tot       = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_redmarrow_tot    = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_reprod_tot       = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_adrenals_tot     = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_rest_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_kidney_tot       = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_lungs_tot        = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_skin_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_adipose_tot      = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_heart_tot        = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pint_bone_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_tumor_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tumor", verified = TRUE),
-    rp_liver_tot          = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_spleen_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_gi_tot             = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_muscle_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_redmarrow_tot      = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_reprod_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_adrenals_tot       = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_rest_tot           = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    rp_kidney_tot         = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_tumor_tot     = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tumor", verified = TRUE),
-    pintern_liver_tot     = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_spleen_tot    = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_gi_tot        = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_muscle_tot    = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_redmarrow_tot = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_reprod_tot    = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_adrenals_tot  = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_rest_tot      = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintern_kidney_tot    = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    pintra_kidney_tot     = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "tissue", verified = TRUE),
-    part_tot              = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pven_tot              = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    pprp_tot              = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "serum", verified = TRUE),
-    urine_tot             = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "urine", verified = TRUE),
-    cleared_tot           = list(analyte = "DOTATATE (labelled plus unlabelled)", units = "nmol", specimen = "not applicable", verified = TRUE),
-    pv_tumor_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tumor", verified = TRUE),
-    pv_liver_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_spleen_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_gi_lab             = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_muscle_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_redmarrow_lab      = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_reprod_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_adrenals_lab       = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_rest_lab           = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_kidney_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_lungs_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_skin_lab           = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_adipose_lab        = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_heart_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_bone_lab           = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pv_brain_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pint_tumor_lab        = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tumor", verified = TRUE),
-    pint_liver_lab        = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_spleen_lab       = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_gi_lab           = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_muscle_lab       = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_redmarrow_lab    = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_reprod_lab       = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_adrenals_lab     = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_rest_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_kidney_lab       = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_lungs_lab        = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_skin_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_adipose_lab      = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_heart_lab        = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pint_bone_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_tumor_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tumor", verified = TRUE),
-    rp_liver_lab          = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_spleen_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_gi_lab             = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_muscle_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_redmarrow_lab      = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_reprod_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_adrenals_lab       = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_rest_lab           = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    rp_kidney_lab         = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_tumor_lab     = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tumor", verified = TRUE),
-    pintern_liver_lab     = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_spleen_lab    = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_gi_lab        = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_muscle_lab    = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_redmarrow_lab = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_reprod_lab    = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_adrenals_lab  = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_rest_lab      = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintern_kidney_lab    = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    pintra_kidney_lab     = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "tissue", verified = TRUE),
-    part_lab              = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pven_lab              = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    pprp_lab              = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "serum", verified = TRUE),
-    urine_lab             = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "urine", verified = TRUE),
-    cleared_lab           = list(analyte = "[111In]In-DOTA-TATE", units = "fraction of injected activity", specimen = "not applicable", verified = TRUE)
+    pv_tumor_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pv_liver_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_spleen_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_gi_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_muscle_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_redmarrow_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_reprod_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_adrenals_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_rest_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_kidney_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_lungs_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_skin_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_adipose_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_heart_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_bone_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_brain_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pint_tumor_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pint_liver_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_spleen_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_gi_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_muscle_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_redmarrow_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_reprod_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_adrenals_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_rest_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_kidney_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_lungs_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_skin_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_adipose_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_heart_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_bone_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_tumor_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    rp_liver_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_spleen_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_gi_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_muscle_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_redmarrow_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_reprod_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_adrenals_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_rest_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_kidney_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_tumor_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pintern_liver_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_spleen_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_gi_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_muscle_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_redmarrow_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_reprod_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_adrenals_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_rest_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_kidney_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintra_kidney_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    part_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pven_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pprp_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    urine_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "urine",
+      verified = TRUE
+    ),
+    cleared_tot = list(
+      analyte = "DOTATATE (labelled plus unlabelled)",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    pv_tumor_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pv_liver_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_spleen_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_gi_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_muscle_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_redmarrow_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_reprod_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_adrenals_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_rest_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_kidney_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_lungs_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_skin_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_adipose_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_heart_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_bone_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pv_brain_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pint_tumor_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pint_liver_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_spleen_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_gi_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_muscle_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_redmarrow_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_reprod_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_adrenals_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_rest_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_kidney_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_lungs_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_skin_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_adipose_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_heart_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pint_bone_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_tumor_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    rp_liver_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_spleen_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_gi_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_muscle_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_redmarrow_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_reprod_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_adrenals_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_rest_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rp_kidney_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_tumor_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pintern_liver_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_spleen_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_gi_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_muscle_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_redmarrow_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_reprod_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_adrenals_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_rest_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintern_kidney_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pintra_kidney_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    part_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pven_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    pprp_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    urine_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "urine",
+      verified = TRUE
+    ),
+    cleared_lab = list(
+      analyte = "[111In]In-DOTA-TATE",
+      units = "fraction of injected activity",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
-
 
   ini({
     # =====================================================================

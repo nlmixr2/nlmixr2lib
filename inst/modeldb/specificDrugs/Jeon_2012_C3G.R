@@ -9,32 +9,32 @@ Jeon_2012_C3G <- function() {
     sep = " "
   )
   vignette <- "Jeon_2012_C3G"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "C3G", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "C3G", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "C3G", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "24-44 years (median 29.5)",
-    age_median     = "29.5 years",
-    weight_range   = "47.0-78.4 kg (median 59.6)",
-    weight_median  = "59.6 kg",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "24-44 years (median 29.5)",
+    age_median = "29.5 years",
+    weight_range = "47.0-78.4 kg (median 59.6)",
+    weight_median = "59.6 kg",
     sex_female_pct = 50,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Healthy adult Korean volunteers (aged 20-45 years) with no clinically relevant findings on medical history, physical examination, clinical laboratory, or ECG; subjects with any history that could alter C3G metabolism or with hypersensitivity to beans were excluded.",
-    dose_range     = "Oral 1 g (200 mg x 5 capsules) of black bean (Phaseolus vulgaris, Cheongjakong-3-ho) seed coat extract once daily at approximately 9 AM for 14 days, after at least a 10 h overnight fast on the PK days (Day 1 and Day 14) and at least 4 h fasting thereafter. The C3G content per gram of extract was not reported; the C3G equivalent dose (used as the model's dose unit) is approximately 14.57 mg per 1 g of extract, back-calculated from the published CL/F and observed AUClast (see ini() comments).",
-    regions        = "Republic of Korea (Clinical Trial Center, Seoul St Mary's Hospital).",
-    notes          = "Demographics from Jeon 2012 Table 1; height median 166 cm (range 158-185). PK assays drew 7 mL venous blood predose and at 0.25, 0.5, 1, 1.5, 2, 4, and 6 h after dosing on Day 1 and Day 14, processed on ice within 10 min of collection and stored at -70 C until LC-MS/MS analysis (C3G LLOQ 0.2 ng/mL, linear range 0.2-50 ng/mL, intra- and inter-day accuracy 99.36-100.7%). Age, height, weight, sex, and creatinine clearance were screened as candidate covariates on CL, V, Ka, and ALAG using GAM (Xpose 4.0.4) with forward-addition/backward-elimination steps (alpha = 0.05); no covariate was retained in the final model (Jeon 2012 Results 'Final model' paragraph 2)."
+    disease_state = "Healthy adult Korean volunteers (aged 20-45 years) with no clinically relevant findings on medical history, physical examination, clinical laboratory, or ECG; subjects with any history that could alter C3G metabolism or with hypersensitivity to beans were excluded.",
+    dose_range = "Oral 1 g (200 mg x 5 capsules) of black bean (Phaseolus vulgaris, Cheongjakong-3-ho) seed coat extract once daily at approximately 9 AM for 14 days, after at least a 10 h overnight fast on the PK days (Day 1 and Day 14) and at least 4 h fasting thereafter. The C3G content per gram of extract was not reported; the C3G equivalent dose (used as the model's dose unit) is approximately 14.57 mg per 1 g of extract, back-calculated from the published CL/F and observed AUClast (see ini() comments).",
+    regions = "Republic of Korea (Clinical Trial Center, Seoul St Mary's Hospital).",
+    notes = "Demographics from Jeon 2012 Table 1; height median 166 cm (range 158-185). PK assays drew 7 mL venous blood predose and at 0.25, 0.5, 1, 1.5, 2, 4, and 6 h after dosing on Day 1 and Day 14, processed on ice within 10 min of collection and stored at -70 C until LC-MS/MS analysis (C3G LLOQ 0.2 ng/mL, linear range 0.2-50 ng/mL, intra- and inter-day accuracy 99.36-100.7%). Age, height, weight, sex, and creatinine clearance were screened as candidate covariates on CL, V, Ka, and ALAG using GAM (Xpose 4.0.4) with forward-addition/backward-elimination steps (alpha = 0.05); no covariate was retained in the final model (Jeon 2012 Results 'Final model' paragraph 2)."
   )
 
   ini({

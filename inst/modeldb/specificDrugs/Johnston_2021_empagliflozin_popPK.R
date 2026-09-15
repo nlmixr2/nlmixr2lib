@@ -23,8 +23,8 @@ Johnston_2021_empagliflozin_popPK <- function() {
   )
   vignette <- "Johnston_2021_empagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "mg empagliflozin (oral, once daily)",
+    time = "h",
+    dosing = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (converted from mg/L via MW 450.91 g/mol)"
   )
 
@@ -32,79 +32,84 @@ Johnston_2021_empagliflozin_popPK <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "empagliflozin popPK",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 44 years on V2/F, V3/F, and ka (Table S2 / equations page 10).",
-      source_name        = "AGE"
+      notes = "Power-form effects centred at 44 years on V2/F, V3/F, and ka (Table S2 / equations page 10).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 70 kg on CL/F, V2/F, Q/F, and V3/F (Table S2).",
-      source_name        = "WT"
+      notes = "Power-form effects centred at 70 kg on CL/F, V2/F, Q/F, and V3/F (Table S2).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (BSA-normalised)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (BSA-normalised)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect centred at 99 mL/min/1.73 m^2 on CL/F (Table S2 theta_25).",
         "Renamed from the source column eGFR to the canonical CRCL per",
         "covariate-columns.md. The paper does not specify which eGFR equation",
         "(MDRD vs CKD-EPI) was used."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     TPRO = list(
-      description        = "Total serum protein at baseline",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein at baseline",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 68 g/L on CL/F, V2/F, and V3/F (Table S2). Reference value read from the equations on page 10 (`TPRO_i(g/L)/68(g/L)`).",
-      source_name        = "TPRO"
+      notes = "Power-form effects centred at 68 g/L on CL/F, V2/F, and V3/F (Table S2). Reference value read from the equations on page 10 (`TPRO_i(g/L)/68(g/L)`).",
+      source_name = "TPRO"
     ),
     ALP = list(
-      description        = "Alkaline phosphatase at baseline",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alkaline phosphatase at baseline",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect centred at 73 U/L on CL/F (Table S2 theta_24). Reference value read from the equation `AP_i(IU/L)/73(IU/L)` on page 10 (the Figure S1 caption prints `AP = 73 IU/kg` but the model equation uses IU/L; treated as a caption typo). Renamed from the source column AP to the canonical ALP per covariate-columns.md.",
-      source_name        = "AP"
+      notes = "Power-form effect centred at 73 U/L on CL/F (Table S2 theta_24). Reference value read from the equation `AP_i(IU/L)/73(IU/L)` on page 10 (the Figure S1 caption prints `AP = 73 IU/kg` but the model equation uses IU/L; treated as a caption typo). Renamed from the source column AP to the canonical ALP per covariate-columns.md.",
+      source_name = "AP"
     ),
     INSDOSE_BL = list(
-      description        = "Baseline total daily insulin dose normalised to body weight",
-      units              = "U/kg/day",
-      type               = "continuous",
+      description = "Baseline total daily insulin dose normalised to body weight",
+      units = "U/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect centred at 0.6 IU/kg on CL/F (Table S2 theta_26). Reference value read from the equation `TDID_i(IU/kg)/0.6(IU/kg)` on page 10.",
-      source_name        = "TDID"
+      notes = "Power-form effect centred at 0.6 IU/kg on CL/F (Table S2 theta_26). Reference value read from the equation `TDID_i(IU/kg)/0.6(IU/kg)` on page 10.",
+      source_name = "TDID"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effects on CL/F, V2/F, V3/F, and ka (Table S2 theta_8 / theta_9 / theta_10 / theta_11). Encoded as `<multiplier>^SEXF` so SEXF=0 recovers the male baseline.",
-      source_name        = "Sex (1 = female; 0 = male)"
+      notes = "Multiplicative effects on CL/F, V2/F, V3/F, and ka (Table S2 theta_8 / theta_9 / theta_10 / theta_11). Encoded as `<multiplier>^SEXF` so SEXF=0 recovers the male baseline.",
+      source_name = "Sex (1 = female; 0 = male)"
     ),
     SMOKE_CURRENT = list(
-      description        = "Current-smoker indicator (paired with SMOKE_NEVER)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator (paired with SMOKE_NEVER)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former smoker (when paired with SMOKE_NEVER = 0)",
-      notes              = paste(
+      notes = paste(
         "Johnston 2021 Table S2 reports smoking as a 3-level categorical with",
         "NON-smoker (=never smoker) as the reference (CL multipliers",
         "theta_12 = 1.02 for ex-smoker, theta_13 = 1.08 for current smoker).",
@@ -113,32 +118,32 @@ Johnston_2021_empagliflozin_popPK <- function() {
         "published coefficients so the reference becomes former smoker",
         "(same recoding pattern used in Baron_2016_empagliflozin)."
       ),
-      source_name        = "Cur-Smoker (1 = current; 0 otherwise)"
+      source_name = "Cur-Smoker (1 = current; 0 otherwise)"
     ),
     SMOKE_NEVER = list(
-      description        = "Never-smoker indicator (paired with SMOKE_CURRENT)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Never-smoker indicator (paired with SMOKE_CURRENT)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former smoker (when paired with SMOKE_CURRENT = 0)",
-      notes              = "See SMOKE_CURRENT notes for the recoding from Johnston 2021's never-as-reference encoding to the canonical former-as-reference pairing.",
-      source_name        = "Ex-Smoker (1 = ex/former; 0 otherwise)"
+      notes = "See SMOKE_CURRENT notes for the recoding from Johnston 2021's never-as-reference encoding to the canonical former-as-reference pairing.",
+      source_name = "Ex-Smoker (1 = ex/former; 0 otherwise)"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 1241L,
-    n_subjects_male     = 614L,
-    n_subjects_female   = 627L,
-    n_studies           = 3L,
-    studies             = "EASE-1 (phase II, 4-week, 75 patients with T1D, once-daily empagliflozin 2.5 / 10 / 25 mg or placebo), EASE-2 (phase III, 52-week, 721 patients with T1D, empagliflozin 10 / 25 mg or placebo), EASE-3 (phase III, 26-week, 948 patients with T1D, empagliflozin 2.5 / 10 / 25 mg or placebo). Table 1.",
-    age_range           = "21-69 years (95th-percentile interval across studies at baseline)",
-    weight_range        = "52-126 kg (95th-percentile interval across studies at baseline)",
-    egfr_range          = "55-129 mL/min/1.73 m^2 (95th-percentile interval across studies at baseline)",
-    hba1c_range         = "7.2-9.6 % (95th-percentile interval across studies at baseline)",
-    insulin_range       = "0.36-1.34 IU/kg total daily insulin dose (95th-percentile interval across studies at baseline)",
-    sex_female_pct      = 100 * 627 / 1241,
-    disease_state       = paste0(
+    species = "human",
+    n_subjects = 1241L,
+    n_subjects_male = 614L,
+    n_subjects_female = 627L,
+    n_studies = 3L,
+    studies = "EASE-1 (phase II, 4-week, 75 patients with T1D, once-daily empagliflozin 2.5 / 10 / 25 mg or placebo), EASE-2 (phase III, 52-week, 721 patients with T1D, empagliflozin 10 / 25 mg or placebo), EASE-3 (phase III, 26-week, 948 patients with T1D, empagliflozin 2.5 / 10 / 25 mg or placebo). Table 1.",
+    age_range = "21-69 years (95th-percentile interval across studies at baseline)",
+    weight_range = "52-126 kg (95th-percentile interval across studies at baseline)",
+    egfr_range = "55-129 mL/min/1.73 m^2 (95th-percentile interval across studies at baseline)",
+    hba1c_range = "7.2-9.6 % (95th-percentile interval across studies at baseline)",
+    insulin_range = "0.36-1.34 IU/kg total daily insulin dose (95th-percentile interval across studies at baseline)",
+    sex_female_pct = 100 * 627 / 1241,
+    disease_state = paste0(
       "Adults with type 1 diabetes mellitus (T1D) on background insulin ",
       "therapy. Reference subject for the full covariate model: male, ",
       "nonsmoker (never smoker), total daily insulin dose 0.6 IU/kg, ",
@@ -146,9 +151,9 @@ Johnston_2021_empagliflozin_popPK <- function() {
       "mL/min/1.73 m^2, weight 70 kg, age 44 years (Figure S1 caption + ",
       "equations page 10)."
     ),
-    dose_range          = "Empagliflozin 0 (placebo), 2.5, 10, 25 mg once daily (oral).",
-    regions             = "Multi-national (EASE-1 / -2 / -3 trials).",
-    notes               = paste0(
+    dose_range = "Empagliflozin 0 (placebo), 2.5, 10, 25 mg once daily (oral).",
+    regions = "Multi-national (EASE-1 / -2 / -3 trials).",
+    notes = paste0(
       "PopPK was estimated with NONMEM 7.3 using FOCE-I (Section 2.2). The ",
       "model was adapted from the prior T2D empagliflozin PopPK of Baron ",
       "2016; initial development used EASE-1 and EASE-3 with EASE-2 as an ",

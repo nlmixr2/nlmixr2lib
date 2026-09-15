@@ -61,70 +61,70 @@ Kovalenko_2020_dupilumab_covariate <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dupilumab covariate", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dupilumab covariate", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dupilumab covariate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume Vc with reference 75 kg.  Reference weight is not restated in Kovalenko 2020; the 75 kg value is inherited from Kovalenko 2016 (doi:10.1002/psp4.12136, Eq. 1) and matches the sibling Kovalenko_2020_dupilumab.R (Model 1) and Kovalenko_2020_dupilumab_base.R (Model 3) files.",
-      source_name        = "WT"
+      notes = "Power effect on central volume Vc with reference 75 kg.  Reference weight is not restated in Kovalenko 2020; the 75 kg value is inherited from Kovalenko 2016 (doi:10.1002/psp4.12136, Eq. 1) and matches the sibling Kovalenko_2020_dupilumab.R (Model 1) and Kovalenko_2020_dupilumab_base.R (Model 3) files.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin (baseline)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (baseline)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume Vc with reference 44 g/L.  Reference value is not restated in Kovalenko 2020; the 44 g/L value is the published median from Zhang 2021 (doi:10.1002/psp4.12667) which analysed an overlapping dupilumab popPK cohort.  ALB in g/L is the SI canonical; multiply by 0.1 to convert US-convention g/dL values to g/L on data ingestion.",
-      source_name        = "ALB"
+      notes = "Power effect on central volume Vc with reference 44 g/L.  Reference value is not restated in Kovalenko 2020; the 44 g/L value is the published median from Zhang 2021 (doi:10.1002/psp4.12667) which analysed an overlapping dupilumab popPK cohort.  ALB in g/L is the SI canonical; multiply by 0.1 to convert US-convention g/dL values to g/L on data ingestion.",
+      source_name = "ALB"
     ),
     BMI = list(
-      description        = "Body mass index (baseline)",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index (baseline)",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the linear elimination rate ke with reference 26 kg/m^2 (approx. median baseline BMI of the LIBERTY AD SOLO 1/2 pooled cohorts per Simpson 2016 doi:10.1056/NEJMoa1610020 Table 1).  Reference value is not restated in Kovalenko 2020.",
-      source_name        = "BMI"
+      notes = "Power effect on the linear elimination rate ke with reference 26 kg/m^2 (approx. median baseline BMI of the LIBERTY AD SOLO 1/2 pooled cohorts per Simpson 2016 doi:10.1056/NEJMoa1610020 Table 1).  Reference value is not restated in Kovalenko 2020.",
+      source_name = "BMI"
     ),
     SCORE_EASI = list(
-      description        = "Eczema Area and Severity Index (baseline)",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Eczema Area and Severity Index (baseline)",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the linear elimination rate ke with reference 32 (approx. median baseline EASI of the Phase 3 dupilumab AD cohort; Simpson 2016 reports mean baseline EASI ~33 in SOLO 1/2 Table 1; CHRONOS Blauvelt 2017 Table 1 reports a similar median).  Reference value is not restated in Kovalenko 2020.  Canonical column name is SCORE_EASI; the prior EASI alias is preserved for compatibility.",
-      source_name        = "EASI"
+      notes = "Power effect on the linear elimination rate ke with reference 32 (approx. median baseline EASI of the Phase 3 dupilumab AD cohort; Simpson 2016 reports mean baseline EASI ~33 in SOLO 1/2 Table 1; CHRONOS Blauvelt 2017 Table 1 reports a similar median).  Reference value is not restated in Kovalenko 2020.  Canonical column name is SCORE_EASI; the prior EASI alias is preserved for compatibility.",
+      source_name = "EASI"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator (1 = White, 0 = non-White)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator (1 = White, 0 = non-White)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-White; pools Black/African American, Asian, American Indian/Alaska Native, Native Hawaiian/Pacific Islander, Other / Not reported in the Phase 3 dupilumab AD trials per Simpson 2016)",
-      notes              = "Multiplicative effect on the linear elimination rate ke as ke * (1 + e_white_kel * RACE_WHITE); the paper's covariate label is 'ke ~ race (White)' with the theta = -0.123 indicating White subjects clear dupilumab via the linear route ~12% more slowly than the non-White reference.  Implementation form follows the Zhang 2021 dupilumab ADA precedent (same drug, same authorship group).",
-      source_name        = "RACE"
+      notes = "Multiplicative effect on the linear elimination rate ke as ke * (1 + e_white_kel * RACE_WHITE); the paper's covariate label is 'ke ~ race (White)' with the theta = -0.123 indicating White subjects clear dupilumab via the linear route ~12% more slowly than the non-White reference.  Implementation form follows the Zhang 2021 dupilumab ADA precedent (same drug, same authorship group).",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    n_subjects     = "Phase 3 cohort only.  The article reports the pooled total across all 16 studies as N = 2115 on study and 2041 on active treatment, with 18,243 of 20,809 samples included.  Phase 3 SOLO 1 (R668-AD-1334) N = 447, SOLO 2 (R668-AD-1416) N = 472, CHRONOS (R668-AD-1224) N = 424 per Supplementary Table S1 (PK analysis set).",
-    n_studies      = 3L,
-    age_range      = "Adults with moderate-to-severe atopic dermatitis (detailed age breakdown not reported in the main text).",
-    age_median     = "Not reported in the main text.",
-    weight_range   = "Not reported in the main text.",
-    weight_median  = "Not reported in the main text; reference weight 75 kg is the Kovalenko 2016 inheritance.",
+    n_subjects = "Phase 3 cohort only.  The article reports the pooled total across all 16 studies as N = 2115 on study and 2041 on active treatment, with 18,243 of 20,809 samples included.  Phase 3 SOLO 1 (R668-AD-1334) N = 447, SOLO 2 (R668-AD-1416) N = 472, CHRONOS (R668-AD-1224) N = 424 per Supplementary Table S1 (PK analysis set).",
+    n_studies = 3L,
+    age_range = "Adults with moderate-to-severe atopic dermatitis (detailed age breakdown not reported in the main text).",
+    age_median = "Not reported in the main text.",
+    weight_range = "Not reported in the main text.",
+    weight_median = "Not reported in the main text; reference weight 75 kg is the Kovalenko 2016 inheritance.",
     sex_female_pct = "Not reported in the main text.",
     race_ethnicity = "Race was a tested covariate and retained in the final model as a multiplicative effect of White vs non-White on the linear elimination rate.  Phase 3 AD trials are predominantly White, with Black, Asian, and Other categories represented.",
-    disease_state  = "Adults with moderate-to-severe atopic dermatitis (SOLO 1, SOLO 2 monotherapy; CHRONOS concomitant topical corticosteroids).",
-    dose_range     = "600 mg SC loading dose on day 1 followed by 300 mg SC qw or q2w for 15 weeks (SOLO 1, SOLO 2) or 51 weeks (CHRONOS).",
-    regions        = "Multi-regional Phase 3 programme; see Supplementary Table S1 for per-study geographic coverage.",
-    notes          = "Primary covariate model (Model 4) for regulatory submissions.  The structural parameters kcp, kpc, ka, MTT, Vm, km, and F are FIXED to values obtained from Models 1 and 2 fits on rich Phase 1/2 data (per the stepwise modelling strategy described in the paper's Methods).  Only weight had a notable effect on Vc explaining interindividual variability; albumin / BMI / EASI / race retained as statistically significant (P < 1e-8 for all) but with smaller effect sizes."
+    disease_state = "Adults with moderate-to-severe atopic dermatitis (SOLO 1, SOLO 2 monotherapy; CHRONOS concomitant topical corticosteroids).",
+    dose_range = "600 mg SC loading dose on day 1 followed by 300 mg SC qw or q2w for 15 weeks (SOLO 1, SOLO 2) or 51 weeks (CHRONOS).",
+    regions = "Multi-regional Phase 3 programme; see Supplementary Table S1 for per-study geographic coverage.",
+    notes = "Primary covariate model (Model 4) for regulatory submissions.  The structural parameters kcp, kpc, ka, MTT, Vm, km, and F are FIXED to values obtained from Models 1 and 2 fits on rich Phase 1/2 data (per the stepwise modelling strategy described in the paper's Methods).  Only weight had a notable effect on Vc explaining interindividual variability; albumin / BMI / EASI / race retained as statistically significant (P < 1e-8 for all) but with smaller effect sizes."
   )
 
   ini({

@@ -7,142 +7,142 @@ Wang_2024_valproic_acid <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = "22 kg (the model-development cohort median; Wang 2024 Table 2)",
-      notes              = "Power effect on both CL/F (exponent 0.717) and V/F (exponent 0.524), each normalised to the 22.0 kg cohort median. Cohort range 6.0-95.0 kg (Wang 2024 Table 2). The authors compared five body-weight / age scaling forms (fixed allometric, simple exponent, sigmoid maturation, body-weight-dependent exponent, age-dependent exponent; Methods Equations 6-13) and selected the SIMPLE EXPONENT model (Model II) with both exponents estimated: the two dependent-exponent models fitted better on OFV/AIC but their kmax and Hill terms had RSE > 60%, and TM50/kmax/Hill could not be estimated at all in the sigmoid maturation model. Note the estimated CL/F exponent 0.717 is close to, but was NOT fixed at, the allometric 0.75. Age is not in the final model because it correlates with body weight at r = 0.948 in this cohort (Wang 2024 Discussion).",
-      source_name        = "BW"
+      notes = "Power effect on both CL/F (exponent 0.717) and V/F (exponent 0.524), each normalised to the 22.0 kg cohort median. Cohort range 6.0-95.0 kg (Wang 2024 Table 2). The authors compared five body-weight / age scaling forms (fixed allometric, simple exponent, sigmoid maturation, body-weight-dependent exponent, age-dependent exponent; Methods Equations 6-13) and selected the SIMPLE EXPONENT model (Model II) with both exponents estimated: the two dependent-exponent models fitted better on OFV/AIC but their kmax and Hill terms had RSE > 60%, and TM50/kmax/Hill could not be estimated at all in the sigmoid maturation model. Note the estimated CL/F exponent 0.717 is close to, but was NOT fixed at, the allometric 0.75. Age is not in the final model because it correlates with body weight at r = 0.948 in this cohort (Wang 2024 Discussion).",
+      source_name = "BW"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "PROPORTIONAL (not exponential) effect on CL/F: the paper's Equation 34 is CL/F = 0.196 * (BW/22)^0.717 * (1 - 0.0436 * Sex) with 'Sex = 0 for male, Sex = 1 for female' stated immediately below the equation, so the paper's Sex indicator is already the canonical SEXF orientation and needs no recoding. Females therefore have 4.36% LOWER apparent clearance and hence 1/(1 - 0.0436) = 4.6% HIGHER exposure at an equivalent dose, which matches the Discussion's 'Compared with males, females exhibited 5-10% higher exposure of VPA at equivalent dose (Figure 2)'. Note the DIRECTION is opposite to the sibling Zhang_2024_valproic_acid.R, where women had 12.9% higher clearance; Zhang attributes its direction to the larger median body weight of the women in that adult-inclusive cohort. 194 of 498 model-development patients (39.0%) were female (Wang 2024 Table 2). Sex was retained on the strength of an OFV drop of 11.727 (p < 0.001) over the covariate-free Model II.",
-      source_name        = "Sex"
+      notes = "PROPORTIONAL (not exponential) effect on CL/F: the paper's Equation 34 is CL/F = 0.196 * (BW/22)^0.717 * (1 - 0.0436 * Sex) with 'Sex = 0 for male, Sex = 1 for female' stated immediately below the equation, so the paper's Sex indicator is already the canonical SEXF orientation and needs no recoding. Females therefore have 4.36% LOWER apparent clearance and hence 1/(1 - 0.0436) = 4.6% HIGHER exposure at an equivalent dose, which matches the Discussion's 'Compared with males, females exhibited 5-10% higher exposure of VPA at equivalent dose (Figure 2)'. Note the DIRECTION is opposite to the sibling Zhang_2024_valproic_acid.R, where women had 12.9% higher clearance; Zhang attributes its direction to the larger median body weight of the women in that adult-inclusive cohort. 194 of 498 model-development patients (39.0%) were female (Wang 2024 Table 2). Sex was retained on the strength of an OFV drop of 11.727 (p < 0.001) over the covariate-free Model II.",
+      source_name = "Sex"
     ),
     FORM_VPA_SR = list(
-      description        = "Sustained-release valproic acid tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sustained-release valproic acid tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral syrup, the reference formulation in this cohort)",
-      notes              = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h; the oral-syrup reference is Ka = 2.64 1/h. Wang 2024 Methods, Base model: 'The fixed values for ka were 2.64 and 0.46 h-1 for syrup and SR tablets, respectively, due to a lack of absorption phase data', citing Mei 2018 (reference 19) - the same literature Ka pair that Zhang_2023_* and Zhang_2024_valproic_acid.R trace to Ding 2015. This cohort has only the two levels syrup and sustained-release tablet, so FORM_TABLET (the conventional immediate-release level used by Zhang_2023_valproic_acid_base.R) is not part of this model. Across the full 617-patient cohort 471 patients received syrup and 154 received SR tablets; 8 patients started on syrup and later switched, which is why the Table 2 per-arm percentages sum to slightly more than 100%.",
-      source_name        = "Dosage forms"
+      notes = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h; the oral-syrup reference is Ka = 2.64 1/h. Wang 2024 Methods, Base model: 'The fixed values for ka were 2.64 and 0.46 h-1 for syrup and SR tablets, respectively, due to a lack of absorption phase data', citing Mei 2018 (reference 19) - the same literature Ka pair that Zhang_2023_* and Zhang_2024_valproic_acid.R trace to Ding 2015. This cohort has only the two levels syrup and sustained-release tablet, so FORM_TABLET (the conventional immediate-release level used by Zhang_2023_valproic_acid_base.R) is not part of this model. Across the full 617-patient cohort 471 patients received syrup and 154 received SR tablets; 8 patients started on syrup and later switched, which is why the Table 2 per-arm percentages sum to slightly more than 100%.",
+      source_name = "Dosage forms"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 5.8 years, range 0.2-17.2 (Wang 2024 Table 2). Screened as a maturation covariate on CL/F in Models III (sigmoid maturation) and V (age-dependent exponent) but NOT retained: TM50, kmax and Hill 'were failed to be estimated in our study' (Discussion), and the strong body-weight/age correlation (r = 0.948) 'necessitates the exclusion of one of these variables, leading to the simplification of the model into a basic exponent model'."
+      units = "years",
+      type = "continuous",
+      notes = "Median 5.8 years, range 0.2-17.2 (Wang 2024 Table 2). Screened as a maturation covariate on CL/F in Models III (sigmoid maturation) and V (age-dependent exponent) but NOT retained: TM50, kmax and Hill 'were failed to be estimated in our study' (Discussion), and the strong body-weight/age correlation (r = 0.948) 'necessitates the exclusion of one of these variables, leading to the simplification of the model into a basic exponent model'."
     ),
     DOSE_VPA_MGKGD = list(
       description = "Total daily valproic acid dose per kg body weight",
-      units       = "mg/kg/d",
-      type        = "continuous",
-      notes       = "Median 21.7 mg/kg/day, range 7.7-40.0 (Wang 2024 Table 2). Screened as a surrogate for concentration-dependent protein-binding saturation in Models VI (TDD simple exponent) and VII (dose-dependent Emax, with Emax and Hill fixed at 2.8 and 1.68 from Ding 2015). Model VII did lower the OFV to 7037.671, below the retained Model II, but was rejected because its typical CL/F of 0.052 L/h was 'unreasonable'. The Discussion further cautions that incorporating TDD in a therapeutic-drug-monitoring dataset is confounded by the TDM feedback effect. No nonlinear protein-binding term appears in the final model.",
+      units = "mg/kg/d",
+      type = "continuous",
+      notes = "Median 21.7 mg/kg/day, range 7.7-40.0 (Wang 2024 Table 2). Screened as a surrogate for concentration-dependent protein-binding saturation in Models VI (TDD simple exponent) and VII (dose-dependent Emax, with Emax and Hill fixed at 2.8 and 1.68 from Ding 2015). Model VII did lower the OFV to 7037.671, below the retained Model II, but was rejected because its typical CL/F of 0.052 L/h was 'unreasonable'. The Discussion further cautions that incorporating TDD in a therapeutic-drug-monitoring dataset is confounded by the TDM feedback effect. No nonlinear protein-binding term appears in the final model.",
       source_name = "TDD"
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion as a continuous covariate on CL/F in linear, power and exponential forms (Methods Equations 23-25) and not retained. Albumin also enters Models VIII-X, the three explicit protein-binding models (one-binding-site with K = 15.5 1/mM and N = 1.98; Langmuir with Kd = 7.8 and Bm = 130 mg/L; linear non-saturable with Kd = 2.12, Bm = 67.3 mg/L and NS = 2.25), none of which improved on the linear Model II. Per-patient values are in Table S1, which is not reproduced in the main text."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened by forward inclusion as a continuous covariate on CL/F in linear, power and exponential forms (Methods Equations 23-25) and not retained. Albumin also enters Models VIII-X, the three explicit protein-binding models (one-binding-site with K = 15.5 1/mM and N = 1.98; Langmuir with Kd = 7.8 and Bm = 130 mg/L; linear non-saturable with Kd = 2.12, Bm = 67.3 mg/L and NS = 2.25), none of which improved on the linear Model II. Per-patient values are in Table S1, which is not reproduced in the main text."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion as a hepatic-function covariate on CL/F and not retained (Wang 2024 Methods, Covariate model). Per-patient values are in Table S1, which is not reproduced in the main text."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened by forward inclusion as a hepatic-function covariate on CL/F and not retained (Wang 2024 Methods, Covariate model). Per-patient values are in Table S1, which is not reproduced in the main text."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion as a hepatic-function covariate on CL/F and not retained (Wang 2024 Methods, Covariate model). Per-patient values are in Table S1, which is not reproduced in the main text."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened by forward inclusion as a hepatic-function covariate on CL/F and not retained (Wang 2024 Methods, Covariate model). Per-patient values are in Table S1, which is not reproduced in the main text."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "A negative correlation with CL/F was seen during covariate evaluation but creatinine was NOT retained. The Discussion rejects it on physiological grounds: the patients' creatinine was almost entirely within the age-appropriate reference range, valproic acid is rarely excreted unchanged in urine, and creatinine 'is not a reliable surrogate for estimating the renal function in children' because it tracks muscle mass (Figure S4)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "A negative correlation with CL/F was seen during covariate evaluation but creatinine was NOT retained. The Discussion rejects it on physiological grounds: the patients' creatinine was almost entirely within the age-appropriate reference range, valproic acid is rarely excreted unchanged in urine, and creatinine 'is not a reliable surrogate for estimating the renal function in children' because it tracks muscle mass (Figure S4)."
     ),
     CYSC = list(
       description = "Serum cystatin C",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Used in place of creatinine to derive the estimated glomerular filtration rate, because the study recorded no height and so could not apply a height-based paediatric equation. Not itself retained on CL/F.",
+      units = "mg/L",
+      type = "continuous",
+      notes = "Used in place of creatinine to derive the estimated glomerular filtration rate, because the study recorded no height and so could not apply a height-based paediatric equation. Not itself retained on CL/F.",
       source_name = "CysC"
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Derived three ways (Methods Equations 20-22: the KDIGO 2012 cystatin-C equation, Shull's equation, and a further cystatin-C-based equation) and screened on CL/F. 'Renal function did not impact VPA's CL/F' (Results, Covariate model); the Discussion adds that the KDIGO 2012 cystatin-C eGFR 'did not fulfill the inclusion/exclusion criteria'. The canonical column CRCL is the register's home for a renal-function covariate reported as an eGFR in mL/min/1.73 m^2; this model does not use it.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Derived three ways (Methods Equations 20-22: the KDIGO 2012 cystatin-C equation, Shull's equation, and a further cystatin-C-based equation) and screened on CL/F. 'Renal function did not impact VPA's CL/F' (Results, Covariate model); the Discussion adds that the KDIGO 2012 cystatin-C eGFR 'did not fulfill the inclusion/exclusion criteria'. The canonical column CRCL is the register's home for a renal-function covariate reported as an eGFR in mL/min/1.73 m^2; this model does not use it.",
       source_name = "eGFR"
     ),
     CONMED_OXC = list(
       description = "Concomitant oxcarbazepine indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "39 of 498 model-development patients (7.8%). Reached forward-inclusion significance on CL/F with an OFV drop of 7.981 (p < 0.05) but was removed in backward elimination (dOFV < 10.83). The Discussion attributes the non-retention to the small number of co-treated subjects.",
+      units = "(binary)",
+      type = "binary",
+      notes = "39 of 498 model-development patients (7.8%). Reached forward-inclusion significance on CL/F with an OFV drop of 7.981 (p < 0.05) but was removed in backward elimination (dOFV < 10.83). The Discussion attributes the non-retention to the small number of co-treated subjects.",
       source_name = "OXC"
     ),
     CONMED_LAMOTRIGINE = list(
       description = "Concomitant lamotrigine indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "55 of 498 model-development patients (11.0%). Forward-inclusion OFV drop of 8.329 (p < 0.05) on CL/F; removed in backward elimination (dOFV < 10.83).",
+      units = "(binary)",
+      type = "binary",
+      notes = "55 of 498 model-development patients (11.0%). Forward-inclusion OFV drop of 8.329 (p < 0.05) on CL/F; removed in backward elimination (dOFV < 10.83).",
       source_name = "LTG"
     ),
     CONMED_CZP = list(
       description = "Concomitant clonazepam indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "39 of 498 model-development patients (7.8%). Forward-inclusion OFV drop of 7.049 (p < 0.05) on CL/F; removed in backward elimination (dOFV < 10.83).",
+      units = "(binary)",
+      type = "binary",
+      notes = "39 of 498 model-development patients (7.8%). Forward-inclusion OFV drop of 7.049 (p < 0.05) on CL/F; removed in backward elimination (dOFV < 10.83).",
       source_name = "CZP"
     ),
     CONMED_PB = list(
       description = "Concomitant phenobarbital indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Only 1 of 498 model-development patients (0.2%), so phenobarbital fell below the paper's own '>5% of patients' screening threshold. The Discussion nonetheless reports a forward-inclusion OFV drop of 8.602 for concurrent phenobarbital therapy; it was removed in backward elimination.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Only 1 of 498 model-development patients (0.2%), so phenobarbital fell below the paper's own '>5% of patients' screening threshold. The Discussion nonetheless reports a forward-inclusion OFV drop of 8.602 for concurrent phenobarbital therapy; it was removed in backward elimination.",
       source_name = "PB"
     ),
     CONMED_TPM = list(
       description = "Concomitant topiramate indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "51 of 498 model-development patients (10.2%), so topiramate passed the '>5% of patients' threshold and was screened as a covariate on CL/F, but the paper reports no OFV drop for it and it is not retained. 'In this study, little impact of concurrent ASMs on VPA's CL/F was observed.'",
+      units = "(binary)",
+      type = "binary",
+      notes = "51 of 498 model-development patients (10.2%), so topiramate passed the '>5% of patients' threshold and was screened as a covariate on CL/F, but the paper reports no OFV drop for it and it is not retained. 'In this study, little impact of concurrent ASMs on VPA's CL/F was observed.'",
       source_name = "TPM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 498,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 498,
+    n_studies = 1,
     n_observations = 1138,
-    age_range      = "0.2-17.2 years",
-    age_median     = "5.8 years",
-    weight_range   = "6.0-95.0 kg",
-    weight_median  = "22.0 kg",
+    age_range = "0.2-17.2 years",
+    age_median = "5.8 years",
+    weight_range = "6.0-95.0 kg",
+    weight_median = "22.0 kg",
     sex_female_pct = 39.0,
     race_ethnicity = "Chinese (single-centre Nanjing cohort; sub-ethnicity not reported)",
-    disease_state  = "Epilepsy, treated with valproic acid for at least 1 week before sampling",
-    dose_range     = "7.7-40.0 mg/kg/day (median 21.7), given one to three times daily as oral syrup or sustained-release tablet",
-    regions        = "China (Children's Hospital of Nanjing Medical University; January 2022 - March 2023)",
-    co_medication  = "Concomitant antiseizure medications in the model-development set: levetiracetam 102 (20.5%), lamotrigine 55 (11.0%), topiramate 51 (10.2%), clonazepam 39 (7.8%), oxcarbazepine 39 (7.8%), perampanel 35 (7.0%), lacosamide 23 (4.6%), vigabatrin 5 (1.0%), zonisamide 5 (1.0%), phenobarbital 1 (0.2%). Only co-medications used by more than 5% of patients were screened as covariates, and none was retained in the final model. Patients taking any non-antiseizure co-medication were excluded at enrolment.",
-    notes          = "1411 steady-state trough concentrations from 617 children were split 8:2 into a model-development set (498 patients, 1138 samples) and an external-evaluation set (119 patients, 273 samples); the numbers recorded in this metadata block are the MODEL-DEVELOPMENT set, which is what Table 3 was fitted to. External-evaluation set: 119 patients (78 male / 41 female), age median 6.2 years (0.5-13.8), body weight median 23.0 kg (6.0-75.0). Observed valproic acid concentrations 12.6-143.1 mg/L (median 68.6), all routine therapeutic-drug-monitoring TROUGHS - there is no absorption-phase sampling, which is why both Ka values are fixed from the literature and why interindividual variability on V/F 'was not informative enough to be calculated' and was dropped. Assay: enzyme multiplied immunoassay technique (EMIT; Viva-E, Siemens), calibration range 1.00-150 mg/L, within- and between-run coefficients of variation below 15%. Median 2 samples per patient (range 1-9). Model fitted in NONMEM 7.3.0 with PsN 5.2.6 using FOCE-I and the ADVAN2 TRANS2 subroutines. Baseline demographics: Wang 2024 Table 2."
+    disease_state = "Epilepsy, treated with valproic acid for at least 1 week before sampling",
+    dose_range = "7.7-40.0 mg/kg/day (median 21.7), given one to three times daily as oral syrup or sustained-release tablet",
+    regions = "China (Children's Hospital of Nanjing Medical University; January 2022 - March 2023)",
+    co_medication = "Concomitant antiseizure medications in the model-development set: levetiracetam 102 (20.5%), lamotrigine 55 (11.0%), topiramate 51 (10.2%), clonazepam 39 (7.8%), oxcarbazepine 39 (7.8%), perampanel 35 (7.0%), lacosamide 23 (4.6%), vigabatrin 5 (1.0%), zonisamide 5 (1.0%), phenobarbital 1 (0.2%). Only co-medications used by more than 5% of patients were screened as covariates, and none was retained in the final model. Patients taking any non-antiseizure co-medication were excluded at enrolment.",
+    notes = "1411 steady-state trough concentrations from 617 children were split 8:2 into a model-development set (498 patients, 1138 samples) and an external-evaluation set (119 patients, 273 samples); the numbers recorded in this metadata block are the MODEL-DEVELOPMENT set, which is what Table 3 was fitted to. External-evaluation set: 119 patients (78 male / 41 female), age median 6.2 years (0.5-13.8), body weight median 23.0 kg (6.0-75.0). Observed valproic acid concentrations 12.6-143.1 mg/L (median 68.6), all routine therapeutic-drug-monitoring TROUGHS - there is no absorption-phase sampling, which is why both Ka values are fixed from the literature and why interindividual variability on V/F 'was not informative enough to be calculated' and was dropped. Assay: enzyme multiplied immunoassay technique (EMIT; Viva-E, Siemens), calibration range 1.00-150 mg/L, within- and between-run coefficients of variation below 15%. Median 2 samples per patient (range 1-9). Model fitted in NONMEM 7.3.0 with PsN 5.2.6 using FOCE-I and the ADVAN2 TRANS2 subroutines. Baseline demographics: Wang 2024 Table 2."
   )
 
   ini({

@@ -26,8 +26,8 @@ Larsen_2018_factorviia_mouse <- function() {
   )
   vignette <- "Larsen_2018_haemophilia_animal_popPK"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -35,49 +35,49 @@ Larsen_2018_factorviia_mouse <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (mouse)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (mouse)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-animal body weight. Used for within-species",
         "allometric scaling around the mouse median weight of",
         "0.026 kg (Larsen 2018 Table 1). Range 0.021-0.036 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     STRAIN_C57BI6 = list(
-      description        = "C57BI/6 mouse-strain indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "C57BI/6 mouse-strain indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = NMRI mouse (reference strain)",
-      notes              = paste(
+      notes = paste(
         "1 = C57BI/6 mouse; 0 = NMRI mouse. Gates the",
         "fractional strain multipliers on V and CL",
         "(Larsen 2018 Table 2 footnote and Cov V,C57BI/6 /",
         "Cov CL,C57BI/6 rows)."
       ),
-      source_name        = "STRAIN_C57BI6"
+      source_name = "STRAIN_C57BI6"
     )
   )
 
   population <- list(
-    species        = "mouse (C57BI/6 and NMRI, pooled)",
-    n_subjects     = 51L,
-    n_studies      = NA_integer_,
-    weight_range   = "0.021-0.036 kg",
-    weight_median  = "0.026 kg",
+    species = "mouse (C57BI/6 and NMRI, pooled)",
+    n_subjects = 51L,
+    n_studies = NA_integer_,
+    weight_range = "0.021-0.036 kg",
+    weight_median = "0.026 kg",
     sex_female_pct = 0,
-    disease_state  = "healthy (non-haemophilic)",
-    dose_range     = "single IV bolus, 100 or 1000 ug/kg rFVIIa (mass dose; user supplies the corresponding IU dose)",
-    regions        = "Denmark (Novo Nordisk in-house and published Karpf 2011)",
-    notes          = paste(
+    disease_state = "healthy (non-haemophilic)",
+    dose_range = "single IV bolus, 100 or 1000 ug/kg rFVIIa (mass dose; user supplies the corresponding IU dose)",
+    regions = "Denmark (Novo Nordisk in-house and published Karpf 2011)",
+    notes = paste(
       "51 male mice (C57BI/6 + NMRI, pooled). Sampling up to 8",
       "h post-dose. Endogenous rFVIIa was not detected in mice",
       "and is not carried in the model. Data sources: Karpf",

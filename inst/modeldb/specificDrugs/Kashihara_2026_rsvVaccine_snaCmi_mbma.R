@@ -36,13 +36,13 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
   vignette <- "Kashihara_2026_rsvVaccine_immune_correlates"
 
   units <- list(
-    time          = paste0(
+    time = paste0(
       "not applicable -- this is a static study-level meta-regression with ",
       "no time course. Immunogenicity is the value measured about 28 days ",
       "after a single dose; VE is accrued over one RSV season (fall to the ",
       "end of spring)."
     ),
-    dosing        = paste0(
+    dosing = paste0(
       "not applicable -- vaccine exposure enters through the ",
       "SNA_RSVA_PBORATIO and IFNG_PBORATIO covariates, not through dosing records."
     ),
@@ -54,27 +54,27 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
 
   covariateData <- list(
     SNA_RSVA_PBORATIO = list(
-      description        = paste0(
+      description = paste0(
         "Placebo-corrected serum neutralizing activity against RSV subtype ",
         "A: the ratio of the vaccine-arm SNA titer to the placebo-arm SNA ",
         "titer, on the original (untransformed) scale, measured about 28 ",
         "days after a single dose. Study-arm level, not individual level. A ",
         "value of 1 means equal titers in the vaccine and placebo arms."
       ),
-      units              = "(fold; dimensionless ratio)",
-      type               = "continuous",
+      units = "(fold; dimensionless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Kashihara 2026 Table 2 column 'RSV-A SNA', footnote b: ",
         "'Immunogenicity values were presented as the ratio to placebo on ",
         "the original scale.' The model uses the log2 of this ratio, which ",
         "is the paper's Equation 2. Observed values across the seven ",
         "analysis trials span 1.6 to 13.9."
       ),
-      source_name        = "RSV-A SNA (ratio to placebo)"
+      source_name = "RSV-A SNA (ratio to placebo)"
     ),
     IFNG_PBORATIO = list(
-      description        = paste0(
+      description = paste0(
         "Placebo-corrected cell-mediated immunity: the ratio of the ",
         "vaccine-arm interferon-gamma response to the placebo-arm ",
         "interferon-gamma response, on the original (untransformed) scale, ",
@@ -82,10 +82,10 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
         "individual level. A value of 1 means an equal response in the ",
         "vaccine and placebo arms, which zeroes the interferon-gamma term."
       ),
-      units              = "(fold; dimensionless ratio)",
-      type               = "continuous",
+      units = "(fold; dimensionless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Kashihara 2026 Table 2 column 'IFN-gamma', footnote b: ",
         "'Immunogenicity values were presented as the ratio to placebo on ",
         "the original scale.' The model uses the NATURAL log of this ratio ",
@@ -101,24 +101,24 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
         "cell-mediated-immunity marker collected but were excluded from ",
         "the analysis because only two trials had data."
       ),
-      source_name        = "IFN-gamma (ratio to placebo)"
+      source_name = "IFN-gamma (ratio to placebo)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 132677L,
-    n_studies      = 7L,
-    age_range      = paste0(
+    species = "human",
+    n_subjects = 132677L,
+    n_studies = 7L,
+    age_range = paste0(
       "Older adults. Six trials enrolled adults aged 60 years and older; ",
       "CYPRESS enrolled adults aged 65 years and older (Kashihara 2026 ",
       "Table 1)."
     ),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Community-dwelling older adults at risk of seasonal RSV infection; ",
       "efficacy endpoints are RSV-ARI, RSV-LRTD 2+ and RSV-LRTD 3+."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "One dose of vaccine or placebo per participant. The seven trials ",
       "used seven different vaccines: RSVpreF3 120 ug with AS01E adjuvant ",
       "(AReSVi-006), mRNA-1345 50 ug (ConquerRSV), Ad26.RSV.preF 1e11 viral ",
@@ -127,8 +127,8 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
       "(RENOIR), RSV F 135 ug (Resolve), and MVA-BN-RSV 3e8 infectious ",
       "units (VANIR)."
     ),
-    regions        = "International (published phase 2b and later trials)",
-    notes          = paste0(
+    regions = "International (published phase 2b and later trials)",
+    notes = paste0(
       "Model-based meta-analysis: the unit of observation is a published ",
       "trial-level vaccine efficacy, not an individual participant. This ",
       "secondary analysis was developed on the 11 VE values from the four ",

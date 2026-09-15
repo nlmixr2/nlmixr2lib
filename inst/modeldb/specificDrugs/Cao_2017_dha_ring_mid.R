@@ -27,8 +27,8 @@ Cao_2017_dha_ring_mid <- function() {
   vignette <- "Cao_2017_dha_artemisinin_stress_model"
   paper_specific_compartments <- c("stress", "parasites")
   units <- list(
-    time          = "h",
-    dosing        = "nM (initial DHA concentration deposited into central)",
+    time = "h",
+    dosing = "nM (initial DHA concentration deposited into central)",
     concentration = "nM (central DHA); unitless fraction (parasites = viability)"
   )
 
@@ -37,30 +37,40 @@ Cao_2017_dha_ring_mid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central   = list(analyte = "dihydroartemisinin (DHA)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    stress    = list(analyte = "dynamic stress variable S(t)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    parasites = list(analyte = "mid-ring-stage parasites viability", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    central = list(analyte = "dihydroartemisinin (DHA)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stress = list(
+      analyte = "dynamic stress variable S(t)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    parasites = list(
+      analyte = "mid-ring-stage parasites viability",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "in vitro (P. falciparum 3D7 laboratory strain)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "in vitro (P. falciparum 3D7 laboratory strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = paste(
       "Tightly age-synchronized 3D7 parasites (>80% within a 1-h age window) at the",
       "mid-ring stage (7.5 h post-infection per Klonis et al 2013, Cao 2017 reference 7).",
       "Cultures grown in human red blood cells; viability assayed in the trophozoite stage",
       "of the following life cycle, 48 h after pulse start, with M3 censoring at the",
       "0.005 limit of detection."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Initial DHA pulse concentrations approximately 39 nM and 300 nM in Cao 2017 Fig 1,",
       "with additional concentrations in the supplemental data of Klonis 2013 (Cao 2017",
       "reference 7); pulse durations 1, 2, 4, and 6 h."
     ),
-    notes          = paste(
+    notes = paste(
       "Mid-ring is the slowest-accumulating stage (Cao 2017 Table 1: lambda = 0.3729 /h",
       "with half-life of the unstressed state ~1.86 h, vs ~0.11 h for early ring). The",
       "stage-pooled Hill coefficient gamma was fixed at 1.7892 (Table 1 footnote a).",

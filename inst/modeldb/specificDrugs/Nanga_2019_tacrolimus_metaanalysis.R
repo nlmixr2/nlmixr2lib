@@ -8,63 +8,63 @@ Nanga_2019_tacrolimus_metaanalysis <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Nanga 2019. Allometric power scaling on CL/F (exponent 0.61, Table 3 WT_CL) and on the apparent volumes of distribution V2/F and V3/F (exponent 0.53, Table 3 WT_V) with reference WT = 50 kg (the pooled-cohort median per Table 5; range 5 - 128 kg covering paediatric to adult patients). The single WT_V coefficient is applied to both Vc and Vp because the paper's text describes the body-weight effect on 'the apparent volume of distribution' (V/F = Vc + Vp).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline in Nanga 2019. Allometric power scaling on CL/F (exponent 0.61, Table 3 WT_CL) and on the apparent volumes of distribution V2/F and V3/F (exponent 0.53, Table 3 WT_V) with reference WT = 50 kg (the pooled-cohort median per Table 5; range 5 - 128 kg covering paediatric to adult patients). The single WT_V coefficient is applied to both Vc and Vp because the paper's text describes the body-weight effect on 'the apparent volume of distribution' (V/F = Vc + Vp).",
+      source_name = "WT"
     ),
     POD = list(
-      description        = "Days post-transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Days post-transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. CL/F follows a sigmoidal recovery from the immediate post-transplant low to twice that level with increasing POD: time_factor_CL = 1 + POD^8.88 / (POD^8.88 + 6.12^8.88), with Hill steepness 8.88 (Table 3 'Sigmoidity coefficient for time_CL') and half-recovery at POD = 6.12 days (Table 3 'Time 50% recovery'). The factor is 1 at POD = 0 and asymptotes to 2 as POD -> infinity.",
-      source_name        = "POD"
+      notes = "Time-varying within subject. CL/F follows a sigmoidal recovery from the immediate post-transplant low to twice that level with increasing POD: time_factor_CL = 1 + POD^8.88 / (POD^8.88 + 6.12^8.88), with Hill steepness 8.88 (Table 3 'Sigmoidity coefficient for time_CL') and half-recovery at POD = 6.12 days (Table 3 'Time 50% recovery'). The factor is 1 at POD = 0 and asymptotes to 2 as POD -> infinity.",
+      source_name = "POD"
     ),
     TX_LIVER = list(
-      description        = "Liver (hepatic) graft indicator: 1 if the patient received a liver transplant, 0 if a non-liver solid-organ transplant (kidney, heart, or lung) -- the pooled model-building cohort includes only liver and kidney recipients (Nanga 2019 Table 5).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Liver (hepatic) graft indicator: 1 if the patient received a liver transplant, 0 if a non-liver solid-organ transplant (kidney, heart, or lung) -- the pooled model-building cohort includes only liver and kidney recipients (Nanga 2019 Table 5).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-liver solid-organ graft)",
-      notes              = "Time-fixed at transplantation date per subject. Nanga 2019 model-building cohort (Table 5): 201 liver-transplant patients (71.5%) and 80 non-liver (kidney) patients (28.5%). Encoded as a multiplicative power coefficient theta^TX_LIVER on CL/F per the paper's general categorical-covariate form (Eq. 4): liver-transplant patients have CL/F reduced by factor 0.38 relative to non-liver recipients (Table 3 'Hepatic trans_CL' = 0.38; printed in the explicit CL equation on p.2815 as 0.39, a rounding/typesetting artifact -- the Table 3 value 0.38 is authoritative).",
-      source_name        = "Hepatic trans_CL"
+      notes = "Time-fixed at transplantation date per subject. Nanga 2019 model-building cohort (Table 5): 201 liver-transplant patients (71.5%) and 80 non-liver (kidney) patients (28.5%). Encoded as a multiplicative power coefficient theta^TX_LIVER on CL/F per the paper's general categorical-covariate form (Eq. 4): liver-transplant patients have CL/F reduced by factor 0.38 relative to non-liver recipients (Table 3 'Hepatic trans_CL' = 0.38; printed in the explicit CL equation on p.2815 as 0.39, a rounding/typesetting artifact -- the Table 3 value 0.38 is authoritative).",
+      source_name = "Hepatic trans_CL"
     ),
     FORM_SYRUP = list(
-      description        = "Oral syrup-formulation indicator: 1 if the patient received the oral suspension / syrup formulation of tacrolimus on a given dose, 0 if the patient received the capsule (immediate-release) formulation. Per-dose-occasion in principle; in paediatric cohorts typically time-fixed per subject by clinical convention.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral syrup-formulation indicator: 1 if the patient received the oral suspension / syrup formulation of tacrolimus on a given dose, 0 if the patient received the capsule (immediate-release) formulation. Per-dose-occasion in principle; in paediatric cohorts typically time-fixed per subject by clinical convention.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capsule / standard solid oral formulation)",
-      notes              = "Time-fixed per-dose-occasion. Nanga 2019 Table 3 estimates the syrup-formulation relative bioavailability F_syrup = 0.53 (95% bootstrap CI 0.31 - 0.75). Encoded inside model() as f(depot) <- F_syrup^FORM_SYRUP per the paper's categorical-covariate form (Eq. 4), so capsule users have F = 1 and syrup users have F = 0.53. The paediatric subset of databases 1 - 3 (Table 1) contributed the syrup-formulation observations.",
-      source_name        = "syrup formulation"
+      notes = "Time-fixed per-dose-occasion. Nanga 2019 Table 3 estimates the syrup-formulation relative bioavailability F_syrup = 0.53 (95% bootstrap CI 0.31 - 0.75). Encoded inside model() as f(depot) <- F_syrup^FORM_SYRUP per the paper's categorical-covariate form (Eq. 4), so capsule users have F = 1 and syrup users have F = 0.53. The paediatric subset of databases 1 - 3 (Table 1) contributed the syrup-formulation observations.",
+      source_name = "syrup formulation"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 281L,
-    n_studies            = 7L,
-    age_range            = "0.3 - 68 years",
-    age_median           = "2.3 years",
-    weight_range         = "5 - 128 kg",
-    weight_median        = "50 kg",
-    sex_female_pct       = 42.2,
-    sex_distribution     = "104 male / 76 female of subjects with non-missing sex; 38% of records missing sex.",
-    race_ethnicity       = "Not reported in the source paper.",
-    disease_state        = "Paediatric and adult recipients of liver (201 patients, 71.5%) or kidney (80 patients, 28.5%) solid-organ transplants on oral tacrolimus immunosuppression. Observations span D1 - D394 post-transplant.",
-    dose_range           = "Oral tacrolimus dosing varied by centre and age (capsule or syrup formulation); per-database dosing schedules are summarised in Nanga 2019 Table 1.",
-    organ_breakdown      = "Model-building cohort (Table 5): 201 liver-transplant patients (71.5%); 80 kidney-transplant patients (28.5%). External-validation cohorts (113 additional patients, NOT used for parameter estimation): 61 adult lung (Stimmugrep trial), 20 adult heart (Pigrec trial), 32 adult kidney (PCCP trial).",
-    formulations         = "Mixed capsule and oral-suspension (syrup) formulations across paediatric and adult datasets. Relative bioavailability for syrup vs capsule estimated at 0.53 (Table 3).",
-    regions              = "Multi-centre European and international cohorts (databases 1 - 7 model-building from in-house and previously published data; databases 8 - 10 external evaluation).",
-    notes                = "Pooled patient-level dataset from 7 historical NONMEM-format individual-patient-data sources (Nanga 2019 Table 1, databases 1 - 7). The paper also reviewed 76 published tacrolimus popPK models (Table 2) and used those for narrative comparison only -- they were NOT used for parameter fitting. Median body weight 50 kg, age 2.3 years (0.3 - 68). Haematocrit, plasma albumin, and CYP3A5 status had > 50% missing data in the pooled dataset, so CYP3A5 polymorphism was not included as a covariate."
+    species = "human",
+    n_subjects = 281L,
+    n_studies = 7L,
+    age_range = "0.3 - 68 years",
+    age_median = "2.3 years",
+    weight_range = "5 - 128 kg",
+    weight_median = "50 kg",
+    sex_female_pct = 42.2,
+    sex_distribution = "104 male / 76 female of subjects with non-missing sex; 38% of records missing sex.",
+    race_ethnicity = "Not reported in the source paper.",
+    disease_state = "Paediatric and adult recipients of liver (201 patients, 71.5%) or kidney (80 patients, 28.5%) solid-organ transplants on oral tacrolimus immunosuppression. Observations span D1 - D394 post-transplant.",
+    dose_range = "Oral tacrolimus dosing varied by centre and age (capsule or syrup formulation); per-database dosing schedules are summarised in Nanga 2019 Table 1.",
+    organ_breakdown = "Model-building cohort (Table 5): 201 liver-transplant patients (71.5%); 80 kidney-transplant patients (28.5%). External-validation cohorts (113 additional patients, NOT used for parameter estimation): 61 adult lung (Stimmugrep trial), 20 adult heart (Pigrec trial), 32 adult kidney (PCCP trial).",
+    formulations = "Mixed capsule and oral-suspension (syrup) formulations across paediatric and adult datasets. Relative bioavailability for syrup vs capsule estimated at 0.53 (Table 3).",
+    regions = "Multi-centre European and international cohorts (databases 1 - 7 model-building from in-house and previously published data; databases 8 - 10 external evaluation).",
+    notes = "Pooled patient-level dataset from 7 historical NONMEM-format individual-patient-data sources (Nanga 2019 Table 1, databases 1 - 7). The paper also reviewed 76 published tacrolimus popPK models (Table 2) and used those for narrative comparison only -- they were NOT used for parameter fitting. Median body weight 50 kg, age 2.3 years (0.3 - 68). Haematocrit, plasma albumin, and CYP3A5 status had > 50% missing data in the pooled dataset, so CYP3A5 polymorphism was not included as a covariate."
   )
 
   ini({

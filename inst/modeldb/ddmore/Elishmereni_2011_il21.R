@@ -22,40 +22,40 @@ Elishmereni_2011_il21 <- function() {
   )
   vignette <- "Elishmereni_2011_il21"
   units <- list(
-    time          = "unspecified (assumed h)",
-    dosing        = "unspecified",
+    time = "unspecified (assumed h)",
+    dosing = "unspecified",
     concentration = "unspecified"
   )
 
-  ddmore_id    <- "DDMODEL00000230"
+  ddmore_id <- "DDMODEL00000230"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "il21", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot2      = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "il21", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot2 = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE),
     peripheral1 = list(analyte = "il21", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "il21", units = NA_character_, specimen = "plasma", verified = FALSE),
-    transit1    = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE)
+    transit1 = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "il21", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (strain not declared in DDMORE bundle; Elishmereni 2011 used C57BL/6 for the in vivo IL-21 PK experiments)",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "mouse (strain not declared in DDMORE bundle; Elishmereni 2011 used C57BL/6 for the in vivo IL-21 PK experiments)",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Tumour-bearing and tumour-free mice receiving recombinant murine interleukin-21 (rIL-21) by ip, iv, or sc routes; the DDMORE deposit description states the model encompasses melanoma and renal cell carcinoma settings.",
-    dose_range     = "Multiple administration routes (ip, iv, sc); specific dose levels are not reproduced in the DDMORE bundle (the IL_21_PK.csv source dataset is not shipped).",
-    regions        = NA_character_,
-    notes          = "The DDMORE deposit (DDMODEL00000230) is a simplified Monolix 3.2 re-fit of the original Elishmereni 2011 PK model: one compartment was removed and all parameters re-estimated by mixed-effects (the original paper used step-wise least-squares fitting). Per the deposit's RDF metadata: model-implementation-conforms-to-literature-controlled = 'No'; model-origin-of-code-in-literature-controlled = 'No'. The original Elishmereni 2011 publication is not on disk in this worktree; parameter values and equations were taken verbatim from the DDMORE bundle's IL_21_PK_model.mdl. See the validation vignette Errata for the full list of bundle-versus-publication caveats."
+    disease_state = "Tumour-bearing and tumour-free mice receiving recombinant murine interleukin-21 (rIL-21) by ip, iv, or sc routes; the DDMORE deposit description states the model encompasses melanoma and renal cell carcinoma settings.",
+    dose_range = "Multiple administration routes (ip, iv, sc); specific dose levels are not reproduced in the DDMORE bundle (the IL_21_PK.csv source dataset is not shipped).",
+    regions = NA_character_,
+    notes = "The DDMORE deposit (DDMODEL00000230) is a simplified Monolix 3.2 re-fit of the original Elishmereni 2011 PK model: one compartment was removed and all parameters re-estimated by mixed-effects (the original paper used step-wise least-squares fitting). Per the deposit's RDF metadata: model-implementation-conforms-to-literature-controlled = 'No'; model-origin-of-code-in-literature-controlled = 'No'. The original Elishmereni 2011 publication is not on disk in this worktree; parameter values and equations were taken verbatim from the DDMORE bundle's IL_21_PK_model.mdl. See the validation vignette Errata for the full list of bundle-versus-publication caveats."
   )
 
   ini({

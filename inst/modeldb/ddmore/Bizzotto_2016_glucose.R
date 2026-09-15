@@ -12,7 +12,7 @@ Bizzotto_2016_glucose <- function() {
   paper_specific_compartments <- c("X1", "X", "Z1", "Z", "xHL1", "xHL2", "xPER1", "xPER2", "xPER3", "xPER4")
 
   units <- list(time = "min", dosing = "umol/m^2", concentration = "mmol/L")
-  ddmore_id    <- "DDMODEL00000227"
+  ddmore_id <- "DDMODEL00000227"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -20,12 +20,12 @@ Bizzotto_2016_glucose <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    X1    = list(analyte = "tracer", units = NA_character_, specimen = "plasma", verified = FALSE),
-    X     = list(analyte = "tracer", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Z1    = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
-    Z     = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
-    xHL1  = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
-    xHL2  = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    X1 = list(analyte = "tracer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    X = list(analyte = "tracer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Z1 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Z = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xHL1 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xHL2 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
     xPER1 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
     xPER2 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
     xPER3 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
@@ -34,33 +34,33 @@ Bizzotto_2016_glucose <- function() {
 
   covariateData <- list(
     INS = list(
-      description        = "Plasma insulin concentration time-course (regressor input)",
-      units              = "pmol/L",
-      type               = "continuous",
+      description = "Plasma insulin concentration time-course (regressor input)",
+      units = "pmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying regressor; supplied at every observation/event row in the dataset. Linearly interpolated between rows via the `linear(INS)` declaration in `model()`. Drives the two-compartment delay (Z1 -> Z) representing insulin at the site of action. The DDMORE bundle's Simulated_glucoseKinetics.csv carries this column as `iins` (insulin at the current row time); rename to `INS` before passing the dataset to rxSolve.",
-      source_name        = "iins"
+      notes = "Time-varying regressor; supplied at every observation/event row in the dataset. Linearly interpolated between rows via the `linear(INS)` declaration in `model()`. Drives the two-compartment delay (Z1 -> Z) representing insulin at the site of action. The DDMORE bundle's Simulated_glucoseKinetics.csv carries this column as `iins` (insulin at the current row time); rename to `INS` before passing the dataset to rxSolve.",
+      source_name = "iins"
     ),
     GLU = list(
-      description        = "Plasma glucose concentration time-course (regressor input)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Plasma glucose concentration time-course (regressor input)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying regressor; supplied at every observation/event row in the dataset. Linearly interpolated between rows via the `linear(GLU)` declaration in `model()`. Drives the two-compartment delay (X1 -> X) representing glucose at the site of action. The DDMORE bundle's Simulated_glucoseKinetics.csv carries this column as `iglu` (glucose at the current row time); rename to `GLU` before passing the dataset to rxSolve.",
-      source_name        = "iglu"
+      notes = "Time-varying regressor; supplied at every observation/event row in the dataset. Linearly interpolated between rows via the `linear(GLU)` declaration in `model()`. Drives the two-compartment delay (X1 -> X) representing glucose at the site of action. The DDMORE bundle's Simulated_glucoseKinetics.csv carries this column as `iglu` (glucose at the current row time); rename to `GLU` before passing the dataset to rxSolve.",
+      source_name = "iglu"
     )
   )
 
   population <- list(
-    n_subjects     = 123L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = 123L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adults spanning the glucose-tolerance spectrum (normal-tolerant, impaired-glucose-tolerance, and type 2 diabetic). 123 subjects across five experimental tests: three-step hyperglycemic-hyperinsulinemic clamp (HGclamp, n=8), two-step isoglycemic-hyperinsulinemic clamp (ISOclamp, n=8), paired oral glucose tolerance test plus euglycemic clamp (OGTT/clamp, n=8), mixed-meal test (MTT, n=91), and paired mixed-meal test plus hyperglycemic clamp (MTT/clamp, n=8). Specific demographic detail (age range, weight range, sex distribution) is described in the Bizzotto 2016 publication but not reproduced in the DDMORE bundle and the publication PDF is not on disk in this worktree.",
-    dose_range     = "Glucose tracer (e.g. [6,6-d2]glucose) administered as an intravenous bolus and continuous infusion; tracer doses normalised to body surface area (umol/m^2 for bolus, umol/min/m^2 for infusion). The DDMORE bundle's Simulated_glucoseKinetics.csv ships test-typical bolus + infusion regimens (e.g. ~1000 umol/m^2 bolus + ~8 umol/min/m^2 infusion in the clamp arms).",
-    regions        = NA_character_,
-    notes          = "Population n and test-by-test n derived from the Long_technical_model_description_glucoseKinetics.txt file in the DDMORE bundle for DDMODEL00000227; the bundle states the test mix and total subject count (123) match the related publication. Demographic detail (age, weight, sex, region) is in the Bizzotto 2016 publication but the publication PDF is not on disk in this worktree, so finer-grained population descriptors are recorded as NA. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    disease_state = "Adults spanning the glucose-tolerance spectrum (normal-tolerant, impaired-glucose-tolerance, and type 2 diabetic). 123 subjects across five experimental tests: three-step hyperglycemic-hyperinsulinemic clamp (HGclamp, n=8), two-step isoglycemic-hyperinsulinemic clamp (ISOclamp, n=8), paired oral glucose tolerance test plus euglycemic clamp (OGTT/clamp, n=8), mixed-meal test (MTT, n=91), and paired mixed-meal test plus hyperglycemic clamp (MTT/clamp, n=8). Specific demographic detail (age range, weight range, sex distribution) is described in the Bizzotto 2016 publication but not reproduced in the DDMORE bundle and the publication PDF is not on disk in this worktree.",
+    dose_range = "Glucose tracer (e.g. [6,6-d2]glucose) administered as an intravenous bolus and continuous infusion; tracer doses normalised to body surface area (umol/m^2 for bolus, umol/min/m^2 for infusion). The DDMORE bundle's Simulated_glucoseKinetics.csv ships test-typical bolus + infusion regimens (e.g. ~1000 umol/m^2 bolus + ~8 umol/min/m^2 infusion in the clamp arms).",
+    regions = NA_character_,
+    notes = "Population n and test-by-test n derived from the Long_technical_model_description_glucoseKinetics.txt file in the DDMORE bundle for DDMODEL00000227; the bundle states the test mix and total subject count (123) match the related publication. Demographic detail (age, weight, sex, region) is in the Bizzotto 2016 publication but the publication PDF is not on disk in this worktree, so finer-grained population descriptors are recorded as NA. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

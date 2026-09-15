@@ -26,8 +26,8 @@ Marcantonio_2022_amivantamab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Amivantamab dose amount into Ab_00_c (IV bolus) in nmol; MW = 150000 Da so 1050 mg = 7000 nmol.",
+    time = "day",
+    dosing = "Amivantamab dose amount into Ab_00_c (IV bolus) in nmol; MW = 150000 Da so 1050 mg = 7000 nmol.",
     concentration = "Free amivantamab plasma concentration Cc = Ab_00_c / Vc in nM; central Vc = 3 L, peripheral Vp = 13 L."
   )
 
@@ -36,37 +36,47 @@ Marcantonio_2022_amivantamab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    R1_c      = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R2_c      = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S2_c      = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_00_c   = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_R1_c   = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_R2_c   = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_S2_c   = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1_c = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R2_c = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S2_c = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_00_c = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1_c = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R2_c = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_S2_c = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_R1R2_c = list(analyte = "bound form Ab-R1R2", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_R1S2_c = list(analyte = "bound form Ab-R1S2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1_p      = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    R2_p      = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    S2_p      = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    Ab_00_p   = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    Ab_R1_p   = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    Ab_R2_p   = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    Ab_S2_p   = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    R1_p = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    R2_p = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    S2_p = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_00_p = list(
+      analyte = "free drug (Amivantamab)",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    Ab_R1_p = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R2_p = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_S2_p = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
     Ab_R1R2_p = list(analyte = "bound form Ab-R1R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
     Ab_R1S2_p = list(analyte = "bound form Ab-R1S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    depot     = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "administration site", verified = FALSE)
+    depot = list(
+      analyte = "free drug (Amivantamab)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with locally advanced or metastatic non-small-cell lung cancer with EGFR exon-20 insertion mutations.",
-    dose_range     = "Clinically approved dose: 1050 mg IV for < 80 kg patients (1400 mg if >= 80 kg) weekly for the first 4 weeks then every 2 weeks (Rybrevant USPI). Model prediction targets 326 mg Q1W or 740 mg Q2W for 98% target engagement of both targets.",
-    regions        = NA_character_,
-    notes          = "See Marcantonio 2022 trastuzumab and panitumumab siblings for shared 2-cpt anti-receptor structure."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with locally advanced or metastatic non-small-cell lung cancer with EGFR exon-20 insertion mutations.",
+    dose_range = "Clinically approved dose: 1050 mg IV for < 80 kg patients (1400 mg if >= 80 kg) weekly for the first 4 weeks then every 2 weeks (Rybrevant USPI). Model prediction targets 326 mg Q1W or 740 mg Q2W for 98% target engagement of both targets.",
+    regions = NA_character_,
+    notes = "See Marcantonio 2022 trastuzumab and panitumumab siblings for shared 2-cpt anti-receptor structure."
   )
 
   ini({

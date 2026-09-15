@@ -28,11 +28,11 @@ Beijer_2026_cloxacillin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate on unbound clearance, exponent 0.67, centred on 84 kg (Table S2 CL row:",
         "'CL (L/h) = theta_CL x (BW/84)^beta1 x (eGFR/67)^beta2 x exp(eta_CL)'). The 84 kg",
         "reference is the typical patient of the Figure 1 caption ('a body weight of 84 kg and",
@@ -44,14 +44,14 @@ Beijer_2026_cloxacillin <- function() {
         "Material, Renal function covariate selection); adding it cut unexplained CL variability",
         "from 50% to 47%."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, Lund-Malmo Revised 2018 equation, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, Lund-Malmo Revised 2018 equation, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate on unbound clearance, exponent 0.51, centred on 67 mL/min/1.73 m^2",
         "(Table S2 CL row). The estimating equation is the Lund-Malmo Revised 2018 formula",
         "(LMR18), which Table S1 shows correlated more strongly with eta_CL than CKD-EPI 2021 or",
@@ -65,52 +65,52 @@ Beijer_2026_cloxacillin <- function() {
         "paper states the model carries little information about severe renal impairment",
         "(Strengths and limitations)."
       ),
-      source_name        = "eGFR-LMR18rel"
+      source_name = "eGFR-LMR18rel"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened but not retained (Methods, Pharmacokinetic modelling; Results: 'No other covariates were found to significantly improve the model fit')."
+      units = "year",
+      type = "continuous",
+      notes = "Screened but not retained (Methods, Pharmacokinetic modelling; Results: 'No other covariates were found to significantly improve the model fit')."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. Cohort 105/200 (53%) female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. Cohort 105/200 (53%) female (Table 1)."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained; used only to compute BMI and Du Bois BSA."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained; used only to compute BMI and Du Bois BSA."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained; total body weight was the retained body-size covariate. Cohort median 28 kg/m^2, IQR 25-32, range 20-61 (Table 1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained; total body weight was the retained body-size covariate. Cohort median 28 kg/m^2, IQR 25-32, range 20-61 (Table 1)."
     ),
     BSA = list(
       description = "Body surface area (Du Bois formula)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained as a covariate; used to convert between relative and absolute eGFR estimates (Methods, Pharmacokinetic modelling)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened but not retained as a covariate; used to convert between relative and absolute eGFR estimates (Methods, Pharmacokinetic modelling)."
     ),
     CREAT = list(
       description = "Plasma creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; entered the model only through the eGFR equations. Cohort median 70 umol/L, IQR 58-89, range 11-236 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained; entered the model only through the eGFR equations. Cohort median 70 umol/L, IQR 58-89, range 11-236 (Table 1)."
     ),
     ALB = list(
       description = "Plasma albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened and significantly correlated with protein binding, but NOT retained: the",
         "Supplementary Material states that adding albumin as a covariate on Bmax (and Kd) 'led to",
         "over-fitting and did not improve overall model performance'. Cohort median 34 g/L,",
@@ -119,48 +119,48 @@ Beijer_2026_cloxacillin <- function() {
     ),
     ASA_CLASS = list(
       description = "American Society of Anesthesiologists preoperative physical-status class",
-      units       = "(ordinal, I-V)",
-      type        = "categorical",
-      notes       = "Screened but not retained. Cohort I 29 (15%), II 84 (42%), III 87 (43%) (Table 1)."
+      units = "(ordinal, I-V)",
+      type = "categorical",
+      notes = "Screened but not retained. Cohort I 29 (15%), II 84 (42%), III 87 (43%) (Table 1)."
     ),
     SURGSITE_KNEE = list(
       description = "Knee (rather than hip) arthroplasty indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained; the type of arthroplasty and the type of prosthesis were both evaluated as categorical covariates. Cohort 105 knee (53%), 95 hip (47%) (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained; the type of arthroplasty and the type of prosthesis were both evaluated as categorical covariates. Cohort 105 knee (53%), 95 hip (47%) (Table 1)."
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "cloxacillin, unbound",
-      units    = "mg",
+      analyte = "cloxacillin, unbound",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "cloxacillin, unbound",
-      units    = "mg",
+      analyte = "cloxacillin, unbound",
+      units = "mg",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 200L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 200L,
+    n_studies = 1L,
     n_observations = "496 paired total and unbound plasma cloxacillin samples; median 3 per patient (range 1-3); 193 (97%) evaluable at start of surgery, 178 (89%) at end of surgery, 125 (63%) at 90 min postoperatively",
-    age_range      = "36-90 years",
-    age_median     = "73 years (IQR 65-78)",
-    weight_range   = "53-185 kg",
-    weight_median  = "83 kg (IQR 73-95)",
+    age_range = "36-90 years",
+    age_median = "73 years (IQR 65-78)",
+    weight_range = "53-185 kg",
+    weight_median = "83 kg (IQR 73-95)",
     sex_female_pct = 52.5,
-    disease_state  = "Adults (>18 years) scheduled for primary elective total hip arthroplasty (95, 47%) or total knee arthroplasty (105, 53%), non-allergic to penicillin; ASA class I 15%, II 42%, III 43%",
+    disease_state = "Adults (>18 years) scheduled for primary elective total hip arthroplasty (95, 47%) or total knee arthroplasty (105, 53%), non-allergic to penicillin; ASA class I 15%, II 42%, III 43%",
     renal_function = "Relative eGFR (LMR18) median 72 mL/min/1.73 m^2 (IQR 61-84, range 18-142); absolute eGFR median 83 mL/min (IQR 68-93, range 21-158); plasma creatinine median 70 umol/L (range 11-236). Generally well preserved, with few patients at very low levels",
-    dose_range     = "Intravenous cloxacillin 2 g at three time points: 30-45 min before surgical incision, then 2 h and 6 h after the start of the first dose. Recommended infusion duration 20-30 min; actual durations were 20-30 min in 100 (50%), <20 min in 90 (45%) and >30 min in 10 (5%) of patients, and only 42 (21%) of preoperative doses complied with the guideline in full",
-    regions        = "Sweden (two centres)",
-    notes          = paste(
+    dose_range = "Intravenous cloxacillin 2 g at three time points: 30-45 min before surgical incision, then 2 h and 6 h after the start of the first dose. Recommended infusion duration 20-30 min; actual durations were 20-30 min in 100 (50%), <20 min in 90 (45%) and >30 min in 10 (5%) of patients, and only 42 (21%) of preoperative doses complied with the guideline in full",
+    regions = "Sweden (two centres)",
+    notes = paste(
       "Prospective two-centre study, enrolment 2022-2024 (Swedish Ethical Review Authority",
       "2021-02358 and 2024-06520-02). Baseline characteristics from Table 1. Total and unbound",
       "plasma cloxacillin were both measured by reversed-phase HPLC-MS/MS, the unbound fraction",

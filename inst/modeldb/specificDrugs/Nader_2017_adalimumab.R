@@ -8,53 +8,53 @@ Nader_2017_adalimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "adalimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on both CL/F and V/F, each normalized as (WT/94 kg)^exponent per Nader 2017 Eqs. (5) and (6). Reference weight 94 kg is the pooled cohort median (Table 1). Baseline body weight, time-fixed per subject.",
-      source_name        = "WTKG"
+      notes = "Power effect on both CL/F and V/F, each normalized as (WT/94 kg)^exponent per Nader 2017 Eqs. (5) and (6). Reference weight 94 kg is the pooled cohort median (Table 1). Baseline body weight, time-fixed per subject.",
+      source_name = "WTKG"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (pre-treatment) CRP measured by standard assay, as a power effect on CL/F normalized as (CRP/7.9 mg/L)^exponent per Nader 2017 Eq. (5). Reference value 7.9 mg/L is the pooled cohort median (Table 1). Time-fixed per subject.",
-      source_name        = "CRP"
+      notes = "Baseline (pre-treatment) CRP measured by standard assay, as a power effect on CL/F normalized as (CRP/7.9 mg/L)^exponent per Nader 2017 Eq. (5). Reference value 7.9 mg/L is the pooled cohort median (Table 1). Time-fixed per subject.",
+      source_name = "CRP"
     ),
     ADA_POS = list(
-      description        = "Anti-adalimumab antibody (AAA) positivity",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-adalimumab antibody (AAA) positivity",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AAA-negative; typical patient)",
-      notes              = "Time-delayed multiplicative power effect on CL/F, active only 21 days (3 weeks) or more after the first adalimumab dose in AAA-positive subjects, per Nader 2017 Eq. (5) definition of COV_1 = AAA_eff. In the source data a sample was classified AAA-positive if the AAA concentration in undiluted serum was greater than 20 ng/mL AND the sample was collected within 30 days of an adalimumab dose (Methods Section 2.3). The model column represents a subject-level 'will develop AAA' indicator to be used together with the model-time gate. Model time origin (t = 0) coincides with the first adalimumab dose (subcutaneous loading). Source paper labels this covariate 'AAA'; renamed to canonical ADA_POS per inst/references/covariate-columns.md.",
-      source_name        = "AAA"
+      notes = "Time-delayed multiplicative power effect on CL/F, active only 21 days (3 weeks) or more after the first adalimumab dose in AAA-positive subjects, per Nader 2017 Eq. (5) definition of COV_1 = AAA_eff. In the source data a sample was classified AAA-positive if the AAA concentration in undiluted serum was greater than 20 ng/mL AND the sample was collected within 30 days of an adalimumab dose (Methods Section 2.3). The model column represents a subject-level 'will develop AAA' indicator to be used together with the model-time gate. Model time origin (t = 0) coincides with the first adalimumab dose (subcutaneous loading). Source paper labels this covariate 'AAA'; renamed to canonical ADA_POS per inst/references/covariate-columns.md.",
+      source_name = "AAA"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 600L,
-    n_studies        = 3L,
-    age_range        = "18-67 years",
-    age_median       = "35 years",
-    weight_range     = "43-221 kg",
-    weight_median    = "94 kg",
-    sex_female_pct   = 66,
-    race_ethnicity   = "Not reported in the population PK Table 1 summary. The pooled phase II/III trials enrolled predominantly White adults with moderate-to-severe HS.",
-    disease_state    = "Moderate-to-severe hidradenitis suppurativa (Hurley stage II 53%, stage III 43%) with inadequate response to a trial of oral antibiotics; naive to anti-tumor-necrosis-factor-alpha treatment.",
-    dose_range       = "Loading 160 mg SC at week 0 and 80 mg at week 2 (phase III), then 40 mg SC weekly through week 12 and thereafter, or 40 mg SC every other week (phase II open-label period).",
-    regions          = "Multiregional (phase II NCT00918255; phase III PIONEER-I NCT01468207 and PIONEER-II NCT01468233).",
-    crp_median       = "7.9 mg/L (range 0.1-189 mg/L)",
+    species = "human",
+    n_subjects = 600L,
+    n_studies = 3L,
+    age_range = "18-67 years",
+    age_median = "35 years",
+    weight_range = "43-221 kg",
+    weight_median = "94 kg",
+    sex_female_pct = 66,
+    race_ethnicity = "Not reported in the population PK Table 1 summary. The pooled phase II/III trials enrolled predominantly White adults with moderate-to-severe HS.",
+    disease_state = "Moderate-to-severe hidradenitis suppurativa (Hurley stage II 53%, stage III 43%) with inadequate response to a trial of oral antibiotics; naive to anti-tumor-necrosis-factor-alpha treatment.",
+    dose_range = "Loading 160 mg SC at week 0 and 80 mg at week 2 (phase III), then 40 mg SC weekly through week 12 and thereafter, or 40 mg SC every other week (phase II open-label period).",
+    regions = "Multiregional (phase II NCT00918255; phase III PIONEER-I NCT01468207 and PIONEER-II NCT01468233).",
+    crp_median = "7.9 mg/L (range 0.1-189 mg/L)",
     aaa_positive_pct = 6.5,
-    notes            = "Pooled analysis of one phase II study (n = 143) and two phase III studies PIONEER-I (n = 295) and PIONEER-II (n = 162). Baseline demographics from Nader 2017 Table 1. Of 787 randomized patients, 187 were excluded from the population PK dataset (175 randomized to placebo or discontinued before receiving adalimumab; 12 without measurable adalimumab concentrations above the LLOQ). Serum adalimumab measured by validated ELISA; assay range 3.125-50.0 ng/mL in diluted serum, LLOQ 3.125 ng/mL. AAA measured by validated ELISA; sample classified AAA-positive if AAA > 20 ng/mL in undiluted serum within 30 days of an adalimumab dose."
+    notes = "Pooled analysis of one phase II study (n = 143) and two phase III studies PIONEER-I (n = 295) and PIONEER-II (n = 162). Baseline demographics from Nader 2017 Table 1. Of 787 randomized patients, 187 were excluded from the population PK dataset (175 randomized to placebo or discontinued before receiving adalimumab; 12 without measurable adalimumab concentrations above the LLOQ). Serum adalimumab measured by validated ELISA; assay range 3.125-50.0 ng/mL in diluted serum, LLOQ 3.125 ng/mL. AAA measured by validated ELISA; sample classified AAA-positive if AAA > 20 ng/mL in undiluted serum within 30 days of an adalimumab dose."
   )
 
   ini({

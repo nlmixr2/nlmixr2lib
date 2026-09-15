@@ -3,8 +3,8 @@ Silva_2023_perampanel <- function() {
   reference <- "Silva R, Colom H, Bicker J, Almeida A, Silva A, Sales F, Santana I, Falcao A, Fortuna A. Population Pharmacokinetic Analysis of Perampanel in Portuguese Patients Diagnosed with Refractory Epilepsy. Pharmaceutics. 2023;15(6):1704. doi:10.3390/pharmaceutics15061704"
   vignette <- "Silva_2023_perampanel"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -17,36 +17,36 @@ Silva_2023_perampanel <- function() {
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Enters the volume of distribution as (BMI/25.1)^e_bmi_vc where 25.1 kg/m^2 is the sample median reported by Silva 2023 (Table 1 median 25.14, rounded to 25.1 in the model equation on page 6 and Table S5 model 3). Studied range 15.76-36.20 kg/m^2.",
-      source_name        = "BMI"
+      notes = "Time-fixed. Enters the volume of distribution as (BMI/25.1)^e_bmi_vc where 25.1 kg/m^2 is the sample median reported by Silva 2023 (Table 1 median 25.14, rounded to 25.1 in the model equation on page 6 and Table S5 model 3). Studied range 15.76-36.20 kg/m^2.",
+      source_name = "BMI"
     ),
     CONMED_EIAED = list(
-      description        = "Concomitant enzyme-inducing antiepileptic drug (any of carbamazepine, oxcarbazepine, phenobarbital, or phenytoin)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant enzyme-inducing antiepileptic drug (any of carbamazepine, oxcarbazepine, phenobarbital, or phenytoin)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant EIAED)",
-      notes              = "Silva 2023 Section 2.4.2 defines the EIAED bucket as carbamazepine, oxcarbazepine, phenobarbital, and phenytoin. 20 of 44 patients (45.5%) were co-prescribed at least one EIAED (Section 3, page 5). Multiplicative effect on apparent clearance (cl *= e_eiaed_cl^CONMED_EIAED) with e_eiaed_cl = 2.76 (Table 2 final model).",
-      source_name        = "IND"
+      notes = "Silva 2023 Section 2.4.2 defines the EIAED bucket as carbamazepine, oxcarbazepine, phenobarbital, and phenytoin. 20 of 44 patients (45.5%) were co-prescribed at least one EIAED (Section 3, page 5). Multiplicative effect on apparent clearance (cl *= e_eiaed_cl^CONMED_EIAED) with e_eiaed_cl = 2.76 (Table 2 final model).",
+      source_name = "IND"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 1L,
-    age_range      = "19-76 years",
-    age_median     = "33 years",
-    weight_range   = "45-99 kg",
-    weight_median  = "77.5 kg",
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
+    age_range = "19-76 years",
+    age_median = "33 years",
+    weight_range = "45-99 kg",
+    weight_median = "77.5 kg",
     sex_female_pct = 38.6,
-    disease_state  = "Adults with refractory epilepsy (two or more appropriate and tolerated antiepileptic drug schedules failed to achieve sustained seizure freedom); most patients on polytherapy with one or more concomitant AEDs alongside perampanel",
-    dose_range     = "2-10 mg once-daily oral perampanel administered at bedtime (Silva 2023 Table 1; 12 mg extrapolated in model-based simulations)",
-    regions        = "Portugal (Refractory Epilepsy Centre, Coimbra Hospital and University Centre, EPE)",
-    notes          = "Retrospective single-centre observational study of TDM records collected April 2019-December 2022 (Silva 2023 Section 2.1). 72 steady-state plasma concentrations sampled 9.7-14 h post-dose (n=42) or 20.5-24 h post-dose (n=30). Concomitant AED landscape: levetiracetam 63.6%, carbamazepine 34.1%, clobazam 25.0%, eslicarbazepine acetate 22.7%, other AEDs at lower frequencies (Silva 2023 Table 1); EIAED co-prescription 45.5%. Median BMI 25.14 kg/m^2 (range 15.76-36.20)."
+    disease_state = "Adults with refractory epilepsy (two or more appropriate and tolerated antiepileptic drug schedules failed to achieve sustained seizure freedom); most patients on polytherapy with one or more concomitant AEDs alongside perampanel",
+    dose_range = "2-10 mg once-daily oral perampanel administered at bedtime (Silva 2023 Table 1; 12 mg extrapolated in model-based simulations)",
+    regions = "Portugal (Refractory Epilepsy Centre, Coimbra Hospital and University Centre, EPE)",
+    notes = "Retrospective single-centre observational study of TDM records collected April 2019-December 2022 (Silva 2023 Section 2.1). 72 steady-state plasma concentrations sampled 9.7-14 h post-dose (n=42) or 20.5-24 h post-dose (n=30). Concomitant AED landscape: levetiracetam 63.6%, carbamazepine 34.1%, clobazam 25.0%, eslicarbazepine acetate 22.7%, other AEDs at lower frequencies (Silva 2023 Table 1); EIAED co-prescription 45.5%. Median BMI 25.14 kg/m^2 (range 15.76-36.20)."
   )
 
   ini({

@@ -8,44 +8,44 @@ McLachlan_1996_fluconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fluconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fluconazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column 'CLcr' in the paper text. Estimated from serum creatinine, age and weight via Cockcroft-Gault (paper Methods 'Study population', citing Cockcroft & Gault 1976); raw mL/min, not BSA-normalized. Cohort mean 68 mL/min (range 36-138 mL/min) per the Methods text. Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source does not apply BSA normalisation; precedent in Delattre_2010_amikacin.R). Enters CL as a raw additive linear slope (no centring, no divisive normalization): CL = exp(lcl) + e_crcl_cl * CRCL + e_cd4_abs_cl * CD4_ABS, per the final NONMEM equation in the abstract and paper Discussion p.296.",
-      source_name        = "CLcr"
+      notes = "Source column 'CLcr' in the paper text. Estimated from serum creatinine, age and weight via Cockcroft-Gault (paper Methods 'Study population', citing Cockcroft & Gault 1976); raw mL/min, not BSA-normalized. Cohort mean 68 mL/min (range 36-138 mL/min) per the Methods text. Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source does not apply BSA normalisation; precedent in Delattre_2010_amikacin.R). Enters CL as a raw additive linear slope (no centring, no divisive normalization): CL = exp(lcl) + e_crcl_cl * CRCL + e_cd4_abs_cl * CD4_ABS, per the final NONMEM equation in the abstract and paper Discussion p.296.",
+      source_name = "CLcr"
     ),
     CD4_ABS = list(
-      description        = "Absolute CD4+ T-lymphocyte count (baseline)",
-      units              = "cells/mm^3",
-      type               = "continuous",
+      description = "Absolute CD4+ T-lymphocyte count (baseline)",
+      units = "cells/mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column 'CD4 cell count' in the paper text. Cohort mean 69 cells/mm^3 per the Methods (severely immunosuppressed HIV/AIDS cohort); the categorical-split analysis (Table 3) recorded 97 of 109 covariate-evaluable subjects with CD4 < 200 cells/mm^3 and 12 of 109 with CD4 >= 200 cells/mm^3. The paper does not tabulate the absolute-count range. Used as a surrogate disease-severity marker in HIV/AIDS; the paper hypothesises that lower CD4 (more advanced immunosuppression) co-occurs with reduced renal tubular reabsorption of fluconazole and altered drug-metabolising enzyme activity (paper Discussion p.297). Enters CL as a raw additive linear slope (cells/mm^3 in absolute count, not z-score): CL = exp(lcl) + e_crcl_cl * CRCL + e_cd4_abs_cl * CD4_ABS.",
-      source_name        = "CD4 cell count"
+      notes = "Source column 'CD4 cell count' in the paper text. Cohort mean 69 cells/mm^3 per the Methods (severely immunosuppressed HIV/AIDS cohort); the categorical-split analysis (Table 3) recorded 97 of 109 covariate-evaluable subjects with CD4 < 200 cells/mm^3 and 12 of 109 with CD4 >= 200 cells/mm^3. The paper does not tabulate the absolute-count range. Used as a surrogate disease-severity marker in HIV/AIDS; the paper hypothesises that lower CD4 (more advanced immunosuppression) co-occurs with reduced renal tubular reabsorption of fluconazole and altered drug-metabolising enzyme activity (paper Discussion p.297). Enters CL as a raw additive linear slope (cells/mm^3 in absolute count, not z-score): CL = exp(lcl) + e_crcl_cl * CRCL + e_cd4_abs_cl * CD4_ABS.",
+      source_name = "CD4 cell count"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 113L,
-    n_studies      = 2L,
-    age_range      = "23-60 years",
-    age_median     = "38 years (mean)",
-    weight_range   = "42-88 kg",
-    weight_median  = "63 kg (mean)",
+    species = "human",
+    n_subjects = 113L,
+    n_studies = 2L,
+    age_range = "23-60 years",
+    age_median = "38 years (mean)",
+    weight_range = "42-88 kg",
+    weight_median = "63 kg (mean)",
     sex_female_pct = 0,
     race_ethnicity = "(not reported in the source; single-site cohort recruited at St Vincent's Hospital, Darlinghurst NSW, Australia)",
-    disease_state  = "HIV infection / AIDS; majority had a prior or current AIDS-defining illness (21 Kaposi's sarcoma, 35 Pneumocystis carinii pneumonia, 25 CMV retinitis, 12 HSV infection per the Methods). Mean baseline CD4+ T-lymphocyte count 69 cells/mm^3 (severe immunosuppression). Cockcroft-Gault creatinine clearance mean 68 mL/min (range 36-138). None of the subjects were receiving other drugs known to affect fluconazole disposition. Most were on antiretroviral nucleosides (zidovudine, didanosine, zalcitabine) and co-trimoxazole; the paper Results confirm these did not affect CL or V.",
-    dose_range     = "Study 1 (n=13, intensive): 50, 100, or 400 mg single doses, each given as both an oral capsule (Diflucan) and an IV infusion at 50 mg per 15 min; doses separated by at least 2 weeks, 12-17 samples per dose at nominal times 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 24, 32, 48, 72, 96, 120, 168 h. Study 2 (n=100, sparse): 50-800 mg oral fluconazole at routine clinical frequency (twice daily to once weekly; majority once daily), all subjects at steady state (>= 7 days on the current regimen), one sample per subject at a precisely recorded post-dose time (mean 20.9 h, range 0.42-51.6 h).",
-    regions        = "Australia (St Vincent's Hospital, Darlinghurst NSW)",
+    disease_state = "HIV infection / AIDS; majority had a prior or current AIDS-defining illness (21 Kaposi's sarcoma, 35 Pneumocystis carinii pneumonia, 25 CMV retinitis, 12 HSV infection per the Methods). Mean baseline CD4+ T-lymphocyte count 69 cells/mm^3 (severe immunosuppression). Cockcroft-Gault creatinine clearance mean 68 mL/min (range 36-138). None of the subjects were receiving other drugs known to affect fluconazole disposition. Most were on antiretroviral nucleosides (zidovudine, didanosine, zalcitabine) and co-trimoxazole; the paper Results confirm these did not affect CL or V.",
+    dose_range = "Study 1 (n=13, intensive): 50, 100, or 400 mg single doses, each given as both an oral capsule (Diflucan) and an IV infusion at 50 mg per 15 min; doses separated by at least 2 weeks, 12-17 samples per dose at nominal times 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 24, 32, 48, 72, 96, 120, 168 h. Study 2 (n=100, sparse): 50-800 mg oral fluconazole at routine clinical frequency (twice daily to once weekly; majority once daily), all subjects at steady state (>= 7 days on the current regimen), one sample per subject at a precisely recorded post-dose time (mean 20.9 h, range 0.42-51.6 h).",
+    regions = "Australia (St Vincent's Hospital, Darlinghurst NSW)",
     n_observations = 770L,
-    notes          = "Baseline demographics and study design from the Methods sections 'Study population' and 'Dose administration and plasma sampling'. All 113 subjects were male; the source recruited only male subjects. The combined dataset (Studies 1 + 2) was used for the final popPK fit reported in Tables 2-4; covariate analysis was run on the n=109 subjects for whom covariate data were available."
+    notes = "Baseline demographics and study design from the Methods sections 'Study population' and 'Dose administration and plasma sampling'. All 113 subjects were male; the source recruited only male subjects. The combined dataset (Studies 1 + 2) was used for the final popPK fit reported in Tables 2-4; covariate analysis was run on the n=109 subjects for whom covariate data were available."
   )
 
   ini({

@@ -10,65 +10,65 @@ Wang_2025_serplulimab <- function() {
   # serplulimab concentrations; Section 3.1: "6677 serplulimab serum
   # concentration measurements").
   compartmentData <- list(
-    central     = list(analyte = "serplulimab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "serplulimab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "serplulimab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL (exponent 0.531) and on Vc (exponent 0.450). Reference 65 kg, taken from the printed final-model equations in Wang 2025 Section 3.2 ('ln(WT/65)'); the PK-dataset median is 64.5 kg (Table 1), so 65 kg is the rounded population median. Wang 2025 Supporting Information notes body weight was tested first because it is correlated with BMI and BSA, and was retained in the base model on the strength of the OFV drop.",
-      source_name        = "WT"
+      notes = "Power-form effect on baseline CL (exponent 0.531) and on Vc (exponent 0.450). Reference 65 kg, taken from the printed final-model equations in Wang 2025 Section 3.2 ('ln(WT/65)'); the PK-dataset median is 64.5 kg (Table 1), so 65 kg is the rounded population median. Wang 2025 Supporting Information notes body weight was tested first because it is correlated with BMI and BSA, and was retained in the base model on the strength of the OFV drop.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL only (exponent -0.783); no albumin effect on Vc was retained. Reference 41.3 g/L, taken from the printed final-model equation in Wang 2025 Section 3.2 ('ln(ALB/41.3)'), which equals the PK-dataset median in Table 1 exactly. Source paper reports albumin in g/L (SI convention), matching the canonical unit. Higher albumin lowers CL and therefore raises exposure (Wang 2025 Section 3.3: exposure ratios 0.818-1.17 across albumin quartiles).",
-      source_name        = "ALB"
+      notes = "Power-form effect on baseline CL only (exponent -0.783); no albumin effect on Vc was retained. Reference 41.3 g/L, taken from the printed final-model equation in Wang 2025 Section 3.2 ('ln(ALB/41.3)'), which equals the PK-dataset median in Table 1 exactly. Source paper reports albumin in g/L (SI convention), matching the canonical unit. Higher albumin lowers CL and therefore raises exposure (Wang 2025 Section 3.3: exposure ratios 0.818-1.17 across albumin quartiles).",
+      source_name = "ALB"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on Vc only (coefficient -0.121); no sex effect on CL was retained. Wang 2025 Section 3.2 defines 'SEX = 0 for male, SEX = 1 for female', which matches canonical SEXF directly with no value transformation. Female subjects have exp(-0.121) = 0.886 of the male Vc, giving slightly higher exposure in females (Wang 2025 Section 3.3: exposure ratios 0.945-1.07). PK dataset was 19.84% female (227/1144; Table 1).",
-      source_name        = "SEX"
+      notes = "Exponential effect on Vc only (coefficient -0.121); no sex effect on CL was retained. Wang 2025 Section 3.2 defines 'SEX = 0 for male, SEX = 1 for female', which matches canonical SEXF directly with no value transformation. Female subjects have exp(-0.121) = 0.886 of the male Vc, giving slightly higher exposure in females (Wang 2025 Section 3.3: exposure ratios 0.945-1.07). PK dataset was 19.84% female (227/1144; Table 1).",
+      source_name = "SEX"
     ),
     TUMTP_NONLUNG = list(
-      description        = "Pooled non-lung-cancer tumour-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pooled non-lung-cancer tumour-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (lung cancer -- NSCLC or SCLC)",
-      notes              = "Exponential effect on Vc only (coefficient -0.0887); no tumour-type effect on CL was retained. Wang 2025 Section 3.2 defines 'TUMTP = 0 for lung cancer, TUMTP = 1 for hepatocellular carcinoma, colorectal cancer, and other tumor types', i.e. a single pooled non-lung indicator rather than one indicator per histology. In the PK dataset (Table 1) the reference lung-cancer group is 817/1144 (71.42%) and the pooled non-lung group is 327/1144 (28.58%: hepatic cancer 125, colorectal cancer 86, other 116). Wang 2025 Section 3.3 forest plot (Figure 1) reports the lung / non-lung contrast as exposure ratios 1.01 vs 0.973.",
-      source_name        = "TUMTP"
+      notes = "Exponential effect on Vc only (coefficient -0.0887); no tumour-type effect on CL was retained. Wang 2025 Section 3.2 defines 'TUMTP = 0 for lung cancer, TUMTP = 1 for hepatocellular carcinoma, colorectal cancer, and other tumor types', i.e. a single pooled non-lung indicator rather than one indicator per histology. In the PK dataset (Table 1) the reference lung-cancer group is 817/1144 (71.42%) and the pooled non-lung group is 327/1144 (28.58%: hepatic cancer 125, colorectal cancer 86, other 116). Wang 2025 Section 3.3 forest plot (Figure 1) reports the lung / non-lung contrast as exposure ratios 1.01 vs 0.973.",
+      source_name = "TUMTP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1144L,
-    n_studies      = 8L,
+    species = "human",
+    n_subjects = 1144L,
+    n_studies = 8L,
     n_observations = 6650L,
-    age_range      = "23.0-83.0 years",
-    age_median     = "61.0 years",
-    weight_range   = "33.0-131 kg",
-    weight_median  = "64.5 kg",
+    age_range = "23.0-83.0 years",
+    age_median = "61.0 years",
+    weight_range = "33.0-131 kg",
+    weight_median = "64.5 kg",
     sex_female_pct = 19.84,
     race_ethnicity = c(Asian = 78.41, `Non-Asian` = 21.59),
-    disease_state  = "Adults with advanced solid tumours. Tumour-type mix in the PK dataset (n = 1144): lung cancer 817 (71.42%; NSCLC and SCLC pooled), hepatic cancer 125 (10.93%), colorectal cancer 86 (7.52%), other 116 (10.14%). The exposure-response efficacy dataset is the ES-SCLC subset from the Phase III ASTRUM-005 trial (HLX10-005-SCLC301 / NCT04063163; n = 389).",
-    dose_range     = "Serplulimab 0.3-10 mg/kg IV across the Phase I dose-escalation trials; the recommended Phase II/III dose is 3 mg/kg Q2W or 4.5 mg/kg Q3W. ASTRUM-005 used 4.5 mg/kg Q3W with a 1-h infusion. Flat doses of 200 mg and 300 mg were also studied in Phase I.",
-    regions        = "Predominantly China (Asian 78.41%); the Phase III ASTRUM-005 trial was multinational, contributing the 21.59% non-Asian subjects.",
-    ada_status     = "ADA-negative 1078 (94.23%); ADA-positive 23 (2.01%); missing 43 (3.76%). Geometric-mean CL was 13.3% higher in ADA-positive subjects, which Wang 2025 judged not clinically meaningful; ADA was not retained in the final model.",
-    ecog_status    = "ECOG performance status 0 in 306 (26.75%), 1 in 835 (72.99%), 2 in 3 (0.26%).",
-    albumin        = "41.3 g/L median (23.9-67.9 g/L range).",
-    tumour_burden  = "88.0 mm median (10.0-350 mm range) in the PK dataset; 117 mm median (13.8-323 mm) in the ER efficacy dataset.",
+    disease_state = "Adults with advanced solid tumours. Tumour-type mix in the PK dataset (n = 1144): lung cancer 817 (71.42%; NSCLC and SCLC pooled), hepatic cancer 125 (10.93%), colorectal cancer 86 (7.52%), other 116 (10.14%). The exposure-response efficacy dataset is the ES-SCLC subset from the Phase III ASTRUM-005 trial (HLX10-005-SCLC301 / NCT04063163; n = 389).",
+    dose_range = "Serplulimab 0.3-10 mg/kg IV across the Phase I dose-escalation trials; the recommended Phase II/III dose is 3 mg/kg Q2W or 4.5 mg/kg Q3W. ASTRUM-005 used 4.5 mg/kg Q3W with a 1-h infusion. Flat doses of 200 mg and 300 mg were also studied in Phase I.",
+    regions = "Predominantly China (Asian 78.41%); the Phase III ASTRUM-005 trial was multinational, contributing the 21.59% non-Asian subjects.",
+    ada_status = "ADA-negative 1078 (94.23%); ADA-positive 23 (2.01%); missing 43 (3.76%). Geometric-mean CL was 13.3% higher in ADA-positive subjects, which Wang 2025 judged not clinically meaningful; ADA was not retained in the final model.",
+    ecog_status = "ECOG performance status 0 in 306 (26.75%), 1 in 835 (72.99%), 2 in 3 (0.26%).",
+    albumin = "41.3 g/L median (23.9-67.9 g/L range).",
+    tumour_burden = "88.0 mm median (10.0-350 mm range) in the PK dataset; 117 mm median (13.8-323 mm) in the ER efficacy dataset.",
     renal_function = "Creatinine clearance 90.9 mL/min median (28.5-291 mL/min); serum creatinine 68.9 umol/L median (23.0-156 umol/L). Neither was a significant covariate.",
-    notes          = "Baseline demographics per Wang 2025 Table 1 (PK dataset column). Pooled dataset spans eight serplulimab (HLX10) trials: two Phase I (HLX10-001 / NCT03952403, HLX10HLX04-001 / NCT04818359), four Phase II (HLX10-008-HCC201 / NCT05246164, HLX10-010-MSI201 / NCT04747236, HLX10-011-CC201 / NCT03973112, HLX10HLX07-001 / NCT04297995) and two Phase III (HLX10-004-NSCLC303 / NCT04778904, HLX10-005-SCLC301 / NCT04063163). 6677 serum concentrations were collected; 27 below the LLOQ were excluded, leaving 6650 in the analysis. Two subjects (0.18%) with missing weight were excluded from the covariate-effect simulations only. Fit with NONMEM 7.5.0 using FOCE-I; PsN 4.2.0 for diagnostics and a 1000-replicate bootstrap."
+    notes = "Baseline demographics per Wang 2025 Table 1 (PK dataset column). Pooled dataset spans eight serplulimab (HLX10) trials: two Phase I (HLX10-001 / NCT03952403, HLX10HLX04-001 / NCT04818359), four Phase II (HLX10-008-HCC201 / NCT05246164, HLX10-010-MSI201 / NCT04747236, HLX10-011-CC201 / NCT03973112, HLX10HLX07-001 / NCT04297995) and two Phase III (HLX10-004-NSCLC303 / NCT04778904, HLX10-005-SCLC301 / NCT04063163). 6677 serum concentrations were collected; 27 below the LLOQ were excluded, leaving 6650 in the analysis. Two subjects (0.18%) with missing weight were excluded from the covariate-effect simulations only. Fit with NONMEM 7.5.0 using FOCE-I; PsN 4.2.0 for diagnostics and a 1000-replicate bootstrap."
   )
 
   # Covariates screened by Wang 2025 (Supporting Information Section 1) but NOT
@@ -80,75 +80,75 @@ Wang_2025_serplulimab <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search (Wang 2025 Supporting Information Section 1, demographic category); not significant at the p = 0.01 forward / p = 0.001 backward criteria."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search (Wang 2025 Supporting Information Section 1, demographic category); not significant at the p = 0.01 forward / p = 0.001 backward criteria."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not statistically significant. Wang 2025 nevertheless carried race into the Figure 1 forest plot 'due to its potential clinical interest': non-Asian subjects (21.6%, N = 247) showed exposure ratios 0.945-1.17 vs Asian, which the authors note 'may be confounded by differences in body weight between the groups'. No point estimate is published, so the effect cannot be encoded."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not statistically significant. Wang 2025 nevertheless carried race into the Figure 1 forest plot 'due to its potential clinical interest': non-Asian subjects (21.6%, N = 247) showed exposure ratios 0.945-1.17 vs Asian, which the authors note 'may be confounded by differences in body weight between the groups'. No point estimate is published, so the effect cannot be encoded."
     ),
     ADA_POS = list(
       description = "Anti-drug-antibody positivity status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. Wang 2025 Section 4 reports geometric-mean CL 13.3% higher in the 23 ADA-positive subjects (2.01% incidence), judged not clinically meaningful. No model coefficient is published."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. Wang 2025 Section 4 reports geometric-mean CL 13.3% higher in the 23 ADA-positive subjects (2.01% incidence), judged not clinically meaningful. No model coefficient is published."
     ),
     TUMBUR = list(
       description = "Baseline tumour burden (sum of longest target-lesion diameters, RECIST)",
-      units       = "mm",
-      type        = "continuous",
-      notes       = "Screened as a PK covariate and not retained. Tumour burden IS a significant predictor of overall survival in the Cox exposure-response model (Wang 2025 Table S4: beta = 0.4554 on log(TUMBUR), Wald p = 0.0149), but that is a survival covariate, not a PK covariate; the Cox sub-model is not encoded here (see the vignette Errata)."
+      units = "mm",
+      type = "continuous",
+      notes = "Screened as a PK covariate and not retained. Tumour burden IS a significant predictor of overall survival in the Cox exposure-response model (Wang 2025 Table S4: beta = 0.4554 on log(TUMBUR), Wald p = 0.0149), but that is a survival covariate, not a PK covariate; the Cox sub-model is not encoded here (see the vignette Errata)."
     ),
     LDH = list(
       description = "Baseline lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a PK covariate and not retained. LDH is the strongest predictor of overall survival in the Cox exposure-response model (Wang 2025 Table S4: beta = 1.0558 on log(LDH), Wald p < 0.0010), but that is a survival covariate, not a PK covariate."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a PK covariate and not retained. LDH is the strongest predictor of overall survival in the Cox exposure-response model (Wang 2025 Table S4: beta = 1.0558 on log(LDH), Wald p < 0.0010), but that is a survival covariate, not a PK covariate."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the laboratory-parameter category; not retained in the final PK model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the laboratory-parameter category; not retained in the final PK model."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the laboratory-parameter category; not retained in the final PK model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the laboratory-parameter category; not retained in the final PK model."
     ),
     BILI = list(
       description = "Baseline total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened in the laboratory-parameter category; not retained in the final PK model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened in the laboratory-parameter category; not retained in the final PK model."
     ),
     CREAT = list(
       description = "Baseline serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened in the laboratory-parameter category; not retained in the final PK model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened in the laboratory-parameter category; not retained in the final PK model."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened in the laboratory-parameter category; not retained in the final PK model. Consistent with a 148 kDa IgG4 mAb not being renally cleared."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened in the laboratory-parameter category; not retained in the final PK model. Consistent with a 148 kDa IgG4 mAb not being renally cleared."
     ),
     ECOG = list(
       description = "Eastern Cooperative Oncology Group performance status",
-      units       = "(score)",
-      type        = "categorical",
-      notes       = "Screened in the disease/treatment category; not retained in the final PK model."
+      units = "(score)",
+      type = "categorical",
+      notes = "Screened in the disease/treatment category; not retained in the final PK model."
     ),
     CONMED_CHEMO = list(
       description = "Concomitant chemotherapy indicator (source column COMB)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the disease/treatment category; not retained. 762/1144 (66.61%) received concomitant chemotherapy."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the disease/treatment category; not retained. 762/1144 (66.61%) received concomitant chemotherapy."
     )
   )
 

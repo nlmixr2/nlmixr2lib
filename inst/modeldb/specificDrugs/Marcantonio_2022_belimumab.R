@@ -19,8 +19,8 @@ Marcantonio_2022_belimumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Belimumab dose amount into depot (SC) or Ab_00 (IV) in nmol; MW = 147000 Da so 200 mg = 1361 nmol.",
+    time = "day",
+    dosing = "Belimumab dose amount into depot (SC) or Ab_00 (IV) in nmol; MW = 147000 Da so 200 mg = 1361 nmol.",
     concentration = "Free belimumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
@@ -34,22 +34,27 @@ Marcantonio_2022_belimumab <- function() {
     Ab_0L = list(analyte = "Belimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_L0 = list(analyte = "Belimumab-BAFF complex", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_LL = list(analyte = "Belimumab-BAFF complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1    = list(analyte = "soluble BAFF (BLyS)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1    = list(analyte = "BAFF-R", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    L1R1  = list(analyte = "Belimumab-BAFF-BAFF-R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1    = list(analyte = "Free soluble BAFF (BLyS)", units = NA_character_, specimen = "plasma", verified = FALSE)
+    L1 = list(analyte = "soluble BAFF (BLyS)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1 = list(analyte = "BAFF-R", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    L1R1 = list(
+      analyte = "Belimumab-BAFF-BAFF-R complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    S1 = list(analyte = "Free soluble BAFF (BLyS)", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with systemic lupus erythematosus (SLE).",
-    dose_range     = "200 mg SC every week or 10 mg/kg IV Q4W (Benlysta USPI). Model prediction targets the weekly SC schedule; a Q4W IV prediction is also reported.",
-    regions        = NA_character_,
-    notes          = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with systemic lupus erythematosus (SLE).",
+    dose_range = "200 mg SC every week or 10 mg/kg IV Q4W (Benlysta USPI). Model prediction targets the weekly SC schedule; a Q4W IV prediction is also reported.",
+    regions = NA_character_,
+    notes = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
   )
 
   ini({

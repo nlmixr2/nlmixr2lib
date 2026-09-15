@@ -11,50 +11,50 @@ Li_2024_norepinephrine <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/L")
 
   compartmentData <- list(
-    central     = list(analyte = "norepinephrine", units = "ng", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "norepinephrine", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "norepinephrine", units = "ng", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling included a priori with theory-based fixed exponents (Methods 2.2): 0.75 on CL, Q and the endogenous production rate, 1.00 on Vc and Vp, 0.25 on the input lag time. Reference weight 70 kg.",
-      source_name        = "BW"
+      notes = "Allometric scaling included a priori with theory-based fixed exponents (Methods 2.2): 0.75 on CL, Q and the endogenous production rate, 1.00 on Vc and Vp, 0.25 on the input lag time. Reference weight 70 kg.",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters CL through Eq. 2, exp((theta_AGE~CL / 100) * (AGE - 35)); the centering age of 35 years is printed in the equation itself.",
-      source_name        = "AGE"
+      notes = "Enters CL through Eq. 2, exp((theta_AGE~CL / 100) * (AGE - 35)); the centering age of 35 years is printed in the equation itself.",
+      source_name = "AGE"
     ),
     CONMED_PROPOFOL_CC = list(
-      description        = "Measured plasma concentration of co-administered propofol",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Measured plasma concentration of co-administered propofol",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = "0 (awake phase; no propofol administered)",
-      notes              = "Time-varying covariate on CL (Results 3.2, Eq. 4). Set to 0 for the awake phase. In the general-anesthesia phase of the source study propofol was delivered by Eleveld-model target-controlled infusion to a 50% age-adjusted drug-effect concentration; the observed median measured concentration was 3.53 ug/mL. This covariate replaced the binary session factor F_SESS in the final model.",
-      source_name        = "CPROP"
+      notes = "Time-varying covariate on CL (Results 3.2, Eq. 4). Set to 0 for the awake phase. In the general-anesthesia phase of the source study propofol was delivered by Eleveld-model target-controlled infusion to a 50% age-adjusted drug-effect concentration; the observed median measured concentration was 3.53 ug/mL. This covariate replaced the binary session factor F_SESS in the final model.",
+      source_name = "CPROP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36,
-    n_studies      = 1,
-    age_range      = "18-70 years",
-    age_median     = "not reported overall; per-stratum medians 22, 39.5 and 57.5 years (mean 42, SD 16 years)",
-    weight_range   = "51.5-94.8 kg",
-    weight_median  = "not reported overall; per-stratum medians 66.9, 72.3 and 69.6 kg",
+    species = "human",
+    n_subjects = 36,
+    n_studies = 1,
+    age_range = "18-70 years",
+    age_median = "not reported overall; per-stratum medians 22, 39.5 and 57.5 years (mean 42, SD 16 years)",
+    weight_range = "51.5-94.8 kg",
+    weight_median = "not reported overall; per-stratum medians 66.9, 72.3 and 69.6 kg",
     sex_female_pct = 50,
-    disease_state  = "healthy volunteers",
-    dose_range     = "5 ug intravenous bolus followed by a five-step step-up infusion of 0.04, 0.08, 0.12, 0.16 and 0.20 ug/kg/min, each step 15 minutes; repeated in an awake phase and a general-anesthesia phase",
-    regions        = "Netherlands (single centre, University Medical Center Groningen)",
-    notes          = "Cross-over healthy-volunteer study (Netherlands Trial Register NL9312); 12 volunteers in each of three age strata (18-34, 35-50, 51-70 years) with a 1:1 male-to-female ratio. Baseline demographics are in Table 1. 1219 norepinephrine samples were analysed after excluding 4 outliers. Observed norepinephrine plasma concentrations ranged from 0.25 to 67.09 nmol/L. General anesthesia used propofol plus remifentanil by Eleveld-model target-controlled infusion; a 30-second 50 mA / 100 Hz tetanic electrical stimulus was applied at each dosing step as a surgical-incision surrogate."
+    disease_state = "healthy volunteers",
+    dose_range = "5 ug intravenous bolus followed by a five-step step-up infusion of 0.04, 0.08, 0.12, 0.16 and 0.20 ug/kg/min, each step 15 minutes; repeated in an awake phase and a general-anesthesia phase",
+    regions = "Netherlands (single centre, University Medical Center Groningen)",
+    notes = "Cross-over healthy-volunteer study (Netherlands Trial Register NL9312); 12 volunteers in each of three age strata (18-34, 35-50, 51-70 years) with a 1:1 male-to-female ratio. Baseline demographics are in Table 1. 1219 norepinephrine samples were analysed after excluding 4 outliers. Observed norepinephrine plasma concentrations ranged from 0.25 to 67.09 nmol/L. General anesthesia used propofol plus remifentanil by Eleveld-model target-controlled infusion; a 30-second 50 mA / 100 Hz tetanic electrical stimulus was applied at each dosing step as a surgical-incision surrogate."
   )
 
   ini({

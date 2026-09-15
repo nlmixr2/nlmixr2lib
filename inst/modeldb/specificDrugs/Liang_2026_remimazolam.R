@@ -39,11 +39,11 @@ Liang_2026_remimazolam <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model, entered as",
         "theory-based allometric scaling on all three volumes and all three",
         "clearances (Equation 3) with the exponents fixed rather than",
@@ -57,7 +57,7 @@ Liang_2026_remimazolam <- function() {
         "down to a cohort median of 6.6 kg (Table S4), so the model is",
         "routinely evaluated far below the weight range it was fit on."
       ),
-      source_name        = "WEIGHTBL"
+      source_name = "WEIGHTBL"
     )
   )
 
@@ -68,11 +68,11 @@ Liang_2026_remimazolam <- function() {
   # backward elimination, leaving allometric weight alone in the final model.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "The strongest candidate covariate: tested on V2, it entered the",
         "full model first (dOFV -10.742, p = 0.001047) but was then removed",
         "during backward elimination because re-adding it raised the OFV by",
@@ -80,105 +80,105 @@ Liang_2026_remimazolam <- function() {
         "Also screened on CL, Q2, Q3, V1 and V3. Cohort was 15 female",
         "(21.1%) of 71 (Table S1)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on CL, Q2, Q3, V1, V2 and V3 (Table S3 note); never",
         "reached the forward-inclusion threshold. Cohort median 27.0 years,",
         "range 18.0-51.0 (Table S1). Age is the driver of the PBPK model's",
         "CES1 ontogeny function instead (see the FCES1 entry)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     HT = list(
-      description        = "Body height at baseline.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at baseline.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on all six disposition parameters (Table S3 note) and not",
         "retained. Correlated with weight and BSA at R > 0.8, so the",
         "screening rules kept only one member of that group (Methods 2.6.2).",
         "Cohort median 168.0 cm, range 155.0-184.0 (Table S1)."
       ),
-      source_name        = "HEIGHTBL"
+      source_name = "HEIGHTBL"
     ),
     BMI = list(
-      description        = "Body mass index at baseline.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Listed among the assessed covariates in Methods 2.6.2 and derived",
         "via Equation 7, but it does not appear in the Table S3",
         "parameter-by-parameter screen, so it was dropped at the |R| >= 0.3",
         "correlation pre-screen. Cohort median 22.3 kg/m^2, range",
         "18.4-25.7 (Table S1)."
       ),
-      source_name        = "BMIBL"
+      source_name = "BMIBL"
     ),
     BSA = list(
-      description        = "Body surface area at baseline.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Assessed per Methods 2.6.2 and carried in the control stream's",
         "$INPUT as BSABL, but excluded as a body-size descriptor because it",
         "correlates with height and weight at R > 0.8 (Methods 2.6.2).",
         "Still required upstream of the analysis as an input to the MDRD",
         "eGFR calculation (Equation 6)."
       ),
-      source_name        = "BSABL"
+      source_name = "BSABL"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on all six disposition parameters (Table S3 note) and not",
         "retained. Cohort median 13.0 U/L, range 5.0-33.0 (Table S1) -- a",
         "healthy-volunteer range with no hepatic impairment, so the screen",
         "had little signal to find."
       ),
-      source_name        = "ALTBL"
+      source_name = "ALTBL"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on all six disposition parameters (Table S3 note) and not",
         "retained; correlated with ALT at R > 0.8 (Methods 2.6.2). Cohort",
         "median 19.0 U/L, range 11.0-32.0 (Table S1)."
       ),
-      source_name        = "ASTBL"
+      source_name = "ASTBL"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on all six disposition parameters (Table S3 note) and not",
         "retained. Cohort median 11.2 umol/L, range 5.3-26.2 (Table S1);",
         "reported in SI units, so no mg/dL conversion is needed."
       ),
-      source_name        = "TBILBL"
+      source_name = "TBILBL"
     ),
     ALB = list(
-      description        = "Serum albumin.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered the full model on V1 (dOFV -4.612, p = 0.031753) and was",
         "the first term removed during backward elimination (Table S3).",
         "Also screened on CL, Q2, Q3, V2 and V3. Mechanistically plausible",
@@ -187,54 +187,54 @@ Liang_2026_remimazolam <- function() {
         "albumin summary is tabulated in Table S1 despite ALB being listed",
         "among the assessed covariates."
       ),
-      source_name        = "ALBBL"
+      source_name = "ALBBL"
     ),
     ALP = list(
-      description        = "Alkaline phosphatase.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alkaline phosphatase.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on all six disposition parameters (Table S3 note) and not",
         "retained. No summary tabulated in Table S1."
       ),
-      source_name        = "ALPBL"
+      source_name = "ALPBL"
     ),
     CREAT = list(
-      description        = "Serum creatinine.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Assessed per Methods 2.6.2 but excluded from the",
         "parameter-by-parameter screen because it correlates with eGFR and",
         "sex at R > 0.8; eGFR was carried forward instead. Cohort median",
         "72.0 umol/L, range 46.0-100.0 (Table S1). Used upstream as the",
         "input to the MDRD eGFR calculation (Equation 6)."
       ),
-      source_name        = "CRBL"
+      source_name = "CRBL"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen.",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen.",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered the full model on CL (dOFV -8.241, p = 0.004096) and was",
         "removed during backward elimination (Table S3). Also screened on",
         "Q2, Q3. Cohort median 4.5 mmol/L, range 1.9-8.4 (Table S1)."
       ),
-      source_name        = "BUNBL"
+      source_name = "BUNBL"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate from the four-variable MDRD",
         "equation (Equation 6)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on CL, Q2 and Q3 (Table S3 note) and not retained --",
         "expected, since remimazolam is cleared by CES1 hydrolysis and only",
         "the inactive metabolite is renally excreted (Introduction). Two",
@@ -248,18 +248,18 @@ Liang_2026_remimazolam <- function() {
         "implausibly low for healthy young adults. Because the covariate",
         "was rejected, neither issue affects any simulation from this model."
       ),
-      source_name        = "EGFRBL"
+      source_name = "EGFRBL"
     ),
     FCES1 = list(
-      description        = paste(
+      description = paste(
         "Fractional hepatic CES1 protein abundance relative to the adult",
         "maximum, derived from age by the sigmoidal ontogeny function of",
         "Boberg et al."
       ),
-      units              = "(fraction of adult)",
-      type               = "continuous",
+      units = "(fraction of adult)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on CL only (Methods 2.6.2) and not retained: it changed",
         "the OFV negligibly and did not improve diagnostics, which is",
         "expected because the analysis population was entirely adult and",
@@ -276,36 +276,36 @@ Liang_2026_remimazolam <- function() {
         "column, and it is excluded here, so no new covariate name is",
         "being claimed."
       ),
-      source_name        = "FCES1"
+      source_name = "FCES1"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 71,
-    n_studies      = 2,
-    age_range      = "18.0-51.0 years",
-    age_median     = "27.0 years",
-    weight_range   = "50.2-83.8 kg",
-    weight_median  = "62.8 kg",
+    species = "human",
+    n_subjects = 71,
+    n_studies = 2,
+    age_range = "18.0-51.0 years",
+    age_median = "27.0 years",
+    weight_range = "50.2-83.8 kg",
+    weight_median = "62.8 kg",
     sex_female_pct = 21.1,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy volunteers",
-    dose_range     = paste(
+    disease_state = "healthy volunteers",
+    dose_range = paste(
       "0.007-0.32 mg/kg as a 1 min intravenous injection (HR7056-Ia,",
       "eleven single ascending dose groups); 0.29 mg/kg loading dose",
       "infused over 1 min plus 1.08 mg/kg/h maintenance infusion for 2 h",
       "(HR7056-Ib, two-period crossover). Doses are expressed as the free",
       "base."
     ),
-    regions        = "China",
-    notes          = paste(
+    regions = "China",
+    notes = paste(
       "Baseline demographics from Table S1; study designs from Table 1.",
       "Pooled from the single-centre Phase I studies HR7056-Ia (63",
       "subjects, 1197 planned samples) and HR7056-Ib (8 subjects, 416",

@@ -18,7 +18,7 @@ BoerPerez_2026_piperacillin <- function() {
     sep = " "
   )
   vignette <- "BoerPerez_2026_piperacillin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
@@ -30,64 +30,64 @@ BoerPerez_2026_piperacillin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Allometric scaling on CL (exponent 0.75 fixed) and on V",
         "(exponent 1 fixed) with reference body weight 1.76 kg, the median of",
         "the model-development cohort (Boer-Perez 2026 Table 1)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the Rhodin 2009 sigmoidal renal-maturation",
         "function on CL (TM50 = 47.7 weeks, Hill = 3.4, both fixed). The",
         "source paper reports PMA in weeks; this model converts the canonical",
         "PAGE (months) back to weeks via pma_wk = PAGE * 4.35 so the published",
         "TM50 and Hill apply unchanged."
       ),
-      source_name        = "PMA (weeks)"
+      source_name = "PMA (weeks)"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL: (CREAT / 0.4)^theta_SCr with theta_SCr =",
         "-0.635 (Boer-Perez 2026 Table 2). Reference 0.4 mg/dL is the median",
         "of the model-development cohort (Table 1). Source paper column SCr,",
         "quantified by an enzymatic assay on an automated analyzer."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     )
   )
 
   population <- list(
-    n_subjects     = 25,
-    n_studies      = 1,
-    age_range      = "Postnatal age 6-28 days; postmenstrual age 28.1-43.3 weeks; gestational age 26-41.1 weeks",
-    age_median     = "Postnatal age 14 days; postmenstrual age 36.0 weeks; gestational age 34.2 weeks",
-    weight_range   = "0.89-3.57 kg",
-    weight_median  = "1.76 kg",
+    n_subjects = 25,
+    n_studies = 1,
+    age_range = "Postnatal age 6-28 days; postmenstrual age 28.1-43.3 weeks; gestational age 26-41.1 weeks",
+    age_median = "Postnatal age 14 days; postmenstrual age 36.0 weeks; gestational age 34.2 weeks",
+    weight_range = "0.89-3.57 kg",
+    weight_median = "1.76 kg",
     sex_female_pct = 56,
     race_ethnicity = "Not reported",
-    disease_state  = "Preterm and term neonates with severe infections (most commonly late-onset sepsis, necrotising enterocolitis Bell stage II or higher, and healthcare-associated pneumonia)",
-    dose_range     = "100 mg/kg piperacillin (with 12.5 mg/kg tazobactam in 8:1 ratio) every 8 or 12 hours by IV infusion (0.5 or 1 h), per Neofax recommendations",
-    regions        = "Mexico (single neonatal intensive care unit at Hospital Central, San Luis Potosi)",
-    ga_range       = "26-41.1 weeks (4% extremely preterm, 52% moderate-late preterm, 44% term)",
-    pma_range      = "28.1-43.3 weeks postmenstrual age",
-    pna_range      = "6-28 days postnatal age",
-    creat_range    = "0.2-0.9 mg/dL serum creatinine (cohort median 0.4 mg/dL)",
-    crcl_range     = "15-103 mL/min/1.73m^2 (Schwartz formula; cohort median 32 mL/min/1.73m^2)",
-    notes          = paste(
+    disease_state = "Preterm and term neonates with severe infections (most commonly late-onset sepsis, necrotising enterocolitis Bell stage II or higher, and healthcare-associated pneumonia)",
+    dose_range = "100 mg/kg piperacillin (with 12.5 mg/kg tazobactam in 8:1 ratio) every 8 or 12 hours by IV infusion (0.5 or 1 h), per Neofax recommendations",
+    regions = "Mexico (single neonatal intensive care unit at Hospital Central, San Luis Potosi)",
+    ga_range = "26-41.1 weeks (4% extremely preterm, 52% moderate-late preterm, 44% term)",
+    pma_range = "28.1-43.3 weeks postmenstrual age",
+    pna_range = "6-28 days postnatal age",
+    creat_range = "0.2-0.9 mg/dL serum creatinine (cohort median 0.4 mg/dL)",
+    crcl_range = "15-103 mL/min/1.73m^2 (Schwartz formula; cohort median 32 mL/min/1.73m^2)",
+    notes = paste(
       "25 neonates from a single neonatal intensive care unit, all admitted",
       "between September 2020 and May 2024 with PNA <= 29 days, BW >= 850 g",
       "and hematocrit >= 30%. 65 piperacillin plasma concentrations (median",

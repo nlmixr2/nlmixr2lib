@@ -25,23 +25,23 @@ Dong_2016_hydroxyurea <- function() {
     sep = " "
   )
   vignette <- "Dong_2016_hydroxyurea"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight (kg). Drives the allometric scaling of",
         "Vmax (exponent 0.75 fixed) and the apparent central volume",
         "V/F (exponent 1.0 fixed); both scalings use 70 kg as the",
@@ -52,14 +52,14 @@ Dong_2016_hydroxyurea <- function() {
         "* (WT/70)'. Cohort median 26.6 kg, range 8.8-88.3 kg on day 1",
         "(Dong 2016 Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CYSC = list(
-      description        = "Serum cystatin C concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline serum cystatin C (turbidimetric assay with",
         "anti-cystatin-C-coated latex particles, Roche Diagnostics).",
         "Used as a power-model covariate on Vmax: Vmax_typ * (CYSC /",
@@ -73,143 +73,143 @@ Dong_2016_hydroxyurea <- function() {
         "vs the cystatin C drop of 24.5 OFV points (Dong 2016 Results",
         "'Population pharmacokinetic modelling' paragraph 4)."
       ),
-      source_name        = "CysC"
+      source_name = "CysC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the Dong 2016 stepwise covariate analysis but not",
         "retained in the final model (only body weight and cystatin C",
         "survived backward elimination). Cohort median 8.8 years, range",
         "1.2-16.6 years on day 1 (Dong 2016 Table 1). Documented here for",
         "provenance of the covariate screen; not referenced inside model()."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the Dong 2016 stepwise covariate analysis but not",
         "retained (Dong 2016 Methods 'Covariate analysis' first paragraph",
         "lists the tested covariates including BSA; only body weight and",
         "cystatin C were retained). Documented for screen provenance;",
         "not referenced inside model()."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the Dong 2016 stepwise covariate analysis but not",
         "retained. Documented for screen provenance; not referenced",
         "inside model()."
       ),
-      source_name        = "HT"
+      source_name = "HT"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened in the Dong 2016 stepwise covariate analysis but not",
         "retained. Cohort 61 male / 35 female on day 1 (Dong 2016 Table 1)."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained; cystatin C outperformed serum",
         "creatinine as a clearance covariate. Serum creatinine reduced",
         "OFV by only 5.05 points (p > 0.01) vs 24.5 for cystatin C",
         "(Dong 2016 Results 'Population pharmacokinetic modelling'",
         "paragraph 4). Cohort median 0.3 mg/dL on day 1 (Table 1)."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     ),
     CRCL = list(
-      description        = "Estimated creatinine clearance (Schwartz formula)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance (Schwartz formula)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Schwartz-formula estimated CrCl",
         "reduced OFV by only 4.31 points (p > 0.01) vs 24.5 for cystatin",
         "C (Dong 2016 Results 'Population pharmacokinetic modelling'",
         "paragraph 4)."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained.",
-      source_name        = "AST"
+      notes = "Screened but not retained.",
+      source_name = "AST"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained.",
-      source_name        = "ALT"
+      notes = "Screened but not retained.",
+      source_name = "ALT"
     ),
     TBILI = list(
-      description        = "Total bilirubin at baseline",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin at baseline",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Canonical units standardized to SI",
         "umol/L per the 2026-06-19 canonical-register audit; the source",
         "paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L).",
         "No inline conversion is needed because TBILI is an excluded",
         "covariate and is not referenced in model()/ini()."
       ),
-      source_name        = "Bilirubin"
+      source_name = "Bilirubin"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Cohort median 7 mg/dL, range 3-21",
         "mg/dL on day 1 (Dong 2016 Table 1)."
       ),
-      source_name        = "BUN"
+      source_name = "BUN"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 96L,
-    n_studies       = 1L,
-    age_range       = "1.2-16.6 years",
-    age_median      = "8.8 years",
-    weight_range    = "8.8-88.3 kg",
-    weight_median   = "26.6 kg",
-    sex_female_pct  = 100 * 35 / 96,
-    race_ethnicity  = "African American (96 of 96 day-1 subjects, 100%; per Dong 2016 Table 1 'Race: African American / Others = 96 / 0')",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 1L,
+    age_range = "1.2-16.6 years",
+    age_median = "8.8 years",
+    weight_range = "8.8-88.3 kg",
+    weight_median = "26.6 kg",
+    sex_female_pct = 100 * 35 / 96,
+    race_ethnicity = "African American (96 of 96 day-1 subjects, 100%; per Dong 2016 Table 1 'Race: African American / Others = 96 / 0')",
+    disease_state = paste(
       "Children and adolescents with sickle cell anaemia enrolled in",
       "the HUSTLE clinical trial (NCT00305175) at St. Jude Children's",
       "Research Hospital. All subjects received a single oral 20 mg/kg",
@@ -218,15 +218,15 @@ Dong_2016_hydroxyurea <- function() {
       "after reaching individual maximum tolerated dose (MTD) over a",
       "minimum 3-month titration window."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Day 1: a single 20 mg/kg oral hydroxyurea dose (range 18-30",
       "mg/kg/day per Table 1). At MTD: 14.2-35.5 mg/kg/day (median 23.4",
       "mg/kg/day, n = 63). Most subjects received a liquid hydroxyurea",
       "formulation; 10 patients early in the study received capsules",
       "for their day-1 dosing."
     ),
-    regions         = "United States (single-centre: St. Jude Children's Research Hospital, Memphis, TN)",
-    notes           = paste(
+    regions = "United States (single-centre: St. Jude Children's Research Hospital, Memphis, TN)",
+    notes = paste(
       "712 hydroxyurea plasma concentrations from 96 children with",
       "sickle cell anaemia. Plasma samples were collected predose and",
       "at 20 min, 40 min, 1, 2, 4, 6, and 8 h after oral hydroxyurea",

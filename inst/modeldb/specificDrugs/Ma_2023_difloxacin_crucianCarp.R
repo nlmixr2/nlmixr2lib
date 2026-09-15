@@ -51,29 +51,29 @@ Ma_2023_difloxacin_crucianCarp <- function() {
   # screen is recorded here rather than in covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight of the individual fish. Ma 2023 Section 2.5 screened BW by the 'shotgun' method against CL/F, V/F and Ka simultaneously; the change in -2LL was 3.02, below the 6.64 chi-square threshold for p < 0.01, so BW was dropped and no covariate model is reported (Section 3.3 and Discussion paragraph 2). Table 1 lists the per-fish weights (0.21-0.40 kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight of the individual fish. Ma 2023 Section 2.5 screened BW by the 'shotgun' method against CL/F, V/F and Ka simultaneously; the change in -2LL was 3.02, below the 6.64 chi-square threshold for p < 0.01, so BW was dropped and no covariate model is reported (Section 3.3 and Discussion paragraph 2). Table 1 lists the per-fish weights (0.21-0.40 kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened and rejected; not retained in the final model. Note that the model is nevertheless implicitly weight-normalised: the dose is given in mg/kg BW and V/F and CL/F are reported per kg BW, i.e. linear (exponent 1) weight scaling is built into the units rather than fitted as a covariate. The rejected covariate test was therefore for a departure from that proportionality, not for the presence of any weight effect at all."
+      notes = "Screened and rejected; not retained in the final model. Note that the model is nevertheless implicitly weight-normalised: the dose is given in mg/kg BW and V/F and CL/F are reported per kg BW, i.e. linear (exponent 1) weight scaling is built into the units rather than fitted as a covariate. The rejected covariate test was therefore for a departure from that proportionality, not for the presence of any weight effect at all."
     )
   )
 
   population <- list(
-    species            = "crucian carp (Carassius auratus)",
-    n_subjects         = 25L,
-    n_studies          = 1L,
-    weight_range       = "0.21-0.40 kg",
-    weight_mean        = "0.298 kg",
-    dose_range         = "single 20 mg/kg body weight oral gavage (10 mg/mL difloxacin hydrochloride in 0.9% saline)",
-    disease_state      = "healthy",
-    regions            = "China (Henan University of Science and Technology, Luoyang)",
-    water_temperature  = "21.3 +/- 1.2 degC",
-    water_quality      = "pH ~7.4; total ammonia nitrogen <= 0.7 mg/L; nitrite nitrogen < 0.07 mg/L; dissolved oxygen > 7.5 mg/L",
-    design             = "30 fish in 6 equal groups of 5; one group served as an undosed control supplying blank plasma, leaving 25 dosed fish. At least 10 days of acclimation before dosing (Section 2.2).",
-    sampling           = "Sparse: each dosed fish sampled 3 times from the tail vein. Table 1 shows five repeating schedules of three times each, cycling across the 25 fish: (0.25, 6, 36), (0.5, 8, 48), (1, 12, 72), (2, 16, 96) and (4, 24, 120) h post-dose, so all 15 nominal times are covered by 5 fish each.",
-    bioanalysis        = "HPLC-UV at 276 nm; calibration 0.1-5 ug/mL, LOQ 0.1 ug/mL, mean recovery 81.46%, intra-day CV 0.74-7.72%, inter-day CV 4.81-7.66% (Sections 2.4 and 3.1).",
-    notes              = "Baseline weights are listed per fish in Table 1; the group description is in Section 2.2. Only one water temperature was studied, and the authors note (Discussion) that difloxacin exposure in carp is strongly temperature dependent, so the parameters here should not be extrapolated to other rearing temperatures."
+    species = "crucian carp (Carassius auratus)",
+    n_subjects = 25L,
+    n_studies = 1L,
+    weight_range = "0.21-0.40 kg",
+    weight_mean = "0.298 kg",
+    dose_range = "single 20 mg/kg body weight oral gavage (10 mg/mL difloxacin hydrochloride in 0.9% saline)",
+    disease_state = "healthy",
+    regions = "China (Henan University of Science and Technology, Luoyang)",
+    water_temperature = "21.3 +/- 1.2 degC",
+    water_quality = "pH ~7.4; total ammonia nitrogen <= 0.7 mg/L; nitrite nitrogen < 0.07 mg/L; dissolved oxygen > 7.5 mg/L",
+    design = "30 fish in 6 equal groups of 5; one group served as an undosed control supplying blank plasma, leaving 25 dosed fish. At least 10 days of acclimation before dosing (Section 2.2).",
+    sampling = "Sparse: each dosed fish sampled 3 times from the tail vein. Table 1 shows five repeating schedules of three times each, cycling across the 25 fish: (0.25, 6, 36), (0.5, 8, 48), (1, 12, 72), (2, 16, 96) and (4, 24, 120) h post-dose, so all 15 nominal times are covered by 5 fish each.",
+    bioanalysis = "HPLC-UV at 276 nm; calibration 0.1-5 ug/mL, LOQ 0.1 ug/mL, mean recovery 81.46%, intra-day CV 0.74-7.72%, inter-day CV 4.81-7.66% (Sections 2.4 and 3.1).",
+    notes = "Baseline weights are listed per fish in Table 1; the group description is in Section 2.2. Only one water temperature was studied, and the authors note (Discussion) that difloxacin exposure in carp is strongly temperature dependent, so the parameters here should not be extrapolated to other rearing temperatures."
   )
 
   ini({

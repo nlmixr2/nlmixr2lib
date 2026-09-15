@@ -11,7 +11,7 @@ Jager_2011_gemtuzumab <- function() {
   vignette <- "Jager_2011_gemtuzumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  ddmore_id    <- "DDMODEL00000229"
+  ddmore_id <- "DDMODEL00000229"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -19,26 +19,31 @@ Jager_2011_gemtuzumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gemtuzumab ozogamicin", units = "mg", specimen = "plasma", verified = FALSE),
-    target      = list(analyte = "CD33 receptor", units = "mg", specimen = "blood cell", verified = FALSE),
-    complex     = list(analyte = "gemtuzumab ozogamicin-CD33 complex", units = "mg", specimen = "blood cell", verified = FALSE),
-    cells       = list(analyte = "leukemic blast cells", units = "mg", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "gemtuzumab ozogamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "CD33 receptor", units = "mg", specimen = "blood cell", verified = FALSE),
+    complex = list(
+      analyte = "gemtuzumab ozogamicin-CD33 complex",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    cells = list(analyte = "leukemic blast cells", units = "mg", specimen = "tissue", verified = FALSE),
     peripheral1 = list(analyte = "gemtuzumab ozogamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Patients with acute myeloid leukemia (AML) receiving the CD33-directed antibody-drug conjugate gemtuzumab ozogamicin (GO; Mylotarg).",
-    dose_range     = "Intravenous gemtuzumab ozogamicin. Specific clinical doses, infusion durations, and study design are reported in the original Jager 2011 publication; the DDMORE bundle does not ship a dataset and the publication itself is not on disk in this worktree, so dose-level detail could not be extracted.",
-    regions        = NA_character_,
-    notes          = paste(
+    disease_state = "Patients with acute myeloid leukemia (AML) receiving the CD33-directed antibody-drug conjugate gemtuzumab ozogamicin (GO; Mylotarg).",
+    dose_range = "Intravenous gemtuzumab ozogamicin. Specific clinical doses, infusion durations, and study design are reported in the original Jager 2011 publication; the DDMORE bundle does not ship a dataset and the publication itself is not on disk in this worktree, so dose-level detail could not be extracted.",
+    regions = NA_character_,
+    notes = paste(
       "Demographic detail is not reproduced in the DDMORE bundle for DDMODEL00000229,",
       "and the Jager 2011 PLoS One paper itself is not on disk under the literature tree.",
       "The DDMORE bundle's `Model_Accommodations.txt` documents that the model parameters",

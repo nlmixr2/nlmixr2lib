@@ -10,8 +10,8 @@ Hayashi_1998_epoetinBeta <- function() {
   )
   vignette <- "Hayashi_1998_epoetinBeta"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/L"
   )
 
@@ -19,54 +19,54 @@ Hayashi_1998_epoetinBeta <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "epoetinBeta", units = "IU", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "epoetinBeta", units = "IU", specimen = "administration site", verified = FALSE),
     central = list(analyte = "epoetinBeta", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study entry",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on apparent ka (exponent -1.92) and on apparent CL/F and V/F (shared exponent 0.776 inherited from the paper's V/F WT effect). Reference WT = 62.0 kg (Hayashi 1998 Table 1 cohort mean). Healthy-adult-male range 51.0-79.0 kg.",
-      source_name        = "Body weight"
+      notes = "Power covariate on apparent ka (exponent -1.92) and on apparent CL/F and V/F (shared exponent 0.776 inherited from the paper's V/F WT effect). Reference WT = 62.0 kg (Hayashi 1998 Table 1 cohort mean). Healthy-adult-male range 51.0-79.0 kg.",
+      source_name = "Body weight"
     ),
     AGE = list(
-      description        = "Age at study entry",
-      units              = "year",
-      type               = "continuous",
+      description = "Age at study entry",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on apparent k_e (paper's parameterisation) with exponent -1.13; under the canonical CL/F reparameterisation here the same exponent rides on CL/F. Reference AGE = 22.7 y (Hayashi 1998 Table 1 cohort mean). Healthy-adult-male range 20-29 y; the strong negative exponent within this narrow window led the authors to discuss bone-marrow contribution to EPO clearance.",
-      source_name        = "Age"
+      notes = "Power covariate on apparent k_e (paper's parameterisation) with exponent -1.13; under the canonical CL/F reparameterisation here the same exponent rides on CL/F. Reference AGE = 22.7 y (Hayashi 1998 Table 1 cohort mean). Healthy-adult-male range 20-29 y; the strong negative exponent within this narrow window led the authors to discuss bone-marrow contribution to EPO clearance.",
+      source_name = "Age"
     ),
     CREAT = list(
-      description        = "Serum creatinine at study entry",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine at study entry",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on apparent k_e (paper's parameterisation) with exponent -0.542; under the canonical CL/F reparameterisation here the same exponent rides on CL/F. Reference CREAT = 0.98 mg/dL (Hayashi 1998 Table 1 cohort mean). Healthy-volunteer range 0.8-1.2 mg/dL.",
-      source_name        = "Creatinine"
+      notes = "Power covariate on apparent k_e (paper's parameterisation) with exponent -0.542; under the canonical CL/F reparameterisation here the same exponent rides on CL/F. Reference CREAT = 0.98 mg/dL (Hayashi 1998 Table 1 cohort mean). Healthy-volunteer range 0.8-1.2 mg/dL.",
+      source_name = "Creatinine"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 48L,
-    n_studies       = 1L,
-    age_range       = "20-29 years",
-    age_median      = "mean 22.7 (s.d. 2.1) years",
-    weight_range    = "51.0-79.0 kg",
-    weight_median   = "mean 62.0 (s.d. 5.7) kg",
-    height_range    = "157.0-185.7 cm",
-    height_median   = "mean 170.5 (s.d. 5.6) cm",
-    sex_female_pct  = 0,
-    race_ethnicity  = c(Asian = 100),
-    creat_range     = "0.8-1.2 mg/dL (mean 0.98)",
-    disease_state   = "Healthy adult male Japanese volunteers; normal complete blood count, platelet count, prothrombin time, and activated partial thromboplastin generation time; no clinically significant cardiovascular, renal, hepatic, metabolic, gastrointestinal, neurologic or endocrine disorders.",
-    dose_range      = "1500 IU or 3000 IU subcutaneous (forearm) at 09:00 h, two administrations 2 weeks apart per subject. 16 subjects @ 1500 IU and 32 subjects @ 3000 IU.",
-    regions         = "Japan",
-    notes           = "Single-centre Phase I bioequivalence-style study at Kannondai Clinic (Ibaraki, Japan) comparing two Epoetin beta formulations; pooled for this popPK analysis. 1056 plasma EPO concentrations measured by radioimmunoassay (anti-recombinant-EPO antibody; LOD 2.1 IU/L; within-run CV 4.5-5.7%; between-run CV 1.9-6.7%). Sampling at -1, 3, 6, 9, 12, 15, 24, 36, 48, 72, 96 h after each administration. Pre-dose baseline EPO (Table 2) was 23.65 +/- 0.65 IU/L (3000 IU group) and 25.14 +/- 0.58 IU/L (1500 IU group). Demographics in Table 1; final pop-PK estimates in Table 4."
+    species = "human",
+    n_subjects = 48L,
+    n_studies = 1L,
+    age_range = "20-29 years",
+    age_median = "mean 22.7 (s.d. 2.1) years",
+    weight_range = "51.0-79.0 kg",
+    weight_median = "mean 62.0 (s.d. 5.7) kg",
+    height_range = "157.0-185.7 cm",
+    height_median = "mean 170.5 (s.d. 5.6) cm",
+    sex_female_pct = 0,
+    race_ethnicity = c(Asian = 100),
+    creat_range = "0.8-1.2 mg/dL (mean 0.98)",
+    disease_state = "Healthy adult male Japanese volunteers; normal complete blood count, platelet count, prothrombin time, and activated partial thromboplastin generation time; no clinically significant cardiovascular, renal, hepatic, metabolic, gastrointestinal, neurologic or endocrine disorders.",
+    dose_range = "1500 IU or 3000 IU subcutaneous (forearm) at 09:00 h, two administrations 2 weeks apart per subject. 16 subjects @ 1500 IU and 32 subjects @ 3000 IU.",
+    regions = "Japan",
+    notes = "Single-centre Phase I bioequivalence-style study at Kannondai Clinic (Ibaraki, Japan) comparing two Epoetin beta formulations; pooled for this popPK analysis. 1056 plasma EPO concentrations measured by radioimmunoassay (anti-recombinant-EPO antibody; LOD 2.1 IU/L; within-run CV 4.5-5.7%; between-run CV 1.9-6.7%). Sampling at -1, 3, 6, 9, 12, 15, 24, 36, 48, 72, 96 h after each administration. Pre-dose baseline EPO (Table 2) was 23.65 +/- 0.65 IU/L (3000 IU group) and 25.14 +/- 0.58 IU/L (1500 IU group). Demographics in Table 1; final pop-PK estimates in Table 4."
   )
 
   ini({

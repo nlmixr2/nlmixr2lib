@@ -33,12 +33,16 @@ Nguyen_2026_levofloxacin <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "levofloxacin", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "levofloxacin",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "levofloxacin", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "levofloxacin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     # The saliva state is a hypothetical effect compartment (Nguyen 2026
     # Methods 2.3: 'a saliva bio-compartment (i.e., a hypothetical effect
@@ -47,8 +51,10 @@ Nguyen_2026_levofloxacin <- function() {
     # observed salivary concentration. It does not deplete the central
     # compartment -- see the model() note.
     saliva = list(
-      analyte = "levofloxacin", units = "mg",
-      specimen = "saliva", verified = TRUE
+      analyte = "levofloxacin",
+      units = "mg",
+      specimen = "saliva",
+      verified = TRUE
     )
   )
 
@@ -67,7 +73,8 @@ Nguyen_2026_levofloxacin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight at baseline.",
-      units = "kg", type = "continuous",
+      units = "kg",
+      type = "continuous",
       notes = paste(
         "Median 50 kg (IQR 45-56), Nguyen 2026 Table 1; a column in the Table S4 $INPUT list.",
         "Tested as an allometric size descriptor on CL/F and V/F with both fixed exponents",
@@ -78,7 +85,8 @@ Nguyen_2026_levofloxacin <- function() {
     ),
     FFM = list(
       description = "Fat-free mass.",
-      units = "kg", type = "continuous",
+      units = "kg",
+      type = "continuous",
       notes = paste(
         "Median 41.4 kg (IQR 36.7-45.6), Nguyen 2026 Table 1. Derived from total body weight and",
         "height by the Janmahasatian / Anderson-Holford relation printed as Supplementary",
@@ -89,7 +97,9 @@ Nguyen_2026_levofloxacin <- function() {
       )
     ),
     AGE = list(
-      description = "Age.", units = "years", type = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       notes = paste(
         "Median 44 years (IQR 33-51), Nguyen 2026 Table 1. Screened against clearance and volume",
         "by stepwise covariate modelling and not retained (Methods 2.3, Results 3.2,",
@@ -98,7 +108,8 @@ Nguyen_2026_levofloxacin <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
       notes = paste(
         "17 of 57 patients female (29.8%), Nguyen 2026 Table 1. Listed among the screened",
@@ -109,7 +120,8 @@ Nguyen_2026_levofloxacin <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance (renal-function marker).",
-      units = "mL/min (raw, NOT BSA-normalized)", type = "continuous",
+      units = "mL/min (raw, NOT BSA-normalized)",
+      type = "continuous",
       notes = paste(
         "Median 71 mL/min (IQR 65.1-84.7), Nguyen 2026 Table 1. The estimating equation is not",
         "stated in the paper. All patients had renal function within normal limits (Results 3.1),",
@@ -121,7 +133,8 @@ Nguyen_2026_levofloxacin <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine.",
-      units = "umol/L", type = "continuous",
+      units = "umol/L",
+      type = "continuous",
       notes = paste(
         "Median 77 umol/L (IQR 71-85), Nguyen 2026 Table 1, printed as 'SCR'. Carried into the",
         "Table S4 $INPUT list as CRE. Screened and not retained (Results 3.2,",
@@ -130,7 +143,8 @@ Nguyen_2026_levofloxacin <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase (hepatic-function marker).",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Median 20 U/L (IQR 15-36), Nguyen 2026 Table 1. Within normal limits in all patients",
         "(Results 3.1). Screened and not retained (Results 3.2, Supplementary Figure S8)."
@@ -138,7 +152,8 @@ Nguyen_2026_levofloxacin <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase (hepatic-function marker).",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Median 24 U/L (IQR 19-32), Nguyen 2026 Table 1. Within normal limits in all patients",
         "(Results 3.1). Screened and not retained (Results 3.2, Supplementary Figure S8)."
@@ -154,24 +169,24 @@ Nguyen_2026_levofloxacin <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 57,
-    n_studies        = 1,
-    age_median       = "44 years (IQR 33-51)",
-    age_range        = "adults aged 18 years and over; the full range is not reported",
-    weight_median    = "50 kg (IQR 45-56)",
-    weight_range     = "IQR 45-56 kg; the full range is not reported",
-    height_median    = "162 cm (IQR 160-167)",
-    ffm_median       = "41.4 kg (IQR 36.7-45.6)",
-    bmi_median       = "19.1 kg/m^2 (IQR 17.5-20.8)",
-    sex_female_pct   = 29.8,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = "multidrug-resistant pulmonary tuberculosis (MDR-TB)",
-    renal_function   = "within normal limits in all patients; creatinine clearance median 71 mL/min (IQR 65.1-84.7), serum creatinine median 77 umol/L (IQR 71-85)",
+    species = "human",
+    n_subjects = 57,
+    n_studies = 1,
+    age_median = "44 years (IQR 33-51)",
+    age_range = "adults aged 18 years and over; the full range is not reported",
+    weight_median = "50 kg (IQR 45-56)",
+    weight_range = "IQR 45-56 kg; the full range is not reported",
+    height_median = "162 cm (IQR 160-167)",
+    ffm_median = "41.4 kg (IQR 36.7-45.6)",
+    bmi_median = "19.1 kg/m^2 (IQR 17.5-20.8)",
+    sex_female_pct = 29.8,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "multidrug-resistant pulmonary tuberculosis (MDR-TB)",
+    renal_function = "within normal limits in all patients; creatinine clearance median 71 mL/min (IQR 65.1-84.7), serum creatinine median 77 umol/L (IQR 71-85)",
     hepatic_function = "within normal limits in all patients; ALT median 20 U/L (IQR 15-36), AST median 24 U/L (IQR 19-32)",
-    dose_range       = "oral levofloxacin at steady state, 750-1000 mg once daily (15-20 mg/kg/day, median 17.9 mg/kg/day)",
-    regions          = "Vietnam (four provinces)",
-    notes            = paste(
+    dose_range = "oral levofloxacin at steady state, 750-1000 mg once daily (15-20 mg/kg/day, median 17.9 mg/kg/day)",
+    regions = "Vietnam (four provinces)",
+    notes = paste(
       "Pharmacokinetic sub-study of the V-SMART trial (ACTRN12620000681954), prospective and",
       "observational. Sixty patients met the inclusion criteria and 57 had evaluable",
       "pharmacokinetic data, contributing 342 paired plasma-saliva samples drawn at pre-dose, 2 h",

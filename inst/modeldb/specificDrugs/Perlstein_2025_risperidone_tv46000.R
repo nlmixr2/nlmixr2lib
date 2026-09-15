@@ -55,15 +55,15 @@ Perlstein_2025_risperidone_tv46000 <- function() {
     sep = " "
   )
   vignette <- "Perlstein_2025_risperidone_tv46000"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a median-normalized power term on BOTH release rate",
         "constants, with opposite signs: ka1 * (BMI / 28.7)^(-1.1) on the fast",
         "direct route and ka2 * (BMI / 28.7)^1.7 on the slow indirect route",
@@ -79,14 +79,14 @@ Perlstein_2025_risperidone_tv46000 <- function() {
         "vignette Assumptions and deviations section.",
         sep = " "
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     DOSE_TV46000_ML = list(
-      description        = "Volume of TV-46000 suspension delivered at this injection",
-      units              = "mL",
-      type               = "continuous",
+      description = "Volume of TV-46000 suspension delivered at this injection",
+      units = "mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate. Enters as a median-normalized power term",
         "on the fast direct-release rate constant only:",
         "ka1 * (DOSE_TV46000_ML / 0.303)^(-0.384) (Perlstein 2025 Table 3,",
@@ -102,14 +102,14 @@ Perlstein_2025_risperidone_tv46000 <- function() {
         "Assumptions and deviations section.",
         sep = " "
       ),
-      source_name        = "INJV"
+      source_name = "INJV"
     ),
     INJSITE_ARM = list(
-      description        = "Subcutaneous injection site is the upper arm rather than the abdomen",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subcutaneous injection site is the upper arm rather than the abdomen",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate; a subject may alternate sites between",
         "injections, and the paper's conclusion is precisely that the two",
         "sites are interchangeable. Enters through the paper's categorical",
@@ -121,16 +121,16 @@ Perlstein_2025_risperidone_tv46000 <- function() {
         "the reference category, matching the canonical register.",
         sep = " "
       ),
-      source_name        = "ADMSITE"
+      source_name = "ADMSITE"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the stepwise covariate analysis and reached statistical",
         "significance, but 'Age and sex did not have clinically relevant",
         "effects on apparent clearance (CL/F) compared with the base model,",
@@ -143,9 +143,9 @@ Perlstein_2025_risperidone_tv46000 <- function() {
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and statistically significant on both the parent and the",
         "metabolite, but removed from both. On the parent it was not",
         "clinically relevant on CL/F; on the metabolite, 'The effect of sex on",
@@ -160,9 +160,9 @@ Perlstein_2025_risperidone_tv46000 <- function() {
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as an intrinsic factor in the stepwise covariate analysis",
         "(Perlstein 2025 Methods) but not retained; the size descriptor that",
         "survived selection was BMI, on the two release rate constants.",
@@ -171,9 +171,9 @@ Perlstein_2025_risperidone_tv46000 <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened as an intrinsic factor (Perlstein 2025 Methods) but not",
         "retained. Cohort mean 121 mL/min (SD 34.3; Table 2).",
         sep = " "
@@ -181,9 +181,9 @@ Perlstein_2025_risperidone_tv46000 <- function() {
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was screened as an intrinsic factor (Perlstein 2025 Methods) but",
         "not retained. The cohort was 64.7% Black or African American, 31.9%",
         "White and 1.4% Asian (Table 2); the Discussion flags this skew, plus",
@@ -195,20 +195,25 @@ Perlstein_2025_risperidone_tv46000 <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
-    transit5    = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = TRUE),
-    central_9oh = list(analyte = "9-hydroxyrisperidone (paliperidone)", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = TRUE),
+    central_9oh = list(
+      analyte = "9-hydroxyrisperidone (paliperidone)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 692L,
-    n_studies      = 5L,
+    species = "human",
+    n_subjects = 692L,
+    n_studies = 5L,
     n_observations = paste(
       "Not reported as a record count. 692 participants contributed at least",
       "one measurable post-TV-46000 plasma concentration: 267 from the three",
@@ -219,13 +224,13 @@ Perlstein_2025_risperidone_tv46000 <- function() {
       "(Perlstein 2025 Results, 'Dataset', and Table S1).",
       sep = " "
     ),
-    age_range      = "16-65 years; mean 47.4 (SD 10.9) years (Perlstein 2025 Table 2, Total Overall column). Patients older than 65 years were excluded from the source studies.",
-    weight_range   = "42-132 kg; mean 86.3 (SD 16.3) kg (Perlstein 2025 Table 2)",
-    bmi_range      = "18-38 kg/m^2; mean 28.7 (SD 4.8) kg/m^2 (Perlstein 2025 Table 2)",
+    age_range = "16-65 years; mean 47.4 (SD 10.9) years (Perlstein 2025 Table 2, Total Overall column). Patients older than 65 years were excluded from the source studies.",
+    weight_range = "42-132 kg; mean 86.3 (SD 16.3) kg (Perlstein 2025 Table 2)",
+    bmi_range = "18-38 kg/m^2; mean 28.7 (SD 4.8) kg/m^2 (Perlstein 2025 Table 2)",
     sex_female_pct = 29.6,
     race_ethnicity = c(Black = 64.7, White = 31.9, Asian = 1.4, Missing = 2.0),
     renal_function = "Creatinine clearance mean 121 mL/min (SD 34.3); not reported for the healthy-volunteer study RISPE1ZG15EU (Perlstein 2025 Table 2)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with schizophrenia or schizoaffective disorder, plus 50 healthy",
       "volunteers (7.2% of the analysis population) from the phase 1 study",
       "RISPE1ZG15EU. Phase 3 patients were stabilized on oral risperidone for",
@@ -234,7 +239,7 @@ Perlstein_2025_risperidone_tv46000 <- function() {
       "participants had undetectable plasma levels at the first injection.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "TV-46000 subcutaneous. Phase 1: single doses 12.5-25 mg",
       "(RISPE1ZG15EU, subtherapeutic, healthy volunteers), single doses",
       "50-225 mg and three consecutive monthly doses 75-150 mg (SAD-10055),",
@@ -243,8 +248,8 @@ Perlstein_2025_risperidone_tv46000 <- function() {
       "(RISE and SHINE). Table 4 simulations assume a 28-day month.",
       sep = " "
     ),
-    regions        = "Not reported by region; the phase 3 trials RISE (NCT03503318) and SHINE (NCT03893825) were multicenter",
-    notes          = paste(
+    regions = "Not reported by region; the phase 3 trials RISE (NCT03503318) and SHINE (NCT03893825) were multicenter",
+    notes = paste(
       "Perlstein 2025 Table 2 tabulates demographics for the 733 participants",
       "with baseline data, while the popPK analysis used the 692 with at least",
       "one measurable concentration; the summary statistics quoted here are",

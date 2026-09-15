@@ -8,19 +8,19 @@ Betts_2018_mAb_cyno <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "cynomolgus monkey",
-    n_subjects     = NA,
-    n_studies      = NA,
-    disease_state  = "Cynomolgus monkeys receiving single-dose IV monoclonal antibody at 1-3 dose levels (n=2 per dose) as part of preclinical PK studies.",
-    dose_range     = "IV: 0.01-200 mg/kg across the 23 mAbs (individual mAb linear dose ranges in Betts 2018 Table 1).",
-    notes          = "Class-level typical values pooled from Pfizer internal data for 23 monoclonal antibodies with linear PK in cynomolgus monkeys. Reference body weight assumed 3 kg per Betts 2018 Materials and methods. Non-linear (target-mediated) doses were excluded from the source fit."
+    species = "cynomolgus monkey",
+    n_subjects = NA,
+    n_studies = NA,
+    disease_state = "Cynomolgus monkeys receiving single-dose IV monoclonal antibody at 1-3 dose levels (n=2 per dose) as part of preclinical PK studies.",
+    dose_range = "IV: 0.01-200 mg/kg across the 23 mAbs (individual mAb linear dose ranges in Betts 2018 Table 1).",
+    notes = "Class-level typical values pooled from Pfizer internal data for 23 monoclonal antibodies with linear PK in cynomolgus monkeys. Reference body weight assumed 3 kg per Betts 2018 Materials and methods. Non-linear (target-mediated) doses were excluded from the source fit."
   )
 
   ini({

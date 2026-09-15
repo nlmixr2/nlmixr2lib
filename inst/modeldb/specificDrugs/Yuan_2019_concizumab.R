@@ -1,55 +1,108 @@
 Yuan_2019_concizumab <- function() {
   description <- "QSP. Systems PK/PD model for concizumab (humanized anti-TFPI IgG4) describing binding to both membrane-bound TFPI (mTFPI; non-linear clearance via receptor-mediated endocytosis) and soluble TFPI (sTFPI; linear clearance via FcRn-recycled pinocytosis) in a minimal physiologically-based PK framework with two nested endothelial endosome compartments. Parameter values for 70 kg adult humans (Yuan 2019 Tables 1-2); the paper also tabulates monkey and rabbit parameter sets."
-  reference   <- "Yuan D, Rode F, Cao Y. A systems pharmacokinetic/pharmacodynamic model for concizumab to explore the potential of anti-TFPI recycling antibodies. Eur J Pharm Sci. 2019 Oct 1;138:105032. doi:10.1016/j.ejps.2019.105032. PMID 31374317. mTFPI baseline, kdegm = kint, and koff optimized in the reduced PK/PD model using human PK/PD data digitized from Chowdary 2015 (J Thromb Haemost 13:743-754). Linear-clearance endosome parameters (CLup, CLe, krec, k1on, k1off, FcRn_b) inherited from Yuan 2018 (J Pharmacokinet Pharmacodyn 45:851-864), calibrated using adalimumab."
-  vignette    <- "Yuan_2019_concizumab"
-  paper_specific_compartments <- c("a_p", "stfpi_p", "astfpi_p", "mtfpi_p", "amtfpi_p", "a_e1", "mtfpi_e1", "amtfpi_e1", "fcrn_e1", "fcrna_e1", "a_e2", "stfpi_e2", "astfpi_e2", "fcrn_e2", "fcrna_e2", "fcrnastfpi_e2", "a_t", "astfpi_t", "a_lk", "astfpi_lk", "a_lm", "astfpi_lm")
+  reference <- "Yuan D, Rode F, Cao Y. A systems pharmacokinetic/pharmacodynamic model for concizumab to explore the potential of anti-TFPI recycling antibodies. Eur J Pharm Sci. 2019 Oct 1;138:105032. doi:10.1016/j.ejps.2019.105032. PMID 31374317. mTFPI baseline, kdegm = kint, and koff optimized in the reduced PK/PD model using human PK/PD data digitized from Chowdary 2015 (J Thromb Haemost 13:743-754). Linear-clearance endosome parameters (CLup, CLe, krec, k1on, k1off, FcRn_b) inherited from Yuan 2018 (J Pharmacokinet Pharmacodyn 45:851-864), calibrated using adalimumab."
+  vignette <- "Yuan_2019_concizumab"
+  paper_specific_compartments <- c(
+    "a_p",
+    "stfpi_p",
+    "astfpi_p",
+    "mtfpi_p",
+    "amtfpi_p",
+    "a_e1",
+    "mtfpi_e1",
+    "amtfpi_e1",
+    "fcrn_e1",
+    "fcrna_e1",
+    "a_e2",
+    "stfpi_e2",
+    "astfpi_e2",
+    "fcrn_e2",
+    "fcrna_e2",
+    "fcrnastfpi_e2",
+    "a_t",
+    "astfpi_t",
+    "a_lk",
+    "astfpi_lk",
+    "a_lm",
+    "astfpi_lm"
+  )
 
-  units       <- list(time = "day", dosing = "nmol", concentration = "nM")
+  units <- list(time = "day", dosing = "nmol", concentration = "nM")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "concizumab", units = "nmol", specimen = "administration site", verified = FALSE),
-    a_p           = list(analyte = "concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    stfpi_p       = list(analyte = "soluble TFPI-concizumab complex", units = "nmol", specimen = "plasma", verified = FALSE),
-    astfpi_p      = list(analyte = "free concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    mtfpi_p       = list(analyte = "membrane-bound TFPI-concizumab complex", units = "nmol", specimen = "plasma", verified = FALSE),
-    amtfpi_p      = list(analyte = "free concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    a_e1          = list(analyte = "concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
-    mtfpi_e1      = list(analyte = "membrane-bound TFPI-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
-    amtfpi_e1     = list(analyte = "free concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
-    fcrn_e1       = list(analyte = "FcRn-receptor-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
-    fcrna_e1      = list(analyte = "receptor-bound concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
-    a_e2          = list(analyte = "concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
-    stfpi_e2      = list(analyte = "soluble TFPI-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
-    astfpi_e2     = list(analyte = "free concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
-    fcrn_e2       = list(analyte = "FcRn-receptor-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
-    fcrna_e2      = list(analyte = "receptor-bound concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
-    fcrnastfpi_e2 = list(analyte = "FcRn-receptor-soluble TFPI-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
-    a_t           = list(analyte = "concizumab", units = "nmol", specimen = "tissue", verified = FALSE),
-    astfpi_t      = list(analyte = "free concizumab", units = "nmol", specimen = "tissue", verified = FALSE),
-    a_lk          = list(analyte = "concizumab", units = "nmol", specimen = "lymph", verified = FALSE),
-    astfpi_lk     = list(analyte = "free concizumab", units = "nmol", specimen = "lymph", verified = FALSE),
-    a_lm          = list(analyte = "concizumab", units = "nmol", specimen = "milk", verified = FALSE),
-    astfpi_lm     = list(analyte = "free concizumab", units = "nmol", specimen = "milk", verified = FALSE)
+    depot = list(analyte = "concizumab", units = "nmol", specimen = "administration site", verified = FALSE),
+    a_p = list(analyte = "concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    stfpi_p = list(analyte = "soluble TFPI-concizumab complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    astfpi_p = list(analyte = "free concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    mtfpi_p = list(
+      analyte = "membrane-bound TFPI-concizumab complex",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    amtfpi_p = list(analyte = "free concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    a_e1 = list(analyte = "concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    mtfpi_e1 = list(
+      analyte = "membrane-bound TFPI-concizumab complex",
+      units = "nmol",
+      specimen = "endosome",
+      verified = FALSE
+    ),
+    amtfpi_e1 = list(analyte = "free concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrn_e1 = list(
+      analyte = "FcRn-receptor-concizumab complex",
+      units = "nmol",
+      specimen = "endosome",
+      verified = FALSE
+    ),
+    fcrna_e1 = list(analyte = "receptor-bound concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    a_e2 = list(analyte = "concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    stfpi_e2 = list(
+      analyte = "soluble TFPI-concizumab complex",
+      units = "nmol",
+      specimen = "endosome",
+      verified = FALSE
+    ),
+    astfpi_e2 = list(analyte = "free concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrn_e2 = list(
+      analyte = "FcRn-receptor-concizumab complex",
+      units = "nmol",
+      specimen = "endosome",
+      verified = FALSE
+    ),
+    fcrna_e2 = list(analyte = "receptor-bound concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrnastfpi_e2 = list(
+      analyte = "FcRn-receptor-soluble TFPI-concizumab complex",
+      units = "nmol",
+      specimen = "endosome",
+      verified = FALSE
+    ),
+    a_t = list(analyte = "concizumab", units = "nmol", specimen = "tissue", verified = FALSE),
+    astfpi_t = list(analyte = "free concizumab", units = "nmol", specimen = "tissue", verified = FALSE),
+    a_lk = list(analyte = "concizumab", units = "nmol", specimen = "lymph", verified = FALSE),
+    astfpi_lk = list(analyte = "free concizumab", units = "nmol", specimen = "lymph", verified = FALSE),
+    a_lm = list(analyte = "concizumab", units = "nmol", specimen = "milk", verified = FALSE),
+    astfpi_lm = list(analyte = "free concizumab", units = "nmol", specimen = "milk", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24,
-    n_studies      = 1,
-    age_range      = "adult (per Chowdary 2015 source study)",
-    weight_range   = "70 kg reference body weight (Yuan 2019 Table 2)",
+    species = "human",
+    n_subjects = 24,
+    n_studies = 1,
+    age_range = "adult (per Chowdary 2015 source study)",
+    weight_range = "70 kg reference body weight (Yuan 2019 Table 2)",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = "Healthy adult males (Chowdary 2015 first-in-human single ascending dose study of concizumab)",
-    dose_range     = "IV 0.25, 1, 3, 9 mg/kg single (used for parameter optimisation); SC 1, 3 mg/kg single (external validation cohort).",
-    regions        = NA,
-    notes          = paste0(
+    disease_state = "Healthy adult males (Chowdary 2015 first-in-human single ascending dose study of concizumab)",
+    dose_range = "IV 0.25, 1, 3, 9 mg/kg single (used for parameter optimisation); SC 1, 3 mg/kg single (external validation cohort).",
+    regions = NA,
+    notes = paste0(
       "Model is a typical-value mechanistic (systems QSP) simulator; ",
       "no IIV or residual error is reported for the systems model itself. ",
       "Residual-error terms in Yuan 2019 Table 1 were ADAPT 5 maximum-likelihood ",
@@ -59,8 +112,8 @@ Yuan_2019_concizumab <- function() {
       "Concizumab clinical PK/PD source: Chowdary P et al. J Thromb Haemost. ",
       "2015 May;13(5):743-754 (PMID 25641556)."
     ),
-    model_class    = "QSP / systems PK-PD (mPBPK base with two nested endothelial endosome compartments, explicit TMDD for mTFPI and sTFPI, and explicit FcRn recycling)",
-    n_states       = 23,
+    model_class = "QSP / systems PK-PD (mPBPK base with two nested endothelial endosome compartments, explicit TMDD for mTFPI and sTFPI, and explicit FcRn recycling)",
+    n_states = 23,
     upstream_model = "Yuan D, Krzyzanski W, Cao Y. A general pharmacokinetic model for the disposition of monoclonal antibodies against soluble antigens. J Pharmacokinet Pharmacodyn. 2018 Dec;45(6):851-864 (linear-clearance endosome calibration with adalimumab)."
   )
 

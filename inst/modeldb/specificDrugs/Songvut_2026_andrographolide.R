@@ -39,36 +39,36 @@ Songvut_2026_andrographolide <- function() {
   vignette <- "Songvut_2026_andrographolide"
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; andrographolide exposure enters as the AUC_ANDRO covariate, not as a dose record)",
+    time = "day",
+    dosing = "(none; andrographolide exposure enters as the AUC_ANDRO covariate, not as a dose record)",
     concentration = "(log10 RdRp viral-load reduction between day 1 and day 5, -log10 copies/uL; the AUC_ANDRO exposure covariate is in ug*h/L)"
   )
 
   covariateData <- list(
     AUC_ANDRO = list(
-      description        = "Per-subject andrographolide (AP1) plasma AUC over the 0-4 h post-dose window on day 5 of q8h dosing, consumed directly as the pharmacodynamic driver of the sigmoidal Emax exposure-response curve. Time-fixed per subject: the source analysis pairs one AUC value with one day-1-to-day-5 viral-load reduction, so this is a cross-sectional covariate rather than a time-varying one.",
-      units              = "ug*h/L",
-      type               = "continuous",
+      description = "Per-subject andrographolide (AP1) plasma AUC over the 0-4 h post-dose window on day 5 of q8h dosing, consumed directly as the pharmacodynamic driver of the sigmoidal Emax exposure-response curve. Time-fixed per subject: the source analysis pairs one AUC value with one day-1-to-day-5 viral-load reduction, so this is a cross-sectional covariate rather than a time-varying one.",
+      units = "ug*h/L",
+      type = "continuous",
       reference_category = "n/a -- enters via the sigmoid AUC^hill / (auc50^hill + AUC^hill). AUC_ANDRO = 0 makes the sigmoid vanish exactly and recovers the baseline reduction e0. Reference values: the cohort mean day-5 AUC(0-4 h) is 30.12 +/- 15.83 ug*h/L (paper Table 2), which the paper notes approaches the estimated auc50 of 29.80 ug*h/L; the observed range spans roughly 8-57 ug*h/L (paper Figure 5).",
-      notes              = "Computed in the source analysis by non-compartmental analysis (PK Solutions 2.0, linear trapezoidal rule) on LC-MS/MS plasma andrographolide concentrations sampled pre-dose and at 0.5, 0.75, 1, 1.5, 2 and 4 h after the day-5 morning dose (paper Sections 2.3.2.2 and 2.3.6). Andrographolide, not the more highly exposed AP3, was chosen as the exposure metric because it is the Thai FDA reference compound for standardized A. paniculata preparations and the most extensively characterised diterpenoid (paper Section 4.3). No population PK model exists for this drug in the source, so downstream users must supply AUC_ANDRO from observed concentrations or from an external andrographolide PK model. Member of the AUC_<DRUG> canonical family.",
-      source_name        = "AUC(0-4h, day 5)"
+      notes = "Computed in the source analysis by non-compartmental analysis (PK Solutions 2.0, linear trapezoidal rule) on LC-MS/MS plasma andrographolide concentrations sampled pre-dose and at 0.5, 0.75, 1, 1.5, 2 and 4 h after the day-5 morning dose (paper Sections 2.3.2.2 and 2.3.6). Andrographolide, not the more highly exposed AP3, was chosen as the exposure metric because it is the Thai FDA reference compound for standardized A. paniculata preparations and the most extensively characterised diterpenoid (paper Section 4.3). No population PK model exists for this drug in the source, so downstream users must supply AUC_ANDRO from observed concentrations or from an external andrographolide PK model. Member of the AUC_<DRUG> canonical family.",
+      source_name = "AUC(0-4h, day 5)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "18-60 years (inclusion criterion); mean 34.08 +/- 9.29 years, two participants classified as middle-aged adults",
-    age_median     = "(not reported in Songvut 2026; mean 34.08 years)",
-    weight_range   = "(not reported in Songvut 2026; body mass index 21.07 +/- 2.19 kg/m^2, and obesity with BMI > 35 kg/m^2 was an exclusion criterion)",
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "18-60 years (inclusion criterion); mean 34.08 +/- 9.29 years, two participants classified as middle-aged adults",
+    age_median = "(not reported in Songvut 2026; mean 34.08 years)",
+    weight_range = "(not reported in Songvut 2026; body mass index 21.07 +/- 2.19 kg/m^2, and obesity with BMI > 35 kg/m^2 was an exclusion criterion)",
+    weight_median = NA_character_,
     sex_female_pct = 83.33,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Mild COVID-19 by the WHO 2020 clinical-management classification: RT-PCR-confirmed SARS-CoV-2 infection within 72 h of symptom onset, symptomatic without viral pneumonia or hypoxia, resting SpO2 at least 95%, normal chest radiograph. All participants were vaccinated with their most recent dose more than one year before enrollment, and none had significant comorbidities. Baseline RdRp viral load geometric mean 8.46e4 copies/uL (range 5.41e2 to 4.40e6), baseline RdRp Ct 18.54 +/- 3.37.",
-    dose_range     = "Single dose level. Standardized A. paniculata aqueous extract capsules equivalent to a labelled 30 mg of andrographolide (three capsules of 10 mg labelled content; measured content 10.28 +/- 0.03 mg/capsule per paper Table 1) every 8 h, i.e. 90 mg/day, for 5 consecutive days, alongside as-needed symptomatic standard of care.",
-    regions        = "Thailand (single centre: acute respiratory infection clinic, Chulabhorn Hospital, Chulabhorn Royal Academy, Bangkok)",
-    notes          = "Baseline demographics and clinical laboratory values in paper Table 5; per-subject viral loads and log10 reductions in Table 4 (Ct) and Table 3 (copies/uL). All 12 participants were of Thai nationality by inclusion criterion, hence race_ethnicity is recorded as 100% Asian; the paper does not report a race or ethnicity breakdown. All 12 completed the protocol with 100% compliance, no dropouts and no protocol deviations, so all 12 contribute to the exposure-response fit. Open-label and single-arm: there was no placebo group, so the observed viral-load decline cannot be attributed to the extract, and the paper is explicit that the exposure-response analysis is exploratory and hypothesis-generating. The paper screened no covariates on the exposure-response model, so no covariate effects are encoded here."
+    disease_state = "Mild COVID-19 by the WHO 2020 clinical-management classification: RT-PCR-confirmed SARS-CoV-2 infection within 72 h of symptom onset, symptomatic without viral pneumonia or hypoxia, resting SpO2 at least 95%, normal chest radiograph. All participants were vaccinated with their most recent dose more than one year before enrollment, and none had significant comorbidities. Baseline RdRp viral load geometric mean 8.46e4 copies/uL (range 5.41e2 to 4.40e6), baseline RdRp Ct 18.54 +/- 3.37.",
+    dose_range = "Single dose level. Standardized A. paniculata aqueous extract capsules equivalent to a labelled 30 mg of andrographolide (three capsules of 10 mg labelled content; measured content 10.28 +/- 0.03 mg/capsule per paper Table 1) every 8 h, i.e. 90 mg/day, for 5 consecutive days, alongside as-needed symptomatic standard of care.",
+    regions = "Thailand (single centre: acute respiratory infection clinic, Chulabhorn Hospital, Chulabhorn Royal Academy, Bangkok)",
+    notes = "Baseline demographics and clinical laboratory values in paper Table 5; per-subject viral loads and log10 reductions in Table 4 (Ct) and Table 3 (copies/uL). All 12 participants were of Thai nationality by inclusion criterion, hence race_ethnicity is recorded as 100% Asian; the paper does not report a race or ethnicity breakdown. All 12 completed the protocol with 100% compliance, no dropouts and no protocol deviations, so all 12 contribute to the exposure-response fit. Open-label and single-arm: there was no placebo group, so the observed viral-load decline cannot be attributed to the extract, and the paper is explicit that the exposure-response analysis is exploratory and hypothesis-generating. The paper screened no covariates on the exposure-response model, so no covariate effects are encoded here."
   )
 
   ini({

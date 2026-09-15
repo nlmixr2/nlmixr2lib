@@ -8,68 +8,68 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumabDeruxtecan", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumabDeruxtecan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumabDeruxtecan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CL_intact (exponent 0.370) and V1_intact (exponent 0.489); reference 57.8 kg per Yin 2021 final model equations (Results: 'Development of intact trastuzumab deruxtecan model').",
-      source_name        = "WT"
+      notes = "Time-fixed baseline value. Power effect on CL_intact (exponent 0.370) and V1_intact (exponent 0.489); reference 57.8 kg per Yin 2021 final model equations (Results: 'Development of intact trastuzumab deruxtecan model').",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (SI units; not g/dL). Power effect on CL_intact (exponent -0.533); reference 40 g/L per Yin 2021 final model equations.",
-      source_name        = "ALB"
+      notes = "Time-fixed baseline value (SI units; not g/dL). Power effect on CL_intact (exponent -0.533); reference 40 g/L per Yin 2021 final model equations.",
+      source_name = "ALB"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size (sum of diameters of target lesions per RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size (sum of diameters of target lesions per RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CL_intact (exponent 0.0710); reference 57 mm per Yin 2021 final model equations.",
-      source_name        = "Tumor size"
+      notes = "Time-fixed baseline value. Power effect on CL_intact (exponent 0.0710); reference 57 mm per Yin 2021 final model equations.",
+      source_name = "Tumor size"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The paper's own reference category is female (see notes).",
-      notes              = "Yin 2021 final model encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Results: 'CL_intact = ... x (1.174, if male)' and 'V1,intact = ... x (1.197, if male)'). To store under the canonical SEXF (1 = female, 0 = male), the effect is applied in model() as (1 + e_male_cl * (1 - SEXF)) and (1 + e_male_v1 * (1 - SEXF)) so SEXF = 1 yields factor 1 (paper female reference) and SEXF = 0 yields the paper's male multiplier (1.174 on CL, 1.197 on V1).",
-      source_name        = "Sex"
+      notes = "Yin 2021 final model encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Results: 'CL_intact = ... x (1.174, if male)' and 'V1,intact = ... x (1.197, if male)'). To store under the canonical SEXF (1 = female, 0 = male), the effect is applied in model() as (1 + e_male_cl * (1 - SEXF)) and (1 + e_male_v1 * (1 - SEXF)) so SEXF = 1 yields factor 1 (paper female reference) and SEXF = 0 yields the paper's male multiplier (1.174 on CL, 1.197 on V1).",
+      source_name = "Sex"
     ),
     REGION_JAPAN = list(
-      description        = "Japan enrollment-country indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japan enrollment-country indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japan country)",
-      notes              = "Yin 2021 retained Country (Japan vs non-Japan) over Race because the two were highly confounded (correlation -0.81) and Country was more significant on all PK parameters. Multiplicative fractional effect of 0.903 on CL_intact and 0.738 on V2_intact for REGION_JAPAN = 1, applied as (1 + e_japan_cl * REGION_JAPAN) and (1 + e_japan_v2 * REGION_JAPAN).",
-      source_name        = "Country"
+      notes = "Yin 2021 retained Country (Japan vs non-Japan) over Race because the two were highly confounded (correlation -0.81) and Country was more significant on all PK parameters. Multiplicative fractional effect of 0.903 on CL_intact and 0.738 on V2_intact for REGION_JAPAN = 1, applied as (1 + e_japan_cl * REGION_JAPAN) and (1 + e_japan_v2 * REGION_JAPAN).",
+      source_name = "Country"
     )
   )
 
   population <- list(
-    n_subjects     = 639L,
-    n_studies      = 5L,
-    phase_mix      = "4 phase I studies (J101, J102, A103, A104) and 1 phase II study (DESTINY-Breast01)",
+    n_subjects = 639L,
+    n_studies = 5L,
+    phase_mix = "4 phase I studies (J101, J102, A103, A104) and 1 phase II study (DESTINY-Breast01)",
     n_observations_intact = 11434L,
-    age_range      = "median 57 years (per Figure 5 caption: 'A typical patient is defined as a 57-year-old female...')",
-    weight_range   = "5th-95th percentile not reported in main text; median 57.8 kg (per final model reference values and Figure 4 caption)",
-    weight_median  = "57.8 kg",
+    age_range = "median 57 years (per Figure 5 caption: 'A typical patient is defined as a 57-year-old female...')",
+    weight_range = "5th-95th percentile not reported in main text; median 57.8 kg (per final model reference values and Figure 4 caption)",
+    weight_median = "57.8 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = "Multi-regional cohort with sufficient Japanese enrollment for a Japan-vs-non-Japan effect to be supported. Race and Country were highly confounded (correlation -0.81); Race was dropped in favour of Country in the final model.",
-    disease_state  = "HER2-positive (or HER2-expressing) advanced or metastatic solid tumors. 512 / 639 (80.1%) patients had unresectable / metastatic breast cancer; 445 / 639 (69.6%) had HER2-positive unresectable / metastatic breast cancer. Other tumor types include HER2-expressing gastric, lung, colorectal, salivary-gland and other solid tumors.",
-    dose_range     = "0.8 - 8.0 mg/kg IV every 3 weeks (q3w), 21-day treatment cycles",
-    regions        = "Multi-regional (US, Japan, EU). Japanese phase I studies J101 and J102 contributed substantially to the Japan-country covariate signal.",
+    disease_state = "HER2-positive (or HER2-expressing) advanced or metastatic solid tumors. 512 / 639 (80.1%) patients had unresectable / metastatic breast cancer; 445 / 639 (69.6%) had HER2-positive unresectable / metastatic breast cancer. Other tumor types include HER2-expressing gastric, lung, colorectal, salivary-gland and other solid tumors.",
+    dose_range = "0.8 - 8.0 mg/kg IV every 3 weeks (q3w), 21-day treatment cycles",
+    regions = "Multi-regional (US, Japan, EU). Japanese phase I studies J101 and J102 contributed substantially to the Japan-country covariate signal.",
     reference_subject = "Female, non-Japan country, 57.8 kg body weight, 40 g/L albumin, 57 mm baseline tumor size (Figure 4 caption: 'A typical patient is defined as a female from a non-Japan country with body weight 57.8 kg, albumin 40 g/L, and baseline tumor size 57 mm.').",
-    notes          = "NONMEM 7.3, FOCE-INTER. Released-drug PK (1-compartment with time-varying release-rate constant and DAR/molar-mass-adjusted input from intact T-DXd) is described in the paper but is NOT implemented in this model file: it requires (a) a dosing-cycle index derived from time and (b) a DAR x molar-mass conversion factor that the paper does not give numerically. See the validation vignette 'Assumptions and deviations' section. Final analysis data set: 11,434 intact T-DXd serum concentrations from 639 patients."
+    notes = "NONMEM 7.3, FOCE-INTER. Released-drug PK (1-compartment with time-varying release-rate constant and DAR/molar-mass-adjusted input from intact T-DXd) is described in the paper but is NOT implemented in this model file: it requires (a) a dosing-cycle index derived from time and (b) a DAR x molar-mass conversion factor that the paper does not give numerically. See the validation vignette 'Assumptions and deviations' section. Final analysis data set: 11,434 intact T-DXd serum concentrations from 639 patients."
   )
 
   ini({

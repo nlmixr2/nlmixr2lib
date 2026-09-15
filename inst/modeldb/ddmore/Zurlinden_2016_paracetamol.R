@@ -12,13 +12,13 @@ Zurlinden_2016_paracetamol <- function() {
   paper_specific_compartments <- c("a_paps")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mcg/L",
-    amount        = "mcmol",
-    weight        = "kg"
+    amount = "mcmol",
+    weight = "kg"
   )
-  ddmore_id    <- "DDMODEL00000237"
+  ddmore_id <- "DDMODEL00000237"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -26,47 +26,112 @@ Zurlinden_2016_paracetamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    a_liver_apap             = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "administration site", verified = FALSE),
-    a_fat_apap               = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_muscle_apap            = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_kidney_apap            = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_rapidly_perfused_apap  = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_slowly_perfused_apap   = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_venous_apap            = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "blood cell", verified = FALSE),
-    a_arterial_apap          = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "blood cell", verified = FALSE),
-    a_urine_apap             = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "urine", verified = FALSE),
-    a_hepatic_apaps          = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_liver_apaps            = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_fat_apaps              = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_muscle_apaps           = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_kidney_apaps           = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_rapidly_perfused_apaps = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_slowly_perfused_apaps  = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_venous_apaps           = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "blood cell", verified = FALSE),
-    a_arterial_apaps         = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "blood cell", verified = FALSE),
-    a_urine_apaps            = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "urine", verified = FALSE),
-    a_hepatic_apapg          = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_liver_apapg            = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_fat_apapg              = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_muscle_apapg           = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_kidney_apapg           = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_rapidly_perfused_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_slowly_perfused_apapg  = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
-    a_venous_apapg           = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "blood cell", verified = FALSE),
-    a_arterial_apapg         = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "blood cell", verified = FALSE),
-    a_urine_apapg            = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "urine", verified = FALSE),
-    a_paps                   = list(analyte = "PAPS", units = "mg", specimen = "tissue", verified = FALSE),
-    a_gut                    = list(analyte = "Paracetamol (APAP) and its conjugated metabolites APAP-glucuronide (AG", units = "mg", specimen = "tissue", verified = FALSE)
+    a_liver_apap = list(
+      analyte = "Paracetamol (APAP)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    a_fat_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_muscle_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_kidney_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_rapidly_perfused_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_slowly_perfused_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_venous_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_arterial_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_urine_apap = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "urine", verified = FALSE),
+    a_hepatic_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_liver_apaps = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_fat_apaps = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_muscle_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_kidney_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_rapidly_perfused_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_slowly_perfused_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_venous_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    a_arterial_apaps = list(
+      analyte = "Paracetamol-glucuronide (AG)",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    a_urine_apaps = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "urine", verified = FALSE),
+    a_hepatic_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_liver_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_fat_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_muscle_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_kidney_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_rapidly_perfused_apapg = list(
+      analyte = "Paracetamol-sulfate (AS)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_slowly_perfused_apapg = list(
+      analyte = "Paracetamol-sulfate (AS)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    a_venous_apapg = list(
+      analyte = "Paracetamol-sulfate (AS)",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    a_arterial_apapg = list(
+      analyte = "Paracetamol-sulfate (AS)",
+      units = "mg",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    a_urine_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "urine", verified = FALSE),
+    a_paps = list(analyte = "PAPS", units = "mg", specimen = "tissue", verified = FALSE),
+    a_gut = list(
+      analyte = "Paracetamol (APAP) and its conjugated metabolites APAP-glucuronide (AG",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to scale all tissue volumes (linear in WT) and the cardiac output / metabolic Vmax (allometric exponent 0.75) and the renal clearance (linear in WT).  The DDMORE bundle's Forward_APAP1.in fixes BW = 70 kg; users can override via rxSolve(params = c(WT = ...)) or supply WT as a per-subject column in the event table.  The DDMORE bundle does NOT report covariates beyond body weight; the Bayesian fit was on a small adult cohort and the model is intended for typical-value adult simulation.",
-      source_name        = "BW"
+      notes = "Used to scale all tissue volumes (linear in WT) and the cardiac output / metabolic Vmax (allometric exponent 0.75) and the renal clearance (linear in WT).  The DDMORE bundle's Forward_APAP1.in fixes BW = 70 kg; users can override via rxSolve(params = c(WT = ...)) or supply WT as a per-subject column in the event table.  The DDMORE bundle does NOT report covariates beyond body weight; the Bayesian fit was on a small adult cohort and the model is intended for typical-value adult simulation.",
+      source_name = "BW"
     )
   )
   # NB: `OralDose_APAP_mg` is declared in ini() (default = 1000 mg, the bundle
@@ -76,16 +141,16 @@ Zurlinden_2016_paracetamol <- function() {
   # listed in covariateData.
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = "Adult (specific age distribution not in bundle)",
-    weight_range   = "70 kg reference (Forward_APAP1.in)",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "Adult (specific age distribution not in bundle)",
+    weight_range = "70 kg reference (Forward_APAP1.in)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Healthy adult, no co-medication, single 1000 mg oral paracetamol dose. The Bayesian population fit in Zurlinden & Reisfeld (2016) used pooled human PK data from multiple published studies (per Methods of the publication, which is not on disk in this worktree); the DDMORE bundle does not redistribute the underlying dataset. The bundle's Real_APAP_data.csv is a digitisation of plasma concentrations from Jansen et al. (2004) J Pharm Biomed Anal 34:585-593 -- a single-study reference dataset re-used by the authors as one validation source, not the full Bayesian inference dataset.",
-    dose_range     = "1000 mg single oral dose (Scenario 4)",
-    regions        = NA_character_,
-    notes          = "Population demographic detail (n, age range, sex distribution, race) is NOT exposed by the DDMORE bundle (Forward_APAP1.in fixes BW=70 kg and reports only the 21 Bayesian posterior-mean parameter values). The original Zurlinden & Reisfeld 2016 publication is not on disk in this worktree, so no cross-check against the publication's Methods is possible. The model is intended for typical-value adult simulation under the Scenario-4 dosing regimen; downstream users wishing to characterise variability must consult the publication directly to obtain the Bayesian posterior distributions for each parameter (these are summarised in the paper but are not exposed by the dpastoor scrape of DDMODEL00000237)."
+    disease_state = "Healthy adult, no co-medication, single 1000 mg oral paracetamol dose. The Bayesian population fit in Zurlinden & Reisfeld (2016) used pooled human PK data from multiple published studies (per Methods of the publication, which is not on disk in this worktree); the DDMORE bundle does not redistribute the underlying dataset. The bundle's Real_APAP_data.csv is a digitisation of plasma concentrations from Jansen et al. (2004) J Pharm Biomed Anal 34:585-593 -- a single-study reference dataset re-used by the authors as one validation source, not the full Bayesian inference dataset.",
+    dose_range = "1000 mg single oral dose (Scenario 4)",
+    regions = NA_character_,
+    notes = "Population demographic detail (n, age range, sex distribution, race) is NOT exposed by the DDMORE bundle (Forward_APAP1.in fixes BW=70 kg and reports only the 21 Bayesian posterior-mean parameter values). The original Zurlinden & Reisfeld 2016 publication is not on disk in this worktree, so no cross-check against the publication's Methods is possible. The model is intended for typical-value adult simulation under the Scenario-4 dosing regimen; downstream users wishing to characterise variability must consult the publication directly to obtain the Bayesian posterior distributions for each parameter (these are summarised in the paper but are not exposed by the dpastoor scrape of DDMODEL00000237)."
   )
 
   ini({

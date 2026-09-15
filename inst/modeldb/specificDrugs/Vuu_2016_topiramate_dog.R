@@ -15,7 +15,7 @@ Vuu_2016_topiramate_dog <- function() {
     "on Vc and CL; residual error is proportional (~15%).",
     sep = " "
   )
-  reference   <- paste(
+  reference <- paste(
     "Vuu I, Coles LD, Maglalang P, Leppik IE, Worrell G, Crepeau D,",
     "Mishra U, Cloyd JC, Patterson EE.",
     "Intravenous Topiramate: Pharmacokinetics in Dogs with Naturally",
@@ -26,10 +26,10 @@ Vuu_2016_topiramate_dog <- function() {
   )
   vignette <- "Vuu_2016_topiramate_dog"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L (equivalent to ug/mL)",
-    dosing_notes  = paste(
+    dosing_notes = paste(
       "Doses in the source paper are mg/kg; the event-table AMT is the",
       "absolute mg dose (mg/kg dose times the dog's body weight). Per-kg",
       "structural PK parameters (Vc, Vp, CL, Q) are converted to absolute",
@@ -42,17 +42,17 @@ Vuu_2016_topiramate_dog <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Individual body weight at the time of TPM dosing.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Individual body weight at the time of TPM dosing.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Required to convert the per-kg structural PK parameters reported",
         "by Vuu 2016 (Vc, Vp in mL/kg; CL, Q in mL/(kg*min)) into absolute",
         "units (L, L/h). The cohort range is 15 - 35 kg (Table 1).",
@@ -65,16 +65,16 @@ Vuu_2016_topiramate_dog <- function() {
       source_name = "Weight"
     ),
     CONMED_PB = list(
-      description        = paste(
+      description = paste(
         "Concomitant phenobarbital (PB) coadministration indicator at the",
         "time of TPM dosing: 1 = dog on chronic PB maintenance therapy,",
         "0 = no concomitant PB.",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital)",
-      notes              = paste(
+      notes = paste(
         "Exponential effect on CL on the log scale:",
         "Cl_i = tvCl * exp(dCl * CONMED_PB) * exp(eta_Cl).",
         "With dCl = 1.73 (Table S1), CONMED_PB = 1 produces a",
@@ -91,20 +91,20 @@ Vuu_2016_topiramate_dog <- function() {
   )
 
   population <- list(
-    species        = "dog (mixed-breed and beagle, naturally occurring epilepsy)",
-    n_subjects     = 5L,
-    n_studies      = 1L,
-    age_range      = "3 - 9 years",
-    weight_range   = "15 - 35 kg",
+    species = "dog (mixed-breed and beagle, naturally occurring epilepsy)",
+    n_subjects = 5L,
+    n_studies = 1L,
+    age_range = "3 - 9 years",
+    weight_range = "15 - 35 kg",
     sex_female_pct = 20.0,
-    disease_state  = paste(
+    disease_state = paste(
       "Naturally-occurring canine epilepsy (focal with secondary",
       "generalisation, or in remission). Three dogs (1, 2, 5) on chronic",
       "antiseizure-drug maintenance including phenobarbital; two dogs",
       "(3, 4) on no concomitant antiseizure therapy.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Low-dose IV TPM 10 mg/kg over a 5-min infusion (n = 4 dogs",
       "ID 1-4); high-dose IV TPM 20 mg/kg over a 5-min infusion",
       "(n = 3 dogs ID 3-5). One hour after the 10 mg/kg IV dose,",
@@ -113,8 +113,8 @@ Vuu_2016_topiramate_dog <- function() {
       "the popPK fit).",
       sep = " "
     ),
-    regions        = "United States (University of Minnesota Veterinary College).",
-    notes          = paste(
+    regions = "United States (University of Minnesota Veterinary College).",
+    notes = paste(
       "Stable-isotope-labelled TPM (six 13C) used for the IV formulation",
       "(10 mg/mL in 10% Captisol) to permit simultaneous IV / oral dosing",
       "while distinguishing the two formulations analytically. Pooled",

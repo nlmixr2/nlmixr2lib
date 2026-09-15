@@ -34,8 +34,8 @@ Ribba_2022_ctdna_sld_joint <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
+    time = "day",
+    dosing = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
     concentration = "two outputs on different scales -- `TS` is the RECIST 1.1 sum of longest diameters in mm, and `ctdna` is base-10 log-transformed average mutant molecules per mL of plasma (log10 MMPM). The residual-error parameters follow their outputs: addSd_TS is in mm, addSd_ctdna is in log10 units."
   )
 
@@ -44,8 +44,8 @@ Ribba_2022_ctdna_sld_joint <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    growth       = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
-    shrink       = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    growth = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    shrink = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
     growth_ctdna = list(analyte = "ctDNA", units = NA_character_, specimen = "plasma", verified = FALSE),
     shrink_ctdna = list(analyte = "ctDNA", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
@@ -53,17 +53,17 @@ Ribba_2022_ctdna_sld_joint <- function() {
   covariateData <- list(
     TUM_SLD = list(
       description = "Observed baseline (cycle 1 day 1) sum of the longest diameters of target lesions per RECIST 1.1, used as the Stein baseline regressor SLD0.",
-      units       = "mm",
-      type        = "continuous",
+      units = "mm",
+      type = "continuous",
       source_name = "SLD0",
-      notes       = "Ribba 2022 Eq. 2: SLD0 is the baseline value of the sum of longest diameters, supplied as a regressor and not estimated. Initialises both SLD Stein sub-states, so TS(0) = TUM_SLD exactly."
+      notes = "Ribba 2022 Eq. 2: SLD0 is the baseline value of the sum of longest diameters, supplied as a regressor and not estimated. Initialises both SLD Stein sub-states, so TS(0) = TUM_SLD exactly."
     ),
     CTDNA = list(
       description = "Observed baseline (cycle 1 day 1) circulating tumor DNA burden, used as the Stein baseline regressor ctDNA0 after base-10 log transformation.",
-      units       = "MMPM (mutant molecules per mL of plasma)",
-      type        = "continuous",
+      units = "MMPM (mutant molecules per mL of plasma)",
+      type = "continuous",
       source_name = "ctDNA0",
-      notes       = paste(
+      notes = paste(
         "Ribba 2022 Eq. 2: ctDNA0 is the baseline ctDNA value, supplied as a regressor and not estimated.",
         "Assayed with the Roche AVENIO panel in the OAK cohort.",
         "Enters model() as rbase_ctdna <- log10(CTDNA) because the source paper log10-transformed the MMPM data before fitting, so ctdna(0) = log10(CTDNA) exactly.",
@@ -73,17 +73,17 @@ Ribba_2022_ctdna_sld_joint <- function() {
   )
 
   population <- list(
-    species         = "human (adults with advanced non-small cell lung cancer)",
-    n_subjects      = 46L,
-    n_studies       = 1L,
-    age_range       = "not reported in this paper (see Rittmeyer 2017 for the OAK cohort demographics)",
-    weight_range    = "not reported in this paper",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "not reported in this paper",
-    disease_state   = "previously treated locally advanced or metastatic NSCLC (OAK study)",
-    dose_range      = "atezolizumab 1200 mg IV every 3 weeks (OAK protocol dose; not a model input)",
-    regions         = "multiregional (OAK was conducted across 31 countries; per-region counts not reported in this paper)",
-    notes           = paste(
+    species = "human (adults with advanced non-small cell lung cancer)",
+    n_subjects = 46L,
+    n_studies = 1L,
+    age_range = "not reported in this paper (see Rittmeyer 2017 for the OAK cohort demographics)",
+    weight_range = "not reported in this paper",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not reported in this paper",
+    disease_state = "previously treated locally advanced or metastatic NSCLC (OAK study)",
+    dose_range = "atezolizumab 1200 mg IV every 3 weeks (OAK protocol dose; not a model input)",
+    regions = "multiregional (OAK was conducted across 31 countries; per-region counts not reported in this paper)",
+    notes = paste(
       "The joint fit requires both endpoints on the same participant, so it is limited to the 46 atezolizumab-arm OAK participants with serial ctDNA and longitudinal SLD (Ribba 2022 Figure 1B).",
       "Estimation was performed in Monolix 2021R1 (Lixoft). Only zeta, omega_zeta and the two constant residual-error terms were estimated; all remaining population parameters were fixed to the two independent single-endpoint fits.",
       "The authors state that the model 'can fit different types of profiles although parameters of the model were not estimated with sufficient precision to use this model for any predictive purpose' (Ribba 2022 Figure 2F caption).",

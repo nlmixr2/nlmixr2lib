@@ -37,18 +37,18 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
-    urine       = list(analyte = "piperacillin", units = "mg", specimen = "urine",  verified = TRUE)
+    urine = list(analyte = "piperacillin", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the non-renal clearance arm and both volumes of distribution as a plain",
         "LINEAR ratio (WGT/8.1), with NO allometric exponent -- Butragueno-Laiseca 2022",
         "Table 2 prints the Parameter model column as theta_CLM * WGT/8.1 and theta_V *",
@@ -66,14 +66,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "simulations (0.2 m2 for 3-10 kg, 0.6 m2 for 10-30 kg, 1.2 m2 for 30-60 kg;",
         "Methods, Probability of target attainment)."
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Multiplies the renal clearance arm as the plain linear ratio (HGT/69), with no",
         "exponent (Butragueno-Laiseca 2022 Table 2: CLR = theta_CLR * (eGFR/119.3) *",
         "(HGT/69)). The reference height of 69 cm is stated in Table 2 footnote c ('Median",
@@ -87,14 +87,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "RRT_CRRT_ACTIVE. Table 1 reports height as mean (SD) 79.5 (30.7) cm without CKRT",
         "and 101 (33.2) cm with CKRT, and the two groups did not differ significantly."
       ),
-      source_name        = "HGT"
+      source_name = "HGT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (Schwartz equation), BSA-normalised",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (Schwartz equation), BSA-normalised",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Multiplies the renal clearance arm as the plain linear ratio (eGFR/119.3), with no",
         "exponent (Butragueno-Laiseca 2022 Table 2). Estimated with the Schwartz formula",
         "(Methods, Pharmacokinetic analysis; the cited reference is Schwartz 1976,",
@@ -112,14 +112,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "CLR is given solely by the typical estimate theta_CLR.' Table 1 reports mean (SD)",
         "eGFR of 123 (55) mL/min/1.73 m2 in the non-CKRT group."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = "CKRT-active indicator (1 while continuous venovenous haemodiafiltration is running, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CKRT-active indicator (1 while continuous venovenous haemodiafiltration is running, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CKRT running)",
-      notes              = paste(
+      notes = paste(
         "Does two separate jobs in this model. (1) It gates the haemofilter clearance arm",
         "ON: the supplementary material states that 'CLRenal and CLRRT were absent in",
         "patients without diuresis or without hemofilter'. (2) It gates the eGFR and height",
@@ -138,14 +138,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "within a 10-day simulated course), although the source analysis treats CKRT",
         "membership as fixed per patient."
       ),
-      source_name        = "Patient type (with or without CKRT)"
+      source_name = "Patient type (with or without CKRT)"
     ),
     FILT_SA_MED = list(
-      description        = "Medium haemofilter indicator (0.6 m2 membrane surface area)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Medium haemofilter indicator (0.6 m2 membrane surface area)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the large 1.2 m2 reference filter, the small 0.2 m2 filter, or no CKRT)",
-      notes              = paste(
+      notes = paste(
         "One of the three levels of the haemofilter-surface-area covariate on the CKRT",
         "clearance arm (Butragueno-Laiseca 2022 Table 2: CLCKRT = theta_CLCKRT * theta_FILT,",
         "with theta_FILT_High = 1 Fixed, theta_FILT_Med = 0.74 (0.6-0.9) and theta_FILT_Low",
@@ -164,14 +164,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "RRT_CRRT_ACTIVE = 1. Mutually exclusive with FILT_SA_LARGE. Supplementary Table 3",
         "records 6 small, 4 medium and 3 large filters among the 13 CKRT patients."
       ),
-      source_name        = "FILT_Med"
+      source_name = "FILT_Med"
     ),
     FILT_SA_LARGE = list(
-      description        = "Large haemofilter indicator (1.2 m2 membrane surface area)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Large haemofilter indicator (1.2 m2 membrane surface area)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the small 0.2 m2 filter, the medium 0.6 m2 filter, or no CKRT)",
-      notes              = paste(
+      notes = paste(
         "The REFERENCE level of the haemofilter-surface-area covariate in this paper",
         "(Butragueno-Laiseca 2022 Table 2: theta_FILT_High = 1 Fixed, where FILT_high is",
         "defined in the table footnote as 'filter surface 1.2 m2 (reference)'), so it",
@@ -183,14 +183,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "records 3 large filters among the 13 CKRT patients, with the shortest mean running",
         "time of the three sizes (10.5 h, SD 13.4)."
       ),
-      source_name        = "FILT_high"
+      source_name = "FILT_high"
     ),
     BFR = list(
-      description        = "Blood flow rate through the CKRT extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate through the CKRT extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters ONLY the post-filter observation equation, not the clearance model. The",
         "supplementary material gives CPost = CPre * (1 - CLRRT / phi_Pl,corr) (eq. 4),",
         "'where phi_Pl,corr and phi_Effl are the corrected plasma and total effluent flows.",
@@ -210,14 +210,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "Constant per subject during the study. Meaningful only when RRT_CRRT_ACTIVE = 1;",
         "converted to L/h inside model()."
       ),
-      source_name        = "Blood flow"
+      source_name = "Blood flow"
     ),
     RRT_CRRT_EFFLUENT_FLOW = list(
-      description        = "Total effluent flow leaving the haemofilter (dialysate + substitution fluid + net ultrafiltration)",
-      units              = "mL/h",
-      type               = "continuous",
+      description = "Total effluent flow leaving the haemofilter (dialysate + substitution fluid + net ultrafiltration)",
+      units = "mL/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters ONLY the effluent observation equation. Supplementary material eq. 5:",
         "CEffl = CLRRT * CPre / phi_Effl, with phi_Effl the 'total effluent flow' and 'The",
         "values of phi_Blood and phi_Effluent were measured during the course of the study.'",
@@ -232,14 +232,14 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "investigated for CLRRT', and only surface area survived. Founding example for this",
         "canonical column (operator ruling, sidecar request-001, answered 2026-08-28)."
       ),
-      source_name        = "phi_Effluent"
+      source_name = "phi_Effluent"
     ),
     URINE_FLOW = list(
-      description        = "Urine flow rate over the urine recovery interval containing the current observation",
-      units              = "mL/h",
-      type               = "continuous",
+      description = "Urine flow rate over the urine recovery interval containing the current observation",
+      units = "mL/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Does two jobs, both keyed on the register's documented zero sentinel ('0 = no urine",
         "collected during the interval'). (1) It is the flow denominator of the urine",
         "concentration observable. The supplementary material states that 'CUr were obtained",
@@ -261,48 +261,48 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "obtain the mL/h this column carries when a finer per-interval measurement is not",
         "available."
       ),
-      source_name        = "UVol"
+      source_name = "UVol"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened and not retained (Butragueno-Laiseca 2022 Results, Population pharmacokinetic modelling: 'No statistical correlations between age, albumin plasma levels, hematocrit and other laboratory values, and the PK parameters were found (p > 0.05)'). Median (range) 7 months (3 months to 15 years) overall; mean (SD) 29 (43) months without CKRT and 62 (62.5) months with CKRT (Table 1). The Discussion attributes the null postmenstrual-age result to the cohort composition -- 'half of the population was 2 years or older, and the minimum age was three months. The absence of premature or neonate patients might have precluded finding a relationship between PMA and CL' -- and offers the retained HT covariate as the organ-maturation marker in its place."
+      units = "months",
+      type = "continuous",
+      notes = "Screened and not retained (Butragueno-Laiseca 2022 Results, Population pharmacokinetic modelling: 'No statistical correlations between age, albumin plasma levels, hematocrit and other laboratory values, and the PK parameters were found (p > 0.05)'). Median (range) 7 months (3 months to 15 years) overall; mean (SD) 29 (43) months without CKRT and 62 (62.5) months with CKRT (Table 1). The Discussion attributes the null postmenstrual-age result to the cohort composition -- 'half of the population was 2 years or older, and the minimum age was three months. The absence of premature or neonate patients might have precluded finding a relationship between PMA and CL' -- and offers the retained HT covariate as the organ-maturation marker in its place."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained, despite piperacillin's plasma-protein binding. Mean (SD) 3.6 (0.5) g/dL without CKRT and 3.3 (0.6) g/dL with CKRT (Table 1)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened and not retained, despite piperacillin's plasma-protein binding. Mean (SD) 3.6 (0.5) g/dL without CKRT and 3.3 (0.6) g/dL with CKRT (Table 1)."
     ),
     HCT = list(
       description = "Haematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained on any structural parameter. Unlike the sibling ButraguenoLaiseca_2025_teicoplanin model, haematocrit does not enter the post-filter plasma-flow correction here either, because this paper estimated the blood-to-plasma ratio directly and found it 'not significantly different from 1' (Results), leaving phi_Pl,corr equal to the raw blood flow. Mean (SD) 31.5 (5.4)% without CKRT and 30.8 (5.5)% with CKRT (Table 1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained on any structural parameter. Unlike the sibling ButraguenoLaiseca_2025_teicoplanin model, haematocrit does not enter the post-filter plasma-flow correction here either, because this paper estimated the blood-to-plasma ratio directly and found it 'not significantly different from 1' (Results), leaving phi_Pl,corr equal to the raw blood flow. Mean (SD) 31.5 (5.4)% without CKRT and 30.8 (5.5)% with CKRT (Table 1)."
     ),
     FILT_RUNTIME = list(
       description = "Haemofilter running time at the current observation",
-      units       = "h",
-      type        = "continuous",
-      notes       = "Screened on the haemofilter clearance arm and not retained; only surface area survived (Methods, Pharmacokinetic analysis: 'The surface area and the running time of the hemofilter were the covariates investigated for CLRRT'; Results retain only surface area). Supplementary Table 3 reports mean (SD) running times of 56.3 (37.6) h for the 0.2 m2 filter, 60.5 (52.7) h for 0.6 m2 and 10.5 (13.4) h for 1.2 m2. Not a registered canonical column, and none is proposed, because the model does not use it; the closest registered relative is the FILT_AGE_HI above-48-hour indicator."
+      units = "h",
+      type = "continuous",
+      notes = "Screened on the haemofilter clearance arm and not retained; only surface area survived (Methods, Pharmacokinetic analysis: 'The surface area and the running time of the hemofilter were the covariates investigated for CLRRT'; Results retain only surface area). Supplementary Table 3 reports mean (SD) running times of 56.3 (37.6) h for the 0.2 m2 filter, 60.5 (52.7) h for 0.6 m2 and 10.5 (13.4) h for 1.2 m2. Not a registered canonical column, and none is proposed, because the model does not use it; the closest registered relative is the FILT_AGE_HI above-48-hour indicator."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
     n_observations = 429L,
-    age_range      = "3 months to 15 years",
-    age_median     = "7 months",
-    weight_range   = "4 to 63 kg",
-    weight_median  = "8.1 kg",
+    age_range = "3 months to 15 years",
+    age_median = "7 months",
+    weight_range = "4 to 63 kg",
+    weight_median = "8.1 kg",
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to a paediatric intensive care unit and treated",
       "with piperacillin-tazobactam, 13 of them undergoing continuous kidney replacement",
       "therapy in continuous venovenous haemodiafiltration modality (10 of the 13 with",
@@ -317,7 +317,7 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
       "pneumoniae, Klebsiella oxytoca, Enterobacter cloacae and Stenotrophomonas",
       "maltophilia, with MICs of 8 to 64 mg/L."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "All patients received 100 mg/kg of piperacillin/tazobactam intravenously every 8 h.",
       "In patients with CKRT the dosing interval was increased to 12 h at the fourth dose,",
       "following the recommended renal adjustment. Sampling began once patients had",
@@ -330,7 +330,7 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
       "model-based dosing evaluation (supplementary Table 4, 'Current' schedules) is the",
       "value adopted in the validation vignette."
     ),
-    regions        = "Hospital General Universitario Gregorio Maranon, Madrid, Spain (single centre).",
+    regions = "Hospital General Universitario Gregorio Maranon, Madrid, Spain (single centre).",
     renal_function = paste(
       "Non-CKRT group: eGFR (Schwartz) median 119.3 mL/min/1.73 m2, mean (SD) 123 (55);",
       "mean serum creatinine 0.37 (SD 0.19) mg/dL; 24-hour urine output 981 (616) mL. CKRT",
@@ -343,7 +343,7 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
       "0.6 m2 (n = 4) and 1.2 m2 (n = 3), with effluent flows of 78 (24), 54 (5) and 60",
       "(15) mL/kg/h and mean running times of 56.3, 60.5 and 10.5 h respectively."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Butragueno-Laiseca 2022 Table 1, reported separately for",
       "the 19 patients without and the 13 patients with CKRT; age, weight and height did",
       "not differ significantly between the groups. Sex is not reported. 429 piperacillin",

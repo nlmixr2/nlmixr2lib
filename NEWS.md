@@ -4,17 +4,18 @@
 
 - **These vignettes now require an rxode2 that does not silently rewrite an ODE
   system into `linCmt()`** ([rxode2 issue
-  1370](https://github.com/nlmixr2/rxode2/issues/1370)). On rxode2 5.1.7 and
+  1370](https://github.com/nlmixr2/rxode2/issues/1370)). On rxode2 5.1.6 and
   earlier, `Marques_2025_salbutamol`, `Schreib_2024_busulfan` and
   `Sawe_2025_levofloxacin` fail to build rather than render numbers taken from
   a model other than the one written. That is deliberate: the same three
-  vignettes previously rendered cleanly against the rewritten model. The fix
-  carries no rxode2 version bump, so `DESCRIPTION` still asks only for
-  `rxode2 (>= 5.0.2)` and the constraint cannot yet be expressed mechanically.
+  vignettes previously rendered cleanly against the rewritten model. rxode2
+  5.1.7 refuses the conversion and `DESCRIPTION` already requires it, so the
+  constraint is now enforced by the dependency solver rather than only
+  described here.
 
 - Fix `Sawe_2025_levofloxacin`, which administered twice the dose. The model
   omitted `f(depot) <- 0`, so each dose entered `depot` as a bolus *and* again
-  through the analytical `transit()` chain: `AUC(0-inf) * CL` came to 1999.99 mg
+  through the analytical `transit()` chain: `AUC(0-inf) * CL` came to 1999.98 mg
   for a 1000 mg dose. The line had been left out on the belief that it zeroed
   the transit input, which was in fact rxode2's ODE-to-`linCmt()` auto-conversion
   ([rxode2 issue 1370](https://github.com/nlmixr2/rxode2/issues/1370)) discarding
@@ -45,6 +46,60 @@
   fixed 96-h course. `Dong_2014_mycophenolic_acid` quoted a typical Cmax of
   8-12 mg/L and IMPDH activity of ~13-18% of baseline; the values are 7-10 mg/L
   and ~15-20%.
+
+- `addBioavailability()` gains a `scale` argument. `scale = "logit"`
+  constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
+  the Monolix-style oral/SC `F` and the form the `PK_double_sim_*` seeds
+  hand-code; `scale = "log"` is the previous unbounded behavior and stays the
+  default, so existing calls are unaffected. With a second compartment
+  (`cmt2`) one fraction drives both paths, `f(cmt) <- f<Cmt>` and
+  `f(cmt2) <- 1 - f<Cmt>`, the double-absorption `F1` dose split. `f` sets the
+  initial estimate on either scale, or leaves it unset when `NULL`. A dose
+  split is refused on the log scale, where `f` is unbounded above and the
+  complement can go negative.
+
+- Drop the redundant "fixed" from the `Kim_2024_meropenem` IIV labels on
+  `etalq` and `etalvp`. `fixed()` already states it, so the labels were an
+  error-severity convention violation; the provenance (`footnote b`, and the
+  reported shrinkage) is kept.
+
+- Add parameters through `rxode2::model()` and `rxode2::ini()` instead of
+  building an `iniDf` row and `rbind()`ing it on. The initial-estimate data
+  frame's columns belong to lotri and they change, so a hand-built row is a
+  latent break waiting on the next upstream release -- which is exactly what
+  happened. Two internal helpers, `.iniAddTheta()` and `.modelAppend()`,
+  replace the 19 sites that did this; residual-error parameters are now
+  created by appending the endpoint line on its own, letting rxode2 decide
+  their `condition`, `err` and lower bound. `.get1theta()` is deleted: it
+  seeded each new parameter from an existing theta row, so a `backTransform`,
+  `condition` or `prior` on that row leaked onto every parameter added after
+  it. What remains of `.getEtaThetaTheta1()` -- renamed `.getEtaTheta()` --
+  only row-subsets `iniDf` and asserts nothing about its columns. Behavior is
+  unchanged: 43 model pipelines produce byte-identical `iniDf` and model
+  blocks.
+
+- Fix the `addWeibullAbs()` beta label, which named the alpha parameter
+  (`Weibull absorption beta (wa)`).
+
+- Require `rxode2 (>= 5.1.7)`. lotri 1.0.5 added a `prior` column to the
+  initial-estimates data frame, which rxode2 5.1.6 does not know about: it
+  `rbind()`s a hand-built row of its own column set onto `$iniDf`, so every
+  piping function that adds a parameter (`addEta()`, `addResErr()`,
+  `addDepot()`, ...) failed with "numbers of columns of arguments do not
+  match". rxode2 5.1.6 declares only `lotri (>= 1.0.4)`, so the broken pair
+  resolved happily and the failure reached CI rather than the dependency
+  solver. rxode2 5.1.7 is the fix; requiring it here makes that pair
+  unresolvable instead of merely documented.
+
+- Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
+  `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
+  `ordinal`. No register's type vocabulary has an `ordinal` member: an
+  ordinal-valued covariate records its scale in `Units:` and takes the type its
+  covariate model implies, which is what `SMOKE_TTFC_SCORE` -- the precedent
+  those entries cite in their own Notes -- already did. Each register's
+  `## Entry schema` `type:` line is now machine-read and checked against the
+  entries it describes, in both directions, so a type outside a file's own
+  documented vocabulary fails the test suite rather than reaching a release.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

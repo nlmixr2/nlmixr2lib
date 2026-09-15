@@ -57,13 +57,15 @@ Franzese_2026_pdl1_nsclc_mbma <- function() {
   # variability.
   paper_specific_etas <- c(
     "eta_study_orr",
-    "eta_study_os_int",  "eta_study_os_orr",
-    "eta_study_pfs_int", "eta_study_pfs_orr"
+    "eta_study_os_int",
+    "eta_study_os_orr",
+    "eta_study_pfs_int",
+    "eta_study_pfs_orr"
   )
 
   units <- list(
-    time          = "months (monthly time axis for OS and PFS discrete-hazard integration; ORR is time-invariant per arm at the study's primary analysis timepoint)",
-    dosing        = "n/a (MBMA covariate-driven predictor; no PK compartment)",
+    time = "months (monthly time axis for OS and PFS discrete-hazard integration; ORR is time-invariant per arm at the study's primary analysis timepoint)",
+    dosing = "n/a (MBMA covariate-driven predictor; no PK compartment)",
     concentration = "fraction/arm (Cc output = per-arm predicted ORR as a dimensionless proportion in [0, 1]; e.g., Cc = 0.35 means a 35 percent ORR. The slash in the unit string is to satisfy checkModelConventions parsing; Cc is NOT a drug concentration.)"
   )
 
@@ -72,18 +74,18 @@ Franzese_2026_pdl1_nsclc_mbma <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz_os  = list(analyte = "OS", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz_os = list(analyte = "OS", units = NA_character_, specimen = "not applicable", verified = FALSE),
     cumhaz_pfs = list(analyte = "PFS", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     TRT = list(
-      description        = "Per-arm integer treatment indicator selecting the ORR treatment-specific intercept (46 unique treatments per Franzese 2026 Table S4) and, via a lookup inside model(), the 5-level OS/PFS treatment category.",
-      units              = "(categorical / integer-coded)",
-      type               = "categorical",
+      description = "Per-arm integer treatment indicator selecting the ORR treatment-specific intercept (46 unique treatments per Franzese 2026 Table S4) and, via a lookup inside model(), the 5-level OS/PFS treatment category.",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       reference_category = "1 = Chemotherapy (paper reference for ORR intercept per Table S4 first row and OS/PFS chemotherapy category).",
-      source_name        = "Treatment (Franzese 2026 Table S4)",
-      notes              = paste(
+      source_name = "Treatment (Franzese 2026 Table S4)",
+      notes = paste(
         "Integer coding follows Franzese 2026 Table S4 grouping. Each level maps to a specific treatment intercept AND to one of 5 OS/PFS treatment categories (mono, +chemo, +other, chemo, other):",
         "  1 = Chemotherapy (paper category: Chemotherapy) [OS/PFS cat 4]",
         "  2 = Camrelizumab (PD-1 mono) [cat 1]",
@@ -136,59 +138,59 @@ Franzese_2026_pdl1_nsclc_mbma <- function() {
       )
     ),
     PDL1_TUM = list(
-      description        = "Per-arm average tumor PD-L1 expression (weighted midpoint of the arm's PD-L1-negative / low / high / super-high subgroups per Franzese 2026 Equation S1). Continuous 0-100 percent; imputed to 32 percent when the arm reports no PD-L1 stratification.",
-      units              = "percent (0-100)",
-      type               = "continuous",
+      description = "Per-arm average tumor PD-L1 expression (weighted midpoint of the arm's PD-L1-negative / low / high / super-high subgroups per Franzese 2026 Equation S1). Continuous 0-100 percent; imputed to 32 percent when the arm reports no PD-L1 stratification.",
+      units = "percent (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "Average %PD-L1 expression (Franzese 2026 Table 1, Table S1, Equation S1)",
-      notes              = "MBMA study-arm-level covariate. Enters the ORR model as a fraction (PDL1_TUM / 100) with piecewise slopes: PD-1 monotherapy quadratic + linear (1.736 * (PDL1_TUM/100) + 0.274) * (PDL1_TUM/100), PD-L1 monotherapy linear 1.642 * (PDL1_TUM/100), any PD-(L)1 combination linear 1.074 * (PDL1_TUM/100). Not used in OS/PFS. Reuses the Struemper 2025 PDL1_TUM canonical (same construct, same units)."
+      source_name = "Average %PD-L1 expression (Franzese 2026 Table 1, Table S1, Equation S1)",
+      notes = "MBMA study-arm-level covariate. Enters the ORR model as a fraction (PDL1_TUM / 100) with piecewise slopes: PD-1 monotherapy quadratic + linear (1.736 * (PDL1_TUM/100) + 0.274) * (PDL1_TUM/100), PD-L1 monotherapy linear 1.642 * (PDL1_TUM/100), any PD-(L)1 combination linear 1.074 * (PDL1_TUM/100). Not used in OS/PFS. Reuses the Struemper 2025 PDL1_TUM canonical (same construct, same units)."
     ),
     LINE_1L = list(
-      description        = "Per-arm first-line-therapy indicator: 1 = arm is first-line (1L), 0 = arm is second-line or later (>=2L).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-arm first-line-therapy indicator: 1 = arm is first-line (1L), 0 = arm is second-line or later (>=2L).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = >=2L (paper's coefficient -0.697 applies to the >=2L category; canonical LINE_1L inverts this so the encoded effect is +0.697 * LINE_1L relative to the >=2L reference).",
-      source_name        = "Line of therapy (1L / >=2L) (Franzese 2026 Table 1 ORR row 'Treatment line')",
-      notes              = "MBMA study-arm-level indicator. Franzese 2026 encodes the effect as -0.697 * (1 if >=2L, 0 if 1L); canonical LINE_1L flips the sign of the reference category so the same effect is +0.697 * LINE_1L (paper's typical first-line arm gets +0.697 on the log-odds relative to the paper's chosen >=2L reference). See covariate-columns.md LINE_1L entry."
+      source_name = "Line of therapy (1L / >=2L) (Franzese 2026 Table 1 ORR row 'Treatment line')",
+      notes = "MBMA study-arm-level indicator. Franzese 2026 encodes the effect as -0.697 * (1 if >=2L, 0 if 1L); canonical LINE_1L flips the sign of the reference category so the same effect is +0.697 * LINE_1L (paper's typical first-line arm gets +0.697 on the log-odds relative to the paper's chosen >=2L reference). See covariate-columns.md LINE_1L entry."
     ),
     TUMTP_SQUAM_PCT = list(
-      description        = "Per-arm percent squamous non-small cell lung cancer (NSCLC) histology among enrolled participants (100 minus the percent non-squamous NSCLC). Continuous 0-100 percent.",
-      units              = "percent (0-100)",
-      type               = "continuous",
+      description = "Per-arm percent squamous non-small cell lung cancer (NSCLC) histology among enrolled participants (100 minus the percent non-squamous NSCLC). Continuous 0-100 percent.",
+      units = "percent (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "%squamous histology (Franzese 2026 Table 1 ORR / OS / PFS rows and Table S1)",
-      notes              = "MBMA study-arm-level covariate. Enters the ORR model as (TUMTP_SQUAM_PCT / 100) * (1 if chemotherapy, 0 otherwise) with slope 0.282 (higher squamous fraction associated with higher chemotherapy-arm ORR). Enters OS and PFS models with slopes 0.213 and 0.186 respectively (higher squamous fraction on chemotherapy arms associated with higher hazard = shorter OS/PFS). New canonical for this arm-level percentage covariate; the family precedent is Vargo 2014's `DIS_CHD_PERCENT`. Founding example: Franzese 2026."
+      source_name = "%squamous histology (Franzese 2026 Table 1 ORR / OS / PFS rows and Table S1)",
+      notes = "MBMA study-arm-level covariate. Enters the ORR model as (TUMTP_SQUAM_PCT / 100) * (1 if chemotherapy, 0 otherwise) with slope 0.282 (higher squamous fraction associated with higher chemotherapy-arm ORR). Enters OS and PFS models with slopes 0.213 and 0.186 respectively (higher squamous fraction on chemotherapy arms associated with higher hazard = shorter OS/PFS). New canonical for this arm-level percentage covariate; the family precedent is Vargo 2014's `DIS_CHD_PERCENT`. Founding example: Franzese 2026."
     ),
     PS_ECOG_0_PCT = list(
-      description        = "Per-arm percent participants with Eastern Cooperative Oncology Group (ECOG) Performance Status score of 0 at baseline (fully active / asymptomatic). Continuous 0-100 percent.",
-      units              = "percent (0-100)",
-      type               = "continuous",
+      description = "Per-arm percent participants with Eastern Cooperative Oncology Group (ECOG) Performance Status score of 0 at baseline (fully active / asymptomatic). Continuous 0-100 percent.",
+      units = "percent (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "%ECOG PS score of 0 (Franzese 2026 Table 1 OS / PFS rows and Table S1)",
-      notes              = "MBMA study-arm-level covariate. Enters the OS model as (PS_ECOG_0_PCT / 100) * (1 if non-chemotherapy related, 0 otherwise) with slope -0.400 (higher ECOG-0 fraction on non-chemotherapy arms associated with lower hazard = longer OS). Enters the PFS model globally with slope -0.293 (higher ECOG-0 fraction on any treatment arm associated with lower hazard = longer PFS). Not used in ORR. New canonical for this arm-level percentage covariate; parallels the aggregate-percentage naming pattern of Vargo 2014's `DIS_CHD_PERCENT`. Founding example: Franzese 2026."
+      source_name = "%ECOG PS score of 0 (Franzese 2026 Table 1 OS / PFS rows and Table S1)",
+      notes = "MBMA study-arm-level covariate. Enters the OS model as (PS_ECOG_0_PCT / 100) * (1 if non-chemotherapy related, 0 otherwise) with slope -0.400 (higher ECOG-0 fraction on non-chemotherapy arms associated with lower hazard = longer OS). Enters the PFS model globally with slope -0.293 (higher ECOG-0 fraction on any treatment arm associated with lower hazard = longer PFS). Not used in ORR. New canonical for this arm-level percentage covariate; parallels the aggregate-percentage naming pattern of Vargo 2014's `DIS_CHD_PERCENT`. Founding example: Franzese 2026."
     ),
     RACE_ASIAN_PCT = list(
-      description        = "Per-arm percent participants who are Asian (any Asian subgroup). Continuous 0-100 percent.",
-      units              = "percent (0-100)",
-      type               = "continuous",
+      description = "Per-arm percent participants who are Asian (any Asian subgroup). Continuous 0-100 percent.",
+      units = "percent (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "%Asian race (Franzese 2026 Table 1 OS row and Table S1 'Race.Asian')",
-      notes              = "MBMA study-arm-level covariate. Enters the OS model as an interaction on the ORR slope: (eta_study_os_orr - 0.595) * (ORR/100) * (RACE_ASIAN_PCT/100) (higher Asian fraction associated with lower hazard for the same ORR; paper Discussion attributes this to regional trial-conduct differences rather than an inherent race effect). Not used in PFS or ORR. Distinct from the per-subject binary RACE_ASIAN canonical (used in the Yang 2010 MBMA precedent at the arm level too, but as a whole-arm-Asian binary): here the arm's Asian fraction is a continuous proportion. New canonical for this arm-level percentage covariate; family precedent Vargo 2014 `DIS_CHD_PERCENT`. Founding example: Franzese 2026."
+      source_name = "%Asian race (Franzese 2026 Table 1 OS row and Table S1 'Race.Asian')",
+      notes = "MBMA study-arm-level covariate. Enters the OS model as an interaction on the ORR slope: (eta_study_os_orr - 0.595) * (ORR/100) * (RACE_ASIAN_PCT/100) (higher Asian fraction associated with lower hazard for the same ORR; paper Discussion attributes this to regional trial-conduct differences rather than an inherent race effect). Not used in PFS or ORR. Distinct from the per-subject binary RACE_ASIAN canonical (used in the Yang 2010 MBMA precedent at the arm level too, but as a whole-arm-Asian binary): here the arm's Asian fraction is a continuous proportion. New canonical for this arm-level percentage covariate; family precedent Vargo 2014 `DIS_CHD_PERCENT`. Founding example: Franzese 2026."
     )
   )
 
   population <- list(
-    species         = "human (adults with metastatic non-small cell lung cancer)",
-    n_studies       = 114L,
-    n_data_points   = 284L,
-    n_treatments    = 46L,
-    age_range       = "adults with mNSCLC; per-arm age means aggregated at study-strata level (Franzese 2026 Table S1 covariate 'Age')",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "aggregated per arm as percent White and percent Asian (Franzese 2026 Table S1). The OS model retains %Asian only.",
-    disease_state   = "metastatic NSCLC (mNSCLC); studies with < 50 participants and studies without PD-(L)1 inhibitor or chemotherapy were excluded per Franzese 2026 Supplementary Methods 2.1.",
-    dose_range      = "per-arm protocol dose per each source study; the MBMA operates on treatment-type intercepts rather than on per-arm dose, so dose is not a covariate in the fitted model.",
-    regions         = "international; heterogeneous across the 114 pooled studies (Franzese 2026 Methods 2.2).",
-    notes           = paste(
+    species = "human (adults with metastatic non-small cell lung cancer)",
+    n_studies = 114L,
+    n_data_points = 284L,
+    n_treatments = 46L,
+    age_range = "adults with mNSCLC; per-arm age means aggregated at study-strata level (Franzese 2026 Table S1 covariate 'Age')",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "aggregated per arm as percent White and percent Asian (Franzese 2026 Table S1). The OS model retains %Asian only.",
+    disease_state = "metastatic NSCLC (mNSCLC); studies with < 50 participants and studies without PD-(L)1 inhibitor or chemotherapy were excluded per Franzese 2026 Supplementary Methods 2.1.",
+    dose_range = "per-arm protocol dose per each source study; the MBMA operates on treatment-type intercepts rather than on per-arm dose, so dose is not a covariate in the fitted model.",
+    regions = "international; heterogeneous across the 114 pooled studies (Franzese 2026 Methods 2.2).",
+    notes = paste(
       "MBMA at the study-strata-arm level. Each 'subject' in nlmixr2 corresponds to one study strata arm (per-arm mean covariate values, per-arm ORR proportion, per-arm monthly Kaplan-Meier survival). Random effects are between-study-strata (eta_study_orr on ORR; eta_study_os_int and eta_study_os_orr on OS; eta_study_pfs_int and eta_study_pfs_orr on PFS) and NOT between-subject. Suitable simulation scope: per-arm ORR + per-arm survival curves; NOT individual-subject trajectories.",
       "",
       "Dataset counts (Franzese 2026 Table S3): 114 studies (197 arms, 284 strata arms) for ORR; 87 studies (147 arms, 187 strata arms) for OS; 88 studies (154 arms, 215 strata arms) for PFS. Median (range) follow-up: 13 (1.5-54) months (ORR); 21 (6-63) months maturity for PFS; 29 (6-75) months maturity for OS.",

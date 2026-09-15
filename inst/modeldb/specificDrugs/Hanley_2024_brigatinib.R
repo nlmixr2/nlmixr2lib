@@ -42,23 +42,29 @@ Hanley_2024_brigatinib <- function() {
     sep = " "
   )
   vignette <- "Hanley_2024_brigatinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Hanley 2024 Figure 1b (the minimal
   # PBPK + SAC schematic) and the Figure 1 legend.
   compartmentData <- list(
     depot = list(
-      analyte = "brigatinib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "brigatinib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "brigatinib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "brigatinib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "brigatinib", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "brigatinib",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
@@ -81,7 +87,7 @@ Hanley_2024_brigatinib <- function() {
         "the platform rather than a reported relationship."
       ),
       units = "kg",
-      type  = "continuous",
+      type = "continuous",
       notes = "Implicit in the L/kg volume inputs; not carried in this reduction."
     ),
     ALB = list(
@@ -96,7 +102,7 @@ Hanley_2024_brigatinib <- function() {
         "relationship cannot be reproduced quantitatively."
       ),
       units = "g/L",
-      type  = "continuous",
+      type = "continuous",
       notes = "Reported qualitatively only; the calibrated cancer fu is not printed."
     ),
     CRCL = list(
@@ -110,28 +116,28 @@ Hanley_2024_brigatinib <- function() {
         "reconstructed."
       ),
       units = "mL/min",
-      type  = "continuous",
+      type = "continuous",
       notes = "Scales CLR in the Simcyp Sim-Cancer population; equation not decodable."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 6L,
-    age_range      = "23-62 years across the simulated healthy-participant scenarios",
-    weight_median  = "70 kg (reference weight used for the L/kg volume inputs)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 6L,
+    age_range = "23-62 years across the simulated healthy-participant scenarios",
+    weight_median = "70 kg (reference weight used for the L/kg volume inputs)",
     sex_female_pct = 30,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult participants. The paper also simulates patients",
       "with ALK-positive advanced malignancies using the Simcyp",
       "Sim-Cancer population, but that arm depends on an unpublished",
       "albumin-calibrated fraction unbound and is not reproduced by",
       "this model."
     ),
-    dose_range     = "Single oral doses of 90 mg and 180 mg; multiple-dose 90 mg q.d. for 7 days then 180 mg q.d.",
-    regions        = "North European Caucasian virtual population (Simcyp default) for the healthy-participant simulations.",
-    studies        = paste(
+    dose_range = "Single oral doses of 90 mg and 180 mg; multiple-dose 90 mg q.d. for 7 days then 180 mg q.d.",
+    regions = "North European Caucasian virtual population (Simcyp default) for the healthy-participant simulations.",
+    studies = paste(
       "AP26113-15-106 bioequivalence study (n = 36 healthy",
       "participants) is the study the disposition parameters ka, Vss,",
       "Vsac, kin and kout were optimized against and the study whose",
@@ -147,7 +153,7 @@ Hanley_2024_brigatinib <- function() {
       "(NCT01449461) is the phase I/II cancer study used for the",
       "multiple-dose verification arm."
     ),
-    notes          = paste(
+    notes = paste(
       "n_subjects records the 36 participants of AP26113-15-106, the",
       "single study the disposition parameters were optimized against;",
       "n_studies counts the six clinical studies listed above that",

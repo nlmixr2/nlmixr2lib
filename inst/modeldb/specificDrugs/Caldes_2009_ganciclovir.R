@@ -1,44 +1,44 @@
 Caldes_2009_ganciclovir <- function() {
   description <- "Two-compartment population PK model for ganciclovir after IV ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus, with first-order absorption, lag time, logit-transformed bioavailability, and creatinine-clearance scaling on CL (Caldes 2009)"
-  reference   <- "Caldes A, Colom H, Armendariz Y, Garrido MJ, Troconiz IF, Gil-Vernet S, Lloberas N, Pou L, Peraire C, Grinyo JM. Population pharmacokinetics of ganciclovir after intravenous ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus. Antimicrob Agents Chemother. 2009;53(11):4816-4824. doi:10.1128/AAC.00085-09"
-  vignette    <- "Caldes_2009_ganciclovir"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  reference <- "Caldes A, Colom H, Armendariz Y, Garrido MJ, Troconiz IF, Gil-Vernet S, Lloberas N, Pou L, Peraire C, Grinyo JM. Population pharmacokinetics of ganciclovir after intravenous ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus. Antimicrob Agents Chemother. 2009;53(11):4816-4824. doi:10.1128/AAC.00085-09"
+  vignette <- "Caldes_2009_ganciclovir"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault formula, raw mL/min, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault formula, raw mL/min, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-scaling effect on CL with reference 57 mL/min (mean population CLCR). Caldes 2009 reports CL = 7.49 * (CLCR / 57) L/h (Table 3); covariate enters as a linear ratio (power exponent fixed at 1), not as a power-law exponent. Cockcroft-Gault was computed with the manufacturer's renal dose-adjustment table (Table 1); per the Methods, CrCl was used in raw mL/min without BSA normalization. The canonical CRCL register's units are mL/min/1.73 m^2, but per Henin 2009 / Goel 2016 precedent the canonical name is reused for raw-CG-CrCl with the unit difference documented here.",
-      source_name        = "CLCR"
+      notes = "Linear-scaling effect on CL with reference 57 mL/min (mean population CLCR). Caldes 2009 reports CL = 7.49 * (CLCR / 57) L/h (Table 3); covariate enters as a linear ratio (power exponent fixed at 1), not as a power-law exponent. Cockcroft-Gault was computed with the manufacturer's renal dose-adjustment table (Table 1); per the Methods, CrCl was used in raw mL/min without BSA normalization. The canonical CRCL register's units are mL/min/1.73 m^2, but per Henin 2009 / Goel 2016 precedent the canonical name is reused for raw-CG-CrCl with the unit difference documented here.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "mean 55.7 (SD 11.8) years; per-transplant subgroup means 54.6 (kidney), 53.2 (liver), 54.4 (heart)",
-    weight_range   = "mean 66.2 (SD 12.9) kg; per-transplant subgroup means 65.9 (kidney), 69.6 (liver), 65.8 (heart)",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "mean 55.7 (SD 11.8) years; per-transplant subgroup means 54.6 (kidney), 53.2 (liver), 54.4 (heart)",
+    weight_range = "mean 66.2 (SD 12.9) kg; per-transplant subgroup means 65.9 (kidney), 69.6 (liver), 65.8 (heart)",
     sex_female_pct = 50,
     race_ethnicity = "All 20 patients reported as Caucasian (Results, Patients section).",
-    disease_state  = "Solid organ transplant recipients (10 kidney, 5 liver, 5 heart) with established CMV infection (positive CMV antigenemia pp65 >= 20 positive cells per 10^5 peripheral blood mononuclear cells); excluded if positive CMV tissue-invasive disease, ANC < 500/mm^3, platelets < 25,000/mm^3, hemoglobin < 80 g/L, or estimated GFR < 10 mL/min.",
-    dose_range     = "IV ganciclovir 5 mg/kg BID for 5 days, then oral valganciclovir 900 mg BID for 16 days; doses adjusted for renal function per Table 1 (ganciclovir 5/2.5/2.5 mg/kg at q12/q24/q48 for CLCR >50 / 25-50 / <25 mL/min; valganciclovir 900/450/450/450 mg at q12/q12/q24/q48 for CLCR bands >=60 / 40-59 / 25-39 / 10-24 mL/min).",
-    regions        = "Single center, Barcelona, Spain (Hospital Universitari de Bellvitge); enrollment March 2004-February 2006.",
-    crcl_range     = "mean 57.0 (SD 25.3) mL/min (Cockcroft-Gault); per-transplant subgroup means 39.9 (kidney), 75.1 (liver), 73.2 (heart).",
+    disease_state = "Solid organ transplant recipients (10 kidney, 5 liver, 5 heart) with established CMV infection (positive CMV antigenemia pp65 >= 20 positive cells per 10^5 peripheral blood mononuclear cells); excluded if positive CMV tissue-invasive disease, ANC < 500/mm^3, platelets < 25,000/mm^3, hemoglobin < 80 g/L, or estimated GFR < 10 mL/min.",
+    dose_range = "IV ganciclovir 5 mg/kg BID for 5 days, then oral valganciclovir 900 mg BID for 16 days; doses adjusted for renal function per Table 1 (ganciclovir 5/2.5/2.5 mg/kg at q12/q24/q48 for CLCR >50 / 25-50 / <25 mL/min; valganciclovir 900/450/450/450 mg at q12/q12/q24/q48 for CLCR bands >=60 / 40-59 / 25-39 / 10-24 mL/min).",
+    regions = "Single center, Barcelona, Spain (Hospital Universitari de Bellvitge); enrollment March 2004-February 2006.",
+    crcl_range = "mean 57.0 (SD 25.3) mL/min (Cockcroft-Gault); per-transplant subgroup means 39.9 (kidney), 75.1 (liver), 73.2 (heart).",
     co_medications = "Concomitant immunosuppression: mycophenolate mofetil 16/20, cyclosporine 11/20, tacrolimus 8/20, sirolimus 1/20.",
-    trial_id       = "ClinicalTrials.gov NCT00730769",
+    trial_id = "ClinicalTrials.gov NCT00730769",
     n_observations = 382L,
-    notes          = "21 patients enrolled; one liver-transplant patient excluded from the population PK analysis due to pancytopenia (treatment not completed). Final dataset: 382 ganciclovir serum concentrations (190 IV + 192 oral, 6 below LOQ of 5 ug/L). Sampling on day 5 (last IV dose) and day 15 (oral): 0, 0.5, 1, 1.5, 2, 3, 4, 8, 12 h post-dose, with extended sampling to 24 h for patients with CLCR < 10 mL/min (IV) or 16 mL/min (oral). Demographics from Table 2."
+    notes = "21 patients enrolled; one liver-transplant patient excluded from the population PK analysis due to pancytopenia (treatment not completed). Final dataset: 382 ganciclovir serum concentrations (190 IV + 192 oral, 6 below LOQ of 5 ug/L). Sampling on day 5 (last IV dose) and day 15 (oral): 0, 0.5, 1, 1.5, 2, 3, 4, 8, 12 h post-dose, with extended sampling to 24 h for patients with CLCR < 10 mL/min (IV) or 16 mL/min (oral). Demographics from Table 2."
   )
 
   ini({

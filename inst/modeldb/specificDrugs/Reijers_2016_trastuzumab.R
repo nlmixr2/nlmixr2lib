@@ -8,50 +8,50 @@ Reijers_2016_trastuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Linear (unit-slope) ratio effect on central volume V1 per Reijers 2016 Online Resource Equation 1: V1_i = V1_pop * (LBW_i / LBW_median) * exp(eta_i). Reference value 61 kg approximates the cohort-weighted mean of the combined-model dose groups in Table 1 (the paper does not state the analysis-dataset median directly). Source column LBW (lean body weight) is an alias of canonical LBM (lean body mass) and the values transfer without transformation.",
-      source_name        = "LBW"
+      notes = "Time-fixed baseline value. Linear (unit-slope) ratio effect on central volume V1 per Reijers 2016 Online Resource Equation 1: V1_i = V1_pop * (LBW_i / LBW_median) * exp(eta_i). Reference value 61 kg approximates the cohort-weighted mean of the combined-model dose groups in Table 1 (the paper does not state the analysis-dataset median directly). Source column LBW (lean body weight) is an alias of canonical LBM (lean body mass) and the values transfer without transformation.",
+      source_name = "LBW"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Linear (unit-slope) ratio effect on the linear elimination rate constant ke per Reijers 2016 Online Resource Equation 2: ke_i = ke_pop * (BMI_i / BMI_median) * exp(eta_i). Reference value 23 kg/m^2 approximates the cohort-weighted mean of the combined-model dose groups in Table 1.",
-      source_name        = "BMI"
+      notes = "Time-fixed baseline value. Linear (unit-slope) ratio effect on the linear elimination rate constant ke per Reijers 2016 Online Resource Equation 2: ke_i = ke_pop * (BMI_i / BMI_median) * exp(eta_i). Reference value 23 kg/m^2 approximates the cohort-weighted mean of the combined-model dose groups in Table 1.",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 110L,
-    n_studies       = 1L,
-    n_observations  = 2159L,
-    study           = "Phase I randomised, single-dose, parallel-group bioequivalence trial of FTMB (Synthon BV biosimilar candidate, test) vs Herceptin (EU-licenced reference) trastuzumab products, preceded by a placebo-controlled dose-escalation part (Wisman 2014).",
-    age_range       = "18-45 years",
-    age_summary     = "Mean (SD) 24-33 (2.3-9.1) years by dose group, per Reijers 2016 Table 1.",
-    weight_summary  = "Mean (SD) total body weight 72.0-79.5 (7.5-12.6) kg by dose group, per Reijers 2016 Table 1.",
-    weight_median   = "Combined-model cohort weighted mean total body weight is approximately 77 kg (computed from Table 1 dose-group means).",
-    lbm_summary     = "Mean (SD) lean body mass 57.5-62.6 (3.8-8.4) kg by dose group, per Reijers 2016 Table 1.",
-    lbm_median      = "Reference LBM = 61 kg (cohort-weighted mean across dose groups).",
-    bmi_summary     = "Mean (SD) BMI 21.2-23.5 (2.1-3.3) kg/m^2 by dose group, per Reijers 2016 Table 1.",
-    bmi_median      = "Reference BMI = 23 kg/m^2 (cohort-weighted mean across dose groups).",
-    sex_female_pct  = 0,
-    disease_state   = "Healthy male volunteers deemed healthy after full medical screening.",
-    dose_range      = "Single 90-min IV infusion in 250 mL 0.9% NaCl. Dose-escalation part: 0.5 mg/kg (n=6), 1.5 mg/kg (n=6), 3 mg/kg (n=6) of test product (actual doses 0.49, 1.48, 2.96 mg/kg). Bioequivalence part: 6 mg/kg test (n=46, actual 5.96 mg/kg) and 6 mg/kg reference (n=46, actual 6.44 mg/kg).",
-    regions         = "The Netherlands (Centre for Human Drug Research, Leiden).",
+    species = "human",
+    n_subjects = 110L,
+    n_studies = 1L,
+    n_observations = 2159L,
+    study = "Phase I randomised, single-dose, parallel-group bioequivalence trial of FTMB (Synthon BV biosimilar candidate, test) vs Herceptin (EU-licenced reference) trastuzumab products, preceded by a placebo-controlled dose-escalation part (Wisman 2014).",
+    age_range = "18-45 years",
+    age_summary = "Mean (SD) 24-33 (2.3-9.1) years by dose group, per Reijers 2016 Table 1.",
+    weight_summary = "Mean (SD) total body weight 72.0-79.5 (7.5-12.6) kg by dose group, per Reijers 2016 Table 1.",
+    weight_median = "Combined-model cohort weighted mean total body weight is approximately 77 kg (computed from Table 1 dose-group means).",
+    lbm_summary = "Mean (SD) lean body mass 57.5-62.6 (3.8-8.4) kg by dose group, per Reijers 2016 Table 1.",
+    lbm_median = "Reference LBM = 61 kg (cohort-weighted mean across dose groups).",
+    bmi_summary = "Mean (SD) BMI 21.2-23.5 (2.1-3.3) kg/m^2 by dose group, per Reijers 2016 Table 1.",
+    bmi_median = "Reference BMI = 23 kg/m^2 (cohort-weighted mean across dose groups).",
+    sex_female_pct = 0,
+    disease_state = "Healthy male volunteers deemed healthy after full medical screening.",
+    dose_range = "Single 90-min IV infusion in 250 mL 0.9% NaCl. Dose-escalation part: 0.5 mg/kg (n=6), 1.5 mg/kg (n=6), 3 mg/kg (n=6) of test product (actual doses 0.49, 1.48, 2.96 mg/kg). Bioequivalence part: 6 mg/kg test (n=46, actual 5.96 mg/kg) and 6 mg/kg reference (n=46, actual 6.44 mg/kg).",
+    regions = "The Netherlands (Centre for Human Drug Research, Leiden).",
     reference_subject = "61 kg LBM, BMI 23 kg/m^2 (the reference subject implied by the cohort-weighted means used as covariate-equation references).",
-    notes           = "Baseline demographics in Reijers 2016 Table 1 (n=110 across 5 treatment-arm strata). Trastuzumab serum concentrations quantified by ELISA with LLOQ 0.060 ug/mL; 1247 observations on the test product and 912 on the reference product (n=2159 total), of which 143 (test) and 51 (reference) were <LLOQ. All pre-dose <LLOQ values were set to zero before analysis; post-dose <LLOQ values were excluded. Drug product (test vs reference) was not a statistically significant covariate on any model parameter (max decrease in OFV 5.80, p>0.01), supporting biosimilarity. The combined model uses all 110 participants and all five dose strata; this file encodes that combined model. The paper additionally reports two separate models (test-only and reference-only at 6 mg/kg) for biosimilarity assessment; those models are not packaged here because the combined model is the published recommendation for general use and the separate models share the structural form."
+    notes = "Baseline demographics in Reijers 2016 Table 1 (n=110 across 5 treatment-arm strata). Trastuzumab serum concentrations quantified by ELISA with LLOQ 0.060 ug/mL; 1247 observations on the test product and 912 on the reference product (n=2159 total), of which 143 (test) and 51 (reference) were <LLOQ. All pre-dose <LLOQ values were set to zero before analysis; post-dose <LLOQ values were excluded. Drug product (test vs reference) was not a statistically significant covariate on any model parameter (max decrease in OFV 5.80, p>0.01), supporting biosimilarity. The combined model uses all 110 participants and all five dose strata; this file encodes that combined model. The paper additionally reports two separate models (test-only and reference-only at 6 mg/kg) for biosimilarity assessment; those models are not packaged here because the combined model is the published recommendation for general use and the separate models share the structural form."
   )
 
   ini({

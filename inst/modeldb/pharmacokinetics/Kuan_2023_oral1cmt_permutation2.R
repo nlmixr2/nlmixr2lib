@@ -41,12 +41,16 @@ Kuan_2023_oral1cmt_permutation2 <- function() {
   # molecule and no biological matrix. The analyte is nominal.
   compartmentData <- list(
     depot = list(
-      analyte = "hypothetical drug", units = "dose_unit",
-      specimen = "administration site", verified = FALSE
+      analyte = "hypothetical drug",
+      units = "dose_unit",
+      specimen = "administration site",
+      verified = FALSE
     ),
     central = list(
-      analyte = "hypothetical drug", units = "dose_unit",
-      specimen = "plasma", verified = FALSE
+      analyte = "hypothetical drug",
+      units = "dose_unit",
+      specimen = "plasma",
+      verified = FALSE
     )
   )
 
@@ -60,9 +64,9 @@ Kuan_2023_oral1cmt_permutation2 <- function() {
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Creatinine clearance, Cockcroft-Gault estimate, raw mL/min and NOT BSA-normalized. Kuan 2023 Appendix S3 states that IDEAL body weight was used as the body-size metric in the Cockcroft-Gault equation.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened on ka, on CL, and on both in the metformin analysis of the",
         "main text, under both the (CL, V, ka) and (k, V, ka)",
         "parameterizations, using a 3.84-unit chi-square drop in objective",
@@ -80,12 +84,12 @@ Kuan_2023_oral1cmt_permutation2 <- function() {
   )
 
   population <- list(
-    species        = "None (methodology paper; a single deterministic simulated profile of a hypothetical drug, not a fit of any real molecule).",
-    n_subjects     = 1L,
-    disease_state  = "N/A (algebraic demonstration of local identifiability).",
-    dose_range     = "Single unit dose, D = 1, with F = 1 (Appendix S1 Table S1).",
-    regions        = "N/A",
-    scope_note     = paste(
+    species = "None (methodology paper; a single deterministic simulated profile of a hypothetical drug, not a fit of any real molecule).",
+    n_subjects = 1L,
+    disease_state = "N/A (algebraic demonstration of local identifiability).",
+    dose_range = "Single unit dose, D = 1, with F = 1 (Appendix S1 Table S1).",
+    regions = "N/A",
+    scope_note = paste(
       "Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/",
       "because there is no drug, following the precedent set by",
       "Beal_2001_iv1cmt_bql and the Schoning_2026_oral1cmt_* family. The file",
@@ -103,7 +107,7 @@ Kuan_2023_oral1cmt_permutation2 <- function() {
       "permutation algebra symbolically, with no numeric values.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Appendix S1: 'Simulations using all the possible permutations for a",
       "one-compartment model was performed to illustrate that the same",
       "input-output profile could be produced with different sets of",

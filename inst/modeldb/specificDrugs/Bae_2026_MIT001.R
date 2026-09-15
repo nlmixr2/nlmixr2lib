@@ -8,28 +8,28 @@ Bae_2026_MIT001 <- function() {
   # biological matrix. Verified against Bae 2026 Figure 1 (model schematic:
   # depot -> V1 with Q12 to V2 and Q13 to V3, CL out of V1) and Table 2.
   compartmentData <- list(
-    depot       = list(analyte = "MIT-001", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "MIT-001", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "MIT-001", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "MIT-001", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "MIT-001", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "MIT-001", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight. Scales both peripheral volumes with reference weight 68.4 kg (the pooled cohort median; Bae 2026 Table 2 footnotes b and c). V2 scales linearly (exponent structurally 1, not estimated); V3 scales with an estimated exponent of 0.742. No weight effect was retained on CL or V1.",
-      source_name        = "Weight"
+      notes = "Baseline body weight. Scales both peripheral volumes with reference weight 68.4 kg (the pooled cohort median; Bae 2026 Table 2 footnotes b and c). V2 scales linearly (exponent structurally 1, not estimated); V3 scales with an estimated exponent of 0.742. No weight effect was retained on CL or V1.",
+      source_name = "Weight"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline ALT. Power effect on CL with reference 16 IU/L (the pooled cohort median; Bae 2026 Table 2 footnote a). The exponent is negative, so higher ALT gives lower clearance, which the authors interpret as reduced hepatic metabolic capacity (MIT-001 urinary recovery was only 1%-3%). The cohort ALT range was narrow (6-53 IU/L in healthy participants), so extrapolation to hepatically impaired patients is not supported by these data.",
-      source_name        = "ALT"
+      notes = "Baseline ALT. Power effect on CL with reference 16 IU/L (the pooled cohort median; Bae 2026 Table 2 footnote a). The exponent is negative, so higher ALT gives lower clearance, which the authors interpret as reduced hepatic metabolic capacity (MIT-001 urinary recovery was only 1%-3%). The cohort ALT range was narrow (6-53 IU/L in healthy participants), so extrapolation to hepatically impaired patients is not supported by these data.",
+      source_name = "ALT"
     )
   )
 
@@ -40,63 +40,63 @@ Bae_2026_MIT001 <- function() {
   covariatesDataExcluded <- list(
     AST = list(
       description = "Serum aspartate aminotransferase activity",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function candidate on CL; not retained. ALT was the transaminase selected."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function candidate on CL; not retained. ALT was the transaminase selected."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort range 4.0-5.1 g/dL (Bae 2026 Table 1). Reported here in the paper's g/dL; the covariate register's canonical unit is g/L (multiply by 10)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort range 4.0-5.1 g/dL (Bae 2026 Table 1). Reported here in the paper's g/dL; the covariate register's canonical unit is g/L (multiply by 10)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened; not retained. Consistent with negligible renal elimination (1%-3% of dose recovered in urine)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened; not retained. Consistent with negligible renal elimination (1%-3% of dose recovered in urine)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort range 20-44 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort range 20-44 years."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; not retained. Bae 2026 Table 1 reports height in metres (median 1.72-1.75 m, range 1.52-1.88 m); the covariate register's canonical unit is cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; not retained. Bae 2026 Table 1 reports height in metres (median 1.72-1.75 m, range 1.52-1.88 m); the covariate register's canonical unit is cm."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened; not retained. Body weight was the size descriptor selected, on the peripheral volumes only."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened; not retained. Body weight was the size descriptor selected, on the peripheral volumes only."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened using the paper's coding SEX = 1 male / 0 female (Bae 2026 Methods); not retained. Only 3 of 119 participants were female, so the cohort could not support a sex effect. The authors explicitly flag this as a limitation."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened using the paper's coding SEX = 1 male / 0 female (Bae 2026 Methods); not retained. Only 3 of 119 participants were female, so the cohort could not support a sex effect. The authors explicitly flag this as a limitation."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 119,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 119,
+    n_studies = 3,
     n_observations = 2859,
-    age_range      = "20-44 years",
-    age_median     = "26, 28 and 28.5 years in studies 1, 2 and 3",
-    weight_range   = "55-87 kg",
-    weight_median  = "67.6, 67.7 and 70.6 kg in studies 1, 2 and 3",
+    age_range = "20-44 years",
+    age_median = "26, 28 and 28.5 years in studies 1, 2 and 3",
+    weight_range = "55-87 kg",
+    weight_median = "67.6, 67.7 and 70.6 kg in studies 1, 2 and 3",
     sex_female_pct = 2.5,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy adults (no disease); the model was developed to support dose selection for patients with oral mucositis",
-    dose_range     = "IV 0.3-200 mg single dose and 3-30 mg once daily for 7 days; SC 10-40 mg single dose and 20-40 mg once daily for 7 days",
-    regions        = "Republic of Korea",
-    notes          = "Pooled from three phase 1 randomized, double-blind, placebo-controlled trials in healthy Korean adults: study 1 NCT01737424 (single ascending dose IV, 63 participants, 1185 observations), study 2 NCT03196804 (multiple ascending dose IV, 26 participants, 1038 observations), study 3 NCT05389696 (SC dose escalation with an IV bioavailability arm, 30 participants, 636 observations). Baseline demographics are Bae 2026 Table 1; per-study designs, sampling schedules and sample counts are Supplementary Table 1. The 63 / 26 split for studies 1 and 2 is taken from Supplementary Table 1; the main-text Table 1 'Male, n (%)' row reports these two counts the other way round, and three independent checks favour Supplementary Table 1 (see the vignette's 'Assumptions and deviations' section). The total of 119 participants is unaffected. 95 participants contributed IV data and 30 contributed SC data; 6 study-3 participants received both a 40 mg SC and a 40 mg IV dose after a two-week washout, which is what identifies bioavailability."
+    disease_state = "healthy adults (no disease); the model was developed to support dose selection for patients with oral mucositis",
+    dose_range = "IV 0.3-200 mg single dose and 3-30 mg once daily for 7 days; SC 10-40 mg single dose and 20-40 mg once daily for 7 days",
+    regions = "Republic of Korea",
+    notes = "Pooled from three phase 1 randomized, double-blind, placebo-controlled trials in healthy Korean adults: study 1 NCT01737424 (single ascending dose IV, 63 participants, 1185 observations), study 2 NCT03196804 (multiple ascending dose IV, 26 participants, 1038 observations), study 3 NCT05389696 (SC dose escalation with an IV bioavailability arm, 30 participants, 636 observations). Baseline demographics are Bae 2026 Table 1; per-study designs, sampling schedules and sample counts are Supplementary Table 1. The 63 / 26 split for studies 1 and 2 is taken from Supplementary Table 1; the main-text Table 1 'Male, n (%)' row reports these two counts the other way round, and three independent checks favour Supplementary Table 1 (see the vignette's 'Assumptions and deviations' section). The total of 119 participants is unaffected. 95 participants contributed IV data and 30 contributed SC data; 6 study-3 participants received both a 40 mg SC and a 40 mg IV dose after a two-week washout, which is what identifies bioavailability."
   )
 
   ini({

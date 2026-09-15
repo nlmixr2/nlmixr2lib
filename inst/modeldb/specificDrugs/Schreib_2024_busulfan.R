@@ -22,7 +22,7 @@ Schreib_2024_busulfan <- function() {
     "lymphoblastic leukemia indicator, and the infusion duration. Total body",
     "water and the maturation function are derived inside model() from",
     "weight, height, age, and sex, so no separate columns are required.",
-    "On rxode2 5.1.7 and earlier, simulate this model with",
+    "On rxode2 5.1.6 and earlier, simulate this model with",
     "rxSolve(..., useLinCmt = FALSE). It is a one-compartment",
     "linear-elimination model, so those versions' ODE-to-linCmt()",
     "auto-conversion replaced the ODE with a closed-form solution that holds",
@@ -30,7 +30,7 @@ Schreib_2024_busulfan <- function() {
     "discarded the time dependence that is the entire point of this paper.",
     "The error was large and one-sided: exposure per dosing interval",
     "under-predicted by about 17% at steady state (45% in the HLH/XLP group).",
-    "Later rxode2 refuses the conversion (rxode2 issue 1370) and the flag is",
+    "rxode2 5.1.7 refuses the conversion (rxode2 issue 1370) and the flag is",
     "no longer required. See the validation vignette for the demonstration."
   )
   reference <- paste(
@@ -53,39 +53,39 @@ Schreib_2024_busulfan <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters only through calculated total body water (TBW, Equation 7 of",
         "Schreib 2024, after Wells 2005). Not a covariate in its own right in",
         "the final model: Table 2 step 2a shows ln(TBW) on ln(V) outperformed",
         "ln(W), ln(BSA), ln(H), and ln(FFM). Population median 17.2 kg",
         "(range 4.3-85.0 kg, Table 1)."
       ),
-      source_name        = "W"
+      source_name = "W"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters only through calculated total body water (Equation 7).",
         "Schreib 2024 back-calculated height from the recorded body surface",
         "area and weight as H = BSA^2 * 3600 / W (the Mosteller relation,",
         "Equation 6, inverted); the deposited script BuSaemix.R computes",
         "Height that way. Median BSA 0.71 m2 (range 0.25-2.06, Table 1)."
       ),
-      source_name        = "H"
+      source_name = "H"
     ),
     AGE = list(
-      description        = "Postnatal age at transplantation",
-      units              = "years",
-      type               = "continuous",
+      description = "Postnatal age at transplantation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used twice inside model(): as a term of the total body water",
         "equation (Equation 7) and to build postmenstrual age for the",
         "maturation function Fmat (Equation 9), PMA[weeks] = 52 * AGE + 40.",
@@ -94,14 +94,14 @@ Schreib_2024_busulfan <- function() {
         "(Fmat = 1/(1 + ((AGE + 40/52)/(46/52))^-2.3)). Median 4.3 years",
         "(range 0.2-27.0 years, Table 1); 18% of patients were under 1 year."
       ),
-      source_name        = "age at HSCT"
+      source_name = "age at HSCT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Enters only through the total body water equation (Equation 7),",
         "where the female term contributes -0.047 on the natural-log scale.",
         "The deposited BuSaemix.R codes Sex01 = 1 for female and 0 for male,",
@@ -109,28 +109,28 @@ Schreib_2024_busulfan <- function() {
         "Sex had no additional effect on busulfan PK beyond TBW (Section 3.2,",
         "Figures S17-S19). 35 of 124 patients (28%) were female (Table 1)."
       ),
-      source_name        = "Sex01"
+      source_name = "Sex01"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Covariate on ln(k) as (ln(ALB) - ln(30 g/L)); reference value 30 g/L",
         "(Table 3), a rounded value close to the population median. The paper",
         "reports albumin in g/L, matching the canonical unit, so no conversion",
         "is needed. Range of the covariate term in the population -0.15 to",
         "0.16 (Table 3)."
       ),
-      source_name        = "Alb"
+      source_name = "Alb"
     ),
     TINF = list(
-      description        = "Duration of the intravenous busulfan infusion",
-      units              = "h",
-      type               = "continuous",
+      description = "Duration of the intravenous busulfan infusion",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Covariate on both ln(V) (+0.226) and ln(k) (-0.161), entering as the",
         "linear deviation (TINF - 3 h); reference 3 h (Table 3). The center",
         "infused over 4 h from October 2010 to September 2014 and over 3 h",
@@ -144,30 +144,30 @@ Schreib_2024_busulfan <- function() {
         "the infusion duration from the event table rather than from a",
         "covariate."
       ),
-      source_name        = "Tinf"
+      source_name = "Tinf"
     ),
     DIS_ALL = list(
-      description        = "Acute lymphoblastic leukemia indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute lymphoblastic leukemia indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other HSCT indication in the cohort)",
-      notes              = paste(
+      notes = paste(
         "Covariate on ln(k), theta_k5 = -0.210, i.e. k and CL are about 19%",
         "lower in patients transplanted for acute lymphoblastic leukemia",
         "(Table 3). 13 of 124 patients (10%, Table 1). The reference group is",
         "all other HSCT indications in the cohort, not a matched comparator."
       ),
-      source_name        = "DiaGroup == 'ALL'"
+      source_name = "DiaGroup == 'ALL'"
     ),
     DIS_HLHXLP = list(
-      description        = paste(
+      description = paste(
         "Hemophagocytic lymphohistiocytosis / X-linked lymphoproliferative",
         "disease indicator"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other HSCT indication in the cohort)",
-      notes              = paste(
+      notes = paste(
         "Covariate on the fractional amplitude of the change in the",
         "elimination rate constant (kel_exp_famp), theta_dk2 = -0.145, which",
         "takes the amplitude from -0.167 to -0.312, i.e. from a 17% to a 31%",
@@ -176,21 +176,21 @@ Schreib_2024_busulfan <- function() {
         "2024 pools HLH and XLP into a single 14-patient diagnosis group",
         "(11%, Table 1) and estimates one coefficient for it."
       ),
-      source_name        = "DiaGroup == 'HLH/XLP'"
+      source_name = "DiaGroup == 'HLH/XLP'"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 124L,
-    n_studies      = 1L,
-    age_range      = "0.2-27.0 years",
-    age_median     = "4.3 years",
-    weight_range   = "4.3-85.0 kg",
-    weight_median  = "17.2 kg",
+    species = "human",
+    n_subjects = 124L,
+    n_studies = 1L,
+    age_range = "0.2-27.0 years",
+    age_median = "4.3 years",
+    weight_range = "4.3-85.0 kg",
+    weight_median = "17.2 kg",
     sex_female_pct = 28,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric and young-adult patients conditioned with intravenous",
       "busulfan before allogeneic hematopoietic stem cell transplantation.",
       "42 of 124 (34%) had malignant disease (ALL 13, AML 12, neuroblastoma",
@@ -198,7 +198,7 @@ Schreib_2024_busulfan <- function() {
       "granulomatous disease 32, HLH or XLP 14, primary immunodeficiencies",
       "14, hemoglobinopathies 12, metabolic diseases 8, thrombocytopenia 2)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Twice-daily (q12h) intravenous busulfan infusions over 4 h (October",
       "2010 to September 2014) or 3 h (from October 2014), four to ten doses",
       "over two to five consecutive days, dosed by weight-based",
@@ -207,8 +207,8 @@ Schreib_2024_busulfan <- function() {
       "with fludarabine (66%), fludarabine plus thiotepa (10%), clofarabine",
       "(8%), melphalan (6%), cyclophosphamide plus melphalan (5%), or other."
     ),
-    regions        = "Switzerland (single center, University Children's Hospital Zurich).",
-    notes          = paste(
+    regions = "Switzerland (single center, University Children's Hospital Zurich).",
+    notes = paste(
       "Baseline demographics from Table 1 of Schreib 2024. Plasma busulfan",
       "was measured by LC-MS/MS after the morning infusion only, pre-dose and",
       "at 0, 30, 60, 120, 240, and 360 min after the end of that infusion.",

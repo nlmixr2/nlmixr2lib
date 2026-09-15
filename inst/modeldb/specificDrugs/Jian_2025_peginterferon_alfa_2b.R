@@ -12,19 +12,19 @@ Jian_2025_peginterferon_alfa_2b <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance by the Cockcroft-Gault equation, raw (NOT BSA-normalized). Jian 2025 Table 1 footnotes (d) and (e) give the exact form used, with serum creatinine in umol/L: male CrCL = (140 - Age) * Weight / (0.818 * Creatinine); female CrCL = 0.85 * (140 - Age) * Weight / (0.818 * Creatinine). The 0.818 denominator is the standard Cockcroft-Gault 72 divided by the 88.4 umol/L-per-mg/dL creatinine conversion (72 / 88.4 = 0.814), so this is ordinary Cockcroft-Gault expressed for umol/L creatinine.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance by the Cockcroft-Gault equation, raw (NOT BSA-normalized). Jian 2025 Table 1 footnotes (d) and (e) give the exact form used, with serum creatinine in umol/L: male CrCL = (140 - Age) * Weight / (0.818 * Creatinine); female CrCL = 0.85 * (140 - Age) * Weight / (0.818 * Creatinine). The 0.818 denominator is the standard Cockcroft-Gault 72 divided by the 88.4 umol/L-per-mg/dL creatinine conversion (72 / 88.4 = 0.814), so this is ordinary Cockcroft-Gault expressed for umol/L creatinine.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "LINEAR effect on apparent linear clearance, centered at 110.38 mL/min: CL = CL_TV * (1 + 0.00504 * (CRCL - 110.38)). This is the form in the executed final-model NONMEM control stream (Data S2): 'CLB_CLCR=(1+THETA(11)*(B_CLCR-110.38))' followed by 'TVCL = CLCOV*TVCL' -- i.e. Equation 1 (linear) of Methods Section 2.3, the PsN stepwise-covariate-model linear relation. FORM DISCREPANCY: the Jian 2025 Table 2 row LABEL prints the EXPONENTIAL form 'CL x exp(theta x (CrCL-110.38))' (Equation 2), which the control stream contradicts; the executed code is used. Baseline (not time-varying) CrCL is the model input -- the control stream reads the B_CLCR column, not the time-varying CLCR. Higher CrCL raises clearance. The effect reached statistical significance in the stepwise covariate model (Table S1 round F2, dOFV -7.43; backward elimination round B1 retained it at +10.01) but was judged NOT clinically relevant (Jian 2025 Section 3.5: the 10th / 90th CrCL percentile ratios were 0.904 and 1.21, inside the 80-120% relevance band).",
-      source_name        = "CrCL"
+      notes = "LINEAR effect on apparent linear clearance, centered at 110.38 mL/min: CL = CL_TV * (1 + 0.00504 * (CRCL - 110.38)). This is the form in the executed final-model NONMEM control stream (Data S2): 'CLB_CLCR=(1+THETA(11)*(B_CLCR-110.38))' followed by 'TVCL = CLCOV*TVCL' -- i.e. Equation 1 (linear) of Methods Section 2.3, the PsN stepwise-covariate-model linear relation. FORM DISCREPANCY: the Jian 2025 Table 2 row LABEL prints the EXPONENTIAL form 'CL x exp(theta x (CrCL-110.38))' (Equation 2), which the control stream contradicts; the executed code is used. Baseline (not time-varying) CrCL is the model input -- the control stream reads the B_CLCR column, not the time-varying CLCR. Higher CrCL raises clearance. The effect reached statistical significance in the stepwise covariate model (Table S1 round F2, dOFV -7.43; backward elimination round B1 retained it at +10.01) but was judged NOT clinically relevant (Jian 2025 Section 3.5: the 10th / 90th CrCL percentile ratios were 0.904 and 1.21, inside the 80-120% relevance band).",
+      source_name = "CrCL"
     ),
     DIS_HEALTHY = list(
-      description        = "Health-status indicator: 1 = healthy volunteer (Phase I SAD trial), 0 = chronic hepatitis B (CHB) patient (Phase II MAD trial NCT01143662). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Health-status indicator: 1 = healthy volunteer (Phase I SAD trial), 0 = chronic hepatitis B (CHB) patient (Phase II MAD trial NCT01143662). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (healthy volunteer)",
-      notes              = paste(
+      notes = paste(
         "POLARITY NOTE: the canonical column is DIS_HEALTHY (1 = healthy), but Jian 2025 uses HEALTHY as the",
         "reference category and reports the effect on the CHB arm. Jian 2025 Table 2 prints the row label",
         "'theta CHB on ka [(1 + theta) x ka for CHB patients]' with theta = -0.405, and Figure 4 confirms",
@@ -34,47 +34,61 @@ Jian_2025_peginterferon_alfa_2b <- function() {
         "0.0101 * (1 - 0.405) = 0.00601 /h, i.e. the 40.5% lower ka reported in Section 3.4.",
         "This was the only covariate effect judged clinically relevant (Section 3.5)."
       ),
-      source_name        = "Health status (healthy v.s. CHB)"
+      source_name = "Health status (healthy v.s. CHB)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on V/F and initially included during forward selection, but dropped in backward elimination and absent from the Jian 2025 Table 2 final model (Discussion, 'Based on the predefined inclusion and exclusion criteria, body weight was initially included as a covariate on V, but was later excluded during the stepwise selection process'). The paper attributes the non-significance to the narrow weight range (49-90 kg) and to CrCL - which is itself weight-derived - already carrying part of the effect. NOTE: the Abstract's claim that 'body weight affected the volume of distribution' contradicts both the Discussion and Table 2; the final model has no weight effect."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on V/F and initially included during forward selection, but dropped in backward elimination and absent from the Jian 2025 Table 2 final model (Discussion, 'Based on the predefined inclusion and exclusion criteria, body weight was initially included as a covariate on V, but was later excluded during the stepwise selection process'). The paper attributes the non-significance to the narrow weight range (49-90 kg) and to CrCL - which is itself weight-derived - already carrying part of the effect. NOTE: the Abstract's claim that 'body weight affected the volume of distribution' contradicts both the Discussion and Table 2; the final model has no weight effect."
     ),
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
-      notes       = "Screened in the stepwise covariate model (Section 2.3) but not retained in the Jian 2025 Table 2 final model. Enters the model only indirectly through the Cockcroft-Gault CRCL calculation."
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate model (Section 2.3) but not retained in the Jian 2025 Table 2 final model. Enters the model only indirectly through the Cockcroft-Gault CRCL calculation."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
-      notes       = "Screened (Section 2.3) but not retained in the final model. Enters only indirectly through the Cockcroft-Gault CRCL calculation (0.85 multiplier for females)."
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Section 2.3) but not retained in the final model. Enters only indirectly through the Cockcroft-Gault CRCL calculation (0.85 multiplier for females)."
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous",
-      notes       = "Screened as one of the biochemical indicators in Section 2.3; not retained in the final model."
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as one of the biochemical indicators in Section 2.3; not retained in the final model."
     ),
     ALT = list(
-      description = "Alanine transaminase", units = "U/L", type = "continuous",
-      notes       = "Screened as one of the biochemical indicators in Section 2.3; not retained in the final model. Strongly separates the two cohorts (healthy median 20 U/L vs CHB median 130 U/L, Table 1), so its effect is largely confounded with the retained health-status covariate."
+      description = "Alanine transaminase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as one of the biochemical indicators in Section 2.3; not retained in the final model. Strongly separates the two cohorts (healthy median 20 U/L vs CHB median 130 U/L, Table 1), so its effect is largely confounded with the retained health-status covariate."
     ),
     PLT = list(
-      description = "Platelet count", units = "10^9/L", type = "continuous",
-      notes       = "Screened as one of the hematological indicators in Section 2.3; not retained in the final model."
+      description = "Platelet count",
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened as one of the hematological indicators in Section 2.3; not retained in the final model."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "peginterferon alfa-2b", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "peginterferon alfa-2b",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "peginterferon alfa-2b", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "peginterferon alfa-2b",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     total_target = list(
       # NOTE: unlike depot / central (amounts), this state holds a
@@ -82,26 +96,28 @@ Jian_2025_peginterferon_alfa_2b <- function() {
       # the concentration scale (its Ctol - Cfree term is a concentration) and
       # Table 2 reports R0 in ug/L, even though the paper's symbol glossary
       # loosely calls Rtol an "amount".
-      analyte = "type I interferon receptor (IFNAR)", units = "ug/L",
-      specimen = "not applicable", verified = TRUE
+      analyte = "type I interferon receptor (IFNAR)",
+      units = "ug/L",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 67L,
-    n_studies      = 2L,
-    age_range      = "18-46 years (Phase I healthy 20-40, median 30; Phase II CHB dense-PK 18-46, median 25)",
-    age_median     = "Phase I healthy 30 years; Phase II CHB 25 years",
-    weight_range   = "49-90 kg (Phase I healthy 49.0-76.0, median 59.0; Phase II CHB dense-PK 50.0-90.0, median 60.0)",
-    weight_median  = "Phase I healthy 59.0 kg; Phase II CHB 60.0 kg",
+    species = "human",
+    n_subjects = 67L,
+    n_studies = 2L,
+    age_range = "18-46 years (Phase I healthy 20-40, median 30; Phase II CHB dense-PK 18-46, median 25)",
+    age_median = "Phase I healthy 30 years; Phase II CHB 25 years",
+    weight_range = "49-90 kg (Phase I healthy 49.0-76.0, median 59.0; Phase II CHB dense-PK 50.0-90.0, median 60.0)",
+    weight_median = "Phase I healthy 59.0 kg; Phase II CHB 60.0 kg",
     sex_female_pct = 43.3,
-    disease_state  = "Pooled modelling dataset of 28 healthy volunteers (Phase I single-ascending-dose trial) and 39 chronic hepatitis B (CHB) patients with dense PK sampling (Phase II multiple-ascending-dose trial NCT01143662).",
-    dose_range     = "Phase I: single SC doses of 45, 90, 180, or 270 ug. Phase II: 90, 135, or 180 ug SC once weekly for 48 weeks.",
+    disease_state = "Pooled modelling dataset of 28 healthy volunteers (Phase I single-ascending-dose trial) and 39 chronic hepatitis B (CHB) patients with dense PK sampling (Phase II multiple-ascending-dose trial NCT01143662).",
+    dose_range = "Phase I: single SC doses of 45, 90, 180, or 270 ug. Phase II: 90, 135, or 180 ug SC once weekly for 48 weeks.",
     renal_function = "Normal; creatinine clearance (Cockcroft-Gault) 73.21-156.02 mL/min in healthy subjects (median 108.95) and 77.57-187.04 mL/min in CHB patients (median 120.49). Jian 2025 Table 1.",
-    regions        = "Not stated in the paper; sponsor and investigators are China-based (Xiamen Amoytop Biotech Co. Ltd.; Peking University, Beijing).",
+    regions = "Not stated in the paper; sponsor and investigators are China-based (Xiamen Amoytop Biotech Co. Ltd.; Peking University, Beijing).",
     external_validation = "An independent Phase II sparse-PK dataset of 115 CHB patients with 464 observations (90 / 135 / 180 ug weekly) was used for external pcVPC validation (Jian 2025 Figure 3b) and did NOT contribute to parameter estimation.",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics are in Jian 2025 Table 1. The modelling dataset comprises 67 individuals and",
       "1013 observations (428 of them from the 28 healthy subjects). Plasma Pegbing was assayed by ELISA",
       "(BMS216/BMS216TEN, eBiosciences) with LLOQ 300 pg/mL; 16.5% of Phase I observations were below the",

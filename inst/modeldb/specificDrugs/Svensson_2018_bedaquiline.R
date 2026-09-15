@@ -20,43 +20,43 @@ Svensson_2018_bedaquiline <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2     = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_SUSPENSION = list(
-      description        = "Suspended-tablet formulation indicator (1 = four 100 mg bedaquiline tablets suspended in approximately 30 mL water at bedside immediately before swallowing; 0 = four 100 mg tablets swallowed whole with water)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Suspended-tablet formulation indicator (1 = four 100 mg bedaquiline tablets suspended in approximately 30 mL water at bedside immediately before swallowing; 0 = four 100 mg tablets swallowed whole with water)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablets swallowed whole; the typical-value MAT reference in Svensson 2018 Table 2)",
-      notes              = "Per-dose-occasion (not per-subject) formulation indicator. Multiplicative effect on the typical mean absorption time MAT relative to the whole-tablet reference: MAT_susp = MAT_whole * (1 + e_susp_mat * FORM_SUSPENSION) with the +23% point estimate from Svensson 2018 Table 2 ('Effect of suspending on MAT (%) = 23'). The same paper found no statistically significant difference in relative bioavailability (95% nonparametric CI 94-108%, predefined bioequivalence criteria 80-125%), so F = 1 is held identically across formulations; only MAT shifts. Sibling formulation indicator under the FORM_* family alongside FORM_TABLET (Kyhl 2016 / Tikiso 2021 tablet vs liquid solution), FORM_CAPSULE, FORM_POWDER, and the various drug-product-version indicators (FORM_SAR_DP2, FORM_ISA_P2F2, FORM_LINAG_TAB1, FORM_VISMO_PHASEI).",
-      source_name        = "FORM"
+      notes = "Per-dose-occasion (not per-subject) formulation indicator. Multiplicative effect on the typical mean absorption time MAT relative to the whole-tablet reference: MAT_susp = MAT_whole * (1 + e_susp_mat * FORM_SUSPENSION) with the +23% point estimate from Svensson 2018 Table 2 ('Effect of suspending on MAT (%) = 23'). The same paper found no statistically significant difference in relative bioavailability (95% nonparametric CI 94-108%, predefined bioequivalence criteria 80-125%), so F = 1 is held identically across formulations; only MAT shifts. Sibling formulation indicator under the FORM_* family alongside FORM_TABLET (Kyhl 2016 / Tikiso 2021 tablet vs liquid solution), FORM_CAPSULE, FORM_POWDER, and the various drug-product-version indicators (FORM_SAR_DP2, FORM_ISA_P2F2, FORM_LINAG_TAB1, FORM_VISMO_PHASEI).",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "19-37 years",
-    age_median     = "23.5 years",
-    weight_range   = "45.6-88.5 kg",
-    weight_median  = "63.4 kg",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "19-37 years",
+    age_median = "23.5 years",
+    weight_range = "45.6-88.5 kg",
+    weight_median = "63.4 kg",
     sex_female_pct = 62.5,
     race_ethnicity = c(Black = 87.5, MixedRace = 12.5),
-    disease_state  = "Healthy adult volunteers (no clinical evidence of QT prolongation, dysrhythmia, significant cardiac conditions, liver/kidney disease, HIV infection, hepatitis B/C, hypothyroidism, suspected or documented active TB, or recent household TB exposure; on no QT-prolonging medications and no CYP3A4 inducers or inhibitors).",
-    dose_range     = "Single 400 mg oral dose of bedaquiline administered twice 14 days apart (open-label two-period crossover); on each occasion as either four 100 mg tablets swallowed whole with 240 mL water, or four 100 mg tablets suspended in 30 mL water with two further rinses (20 mL + 10 mL). Both doses given within 30 min after a standardized 670 kcal breakfast with at least 33% fat content.",
-    regions        = "Cape Town, South Africa (single site, November-December 2016).",
-    notes          = "Baseline demographics from Svensson 2018 Table 1. Twelve participants were randomized to whole-tablets-first then suspension at the second occasion; twelve to suspension first then whole tablets. All 24 participants completed the study. There were 552 concentration observations each for bedaquiline and M2; below-LLOQ observations (LLOQ 0.01 ug/mL for BDQ and M2) were excluded from the analysis (5 postdose BDQ and 81 postdose M2 observations were below LLOQ; 81 of the 81 M2 BLOQ samples occurred within 4 h of dose administration). The pediatric clinical motivation of this study (using suspended tablets when a pediatric formulation is not yet available) is not reflected in the cohort itself, which is healthy adult volunteers."
+    disease_state = "Healthy adult volunteers (no clinical evidence of QT prolongation, dysrhythmia, significant cardiac conditions, liver/kidney disease, HIV infection, hepatitis B/C, hypothyroidism, suspected or documented active TB, or recent household TB exposure; on no QT-prolonging medications and no CYP3A4 inducers or inhibitors).",
+    dose_range = "Single 400 mg oral dose of bedaquiline administered twice 14 days apart (open-label two-period crossover); on each occasion as either four 100 mg tablets swallowed whole with 240 mL water, or four 100 mg tablets suspended in 30 mL water with two further rinses (20 mL + 10 mL). Both doses given within 30 min after a standardized 670 kcal breakfast with at least 33% fat content.",
+    regions = "Cape Town, South Africa (single site, November-December 2016).",
+    notes = "Baseline demographics from Svensson 2018 Table 1. Twelve participants were randomized to whole-tablets-first then suspension at the second occasion; twelve to suspension first then whole tablets. All 24 participants completed the study. There were 552 concentration observations each for bedaquiline and M2; below-LLOQ observations (LLOQ 0.01 ug/mL for BDQ and M2) were excluded from the analysis (5 postdose BDQ and 81 postdose M2 observations were below LLOQ; 81 of the 81 M2 BLOQ samples occurred within 4 h of dose administration). The pediatric clinical motivation of this study (using suspended tablets when a pediatric formulation is not yet available) is not reflected in the cohort itself, which is healthy adult volunteers."
   )
 
   ini({

@@ -32,7 +32,7 @@ Hui_2019_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482. Wang 2023 Table 2 records this model as '2 CMT' with states V1
   # (central) and V2 (peripheral). Amount units are umol because every
@@ -41,17 +41,17 @@ Hui_2019_methotrexate <- function() {
   # the assayed matrix, is not on disk, and neither Wang 2023 Table 2 nor the
   # primary's abstract names it.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BSA. Power-form effects on BOTH clearance and the",
         "central volume, each normalised to 0.735 m^2, per Wang 2023 Table 2:",
         "'CL (L/h) = 7.73 x (BSA/0.735)^0.721 x ...' and",
@@ -60,14 +60,14 @@ Hui_2019_methotrexate <- function() {
         "reference is the cohort median -- Wang 2023 Table 1 records BSA",
         "median 0.74 m^2 (range 0.47-1.64) for this study."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eGFR. Power-form effect on clearance, per Wang 2023",
         "Table 2: 'CL (L/h) = 7.73 x (BSA/0.735)^0.721 x",
         "(eGFR x 1.73/192 x BSA)^0.256 x e^(eta_CL + IOV)'. Only two of the",
@@ -89,14 +89,14 @@ Hui_2019_methotrexate <- function() {
         "raise typical clearance by about 17%. Flagged in the vignette Errata;",
         "the primary is queued for re-extraction."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column Age. Power-form effect on intercompartmental clearance",
         "only, normalised to 5.29 years, per Wang 2023 Table 2:",
         "'Q (L/h) = 0.283 x (Age/5.29)^0.278'. The 5.29-year reference is the",
@@ -104,14 +104,14 @@ Hui_2019_methotrexate <- function() {
         "(range 1.3-15.8) for this study. Age does NOT enter clearance or",
         "either volume in this model."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator (one high-dose methotrexate course per occasion)",
-      units              = "(integer)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator (one high-dose methotrexate course per occasion)",
+      units = "(integer)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying between courses, constant within a course. Wang 2023",
         "Table 2 records this model's variability as 'CL = 14.3 (14.9)' under",
         "the header 'IIV (%) (IOV (%))', i.e. a 14.3% between-subject CV and a",
@@ -126,27 +126,27 @@ Hui_2019_methotrexate <- function() {
         "count merely bounds how many distinct courses a user can encode.",
         "Set OCC = 1 for a single-course simulation."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "1.3 to 15.8 years",
-    age_median     = "5.3 years",
-    weight_range   = "10.4 to 57.8 kg",
-    weight_median  = "18.4 kg",
-    height_range   = "77 to 176 cm (median 107)",
-    bsa_range      = "0.47 to 1.64 m^2 (median 0.74)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "1.3 to 15.8 years",
+    age_median = "5.3 years",
+    weight_range = "10.4 to 57.8 kg",
+    weight_median = "18.4 kg",
+    height_range = "77 to 176 cm (median 107)",
+    bsa_range = "0.47 to 1.64 m^2 (median 0.74)",
     sex_female_pct = 100 * 13 / 36,
-    disease_state  = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate. The primary also studied 16 osteosarcoma patients under a separate model, not extracted here.",
+    disease_state = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate. The primary also studied 16 osteosarcoma patients under a separate model, not extracted here.",
     renal_function = "Serum creatinine median 0.362 mg/dL (range 0.11-1.07); eGFR is a model covariate but its cohort distribution is not reproduced in Wang 2023.",
     hepatic_function = "ALT median 16.5 U/L (range 5.0-247.0).",
-    dose_range     = "2 to 5 g/m^2 intravenous high-dose methotrexate.",
-    regions        = "Hong Kong / China.",
-    notes          = paste(
+    dose_range = "2 to 5 g/m^2 intravenous high-dose methotrexate.",
+    regions = "Hong Kong / China.",
+    notes = paste(
       "Demographics from Wang 2023 Table 1; the primary's abstract records",
       "'36 ALL (354 observations) and 16 osteosarcoma (585 observations)",
       "patients' with covariate model building and parameter estimation in",

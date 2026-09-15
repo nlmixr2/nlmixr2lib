@@ -22,7 +22,7 @@ test_that("conventional parameter names produce no naming issues", {
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     compartmentData <- list(
-      depot   = list(analyte = "drug", units = "mg", specimen = "administration site", verified = TRUE),
+      depot = list(analyte = "drug", units = "mg", specimen = "administration site", verified = TRUE),
       central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
     )
     ini({
@@ -165,8 +165,7 @@ test_that("a covariate alias without declared source_name produces a warning", {
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
-      ADA = list(description = "Anti-drug antibody", units = "(binary)",
-                 type = "binary")
+      ADA = list(description = "Anti-drug antibody", units = "(binary)", type = "binary")
     )
     ini({
       lcl <- 1; label("a")
@@ -184,8 +183,7 @@ test_that("a covariate alias without declared source_name produces a warning", {
     })
   }
   res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
-  cov <- res[res$category == "covariates" & res$name == "ADA" &
-               grepl("alias", res$message), ]
+  cov <- res[res$category == "covariates" & res$name == "ADA" & grepl("alias", res$message), ]
   expect_equal(nrow(cov), 1)
   expect_equal(cov$severity, "warning")
 })
@@ -196,8 +194,7 @@ test_that("declared alias via source_name produces no alias warning", {
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
-      ADA_POS = list(description = "ADA-positive", units = "(binary)",
-                     type = "binary", source_name = "ADA")
+      ADA_POS = list(description = "ADA-positive", units = "(binary)", type = "binary", source_name = "ADA")
     )
     ini({
       lcl <- 1; label("a")
@@ -278,11 +275,23 @@ test_that("warning is emitted when issues exist and suppressed when clean", {
   # what this test is about.
   namingIssues <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
   namingIssues <- namingIssues[
-    namingIssues$severity %in% c("error", "warning") &
+    namingIssues$severity %in%
+      c("error", "warning") &
       namingIssues$category %in%
-        c("parameter_names", "parameter_labels", "parameter_units",
-          "deprecated_names", "fixed_label_disagreement", "compartments",
-          "observation", "units", "covariates"), , drop = FALSE]
+        c(
+          "parameter_names",
+          "parameter_labels",
+          "parameter_units",
+          "deprecated_names",
+          "fixed_label_disagreement",
+          "compartments",
+          "observation",
+          "units",
+          "covariates"
+        ),
+    ,
+    drop = FALSE
+  ]
   expect_equal(nrow(namingIssues), 0L)
 
   bad <- function() {
@@ -303,20 +312,51 @@ test_that("warning is emitted when issues exist and suppressed when clean", {
   )
 })
 
+# The whole-database sweep this block used to do now lives in
+# test-modeldb-conventions-01.R .. -08.R, which cover the same models split
+# across files so testthat's workers can share them. Running all 2912 models
+# in this one block put the entire suite behind a single ~1100s serial call.
+# What is left here is the no-argument wrapper's own job -- walk every name in
+# the database and stack the per-model results -- with the per-model check
+# stubbed, so the iteration is tested without rebuilding the library.
 test_that("iterating with no argument returns stacked data.frame with model column", {
+  .conventionStubAcc$seen <- character(0)
+  testthat::local_mocked_bindings(
+    .checkOneModel = .conventionStubCheckOneModel,
+    .package = "nlmixr2lib"
+  )
+
   res <- suppressWarnings(checkModelConventions(verbose = FALSE))
   expect_s3_class(res, "data.frame")
   expect_true("model" %in% names(res))
   expect_gt(length(unique(res$model)), 1)
+  # every model in the database was visited, not just the first
+  expect_setequal(
+    .conventionStubAcc$seen,
+    get0("modeldb", envir = asNamespace("nlmixr2lib"))$name
+  )
 })
 
 test_that("canonical covariates are parsed from inst/references/covariate-columns.md", {
   canon <- nlmixr2lib:::.loadCanonicalCovariates()
   expect_true(length(canon) > 30)
-  expect_true(all(c("WT", "SEXF", "ADA_POS", "RACE_BLACK",
-                    "RACE_BLACK_OTH", "CREAT", "ALB", "CRP", "CRCL",
-                    "EOS", "PRIOR_GAST", "ADA_TITER") %in%
-                    names(canon)))
+  expect_true(all(
+    c(
+      "WT",
+      "SEXF",
+      "ADA_POS",
+      "RACE_BLACK",
+      "RACE_BLACK_OTH",
+      "CREAT",
+      "ALB",
+      "CRP",
+      "CRCL",
+      "EOS",
+      "PRIOR_GAST",
+      "ADA_TITER"
+    ) %in%
+      names(canon)
+  ))
   expect_true("SEXM" %in% canon$SEXF$aliases)
   expect_true("ADA" %in% canon$ADA_POS$aliases)
   expect_true("BLACK_OTH" %in% canon$RACE_BLACK_OTH$aliases)
@@ -365,8 +405,7 @@ test_that("a scope-general canonical covariate produces no scope warning in any 
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
-      CRP = list(description = "C-reactive protein", units = "mg/L",
-                 type = "continuous")
+      CRP = list(description = "C-reactive protein", units = "mg/L", type = "continuous")
     )
     ini({
       lcl <- 1; label("a")
@@ -384,8 +423,10 @@ test_that("a scope-general canonical covariate produces no scope warning in any 
     })
   }
   res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
-  scoped <- res[res$category == "covariates" &
-                  grepl("scoped 'specific'", res$message), ]
+  scoped <- res[
+    res$category == "covariates" &
+      grepl("scoped 'specific'", res$message),
+  ]
   expect_equal(nrow(scoped), 0)
 })
 
@@ -395,8 +436,7 @@ test_that("a scope-specific canonical covariate in an unapproved model raises a 
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
-      FORM_DP2 = list(description = "Drug-product 2 indicator",
-                      units = "(binary)", type = "binary")
+      FORM_DP2 = list(description = "Drug-product 2 indicator", units = "(binary)", type = "binary")
     )
     ini({
       lcl <- 1; label("a")
@@ -414,8 +454,7 @@ test_that("a scope-specific canonical covariate in an unapproved model raises a 
     })
   }
   res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
-  scoped <- res[res$category == "covariates" & res$name == "FORM_DP2" &
-                  grepl("scoped 'specific'", res$message), ]
+  scoped <- res[res$category == "covariates" & res$name == "FORM_DP2" & grepl("scoped 'specific'", res$message), ]
   expect_equal(nrow(scoped), 1)
   expect_equal(scoped$severity, "warning")
   expect_match(scoped$message, "Xu_2019_sarilumab")
@@ -426,8 +465,7 @@ test_that("a scope-specific canonical covariate in its listed model produces no 
   res <- suppressWarnings(
     checkModelConventions("Xu_2019_sarilumab", verbose = FALSE)
   )
-  scoped <- res[res$category == "covariates" & res$name == "FORM_DP2" &
-                  grepl("scoped 'specific'", res$message), ]
+  scoped <- res[res$category == "covariates" & res$name == "FORM_DP2" & grepl("scoped 'specific'", res$message), ]
   expect_equal(nrow(scoped), 0)
 })
 
@@ -563,7 +601,8 @@ test_that("every blessed chain prefix accepts numbered members and the register 
   # rather than on the thing it was written to check.
   prefixes <- strsplit(
     sub("\\).*$", "", sub("^\\^\\(", "", conv$compartmentRegex)),
-    "|", fixed = TRUE
+    "|",
+    fixed = TRUE
   )[[1]]
   expect_true(length(prefixes) >= 9L)
   expect_true(all(grepl("^[a-z_]+$", prefixes)))
@@ -589,8 +628,7 @@ test_that("every blessed chain prefix accepts numbered members and the register 
   md <- readLines(nlmixr2lib:::.compartmentNamesPath(), warn = FALSE)
   bullet <- grep("^- `compartmentRegex = ", md, value = TRUE)
   expect_length(bullet, 1L)
-  documented <- sub("^- `compartmentRegex = \"(.*?)\"`.*$", "\\1", bullet,
-                    perl = TRUE)
+  documented <- sub("^- `compartmentRegex = \"(.*?)\"`.*$", "\\1", bullet, perl = TRUE)
   expect_equal(documented, conv$compartmentRegex)
   # Each prefix is also named in that bullet's prose, so the reader-facing
   # description cannot fall behind the pattern.
@@ -636,8 +674,7 @@ test_that("shared-exponent covariate effects (e_<cov>_<param1>_<param2>) are acc
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
     covariateData <- list(
-      WT = list(description = "Body weight", units = "kg",
-                type = "continuous")
+      WT = list(description = "Body weight", units = "kg", type = "continuous")
     )
     ini({
       lcl <- 1; label("CL (L/day)")
@@ -675,8 +712,7 @@ test_that("multi-component CL covariate effects (e_<cov>_cl_ss, e_<cov>_cl_time)
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
     covariateData <- list(
-      WT = list(description = "Body weight", units = "kg",
-                type = "continuous")
+      WT = list(description = "Body weight", units = "kg", type = "continuous")
     )
     ini({
       lcl_ss <- 1;   label("Steady-state CL (L/day)")
@@ -786,8 +822,7 @@ test_that("deprecated covariate-effect suffixes are flagged with rename suggesti
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
-      WT = list(description = "Body weight", units = "kg",
-                type = "continuous")
+      WT = list(description = "Body weight", units = "kg", type = "continuous")
     )
     ini({
       lcl <- 1; label("a (L/day)")
@@ -821,8 +856,7 @@ test_that("reversed-order covariate effects (e_<param>_<cov>) are flagged", {
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
-      WT = list(description = "Body weight", units = "kg",
-                type = "continuous")
+      WT = list(description = "Body weight", units = "kg", type = "continuous")
     )
     ini({
       lcl <- 1; label("a (L/day)")
@@ -1343,23 +1377,35 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
   for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
     lines <- readLines(f, warn = FALSE)
     start <- grep("^\\s*model\\(\\{", lines)
-    if (!length(start)) next
+    if (!length(start)) {
+      next
+    }
     for (ln in lines[seq(start[1], length(lines))]) {
-      if (!grepl(nlmixr2lib:::.clearanceLhsPattern, ln)) next
+      if (!grepl(nlmixr2lib:::.clearanceLhsPattern, ln)) {
+        next
+      }
       rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
       rhs <- gsub('"[^"]*"', "", rhs)
-      if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
+      if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) {
+        next
+      }
       # Same constant the checker uses, NOT a copy of its literal: when these
       # were two literals, ratifying a new canonical updated one and left this
       # test flagging the model that founded it.
-      if (grepl(nlmixr2lib:::.timeVaryingClearanceAcceptPattern, rhs)) next
+      if (grepl(nlmixr2lib:::.timeVaryingClearanceAcceptPattern, rhs)) {
+        next
+      }
       offenders <- c(offenders, basename(f))
     }
   }
   # The four deliberate exclusions are a different structure (diurnal cosine,
   # circadian clock offset, a lag state, ADA-gated logistic onset).
-  allowed <- c("Bienczak_2016_nevirapine.R", "Hayashi_1998_epoetinBeta.R",
-               "Mann_2022_respiratory_physiology.R", "Yoshida_2024_fazpilodemab.R")
+  allowed <- c(
+    "Bienczak_2016_nevirapine.R",
+    "Hayashi_1998_epoetinBeta.R",
+    "Mann_2022_respiratory_physiology.R",
+    "Yoshida_2024_fazpilodemab.R"
+  )
   expect_equal(sort(unique(setdiff(offenders, allowed))), character(0))
 })
 
@@ -1368,17 +1414,20 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
 test_that("compartmentData must cover every ODE state and use the vocabulary", {
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   expect_true(length(conv$specimenVocabulary) > 0L)
-  expect_true(all(c("analyte", "units", "specimen", "verified") %in%
-                    conv$compartmentDataFields))
+  expect_true(all(
+    c("analyte", "units", "specimen", "verified") %in%
+      conv$compartmentDataFields
+  ))
   # The two non-matrix categories must exist, or every latent/PD state would be
   # forced into a false specimen.
-  expect_true(all(c("administration site", "not applicable") %in%
-                    conv$specimenVocabulary))
+  expect_true(all(
+    c("administration site", "not applicable") %in%
+      conv$specimenVocabulary
+  ))
 })
 
 test_that("the worked compartmentData examples validate", {
-  for (nm in c("PerezRuixo_2025_posdinemab", "HuttonSmith_2018_ranibizumab",
-               "Le_2015_lampalizumab_cyno")) {
+  for (nm in c("PerezRuixo_2025_posdinemab", "HuttonSmith_2018_ranibizumab", "Le_2015_lampalizumab_cyno")) {
     res <- suppressWarnings(checkModelConventions(nm, verbose = FALSE))
     expect_equal(sum(res$category == "compartment_data"), 0L, info = nm)
   }
@@ -1445,8 +1494,7 @@ test_that("no model in the database repeats fixed() in its label", {
   # Enumerating: the database was cleaned in one pass, so any hit is new.
   root <- system.file("modeldb", package = "nlmixr2lib")
   skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
-  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*",
-                "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
+  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*", "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
   offenders <- character(0)
   for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
     src <- readLines(f, warn = FALSE)
@@ -1463,8 +1511,7 @@ test_that("the extraction skill never teaches a name the rules reject", {
   # INSTRUCTIONS, so a retired name cannot survive in the guidance that new
   # models are written from -- which is how `allo_cl`, `logitfr`, `Km` and
   # `Vmax` were still being taught after the models themselves were migrated.
-  skillDir <- testthat::test_path("..", "..", ".claude", "skills",
-                                  "extract-literature-model")
+  skillDir <- testthat::test_path("..", "..", ".claude", "skills", "extract-literature-model")
   skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   docs <- list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
@@ -1482,11 +1529,9 @@ test_that("the extraction skill never teaches a name the rules reject", {
 })
 
 test_that("the extraction skill never shows fixed() repeated in a label", {
-  skillDir <- testthat::test_path("..", "..", ".claude", "skills",
-                                  "extract-literature-model")
+  skillDir <- testthat::test_path("..", "..", ".claude", "skills", "extract-literature-model")
   skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
-  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*",
-                "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
+  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*", "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
   offenders <- character(0)
   for (f in list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)) {
     src <- readLines(f, warn = FALSE)
@@ -1554,7 +1599,9 @@ test_that("no model in the database uses a non-canonical unit spelling", {
     for (fld in c("time", "dosing")) {
       map <- if (fld == "time") conv$timeUnitSpellings else conv$doseUnitSpellings
       m <- regmatches(src, regexpr(sprintf('%s\\s*=\\s*"[^"]*"', fld), src))
-      if (!length(m)) next
+      if (!length(m)) {
+        next
+      }
       val <- sub('.*"([^"]*)".*', "\\1", m)
       if (tolower(val) %in% names(map)) bad <- c(bad, paste0(basename(f), ": ", fld, "=", val))
     }
@@ -1589,12 +1636,20 @@ test_that("no ini() line carries a quoted trailing comment rxode2 would promote 
         inIni <- TRUE
         next
       }
-      if (grepl("^\\s*model\\(\\{", ln)) inIni <- FALSE
-      if (!inIni) next
+      if (grepl("^\\s*model\\(\\{", ln)) {
+        inIni <- FALSE
+      }
+      if (!inIni) {
+        next
+      }
       # A standalone comment line is not attached to a parameter, and a line
       # that already calls label() is not promoted.
-      if (grepl("^\\s*#", ln)) next
-      if (grepl("label(", ln, fixed = TRUE)) next
+      if (grepl("^\\s*#", ln)) {
+        next
+      }
+      if (grepl("label(", ln, fixed = TRUE)) {
+        next
+      }
       # Locate the first # that is not itself inside a string literal.
       chars <- strsplit(ln, "", fixed = TRUE)[[1]]
       nq <- 0L
@@ -1607,7 +1662,9 @@ test_that("no ini() line carries a quoted trailing comment rxode2 would promote 
           break
         }
       }
-      if (hash == 0L) next
+      if (hash == 0L) {
+        next
+      }
       if (grepl('"', substring(ln, hash), fixed = TRUE)) {
         bad <- c(bad, paste0(basename(f), ":", i))
       }
@@ -1633,8 +1690,12 @@ test_that("iov_ and bvv_ level etas pair with their l<param> fixed effect", {
     )
     covariateData <- list(
       OCC = list(
-        description = "Occasion index", units = "(count)", type = "categorical",
-        reference_category = NULL, notes = "n", source_name = "OCC"
+        description = "Occasion index",
+        units = "(count)",
+        type = "categorical",
+        reference_category = NULL,
+        notes = "n",
+        source_name = "OCC"
       )
     )
     ini({
@@ -1704,22 +1765,26 @@ test_that("no register entry is duplicated at the same Type", {
   root <- system.file("references", package = "nlmixr2lib")
   skip_if(!nzchar(root) || !dir.exists(root), "references not installed")
   issues <- nlmixr2lib:::.referenceDuplicateIssues(
-    Sys.glob(file.path(root, "*.md")))
+    Sys.glob(file.path(root, "*.md"))
+  )
   expect_equal(nrow(issues), 0L)
 })
 
 test_that("two blocks sharing a name and a Type are an error", {
   tmp <- tempfile(fileext = ".md")
   on.exit(unlink(tmp), add = TRUE)
-  writeLines(c(
-    "### foo (**canonical foo**)",
-    "- **Type:** compartment",
-    "- **Role:** first.",
-    "",
-    "### foo (**canonical foo again**)",
-    "- **Type:** compartment",
-    "- **Role:** second, silently discarded."
-  ), tmp)
+  writeLines(
+    c(
+      "### foo (**canonical foo**)",
+      "- **Type:** compartment",
+      "- **Role:** first.",
+      "",
+      "### foo (**canonical foo again**)",
+      "- **Type:** compartment",
+      "- **Role:** second, silently discarded."
+    ),
+    tmp
+  )
   issues <- nlmixr2lib:::.referenceDuplicateIssues(tmp)
   expect_equal(nrow(issues), 1L)
   expect_equal(issues$severity, "error")
@@ -1733,32 +1798,38 @@ test_that("the same name under two different Types is NOT flagged", {
   # compartment and a metabolite-suffix, on purpose.
   tmp <- tempfile(fileext = ".md")
   on.exit(unlink(tmp), add = TRUE)
-  writeLines(c(
-    "### col (**canonical colistin bare drug-state compartment**)",
-    "- **Type:** compartment",
-    "- **Role:** bare state.",
-    "",
-    "### col (**canonical colistin metabolite suffix**)",
-    "- **Type:** metabolite-suffix",
-    "- **Role:** suffix."
-  ), tmp)
+  writeLines(
+    c(
+      "### col (**canonical colistin bare drug-state compartment**)",
+      "- **Type:** compartment",
+      "- **Role:** bare state.",
+      "",
+      "### col (**canonical colistin metabolite suffix**)",
+      "- **Type:** metabolite-suffix",
+      "- **Role:** suffix."
+    ),
+    tmp
+  )
   expect_equal(nrow(nlmixr2lib:::.referenceDuplicateIssues(tmp)), 0L)
 })
 
 test_that("register blocks are parsed with and without the bold parenthetical", {
   tmp <- tempfile(fileext = ".md")
   on.exit(unlink(tmp), add = TRUE)
-  writeLines(c(
-    "## A section heading is not an entry",
-    "### bare",
-    "- **Type:** paper-named-param",
-    "",
-    "### withParen (**canonical thing**)",
-    "- **Type:** compartment",
-    "",
-    "### Files using ALB",
-    "(prose heading, no Type line)"
-  ), tmp)
+  writeLines(
+    c(
+      "## A section heading is not an entry",
+      "### bare",
+      "- **Type:** paper-named-param",
+      "",
+      "### withParen (**canonical thing**)",
+      "- **Type:** compartment",
+      "",
+      "### Files using ALB",
+      "(prose heading, no Type line)"
+    ),
+    tmp
+  )
   b <- nlmixr2lib:::.referenceRegisterBlocks(tmp)
   expect_true(all(c("bare", "withParen") %in% b$name))
   expect_equal(b$type[b$name == "bare"], "paper-named-param")
@@ -1769,7 +1840,6 @@ test_that("register blocks are parsed with and without the bold parenthetical", 
 })
 
 # nolint end
-
 
 # Fraction-metabolised pathway family (`fm_<pathway>`). `fm` was registered
 # but its pathway suffixes were not, so nothing consumed the fact that
@@ -1796,8 +1866,9 @@ test_that("every registered fm_<pathway> member is accepted", {
   # Guard against a vacuous gate: if a register edit broke the heading, the
   # parse would yield nothing and every test below would pass for free.
   expect_gte(length(registered), 7L)
-  expect_true(all(c("fm_cyp3a4", "fm_cyp3a5", "fm_h4", "fm_ko516_frac",
-                    "fm_m3g", "fm_m6g", "fm_other") %in% registered))
+  expect_true(all(
+    c("fm_cyp3a4", "fm_cyp3a5", "fm_h4", "fm_ko516_frac", "fm_m3g", "fm_m6g", "fm_other") %in% registered
+  ))
   issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = registered), conv)
   expect_equal(nrow(issues), 0L)
 })
@@ -1844,10 +1915,17 @@ test_that("model() locals are in scope, not just ini() parameters", {
   # Mitra_2026_ziftomenib.R binds `fm_ko516_frac` inside model(), never in
   # ini(); an ini-only check would not see it.
   conv <- nlmixr2lib:::.nlmixr2libConventions()
-  expect_equal(nrow(nlmixr2lib:::.checkFmFamily(
-    .fmStubUi(model = "fm_ko516_frac <- 0.5"), conv)), 0L)
+  expect_equal(
+    nrow(nlmixr2lib:::.checkFmFamily(
+      .fmStubUi(model = "fm_ko516_frac <- 0.5"),
+      conv
+    )),
+    0L
+  )
   bad <- nlmixr2lib:::.checkFmFamily(
-    .fmStubUi(model = "fm_ko516frac <- 0.5"), conv)
+    .fmStubUi(model = "fm_ko516frac <- 0.5"),
+    conv
+  )
   expect_equal(nrow(bad), 1L)
   expect_equal(bad$name, "fm_ko516frac")
 })
@@ -1858,7 +1936,8 @@ test_that("a name bound inside an if() branch is still in scope", {
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   issues <- nlmixr2lib:::.checkFmFamily(
     .fmStubUi(model = "if (COV > 0) { fm_others <- 0.1 } else { fm_others <- 0.2 }"),
-    conv)
+    conv
+  )
   expect_equal(nrow(issues), 1L)
   expect_equal(issues$name, "fm_others")
   expect_true(grepl("Rename to 'fm_other'", issues$suggestion, fixed = TRUE))
@@ -1874,8 +1953,10 @@ test_that("source-paper notation in prose is out of scope", {
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   ui <- .fmStubUi(
     ini = "lcl_m2",
-    model = c('lab <- "Apparent M2 metabolite clearance CL_M2/(F*fm_M2)"',
-              'population <- list(ffm_range = "35.6-75.1", fm_range = "6.3-42.7")')
+    model = c(
+      'lab <- "Apparent M2 metabolite clearance CL_M2/(F*fm_M2)"',
+      'population <- list(ffm_range = "35.6-75.1", fm_range = "6.3-42.7")'
+    )
   )
   expect_equal(nrow(nlmixr2lib:::.checkFmFamily(ui, conv)), 0L)
 })
@@ -1887,18 +1968,21 @@ test_that("no model in the database binds an unregistered fm_ parameter", {
   root <- system.file("modeldb", package = "nlmixr2lib")
   skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
   conv <- nlmixr2lib:::.nlmixr2libConventions()
-  files <- list.files(root, pattern = "[.]R$", recursive = TRUE,
-                      full.names = TRUE)
-  candidates <- Filter(function(f) {
-    any(grepl("\\bfm_[A-Za-z0-9_]+", readLines(f, warn = FALSE), perl = TRUE))
-  }, files)
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  candidates <- Filter(
+    function(f) {
+      any(grepl("\\bfm_[A-Za-z0-9_]+", readLines(f, warn = FALSE), perl = TRUE))
+    },
+    files
+  )
   # If this drops to zero the test has stopped testing anything.
   expect_gte(length(candidates), 1L)
   bad <- character(0)
   for (f in candidates) {
     nm <- sub("[.]R$", "", basename(f))
     ui <- suppressMessages(suppressWarnings(
-      nlmixr2est::nlmixr(readModelDb(nm))))
+      nlmixr2est::nlmixr(readModelDb(nm))
+    ))
     issues <- nlmixr2lib:::.checkFmFamily(ui, conv)
     if (nrow(issues)) bad <- c(bad, paste0(nm, ": ", issues$name))
   }
@@ -1918,8 +2002,7 @@ test_that(".labelDocumentedProportions tolerates a missing or empty label", {
 })
 
 test_that("a label rounding expit(2.40) = 0.9168 to 0.917 still matches", {
-  expect_equal(nlmixr2lib:::.labelDocumentedProportions("Logit max suppression = 0.917"),
-               0.917)
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("Logit max suppression = 0.917"), 0.917)
   expect_lt(abs(nlmixr2lib:::.expit(2.40) - 0.917), 0.005)
 })
 
@@ -2052,40 +2135,65 @@ test_that("no shipped model disagrees with its own logit back-transform", {
   root <- system.file("modeldb", package = "nlmixr2lib")
   skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
   files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
-  expect_gt(length(files), 100L)   # the sweep must actually have inputs
+  expect_gt(length(files), 100L) # the sweep must actually have inputs
 
   # `logitfoo <- 1.56;  label("... F = 0.826 ...")`  and the forward-transform
   # spelling `logitfoo <- logit(0.826); label(...)`.
-  pat <- paste0("^\\s*([A-Za-z_.][A-Za-z0-9_.]*)\\s*<-\\s*",
-                "(logit\\(\\s*[-0-9.eE]+\\s*\\)|-?[0-9.]+(?:[eE][-+]?[0-9]+)?)\\s*;")
+  pat <- paste0(
+    "^\\s*([A-Za-z_.][A-Za-z0-9_.]*)\\s*<-\\s*",
+    "(logit\\(\\s*[-0-9.eE]+\\s*\\)|-?[0-9.]+(?:[eE][-+]?[0-9]+)?)\\s*;"
+  )
   offenders <- character(0)
   for (f in files) {
     for (ln in readLines(f, warn = FALSE)) {
       m <- regmatches(ln, regexec(pat, ln, perl = TRUE))[[1]]
-      if (!length(m)) next
+      if (!length(m)) {
+        next
+      }
       nm <- m[[2]]
-      if (!grepl("logit", nm, ignore.case = TRUE)) next
-      if (grepl("^eta", nm)) next
+      if (!grepl("logit", nm, ignore.case = TRUE)) {
+        next
+      }
+      if (grepl("^eta", nm)) {
+        next
+      }
       raw <- m[[3]]
       est <- if (grepl("^logit\\(", raw)) {
         p <- as.numeric(gsub("[^-0-9.eE]", "", raw))
-        if (!is.finite(p) || p <= 0 || p >= 1) next
+        if (!is.finite(p) || p <= 0 || p >= 1) {
+          next
+        }
         log(p / (1 - p))
       } else {
         as.numeric(raw)
       }
-      if (!is.finite(est)) next
+      if (!is.finite(est)) {
+        next
+      }
       lbl <- sub("^.*?label\\(\\s*\"", "", ln)
       lbl <- sub("\"\\s*\\).*$", "", lbl)
       docs <- nlmixr2lib:::.labelDocumentedProportions(lbl)
       docs <- docs[abs(docs - est) > 1e-9]
-      if (!length(docs)) next
+      if (!length(docs)) {
+        next
+      }
       pos <- nlmixr2lib:::.expit(est)
       neg <- nlmixr2lib:::.expit(-est)
-      if (any(abs(pos - docs) <= 0.005) || any(abs(neg - docs) <= 0.005)) next
-      offenders <- c(offenders, sprintf("%s: %s = %g -> expit %.4f / %.4f, label says %s",
-                                        basename(f), nm, est, pos, neg,
-                                        paste(docs, collapse = ", ")))
+      if (any(abs(pos - docs) <= 0.005) || any(abs(neg - docs) <= 0.005)) {
+        next
+      }
+      offenders <- c(
+        offenders,
+        sprintf(
+          "%s: %s = %g -> expit %.4f / %.4f, label says %s",
+          basename(f),
+          nm,
+          est,
+          pos,
+          neg,
+          paste(docs, collapse = ", ")
+        )
+      )
     }
   }
   expect_equal(offenders, character(0))
@@ -2099,9 +2207,13 @@ test_that("no shipped model disagrees with its own logit back-transform", {
 
 test_that("the four hand-written inverse-logit spellings are detected", {
   f <- nlmixr2lib:::.handWrittenInverseLogit
-  for (txt in c("1/(1 + exp(-x))", "1/(1 + exp(x))",
-                "exp(x)/(1 + exp(x))", "exp(x)/(exp(x) + 1)",
-                "exp(a + b)/(1 + exp(a + b))")) {
+  for (txt in c(
+    "1/(1 + exp(-x))",
+    "1/(1 + exp(x))",
+    "exp(x)/(1 + exp(x))",
+    "exp(x)/(exp(x) + 1)",
+    "exp(a + b)/(1 + exp(a + b))"
+  )) {
     expect_false(is.na(f(str2lang(txt))), info = txt)
   }
 })
@@ -2122,7 +2234,9 @@ test_that("shapes that merely resemble an inverse logit are NOT detected", {
     "exp(x)/vc",
     "central/vc"
   )
-  for (txt in cases) expect_true(is.na(f(str2lang(txt))), info = txt)
+  for (txt in cases) {
+    expect_true(is.na(f(str2lang(txt))), info = txt)
+  }
 })
 
 test_that("a model using expit() raises no issue", {
@@ -2216,22 +2330,33 @@ test_that("no shipped model spells an inverse logit by hand", {
   for (f in files) {
     txt <- paste(readLines(f, warn = FALSE), collapse = "\n")
     m <- regexpr("model\\s*\\(\\s*\\{", txt)
-    if (m < 0) next
+    if (m < 0) {
+      next
+    }
     open <- m + attr(m, "match.length") - 1L
     chars <- strsplit(substring(txt, open), "")[[1]]
     depth <- 0L
     close <- NA_integer_
     for (i in seq_along(chars)) {
-      if (chars[[i]] == "{") depth <- depth + 1L
+      if (chars[[i]] == "{") {
+        depth <- depth + 1L
+      }
       if (chars[[i]] == "}") {
         depth <- depth - 1L
-        if (depth == 0L) { close <- i; break }
+        if (depth == 0L) {
+          close <- i
+          break
+        }
       }
     }
-    if (is.na(close)) next
+    if (is.na(close)) {
+      next
+    }
     body <- substring(txt, open, open + close - 1L)
     e <- tryCatch(str2lang(body), error = function(e) NULL)
-    if (is.null(e)) next
+    if (is.null(e)) {
+      next
+    }
     hits <- nlmixr2lib:::.inverseLogitOffenders(e)
     if (length(hits)) {
       offenders <- c(offenders, paste0(basename(f), ": ", unique(hits)))
@@ -2272,8 +2397,7 @@ test_that(".checkCentralConcentrationName fires in BOTH directions", {
 
   # (4) EXEMPTION: a second central quantity beside a defined `Cc` keeps its
   #     own name (Duke_2024_cefazolin: unbound beside total).
-  expect_equal(nrow(run(c("Cunbound <- central / vc",
-                          "Cc <- (complex + central) / vc"))), 0L)
+  expect_equal(nrow(run(c("Cunbound <- central / vc", "Cc <- (complex + central) / vc"))), 0L)
 
   # (5) EXEMPTION: a SCALED derivation is a different quantity, not a rename.
   expect_equal(nrow(run(c("Cc <- central / vc", "Cu <- central / vc * fu"))), 0L)
@@ -2319,7 +2443,11 @@ test_that(".checkCentralConcentrationName fires in BOTH directions", {
         %s <- expit(logit_ep)
         %s ~ add(addSd_%s)
       })
-    }", out, out, out, out
+    }",
+    out,
+    out,
+    out,
+    out
   )
   eval(parse(text = paste0("function() ", body)))
 }
@@ -2334,8 +2462,7 @@ test_that(".checkCentralConcentrationName fires in BOTH directions", {
 test_that("a prob_<endpoint> single output raises no observation issue", {
   # Registered endpoint (has its own H3 entry) and, more importantly,
   # endpoints that are NOT registered -- those are what the shape rule buys.
-  for (nm in c("prob_roc", "prob_patient_rating", "prob_almost_cured",
-               "prob_aeg35", "prob_significant_improvement")) {
+  for (nm in c("prob_roc", "prob_patient_rating", "prob_almost_cured", "prob_aeg35", "prob_significant_improvement")) {
     expect_equal(nrow(.erObsIssues(nm)), 0L, info = nm)
   }
 })
@@ -2343,8 +2470,10 @@ test_that("a prob_<endpoint> single output raises no observation issue", {
 test_that("the shape accepts a brand-new endpoint with no register entry", {
   # The whole point of the ruling: a future ER extraction must pass without a
   # register edit. Guard with a name deliberately absent from the register.
-  expect_false("prob_brand_new_endpoint42" %in%
-                 nlmixr2lib:::.nlmixr2libConventions()$compartments)
+  expect_false(
+    "prob_brand_new_endpoint42" %in%
+      nlmixr2lib:::.nlmixr2libConventions()$compartments
+  )
   expect_equal(nrow(.erObsIssues("prob_brand_new_endpoint42")), 0L)
 })
 
@@ -2373,7 +2502,9 @@ test_that("probOutputRegex accepts every prob_ output shipped in the library", {
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   files <- list.files(
     system.file("modeldb", package = "nlmixr2lib"),
-    pattern = "\\.R$", recursive = TRUE, full.names = TRUE
+    pattern = "\\.R$",
+    recursive = TRUE,
+    full.names = TRUE
   )
   used <- character()
   for (f in files) {
@@ -2383,9 +2514,10 @@ test_that("probOutputRegex accepts every prob_ output shipped in the library", {
   }
   used <- sort(unique(used))
   expect_gt(length(used), 30L)
-  expect_true(all(grepl(conv$probOutputRegex, used)),
-              info = paste(used[!grepl(conv$probOutputRegex, used)],
-                           collapse = ", "))
+  expect_true(
+    all(grepl(conv$probOutputRegex, used)),
+    info = paste(used[!grepl(conv$probOutputRegex, used)], collapse = ", ")
+  )
 })
 
 test_that("the prob_ family is an observation form, not a compartment name", {

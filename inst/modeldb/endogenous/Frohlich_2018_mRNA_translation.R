@@ -1,6 +1,6 @@
 Frohlich_2018_mRNA_translation <- function() {
   description <- "QSP (mechanistic, single-cell, in vitro). Two-state gene-expression model with ribosomal rate-limited translation (model ii of Frohlich et al. 2018) for eGFP / d2eGFP fluorescent reporter expression after mRNA transfection in HuH7 hepatoma cells, fit by multi-experiment nonlinear mixed-effects modelling (MEMOIR + AMICI)."
-  reference   <- paste(
+  reference <- paste(
     "Frohlich F, Reiser A, Fink L, Woschee D, Ligon T,",
     "Theis FJ, Radler JO, Hasenauer J.",
     "Multi-experiment nonlinear mixed effect modeling of",
@@ -14,8 +14,12 @@ Frohlich_2018_mRNA_translation <- function() {
     "see vignette for the recovery details).",
     sep = " "
   )
-  vignette    <- "Frohlich_2018_mRNA_translation"
-  units       <- list(time = "h", dosing = "normalized mRNA mass (m0 = 1)", concentration = "log fluorescence intensity (a.u.)")
+  vignette <- "Frohlich_2018_mRNA_translation"
+  units <- list(
+    time = "h",
+    dosing = "normalized mRNA mass (m0 = 1)",
+    concentration = "log fluorescence intensity (a.u.)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
@@ -23,30 +27,30 @@ Frohlich_2018_mRNA_translation <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     mrna = list(analyte = "mRNA", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    gfp  = list(analyte = "eGFP", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    gfp = list(analyte = "eGFP", units = NA_character_, specimen = "not applicable", verified = FALSE),
     ribo = list(analyte = "free ribosomes", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     STUDY_d2eGFP = list(
-      description        = "1 = cell transfected with destabilized eGFP (d2eGFP, ~6.6 h protein half-life via C-terminal PEST sequence); 0 = cell transfected with eGFP (~22.8 h protein half-life). Cohort indicator selecting between the two reporter constructs in the Frohlich 2018 multi-experiment NLME analysis. All structural and ribosomal-binding parameters are shared between cohorts; only the protein degradation rate (gamma_eGFP for STUDY_d2eGFP = 0 vs gamma_d2eGFP for STUDY_d2eGFP = 1) and its IIV variance differ.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = cell transfected with destabilized eGFP (d2eGFP, ~6.6 h protein half-life via C-terminal PEST sequence); 0 = cell transfected with eGFP (~22.8 h protein half-life). Cohort indicator selecting between the two reporter constructs in the Frohlich 2018 multi-experiment NLME analysis. All structural and ribosomal-binding parameters are shared between cohorts; only the protein degradation rate (gamma_eGFP for STUDY_d2eGFP = 0 vs gamma_d2eGFP for STUDY_d2eGFP = 1) and its IIV variance differ.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Cell-level (time-fixed) indicator. The two cohorts were measured in parallel using the same transfection / imaging / quantification pipeline; the only experimental difference is the mRNA construct (eGFP vs d2eGFP). Frohlich 2018 Methods (Plasmid vectors and mRNA production).",
-      source_name        = "EXPERIMENT (1 = eGFP, 2 = d2eGFP in the source dataset)"
+      notes = "Cell-level (time-fixed) indicator. The two cohorts were measured in parallel using the same transfection / imaging / quantification pipeline; the only experimental difference is the mRNA construct (eGFP vs d2eGFP). Frohlich 2018 Methods (Plasmid vectors and mRNA production).",
+      source_name = "EXPERIMENT (1 = eGFP, 2 = d2eGFP in the source dataset)"
     )
   )
 
   population <- list(
-    species       = "in vitro (human hepatoma HuH7 cell line)",
-    n_subjects    = 630,
-    n_studies     = 1,
-    age_range     = "n/a (immortalised cell line; 4-h adhesion + 30-h imaging per channel)",
+    species = "in vitro (human hepatoma HuH7 cell line)",
+    n_subjects = 630,
+    n_studies = 1,
+    age_range = "n/a (immortalised cell line; 4-h adhesion + 30-h imaging per channel)",
     disease_state = "Healthy proliferating cells; no perturbation other than mRNA lipoplex transfection.",
-    dose_range    = "Single mRNA lipoplex addition (~0.5 ug/uL mRNA in OptiMEM with Lipofectamine(TM) 2000 at 2.5 uL per 1 ug mRNA), 1-h incubation followed by washout. The structural model is encoded on the normalised mRNA mass m0; one 'dose' = the per-cell mRNA mass entering the cytoplasm.",
-    regions       = "Germany (LMU Munich / Helmholtz Zentrum Muenchen).",
-    notes         = "Single-cell time-lapse fluorescence microscopy of micropatterned protein arrays (30 um x 30 um fibronectin squares on PLL-g-PEG passivated coverslips). >= 200 cells per experimental condition per replicate; the primary fit (results_ribo.mat, 14-Nov-2016) uses N_eGFP = 236 and N_d2eGFP = 394 single cells (sum 630). Imaging interval 10 min over 30 h; observations start ~2 h after lipoplex addition (eGFP grid: 2.17-32 h; d2eGFP grid: 2.0-32 h). The output is log fluorescence intensity y = log(GFP + offset), so the residual error is additive on the log scale (paper Methods, Data acquisition and quantitative image analysis). Parameter values are the population fixed-effect means (beta) and diagonal random-effect variances (D) from results_ribo.mat in the authors' Zenodo deposit (doi:10.5281/zenodo.1228899); MEMOIR uses log10(parameter) = beta + b internally, so all variances are converted to the natural-log scale used by nlmixr2 via Var[ln(p)] = ln(10)^2 * Var[log10(p)] = 5.302 * D_paper (see in-file comments). Offset has no inter-cell IIV in the source model (only a common fixed effect per the per-experiment phi mapping in experiments_transfection_ribo.m); the C_offset value in the deposited parameter vector is unconstrained and not used here. Residual error is reported in the source experiment definition as sigma_noise = 0.3 on the log-fluorescence observable (initialisation in experiments_transfection_ribo.m); per-cell sigmas are estimated as nuisance parameters in the inner MEMOIR likelihood (estim_sigma = true in optimize_transfection.m) and not retained at the population level, so 0.3 is the reported population-level value carried forward here -- see vignette Assumptions."
+    dose_range = "Single mRNA lipoplex addition (~0.5 ug/uL mRNA in OptiMEM with Lipofectamine(TM) 2000 at 2.5 uL per 1 ug mRNA), 1-h incubation followed by washout. The structural model is encoded on the normalised mRNA mass m0; one 'dose' = the per-cell mRNA mass entering the cytoplasm.",
+    regions = "Germany (LMU Munich / Helmholtz Zentrum Muenchen).",
+    notes = "Single-cell time-lapse fluorescence microscopy of micropatterned protein arrays (30 um x 30 um fibronectin squares on PLL-g-PEG passivated coverslips). >= 200 cells per experimental condition per replicate; the primary fit (results_ribo.mat, 14-Nov-2016) uses N_eGFP = 236 and N_d2eGFP = 394 single cells (sum 630). Imaging interval 10 min over 30 h; observations start ~2 h after lipoplex addition (eGFP grid: 2.17-32 h; d2eGFP grid: 2.0-32 h). The output is log fluorescence intensity y = log(GFP + offset), so the residual error is additive on the log scale (paper Methods, Data acquisition and quantitative image analysis). Parameter values are the population fixed-effect means (beta) and diagonal random-effect variances (D) from results_ribo.mat in the authors' Zenodo deposit (doi:10.5281/zenodo.1228899); MEMOIR uses log10(parameter) = beta + b internally, so all variances are converted to the natural-log scale used by nlmixr2 via Var[ln(p)] = ln(10)^2 * Var[log10(p)] = 5.302 * D_paper (see in-file comments). Offset has no inter-cell IIV in the source model (only a common fixed effect per the per-experiment phi mapping in experiments_transfection_ribo.m); the C_offset value in the deposited parameter vector is unconstrained and not used here. Residual error is reported in the source experiment definition as sigma_noise = 0.3 on the log-fluorescence observable (initialisation in experiments_transfection_ribo.m); per-cell sigmas are estimated as nuisance parameters in the inner MEMOIR likelihood (estim_sigma = true in optimize_transfection.m) and not retained at the population level, so 0.3 is the reported population-level value carried forward here -- see vignette Assumptions."
   )
 
   ini({

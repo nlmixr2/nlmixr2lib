@@ -1,145 +1,145 @@
 Huo_2025_lamotrigine <- function() {
   description <- "One-compartment population PK model with first-order absorption and elimination for lamotrigine (LTG) in 128 Chinese peripregnancy women with epilepsy on lamotrigine monotherapy (Huo 2025 Eqs 1-7, Table 4 'Final Model' column). Ka (1.93 1/h) and apparent volume V/F (68.8 L) were both FIXED from the literature because the therapeutic-drug-monitoring data were almost all steady-state troughs and carried no absorption or distribution information; apparent clearance CL/F was the only structural parameter estimated. CL/F = 2.42 L/h at 59.8 kg and carries an estimated body-weight power exponent of 0.95, an exponential five-level peripregnancy-stage effect using the paper's own Classification C staging (gestational-week nodes at 5, 14 and 28 weeks plus a postpartum level), and an exponential valproate-comedication effect that lowers CL/F by 45% (exp(-0.60)). Residual error is combined proportional plus additive. Fit in Phoenix NLME 8.3 by FOCE-ELS."
-  reference   <- "Huo J, Liu Y, Yang J, Chen M, Yang L, Wang L, Zhang D, Liu T, Gao W, Dai H, Mei S, Zhao Z. Dosing Optimization of Lamotrigine in Peripregnancy Epilepsy Through PopPK Modelling and Simulation. Drug Des Devel Ther. 2025;19:10243-10254. doi:10.2147/DDDT.S541597. PMCID PMC12645405. Structural equations from Eqs 1-5 (p 10246); covariate model from Eq 6 (p 10248) and the peripregnancy-stage / inhibitor coefficient block (p 10249); V/F from Eq 7 (p 10249); parameter estimates from Table 4 'Final Model'; peripregnancy staging from Table 1 row C; cohort demographics from Table 2."
-  vignette    <- "Huo_2025_lamotrigine"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Huo J, Liu Y, Yang J, Chen M, Yang L, Wang L, Zhang D, Liu T, Gao W, Dai H, Mei S, Zhao Z. Dosing Optimization of Lamotrigine in Peripregnancy Epilepsy Through PopPK Modelling and Simulation. Drug Des Devel Ther. 2025;19:10243-10254. doi:10.2147/DDDT.S541597. PMCID PMC12645405. Structural equations from Eqs 1-5 (p 10246); covariate model from Eq 6 (p 10248) and the peripregnancy-stage / inhibitor coefficient block (p 10249); V/F from Eq 7 (p 10249); parameter estimates from Table 4 'Final Model'; peripregnancy staging from Table 1 row C; cohort demographics from Table 2."
+  vignette <- "Huo_2025_lamotrigine"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "lamotrigine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters CL/F only, as the power term (WT/59.8)^0.95 printed in Huo 2025 Eq 6. The normalisation constant 59.8 kg is NOT the cohort mean body weight, which Table 2 gives as 60.75 +/- 13.47 kg (range 40.00-114.00); the paper never says what 59.8 kg is, and it is most plausibly the cohort MEDIAN weight. It is transcribed exactly as printed in Eq 6 and never adjusted. Note that the paper's own Discussion sentence 'this study set the Vd value as 59.8 L' re-uses this same number as a volume - that sentence is a transcription slip and 59.8 is the weight normalisation constant, not V/F (see the vignette Errata and the lvc source-trace comment). Body weight is time-varying across a pregnancy; the paper does not state whether the per-record weight or a single baseline weight was used, but the strong stage-3/stage-4 CL/F elevation that the Discussion reports (193% / 199% of stage 1) is only reproduced when the pregnancy weight gain is carried in WT alongside the stage effect, so a per-record (time-varying) weight is the reading used here.",
-      source_name        = "BW"
+      notes = "Enters CL/F only, as the power term (WT/59.8)^0.95 printed in Huo 2025 Eq 6. The normalisation constant 59.8 kg is NOT the cohort mean body weight, which Table 2 gives as 60.75 +/- 13.47 kg (range 40.00-114.00); the paper never says what 59.8 kg is, and it is most plausibly the cohort MEDIAN weight. It is transcribed exactly as printed in Eq 6 and never adjusted. Note that the paper's own Discussion sentence 'this study set the Vd value as 59.8 L' re-uses this same number as a volume - that sentence is a transcription slip and 59.8 is the weight normalisation constant, not V/F (see the vignette Errata and the lvc source-trace comment). Body weight is time-varying across a pregnancy; the paper does not state whether the per-record weight or a single baseline weight was used, but the strong stage-3/stage-4 CL/F elevation that the Discussion reports (193% / 199% of stage 1) is only reproduced when the pregnancy weight gain is carried in WT alongside the stage effect, so a per-record (time-varying) weight is the reading used here.",
+      source_name = "BW"
     ),
     EGA = list(
-      description        = "Maternal estimated gestational age at the observation",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Maternal estimated gestational age at the observation",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Carries the peripregnancy stage during pregnancy. The paper does not fit gestational age as a continuous covariate; it fits a five-level categorical 'peripregnancy stage' whose levels are gestational-week bands. Huo 2025 Table 1 row C ('Classification C was selected for the model') defines them as stage 1 = GA < 5 weeks, stage 2 = 5 <= GA < 14 weeks, stage 3 = 14 <= GA <= 28 weeks, stage 4 = 28 < GA < delivery, stage 5 = postpartum. Those cutoffs are the paper's own model equation, so the banding is applied inside model() from EGA rather than requiring the user to supply a pre-computed stage column. Per the EGA register entry, gestational-week stratification is carried on EGA rather than by introducing a trimester-indicator canonical. Set EGA to the gestational age in weeks for pregnancy records; for postpartum records EGA is ignored (TPP > 0 selects stage 5). Observation counts per stage: 13 / 63 / 111 / 84 / 22 (Table 2).",
-      source_name        = "Peripregnancy stage"
+      notes = "Carries the peripregnancy stage during pregnancy. The paper does not fit gestational age as a continuous covariate; it fits a five-level categorical 'peripregnancy stage' whose levels are gestational-week bands. Huo 2025 Table 1 row C ('Classification C was selected for the model') defines them as stage 1 = GA < 5 weeks, stage 2 = 5 <= GA < 14 weeks, stage 3 = 14 <= GA <= 28 weeks, stage 4 = 28 < GA < delivery, stage 5 = postpartum. Those cutoffs are the paper's own model equation, so the banding is applied inside model() from EGA rather than requiring the user to supply a pre-computed stage column. Per the EGA register entry, gestational-week stratification is carried on EGA rather than by introducing a trimester-indicator canonical. Set EGA to the gestational age in weeks for pregnancy records; for postpartum records EGA is ignored (TPP > 0 selects stage 5). Observation counts per stage: 13 / 63 / 111 / 84 / 22 (Table 2).",
+      source_name = "Peripregnancy stage"
     ),
     TPP = list(
-      description        = "Time postpartum (time since delivery)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Time postpartum (time since delivery)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only as the postpartum GATE: TPP = 0 for every pregnancy record and TPP > 0 for every postpartum record, which selects peripregnancy stage 5 (Huo 2025 Table 1 row C). The paper models postpartum as a single step level, NOT as a continuous time-since-delivery decay, so no magnitude of TPP other than 'zero vs positive' affects the prediction. The postpartum observations span 1 to 84 days after delivery (Limitations), which the authors flag as a limitation because LTG CL/F is reported elsewhere to return to prepregnancy levels within 2-4 weeks; a single step level therefore averages across a window in which recovery is still in progress.",
-      source_name        = "Postpartum"
+      notes = "Used only as the postpartum GATE: TPP = 0 for every pregnancy record and TPP > 0 for every postpartum record, which selects peripregnancy stage 5 (Huo 2025 Table 1 row C). The paper models postpartum as a single step level, NOT as a continuous time-since-delivery decay, so no magnitude of TPP other than 'zero vs positive' affects the prediction. The postpartum observations span 1 to 84 days after delivery (Limitations), which the authors flag as a limitation because LTG CL/F is reported elsewhere to return to prepregnancy levels within 2-4 weeks; a single step level therefore averages across a window in which recovery is still in progress.",
+      source_name = "Postpartum"
     ),
     CONMED_VPA = list(
-      description        = "Concomitant valproate (valproic acid) therapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant valproate (valproic acid) therapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant enzyme inhibitor (lamotrigine without valproate)",
-      notes              = "Huo 2025 calls this covariate 'inhibitor' / 'enzyme inhibitors', but Data Collection defines the enzyme-inhibitor class as containing exactly one drug: 'enzyme inhibitors (valproic acid(VPA))'. Valproate was used by 3.91% (5) of the 128 patients (Table 2), and both the Discussion ('co-administration of VPA could decrease LTG CL/F by 46%') and the Table 6 dosing recommendations name VPA explicitly, so the drug-specific canonical CONMED_VPA is used rather than the pooled CONMED_UGT_INH. Enters CL/F as exp(-0.60 * CONMED_VPA) = 0.549, a 45.1% reduction, which reproduces the paper's stated 46%. Time-varying in principle; the cohort is on chronic maintenance therapy.",
-      source_name        = "inhibitor"
+      notes = "Huo 2025 calls this covariate 'inhibitor' / 'enzyme inhibitors', but Data Collection defines the enzyme-inhibitor class as containing exactly one drug: 'enzyme inhibitors (valproic acid(VPA))'. Valproate was used by 3.91% (5) of the 128 patients (Table 2), and both the Discussion ('co-administration of VPA could decrease LTG CL/F by 46%') and the Table 6 dosing recommendations name VPA explicitly, so the drug-specific canonical CONMED_VPA is used rather than the pooled CONMED_UGT_INH. Enters CL/F as exp(-0.60 * CONMED_VPA) = 0.549, a 45.1% reduction, which reproduces the paper's stated 46%. Time-varying in principle; the cohort is on chronic maintenance therapy.",
+      source_name = "inhibitor"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened and not retained. Huo 2025 'Other Unexplored Covariates in LTG Metabolism' attributes the absence of an age effect to the narrow age span of the cohort (19-36 years, Table 2)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened and not retained. Huo 2025 'Other Unexplored Covariates in LTG Metabolism' attributes the absence of an age effect to the narrow age span of the cohort (19-36 years, Table 2)."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained. Highly correlated with body weight; the Covariate Model section excluded covariate pairs with a correlation coefficient > 0.5 from entering the model simultaneously (Figure S1)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened and not retained. Highly correlated with body weight; the Covariate Model section excluded covariate pairs with a correlation coefficient > 0.5 from entering the model simultaneously (Figure S1)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained; correlated with body weight, see the BSA note."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and not retained; correlated with body weight, see the BSA note."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Huo 2025 reports that liver and kidney function were within normal limits for the majority of participants, so no hepatic or renal marker reached significance."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained. Huo 2025 reports that liver and kidney function were within normal limits for the majority of participants, so no hepatic or renal marker reached significance."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened and not retained; see the ALB note."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened and not retained; see the ALB note."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened and not retained; see the ALB note."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened and not retained; see the ALB note."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained; see the ALB note."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained; see the ALB note."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained; see the ALB note."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained; see the ALB note."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Only one patient had a creatinine below the reference range on at least two occasions, so renal function was effectively invariant in the cohort."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened and not retained. Only one patient had a creatinine below the reference range on at least two occasions, so renal function was effectively invariant in the cohort."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained; see the BUN note."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained; see the BUN note."
     ),
     CONMED_CBZ = list(
       description = "Concomitant carbamazepine",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an enzyme inducer and not retained. Huo 2025 attributes this to sample size: 'only 3 patients received CBZ in this study', versus other studies that did retain a CBZ effect."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an enzyme inducer and not retained. Huo 2025 attributes this to sample size: 'only 3 patients received CBZ in this study', versus other studies that did retain a CBZ effect."
     ),
     CONMED_OXC = list(
       description = "Concomitant oxcarbazepine",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an enzyme inducer and not retained (7 patients). Huo 2025 argues mechanistically that oxcarbazepine's active monohydroxy metabolite is only a weak UGT inducer and so is unlikely to affect a drug cleared by glucuronidation."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an enzyme inducer and not retained (7 patients). Huo 2025 argues mechanistically that oxcarbazepine's active monohydroxy metabolite is only a weak UGT inducer and so is unlikely to affect a drug cleared by glucuronidation."
     ),
     CONMED_PB = list(
       description = "Concomitant phenobarbital",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an enzyme inducer and not retained (5 patients)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an enzyme inducer and not retained (5 patients)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 128,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 128,
+    n_studies = 1,
     n_observations = 293,
-    age_range      = "19-36 years; mean 28.24 +/- 3.79 years (Table 2).",
-    weight_range   = "40.00-114.00 kg; mean 60.75 +/- 13.47 kg (Table 2).",
+    age_range = "19-36 years; mean 28.24 +/- 3.79 years (Table 2).",
+    weight_range = "40.00-114.00 kg; mean 60.75 +/- 13.47 kg (Table 2).",
     sex_female_pct = 100,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Women with epilepsy (2014 ILAE classification, confirmed by two board-certified neurologists) diagnosed during pregnancy or within 6 months postpartum, receiving lamotrigine monotherapy. Age < 18 years at conception, major psychiatric comorbidity, poor adherence and > 20% missing data were exclusions (Methods, Study Population).",
-    dose_range     = "25-800 mg/day oral tablets, typically given as one or two doses per day (Methods, Dosing Regimens and Concentration Measurement).",
-    regions        = "China (two centres: Beijing Tiantan Hospital, Capital Medical University; The Second Affiliated Hospital, Zhejiang University School of Medicine), January 2015 - May 2024.",
-    co_medication  = "42.19% of patients used at least one concomitant antiseizure medication. Individual comedication rates (Table 2): levetiracetam 17.19% (22), perampanel 4.69% (6), oxcarbazepine 5.47% (7), phenobarbital 3.91% (5), valproic acid 3.91% (5), carbamazepine 2.34% (3), clobazam 2.34% (3), topiramate 0.78% (1), lacosamide 0.78% (1), vigabatrin 0.78% (1). Only valproate (the enzyme-inhibitor class) was retained as a covariate.",
+    disease_state = "Women with epilepsy (2014 ILAE classification, confirmed by two board-certified neurologists) diagnosed during pregnancy or within 6 months postpartum, receiving lamotrigine monotherapy. Age < 18 years at conception, major psychiatric comorbidity, poor adherence and > 20% missing data were exclusions (Methods, Study Population).",
+    dose_range = "25-800 mg/day oral tablets, typically given as one or two doses per day (Methods, Dosing Regimens and Concentration Measurement).",
+    regions = "China (two centres: Beijing Tiantan Hospital, Capital Medical University; The Second Affiliated Hospital, Zhejiang University School of Medicine), January 2015 - May 2024.",
+    co_medication = "42.19% of patients used at least one concomitant antiseizure medication. Individual comedication rates (Table 2): levetiracetam 17.19% (22), perampanel 4.69% (6), oxcarbazepine 5.47% (7), phenobarbital 3.91% (5), valproic acid 3.91% (5), carbamazepine 2.34% (3), clobazam 2.34% (3), topiramate 0.78% (1), lacosamide 0.78% (1), vigabatrin 0.78% (1). Only valproate (the enzyme-inhibitor class) was retained as a covariate.",
     gestational_stage_distribution = "Observations per peripregnancy stage under Classification C: stage 1 (GA < 5 weeks) 13, stage 2 (5-14 weeks) 63, stage 3 (14-28 weeks) 111, stage 4 (28 weeks to delivery) 84, stage 5 (postpartum) 22 (Table 2). Postpartum samples span 1-84 days after delivery (Limitations).",
-    notes          = "Multicentre retrospective therapeutic-drug-monitoring cohort; the majority of the 293 samples are steady-state trough concentrations drawn after at least 7 days of continuous lamotrigine therapy. Concentrations were measured by a validated UPLC-MS/MS assay linear from 1.37 to 20.9 mg/L with an LLOQ of 1.37 mg/L. Baseline demographics are Table 2. No pre-pregnancy therapeutic-drug-monitoring data were available, so the fold-changes reported by the paper are all relative to peripregnancy stage 1 rather than to a true prepregnancy baseline (Limitations). No genotype data were collected."
+    notes = "Multicentre retrospective therapeutic-drug-monitoring cohort; the majority of the 293 samples are steady-state trough concentrations drawn after at least 7 days of continuous lamotrigine therapy. Concentrations were measured by a validated UPLC-MS/MS assay linear from 1.37 to 20.9 mg/L with an LLOQ of 1.37 mg/L. Baseline demographics are Table 2. No pre-pregnancy therapeutic-drug-monitoring data were available, so the fold-changes reported by the paper are all relative to peripregnancy stage 1 rather than to a true prepregnancy baseline (Limitations). No genotype data were collected."
   )
 
   ini({

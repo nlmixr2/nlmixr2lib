@@ -32,27 +32,27 @@ Jung_2023_donepezil_multipledose <- function() {
   dosing <- c("depot_oral", "depot_td")
 
   compartmentData <- list(
-    depot_oral  = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "donepezil", units = "mg", specimen = "plasma", verified = TRUE),
+    depot_oral = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "donepezil", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "donepezil", units = "mg", specimen = "plasma", verified = TRUE),
-    depot_td    = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE)
+    depot_td = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "donepezil", units = "mg", specimen = "administration site", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44,
-    n_studies      = 1,
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = paste(
+    species = "human",
+    n_subjects = 44,
+    n_studies = 1,
+    disease_state = "Healthy adult volunteers",
+    dose_range = paste(
       "Multiple dose: 7 days of oral titration followed by three transdermal-patch doses,",
       "observed to 2496 h. Jung 2023 Section 2.3 states only that two different amounts were",
       "dosed for the oral and transdermal-patch routes; the amounts themselves are not reported."
     ),
     n_observations = 3024,
-    notes          = paste(
+    notes = paste(
       "Jung 2023 Table 2 reports Model Case 2 as 44 subjects and 3024 observations.",
       "DRUG IDENTITY. Jung 2023 never names the drug for Case 2, and unlike Case 1 the",
       "description carries no citation. Donepezil is an inference, adopted per operator sidecar",

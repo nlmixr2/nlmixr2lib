@@ -23,8 +23,8 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
   )
   vignette <- "Clewe_2018_TB_MTP_GPDI_invitro"
   units <- list(
-    time          = "day",
-    dosing        = "mg/L (static covariates -- not administered events)",
+    time = "day",
+    dosing = "mg/L (static covariates -- not administered events)",
     concentration = "log(CFU/mL) for the model observation log_cfu"
   )
 
@@ -33,20 +33,45 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
   # scheme; units are not derivable from its units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    aroff = list(analyte = "adaptive-resistance OFF subpopulation", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    aron  = list(analyte = "adaptive-resistance ON subpopulation", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    fbugs = list(analyte = "fast-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    sbugs = list(analyte = "slow-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    nbugs = list(analyte = "non-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    aroff = list(
+      analyte = "adaptive-resistance OFF subpopulation",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    aron = list(
+      analyte = "adaptive-resistance ON subpopulation",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    fbugs = list(
+      analyte = "fast-multiplying bacteria",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    sbugs = list(
+      analyte = "slow-multiplying bacteria",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    nbugs = list(
+      analyte = "non-multiplying bacteria",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONC_RIF_MGL = list(
-      description        = "Static rifampicin concentration in the in vitro time-kill assay (mg/L)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Static rifampicin concentration in the in vitro time-kill assay (mg/L)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant per Clewe 2018 Materials and methods (Multistate TB pharmacometric model):",
         "'Static drug concentrations were used as input to the PD modelling.",
         "The stability of the drugs allowed assessment of activity during the 6 days",
@@ -57,41 +82,41 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
         "in nlmixr2lib is a state-derived plasma concentration (log_cfu), not a static",
         "exogenous-drug-concentration covariate used to drive an in vitro PD model."
       ),
-      source_name        = "CRIF (Clewe 2018 Materials and methods)"
+      source_name = "CRIF (Clewe 2018 Materials and methods)"
     ),
     CONC_INH_MGL = list(
-      description        = "Static isoniazid concentration in the in vitro time-kill assay (mg/L)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Static isoniazid concentration in the in vitro time-kill assay (mg/L)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant per Clewe 2018 Materials and methods. Tested concentrations in",
         "the source experiment (Figure 1): isoniazid 0.01, 0.039, 0.156, 0.625, 2.5, 10,",
         "40 mg/L. Set to 0 in regimens without isoniazid. Paper-specific covariate;",
         "drives both the kill effects on F and S sub-states and the adaptive-resistance",
         "AR_on / AR_off transition rate kon * CONC_INH_MGL."
       ),
-      source_name        = "CINH (Clewe 2018 Materials and methods)"
+      source_name = "CINH (Clewe 2018 Materials and methods)"
     ),
     CONC_EMB_MGL = list(
-      description        = "Static ethambutol concentration in the in vitro time-kill assay (mg/L)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Static ethambutol concentration in the in vitro time-kill assay (mg/L)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant per Clewe 2018 Materials and methods. Tested concentrations in",
         "the source experiment (Figure 1): ethambutol 0.0078, 0.031, 0.125, 0.5, 2, 8,",
         "32 mg/L. Set to 0 in regimens without ethambutol. Paper-specific covariate."
       ),
-      source_name        = "CEMB (Clewe 2018 Materials and methods)"
+      source_name = "CEMB (Clewe 2018 Materials and methods)"
     )
   )
 
   population <- list(
-    species        = "in vitro (M. tuberculosis Beijing VN 2002-1585, BE1585 strain)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "in vitro (M. tuberculosis Beijing VN 2002-1585, BE1585 strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = paste(
       "Tuberculosis time-kill experiments using the Mycobacterium tuberculosis",
       "Beijing VN 2002-1585 (BE1585) genotype, an MDR-precursor clinical isolate.",
       "Cultures grown in Middlebrook 7H9 broth + 10% OADC + 0.5% glycerol +",
@@ -99,7 +124,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
       "Materials and methods (In vitro assay). The limit of quantification was",
       "5 CFU; data below the LOQ were handled in NONMEM with the M3 method."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Static drug concentrations (no PK dosing), tested in mono / duo / trio",
       "combinations over a 6-day window (assessed on days 1, 2, 3, and 6).",
       "Rifampicin 0.002-8 mg/L; isoniazid 0.01-40 mg/L; ethambutol 0.0078-32 mg/L",
@@ -107,7 +132,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
       "concentrations including clinically relevant unbound Cmax values (RIF 2,",
       "INH 10, EMB 8 mg/L)."
     ),
-    notes          = paste(
+    notes = paste(
       "Experiments performed in duplicate at Erasmus Medical Centre, Rotterdam, NL",
       "(Department of Medical Microbiology and Infectious Diseases). The paper",
       "does not report interindividual or interreplicate variability on the",

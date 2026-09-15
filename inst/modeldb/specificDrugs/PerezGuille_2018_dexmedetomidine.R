@@ -19,39 +19,39 @@ PerezGuille_2018_dexmedetomidine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "A priori allometric scaling per Perez-Guille 2018 Methods: CL and Q scale as (WT/70)^0.75 and V1 and V2 scale as (WT/70)^1; reference weight 70 kg. Cohort mean WT 43 kg (SD 19), age 2-18 years (Table 1). Age was tested as a separate covariate via a maturation model but was not retained (dBIC = 2.17; Results).",
-      source_name        = "WT"
+      notes = "A priori allometric scaling per Perez-Guille 2018 Methods: CL and Q scale as (WT/70)^0.75 and V1 and V2 scale as (WT/70)^1; reference weight 70 kg. Cohort mean WT 43 kg (SD 19), age 2-18 years (Table 1). Age was tested as a separate covariate via a maturation model but was not retained (dBIC = 2.17; Results).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 30L,
-    n_studies       = 1L,
-    age_range       = "2-18 years",
-    age_mean_sd     = "11 (SD 5) years",
-    weight_range    = "Table 1 reports mean 43 (SD 19) kg; cohort weight range not separately tabulated",
-    weight_mean_sd  = "43 (SD 19) kg",
-    height_mean_sd  = "132 (SD 42) cm",
-    sex_female_pct  = 30,
-    race_ethnicity  = "Mexican Mestizo",
-    disease_state   = "Healthy children with American Society of Anesthesiologists (ASA) physical status score of I (28/30) or II (2/30) scheduled for outpatient surgical procedures (urology, ORL, plastic, general). Exclusions: enzyme-inducing drugs, history of arrhythmias, delayed neurological development, malnutrition.",
-    dose_range      = "Single IV infusion of dexmedetomidine 0.7 ug/kg over 10-15 min (exact infusion time recorded per patient and used as PK model input).",
-    regions         = "Mexico (Instituto Nacional de Pediatria, Mexico City)",
-    procedures      = "Urologic (6), ORL (12), plastic (8), general (4); mean duration of anesthesia 77 (SD 15) min.",
-    co_medication   = "Standardised anaesthetic regimen: induction via inhaled sevoflurane + oxygen; fentanyl IV after IV access; IV propofol for endotracheal / laryngeal-mask insertion; maintenance with sevoflurane titrated to surgical stimulus.",
-    sampling        = "Sparse: 2-5 venous samples per child (1 mL each) at randomly assigned times among 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300, 420, and 600 min after end of infusion. HR and MAP recorded every 5 min during surgery and every 5 min for the first 30 min postoperatively, then hourly until discharge (Aldrete >8).",
-    notes           = "Final fit by stochastic-EM + MCMC (Monolix v4.4). Allometric and proportional weight models both reported (Table 2); this entry encodes the allometric (footnote a) model. The PD model was fit sequentially with the PK parameters fixed at the individual EBE estimates (Methods)."
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "2-18 years",
+    age_mean_sd = "11 (SD 5) years",
+    weight_range = "Table 1 reports mean 43 (SD 19) kg; cohort weight range not separately tabulated",
+    weight_mean_sd = "43 (SD 19) kg",
+    height_mean_sd = "132 (SD 42) cm",
+    sex_female_pct = 30,
+    race_ethnicity = "Mexican Mestizo",
+    disease_state = "Healthy children with American Society of Anesthesiologists (ASA) physical status score of I (28/30) or II (2/30) scheduled for outpatient surgical procedures (urology, ORL, plastic, general). Exclusions: enzyme-inducing drugs, history of arrhythmias, delayed neurological development, malnutrition.",
+    dose_range = "Single IV infusion of dexmedetomidine 0.7 ug/kg over 10-15 min (exact infusion time recorded per patient and used as PK model input).",
+    regions = "Mexico (Instituto Nacional de Pediatria, Mexico City)",
+    procedures = "Urologic (6), ORL (12), plastic (8), general (4); mean duration of anesthesia 77 (SD 15) min.",
+    co_medication = "Standardised anaesthetic regimen: induction via inhaled sevoflurane + oxygen; fentanyl IV after IV access; IV propofol for endotracheal / laryngeal-mask insertion; maintenance with sevoflurane titrated to surgical stimulus.",
+    sampling = "Sparse: 2-5 venous samples per child (1 mL each) at randomly assigned times among 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300, 420, and 600 min after end of infusion. HR and MAP recorded every 5 min during surgery and every 5 min for the first 30 min postoperatively, then hourly until discharge (Aldrete >8).",
+    notes = "Final fit by stochastic-EM + MCMC (Monolix v4.4). Allometric and proportional weight models both reported (Table 2); this entry encodes the allometric (footnote a) model. The PD model was fit sequentially with the PK parameters fixed at the individual EBE estimates (Methods)."
   )
 
   ini({
