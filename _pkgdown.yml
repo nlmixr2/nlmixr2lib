@@ -4166,6 +4166,10 @@ navbar:
         href: articles/Liu_2024_saf189s.html
       - text: "Saf189s proteinuria (Liu 2024)"
         href: articles/Liu_2024_saf189s.html
+      - text: "Safinamide (Loprete 2016)"
+        href: articles/Loprete_2016_safinamide.html
+      - text: "Safinamide ontime (Loprete 2016)"
+        href: articles/Loprete_2016_safinamide.html
       - text: "Salbutamol (Heuberger 2018)"
         href: articles/Heuberger_2018_salbutamol.html
       - text: "Salbutamol (Marques 2024)"
@@ -6417,6 +6421,7 @@ articles:
   - articles/LongBoyle_2015_busulfan
   - articles/Long_2017_necitumumab
   - articles/LopezArguello_2023_pbp_binding_pseudomonas
+  - articles/Loprete_2016_safinamide
   - articles/Lowe_2009_omalizumab
   - articles/Lu_2014_sglt_qsp
   - articles/Lu_2014_trastuzumabemtansine
