@@ -4848,6 +4848,26 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `s` -- prior canonical name (pre-2026-06-19 disambiguation standardization).
 - **Example models:** `Valitalo_2017_ketorolac.R`.
 
+### dcit_r_enant (**canonical R-desmethylcitalopram suffix**)
+- **Type:** metabolite-suffix
+- **Role:** R-desmethylcitalopram (R-DCT), the R-enantiomer of the primary N-demethylated metabolite of citalopram. Used for the compartment, parameter, observation and residual-SD names of joint enantiomer-resolved parent-plus-metabolite citalopram popPK models (`central_dcit_r_enant`, `lcl_dcit_r_enant`, `Cc_dcit_r_enant`, `propSd_dcit_r_enant`, `e_wt_cl_dcit_r_enant`).
+- **Source aliases:**
+  - `R-desmethylcitalopram` / `R-Dcit` -- Akil 2016 Abstract, Table 1 and Table 3.
+  - `C(3)` -- the concentration symbol for this analyte in Akil 2016 equations (1)-(4).
+  - `CL Rm /F` -- the Akil 2016 Table 3 parameter-symbol stem for its apparent clearance.
+- **Example models:** `Akil_2016_citalopram.R` (founding example; doi:10.1007/s10928-015-9457-6).
+- **Notes:** Registered as a **single composite token** (`dcit_r_enant`) rather than as a composable `dcit` plus the existing `r_enant`, because `checkModelConventions()` strips exactly one registered suffix when validating a *parameter* name (`.isPkParam` / `.isPkBareParam` are non-recursive, unlike `.matchesCompartment`). A two-layer `lcl_dcit_r_enant` would therefore fail parameter validation while passing compartment validation. The composite token keeps one grammar for all four analytes of a racemate-plus-metabolite model: `_r_enant` / `_s_enant` for the parent enantiomers and `_dcit_r_enant` / `_dcit_s_enant` for their metabolites, so the enantiomer label stays in the same trailing position throughout. Paired with `dcit_s_enant`. A future citalopram model that measures only racemic desmethylcitalopram should register a separate `dcit` token rather than overloading either of these.
+
+### dcit_s_enant (**canonical S-desmethylcitalopram suffix**)
+- **Type:** metabolite-suffix
+- **Role:** S-desmethylcitalopram (S-DCT, desmethylescitalopram), the S-enantiomer of the primary N-demethylated metabolite of citalopram.
+- **Source aliases:**
+  - `S-desmethylcitalopram` / `S-Dcit` -- Akil 2016 Abstract, Table 1 and Table 3.
+  - `C(4)` -- the concentration symbol for this analyte in Akil 2016 equations (1)-(4).
+  - `CL Sm /F` -- the Akil 2016 Table 3 parameter-symbol stem for its apparent clearance.
+- **Example models:** `Akil_2016_citalopram.R` (founding example; doi:10.1007/s10928-015-9457-6).
+- **Notes:** Companion to `dcit_r_enant`; see that entry for why the enantiomer label is folded into a single composite token.
+
 ### noxide (**canonical roflumilast N-oxide suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Roflumilast N-oxide, active metabolite of roflumilast (contributes ~90% of total PDE4 inhibitory activity).

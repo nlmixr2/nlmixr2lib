@@ -968,6 +968,8 @@ navbar:
         href: articles/Royer_2011_cisplatin.html
       - text: "Cisplatin (Urien 2004)"
         href: articles/Urien_2004_cisplatin.html
+      - text: "Citalopram (Akil 2016)"
+        href: articles/Akil_2016_citalopram.html
       - text: "Cladribine (Savic 2017)"
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
@@ -5391,6 +5393,7 @@ articles:
   - articles/AitOudhia_2016_sunitinib
   - articles/AitOudhia_2024_sotatercept
   - articles/Akbar_2025_voriconazole
+  - articles/Akil_2016_citalopram
   - articles/Aksenov_2018_uricAcid
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/AlZubaydi_2024_gabapentin
