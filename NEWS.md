@@ -2,6 +2,18 @@
 
 # development version
 
+- Require `rxode2 (>= 5.1.8)`. 5.1.7 is the first release that works with lotri
+  1.0.5, but it still defaults `useLinCmt = TRUE`, and the ODE-to-`linCmt()`
+  conversion that flag enables segfaults intermittently inside rxode2's model
+  parser -- `linCmtGen()` generates model text and the result is parsed again
+  while the outer parse is still live, over parser state held in C globals. It
+  took out a pkgdown render shard on `Stroh_2013_rolofylline` with
+  `memory not mapped`, having rendered the same article successfully minutes
+  earlier on another branch. 5.1.8 defaults the flag to `FALSE`, which is also
+  the more accurate path: the conversion holds `kel` at its `t = 0` value and
+  drops exogenous input terms, and it changes 92 of the library's models'
+  solutions, five of them by more than 1%.
+
 - **These vignettes now require an rxode2 that does not silently rewrite an ODE
   system into `linCmt()`** ([rxode2 issue
   1370](https://github.com/nlmixr2/rxode2/issues/1370)). On rxode2 5.1.6 and
