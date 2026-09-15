@@ -27,8 +27,13 @@ test_that("shard 2 of the model database satisfies the naming conventions", {
   # models has one violation somewhere, which is not enough to act on. The
   # diff on failure names the model, the rule and the parameter.
   .err <- res[res$severity == "error", , drop = FALSE]
-  expect_identical(
-    paste0(.err$model, " [", .err$category, "] ", .err$name, ": ", .err$message),
+  # paste0() recycles zero-length arguments against the literals, so on a
+  # clean shard paste0(.err$model, " [", ...) is " [] : " -- length 1, not
+  # length 0. Build the vector only when there is something to describe.
+  .errText <- if (nrow(.err) == 0L) {
     character(0)
-  )
+  } else {
+    paste0(.err$model, " [", .err$category, "] ", .err$name, ": ", .err$message)
+  }
+  expect_identical(.errText, character(0))
 })
