@@ -19,7 +19,13 @@
   if (is.null(nms)) {
     return(character(0))
   }
-  nms <- sort(nms)
+  # method = "radix" sorts in the C locale. Plain sort() uses the collation
+  # locale, and en_US.UTF-8 and C disagree about these names: 215 of shard 7's
+  # 364 models move between the two. The union still covers every model either
+  # way, but a failure would land in a different shard on a developer's machine
+  # than in CI, which makes it unreproducible exactly when someone needs to
+  # reproduce it.
+  nms <- sort(nms, method = "radix")
   nms[seq_along(nms) %% .conventionShardCount == (shard - 1L)]
 }
 

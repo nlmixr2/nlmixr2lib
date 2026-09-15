@@ -22,5 +22,13 @@ test_that("shard 3 of the model database satisfies the naming conventions", {
   # No model ships with an error-severity violation. buildModelDb() gates on
   # this, but its gate runs at build time only; asserting it here means a
   # model edited after the last rebuild cannot slip through.
-  expect_equal(sum(res$severity == "error"), 0L)
+  #
+  # Compared as text rather than as a count: a count tells you a shard of 364
+  # models has one violation somewhere, which is not enough to act on. The
+  # diff on failure names the model, the rule and the parameter.
+  .err <- res[res$severity == "error", , drop = FALSE]
+  expect_identical(
+    paste0(.err$model, " [", .err$category, "] ", .err$name, ": ", .err$message),
+    character(0)
+  )
 })
