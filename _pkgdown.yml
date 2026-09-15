@@ -3550,6 +3550,10 @@ navbar:
         href: articles/Yin_2021_pexidartinib.html
       - text: "Pf 06671008 qsp (Betts 2019)"
         href: articles/Betts_2019_pf_06671008.html
+      - text: "Pfoa pbpk (Verner 2015)"
+        href: articles/Verner_2015_pfas_birthweight.html
+      - text: "Pfos pbpk (Verner 2015)"
+        href: articles/Verner_2015_pfas_birthweight.html
       - text: "Pfuroylamphenmulin (Xia 2025)"
         href: articles/Xia_2025_pfuroylamphenmulin.html
       - text: "Phage human pbpk (Echterhof 2026)"
@@ -7085,6 +7089,7 @@ articles:
   - articles/VelezdeMendizabal_2012_lumiracoxib_rat
   - articles/VelezdeMendizabal_2013_multipleSclerosis
   - articles/Venisse_2008_candida_albicans
+  - articles/Verner_2015_pfas_birthweight
   - articles/Verrest_2023_miltefosine_paromomycin
   - articles/Verrest_2024_leishmania
   - articles/Vet_2016_midazolam
