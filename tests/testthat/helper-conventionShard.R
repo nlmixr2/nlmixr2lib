@@ -32,8 +32,14 @@
 .conventionShardCheck <- function(shard) {
   nms <- .conventionShardModels(shard)
   skip_if(length(nms) == 0L, "modeldb is not available")
+  # suppressMessages() as well as suppressWarnings(): readModelDb() reports
+  # each model's full description through cli_alert_info(), and a shard walks
+  # 364 of them. Left alone that is the overwhelming majority of this
+  # package's CI log on a *successful* run, which buries anything worth
+  # reading. Nothing here is diagnosed from the message stream -- a violation
+  # is reported by the assertion, which names the model itself.
   do.call(rbind, lapply(nms, function(nm) {
-    suppressWarnings(nlmixr2lib:::.checkOneModel(nm, verbose = FALSE))
+    suppressMessages(suppressWarnings(nlmixr2lib:::.checkOneModel(nm, verbose = FALSE)))
   }))
 }
 
