@@ -238,7 +238,7 @@ gate |>
 |:--------------------|:---------|---------:|:-------------------|
 | reference subject   | Full     |    3.310 | 2.3e-14            |
 | reference subject   | Hoek     |    2.610 | 7.1e-14            |
-| reference subject   | Schwartz |    2.820 | 6.5e-14            |
+| reference subject   | Schwartz |    2.820 | 6.4e-14            |
 | median test subject | Full     |    3.317 | 5.9e-14            |
 | median test subject | Hoek     |    3.246 | 4.0e-14            |
 | median test subject | Schwartz |    3.615 | 9.9e-15            |

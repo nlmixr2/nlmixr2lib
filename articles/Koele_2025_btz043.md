@@ -1263,7 +1263,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tibble_3.3.1          tidyr_1.3.2          
-#> [4] dplyr_1.2.1           rxode2_5.1.6          PKNCA_0.12.1         
+#> [4] dplyr_1.2.1           rxode2_5.1.7          PKNCA_0.12.1         
 #> [7] nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):

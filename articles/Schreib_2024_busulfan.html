@@ -3071,20 +3071,28 @@ line and the HLH/XLP line; Equation (3) matches neither.</caption>
 <h2 id="solve-this-model-with-uselincmt-false">Solve this model with <code>useLinCmt = FALSE</code><a class="anchor" aria-label="anchor" href="#solve-this-model-with-uselincmt-false"></a>
 </h2>
 <p><strong>Every <code>rxSolve()</code> call in this vignette passes
-<code>useLinCmt = FALSE</code>, and any simulation of this model must do
-the same.</strong></p>
+<code>useLinCmt = FALSE</code>.</strong> That is now belt and braces
+rather than a necessity, and it is kept deliberately – see below.</p>
 <p>Schreib 2024 is a one-compartment model with linear elimination,
-which is exactly the structure <code>rxSolve()</code> recognises and
-rewrites into a closed-form <code>linCmt()</code> solution by default
-(<code>useLinCmt = TRUE</code>). That closed form can only carry a
-<strong>constant</strong> elimination rate constant, so the rewrite
-silently substitutes <code>kel</code> at <code>t = 0</code> for all time
-and discards the entire time dependence – which is the whole subject of
-this paper.</p>
-<p>The failure is silent, one-sided, and large. The check below solves
-the same regimen both ways and compares each dosing interval’s AUC
-against a hand integration. Under the default flag every interval
-collapses to exactly <code>Dose / (kel(0) * vc)</code>.</p>
+which is the structure <code>rxSolve()</code> recognises and can rewrite
+into a closed-form <code>linCmt()</code> solution. That closed form can
+only carry a <strong>constant</strong> elimination rate constant, so
+through rxode2 5.1.6 the rewrite silently substituted <code>kel</code>
+at <code>t = 0</code> for all time and discarded the entire time
+dependence – the whole subject of this paper. The failure was silent,
+one-sided and large: under the default flag every interval collapsed to
+exactly <code>Dose / (kel(0) * vc)</code>.</p>
+<p>rxode2 5.1.7 closed that hole from the other side. It now refuses the
+ODE-to-<code>linCmt()</code> conversion when the conversion would change
+a rate or when the model carries an exogenous input term, which covers
+this model, so the rewrite no longer happens and both flags give the
+same answer. The check below solves the same regimen both ways and
+asserts exactly that: the time dependence survives, and the two paths
+agree.</p>
+<p>Passing the flag explicitly is still worth doing. It states which
+solver path the numbers came from instead of inheriting a package
+default – and that default itself changed in rxode2 5.1.8, from
+<code>TRUE</code> to <code>FALSE</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rxode2() turns the model function returned by readModelDb() into the rxUi</span></span>
 <span><span class="co"># object that zeroRe() and rxSolve() operate on.</span></span>
@@ -3118,15 +3126,17 @@ collapses to exactly <code>Dose / (kel(0) * vc)</code>.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
-<span>      <span class="st">"The default ODE-to-linCmt conversion holds kel at its t = 0 value."</span>,</span>
-<span>      <span class="st">"The correct (ODE) column rises as clearance falls; the converted column"</span>,</span>
-<span>      <span class="st">"does not move after the first interval."</span></span>
+<span>      <span class="st">"From rxode2 5.1.7 the ODE-to-linCmt conversion is refused for this"</span>,</span>
+<span>      <span class="st">"model, so both columns rise as clearance falls and the under-prediction"</span>,</span>
+<span>      <span class="st">"is zero. Before 5.1.7 the converted column did not move after the first"</span>,</span>
+<span>      <span class="st">"interval, holding kel at its t = 0 value."</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>The default ODE-to-linCmt conversion holds kel at its t = 0
-value. The correct (ODE) column rises as clearance falls; the converted
-column does not move after the first interval.</caption>
+<caption>From rxode2 5.1.7 the ODE-to-linCmt conversion is refused for
+this model, so both columns rise as clearance falls and the
+under-prediction is zero. Before 5.1.7 the converted column did not move
+after the first interval, holding kel at its t = 0 value.</caption>
 <colgroup>
 <col width="20%">
 <col width="28%">
@@ -3142,60 +3152,63 @@ column does not move after the first interval.</caption>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">9.258</td>
 <td align="right">9.507</td>
-<td align="left">-2.6%</td>
+<td align="right">9.507</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">9.481</td>
 <td align="right">10.393</td>
-<td align="left">-8.8%</td>
+<td align="right">10.393</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="right">9.484</td>
 <td align="right">10.826</td>
-<td align="left">-12.4%</td>
+<td align="right">10.826</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="even">
 <td align="right">4</td>
-<td align="right">9.484</td>
 <td align="right">11.075</td>
-<td align="left">-14.4%</td>
+<td align="right">11.075</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
-<td align="right">9.484</td>
 <td align="right">11.216</td>
-<td align="left">-15.4%</td>
+<td align="right">11.216</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="even">
 <td align="right">6</td>
-<td align="right">9.484</td>
 <td align="right">11.293</td>
-<td align="left">-16.0%</td>
+<td align="right">11.293</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="right">7</td>
-<td align="right">9.484</td>
 <td align="right">11.335</td>
-<td align="left">-16.3%</td>
+<td align="right">11.335</td>
+<td align="left">0.0%</td>
 </tr>
 <tr class="even">
 <td align="right">8</td>
-<td align="right">9.484</td>
 <td align="right">11.358</td>
-<td align="left">-16.5%</td>
+<td align="right">11.358</td>
+<td align="left">0.0%</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># Regression guard: if a future edit drops useLinCmt = FALSE, this fails loudly</span></span>
-<span><span class="co"># rather than shipping a silently constant-clearance vignette.</span></span>
+<span><span class="co"># Regression guard, in two parts. The first is the physics and has always held:</span></span>
+<span><span class="co"># clearance falls with time, so interval AUC must rise. The second used to</span></span>
+<span><span class="co"># assert the linCmt column was FLAT -- the defect. rxode2 5.1.7 refuses the</span></span>
+<span><span class="co"># conversion for this model, so the two paths now agree instead, and asserting</span></span>
+<span><span class="co"># that catches both a reintroduced rewrite and a silent divergence.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">trap_ode</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span> <span class="op">/</span> <span class="va">trap_ode</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">1.15</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">trap_default</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span> <span class="op">/</span> <span class="va">trap_default</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.001</span><span class="op">)</span></span></code></pre></div>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">trap_default</span> <span class="op">/</span> <span class="va">trap_ode</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="typical-values-at-the-reference-covariates">Typical values at the reference covariates<a class="anchor" aria-label="anchor" href="#typical-values-at-the-reference-covariates"></a>

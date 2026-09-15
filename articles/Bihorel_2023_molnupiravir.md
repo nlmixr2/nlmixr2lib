@@ -220,8 +220,6 @@ sim_typical <- rxode2::rxSolve(
   mod_typical, events = ev_typical, keep = "treatment",
   omega = NA, sigma = NA, returnType = "data.frame"
 )
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_mtt_1, etaiov_mtt_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 sim_food <- rxode2::rxSolve(
   mod_typical, events = ev_food, keep = "treatment",
@@ -232,8 +230,6 @@ sim_cohort <- rxode2::rxSolve(
   mod, events = ev_cohort, keep = c("WT", "BMI", "SEXF", "FED_HIGHFAT"),
   returnType = "data.frame"
 )
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_mtt_1, etaiov_mtt_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_mtt_1, etaiov_mtt_2
 #> as a work-around try putting the mu-referenced expression on a simple line
 ```

@@ -3011,18 +3011,6 @@ The simulation samples the plateau concentration at 6 hours.</p>
 <span>  addDosing <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 model syntax error:</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead</span></span>
-<span><span class="co">#&gt; :</span></span>
-<span><span class="co">#&gt;       cl &lt;- exp(lcl + etalcl) * (WT/70)^e_wt_cl * (SAPS_II/50)^e_saps_ii_cl</span></span>
-<span><span class="co">#&gt;       ^</span></span>
-<span><span class="co">#&gt; :002: vc &lt;- exp(lvc)</span></span>
-<span><span class="co">#&gt; :003: rbase &lt;- exp(lrbase + etalrbase)</span></span>
-<span><span class="co">#&gt; :004: kel &lt;- cl/vc</span></span>
-<span><span class="co">#&gt; :005: central(0) &lt;- rbase/kel</span></span>
-<span><span class="co">#&gt; :006: Cc &lt;- linCmt(kel, vc)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalrbase'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>

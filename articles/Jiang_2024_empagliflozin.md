@@ -354,7 +354,7 @@ is a read of that figure rather than a transcribed value.
 ### Equivalence of the encoded absorption term to rxode2’s `transit()`
 
 The model writes the Savic gamma-density input explicitly instead of
-calling rxode2’s `transit()` macro, because under rxode2 5.1.6 the macro
+calling rxode2’s `transit()` macro, because under rxode2 5.1.7 the macro
 silently returns zero input for a model in nlmixr2 UI form when combined
 with the conventional `f(depot) <- 0` bolus suppression. The two forms
 are algebraically identical, and that is asserted here rather than
@@ -777,7 +777,7 @@ cat(sprintf("cohort-median AUCinf ratio 25 mg : 5 mg = %.4f (expected 5)\n", auc
   1/h), the observable concentration is governed by V1 + V2 rather than
   by V1 alone, so predictions remain sensible.
 - **The absorption term is written out instead of calling `transit()`.**
-  Under rxode2 5.1.6, `transit()` combined with `f(depot) <- 0` silently
+  Under rxode2 5.1.7, `transit()` combined with `f(depot) <- 0` silently
   delivers zero dose for models in nlmixr2 UI form. The explicit gamma
   density is algebraically identical; the “Equivalence” section above
   asserts agreement to better than 1e-8 mg/L against the macro.

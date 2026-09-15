@@ -3123,9 +3123,7 @@ sampling schedule covers the 0-12 h dose interval at steady state.</p>
 <span>  events <span class="op">=</span> <span class="va">events_fdc</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FORM_FDC"</span>, <span class="st">"OCC"</span>, <span class="st">"dose_label"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_mtt_1, etaiov_mtt_2, etaiov_mtt_3, etaiov_mtt_4, etaiov_mtt_5, etaiov_mtt_6</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>For the typical-value trajectory used in the figures and the PKNCA
 table, zero out the random effects so the prediction is deterministic
 (individual = population at typical FDC = 1 covariates):</p>
@@ -3139,8 +3137,6 @@ table, zero out the random effects so the prediction is deterministic
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FORM_FDC"</span>, <span class="st">"OCC"</span>, <span class="st">"dose_label"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_mtt_1, etaiov_mtt_2, etaiov_mtt_3, etaiov_mtt_4, etaiov_mtt_5, etaiov_mtt_6</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etalmtt', 'etalnn', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_mtt_3', 'etaiov_mtt_4', 'etaiov_mtt_5', 'etaiov_mtt_6'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
@@ -3339,65 +3335,65 @@ per dose).</caption>
 <tr class="odd">
 <td align="left">450 mg</td>
 <td align="left">auclast</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">30.188675</td>
+<td align="right">8.649439</td>
+<td align="right">75.40645</td>
 </tr>
 <tr class="even">
 <td align="left">450 mg</td>
 <td align="left">cmax</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">4.488030</td>
+<td align="right">1.815059</td>
+<td align="right">9.10072</td>
 </tr>
 <tr class="odd">
 <td align="left">450 mg</td>
 <td align="left">tmax</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">3.000000</td>
+<td align="right">1.500000</td>
+<td align="right">4.10000</td>
 </tr>
 <tr class="even">
 <td align="left">480 mg</td>
 <td align="left">auclast</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">24.357957</td>
+<td align="right">10.866736</td>
+<td align="right">57.87313</td>
 </tr>
 <tr class="odd">
 <td align="left">480 mg</td>
 <td align="left">cmax</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">4.874297</td>
+<td align="right">1.867292</td>
+<td align="right">10.45508</td>
 </tr>
 <tr class="even">
 <td align="left">480 mg</td>
 <td align="left">tmax</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2.000000</td>
+<td align="right">1.000000</td>
+<td align="right">4.00000</td>
 </tr>
 <tr class="odd">
 <td align="left">600 mg</td>
 <td align="left">auclast</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">34.495613</td>
+<td align="right">19.795166</td>
+<td align="right">96.64108</td>
 </tr>
 <tr class="even">
 <td align="left">600 mg</td>
 <td align="left">cmax</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">6.754103</td>
+<td align="right">4.231224</td>
+<td align="right">15.08227</td>
 </tr>
 <tr class="odd">
 <td align="left">600 mg</td>
 <td align="left">tmax</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2.000000</td>
+<td align="right">1.000000</td>
+<td align="right">4.00000</td>
 </tr>
 </tbody>
 </table>

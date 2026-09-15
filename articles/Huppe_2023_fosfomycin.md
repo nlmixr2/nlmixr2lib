@@ -382,7 +382,7 @@ from the first dose, against the EUCAST/CLSI breakpoints and ECOFF of
 
 An anuric patient with CVVHD off has total clearance of **exactly** zero
 in this model. Concentrations still plateau rather than diverge, because
-`V_C` grows with time since first dose. Under rxode2 5.1.6 a model with
+`V_C` grows with time since first dose. Under rxode2 5.1.7 a model with
 a residual endpoint and exactly-zero elimination returns `NaN` states
 when dosed by infusion, so the CVVHD-off arm uses a negligible non-zero
 gate as a numerical stand-in for the `CL -> 0` limit. Its inertness is
@@ -946,7 +946,7 @@ Parameters were not tuned to close this gap.
   referenced in `model()`.
 - **Zero-clearance limit is a solver workaround, not a parameter
   change.** An anuric patient with CVVHD off has exactly zero total
-  clearance. Under rxode2 5.1.6 such a model returns `NaN` states when
+  clearance. Under rxode2 5.1.7 such a model returns `NaN` states when
   dosed by infusion (a bolus solves correctly, as does the equivalent
   endpoint-free plain rxode2 model), so this vignette sets
   `RRT_CRRT_ACTIVE = 1e-9` in the CVVHD-off arm. That corresponds to a

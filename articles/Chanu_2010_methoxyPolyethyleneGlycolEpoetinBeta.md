@@ -243,7 +243,9 @@ t_grid <- c(0.25, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28)
 # IV bolus: C(t) = D / V * exp(-kel * t)
 iv <- solve_typ(make_events(1, dose = 100, route = "iv", tau = 1e6, n_dose = 1,
                             obs = t_grid, covs = typical_covs()))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:04
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
+#> 
+#> ] 0:00:02
 iv_closed <- 100 / theta[["vc"]] * exp(-kel * t_grid)
 
 # SC: C(t) = F * D * ka / (V * (ka - kel)) * (exp(-kel t) - exp(-ka t))
@@ -1078,7 +1080,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.6          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       

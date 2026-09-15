@@ -2701,7 +2701,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addCmtProp</span><span class="op">(</span><span class="va">ui</span>, prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"f"</span>, <span class="st">"lag"</span>, <span class="st">"dur"</span>, <span class="st">"rate"</span>, <span class="st">"ini"</span><span class="op">)</span>, <span class="va">cmt</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">addBioavailability</span><span class="op">(</span><span class="va">ui</span>, <span class="va">cmt</span><span class="op">)</span></span>
+<span><span class="fu">addBioavailability</span><span class="op">(</span><span class="va">ui</span>, <span class="va">cmt</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"log"</span>, <span class="st">"logit"</span><span class="op">)</span>, cmt2 <span class="op">=</span> <span class="cn">NULL</span>, f <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">addLag</span><span class="op">(</span><span class="va">ui</span>, <span class="va">cmt</span><span class="op">)</span></span>
 <span></span>
@@ -2731,6 +2731,23 @@
 
 <dt id="arg-cmt">cmt<a class="anchor" aria-label="anchor" href="#arg-cmt"></a></dt>
 <dd><p>compartment to apply the property to</p></dd>
+
+
+<dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
+<dd><p>parameterization of the bioavailability: <code>"log"</code>
+(default) estimates it unboundedly on the log scale, while
+<code>"logit"</code> constrains it to (0,1) with a logit/expit
+parameterization (Monolix-style <code>F</code>, oral or subcutaneous)</p></dd>
+
+
+<dt id="arg-cmt-">cmt2<a class="anchor" aria-label="anchor" href="#arg-cmt-"></a></dt>
+<dd><p>optional second compartment for the logit dose-split
+form; see [addBioavailabilityLogit()]</p></dd>
+
+
+<dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
+<dd><p>initial bioavailability fraction, in (0,1), for the logit
+form, or NULL to leave the initial estimate unset</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -2827,11 +2844,15 @@
 <span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_3cmt_des"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">addBioavailability</span><span class="op">(</span><span class="va">depot</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 4-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     lka     lcl     lvc     lvp    lvp2      lq     lq2  propSd lfDepot </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0.45    1.00    3.00    5.00    8.00    0.10    0.50    0.50    0.10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        lka        lcl        lvc        lvp       lvp2         lq        lq2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.4500000  1.0000000  3.0000000  5.0000000  8.0000000  0.1000000  0.5000000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     propSd    lfDepot </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.5000000 -0.2231436 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
@@ -2867,7 +2888,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Second intercompartmental clearance (Q2)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         propSd &lt;- c(0, 0.5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Proportional residual error (fraction)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         lfDepot &lt;- 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lfDepot &lt;- -0.22314355131421</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         fDepot &lt;- exp(lfDepot)</span>
@@ -3177,6 +3198,112 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1 - k13 * central + k31 * peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral2) &lt;- k13 * central - k31 * peripheral2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># bioavailability bounded to (0,1) with a logit parameterization</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt_des"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">addBioavailability</span><span class="op">(</span><span class="va">depot</span>, scale <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka         lcl         lvc      propSd logitfDepot </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.450000    1.000000    3.450000    0.500000    1.386294 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     compartmentData &lt;- list(depot = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         specimen = "administration site", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         central = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "plasma", verified = FALSE))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     dosing &lt;- c("central", "depot")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         propSd &lt;- c(0, 0.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Proportional residual error (fraction)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         logitfDepot &lt;- 1.38629436111989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Bioavailability fraction (fDepot)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         fDepot &lt;- expit(logitfDepot, 0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         f(depot) &lt;- fDepot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># dose split between two absorption paths, fraction named for depot</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt_des"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="addDepot.html">addDepot</a></span><span class="op">(</span>depot <span class="op">=</span> <span class="st">"depot2"</span>, ka <span class="op">=</span> <span class="st">"ka2"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">addBioavailability</span><span class="op">(</span><span class="va">depot</span>, <span class="va">depot2</span>, scale <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka         lcl         lvc      propSd        lka2 logitfDepot </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.450000    1.000000    3.450000    0.500000    0.100000    1.386294 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2           depot2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     compartmentData &lt;- list(depot = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         specimen = "administration site", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         central = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "plasma", verified = FALSE))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     dosing &lt;- c("central", "depot")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         propSd &lt;- c(0, 0.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Proportional residual error (fraction)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka2 &lt;- 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("First order absorption rate (ka2)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         logitfDepot &lt;- 1.38629436111989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Fraction of dose absorbed from depot (fDepot)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         fDepot &lt;- expit(logitfDepot, 0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         f(depot) &lt;- fDepot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka2 &lt;- exp(lka2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot2) &lt;- -ka2 * depot2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         f(depot2) &lt;- 1 - fDepot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central + ka2 * depot2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>

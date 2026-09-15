@@ -53,7 +53,7 @@ Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 
 ``` r
 library(rxode2)
-#> rxode2 5.1.6 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 readModelDb("PK_1cmt") |> addEta("ka")
 #>  
@@ -68,5 +68,34 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #> ℹ parameter labels from comments are typically ignored in non-interactive mode
 #> ℹ Need to run with the source intact to parse comments
 #> ℹ promote `etaKa` to between subject variability with initial estimate 0.1
-#> Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
+#> ℹ change initial estimate of `etaKa` to `0.1`
+#> function () 
+#> {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
+#>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+#>     ini({
+#>         lka <- 0.45
+#>         label("Absorption rate (Ka)")
+#>         lcl <- 1
+#>         label("Clearance (CL)")
+#>         lvc <- 3.45
+#>         label("Central volume of distribution (V)")
+#>         propSd <- c(0, 0.5)
+#>         label("Proportional residual error (fraction)")
+#>         etaKa ~ 0.1
+#>     })
+#>     model({
+#>         ka <- exp(lka + etaKa)
+#>         cl <- exp(lcl)
+#>         vc <- exp(lvc)
+#>         Cc <- linCmt()
+#>         Cc ~ prop(propSd)
+#>     })
+#> }
+#> <environment: 0x55b404cb1968>
 ```

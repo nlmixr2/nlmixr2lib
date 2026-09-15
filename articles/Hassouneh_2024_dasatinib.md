@@ -1024,7 +1024,7 @@ cat(sprintf("cohort-median Cmax, occasion 1 : occasion 2 = %.4f (expected ~1)\n"
   library’s more common mg/L, so the published value can be used
   unscaled.
 - **The absorption term is written out instead of calling `transit()`.**
-  Under rxode2 5.1.6, `transit()` combined with `f(depot) <- 0` silently
+  Under rxode2 5.1.7, `transit()` combined with `f(depot) <- 0` silently
   delivers zero dose for models in nlmixr2 UI form. The explicit gamma
   density is algebraically identical; the equivalence section above
   asserts agreement to better than 1e-6 ng/mL against the macro.

@@ -2763,7 +2763,7 @@ accepted)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Cc ~ prop(propSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x558a8a64e030&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55b400de3ba0&gt;</span>
 <span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ka"</span>, <span class="st">"vc"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
@@ -2782,7 +2782,68 @@ accepted)</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> promote `etaKa` to between subject variability with initial estimate 0.1</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rbind(deparse.level, ...):</span> numbers of columns of arguments do not match</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `etaKa` to `0.1`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> promote `etaVc` to between subject variability with initial estimate 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `etaVc` to `0.1`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcAddSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcAddSd` to `1`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based solved PK 1-compartment model</span> <span style="color: #00BBBB;">──────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lka     lcl     lvc CcAddSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.45    1.00    3.45    1.00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Omega</span> (<span style="color: #0000BB; font-weight: bold;">$omega</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       etaKa etaVc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etaKa   0.1   0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etaVc   0.0   0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name Rate   Off Internal #</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot TRUE FALSE          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central TRUE FALSE          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">μ-referencing (</span><span style="color: #0000BB; font-weight: bold;">$muRefTable</span><span style="font-weight: bold;">):</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   theta   eta level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   lka etaKa    id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   lvc etaVc    id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     compartmentData &lt;- list(depot = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         specimen = "administration site", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         central = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "plasma", verified = FALSE))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CcAddSd &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         etaKa ~ 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         etaVc ~ 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka + etaKa)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc + etaVc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- linCmt()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ add(CcAddSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"PK_1cmt"</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
@@ -2790,7 +2851,43 @@ accepted)</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcAddSd` and set estimate to 1</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rbind(deparse.level, ...):</span> numbers of columns of arguments do not match</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcAddSd` to `1`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based solved PK 1-compartment model</span> <span style="color: #00BBBB;">──────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lka     lcl     lvc CcAddSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.45    1.00    3.45    1.00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name Rate   Off Internal #</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot TRUE FALSE          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central TRUE FALSE          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     compartmentData &lt;- list(depot = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         specimen = "administration site", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         central = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "plasma", verified = FALSE))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CcAddSd &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- linCmt()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ add(CcAddSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

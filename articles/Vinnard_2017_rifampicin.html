@@ -2953,9 +2953,7 @@ mg n = 19, 600 mg n = 17, 750 mg n = 3).</p>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"OCC"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>For deterministic typical-value replication (no random effects),
 <code>zeroRe()</code> gives the population mean prediction:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -2968,8 +2966,6 @@ mg n = 19, 600 mg n = 17, 750 mg n = 3).</p>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"OCC"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etalnn', 'etalmtt', 'etaiov_fdepot_1', 'etaiov_fdepot_2'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
@@ -3074,63 +3070,23 @@ the dose band.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span></span>
 <span><span class="va">nca_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nca_tbl</span>, <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"First 12 rows of the per-subject PKNCA result table."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<table class="table">
 <caption>First 12 rows of the per-subject PKNCA result table.</caption>
 <colgroup>
-<col width="7%">
-<col width="2%">
-<col width="4%">
-<col width="2%">
 <col width="14%">
+<col width="4%">
+<col width="8%">
 <col width="5%">
-<col width="56%">
-<col width="6%">
+<col width="28%">
+<col width="15%">
+<col width="11%">
+<col width="12%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">treatment</th>
@@ -3149,7 +3105,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">8</td>
 <td align="left">auclast</td>
-<td align="right">0</td>
+<td align="right">20.7683115</td>
 <td align="left">NA</td>
 <td align="left">h*mg/L</td>
 </tr>
@@ -3159,7 +3115,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">8</td>
 <td align="left">cmax</td>
-<td align="right">0</td>
+<td align="right">4.4855222</td>
 <td align="left">NA</td>
 <td align="left">mg/L</td>
 </tr>
@@ -3169,7 +3125,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">8</td>
 <td align="left">tmax</td>
-<td align="right">NA</td>
+<td align="right">2.7500000</td>
 <td align="left">NA</td>
 <td align="left">h</td>
 </tr>
@@ -3179,7 +3135,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">auclast</td>
-<td align="right">0</td>
+<td align="right">26.2911944</td>
 <td align="left">NA</td>
 <td align="left">h*mg/L</td>
 </tr>
@@ -3189,7 +3145,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">cmax</td>
-<td align="right">0</td>
+<td align="right">4.4855222</td>
 <td align="left">NA</td>
 <td align="left">mg/L</td>
 </tr>
@@ -3199,7 +3155,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">tmax</td>
-<td align="right">NA</td>
+<td align="right">2.7500000</td>
 <td align="left">NA</td>
 <td align="left">h</td>
 </tr>
@@ -3209,7 +3165,7 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">tlast</td>
-<td align="right">NA</td>
+<td align="right">24.0000000</td>
 <td align="left">NA</td>
 <td align="left">h</td>
 </tr>
@@ -3219,9 +3175,8 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.2477855</td>
+<td align="left">NA</td>
 <td align="left">1/h</td>
 </tr>
 <tr class="odd">
@@ -3230,9 +3185,8 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">r.squared</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.9999424</td>
+<td align="left">NA</td>
 <td align="left">unitless</td>
 </tr>
 <tr class="even">
@@ -3241,9 +3195,8 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">adj.r.squared</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.9999417</td>
+<td align="left">NA</td>
 <td align="left">unitless</td>
 </tr>
 <tr class="odd">
@@ -3252,9 +3205,8 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">3.0000000</td>
+<td align="left">NA</td>
 <td align="left">h</td>
 </tr>
 <tr class="even">
@@ -3263,9 +3215,8 @@ the dose band.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z.time.last</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">24.0000000</td>
+<td align="left">NA</td>
 <td align="left">h</td>
 </tr>
 </tbody>
@@ -3336,22 +3287,22 @@ medians.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">AUC0-24 (mg*h/L)</td>
-<td align="right">0</td>
-<td align="left">0.00 - 0.00</td>
+<td align="right">31.94</td>
+<td align="left">19.00 - 53.25</td>
 <td align="right">34.4</td>
 <td align="left">8.2-80.2</td>
 </tr>
 <tr class="even">
 <td align="left">Cmax (mg/L)</td>
-<td align="right">0</td>
-<td align="left">0.00 - 0.00</td>
+<td align="right">7.09</td>
+<td align="left">4.30 - 11.15</td>
 <td align="right">7.4</td>
 <td align="left">2.56-11.61</td>
 </tr>
 <tr class="odd">
 <td align="left">Cmax (mg/L)</td>
-<td align="right">0</td>
-<td align="left">0.00 - 0.00</td>
+<td align="right">7.09</td>
+<td align="left">4.30 - 11.15</td>
 <td align="right">7.4</td>
 <td align="left">2.56-11.61</td>
 </tr>

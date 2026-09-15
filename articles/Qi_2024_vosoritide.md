@@ -485,10 +485,10 @@ nca_df |>
 
 | Regimen     | NCA parameter     | Median | 5th pctile | 95th pctile | 95th / 5th |
 |:------------|:------------------|-------:|-----------:|------------:|-----------:|
-| 15 ug/kg    | AUC0-5h (ug\*h/L) |  7.603 |      2.539 |      15.219 |       5.99 |
-| 15 ug/kg    | Cmax (ug/L)       |  6.121 |      3.754 |       8.996 |       2.40 |
-| Weight band | AUC0-5h (ug\*h/L) |  5.383 |      2.799 |       9.605 |       3.43 |
-| Weight band | Cmax (ug/L)       |  5.468 |      2.979 |       8.864 |       2.98 |
+| 15 ug/kg    | AUC0-5h (ug\*h/L) |  8.315 |      2.867 |      15.344 |       5.35 |
+| 15 ug/kg    | Cmax (ug/L)       |  5.830 |      3.708 |       8.817 |       2.38 |
+| Weight band | AUC0-5h (ug\*h/L) |  5.704 |      3.128 |      10.486 |       3.35 |
+| Weight band | Cmax (ug/L)       |  5.270 |      2.806 |       8.704 |       3.10 |
 
 Spread of simulated exposure across the whole 10-100 kg range. A smaller
 95th/5th ratio means more consistent exposure. {.table

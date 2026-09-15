@@ -3021,9 +3021,9 @@ simplified-MDRD CrCl) were sampled to approximate Berges 2007 Table
 <span><span class="co">#&gt; # A tibble: 3 × 3</span></span>
 <span><span class="co">#&gt;   threshold_IU_mL paper_pct sim_pct</span></span>
 <span><span class="co">#&gt;             &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1             0.5        29     100</span></span>
-<span><span class="co">#&gt; 2             0.8        10     100</span></span>
-<span><span class="co">#&gt; 3             1           4     100</span></span>
+<span><span class="co">#&gt; 1             0.5        29   40.7 </span></span>
+<span><span class="co">#&gt; 2             0.8        10    1.59</span></span>
+<span><span class="co">#&gt; 3             1           4    0</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">peak_window</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">peak</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, fill <span class="op">=</span> <span class="st">"grey70"</span>, colour <span class="op">=</span> <span class="st">"grey30"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -3105,7 +3105,7 @@ above three clinically interesting thresholds (0.5, 0.8, 1.0 IU/mL).</p>
 <span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
 <span><span class="co">#&gt;   treatment       median_peak min_peak max_peak pct_gt_0_5 pct_gt_0_8 pct_gt_1_0</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                 &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Enoxaparin 400…        478.     264.     892.        100        100        100</span></span>
+<span><span class="co">#&gt; 1 Enoxaparin 400…       0.478    0.264    0.892       40.7        1.6          0</span></span>
 <span></span>
 <span><span class="va">published_peak</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  treatment    <span class="op">=</span> <span class="st">"Enoxaparin 4000 IU SC QD"</span>,</span>
@@ -3154,12 +3154,12 @@ virtual cohort vs Berges 2007 Bayesian predictions.</caption>
 <tr class="odd">
 <td align="left">Simulated</td>
 <td align="left">Enoxaparin 4000 IU SC QD</td>
-<td align="right">478.13</td>
-<td align="right">264.06</td>
-<td align="right">891.52</td>
-<td align="right">100</td>
-<td align="right">100</td>
-<td align="right">100</td>
+<td align="right">0.48</td>
+<td align="right">0.26</td>
+<td align="right">0.89</td>
+<td align="right">40.7</td>
+<td align="right">1.6</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">Berges 2007 (Bayesian predictions)</td>
@@ -3167,8 +3167,8 @@ virtual cohort vs Berges 2007 Bayesian predictions.</caption>
 <td align="right">0.44</td>
 <td align="right">0.10</td>
 <td align="right">1.20</td>
-<td align="right">29</td>
-<td align="right">10</td>
+<td align="right">29.0</td>
+<td align="right">10.0</td>
 <td align="right">4</td>
 </tr>
 </tbody>
@@ -3201,33 +3201,33 @@ PROPHRE.75-like cohort).</caption>
 <tbody>
 <tr class="odd">
 <td align="left">auclast</td>
-<td align="right">5840.0</td>
-<td align="right">3550.0</td>
-<td align="right">8800.0</td>
+<td align="right">5.8400</td>
+<td align="right">3.5500</td>
+<td align="right">8.800</td>
 </tr>
 <tr class="even">
 <td align="left">cav</td>
-<td align="right">243.0</td>
-<td align="right">148.0</td>
-<td align="right">367.0</td>
+<td align="right">0.2430</td>
+<td align="right">0.1480</td>
+<td align="right">0.367</td>
 </tr>
 <tr class="odd">
 <td align="left">cmax</td>
-<td align="right">478.0</td>
-<td align="right">321.0</td>
-<td align="right">699.0</td>
+<td align="right">0.4780</td>
+<td align="right">0.3210</td>
+<td align="right">0.699</td>
 </tr>
 <tr class="even">
 <td align="left">cmin</td>
-<td align="right">91.5</td>
-<td align="right">38.7</td>
-<td align="right">187.0</td>
+<td align="right">0.0915</td>
+<td align="right">0.0387</td>
+<td align="right">0.187</td>
 </tr>
 <tr class="odd">
 <td align="left">tmax</td>
-<td align="right">3.0</td>
-<td align="right">2.5</td>
-<td align="right">3.5</td>
+<td align="right">3.0000</td>
+<td align="right">2.5000</td>
+<td align="right">3.500</td>
 </tr>
 </tbody>
 </table>

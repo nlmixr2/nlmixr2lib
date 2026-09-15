@@ -3021,26 +3021,6 @@ truncated normals matching Table 1 baseline statistics.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; rxode2 model syntax error:</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead</span></span>
-<span><span class="co">#&gt; :</span></span>
-<span><span class="co">#&gt;       wt_ref &lt;- 62</span></span>
-<span><span class="co">#&gt;       ^</span></span>
-<span><span class="co">#&gt; :002: age_ref &lt;- 22.7</span></span>
-<span><span class="co">#&gt; :003: creat_ref &lt;- 0.98</span></span>
-<span><span class="co">#&gt; :004: ka &lt;- exp(lka + etalka) * (WT/wt_ref)^e_wt_ka</span></span>
-<span><span class="co">#&gt; :005: cl &lt;- exp(lcl + etalcl) * (WT/wt_ref)^e_wt_cl_vc * (CREAT/creat_ref)^e_creat_cl * (AGE/age_ref)^e_age_cl</span></span>
-<span><span class="co">#&gt; :006: vc &lt;- exp(lvc + etalvc) * (WT/wt_ref)^e_wt_cl_vc</span></span>
-<span><span class="co">#&gt; :007: kel &lt;- cl/vc</span></span>
-<span><span class="co">#&gt; :008: rbase &lt;- exp(lrbase + etalrbase)</span></span>
-<span><span class="co">#&gt; :009: ra &lt;- exp(lra)</span></span>
-<span><span class="co">#&gt; :010: tacro &lt;- exp(ltacro)</span></span>
-<span><span class="co">#&gt; :011: clock_t &lt;- t + 9</span></span>
-<span><span class="co">#&gt; :012: end_t &lt;- rbase * (1 + ra * sin(2 * pi/24 * (tacro + 6 - clock_t)))</span></span>
-<span><span class="co">#&gt; :013: central(0) &lt;- rbase * (1 + ra * sin(2 * pi/24 * (tacro - 3)))/kel</span></span>
-<span><span class="co">#&gt; :014: Cc &lt;- linCmt(ka, kel, vc)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; Warning: </span></span>
 <span><span class="co">#&gt; with negative times, compartments initialize at first negative observed time</span></span>
 <span><span class="co">#&gt; with positive times, compartments initialize at time zero</span></span>
@@ -3074,26 +3054,6 @@ simulate the typical trajectory on a fine grid.</p>
 <span>  <span class="fu">simulate_typical_one</span><span class="op">(</span><span class="fl">1500</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  <span class="fu">simulate_typical_one</span><span class="op">(</span><span class="fl">3000</span>, <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 model syntax error:</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead</span></span>
-<span><span class="co">#&gt; :</span></span>
-<span><span class="co">#&gt;       wt_ref &lt;- 62</span></span>
-<span><span class="co">#&gt;       ^</span></span>
-<span><span class="co">#&gt; :002: age_ref &lt;- 22.7</span></span>
-<span><span class="co">#&gt; :003: creat_ref &lt;- 0.98</span></span>
-<span><span class="co">#&gt; :004: ka &lt;- exp(lka + etalka) * (WT/wt_ref)^e_wt_ka</span></span>
-<span><span class="co">#&gt; :005: cl &lt;- exp(lcl + etalcl) * (WT/wt_ref)^e_wt_cl_vc * (CREAT/creat_ref)^e_creat_cl * (AGE/age_ref)^e_age_cl</span></span>
-<span><span class="co">#&gt; :006: vc &lt;- exp(lvc + etalvc) * (WT/wt_ref)^e_wt_cl_vc</span></span>
-<span><span class="co">#&gt; :007: kel &lt;- cl/vc</span></span>
-<span><span class="co">#&gt; :008: rbase &lt;- exp(lrbase + etalrbase)</span></span>
-<span><span class="co">#&gt; :009: ra &lt;- exp(lra)</span></span>
-<span><span class="co">#&gt; :010: tacro &lt;- exp(ltacro)</span></span>
-<span><span class="co">#&gt; :011: clock_t &lt;- t + 9</span></span>
-<span><span class="co">#&gt; :012: end_t &lt;- rbase * (1 + ra * sin(2 * pi/24 * (tacro + 6 - clock_t)))</span></span>
-<span><span class="co">#&gt; :013: central(0) &lt;- rbase * (1 + ra * sin(2 * pi/24 * (tacro - 3)))/kel</span></span>
-<span><span class="co">#&gt; :014: Cc &lt;- linCmt(ka, kel, vc)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalrbase'</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalrbase'</span></span></code></pre></div>
 </div>

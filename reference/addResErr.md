@@ -51,7 +51,43 @@ readModelDb("PK_1cmt") |> addResErr("addSd")
 #>  
 #> ! remove population parameter `propSd`
 #> ℹ add residual parameter `CcAddSd` and set estimate to 1
-#> Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
+#> ℹ change initial estimate of `CcAddSd` to `1`
+#>  ── rxode2-based solved PK 1-compartment model ────────────────────────────────── 
+#>  ── Initalization: ──  
+#> Fixed Effects ($theta): 
+#>     lka     lcl     lvc CcAddSd 
+#>    0.45    1.00    3.45    1.00 
+#> 
+#> States ($state or $stateDf): 
+#>   Compartment Number Compartment Name Rate   Off Internal #
+#> 1                  1            depot TRUE FALSE          1
+#> 2                  2          central TRUE FALSE          2
+#>  ── Model (Normalized Syntax): ── 
+#> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
+#>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+#>     ini({
+#>         lka <- 0.45
+#>         label("Absorption rate (Ka)")
+#>         lcl <- 1
+#>         label("Clearance (CL)")
+#>         lvc <- 3.45
+#>         label("Central volume of distribution (V)")
+#>         CcAddSd <- c(0, 1)
+#>     })
+#>     model({
+#>         ka <- exp(lka)
+#>         cl <- exp(lcl)
+#>         vc <- exp(lvc)
+#>         Cc <- linCmt()
+#>         Cc ~ add(CcAddSd)
+#>     })
+#> }
 readModelDb("PK_1cmt") |> addResErr("lnormSd")
 #>  
 #>  
@@ -59,7 +95,43 @@ readModelDb("PK_1cmt") |> addResErr("lnormSd")
 #>  
 #> ! remove population parameter `propSd`
 #> ℹ add residual parameter `CcLnormSd` and set estimate to 1
-#> Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
+#> ℹ change initial estimate of `CcLnormSd` to `0.5`
+#>  ── rxode2-based solved PK 1-compartment model ────────────────────────────────── 
+#>  ── Initalization: ──  
+#> Fixed Effects ($theta): 
+#>       lka       lcl       lvc CcLnormSd 
+#>      0.45      1.00      3.45      0.50 
+#> 
+#> States ($state or $stateDf): 
+#>   Compartment Number Compartment Name Rate   Off Internal #
+#> 1                  1            depot TRUE FALSE          1
+#> 2                  2          central TRUE FALSE          2
+#>  ── Model (Normalized Syntax): ── 
+#> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
+#>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+#>     ini({
+#>         lka <- 0.45
+#>         label("Absorption rate (Ka)")
+#>         lcl <- 1
+#>         label("Clearance (CL)")
+#>         lvc <- 3.45
+#>         label("Central volume of distribution (V)")
+#>         CcLnormSd <- c(0, 0.5)
+#>     })
+#>     model({
+#>         ka <- exp(lka)
+#>         cl <- exp(lcl)
+#>         vc <- exp(lvc)
+#>         Cc <- linCmt()
+#>         Cc ~ lnorm(CcLnormSd)
+#>     })
+#> }
 readModelDb("PK_1cmt") |> addResErr(c("addSd", "propSd"))
 #>  
 #>  
@@ -67,5 +139,44 @@ readModelDb("PK_1cmt") |> addResErr(c("addSd", "propSd"))
 #>  
 #> ! remove population parameter `propSd`
 #> ℹ add residual parameter `CcAddSd` and set estimate to 1
-#> Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
+#> ℹ add residual parameter `CcPropSd` and set estimate to 1
+#> ℹ change initial estimate of `CcAddSd` to `1`
+#> ℹ change initial estimate of `CcPropSd` to `0.5`
+#>  ── rxode2-based solved PK 1-compartment model ────────────────────────────────── 
+#>  ── Initalization: ──  
+#> Fixed Effects ($theta): 
+#>      lka      lcl      lvc  CcAddSd CcPropSd 
+#>     0.45     1.00     3.45     1.00     0.50 
+#> 
+#> States ($state or $stateDf): 
+#>   Compartment Number Compartment Name Rate   Off Internal #
+#> 1                  1            depot TRUE FALSE          1
+#> 2                  2          central TRUE FALSE          2
+#>  ── Model (Normalized Syntax): ── 
+#> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
+#>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+#>     ini({
+#>         lka <- 0.45
+#>         label("Absorption rate (Ka)")
+#>         lcl <- 1
+#>         label("Clearance (CL)")
+#>         lvc <- 3.45
+#>         label("Central volume of distribution (V)")
+#>         CcAddSd <- c(0, 1)
+#>         CcPropSd <- c(0, 0.5)
+#>     })
+#>     model({
+#>         ka <- exp(lka)
+#>         cl <- exp(lcl)
+#>         vc <- exp(lvc)
+#>         Cc <- linCmt()
+#>         Cc ~ add(CcAddSd) + prop(CcPropSd)
+#>     })
+#> }
 ```

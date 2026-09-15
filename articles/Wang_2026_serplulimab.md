@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.6 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -830,7 +830,7 @@ c(`max |Q2W ratio - 66.67/WT|` = max(abs(ratios$q2w_ratio - ratios$expected)),
   `max |Q3W ratio - 66.67/WT|` = max(abs(ratios$q3w_ratio - ratios$expected)),
   `max |Q2W ratio - Q3W ratio|` = max(abs(ratios$q2w_ratio - ratios$q3w_ratio)))
 #>  max |Q2W ratio - 66.67/WT|  max |Q3W ratio - 66.67/WT| 
-#>                1.776357e-15                1.554312e-15 
+#>                1.776357e-15                1.776357e-15 
 #> max |Q2W ratio - Q3W ratio| 
 #>                2.664535e-15
 

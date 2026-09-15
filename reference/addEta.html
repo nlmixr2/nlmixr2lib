@@ -2750,7 +2750,7 @@ instead of <code>ui</code> still works but emits a deprecation warning.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nlmixr2.github.io/rxode2/" class="external-link">rxode2</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> rxode2 5.1.6 using 2 threads (see ?getRxThreads)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> rxode2 5.1.7 using 2 threads (see ?getRxThreads)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   no cache: create with `rxCreateCache()`</span>
 <span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">addEta</span><span class="op">(</span><span class="st">"ka"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
@@ -2765,7 +2765,36 @@ instead of <code>ui</code> still works but emits a deprecation warning.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> promote `etaKa` to between subject variability with initial estimate 0.1</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rbind(deparse.level, ...):</span> numbers of columns of arguments do not match</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `etaKa` to `0.1`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     compartmentData &lt;- list(depot = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         specimen = "administration site", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         central = list(analyte = "drug", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "plasma", verified = FALSE))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         propSd &lt;- c(0, 0.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Proportional residual error (fraction)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         etaKa ~ 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka + etaKa)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- linCmt()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55b404cb1968&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

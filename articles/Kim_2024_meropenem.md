@@ -158,8 +158,8 @@ mod_omega
 #> etalvp 0.0000000 0.0000000 0.0315384
 #> attr(,"lotriLabels")
 #> [1] "Table 2: IIV on CL = 26.2% (RSE 30.4%, shrinkage 1.82%; bootstrap 25.4%, 95% CI 7.8-38.3) -> log(1 + 0.262^2)"
-#> [2] "Table 2: IIV on Q = 14.4% (footnote b: fixed; shrinkage 49.1%) -> log(1 + 0.144^2)"                           
-#> [3] "Table 2: IIV on V2 = 17.9% (footnote b: fixed; shrinkage 11.2%) -> log(1 + 0.179^2)"                          
+#> [2] "Table 2: IIV on Q = 14.4% (footnote b; shrinkage 49.1%) -> log(1 + 0.144^2)"                                  
+#> [3] "Table 2: IIV on V2 = 17.9% (footnote b; shrinkage 11.2%) -> log(1 + 0.179^2)"                                 
 #> attr(,"lotriFix")
 #>        etalcl etalq etalvp
 #> etalcl  FALSE FALSE  FALSE

@@ -3281,7 +3281,7 @@ tight.</p>
 <span><span class="va">max_rel_err</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">sim_ref</span><span class="op">$</span><span class="va">Cc</span> <span class="op">-</span> <span class="va">sim_ref</span><span class="op">$</span><span class="va">closed_form</span><span class="op">)</span> <span class="op">/</span></span>
 <span>                     <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">sim_ref</span><span class="op">$</span><span class="va">closed_form</span>, <span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif</a></span><span class="op">(</span><span class="va">max_rel_err</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2.97e-14</span></span>
+<span><span class="co">#&gt; [1] 3e-14</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">max_rel_err</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span></code></pre></div>
 <p>The solver reproduces the analytic infusion solution to better than

@@ -107,7 +107,7 @@ readModelDb("PK_1cmt_des") |>
 #>         lwa <- 0.1
 #>         label("Weibull absorption alpha (wa)")
 #>         lwb <- 0.1
-#>         label("Weibull absorption beta (wa)")
+#>         label("Weibull absorption beta (wb)")
 #>     })
 #>     model({
 #>         wa <- exp(lwa)

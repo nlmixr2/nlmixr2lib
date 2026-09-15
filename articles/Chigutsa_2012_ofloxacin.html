@@ -3019,8 +3019,7 @@ slower terminal phase.</p>
 <span>    colour  <span class="op">=</span> <span class="st">"Site"</span>,</span>
 <span>    title   <span class="op">=</span> <span class="st">"Typical-value ofloxacin Cc vs time, by site"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Figure 1b of Chigutsa 2012."</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="Chigutsa_2012_ofloxacin_files/figure-html/figure-1b-1.png" class="r-plt" alt="Replicates Figure 1b of Chigutsa 2012 (typical-value ofloxacin concentration-time profile for the median patient at each study site, log-y scale)." width="672"><p class="caption">
 Replicates Figure 1b of Chigutsa 2012 (typical-value ofloxacin
@@ -3103,423 +3102,23 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span></span>
 <span><span class="va">nca_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nca_tbl</span>, <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"First 12 rows of the per-subject PKNCA result table."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>First 12 rows of the per-subject PKNCA result table.</caption>
 <colgroup>
-<col width="11%">
-<col width="2%">
-<col width="4%">
-<col width="2%">
-<col width="13%">
+<col width="20%">
 <col width="5%">
-<col width="53%">
-<col width="6%">
+<col width="7%">
+<col width="5%">
+<col width="25%">
+<col width="14%">
+<col width="10%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">site</th>
@@ -3538,7 +3137,7 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">cmax</td>
-<td align="right">0</td>
+<td align="right">7.7806534</td>
 <td align="left">NA</td>
 <td align="left">mg/L</td>
 </tr>
@@ -3548,7 +3147,7 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">tmax</td>
-<td align="right">NA</td>
+<td align="right">3.7500000</td>
 <td align="left">NA</td>
 <td align="left">h</td>
 </tr>
@@ -3558,7 +3157,7 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">tlast</td>
-<td align="right">NA</td>
+<td align="right">24.0000000</td>
 <td align="left">NA</td>
 <td align="left">h</td>
 </tr>
@@ -3568,9 +3167,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.1095885</td>
+<td align="left">NA</td>
 <td align="left">1/h</td>
 </tr>
 <tr class="odd">
@@ -3579,9 +3177,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">r.squared</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.9999759</td>
+<td align="left">NA</td>
 <td align="left">unitless</td>
 </tr>
 <tr class="even">
@@ -3590,9 +3187,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">adj.r.squared</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.9999756</td>
+<td align="left">NA</td>
 <td align="left">unitless</td>
 </tr>
 <tr class="odd">
@@ -3601,9 +3197,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">4.0000000</td>
+<td align="left">NA</td>
 <td align="left">h</td>
 </tr>
 <tr class="even">
@@ -3612,9 +3207,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z.time.last</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">24.0000000</td>
+<td align="left">NA</td>
 <td align="left">h</td>
 </tr>
 <tr class="odd">
@@ -3623,9 +3217,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">lambda.z.n.points</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">81.0000000</td>
+<td align="left">NA</td>
 <td align="left">count</td>
 </tr>
 <tr class="even">
@@ -3634,9 +3227,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">clast.pred</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">0.8838320</td>
+<td align="left">NA</td>
 <td align="left">mg/L</td>
 </tr>
 <tr class="odd">
@@ -3645,9 +3237,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">half.life</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">6.3249976</td>
+<td align="left">NA</td>
 <td align="left">h</td>
 </tr>
 <tr class="even">
@@ -3656,9 +3247,8 @@ per-site derived values in Chigutsa 2012 Table 3.</p>
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">span.ratio</td>
-<td align="right">NA</td>
-<td align="left">Too few points for half-life calculation
-(min.hl.points=3 with only 0 points)</td>
+<td align="right">3.1620565</td>
+<td align="left">NA</td>
 <td align="left">fraction</td>
 </tr>
 </tbody>
@@ -3730,43 +3320,43 @@ x AUC0-24, see Assumptions and deviations.</caption>
 <tr class="odd">
 <td align="left">Cape Town (fed)</td>
 <td align="left">Cmax (mg/L)</td>
-<td align="right">0</td>
-<td align="left">0.00 - 0.00</td>
+<td align="right">8.57</td>
+<td align="left">5.85 - 12.78</td>
 <td align="right">8.8</td>
 </tr>
 <tr class="even">
 <td align="left">Cape Town (fed)</td>
 <td align="left">Terminal half-life (h)</td>
-<td align="right">NA</td>
-<td align="left">NA - NA</td>
+<td align="right">7.58</td>
+<td align="left">4.98 - 11.92</td>
 <td align="right">7.8</td>
 </tr>
 <tr class="odd">
 <td align="left">Cape Town (fed)</td>
 <td align="left">Tmax (h)</td>
-<td align="right">NA</td>
-<td align="left">NA - NA</td>
+<td align="right">2.75</td>
+<td align="left">1.25 - 5.51</td>
 <td align="right">3.0</td>
 </tr>
 <tr class="even">
 <td align="left">Durban (fasted)</td>
 <td align="left">Cmax (mg/L)</td>
-<td align="right">0</td>
-<td align="left">0.00 - 0.00</td>
+<td align="right">9.98</td>
+<td align="left">6.64 - 15.87</td>
 <td align="right">10.4</td>
 </tr>
 <tr class="odd">
 <td align="left">Durban (fasted)</td>
 <td align="left">Terminal half-life (h)</td>
-<td align="right">NA</td>
-<td align="left">NA - NA</td>
+<td align="right">7.42</td>
+<td align="left">5.15 - 11.10</td>
 <td align="right">7.8</td>
 </tr>
 <tr class="even">
 <td align="left">Durban (fasted)</td>
 <td align="left">Tmax (h)</td>
-<td align="right">NA</td>
-<td align="left">NA - NA</td>
+<td align="right">1.25</td>
+<td align="left">0.50 - 2.50</td>
 <td align="right">1.2</td>
 </tr>
 </tbody>

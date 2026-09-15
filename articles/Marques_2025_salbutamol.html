@@ -3016,18 +3016,27 @@ parameters”</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="model-handle-and-a-required-rxode2-workaround">Model handle and a required rxode2 workaround<a class="anchor" aria-label="anchor" href="#model-handle-and-a-required-rxode2-workaround"></a>
+<h2 id="model-handle-and-a-retired-rxode2-workaround">Model handle and a retired rxode2 workaround<a class="anchor" aria-label="anchor" href="#model-handle-and-a-retired-rxode2-workaround"></a>
 </h2>
 <p>The packaged model uses rxode2’s built-in <code>transit()</code>, the
 closed-form (gamma-density) input rate of the Savic transit-absorption
-model. On the rxode2 version installed here, <code>transit()</code>
-silently evaluates to zero when the model is solved through an
-<code>rxUi</code> object obtained from <code><a href="../reference/readModelDb.html">readModelDb()</a></code>, while
-the <em>identical</em> generated ODE code solves correctly as a plain
-<code>rxode2</code> model. The check below documents the defect and
-builds the plain-ODE twin used for every simulation in this vignette.
-All parameter values are read out of the packaged model’s
-<code>iniDf</code>, so nothing is re-typed from the paper here.</p>
+model. Through rxode2 5.1.6, <code>transit()</code> silently evaluated
+to zero when the model was solved through an <code>rxUi</code> object
+obtained from <code><a href="../reference/readModelDb.html">readModelDb()</a></code>, while the <em>identical</em>
+generated ODE code solved correctly as a plain <code>rxode2</code>
+model. That defect is fixed as of rxode2 5.1.7, which this package now
+requires, so both handles agree and the check below asserts that
+agreement rather than the old defect.</p>
+<p>The plain-ODE twin is still what every simulation here solves
+through. It is kept deliberately: the twin takes its fixed effects from
+<code>params</code> and its etas from explicit event-table columns,
+which is what makes the typical-value and virtual-cohort sections
+reproducible, and re-pointing them at the <code>rxUi</code> handle would
+change how the etas are applied. Retiring the twin is a separate change
+that has to re-derive this article’s published numbers, not a side
+effect of the version bump. All parameter values are read out of the
+packaged model’s <code>iniDf</code>, so nothing is re-typed from the
+paper here.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Marques_2025_salbutamol"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
@@ -3044,7 +3053,7 @@ All parameter values are read out of the packaged model’s
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="va">theta</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"addSd"</span>, <span class="st">"propSd"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">eta_var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">ini</span><span class="op">$</span><span class="va">est</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ini</span><span class="op">$</span><span class="va">neta1</span><span class="op">)</span><span class="op">]</span>, <span class="va">eta_names</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Demonstrate the defect: same code, two handles, one of them returns zero.</span></span>
+<span><span class="co"># Both handles now agree; before rxode2 5.1.7 the rxUi one returned zero.</span></span>
 <span><span class="va">ev_probe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="fl">4</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, amt <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">0L</span>,</span>
@@ -3061,22 +3070,22 @@ All parameter values are read out of the packaged model’s
 <span>  <span class="va">mod_ode</span>, <span class="va">ev_probe_eta</span>, params <span class="op">=</span> <span class="va">theta</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  Handle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rxUi from readModelDb() (transit() returns 0)"</span>,</span>
+<span>  Handle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rxUi from readModelDb()"</span>,</span>
 <span>             <span class="st">"plain rxode2 model from rxNorm() of the same rxUi"</span><span class="op">)</span>,</span>
 <span>  `Cmax (ug/mL)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cmax_ui</span>, <span class="va">cmax_ode</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">7</span>, caption <span class="op">=</span> <span class="st">"The rxode2 transit()/rxUi defect that forces the plain-ODE twin."</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">7</span>, caption <span class="op">=</span> <span class="st">"Both handles solve transit() identically from rxode2 5.1.7 on."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>The rxode2 transit()/rxUi defect that forces the plain-ODE
-twin.</caption>
+<caption>Both handles solve transit() identically from rxode2 5.1.7
+on.</caption>
 <thead><tr class="header">
 <th align="left">Handle</th>
 <th align="right">Cmax (ug/mL)</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">rxUi from readModelDb() (transit() returns 0)</td>
-<td align="right">0.0000000</td>
+<td align="left">rxUi from readModelDb()</td>
+<td align="right">0.0018901</td>
 </tr>
 <tr class="even">
 <td align="left">plain rxode2 model from rxNorm() of the same rxUi</td>
@@ -3086,9 +3095,10 @@ twin.</caption>
 </table>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># Lock the workaround in: if a future rxode2 fixes the rxUi path, cmax_ui</span></span>
-<span><span class="co"># becomes non-zero and this assertion fires, prompting the simplification.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">cmax_ui</span> <span class="op">==</span> <span class="fl">0</span>, <span class="va">cmax_ode</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># The two handles run the same generated code, so they must agree. This</span></span>
+<span><span class="co"># replaces the guard that used to assert cmax_ui == 0: that guard existed to</span></span>
+<span><span class="co"># fire when rxode2 fixed the rxUi path, which it now has.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">cmax_ode</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cmax_ui</span> <span class="op">/</span> <span class="va">cmax_ode</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="transit-chain-self-consistency">Transit-chain self-consistency<a class="anchor" aria-label="anchor" href="#transit-chain-self-consistency"></a>
 </h3>

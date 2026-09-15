@@ -387,7 +387,7 @@ sim_ref$closed_form <- conc_infusion(sim_ref$time, g_to_umol(ref_dose_g) / 4)
 max_rel_err <- max(abs(sim_ref$Cc - sim_ref$closed_form) /
                      pmax(sim_ref$closed_form, 1e-12))
 signif(max_rel_err, 3)
-#> [1] 2.97e-14
+#> [1] 3e-14
 
 stopifnot(max_rel_err < 1e-6)
 ```

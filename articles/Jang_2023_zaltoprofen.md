@@ -248,7 +248,7 @@ cf <- cf_2cmt_oral(sim_tv$time, dose = 80, ka = 1.73, vc = 4.88,
 keep <- sim_tv$time > 0
 rel_cf <- max(abs(cf[keep] - sim_tv$Cc[keep]) / cf[keep])
 cat(sprintf("max relative difference, closed form vs ODE solve: %.3e\n", rel_cf))
-#> max relative difference, closed form vs ODE solve: 4.328e-14
+#> max relative difference, closed form vs ODE solve: 4.313e-14
 
 # Achieved ~6e-14. The bound leaves six orders of magnitude of headroom and
 # still fails instantly on any mis-transcribed structural value.

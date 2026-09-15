@@ -171,31 +171,6 @@ for (e in c("etalcl", "etalvc", "etalvp", "etalkin",
 baseline_sim <- rxode2::rxSolve(
   mod, baseline_events, omega = NA, sigma = NA, returnType = "data.frame"
 )
-#> rxode2 model syntax error:
-#> ================================================================================
-#> :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead
-#> :
-#>       wtRef <- 70
-#>       ^
-#> :ERR: 'peripheral1(0)' present, but d/dt(peripheral1) not defined:
-#> 
-#> :002: ageRef <- 35
-#> :003: fage <- exp(e_age_cl/100 * (AGE - ageRef))
-#> :004: fprop <- exp((e_conmed_propofol_cc_cl + etae_conmed_propofol_cc_cl)/100 * CONMED_PROPOFOL_CC)
-#> :005: cl <- exp(lcl + etalcl) * (WT/wtRef)^e_wt_cl * fage * fprop
-#> :006: vc <- exp(lvc + etalvc) * (WT/wtRef)^e_wt_vc
-#> :007: q <- exp(lq) * (WT/wtRef)^e_wt_q
-#> :008: vp <- exp(lvp + etalvp) * (WT/wtRef)^e_wt_vp
-#> :009: kin <- exp(lkin + etalkin) * (WT/wtRef)^e_wt_kin
-#> :010: tlag <- exp(ltlag) * (WT/wtRef)^e_wt_tlag
-#> :011: kel <- cl/vc
-#> :012: k12 <- q/vc
-#> :013: k21 <- q/vp
-#> :014: central(0) <- kin * vc/cl
-#> :015: peripheral1(0) <- kin * vp/cl
-#> :016: alag(central) <- tlag
-#> :017: Cc <- linCmt(kel, k12, k21, vc)
-#> ================================================================================
 
 stopifnot(
   max(abs(baseline_sim$Cc - kin_typ / cl_typ)) < 1e-6

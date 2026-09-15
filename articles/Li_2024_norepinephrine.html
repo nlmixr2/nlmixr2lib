@@ -3044,31 +3044,6 @@ allometric exponent.</p>
 <span><span class="va">baseline_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, <span class="va">baseline_events</span>, omega <span class="op">=</span> <span class="cn">NA</span>, sigma <span class="op">=</span> <span class="cn">NA</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 model syntax error:</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
-<span><span class="co">#&gt; :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead</span></span>
-<span><span class="co">#&gt; :</span></span>
-<span><span class="co">#&gt;       wtRef &lt;- 70</span></span>
-<span><span class="co">#&gt;       ^</span></span>
-<span><span class="co">#&gt; :ERR: 'peripheral1(0)' present, but d/dt(peripheral1) not defined:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; :002: ageRef &lt;- 35</span></span>
-<span><span class="co">#&gt; :003: fage &lt;- exp(e_age_cl/100 * (AGE - ageRef))</span></span>
-<span><span class="co">#&gt; :004: fprop &lt;- exp((e_conmed_propofol_cc_cl + etae_conmed_propofol_cc_cl)/100 * CONMED_PROPOFOL_CC)</span></span>
-<span><span class="co">#&gt; :005: cl &lt;- exp(lcl + etalcl) * (WT/wtRef)^e_wt_cl * fage * fprop</span></span>
-<span><span class="co">#&gt; :006: vc &lt;- exp(lvc + etalvc) * (WT/wtRef)^e_wt_vc</span></span>
-<span><span class="co">#&gt; :007: q &lt;- exp(lq) * (WT/wtRef)^e_wt_q</span></span>
-<span><span class="co">#&gt; :008: vp &lt;- exp(lvp + etalvp) * (WT/wtRef)^e_wt_vp</span></span>
-<span><span class="co">#&gt; :009: kin &lt;- exp(lkin + etalkin) * (WT/wtRef)^e_wt_kin</span></span>
-<span><span class="co">#&gt; :010: tlag &lt;- exp(ltlag) * (WT/wtRef)^e_wt_tlag</span></span>
-<span><span class="co">#&gt; :011: kel &lt;- cl/vc</span></span>
-<span><span class="co">#&gt; :012: k12 &lt;- q/vc</span></span>
-<span><span class="co">#&gt; :013: k21 &lt;- q/vp</span></span>
-<span><span class="co">#&gt; :014: central(0) &lt;- kin * vc/cl</span></span>
-<span><span class="co">#&gt; :015: peripheral1(0) &lt;- kin * vp/cl</span></span>
-<span><span class="co">#&gt; :016: alag(central) &lt;- tlag</span></span>
-<span><span class="co">#&gt; :017: Cc &lt;- linCmt(kel, k12, k21, vc)</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">baseline_sim</span><span class="op">$</span><span class="va">Cc</span> <span class="op">-</span> <span class="va">kin_typ</span> <span class="op">/</span> <span class="va">cl_typ</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span></span>

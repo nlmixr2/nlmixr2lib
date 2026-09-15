@@ -351,7 +351,7 @@ knitr::kable(
 | NCA parameter     | treatment | Reference | Simulated | % diff |
 |:------------------|:----------|----------:|----------:|-------:|
 | Cmax (mg/L)       | 1 g q8h   |      39.2 |      39.2 |  -0.0% |
-| Cmin (mg/L)       | 1 g q8h   |      1.98 |      1.98 |  +0.0% |
+| Cmin (mg/L)       | 1 g q8h   |      1.98 |      1.98 |  -0.0% |
 | Tmax (h)          | 1 g q8h   |         1 |         1 |  +0.0% |
 | AUClast (mg\*h/L) | 1 g q8h   |      88.1 |        88 |  -0.0% |
 | t½ (h)            | 1 g q8h   |      2.21 |      2.17 |  -1.6% |

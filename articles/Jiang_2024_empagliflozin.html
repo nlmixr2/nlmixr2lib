@@ -3307,7 +3307,7 @@ is a read of that figure rather than a transcribed value.</p>
 </h3>
 <p>The model writes the Savic gamma-density input explicitly instead of
 calling rxode2’s <code>transit()</code> macro, because under rxode2
-5.1.6 the macro silently returns zero input for a model in nlmixr2 UI
+5.1.7 the macro silently returns zero input for a model in nlmixr2 UI
 form when combined with the conventional <code>f(depot) &lt;- 0</code>
 bolus suppression. The two forms are algebraically identical, and that
 is asserted here rather than asserted in prose.</p>
@@ -3973,7 +3973,7 @@ within minutes (k12 = 8.2 1/h), the observable concentration is governed
 by V1 + V2 rather than by V1 alone, so predictions remain sensible.</li>
 <li>
 <strong>The absorption term is written out instead of calling
-<code>transit()</code>.</strong> Under rxode2 5.1.6,
+<code>transit()</code>.</strong> Under rxode2 5.1.7,
 <code>transit()</code> combined with <code>f(depot) &lt;- 0</code>
 silently delivers zero dose for models in nlmixr2 UI form. The explicit
 gamma density is algebraically identical; the “Equivalence” section

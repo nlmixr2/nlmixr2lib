@@ -165,18 +165,27 @@ location.
 | Model selection criteria | BICc / -2LL | Table S4 (see Errata item 4) |
 | Covariate screen | correlations and p-values | Table S5 (see Errata item 5) |
 
-## Model handle and a required rxode2 workaround
+## Model handle and a retired rxode2 workaround
 
 The packaged model uses rxode2’s built-in `transit()`, the closed-form
-(gamma-density) input rate of the Savic transit-absorption model. On the
-rxode2 version installed here, `transit()` silently evaluates to zero
-when the model is solved through an `rxUi` object obtained from
+(gamma-density) input rate of the Savic transit-absorption model.
+Through rxode2 5.1.6, `transit()` silently evaluated to zero when the
+model was solved through an `rxUi` object obtained from
 [`readModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.md),
-while the *identical* generated ODE code solves correctly as a plain
-`rxode2` model. The check below documents the defect and builds the
-plain-ODE twin used for every simulation in this vignette. All parameter
-values are read out of the packaged model’s `iniDf`, so nothing is
-re-typed from the paper here.
+while the *identical* generated ODE code solved correctly as a plain
+`rxode2` model. That defect is fixed as of rxode2 5.1.7, which this
+package now requires, so both handles agree and the check below asserts
+that agreement rather than the old defect.
+
+The plain-ODE twin is still what every simulation here solves through.
+It is kept deliberately: the twin takes its fixed effects from `params`
+and its etas from explicit event-table columns, which is what makes the
+typical-value and virtual-cohort sections reproducible, and re-pointing
+them at the `rxUi` handle would change how the etas are applied.
+Retiring the twin is a separate change that has to re-derive this
+article’s published numbers, not a side effect of the version bump. All
+parameter values are read out of the packaged model’s `iniDf`, so
+nothing is re-typed from the paper here.
 
 ``` r
 
@@ -195,7 +204,7 @@ theta <- setNames(ini$est[!is.na(ini$ntheta)], theta_names)
 theta <- theta[!names(theta) %in% c("addSd", "propSd")]
 eta_var <- setNames(ini$est[!is.na(ini$neta1)], eta_names)
 
-# Demonstrate the defect: same code, two handles, one of them returns zero.
+# Both handles now agree; before rxode2 5.1.7 the rxUi one returned zero.
 ev_probe <- rbind(
   data.frame(id = 1L, time = 0, amt = 4, evid = 1L, cmt = "depot"),
   data.frame(id = 1L, time = seq(0, 24, by = 0.5), amt = 0, evid = 0L,
@@ -212,27 +221,27 @@ cmax_ode <- max(rxode2::rxSolve(
   mod_ode, ev_probe_eta, params = theta, returnType = "data.frame")$Cc)
 
 tibble::tibble(
-  Handle = c("rxUi from readModelDb() (transit() returns 0)",
+  Handle = c("rxUi from readModelDb()",
              "plain rxode2 model from rxNorm() of the same rxUi"),
   `Cmax (ug/mL)` = c(cmax_ui, cmax_ode)
 ) |>
-  knitr::kable(digits = 7, caption = "The rxode2 transit()/rxUi defect that forces the plain-ODE twin.")
+  knitr::kable(digits = 7, caption = "Both handles solve transit() identically from rxode2 5.1.7 on.")
 ```
 
 | Handle                                            | Cmax (ug/mL) |
 |:--------------------------------------------------|-------------:|
-| rxUi from readModelDb() (transit() returns 0)     |    0.0000000 |
+| rxUi from readModelDb()                           |    0.0018901 |
 | plain rxode2 model from rxNorm() of the same rxUi |    0.0018901 |
 
-The rxode2 transit()/rxUi defect that forces the plain-ODE twin.
-{.table}
+Both handles solve transit() identically from rxode2 5.1.7 on. {.table}
 
 ``` r
 
 
-# Lock the workaround in: if a future rxode2 fixes the rxUi path, cmax_ui
-# becomes non-zero and this assertion fires, prompting the simplification.
-stopifnot(cmax_ui == 0, cmax_ode > 0)
+# The two handles run the same generated code, so they must agree. This
+# replaces the guard that used to assert cmax_ui == 0: that guard existed to
+# fire when rxode2 fixed the rxUi path, which it now has.
+stopifnot(cmax_ode > 0, abs(cmax_ui / cmax_ode - 1) < 1e-6)
 ```
 
 ### Transit-chain self-consistency

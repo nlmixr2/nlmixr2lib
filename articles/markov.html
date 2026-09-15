@@ -2889,19 +2889,13 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt; → loading into symengine environment...</span></span>
 <span><span class="co">#&gt; → pruning branches (`if`/`else`) of full model...</span></span>
 <span><span class="co">#&gt; ✔ done</span></span>
-<span><span class="co">#&gt; → optimizing duplicate expressions in EBE model (2 chunks)...</span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00</span></span>
+<span><span class="co">#&gt; → finding duplicate expressions in EBE model...</span></span>
 <span><span class="co">#&gt; → compiling EBE model...</span></span>
 <span><span class="co">#&gt; ✔ done</span></span>
-<span><span class="co">#&gt; rxode2 5.1.6 using 2 threads (see ?getRxThreads)</span></span>
+<span><span class="co">#&gt; rxode2 5.1.7 using 2 threads (see ?getRxThreads)</span></span>
 <span><span class="co">#&gt;   no cache: create with `rxCreateCache()`</span></span>
 <span><span class="co">#&gt; calculating covariance matrix</span></span>
+<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00 </span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; → Calculating residuals/tables</span></span>
 <span><span class="co">#&gt; ✔ done</span></span>
@@ -2913,10 +2907,10 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Time (sec fit$time): ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;           setup   optimize  covariance preprocess postprocess table compress</span></span>
-<span><span class="co">#&gt; elapsed 3.74762 0.08502295 0.004669118      0.058       0.012 0.063    0.002</span></span>
+<span><span class="co">#&gt;            setup    optimize  covariance preprocess postprocess table compress</span></span>
+<span><span class="co">#&gt; elapsed 2.442528 0.008784222 0.004672177      0.074       0.013 0.048    0.002</span></span>
 <span><span class="co">#&gt;             other</span></span>
-<span><span class="co">#&gt; elapsed 0.6576875</span></span>
+<span><span class="co">#&gt; elapsed 0.7570157</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── (fit$parFixed or fit$parFixedDf): ──</span></span>
 <span><span class="co">#&gt; </span></span>
