@@ -11,7 +11,7 @@
 \usage{
 addCmtProp(ui, prop = c("f", "lag", "dur", "rate", "ini"), cmt)
 
-addBioavailability(ui, cmt)
+addBioavailability(ui, cmt, scale = c("log", "logit"), cmt2 = NULL, f = 0.8)
 
 addLag(ui, cmt)
 
@@ -37,6 +37,17 @@ addIni(ui, cmt)
 - \code{ini}: initial value of the compartment}
 
 \item{cmt}{compartment to apply the property to}
+
+\item{scale}{parameterization of the bioavailability: \code{"log"}
+(default) estimates it unboundedly on the log scale, while
+\code{"logit"} constrains it to (0,1) with a logit/expit
+parameterization (Monolix-style \code{F}, oral or subcutaneous)}
+
+\item{cmt2}{optional second compartment for the logit dose-split
+form; see [addBioavailabilityLogit()]}
+
+\item{f}{initial bioavailability fraction, in (0,1), for the logit
+form, or NULL to leave the initial estimate unset}
 }
 \value{
 rxode2 ui object with property applied
@@ -70,6 +81,14 @@ readModelDb("PK_3cmt_des") |> addDur(depot)
 readModelDb("PK_3cmt_des") |> addRate(depot)
 
 readModelDb("PK_3cmt_des") |> addIni(depot)
+
+# bioavailability bounded to (0,1) with a logit parameterization
+readModelDb("PK_1cmt_des") |> addBioavailability(depot, scale = "logit")
+
+# dose split between two absorption paths, fraction named for depot
+readModelDb("PK_1cmt_des") |>
+  addDepot(depot = "depot2", ka = "ka2") |>
+  addBioavailability(depot, depot2, scale = "logit")
 
 }
 \author{

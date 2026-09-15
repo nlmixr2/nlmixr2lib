@@ -186,7 +186,7 @@ Qi_2024_vosoritide <- function() {
     # omega^2 = (CV/100)^2 per the scale note above.
     etalcl ~ 0.112896                                                                 # Qi 2024 Table 5 'IIV CL (CV, %)' = 33.6 (%SE 8.3; bootstrap 27.3 / 33 / 40.49); 0.336^2 = 0.112896
     etalvc ~ 0.058564                                                                 # Qi 2024 Table 5 'IIV V (CV, %)' = 24.2 (%SE 13.6; bootstrap 17.7 / 23.9 / 29.99); 0.242^2 = 0.058564
-    etalmtime ~ fixed(0.05)                                                           # Qi 2024 Table 5 'IIV change-point (fixed)' = 22.4, %SE 0, bootstrap NE; 100*sqrt(0.05) = 22.36 -> 22.4
+    etalmtime ~ fixed(0.05)                                                           # Qi 2024 Table 5 'IIV change-point' = 22.4, %SE 0, bootstrap NE; 100*sqrt(0.05) = 22.36 -> 22.4
 
     # ---------------- Study-level (nested) variability (Table 5 study IIV rows) ----------------
     # The additional hierarchical level of Qi 2024 Sect. 2.4 (eta6 on
