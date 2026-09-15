@@ -914,6 +914,8 @@ navbar:
         href: articles/Dirks_2008_cetuximab.html
       - text: "ChlorogenicAcid rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
+      - text: "Chloroquine (Hoglund 2016)"
+        href: articles/Hoglund_2016_chloroquine.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
       - text: "Cholecalciferol (Tuey 2024)"
@@ -6037,6 +6039,7 @@ articles:
   - articles/Hoefman_2021_asp8232
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2015_artemether_lumefantrine
+  - articles/Hoglund_2016_chloroquine
   - articles/Hoglund_2017_piperaquine
   - articles/Hoglund_2018_mefloquine
   - articles/Holford_1992_tacrine
