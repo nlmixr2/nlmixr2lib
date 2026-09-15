@@ -269,9 +269,16 @@ parameters per subject per occasion via PKNCA, then compared against
 the values reported in Smythe 2013.
 
 ```{r pknca}
+# Keep the t = 0 record. PKNCA refuses an interval that starts before the
+# first measurement, so filtering `time > 0` here silently returns NA for
+# auclast and aucinf.obs on every subject ("Requesting an AUC range
+# starting (0) before the first measurement (0.25) is not allowed").
+# Dosing is extravascular, so the t = 0 concentration is a true zero.
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, occasion)
+
+stopifnot(0 %in% sim_nca$time)
 
 dose_df <- events |>
   dplyr::filter(evid == 1) |>

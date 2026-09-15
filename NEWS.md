@@ -13,6 +13,105 @@
   rows in C order on every machine, which is the order already committed to
   `data/modeldb.rda` and `inst/modeldb.rds`.
 
+- Require `rxode2 (>= 5.1.8)`. 5.1.7 is the first release that works with lotri
+  1.0.5, but it still defaults `useLinCmt = TRUE`, and the ODE-to-`linCmt()`
+  conversion that flag enables segfaults intermittently inside rxode2's model
+  parser -- `linCmtGen()` generates model text and the result is parsed again
+  while the outer parse is still live, over parser state held in C globals. It
+  took out a pkgdown render shard on `Stroh_2013_rolofylline` with
+  `memory not mapped`, having rendered the same article successfully minutes
+  earlier on another branch. 5.1.8 defaults the flag to `FALSE`, which is also
+  the more accurate path: the conversion holds `kel` at its `t = 0` value and
+  drops exogenous input terms, and it changes 92 of the library's models'
+  solutions, five of them by more than 1%.
+
+- **These vignettes now require an rxode2 that does not silently rewrite an ODE
+  system into `linCmt()`** ([rxode2 issue
+  1370](https://github.com/nlmixr2/rxode2/issues/1370)). On rxode2 5.1.6 and
+  earlier, `Marques_2025_salbutamol`, `Schreib_2024_busulfan` and
+  `Sawe_2025_levofloxacin` fail to build rather than render numbers taken from
+  a model other than the one written. That is deliberate: the same three
+  vignettes previously rendered cleanly against the rewritten model. rxode2
+  5.1.7 refuses the conversion and `DESCRIPTION` already requires it, so the
+  constraint is now enforced by the dependency solver rather than only
+  described here.
+
+- Fix `Sawe_2025_levofloxacin`, which administered twice the dose. The model
+  omitted `f(depot) <- 0`, so each dose entered `depot` as a bolus *and* again
+  through the analytical `transit()` chain: `AUC(0-inf) * CL` came to 1999.98 mg
+  for a 1000 mg dose. The line had been left out on the belief that it zeroed
+  the transit input, which was in fact rxode2's ODE-to-`linCmt()` auto-conversion
+  ([rxode2 issue 1370](https://github.com/nlmixr2/rxode2/issues/1370)) discarding
+  the `transit()` term. The vignette's steady-state AUC identity now holds
+  because the model is right, not because the solver had replaced it. A sweep of
+  all 47 models that call `transit()` found no other instance.
+
+- Update the vignettes that documented rxode2's ODE-to-`linCmt()` auto-conversion
+  defect, now that rxode2 refuses the conversion when it would change the model.
+  `Marques_2025_salbutamol` no longer describes its plain-ODE twin as a
+  `transit()`/`rxUi` workaround -- that diagnosis was wrong -- and now asserts the
+  two model handles agree. `Schreib_2024_busulfan` keeps `useLinCmt = FALSE` so it
+  stays correct on older rxode2, but its demonstration of the constant-`kel`
+  rewrite becomes an agreement check. Both vignettes previously carried assertions
+  that required the defect to be present and failed once it was fixed.
+
+- Fix the `Smythe_2013_gatifloxacin` NCA interval. The chunk filtered `time > 0`
+  out of the concentration data while asking PKNCA for an interval starting at 0,
+  so `auclast` and `aucinf.obs` came back `NA` for every subject and the
+  simulated-versus-published AUC table was empty. Simulated AUC0-inf is 35.97
+  (first dose) and 32.44 mg*h/L (steady state) against published medians of 41.2
+  and 35.4.
+
+- Correct two vignette claims that were written against unusable output.
+  `Barras_2009_enoxaparin` said ~20-30% discrepancies in cAUC were expected; the
+  simulated median is 2.7-fold the published one, because Table 3's cAUC runs to
+  the bleeding event over a mean 3.5-day therapy while the vignette integrates a
+  fixed 96-h course. `Dong_2014_mycophenolic_acid` quoted a typical Cmax of
+  8-12 mg/L and IMPDH activity of ~13-18% of baseline; the values are 7-10 mg/L
+  and ~15-20%.
+
+- Read the registers' `- **Type:**` field the same way in every parser. Four
+  places read that one field and only `checkNamingRegisters.R::.parseRegister()`
+  split off a trailing parenthetical qualifier; the other three kept it. So
+  `WHO_PS` -- written `continuous (semantically ordinal but treated as
+  continuous in the covariate model)` -- carried that whole sentence as its
+  routing tag where every other covariate with a `Type:` line carried a bare
+  token. Nothing branches on a covariate's type yet, so this was a latent trap
+  rather than a live bug -- the first code to filter covariates by type would
+  have silently missed that entry. `conventions.R::.parseCovariateColumns()`,
+  `conventions.R::.parseTypedNamesMd()` and
+  `checkModelConventions.R::.referenceRegisterBlocks()` now all split the
+  field: the bare token lands in `type` and the parenthetical in a new
+  `typeQualifier` field. The tag is matched with `identical()` wherever it is
+  consumed (`.namesByType()`, and the `name` + `type` duplicate key), so a
+  qualifier left on it drops an entry out of the canonical lists with no
+  warning anywhere. All four now call one splitter,
+  `conventions.R::.splitRegisterType()`, so they cannot diverge by
+  construction rather than only by four copies of a regex happening to agree;
+  a new `tests/testthat/test-conventions.R` covers the splitter directly and
+  enumerates every entry of every register on top of that.
+
+- Remove the `as`, `ag` and `DIAL` deprecation tombstones from the naming
+  registers. All three names were introduced, deprecated and replaced entirely
+  within the 0.3.2.9000 development cycle -- `inst/references/` did not exist at
+  the 0.3.2 release, no released model ever used the `_as` / `_ag` paracetamol
+  suffixes, and no model has ever carried `DIAL` as a covariate column -- so
+  none of them ever reached a user and a tombstone pointing at the replacement
+  had no audience. The canonical replacements (`apaps`, `apapg`,
+  `RRT_HEMODIAL_ACTIVE` / `RRT_HEMODIAL_STATUS`) are unaffected, and `DIAL`
+  survives as a source alias on both `RRT_HEMODIAL_*` canonicals, which is what
+  actually records that the source papers named the column that way. The `BFR`
+  and `DFR` entries now gate on `RRT_HEMODIAL_ACTIVE` rather than on the
+  removed name.
+
+  Removing the tombstones also dissolves a trap: `metabolite-suffix
+  (deprecated)` was the only thing keeping `as` and `ag` out of
+  `registeredMetabolites`, and it did so by failing an `identical()` match
+  rather than by an explicit flag, so making the parsers consistent would have
+  silently re-admitted both. With the entries gone there is nothing left to
+  re-admit. Verified that every canonical list
+  (`compartments`, `registeredMetabolites`, `pkParams`, `pkBareParams`,
+  `paperNamedParams`) is byte-identical to before.
 - `addBioavailability()` gains a `scale` argument. `scale = "logit"`
   constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
   the Monolix-style oral/SC `F` and the form the `PK_double_sim_*` seeds

@@ -50,6 +50,8 @@ readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit()
 \seealso{
 Other absorption:
 \code{\link[=addTransit]{addTransit()}},
-\code{\link[=addWeibullAbs]{addWeibullAbs()}}
+\code{\link[=addWeibullAbs]{addWeibullAbs()}},
+\code{\link[=addZeroOrderAbs]{addZeroOrderAbs()}},
+\code{\link[=removeZeroOrderAbs]{removeZeroOrderAbs()}}
 }
 \concept{absorption}
