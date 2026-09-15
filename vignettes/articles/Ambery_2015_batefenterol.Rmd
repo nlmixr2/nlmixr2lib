@@ -305,16 +305,36 @@ blq |>
 
 pct <- setNames(blq$pct_blq, blq$arm)
 
-# The two model-building arms must land on the reported side of the paper's
-# own 50% dichotomy, and the sub-therapeutic arm on the other side. Bounds
-# are deliberately wide: the exact percentage depends on the sampling
-# schedule, which the paper gives only as five sampling WINDOWS rather than
-# nominal times, and on which cohort rxode2 happens to draw (its RNG streams
-# are partitioned per solver thread, so CI draws a different cohort).
+# What the paper's dichotomy actually asserts is a SEPARATION: the two
+# model-building arms sit far below the sub-therapeutic arm. Assert that
+# separation rather than each arm's position relative to the bare 50% line.
+#
+# This matters because the BLQ fraction is heavily clustered WITHIN subject
+# -- a high-CL/F subject is below the LLOQ at every sampling time -- so its
+# effective sample size is the 100 subjects per arm, not the number of
+# observation rows, giving a standard error near 5 percentage points. The
+# two model-building arms simulate to roughly 41-44% here, so a bare
+# `< 50` bound would sit only ~1.2 standard errors away and would fail on
+# perhaps one CI run in ten. rxode2 partitions its RNG streams per solver
+# thread, so CI draws a different cohort than a local render does, and that
+# is exactly the shape of assertion this repository has been bitten by
+# before (see `known-vignette-failure-patterns.md`, pattern 12).
+#
+# The separation is ~53 percentage points and both arms move together with
+# the draw, so a 25-point floor is robust while still failing loudly if the
+# clearance or the residual error were mis-transcribed.
 stopifnot(
-  pct[["800 ug QD"]]  < 50,
-  pct[["400 ug BID"]] < 50,
-  pct[["100 ug QD"]]  > 50
+  # Ordering: the sub-therapeutic arm is the most censored.
+  pct[["100 ug QD"]] > pct[["800 ug QD"]],
+  pct[["100 ug QD"]] > pct[["400 ug BID"]],
+  # Magnitude of the separation, robust to which cohort was drawn.
+  pct[["100 ug QD"]] - max(pct[["800 ug QD"]], pct[["400 ug BID"]]) > 25,
+  # Wide absolute sanity bounds: the model-building arms are substantially
+  # censored but not predominantly so, and the 100 ug arm is predominantly
+  # censored, as Sect. 2.4 reports.
+  pct[["800 ug QD"]]  > 15, pct[["800 ug QD"]]  < 65,
+  pct[["400 ug BID"]] > 15, pct[["400 ug BID"]] < 65,
+  pct[["100 ug QD"]]  > 75
 )
 ```
 
@@ -627,8 +647,17 @@ printed figure can be read.
   pre-dose, then 0-30 min, 30 min-2 h, 2-6 h and 6-11 h post-dose) rather
   than nominal times, so the below-LLOQ percentages here are computed over
   a uniform 0.25 h grid across the whole day-28 interval and are not
-  expected to reproduce the paper's 30% and 27% exactly. The assertion is
-  written against the paper's own 50% dichotomy instead.
+  expected to reproduce the paper's 30% and 27% exactly. They do not: the
+  simulated figures are about 44% (800 ug once daily) and 41% (400 ug twice
+  daily) against the reported 30% and 27%. The uniform grid is the likely
+  reason -- it places half its samples in the 11-24 h stretch that the
+  paper's five windows, all of which end by 11 h post-dose, never sample,
+  and concentrations in that late stretch are the most likely to fall below
+  the LLOQ. This is a deviation to be aware of when reusing the packaged
+  model, not evidence against the parameter transcription: the arms' rank
+  order and their wide separation from the sub-therapeutic 100 ug arm
+  (about 97% censored) are reproduced, and it is that separation the
+  assertion is written against.
 
 - **The virtual baseline-FEV1 distribution is normal, truncated to
   0.40-3.00 L.** Ambery 2015 Table 1 reports only a mean and a standard
