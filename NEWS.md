@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Boucher 2016 naproxen and topiramate landmark model-based meta-analyses ([doi:10.1002/psp4.12041](https://doi.org/10.1002/psp4.12041)) -- adults with osteoarthritis pain across 13 naproxen trials, and adults with episodic migraine across six topiramate prophylaxis trials.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
