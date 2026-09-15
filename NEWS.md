@@ -56,6 +56,8 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
+- Add Navid 2016 theophylline, caffeine and ciprofloxacin whole-body PBPK ([doi:10.1002/psp4.12061](https://doi.org/10.1002/psp4.12061)) -- adults, reference man and woman, with the drug-drug interactions of theophylline with caffeine and ciprofloxacin.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
