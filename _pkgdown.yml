@@ -2300,6 +2300,8 @@ navbar:
         href: articles/Wilkins_2011_isoniazid.html
       - text: "Isoniazid pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Isoniazid pd (Cordes 2016)"
+        href: articles/Cordes_2016_isoniazid.html
       - text: "Isoprenaline rat (vanSteeg 2007)"
         href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
       - text: "Istradefylline dizziness (Knebel 2012)"
@@ -5713,6 +5715,7 @@ articles:
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Cooper_2015_sertraline
+  - articles/Cordes_2016_isoniazid
   - articles/Cortez_2015_nevirapine
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2023_cabamiquine
