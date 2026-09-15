@@ -156,7 +156,7 @@ removeZeroOrderAbs <- function(ui, central = "central") {
   }
   .ui <- rxode2::rxUiDecompress(.ui)
   if (.dropIni) {
-    .tmp <- .getEtaThetaTheta1(.ui)
+    .tmp <- .getEtaTheta(.ui)
     .ui$iniDf <- rbind(.dropTheta(.tmp$theta, .var), .tmp$eta)
   }
   if (exists("description", envir = .ui$meta)) {
