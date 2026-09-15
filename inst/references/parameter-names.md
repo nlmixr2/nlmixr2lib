@@ -1773,7 +1773,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Type:** paper-named-param
 - **Role:** First-order rate constant for in-vivo formation of an active metabolite from the parent central compartment, used when the source paper parameterises metabolite formation independently of the parent's total clearance.
 - **Source aliases:** none.
-- **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite).
+- **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite); `Bertin_2026_levosimendan.R` (`kmet_or1896`, the metabolite-suffixed form); `Burns_2015_tenofovir.R` (`kmet_tfvdp` = the paper's `K24`, tenofovir -> intracellular tenofovir diphosphate).
 - **Notes:** Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`. Distinct from `k_presystemic_central_sa` and its siblings, which describe PRE-systemic (first-pass) metabolite formation out of the `presystemic` compartment rather than systemic conversion out of `central`. Also has a log-transformed primary form `lkmet` (`Krause_2017_selexipag.R`, `Koh_2025_aspirin.R`).
 
 ### k_presystemic_central (**canonical pre-systemic-to-parent-central transfer rate constant**)
