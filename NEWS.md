@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Komatsu 2015 digoxin ([doi:10.1186/s40780-015-0023-6](https://doi.org/10.1186/s40780-015-0023-6)) -- adult Japanese cardiology patients.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
