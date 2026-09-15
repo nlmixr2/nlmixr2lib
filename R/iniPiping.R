@@ -52,7 +52,13 @@
   if (length(.exprs) == 0L) {
     return(ui)
   }
-  do.call(rxode2::ini, c(list(ui), .exprs))
+  # suppressMessages(): ini() announces "promote <x> to population parameter"
+  # and "change initial estimate of <x>" for every parameter it takes. The
+  # caller here is a function whose whole job is to add that parameter, so the
+  # announcement is not news to anyone -- but it is two lines per parameter,
+  # and it made the test suite's output several times longer than the suite's
+  # own report. The iniDf rbind() this replaced was silent.
+  suppressMessages(do.call(rxode2::ini, c(list(ui), .exprs)))
 }
 
 #' Append model lines through rxode2's piping interface
@@ -68,7 +74,9 @@
 #' @noRd
 .modelAppend <- function(ui, lines) {
   for (.line in lines) {
-    ui <- do.call(rxode2::model, list(ui, .line, append = TRUE))
+    # quiet for the same reason as .iniAddTheta(): appending an endpoint
+    # announces the residual parameter it creates, which the caller asked for
+    ui <- suppressMessages(do.call(rxode2::model, list(ui, .line, append = TRUE)))
   }
   ui
 }
