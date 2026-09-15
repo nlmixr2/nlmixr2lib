@@ -51,10 +51,9 @@ convertEmax <- function(ui, emax = "Emax", ec50 = "EC50",
     v1 = ek, v2 = cc,
     ret = paste0(.emaxMult,
       cc, "/(", cc, "+", ec50, ")"))
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ek)
   .modelLines <- .tmp$modelLines
@@ -70,30 +69,24 @@ convertEmax <- function(ui, emax = "Emax", ec50 = "EC50",
   .emaxLine <- NULL
   if (.emaxMult != "") {
     .emaxLine <- list(str2lang(paste0(emax, "<- exp(l", emax, ")")))
-    .thetaEmax <- .get1theta(emax, .theta1, .ntheta,
-      label = paste0("Maximum effect (", emax, ")"))
-    .ntheta <- .ntheta + 1
-  } else {
-    .thetaEmax <- NULL
   }
 
-  .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
-    label = paste0("Concentration of 50% ", emax,
-      " (", emax, ")"))
-  .ntheta <- .ntheta + 1
-
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaEmax,
-    .thetaEc50,
-    .eta)
+  # .theta/.eta are subsets of this model's own iniDf (ek dropped), so binding
+  # them assumes nothing about its columns; the new parameters go in via ini().
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- c(.emaxLine,
     list(str2lang(paste0(ec50, "<- exp(l", ec50, ")"))),
     .modelLines)
-  .ui
+  if (!is.null(.emaxLine)) {
+    .ui <- .iniAddTheta(.ui, paste0("l", emax),
+      label = paste0("Maximum effect (", emax, ")"))
+  }
+  .iniAddTheta(.ui, paste0("l", ec50),
+    label = paste0("Concentration of 50% ", emax, " (", emax, ")"))
 }
 
 #'  Convert linear effect to Emax-Hill effect
@@ -141,10 +134,9 @@ convertEmaxHill <- function(ui, emax = "Emax", ec50 = "EC50", g = "g",
     ret = paste0(.emaxMult, cc, "^", g,
       "/(", cc, "^", g,
       "+", ec50, "^", g, ")"))
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ek)
   .modelLines <- .tmp$modelLines
@@ -160,35 +152,12 @@ convertEmaxHill <- function(ui, emax = "Emax", ec50 = "EC50", g = "g",
   .emaxLine <- NULL
   if (.emaxMult != "") {
     .emaxLine <- list(str2lang(paste0(emax, "<- exp(l", emax, ")")))
-    .thetaEmax <- .get1theta(emax, .theta1, .ntheta,
-      label = paste0("Maximum effect (", emax, ")"))
-    .ntheta <- .ntheta + 1
-  } else {
-    .thetaEmax <- NULL
   }
 
-  .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
-    label = paste0("Concentration of 50% ", emax,
-      " (", emax, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
-    label = paste0("Concentration of 50% ", emax,
-      " (", emax, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaG <- .get1theta(g, .theta1, .ntheta, name = paste0("lg", g),
-    est = logit(1, 0.1, 10),
-    label = paste0("logit-constrained Hill coefficient ", g))
-  .ntheta <- .ntheta + 1
-
-
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaEmax,
-    .thetaEc50,
-    .thetaG,
-    .eta)
+  # .theta/.eta are subsets of this model's own iniDf (ek dropped), so binding
+  # them assumes nothing about its columns; the new parameters go in via ini().
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
@@ -196,5 +165,13 @@ convertEmaxHill <- function(ui, emax = "Emax", ec50 = "EC50", g = "g",
     list(str2lang(paste0(ec50, "<- exp(l", ec50, ")")),
       str2lang(paste0(g, "<- expit(lg", g, ", 0.1, 10)"))),
     .modelLines)
-  .ui
+  if (!is.null(.emaxLine)) {
+    .ui <- .iniAddTheta(.ui, paste0("l", emax),
+      label = paste0("Maximum effect (", emax, ")"))
+  }
+  .ui <- .iniAddTheta(.ui, paste0("l", ec50),
+    label = paste0("Concentration of 50% ", emax, " (", emax, ")"))
+  .iniAddTheta(.ui, paste0("lg", g),
+    est = logit(1, 0.1, 10),
+    label = paste0("logit-constrained Hill coefficient ", g))
 }
