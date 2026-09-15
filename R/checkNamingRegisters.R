@@ -204,6 +204,7 @@
   out
 }
 
+# nolint start: cyclocomp_linter. Long-standing complexity; refactor separately.
 #' Check the naming registers for structural defects
 #'
 #' Validates `inst/references/*.md`, the registers that define canonical
@@ -395,3 +396,4 @@ checkNamingRegisters <- function(root = NULL) {
   rownames(res) <- NULL
   res
 }
+# nolint end

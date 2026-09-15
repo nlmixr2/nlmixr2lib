@@ -37,6 +37,12 @@ For full details see `vignettes/create-model-library.Rmd` and `.claude/skills/ex
 - Before regenerating `data/modeldb.rda` / `inst/modeldb.qs2`, sync with `origin/main` so upstream additions aren't clobbered.
 - `nlmixr2lib::buildModelDb()` regenerates the registry; commit the regenerated artifacts alongside the model file and vignette.
 
+## Formatting
+
+- R code is formatted with [air](https://posit-dev.github.io/air/) using `air.toml`; the `format-check` CI job runs `air format --check`. Run `air format .` (or on the files you touched) before committing.
+- `air.toml` skips `ini()`, `model()`, `rxode2()` and `modelExtract()`, so the `lcl <- 1; label("...")` and `d/dt(central)` idioms are left as written.
+- `.lintr` follows rxode2's rules, with `semicolon_linter(allow_compound = TRUE)` and `/` excluded from `infix_spaces_linter` for the same idioms.
+
 ## Testing
 
 - `devtools::check()` must pass. Model files are validated via `buildModelDb()` (filename ↔ function-name match, parseable `ini()` / `model()`).

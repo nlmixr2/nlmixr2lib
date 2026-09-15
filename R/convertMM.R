@@ -53,12 +53,9 @@
         .neg <- TRUE
         x[[2]] <- x[[2]][[2]]
       }
-      if (
-        (identical(x[[2]], v1) &&
-          identical(x[[3]], v2)) ||
-          (identical(x[[3]], v1) &&
-            identical(x[[2]], v2))
-      ) {
+      .matchForward <- identical(x[[2]], v1) && identical(x[[3]], v2)
+      .matchReverse <- identical(x[[3]], v1) && identical(x[[2]], v2)
+      if (.matchForward || .matchReverse) {
         if (.neg) {
           return(str2lang(paste0("-", deparse1(ret))))
         } else {
