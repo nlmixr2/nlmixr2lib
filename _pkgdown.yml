@@ -3414,6 +3414,10 @@ navbar:
         href: articles/Wickramasinghe_2025_pamiparib.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Panobinostat (Savelieva 2015)"
+        href: articles/Savelieva_2015_panobinostat.html
+      - text: "Panobinostat allometric (Savelieva 2015)"
+        href: articles/Savelieva_2015_panobinostat.html
       - text: "Pantoprazole (Knebel 2011)"
         href: articles/Knebel_2011_pantoprazole.html
       - text: "Pantoprazole (Pettersen 2009)"
@@ -6817,6 +6821,7 @@ articles:
   - articles/Sathe_2024_sacituzumab
   - articles/Sathe_2025_sacituzumab
   - articles/Sato_2024_sglt2_hba1c_mbma
+  - articles/Savelieva_2015_panobinostat
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
   - articles/Sawe_2025_levofloxacin
