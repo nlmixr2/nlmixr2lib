@@ -4500,6 +4500,8 @@ navbar:
         href: articles/Azechi_2024_tamibarotene_pediatric.html
       - text: "Tamsulosin (Tsuda 2010)"
         href: articles/Tsuda_2010_tamsulosin.html
+      - text: "Tanezumab (Jonsson 2016)"
+        href: articles/Jonsson_2016_tanezumab.html
       - text: "Taranabant (Li 2010)"
         href: articles/Li_2010_taranabant.html
       - text: "Taspoglutide mbma (Li 2015)"
@@ -6150,6 +6152,7 @@ articles:
   - articles/Jonsson_2011_ethambutol
   - articles/Jonsson_2011_ethambutol_ddmore
   - articles/Jonsson_2015_edoxaban
+  - articles/Jonsson_2016_tanezumab
   - articles/Jorga_2000_tolcapone
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
