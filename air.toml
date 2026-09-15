@@ -1,0 +1,7 @@
+[format]
+line-width = 120
+indent-width = 2
+# ini(), model() and rxode2() bodies are the rxode2 modelling DSL. Formatting
+# them would split the `lcl <- 1; label("...")` idiom onto two lines and
+# rewrite `d/dt(central)` as `d / dt(central)`, so leave them as written.
+skip = ["ini", "model", "rxode2", "modelExtract"]

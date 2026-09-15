@@ -1,11 +1,24 @@
 linters: linters_with_defaults(
+    # rxode2's lintr rules (see nlmixr2/rxode2 .lintr), adapted for nlmixr2lib.
+    assignment_linter(),
+    line_length_linter(120),
+    whitespace_linter(),
+    pipe_continuation_linter(),
+    T_and_F_symbol_linter(),
+    cyclocomp_linter(50),
+    # `lcl <- 1; label("...")` is the ini() labelling idiom.
+    semicolon_linter(allow_compound = TRUE),
+    # Air formats spacing, so these no longer have a violation backlog; `/` is
+    # excluded so `d/dt(cmt)` stays legal.
+    infix_spaces_linter(exclude_operators = "/"),
+    commas_linter(),
+    # Kept off: enabling these would require renaming exported arguments
+    # (e.g. `tolerance_pct`) and model-named functions, or they flag the
+    # non-standard evaluation used by ini()/model().
     object_name_linter   = NULL,
     object_length_linter = NULL,
     object_usage_linter  = NULL,
-    commented_code_linter = NULL,
-    line_length_linter   = line_length_linter(120L),
-    indentation_linter   = NULL,
-    pipe_consistency_linter = NULL
+    commented_code_linter = NULL
   )
 exclusions: list(
     "inst/modeldb",
