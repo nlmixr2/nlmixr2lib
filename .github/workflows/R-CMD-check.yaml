@@ -59,13 +59,21 @@ jobs:
           # defaults that flag to FALSE. It is r-universe-only for now, so this
           # repository is load-bearing until 5.1.8 reaches CRAN/RSPM.
           extra-repositories: https://nlmixr2.r-universe.dev
+          use-public-rspm: true
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          cache-version: 2
           extra-packages: any::rcmdcheck
           needs: check
+
+      # Fails fast, with a readable message, when the resolved nlmixr2 stack is
+      # not mutually compatible -- rather than letting it surface as a crash
+      # somewhere far away. See the script's header for the mechanism.
+      - name: Verify the installed R package stack is mutually compatible
+        run: Rscript .github/scripts/check-r-stack.R
 
       - uses: r-lib/actions/check-r-package@v2
         with:
