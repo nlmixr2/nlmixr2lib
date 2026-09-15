@@ -44,8 +44,8 @@
 #' @noRd
 .rmCmtPropLines <- function(modelLines, cmts) {
   .props <- c("f", "lag", "alag", "dur", "rate")
-  .exprs <- unlist(lapply(cmts,
-    function(cmt) {
+  .exprs <- unlist(
+    lapply(cmts, function(cmt) {
       c(
         lapply(.props, function(p) {
           str2lang(paste0(p, "(", cmt, ") <- ."))
@@ -53,23 +53,31 @@
         lapply(.props, function(p) {
           str2lang(paste0(p, "(", cmt, ") = ."))
         }),
-        list(str2lang(paste0(cmt, "(0) <- .")),
-             str2lang(paste0(cmt, "(0) = .")))
+        list(str2lang(paste0(cmt, "(0) <- .")), str2lang(paste0(cmt, "(0) = .")))
       )
-    }), recursive = FALSE)
-  .w <- which(vapply(seq_along(modelLines),
+    }),
+    recursive = FALSE
+  )
+  .w <- which(vapply(
+    seq_along(modelLines),
     function(i) {
       .cur <- modelLines[[i]]
-      any(vapply(.exprs,
+      any(vapply(
+        .exprs,
         function(e) {
           rxode2::.matchesLangTemplate(.cur, e)
-        }, logical(1), USE.NAMES = FALSE))
-    }, logical(1), USE.NAMES = FALSE))
+        },
+        logical(1),
+        USE.NAMES = FALSE
+      ))
+    },
+    logical(1),
+    USE.NAMES = FALSE
+  ))
   if (length(.w) == 0L) {
     return(modelLines)
   }
-  lapply(seq_along(modelLines)[-.w],
-    function(i) {
-      modelLines[[i]]
-    })
+  lapply(seq_along(modelLines)[-.w], function(i) {
+    modelLines[[i]]
+  })
 }

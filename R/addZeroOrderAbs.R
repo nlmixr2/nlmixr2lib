@@ -5,16 +5,23 @@
 #' @return logical indicating an assignment line exists
 #' @noRd
 .hasVarAssignmentLine <- function(modelLines, var) {
-  .exprs <- list(str2lang(paste0(var, "<- .")),
-                 str2lang(paste0(var, "= .")))
-  any(vapply(seq_along(modelLines),
+  .exprs <- list(str2lang(paste0(var, "<- .")), str2lang(paste0(var, "= .")))
+  any(vapply(
+    seq_along(modelLines),
     function(i) {
       .cur <- modelLines[[i]]
-      any(vapply(.exprs,
+      any(vapply(
+        .exprs,
         function(e) {
           rxode2::.matchesLangTemplate(.cur, e)
-        }, logical(1), USE.NAMES = FALSE))
-    }, logical(1), USE.NAMES = FALSE))
+        },
+        logical(1),
+        USE.NAMES = FALSE
+      ))
+    },
+    logical(1),
+    USE.NAMES = FALSE
+  ))
 }
 
 #' Collect every symbol used by the model lines
@@ -69,9 +76,15 @@
 #'
 #' # a model without a depot gets the same modeled duration input
 #' readModelDb("PK_2cmt_no_depot") |> addZeroOrderAbs()
-addZeroOrderAbs <- function(ui, central = "central", depot = "depot",
-                            transit = "transit", ktr = "ktr", ka = "ka",
-                            tk0 = "tk0") {
+addZeroOrderAbs <- function(
+  ui,
+  central = "central",
+  depot = "depot",
+  transit = "transit",
+  ktr = "ktr",
+  ka = "ka",
+  tk0 = "tk0"
+) {
   .ui <- rxode2::assertRxUi(ui)
   central <- rxode2::assertCompartmentExists(.ui, central)
   assertCompartmentName(depot)
@@ -79,26 +92,21 @@ addZeroOrderAbs <- function(ui, central = "central", depot = "depot",
   rxode2::assertVariableNew(.ui, tk0)
   rxode2::assertVariableNew(.ui, paste0("l", tk0))
   .cp <- .ui$props$cmtProp
-  if (!is.null(.cp) &&
-        any(.cp$Compartment == central & .cp$Property == "dur")) {
-    stop("modeled duration already present for compartment '", central, "'",
-         call. = FALSE)
+  if (
+    !is.null(.cp) &&
+      any(.cp$Compartment == central & .cp$Property == "dur")
+  ) {
+    stop("modeled duration already present for compartment '", central, "'", call. = FALSE)
   }
   if (rxode2::testCompartmentExists(.ui, paste0(transit, "1"))) {
-    .ui <- removeTransit(.ui,
-                         central = central, depot = depot,
-                         transit = transit, ktr = ktr, ka = ka)
-    warning("transit compartments removed for zero-order absorption model",
-            call. = FALSE)
+    .ui <- removeTransit(.ui, central = central, depot = depot, transit = transit, ktr = ktr, ka = ka)
+    warning("transit compartments removed for zero-order absorption model", call. = FALSE)
   }
   if (rxode2::testCompartmentExists(.ui, depot)) {
     .ui <- removeDepot(.ui, central = central, depot = depot, ka = ka)
-    warning("'", depot, "' removed for zero-order absorption model",
-            call. = FALSE)
+    warning("'", depot, "' removed for zero-order absorption model", call. = FALSE)
   }
-  .ui <- addLogEstimates(.ui,
-                         stats::setNames("Zero-order absorption duration (Tk0)",
-                                         tk0))
+  .ui <- addLogEstimates(.ui, stats::setNames("Zero-order absorption duration (Tk0)", tk0))
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
@@ -106,10 +114,7 @@ addZeroOrderAbs <- function(ui, central = "central", depot = "depot",
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
-  rxode2::model(.ui) <- c(.tmp$pre,
-                          .tmp$w,
-                          str2lang(paste0("dur(", central, ") <- ", tk0)),
-                          .tmp$post)
+  rxode2::model(.ui) <- c(.tmp$pre, .tmp$w, str2lang(paste0("dur(", central, ") <- ", tk0)), .tmp$post)
   rxode2::rxUiCompress(.ui)
 }
 

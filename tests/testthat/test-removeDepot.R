@@ -64,7 +64,5 @@ test_that("removeDepot leaves other compartment properties intact", {
     removeDepot(modelTest, central = "central", depot = "depot")
   )
   expect_equal(rxode2::modelExtract(modelUpdate, "dur(depot)"), character(0))
-  expect_equal(rxode2::modelExtract(modelUpdate, "dur(central)"),
-    "dur(central) <- durCentral"
-  )
+  expect_equal(rxode2::modelExtract(modelUpdate, "dur(central)"), "dur(central) <- durCentral")
 })
