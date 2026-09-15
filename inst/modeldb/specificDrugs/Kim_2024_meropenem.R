@@ -208,8 +208,8 @@ Kim_2024_meropenem <- function() {
     # V1 is 1.53 times the IIV of CL". This is encoded as scale_etalvc
     # below and applied in model(); no independent eta on Vc exists.
     etalcl ~ 0.0663906  # Table 2: IIV on CL = 26.2% (RSE 30.4%, shrinkage 1.82%; bootstrap 25.4%, 95% CI 7.8-38.3) -> log(1 + 0.262^2)
-    etalq  ~ fixed(0.0205239)  # Table 2: IIV on Q = 14.4% (footnote b: fixed; shrinkage 49.1%) -> log(1 + 0.144^2)
-    etalvp ~ fixed(0.0315384)  # Table 2: IIV on V2 = 17.9% (footnote b: fixed; shrinkage 11.2%) -> log(1 + 0.179^2)
+    etalq  ~ fixed(0.0205239)  # Table 2: IIV on Q = 14.4% (footnote b; shrinkage 49.1%) -> log(1 + 0.144^2)
+    etalvp ~ fixed(0.0315384)  # Table 2: IIV on V2 = 17.9% (footnote b; shrinkage 11.2%) -> log(1 + 0.179^2)
 
     scale_etalvc <- 1.53; label("Scaling of the CL inter-individual eta onto Vc (unitless)")     # Table 2 IIV block, V1 row = 1.53 (RSE 4.80%; bootstrap 1.53, 95% CI 1.07-2.43); NONMEM THETA(1)
 

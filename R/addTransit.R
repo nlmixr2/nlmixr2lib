@@ -50,10 +50,9 @@ addTransit <- function(ui, ntransit, central = "central",
   rxode2::assertCompartmentExists(.ui, depot)
 
   # Extract model and central ODE
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   .modelLines <- .ui$lstExpr
   # Get the central ODE and modify the depot expression to a transit
@@ -107,26 +106,15 @@ addTransit <- function(ui, ntransit, central = "central",
     .modRep,
     .after
   )
-  if (length(.theta$name) == 0L) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaktr <- .get1theta(ktr, .theta1, .ntheta,
-    label = paste0("First order transition rate (", ktr, ")"))
-  .ntheta <- .ntheta + 1
-
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaktr,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
 
   # modify model block
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("l", ktr),
+    label = paste0("First order transition rate (", ktr, ")"))
 }
 
 #' To remove transit compartments from the model
@@ -178,11 +166,10 @@ removeTransit <- function(ui, ntransit, central = "central",
   .ui <- rxode2::rxUiDecompress(.ui)
   if (ntransit == .totTransit) {
     # remove all
-    .tmp <- .getEtaThetaTheta1(.ui)
+    .tmp <- .getEtaTheta(.ui)
     .iniDf <- .tmp$iniDf
     .eta <- .tmp$eta
     .theta <- .tmp$theta
-    .theta1 <- .tmp$theta1
     .theta <- .dropTheta(.theta, ktr)
     .eta <- .dropEta(.eta, ktr)
 
