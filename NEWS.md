@@ -2,6 +2,17 @@
 
 # development version
 
+- Generate the model database and the pkgdown navbar in the C collation
+  whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
+  `list.files()` and `Sys.glob()` all follow the collation locale, and C and
+  en_US.UTF-8 disagree about case: "ABT 102 (Othman 2013)" sorts before
+  "Abacavir (Archary 2019)" under C and after it under en_US. Rebuilding
+  outside the C locale therefore reordered 2509 of the 2912 `modeldb` rows and
+  most of the `_pkgdown.yml` navbar, thousands of lines of diff that said
+  nothing about the change being made. `addDirToModelDb()` now returns its
+  rows in C order on every machine, which is the order already committed to
+  `data/modeldb.rda` and `inst/modeldb.rds`.
+
 - `addBioavailability()` gains a `scale` argument. `scale = "logit"`
   constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
   the Monolix-style oral/SC `F` and the form the `PK_double_sim_*` seeds
