@@ -2578,6 +2578,14 @@ navbar:
         href: articles/Yang_2013_losmapimod.html
       - text: "Lserine (Lee 2024)"
         href: articles/Lee_2024_lserine.html
+      - text: "Lu177dotatate adolescent (Sood 2026)"
+        href: articles/Sood_2026_lu177dotatate.html
+      - text: "Lu177dotatate adult (Sood 2026)"
+        href: articles/Sood_2026_lu177dotatate.html
+      - text: "Lu177dotatate dosimetry adult (Sood 2026)"
+        href: articles/Sood_2026_lu177dotatate.html
+      - text: "Lu177dotatate dosimetry pooled (Sood 2026)"
+        href: articles/Sood_2026_lu177dotatate.html
       - text: "Lu177hadotatate (Siebinga 2023)"
         href: articles/Siebinga_2023_hadotatate.html
       - text: "Lu177psma617 (Siebinga 2023)"
@@ -6936,6 +6944,7 @@ articles:
   - articles/Song_2024_tigecycline
   - articles/Song_2025_infliximab
   - articles/Songvut_2026_andrographolide
+  - articles/Sood_2026_lu177dotatate
   - articles/SoriaChacartegui_2026_tramadol
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
