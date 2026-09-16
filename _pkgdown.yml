@@ -4054,6 +4054,8 @@ navbar:
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rlyb212 (MocWilleford 2024)"
         href: articles/MocWilleford_2024_rlyb212.html
+      - text: "Robenacoxib cat (Pelligand 2016)"
+        href: articles/Pelligand_2016_robenacoxib_cat.html
       - text: "Roblitinib (Wilbaux 2022)"
         href: articles/Wilbaux_2022_roblitinib.html
       - text: "Rocatinlimab (Okada 2025)"
@@ -6677,6 +6679,7 @@ articles:
   - articles/Pei_2016_iloperidone
   - articles/Pei_2023_tacrolimus
   - articles/Pejcic_2024_clopidogrel
+  - articles/Pelligand_2016_robenacoxib_cat
   - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
   - articles/Peng_2025_meropenem
