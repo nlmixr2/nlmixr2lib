@@ -3120,6 +3120,8 @@ navbar:
         href: articles/Elkomy_2015_morphine.html
       - text: "Morphine (Franken 2015)"
         href: articles/Franken_2015_morphine.html
+      - text: "Morphine (Oosten 2017)"
+        href: articles/Oosten_2017_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
       - text: "Morphine brain rat (Groenendaal 2007)"
@@ -6890,6 +6892,7 @@ articles:
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Onita_2025_sulbactam
   - articles/Oosten_2016_fentanyl
+  - articles/Oosten_2017_morphine
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab
