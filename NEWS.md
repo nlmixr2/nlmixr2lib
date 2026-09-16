@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ambery 2015 batefenterol ([doi:10.1007/s40268-015-0104-x](https://doi.org/10.1007/s40268-015-0104-x)) -- adults with moderate-to-severe COPD, plus a trough-FEV1 Emax dose-response model.
+- Add van Rongen 2015 midazolam ([doi:10.1002/psp4.12007](https://doi.org/10.1002/psp4.12007)) -- healthy adult male volunteers, 24-hour variation in oral and intravenous PK.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
