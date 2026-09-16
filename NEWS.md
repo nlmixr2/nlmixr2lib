@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Togawa 2016 bilastine ([doi:10.1007/s40261-016-0447-2](https://doi.org/10.1007/s40261-016-0447-2)) -- healthy adult Japanese men; population PK plus indirect-response PK/PD models for the histamine-induced skin wheal and flare.
+- Add Schlender 2016 whole-body aging physiology ([doi:10.1007/s40262-016-0422-3](https://doi.org/10.1007/s40262-016-0422-3)) -- healthy European adults from 30 to 100 years; a PBPK system layer of organ masses, blood flows and a new GFR aging function, with no drug.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
