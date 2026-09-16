@@ -599,7 +599,18 @@
     # followed as a second analyte in joint parent + metabolite popPK
     # models (Vaddady 2024 doi:10.1111/cts.70074). Sidecar
     # request-001 / response-001, question q1, option A.
-    "ac886"
+    "ac886",
+    # adADT (acetylated dADT), the N-acetylated and only marginally
+    # anthelminthically active metabolite of dADT (deacetylated
+    # amidantel). dADT is itself the active degradation product of the
+    # prodrug tribendimidine, which hydrolyses non-enzymatically in the
+    # gut and is never measured; following the `gba` precedent above,
+    # dADT therefore takes the bare canonical names as the model's
+    # parent analyte and only adADT carries a suffix, so a "dadt"
+    # suffix is deliberately NOT registered (it would also collide
+    # visually with NONMEM's DADT derivative syntax). Founding example:
+    # Vanobberghen_2016_tribendimidine (doi:10.1128/AAC.00655-16).
+    "adadt"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

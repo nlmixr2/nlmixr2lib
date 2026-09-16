@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Vanobberghen 2016 tribendimidine ([doi:10.1128/AAC.00655-16](https://doi.org/10.1128/AAC.00655-16)) -- Lao adults infected with the liver fluke *Opisthorchis viverrini*.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
