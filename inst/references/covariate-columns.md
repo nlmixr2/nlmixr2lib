@@ -12286,7 +12286,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:**
   - `ABCG2 421A/A` -- used in `Ueshima_2018_apixaban.R` (Ueshima 2018 Methods Eq. of the final-model CL/F: dichotomous parameter ABCG2 equals 1 for 421A/A and 0 for 421C/C or 421C/A).
   - `rs2231142 TT` -- used in `Jiang_2023_imatinib.R` (Jiang 2023 reports the SNP on the opposite DNA strand as G>T, so the TT genotype is the 421A/A homozygous-variant stratum; Table 3 row `rs2231142 TT`).
-- **Example models:** `Ueshima_2018_apixaban.R` (multiplicative factor on the non-renal arm of apparent oral clearance: `cl_nonren = exp(lcl) * e_abcg2_homvar_cl_nonren^SNP_ABCG2_RS2231142_HOM` with `e_abcg2_homvar_cl_nonren = 0.341`; 421A/A homozygotes have non-renal CL/F reduced by 65.9% relative to 421C/C or 421C/A; paper Table 4 theta6 = 0.341), `Jiang_2023_imatinib.R` (power-of-binary multiplicative factor on apparent oral clearance, paired with `SNP_ABCG2_RS2231142_HET`: `e_abcg2_het_cl^SNP_ABCG2_RS2231142_HET * e_abcg2_hom_cl^SNP_ABCG2_RS2231142_HOM` with `e_abcg2_hom_cl = 0.976`; TT homozygotes have CL/F 2.4% lower than GG wild-type homozygotes, imprecisely estimated on n = 6 TT subjects; paper Table 3).
+- **Example models:** `Ueshima_2018_apixaban.R` (multiplicative factor on the non-renal arm of apparent oral clearance: `cl_nonren = exp(lcl) * e_abcg2_homvar_cl_nonren^SNP_ABCG2_RS2231142_HOM` with `e_abcg2_homvar_cl_nonren = 0.341`; 421A/A homozygotes have non-renal CL/F reduced by 65.9% relative to 421C/C or 421C/A; paper Table 4 theta6 = 0.341), `Jiang_2023_imatinib.R` (power-of-binary multiplicative factor on apparent oral clearance, paired with `SNP_ABCG2_RS2231142_HET`: `e_abcg2_het_cl^SNP_ABCG2_RS2231142_HET * e_abcg2_hom_cl^SNP_ABCG2_RS2231142_HOM` with `e_abcg2_hom_cl = 0.976`; TT homozygotes have CL/F 2.4% lower than GG wild-type homozygotes, imprecisely estimated on n = 6 TT subjects; paper Table 3)., `Toshimoto_2017_irinotecan_pbpk.R` (same two efflux processes scaled to 51.3 percent of wild type; Toshimoto 2017 Supplementary Table 2A)
 - **Notes:** Distinct from `SNP_ABCG2_RS4148157` in two ways: (a) a different SNP (rs2231142 is the well-characterised coding Q141K variant in exon 5, whereas rs4148157 is an intronic variant in intron 11 that is in strong linkage disequilibrium with rs2231142 and used by Roberts 2016 as a surrogate marker), (b) a different genetic model (recessive 421A/A-only in Ueshima 2018 vs dominant any-A-allele in Roberts 2016 rs4148157). **Strand orientation:** papers report this SNP either as c.421C>A (dbSNP reference orientation, variant allele A) or as G>T on the opposite strand (variant allele T); the two are the same variant, so 421C/C = GG, 421C/A = GT, and 421A/A = TT. Always map the paper's genotype labels onto the reference-orientation strata before assigning indicator values. **Genetic-model orientations:** use `SNP_ABCG2_RS2231142_HOM` alone for a recessive encoding (Ueshima 2018); pair it with `SNP_ABCG2_RS2231142_HET` when the source paper assigns a distinct typical-value effect to each of the three genotype strata (Jiang 2023), following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` and `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` precedents. The per-subject column value is identical in both encodings (1 iff the subject is 421A/A); only the model's reference-category interpretation changes, which is why the paired form does not need a separate canonical for the homozygote. When a future paper uses a dominant-model encoding (any-A-allele = 1, pooling heterozygotes with homozygous variants into a single carrier group), register a paired companion canonical `SNP_ABCG2_RS2231142_CARRIER` so the two genetic-model orientations remain separate canonicals. The Q141K variant impairs ABCG2 plasma-membrane localisation and function; it is the most commonly studied ABCG2 pharmacogenetic SNP in popPK literature (substrates include apixaban, rosuvastatin, sulfasalazine, topotecan, methotrexate).
 
 ### SNP_ABCG2_RS2231142_HET (**canonical for ABCG2 rs2231142 (Q141K) heterozygote indicator**)
@@ -12297,7 +12297,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (421C/C wild-type homozygote, when paired with `SNP_ABCG2_RS2231142_HOM` = 0). The reference group is the wild-type homozygote stratum; `SNP_ABCG2_RS2231142_HOM` flags the homozygous-variant stratum.
 - **Source aliases:**
   - `rs2231142 GT` -- used in `Jiang_2023_imatinib.R` (Jiang 2023 reports the SNP on the opposite DNA strand as G>T, so the GT genotype is the 421C/A heterozygous stratum; Table 3 row `rs2231142 GT`; the paper's final-model equation writes the exponent as `heterozygous`).
-- **Example models:** `Jiang_2023_imatinib.R` (power-of-binary multiplicative factor on apparent oral clearance: `e_abcg2_het_cl^SNP_ABCG2_RS2231142_HET` with `e_abcg2_het_cl = 0.879`; heterozygotes have CL/F 12.1% lower than GG wild-type homozygotes and therefore reach higher trough concentrations at the same dose; paper Table 3, RSE 5%, bootstrap 95% CI 0.785-0.968).
+- **Example models:** `Jiang_2023_imatinib.R` (power-of-binary multiplicative factor on apparent oral clearance: `e_abcg2_het_cl^SNP_ABCG2_RS2231142_HET` with `e_abcg2_het_cl = 0.879`; heterozygotes have CL/F 12.1% lower than GG wild-type homozygotes and therefore reach higher trough concentrations at the same dose; paper Table 3, RSE 5%, bootstrap 95% CI 0.785-0.968)., `Toshimoto_2017_irinotecan_pbpk.R` (scales BCRP-mediated biliary excretion and enterocyte-to-lumen efflux of SN-38 to 87.5 percent of wild type, weighted by the 33 percent BCRP contribution to each of those two processes; Toshimoto 2017 Supplementary Table 2A)
 - **Notes:** Paired with `SNP_ABCG2_RS2231142_HOM` (see that entry's Notes for the strand-orientation convention, the recessive-vs-paired genetic-model distinction, and the three-level decomposition rationale). Follows the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM`, `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM`, and `CYP2D6_STAR10_HET` / `CYP2D6_STAR10_HOM` precedents: two binary indicators encode a three-level germline genotype with the wild-type homozygote as the implicit reference (both indicators = 0). Distinct from a hypothetical `SNP_ABCG2_RS2231142_CARRIER` (not yet registered), which would pool heterozygotes with homozygous variants under a dominant model; use the paired indicators when the source paper resolves a distinct typical-value effect for the heterozygous stratum specifically. Jiang 2023 is the founding example and motivated the three-level decomposition because the East Asian cohort had abundant heterozygotes (45/85, 53%) but few homozygous variants (6/85, 7%) -- the heterozygote effect (0.879) is precisely estimated while the homozygote effect (0.976) is not. Genotype distribution in the Jiang 2023 cohort of 85 Chinese postoperative GIST adults (Table 2): GG 34 (40%), GT 45 (53%), TT 6 (7%); allele frequency G 0.66 / T 0.34; Hardy-Weinberg p = 0.22.
 
 ### SNP_ABCG2_RS2231142_T_COUNT (**canonical for ABCG2 rs2231142 (Q141K) variant T-allele count**)
@@ -12311,6 +12311,95 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `rs2231142` genotype string (`"GG"` / `"GT"` / `"TT"`): derive the count as the number of T alleles in the diplotype.
 - **Example models:** `Wei_2025_methotrexate_genotype.R` (one of three variant-allele counts summed inside `model()` into a composite ABCC4-ABCG2-ADORA2A carrier indicator that multiplies methotrexate clearance by 0.91; this SNP is the worked example the source paper uses to fix its own grouping convention).
 - **Notes:** Auto-approved member of the `SNP_<GENE>_RS<rsid>_<allele>_COUNT` family, following the `SNP_ABCB1_RS1045642_T_COUNT`, `SNP_CYP2B6_RS3745274_T_COUNT` and `SNP_CYP4F2_RS2108622_T_COUNT` precedents. Composable with the binary siblings `SNP_ABCG2_RS2231142_HOM` (recoverable as `== 2`) and `SNP_ABCG2_RS2231142_HET` (recoverable as `== 1`); the count is the more general encoding and should be preferred when the source resolves all three genotypes or needs an additive allele dose. **Strand orientation:** papers report this SNP either as c.421C>A (dbSNP reference, variant allele A) or as G>T on the opposite strand (variant allele T); these are the same variant, so always map the paper's genotype labels onto the variant-allele count before assigning values -- see the `SNP_ABCG2_RS2231142_HOM` Notes for the full mapping. Direction of effect in the founding paper: the T (variant) allele is associated with REDUCED methotrexate clearance, consistent with impaired BCRP-mediated efflux.
+
+### SNP_UGT1A1_RS8175347_HET (**canonical for UGT1A1 *28 heterozygote indicator**)
+- **Description:** Binary genotype indicator for the *UGT1A1* \*28 promoter polymorphism (rs8175347): an extra TA dinucleotide in the TATA box of the *UGT1A1* promoter, (TA)7TAA instead of the wild-type (TA)6TAA, which reduces transcription and therefore UGT1A1 glucuronidation capacity. 1 = subject carries exactly one \*28 allele ((TA)6/(TA)7, commonly written \*1/\*28); 0 = otherwise (the union of \*1/\*1 wild-type homozygotes and \*28/\*28 homozygous-variant carriers, the latter flagged by the paired `SNP_UGT1A1_RS8175347_HOM`). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (\*1/\*1 wild-type homozygote, when paired with `SNP_UGT1A1_RS8175347_HOM` = 0).
+- **Source aliases:**
+  - `UGT1A1 *28`, heterozygote column -- Toshimoto 2017 Supplementary Table 2A.
+  - `*1/*28` -- Toshimoto 2017 Methods, where the dominant and recessive genetic models are defined over the same three strata.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the UGT1A1-mediated SN-38 glucuronidation clearance in both liver and enterocyte by 0.602, i.e. heterozygotes retain 60.2 percent of wild-type glucuronidation capacity; Supplementary Table 2A).
+- **Notes:** Paired with `SNP_UGT1A1_RS8175347_HOM`; see that entry's Notes for the activity-ratio provenance caveat, which is load-bearing. \*28 is the best-established pharmacogenetic determinant of irinotecan toxicity and is the variant behind Gilbert's syndrome. Genotype frequencies in the Teft 2015 cohort that Toshimoto 2017 used to build its virtual population: \*1/\*1 44.66 percent, \*1/\*28 47.57 percent, \*28/\*28 7.77 percent. Distinct from the East Asian \*6 allele (rs4148323, G71R), which is a coding rather than a promoter variant; if a future source models both, register \*6 separately rather than reusing this column.
+
+### SNP_UGT1A1_RS8175347_HOM (**canonical for UGT1A1 *28 homozygous-variant indicator**)
+- **Description:** Binary genotype indicator for the *UGT1A1* \*28 promoter polymorphism (rs8175347): an extra TA dinucleotide in the TATA box of the *UGT1A1* promoter, (TA)7TAA instead of the wild-type (TA)6TAA, which reduces transcription and therefore UGT1A1 glucuronidation capacity. 1 = subject carries two \*28 alleles ((TA)7/(TA)7, commonly written \*28/\*28); 0 = otherwise (the union of \*1/\*1 and \*1/\*28, the latter flagged by the paired `SNP_UGT1A1_RS8175347_HET`). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (\*1/\*1 wild-type homozygote, when paired with `SNP_UGT1A1_RS8175347_HET` = 0).
+- **Source aliases:**
+  - `UGT1A1 *28`, homozygote column -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the UGT1A1-mediated SN-38 glucuronidation clearance in both liver and enterocyte by 0.322; Supplementary Table 2A).
+- **Notes:** Companion to `SNP_UGT1A1_RS8175347_HET`. **Activity-ratio provenance caveat:** Toshimoto 2017 Supplementary Table 2A footnote a states that the 60.2 / 32.2 percent activity ratios assigned to \*28 were in fact measured for the *UGT1A1 \*6* polymorphism (Yamamoto 1998) and borrowed. A future extraction that needs a \*28-specific in vitro activity ratio must not take these numbers as \*28 measurements. The column itself is unaffected -- it encodes genotype, not activity -- but any model reusing it should carry its own sourced ratio.
+
+### SNP_SLCO1B1_RS4149056_HET (**canonical for SLCO1B1 c.521T>C heterozygous (521T/C) indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.521T>C polymorphism (rs4149056, V174A / p.Val174Ala): 1 = subject carries the heterozygous (521T/C) genotype; 0 = otherwise (the paired `SNP_SLCO1B1_RS4149056_HOM` flags the other variant stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS4149056_HOM` = 0).
+- **Source aliases:**
+  - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.634; Supplementary Table 2A).
+- **Notes:** Paired with `SNP_SLCO1B1_RS4149056_HOM`. c.521T>C is the classical **reduced-function** OATP1B1 variant (the defining SNP of the \*5 allele and, in cis with c.388A>G, of the \*15 / \*17 haplotypes). **Relationship to `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM`:** those canonicals encode the phased \*15 HAPLOTYPE (388G and 521C together); this column encodes the single c.521T>C SNP on its own. Use the haplotype canonicals when the source phases the two loci into \*15, and this pair plus `SNP_SLCO1B1_RS2306283_*` when the source models the two SNPs as separate covariates -- as Toshimoto 2017 does, combining their activities multiplicatively on the same transporter. The two encodings must not be mixed in one model. Toshimoto 2017 draws the joint genotype from the linkage-disequilibrium frequency table of its Supplementary Table 2B (Pasanen 2008) rather than treating the two loci as independent. Activity ratio 63.4 percent, from the authors' unpublished in-house data (Supplementary Table 2A footnote b) -- not from a citable source, so a future extraction should prefer its own published ratio.
+
+### SNP_SLCO1B1_RS4149056_HOM (**canonical for SLCO1B1 c.521T>C homozygous-variant (521C/C) indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.521T>C polymorphism (rs4149056, V174A / p.Val174Ala): 1 = subject carries the homozygous-variant (521C/C) genotype; 0 = otherwise (the paired `SNP_SLCO1B1_RS4149056_HET` flags the other variant stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS4149056_HET` = 0).
+- **Source aliases:**
+  - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.268; Supplementary Table 2A).
+- **Notes:** Companion to `SNP_SLCO1B1_RS4149056_HET`; see that entry's Notes for the \*15-haplotype relationship, the linkage-disequilibrium sampling and the unpublished-ratio caveat. Activity ratio 26.8 percent of wild type.
+
+### SNP_SLCO1B1_RS2306283_HET (**canonical for SLCO1B1 c.388A>G heterozygous (388A/G) indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.388A>G polymorphism (rs2306283, N130D / p.Asn130Asp): 1 = subject carries the heterozygous (388A/G) genotype; 0 = otherwise (the paired `SNP_SLCO1B1_RS2306283_HOM` flags the other variant stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS2306283_HOM` = 0).
+- **Source aliases:**
+  - `SLCO1B1 c.388A>G` -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 1.61; Supplementary Table 2A).
+- **Notes:** Paired with `SNP_SLCO1B1_RS2306283_HOM`. **Direction of effect is opposite to most transporter variants:** c.388A>G INCREASES OATP1B1 uptake activity (161 percent of wild type in heterozygotes, 221 percent in homozygotes per Toshimoto 2017 Supplementary Table 2A), so a carrier clears the substrate from blood into the liver FASTER. A model that assumes every variant reduces function will get the sign wrong. See `SNP_SLCO1B1_RS4149056_HET` Notes for the relationship to the `SLCO1B1_HAP15_*` haplotype canonicals, for the linkage-disequilibrium joint sampling with c.521T>C, and for the unpublished-ratio caveat (Supplementary Table 2A footnote b).
+
+### SNP_SLCO1B1_RS2306283_HOM (**canonical for SLCO1B1 c.388A>G homozygous-variant (388G/G) indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.388A>G polymorphism (rs2306283, N130D / p.Asn130Asp): 1 = subject carries the homozygous-variant (388G/G) genotype; 0 = otherwise (the paired `SNP_SLCO1B1_RS2306283_HET` flags the other variant stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS2306283_HET` = 0).
+- **Source aliases:**
+  - `SLCO1B1 c.388A>G` -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 2.21; Supplementary Table 2A).
+- **Notes:** Companion to `SNP_SLCO1B1_RS2306283_HET`; see that entry's Notes, in particular that this variant INCREASES rather than decreases OATP1B1 activity (221 percent of wild type).
+
+### SNP_ABCC2_RS717620_HET (**canonical for ABCC2 c.-24C>T heterozygote indicator**)
+- **Description:** Binary genotype indicator for the *ABCC2* (MRP2 canalicular and apical efflux transporter) c.-24C>T promoter polymorphism (rs717620), a 5'-untranslated-region variant associated with reduced MRP2 expression. 1 = subject carries exactly one variant allele (C/T); 0 = otherwise (the paired `SNP_ABCC2_RS717620_HOM` flags the T/T stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C wild-type homozygote, when paired with `SNP_ABCC2_RS717620_HOM` = 0).
+- **Source aliases:**
+  - `ABCC2 -24C>T` -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (scales MRP2-mediated biliary excretion and enterocyte-to-lumen efflux to 66.6 percent of wild type, weighted by the MRP2 contribution to each compound: 50 percent for irinotecan, 33 percent for SN-38 and 100 percent for SN-38G).
+- **Notes:** Paired with `SNP_ABCC2_RS717620_HOM`. The 66.6 / 33.3 percent activity ratios are recorded in Toshimoto 2017 Supplementary Table 2A as `Assumption` -- the authors assumed a one-third loss of function per variant allele rather than measuring or citing one, so the ratios carry no experimental support and a future extraction should supply its own. Genotype frequencies in the Teft 2015 cohort: C/C 58.25 percent, C/T 32.04 percent, T/T 9.71 percent. Distinct from the `SNP_ABCC4_*` columns (a different ABC-C-subfamily transporter gene).
+
+### SNP_ABCC2_RS717620_HOM (**canonical for ABCC2 c.-24C>T homozygous-variant indicator**)
+- **Description:** Binary genotype indicator for the *ABCC2* (MRP2 canalicular and apical efflux transporter) c.-24C>T promoter polymorphism (rs717620), a 5'-untranslated-region variant associated with reduced MRP2 expression. 1 = subject carries two variant alleles (T/T); 0 = otherwise (the paired `SNP_ABCC2_RS717620_HET` flags the C/T stratum). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C wild-type homozygote, when paired with `SNP_ABCC2_RS717620_HET` = 0).
+- **Source aliases:**
+  - `ABCC2 -24C>T` -- Toshimoto 2017 Supplementary Table 2A.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (scales MRP2-mediated biliary excretion and enterocyte-to-lumen efflux to 33.3 percent of wild type, weighted by the per-compound MRP2 contribution).
+- **Notes:** Companion to `SNP_ABCC2_RS717620_HET`; see that entry's Notes for the `Assumption` provenance of the activity ratios and the cohort genotype frequencies.
 
 ### SNP_ABCC4_RS2274407_G_COUNT (**canonical for ABCC4 rs2274407 variant G-allele count**)
 - **Description:** Continuous individual-level count of *ABCC4* rs2274407 variant alleles as defined on the T>G orientation: 0 = TT wild-type homozygote, 1 = TG heterozygote, 2 = GG variant homozygote. Time-invariant (germline genotype). *ABCC4* encodes multidrug-resistance protein 4 (MRP4), an ATP-binding-cassette C-subfamily efflux transporter expressed across many tissues and tumours. The variant sits at the 3' splice acceptor site of exon 8; the cited functional work reports that it does not alter MRP4 transport activity directly but may disrupt normal splicing of *ABCC4* pre-mRNA.
@@ -12877,7 +12966,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (C/C homozygous wild-type, when paired with `ABCB1_C3435T_MUT = 0`). The reference group is the homozygous wild-type C/C stratum; `ABCB1_C3435T_MUT` flags the homozygous-variant T/T stratum.
 - **Source aliases:**
   - `ABCB1 C3435T C/T` / `C/T` -- Zhao 2018 (paper Table 2 reports a multiplicative scaling factor of 1.86 on Ka for the heterozygote stratum relative to the C/C reference).
-- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on absorption rate constant Ka: `e_abcb1_c3435t_het_ka ^ ABCB1_C3435T_HET` with `e_abcb1_c3435t_het_ka = 1.86`; C/T heterozygotes have an absorption rate constant approximately 86% higher than the C/C wild-type reference; paired with `ABCB1_C3435T_MUT` and used jointly).
+- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on absorption rate constant Ka: `e_abcb1_c3435t_het_ka ^ ABCB1_C3435T_HET` with `e_abcb1_c3435t_het_ka = 1.86`; C/T heterozygotes have an absorption rate constant approximately 86% higher than the C/C wild-type reference; paired with `ABCB1_C3435T_MUT` and used jointly)., `Toshimoto_2017_irinotecan_pbpk.R` (scales MDR1-mediated biliary excretion and enterocyte-to-lumen efflux to 66.6 percent of wild type, weighted by the MDR1 contribution: 50 percent for irinotecan, 33 percent for SN-38; Toshimoto 2017 Supplementary Table 2A)
 - **Notes:** Follows the `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` and `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` paired-binary precedent for a three-level genotype where each stratum carries a distinct typical-value covariate effect. Distinct from the `ABCB1_HAP_TTT` haplotype canonical (which jointly tests the cis combination of rs1128503 / rs2032582 / rs1045642 SNPs as a single haplotype block; used in de Wit 2016 everolimus). Use `ABCB1_C3435T_HET` + `ABCB1_C3435T_MUT` when the source paper fits a distinct typical-value covariate effect to the single rs1045642 SNP without phasing it into a haplotype, and when both the heterozygous and homozygous-variant strata are large enough to identify independent effects (Zhao 2018 cohort: n = 22 heterozygotes, 43.1%, and n = 4 homozygous variant, 7.8%, with n = 25 wild-type, 49.0%, as the reference). Mechanistically the C3435T variant has been associated with altered P-gp expression and substrate efflux in some studies (often via linkage with functional variants in the same haplotype block), though directionality of the effect on substrate exposure varies across substrates and tissues.
 
 ### ABCB1_C3435T_MUT (**canonical for ABCB1 C3435T homozygous-variant indicator**)
@@ -12888,7 +12977,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (C/C homozygous wild-type, when paired with `ABCB1_C3435T_HET = 0`). The reference group is the homozygous wild-type C/C stratum; `ABCB1_C3435T_HET` flags the heterozygous C/T stratum.
 - **Source aliases:**
   - `ABCB1 C3435T T/T` / `T/T` -- Zhao 2018 (paper Table 2 reports a multiplicative scaling factor of 6.93 on Ka for the homozygous-variant stratum relative to the C/C reference).
-- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on absorption rate constant Ka: `e_abcb1_c3435t_mut_ka ^ ABCB1_C3435T_MUT` with `e_abcb1_c3435t_mut_ka = 6.93`; T/T homozygotes have an absorption rate constant approximately 6.93-fold higher than the C/C wild-type reference; paired with `ABCB1_C3435T_HET` and used jointly).
+- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on absorption rate constant Ka: `e_abcb1_c3435t_mut_ka ^ ABCB1_C3435T_MUT` with `e_abcb1_c3435t_mut_ka = 6.93`; T/T homozygotes have an absorption rate constant approximately 6.93-fold higher than the C/C wild-type reference; paired with `ABCB1_C3435T_HET` and used jointly)., `Toshimoto_2017_irinotecan_pbpk.R` (same processes scaled to 33.3 percent of wild type; Toshimoto 2017 Supplementary Table 2A)
 - **Notes:** Companion to `ABCB1_C3435T_HET`. See `ABCB1_C3435T_HET` Notes for the three-level decomposition rationale, the distinction from the `ABCB1_HAP_TTT` haplotype canonical, and the Zhao 2018 cohort distribution.
 
 ### ABCB1_HAP_TTT (**canonical for ABCB1 TTT haplotype carrier indicator**)

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Toshimoto 2017 irinotecan whole-body PBPK ([doi:10.1007/s11095-017-2153-z](https://doi.org/10.1007/s11095-017-2153-z)) -- adults with advanced or metastatic solid tumours; irinotecan plus SN-38, SN-38G, NPC and APC as five coupled PBPK modules.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and

@@ -2266,6 +2266,8 @@ navbar:
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Irinotecan mouse (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Irinotecan pbpk (Toshimoto 2017)"
+        href: articles/Toshimoto_2017_irinotecan_pbpk.html
       - text: "Iron ferriccarboxymaltose human pbpk (Fan 2025)"
         href: articles/Fan_2025_iron_wholebody_pbpk.html
       - text: "Iron ferriccarboxymaltose rat pbpk (Fan 2025)"
@@ -7034,6 +7036,7 @@ articles:
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
+  - articles/Toshimoto_2017_irinotecan_pbpk
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
   - articles/Tremoulet_2014_ampicillin

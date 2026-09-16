@@ -4269,9 +4269,33 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 
 ### sn38 (**canonical SN-38 payload suffix**)
 - **Type:** metabolite-suffix
-- **Role:** SN-38 (topoisomerase-I-inhibitor) ADC payload species suffix.
+- **Role:** SN-38 (topoisomerase-I-inhibitor) ADC payload species suffix. Also the active-metabolite suffix for irinotecan (CPT-11), of which SN-38 is the carboxylesterase hydrolysis product; the same token serves both roles because it names the same chemical species.
 - **Source aliases:** none.
-- **Example models:** ADC popPK extractions with SN-38 payload.
+- **Example models:** ADC popPK extractions with SN-38 payload; `Toshimoto_2017_irinotecan_pbpk.R` (irinotecan whole-body PBPK, where SN-38 is a full 23-state PBPK module rather than a released payload).
+
+### sn38g (**canonical SN-38 glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** SN-38G (7-ethyl-10-hydroxy-camptothecin glucuronide), the UGT1A1-mediated phase-II conjugate of `sn38` and the principal inactivation route for irinotecan's active metabolite. One composite token rather than `sn38_gluc`, following the two-layer-metabolite convention that a conjugate of a named metabolite gets a single suffix (compare `m3g` / `m6g` for the morphine glucuronides and `acmpag` for the MPA acyl-glucuronide). SN-38G is deconjugated back to SN-38 by intestinal bacterial beta-glucuronidase, so models carrying this suffix generally also carry an enterohepatic-recycling path.
+- **Source aliases:**
+  - `SN-38G` -- Toshimoto 2017 throughout (Figure 1 metabolic scheme, Supplementary Text ODE system, Supplementary Table 4C).
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (founding example; SN-38G is one of five coupled whole-body PBPK modules, formed from `sn38` in both hepatocyte and enterocyte and deconjugated back to it in the intestinal lumen at `kdec`).
+- **Notes:** Distinct from the generic `gluc` suffix, which names an unspecified glucuronide of the parent compound: a model that carries BOTH a parent glucuronide and an SN-38 glucuronide needs the two tokens to be separable. Distinct from `sn38`, which is the aglycone.
+
+### npc (**canonical irinotecan NPC metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** NPC, 7-ethyl-10-[4-amino-1-piperidino]carbonyloxycamptothecin, the CYP3A4-mediated oxidative metabolite of irinotecan that retains the terminal amine and is itself hydrolysed onward to `sn38` by carboxylesterase. Because it is a precursor of the active metabolite rather than a terminal product, a model carrying `npc` normally needs a metabolic path from `npc` to `sn38` as well as one from the parent to `npc`.
+- **Source aliases:**
+  - `NPC` -- Toshimoto 2017 throughout (Figure 1 metabolic scheme, Supplementary Text, Supplementary Table 4D).
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (founding example).
+- **Notes:** Paired with `apc`, the other CYP3A4 oxidative metabolite of irinotecan; the two are formed in parallel from the parent but only `npc` is converted onward to `sn38`, which is why they are separate tokens rather than one lumped oxidative-metabolite suffix.
+
+### apc (**canonical irinotecan APC metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** APC, 7-ethyl-10-[4-N-(5-aminopentanoic acid)-1-piperidino]carbonyloxycamptothecin, the other CYP3A4-mediated oxidative metabolite of irinotecan. APC is pharmacologically inactive and is a terminal product: it is not hydrolysed onward to `sn38`.
+- **Source aliases:**
+  - `APC` -- Toshimoto 2017 throughout (Figure 1 metabolic scheme, Supplementary Text, Supplementary Table 4E).
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (founding example).
+- **Notes:** Paired with `npc` (see that entry for why the two CYP3A4 oxidative metabolites are separate tokens). Not to be confused with `apap` / `apapg`, the paracetamol tokens.
 
 ### dm4 (**canonical DM4 payload suffix**)
 - **Type:** metabolite-suffix
