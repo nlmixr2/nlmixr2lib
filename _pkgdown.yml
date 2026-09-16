@@ -3700,6 +3700,8 @@ navbar:
         href: articles/Ide_2009_pravastatin.html
       - text: "Prednisolone (Bouazza 2025)"
         href: articles/Bouazza_2025_prednisolone.html
+      - text: "Pregabalin (Hong 2016)"
+        href: articles/Hong_2016_pregabalin.html
       - text: "Pregabalin (Shoji 2011)"
         href: articles/Shoji_2011_pregabalin.html
       - text: "Pregabalin rat binary (Bender 2009)"
@@ -6046,6 +6048,7 @@ articles:
   - articles/Hong_2011_atazanavir
   - articles/Hong_2013_glucose_insulin
   - articles/Hong_2015_moxifloxacin
+  - articles/Hong_2016_pregabalin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
   - articles/Hopkins_2015_leflunomide
