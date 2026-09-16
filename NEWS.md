@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Vanobberghen 2016 tribendimidine ([doi:10.1128/AAC.00655-16](https://doi.org/10.1128/AAC.00655-16)) -- Lao adults infected with the liver fluke *Opisthorchis viverrini*.
+- Add Jiang 2016 harmaline + 5-MeO-DMT thermoregulation PK/PD ([doi:10.1016/j.apsb.2016.07.007](https://doi.org/10.1016/j.apsb.2016.07.007)) — wild-type and CYP2D6-humanized transgenic mice.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,

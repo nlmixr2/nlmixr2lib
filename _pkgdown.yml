@@ -2042,6 +2042,8 @@ navbar:
         href: articles/Franken_2017_haloperidol.html
       - text: "Haloperidol panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Harmaline meodmt mouse (Jiang 2016)"
+        href: articles/Jiang_2016_harmaline_meodmt_mouse.html
       - text: "Hemoporfin (Chen 2025)"
         href: articles/Chen_2025_hemoporfin.html
       - text: "Hemoporfin almost cured (Chen 2025)"
@@ -6300,6 +6302,7 @@ articles:
   - articles/Jia_2026_rivaroxaban
   - articles/Jian_2025_peginterferon_alfa_2b
   - articles/Jiang_2008_gemcitabine
+  - articles/Jiang_2016_harmaline_meodmt_mouse
   - articles/Jiang_2023_imatinib
   - articles/Jiang_2024_empagliflozin
   - articles/Jiang_2025_filgrastim

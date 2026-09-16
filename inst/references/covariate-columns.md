@@ -18525,26 +18525,46 @@ expected to recur in any combined-evidence model; the rest are COPD-specific.
 - **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (scales the tiotropium reference efficacy by `rel_tio_ol` = 0.918 while keeping the blinded ED50, i.e. open-label tiotropium is estimated to perform about 8% worse than the same drug given blinded).
 - **Notes:** Strictly a TRIAL-CONDUCT covariate rather than a formulation, and is registered in the `FORM_<drug>_<variant>` family only because it selects between two variants of one drug's effect in exactly the way the other members do; the alternative of a general `OPENLABEL` covariate was rejected because the estimated effect is a tiotropium-specific potency ratio, not a generic unblinding bias, and pooling it across drugs would be unsupported. The direction is counterintuitive -- open-label administration reducing rather than inflating the measured effect -- and reflects that the open-label tiotropium arms served as active comparators in trials of other drugs rather than as the trial's own test arm. The founding control stream records that "blinded tio never given with another drug being OL in dataset".
 
-### DOSE_LU177DOTATATE_GBQ (**canonical for administered [177Lu]Lu-DOTATATE radioactivity per treatment cycle**)
-- **Description:** Radioactivity of [177Lu]Lu-DOTATATE (177Lu-DOTATATE, lutetium Lu 177 dotatate, INN lutetium (177Lu) oxodotreotide) administered intravenously in one treatment cycle, in gigabecquerel. The approved adult and adolescent regimen is flat 7.4 GBq per cycle for four cycles eight weeks apart, a cumulative 29.6 GBq. Distinct from every other member of the `DOSE_<DRUG>_<UNITS>` family in that the quantity is an ACTIVITY (GBq), not a mass: a radiopharmaceutical is prescribed and labelled by becquerels, and the peptide mass corresponding to a given activity varies with the age of the vial because the cold (unlabelled) peptide fraction grows as the 177Lu decays. A mass dose therefore cannot be derived from this column and vice versa; a model that needs both must carry both.
-- **Units:** GBq (per treatment cycle)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- continuous, entering as the normalized power term `(DOSE_LU177DOTATATE_GBQ / 7.4)^exponent`. Reference value observed: 7.4 GBq, the approved per-cycle activity, printed explicitly inside Sood 2026 Eqs. 3-6 rather than being a cohort median.
-- **Source aliases:**
-  - `activity (GBq)` -- the variable name used throughout Sood 2026 Eqs. 3-6, Fig. 3 ("activity per cycle (GBq)") and Fig. 7. Same orientation as the canonical, no value transformation.
-  - `COV1` / `COV3` -- the generic covariate placeholders of Sood 2026 Eqs. 1-2, which Eqs. 3-4 then resolve to activity.
-- **Example models:** `Sood_2026_lu177dotatate_dosimetry_adult.R` (founding example; power exponents 0.66 on the per-cycle kidney absorbed dose and 0.597 on the per-cycle bone marrow absorbed dose, both referenced to 7.4 GBq), `Sood_2026_lu177dotatate_dosimetry_pooled.R` (the adult-plus-adolescent refit, exponents 0.65 and 0.52).
-- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. In Sood 2026 the column is a **surrogate for exposure**, not a dose amount: popPK-predicted AUC from time zero to infinity existed only for the 20 NETTER-1 patients and, for the kidney, did not correlate with absorbed dose at all (R = -0.027, P = 0.91), so activity was used instead because it is recorded for every patient including the 27 ERASMUS patients who have no popPK exposure metric. Both consuming models are static per-cycle regressions with no PK layer, so the column is a per-record scalar rather than a dosing event; the cumulative absorbed dose compared against the 23 Gy / 29 Gy kidney and 2 Gy bone marrow external-beam thresholds is the per-cycle prediction multiplied by the number of identical cycles. Supported range 1-8 GBq per cycle, the span the paper's own 240-scenario simulation exercises (Fig. 3).
-
-### STUDY_NETTER_P (**canonical for the NETTER-P adolescent trial cohort indicator**)
-- **Description:** 1 = record from NETTER-P (NCT04711135), the multicenter open-label single-arm phase 2 trial of [177Lu]Lu-DOTATATE in adolescents aged 12 to under 18 years with somatostatin-receptor-positive gastroenteropancreatic neuroendocrine tumors or pheochromocytomas and paragangliomas; 0 = record from the pooled adult studies NETTER-1 (NCT01578239) and ERASMUS. Study-level (study-fixed) binary indicator.
+### CYP2D6_TG (**canonical for the CYP2D6-humanized transgenic animal indicator**)
+- **Description:** 1 = the animal is a CYP2D6-humanized transgenic (Tg-CYP2D6) expressing functional human CYP2D6, 0 = a wild-type animal of the same background that does not. Applies to preclinical humanized-transgenic models in which the human enzyme is present as an ADDITIONAL elimination route layered on top of the intact native (murine) pathways.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (the pooled adult studies NETTER-1 and ERASMUS).
+- **Reference category:** 0 (wild-type animal; native pathways only).
 - **Source aliases:**
-  - `study is NETTER-P` -- the conditional printed inside Sood 2026 Eq. 5, `(-0.55 [+1.58 if study is NETTER-P])`.
-  - `beta_C_STUDY_NETTER_P` -- the Sood 2026 Table 5 parameter row name for its coefficient, "CrCL effect on kidney dosimetry based on adult or adolescent populations".
-- **Example models:** `Sood_2026_lu177dotatate_dosimetry_pooled.R` (founding example; shifts the creatinine-clearance EXPONENT on the per-cycle kidney absorbed dose by +1.58, from -0.55 in the adult studies to +1.03 in NETTER-P, i.e. the renal-function relationship reverses sign. Applied only to the kidney model; the bone marrow model gained nothing from additional covariates).
-- **Notes:** The column stands in for AGE, and the paper says so outright: "The study effect, which can be assumed as adult versus adolescent population, was used instead of age." Two cautions belong with any reuse. First, it modifies another covariate's exponent rather than the predicted absorbed dose, so it is not interchangeable with the usual proportional study-effect shape and cannot be read as a percentage difference between cohorts. Second, it rests on 10 adolescents and the paper flags it as provisional -- "this result should be interpreted with caution because of the small sample size of the adolescent population (n = 10)" -- and the sign reversal it encodes is physiologically surprising, the Discussion attributing the limitation to "small sample size and absence of renal impairment" (NETTER-P required a creatinine clearance of at least 70 mL/min at entry). Sibling of the other `STUDY_<id>` members; scoped specific because the reference category is this analysis's own adult two-trial set.
+  - `Tg-CYP2D6 vs wild-type` -- Jiang 2016 Methods 2.2 describes "age-matched male wild-type FVB/N and Tg-CYP2D6 mice"; the paper prints no data-column name.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (switches on the CYP2D6-mediated harmaline clearance arm CLCYP2D6-H = 0.0608 L/min/kg, which is absent in wild-type, and scales the 5-MeO-DMT O-demethylation Vmax by 1 + 0.301).
+- **Notes:** Deliberately distinct from the human CYP2D6 metabolizer-phenotype family (`CYP2D6_PM`, `CYP2D6_IM`, `CYP2D6_EM`, `CYP2D6_UM`) and from the activity-score `CYP2D6`. Those describe which allelic phenotype a human subject has; this column records whether a transgene is present in an animal that also retains its own species-specific orthologues, so a `CYP2D6_TG = 0` animal is NOT a CYP2D6 poor metabolizer -- it still clears drug through native routes that a human PM does not have. Encoding a wild-type animal as `CYP2D6_PM = 1` would therefore misstate the mechanism and conflate species. Also distinct from the genotype-indicator families (`SNP_<GENE>_RS<rsid>`, `UGT2B7_*`), which record naturally occurring polymorphisms rather than an engineered transgene. Extensible to other humanized-transgenic lines by the same pattern (`CYP3A4_TG`, `CYP2C19_TG`) if a future paper needs one.
+
+### INJ_REPEAT (**canonical for the repeat-handling / second-injection indicator**)
+- **Description:** 1 = the subject received a second handling or injection event after the index dose, 0 = a single injection. Records the experimental handling burden rather than what was injected.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single injection).
+- **Source aliases:**
+  - `single dose treatment` / `DDI dosing regimen` -- the wording Jiang 2016 uses in Methods 2.4 and Table 1 to distinguish the two estimates of kS-H.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (selects the harmaline heat-loss sensitivity constant kS-H: 0.0347 L/umol after a single injection, 0.0136 L/umol after a repeat-handling regimen).
+- **Notes:** Handling and restraint are themselves a thermoregulatory and neuroendocrine stimulus in rodents, so a study whose arms differ in the NUMBER of handling events carries a design covariate that is not a drug covariate. Jiang 2016 is explicit that the trigger is the handling event and not the injected substance: Methods 2.4 records that "5-MeO-DMT or saline was dosed 15 min after the administration of harmaline" produced the same reduction either way, and Discussion p.500 quantifies it as a fall in kS-H of more than 50%. Distinct from `CONMED_<INN>`, which keys on whether a particular drug was present -- the two columns are independent and Jiang 2016 needs both, because its vehicle-plus-5-MeO-DMT arm is a two-injection regimen with no harmaline. Distinct also from the transient stress SIGNAL itself, which this model carries as an ODE state dosed at each injection; this column selects a parameter, it does not time the events.
+
+### CONMED_HARMALINE (**canonical for concomitant harmaline coadministration indicator**)
+- **Description:** 1 = harmaline (a beta-carboline monoamine oxidase-A inhibitor) was coadministered, 0 = no concomitant harmaline.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant harmaline).
+- **Source aliases:**
+  - `pretreated with harmaline` vs `treated alone or pretreated with vehicle` -- the Table 1 wording Jiang 2016 uses to define its two SC50-M estimates.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (selects the 5-MeO-DMT potency on thermogenesis, SC50-M = 1.88 umol/L without harmaline versus 0.496 umol/L with it -- the roughly 4-fold potentiation that is the paper's headline result).
+- **Notes:** A member of the `CONMED_<INN>` family. In Jiang 2016 this column carries only the PHARMACODYNAMIC half of the harmaline interaction; the pharmacokinetic half is mechanistic (harmaline competitively inhibits two of the three 5-MeO-DMT elimination routes through explicit Ki terms) and therefore needs no covariate. A model that used this flag to stand in for the PK interaction as well would double-count it.
+
+### DOSE_HARMALINE_MGKG (**canonical for administered harmaline dose level per kg body weight**)
+- **Description:** Harmaline dose administered per kg body weight, recorded per dose event.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a dose-group selector for a dose-dependent bioavailability, not as a normalized continuous term.
+- **Source aliases:**
+  - `harmaline (2, 5 and 15 mg/kg)` -- Jiang 2016 Methods 2.4; the paper prints no data-column name.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (selects the intraperitoneal bioavailability FH, which rises with dose: 34.6 / 74.2 / 90.3 percent at 2 / 5 / 15 mg/kg in wild-type mice and 36.8 / 68.8 / 80.1 percent in Tg-CYP2D6 mice).
+- **Notes:** A drug-specific member of the `DOSE_<drug>_<units>` family; the general `DOSE` canonical is unusable because rxode2's `etTrans` consumes a column literally named `DOSE` and never exposes it to `model`. The model reproduces the six published bioavailability values exactly at the three published dose levels and interpolates linearly between them, holding the nearest published value outside 2-15 mg/kg. Bioavailability at any other dose is an encoding choice rather than a published quantity, which matters because the paper's own external-validation arm uses 10 mg/kg -- a dose for which it reports no FH.
