@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lyauk 2016 methylphenidate ([doi:10.1111/cts.12423](https://doi.org/10.1111/cts.12423)) — healthy Caucasian adults genotyped for CES1.
+- Add Sadiq 2017 ciprofloxacin whole-body PBPK ([doi:10.1007/s10928-016-9486-9](https://doi.org/10.1007/s10928-016-9486-9)) — adults in intensive care.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,

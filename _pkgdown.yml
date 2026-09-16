@@ -988,6 +988,8 @@ navbar:
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
       - text: "Ciprofloxacin colistin plasma (Zhao 2024)"
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
+      - text: "Ciprofloxacin pbpk (Sadiq 2017)"
+        href: articles/Sadiq_2017_ciprofloxacin.html
       - text: "Ciprofol (Wang 2026)"
         href: articles/Wang_2026_ciprofol.html
       - text: "Cisplatin (Boer 2015)"
@@ -7036,6 +7038,7 @@ articles:
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadaf_2024_glutamine
+  - articles/Sadiq_2017_ciprofloxacin
   - articles/Sadiq_2024_tozorakimab
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Saeheng_2024_atractylodesLancea
