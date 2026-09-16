@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Aston 2017 omalizumab and efalizumab receptor-rebound QSP models ([doi:10.1007/s00285-016-1073-6](https://doi.org/10.1007/s00285-016-1073-6)) -- theoretical TMDD illustration and adults with moderate-to-severe plaque psoriasis.
+- Add Toshimoto 2017 irinotecan whole-body PBPK ([doi:10.1007/s11095-017-2153-z](https://doi.org/10.1007/s11095-017-2153-z)) -- adults with advanced or metastatic solid tumours; irinotecan plus SN-38, SN-38G, NPC and APC as five coupled PBPK modules.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
