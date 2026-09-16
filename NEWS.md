@@ -2,8 +2,7 @@
 
 # development version
 
-- Add Traynard 2017 prostate cancer signaling logic-based ODE network ([doi:10.1002/psp4.12225](https://doi.org/10.1002/psp4.12225)) -- in vitro LNCaP human prostate cancer cell line.
-
+- Add Tamai 2017 lenvatinib ([doi:10.1002/jcph.917](https://doi.org/10.1002/jcph.917)) -- adults with advanced hepatocellular carcinoma Child-Pugh class A, pooled with healthy adults and mixed solid tumors; population PK plus an exposure-response model for early dose modification.
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
