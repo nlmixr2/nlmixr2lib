@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2015 pomalidomide ([doi:10.1002/jcph.455](https://doi.org/10.1002/jcph.455)) -- healthy adults and patients with relapsed and refractory multiple myeloma.
+- Add Savelieva 2015 panobinostat ([doi:10.1007/s00228-015-1846-7](https://doi.org/10.1007/s00228-015-1846-7)) -- adults with advanced hematologic and solid tumours; both of the paper's final models are included.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
