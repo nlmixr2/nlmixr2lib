@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sood 2026 [177Lu]Lu-DOTATATE ([doi:10.2967/jnumed.125.270202](https://doi.org/10.2967/jnumed.125.270202)) -- adults and adolescents with somatostatin-receptor-positive gastroenteropancreatic neuroendocrine tumours, plus kidney and bone-marrow exposure-dosimetry models.
+- Add Tao 2026 levofloxacin ([doi:10.1128/aac.01853-25](https://doi.org/10.1128/aac.01853-25)) -- Chinese children aged 0.16-16 years with severe refractory *Mycoplasma pneumoniae* pneumonia.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

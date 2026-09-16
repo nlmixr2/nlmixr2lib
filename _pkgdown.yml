@@ -2462,6 +2462,8 @@ navbar:
         href: articles/Nguyen_2026_levofloxacin.html
       - text: "Levofloxacin (Sawe 2025)"
         href: articles/Sawe_2025_levofloxacin.html
+      - text: "Levofloxacin (Tao 2026)"
+        href: articles/Tao_2026_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
@@ -7020,6 +7022,7 @@ articles:
   - articles/Tang_2023_tenecteplase
   - articles/Tang_2026_vixarelimab
   - articles/Tao_2025_meropenem
+  - articles/Tao_2026_levofloxacin
   - articles/Tarning_2008_piperaquine
   - articles/Tarning_2012_artemether
   - articles/Tarning_2012_dihydroartemisinin_piperaquine
