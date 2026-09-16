@@ -2,7 +2,7 @@
 
 # development version
 
-- Add twelve polyclonal immunoglobulin (IVIg/SCIg) popPK models transcribed from the van der Zeeuw 2026 systematic review ([doi:10.1007/s40262-026-01641-5](https://doi.org/10.1007/s40262-026-01641-5)) -- primary and secondary immunodeficiency, very low birth-weight neonates, CIDP and multifocal motor neuropathy, one with a grip-strength PD layer.
+- Add Gao 2026 trastuzumab rezetecan ([doi:10.1002/psp4.70259](https://doi.org/10.1002/psp4.70259)) -- adults with HER2-expressing or mutated advanced solid tumors.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
