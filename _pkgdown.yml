@@ -1812,6 +1812,8 @@ navbar:
         href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Fluticasone inhaled (Weber 2015)"
         href: articles/Weber_2015_fluticasone_inhaled.html
+      - text: "FluticasoneFuroate (Siederer 2016)"
+        href: articles/Siederer_2016_fluticasoneFuroate_vilanterol.html
       - text: "Fluvoxamine rat (Geldof 2008)"
         href: articles/Geldof_2008_fluvoxamine_rat.html
       - text: "Fluvoxamine sert brain rat (Geldof 2008)"
@@ -5080,6 +5082,8 @@ navbar:
         href: articles/Qi_2019_vestronidaseAlfa.html
       - text: "Vigabatrin (Nielsen 2015)"
         href: articles/Nielsen_2015_vigabatrin.html
+      - text: "Vilanterol (Siederer 2016)"
+        href: articles/Siederer_2016_fluticasoneFuroate_vilanterol.html
       - text: "Vildagliptin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vildagliptin qsp (Landersdorfer 2012)"
@@ -6888,6 +6892,7 @@ articles:
   - articles/Siebinga_2023_hadotatate
   - articles/Siebinga_2023_lu177psma617
   - articles/Siebinga_2024_lu177psmaIT
+  - articles/Siederer_2016_fluticasoneFuroate_vilanterol
   - articles/Siemers_2025_sabirnetug
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma

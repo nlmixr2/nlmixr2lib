@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Siederer 2016 fluticasone furoate and vilanterol ([doi:10.1007/s13318-015-0303-4](https://doi.org/10.1007/s13318-015-0303-4)) — adults with COPD and healthy volunteers.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
