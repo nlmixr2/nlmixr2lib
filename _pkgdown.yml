@@ -2562,6 +2562,8 @@ navbar:
         href: articles/Pohl_2022_linzagolix.html
       - text: "Linzagolix e2 (Pohl 2022)"
         href: articles/Pohl_2022_linzagolix.html
+      - text: "Liraglutide (CarlssonPetri 2015)"
+        href: articles/CarlssonPetri_2015_liraglutide.html
       - text: "Liraglutide (CarlssonPetri 2021)"
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Liraglutide (Overgaard 2016)"
@@ -5675,6 +5677,7 @@ articles:
   - articles/Cao_2026_lecanemab
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
+  - articles/CarlssonPetri_2015_liraglutide
   - articles/CarlssonPetri_2018_semaglutide
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Carmichael_2003_hydroxychloroquine

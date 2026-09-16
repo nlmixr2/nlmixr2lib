@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Keizer 2015 indisulam ([doi:10.1002/prp2.131](https://doi.org/10.1002/prp2.131)) -- adults with advanced solid tumours in a phase I indisulam plus irinotecan dose-escalation trial.
+- Add Carlsson Petri 2015 liraglutide ([doi:10.1007/s40262-014-0229-z](https://doi.org/10.1007/s40262-014-0229-z)) -- pediatric (10-17 years) and adult subjects with type 2 diabetes.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
