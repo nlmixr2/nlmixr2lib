@@ -2502,6 +2502,8 @@ navbar:
         href: articles/Boak_2014_linezolid.html
       - text: "Linezolid (Duan 2024)"
         href: articles/Duan_2024_linezolid.html
+      - text: "Linezolid (GallegoHernandez 2026)"
+        href: articles/GallegoHernandez_2026_linezolid.html
       - text: "Linezolid (Milakovic 2024)"
         href: articles/Milakovic_2024_linezolid.html
       - text: "Linezolid (Nguyen 2026)"
@@ -5900,6 +5902,7 @@ articles:
   - articles/Fung_2008_butanediol_rat
   - articles/Gafar_2026_rifampicin
   - articles/Gaffney_2026_niraparib
+  - articles/GallegoHernandez_2026_linezolid
   - articles/Galluppi_2016_BIIB023
   - articles/Galluppi_2021_ulotaront
   - articles/Gandhi_2021_abatacept

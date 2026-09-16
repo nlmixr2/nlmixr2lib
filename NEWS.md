@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2026 pixavir ([doi:10.3390/pharmaceutics18050550](https://doi.org/10.3390/pharmaceutics18050550)) -- Chinese adults and adolescents aged 12 years and older with acute influenza, plus healthy volunteers.
+- Add Gallego-Hernandez 2026 linezolid ([doi:10.3390/pharmaceutics18050528](https://doi.org/10.3390/pharmaceutics18050528)) -- elderly hospitalized adults aged 65-87 years under routine therapeutic drug monitoring.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
