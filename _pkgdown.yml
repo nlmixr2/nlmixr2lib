@@ -1786,6 +1786,8 @@ navbar:
         href: articles/Stott_2023_flucytosine.html
       - text: "Fludarabine (Langenhorst 2019)"
         href: articles/Langenhorst_2019_fludarabine.html
+      - text: "Fludarabine (Mohanan 2017)"
+        href: articles/Mohanan_2017_fludarabine.html
       - text: "Fludarabine (VarelaGonzalezAller 2025)"
         href: articles/VarelaGonzalezAller_2025_fludarabine.html
       - text: "Fludrocortisone (Polito 2016)"
@@ -6521,6 +6523,7 @@ articles:
   - articles/Mohamed_2016_colistin_meropenem
   - articles/MohammedAli_2023_tacrolimus
   - articles/MohammedAli_2025_tacrolimus
+  - articles/Mohanan_2017_fludarabine
   - articles/Molto_2016_atazanavir_ritonavir
   - articles/Momper_2016_fluconazole
   - articles/Mondick_2006_dactinomycin

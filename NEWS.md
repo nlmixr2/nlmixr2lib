@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Mohanan 2017 fludarabine ([doi:10.1038/bmt.2017.79](https://doi.org/10.1038/bmt.2017.79)) — patients with aplastic anemia or Fanconi anemia undergoing allogeneic hematopoietic stem cell transplantation.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
