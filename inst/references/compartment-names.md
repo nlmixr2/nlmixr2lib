@@ -5106,6 +5106,16 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Kastrissios_2012_managlinatDialanetil_linked.R` (doi:10.1177/0091270010396373).
 - **Notes:** Modelled as 1-compartment; the paper reports no improvement from adding a second compartment. Apparent-parameter and 1:1-flux semantics as for `r134450` -- and note that here the unknown absorbed fraction is genuinely well below 1, because R-125338 is cleared by renal excretion in parallel with the N-acetylation route that forms this metabolite.
 
+### adadt (**canonical acetylated-dADT tribendimidine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** adADT (acetylated dADT), the N-acetylation product of dADT and a metabolite with marginal or no anthelminthic activity of its own. Drives `central_adadt`, the `lcl_adadt` / `lvc_adadt` parameters, the `e_<cov>_<param>_adadt` covariate effects, the `Cc_adadt` observation and the `expSd_adadt` residual SD.
+- **Source aliases:**
+  - `adADT` -- the abbreviation used throughout the tribendimidine literature.
+  - `acetylated dADT` -- expanded form.
+  - `Metabolite 2` / `CM` / `V3` -- the `$MODEL` and `$PK` names in the Vanobberghen 2016 final NONMEM control stream (supplemental File S1), which numbers dADT as metabolite 1 and adADT as metabolite 2.
+- **Example models:** `Vanobberghen_2016_tribendimidine.R` (founding example; doi:10.1128/AAC.00655-16, one-compartment adADT disposition formed at 1:1 molar stoichiometry from a fixed 65% of dADT elimination, with the remaining 35% assumed renal).
+- **Notes:** The dosed compound, tribendimidine, hydrolyses non-enzymatically to dADT in the gut and is never measured, so -- following the `gba` precedent, where camostat itself is never measured and its active metabolite GBPA takes the bare canonical names -- **dADT is the model's parent analyte and keeps the unsuffixed `central` / `Cc` / `lcl` names, and only adADT carries a suffix.** A `dadt` suffix is deliberately NOT registered, both for that reason and because it would read as NONMEM's `DADT(n)` derivative syntax in any control stream quoted alongside the model. Chemically the closest sibling in this register is `r143047`, likewise a terminal N-acetylated metabolite of an active moiety; as there, every `*_adadt` parameter is an APPARENT value that also absorbs the assumed metabolic fraction, i.e. CL/(F x fm) rather than CL/F, which the founding model records in its `description`. adADT is formation-rate-limited, so its terminal slope reflects the dADT half-life rather than its own.
+
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 

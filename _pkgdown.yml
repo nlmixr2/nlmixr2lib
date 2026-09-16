@@ -4930,6 +4930,8 @@ navbar:
         href: articles/Danielak_2017_treosulfan.html
       - text: "Triazolam (Okada 2024)"
         href: articles/Okada_2024_triazolam.html
+      - text: "Tribendimidine (Vanobberghen 2016)"
+        href: articles/Vanobberghen_2016_tribendimidine.html
       - text: "Triflusal (Park 2014)"
         href: articles/Park_2014_triflusal.html
       - text: "Trimethoprim (Chen 2025)"
@@ -7277,7 +7279,7 @@ articles:
   - articles/VanWart_2004_garenoxacin
   - articles/VanWart_2025_telavancin
   - articles/VanWart_2025_tobramycin
-  - articles/vanWijk_2019_paracetamol
+  - articles/Vanobberghen_2016_tribendimidine
   - articles/Varatharajan_2016_daunorubicin
   - articles/VarelaGonzalezAller_2025_fludarabine
   - articles/VargasChristensen_2019_rfviii_rat

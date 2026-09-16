@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cordes 2016 isoniazid antimycobacterial PD ([doi:10.1128/AAC.00508-16](https://doi.org/10.1128/AAC.00508-16)) — adults with active pulmonary tuberculosis.
+- Add Vanobberghen 2016 tribendimidine ([doi:10.1128/AAC.00655-16](https://doi.org/10.1128/AAC.00655-16)) -- Lao adults infected with the liver fluke *Opisthorchis viverrini*.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
