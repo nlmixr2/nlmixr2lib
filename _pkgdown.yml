@@ -3474,6 +3474,8 @@ navbar:
         href: articles/Wickramasinghe_2025_pamiparib.html
       - text: "Pamiparib unbound (Wickramasinghe 2025)"
         href: articles/Wickramasinghe_2025_pamiparib.html
+      - text: "Pamrevlumab rat (Brenner 2016)"
+        href: articles/Brenner_2016_pamrevlumab_rat.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Panobinostat (Savelieva 2015)"
@@ -5676,6 +5678,7 @@ articles:
   - articles/Brandon_2026_mitoxantrone
   - articles/Braniff_2025_lorlatinib_qsp
   - articles/Brekkan_2016_factorIX
+  - articles/Brenner_2016_pamrevlumab_rat
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
   - articles/Brochot_2015_darunavir

@@ -58,7 +58,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Zierhut 2016 antiangiogenic therapy in advanced hepatocellular carcinoma ([doi:10.1002/psp4.12078](https://doi.org/10.1002/psp4.12078)) -- a median-overall-survival MBMA over 68 trial arms from 59 published studies.
+- Add Brenner 2016 pamrevlumab (FG-3019) ([doi:10.1007/s11095-016-1918-0](https://doi.org/10.1007/s11095-016-1918-0)) -- male Sprague-Dawley rats; target-mediated disposition against endogenous CTGF and its N-fragment.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
