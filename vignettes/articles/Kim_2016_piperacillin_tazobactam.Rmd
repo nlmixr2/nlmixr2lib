@@ -518,14 +518,19 @@ compared against the PKNCA half-life of a single-dose washout at the reference
 subject (60 kg, CLcr 47 mL/min). A wrong Q or V2 changes `beta` and the gate
 goes red.
 
-`lambda_z` is fitted over 28-40 h post-dose rather than over PKNCA's
-automatically chosen window. For tazobactam the distribution rate constant
-(`alpha = 0.43 /h`) is only about 2.4-fold faster than `beta = 0.18 /h`, so a
-window that starts too early still carries distribution-phase curvature and
-`lambda_z` reads steep: PKNCA's automatic selection began at 13.2 h and returned
-3.65 h against a closed-form 3.76 h, a 3.0% bias in the *instrument*, not in the
-model (see pattern 11 of the skill's known-failure catalogue). Starting at 28 h
-removes it.
+`lambda_z` is restricted to 28 h post-dose and later rather than left to PKNCA's
+automatic point selection. For tazobactam the distribution rate constant
+(`alpha = 0.43 /h`) is only about 2.4-fold faster than `beta = 0.18 /h`, so an
+earlier window still carries distribution-phase curvature and `lambda_z` reads
+steep: PKNCA's automatic selection began at 13.2 h and returned a half-life of
+3.65 h against a closed-form 3.76 h -- a 3.0% bias in the *instrument*, not in
+the model (see pattern 11 of the skill's known-failure catalogue). `r.squared`
+does not warn about it; it was 0.9999 on the biased fit.
+
+The window is set with `PKNCAconc(include_half.life = )`, which takes the name
+of a **logical column of the concentration data**. Note that
+`lambda.z.time.first` in the `intervals` data frame is a reporting flag, not a
+window setting -- putting a time there is rejected outright.
 
 ```{r gate-3}
 ref_subject <- tibble::tibble(
@@ -553,8 +558,9 @@ half_life_check <- function(mod, amt, theta1, theta5, theta2, q, vp) {
   stopifnot(all(sim$Cc >= 0, na.rm = TRUE))
 
   conc <- sim |>
-    dplyr::filter(!is.na(Cc), time >= lambda_z_start) |>
-    dplyr::select(id, time, Cc, treatment)
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, treatment) |>
+    dplyr::mutate(include_hl = time >= lambda_z_start)
   dose <- ev |>
     dplyr::filter(evid == 1) |>
     dplyr::select(id, time, amt, treatment)
@@ -562,12 +568,19 @@ half_life_check <- function(mod, amt, theta1, theta5, theta2, q, vp) {
   # The tail is still far above solver noise at 40 h (0.0037 mg/L for
   # piperacillin against a Cmax of 165 mg/L, 0.0056 against 18.8 for
   # tazobactam), so the log-linear fit is not reading rounding error.
-  stopifnot(nrow(conc) > 50, all(conc$Cc > 1e-4))
+  stopifnot(
+    sum(conc$include_hl) > 50,
+    all(conc$Cc[conc$include_hl] > 1e-4)
+  )
 
   res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
-    PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h"),
+    PKNCA::PKNCAconc(
+      conc, Cc ~ time | treatment + id,
+      concu = "mg/L", timeu = "h",
+      include_half.life = "include_hl"
+    ),
     PKNCA::PKNCAdose(dose, amt ~ time | treatment + id, doseu = "mg"),
-    intervals = data.frame(start = lambda_z_start, end = Inf, half.life = TRUE)
+    intervals = data.frame(start = 0, end = Inf, half.life = TRUE)
   ))
   hl_nca <- as.data.frame(res$result) |>
     dplyr::filter(PPTESTCD == "half.life") |>
