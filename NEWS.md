@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mulford 2026 vonoprazan ([doi:10.1002/psp4.70291](https://doi.org/10.1002/psp4.70291)) -- healthy adults and children and adolescents aged 6 to 17 years with gastroesophageal reflux disease.
+- Add Li 2015 pomalidomide ([doi:10.1002/jcph.455](https://doi.org/10.1002/jcph.455)) -- healthy adults and patients with relapsed and refractory multiple myeloma.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than

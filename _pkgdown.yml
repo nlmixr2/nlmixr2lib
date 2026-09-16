@@ -3724,6 +3724,8 @@ navbar:
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
       - text: "PolymyxinB meropenem fosfomycin KP00521 (Mahadevan 2026)"
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "Pomalidomide (Li 2015)"
+        href: articles/Li_2015_pomalidomide.html
       - text: "Ponezumab (Nicholas 2009)"
         href: articles/Nicholas_2009_ponezumab.html
       - text: "Posaconazole (Dvorackova 2023)"
@@ -6432,6 +6434,7 @@ articles:
   - articles/Li_2012_clozapine
   - articles/Li_2012_dexamethasone_rat
   - articles/Li_2014_penicillinG
+  - articles/Li_2015_pomalidomide
   - articles/Li_2015_taspoglutide_mbma
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
