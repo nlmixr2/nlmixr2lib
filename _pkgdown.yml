@@ -3646,6 +3646,8 @@ navbar:
         href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "Pixavir (Yang 2026)"
+        href: articles/Yang_2026_pixavir.html
       - text: "Plozasiran (Ousey 2026)"
         href: articles/Ousey_2026_plozasiran.html
       - text: "Polatuzumab (Lu 2019)"
@@ -7276,6 +7278,7 @@ articles:
   - articles/Yang_2026_copd_fev1
   - articles/Yang_2026_encorafenib
   - articles/Yang_2026_lurasidone
+  - articles/Yang_2026_pixavir
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2023_sglt2_inhibitors

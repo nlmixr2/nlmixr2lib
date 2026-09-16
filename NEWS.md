@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Brandon 2026 mitoxantrone ([doi:10.1002/bcp.70436](https://doi.org/10.1002/bcp.70436)) -- children aged 0.9-17 years with acute myeloid leukaemia.
+- Add Yang 2026 pixavir ([doi:10.3390/pharmaceutics18050550](https://doi.org/10.3390/pharmaceutics18050550)) -- Chinese adults and adolescents aged 12 years and older with acute influenza, plus healthy volunteers.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
