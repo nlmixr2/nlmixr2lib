@@ -2872,6 +2872,8 @@ navbar:
         href: articles/Billard_1995_methoxsalen.html
       - text: "MethoxyPolyethyleneGlycolEpoetinBeta (Chanu 2010)"
         href: articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.html
+      - text: "Methylphenidate (Lyauk 2016)"
+        href: articles/Lyauk_2016_methylphenidate.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Methylprednisolone sheep (Leber 2023)"
@@ -6434,6 +6436,7 @@ articles:
   - articles/Lv_2024_delafloxacin
   - articles/Lv_2025_asc10a
   - articles/Ly_2023_cabozantinib
+  - articles/Lyauk_2016_methylphenidate
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Ma_2023_difloxacin_crucianCarp

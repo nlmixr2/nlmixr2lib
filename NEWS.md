@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lyauk 2016 methylphenidate ([doi:10.1111/cts.12423](https://doi.org/10.1111/cts.12423)) — healthy Caucasian adults genotyped for CES1.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
