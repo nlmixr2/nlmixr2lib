@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hard 2017 aripiprazole lauroxil ([doi:10.1007/s40263-017-0447-7](https://doi.org/10.1007/s40263-017-0447-7)) - adults with schizophrenia or schizoaffective disorder.
+- Add Hanley 2017 bortezomib ([doi:10.1002/jcph.906](https://doi.org/10.1002/jcph.906)) -- children and adolescents aged 2-16 years with relapsed acute lymphoblastic leukemia or de novo acute myelogenous leukemia.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
