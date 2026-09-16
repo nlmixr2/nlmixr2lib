@@ -3506,6 +3506,10 @@ navbar:
         href: articles/ElassaissSchaap_2017_pembrolizumab.html
       - text: "Pembrolizumab (Lindauer 2017)"
         href: articles/Lindauer_2017_pembrolizumab.html
+      - text: "Pembrolizumab consolidated (Chatterjee 2017)"
+        href: articles/Chatterjee_2017_pembrolizumab_melanoma.html
+      - text: "Pembrolizumab mixture (Chatterjee 2017)"
+        href: articles/Chatterjee_2017_pembrolizumab_melanoma.html
       - text: "Pembrolizumab qol mbma (Zou 2026)"
         href: articles/Zou_2026_pembrolizumab_qol.html
       - text: "Pemetrexed osimertinib mouse qsp (Hu 2026)"
@@ -5624,6 +5628,7 @@ articles:
   - articles/Charles_2007_tafenoquine
   - articles/Chatelut_1999_interferon_alfa_2b
   - articles/Chatterjee_2016_pembrolizumab
+  - articles/Chatterjee_2017_pembrolizumab_melanoma
   - articles/Chawla_2023_gefapixant
   - articles/Cheah_2016_polymyxin_Abaumannii_dynamics
   - articles/Chelle_2019_factorviii_fanhdi
