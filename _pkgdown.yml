@@ -344,6 +344,8 @@ navbar:
         href: articles/Sidhu_1998_artemisinin.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
+      - text: "Artesunate (Kloprogge 2015)"
+        href: articles/Kloprogge_2015_artesunate.html
       - text: "Artesunate (LohyDas 2018)"
         href: articles/LohyDas_2018_artesunate.html
       - text: "Artesunate (Morris 2011)"
@@ -6352,6 +6354,7 @@ articles:
   - articles/Kloos_2021_pegasparaginase
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
+  - articles/Kloprogge_2015_artesunate
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
   - articles/Klunder_2017_upadacitinib

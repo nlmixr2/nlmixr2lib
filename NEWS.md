@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van Rongen 2015 midazolam ([doi:10.1002/psp4.12007](https://doi.org/10.1002/psp4.12007)) -- healthy adult male volunteers, 24-hour variation in oral and intravenous PK.
+- Add Kloprogge 2015 artesunate ([doi:10.1111/bcp.12660](https://doi.org/10.1111/bcp.12660)) -- pregnant women with uncomplicated falciparum malaria on the Thailand-Myanmar border, restudied three months post-partum.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
