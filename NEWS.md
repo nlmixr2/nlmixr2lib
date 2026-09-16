@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stockmann 2015 vancomycin ([doi:10.1007/s40121-015-0067-9](https://doi.org/10.1007/s40121-015-0067-9)) -- neonates up to 54 weeks postmenstrual age.
+- Add Isbister 2015 Indian F(ab')2 snake antivenom ([doi:10.1371/journal.pntd.0003873](https://doi.org/10.1371/journal.pntd.0003873)) -- Sri Lankan adults with Russell's viper envenoming.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than

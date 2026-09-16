@@ -4368,6 +4368,8 @@ navbar:
         href: articles/Park_2014_SKL10406.html
       - text: "Sn38 organoid (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Snake antivenom (Isbister 2015)"
+        href: articles/Isbister_2015_snake_antivenom.html
       - text: "Snake venom (Sanhajariya 2018)"
         href: articles/Sanhajariya_2018_snake_venom.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
@@ -6201,6 +6203,7 @@ articles:
   - articles/Iida_2008_nicorandil
   - articles/Inoue_2025_valemetostat_ptcl
   - articles/Ippolito_2024_pacmilimab_qsp
+  - articles/Isbister_2015_snake_antivenom
   - articles/Ishibashi_2024_ensitrelvir
   - articles/Isla_2024_fosfomycinCalcium
   - articles/Ivanova_2024_synucleinopathy_qsp
