@@ -4264,6 +4264,8 @@ navbar:
         href: articles/Narwal_2013_sifalimumab.html
       - text: "Sifalimumab (Zheng 2016)"
         href: articles/Zheng_2016_sifalimumab.html
+      - text: "Sildenafil dog (Yata 2026)"
+        href: articles/Yata_2026_sildenafil_dog.html
       - text: "Siltuximab (Cao 2013)"
         href: articles/Cao_2013_siltuximab.html
       - text: "Siltuximab (Nikanjam 2019)"
@@ -7273,6 +7275,7 @@ articles:
   - articles/Yao_2023_sglt2_inhibitors
   - articles/Yao_2025_flurbiprofen
   - articles/Yassen_2025_asundexian
+  - articles/Yata_2026_sildenafil_dog
   - articles/Yates_2023_dose_response_shape
   - articles/Yau_2023_diazepam_pbpk
   - articles/Yau_2023_middle_out_pbpk_translation

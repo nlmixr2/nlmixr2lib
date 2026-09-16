@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
+- Add Yata 2026 sildenafil ([doi:10.1111/jvp.70057](https://doi.org/10.1111/jvp.70057)) -- client-owned dogs with naturally occurring pulmonary hypertension.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
