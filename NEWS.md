@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Carlsson Petri 2015 liraglutide ([doi:10.1007/s40262-014-0229-z](https://doi.org/10.1007/s40262-014-0229-z)) -- pediatric (10-17 years) and adult subjects with type 2 diabetes.
+- Add Zhou 2015 BMS-911543 in vitro enzyme kinetics ([doi:10.1002/psp4.35](https://doi.org/10.1002/psp4.35)) -- pooled human liver microsomes and recombinant CYP1A2, CYP3A4 and CYP2J2, plus mechanism-based inactivation of CYP1A2.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
