@@ -2234,6 +2234,8 @@ navbar:
         href: articles/Csajka_2004_indinavir.html
       - text: "Indinavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_indinavir.html
+      - text: "Indisulam (Keizer 2015)"
+        href: articles/Keizer_2015_indisulam.html
       - text: "Infliximab (Berends 2019)"
         href: articles/Berends_2019_infliximab.html
       - text: "Infliximab (Faelens 2021)"
@@ -6284,6 +6286,7 @@ articles:
   - articles/Kay_2022_lumefantrine
   - articles/Keij_2023_amoxicillin
   - articles/Keizer_2011_E7820
+  - articles/Keizer_2015_indisulam
   - articles/Kelman_1984_gentamicin
   - articles/Kemal_2026_nemtabrutinib
   - articles/Kengo_2025_atazanavir_ritonavir_rifampicin

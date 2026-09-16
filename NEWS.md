@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kletting 2015 anti-CD66 antibody (BW 250/183) radioimmunotherapy whole-body PBPK, models 1 and 2 ([doi:10.1371/journal.pone.0127934](https://doi.org/10.1371/journal.pone.0127934)) -- adults with acute leukaemia conditioned before stem-cell transplantation.
+- Add Keizer 2015 indisulam ([doi:10.1002/prp2.131](https://doi.org/10.1002/prp2.131)) -- adults with advanced solid tumours in a phase I indisulam plus irinotecan dose-escalation trial.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
