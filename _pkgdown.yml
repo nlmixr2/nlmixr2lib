@@ -596,6 +596,12 @@ navbar:
         href: articles/Galluppi_2016_BIIB023.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
+      - text: "Bilastine (Togawa 2016)"
+        href: articles/Togawa_2016_bilastine.html
+      - text: "Bilastine flare (Togawa 2016)"
+        href: articles/Togawa_2016_bilastine.html
+      - text: "Bilastine wheal (Togawa 2016)"
+        href: articles/Togawa_2016_bilastine.html
       - text: "Bitopertin (Rognas 2025)"
         href: articles/Rognas_2025_bitopertin.html
       - text: "Bivalirudin (Zhang 2012)"
@@ -7233,6 +7239,7 @@ articles:
   - articles/Tobin_2026_atomoxetine
   - articles/Tod_1998_amikacin
   - articles/Toffoli_2001_etoposide
+  - articles/Togawa_2016_bilastine
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
