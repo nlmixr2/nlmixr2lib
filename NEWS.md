@@ -69,7 +69,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Loprete 2016 safinamide ([doi:10.1002/prp2.251](https://doi.org/10.1002/prp2.251)) -- adults with Parkinson's disease on stable dopamine-agonist or levodopa therapy; a population PK model and a linear ON-time disease-progression model.
+- Add Hong 2016 pregabalin ([doi:10.2147/DDDT.S123318](https://doi.org/10.2147/DDDT.S123318)) -- healthy Korean male volunteers dosed fasted or after a meal.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
