@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Choi 2016 GCC-4401C and rivaroxaban PK/PD ([doi:10.1002/psp4.12103](https://doi.org/10.1002/psp4.12103)) — healthy male volunteers.
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and

@@ -1918,6 +1918,8 @@ navbar:
         href: articles/VanWart_2004_garenoxacin.html
       - text: "Gatifloxacin (Smythe 2013)"
         href: articles/Smythe_2013_gatifloxacin.html
+      - text: "Gcc4401c (Choi 2016)"
+        href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Gefapixant (Chawla 2023)"
         href: articles/Chawla_2023_gefapixant.html
       - text: "Gemcitabine (Jiang 2008)"
@@ -4030,6 +4032,8 @@ navbar:
         href: articles/Williams_2016_rituximab_biosimilar.html
       - text: "Rituximab pla2r (Liang 2024)"
         href: articles/Liang_2024_rituximab.html
+      - text: "Rivaroxaban (Choi 2016)"
+        href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Rivaroxaban (Gu 2025)"
         href: articles/Gu_2025_rivaroxaban.html
       - text: "Rivaroxaban (Jia 2026)"
@@ -5672,6 +5676,7 @@ articles:
   - articles/Chirehwa_2017_pyrazinamide
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
+  - articles/Choi_2016_gcc4401c_rivaroxaban
   - articles/Choi_2018_metformin
   - articles/Choi_2025_denosumab
   - articles/Choi_2025_efpeglenatide
