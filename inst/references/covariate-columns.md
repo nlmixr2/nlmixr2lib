@@ -5872,6 +5872,28 @@ readable.
 - **Example models:** `Zhou_2021_belimumab.R` (multiplicative factor 1.07 on V1).
 - **Notes:** Distinct from the broader `RACE_ASIAN` (which can include South / Southeast Asian populations) because Zhou 2021 specifically tested whether Chinese/Japanese/Korean patients had different PK from the rest of the dataset; the analysis explicitly compared `RAC4` (North East Asian) against alternative race definitions and chose `RAC4` by AIC.
 
+### RACE_ASIAN_EAST_SE (**canonical for the East Asian / Japanese / South East Asian composite race indicator**)
+- **Description:** 1 = East Asian, Japanese, or South East Asian heritage; 0 = any other race. Composite indicator for a paper-defined grouping that pools the three East/South-East Asian heritage categories of a multi-level race column while deliberately EXCLUDING Central / South Asian heritage, which the same analysis assigns to a separate smaller-N composite.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0, with White/Caucasian as the model's implicit reference when paired on the same parameter with `RACE_BLACK` and `RACE_ASIAN_CENTRAL_ARABIC_AMIND_OTH` (all three indicators = 0 selects White/Caucasian).
+- **Source aliases:**
+  - `RACE1 = 2` -- used in `Siederer_2016_fluticasoneFuroate.R` (Siederer 2016 Sect. 2.3.1 grouping "RACE1 = 2-East Asian, Japanese, and South East Asian").
+- **Example models:** `Siederer_2016_fluticasoneFuroate.R` (log-additive effect on apparent inhaled clearance: `exp(-0.211 * RACE_ASIAN_EAST_SE)`, i.e. CL/F 19% lower than the White/Caucasian reference, giving a 23-30% higher steady-state AUC0-24 for inhaled fluticasone furoate).
+- **Notes:** Specific scope because the composite grouping is defined by the source paper's analysis plan (driven by the small N available in the individual race categories) rather than by a uniform external standard. Distinct from `RACE_ASIAN` (which also includes Central / South Asian), from `RACE_ASIAN_NORTHEAST` (Chinese / Japanese / Korean only -- excludes South East Asian, includes Korean), and from `RACE_JAPANESE` (Japanese heritage alone). Do not combine with the decomposed `RACE_JAPANESE` / `RACE_ASIAN` indicators in the same model; the composite is mutually exclusive with its decomposition.
+
+### RACE_ASIAN_CENTRAL_ARABIC_AMIND_OTH (**canonical for the Central Asian / White-Arabic / American Indian / Other composite race indicator**)
+- **Description:** 1 = Central or South Asian heritage, White-Arabic / North African heritage, American Indian / Alaska Native, or race category "other"; 0 = any other race. Composite indicator that pools the residual smaller-N race categories of a multi-level race column in an analysis that already carries separate indicators for its two largest non-reference groups.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0, with White/Caucasian as the model's implicit reference when paired on the same parameter with `RACE_BLACK` and `RACE_ASIAN_EAST_SE` (all three indicators = 0 selects White/Caucasian).
+- **Source aliases:**
+  - `RACE1 = 4` -- used in `Siederer_2016_fluticasoneFuroate.R` (Siederer 2016 Sect. 2.3.1 grouping "RACE1 = 4-Asian Central, White Arabic, American Indian/Native Alaskan, and 'other'").
+- **Example models:** `Siederer_2016_fluticasoneFuroate.R` (log-additive effect on apparent inhaled clearance: `exp(-0.265 * RACE_ASIAN_CENTRAL_ARABIC_AMIND_OTH)`, i.e. CL/F 23% lower than the White/Caucasian reference; the coefficient is imprecise -- %RSE 50.6, 95% CI -0.528 to -0.002 -- because the group is under 2% of the dataset).
+- **Notes:** Specific scope because the composite grouping is paper-defined. Distinct from `RACE_NONBLACK_NONWHITE` (which pools ALL non-White non-Black races including East Asian, and takes White + Black as its reference) and from `RACE_ASIAN_AMIND_OTH` (Frey 2013 grouping, which pools all Asian heritage and takes White + Black as its reference). The distinguishing features here are that East / South East Asian heritage is carved out into `RACE_ASIAN_EAST_SE` instead, that White-Arabic / North African heritage is pooled in rather than counted as White, and that the reference category is White/Caucasian alone rather than White + Black.
+
 ### RACE_MULTI (**canonical for multiracial indicator**)
 - **Description:** 1 = multiracial, 0 = other.
 - **Units:** (binary)
@@ -7247,7 +7269,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (non-COPD subject; the complement group is paper-defined -- for Lahu 2010 the reference is the pooled phase I healthy-volunteer cohort).
 - **Source aliases:**
   - `COPD` -- used in `Lahu_2010_roflumilast.R` (paper text covariate symbol in equation 6 and 7).
-- **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient), `Facius_2018_roflumilast.R` (linear additive phase II-III patient effects on KA (-73.3%), parent CL (-55.2%), N-oxide CL (-24.4%), and N-oxide central V3 (-20.7%) on the joint Lahu 2010 base model re-estimated on the OPTIMIZE + REACT phase III COPD dataset; reference category 0 = the implicit phase I healthy-volunteer cohort that backed the upstream Lahu 2010 fixed structural parameters), `Yang_2013_losmapimod.R` (mutually-exclusive proportional residual variance switch: sigma^2_prop = 0.061 for non-COPD subjects vs sigma^2_prop,COPD = 0.268 for COPD subjects, reproducing the NONMEM IF (COPD.EQ.1) EPS(2) ELSE EPS(1) $ERROR pattern; reference category 0 = pooled healthy volunteers plus rheumatoid arthritis patients).
+- **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient), `Facius_2018_roflumilast.R` (linear additive phase II-III patient effects on KA (-73.3%), parent CL (-55.2%), N-oxide CL (-24.4%), and N-oxide central V3 (-20.7%) on the joint Lahu 2010 base model re-estimated on the OPTIMIZE + REACT phase III COPD dataset; reference category 0 = the implicit phase I healthy-volunteer cohort that backed the upstream Lahu 2010 fixed structural parameters), `Yang_2013_losmapimod.R` (mutually-exclusive proportional residual variance switch: sigma^2_prop = 0.061 for non-COPD subjects vs sigma^2_prop,COPD = 0.268 for COPD subjects, reproducing the NONMEM IF (COPD.EQ.1) EPS(2) ELSE EPS(1) $ERROR pattern; reference category 0 = pooled healthy volunteers plus rheumatoid arthritis patients), `Siederer_2016_vilanterol.R` (selects the COPD stratum of the separately-estimated CL/F, V1/F and V2/F, and gates every age / bodyweight / sex / smoking / study covariate effect, all of which Table 2 labels "COPD"; reference category 0 = the healthy-volunteer cohort of the phase I study HZA102936).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers (with or without additional non-COPD patient cohorts such as rheumatoid arthritis in Yang 2013) with COPD patients and the COPD-vs-non-COPD contrast is retained either as a covariate on structural PK parameters or as a switch on residual-error magnitude. Scope: specific because the complement reference category and the COPD-severity inclusion criteria are paper-defined.
 
 ### DIS_OBESE_MORBID (**canonical for morbidly obese cohort indicator**)
@@ -13703,6 +13725,26 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** "Study = APLIOS" (categorical effect column in Yu 2022 covariate equations).
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on Emax of B cell lysis).
 - **Notes:** Captures a between-study shift in the maximum B-cell lysis stimulatory effect not explained by the other covariates in the final model.
+
+### STUDY_HZC110946 (**canonical for the GSK HZC110946 fluticasone furoate/vilanterol study indicator**)
+- **Description:** 1 = subject enrolled in study HZC110946 (NCT01072149; phase III, multicenter randomized double-blind placebo-controlled 3-way incomplete cross-over of fluticasone furoate/vilanterol 50/25, 100/25 and 200/25 ug in 54 COPD subjects, 4 weeks, intensive PK sampling to 24 h), 0 = other study in the Siederer 2016 pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled phase III studies HZC112206 and HZC112207, which carry no study effect).
+- **Source aliases:** `Study 3` -- used in `Siederer_2016_vilanterol.R` (Siederer 2016 Table 2 row "Study 3 on V1/F, COPD"; Online Resource Table S1 maps Study 3 to protocol HZC110946).
+- **Example models:** `Siederer_2016_vilanterol.R` (log-additive effect on apparent central volume: `exp(-0.358 * STUDY_HZC110946)`, i.e. V1/F 30% lower than the pooled HZC112206 / HZC112207 reference, 447 L vs 639 L).
+- **Notes:** Siederer 2016 Sect. 2.3.1 retained "study" as a covariate because review of the raw concentration-time data suggested vilanterol systemic exposure was higher in this study and comparable study differences had been seen before. The effect applies only to COPD subjects. Only the vilanterol analysis carries study effects; the fluticasone furoate analysis found race to be its only significant covariate.
+
+### STUDY_HZC111348 (**canonical for the GSK HZC111348 fluticasone furoate/vilanterol study indicator**)
+- **Description:** 1 = subject enrolled in study HZC111348 (NCT00731822; phase II, multicenter randomized double-blind placebo-controlled parallel-group study of fluticasone furoate/vilanterol 400/25 ug in 60 COPD subjects, 4 weeks, steady-state days 14 and 28 included), 0 = other study in the Siederer 2016 pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled phase III studies HZC112206 and HZC112207, which carry no study effect).
+- **Source aliases:** `Study 4` -- used in `Siederer_2016_vilanterol.R` (Siederer 2016 Table 2 rows "Study 4 on CL/F, COPD" and "Study 4 on V1/F, COPD"; Online Resource Table S1 maps Study 4 to protocol HZC111348).
+- **Example models:** `Siederer_2016_vilanterol.R` (log-additive effects on both apparent inhaled clearance, `exp(-0.465 * STUDY_HZC111348)` giving CL/F 59.4 L/h vs 94.6 L/h, and apparent central volume, `exp(-1.24 * STUDY_HZC111348)` giving V1/F 185 L vs 639 L; together these raise predicted vilanterol AUC0-24 about 1.5-fold and Cmax about 2.7-fold).
+- **Notes:** This study contributed only to the vilanterol analysis; Siederer 2016 Sect. 2.1 excluded it from the fluticasone furoate analysis because it provided only 0-4 h post-dose data. Sect. 4 examined and could not explain the marked exposure difference and concluded it "may just reflect between-study variability". The effect applies only to COPD subjects.
 
 ### STUDY_MIRROR (**canonical for MIRROR dose-finding study indicator**)
 - **Description:** 1 = subject enrolled in the MIRROR dose-finding study (NCT01457924; phase 2; SC ofatumumab dose-ranging in RRMS), 0 = other study in the Yu 2022 pooled analysis.
