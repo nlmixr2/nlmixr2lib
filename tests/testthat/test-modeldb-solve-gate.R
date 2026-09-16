@@ -51,26 +51,30 @@
 # match the converter's topology. No reviewer is going to run
 # `rxode2:::.odeToLinDetect()` in their head. The gate has to be mechanical.
 
-# Models that cannot survive rxode2's ODE-to-linCmt conversion. Every entry
-# here is a CORRECT model file defeated by the upstream defect described
-# above; none of them is a transcription error, and none should be "fixed" by
-# rewriting the model to dodge the converter. Remove entries -- and this
-# comment -- in the same commit that raises the rxode2 minimum in DESCRIPTION
-# to the first release that refuses to convert an ODE carrying an exogenous
-# input term.
-knownLinCmtDropModels <- c(
-  "Bienczak_2016_efavirenz",
-  "Chigutsa_2011_rifampicin",
-  "Chigutsa_2012_ofloxacin",
-  "Dong_2014_mycophenolic_acid",
-  "Marques_2025_salbutamol",
-  "ResendizGalvan_2025_cycloserine",
-  "Sloan_2017_rifampicin",
-  "Smythe_2013_gatifloxacin",
-  "Tikiso_2021_abacavir",
-  "Vinnard_2017_rifampicin",
-  "Wilkins_2008_rifampicin"
-)
+# EMPTIED 2026-09-16. This list quarantined models defeated by rxode2's
+# ODE-to-linCmt conversion silently dropping exogenous input terms
+# (https://github.com/nlmixr2/rxode2/issues/1370). The entry condition it set
+# for its own removal was "the same commit that raises the rxode2 minimum in
+# DESCRIPTION to the first release that refuses to convert an ODE carrying an
+# exogenous input term" -- DESCRIPTION now requires rxode2 (>= 5.1.8), and that
+# release fixes it.
+#
+# Verified rather than assumed: all eleven former entries were re-probed under
+# rxode2 5.1.8 with this file's own probeSolveModel(), and every one responds
+# to a dose again (doseEffect 5.4 to 130.4, none zero):
+#
+#   Bienczak_2016_efavirenz 73.0   Chigutsa_2011_rifampicin 53.9
+#   Chigutsa_2012_ofloxacin 59.6   Dong_2014_mycophenolic_acid 130.4
+#   Marques_2025_salbutamol 5.4    ResendizGalvan_2025_cycloserine 93.1
+#   Sloan_2017_rifampicin 82.2     Smythe_2013_gatifloxacin 91.1
+#   Tikiso_2021_abacavir 60.0      Vinnard_2017_rifampicin 73.3
+#   Wilkins_2008_rifampicin 61.5
+#
+# No model file was rewritten to achieve this -- the fix was entirely upstream,
+# which is why the models were left faithful to their papers rather than
+# reshaped to dodge the converter. Keep the vector (empty) and the third test:
+# they are what will catch the next model that stops responding to a dose.
+knownLinCmtDropModels <- character(0)
 
 # Models the probe cannot drive at all -- they fail to solve with the linCmt
 # conversion both enabled and disabled, so whatever is wrong is not the defect
