@@ -3588,8 +3588,12 @@ navbar:
         href: articles/Muller_2007_penicillin_G.html
       - text: "Penicillin G (Padari 2018)"
         href: articles/Padari_2018_penicillin_G.html
+      - text: "PenicillinG (Komatsu 2016)"
+        href: articles/Komatsu_2016_penicillinG.html
       - text: "PenicillinG cattle (Li 2014)"
         href: articles/Li_2014_penicillinG.html
+      - text: "PenicillinG clinical success (Komatsu 2016)"
+        href: articles/Komatsu_2016_penicillinG.html
       - text: "PenicillinG swine (Li 2014)"
         href: articles/Li_2014_penicillinG.html
       - text: "Pentadecanoic triheptadecanoic (Mascarenhas 2015)"
@@ -6402,7 +6406,7 @@ articles:
   - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
   - articles/Kolowrat_2025_apixaban
-  - articles/Komatsu_2015_digoxin
+  - articles/Komatsu_2016_penicillinG
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
   - articles/Koo_2012_propofol
