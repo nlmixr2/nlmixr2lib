@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Jiang 2016 harmaline + 5-MeO-DMT thermoregulation PK/PD ([doi:10.1016/j.apsb.2016.07.007](https://doi.org/10.1016/j.apsb.2016.07.007)) — wild-type and CYP2D6-humanized transgenic mice.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
