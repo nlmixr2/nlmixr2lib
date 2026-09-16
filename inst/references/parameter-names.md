@@ -1490,6 +1490,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** paper-mechanistic decay PD models.
 
+### kdec (**canonical ADC deconjugation rate**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) at which a single cytotoxic payload molecule detaches from an antibody-drug conjugate in circulation. Deconjugation is one of the two major ADC catabolism routes alongside proteolytic degradation, and it is the route that distinguishes the conjugate's disposition from the antibody's: it destroys conjugated drug without destroying antibody, so it appears as an extra loss term on the conjugate's central compartment and nowhere in the total-antibody equations. Log-transform prefix `lkdec`, IIV partner `etalkdec`. A per-DAR-species chain takes the numbered form `lkdec1` ... `lkdec8`, and a model estimating a separate rate per molecule takes a stratum suffix (`lkdec_pina` / `lkdec_pola`).
+- **Source aliases:**
+  - `KDEC`, `kdec` -- Lu 2016 supplement S1 `$PK` and Figure 2 legend; Pouzin 2022 Table 4.
+- **Example models:** `Lu_2016_pinatuzumab_polatuzumab.R` (one rate per ADC, 0.00855 and 0.00647 /h, under the paper's assumption that the per-molecule deconjugation rate is independent of the conjugate's DAR); `Pouzin_2022_tusamitamab.R` (`lkdec1` ... `lkdec8`, the DAR-resolved chain, with `kdec7` and `kdec8` constrained to `kdec6`).
+- **Notes:** Deliberately distinct from `kdecay` (a generic first-order decay of a paper-mechanistic state) and from `krel` (release of drug from a complex or depot reservoir, e.g. the `KREL` that generates free SN-38 in `Sathe_2024_sacituzumab.R`). The boundary is what the rate does to the *antibody*: `krel` liberates payload in a model that tracks the released species as its own analyte, whereas `kdec` names the loss term seen from the conjugate's side in a model whose other analyte is total antibody. A model carrying both a conjugate and a released-payload compartment may need both names. Not a clearance: `kdec` carries 1/time, so the corresponding contribution to the conjugate's effective clearance is `kdec * vc`.
+
 ### krel (**canonical release rate**)
 - **Type:** paper-named-param
 - **Role:** Release / liberation rate constant (e.g., drug release from a complex or depot reservoir).
@@ -2294,8 +2302,9 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Role:** Slope of a linear recalibration mapping one measurement modality's predictions onto another modality's scale, used when a single structural state is observed by two assays with different bias / gain and the paper estimates the mapping as part of the model: `pred_reference = cal_slope_<assay> * pred_<assay> + cal_int_<assay>`. Unitless. `<assay>` is a short lower-case token naming the *non-reference* modality (`spect`, `pet`, `dbs`, `saliva`,...).
 - **Source aliases:**
   - `beta` -- Siebinga 2023 Equation 1 (`Cpred = Cpred_SPECT * beta + alpha`).
-- **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_slope_spect` = 0.828, fixed; recalibrates SPECT/CT-derived blood activity onto the blood-sample scale).
-- **Notes:** Distinct from a covariate effect (`e_<cov>_<param>`): the calibration parameters describe the *measurement* process, not a biological source of variability, and belong with the residual-error block rather than with the structural PK. Typically fixed after estimation in a data-source-only sub-model.
+  - `CORR` -- Lu 2016 Equation 5 (`Cpredicted = CORR * Cmodel`), the ADC assay-correction factor.
+- **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_slope_spect` = 0.828, fixed; recalibrates SPECT/CT-derived blood activity onto the blood-sample scale). `Lu_2016_pinatuzumab_polatuzumab.R` (`cal_slope_acmmae_pina` = 1.31 and `cal_slope_acmmae_pola` = 1.45, both estimated; reconciles the antibody-conjugated-MMAE prediction, whose scale is set by the mean drug-to-antibody ratio measured in the dosing solution by hydrophobic interaction chromatography, with the LC-MS/MS assay that measures acMMAE in patient plasma -- without it the model underestimated acMMAE and overestimated total antibody at every timepoint).
+- **Notes:** Distinct from a covariate effect (`e_<cov>_<param>`): the calibration parameters describe the *measurement* process, not a biological source of variability, and belong with the residual-error block rather than with the structural PK. Typically fixed after estimation in a data-source-only sub-model, but estimated jointly with the structural parameters in Lu 2016. A member with no intercept takes `cal_slope_<assay>` alone and no `cal_int_<assay>` partner. A model estimating the slope separately in two or more strata appends the stratum suffix after the assay token (`cal_slope_acmmae_pina`).
 
 ### cal_int_<assay> (**canonical assay cross-calibration intercept**)
 - **Type:** paper-named-param

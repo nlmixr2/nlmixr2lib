@@ -2,15 +2,7 @@
 
 # development version
 
-- Add Eugene 2016 metoprolol ([doi:10.3390/medsci4040018](https://doi.org/10.3390/medsci4040018))
-  as `Eugene_2016b_metoprolol` (S-metoprolol with IIV) and
-  `Eugene_2016b_metoprolol_enantiomers` (R- and S-metoprolol typical values) --
-  healthy young adult men and women.
-- Rename the existing `Eugene_2016_metoprolol` to `Eugene_2016a_metoprolol`. It
-  is a different Eugene 2016 metoprolol paper
-  ([doi:10.19070/2167-910X-1600035](https://doi.org/10.19070/2167-910X-1600035),
-  elderly inpatients) from the one added above, and the two collided on the
-  `Author_Year_drug` stem.
+- Add Lu 2016 pinatuzumab vedotin + polatuzumab vedotin ([doi:10.1002/psp4.12137](https://doi.org/10.1002/psp4.12137)) — adults with relapsed/refractory B-cell non-Hodgkin lymphoma.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,

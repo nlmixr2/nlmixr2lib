@@ -3700,6 +3700,8 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Phenytoin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Pinatuzumab polatuzumab (Lu 2016)"
+        href: articles/Lu_2016_pinatuzumab_polatuzumab.html
       - text: "Piperacillin (BoerPerez 2026)"
         href: articles/BoerPerez_2026_piperacillin.html
       - text: "Piperacillin (Bulitta 2007)"
@@ -6642,6 +6644,7 @@ articles:
   - articles/Lu_2014_trastuzumabemtansine
   - articles/Lu_2015_tacrolimus
   - articles/Lu_2015_vismodegib
+  - articles/Lu_2016_pinatuzumab_polatuzumab
   - articles/Lu_2016_tenofovir
   - articles/Lu_2017_polatuzumab_neuropathy
   - articles/Lu_2019_polatuzumab
