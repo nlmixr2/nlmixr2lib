@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sadiq 2017 ciprofloxacin whole-body PBPK ([doi:10.1007/s10928-016-9486-9](https://doi.org/10.1007/s10928-016-9486-9)) — adults in intensive care.
+- Add Santamaria 2017 rupatadine ([doi:10.1371/journal.pone.0176091](https://doi.org/10.1371/journal.pone.0176091)) -- 6-11 year old children with allergic rhinitis.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
