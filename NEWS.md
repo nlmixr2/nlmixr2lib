@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2026 oxacillin ([doi:10.1128/aac.01777-25](https://doi.org/10.1128/aac.01777-25)) -- preterm and term neonates and infants up to 90 days old on continuous infusion.
+- Add Kang 2026 ticagrelor ([doi:10.1002/cpt.70282](https://doi.org/10.1002/cpt.70282)) -- adults with acute coronary syndrome supported by veno-arterial ECMO.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
