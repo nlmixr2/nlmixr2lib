@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Dhondt 2017 celecoxib, mavacoxib and meloxicam ([doi:10.1038/s41598-017-12159-z](https://doi.org/10.1038/s41598-017-12159-z)) -- healthy cockatiels (*Nymphicus hollandicus*), eight separately fitted intravenous and oral arms.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
