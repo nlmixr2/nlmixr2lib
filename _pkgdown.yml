@@ -3692,6 +3692,8 @@ navbar:
         href: articles/Dong_2026_piperacillin.html
       - text: "Piperacillin (Jeon 2014)"
         href: articles/Jeon_2014_piperacillin.html
+      - text: "Piperacillin (Kim 2016)"
+        href: articles/Kim_2016_piperacillin_tazobactam.html
       - text: "Piperacillin (Kumta 2025)"
         href: articles/Kumta_2025_piperacillin_tazobactam.html
       - text: "Piperacillin (Landersdorfer 2012)"
@@ -4624,6 +4626,8 @@ navbar:
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Tazobactam (CohenWolkowiez 2014)"
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
+      - text: "Tazobactam (Kim 2016)"
+        href: articles/Kim_2016_piperacillin_tazobactam.html
       - text: "Tazobactam (Kumta 2025)"
         href: articles/Kumta_2025_piperacillin_tazobactam.html
       - text: "Tazobactam (Lee 2025)"
@@ -6385,6 +6389,7 @@ articles:
   - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine
   - articles/Kim_2015_valsartan
+  - articles/Kim_2016_piperacillin_tazobactam
   - articles/Kim_2016_udenafil
   - articles/Kim_2017_fimasartan
   - articles/Kim_2018_tacrolimus
