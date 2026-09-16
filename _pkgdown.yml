@@ -2908,6 +2908,8 @@ navbar:
         href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate (Yu 2025)"
         href: articles/Yu_2025_methotrexate.html
+      - text: "Methotrexate (Zhang 2015)"
+        href: articles/Zhang_2015_methotrexate.html
       - text: "Methotrexate (Zhao 2025)"
         href: articles/Zhao_2025_methotrexate.html
       - text: "Methotrexate acr20 mbma (Chen 2025)"
@@ -7514,6 +7516,7 @@ articles:
   - articles/Zhang_2012_lopinavir_ritonavir_pedi
   - articles/Zhang_2013_lopinavir_ritonavir
   - articles/Zhang_2015_dolutegravir
+  - articles/Zhang_2015_methotrexate
   - articles/Zhang_2016_burosumab
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen

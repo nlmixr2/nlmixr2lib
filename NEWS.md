@@ -58,7 +58,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Komatsu 2016 penicillin G ([doi:10.1186/s40780-016-0043-x](https://doi.org/10.1186/s40780-016-0043-x)) -- Japanese adults treated for infective endocarditis, with a companion clinical-success exposure-response model.
+- Add Zhang 2015 methotrexate ([doi:10.4103/0366-6999.147829](https://doi.org/10.4103/0366-6999.147829)) -- Chinese osteosarcoma patients aged 6-49 receiving high-dose intravenous methotrexate.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
