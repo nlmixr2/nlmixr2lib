@@ -4118,6 +4118,8 @@ navbar:
         href: articles/Kashihara_2026_rsvVaccine_immune_correlates.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
+      - text: "Rupatadine (Santamaria 2017)"
+        href: articles/Santamaria_2017_rupatadine.html
       - text: "Rutin human (DominguezMore 2024)"
         href: articles/DominguezMore_2024_rutin_physalis.html
       - text: "Rutin rabbit (DominguezMore 2024)"
@@ -6811,6 +6813,7 @@ articles:
   - articles/Sanghavi_2020_ipilimumab
   - articles/Sanhajariya_2018_snake_venom
   - articles/Sano_2023_fesoterodine
+  - articles/Santamaria_2017_rupatadine
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
   - articles/Sassen_2017_crisantaspase
