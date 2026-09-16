@@ -10454,7 +10454,40 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Source aliases:**
   - `RITUX` -- used in `Wu_2024_inotuzumab.R`.
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ~= 13% lower CL1 with concomitant rituximab).
-- **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical.
+- **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. `Li_2017_nhl_pfs_mbma.R` is the first consumer at the **study-arm** rather than the subject level (the cohort's regimen includes rituximab) and the first to need the reverse-coded transformation in practice: its Table S1 tabulates `No rituximab on lambda`, so the model multiplies the coefficient by `(1 - CONMED_RITUX)` while the column keeps the canonical polarity. Siblings for the regimen levels that paper pools alongside rituximab: `CONMED_CHOP`, `CONMED_BENDAMUSTINE`, `CONMED_NONCHEMO_OTHER`.
+
+### CONMED_CHOP (**canonical for concomitant CHOP or CHOP-like chemotherapy backbone indicator**)
+- **Description:** 1 = the regimen includes CHOP (cyclophosphamide, doxorubicin/hydroxydaunorubicin, vincristine, prednisone) or a CHOP-like variant, 0 = otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no CHOP or CHOP-like backbone).
+- **Source aliases:**
+  - `CHOP/CHOP-like` -- Li 2017 Table 1 `Type of treatment` block and Table S1 coefficient row.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +0.819 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(0.819) = 2.27`-fold longer median PFS time).
+- **Notes:** A regimen-composite indicator in the `CONMED_<regimen>` sub-family alongside `CONMED_AVD` and `CONMED_EOX`, not a single-INN column. **`CHOP-like` is deliberately pooled with CHOP** because that is how the founding source modelled it: Li 2017 Methods defines CHOP-like as a regimen sharing 3 of the 4 CHOP drugs, and no finer decomposition is recoverable from the paper. A model needing a strict-CHOP-only column must register a separate canonical rather than narrowing this one. Not mutually exclusive with `CONMED_RITUX`: an R-CHOP arm carries both at 1 and receives both coefficients additively. Distinct from `CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN`, which record a single anthracycline rather than the four-drug regimen.
+
+### CONMED_BENDAMUSTINE (**canonical for concomitant bendamustine coadministration indicator**)
+- **Description:** 1 = the regimen includes bendamustine (a bifunctional alkylating agent with purine-analogue features, used in indolent NHL and CLL), 0 = otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no bendamustine).
+- **Source aliases:**
+  - `Bendamustine` -- Li 2017 Table 1 `Type of treatment` block and Table S1 coefficient row.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +1.39 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(1.39) = 4.01`-fold longer median PFS time -- the largest treatment effect in that model).
+- **Notes:** Standard `CONMED_<INN>` member. In the founding model this is the **smallest** treatment stratum (11 of 155 cohorts, 7%), which is why its coefficient is also the least stable: it moves from 1.39 in the final model to 0.526 (RSE 54%) in that paper's complete-covariate sensitivity analysis. Treat the point estimate accordingly.
+
+### CONMED_NONCHEMO_OTHER (**canonical for residual 'other non-chemotherapy anticancer drug' coadministration indicator**)
+- **Description:** 1 = the regimen includes at least one non-chemotherapy anticancer agent that the source did not model as its own level, 0 = otherwise. A residual-bucket indicator whose membership is defined by the source's own enumeration.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no other non-chemotherapy drug).
+- **Source aliases:**
+  - `Other drugs` -- Li 2017 Table 1 `Type of treatment` block and Table S1 `Other drugs on lambda`.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (study-arm-level; log-linear coefficient +0.813 on the Weibull scale `lambda` of progression-free survival, i.e. `exp(0.813) = 2.25`-fold longer median PFS time; present in 60 of 155 cohorts, 38.7%).
+- **Notes:** Residual-bucket indicator, following the `TUMTP_OTHER` / `TUMTP_PTCL_OTHER` pattern on the covariate side. **Its membership is source-specific and MUST be enumerated per model in `covariateData[[CONMED_NONCHEMO_OTHER]]$notes`** -- in Li 2017 it pools temsirolimus, GM-CSF, enzastaurin, celecoxib, tositumomab, alisertib, lenalidomide, pidilizumab, idelalisib, flavopiridol, cladribine, ibrutinib, everolimus, SAM486A, dacetuzumab, bevacizumab, galiximab, obinutuzumab, inotuzumab, thalidomide, epratuzumab, dexamethasone and ofatumumab under one coefficient, and explicitly EXCLUDES rituximab and bortezomib because those carry their own levels. Because one estimate spans that whole list, the column must never be read as a class effect for any single agent. Distinct from `CONMED_CHEMO`, which means any chemotherapy backbone rather than a non-chemotherapy residual.
 
 ### CONMED_RTV (**canonical for concomitant ritonavir (CYP3A4 inhibitor / PK-booster) coadministration indicator**)
 - **Description:** 1 = subject is receiving concomitant ritonavir (RTV), typically at low "booster" doses (100 mg twice daily) as a pharmacokinetic enhancer of co-administered HIV protease inhibitors or other CYP3A4-metabolised antiretrovirals; 0 = no ritonavir. Ritonavir is a potent CYP3A4 inhibitor and P-glycoprotein modulator, so the indicator flags reduced CYP3A4-mediated clearance (and potential bioavailability changes) of the perpetrator-sensitive co-administered drug.
@@ -14507,6 +14540,51 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** `%squamous histology` (Franzese 2026 Table 1 / Table S1 covariate label).
 - **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (linear coefficients on ORR chemotherapy intercept (+0.282), OS chemotherapy hazard (+0.213), and PFS chemotherapy hazard (+0.186) in a mNSCLC MBMA of PD-(L)1 immunotherapy).
 - **Notes:** MBMA study-arm-level covariate. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). Distinct from a per-subject binary squamous-histology indicator; here the arm's squamous fraction is a continuous proportion of participants.
+
+### TUMTP_FL_PCT (**canonical for follicular-lymphoma cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose non-Hodgkin-lymphoma (NHL) histology is follicular lymphoma (FL). Continuous covariate scaled in percent (not fraction). The aggregate counterpart of the individual-level binary `TUMTP_FL`.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no FL patients). In a model carrying the whole NHL-histology `_PCT` set, mantle cell lymphoma is the natural reference level and is represented by leaving `TUMTP_FL_PCT`, `TUMTP_DLBCL_PCT` and `TUMTP_OTHER_NHL_PCT` all at 0.
+- **Source aliases:**
+  - `Percentage of patients with each NHL subtype` / `FL` -- Li 2017 Methods and Table 1 `NHL subtype` block; the Table S1 coefficient row is `Follicular lymphoma on lambda`.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (log-linear coefficient +0.46 on the Weibull scale `lambda` of progression-free survival, i.e. an all-FL cohort has `exp(0.46) = 1.58`-fold the median PFS time of an all-MCL cohort).
+- **Notes:** MBMA study-arm-level covariate; sibling of `TUMTP_SQUAM_PCT`, from which the naming pattern is taken unchanged. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). A continuous prevalence rather than a per-cohort histology label because meta-analytic databases contain MIXED-histology arms -- 25 of the 155 cohorts in Li 2017 (16.1%) are classified `Mixed` and take intermediate values in every member of this set. **The percent-versus-fraction scale is load-bearing**: sources routinely tabulate these columns as fractions in 0-1 (Li 2017 Table 1 prints its sibling aggregate covariates that way) while the canonical is in percent, and consuming models fit on the fraction scale must divide by 100. Supplying a fraction where a percent is expected shrinks the effect by a factor of 100 and is invisible in any summary statistic of the column itself, so verify against a published contrast (for Li 2017, the median-PFS-time ratios in Figure 3B) before use.
+
+### TUMTP_DLBCL_PCT (**canonical for diffuse-large-B-cell-lymphoma cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose NHL histology is diffuse large B-cell lymphoma (DLBCL). Continuous covariate scaled in percent (not fraction). The aggregate counterpart of the individual-level binary `TUMTP_DLBCL`.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no DLBCL patients); see `TUMTP_FL_PCT` for the shared MCL reference level.
+- **Source aliases:**
+  - `Percentage of patients with each NHL subtype` / `DLBCL` -- Li 2017 Methods and Table 1 `NHL subtype` block; the Table S1 coefficient row is `DLBCL on lambda`.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (log-linear coefficient -1.41 on the Weibull scale `lambda` of progression-free survival, i.e. an all-DLBCL cohort has `exp(-1.41) = 0.24` of the median PFS time of an all-MCL cohort -- the largest histology effect in that model, consistent with DLBCL being the aggressive high-grade subtype).
+- **Notes:** MBMA study-arm-level covariate; sibling of `TUMTP_FL_PCT` and `TUMTP_OTHER_NHL_PCT`. See `TUMTP_FL_PCT` for the percent-versus-fraction warning and the mixed-histology rationale. Distinct from the per-subject binary `TUMTP_DLBCL` (an individual-level indicator).
+
+### TUMTP_OTHER_NHL_PCT (**canonical for 'other non-FL non-DLBCL non-MCL NHL' cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose NHL histology is none of follicular lymphoma, DLBCL or mantle cell lymphoma (e.g. peripheral T-cell lymphoma, marginal zone lymphoma). Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no other-NHL patients); see `TUMTP_FL_PCT` for the shared MCL reference level.
+- **Source aliases:**
+  - `Percentage of patients with each NHL subtype` / `Other` -- Li 2017 Methods and Table 1 `NHL subtype` block; the Table S1 coefficient row is `Other lymphomas on lambda`.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (log-linear coefficient -0.17 on the Weibull scale `lambda` of progression-free survival, with a 113% RSE and a 95% CI of -0.54 to 0.21 that brackets zero; the paper reports other subtypes as `similar to the MCL patient population`).
+- **Notes:** MBMA study-arm-level covariate; sibling of `TUMTP_FL_PCT` and `TUMTP_DLBCL_PCT`. **Its membership is narrower than that of the individual-level `TUMTP_OTHER_NHL` canonical**, which pools MCL into the residual bucket: here MCL is EXCLUDED because MCL is the reference histology of the founding model and carries its own zero-by-construction level. A model that uses a different reference histology must document its own bucket composition in `covariateData[[TUMTP_OTHER_NHL_PCT]]$notes` rather than overloading this canonical. See `TUMTP_FL_PCT` for the percent-versus-fraction warning. Typically a small column -- only 4 of the 155 Li 2017 cohorts (2.5%) are predominantly other-NHL, which is why that model cannot distinguish its effect from the reference.
+
+### LINE_1L_PCT (**canonical for treatment-naive (first-line) cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort receiving the trial regimen as FIRST-LINE therapy, i.e. treatment-naive with no prior anticancer therapy for the indication. Continuous covariate scaled in percent (not fraction). The aggregate counterpart of the individual-level binary `LINE_1L`, whose `1 = first-line / treatment-naive` polarity it keeps.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** paper-specific and **frequently 100%, not 0%**. Li 2017 defines its reference population as an all-treatment-naive cohort, so the reference for that model is `LINE_1L_PCT = 100`. Record the model's own reference level in `covariateData[[LINE_1L_PCT]]$reference_category`.
+- **Source aliases:**
+  - `Percentage of patients with different numbers of prior treatments (naive, 1, 2+)` -- Li 2017 Methods.
+  - `% experienced patients` -- Li 2017 Table S1 coefficient row. **Opposite polarity**: the source coefficient multiplies the treatment-EXPERIENCED fraction, so a consuming model forms `(100 - LINE_1L_PCT) / 100`. Do not register a reverse-coded `LINE_2L_PLUS_PCT` companion; the two would have to sum to 100 and could silently disagree.
+- **Example models:** `Li_2017_nhl_pfs_mbma.R` (log-linear coefficient -1.85 applied to the experienced fraction `(100 - LINE_1L_PCT) / 100` on the Weibull scale `lambda` of progression-free survival, i.e. an all-experienced cohort has `exp(-1.85) = 0.16` of the median PFS time of an all-naive cohort -- a 6.4-fold swing and the largest covariate effect in that model).
+- **Notes:** MBMA study-arm-level covariate; follows the `_PCT` aggregate-prevalence pattern founded by `DIS_CHD_PERCENT` (Vargo 2014) and applied to an oncology histology column by `TUMTP_SQUAM_PCT`. Distinct from the per-subject binary `LINE_1L`. **A single linear column approximates what is often a threshold effect**: Li 2017's own subanalysis found treatment-naive and one-prior-line cohorts statistically indistinguishable while two-or-more-prior-line cohorts had under a tenth the median PFS time, so the linear prevalence column compresses a step at two prior lines. When a source resolves prior-therapy count into more than two levels at the arm level, register parallel `LINE_3L_PCT` / `LINE_4L_PLUS_PCT` members rather than overloading this one -- the same guidance the individual-level `LINE_1L` entry gives, and note the `N prior regimens -> line N + 1` off-by-one documented under `LINE_3L`. See `TUMTP_FL_PCT` for the percent-versus-fraction warning.
 
 ### PS_ECOG_0_PCT (**canonical for ECOG-performance-status-0 cohort prevalence percentage**)
 - **Description:** Study-arm-level percentage (0-100) of the enrolled cohort with an Eastern Cooperative Oncology Group (ECOG) Performance Status score of 0 at baseline (fully active / asymptomatic). Continuous covariate scaled in percent (not fraction). Higher arm-level ECOG-0 fraction typically indicates a healthier / more-active enrolled cohort and is associated with better survival outcomes.
