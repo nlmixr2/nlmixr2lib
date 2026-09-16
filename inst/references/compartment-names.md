@@ -5330,8 +5330,10 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 ### tfvdp (**canonical tenofovir diphosphate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Tenofovir diphosphate active intracellular metabolite suffix.
-- **Source aliases:** none.
-- **Example models:** `Chen_2016_tenofovir_emtricitabine.R`.
+- **Source aliases:**
+  - `TFV-DP` -- the standard antiretroviral-literature abbreviation.
+- **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants).
+- **Notes:** Prefer the matrix-qualified `pbmc_tfvdp` / `rbc_tfvdp` form over the bare `tfvdp`: tenofovir diphosphate is assayed in more than one cell type, the two compartments have materially different kinetics, and `pbmc` / `rbc_<analyte>` are themselves canonical so the qualified name validates natively without a per-model escape hatch. The paired rate-constant names take a SINGLE suffix (`kmet_tfvdp`, `kel_tfvdp`) rather than repeating the matrix, because `.isPkParam()` strips only one suffix and a two-layer `kel_pbmc_tfvdp` would pass compartment validation but fail parameter validation.
 
 ### ftctp (**canonical emtricitabine triphosphate suffix**)
 - **Type:** metabolite-suffix
