@@ -5944,3 +5944,41 @@ turned over. Name the state for the co-substrate, not for the drug.
 - **Notes:** Dimensionless and normalised, so it is deliberately NOT named `gsh`: the bare name belongs to the "Endogenous metabolic species" family, every member of which carries a real measured concentration, and Cao 2025 explicitly states that active glutathione levels were not assayed and "full GSH dynamics could not be reconstructed". Initial condition `gsh_pool(0) <- 1`. The coupling constant that scales metabolic flux to the pool is the paired parameter `sdep_gsh` (see `parameter-names.md`); the two are introduced together and should stay paired. Extend to a sibling (`sdep_<pool>` / `<pool>_pool`) for any other consumable co-substrate, e.g. NADPH, sulfate, or acetyl-CoA.
 
 ---
+
+## Methylxanthine / CYP1A2 drug-drug-interaction suffixes (Navid 2016)
+
+Four-compound whole-body PBPK models of the CYP1A2 methylxanthine network carry every state and every compound-specific parameter with a short drug token, because no compound can claim the bare canonical names: theophylline and caffeine are simultaneously substrate, product and mutual inhibitor, and ciprofloxacin is a perpetrator that is also a substrate. The tokens are the abbreviations the source paper itself uses throughout its text, tables and figures.
+
+### thp (**canonical theophylline drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Theophylline drug-name suffix for the per-compound states and parameters of a multi-compound PBPK network (`liver_thp`, `venous_thp`, `transit1_thp`, `kp_liver_thp`, `eren_thp`, `mw_thp`). Theophylline is both a directly dosed drug and a caffeine metabolite in the same model, which is exactly why it cannot hold the bare names.
+- **Source aliases:**
+  - `THP` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** Three-letter abbreviation rather than the full INN, following the `van` / `mero` / `dap` / `lzd` precedent for combination models whose state count makes full INN suffixes unwieldy -- this model carries 87 states, and a full-INN scheme would produce names such as `transit1_theophylline`. Distinct from the caffeine metabolite token `tb` (theobromine), which is a terminal sink here and not carried as a state.
+
+### caf (**canonical caffeine drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Caffeine drug-name suffix in multi-compound CYP1A2 PBPK networks (`liver_caf`, `stomach_caf`, `kp_adipose_caf`, `vmax_caf_px_1a2`). Caffeine is the upstream parent whose CYP1A2 demethylation generates both paraxanthine and theophylline.
+- **Source aliases:**
+  - `CAF` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** Caffeine appears elsewhere in the library as a parent analyte with bare canonical names; this suffix is for models in which it is one of several simultaneously tracked compounds.
+
+### px (**canonical paraxanthine drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Paraxanthine drug-name suffix (`liver_px`, `venous_px`, `kp_liver_px`, `km_px_1a2`). Paraxanthine is the major CYP1A2 demethylation product of caffeine and is carried as a full compound rather than a terminal sink because it competitively inhibits theophylline metabolism at CYP1A2.
+- **Source aliases:**
+  - `PX` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** A metabolite in the strict sense, unlike its three siblings in this family: it is never dosed and therefore carries no absorption chain. Record which parent generates it, since the same token would be reused for a paraxanthine-probe CYP1A2 phenotyping model where caffeine is the only dosed species.
+
+### cip (**canonical ciprofloxacin drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ciprofloxacin drug-name suffix in drug-drug-interaction PBPK models (`liver_cip`, `urine_cip`, `kp_muscle_cip`, `eren_cip`, `km_cip_3a4_inhib`). Ciprofloxacin is the interaction perpetrator: it is a CYP1A2 substrate and inhibitor, and a CYP3A4 inhibitor that is not itself a CYP3A4 substrate.
+- **Source aliases:**
+  - `CIP` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** Ciprofloxacin already appears in the library as a parent analyte with bare canonical names (`Khan_2015_ciprofloxacin.R`); this suffix is for multi-compound models in which it is a co-administered perpetrator. Same role as the members of the "Transporter-DDI perpetrator drug suffixes" family, but placed here because ciprofloxacin is also a substrate of the enzyme it inhibits, so its own disposition has to be solved rather than assumed constant.
+
+---

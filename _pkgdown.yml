@@ -4752,6 +4752,8 @@ navbar:
         href: articles/Suda_2008_theophylline.html
       - text: "Theophylline (Yano 1993)"
         href: articles/Yano_1993_theophylline.html
+      - text: "Theophylline pbpk (Navid 2016)"
+        href: articles/Navid_2016_theophylline_pbpk.html
       - text: "Theophylline pediatric asthma (elDesoky 1997)"
         href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
       - text: "Thioguanine (Bayoumy 2025)"
@@ -6726,6 +6728,7 @@ articles:
   - articles/Nath_2007_melphalan
   - articles/Nath_2010_melphalan
   - articles/Nava_2018_busulfan
+  - articles/Navid_2016_theophylline_pbpk
   - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
   - articles/Nestorov_2014_factorviii
