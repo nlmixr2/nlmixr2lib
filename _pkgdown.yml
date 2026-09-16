@@ -1266,6 +1266,8 @@ navbar:
         href: articles/Ma_2023_difloxacin_crucianCarp.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
+      - text: "Digoxin (Komatsu 2015)"
+        href: articles/Komatsu_2015_digoxin.html
       - text: "Digoxin (Zhou 2010)"
         href: articles/Zhou_2010_digoxin.html
       - text: "Digoxin pbpk (Gu 2025)"
@@ -3610,10 +3612,28 @@ navbar:
         href: articles/Yin_2021_pexidartinib.html
       - text: "Pf 06671008 qsp (Betts 2019)"
         href: articles/Betts_2019_pf_06671008.html
-      - text: "Pfoa pbpk (Verner 2015)"
-        href: articles/Verner_2015_pfas_birthweight.html
-      - text: "Pfos pbpk (Verner 2015)"
-        href: articles/Verner_2015_pfas_birthweight.html
+      - text: "PF 06939999 (Guo 2022)"
+        href: articles/Guo_2022_PF_06939999.html
+      - text: "PF00821385 dog (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF00821385 human (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF04236921 (Li 2018)"
+        href: articles/Li_2018_PF04236921.html
+      - text: "PF04455242 human (Chang 2011)"
+        href: articles/Chang_2011_PF04455242_prolactin.html
+      - text: "PF04455242 rat (Chang 2011)"
+        href: articles/Chang_2011_PF04455242_prolactin.html
+      - text: "PF04457845 qsp (Benson 2014)"
+        href: articles/Benson_2014_PF04457845_qsp.html
+      - text: "PF04878691 (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 lymphocyte (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 oas (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 viralLoad (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
       - text: "Pfuroylamphenmulin (Xia 2025)"
         href: articles/Xia_2025_pfuroylamphenmulin.html
       - text: "Phage human pbpk (Echterhof 2026)"
@@ -6369,6 +6389,7 @@ articles:
   - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
   - articles/Kolowrat_2025_apixaban
+  - articles/Komatsu_2015_digoxin
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
   - articles/Koo_2012_propofol
