@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yata 2026 sildenafil ([doi:10.1111/jvp.70057](https://doi.org/10.1111/jvp.70057)) -- client-owned dogs with naturally occurring pulmonary hypertension.
+- Add Nyang'wa 2026 pretomanid ([doi:10.1038/s41598-026-46217-2](https://doi.org/10.1038/s41598-026-46217-2)) -- adults with rifampicin-resistant tuberculosis on the BPaL/BPaLM/BPaLC regimens.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

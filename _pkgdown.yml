@@ -3716,6 +3716,8 @@ navbar:
         href: articles/Gaohua_2012_pregnancy_pbpk.html
       - text: "Pregnancy pbpk midazolam (Gaohua 2012)"
         href: articles/Gaohua_2012_pregnancy_pbpk.html
+      - text: "Pretomanid (Nyangwa 2026)"
+        href: articles/Nyangwa_2026_pretomanid.html
       - text: "Pretomanid mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Prexasertib mouse pbpk (Saleh 2023)"
@@ -6611,6 +6613,7 @@ articles:
   - articles/Niu_2017_veliparib
   - articles/Noe_1996_factor_viii
   - articles/Novakovic_2017_cladribine
+  - articles/Nyangwa_2026_pretomanid
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
