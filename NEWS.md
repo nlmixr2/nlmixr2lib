@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Verner 2015 PFOS and PFOA gestational PBPK ([doi:10.1289/ehp.1408837](https://doi.org/10.1289/ehp.1408837)) -- pregnant women with background environmental exposure.
+- Add Yoshii 2016 acotiamide ([doi:10.1007/s11095-015-1787-y](https://doi.org/10.1007/s11095-015-1787-y)) -- male Sprague-Dawley rats.
 
 - `addBioavailability()` gains a `scale` argument. `scale = "logit"`
   constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is

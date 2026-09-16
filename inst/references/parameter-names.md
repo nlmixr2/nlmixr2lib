@@ -470,6 +470,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 
+### lclin_<tissue>, lclef_<tissue>, clin_<tissue>, clef_<tissue> (**canonical destination-suffixed permeation clearance pair**)
+- **Type:** log-transformed-pk
+- **Role:** Influx / efflux permeation clearance pair across a membrane INSIDE a resolved tissue, i.e. between two named sub-spaces of one organ rather than between plasma and a tissue (volume / time). Destination-suffixed members of the bare `lclin` / `lclef` pair, added for the same reason the `lq_<destination>` family exists: bare `lclin` / `lclef` are scoped to "plasma central to a tissue ECF compartment", so a transfer whose donor is itself a tissue sub-space needs its own token or a reader will mis-assign the donor compartment.
+- **Source aliases:** `fb*PSinf` (influx), `fu*PSeff` (efflux) -- Yoshii 2016 Table I and eqs. (3), (4).
+- **Example models:** `Yoshii_2016_acotiamide_rat_pbpk.R` (`lclin_stomach` = `fb*PSinf` = 0.174 mL/min fixed from the authors' earlier integration-plot analysis; `lclef_stomach` = `fu*PSeff` = 0.00600 mL/min fitted).
+- **Notes:** The two legs are independent, not a single clearance applied in both directions -- in the founding example influx exceeds efflux by a factor of 29, which is what makes the drug accumulate in the organ. A permeation clearance of this kind is typically a *permeability-surface-area product multiplied by a free fraction*, so it is blood-flow independent; that independence is the usual published evidence for carrier-mediated rather than perfusion-limited uptake, and it is why such a model carries this pair ALONGSIDE `lq_<organ>` rather than instead of it.
+
 ### lkamax (**canonical log-transformed Weibull-absorption asymptotic maximum rate constant**)
 - **Type:** log-transformed-pk
 - **Role:** Log of the maximum / asymptotic first-order absorption rate constant in a Piotrovskij-style time-dependent (Weibull) absorption model `ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))` (1 / time). The bare counterpart inside `model` is `kamax`.
@@ -1918,6 +1925,20 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Felmlee_2010_ghb_rat.R` (`Vkidney = 4.0 mL`, fixed to the rat physiological value; Table I footnote a).
 - **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Paired with `lq_kidney` in the founding example but independent of it -- a model may carry a kidney volume without an explicit perfusion flow, or vice versa.
 
+### lq_stomach, q_stomach (**canonical log-transformed central-to-stomach perfusion flow**)
+- **Type:** log-transformed-pk
+- **Role:** Gastric blood flow perfusing a stomach vascular space, applied as a bidirectional flow between the systemic blood compartment and that space (volume / time). Fourth member of the `lq_<destination>` family (`lq_milk`, `lq_elf`, `lq_kidney`), taken under the standing authorisation in the `lq_kidney` entry that "other perfused organs should take the same `lq_<organ>` shape". The bare form `q_stomach` is used inside `model()`.
+- **Source aliases:** `Qt` -- Yoshii 2016 Table I ("Blood flow rate") and eq. (3).
+- **Example models:** `Yoshii_2016_acotiamide_rat_pbpk.R` (`Qt = 1.1 mL/min`, fixed to the rat physiological value from Hosseini-Yeganeh and McLachlan).
+- **Notes:** In Yoshii 2016 the perfused space is NOT well-stirred with the rest of the tissue: `q_stomach` exchanges only with the vascular space, and drug reaches the deeper stomach pools through a separate permeation clearance (`lclin_stomach` / `lclef_stomach`). That is the general shape to expect for a permeability-limited organ, as opposed to the flow-limited organ described in the `lq_kidney` entry.
+
+### lv_stomach_vascular, lv_stomach_precursor, v_stomach_vascular, v_stomach_precursor (**canonical log-transformed stomach sub-space volumes**)
+- **Type:** log-transformed-pk
+- **Role:** Volumes of the individual spaces of a resolved stomach compartment (volume). Members of the `lv_<space>` family founded by `lv_elf` and continued by `lv_kidney` / `lv_ulf1` / `lv_ulf2`: the bare volume canonicals `lvc` / `lvp` / `lvp2` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a named organ sub-space is not a numbered peripheral compartment. The `lv_<space>` token follows the state it measures, so the family extends to `paper_specific_compartments` states exactly as `lv_ulf1` / `lv_ulf2` already do. Bare forms are used inside `model()`, and each space's concentration is `<state> / v_<space>`.
+- **Source aliases:** `Ve` (vascular space), `VT` (precursor pool) -- Yoshii 2016 Table I and eqs. (3), (4).
+- **Example models:** `Yoshii_2016_acotiamide_rat_pbpk.R` (`Ve = 0.441 mL` fixed; `VT = 0.133 mL` fitted).
+- **Notes:** The deep-pool volume in that model is deliberately NOT an `ini()` parameter: source paper eq. (6) derives it as `VT * kass / kdis`, the volume that makes the association / dissociation pair an equilibrium partition, and Table I correspondingly has no row for it. Derive such a volume in `model()` rather than adding a register entry for it.
+
 ### lgfr, gfr (**canonical glomerular filtration rate**)
 - **Type:** log-transformed-pk
 - **Role:** Glomerular filtration rate as a physiologic volumetric flow OUT of a kidney compartment and INTO a renal ultrafiltrate / tubular compartment (volume / time). It is deliberately NOT `cl_renal`: `lcl_renal` is an additive arm of the CENTRAL clearance that lumps filtration, secretion and reabsorption into one net number applied to plasma, whereas `gfr` is the filtration step alone, applied to the kidney compartment concentration, with reabsorption represented explicitly as a separate returning flux. The registered `lcl_tsnet` entry already presumes this parameter exists ("the filtration arm is carried by the model's glomerular-filtration parameter"). The bare form `gfr` is used inside `model()`.
@@ -2007,6 +2028,13 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Role:** First-order elimination rate of an indirect-response turnover pool (1 / time). Also the tissue-to-central return leg of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family -- see the `kin` entry above.
 - **Source aliases:** none.
 - **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form), `Nguyen_2026_linezolid.R` (`kin_saliva` / `kout_saliva`, the central-to-saliva secretion and saliva-to-central reabsorption legs of a saliva-TDM model).
+
+### lkin_stomach_deep, lkout_stomach_deep, kin_stomach_deep, kout_stomach_deep (**canonical stomach deep-pool exchange rate constants**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constants (1 / time) for reversible, LINEAR partitioning of drug between a stomach precursor pool and a stomach deep pool in which it interacts non-specifically with cellular components. Members of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family: `kin_` names the leg INTO the suffixed compartment and `kout_` the leg back out, exactly as for `kin_tumor` / `kout_tumor`. The family entry's instruction to "prefer these role-based names over the source paper's numeric micro-constants" is what selects them over the source's `kass` / `kdis`, which say only that the process is an association / dissociation and not which compartment it fills.
+- **Source aliases:** `kass` (precursor-to-deep), `kdis` (deep-to-precursor) -- Yoshii 2016 Table I and eqs. (4), (5), (6).
+- **Example models:** `Yoshii_2016_acotiamide_rat_pbpk.R` (`kass` = 3.20e-5 1/min, `kdis` = 4.85e-6 1/min, both fitted).
+- **Notes:** Two cautions. First, the suffixed compartment here is a `paper_specific_compartments` state rather than a canonical one, which the `kin` entry's "must be a canonical compartment" wording does not anticipate; the `lv_ulf1` / `lv_ulf2` precedent already establishes that a volume / rate token may follow a paper-specific state, and the alternative -- keeping the paper's bare `kass` / `kdis` -- would put two entirely generic names into the register. Second, this pair can coexist in ONE model with the bare indirect-response `kin` / `kout`, which mean something different (zero-order production and first-order loss of a turnover pool). The founding example carries both: `kin` / `kout` drive acetylcholine turnover while `kin_stomach_deep` / `kout_stomach_deep` move acotiamide between two drug pools. Always read the suffix before assuming which family a `kin` belongs to.
 
 ### lkel_saliva, kel_saliva (**canonical irreversible salivary elimination rate constant**)
 - **Type:** paper-named-param
