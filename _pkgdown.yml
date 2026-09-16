@@ -604,6 +604,8 @@ navbar:
         href: articles/Zhu_2024_borneol_pbpk.html
       - text: "Borneol rat pbpk (Zhu 2024)"
         href: articles/Zhu_2024_borneol_pbpk.html
+      - text: "Bortezomib (Hanley 2017)"
+        href: articles/Hanley_2017_bortezomib.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
       - text: "Brazikumab (Zhang 2023)"
@@ -5979,6 +5981,7 @@ articles:
   - articles/Han_2025_fluoxetine
   - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
+  - articles/Hanley_2017_bortezomib
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_dbp
   - articles/Hansson_2013_sunitinib_hfs
