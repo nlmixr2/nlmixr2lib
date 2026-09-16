@@ -60,8 +60,8 @@ navbar:
         href: articles/Wickramasinghe_2025_spatial_cns_pbpk.html
       - text: "Abemaciclib qsp (Zhang 2025)"
         href: articles/Zhang_2025_abemaciclib.html
-      - text: "Acetaminophen (Franke 2015)"
-        href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "ABT 102 (Othman 2013)"
+        href: articles/Othman_2013_ABT_102.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
@@ -488,10 +488,10 @@ navbar:
         href: articles/Decker_2024_baricitinib.html
       - text: "Baricitinib (Decker 2026)"
         href: articles/Decker_2026_baricitinib.html
-      - text: "Batefenterol (Ambery 2015)"
-        href: articles/Ambery_2015_batefenterol.html
-      - text: "Batefenterol fev1 (Ambery 2015)"
-        href: articles/Ambery_2015_batefenterol.html
+      - text: "BAY81 8973 (Garmann 2017)"
+        href: articles/Garmann_2017_BAY81_8973.html
+      - text: "BAY94 9027 (Solms 2020)"
+        href: articles/Solms_2020_BAY94_9027.html
       - text: "Bedaquiline (Shao 2023)"
         href: articles/Shao_2023_bedaquiline.html
       - text: "Bedaquiline (Svensson 2013)"
@@ -3376,6 +3376,8 @@ navbar:
         href: articles/Patel_2015_oseltamivir.html
       - text: "Oseltamivir (Standing 2012)"
         href: articles/Standing_2012_oseltamivir.html
+      - text: "Oseltamivir ferret (Reddy 2015)"
+        href: articles/Reddy_2015_oseltamivir_ferret.html
       - text: "Oseltamivir pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Oseltamivir qsp (Kamal 2017)"
@@ -5514,7 +5516,7 @@ articles:
   - articles/Alsultan_2023_vancomycin
   - articles/Altcheh_2023_benznidazole
   - articles/AlvarezJimenez_2016_scopolamine
-  - articles/Ambery_2015_batefenterol
+  - articles/AlZubaydi_2024_gabapentin
   - articles/An_2012_mitoxantrone_pbpk
   - articles/An_2025_rosuvastatin_ezetimibe
   - articles/Anbari_2023_atezolizumab_cibisatamab_qsp
@@ -6872,6 +6874,7 @@ articles:
   - articles/Ravva_2010_varenicline_exposure_response
   - articles/Ravva_2015_varenicline
   - articles/Rayner_2013_oseltamivir_exposure_response
+  - articles/Reddy_2015_oseltamivir_ferret
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reif_2013_ethinylestradiol_drospirenone
   - articles/Reijers_2016_trastuzumab
@@ -7571,38 +7574,5 @@ articles:
   - articles/Zurawska_2026_piperacillin
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deCastroSuarez_2020_nimotuzumab
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deVries_2025_durvalumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanErp_2010_sunitinib
-  - articles/vanHasselt_2013_eribulin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanIersel_2018_posaconazole
-  - articles/vanMaanen_2025_amyloid
-  - articles/vanOs_2024_temocillin
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2015_midazolam_circadian
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanSchaick_2016_prucalopride_pediatric
-  - articles/vanSteeg_2007_atenolol_isoprenaline_rat
-  - articles/vanWijk_2019_paracetamol
-  - articles/vandenBerg_2021_finerenone
-  - articles/vandenBerg_2021_uprifosbuvir
-  - articles/vandenBerg_2025_genericMab
-  - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
-  - articles/vanderGaag_2025_osimertinib_pbpk
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END
