@@ -18138,3 +18138,36 @@ expected to recur in any combined-evidence model; the rest are COPD-specific.
   - `DRGOL1` / `DRGOL2` / `DRGOL3` -- the Yang 2026 control streams set an open-label flag per treatment slot.
 - **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (scales the tiotropium reference efficacy by `rel_tio_ol` = 0.918 while keeping the blinded ED50, i.e. open-label tiotropium is estimated to perform about 8% worse than the same drug given blinded).
 - **Notes:** Strictly a TRIAL-CONDUCT covariate rather than a formulation, and is registered in the `FORM_<drug>_<variant>` family only because it selects between two variants of one drug's effect in exactly the way the other members do; the alternative of a general `OPENLABEL` covariate was rejected because the estimated effect is a tiotropium-specific potency ratio, not a generic unblinding bias, and pooling it across drugs would be unsupported. The direction is counterintuitive -- open-label administration reducing rather than inflating the measured effect -- and reflects that the open-label tiotropium arms served as active comparators in trials of other drugs rather than as the trial's own test arm. The founding control stream records that "blinded tio never given with another drug being OL in dataset".
+
+## In-vitro signaling-network perturbation inputs
+
+Logic-based / Boolean signaling-network models (CellNOptR, CNORode, MaBoSS and
+relatives) are trained on perturbation panels in which a cultured cell line is
+exposed to combinations of ligands and targeted kinase inhibitors. Two families
+of per-condition covariate come out of that design: a `STIM_<ligand>_<units>`
+member per applied ligand, and an `INH_<target>` member per pharmacologically
+inhibited network node. Neither is a PK-driven exposure -- there is no
+absorption, distribution or elimination anywhere in these models; the covariate
+is the experimental condition itself, held constant for the whole solve.
+
+### STIM_EGF_NORM, STIM_IGF1_NORM, STIM_IL6_NORM, STIM_TNFA_NORM, STIM_DHT_NORM (**canonical for the normalized activity of an applied ligand input node in a logic-based signaling-network model**)
+- **Description:** Activity assigned to the named ligand's input node in a logic / logic-ODE signaling network, on the model's own normalized `[0, 1]` activity scale. The reference level is the model's normalized basal value (0.5 in the log2-fold-change normalization CellNOptR uses, where 0.5 corresponds to a log2 fold change of zero), and 1 means the ligand was applied to the culture. The five members cover epidermal growth factor (EGF), insulin-like growth factor 1 (IGF-1), interleukin-6 (IL-6), tumour necrosis factor alpha (TNF-alpha) and the androgen dihydrotestosterone (DHT).
+- **Units:** fraction of maximal activity (unitless, `[0, 1]`)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** the model's normalized basal activity -- 0.5 for the CellNOptR log2-fold-change normalization, which is the value the founding model uses. Not 0: an unstimulated input node in that normalization sits at basal, not at zero activity. Reference values observed: Traynard 2017 used 0.5 / 1 only.
+- **Source aliases:**
+  - `TR:EGF`, `TR:IGF_1`, `TR:IL6`, `TR:TNFa`, `TR:DHT` -- the MIDAS-format stimulus columns of the Traynard 2017 supplement `perturbationData_LNCaP_MIDAS.csv`, which carry 0 / 1 and are recoded to 0.5 / 1 by the supplement's own fitting script (`cnolist$valueStimuli[cnolist$valueStimuli==0]=0.5`).
+- **Example models:** `Traynard_2017_prostateSignaling_qsp.R` (the five ligand inputs of a 20-node logic-based ODE model of LNCaP prostate cancer signaling; `STIM_IGF1_NORM` and `STIM_TNFA_NORM` are inert in the fitted model because their receptor nodes have a zero lifetime parameter, but are retained because they are part of the published structure).
+- **Notes:** Member of the in-vitro applied-stimulus `STIM_<agent>_<units>` family (siblings `STIM_ARTESUNATE_NM`, `STIM_CHLOROQUINE_NM`, `STIM_LUMEFANTRINE_NM`, `STIM_MEFLOQUINE_NM`, `STIM_QUININE_MM`), and shares that family's defining property: the value is what contacts the target directly, with no PK layer. It differs from those siblings in its units token: the applied molar concentration is reported in the upstream data paper rather than in the modeling paper, and the model itself is written on a normalized activity scale, so `_NORM` records a unitless `[0, 1]` activity rather than a concentration. Use `_NORM` only when the model genuinely consumes a normalized activity; when an applied concentration is available and the model consumes it, register a concentration-unit member instead. Distinct from `CAV` and the `CP_<drug>` family (systemic plasma exposure) and from `CONC_<drug>_MGL` (in-vitro antibacterial bath concentration in mg/L).
+
+### INH_PI3K, INH_MEK, INH_MTOR, INH_P38, INH_IKK (**canonical for a targeted-inhibitor indicator on a named node of a signaling-network model**)
+- **Description:** 1 = the culture was treated with a small-molecule inhibitor of the named signaling node, 0 = untreated. The target token is the network node's own symbol, upper-cased (`INH_PI3K` inhibits the `PI3K` node, `INH_MTOR` the `mTOR` node, and so on), so the covariate and the state it acts on are unambiguously paired. Values on `(0, 1)` are meaningful where the model's inhibition term is continuous -- in CNORode the inhibitor multiplies the whole right-hand side of its target node by `(1 - INH_<target>)`, so an intermediate value is a partial inhibition and a value of 1 pins the node at its initial (basal) activity.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no inhibitor of that node).
+- **Source aliases:**
+  - `TR:PI3Ki`, `TR:MEKi`, `TR:mTORi`, `TR:p38i`, `TR:IKKai` -- the MIDAS-format inhibitor columns of the Traynard 2017 supplement `perturbationData_LNCaP_MIDAS.csv`.
+- **Example models:** `Traynard_2017_prostateSignaling_qsp.R` (five inhibitor covariates gating the PI3K, MEK, mTOR, p38 and IKKa nodes of a 20-node logic-based ODE model; `INH_IKK` is inert in the fitted model because `tau_IKKa` is zero).
+- **Notes:** Registered by target node rather than by compound because signaling-network perturbation panels routinely identify their inhibitors only by target class ("PI3K inhibitor"), with the compound identity and concentration living in the upstream data paper -- which is exactly the situation in the founding model. When the compound IS named and the model treats it as a co-administered drug rather than as a node clamp, use `CONMED_<INN>` instead; when the model consumes an applied inhibitor concentration rather than a flag, use the `STIM_<agent>_<units>` or `CONC_<drug>_<units>` families. Distinct from `INH_MCT_KM_RATIO` / `INH_MCT_CONC_RATIO`, which are inhibitor-to-Ki concentration ratios modulating a saturable transport term rather than indicators that a node was clamped. A new member is added per inhibited node symbol; do not overload an existing member with a different target.
