@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Woillard 2017 tacrolimus ([doi:10.3389/fphar.2017.00358](https://doi.org/10.3389/fphar.2017.00358)) -- de novo cadaveric kidney transplant recipients.
+- Add Aston 2017 omalizumab and efalizumab receptor-rebound QSP models ([doi:10.1007/s00285-016-1073-6](https://doi.org/10.1007/s00285-016-1073-6)) -- theoretical TMDD illustration and adults with moderate-to-severe plaque psoriasis.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,

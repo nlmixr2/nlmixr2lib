@@ -1470,6 +1470,8 @@ navbar:
         href: articles/Chetty_2014_efalizumab_cd11a_pasi.html
       - text: "Efalizumab pasi (Chetty 2014)"
         href: articles/Chetty_2014_efalizumab_cd11a_pasi.html
+      - text: "Efalizumab qsp (Aston 2017)"
+        href: articles/Aston_2017_receptor_rebound.html
       - text: "Efaproxiral (Gastonguay 2005)"
         href: articles/Gastonguay_2005_efaproxiral.html
       - text: "Efavirenz (Bienczak 2016)"
@@ -3404,6 +3406,8 @@ navbar:
         href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
       - text: "Omalizumab pediatric (Zhu 2023)"
         href: articles/Zhu_2023_omalizumab_pediatric.html
+      - text: "Omalizumab qsp (Aston 2017)"
+        href: articles/Aston_2017_receptor_rebound.html
       - text: "Ombitasvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Omega3PUFA (Wang 2024)"
@@ -5647,6 +5651,7 @@ articles:
   - articles/Assmus_2025_benznidazole
   - articles/Assmus_2025_benznidazole_mouse
   - articles/Assmus_2026_dndi6148
+  - articles/Aston_2017_receptor_rebound
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
   - articles/Axelsen_2024_selexipag
