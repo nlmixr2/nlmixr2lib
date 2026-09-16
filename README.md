@@ -6,6 +6,42 @@
 
 # nlmixr2lib
 
+> ### Which version are you on?
+>
+> **This site documents the development version.** The articles here cover
+> every model in the development library; the CRAN release contains far fewer,
+> so a `readModelDb()` call copied from an article will fail with
+> `'name' not in database` if you are on CRAN.
+>
+> | | models |
+> |---|---|
+> | CRAN `0.3.2` (released 2026-01-18) | 59 |
+> | development `0.3.2.9000` | 2912 |
+>
+> To get the models these articles describe:
+>
+> ```r
+> install.packages(
+>   "nlmixr2lib",
+>   repos = c("https://nlmixr2.r-universe.dev", getOption("repos"))
+> )
+> ```
+>
+> **Then restart R.** `readModelDb()` and `modeldb` both resolve against the
+> package as loaded, so a reinstall in a running session leaves the old model
+> list in memory and the new models will still appear missing.
+>
+> Check it worked:
+>
+> ```r
+> packageVersion("nlmixr2lib")   # 0.3.2.9000
+> nrow(nlmixr2lib::modeldb)      # 2912
+> ```
+>
+> The r-universe repository is needed rather than plain `install_github()`:
+> the development version requires `rxode2 (>= 5.1.8)`, which is not on CRAN
+> yet, and r-universe serves prebuilt binaries so no compiler is required.
+
 This is a model library for `nlmixr2`.  The package allows a few ways to interact with the model library:
 
 
