@@ -5288,6 +5288,12 @@ navbar:
         href: articles/PiresdeMello_2018_zika_FAV_HFIM.html
       - text: "Zika FAV IFN RBV (PiresdeMello 2018)"
         href: articles/PiresdeMello_2018_zika_FAV_IFN_RBV.html
+      - text: "ZincNitrate mouse pbpk (Chen 2015)"
+        href: articles/Chen_2015_zincOxideNanoparticles.html
+      - text: "ZincOxideNanoparticle10nm mouse pbpk (Chen 2015)"
+        href: articles/Chen_2015_zincOxideNanoparticles.html
+      - text: "ZincOxideNanoparticle71nm mouse pbpk (Chen 2015)"
+        href: articles/Chen_2015_zincOxideNanoparticles.html
       - text: "Ziprasidone (Izat 2025)"
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Ziprasidone panss subscales (PillaReddy 2013)"
@@ -5733,6 +5739,7 @@ articles:
   - articles/Chen_2014_immunogenicity_qsp
   - articles/Chen_2014_nab_paclitaxel
   - articles/Chen_2015_voriconazole
+  - articles/Chen_2015_zincOxideNanoparticles
   - articles/Chen_2016_tenofovir_emtricitabine
   - articles/Chen_2017_tacrolimus
   - articles/Chen_2017_TB_MTP_GPDI_mouse
