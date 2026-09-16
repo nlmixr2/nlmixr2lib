@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Franke 2015 oxycodone and acetaminophen ([doi:10.2147/DDDT.S79499](https://doi.org/10.2147/DDDT.S79499)) -- healthy adults and nondependent recreational opioid users given single oral doses of biphasic IR/ER oxycodone/acetaminophen tablets, fasted and with a meal.
+- Add Ambery 2015 batefenterol ([doi:10.1007/s40268-015-0104-x](https://doi.org/10.1007/s40268-015-0104-x)) -- adults with moderate-to-severe COPD, plus a trough-FEV1 Emax dose-response model.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
