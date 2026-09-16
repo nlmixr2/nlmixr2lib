@@ -2,7 +2,17 @@
 
 # development version
 
-- Add Jin 2026 colistin sulfate ([doi:10.2147/IDR.S611711](https://doi.org/10.2147/IDR.S611711)) -- critically ill adults with carbapenem-resistant Gram-negative pneumonia.
+- Add Mulford 2026 vonoprazan ([doi:10.1002/psp4.70291](https://doi.org/10.1002/psp4.70291)) -- healthy adults and children and adolescents aged 6 to 17 years with gastroesophageal reflux disease.
+
+- Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
+  `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
+  `ordinal`. No register's type vocabulary has an `ordinal` member: an
+  ordinal-valued covariate records its scale in `Units:` and takes the type its
+  covariate model implies, which is what `SMOKE_TTFC_SCORE` -- the precedent
+  those entries cite in their own Notes -- already did. Each register's
+  `## Entry schema` `type:` line is now machine-read and checked against the
+  entries it describes, in both directions, so a type outside a file's own
+  documented vocabulary fails the test suite rather than reaching a release.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
