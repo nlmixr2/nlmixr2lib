@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nyang'wa 2026 pretomanid ([doi:10.1038/s41598-026-46217-2](https://doi.org/10.1038/s41598-026-46217-2)) -- adults with rifampicin-resistant tuberculosis on the BPaL/BPaLM/BPaLC regimens.
+- Add Brandon 2026 mitoxantrone ([doi:10.1002/bcp.70436](https://doi.org/10.1002/bcp.70436)) -- children aged 0.9-17 years with acute myeloid leukaemia.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
