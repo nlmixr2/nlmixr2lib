@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Schlender 2016 whole-body aging physiology ([doi:10.1007/s40262-016-0422-3](https://doi.org/10.1007/s40262-016-0422-3)) -- healthy European adults from 30 to 100 years; a PBPK system layer of organ masses, blood flows and a new GFR aging function, with no drug.
+- Add Chen 2016 deoxypodophyllotoxin ([doi:10.3389/fphar.2016.00488](https://doi.org/10.3389/fphar.2016.00488)) -- whole-body PBPK in mouse, rat, cynomolgus monkey, beagle dog and predicted human, plus an interspecies-allometric human model.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,

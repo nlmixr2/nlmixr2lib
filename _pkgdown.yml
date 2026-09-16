@@ -1206,6 +1206,18 @@ navbar:
         href: articles/Zhu_2026_denosumab.html
       - text: "Denosumab reference (Zhu 2026)"
         href: articles/Zhu_2026_denosumab.html
+      - text: "Deoxypodophyllotoxin dog pbpk (Chen 2016)"
+        href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Deoxypodophyllotoxin human allometric (Chen 2016)"
+        href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Deoxypodophyllotoxin human pbpk (Chen 2016)"
+        href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Deoxypodophyllotoxin monkey pbpk (Chen 2016)"
+        href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Deoxypodophyllotoxin mouse pbpk (Chen 2016)"
+        href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Deoxypodophyllotoxin rat pbpk (Chen 2016)"
+        href: articles/Chen_2016_deoxypodophyllotoxin.html
       - text: "Desmopressin (Agerso 2004)"
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
@@ -5799,7 +5811,7 @@ articles:
   - articles/Chen_2014_immunogenicity_qsp
   - articles/Chen_2014_nab_paclitaxel
   - articles/Chen_2015_voriconazole
-  - articles/Chen_2015_zincOxideNanoparticles
+  - articles/Chen_2016_deoxypodophyllotoxin
   - articles/Chen_2016_tenofovir_emtricitabine
   - articles/Chen_2017_tacrolimus
   - articles/Chen_2017_TB_MTP_GPDI_mouse
