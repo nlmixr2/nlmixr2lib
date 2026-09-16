@@ -69,7 +69,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Burns 2015 tenofovir and tenofovir-diphosphate ([doi:10.1002/jcph.461](https://doi.org/10.1002/jcph.461)) -- healthy HIV-negative women in the MTN-001 trial.
+- Add Loprete 2016 safinamide ([doi:10.1002/prp2.251](https://doi.org/10.1002/prp2.251)) -- adults with Parkinson's disease on stable dopamine-agonist or levodopa therapy; a population PK model and a linear ON-time disease-progression model.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
