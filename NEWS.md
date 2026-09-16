@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kang 2026 ticagrelor ([doi:10.1002/cpt.70282](https://doi.org/10.1002/cpt.70282)) -- adults with acute coronary syndrome supported by veno-arterial ECMO.
+- Add Beliveau 2026 tenofovir alafenamide subdermal implant ([doi:10.1038/s41598-026-48746-2](https://doi.org/10.1038/s41598-026-48746-2)) -- South African cisgender women in the CAPRISA 018 HIV-1 prevention trial, as zero-order-release and Weibull-release model files.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
