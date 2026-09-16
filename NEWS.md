@@ -2,7 +2,51 @@
 
 # development version
 
-- Add Boucher 2016 naproxen and topiramate landmark model-based meta-analyses ([doi:10.1002/psp4.12041](https://doi.org/10.1002/psp4.12041)) -- adults with osteoarthritis pain across 13 naproxen trials, and adults with episodic migraine across six topiramate prophylaxis trials.
+- Add Hoglund 2016 chloroquine and desethylchloroquine ([doi:10.1186/s12936-016-1181-1](https://doi.org/10.1186/s12936-016-1181-1)) -- adults with Plasmodium vivax mono-infection on the Thai-Myanmar border.
+
+- `addBioavailability()` gains a `scale` argument. `scale = "logit"`
+  constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
+  the Monolix-style oral/SC `F` and the form the `PK_double_sim_*` seeds
+  hand-code; `scale = "log"` is the previous unbounded behavior and stays the
+  default, so existing calls are unaffected. With a second compartment
+  (`cmt2`) one fraction drives both paths, `f(cmt) <- f<Cmt>` and
+  `f(cmt2) <- 1 - f<Cmt>`, the double-absorption `F1` dose split. `f` sets the
+  initial estimate on either scale, or leaves it unset when `NULL`. A dose
+  split is refused on the log scale, where `f` is unbounded above and the
+  complement can go negative.
+
+- Drop the redundant "fixed" from the `Kim_2024_meropenem` IIV labels on
+  `etalq` and `etalvp`. `fixed()` already states it, so the labels were an
+  error-severity convention violation; the provenance (`footnote b`, and the
+  reported shrinkage) is kept.
+
+- Add parameters through `rxode2::model()` and `rxode2::ini()` instead of
+  building an `iniDf` row and `rbind()`ing it on. The initial-estimate data
+  frame's columns belong to lotri and they change, so a hand-built row is a
+  latent break waiting on the next upstream release -- which is exactly what
+  happened. Two internal helpers, `.iniAddTheta()` and `.modelAppend()`,
+  replace the 19 sites that did this; residual-error parameters are now
+  created by appending the endpoint line on its own, letting rxode2 decide
+  their `condition`, `err` and lower bound. `.get1theta()` is deleted: it
+  seeded each new parameter from an existing theta row, so a `backTransform`,
+  `condition` or `prior` on that row leaked onto every parameter added after
+  it. What remains of `.getEtaThetaTheta1()` -- renamed `.getEtaTheta()` --
+  only row-subsets `iniDf` and asserts nothing about its columns. Behavior is
+  unchanged: 43 model pipelines produce byte-identical `iniDf` and model
+  blocks.
+
+- Fix the `addWeibullAbs()` beta label, which named the alpha parameter
+  (`Weibull absorption beta (wa)`).
+
+- Require `rxode2 (>= 5.1.7)`. lotri 1.0.5 added a `prior` column to the
+  initial-estimates data frame, which rxode2 5.1.6 does not know about: it
+  `rbind()`s a hand-built row of its own column set onto `$iniDf`, so every
+  piping function that adds a parameter (`addEta()`, `addResErr()`,
+  `addDepot()`, ...) failed with "numbers of columns of arguments do not
+  match". rxode2 5.1.6 declares only `lotri (>= 1.0.4)`, so the broken pair
+  resolved happily and the failure reached CI rather than the dependency
+  solver. rxode2 5.1.7 is the fix; requiring it here makes that pair
+  unresolvable instead of merely documented.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than

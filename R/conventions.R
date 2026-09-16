@@ -413,6 +413,11 @@
     # metabolite suffix in joint parent-plus-metabolite popPK models
     # (Ali 2018 doi:10.1128/AAC.02193-17).
     "deaq",
+    # Desethylchloroquine (DCQ), the principal antimalarial-active
+    # metabolite of chloroquine. Used as a metabolite suffix in joint
+    # parent-plus-metabolite popPK models
+    # (Hoglund 2016 doi:10.1186/s12936-016-1181-1).
+    "dcq",
     # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
     # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
     # suffix in parent + metabolite simultaneous popPK models
