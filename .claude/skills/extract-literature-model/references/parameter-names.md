@@ -123,6 +123,44 @@ dar7_central, dar7_peripheral1, dar7_peripheral2
 Cc_dar0, Cc_dar1, ... Cc_dar7
 ```
 
+
+### ADC deconjugation rate (`kdec`)
+
+Canonical first-order rate constant (1/time) at which a single cytotoxic
+payload molecule detaches from an antibody-drug conjugate in circulation:
+**`lkdec`** in `ini()`, bare `kdec` inside `model()`, IIV partner `etalkdec`.
+
+Deconjugation destroys conjugated drug without destroying antibody, so it is an
+extra loss term on the *conjugate's* central compartment and is absent from the
+total-antibody equations. Its contribution to the conjugate's effective
+clearance is `kdec * vc`, not `kdec`.
+
+- Per-DAR-species chain: numbered `lkdec1` ... `lkdec8`
+  (`Pouzin_2022_tusamitamab.R`).
+- One rate per molecule in a joint multi-drug fit: stratum suffix
+  (`lkdec_pina` / `lkdec_pola`, `Lu_2016_pinatuzumab_polatuzumab.R`).
+
+Source aliases translating without a sidecar: `KDEC`, `kdec`, "deconjugation
+rate".
+
+Distinct from `kdecay` (generic decay of a paper-mechanistic state) and from
+`krel` (payload release in a model that carries the released species as its own
+analyte, e.g. `KREL` generating free SN-38 in `Sathe_2024_sacituzumab.R`). A
+model with both a conjugate and a released-payload compartment may need both.
+
+### Assay cross-calibration (`cal_slope_<assay>`, `cal_int_<assay>`)
+
+Unitless linear recalibration of one measurement modality onto another's scale,
+`pred_reference = cal_slope_<assay> * pred_<assay> + cal_int_<assay>`. Use it
+when one structural state (or one analyte pair) is observed by two assays with
+different gain and the paper estimates the mapping as part of the model. Omit
+`cal_int_<assay>` when the paper's mapping has no intercept. `<assay>` is a
+short lowercase token naming the non-reference modality (`spect`, `dbs`,
+`acmmae`, ...); a stratum suffix goes after it (`cal_slope_acmmae_pina`).
+These describe the *measurement* process, so they belong with the residual-error
+block, not with the structural PK. Founding examples:
+`Siebinga_2023_lu177psma617.R` (`cal_slope_spect`, fixed) and
+`Lu_2016_pinatuzumab_polatuzumab.R` (the paper's `CORR`, estimated).
 ## Absorption: transit and lag-time
 
 ### Transit-absorption chain (Savic parameterisation)

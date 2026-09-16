@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lu 2016 pinatuzumab vedotin + polatuzumab vedotin ([doi:10.1002/psp4.12137](https://doi.org/10.1002/psp4.12137)) — adults with relapsed/refractory B-cell non-Hodgkin lymphoma.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
