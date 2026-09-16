@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Woillard 2017 tacrolimus ([doi:10.3389/fphar.2017.00358](https://doi.org/10.3389/fphar.2017.00358)) -- de novo cadaveric kidney transplant recipients.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
