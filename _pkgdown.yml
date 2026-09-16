@@ -1454,6 +1454,12 @@ navbar:
         href: articles/Choi_2025_efpeglenatide.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Elafibranor (Ooi 2026)"
+        href: articles/Ooi_2026_elafibranor.html
+      - text: "Elafibranor alptb (Ooi 2026)"
+        href: articles/Ooi_2026_elafibranor.html
+      - text: "Elafibranor gft1007 (Ooi 2026)"
+        href: articles/Ooi_2026_elafibranor.html
       - text: "Elexacaftor (Truong 2025)"
         href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Elinzanetant (Willmann 2024)"
@@ -4852,10 +4858,6 @@ navbar:
         href: articles/Bender_2014_trastuzumabEmtansine_mechanistic.html
       - text: "TrastuzumabEmtansine reduced (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_reduced.html
-      - text: "TrastuzumabRezetecan (Gao 2026)"
-        href: articles/Gao_2026_trastuzumabRezetecan.html
-      - text: "Trastuzumabemtansine (Lu 2014)"
-        href: articles/Lu_2014_trastuzumabemtansine.html
       - text: "Tremelimumab (Hwang 2022)"
         href: articles/Hwang_2022_tremelimumab.html
       - text: "Treosulfan (Danielak 2017)"
@@ -7512,38 +7514,5 @@ articles:
   - articles/Zurawska_2026_piperacillin
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deCastroSuarez_2020_nimotuzumab
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deVries_2025_durvalumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanErp_2010_sunitinib
-  - articles/vanHasselt_2013_eribulin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanIersel_2018_posaconazole
-  - articles/vanMaanen_2025_amyloid
-  - articles/vanOs_2024_temocillin
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanSchaick_2016_prucalopride_pediatric
-  - articles/vanSteeg_2007_atenolol_isoprenaline_rat
-  - articles/vanWijk_2019_paracetamol
-  - articles/vandenBerg_2021_finerenone
-  - articles/vandenBerg_2021_uprifosbuvir
-  - articles/vandenBerg_2025_genericMab
-  - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
-  - articles/vanderGaag_2025_osimertinib_pbpk
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vanderZeeuw_2026_immunoglobulin
-  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END

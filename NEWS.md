@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gao 2026 trastuzumab rezetecan ([doi:10.1002/psp4.70259](https://doi.org/10.1002/psp4.70259)) -- adults with HER2-expressing or mutated advanced solid tumors.
+- Add Ooi 2026 elafibranor ([doi:10.1002/psp4.70247](https://doi.org/10.1002/psp4.70247)) -- pooled healthy volunteers and patients with renal or hepatic impairment, MASH or primary biliary cholangitis, plus the GFT1007 active-metabolite PK model and the joint alkaline-phosphatase / total-bilirubin exposure-response model.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
