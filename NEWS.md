@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Choi 2026 melphalan ([doi:10.1007/s13318-026-01000-6](https://doi.org/10.1007/s13318-026-01000-6)) -- pediatric autologous haematopoietic stem cell transplant recipients.
+- Add Jin 2026 colistin sulfate ([doi:10.2147/IDR.S611711](https://doi.org/10.2147/IDR.S611711)) -- critically ill adults with carbapenem-resistant Gram-negative pneumonia.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

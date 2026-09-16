@@ -1032,6 +1032,8 @@ navbar:
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
       - text: "ColistinSulfate (Huang 2025)"
         href: articles/Huang_2025_colistinSulfate.html
+      - text: "ColistinSulfate (Jin 2026)"
+        href: articles/Jin_2026_colistinSulfate.html
       - text: "ColistinSulfate (Ma 2026)"
         href: articles/Ma_2026_colistinSulfate.html
       - text: "ColistinSulfate (Sun 2025)"
@@ -6212,6 +6214,7 @@ articles:
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
   - articles/Jin_2025_benralizumab
+  - articles/Jin_2026_colistinSulfate
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
   - articles/Johnson_2025_osimertinib
