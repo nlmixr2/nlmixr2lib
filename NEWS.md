@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Savelieva 2015 panobinostat ([doi:10.1007/s00228-015-1846-7](https://doi.org/10.1007/s00228-015-1846-7)) -- adults with advanced hematologic and solid tumours; both of the paper's final models are included.
+- Add Kletting 2015 anti-CD66 antibody (BW 250/183) radioimmunotherapy whole-body PBPK, models 1 and 2 ([doi:10.1371/journal.pone.0127934](https://doi.org/10.1371/journal.pone.0127934)) -- adults with acute leukaemia conditioned before stem-cell transplantation.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than

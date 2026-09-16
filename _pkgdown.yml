@@ -262,6 +262,10 @@ navbar:
         href: articles/deVriesSchultink_2018_cardiotoxicity.html
       - text: "Anti tryptase (Rymut 2023)"
         href: articles/Rymut_2023_anti_tryptase.html
+      - text: "AntiCD66 pbpk model1 (Kletting 2015)"
+        href: articles/Kletting_2015_antiCD66_pbpk.html
+      - text: "AntiCD66 pbpk model2 (Kletting 2015)"
+        href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "Antithrombin (DeJongh 2014)"
         href: articles/DeJongh_2014_antithrombin.html
       - text: "Antithrombin (Moffett 2017)"
@@ -6315,6 +6319,7 @@ articles:
   - articles/Kleideiter_2018_cebranopadol
   - articles/Kleijn_2011_sugammadex_rocuronium
   - articles/Klein_2026_alprazolam
+  - articles/Kletting_2015_antiCD66_pbpk
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloos_2021_pegasparaginase
   - articles/Kloprogge_2013_lumefantrine
