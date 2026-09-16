@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ooi 2026 elafibranor ([doi:10.1002/psp4.70247](https://doi.org/10.1002/psp4.70247)) -- pooled healthy volunteers and patients with renal or hepatic impairment, MASH or primary biliary cholangitis, plus the GFT1007 active-metabolite PK model and the joint alkaline-phosphatase / total-bilirubin exposure-response model.
+- Add Choi 2026 melphalan ([doi:10.1007/s13318-026-01000-6](https://doi.org/10.1007/s13318-026-01000-6)) -- pediatric autologous haematopoietic stem cell transplant recipients.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

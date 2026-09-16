@@ -1454,12 +1454,6 @@ navbar:
         href: articles/Choi_2025_efpeglenatide.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
-      - text: "Elafibranor (Ooi 2026)"
-        href: articles/Ooi_2026_elafibranor.html
-      - text: "Elafibranor alptb (Ooi 2026)"
-        href: articles/Ooi_2026_elafibranor.html
-      - text: "Elafibranor gft1007 (Ooi 2026)"
-        href: articles/Ooi_2026_elafibranor.html
       - text: "Elexacaftor (Truong 2025)"
         href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Elinzanetant (Willmann 2024)"
@@ -2786,6 +2780,8 @@ navbar:
         href: articles/Simpson_2013_mefloquine.html
       - text: "Meloxicam dog (Teixeira 2026)"
         href: articles/Teixeira_2026_meloxicam_dog.html
+      - text: "Melphalan (Choi 2026)"
+        href: articles/Choi_2026_melphalan.html
       - text: "Melphalan (Nath 2007)"
         href: articles/Nath_2007_melphalan.html
       - text: "Melphalan total (Nath 2010)"
@@ -5739,6 +5735,7 @@ articles:
   - articles/Choi_2018_metformin
   - articles/Choi_2025_denosumab
   - articles/Choi_2025_efpeglenatide
+  - articles/Choi_2026_melphalan
   - articles/Chotsiri_2019_lumefantrine
   - articles/Chotsiri_2019_piperaquine
   - articles/Chotsiri_2024_primaquine_metabolites
