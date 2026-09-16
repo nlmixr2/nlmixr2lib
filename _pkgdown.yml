@@ -2958,8 +2958,12 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Methylprednisolone sheep (Leber 2023)"
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
-      - text: "Metoprolol (Eugene 2016)"
-        href: articles/Eugene_2016_metoprolol.html
+      - text: "Metoprolol (Eugene 2016a)"
+        href: articles/Eugene_2016a_metoprolol.html
+      - text: "Metoprolol (Eugene 2016b)"
+        href: articles/Eugene_2016b_metoprolol_gender_dose_equivalence.html
+      - text: "Metoprolol enantiomers (Eugene 2016b)"
+        href: articles/Eugene_2016b_metoprolol_gender_dose_equivalence.html
       - text: "Metoprolol rat pbpk (Kir 2025)"
         href: articles/Kir_2025_atenolol_metoprolol_malnutrition.html
       - text: "Metronidazole (CohenWolkowiez 2012)"
@@ -6012,7 +6016,8 @@ articles:
   - articles/Elkomy_2015_morphine
   - articles/Elmokadem_2023_mavoglurant_pbpk
   - articles/EudyByrne_2021_buprenorphine
-  - articles/Eugene_2016_metoprolol
+  - articles/Eugene_2016a_metoprolol
+  - articles/Eugene_2016b_metoprolol_gender_dose_equivalence
   - articles/Eyler_2014_ertapenem
   - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Facius_2018_roflumilast
