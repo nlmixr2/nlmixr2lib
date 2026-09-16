@@ -69,7 +69,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Dumond 2017 efavirenz, atazanavir and ritonavir ([doi:10.1002/psp4.12151](https://doi.org/10.1002/psp4.12151)) -- HIV-infected adults aged 22-73 years, with total and unbound plasma concentrations modelled simultaneously.
+- Add Law 2017 tea catechins ([doi:10.1002/prp2.305](https://doi.org/10.1002/prp2.305)) -- healthy adult volunteers and male Sprague-Dawley rats; six whole-body PBPK models (EGCg, ECg, EC in rats; EGCg, EGC, EC in humans) that together reproduce the paper's tea catechin mixture model.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

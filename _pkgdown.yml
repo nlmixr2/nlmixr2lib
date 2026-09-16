@@ -1446,6 +1446,14 @@ navbar:
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Ec human pbpk (Law 2017)"
+        href: articles/Law_2017_teacatechins_pbpk.html
+      - text: "Ec rat pbpk (Law 2017)"
+        href: articles/Law_2017_teacatechins_pbpk.html
+      - text: "Ecg rat pbpk (Law 2017)"
+        href: articles/Law_2017_teacatechins_pbpk.html
       - text: "Eculizumab (Lee 2024)"
         href: articles/Lee_2024_eculizumab.html
       - text: "Edoxaban (Jonsson 2015)"
@@ -1502,8 +1510,12 @@ navbar:
         href: articles/Jansson_2008_eflornithine.html
       - text: "Efpeglenatide (Choi 2025)"
         href: articles/Choi_2025_efpeglenatide.html
-      - text: "EGF IFN chimera (DoldanMartelli 2013)"
-        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Egc human pbpk (Law 2017)"
+        href: articles/Law_2017_teacatechins_pbpk.html
+      - text: "Egcg human pbpk (Law 2017)"
+        href: articles/Law_2017_teacatechins_pbpk.html
+      - text: "Egcg rat pbpk (Law 2017)"
+        href: articles/Law_2017_teacatechins_pbpk.html
       - text: "Elexacaftor (Truong 2025)"
         href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Elinzanetant (Willmann 2024)"
