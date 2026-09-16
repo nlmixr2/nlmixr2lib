@@ -3852,6 +3852,34 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Lin_2024_TB_multistate.R` (five-state pharmacometric multistate model; `prob_scc <- s_converted` is the observation variable and carries the placeholder additive residual, while `prob_active_tb`, `prob_recurrent_tb`, `prob_dropout` and `prob_death` expose the other four state-occupancy probabilities).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Distinct from `sur` (a survival probability derived from a cumulative hazard in a time-to-event sub-model) because `prob_scc` is a state-occupancy probability of a *transient, re-enterable* state: a patient can leave the converted state for recurrent TB and return to it, so `prob_scc` is not monotone in time and is not the complement of any cumulative hazard. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc`. Founding models expose `prob_scc` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises an exact multistate event likelihood on the observed categorical state and has no observation-error model.
 
+### prob_escape (**canonical escape-subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "escape" latent class of a four-class longitudinal tumour-size mixture model -- the progressor class, in which the drug-driven kill rate is zero, the tumour grows unopposed and the baseline tumour burden is larger than in the responder classes. Time-invariant per subject: it is the output of a multinomial logistic regression on baseline covariates and a scalar exposure metric, not a state-occupancy probability that evolves along the solve. The reference (intercept) category of that regression, so its logit is fixed at 0 and the three responder logits are estimated relative to it.
+- **Source aliases:** `P1` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the paper's second-stage multinomial regression; together with `prob_monophasic_slow`, `prob_biphasic` and `prob_monophasic_fast` it supplies the class-assignment distribution for the mixture tumour-size model, whose observation variable is `TS`).
+- **Notes:** Exposed as a derived model variable rather than as the observation endpoint, following `Lin_2024_TB_multistate.R`, because the endpoint the source paper actually observes is tumour size. Do not confuse this class probability with a clinical progression probability: a patient in the escape class is one whose tumour-size trajectory the model describes with no kill term, which is a modelling construct, not a RECIST progressive-disease call. The four probabilities sum to 1 by construction.
+
+### prob_monophasic_slow (**canonical monophasic-slow-responder subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "monophasic slow" latent class of a four-class longitudinal tumour-size mixture model -- steady first-order shrinkage at the base kill rate, with no static residual tumour mass. Time-invariant per subject; output of a multinomial logistic regression on baseline covariates and a scalar exposure metric.
+- **Source aliases:** `P2` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_MONO_SLOW`).
+- **Notes:** The most prevalent class in the founding cohort (about 39%). See `prob_escape` for why these are derived variables rather than observation endpoints.
+
+### prob_biphasic (**canonical biphasic-responder subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "biphasic" latent class of a four-class longitudinal tumour-size mixture model -- fast initial shrinkage of the accessible tumour onto a durable static plateau. Time-invariant per subject; output of a multinomial logistic regression on baseline covariates and a scalar exposure metric.
+- **Source aliases:** `P3` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_BIPHASIC`).
+- **Notes:** The durable-plateau class is the one whose existence motivated the source authors to fix the resistance term of the Claret 2009 tumour-growth model to zero. See `prob_escape` for why these are derived variables rather than observation endpoints.
+
+### prob_monophasic_fast (**canonical monophasic-fast-responder subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "monophasic fast" latent class of a four-class longitudinal tumour-size mixture model -- accelerated first-order shrinkage with no static residual. Time-invariant per subject; output of a multinomial logistic regression on baseline covariates and a scalar exposure metric.
+- **Source aliases:** `P4` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_MONO_FAST`).
+- **Notes:** The rarest of the four classes in the founding cohort (about 6%); the source Discussion warns that classes this small are hard to distinguish from sparse tumour-size data. See `prob_escape` for why these are derived variables rather than observation endpoints.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
