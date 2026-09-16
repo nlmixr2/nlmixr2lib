@@ -58,7 +58,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Navid 2016 theophylline, caffeine and ciprofloxacin whole-body PBPK ([doi:10.1002/psp4.12061](https://doi.org/10.1002/psp4.12061)) -- adults, reference man and woman, with the drug-drug interactions of theophylline with caffeine and ciprofloxacin.
+- Add Jonsson 2016 tanezumab ([doi:10.1111/bcp.12850](https://doi.org/10.1111/bcp.12850)) -- adults with moderate to severe osteoarthritis of the knee or hip.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
