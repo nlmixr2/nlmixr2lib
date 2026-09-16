@@ -2338,6 +2338,8 @@ navbar:
         href: articles/Fau_2020_isatuximab.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
+      - text: "Isavuconazole secure (Desai 2016)"
+        href: articles/Desai_2016_isavuconazole_secure.html
       - text: "Isb2001 qsp (ChandralayamAyyappaMenon 2026)"
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
       - text: "Isolariciresinol rat (Liu 2024)"
@@ -5898,6 +5900,7 @@ articles:
   - articles/Denti_2018_levofloxacin
   - articles/Derippe_2024_BH3_mimetics_virtual_tumors
   - articles/Desai_2016_isavuconazole
+  - articles/Desai_2016_isavuconazole_secure
   - articles/Desai_2024_crisprCas9
   - articles/Desikan_2022_covidVaccine
   - articles/Desmee_2015_PSA_mCRPC

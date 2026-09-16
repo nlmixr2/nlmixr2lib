@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hoglund 2016 chloroquine and desethylchloroquine ([doi:10.1186/s12936-016-1181-1](https://doi.org/10.1186/s12936-016-1181-1)) -- adults with Plasmodium vivax mono-infection on the Thai-Myanmar border.
+- Add Desai 2016 isavuconazole, phase 1 + phase 3 SECURE pooled analysis ([doi:10.1128/AAC.02819-15](https://doi.org/10.1128/AAC.02819-15)) -- healthy adults and adults with invasive aspergillosis or other filamentous-fungal infections. Distinct from the same author's same-year hepatic-impairment analysis already carried as `Desai_2016_isavuconazole`.
 
 - `addBioavailability()` gains a `scale` argument. `scale = "logit"`
   constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
