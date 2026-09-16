@@ -42,11 +42,19 @@ jobs:
           # defaults that flag to FALSE. It is r-universe-only for now, so this
           # repository is load-bearing until 5.1.8 reaches CRAN/RSPM.
           extra-repositories: https://nlmixr2.r-universe.dev
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          cache-version: 2
           extra-packages: any::lintr, any::cyclocomp, local::.
           needs: lint
+
+      # Fails fast, with a readable message, when the resolved nlmixr2 stack is
+      # not mutually compatible -- rather than letting it surface as a crash
+      # somewhere far away. See the script's header for the mechanism.
+      - name: Verify the installed R package stack is mutually compatible
+        run: Rscript .github/scripts/check-r-stack.R
 
       - name: Lint
         run: lintr::lint_package()
