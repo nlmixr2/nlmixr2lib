@@ -58,7 +58,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Reddy 2015 oseltamivir ([doi:10.1371/journal.pone.0138069](https://doi.org/10.1371/journal.pone.0138069)) -- ferrets, uninfected or inoculated with influenza A (H5N1, H3N2) or influenza B.
+- Add Akil 2016 citalopram ([doi:10.1007/s10928-015-9457-6](https://doi.org/10.1007/s10928-015-9457-6)) -- elderly Alzheimer's disease patients treated for agitation in the CitAD trial.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
