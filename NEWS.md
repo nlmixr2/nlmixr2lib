@@ -58,7 +58,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Brenner 2016 pamrevlumab (FG-3019) ([doi:10.1007/s11095-016-1918-0](https://doi.org/10.1007/s11095-016-1918-0)) -- male Sprague-Dawley rats; target-mediated disposition against endogenous CTGF and its N-fragment.
+- Add Bustinduy 2016 praziquantel ([doi:10.1128/mBio.00227-16](https://doi.org/10.1128/mBio.00227-16)) -- Ugandan children aged 3-8 years with intestinal schistosomiasis.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
