@@ -3164,6 +3164,8 @@ navbar:
         href: articles/Sharma_2018_naltrexone_bupropion.html
       - text: "Naproxcinod (Bjornsson 2011)"
         href: articles/Bjornsson_2011_naproxcinod.html
+      - text: "Naproxen mbma (Boucher 2016)"
+        href: articles/Boucher_2016_landmark_mbma.html
       - text: "Naproxen mbma (Boucher 2018)"
         href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Naproxen rat (Li 2017)"
@@ -4836,6 +4838,8 @@ navbar:
         href: articles/Lee_2024_topiramate.html
       - text: "Topiramate dog (Vuu 2016)"
         href: articles/Vuu_2016_topiramate_dog.html
+      - text: "Topiramate mbma (Boucher 2016)"
+        href: articles/Boucher_2016_landmark_mbma.html
       - text: "Topotecan (Leger 2004)"
         href: articles/Leger_2004_topotecan.html
       - text: "Topotecan (Roberts 2016)"
@@ -5652,6 +5656,7 @@ articles:
   - articles/Bouazza_2011_lamivudine
   - articles/Bouazza_2012_clindamycin
   - articles/Bouazza_2025_prednisolone
+  - articles/Boucher_2016_landmark_mbma
   - articles/Boucher_2018_naproxen_mbma
   - articles/Boulanger_2025_trimethoprim_sulfonamides_pig
   - articles/Brain_2008_ifosfamide
