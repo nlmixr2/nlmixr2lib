@@ -166,6 +166,8 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
+- Add Law 2017 tea catechins ([doi:10.1002/prp2.305](https://doi.org/10.1002/prp2.305)) -- healthy adult volunteers and male Sprague-Dawley rats; six whole-body PBPK models (EGCg, ECg, EC in rats; EGCg, EGC, EC in humans) that together reproduce the paper's tea catechin mixture model.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
