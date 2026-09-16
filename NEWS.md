@@ -166,6 +166,8 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
+- Add Oosten 2017 morphine, M3G and M6G ([doi:10.1007/s40262-016-0471-7](https://doi.org/10.1007/s40262-016-0471-7)) -- adults with nociceptive cancer pain on oral and subcutaneous morphine.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
