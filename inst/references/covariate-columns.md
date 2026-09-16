@@ -18748,6 +18748,173 @@ expected to recur in any combined-evidence model; the rest are COPD-specific.
 - **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (scales the tiotropium reference efficacy by `rel_tio_ol` = 0.918 while keeping the blinded ED50, i.e. open-label tiotropium is estimated to perform about 8% worse than the same drug given blinded).
 - **Notes:** Strictly a TRIAL-CONDUCT covariate rather than a formulation, and is registered in the `FORM_<drug>_<variant>` family only because it selects between two variants of one drug's effect in exactly the way the other members do; the alternative of a general `OPENLABEL` covariate was rejected because the estimated effect is a tiotropium-specific potency ratio, not a generic unblinding bias, and pooling it across drugs would be unsupported. The direction is counterintuitive -- open-label administration reducing rather than inflating the measured effect -- and reflects that the open-label tiotropium arms served as active comparators in trials of other drugs rather than as the trial's own test arm. The founding control stream records that "blinded tio never given with another drug being OL in dataset".
 
+### DOSE_LU177DOTATATE_GBQ (**canonical for administered [177Lu]Lu-DOTATATE radioactivity per treatment cycle**)
+- **Description:** Radioactivity of [177Lu]Lu-DOTATATE (177Lu-DOTATATE, lutetium Lu 177 dotatate, INN lutetium (177Lu) oxodotreotide) administered intravenously in one treatment cycle, in gigabecquerel. The approved adult and adolescent regimen is flat 7.4 GBq per cycle for four cycles eight weeks apart, a cumulative 29.6 GBq. Distinct from every other member of the `DOSE_<DRUG>_<UNITS>` family in that the quantity is an ACTIVITY (GBq), not a mass: a radiopharmaceutical is prescribed and labelled by becquerels, and the peptide mass corresponding to a given activity varies with the age of the vial because the cold (unlabelled) peptide fraction grows as the 177Lu decays. A mass dose therefore cannot be derived from this column and vice versa; a model that needs both must carry both.
+- **Units:** GBq (per treatment cycle)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous, entering as the normalized power term `(DOSE_LU177DOTATATE_GBQ / 7.4)^exponent`. Reference value observed: 7.4 GBq, the approved per-cycle activity, printed explicitly inside Sood 2026 Eqs. 3-6 rather than being a cohort median.
+- **Source aliases:**
+  - `activity (GBq)` -- the variable name used throughout Sood 2026 Eqs. 3-6, Fig. 3 ("activity per cycle (GBq)") and Fig. 7. Same orientation as the canonical, no value transformation.
+  - `COV1` / `COV3` -- the generic covariate placeholders of Sood 2026 Eqs. 1-2, which Eqs. 3-4 then resolve to activity.
+- **Example models:** `Sood_2026_lu177dotatate_dosimetry_adult.R` (founding example; power exponents 0.66 on the per-cycle kidney absorbed dose and 0.597 on the per-cycle bone marrow absorbed dose, both referenced to 7.4 GBq), `Sood_2026_lu177dotatate_dosimetry_pooled.R` (the adult-plus-adolescent refit, exponents 0.65 and 0.52).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. In Sood 2026 the column is a **surrogate for exposure**, not a dose amount: popPK-predicted AUC from time zero to infinity existed only for the 20 NETTER-1 patients and, for the kidney, did not correlate with absorbed dose at all (R = -0.027, P = 0.91), so activity was used instead because it is recorded for every patient including the 27 ERASMUS patients who have no popPK exposure metric. Both consuming models are static per-cycle regressions with no PK layer, so the column is a per-record scalar rather than a dosing event; the cumulative absorbed dose compared against the 23 Gy / 29 Gy kidney and 2 Gy bone marrow external-beam thresholds is the per-cycle prediction multiplied by the number of identical cycles. Supported range 1-8 GBq per cycle, the span the paper's own 240-scenario simulation exercises (Fig. 3).
+
+### STUDY_NETTER_P (**canonical for the NETTER-P adolescent trial cohort indicator**)
+- **Description:** 1 = record from NETTER-P (NCT04711135), the multicenter open-label single-arm phase 2 trial of [177Lu]Lu-DOTATATE in adolescents aged 12 to under 18 years with somatostatin-receptor-positive gastroenteropancreatic neuroendocrine tumors or pheochromocytomas and paragangliomas; 0 = record from the pooled adult studies NETTER-1 (NCT01578239) and ERASMUS. Study-level (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled adult studies NETTER-1 and ERASMUS).
+- **Source aliases:**
+  - `study is NETTER-P` -- the conditional printed inside Sood 2026 Eq. 5, `(-0.55 [+1.58 if study is NETTER-P])`.
+  - `beta_C_STUDY_NETTER_P` -- the Sood 2026 Table 5 parameter row name for its coefficient, "CrCL effect on kidney dosimetry based on adult or adolescent populations".
+- **Example models:** `Sood_2026_lu177dotatate_dosimetry_pooled.R` (founding example; shifts the creatinine-clearance EXPONENT on the per-cycle kidney absorbed dose by +1.58, from -0.55 in the adult studies to +1.03 in NETTER-P, i.e. the renal-function relationship reverses sign. Applied only to the kidney model; the bone marrow model gained nothing from additional covariates).
+- **Notes:** The column stands in for AGE, and the paper says so outright: "The study effect, which can be assumed as adult versus adolescent population, was used instead of age." Two cautions belong with any reuse. First, it modifies another covariate's exponent rather than the predicted absorbed dose, so it is not interchangeable with the usual proportional study-effect shape and cannot be read as a percentage difference between cohorts. Second, it rests on 10 adolescents and the paper flags it as provisional -- "this result should be interpreted with caution because of the small sample size of the adolescent population (n = 10)" -- and the sign reversal it encodes is physiologically surprising, the Discussion attributing the limitation to "small sample size and absence of renal impairment" (NETTER-P required a creatinine clearance of at least 70 mL/min at entry). Sibling of the other `STUDY_<id>` members; scoped specific because the reference category is this analysis's own adult two-trial set.
+
+### CYP2D6_TG (**canonical for the CYP2D6-humanized transgenic animal indicator**)
+- **Description:** 1 = the animal is a CYP2D6-humanized transgenic (Tg-CYP2D6) expressing functional human CYP2D6, 0 = a wild-type animal of the same background that does not. Applies to preclinical humanized-transgenic models in which the human enzyme is present as an ADDITIONAL elimination route layered on top of the intact native (murine) pathways.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (wild-type animal; native pathways only).
+- **Source aliases:**
+  - `Tg-CYP2D6 vs wild-type` -- Jiang 2016 Methods 2.2 describes "age-matched male wild-type FVB/N and Tg-CYP2D6 mice"; the paper prints no data-column name.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (switches on the CYP2D6-mediated harmaline clearance arm CLCYP2D6-H = 0.0608 L/min/kg, which is absent in wild-type, and scales the 5-MeO-DMT O-demethylation Vmax by 1 + 0.301).
+- **Notes:** Deliberately distinct from the human CYP2D6 metabolizer-phenotype family (`CYP2D6_PM`, `CYP2D6_IM`, `CYP2D6_EM`, `CYP2D6_UM`) and from the activity-score `CYP2D6`. Those describe which allelic phenotype a human subject has; this column records whether a transgene is present in an animal that also retains its own species-specific orthologues, so a `CYP2D6_TG = 0` animal is NOT a CYP2D6 poor metabolizer -- it still clears drug through native routes that a human PM does not have. Encoding a wild-type animal as `CYP2D6_PM = 1` would therefore misstate the mechanism and conflate species. Also distinct from the genotype-indicator families (`SNP_<GENE>_RS<rsid>`, `UGT2B7_*`), which record naturally occurring polymorphisms rather than an engineered transgene. Extensible to other humanized-transgenic lines by the same pattern (`CYP3A4_TG`, `CYP2C19_TG`) if a future paper needs one.
+
+### INJ_REPEAT (**canonical for the repeat-handling / second-injection indicator**)
+- **Description:** 1 = the subject received a second handling or injection event after the index dose, 0 = a single injection. Records the experimental handling burden rather than what was injected.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single injection).
+- **Source aliases:**
+  - `single dose treatment` / `DDI dosing regimen` -- the wording Jiang 2016 uses in Methods 2.4 and Table 1 to distinguish the two estimates of kS-H.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (selects the harmaline heat-loss sensitivity constant kS-H: 0.0347 L/umol after a single injection, 0.0136 L/umol after a repeat-handling regimen).
+- **Notes:** Handling and restraint are themselves a thermoregulatory and neuroendocrine stimulus in rodents, so a study whose arms differ in the NUMBER of handling events carries a design covariate that is not a drug covariate. Jiang 2016 is explicit that the trigger is the handling event and not the injected substance: Methods 2.4 records that "5-MeO-DMT or saline was dosed 15 min after the administration of harmaline" produced the same reduction either way, and Discussion p.500 quantifies it as a fall in kS-H of more than 50%. Distinct from `CONMED_<INN>`, which keys on whether a particular drug was present -- the two columns are independent and Jiang 2016 needs both, because its vehicle-plus-5-MeO-DMT arm is a two-injection regimen with no harmaline. Distinct also from the transient stress SIGNAL itself, which this model carries as an ODE state dosed at each injection; this column selects a parameter, it does not time the events.
+
+### CONMED_HARMALINE (**canonical for concomitant harmaline coadministration indicator**)
+- **Description:** 1 = harmaline (a beta-carboline monoamine oxidase-A inhibitor) was coadministered, 0 = no concomitant harmaline.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant harmaline).
+- **Source aliases:**
+  - `pretreated with harmaline` vs `treated alone or pretreated with vehicle` -- the Table 1 wording Jiang 2016 uses to define its two SC50-M estimates.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (selects the 5-MeO-DMT potency on thermogenesis, SC50-M = 1.88 umol/L without harmaline versus 0.496 umol/L with it -- the roughly 4-fold potentiation that is the paper's headline result).
+- **Notes:** A member of the `CONMED_<INN>` family. In Jiang 2016 this column carries only the PHARMACODYNAMIC half of the harmaline interaction; the pharmacokinetic half is mechanistic (harmaline competitively inhibits two of the three 5-MeO-DMT elimination routes through explicit Ki terms) and therefore needs no covariate. A model that used this flag to stand in for the PK interaction as well would double-count it.
+
+### DOSE_HARMALINE_MGKG (**canonical for administered harmaline dose level per kg body weight**)
+- **Description:** Harmaline dose administered per kg body weight, recorded per dose event.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a dose-group selector for a dose-dependent bioavailability, not as a normalized continuous term.
+- **Source aliases:**
+  - `harmaline (2, 5 and 15 mg/kg)` -- Jiang 2016 Methods 2.4; the paper prints no data-column name.
+- **Example models:** `Jiang_2016_harmaline_meodmt_mouse.R` (selects the intraperitoneal bioavailability FH, which rises with dose: 34.6 / 74.2 / 90.3 percent at 2 / 5 / 15 mg/kg in wild-type mice and 36.8 / 68.8 / 80.1 percent in Tg-CYP2D6 mice).
+- **Notes:** A drug-specific member of the `DOSE_<drug>_<units>` family; the general `DOSE` canonical is unusable because rxode2's `etTrans` consumes a column literally named `DOSE` and never exposes it to `model`. The model reproduces the six published bioavailability values exactly at the three published dose levels and interpolates linearly between them, holding the nearest published value outside 2-15 mg/kg. Bioavailability at any other dose is an encoding choice rather than a published quantity, which matters because the paper's own external-validation arm uses 10 mg/kg -- a dose for which it reports no FH.
+
+### STUDY_SMAD (**canonical for the Choi 2016 GCC-4401C single-and-multiple-ascending-dose study cohort indicator**)
+- **Description:** 1 = subject enrolled in the single-and-multiple-ascending-dose (S&MAD) phase I study of GCC-4401C (ClinicalTrials.gov NCT01954238), 0 = the first-in-human single-ascending-dose (SAD) study (NCT01651234). The Choi 2016 analysis pooled the two trials and retained a study effect in four places.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the single-ascending-dose study, NCT01651234).
+- **Source aliases:**
+  - `STUDY` -- the integer study column of the Choi 2016 NONMEM `$INPUT` (deposited control stream PSP4-5-532-s008), where `STUDY = 1` is the SAD trial and `STUDY = 2` the S&MAD trial; `STUDY_SMAD = as.integer(STUDY == 2)`.
+- **Example models:** `Choi_2016_gcc4401c.R`.
+- **Notes:** Carries four distinct effects in the founding model, which is why it is a single indicator rather than a residual-error stratum. (i) **Apparent central volume / assay accuracy.** The control stream sets `S2 = V2/1000` and, for `STUDY.EQ.2`, `S2 = (V2/1000)/THETA(10)` with `THETA(10) = 0.82` -- so predicted plasma concentrations in the S&MAD study are 18% lower than in the SAD study for the same amount. The paper attributes this to the two trials using different bioanalytical laboratories (Choi 2016 Eqs. 7-8 and Table 2 footnote d, and `Delta`MOFV -21.037 for its inclusion). Because the scaling divides the volume, it is encoded as `e_study_smad_vc` rather than as a separate assay parameter. (ii) The sigmoidicity `gamma` of the coagulation-factor-X PD model (1.07 SAD versus 0.60 S&MAD, Table 3a). (iii) The EC50 of both prothrombin-time PD models (426 versus 1350 ng/mL for INR, Table 3d; 563 versus 1450 ng/mL for seconds, Table 3e). (iv) The Emax of the aPTT PD model (16.9 versus 20.4 s, Table 3f). The paper notes the PD differences "might be partially ascribed to study difference" without identifying a mechanism. The companion rivaroxaban model `Choi_2016_rivaroxaban.R` does not carry this covariate because that arm ran only in the S&MAD study. Do not reuse this name for an unrelated trial's single-and-multiple-ascending-dose cohort -- `SMAD` here is the Choi 2016 trial's own label, and a new paper needs its own `STUDY_<id>` member.
+
+### SNP_CES1_RS71647871 (**canonical for CES1 rs71647871 (p.Gly143Glu) variant-allele carrier indicator**)
+- **Description:** Binary germline indicator for the *CES1* nonsynonymous variant rs71647871 (c.428G>A, p.Gly143Glu), which abolishes much of the catalytic activity of carboxylesterase 1. 1 = carrier of at least one A (variant) allele; 0 = GG wild-type homozygote. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (rs71647871 GG wild-type homozygote).
+- **Source aliases:**
+  - `X4A` -- used in `Lyauk_2016_methylphenidate.R`. **Value-inverted**: the source NONMEM column codes `1` = wild-type and `0` = the GA variant (`IF(X4A.EQ.1) CLX4A = 1` / `IF(X4A.EQ.0) CLX4A = ( 1 + THETA(13))`), plus the sentinel `999` for missing. Convert on ingestion with `SNP_CES1_RS71647871 = as.integer(X4A == 0)`. The paper's own printed typical-value equation already uses the carrier-equals-1 orientation that this canonical adopts.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `cl <- ... * (1 + e_snp_ces1_rs71647871_cl * SNP_CES1_RS71647871) * ...` with `e_snp_ces1_rs71647871_cl = -0.587`; GA carriers have 58.7% lower CL/F, giving a 2.43-fold higher d-methylphenidate AUC0-inf, Lyauk 2016 Table 1 theta 9 and Figure 4).
+- **Notes:** Member of the auto-approving `SNP_<GENE>_<RSID>` germline-pharmacogenomics family, following the family default that 1 = mutant allele present. General scope: rs71647871 is the one CES1 variant with replicated cross-drug effects, reported for oseltamivir, clopidogrel, quinapril and enalapril as well as methylphenidate (Lyauk 2016 Discussion and references 25-27), so the same column will recur in any CES1-substrate analysis. Only heterozygotes were observed in the founding cohort (6 of 116 genotyped subjects); a future paper resolving AA homozygotes separately should register a `_HOM` sibling on the `SNP_ABCG2_RS2231142_HET` / `_HOM` pattern rather than overloading this carrier indicator. Pair with `SNP_CES1_RS71647871_MISSING` when the source handles ungenotyped subjects with an EXTRA / EST missing-data parameter. Distinct from `SNP_CES1_RS115629050`, an independent CES1A1 variant that the founding paper confirmed is in linkage equilibrium with this one (Supplementary Figure S1), so both may be carried simultaneously.
+
+### SNP_CES1_RS71647871_MISSING (**canonical for CES1 rs71647871 genotype-missing indicator**)
+- **Description:** Binary indicator that a subject's *CES1* rs71647871 genotype could not be determined. 1 = genotype missing; 0 = genotype measured (whether wild-type or variant). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (rs71647871 genotype successfully measured). Mutually exclusive with `SNP_CES1_RS71647871 = 1`.
+- **Source aliases:**
+  - `X4A` sentinel value `999` -- used in `Lyauk_2016_methylphenidate.R` (`IF(X4A.EQ.999) CLX4A = ( 1 + THETA(12))`). Convert on ingestion with `SNP_CES1_RS71647871_MISSING = as.integer(X4A == 999)`.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_snp_ces1_rs71647871_missing_cl = -0.157`; the 5% of subjects without a genotype call behave as though modestly enriched for the variant, Lyauk 2016 Table 1 theta 10).
+- **Notes:** Member of the established `<COV>_MISSING` missing-indicator family (`ADA_MISSING`, `CYP2C9_MISSING`, `SNP_CYP2C19_RS3814637_MISSING`, `SNP_CYP3A4_RS2242480_MISSING`). The modelling role here is the EXTRA (also called EST) method of Keizer 2012 and Johansson & Karlsson 2013 for data missing **not** at random: rather than imputing a genotype, the estimation adds one typical-value multiplier per covariate that contains missing data, so ungenotyped subjects form their own effect stratum. Record which role the flag plays -- a shift of the typical value (as here) versus a shift of the between-subject variance -- in `covariateData[[SNP_CES1_RS71647871_MISSING]]$notes`. A source that instead drops ungenotyped subjects, or imputes them to wild-type, needs no such column.
+
+### SNP_CES1_RS115629050 (**canonical for CES1 rs115629050 (p.Ala270Ser) variant-allele carrier indicator**)
+- **Description:** Binary germline indicator for the *CES1A1* nonsynonymous variant rs115629050 (p.Ala270Ser), located in exon 7. 1 = carrier of at least one variant (G) allele at the T>G position, i.e. a TG heterozygote or GG homozygote; 0 = wild-type homozygote. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (rs115629050 wild-type homozygote).
+- **Source aliases:**
+  - `X7A` -- used in `Lyauk_2016_methylphenidate.R`. Source coding matches this canonical directly (`IF(X7A.EQ.0) CLX7A = 1` wild-type, `IF(X7A.EQ.1) CLX7A = ( 1 + THETA(15))` variant), with the sentinel `999` for missing; **no value inversion**, in contrast to the sibling `SNP_CES1_RS71647871` in the same model.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_snp_ces1_rs115629050_cl = -0.403`; TG carriers have 40.3% lower CL/F, giving a 1.68-fold higher d-methylphenidate AUC0-inf, Lyauk 2016 Table 1 theta 14 and Figure 4).
+- **Notes:** Member of the auto-approving `SNP_<GENE>_<RSID>` family. Scoped **specific** rather than general, unlike its sibling `SNP_CES1_RS71647871`: the founding paper is the first and so far only report of an rs115629050 effect on any drug's PK, its Discussion records that an in-vitro study of CES1-metabolised ACE inhibitors failed to detect an effect of the same variant, and 42% of the founding cohort could not be genotyped at this locus because the assay cannot resolve sequence downstream of *CES1A1* exon 5 when *CES1A2* is present. Promote to general only once a second paper ratifies the effect. Confirmed to be in linkage equilibrium with rs71647871 in the founding cohort (Lyauk 2016 Supplementary Figure S1), which is what permits both to enter one model. Pair with `SNP_CES1_RS115629050_MISSING`.
+
+### SNP_CES1_RS115629050_MISSING (**canonical for CES1 rs115629050 genotype-missing indicator**)
+- **Description:** Binary indicator that a subject's *CES1* rs115629050 genotype could not be determined. 1 = genotype missing; 0 = genotype measured. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (rs115629050 genotype successfully measured). Mutually exclusive with `SNP_CES1_RS115629050 = 1`.
+- **Source aliases:**
+  - `X7A` sentinel value `999` -- used in `Lyauk_2016_methylphenidate.R` (`IF(X7A.EQ.999) CLX7A = ( 1 + THETA(14))`). Convert on ingestion with `SNP_CES1_RS115629050_MISSING = as.integer(X7A == 999)`.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_snp_ces1_rs115629050_missing_cl = 0.090`, Lyauk 2016 Table 1 theta 15).
+- **Notes:** Member of the `<COV>_MISSING` family, used here for the EXTRA / EST missing-not-at-random method (see `SNP_CES1_RS71647871_MISSING` Notes). This particular flag covers an unusually large 42% of the founding cohort, for the structural assay reason recorded under `SNP_CES1_RS115629050`, and its estimated coefficient is the only one in that model whose bootstrap 95% CI spans zero (-0.0623 to 0.262) -- i.e. ungenotyped subjects are statistically indistinguishable from wild-type. Do not read a large missing fraction as a data-quality defect that could be cleaned away: here missingness is a deterministic consequence of the subject's *CES1A2* copy number, which is precisely why the founding paper classified it as missing not at random rather than missing at random.
+
+### CES1_HAPA2_HET (**canonical for the CES1A2-bearing haplotype heterozygote indicator**)
+- **Description:** Binary indicator that a subject carries exactly one copy of the hybrid gene *CES1A2*. A *CES1* haplotype carries either the nonfunctional pseudogene *CES1P1* or the duplicated *CES1A2* segment in addition to *CES1A1*, so the diplotype is a three-level germline dosage; this column flags the heterozygous `CES1A1-CES1P1 / CES1A1-CES1A2` group. 1 = one *CES1A2* copy; 0 = otherwise (the union of the zero-copy and two-copy groups; the paired indicator `CES1_HAPA2_HOM` flags the two-copy group). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (`CES1A1-CES1P1 / CES1A1-CES1P1`, no *CES1A2* copy -- the most common diplotype -- when both `CES1_HAPA2_HET` and `CES1_HAPA2_HOM` are 0).
+- **Source aliases:**
+  - `NCOP` -- used in `Lyauk_2016_methylphenidate.R`, which carries the combined *CES1A1* + *CES1A2* copy number (2 = no *CES1A2*, 3 = one copy, 4 = two copies, 999 = missing). Convert on ingestion with `CES1_HAPA2_HET = as.integer(NCOP == 3)`.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_ces1_hapa2_het_cl = -0.182`; one-copy carriers have 18.2% lower CL/F, giving a 1.22-fold higher d-methylphenidate AUC0-inf, Lyauk 2016 Table 1 theta 11 and Figure 4).
+- **Notes:** Member of the `<GENE>_HAP<haplotype>_HET` / `_HOM` human-germline-haplotype-dosage family established by `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM`, and registered there rather than under a copy-number name because the underlying genetics is haplotype dosage: one *CES1A2* copy means one of the subject's two *CES1* haplotypes is the *CES1A2*-bearing form. Deliberately **not** placed in the `PFMDR1_CN2` / `PFMDR1_CN3PLUS` family, which is a specific parasite-genome amplification set for *P. falciparum* and carries no implication of diploid haplotype dosage. Not a `SNP_<GENE>_<RSID>` entry either: *CES1A2* is a structural hybrid gene, not a point variant, and has no rsID. Scoped specific pending a second paper -- the founding study's Discussion records that its direction conflicts with an irinotecan study in which *CES1A2* presence increased clearance, and with an oseltamivir study that found no diplotype effect. Pair with `CES1_HAPA2_MISSING` when the source handles undetermined copy number with an EXTRA / EST parameter.
+
+### CES1_HAPA2_HOM (**canonical for the CES1A2-bearing haplotype homozygote indicator**)
+- **Description:** Binary indicator that a subject carries two copies of the hybrid gene *CES1A2*, i.e. the `CES1A1-CES1A2 / CES1A1-CES1A2` diplotype in which both *CES1* haplotypes are the *CES1A2*-bearing form. 1 = two *CES1A2* copies; 0 = otherwise (the union of the zero-copy and one-copy groups; the paired indicator `CES1_HAPA2_HET` flags the one-copy group). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (`CES1A1-CES1P1 / CES1A1-CES1P1`, no *CES1A2* copy, when both `CES1_HAPA2_HET` and `CES1_HAPA2_HOM` are 0).
+- **Source aliases:**
+  - `NCOP` -- used in `Lyauk_2016_methylphenidate.R` (combined *CES1A1* + *CES1A2* copy number). Convert on ingestion with `CES1_HAPA2_HOM = as.integer(NCOP == 4)`.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_ces1_hapa2_hom_cl = -0.410`; two-copy carriers have 41.0% lower CL/F, giving a 1.70-fold higher d-methylphenidate AUC0-inf, Lyauk 2016 Table 1 theta 12 and Figure 4).
+- **Notes:** Paired with `CES1_HAPA2_HET` to encode the three-level *CES1A2* diplotype with the no-copy group as the implicit reference (both indicators 0). See `CES1_HAPA2_HET` Notes for the family rationale and the boundaries against `PFMDR1_CN*` and `SNP_<GENE>_<RSID>`. Rest on a small stratum: only 5 of 121 successfully genotyped subjects in the founding cohort carried two copies (Lyauk 2016 Supplementary Table S2), and the paper's own large-population simulation assumes a 2.5% frequency of the two-copy diplotype against 21.5% for one copy in a Caucasian population.
+
+### CES1_HAPA2_MISSING (**canonical for the CES1A2 diplotype missing indicator**)
+- **Description:** Binary indicator that a subject's *CES1A2* copy number (and hence *CES1* diplotype) could not be determined. 1 = diplotype missing; 0 = diplotype measured. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (*CES1A2* copy number successfully measured). Mutually exclusive with `CES1_HAPA2_HET = 1` and `CES1_HAPA2_HOM = 1`.
+- **Source aliases:**
+  - `NCOP` sentinel value `999` -- used in `Lyauk_2016_methylphenidate.R` (`IF(NCOP.EQ.999) CLNCOP = ( 1 + THETA(11))`). Convert on ingestion with `CES1_HAPA2_MISSING = as.integer(NCOP == 999)`.
+- **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_ces1_hapa2_missing_cl = -0.535`, Lyauk 2016 Table 1 theta 13).
+- **Notes:** Member of the `<COV>_MISSING` family, used for the EXTRA / EST missing-not-at-random method (see `SNP_CES1_RS71647871_MISSING` Notes). Unlike its two sibling missing-indicators in the same model, this one covers only 0.8% of the founding cohort -- a **single** subject -- yet carries a large (-53.5%) and nominally precise (RSE 9.0%) coefficient. Read it as a nuisance parameter absorbing that one subject rather than as a transferable effect, and do not carry the estimate across to another analysis; a source with no ungenotyped subjects should omit the column entirely rather than set it to 0 for everyone, since `checkNamingRegisters()` gates registered-but-unused entries.
+
+### STUDY_A105 (**canonical for the aripiprazole lauroxil phase I study A105 cohort indicator**)
+- **Description:** 1 = subject enrolled in A105 (NCT02320032), the open-label phase I study of aripiprazole lauroxil 441 mg q4wk / 882 mg q6wk / 1064 mg q8wk in stable schizophrenia; 0 = subject from one of the four earlier studies pooled into the same analysis (phase I studies 002, 101 and 102, and the pivotal phase III study 003). Subject-level (time-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the four earlier pooled studies 002 / 101 / 102 / 003).
+- **Source aliases:**
+  - `Study` -- Hard 2017 ESM Supplemental Table 7 labels the two residual-error rows "sigma2prop ARI A105" and "sigma2prop ARI Non-A105".
+- **Example models:** `Hard_2017_aripiprazole_lauroxil.R` (selects the proportional residual SD: sqrt(0.0238) = 0.154 for A105 against sqrt(0.0565) = 0.238 for the earlier studies; applied inside `model()` as `propSdStdyA105 * STUDY_A105 + propSdStdyPrior * (1 - STUDY_A105)`).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. The between-study difference is confined to residual error, the same role `STUDY_ODYSSEY` plays in `Chandasana_2024b_dolutegravir.R` and `STUDY_NOVA` in `Gaffney_2026_niraparib.R`: A105 sampled up to 48 times per patient over 309 days whereas the pooled phase III study 003 sampled 13 times, so the denser study supports a smaller residual magnitude. No structural or covariate parameter differs by study in this model. A105 is the only one of the five pooled studies that gave no oral aripiprazole at all, so a data set carrying `STUDY_A105 = 1` should have no `cmt = "depot"` records.
+
 ## In-vitro signaling-network perturbation inputs
 
 Logic-based / Boolean signaling-network models (CellNOptR, CNORode, MaBoSS and
