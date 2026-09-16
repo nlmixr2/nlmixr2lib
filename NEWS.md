@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2015 BMS-911543 in vitro enzyme kinetics ([doi:10.1002/psp4.35](https://doi.org/10.1002/psp4.35)) -- pooled human liver microsomes and recombinant CYP1A2, CYP3A4 and CYP2J2, plus mechanism-based inactivation of CYP1A2.
+- Add Stockmann 2015 vancomycin ([doi:10.1007/s40121-015-0067-9](https://doi.org/10.1007/s40121-015-0067-9)) -- neonates up to 54 weeks postmenstrual age.
 
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than

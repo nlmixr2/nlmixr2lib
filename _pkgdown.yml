@@ -5086,6 +5086,8 @@ navbar:
         href: articles/Shiau_2026_vancomycin.html
       - text: "Vancomycin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
+      - text: "Vancomycin (Stockmann 2015)"
+        href: articles/Stockmann_2015_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
         href: articles/Takada_2025_vancomycin.html
       - text: "Vancomycin (Tseng 2026)"
@@ -7046,6 +7048,7 @@ articles:
   - articles/Stevens_2012_remoxipride
   - articles/Stitt_2026_tranexamicAcid
   - articles/Stocker_2012_oxypurinol
+  - articles/Stockmann_2015_vancomycin
   - articles/Storgaard_2026_tetrahydrocannabinol
   - articles/Storset_2014_tacrolimus
   - articles/Stoschus_2025_phenobarbital
