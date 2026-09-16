@@ -2522,6 +2522,8 @@ navbar:
         href: articles/Xu_2024_linezolid.html
       - text: "Linezolid (Zavrelova 2025)"
         href: articles/Zavrelova_2025_linezolid.html
+      - text: "Linezolid (Zhang 2026)"
+        href: articles/Zhang_2026_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
       - text: "Linzagolix (Pohl 2022)"
@@ -7423,6 +7425,7 @@ articles:
   - articles/Zhang_2025_nedosiran
   - articles/Zhang_2025_olanzapine
   - articles/Zhang_2025_remdesivir
+  - articles/Zhang_2026_linezolid
   - articles/Zhang_2026_ribociclib
   - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid
