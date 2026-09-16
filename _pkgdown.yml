@@ -378,6 +378,8 @@ navbar:
         href: articles/Colombo_2006_atazanavir.html
       - text: "Atazanavir (Dickinson 2009)"
         href: articles/Dickinson_2009_atazanavir.html
+      - text: "Atazanavir (Dumond 2017)"
+        href: articles/Dumond_2017_unbound_antiretrovirals.html
       - text: "Atazanavir (Foissac 2011)"
         href: articles/Foissac_2011_atazanavir.html
       - text: "Atazanavir (Hong 2011)"
@@ -1422,6 +1424,8 @@ navbar:
         href: articles/Chala_2023_efavirenz.html
       - text: "Efavirenz (Dhoro 2015)"
         href: articles/Dhoro_2015_efavirenz.html
+      - text: "Efavirenz (Dumond 2017)"
+        href: articles/Dumond_2017_unbound_antiretrovirals.html
       - text: "Efavirenz (Heathman 2024)"
         href: articles/Heathman_2024_efavirenz.html
       - text: "Efavirenz (Hirt 2009)"
@@ -4006,6 +4010,8 @@ navbar:
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritonavir (Chen 2024)"
         href: articles/Chen_2024_nirmatrelvir_ritonavir.html
+      - text: "Ritonavir (Dumond 2017)"
+        href: articles/Dumond_2017_unbound_antiretrovirals.html
       - text: "Ritonavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_ritonavir.html
       - text: "Ritonavir (Kengo 2025)"
@@ -5792,6 +5798,7 @@ articles:
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
   - articles/Duke_2024_cefazolin
+  - articles/Dumond_2017_unbound_antiretrovirals
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Duong_2016_WHIG_T2DM
