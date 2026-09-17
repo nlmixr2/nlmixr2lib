@@ -185,10 +185,10 @@ Schoemaker_2018_levetiracetam <- function() {
     # Per-record terms.
     # ------------------------------------------------------------------
 
-    # Markov amplitude term. PDV is supplied per-record as a covariate
-    # (operator decision; sidecar response-001 Q2). For adult records
-    # (CHILD = 0) the source dataset uses PDV = -99 as a sentinel; the
-    # CHILD multiplier zeroes the term so the sentinel value is harmless.
+    # Markov amplitude term. PDV is supplied per-record as a covariate.
+    # For adult records (CHILD = 0) the source dataset uses PDV = -99 as
+    # a sentinel; the CHILD multiplier zeroes the term so the sentinel
+    # value is harmless.
     markov_addend <- CHILD * exp(lsmax_subject) * PDV / (es50 + PDV)
     log_rate_baseline <- ls0_subject + markov_addend
 

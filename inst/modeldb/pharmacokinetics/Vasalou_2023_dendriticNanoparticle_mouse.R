@@ -116,10 +116,10 @@ Vasalou_2023_dendriticNanoparticle_mouse <- function() {
     # Vascular volume fractions used by Eqs 20-21 to add residual blood to
     # TOTAL tissue concentrations. Table 5 prints 0.125 / 0.016, but those
     # two cells are byte-identical to the krelb / krelL cells one row-group
-    # above and are a transcription error; the authors' S3 File uses
-    # 0.10739 / 0.055634, which are the values that generated Figs 4-9.
-    # Operator-ratified 2026-07-29 (sidecar request-001 q2 = A). See vignette
-    # "Assumptions and deviations" for the full comparison.
+    # above and are a transcription error; the authors' S3 File uses 0.10739
+    # / 0.055634, which are the values that generated Figs 4-9. ratified
+    # 2026-07-29. See vignette "Assumptions and deviations" for the full
+    # comparison.
     fvasc_liver  <- fixed(0.10739)    ; label("Liver vascular volume fraction vliver (unitless)")       # S3 parameters(39); Table 5 prints 0.125 (transcription error)
     fvasc_spleen <- fixed(0.055634)   ; label("Spleen vascular volume fraction vspleen (unitless)")     # S3 parameters(41); Table 5 prints 0.016 (transcription error)
   })

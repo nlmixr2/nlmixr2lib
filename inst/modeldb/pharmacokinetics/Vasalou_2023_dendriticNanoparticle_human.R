@@ -125,7 +125,7 @@ Vasalou_2023_dendriticNanoparticle_human <- function() {
     # See the mouse file and the vignette Errata: Table 5 prints 0.125 /
     # 0.016 for these two, byte-identical to the krelb / krelL cells one
     # row-group above; the authors' S3 File values below are what generated
-    # Figs 4-9. Operator-ratified 2026-07-29 (sidecar request-001 q2 = A).
+    # Figs 4-9. ratified 2026-07-29.
     fvasc_liver  <- fixed(0.10739)    ; label("Liver vascular volume fraction vliver (unitless)")       # S3 parameters(39); Table 5 prints 0.125 (transcription error)
     fvasc_spleen <- fixed(0.055634)   ; label("Spleen vascular volume fraction vspleen (unitless)")     # S3 parameters(41); Table 5 prints 0.016 (transcription error)
   })

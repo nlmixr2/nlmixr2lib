@@ -101,7 +101,7 @@ Cleary_2023_risdiplam <- function() {
     # Healthy-adult effect on CL/F. Table 2 reports only "Healthy subjects on
     # CL/F | Factor | 0.524" and never states the functional form; the linear
     # form CL/F x (1 + 0.524 x DIS_HEALTHY) is an INFERRED encoding, not a
-    # sourced one (operator-ratified, sidecar request-002 q2 option A). See
+    # sourced one (ratified, sidecar request-002 q2 option A). See
     # covariateData$DIS_HEALTHY$notes and the vignette's Assumptions and
     # deviations section for the full derivation and rejected alternatives.
     e_dis_healthy_cl <- 0.524; label("Fractional increase in CL/F for healthy adults (unitless)") # Table 2: "Healthy subjects on CL/F" = 0.524 (RSE 13.1%, bootstrap 95% CI 0.392-0.751)

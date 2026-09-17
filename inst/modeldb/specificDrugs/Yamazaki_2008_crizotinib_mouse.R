@@ -103,7 +103,7 @@ Yamazaki_2008_crizotinib_mouse <- function() {
     lkout_tumor   <- log(0.00672); label("Tumor first-order loss rate kout (1/h)")            # Table 3 GTL16 (SE 0.00243)
     lec50_tumor   <- log(213);     label("EC50 for tumor growth inhibition (ng/mL)")          # Table 3 GTL16 (SE 123)
 
-    # ---- Baseline tumor volume (operator-derived) ----
+    # ---- Baseline tumor volume (digitized) ----
     # Methods: initial condition was the "individual tumor volume (cubic
     # millimeters)" per mouse; a typical-value population baseline is not
     # reported numerically. The 150 mm^3 below was read off Figures 5 (GTL16)

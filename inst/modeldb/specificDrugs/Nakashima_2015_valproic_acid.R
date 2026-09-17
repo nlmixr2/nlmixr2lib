@@ -351,7 +351,7 @@ Nakashima_2015_valproic_acid <- function() {
     # restated Vd/F = 110 * (Dose/1000)^1.51 is 110-130 L at this
     # cohort's doses, i.e. about 2.8 L/kg, impossible for valproic acid
     # (V/F about 0.1-0.4 L/kg); Ogusu's 21.4 L is about 0.5 L/kg.
-    # Operator ruling (sidecar oare_PMC9833507 q2 = A): use the upstream
+    # Operator ruling: use the upstream
     # source values and document the misquotation. See vignette Errata.
     # ==================================================================
 

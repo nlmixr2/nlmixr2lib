@@ -127,14 +127,14 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
     # ===================================================================
     # Mody 2023 Tables 1 and 2 report %RSE on point estimates only; no
     # residual SD is tabulated for DOX plasma, DEX plasma, or AC16 % cell
-    # viability. Small operator-chosen placeholders so the multi-output
+    # viability. Small a chosen placeholders so the multi-output
     # model parses cleanly; the paper's Methods introduces a 10% CV IIV
     # on TD parameters at simulation time (arbitrary, not fit).
-    # operator-chosen placeholder (paper reports no residual SD)
+    # a chosen placeholder (paper reports no residual SD)
     addSd            <- fixed(1)   ; label("Additive residual SD on DOX plasma Cc (mg/L; placeholder)")
-    # operator-chosen placeholder (paper reports no residual SD)
+    # a chosen placeholder (paper reports no residual SD)
     addSd_dex        <- fixed(1)   ; label("Additive residual SD on DEX plasma Cc_dex (mg/L; placeholder)")
-    # operator-chosen placeholder (paper reports no residual SD)
+    # a chosen placeholder (paper reports no residual SD)
     addSd_viability  <- fixed(5)   ; label("Additive residual SD on AC16 cell viability (%; placeholder)")
   })
 

@@ -70,15 +70,12 @@ Freyer_2000_ifosfamide <- function() {
   )
 
   ini({
-    # Structural PK (Freyer 2000 Table 2, ifosfamide row).
-    #
-    # The paper estimated two separate clearances -- CL_day1 = 5.6 L/h and
-    # CL_day2 = 7.95 L/h -- describing an unmodelled 42% autoinduction of
-    # ifosfamide metabolism between the two dosing days. This extraction
-    # collapses the two values to their arithmetic mean per operator
-    # instruction (sidecar 001 response 2026-06-21, q2 = BB): the
+    # Structural PK (Freyer 2000 Table 2, ifosfamide row). The paper
+    # estimated two separate clearances -- CL_day1 = 5.6 L/h and CL_day2 =
+    # 7.95 L/h -- describing an unmodelled 42% autoinduction of ifosfamide
+    # metabolism between the two dosing days. This extraction collapses the
+    # two values to their arithmetic mean per operator instruction: the
     # day-specific structure is dropped in favour of a single clearance.
-    #
     # The 1-compartment reduction (from the paper's 2-cmt structure) is a
     # separate simplification -- required because the transfer rate
     # constants / peripheral volume are not reported anywhere in the paper.
