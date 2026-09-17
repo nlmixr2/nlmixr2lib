@@ -5,71 +5,71 @@ Franke_2015_acetaminophen <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "acetaminophen", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "acetaminophen", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "acetaminophen", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "acetaminophen", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "acetaminophen", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; power scaling referenced to the 73.45 kg cohort median named in the printed CL/F and V2/F equations (the Results text for acetaminophen quotes the same median rounded to 73.5). Table 1 gives median 73.5 kg (range 50.0-120.9). Exponent 0.75 on CL/F and 1 on V2/F, both structural rather than estimated. Q and V3/F carry no weight term.",
-      source_name        = "WT"
+      notes = "Baseline; power scaling referenced to the 73.45 kg cohort median named in the printed CL/F and V2/F equations (the Results text for acetaminophen quotes the same median rounded to 73.5). Table 1 gives median 73.5 kg (range 50.0-120.9). Exponent 0.75 on CL/F and 1 on V2/F, both structural rather than estimated. Q and V3/F carry no weight term.",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex indicator, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise covariate search but not retained in the pooled FASTED acetaminophen model (Table 4). Sex WAS retained on CL/F and V2/F in the separate 31-subject food-effect acetaminophen model, which is not packaged because Table 5 omits Q and V3/F for that fit."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise covariate search but not retained in the pooled FASTED acetaminophen model (Table 4). Sex WAS retained on CL/F and V2/F in the separate 31-subject food-effect acetaminophen model, which is not packaged because Table 5 omits Q and V3/F for that fit."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 4). Cohort mean 29.1 years (SD 8.6)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (Table 4). Cohort mean 29.1 years (SD 8.6)."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 4)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Table 4)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 4)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Table 4)."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained for acetaminophen (Table 4), in contrast to oxycodone where race was retained on both CL/F and V/F."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained for acetaminophen (Table 4), in contrast to oxycodone where race was retained on both CL/F and V/F."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 151,
-    n_studies      = 4,
-    age_range      = "18-55 years (protocol inclusion range)",
-    age_median     = "29.1 years (mean, SD 8.6)",
-    weight_range   = "50.0-120.9 kg",
-    weight_median  = "73.5 kg",
-    height_median  = "172.7 cm (range 153.6-194.0)",
-    bmi_median     = "25.1 kg/m^2 (range 18.6-32.9)",
+    species = "human",
+    n_subjects = 151,
+    n_studies = 4,
+    age_range = "18-55 years (protocol inclusion range)",
+    age_median = "29.1 years (mean, SD 8.6)",
+    weight_range = "50.0-120.9 kg",
+    weight_median = "73.5 kg",
+    height_median = "172.7 cm (range 153.6-194.0)",
+    bmi_median = "25.1 kg/m^2 (range 18.6-32.9)",
     sex_female_pct = 30.5,
     race_ethnicity = c(White = 74.2, Black = 25.2, Asian = 0.6),
-    disease_state  = "Healthy adults (studies 1, 2 and 4) and healthy nondependent recreational users of prescription opioids (study 3). Protocol inclusion required BMI 19 to <33 kg/m^2 and body weight >=59 kg.",
-    dose_range     = "Single oral doses of one, two or four intact IR/ER OC/APAP 7.5/325 mg tablets, i.e. 325, 650 or 1300 mg acetaminophen, all under fasted conditions.",
-    regions        = "United States",
-    notes          = "Baseline demographics from Franke 2015 Table 1 (completers, n = 151, of 251 enrolled). Same pooled fasted dataset as modellib('Franke_2015_oxycodone'); the two analytes were fitted separately and with different structural models."
+    disease_state = "Healthy adults (studies 1, 2 and 4) and healthy nondependent recreational users of prescription opioids (study 3). Protocol inclusion required BMI 19 to <33 kg/m^2 and body weight >=59 kg.",
+    dose_range = "Single oral doses of one, two or four intact IR/ER OC/APAP 7.5/325 mg tablets, i.e. 325, 650 or 1300 mg acetaminophen, all under fasted conditions.",
+    regions = "United States",
+    notes = "Baseline demographics from Franke 2015 Table 1 (completers, n = 151, of 251 enrolled). Same pooled fasted dataset as modellib('Franke_2015_oxycodone'); the two analytes were fitted separately and with different structural models."
   )
 
   ini({

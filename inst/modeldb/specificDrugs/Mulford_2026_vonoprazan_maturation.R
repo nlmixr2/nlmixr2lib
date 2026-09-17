@@ -40,21 +40,21 @@ Mulford_2026_vonoprazan_maturation <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "vonoprazan", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "vonoprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "vonoprazan", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vonoprazan", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power model on central volume only, centered at 70 kg (Mulford",
         "2026 Methods 2.2.2; Supporting Information Model Code line",
         "TVVC = TVVC * (WEIGHT/70)**THETA(11)). For the Figure 6",
@@ -62,14 +62,14 @@ Mulford_2026_vonoprazan_maturation <- function() {
         "weights from the WHO/CDC normal growth statistics. No weight",
         "effect on clearance was retained (Results 3.3.3)."
       ),
-      source_name        = "WEIGHT"
+      source_name = "WEIGHT"
     ),
     AGE = list(
-      description        = "Chronological age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Chronological age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used TWICE in this model, and the two uses have different",
         "centerings and different mechanisms. (1) As a power model on the",
         "absorption rate constant centered at 28 years, per the Supporting",
@@ -86,41 +86,41 @@ Mulford_2026_vonoprazan_maturation <- function() {
         "down to 6 years of age -- everything below that is extrapolation",
         "carried entirely by the maturation function."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "The source column is SEX with SEX == 2 denoting female",
         "(Supporting Information Model Code: IF( SEX == 2 )), so",
         "SEXF = as.integer(SEX == 2). The Methods 2.4.2 virtual population",
         "was 50 percent boys and 50 percent girls."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     DAY2 = list(
-      description        = "Day-after-first-dose landmark indicator: 1 = the record falls on study day 2 or later, 0 = the record falls on study day 1 (the first dosing day).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Day-after-first-dose landmark indicator: 1 = the record falls on study day 2 or later, 0 = the record falls on study day 1 (the first dosing day).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (study day 1, the first dosing day)",
-      notes              = paste(
+      notes = paste(
         "Implements the Supporting Information Model Code branches",
         "IF(DAY>1) on absorption rate, clearance and central volume, i.e.",
         "DAY2 = as.integer(study_day >= 2). Because the Figure 6",
         "projections are steady-state exposures, DAY2 = 1 is the relevant",
         "setting for reproducing them."
       ),
-      source_name        = "DAY"
+      source_name = "DAY"
     ),
     DOSE_VONOPRAZAN_MG = list(
-      description        = "Administered vonoprazan dose level carried on every record of the dosing interval, in mg.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered vonoprazan dose level carried on every record of the dosing interval, in mg.",
+      units = "mg",
+      type = "continuous",
       reference_category = "20 mg (the dose at which relative bioavailability equals its typical value)",
-      notes              = paste(
+      notes = paste(
         "Continuous power-model regressor on relative bioavailability,",
         "centered at 20 mg (Supporting Information Model Code line",
         "TVFREL = TVFREL * (DOSE/20)**THETA(10)). Methods 2.4.3 swept",
@@ -128,47 +128,47 @@ Mulford_2026_vonoprazan_maturation <- function() {
         "when matching pediatric to adult steady-state AUC; the source",
         "studies span 1 mg to 120 mg (Table S1)."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE = list(
-      description        = "Self-reported race category (Asian, Black, Other, White).",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Self-reported race category (Asian, Black, Other, White).",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried in the analysis dataset and screened graphically in Figure",
         "S3, but not retained; no point estimate is reported."
       ),
-      source_name        = "RACE"
+      source_name = "RACE"
     ),
     EGFR = list(
-      description        = "Estimated glomerular filtration rate.",
-      units              = "mL/min/1.73m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate.",
+      units = "mL/min/1.73m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Present in the analysis dataset but not tested or retained in the",
         "published covariate model; no point estimate is reported."
       ),
-      source_name        = "EGFR"
+      source_name = "EGFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 392L,
-    n_studies      = 10L,
+    species = "human",
+    n_subjects = 392L,
+    n_studies = 10L,
     n_observations = 8201L,
-    age_range      = "6-54 years observed; applied by extrapolation from 1 month of age",
-    weight_range   = "20.7-132 kg observed",
-    weight_median  = "66 kg (adults), 64 kg (adolescents), 32 kg (children)",
-    disease_state  = "healthy volunteers (all eight adult studies) and patients with gastroesophageal reflux disease (the adolescent study VPED-102 and the child study VPED-103)",
-    dose_range     = "1-120 mg oral observed; 1-25 mg swept in the pediatric dose-matching simulations",
-    regions        = "Japan, Europe, China, United States",
-    notes          = paste(
+    age_range = "6-54 years observed; applied by extrapolation from 1 month of age",
+    weight_range = "20.7-132 kg observed",
+    weight_median = "66 kg (adults), 64 kg (adolescents), 32 kg (children)",
+    disease_state = "healthy volunteers (all eight adult studies) and patients with gastroesophageal reflux disease (the adolescent study VPED-102 and the child study VPED-103)",
+    dose_range = "1-120 mg oral observed; 1-25 mg swept in the pediatric dose-matching simulations",
+    regions = "Japan, Europe, China, United States",
+    notes = paste(
       "The estimation dataset is identical to that of",
       "modellib('Mulford_2026_vonoprazan') -- Mulford 2026 Tables S1 to S3",
       "-- because the maturation factor was ADDED to the fitted Model 3",

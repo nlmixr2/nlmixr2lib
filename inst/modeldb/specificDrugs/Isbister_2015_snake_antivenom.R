@@ -6,12 +6,12 @@ Isbister_2015_snake_antivenom <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the central volume only, centred on the cohort average weight: V = theta_V * (WT/WTav)^f_wt (Isbister 2015, Methods 'Pharmacokinetic analysis', unnumbered equation). The paper says the covariate was 'centred to the average weight' but never prints the average; Table 1 reports only the MEDIAN weight of 57 kg (range 40 to 70 kg), so 57 kg is used as WTav here. See the vignette 'Assumptions and deviations' section. Age, sex and pre-antivenom venom concentration were screened by visual inspection of individual parameter estimates and were NOT retained (Methods and Results); they are listed in covariatesDataExcluded.",
-      source_name        = "wt"
+      notes = "Power effect on the central volume only, centred on the cohort average weight: V = theta_V * (WT/WTav)^f_wt (Isbister 2015, Methods 'Pharmacokinetic analysis', unnumbered equation). The paper says the covariate was 'centred to the average weight' but never prints the average; Table 1 reports only the MEDIAN weight of 57 kg (range 40 to 70 kg), so 57 kg is used as WTav here. See the vignette 'Assumptions and deviations' section. Age, sex and pre-antivenom venom concentration were screened by visual inspection of individual parameter estimates and were NOT retained (Methods and Results); they are listed in covariatesDataExcluded.",
+      source_name = "wt"
     )
   )
 
@@ -20,15 +20,15 @@ Isbister_2015_snake_antivenom <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Isbister 2015 Methods: 'Age, sex and pre-antivenom concentrations were not included in the final model evaluation due to the absence of an association visually.' Cohort median 38 years (range 16 to 64)."
+      units = "year",
+      type = "continuous",
+      notes = "Isbister 2015 Methods: 'Age, sex and pre-antivenom concentrations were not included in the final model evaluation due to the absence of an association visually.' Cohort median 38 years (range 16 to 64)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Isbister 2015 Methods: screened by visual inspection of individual parameter estimates, no association seen, not carried into the final model. Cohort was 64/75 (85%) male."
+      units = "(binary)",
+      type = "binary",
+      notes = "Isbister 2015 Methods: screened by visual inspection of individual parameter estimates, no association seen, not carried into the final model. Cohort was 64/75 (85%) male."
     )
   )
 
@@ -37,27 +37,37 @@ Isbister_2015_snake_antivenom <- function() {
   compartmentData <- list(
     # Antivenom was measured by sandwich EIA in SERUM (Methods, 'Data
     # collection': blood collected in serum tubes for the antivenom EIA).
-    central     = list(analyte = "Indian polyvalent F(ab')2 snake antivenom", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(
+      analyte = "Indian polyvalent F(ab')2 snake antivenom",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    ),
     # Mathematical distribution compartment; the paper assigns it no anatomical
     # identity beyond noting that V + Vp is 'consistent with a large molecule
     # which does not have a large volume of distribution' (Discussion).
-    peripheral1 = list(analyte = "Indian polyvalent F(ab')2 snake antivenom", units = "mg", specimen = "tissue", verified = FALSE)
+    peripheral1 = list(
+      analyte = "Indian polyvalent F(ab')2 snake antivenom",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 75,
-    n_studies      = 1,
-    age_range      = "16 to 64 years",
-    age_median     = "38 years",
-    weight_range   = "40 to 70 kg",
-    weight_median  = "57 kg",
+    species = "human",
+    n_subjects = 75,
+    n_studies = 1,
+    age_range = "16 to 64 years",
+    age_median = "38 years",
+    weight_range = "40 to 70 kg",
+    weight_median = "57 kg",
     sex_female_pct = 14.7,
     race_ethnicity = "Not reported; single-centre Sri Lankan cohort.",
-    disease_state  = "Snake envenoming with coagulopathy (abnormal 20-minute whole blood clotting test). 71 of 75 Russell's viper (Daboia russelii) envenoming, of whom 52 had detectable venom before antivenom; 4 hump-nosed viper (Hypnale spp.) envenoming. Local envenoming 97%, coagulopathy 100%, systemic bleeding 35%, neurotoxicity (ptosis) 43%.",
-    dose_range     = "8 to 40 vials (median 18) of Indian polyvalent antivenom given intravenously; each 10-vial dose is reconstituted in 100 mL and administered in a total of 500 mL normal saline over 1 hour. 21 of 75 patients (28%) received a repeat dose. The paper does NOT report the antivenom mass per vial, so the model's dosing unit is the assay's calibrator mass -- see the vignette for the Figure 2 back-solve.",
-    regions        = "Sri Lanka (Base Hospital Polonnaruwa, Central Eastern Province)",
-    notes          = "Isbister 2015 Table 1. Patients >15 years old recruited October 2010 to March 2012 from a prospective snakebite cohort and enrolled in a fresh-frozen-plasma dose-finding randomised trial; the PK sub-study required serial serum sampling and complete demographics. 510 antivenom samples were drawn, of which 411 had quantifiable antivenom (limit of quantification 40 ug/mL); median 5 samples per patient for the 54 single-dose patients and 7 for the 21 multiple-dose patients. Five antivenom batches were used (1060, 1096, 1102, 01015/10-11, 01AS11112); S1 Fig shows no relationship between batch and the F random effect."
+    disease_state = "Snake envenoming with coagulopathy (abnormal 20-minute whole blood clotting test). 71 of 75 Russell's viper (Daboia russelii) envenoming, of whom 52 had detectable venom before antivenom; 4 hump-nosed viper (Hypnale spp.) envenoming. Local envenoming 97%, coagulopathy 100%, systemic bleeding 35%, neurotoxicity (ptosis) 43%.",
+    dose_range = "8 to 40 vials (median 18) of Indian polyvalent antivenom given intravenously; each 10-vial dose is reconstituted in 100 mL and administered in a total of 500 mL normal saline over 1 hour. 21 of 75 patients (28%) received a repeat dose. The paper does NOT report the antivenom mass per vial, so the model's dosing unit is the assay's calibrator mass -- see the vignette for the Figure 2 back-solve.",
+    regions = "Sri Lanka (Base Hospital Polonnaruwa, Central Eastern Province)",
+    notes = "Isbister 2015 Table 1. Patients >15 years old recruited October 2010 to March 2012 from a prospective snakebite cohort and enrolled in a fresh-frozen-plasma dose-finding randomised trial; the PK sub-study required serial serum sampling and complete demographics. 510 antivenom samples were drawn, of which 411 had quantifiable antivenom (limit of quantification 40 ug/mL); median 5 samples per patient for the 54 single-dose patients and 7 for the 21 multiple-dose patients. Five antivenom batches were used (1060, 1096, 1102, 01015/10-11, 01AS11112); S1 Fig shows no relationship between batch and the F random effect."
   )
 
   ini({

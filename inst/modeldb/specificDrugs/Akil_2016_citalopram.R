@@ -29,8 +29,8 @@ Akil_2016_citalopram <- function() {
   vignette <- "Akil_2016_citalopram"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -39,29 +39,44 @@ Akil_2016_citalopram <- function() {
   # split into the two parent compartments happens on transfer.
   compartmentData <- list(
     depot = list(
-      analyte = "racemic citalopram", units = "mg", specimen = "administration site", verified = TRUE
+      analyte = "racemic citalopram",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central_r_enant = list(
-      analyte = "R-citalopram", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "R-citalopram",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_s_enant = list(
-      analyte = "S-citalopram", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "S-citalopram",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_dcit_r_enant = list(
-      analyte = "R-desmethylcitalopram", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "R-desmethylcitalopram",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_dcit_s_enant = list(
-      analyte = "S-desmethylcitalopram", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "S-desmethylcitalopram",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Centred on 60 years, not on the cohort mean: Akil 2016 Methods 'Final model' states",
         "'Age was centered on a value of 60 years', and the Results give the retained",
         "relationships explicitly as CLRp/F = CL0/F x (Age/60)^-0.822 and",
@@ -75,14 +90,14 @@ Akil_2016_citalopram <- function() {
         "clearance.",
         sep = " "
       ),
-      source_name        = "Age (Akil 2016 Table 1; 'Age/60' in the Results covariate equations)"
+      source_name = "Age (Akil 2016 Table 1; 'Age/60' in the Results covariate equations)"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Centred on 70 kg (Akil 2016 Methods 'Final model': 'weight was centered on a value of",
         "70 kg'), which is close to the cohort mean of 71.5 kg. Retained on S-citalopram",
         "apparent metabolic clearance as (WT/70)^0.75 and on both desmethylcitalopram apparent",
@@ -95,14 +110,14 @@ Akil_2016_citalopram <- function() {
         "power form in the Results equations is the one implemented (see vignette Errata).",
         sep = " "
       ),
-      source_name        = "Weight (Akil 2016 Table 1; 'WT/70' in the Results covariate equations)"
+      source_name = "Weight (Akil 2016 Table 1; 'WT/70' in the Results covariate equations)"
     ),
     SEXF = list(
-      description        = "Female sex indicator; 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator; 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Akil 2016 Methods 'Final model' fits sex as two separate typical values",
         "(theta_1p for females, theta_2p for males) rather than as a reference plus a shift, and",
         "Table 3 reports both: CL Rp /F = 13 L/h for male and 9.05 L/h for female. The model file",
@@ -113,14 +128,14 @@ Akil_2016_citalopram <- function() {
         "(Akil 2016 Discussion). The cohort was 40/81 female (49.4 percent).",
         sep = " "
       ),
-      source_name        = "Sex, Male / Female (Akil 2016 Table 1)"
+      source_name = "Sex, Male / Female (Akil 2016 Table 1)"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator; 1 = IM, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator; 1 = IM, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive or rapid metabolizer, when CYP2C19_PM and CYP2C19_MISSING are also 0)",
-      notes              = paste(
+      notes = paste(
         "Akil 2016 Methods 'Final model' regrouped CYP2C19 genotype into three levels",
         "(EM/RM = 1, IM/PM = 2, missing = 3) and estimated one typical clearance per level, so",
         "the intermediate and poor metabolizers share a single pooled coefficient. The general-",
@@ -136,26 +151,26 @@ Akil_2016_citalopram <- function() {
         "clearance of R-citalopram' (Akil 2016 Discussion).",
         sep = " "
       ),
-      source_name        = "Intermediate metabolizers (Akil 2016 Table 1); 'IM/PM = 2' (Methods 'Final model')"
+      source_name = "Intermediate metabolizers (Akil 2016 Table 1); 'IM/PM = 2' (Methods 'Final model')"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator; 1 = PM, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator; 1 = PM, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive or rapid metabolizer, when CYP2C19_IM and CYP2C19_MISSING are also 0)",
-      notes              = paste(
+      notes = paste(
         "Companion to CYP2C19_IM; see that entry for why the two indicators carry a single shared",
         "estimate in this model. Cohort: 3 PM of 81 (3.7 percent; Akil 2016 Table 1).",
         sep = " "
       ),
-      source_name        = "Poor metabolizers (Akil 2016 Table 1); 'IM/PM = 2' (Methods 'Final model')"
+      source_name = "Poor metabolizers (Akil 2016 Table 1); 'IM/PM = 2' (Methods 'Final model')"
     ),
     CYP2C19_MISSING = list(
-      description        = "CYP2C19 genotype-missing indicator; 1 = genotype not determined, 0 = genotype known",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 genotype-missing indicator; 1 = genotype not determined, 0 = genotype known",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (genotype known)",
-      notes              = paste(
+      notes = paste(
         "Akil 2016 treated an undetermined CYP2C19 genotype as its own covariate level with its",
         "own typical clearance (Methods 'Final model': 'EM/RM = 1, IM/PM = 2 and missing = 3'),",
         "rather than imputing those subjects into the extensive-metabolizer reference. 15 of 81",
@@ -167,17 +182,17 @@ Akil_2016_citalopram <- function() {
         "CYP2C19_IM and CYP2C19_PM must be 0.",
         sep = " "
       ),
-      source_name        = "Missing (Akil 2016 Table 1); 'CL Sp /F for Missing' (Table 3)"
+      source_name = "Missing (Akil 2016 Table 1); 'CL Sp /F for Missing' (Table 3)"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a continuous covariate on every pharmacokinetic parameter using the centred",
         "additive and power models of Akil 2016 Methods 'Final model' ('Both continuous covariates",
         "(age, weight, and BMI) and discrete covariates (CYP2C19 genotype, and sex) were tested'),",
@@ -189,38 +204,38 @@ Akil_2016_citalopram <- function() {
         "label is a typographical error in the source (see vignette Errata).",
         sep = " "
       ),
-      source_name        = "Body mass index (Akil 2016 Table 1)"
+      source_name = "Body mass index (Akil 2016 Table 1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 81L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 81L,
+    n_studies = 1L,
     n_observations = paste(
       "205 R-citalopram, 205 S-citalopram, 179 R-desmethylcitalopram and 109",
       "S-desmethylcitalopram plasma concentrations (Akil 2016 Table 1); 2.5, 2.5, 2.2 and 1.3",
       "observations per subject respectively",
       sep = " "
     ),
-    age_range      = "mean (SD) 77.8 (8.2) years, range 47-90",
-    weight_range   = "mean (SD) 71.5 (17.2) kg, range 40-122.3",
-    bmi_range      = "mean (SD) 26.3 (5.2), range 15.4-41.6",
+    age_range = "mean (SD) 77.8 (8.2) years, range 47-90",
+    weight_range = "mean (SD) 71.5 (17.2) kg, range 40-122.3",
+    bmi_range = "mean (SD) 26.3 (5.2), range 15.4-41.6",
     sex_female_pct = 49.4,
     race_ethnicity = "Not reported in Akil 2016",
-    disease_state  = "Alzheimer's disease with clinically significant agitation",
-    dose_range     = paste(
+    disease_state = "Alzheimer's disease with clinically significant agitation",
+    dose_range = paste(
       "Oral racemic citalopram started at 10 mg once daily and titrated over 2 weeks to a target",
       "of 30 mg once daily, given as three 10 mg capsules in the morning",
       sep = " "
     ),
-    genotype       = paste(
+    genotype = paste(
       "CYP2C19: 43 extensive (53.1 percent), 3 rapid (3.7 percent), 17 intermediate (21 percent),",
       "3 poor (3.7 percent) metabolizers; 15 missing (18.5 percent)",
       sep = " "
     ),
-    regions        = "United States (CitAD, a multi-centre randomised trial)",
-    notes          = paste(
+    regions = "United States (CitAD, a multi-centre randomised trial)",
+    notes = paste(
       "Sparse sampling: plasma samples were drawn at weeks 3, 6 and 9 of treatment, i.e. at",
       "steady state, with no intensive profile. 94 patients received citalopram and provided",
       "concentration samples; 81 contributed to the population analysis. Concentrations were",

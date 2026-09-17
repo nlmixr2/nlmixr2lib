@@ -38,11 +38,11 @@ vanRongen_2015_midazolam_circadian <- function() {
 
   covariateData <- list(
     TCLOCK = list(
-      description        = "Wall-clock time of day at model time zero, in decimal hours",
-      units              = "h",
-      type               = "continuous",
+      description = "Wall-clock time of day at model time zero, in decimal hours",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Anchors the model's integration axis to the wall clock so the two",
         "24-hour cosine terms can be evaluated. van Rongen 2015 Eq. 2 defines",
         "its TIME as 'the time in minutes starting at midnight of the first",
@@ -61,14 +61,14 @@ vanRongen_2015_midazolam_circadian <- function() {
         "intravenous dose. TCLOCK is also what gates the 14:00 absorption-rate",
         "factor, because the oral dose is placed at time = 0."
       ),
-      source_name        = "TIME (minutes after midnight of the first study visit; TCLOCK = TIME / 60 at time = 0)"
+      source_name = "TIME (minutes after midnight of the first study visit; TCLOCK = TIME / 60 at time = 0)"
     ),
     OCC = list(
-      description        = "Administration-occasion index for inter-occasion variability on bioavailability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Administration-occasion index for inter-occasion variability on bioavailability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Integer 1-6 identifying which of the six midazolam administration",
         "occasions a profile belongs to. Each volunteer attended three study",
         "visits and was dosed twice per visit at a 12-hour interval, giving six",
@@ -82,18 +82,18 @@ vanRongen_2015_midazolam_circadian <- function() {
         "the IOV on clearance was removed as being substantially smaller than",
         "the IIV. For a single-occasion simulation set OCC = 1 throughout."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     ROUTE_IV = list(
-      description        = "Intravenous-phase observation-record indicator selecting the residual error magnitude",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intravenous-phase observation-record indicator selecting the residual error magnitude",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (oral-phase records). The comparator non-intravenous route here is",
         "ORAL, not subcutaneous -- van Rongen 2015 pools an oral solution arm",
         "with an intravenous bolus arm and no subcutaneous arm exists."
       ),
-      notes              = paste(
+      notes = paste(
         "Residual-error-only role, the same role ROUTE_IV plays in",
         "Fanta_2007_ciclosporin.R and Kuroda_2024_quinidine_horse.R: no",
         "structural parameter switches by route in this model. van Rongen 2015",
@@ -111,44 +111,54 @@ vanRongen_2015_midazolam_circadian <- function() {
         "throughout for an oral-only profile and 1 throughout for an",
         "intravenous-only profile."
       ),
-      source_name        = "not reported as a named column; derived from the sampling schedule (paper Methods)"
+      source_name = "not reported as a named column; derived from the sampling schedule (paper Methods)"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "midazolam", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "midazolam",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "midazolam", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "midazolam",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "midazolam", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "midazolam",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "midazolam", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "midazolam",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "midazolam", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "midazolam",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "18-27 years",
-    age_median     = "22 years (mean 21.8, SD 3.19)",
-    weight_range   = "63.4-92.9 kg",
-    weight_median  = "75.4 kg (mean 76.0, SD 8.65)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "18-27 years",
+    age_median = "22 years (mean 21.8, SD 3.19)",
+    weight_range = "63.4-92.9 kg",
+    weight_median = "75.4 kg (mean 76.0, SD 8.65)",
     sex_female_pct = 0,
     race_ethnicity = "Caucasian (100 percent by inclusion criterion)",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy, nonsmoking Caucasian male volunteers with body mass index",
       "18-30 kg/m^2 (observed 18.8-25.8, median 21.9). Excluded for any",
       "clinically significant abnormality in medical history, routine",
@@ -156,7 +166,7 @@ vanRongen_2015_midazolam_circadian <- function() {
       "morning or evening chronotype on the Horne-Ostberg questionnaire, and",
       "for transmeridian flights or shift work in the month before the study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Semi-simultaneous administration of 2 mg oral midazolam solution",
       "followed 150 minutes later by 1 mg intravenous midazolam, given twice",
       "per study visit at a 12-hour interval across three visits, so that oral",
@@ -166,8 +176,8 @@ vanRongen_2015_midazolam_circadian <- function() {
       "390 min after the oral dose, plus 715 min on the first half of a visit.",
       "Assay LLQ 0.3 ug/L."
     ),
-    regions        = "The Netherlands (Centre for Human Drug Research, Leiden)",
-    notes          = paste(
+    regions = "The Netherlands (Centre for Human Drug Research, Leiden)",
+    notes = paste(
       "Demographics from Table 1 of van Rongen 2015 (n = 12). One subject",
       "withdrew consent during the study for personal reasons and was replaced",
       "by another subject dosed on the same randomization order, so 13",

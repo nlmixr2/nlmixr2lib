@@ -32,8 +32,8 @@ Zhang_2026_linezolid <- function() {
   )
   vignette <- "Zhang_2026_linezolid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -43,11 +43,11 @@ Zhang_2026_linezolid <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline). Zhang 2026 Table 2 centres both",
         "the CL and the V power terms on 20.00 kg. Table 1 reports a",
         "per-sample median weight of 21.00 kg (IQR 9.10-33.50) in the",
@@ -58,14 +58,14 @@ Zhang_2026_linezolid <- function() {
         "under 12 years were dosed 10 mg/kg q8h or q12h.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (Schwartz formula)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (Schwartz formula)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline). Computed by the authors with the",
         "Schwartz formula (Methods 2.1, Equation 1) using k = 0.45 for",
         "children under 1 year and k = 0.413 for children aged 1 year or",
@@ -81,7 +81,7 @@ Zhang_2026_linezolid <- function() {
         "200-400 mL/min/1.73 m^2.",
         sep = " "
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     )
   )
 
@@ -98,138 +98,138 @@ Zhang_2026_linezolid <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Collected, not retained. Supplementary Table S3 reports a cohort median of 6.3 years (range 0.2-15.2); Table 1 per-sample medians 6.60 (training) and 6.20 (testing) years. Age also sets the dosing rule (10 mg/kg under 12 years, 600 mg q12h at 12 years and above)."
+      units = "years",
+      type = "continuous",
+      notes = "Collected, not retained. Supplementary Table S3 reports a cohort median of 6.3 years (range 0.2-15.2); Table 1 per-sample medians 6.60 (training) and 6.20 (testing) years. Age also sets the dosing rule (10 mg/kg under 12 years, 600 mg q12h at 12 years and above)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected, not retained. Table 1 reports counts per sample rather than per patient: 63/149 female in the training set (42.28%) and 32/64 in the testing set (50.00%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected, not retained. Table 1 reports counts per sample rather than per patient: 63/149 female in the training set (42.28%) and 32/64 in the testing set (50.00%)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 15.72 (training) and 15.52 (testing) kg/m^2. Body size entered the model through WT rather than BMI."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 15.72 (training) and 15.52 (testing) kg/m^2. Body size entered the model through WT rather than BMI."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 28.90 (training) and 32.80 (testing) umol/L. Serum creatinine is the input to the Schwartz eGFR that WAS retained, so the two are strongly correlated and only the derived eGFR survives the covariate screen. SCR is nonetheless the fifth-ranked feature of the LightGBM model by mean absolute SHAP value (Results 3.4)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 28.90 (training) and 32.80 (testing) umol/L. Serum creatinine is the input to the Schwartz eGFR that WAS retained, so the two are strongly correlated and only the derived eGFR survives the covariate screen. SCR is nonetheless the fifth-ranked feature of the LightGBM model by mean absolute SHAP value (Results 3.4)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 36.16 (training) and 35.93 (testing) g/L."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 36.16 (training) and 35.93 (testing) g/L."
     ),
     TP = list(
       description = "Total serum protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 59.80 (training) and 59.47 (testing) g/L."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 59.80 (training) and 59.47 (testing) g/L."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 21.80 (training) and 22.65 (testing) U/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 21.80 (training) and 22.65 (testing) U/L."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 39.76 (training) and 38.92 (testing) U/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 39.76 (training) and 38.92 (testing) U/L."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 8.40 (training) and 11.40 (testing) umol/L. Abbreviated TBIL in Table 1."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 8.40 (training) and 11.40 (testing) umol/L. Abbreviated TBIL in Table 1."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 3.80 (training) and 4.60 (testing) umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 3.80 (training) and 4.60 (testing) umol/L."
     ),
     PLT = list(
       description = "Platelet count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 212.00 (training) and 198.50 (testing) x10^9/L. Clinically relevant because linezolid overexposure is associated with thrombocytopenia (Introduction), which is why the paper carries a Cmin = 7 mg/L safety threshold."
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 212.00 (training) and 198.50 (testing) x10^9/L. Clinically relevant because linezolid overexposure is associated with thrombocytopenia (Introduction), which is why the paper carries a Cmin = 7 mg/L safety threshold."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 8.26 (training) and 7.78 (testing) x10^9/L."
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 8.26 (training) and 7.78 (testing) x10^9/L."
     ),
     RBC = list(
       description = "Red blood cell count",
-      units       = "10^12 cells/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 3.05 (training) and 2.94 (testing) x10^12/L."
+      units = "10^12 cells/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 3.05 (training) and 2.94 (testing) x10^12/L."
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 85.00 (training) and 84.00 (testing) g/L."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 85.00 (training) and 84.00 (testing) g/L."
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Collected, not retained. Table 1 per-sample medians 14.00 (training) and 15.32 (testing) mg/L. The Discussion argues that systemic inflammation is a 'hidden covariate' acting through augmented renal clearance."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Collected, not retained. Table 1 per-sample medians 14.00 (training) and 15.32 (testing) mg/L. The Discussion argues that systemic inflammation is a 'hidden covariate' acting through augmented renal clearance."
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous renal replacement therapy indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected as a yes/no flag, not retained. Table 1: 17/149 training samples (11.41%) and 3/64 testing samples (4.69%). The Discussion states explicitly that ECMO and CRRT entered the analysis 'only as binary covariates (yes/no) in the model, without integrating specific treatment parameters (e.g. ... replacement fluid rates, and operational modes for CRRT)', and names this simplification as a limitation that may underestimate PK variability."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected as a yes/no flag, not retained. Table 1: 17/149 training samples (11.41%) and 3/64 testing samples (4.69%). The Discussion states explicitly that ECMO and CRRT entered the analysis 'only as binary covariates (yes/no) in the model, without integrating specific treatment parameters (e.g. ... replacement fluid rates, and operational modes for CRRT)', and names this simplification as a limitation that may underestimate PK variability."
     ),
     ECMO_STATUS = list(
       description = "Extracorporeal membrane oxygenation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected as a yes/no flag, not retained. Table 1: 9/149 training samples (6.04%) and 3/64 testing samples (4.69%). Same Discussion limitation as RRT_CRRT_STATUS: flow rates and oxygenator types were not modelled."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected as a yes/no flag, not retained. Table 1: 9/149 training samples (6.04%) and 3/64 testing samples (4.69%). Same Discussion limitation as RRT_CRRT_STATUS: flow rates and oxygenator types were not modelled."
     ),
     CONMED_MEROPENEM = list(
       description = "Concomitant meropenem",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected, not retained. Table 1: 77/149 training samples (51.68%) and 37/64 testing samples (57.81%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected, not retained. Table 1: 77/149 training samples (51.68%) and 37/64 testing samples (57.81%)."
     ),
     CONMED_OMEPRAZOLE = list(
       description = "Concomitant omeprazole",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected, not retained. Table 1: 60/149 training samples (40.27%) and 28/64 testing samples (43.75%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected, not retained. Table 1: 60/149 training samples (40.27%) and 28/64 testing samples (43.75%)."
     ),
     CONMED_VORICONAZOLE = list(
       description = "Concomitant voriconazole",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected, not retained. Table 1: 21/149 training samples (14.09%) and 8/64 testing samples (12.50%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected, not retained. Table 1: 21/149 training samples (14.09%) and 8/64 testing samples (12.50%)."
     ),
     CONMED_FLUCONAZOLE = list(
       description = "Concomitant fluconazole",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected, not retained. Table 1: 29/149 training samples (19.46%) and 12/64 testing samples (18.75%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected, not retained. Table 1: 29/149 training samples (19.46%) and 12/64 testing samples (18.75%)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 145L,
-    n_studies      = 1L,
-    age_range      = "under 18 years by inclusion criterion; observed median 6.3 years (range 0.2-15.2) per Supplementary Table S3",
-    weight_range   = "per-sample median 21.00 kg (IQR 9.10-33.50) in the training set; covariate model centred on 20.00 kg",
+    species = "human",
+    n_subjects = 145L,
+    n_studies = 1L,
+    age_range = "under 18 years by inclusion criterion; observed median 6.3 years (range 0.2-15.2) per Supplementary Table S3",
+    weight_range = "per-sample median 21.00 kg (IQR 9.10-33.50) in the training set; covariate model centred on 20.00 kg",
     sex_female_pct = 44.6,
     race_ethnicity = c(Asian = 100),
     renal_function = paste(
@@ -241,7 +241,7 @@ Zhang_2026_linezolid <- function() {
       "and 200-400 mL/min/1.73 m^2.",
       sep = " "
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to the paediatric intensive care",
       "unit and treated with intravenous linezolid for more than 3 days.",
       "Of the 145 patients, 69 (47.6%) had severe pneumonia, 43 (29.7%)",
@@ -251,7 +251,7 @@ Zhang_2026_linezolid <- function() {
       "enterococci.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous linezolid 10 mg/kg every 8 or 12 h for children under",
       "12 years, and 600 mg every 12 h for children aged 12 years and",
       "above, each given as an infusion over 1-2 h. Table 1 reports a",
@@ -259,8 +259,8 @@ Zhang_2026_linezolid <- function() {
       "the training set.",
       sep = " "
     ),
-    regions        = "China (single centre: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai)",
-    notes          = paste(
+    regions = "China (single centre: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai)",
+    notes = paste(
       "Retrospective single-centre study, January 2022 to October 2025,",
       "approved by the Ethics Committee of the Children's Hospital of Fudan",
       "University (No. 2025-506). 145 children contributed 213 steady-state",

@@ -50,205 +50,214 @@ Ooi_2026_elafibranor_gft1007 <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Included a priori with allometric scaling referenced to 75 kg ",
         "(Supplementary Datafile S2 $PK, LOG(WTKGBL/75)); exponents fixed at ",
         "0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F (Table S3)."
       ),
-      source_name        = "WTKGBL"
+      source_name = "WTKGBL"
     ),
     ALT = list(
-      description        = "Baseline alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power model normalised to 27 U/L on CL/F and Vp/F (Supplementary ",
         "Datafile S2 $PK, CLALTBL = (ALTBL/27)**THETA and V3ALTBL). The ",
         "authors used a power rather than exponential model because the ALT ",
         "distribution is highly positively skewed (Methods 2.2.3). Mean ",
         "38.3 U/L (SD 35.1) in the PK analysis set (Table S2)."
       ),
-      source_name        = "ALTBL"
+      source_name = "ALTBL"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect centred at 44 years on Vc/F (Supplementary Datafile S2 $PK, V2AGEYBL). Mean 43.9 years (SD 16.0) (Table S2).",
-      source_name        = "AGEYBL"
+      notes = "Exponential effect centred at 44 years on Vc/F (Supplementary Datafile S2 $PK, V2AGEYBL). Mean 43.9 years (SD 16.0) (Table S2).",
+      source_name = "AGEYBL"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effects centred at 26.44 kg/m^2 on CL/F and Vp/F (Supplementary Datafile S2 $PK, CLBMIBL / V3BMIBL). Mean 27.7 kg/m^2 (SD 5.9) (Table S2).",
-      source_name        = "BMIBL"
+      notes = "Exponential effects centred at 26.44 kg/m^2 on CL/F and Vp/F (Supplementary Datafile S2 $PK, CLBMIBL / V3BMIBL). Mean 27.7 kg/m^2 (SD 5.9) (Table S2).",
+      source_name = "BMIBL"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance, body-surface-area normalised",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline creatinine clearance, body-surface-area normalised",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect centred at 97.49 mL/min/1.73 m^2 on CL/F ",
         "(Supplementary Datafile S2 $PK, CLEGFRBL; the source column is ",
         "named EGFRBL but Table S3 and Figure 3 label the covariate CRCL). ",
         "Mean 96.6 mL/min/1.73 m^2 (SD 19.8), missing in 10.1% (Table S2). ",
         "Figure 3B evaluates 15, 30, 60, 90 and 120 mL/min/1.73 m^2."
       ),
-      source_name        = "EGFRBL"
+      source_name = "EGFRBL"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male, the most common category in the PK analysis set)",
-      notes              = paste0(
+      notes = paste0(
         "Fractional difference on Q/F: 9.23% higher in women (Table S3, ",
         "'Female sex on Q/F (proportional increase) 0.0923'). The source ",
         "column SEXN codes 1 = male (reference) and 2 = female, so ",
         "SEXF = SEXN - 1. Note the sign is OPPOSITE to the parent model, ",
         "where female sex lowers Q/F by 18.3%."
       ),
-      source_name        = "SEXN"
+      source_name = "SEXN"
     ),
     DIS_PBC = list(
-      description        = "Primary biliary cholangitis patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Primary biliary cholangitis patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer or non-PBC patient population)",
-      notes              = "Fractional difference on Q/F: 21.4% higher in patients with PBC (Table S3, 'PBC on Q/F (proportional increase) 0.214'). Corresponds to POPN2 in Supplementary Datafile S2.",
-      source_name        = "POPN2"
+      notes = "Fractional difference on Q/F: 21.4% higher in patients with PBC (Table S3, 'PBC on Q/F (proportional increase) 0.214'). Corresponds to POPN2 in Supplementary Datafile S2.",
+      source_name = "POPN2"
     ),
     FED = list(
-      description        = "Fed state at the time of dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted, 98.9% of baseline records in Table S2)",
-      notes              = paste0(
+      notes = paste0(
         "Fractional differences on D1 and relative bioavailability: the ",
         "zero-order formation duration is 11.6-fold longer (a 1160% ",
         "proportional increase) and relative bioavailability 25.2% higher ",
         "when the dose is taken fed (Table S3). Time-varying."
       ),
-      source_name        = "FOODN"
+      source_name = "FOODN"
     ),
     FORM_ELA_F1 = list(
-      description        = "Elafibranor formulation 1 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Elafibranor formulation 1 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all six formulation indicators 0 selects formulation 5, the phase II/III formulation)",
-      notes              = "Table S1 / Table S3 formulation numbering.",
-      source_name        = "FORMN == 1"
+      notes = "Table S1 / Table S3 formulation numbering.",
+      source_name = "FORMN == 1"
     ),
     FORM_ELA_F2 = list(
-      description        = "Elafibranor formulation 2 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Elafibranor formulation 2 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (formulation 5 reference)",
-      notes              = "Table S1 / Table S3 formulation numbering.",
-      source_name        = "FORMN == 2"
+      notes = "Table S1 / Table S3 formulation numbering.",
+      source_name = "FORMN == 2"
     ),
     FORM_ELA_F3 = list(
-      description        = "Elafibranor formulation 3 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Elafibranor formulation 3 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (formulation 5 reference)",
-      notes              = "Table S1 / Table S3 formulation numbering. GFT1007 relative bioavailability for formulation 3 is also fixed to 1.00, so formulations 3 and 5 share the reference bioavailability but differ in D1, MAT and lag time.",
-      source_name        = "FORMN == 3"
+      notes = "Table S1 / Table S3 formulation numbering. GFT1007 relative bioavailability for formulation 3 is also fixed to 1.00, so formulations 3 and 5 share the reference bioavailability but differ in D1, MAT and lag time.",
+      source_name = "FORMN == 3"
     ),
     FORM_ELA_F4 = list(
-      description        = "Elafibranor formulation 4 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Elafibranor formulation 4 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (formulation 5 reference)",
-      notes              = "Table S1 / Table S3 formulation numbering; the phase IIb MASH formulation.",
-      source_name        = "FORMN == 4"
+      notes = "Table S1 / Table S3 formulation numbering; the phase IIb MASH formulation.",
+      source_name = "FORMN == 4"
     ),
     FORM_ELA_F6 = list(
-      description        = "Elafibranor formulation 6 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Elafibranor formulation 6 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (formulation 5 reference)",
-      notes              = "Table S1 / Table S3 formulation numbering.",
-      source_name        = "FORMN == 6"
+      notes = "Table S1 / Table S3 formulation numbering.",
+      source_name = "FORMN == 6"
     ),
     STUDY_PHASE2 = list(
-      description        = "Phase II study-stratum indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase II study-stratum indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase I when STUDY_PHASE3 is also 0)",
-      notes              = "Selects the residual-error magnitudes only (Table S3 residual-error rows are tabulated per study phase).",
-      source_name        = "PHASEN == 2"
+      notes = "Selects the residual-error magnitudes only (Table S3 residual-error rows are tabulated per study phase).",
+      source_name = "PHASEN == 2"
     ),
     STUDY_PHASE3 = list(
-      description        = "Phase III study-stratum indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase III study-stratum indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase I when STUDY_PHASE2 is also 0)",
-      notes              = "Selects the residual-error magnitudes only (Table S3 residual-error rows are tabulated per study phase).",
-      source_name        = "PHASEN == 3"
+      notes = "Selects the residual-error magnitudes only (Table S3 residual-error rows are tabulated per study phase).",
+      source_name = "PHASEN == 3"
     ),
     STUDY_GFT505B_319_1 = list(
-      description        = "ELATIVE phase III study (GFT505B-319-1, NCT04526665) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ELATIVE phase III study (GFT505B-319-1, NCT04526665) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other pooled study)",
-      notes              = "The absorption lag time was estimated separately for this study and fixed to 0 h (Table S3; Supplementary Datafile S2 $PK, IF(STUDYIDN.EQ.20) ALAG1 = THETA(41) with THETA(41) fixed at 0).",
-      source_name        = "STUDYIDN == 20"
+      notes = "The absorption lag time was estimated separately for this study and fixed to 0 h (Table S3; Supplementary Datafile S2 $PK, IF(STUDYIDN.EQ.20) ALAG1 = THETA(41) with THETA(41) fixed at 0).",
+      source_name = "STUDYIDN == 20"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "GFT1007", units = "umol",
-      specimen = "administration site", verified = TRUE
+      analyte = "GFT1007",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "GFT1007", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "GFT1007",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "GFT1007", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "GFT1007",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 894L,
-    n_studies      = 17L,
+    species = "human",
+    n_subjects = 894L,
+    n_studies = 17L,
     n_observations = 10592L,
-    age_range      = "not reported; mean 43.9 years (SD 16.0)",
-    age_median     = "mean 43.9 years (SD 16.0) (Table S2)",
-    weight_range   = "not reported; mean 81.0 kg (SD 18.4)",
-    weight_median  = "mean 81.0 kg (SD 18.4) (Table S2)",
+    age_range = "not reported; mean 43.9 years (SD 16.0)",
+    age_median = "mean 43.9 years (SD 16.0) (Table S2)",
+    weight_range = "not reported; mean 81.0 kg (SD 18.4)",
+    weight_median = "mean 81.0 kg (SD 18.4) (Table S2)",
     sex_female_pct = 36.7,
     race_ethnicity = c(
-      White = 84.7, `Black or African American` = 2.2, Asian = 0.8,
+      White = 84.7,
+      `Black or African American` = 2.2,
+      Asian = 0.8,
       `American Indian or Alaska Native` = 0.2,
       `Native Hawaiian or other Pacific Islander` = 0.2,
-      `Multiple or other` = 1.2, `Unknown or not reported` = 0.6,
+      `Multiple or other` = 1.2,
+      `Unknown or not reported` = 0.6,
       Missing = 10.1
     ),
-    disease_state  = paste0(
+    disease_state = paste0(
       "pooled healthy volunteers and patients with renal impairment, ",
       "hepatic impairment, metabolic dysfunction-associated steatohepatitis ",
       "(MASH) or primary biliary cholangitis (PBC)"
     ),
-    dose_range     = "elafibranor 5-360 mg once daily, single dose to daily dosing for over a year",
-    regions        = "not reported",
+    dose_range = "elafibranor 5-360 mg once daily, single dose to daily dosing for over a year",
+    regions = "not reported",
     renal_function = "mean baseline creatinine clearance 96.6 mL/min/1.73 m^2 (SD 19.8); a dedicated renal-impairment study (GFT505-118-13) was included",
     hepatic_function = "NCI hepatic-impairment score 0 in 64.0%, 1 in 27.5%, 2 in 1.6%, 3 in 0.1%; a dedicated hepatic-impairment study (GFT505-118-14) was included",
-    iov_structure  = "None. Graphical analysis did not identify inter-occasion variability in the GFT1007 absorption parameters, so no IOV was incorporated (Results 3.1.5).",
-    notes          = paste0(
+    iov_structure = "None. Graphical analysis did not identify inter-occasion variability in the GFT1007 absorption parameters, so no IOV was incorporated (Results 3.1.5).",
+    notes = paste0(
       "Baseline characteristics from Table S2; the GFT1007 PK data set held ",
       "894 subjects and 10,592 observations (Results section 3.1.1). Study ",
       "list in Table S1."
@@ -260,16 +269,21 @@ Ooi_2026_elafibranor_gft1007 <- function() {
   # inside model(). Declared here so checkModelConventions() does not read the
   # stratum suffixes as deviant residual-error names.
   paper_specific_residual_sds <- c(
-    "expSdP1Late", "expSdP1Early",
-    "expSdP2Late", "expSdP2Early",
-    "expSdP3Late", "expSdP3Early"
+    "expSdP1Late",
+    "expSdP1Early",
+    "expSdP2Late",
+    "expSdP2Early",
+    "expSdP3Late",
+    "expSdP3Early"
   )
 
   # Inter-individual variability on the residual error itself (the
   # EPS(k)*EXP(ETA(j)) construction of Supplementary Datafile S2 $ERROR).
   paper_specific_etas <- c(
-    "etaruvP1Late", "etaruvP1Early",
-    "etaruvP2Late", "etaruvP2Early",
+    "etaruvP1Late",
+    "etaruvP1Early",
+    "etaruvP2Late",
+    "etaruvP2Early",
     "etaruvP3Late"
   )
 

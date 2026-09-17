@@ -1,99 +1,99 @@
 Jonsson_2016_tanezumab <- function() {
   description <- "Two-compartment population PK model for intravenous tanezumab, an anti-nerve-growth-factor IgG2 monoclonal antibody, in 1608 adults with moderate to severe osteoarthritis of the knee or hip pooled across four phase 3 trials (Jonsson 2016). Elimination from the central compartment is the sum of a linear clearance and a parallel Michaelis-Menten pathway (Vmax 8.03 ug/day, Km 27.7 ng/mL) attributed to target-mediated disposition; the saturable route supplies only 18%, 10% and 5% of total clearance at the 2.5, 5 and 10 mg dose levels. Clearance and both volumes scale with body weight as power functions centred at 84.7 kg (exponents 0.77, 0.554 and 0.302). Clearance additionally carries a Cockcroft-Gault creatinine-clearance power effect centred at 93.5 mL/min, a +14.3% male effect, and a +6.69% effect for the 2.5 and 5 mg dose groups relative to 10 mg; central volume carries a +17.5% male effect. Inter-individual variability is log-normal on CL, Vc, Vp and Vmax with a correlated CL-Vc block. Residual error is a two-class per-subject mixture on the log scale: 76.3% of subjects take the 13% component and the remainder the 54% component, selected by the MIX_LARGE_PROPRUV indicator."
-  reference   <- "Jonsson EN, Xie R, Marshall SF, Arends RH. Population pharmacokinetics of tanezumab in phase 3 clinical trials for osteoarthritis pain. Br J Clin Pharmacol. 2016;81(4):688-699. doi:10.1111/bcp.12850"
-  vignette    <- "Jonsson_2016_tanezumab"
+  reference <- "Jonsson EN, Xie R, Marshall SF, Arends RH. Population pharmacokinetics of tanezumab in phase 3 clinical trials for osteoarthritis pain. Br J Clin Pharmacol. 2016;81(4):688-699. doi:10.1111/bcp.12850"
+  vignette <- "Jonsson_2016_tanezumab"
 
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight (time-fixed). Selected over body surface area, body mass index and baseline lean body weight as the body-size descriptor because it gave the largest OFV drop on CL and because the fits on CL, V1 and V2 differed little between descriptors (Results, body-size paragraph). Enters CL, V1 and V2 as separate estimated power functions centred at the 84.7 kg model reference (Equations 3-5), which is the rounded cohort median and is slightly below the 86.6 kg cohort mean of Table 1.",
-      source_name        = "WT"
+      notes = "Baseline body weight (time-fixed). Selected over body surface area, body mass index and baseline lean body weight as the body-size descriptor because it gave the largest OFV drop on CL and because the fits on CL, V1 and V2 differed little between descriptors (Results, body-size paragraph). Enters CL, V1 and V2 as separate estimated power functions centred at the 84.7 kg model reference (Equations 3-5), which is the rounded cohort median and is slightly below the 86.6 kg cohort mean of Table 1.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, Cockcroft-Gault computed on TOTAL body weight and NOT BSA-normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, Cockcroft-Gault computed on TOTAL body weight and NOT BSA-normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Raw un-normalized Cockcroft-Gault creatinine clearance in mL/min, the same size normalisation used by Delattre_2010_amikacin.R and Chen_2023_nemonoxacin.R rather than the BSA-normalized mL/min/1.73 m^2 default of this canonical. The source Methods truncate the column at a MAXIMUM of 150 mL/min before it enters the model, because Cockcroft-Gault on total body weight returns unreasonably high values in heavy subjects (Methods, PK analysis paragraph, citing reference 21); the cohort range in Table 1 runs to 301 mL/min, so the cap is active in practice. That cap is reproduced inside model() as min(CRCL, 150) so a user cannot silently extrapolate past it. Enters CL as the power function (CRCL_capped / 93.5)^0.108 (Equation 3); 93.5 mL/min is the model reference and is slightly below the 97.7 mL/min cohort mean of Table 1.",
-      source_name        = "CLcr"
+      notes = "Raw un-normalized Cockcroft-Gault creatinine clearance in mL/min, the same size normalisation used by Delattre_2010_amikacin.R and Chen_2023_nemonoxacin.R rather than the BSA-normalized mL/min/1.73 m^2 default of this canonical. The source Methods truncate the column at a MAXIMUM of 150 mL/min before it enters the model, because Cockcroft-Gault on total body weight returns unreasonably high values in heavy subjects (Methods, PK analysis paragraph, citing reference 21); the cohort range in Table 1 runs to 301 mL/min, so the cap is active in practice. That cap is reproduced inside model() as min(CRCL, 150) so a user cannot silently extrapolate past it. Enters CL as the power function (CRCL_capped / 93.5)^0.108 (Equation 3); 93.5 mL/min is the model reference and is slightly below the 97.7 mL/min cohort mean of Table 1.",
+      source_name = "CLcr"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) -- NOTE this is the SOURCE PAPER's reference, the inverse of the canonical",
-      notes              = "The source paper's reference subject is FEMALE: Equations 3 and 4 both read 'CLGENDER = 1 if female or 1 + theta if male', and the Table 2 footnote states the CL and V1 estimates are for a female. To keep the canonical 1 = female orientation while preserving the verbatim published coefficients, the effects are applied as (1 + e_sexf_cl * (1 - SEXF)) and (1 + e_sexf_vc * (1 - SEXF)) -- the same construction used by Bajaj_2017_nivolumab.R and Wada_2023_sparsentan.R. Men have 14.3% higher CL and 17.5% higher V1 than women (Table 3, rows 'Gender on CL' and 'Gender on V1').",
-      source_name        = "GENDER"
+      notes = "The source paper's reference subject is FEMALE: Equations 3 and 4 both read 'CLGENDER = 1 if female or 1 + theta if male', and the Table 2 footnote states the CL and V1 estimates are for a female. To keep the canonical 1 = female orientation while preserving the verbatim published coefficients, the effects are applied as (1 + e_sexf_cl * (1 - SEXF)) and (1 + e_sexf_vc * (1 - SEXF)) -- the same construction used by Bajaj_2017_nivolumab.R and Wada_2023_sparsentan.R. Men have 14.3% higher CL and 17.5% higher V1 than women (Table 3, rows 'Gender on CL' and 'Gender on V1').",
+      source_name = "GENDER"
     ),
     DOSE_HIGH = list(
-      description        = "Highest-dose-cohort indicator: 1 = the 10 mg tanezumab arm, 0 = the 2.5 mg or 5 mg arm",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Highest-dose-cohort indicator: 1 = the 10 mg tanezumab arm, 0 = the 2.5 mg or 5 mg arm",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (the 10 mg arm) -- NOTE this is the SOURCE PAPER's reference, the inverse of the canonical",
-      notes              = "Time-fixed per subject: the four phase 3 trials are parallel-group designs in which each patient stayed on one dose level for the whole study. Equation 3 reads 'CLDOSE = 1 if dose = 10 mg or 1 + theta12 if dose = 2.5 or 5 mg', so the source reference cohort is the HIGHEST dose, the inverse of this canonical's reference category. The effect is therefore applied as (1 + e_dose_high_cl * (1 - DOSE_HIGH)) to preserve the verbatim +0.0669 coefficient. Clearance is 6.69% higher in the 2.5 and 5 mg arms than in the 10 mg arm (Table 3, row 'Dose on CL'), and the Discussion is explicit that this step is over and above the concentration-dependent saturable pathway already in the structural model. The 2.5 and 5 mg arms share one level; the paper reports no separate estimate for them.",
-      source_name        = "DOSE"
+      notes = "Time-fixed per subject: the four phase 3 trials are parallel-group designs in which each patient stayed on one dose level for the whole study. Equation 3 reads 'CLDOSE = 1 if dose = 10 mg or 1 + theta12 if dose = 2.5 or 5 mg', so the source reference cohort is the HIGHEST dose, the inverse of this canonical's reference category. The effect is therefore applied as (1 + e_dose_high_cl * (1 - DOSE_HIGH)) to preserve the verbatim +0.0669 coefficient. Clearance is 6.69% higher in the 2.5 and 5 mg arms than in the 10 mg arm (Table 3, row 'Dose on CL'), and the Discussion is explicit that this step is over and above the concentration-dependent saturable pathway already in the structural model. The 2.5 and 5 mg arms share one level; the paper reports no separate estimate for them.",
+      source_name = "DOSE"
     ),
     MIX_LARGE_PROPRUV = list(
-      description        = "Latent mixture-model class indicator for the log-scale residual error magnitude: 1 = subject assigned to the minority large-residual subpopulation (54% CV), 0 = subject assigned to the majority small-residual subpopulation (13% CV)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Latent mixture-model class indicator for the log-scale residual error magnitude: 1 = subject assigned to the minority large-residual subpopulation (54% CV), 0 = subject assigned to the majority small-residual subpopulation (13% CV)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (small-residual subpopulation; 76.3% of the source cohort)",
-      notes              = "Not a measured patient covariate -- this is the per-subject latent class index of the NONMEM mixture the source fitted on the residual error alone (Equation 2: 'Y = Yhat + eps1 if subpopulation 1 or eps2 if subpopulation 2'). Structural PK, covariate effects and IIV are shared by the two classes; only the residual magnitude switches. Table 2 estimates the mixture probability for the low-residual class at 0.763 (95% CI 0.738, 0.789). For typical-value simulation set MIX_LARGE_PROPRUV = 0; for population simulation draw MIX_LARGE_PROPRUV ~ Bernoulli(1 - 0.763) per subject. The eta shrinkages the paper reports separately per class (CL 11%/10%, V1 15%/23%, VM 66%/71%, V2 57%/79% for low/high) confirm the mixture is assigned at the subject level, not per observation.",
-      source_name        = "$MIX class assignment"
+      notes = "Not a measured patient covariate -- this is the per-subject latent class index of the NONMEM mixture the source fitted on the residual error alone (Equation 2: 'Y = Yhat + eps1 if subpopulation 1 or eps2 if subpopulation 2'). Structural PK, covariate effects and IIV are shared by the two classes; only the residual magnitude switches. Table 2 estimates the mixture probability for the low-residual class at 0.763 (95% CI 0.738, 0.789). For typical-value simulation set MIX_LARGE_PROPRUV = 0; for population simulation draw MIX_LARGE_PROPRUV ~ Bernoulli(1 - 0.763) per subject. The eta shrinkages the paper reports separately per class (CL 11%/10%, V1 15%/23%, VM 66%/71%, V2 57%/79% for low/high) confirm the mixture is assigned at the subject level, not per observation.",
+      source_name = "$MIX class assignment"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL, V1, V2, VM and KM in the stepwise covariate model but not retained in the final model (Results, covariate-model paragraph). Cohort mean 61.4 years (SD 10.4), range 21-93 (Table 1). No point estimate is reported, so the effect cannot be implemented."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL, V1, V2, VM and KM in the stepwise covariate model but not retained in the final model (Results, covariate-model paragraph). Cohort mean 61.4 years (SD 10.4), range 21-93 (Table 1). No point estimate is reported, so the effect cannot be implemented."
     ),
     RACE_BLACK = list(
       description = "Black race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Race was screened on CL, V1, V2, VM and KM but not retained in the final model. The cohort is 86.4% White, 11.2% Black, 0.9% Asian and 1.5% Other (Table 1). No point estimate is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Race was screened on CL, V1, V2, VM and KM but not retained in the final model. The cohort is 86.4% White, 11.2% Black, 0.9% Asian and 1.5% Other (Table 1). No point estimate is reported."
     ),
     OA_HIP = list(
       description = "Index osteoarthritis joint indicator (1 = hip, 0 = knee)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Site of OA was screened on all structural model parameters and not retained (Results, covariate-model paragraph). 69.0% knee / 31.0% hip (Table 1). Missing values were imputed as knee because they occurred only in study A4091011, which enrolled knee OA only. No point estimate is reported. OA_HIP is a descriptive placeholder name for a screened-but-dropped covariate and is deliberately not registered as a canonical column."
+      units = "(binary)",
+      type = "binary",
+      notes = "Site of OA was screened on all structural model parameters and not retained (Results, covariate-model paragraph). 69.0% knee / 31.0% hip (Table 1). Missing values were imputed as knee because they occurred only in study A4091011, which enrolled knee OA only. No point estimate is reported. OA_HIP is a descriptive placeholder name for a screened-but-dropped covariate and is deliberately not registered as a canonical column."
     ),
     ADA_POS = list(
       description = "Anti-drug-antibody-positive indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not tested as a covariate at all. Only 8 of 1601 patients were ADA-positive and the paper states their PK, pain response and safety profile did not differ from ADA-negative patients, so ADA status was excluded from covariate model building (Methods, PK analysis paragraph)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not tested as a covariate at all. Only 8 of 1601 patients were ADA-positive and the paper states their PK, pain response and safety profile did not differ from ADA-negative patients, so ADA status was excluded from covariate model building (Methods, PK analysis paragraph)."
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "tanezumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tanezumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tanezumab", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1608,
-    n_studies      = 4,
-    age_range      = "21-93 years",
-    age_median     = "mean 61.4 years (SD 10.4)",
-    weight_range   = "34-170 kg",
-    weight_median  = "mean 86.6 kg (SD 17.8); model reference 84.7 kg",
+    species = "human",
+    n_subjects = 1608,
+    n_studies = 4,
+    age_range = "21-93 years",
+    age_median = "mean 61.4 years (SD 10.4)",
+    weight_range = "34-170 kg",
+    weight_median = "mean 86.6 kg (SD 17.8); model reference 84.7 kg",
     sex_female_pct = 60.5,
     race_ethnicity = c(White = 86.4, Black = 11.2, Asian = 0.9, Other = 1.5),
-    disease_state  = "moderate to severe osteoarthritis of the knee (69.0%) or hip (31.0%)",
-    dose_range     = "2.5, 5 or 10 mg intravenously over a 5 min infusion every 8 weeks, for a total of two doses (studies A4091015, A4091018) or three doses (studies A4091011, A4091014)",
-    regions        = "not reported by region; four multicentre phase 3 trials",
-    notes          = "Baseline demographics from Table 1. Four randomized, double-blind, placebo-controlled, multicentre, parallel-group phase 3 trials: NCT00733902 (A4091011), NCT00744471 (A4091014), NCT00830063 (A4091015) and NCT00863304 (A4091018). Arm sizes 289 / 655 / 664 at 2.5 / 5 / 10 mg. The final analysis data set held 7592 plasma concentrations from 1608 patients after three pre-specified data-cleaning rules (n = 4, 188 and 190 removals) and removal of observations with |CWRES| > 5; re-including the cleaning-rule-3 patients and the outliers changed most fixed-effect estimates by less than 10%, with a maximum 23% change in inter-compartmental clearance. Samples were drawn pre-dose, 1 h post-dose and at weeks 4, 8 (pre and post), 16 (pre and post) and 24, plus week 32 in A4091011 and A4091014. Validated ELISA with an LLOQ of 12.0 ng/mL. NONMEM 7.1, FOCE(I), ADVAN6; covariate selection by the PsN stepwise covariate model procedure."
+    disease_state = "moderate to severe osteoarthritis of the knee (69.0%) or hip (31.0%)",
+    dose_range = "2.5, 5 or 10 mg intravenously over a 5 min infusion every 8 weeks, for a total of two doses (studies A4091015, A4091018) or three doses (studies A4091011, A4091014)",
+    regions = "not reported by region; four multicentre phase 3 trials",
+    notes = "Baseline demographics from Table 1. Four randomized, double-blind, placebo-controlled, multicentre, parallel-group phase 3 trials: NCT00733902 (A4091011), NCT00744471 (A4091014), NCT00830063 (A4091015) and NCT00863304 (A4091018). Arm sizes 289 / 655 / 664 at 2.5 / 5 / 10 mg. The final analysis data set held 7592 plasma concentrations from 1608 patients after three pre-specified data-cleaning rules (n = 4, 188 and 190 removals) and removal of observations with |CWRES| > 5; re-including the cleaning-rule-3 patients and the outliers changed most fixed-effect estimates by less than 10%, with a maximum 23% change in inter-compartmental clearance. Samples were drawn pre-dose, 1 h post-dose and at weeks 4, 8 (pre and post), 16 (pre and post) and 24, plus week 32 in A4091011 and A4091014. Validated ELISA with an LLOQ of 12.0 ng/mL. NONMEM 7.1, FOCE(I), ADVAN6; covariate selection by the PsN stepwise covariate model procedure."
   )
 
   ini({

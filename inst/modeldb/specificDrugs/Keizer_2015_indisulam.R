@@ -10,13 +10,13 @@ Keizer_2015_indisulam <- function() {
     sep = " "
   )
   vignette <- "Keizer_2015_indisulam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "indisulam", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "indisulam", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "indisulam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -26,18 +26,18 @@ Keizer_2015_indisulam <- function() {
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 34L,
-    n_studies        = 1L,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
+    disease_state = paste(
       "Adult patients with advanced solid tumours enrolled in a phase I",
       "dose-escalation trial of indisulam (E7070) in combination with",
       "irinotecan (Ryan et al. 2005); the trial supplying the PK data was",
       "sponsored by Eisai."
     ),
-    dose_range       = "250-525 mg/m^2 indisulam administered as a 2-hour intravenous infusion",
+    dose_range = "250-525 mg/m^2 indisulam administered as a 2-hour intravenous infusion",
     n_concentrations = 231L,
-    notes            = paste(
+    notes = paste(
       "One PK curve per patient, sampled over 120 h (Keizer 2015,",
       "'Real PopPK data set'). Of 231 PK samples (excluding pre-first-dose",
       "samples), 17 (7.4%) were below the LLOQ. Plasma indisulam was assayed",

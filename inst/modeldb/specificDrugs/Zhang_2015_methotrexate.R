@@ -9,7 +9,7 @@ Zhang_2015_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Zhang_2015_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Plasma methotrexate was quantified by fluorescence
@@ -18,17 +18,17 @@ Zhang_2015_methotrexate <- function() {
   # (Methods, "Methotrexate assay" and "Blood collection"). The amount unit
   # that pairs with the published V1 (L) and CL1 (L/h) is therefore umol.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CYCLE = list(
-      description        = "Index of the current high-dose methotrexate chemotherapy course (1 = first course)",
-      units              = "(count)",
-      type               = "count",
+      description = "Index of the current high-dose methotrexate chemotherapy course (1 = first course)",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column MTXNUM, glossed by Zhang 2015 as 'the number of methotrexate chemotherapy cycles before",
         "MTX infusion' (Abstract) and 'the time of chemotherapy using MTX before chemotherapy' (Results).",
         "Table 1 gives median 2, range 1-12, n = 270. The minimum of 1 -- not 0 -- in a dataset that must contain",
@@ -44,14 +44,14 @@ Zhang_2015_methotrexate <- function() {
         "progressively impair renal function, so clearance falls as the course count rises.",
         sep = " "
       ),
-      source_name        = "MTXNUM"
+      source_name = "MTXNUM"
     ),
     CRCL = list(
-      description        = "Pre-dose creatinine clearance (raw, NOT BSA-normalized), on the source's own numeric scale",
-      units              = "mL/s",
-      type               = "continuous",
+      description = "Pre-dose creatinine clearance (raw, NOT BSA-normalized), on the source's own numeric scale",
+      units = "mL/s",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CrCl1, 'creatinine clearance before administration'. Table 1 gives median 1.88,",
         "minimum 0.94, maximum 4.64, n = 245, and the final-model equation centers on 1.89.",
         "UNITS HAZARD -- READ BEFORE SUPPLYING THIS COLUMN. Zhang 2015 Table 1 labels this row 'ml/min', which",
@@ -80,14 +80,14 @@ Zhang_2015_methotrexate <- function() {
         "methotrexate.",
         sep = " "
       ),
-      source_name        = "CrCl1"
+      source_name = "CrCl1"
     ),
     BSA = list(
-      description        = "Body surface area at the time of the course",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at the time of the course",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BODYAREA. Table 1 gives median 1.63 m^2, range 0.62-2.21, n = 270; the Subjects section",
         "reports 1.63 +/- 0.27 m^2. The final-model equations center on 1.62 m^2, consistent with the Methods",
         "covariate template, which centers each covariate on its MEAN rather than its median.",
@@ -104,7 +104,7 @@ Zhang_2015_methotrexate <- function() {
         "equations is the opposite of this and of the paper's own Discussion.",
         sep = " "
       ),
-      source_name        = "BODYAREA"
+      source_name = "BODYAREA"
     )
   )
 
@@ -118,37 +118,37 @@ Zhang_2015_methotrexate <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Table 1 median 17 years, range 6-49, n = 274; Subjects section 17.00 +/- 7.06 years. Screened, not retained.",
+      units = "years",
+      type = "continuous",
+      notes = "Table 1 median 17 years, range 6-49, n = 274; Subjects section 17.00 +/- 7.06 years. Screened, not retained.",
       source_name = "Age"
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Table 1 median 58 kg, range 20-97, n = 268. Strongly correlated with BMI and BSA (Figure 2); BSA was retained in preference. Screened, not retained.",
+      units = "kg",
+      type = "continuous",
+      notes = "Table 1 median 58 kg, range 20-97, n = 268. Strongly correlated with BMI and BSA (Figure 2); BSA was retained in preference. Screened, not retained.",
       source_name = "Weight"
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Table 1 median 19.95 kg/m^2, range 11.32-40.17, n = 267. Strongly correlated with weight and BSA (Figure 2); BSA was retained in preference. Screened, not retained.",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Table 1 median 19.95 kg/m^2, range 11.32-40.17, n = 267. Strongly correlated with weight and BSA (Figure 2); BSA was retained in preference. Screened, not retained.",
       source_name = "BMI"
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "194 of 274 courses were in males and 80 in females, i.e. 29% female (Subjects section). Screened as 'Gender' (Table 1, Figure 2), not retained.",
+      units = "(binary)",
+      type = "categorical",
+      notes = "194 of 274 courses were in males and 80 in females, i.e. 29% female (Subjects section). Screened as 'Gender' (Table 1, Figure 2), not retained.",
       source_name = "Gender"
     ),
     CREAT = list(
       description = "Pre-dose serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Source column Cr1. Table 1 median 49, range 19-81, n = 250, labelled 'mg/dl' -- a label that cannot be",
         "correct at that magnitude and is only sane as umol/L (49 umol/L = 0.55 mg/dL). This mislabelling is the",
         "corroborating evidence that the companion CrCl1 row is likewise in SI units; see covariateData$CRCL.",
@@ -159,53 +159,53 @@ Zhang_2015_methotrexate <- function() {
     ),
     ALB = list(
       description = "Pre-dose serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Table 1 median 41.2 g/L, range 24.4-51.7, n = 250. Screened, not retained.",
+      units = "g/L",
+      type = "continuous",
+      notes = "Table 1 median 41.2 g/L, range 24.4-51.7, n = 250. Screened, not retained.",
       source_name = "Albumin1"
     ),
     ALP = list(
       description = "Pre-dose alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Table 1 median 94 U/L, range 43-479, n = 238. Often raised in osteosarcoma. Screened, not retained.",
+      units = "U/L",
+      type = "continuous",
+      notes = "Table 1 median 94 U/L, range 43-479, n = 238. Often raised in osteosarcoma. Screened, not retained.",
       source_name = "AKP1"
     ),
     HCT = list(
       description = "Pre-dose hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Table 1 median 36.5%, range 20.4-48.9, n = 262. Screened, not retained.",
+      units = "%",
+      type = "continuous",
+      notes = "Table 1 median 36.5%, range 20.4-48.9, n = 262. Screened, not retained.",
       source_name = "HCT1"
     ),
     RBC = list(
       description = "Pre-dose erythrocyte count",
-      units       = "10^12/L",
-      type        = "continuous",
-      notes       = "Table 1 median 4.06, range 2.28-5.70, n = 264, printed as '1 x 109/L' but at that magnitude the values are 10^12/L (a conventional red-cell count). Screened, not retained.",
+      units = "10^12/L",
+      type = "continuous",
+      notes = "Table 1 median 4.06, range 2.28-5.70, n = 264, printed as '1 x 109/L' but at that magnitude the values are 10^12/L (a conventional red-cell count). Screened, not retained.",
       source_name = "RBC1"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 148L,
-    n_studies         = 1L,
+    species = "human",
+    n_subjects = 148L,
+    n_studies = 1L,
     n_administrations = 274L,
-    age_range         = "6-49 years (Table 1); 17.00 +/- 7.06 years (Subjects section)",
-    age_median        = "17 years",
-    weight_range      = "20-97 kg (Table 1); 58.00 +/- 18.28 kg (Subjects section)",
-    weight_median     = "58 kg",
-    bsa_median        = "1.63 m^2 (range 0.62-2.21); 1.63 +/- 0.27 m^2 (Subjects section); BSA formula unspecified",
-    height_mean       = "166.00 +/- 12.44 cm",
-    sex_female_pct    = 29,
-    race_ethnicity    = "Chinese; race was not evaluated as a covariate",
-    disease_state     = "Osteosarcoma receiving neoadjuvant or adjuvant high-dose methotrexate with leucovorin rescue",
-    dose_range        = "8-12 g/m^2 methotrexate in 500 mL 5% glucose infused intravenously over 4-6 h in darkness (Methods, 'High-dose methotrexate administration'); the Abstract quotes the regimen as 10 g/m^2",
-    renal_function    = "Pre-dose creatinine clearance median 1.88 on the source's own numeric scale (range 0.94-4.64; see covariateData$CRCL for the units hazard), pre-dose serum creatinine median 49 umol/L (range 19-81). No renal-impairment stratification is reported and no exclusion for renal dysfunction is stated.",
-    co_medication     = "Protocolized hyperhydration and urine alkalinization before, during and after the infusion (5% glucose, 5% glucose-saline, potassium chloride and 5% sodium bicarbonate), plus 2 mg vincristine and 5 mg tropisetron. Oral sodium bicarbonate 1.0 g three times daily and allopurinol 200 mg three times daily throughout. Leucovorin rescue 12 mg every 6 h beginning 6-8 h after the end of the infusion and continued until plasma methotrexate fell below 0.05 umol/L, escalated per protocol if elimination was delayed.",
-    regions           = "Single center: Beijing Jishuitan Hospital, Beijing, China",
-    notes             = paste(
+    age_range = "6-49 years (Table 1); 17.00 +/- 7.06 years (Subjects section)",
+    age_median = "17 years",
+    weight_range = "20-97 kg (Table 1); 58.00 +/- 18.28 kg (Subjects section)",
+    weight_median = "58 kg",
+    bsa_median = "1.63 m^2 (range 0.62-2.21); 1.63 +/- 0.27 m^2 (Subjects section); BSA formula unspecified",
+    height_mean = "166.00 +/- 12.44 cm",
+    sex_female_pct = 29,
+    race_ethnicity = "Chinese; race was not evaluated as a covariate",
+    disease_state = "Osteosarcoma receiving neoadjuvant or adjuvant high-dose methotrexate with leucovorin rescue",
+    dose_range = "8-12 g/m^2 methotrexate in 500 mL 5% glucose infused intravenously over 4-6 h in darkness (Methods, 'High-dose methotrexate administration'); the Abstract quotes the regimen as 10 g/m^2",
+    renal_function = "Pre-dose creatinine clearance median 1.88 on the source's own numeric scale (range 0.94-4.64; see covariateData$CRCL for the units hazard), pre-dose serum creatinine median 49 umol/L (range 19-81). No renal-impairment stratification is reported and no exclusion for renal dysfunction is stated.",
+    co_medication = "Protocolized hyperhydration and urine alkalinization before, during and after the infusion (5% glucose, 5% glucose-saline, potassium chloride and 5% sodium bicarbonate), plus 2 mg vincristine and 5 mg tropisetron. Oral sodium bicarbonate 1.0 g three times daily and allopurinol 200 mg three times daily throughout. Leucovorin rescue 12 mg every 6 h beginning 6-8 h after the end of the infusion and continued until plasma methotrexate fell below 0.05 umol/L, escalated per protocol if elimination was delayed.",
+    regions = "Single center: Beijing Jishuitan Hospital, Beijing, China",
+    notes = paste(
       "148 patients contributed 274 high-dose methotrexate courses between August 2009 and August 2010.",
       "IMPORTANT STRUCTURAL CAVEAT: repeat courses in the same patient were treated as INDEPENDENT individuals",
       "during model building. Zhang 2015 says so explicitly (Discussion): 'There were some patients who received",

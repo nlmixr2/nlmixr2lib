@@ -49,12 +49,12 @@ Boucher_2016_naproxen_mbma <- function() {
   vignette <- "Boucher_2016_landmark_mbma"
 
   units <- list(
-    time          = paste0(
+    time = paste0(
       "not applicable (LANDMARK meta-analysis: the single modelled ",
       "observation per trial is the treatment difference at week 2, so the ",
       "model has no time term and its prediction is constant in time)"
     ),
-    dosing        = paste0(
+    dosing = paste0(
       "not applicable (every active arm in every included trial used the ",
       "same regimen, naproxen 500 mg twice daily, so no dose-response is ",
       "identifiable and treatment is implicit in the endpoint - the ",
@@ -72,16 +72,16 @@ Boucher_2016_naproxen_mbma <- function() {
 
   covariateData <- list(
     FLARE = list(
-      description        = paste0(
+      description = paste0(
         "Study-level flare-design indicator: 1 if the trial used a flare ",
         "design (subjects were washed out of their pain medications and ",
         "were required to have a predefined increase in pain before being ",
         "eligible for randomization), 0 for a non-flare design."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-flare design)",
-      notes              = paste0(
+      notes = paste0(
         "MBMA study-LEVEL covariate (a property of the trial design, not of ",
         "an individual patient). Same canonical and same role as in the ",
         "sibling Boucher_2018_naproxen_mbma.R, but note the different ",
@@ -100,22 +100,22 @@ Boucher_2016_naproxen_mbma <- function() {
         "research questions and because the coefficient is a published ",
         "point estimate, not because the source recommends using it."
       ),
-      source_name        = "Flare (Boucher 2016 Supplementary Materials Table 1 / PSP4-5-54-s007.csv); Fi in the 'Meta-regression model' equation"
+      source_name = "Flare (Boucher 2016 Supplementary Materials Table 1 / PSP4-5-54-s007.csv); Fi in the 'Meta-regression model' equation"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 13L,
-    disease_state  = paste0(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 13L,
+    disease_state = paste0(
       "Adults with osteoarthritis pain of the knee or hip. The endpoint is ",
       "the WOMAC pain subscale, five pain-related questions each scored 0 ",
       "(no pain) to 4 (maximum pain) and summed to a total between 0 and ",
       "20, analysed as a continuous variable."
     ),
-    dose_range     = "naproxen 500 mg twice daily vs placebo (a single regimen; no dose-ranging)",
-    design         = paste0(
+    dose_range = "naproxen 500 mg twice daily vs placebo (a single regimen; no dose-ranging)",
+    design = paste0(
       "13 double-blind, placebo-controlled, randomized parallel-group ",
       "trials in which both a naproxen 500 mg twice-daily arm and a placebo ",
       "arm were present. 9 used a flare design and 4 did not. 10 of the 13 ",
@@ -123,8 +123,8 @@ Boucher_2016_naproxen_mbma <- function() {
       "Schnitzer et al. 2005, Baerwald et al. 2010 and Schnitzer et al. ",
       "2010. The week-2 arithmetic means were the ones analysed."
     ),
-    timepoints     = "week 2 only (landmark analysis of a single timepoint)",
-    notes          = paste0(
+    timepoints = "week 2 only (landmark analysis of a single timepoint)",
+    notes = paste0(
       "MBMA AT THE STUDY LEVEL: each modelled data point is one trial's ",
       "naproxen-minus-placebo difference in mean change from baseline in ",
       "WOMAC pain at week 2, together with that difference's reported ",

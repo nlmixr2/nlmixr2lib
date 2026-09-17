@@ -45,13 +45,13 @@ Boucher_2016_topiramate_mbma <- function() {
   vignette <- "Boucher_2016_landmark_mbma"
 
   units <- list(
-    time          = paste0(
+    time = paste0(
       "not applicable (LANDMARK meta-analysis: every modelled observation is ",
       "the paresthesia incidence accumulated over one whole trial, so the ",
       "model has no time term and its prediction is constant in time. The ",
       "source does not report the included trials' durations)"
     ),
-    dosing        = paste0(
+    dosing = paste0(
       "mg/day (assigned daily topiramate dose for the study arm, supplied ",
       "through the DOSE_TPM_MGD covariate column and NOT as rxode2 dose ",
       "events; the arms studied were 0, 50, 100 and 200 mg/day)"
@@ -66,14 +66,14 @@ Boucher_2016_topiramate_mbma <- function() {
 
   covariateData <- list(
     DOSE_TPM_MGD = list(
-      description        = paste0(
+      description = paste0(
         "Assigned total daily topiramate dose for the study arm, in mg/day; ",
         "0 in the placebo arms."
       ),
-      units              = "mg/day",
-      type               = "continuous",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "MBMA study-ARM-level covariate here (a property of the trial arm), ",
         "in contrast to the per-patient per-record usage of the same ",
         "canonical in Lee_2024_topiramate.R. It is the dose-response driver ",
@@ -92,23 +92,23 @@ Boucher_2016_topiramate_mbma <- function() {
         "rxode2::etTrans consumes a column named bare 'DOSE' before model() ",
         "sees it."
       ),
-      source_name        = "dose (Boucher 2016 Supplementary Materials Table 2 / PSP4-5-54-s008.csv)"
+      source_name = "dose (Boucher 2016 Supplementary Materials Table 2 / PSP4-5-54-s008.csv)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1650L,
-    n_studies      = 6L,
-    n_arms         = 17L,
-    disease_state  = paste0(
+    species = "human",
+    n_subjects = 1650L,
+    n_studies = 6L,
+    n_arms = 17L,
+    disease_state = paste0(
       "Adults with episodic migraine receiving topiramate for migraine ",
       "prophylaxis. The modelled endpoint is a SAFETY endpoint - the ",
       "incidence of paresthesia, topiramate's commonest dose-limiting ",
       "adverse event - not an efficacy endpoint."
     ),
-    dose_range     = "0 (placebo), 50, 100 and 200 mg/day topiramate",
-    design         = paste0(
+    dose_range = "0 (placebo), 50, 100 and 200 mg/day topiramate",
+    design = paste0(
       "Six randomized placebo-controlled episodic migraine prophylaxis ",
       "trials, pooled at the study-arm level: Edwards 2003 (0/200 mg, ",
       "n = 15/15), Silberstein 2004 (0/50/100/200 mg, n = 116/118/126/113), ",
@@ -118,7 +118,7 @@ Boucher_2016_topiramate_mbma <- function() {
       "a placebo arm and a 200 mg arm; only Silberstein 2004 and Brandes ",
       "2004 contributed 50 mg arms."
     ),
-    notes          = paste0(
+    notes = paste0(
       "MBMA AT THE STUDY-ARM LEVEL: each modelled data point is one trial ",
       "arm's paresthesia event count out of that arm's subject total, and ",
       "the model is intended for simulating study-arm incidence rates - it ",

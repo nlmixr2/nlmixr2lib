@@ -41,8 +41,8 @@ Ambery_2015_batefenterol <- function() {
   # two-compartment disposition model (ADVAN4 TRANS4) with first-order
   # absorption") and Sect. 2.3 (plasma sampling, HPLC-MS/MS assay).
   compartmentData <- list(
-    depot       = list(analyte = "batefenterol", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "batefenterol", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "batefenterol", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "batefenterol", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "batefenterol", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
@@ -50,11 +50,11 @@ Ambery_2015_batefenterol <- function() {
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at screening",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at screening",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported for the PK model-building subset in Ambery 2015 Table 1",
         "(63 +/- 8.9 years). Covariates were screened only for the",
         "pharmacodynamic model; Sect. 3.1 states 'Covariates were not",
@@ -62,104 +62,104 @@ Ambery_2015_batefenterol <- function() {
         "Discussion cites Ribbing and Jonsson against covariate selection in",
         "data sets of fewer than 50 to 100 subjects (the PK set had 47)."
       ),
-      source_name        = "Age (years)"
+      source_name = "Age (years)"
     ),
     WT = list(
-      description        = "Body weight at screening",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at screening",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported for the PK model-building subset in Ambery 2015 Table 1",
         "(72 +/- 13 kg). Not screened on the PK model; see the AGE entry."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     HT = list(
-      description        = "Height at screening",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height at screening",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported for the PK model-building subset in Ambery 2015 Table 1",
         "(169 +/- 7.7 cm). Not screened on the PK model; see the AGE entry."
       ),
-      source_name        = "Height (cm)"
+      source_name = "Height (cm)"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Ambery 2015 Table 1 reports 62% male in the PK model-building",
         "subset, i.e. 38% female. Not screened on the PK model; see the",
         "AGE entry."
       ),
-      source_name        = "Male (%)"
+      source_name = "Male (%)"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former smoker",
-      notes              = paste(
+      notes = paste(
         "Ambery 2015 Table 1 reports 49% current smokers in the PK",
         "model-building subset; all patients were current or former smokers",
         "with at least a 10 pack-year history (Sect. 2.2). Not screened on",
         "the PK model; see the AGE entry."
       ),
-      source_name        = "Current smoker (%)"
+      source_name = "Current smoker (%)"
     ),
     CONMED_ICS = list(
-      description        = "Concurrent inhaled-corticosteroid use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent inhaled-corticosteroid use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concurrent ICS",
-      notes              = paste(
+      notes = paste(
         "Ambery 2015 Table 1 reports 53% concurrent ICS use in the PK",
         "model-building subset. Not screened on the PK model; see the AGE",
         "entry."
       ),
-      source_name        = "Concurrent ICS use (%)"
+      source_name = "Concurrent ICS use (%)"
     ),
     FEV1_BL = list(
-      description        = "Baseline (day 1) trough FEV1",
-      units              = "L",
-      type               = "continuous",
-      notes              = paste(
+      description = "Baseline (day 1) trough FEV1",
+      units = "L",
+      type = "continuous",
+      notes = paste(
         "Ambery 2015 Table 1 reports 1.36 +/- 0.42 L for the PK",
         "model-building subset. It is a retained covariate of the companion",
         "pharmacodynamic model (see modellib('Ambery_2015_batefenterol_fev1'))",
         "but was not screened on the PK model; see the AGE entry."
       ),
-      source_name        = "Baseline FEV1 on day 1 (L)"
+      source_name = "Baseline FEV1 on day 1 (L)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
     n_observations = 405L,
-    age_mean_sd    = "63 +/- 8.2 years (PD / PK-PD set); 63 +/- 8.9 years (PK model-building set)",
+    age_mean_sd = "63 +/- 8.2 years (PD / PK-PD set); 63 +/- 8.9 years (PK model-building set)",
     weight_mean_sd = "76 +/- 14 kg (PD / PK-PD set); 72 +/- 13 kg (PK model-building set)",
     height_mean_sd = "171 +/- 8.5 cm (PD / PK-PD set); 169 +/- 7.7 cm (PK model-building set)",
     sex_female_pct = 38,
-    disease_state  = paste(
+    disease_state = paste(
       "Moderate-to-severe stable COPD: post-bronchodilator FEV1/FVC below",
       "70% and FEV1 30-70% of predicted by NHANES III normative values;",
       "current or former smokers aged 40 years or above with at least a",
       "10 pack-year history; diagnosed asthma excluded"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "GSK961081 DISKUS 100, 400 and 800 ug once daily and 100, 200 and",
       "400 ug twice daily for 4 weeks; the PK model-building data set used",
       "only the 800 ug once-daily and 400 ug twice-daily arms on day 28"
     ),
-    regimens       = "Inhaled dry powder (DISKUS), once or twice daily for 28 days",
-    regions        = "Multicenter international (GSK MAB115032 / NCT01319019)",
-    notes          = paste(
+    regimens = "Inhaled dry powder (DISKUS), once or twice daily for 28 days",
+    regions = "Multicenter international (GSK MAB115032 / NCT01319019)",
+    notes = paste(
       "Ambery 2015 Table 1 gives demographics for two overlapping analysis",
       "sets: the PD / PK-PD set (n = 347) and the PK model-building set",
       "(n = 47). The population block above describes the PK model-building",

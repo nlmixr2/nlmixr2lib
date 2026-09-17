@@ -147,7 +147,9 @@ test_that("every model in the registry responds to a dose", {
   unsupported <- character(0)
   for (n in names_) {
     r <- probeSolveModel(n, db)
-    if (identical(r$status, "skip")) next
+    if (identical(r$status, "skip")) {
+      next
+    }
     if (!identical(r$status, "ok")) {
       # An outright solve failure has two very different causes, and they must
       # not be conflated. If the same model solves with the conversion
@@ -171,7 +173,8 @@ test_that("every model in the registry responds to a dose", {
   }
 
   expect_equal(
-    setdiff(dead, knownLinCmtDropModels), character(0),
+    setdiff(dead, knownLinCmtDropModels),
+    character(0),
     info = paste0(
       "Model(s) that a dose does not reach under default rxSolve() arguments: ",
       paste(setdiff(dead, knownLinCmtDropModels), collapse = ", "),
@@ -181,7 +184,8 @@ test_that("every model in the registry responds to a dose", {
     )
   )
   expect_equal(
-    setdiff(brokenByConversion, knownLinCmtDropModels), character(0),
+    setdiff(brokenByConversion, knownLinCmtDropModels),
+    character(0),
     info = paste0(
       "Model(s) that fail to solve under default rxSolve() arguments but ",
       "solve with useLinCmt = FALSE: ",
@@ -195,8 +199,7 @@ test_that("every model in the registry responds to a dose", {
     character(0),
     info = paste0(
       "Model(s) the probe could not solve either way: ",
-      paste(setdiff(unsupported, c(probeUnsupportedModels, knownBrokenModels)),
-            collapse = ", "),
+      paste(setdiff(unsupported, c(probeUnsupportedModels, knownBrokenModels)), collapse = ", "),
       ". Either the model is broken or helper-solveProbe.R needs to learn how ",
       "to drive it -- work out which, then add it to knownBrokenModels or to ",
       "probeUnsupportedModels accordingly. Do not put a broken model in ",
@@ -234,15 +237,19 @@ test_that("rxode2's linCmt() optimisation never changes a model's solution", {
   for (n in names_) {
     lin <- probeSolveModel(n, db, useLinCmt = TRUE)
     ode <- probeSolveModel(n, db, useLinCmt = FALSE)
-    if (!identical(lin$status, "ok") || !identical(ode$status, "ok")) next
+    if (!identical(lin$status, "ok") || !identical(ode$status, "ok")) {
+      next
+    }
     if (probeMaxRelDiff(lin, ode) > 1e-4) divergent <- c(divergent, n)
   }
 
   expect_equal(
-    setdiff(divergent, knownLinCmtDropModels), character(0),
+    setdiff(divergent, knownLinCmtDropModels),
+    character(0),
     info = paste0(
       "Model(s) that solve differently with and without rxode2's linCmt ",
-      "conversion: ", paste(setdiff(divergent, knownLinCmtDropModels), collapse = ", "),
+      "conversion: ",
+      paste(setdiff(divergent, knownLinCmtDropModels), collapse = ", "),
       ". The conversion has dropped a term the analytical solution cannot ",
       "represent; see the comment at the top of this file."
     )
@@ -267,10 +274,11 @@ test_that("the linCmt-drop quarantine contains no model that already solves", {
   for (nm in knownLinCmtDropModels) {
     expect_true(
       nm %in% db$name,
-      info = paste0(nm, " is quarantined but is not in the registry; ",
-                    "remove it from knownLinCmtDropModels.")
+      info = paste0(nm, " is quarantined but is not in the registry; ", "remove it from knownLinCmtDropModels.")
     )
-    if (!nm %in% db$name) next
+    if (!nm %in% db$name) {
+      next
+    }
     lin <- probeSolveModel(nm, db, useLinCmt = TRUE)
     ode <- probeSolveModel(nm, db, useLinCmt = FALSE)
     stillBroken <- identical(ode$status, "ok") &&
@@ -278,7 +286,10 @@ test_that("the linCmt-drop quarantine contains no model that already solves", {
     expect_true(
       stillBroken,
       # nolint next: line_length_linter.
-      label = paste0(nm, " now solves the same with and without rxode2's linCmt conversion, so it must be removed from knownLinCmtDropModels")
+      label = paste0(
+        nm,
+        " now solves the same with and without rxode2's linCmt conversion, so it must be removed from knownLinCmtDropModels"
+      )
     )
   }
 })

@@ -228,7 +228,6 @@ Navid_2016_theophylline_pbpk <- function() {
     urine_cip = list(analyte = "ciprofloxacin", units = "mmol", specimen = "urine", verified = TRUE)
   )
 
-
   population <- list(
     species = "human",
     n_subjects = NA_integer_,

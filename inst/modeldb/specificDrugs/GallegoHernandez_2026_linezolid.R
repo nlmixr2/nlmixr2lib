@@ -29,18 +29,20 @@ GallegoHernandez_2026_linezolid <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, CKD-EPI equation, in ABSOLUTE mL/min (de-normalized, NOT mL/min/1.73 m^2).",
-      units              = "mL/min (absolute, NOT BSA-normalized)",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, CKD-EPI equation, in ABSOLUTE mL/min (de-normalized, NOT mL/min/1.73 m^2).",
+      units = "mL/min (absolute, NOT BSA-normalized)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance as the centred power term (CRCL / 59.56)^0.29 (Results 3.2 final-model",
         "equation). Three cautions carry forward. First, the normalisation: Methods 2.1 states",
         "that 'the CKD-EPI estimated glomerular filtration rate (eGFR) expressed in absolute",
@@ -60,14 +62,14 @@ GallegoHernandez_2026_linezolid <- function() {
         "The paper tested Cockcroft-Gault on several weight descriptors as well and found",
         "absolute eGFR the strongest predictor."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     AGE = list(
-      description        = "Age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance as the centred power term (AGE / 78)^-1.16 (Results 3.2 final-model",
         "equation), so clearance FALLS with advancing age. The 78-year centring constant is the",
         "development-cohort median (Table 1). Two cautions. First, the exponent is steep",
@@ -82,14 +84,14 @@ GallegoHernandez_2026_linezolid <- function() {
         "factor 1.05), concluding age carries explanatory information beyond eGFR in this",
         "dataset. Treated as time-fixed."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     T_FIRSTDOSE = list(
-      description        = "Time elapsed since the first linezolid dose of the treatment course, i.e. treatment duration.",
-      units              = "h",
-      type               = "continuous",
+      description = "Time elapsed since the first linezolid dose of the treatment course, i.e. treatment duration.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The paper's DAY covariate, 'treatment duration in days'. Carried in canonical HOURS and",
         "divided by 24 inside model() to recover the paper's days, exactly as the T_FIRSTDOSE",
         "register entry prescribes and as Eechoute_2012_imatinib.R and",
@@ -110,7 +112,7 @@ GallegoHernandez_2026_linezolid <- function() {
         "function, TDM-driven dose adaptation or survivor bias as much as any time-dependent",
         "pharmacokinetic process (Discussion)."
       ),
-      source_name        = "DAY"
+      source_name = "DAY"
     )
   )
 
@@ -121,90 +123,124 @@ GallegoHernandez_2026_linezolid <- function() {
   # they are deliberately absent from model() and from covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description = "Total body weight.", units = "kg", type = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       notes = "Development-cohort median 70 kg (IQR 60-80), Table 1. Screened and not retained. Ideal body weight (median 58.5 kg, IQR 54-64.3), adjusted body weight (0.4 correction factor), body mass index (median 26.6 kg/m^2, IQR 23.8-30.0) and body surface area (Mosteller) were also collected and screened; note that weight descriptors entered the screen chiefly as inputs to alternative Cockcroft-Gault renal-function estimators, all of which lost to absolute CKD-EPI eGFR (Results 3.2)."
     ),
     SEXF = list(
-      description = "Female sex indicator.", units = "1 = female, 0 = male", type = "categorical",
+      description = "Female sex indicator.",
+      units = "1 = female, 0 = male",
+      type = "categorical",
       notes = "Development cohort 65.0% male, i.e. 35.0% female (Table 1). Screened and not retained."
     ),
     ALB = list(
-      description = "Serum albumin.", units = "g/dL", type = "continuous",
+      description = "Serum albumin.",
+      units = "g/dL",
+      type = "continuous",
       notes = "Development-cohort median 3.0 g/dL (IQR 2.7-3.3), Table 1. Screened and not retained."
     ),
     CREAT = list(
-      description = "Serum creatinine.", units = "mg/dL", type = "continuous",
+      description = "Serum creatinine.",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Collected (Methods 2.1) as the input to both the Cockcroft-Gault and CKD-EPI renal-function estimators. Not tabulated as a standalone row in Table 1 and not retained in its raw form; renal function entered the model through CRCL instead."
     ),
     ALT = list(
-      description = "Alanine aminotransferase (hepatic-function marker).", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase (hepatic-function marker).",
+      units = "U/L",
+      type = "continuous",
       notes = "Development-cohort median 24 U/L (IQR 11.5-36.5), Table 1. Screened and not retained."
     ),
     AST = list(
-      description = "Aspartate aminotransferase (hepatic-function marker).", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase (hepatic-function marker).",
+      units = "U/L",
+      type = "continuous",
       notes = "Development-cohort median 44 U/L (IQR 30-77), Table 1. Screened and not retained."
     ),
     TBILI = list(
-      description = "Total bilirubin (hepatic-function marker).", units = "mg/dL", type = "continuous",
+      description = "Total bilirubin (hepatic-function marker).",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Development-cohort median 0.4 mg/dL (IQR 0.3-0.6), Table 1, where it is abbreviated BLT. Screened and not retained."
     ),
     LDH = list(
-      description = "Lactate dehydrogenase.", units = "U/L", type = "continuous",
+      description = "Lactate dehydrogenase.",
+      units = "U/L",
+      type = "continuous",
       notes = "Development-cohort median 212.0 U/L (IQR 174.5-285.5), Table 1. Screened and not retained."
     ),
     TPRO = list(
-      description = "Total serum protein.", units = "g/dL", type = "continuous",
+      description = "Total serum protein.",
+      units = "g/dL",
+      type = "continuous",
       notes = "Development-cohort median 5.5 g/dL (IQR 5.1-6.0), Table 1. Screened and not retained."
     ),
     CRP = list(
-      description = "C-reactive protein (inflammation marker).", units = "mg/L", type = "continuous",
+      description = "C-reactive protein (inflammation marker).",
+      units = "mg/L",
+      type = "continuous",
       notes = "Development-cohort median 9.4 mg/L (IQR 4.0-19.2), Table 1. Screened and not retained."
     ),
     PROCALCITONIN = list(
-      description = "Serum procalcitonin (inflammation / sepsis marker).", units = "ng/mL", type = "continuous",
+      description = "Serum procalcitonin (inflammation / sepsis marker).",
+      units = "ng/mL",
+      type = "continuous",
       notes = "Development-cohort median 0.5 ng/mL (IQR 0.2-1.3), Table 1. Screened and not retained."
     ),
     HGB = list(
-      description = "Haemoglobin.", units = "g/dL", type = "continuous",
+      description = "Haemoglobin.",
+      units = "g/dL",
+      type = "continuous",
       notes = "Development-cohort median 10.1 g/dL (IQR 9.0-11.6), Table 1. Collected as a linezolid haematological-toxicity marker as well as a screened covariate. Not retained."
     ),
     PLT = list(
-      description = "Platelet count.", units = "10^9/L", type = "continuous",
+      description = "Platelet count.",
+      units = "10^9/L",
+      type = "continuous",
       notes = "Development-cohort median 241 x10^9/L (IQR 172.5-349.5), Table 1. Collected chiefly as the linezolid thrombocytopenia marker. Not retained."
     ),
     CONMED_RIF = list(
-      description = "Concomitant rifampicin indicator (a known inducer).", units = "1 = yes, 0 = no", type = "categorical",
+      description = "Concomitant rifampicin indicator (a known inducer).",
+      units = "1 = yes, 0 = no",
+      type = "categorical",
       notes = "3 of 103 development-cohort patients (2.9%), Table 1. Methods 2.1 states that concomitant medications with potential pharmacokinetic interaction were recorded 'with particular attention to known enzyme or transporter inducers and inhibitors, including rifampicin and macrolides'. Not retained; at n = 3 the cohort carries almost no information about this interaction."
     ),
     CONMED_MACROLIDE = list(
-      description = "Concomitant macrolide indicator.", units = "1 = yes, 0 = no", type = "categorical",
+      description = "Concomitant macrolide indicator.",
+      units = "1 = yes, 0 = no",
+      type = "categorical",
       notes = "7 of 103 development-cohort patients (6.8%), Table 1. Screened per Methods 2.1 and not retained."
     ),
     CONMED_PPI = list(
-      description = "Concomitant proton-pump-inhibitor indicator.", units = "1 = yes, 0 = no", type = "categorical",
+      description = "Concomitant proton-pump-inhibitor indicator.",
+      units = "1 = yes, 0 = no",
+      type = "categorical",
       notes = "88 of 103 development-cohort patients (85.4%), Table 1. Recorded as part of the polypharmacy profile; not retained. Note the near-universal prevalence leaves little contrast to estimate an effect from."
     ),
     CONMED_AZOLE = list(
-      description = "Concomitant azole antifungal indicator (CYP3A4 / P-gp inhibitor).", units = "1 = yes, 0 = no", type = "categorical",
+      description = "Concomitant azole antifungal indicator (CYP3A4 / P-gp inhibitor).",
+      units = "1 = yes, 0 = no",
+      type = "categorical",
       notes = "13 of 103 development-cohort patients (12.6%), Table 1. Screened per Methods 2.1 and not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 103,
-    n_studies      = 1,
-    age_median     = "78 years (range 65-87)",
-    age_range      = "65-87 years",
-    weight_median  = "70 kg (IQR 60-80)",
-    bmi_median     = "26.6 kg/m^2 (IQR 23.8-30.0)",
+    species = "human",
+    n_subjects = 103,
+    n_studies = 1,
+    age_median = "78 years (range 65-87)",
+    age_range = "65-87 years",
+    weight_median = "70 kg (IQR 60-80)",
+    bmi_median = "26.6 kg/m^2 (IQR 23.8-30.0)",
     sex_female_pct = 35.0,
     race_ethnicity = "Single-centre Spanish cohort; race/ethnicity not reported in the source.",
-    disease_state  = "Elderly hospitalized adults receiving intravenous linezolid as targeted or empirical therapy for Gram-positive infection. Diagnoses in the development cohort were respiratory infection 21.4%, skin and soft tissue infection 22.3%, urinary tract infection 23.3% and other infections 33.0% (Table 1). Patients on oral linezolid, with active oncological or haematological disease, on renal replacement therapy, or critically ill requiring ICU admission were EXCLUDED by design, so the model carries no information about those groups.",
+    disease_state = "Elderly hospitalized adults receiving intravenous linezolid as targeted or empirical therapy for Gram-positive infection. Diagnoses in the development cohort were respiratory infection 21.4%, skin and soft tissue infection 22.3%, urinary tract infection 23.3% and other infections 33.0% (Table 1). Patients on oral linezolid, with active oncological or haematological disease, on renal replacement therapy, or critically ill requiring ICU admission were EXCLUDED by design, so the model carries no information about those groups.",
     renal_function = "Broad and skewed towards impairment: absolute CKD-EPI eGFR median 48.8 mL/min (IQR 25.9-75.4). Strata: >90 mL/min 11.7%, 60-89 mL/min 26.2%, 30-59 mL/min 32.0%, <30 mL/min 30.1% (Table 1). Values were capped at 130 mL/min for modelling. Renal replacement therapy was an exclusion criterion.",
-    dose_range     = "All patients started intravenous linezolid 600 mg every 12 h as a 1-h infusion, after which dosing was individualized on TDM results. Development-cohort daily dose median 1200 mg/day (range 300-1800), maximum daily dose median 1200 mg/day (range 600-2400), daily dose per body weight median 14.7 mg/kg/day (IQR 10.0-17.7). Treatment duration median 7 days (range 3-26).",
-    regions        = "Spain (University Hospital of Salamanca).",
-    notes          = paste(
+    dose_range = "All patients started intravenous linezolid 600 mg every 12 h as a 1-h infusion, after which dosing was individualized on TDM results. Development-cohort daily dose median 1200 mg/day (range 300-1800), maximum daily dose median 1200 mg/day (range 600-2400), daily dose per body weight median 14.7 mg/kg/day (IQR 10.0-17.7). Treatment duration median 7 days (range 3-26).",
+    regions = "Spain (University Hospital of Salamanca).",
+    notes = paste(
       "Retrospective, single-centre study of routine TDM records, January 2024 to September",
       "2025. 149 patients contributing 293 quantifiable serum concentrations were randomly",
       "split about 2:1 into a development cohort of 103 patients / 198 concentrations (the fit",

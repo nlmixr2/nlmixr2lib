@@ -38,8 +38,10 @@ Kloprogge_2015_artesunate <- function() {
   # here as paper-specific, following the Ahmed_2015_topiramate.R
   # (propSdOral / propSdIv) and AitOudhia_2024_sotatercept.R precedents.
   paper_specific_residual_sds <- c(
-    "expSdIv", "expSdOral",
-    "expSd_dihydroartIv", "expSd_dihydroartOral"
+    "expSdIv",
+    "expSdOral",
+    "expSd_dihydroartIv",
+    "expSd_dihydroartOral"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -48,27 +50,27 @@ Kloprogge_2015_artesunate <- function() {
   # modelled simultaneously as their natural logarithms"; the 1:1 molar
   # conversion of AS to DHA therefore needs no molecular-weight factor.
   compartmentData <- list(
-    depot                  = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit1               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit2               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit3               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit4               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit5               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit6               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit7               = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
-    central                = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1            = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = TRUE),
-    central_dihydroart     = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit6 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit7 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = TRUE),
+    central_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with exponents fixed to 0.75 on every clearance",
         "parameter (CL and Q of both artesunate and dihydroartemisinin) and to 1",
         "on every volume parameter (Vc and Vp of both species), per Kloprogge",
@@ -83,14 +85,14 @@ Kloprogge_2015_artesunate <- function() {
         "included allometry, 'to correct for differences in bodyweight between",
         "the pregnancy and post-partum visit' (Methods)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Pregnancy status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = second or third trimester of pregnancy; 0 = not pregnant (the same",
         "women restudied 3 months post-partum). Time-varying within subject: the",
         "source design re-enrolled 15 of the 20 pregnant patients as healthy",
@@ -110,14 +112,14 @@ Kloprogge_2015_artesunate <- function() {
         "estimated gestational age as a continuous covariate were both tested and",
         "were unstable and not superior to the binary indicator."
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     DIS_MALARIA_ACUTE = list(
-      description        = "Acute symptomatic phase of a Plasmodium falciparum malaria episode",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute symptomatic phase of a Plasmodium falciparum malaria episode",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = the record falls in the acute phase of the malaria episode (study",
         "days 1 and 2); 0 = convalescent or healthy (study day 7 of the treated",
         "episode, and every record from the post-partum healthy-volunteer visit).",
@@ -140,14 +142,14 @@ Kloprogge_2015_artesunate <- function() {
         "function tests (or fever > 37.5 degC with tachycardia > 100 beats/min),",
         "and a disease-severity count of fulfilled criteria (Methods)."
       ),
-      source_name        = "DISEASE"
+      source_name = "DISEASE"
     ),
     ROUTE_IV = list(
-      description        = "Intravenous (vs oral) route of administration for the record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intravenous (vs oral) route of administration for the record",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = intravenous artesunate, 0 = ORAL artesunate. The reference category",
         "here is oral, not subcutaneous. Per-dose-record / per-observation",
         "indicator: every patient received both routes in the source design",
@@ -163,23 +165,23 @@ Kloprogge_2015_artesunate <- function() {
         "input of the fixed 0.0167 h = 1 min duration applies automatically); set",
         "ROUTE_IV = 0 and dose into 'depot' for the oral route."
       ),
-      source_name        = "ROUTE"
+      source_name = "ROUTE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_pregnant     = 20L,
-    n_postpartum   = 15L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_pregnant = 20L,
+    n_postpartum = 15L,
+    n_studies = 1L,
     n_observations = "1571 plasma samples (920 during the pregnancy visit, 651 during the post-partum visit; Table 1). More than 45% of the artesunate observations were below the 1.2 ng/mL limit of quantification and were handled with the M3 likelihood method rather than being discarded.",
-    age_range      = "not reported (adult women of childbearing age)",
-    weight_range   = "40.0-64.0 kg pregnant (median 48.0); 37.0-52.0 kg post-partum (median 46.0) (Table 1)",
-    weight_median  = "46 kg is the typical-value reference weight of Table 2",
+    age_range = "not reported (adult women of childbearing age)",
+    weight_range = "40.0-64.0 kg pregnant (median 48.0); 37.0-52.0 kg post-partum (median 46.0) (Table 1)",
+    weight_median = "46 kg is the typical-value reference weight of Table 2",
     sex_female_pct = 100,
     race_ethnicity = "Karen and Burmese migrant and refugee women on the north-western border of Thailand and Myanmar (Shoklo Malaria Research Unit)",
-    disease_state  = paste(
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria in the second or third",
       "trimester of pregnancy, with haematocrit not lower than 25%. Estimated",
       "gestational age 25.7 weeks (range 14.0-38.0) by dating ultrasound, 10",
@@ -190,8 +192,8 @@ Kloprogge_2015_artesunate <- function() {
       "singleton babies at a mean 39.2 weeks (range 35.6-41.5) and 3 were lost to",
       "follow-up."
     ),
-    ga_range       = "14.0-38.0 weeks estimated gestational age at enrolment (median 25.7)",
-    dose_range     = paste(
+    ga_range = "14.0-38.0 weeks estimated gestational age at enrolment (median 25.7)",
+    dose_range = paste(
       "4 mg/kg artesunate daily for 7 days, with one of the seven doses given",
       "intravenously: group 1 received intravenous artesunate on admission",
       "followed by oral artesunate on the next 6 days; group 2 received oral",
@@ -202,9 +204,9 @@ Kloprogge_2015_artesunate <- function() {
       "Pharmaceutical Factory and repackaged by Atlantic Pharmaceuticals; the same",
       "drug lots were reserved for the post-partum visit."
     ),
-    sampling       = "Days 1 and 2: 0, 5, 15, 30, 60, 120, 180, 240 and 360 min after an intravenous dose, or 0, 15, 30, 60, 90, 120, 180, 240 and 360 min after an oral dose. Day 7: 0, 60, 120, 240 and 360 min after dose in all patients.",
-    regions        = "Thailand-Myanmar border (Shoklo Malaria Research Unit clinics), April 2008 to March 2009",
-    notes          = paste(
+    sampling = "Days 1 and 2: 0, 5, 15, 30, 60, 120, 180, 240 and 360 min after an intravenous dose, or 0, 15, 30, 60, 90, 120, 180, 240 and 360 min after an oral dose. Day 7: 0, 60, 120, 240 and 360 min after dose in all patients.",
+    regions = "Thailand-Myanmar border (Shoklo Malaria Research Unit clinics), April 2008 to March 2009",
+    notes = paste(
       "Re-analysis of a previously published pharmacokinetic study; the",
       "non-compartmental results of the same data appear in reference [8] of the",
       "source paper. Ethical approval TM-IR 029/2005 (Mahidol University) and",

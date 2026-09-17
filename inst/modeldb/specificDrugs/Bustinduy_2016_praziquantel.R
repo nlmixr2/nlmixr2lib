@@ -31,8 +31,8 @@ Bustinduy_2016_praziquantel <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "praziquantel", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "praziquantel", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "praziquantel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "praziquantel", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "praziquantel", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -41,9 +41,9 @@ Bustinduy_2016_praziquantel <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened but NOT retained. Methods (Pharmacokinetic population analyses): 'Potential",
         "relationships between each model parameter and covariates (e.g., weight, age, and gender)",
         "were explored by plotting the Bayesian posterior estimate for the parameter against the",
@@ -58,9 +58,9 @@ Bustinduy_2016_praziquantel <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened against the Bayesian posterior parameter estimates but not retained (Methods;",
         "Results). Cohort range 3-8 years, split by the authors into preschool (3-5 years, n = 17)",
         "and school-aged (6-8 years, n = 43) strata in Table 1.",
@@ -69,9 +69,9 @@ Bustinduy_2016_praziquantel <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened as 'gender' against the Bayesian posterior parameter estimates but not retained in",
         "the PK model (Methods; Results). 38 of 60 enrolled children (63.3%) were female. Female sex",
         "does appear in the separate logistic cure-rate analysis (Table 5, unadjusted OR 3.18,",
@@ -82,16 +82,16 @@ Bustinduy_2016_praziquantel <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 59L,
-    n_studies        = 1L,
-    age_range        = "3-8 years",
-    age_median       = "Means by arm: 6.4 years (40 mg/kg) and 6.3 years (60 mg/kg); median not reported",
-    weight_range     = "15-34 kg",
-    weight_median    = "Means by arm: 21.8 kg (40 mg/kg) and 23.0 kg (60 mg/kg); median not reported",
-    sex_female_pct   = 63.3,
-    race_ethnicity   = "Not reported (Ugandan children from Bugoigo and Walukuba villages on the shore of Lake Albert)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
+    age_range = "3-8 years",
+    age_median = "Means by arm: 6.4 years (40 mg/kg) and 6.3 years (60 mg/kg); median not reported",
+    weight_range = "15-34 kg",
+    weight_median = "Means by arm: 21.8 kg (40 mg/kg) and 23.0 kg (60 mg/kg); median not reported",
+    sex_female_pct = 63.3,
+    race_ethnicity = "Not reported (Ugandan children from Bugoigo and Walukuba villages on the shore of Lake Albert)",
+    disease_state = paste(
       "Egg-patent Schistosoma mansoni intestinal schistosomiasis in a hyperendemic setting.",
       "Baseline intensity by Kato-Katz: heavy (>400 epg) 23 children, medium (100-399 epg) 17,",
       "light (1-100 epg) 19, and 1 child egg-negative but CCA-positive. Arithmetic mean baseline",
@@ -101,13 +101,13 @@ Bustinduy_2016_praziquantel <- function() {
       "before the study and had tolerated it.",
       sep = " "
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Single oral dose of praziquantel, randomised 1:1 to 40 mg/kg (n = 30) or 60 mg/kg (n = 30),",
       "administered after a breakfast of local foods because food increases PZQ bioavailability.",
       sep = " "
     ),
-    regions          = "Uganda (Bugoigo and Walukuba villages, Lake Albert)",
-    notes            = paste(
+    regions = "Uganda (Bugoigo and Walukuba villages, Lake Albert)",
+    notes = paste(
       "Baseline demographics from Bustinduy 2016 Table 1 (60 enrolled). 59 children completed the",
       "protocol and entered the population PK analysis (one child was withdrawn 6 h into sampling",
       "with falciparum malaria); 58 were available at the 24-day pharmacodynamic follow-up. Venous",

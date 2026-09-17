@@ -63,19 +63,19 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
   # checkModelConventions() is not asked to reconcile a dimensional pair
   # that does not exist in this model.
   units <- list(
-    time          = "month",
-    dosing        = "n/a (no dosing; treatment enters as trial-arm indicators)",
+    time = "month",
+    dosing = "n/a (no dosing; treatment enters as trial-arm indicators)",
     concentration = "n/a (no drug concentration is modelled)",
-    response      = "month (mos, the study arm's median overall survival; the fitted response lnmos is its natural logarithm and is dimensionless)"
+    response = "month (mos, the study arm's median overall survival; the fitted response lnmos is its natural logarithm and is dimensionless)"
   )
 
   covariateData <- list(
     ON_TREATMENT = list(
-      description        = "Indicator that the trial arm received a systemic antiangiogenic therapy (AAT) rather than placebo. 1 = AAT arm, 0 = placebo arm.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the trial arm received a systemic antiangiogenic therapy (AAT) rather than placebo. 1 = AAT arm, 0 = placebo arm.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm, which selects the separately estimated lmos_pbo intercept rather than a shift away from lmos_aat)",
-      notes              = paste0(
+      notes = paste0(
         "MBMA trial-arm indicator. Zierhut 2016 carries the paper's AAT and ",
         "PBO indicators as two SEPARATE intercepts with no shared intercept, ",
         "and states in Results 'Final model' that the two are 'mutually ",
@@ -94,14 +94,14 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
         "together with SORAFENIB = 1 is outside the source's calibration - no ",
         "placebo arm was a sorafenib arm."
       ),
-      source_name        = "AAT / PBO (Zierhut 2016 Results 'Final model' equation and Table 1)"
+      source_name = "AAT / PBO (Zierhut 2016 Results 'Final model' equation and Table 1)"
     ),
     SORAFENIB = list(
-      description        = "Indicator that the antiangiogenic therapy administered in this trial arm was sorafenib rather than one of the other antiangiogenic agents.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the antiangiogenic therapy administered in this trial arm was sorafenib rather than one of the other antiangiogenic agents.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a non-sorafenib AAT arm, or a placebo arm)",
-      notes              = paste0(
+      notes = paste0(
         "MBMA per-drug trial-arm indicator, applied ON TOP OF ON_TREATMENT ",
         "rather than instead of it: Zierhut 2016 Table 3 reports ",
         "exp(theta_SOR) = 121%, i.e. a sorafenib arm's median overall ",
@@ -125,14 +125,14 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
         "information at all and no sorafenib dose was a covariate in this ",
         "meta-analysis."
       ),
-      source_name        = "SOR (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
+      source_name = "SOR (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
     ),
     CONMED_LOCOREGIONAL = list(
-      description        = "Indicator that the trial arm received a concomitant locoregional liver-directed therapy alongside its systemic treatment.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the trial arm received a concomitant locoregional liver-directed therapy alongside its systemic treatment.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (systemic therapy alone; no concomitant locoregional procedure)",
-      notes              = paste0(
+      notes = paste0(
         "MBMA trial-arm study-design indicator. Zierhut 2016 Results 'Final ",
         "model' defines the locoregional class explicitly: 'LOC therapy ",
         "consisted of transarterial chemoembolization, SIRspheres, or ",
@@ -150,14 +150,14 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
         "family alongside CONMED_CHEMO and CONMED_PLATIN, which likewise name ",
         "a class of concomitant therapy rather than a single INN."
       ),
-      source_name        = "LOC / 'Concomitant LOC' (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
+      source_name = "LOC / 'Concomitant LOC' (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
     ),
     DIS_CHB_PERCENT = list(
-      description        = "Percentage (0-100) of the trial arm's enrolled population who were hepatitis B virus positive at baseline.",
-      units              = "%",
-      type               = "continuous",
+      description = "Percentage (0-100) of the trial arm's enrolled population who were hepatitis B virus positive at baseline.",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "MBMA trial-arm cohort-prevalence covariate, scaled in PERCENT and ",
         "not as a fraction: Zierhut 2016 Table 3 gives the coefficient in ",
         "'d.u./%' and the Results gloss it as 'mOS decreases by ~0.4% for ",
@@ -175,14 +175,14 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
         "(Methods 'Data processing'), so 30% of the arms carry an imputed ",
         "value. Supply 0-100, not 0-1."
       ),
-      source_name        = "HBV / 'Percent with HBV' (Zierhut 2016 Results 'Final model' equation, Table 2 and Table 3)"
+      source_name = "HBV / 'Percent with HBV' (Zierhut 2016 Results 'Final model' equation, Table 2 and Table 3)"
     ),
     PRIOR_SYSTEMIC = list(
-      description        = "Indicator that the ENTIRE enrolled population of the trial arm had received prior systemic anticancer therapy, i.e. the arm is wholly second-line or later.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the ENTIRE enrolled population of the trial arm had received prior systemic anticancer therapy, i.e. the arm is wholly second-line or later.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the arm was not wholly pretreated: first-line arms and arms of mixed treatment-line composition both take 0)",
-      notes              = paste0(
+      notes = paste0(
         "MBMA trial-arm cohort-composition flag, NOT an individual patient's ",
         "treatment history. The threshold is all-or-nothing: Zierhut 2016 ",
         "Table 1 counts 7 arms of 'All second line patients' and 43 of 'All ",
@@ -206,14 +206,14 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
         "and harm, and the Discussion cautions that with only 7 informative ",
         "arms 'their true impact may not have been fully accounted for'."
       ),
-      source_name        = "PTx / 'All second line patients' (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
+      source_name = "PTx / 'All second line patients' (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
     ),
     CONMED_CHEMO = list(
-      description        = "Indicator that the trial arm received concomitant cytotoxic chemotherapy alongside its antiangiogenic or placebo treatment.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the trial arm received concomitant cytotoxic chemotherapy alongside its antiangiogenic or placebo treatment.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant chemotherapy)",
-      notes              = paste0(
+      notes = paste0(
         "MBMA trial-arm study-design indicator; Zierhut 2016 Table 1 records ",
         "13 arms with concomitant chemotherapy of the 68 total. Reuses the ",
         "registered CONMED_CHEMO column in its general sense - any ",
@@ -231,7 +231,7 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
         "and the per-agent CONMED_<INN> columns, none of which this source ",
         "resolves."
       ),
-      source_name        = "CTx / 'Concomitant CTx' (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
+      source_name = "CTx / 'Concomitant CTx' (Zierhut 2016 Results 'Final model' equation, Table 1 and Table 3)"
     )
   )
 
@@ -242,51 +242,51 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Trial-arm mean age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Zierhut 2016 Table 2: 60.2 years (SD 6.8), median 60 [47, 75], reported in 83% of arms. Screened as 'median age' in the forward-selection covariate set (Methods 'Model building') and not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Zierhut 2016 Table 2: 60.2 years (SD 6.8), median 60 [47, 75], reported in 83% of arms. Screened as 'median age' in the forward-selection covariate set (Methods 'Model building') and not retained."
     ),
     SEXF = list(
       description = "Percentage of the trial arm that was male; the paper screened the male rather than the female percentage.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Zierhut 2016 Table 2 reports 'Percent male' 78.6 (SD 9.7), median 80.1 [55, 94.7], reported in 79% of arms; the arm-level female percentage is its complement. Screened as 'percent of population ... male' and not retained."
+      units = "%",
+      type = "continuous",
+      notes = "Zierhut 2016 Table 2 reports 'Percent male' 78.6 (SD 9.7), median 80.1 [55, 94.7], reported in 79% of arms; the arm-level female percentage is its complement. Screened as 'percent of population ... male' and not retained."
     ),
     RACE_ASIAN_PCT = list(
       description = "Asian trial-site indicator; the source screened a whole-trial Asian-site flag rather than a continuous Asian percentage.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Zierhut 2016 Table 1 records 22 trials of 59 conducted at Asian study sites. Not significant in the forward selection. Re-examined post hoc as a placebo-arm-specific covariate after the axitinib trial reported an Asian-site benefit, where it showed a trend only (delta MOF = -2.63, short of the 3.84 entry threshold); the Discussion reports the resulting model-predicted mOS ratios of 0.821 (Asian) and 0.902 (non-Asian) but no fitted coefficient, so nothing is encodable."
+      units = "(binary)",
+      type = "binary",
+      notes = "Zierhut 2016 Table 1 records 22 trials of 59 conducted at Asian study sites. Not significant in the forward selection. Re-examined post hoc as a placebo-arm-specific covariate after the axitinib trial reported an Asian-site benefit, where it showed a trend only (delta MOF = -2.63, short of the 3.84 entry threshold); the Discussion reports the resulting model-predicted mOS ratios of 0.821 (Asian) and 0.902 (non-Asian) but no fitted coefficient, so nothing is encodable."
     ),
     PS_ECOG_0_PCT = list(
       description = "Percentage of the trial arm with an ECOG performance status of 0.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Zierhut 2016 Table 2: 43.1% (SD 17.4), median 36.3 [0, 100], reported in 58% of arms. A companion 'Percent with ECOG < 2' row reads 90.8% (SD 9.5), median 94.4 [76.8, 100], reported in 73% of arms. Neither was retained."
+      units = "%",
+      type = "continuous",
+      notes = "Zierhut 2016 Table 2: 43.1% (SD 17.4), median 36.3 [0, 100], reported in 58% of arms. A companion 'Percent with ECOG < 2' row reads 90.8% (SD 9.5), median 94.4 [76.8, 100], reported in 73% of arms. Neither was retained."
     ),
     DIS_CHILDPUGH_A_PCT = list(
       description = "Percentage of the trial arm with Child-Pugh class A liver function.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Zierhut 2016 Table 2: 82.7% (SD 16.1), median 83.9 [7.4, 100], reported in 80% of arms; the class B row reads 13.7% (SD 15.5), median 8.5 [0, 92.6]. Child-Pugh B percentage is named in Methods 'Model building' as one of the screened covariates and was not retained. No canonical column is minted for either, because neither is used by any model."
+      units = "%",
+      type = "continuous",
+      notes = "Zierhut 2016 Table 2: 82.7% (SD 16.1), median 83.9 [7.4, 100], reported in 80% of arms; the class B row reads 13.7% (SD 15.5), median 8.5 [0, 92.6]. Child-Pugh B percentage is named in Methods 'Model building' as one of the screened covariates and was not retained. No canonical column is minted for either, because neither is used by any model."
     ),
     YEAR_PUB = list(
       description = "Publication year of the source study.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Zierhut 2016 Table 2: 2010.6 (SD 1.70), median 2011 [2005, 2012]. Tested prospectively as a proxy for improving best supportive care over time and not significant (delta MOF = -0.449). The Discussion argues this is the most likely explanation for the phase II trial's higher observed mOS in BOTH arms, while noting the dataset shows no evidence of the trend."
+      units = "year",
+      type = "continuous",
+      notes = "Zierhut 2016 Table 2: 2010.6 (SD 1.70), median 2011 [2005, 2012]. Tested prospectively as a proxy for improving best supportive care over time and not significant (delta MOF = -0.449). The Discussion argues this is the most likely explanation for the phase II trial's higher observed mOS in BOTH arms, while noting the dataset shows no evidence of the trend."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4813L,
-    n_studies      = 59L,
-    n_arms         = 68L,
-    age_range      = "Trial-arm mean ages 47-75 years (mean of arm means 60.2, SD 6.8; median 60), reported in 83% of arms (Zierhut 2016 Table 2).",
-    weight_range   = "Body weight was not collected and was not among the screened covariates.",
+    species = "human",
+    n_subjects = 4813L,
+    n_studies = 59L,
+    n_arms = 68L,
+    age_range = "Trial-arm mean ages 47-75 years (mean of arm means 60.2, SD 6.8; median 60), reported in 83% of arms (Zierhut 2016 Table 2).",
+    weight_range = "Body weight was not collected and was not among the screened covariates.",
     sex_female_pct = 21.4,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Advanced (unresectable or metastatic) hepatocellular carcinoma; 98.1% ",
       "of the pooled population had advanced disease (median 100% per arm, ",
       "range 69-100%). Liver function was predominantly preserved: 82.7% ",
@@ -296,9 +296,9 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
       "below 2 in 90.8%. Prior chemotherapy 20.5% and prior systemic therapy ",
       "16.6% (median 0%), i.e. most arms were treatment-naive."
     ),
-    dose_range     = "Not modelled. Dose was not a covariate: treatment enters only as the AAT / placebo / sorafenib / concomitant-therapy arm indicators, and no exposure metric was available at the aggregate level.",
-    regions        = "Multinational. 22 of the 59 trials were conducted at Asian study sites; the remainder were non-Asian or mixed.",
-    treatments     = paste0(
+    dose_range = "Not modelled. Dose was not a covariate: treatment enters only as the AAT / placebo / sorafenib / concomitant-therapy arm indicators, and no exposure metric was available at the aggregate level.",
+    regions = "Multinational. 22 of the 59 trials were conducted at Asian study sites; the remainder were non-Asian or mixed.",
+    treatments = paste0(
       "68 arms: 6 placebo, 26 sorafenib and 36 other-AAT arms spanning 14 ",
       "further agents at 1-9 arms each. The agents tested in covariate ",
       "selection were brivanib, vandetanib, bevacizumab, erlotinib, ",
@@ -309,8 +309,8 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
       "concomitant locoregional therapy. All patients received best ",
       "supportive care in addition to the listed treatment."
     ),
-    trial_design   = "10 blinded trials, 9 randomised, 43 phase II or III; 49 of the 59 were single-arm studies. Arm sizes ranged from 10 to 544 patients (mean 70.8, median 42).",
-    endpoint       = paste0(
+    trial_design = "10 blinded trials, 9 randomised, 43 phase II or III; 49 of the 59 were single-arm studies. Arm sizes ranged from 10 to 544 patients (mean 70.8, median 42).",
+    endpoint = paste0(
       "Median overall survival. Across the 68 arms the median of the arm mOS ",
       "values was 9.4 months, range 4.2-20.8; on the modelled ln scale the ",
       "mean was 2.18 (SD 0.36) with median 2.24 [1.44, 3.04]. The per-arm ",
@@ -324,7 +324,7 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
       "exp(2.24) = 9.4, exp(1.44) = 4.2 and exp(3.04) = 20.9. See the ",
       "vignette Errata."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Study-level (aggregate) literature data only - no individual patient ",
       "data. One record is one published treatment arm, and the model ",
       "predicts that arm's median overall survival. Sources were screened ",

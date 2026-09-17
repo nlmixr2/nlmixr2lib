@@ -55,7 +55,10 @@ Yoshii_2016_acotiamide_rat_pbpk <- function() {
   # amount -- Eq. 9 is written directly as dR/dt with R the observed ACh
   # concentration, and kin is reported in nmol/g of tissue/min.
   paper_specific_compartments <- c(
-    "stomach_vascular", "stomach_precursor", "stomach_deep", "ach"
+    "stomach_vascular",
+    "stomach_precursor",
+    "stomach_deep",
+    "ach"
   )
 
   units <- list(time = "min", dosing = "nmol/kg", concentration = "uM")
@@ -63,27 +66,27 @@ Yoshii_2016_acotiamide_rat_pbpk <- function() {
   compartmentData <- list(
     # Concentrations here are BLOOD, not plasma: the source paper converted its
     # measured plasma values with Rbp = 0.84 (Eq. 1) before fitting.
-    central           = list(analyte = "acotiamide", units = "nmol/kg", specimen = "whole blood", verified = TRUE),
-    peripheral1       = list(analyte = "acotiamide", units = "nmol/kg", specimen = "whole blood", verified = TRUE),
-    stomach_vascular  = list(analyte = "acotiamide", units = "nmol", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "acotiamide", units = "nmol/kg", specimen = "whole blood", verified = TRUE),
+    peripheral1 = list(analyte = "acotiamide", units = "nmol/kg", specimen = "whole blood", verified = TRUE),
+    stomach_vascular = list(analyte = "acotiamide", units = "nmol", specimen = "tissue", verified = TRUE),
     stomach_precursor = list(analyte = "acotiamide", units = "nmol", specimen = "tissue", verified = TRUE),
-    stomach_deep      = list(analyte = "acotiamide", units = "nmol", specimen = "tissue", verified = TRUE),
-    ach               = list(analyte = "acetylcholine", units = "nmol/g", specimen = "tissue", verified = TRUE)
+    stomach_deep = list(analyte = "acotiamide", units = "nmol", specimen = "tissue", verified = TRUE),
+    ach = list(analyte = "acetylcholine", units = "nmol/g", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (male Sprague-Dawley)",
-    n_subjects     = 66L,
-    n_studies      = 1L,
-    age_range      = "6 to 7 weeks",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 66L,
+    n_studies = 1L,
+    age_range = "6 to 7 weeks",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male Sprague-Dawley rats (Charles River Japan), housed at",
       "23 +/- 3 degrees C and 55 +/- 20% humidity on a 12 h light/dark",
       "cycle with food and water ad libitum, acclimated for at least one",
       "week before the experiments."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Acotiamide 1.85 umol/kg dissolved in 5% glucose solution as a single",
       "intravenous bolus into the femoral vein under isoflurane",
       "anaesthesia. Blood sampled from the abdominal aorta at 5, 10, 15 and",
@@ -91,8 +94,8 @@ Yoshii_2016_acotiamide_rat_pbpk <- function() {
       "rinsed and homogenised at each of those times for the acotiamide",
       "assay, and over 5 min to 4 h for the acetylcholine assay."
     ),
-    regions        = "Japan (Zeria Pharmaceutical Co., Ltd, Saitama)",
-    notes          = paste(
+    regions = "Japan (Zeria Pharmaceutical Co., Ltd, Saitama)",
+    notes = paste(
       "n_subjects is the 66 rats dosed across six separate experiments;",
       "each reported time point is the mean +/- S.E. of six rats, and the",
       "model was fitted to those group mean profiles rather than to",

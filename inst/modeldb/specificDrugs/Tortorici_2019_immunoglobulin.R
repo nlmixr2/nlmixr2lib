@@ -1,47 +1,47 @@
 Tortorici_2019_immunoglobulin <- function() {
   description <- "Two-compartment population PK model for intravenous polyclonal immunoglobulin G (Privigen) in primary and secondary immunodeficiency, with a disease-type effect on central volume (Tortorici 2019)"
-  reference   <- "Tortorici MA, Lawo JP, Weide R, Jochems J, Puli S, Hofmann J, et al. Privigen has similar pharmacokinetic properties in primary and secondary immune deficiency. Int Immunopharmacol. 2019;66:119-26. doi:10.1016/j.intimp.2018.11.013 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 54)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Tortorici MA, Lawo JP, Weide R, Jochems J, Puli S, Hofmann J, et al. Privigen has similar pharmacokinetic properties in primary and secondary immune deficiency. Int Immunopharmacol. 2019;66:119-26. doi:10.1016/j.intimp.2018.11.013 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 54)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on CL (estimated exponent 0.796) and on Vc (exponent 1.1), reference weight 72 kg. Q and Vp carry no weight term in van der Zeeuw 2026 Table 4.",
-      source_name        = "BW"
+      notes = "Allometric power scaling on CL (estimated exponent 0.796) and on Vc (exponent 1.1), reference weight 72 kg. Q and Vp carry no weight term in van der Zeeuw 2026 Table 4.",
+      source_name = "BW"
     ),
     DIS_SAD = list(
-      description        = "Secondary immunodeficiency indicator (1 = secondary immunodeficiency, 0 = primary immunodeficiency)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Secondary immunodeficiency indicator (1 = secondary immunodeficiency, 0 = primary immunodeficiency)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (primary immunodeficiency, PID)",
-      notes              = "Time-fixed per subject. Tortorici 2019 is the only model in van der Zeeuw 2026 fitted to BOTH PID and SID data, and disease type was retained as a covariate on Vc only (van der Zeeuw 2026 section 3.2.1.6). The source term is 'secondary immunodeficiency (SID)'; the canonical column DIS_SAD (secondary antibody deficiency, reference category primary immunodeficiency) encodes the identical PID-versus-acquired-antibody-deficiency contrast and is reused here rather than minting a near-synonym. The SID cohort in this study was predominantly haematological-malignancy-associated. The authors concluded the Vc difference had no impact on overall IgG exposure (AUC0-28d).",
-      source_name        = "Disease type (PID / SID)"
+      notes = "Time-fixed per subject. Tortorici 2019 is the only model in van der Zeeuw 2026 fitted to BOTH PID and SID data, and disease type was retained as a covariate on Vc only (van der Zeeuw 2026 section 3.2.1.6). The source term is 'secondary immunodeficiency (SID)'; the canonical column DIS_SAD (secondary antibody deficiency, reference category primary immunodeficiency) encodes the identical PID-versus-acquired-antibody-deficiency contrast and is reused here rather than minting a near-synonym. The SID cohort in this study was predominantly haematological-malignancy-associated. The authors concluded the Vc difference had no impact on overall IgG exposure (AUC0-28d).",
+      source_name = "Disease type (PID / SID)"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 187L,
-    n_studies      = 3L,
-    age_range      = "PID mean (SD) 29.8 (20.3) years; SID mean (SD) 69.5 (10.4) years",
-    age_median     = "Not reported (means given by disease group)",
-    weight_range   = "PID mean (SD) 62.6 (26.4) kg; SID mean (SD) 76.8 (16.1) kg",
-    weight_median  = "Not reported (means given by disease group)",
+    species = "human",
+    n_subjects = 187L,
+    n_studies = 3L,
+    age_range = "PID mean (SD) 29.8 (20.3) years; SID mean (SD) 69.5 (10.4) years",
+    age_median = "Not reported (means given by disease group)",
+    weight_range = "PID mean (SD) 62.6 (26.4) kg; SID mean (SD) 76.8 (16.1) kg",
+    weight_median = "Not reported (means given by disease group)",
     sex_female_pct = round(100 * (41 + 39) / 187, 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Primary immunodeficiency (PID, n = 90) and secondary immunodeficiency (SID, n = 97)",
-    dose_range     = "IVIg; PID 13.3-959.0 mg/kg, SID 90.9-678.0 mg/kg",
-    regions        = "United States, Europe",
-    notes          = "Pooled analysis of NCT00168025, NCT00322556 and non-interventional study NIS-Nr 182 (van der Zeeuw 2026 Table 1). Baseline IgG measured 28 +/- 2 days after an IgRT dose and therefore represents endogenous PLUS exogenous IgG: median 9.17 g/L (3.93-27.2) in PID and 6.15 g/L (2.05-17.1) in SID."
+    disease_state = "Primary immunodeficiency (PID, n = 90) and secondary immunodeficiency (SID, n = 97)",
+    dose_range = "IVIg; PID 13.3-959.0 mg/kg, SID 90.9-678.0 mg/kg",
+    regions = "United States, Europe",
+    notes = "Pooled analysis of NCT00168025, NCT00322556 and non-interventional study NIS-Nr 182 (van der Zeeuw 2026 Table 1). Baseline IgG measured 28 +/- 2 days after an IgRT dose and therefore represents endogenous PLUS exogenous IgG: median 9.17 g/L (3.93-27.2) in PID and 6.15 g/L (2.05-17.1) in SID."
   )
 
   ini({

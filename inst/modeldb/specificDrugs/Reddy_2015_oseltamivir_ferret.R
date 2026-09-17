@@ -43,10 +43,10 @@ Reddy_2015_oseltamivir_ferret <- function() {
         "stratified parameter summaries side by side and carried only the",
         "ketamine (Studies 1 + 2) set forward into the simulations."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no anaesthesia)",
-      notes              = paste(
+      notes = paste(
         "Screened and reported as significant, but NOT retained as a",
         "structural covariate effect in this model. The no-anaesthesia",
         "parameter set (Reddy 2015 Table 4, Study 3 column, n = 8 ferrets)",
@@ -60,47 +60,57 @@ Reddy_2015_oseltamivir_ferret <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "oseltamivir", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "oseltamivir",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "oseltamivir carboxylate", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "oseltamivir carboxylate",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "ferret (Mustela putorius furo)",
-    n_subjects     = 65,
-    n_studies      = 3,
+    species = "ferret (Mustela putorius furo)",
+    n_subjects = 65,
+    n_studies = 3,
     n_observations = 430,
-    age_range      = "3-5 months (young adult)",
-    weight_range   = "0.6-0.92 kg",
+    age_range = "3-5 months (young adult)",
+    weight_range = "0.6-0.92 kg",
     sex_female_pct = 12.3,
-    disease_state  = paste(
+    disease_state = paste(
       "uninfected (n = 17) or inoculated with influenza A/Shenzheng/406H/2006",
       "(H5N1, n = 18), influenza A/Hong Kong/433581/2009 (H3N2, n = 12) or",
       "influenza B/Yamagata/16/1988 (n = 18); all inoculations produced only",
       "mild, essentially subclinical illness"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.76-25 mg/kg oseltamivir free base (equivalently 1.0-32.9 mg/kg",
       "oseltamivir phosphate) orally, as single doses or every 12 h for 5 days"
     ),
-    regions        = "Beijing (China), Memphis (USA), London (UK)",
-    notes          = paste(
+    regions = "Beijing (China), Memphis (USA), London (UK)",
+    notes = paste(
       "Reddy 2015 Methods 'PK Studies in a Ferret Model' and 'OC PK Model'.",
       "Studies 1 and 2 used male ferrets, Study 3 female ferrets, so the",
       "female fraction is 8/65. The 65 animals contributed 430 OC",

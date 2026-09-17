@@ -48,48 +48,48 @@ Chen_2015_zincOxideNanoparticle10nm_mouse_pbpk <- function() {
   # volume fractions of Table 2 sum to 0.294 of body weight and the carcass
   # fraction is exactly 1 - 0.294 = 0.706.
   compartmentData <- list(
-    blood  = list(analyte = "zinc-65", units = "ug/mL", specimen = "whole blood", verified = TRUE),
-    lung   = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
-    gut    = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
+    blood = list(analyte = "zinc-65", units = "ug/mL", specimen = "whole blood", verified = TRUE),
+    lung = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
     spleen = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
-    liver  = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
-    heart  = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
-    brain  = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
     kidney = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE),
-    other  = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE)
+    other = list(analyte = "zinc-65", units = "ug/g", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales cardiac output allometrically (QBl = QC * BW^0.75, Equation 1)",
         "and every compartment volume linearly (Vi = Vi,f * BW, Table 2).",
         "Chen 2015 Table 2 uses BW = 0.032 kg; the dosed animals weighed",
         "0.031-0.032 kg. Tissue density is taken as 1 g/mL so that the Table 2",
         "volume fractions (fractions of body weight) give volumes in mL."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species      = "mouse (ICR, male, 6 weeks old)",
-    n_subjects   = NA_integer_,
-    n_studies    = 1L,
-    age_range    = "6 weeks",
+    species = "mouse (ICR, male, 6 weeks old)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "6 weeks",
     weight_range = "0.031-0.032 kg",
     sex_female_pct = 0,
     disease_state = "healthy",
-    dose_range   = paste(
+    dose_range = paste(
       "Single intravenous (tail vein) dose of 120 ug of suspended 65ZnO",
       "nanoparticles in 400 uL of distilled water."
     ),
-    regions      = "Taiwan (National Health Research Institutes, Zhunan)",
-    notes        = paste(
+    regions = "Taiwan (National Health Research Institutes, Zhunan)",
+    notes = paste(
       "Biodistribution was measured in blood, liver, lung, kidney, spleen,",
       "brain, heart, gastrointestinal tract and carcass (muscle and bone) at",
       "1, 2, 4 and 7 hours and 1, 2, 3, 7 and 28 days after injection",

@@ -32,38 +32,43 @@ Beliveau_2026_tenofovir_alafenamide_implant_weibull <- function() {
   # undelivered TAF still inside the implant reservoir, which the Weibull
   # hazard empties.
   compartmentData <- list(
-    depot           = list(analyte = "tenofovir alafenamide", units = "ug",              specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "tenofovir alafenamide", units = "ug",              specimen = "plasma",              verified = TRUE),
-    central_tfv     = list(analyte = "tenofovir",             units = "ug",              specimen = "plasma",              verified = TRUE),
-    peripheral1_tfv = list(analyte = "tenofovir",             units = "ug",              specimen = "plasma",              verified = TRUE),
-    pbmc_tfvdp      = list(analyte = "tenofovir diphosphate", units = "fmol/10^6 cells", specimen = "blood cell",          verified = TRUE)
+    depot = list(analyte = "tenofovir alafenamide", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tenofovir alafenamide", units = "ug", specimen = "plasma", verified = TRUE),
+    central_tfv = list(analyte = "tenofovir", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1_tfv = list(analyte = "tenofovir", units = "ug", specimen = "plasma", verified = TRUE),
+    pbmc_tfvdp = list(
+      analyte = "tenofovir diphosphate",
+      units = "fmol/10^6 cells",
+      specimen = "blood cell",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters every plasma TFV disposition parameter as a power function",
         "centred on 70.8 kg, carried over unchanged from the oral TAF",
         "literature model of Ji et al. (Beliveau 2026 Table 3): exponent 1 on",
         "(V/F)TFV and -0.25 on K12, K21 and Ke(TFV). Plasma TAF, the implant",
         "release profile and PBMC TFV-DP carry no weight effect."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     DOSE_TAF_MG = list(
-      description        = paste(
+      description = paste(
         "Total mass of tenofovir alafenamide delivered in vivo by the",
         "implant(s) over the whole insertion period, estimated from the",
         "residual drug assayed in the used implants."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters apparent central TAF volume (V/F)TAF as a power function",
         "centred on the cohort median 17.3 mg: (V/F)TAF x (Dose/17.3)^0.618",
         "(Table 4). In this Weibull variant the SAME quantity is also the",
@@ -75,29 +80,29 @@ Beliveau_2026_tenofovir_alafenamide_implant_weibull <- function() {
         "pre-multiply the two. Observed values: Group 2A median 22.0 mg,",
         "Group 2C median 36.8 mg, overall range 0.05-109 mg (Table 1)."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "18-38 years",
-    weight_range   = "49.1-90.9 kg",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "18-38 years",
+    weight_range = "49.1-90.9 kg",
     sex_female_pct = 100,
     race_ethnicity = c(Black = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy, HIV-negative cisgender women enrolled for HIV-1 pre-exposure",
       "prophylaxis; not a disease population"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "One or two subdermal implants each containing 110 +/- 10 mg tenofovir",
       "alafenamide, in place for 4 weeks (Group 1) or up to 48 weeks (Groups",
       "2A and 2C); estimated delivered doses 0.05-109 mg"
     ),
-    regions        = "South Africa (CAPRISA 018; PACTR201809520959443)",
-    notes          = paste(
+    regions = "South Africa (CAPRISA 018; PACTR201809520959443)",
+    notes = paste(
       "Same cohort as Beliveau_2026_tenofovir_alafenamide_implant; see that",
       "file for the full baseline description and the BLQ handling. What",
       "differs here is the STATUS of the release parameters. Table 5 reports",

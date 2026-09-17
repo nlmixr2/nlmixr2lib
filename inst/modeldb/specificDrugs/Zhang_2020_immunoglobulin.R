@@ -1,40 +1,40 @@
 Zhang_2020_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IgPro20, Hizentra) given weekly or biweekly in primary immunodeficiency (Zhang 2020)"
-  reference   <- "Zhang Y, Baheti G, Chapdelaine H, Hofmann J, Rojavin M, Tortorici M, et al. Population pharmacokinetic analysis of weekly and biweekly IgPro20 (Hizentra) dosing in patients with primary immunodeficiency. Int Immunopharmacol. 2020;81:106005. doi:10.1016/j.intimp.2019.106005 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 44)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Zhang Y, Baheti G, Chapdelaine H, Hofmann J, Rojavin M, Tortorici M, et al. Population pharmacokinetic analysis of weekly and biweekly IgPro20 (Hizentra) dosing in patients with primary immunodeficiency. Int Immunopharmacol. 2020;81:106005. doi:10.1016/j.intimp.2019.106005 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 44)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on CL (estimated exponent 0.768) and on Vc (estimated exponent 0.448), reference weight 66 kg. Q and Vp carry no weight term in van der Zeeuw 2026 Table 4.",
-      source_name        = "BW"
+      notes = "Allometric power scaling on CL (estimated exponent 0.768) and on Vc (estimated exponent 0.448), reference weight 66 kg. Q and Vp carry no weight term in van der Zeeuw 2026 Table 4.",
+      source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 173L,
-    n_studies      = 5L,
-    age_range      = "3.0-81.0 years (per-study medians 18.0-32.0 years)",
-    age_median     = "NCT00419341: 32.0; NCT00168025: 25.0; NCT00322556: 23.0; NCT00542997: 18.0; NCT02711228: 19.0 years",
-    weight_range   = "13.0-135.0 kg",
-    weight_median  = "NCT00419341: 66.0; NCT00168025: 66.5; NCT00322556: 62.0; NCT00542997: 54.0; NCT02711228: 72.5 kg",
+    species = "human",
+    n_subjects = 173L,
+    n_studies = 5L,
+    age_range = "3.0-81.0 years (per-study medians 18.0-32.0 years)",
+    age_median = "NCT00419341: 32.0; NCT00168025: 25.0; NCT00322556: 23.0; NCT00542997: 18.0; NCT02711228: 19.0 years",
+    weight_range = "13.0-135.0 kg",
+    weight_median = "NCT00419341: 66.0; NCT00168025: 66.5; NCT00322556: 62.0; NCT00542997: 54.0; NCT02711228: 72.5 kg",
     sex_female_pct = round(100 * (27 + 34 + 39 + 16 + 9) / (22 + 27 + 46 + 34 + 26 + 39 + 35 + 16 + 8 + 9), 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
-    dose_range     = "IVIg 200-888 mg/kg every 3 or 4 weeks; SCIg 117.0-120.7 mg/kg weekly and 179.6-224.3 mg/kg every 2 weeks",
-    regions        = "United States, Canada, Europe",
-    notes          = "Pooled analysis of NCT00419341, NCT00168025, NCT00322556, NCT00542997 and NCT02711228 (van der Zeeuw 2026 Tables 1 and 2). Baseline IgG not reported."
+    disease_state = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
+    dose_range = "IVIg 200-888 mg/kg every 3 or 4 weeks; SCIg 117.0-120.7 mg/kg weekly and 179.6-224.3 mg/kg every 2 weeks",
+    regions = "United States, Canada, Europe",
+    notes = "Pooled analysis of NCT00419341, NCT00168025, NCT00322556, NCT00542997 and NCT02711228 (van der Zeeuw 2026 Tables 1 and 2). Baseline IgG not reported."
   )
 
   ini({

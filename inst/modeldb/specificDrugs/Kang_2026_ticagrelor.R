@@ -21,25 +21,25 @@ Kang_2026_ticagrelor <- function() {
     sep = " "
   )
   vignette <- "Kang_2026_ticagrelor"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amount units are mg because Appendix S2 sets S2 = Vd/F
   # and S3 = VM/F with no unit-conversion factor, so the state / volume ratio
   # is the modelled plasma concentration directly (see the units block).
   compartmentData <- list(
-    depot       = list(analyte = "ticagrelor",             units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ticagrelor",             units = "mg", specimen = "plasma",              verified = TRUE),
-    central_tam = list(analyte = "AR-C124910XX (TAM)",     units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "ticagrelor", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ticagrelor", units = "mg", specimen = "plasma", verified = TRUE),
+    central_tam = list(analyte = "AR-C124910XX (TAM)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     ECMO_STATUS = list(
-      description        = "Binary indicator: 1 = patient currently supported by VA-ECMO, 0 = patient off VA-ECMO (after weaning) (time-varying within subject)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = patient currently supported by VA-ECMO, 0 = patient off VA-ECMO (after weaning) (time-varying within subject)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Source column ECMO, coded ON-ECMO = 1 / OFF-ECMO = 0 (Kang 2026 Methods,",
         "'Population PK modeling', categorical-covariate list). ECMO modality: veno-arterial only;",
         "the cohort used a Capiox SP-101 centrifugal pump with a Capiox EBS X-coated conduit",
@@ -62,14 +62,14 @@ Kang_2026_ticagrelor <- function() {
         "(all 20 patients were transfused and 18 received albumin) and to circuit sequestration.",
         sep = " "
       ),
-      source_name        = "ECMO"
+      source_name = "ECMO"
     ),
     Q_ECMO = list(
-      description        = "Blood flow rate delivered through the VA-ECMO circuit",
-      units              = "L/min",
-      type               = "continuous",
+      description = "Blood flow rate delivered through the VA-ECMO circuit",
+      units = "L/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'ECMO flow rate' (Kang 2026 Methods, 'Data collection and sample analysis'",
         "and the continuous-covariate list under 'Population PK modeling'; Table 2 row",
         "'theta ECMO flow rate on Vd/F').",
@@ -91,21 +91,21 @@ Kang_2026_ticagrelor <- function() {
         "flow effect 'should be interpreted cautiously and considered exploratory'.",
         sep = " "
       ),
-      source_name        = "ECMO flow rate"
+      source_name = "ECMO flow rate"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "36-88 years",
-    age_median     = "59 years",
-    weight_range   = "58-110 kg",
-    weight_median  = "70.2 kg (Results); 70.8 kg ON-ECMO and 70.95 kg OFF-ECMO (Table 1)",
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "36-88 years",
+    age_median = "59 years",
+    weight_range = "58-110 kg",
+    weight_median = "70.2 kg (Results); 70.8 kg ON-ECMO and 70.95 kg OFF-ECMO (Table 1)",
     sex_female_pct = 10,
     race_ethnicity = "Not reported (single-centre South Korean cohort at Severance Hospital, Seoul; presumed predominantly Korean)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (> 19 years) with acute coronary syndrome receiving ticagrelor during and after",
       "VA-ECMO support in a coronary intensive care unit. 19 STEMI / 1 NSTEMI; 19 underwent PCI;",
       "15 of 20 had cardiac arrest. Median body mass index 25.1 kg/m^2 (20.7-35.9).",
@@ -114,12 +114,12 @@ Kang_2026_ticagrelor <- function() {
       "lopinavir/ritonavir).",
       sep = " "
     ),
-    dose_range     = "Ticagrelor 180 mg oral loading dose followed by 90 mg twice daily maintenance (standard ACS regimen; the observed data come from this regimen only - the reduced 45-135 mg regimens in the paper are simulated, not observed).",
-    regions        = "South Korea (single-centre prospective observational cohort, coronary intensive care unit, Severance Hospital, Yonsei University College of Medicine, Seoul; October 2015 - April 2018).",
+    dose_range = "Ticagrelor 180 mg oral loading dose followed by 90 mg twice daily maintenance (standard ACS regimen; the observed data come from this regimen only - the reduced 45-135 mg regimens in the paper are simulated, not observed).",
+    regions = "South Korea (single-centre prospective observational cohort, coronary intensive care unit, Severance Hospital, Yonsei University College of Medicine, Seoul; October 2015 - April 2018).",
     renal_function = "Median serum creatinine 1.30 mg/dL ON-ECMO (range 0.79-4.89) and 1.72 mg/dL OFF-ECMO (1.16-4.38); median BUN 20.8 vs 43.8 mg/dL. 5 patients received CRRT while ON-ECMO and 6 OFF-ECMO; CRRT was screened as a covariate and not retained. BUN, creatinine and uric acid were not evaluated for patients on CRRT.",
     hepatic_function = "Median total bilirubin 2.1 mg/dL ON-ECMO (0.9-6.3) and 1.4 mg/dL OFF-ECMO (0.4-24.2); median albumin 2.9 vs 2.95 g/dL; median total protein 4.9 vs 5.55 g/dL. Median AST 155 vs 63.5 IU/L.",
-    ecmo_duration  = "Median 5.87 days (range 1.82-16.26)",
-    notes          = paste(
+    ecmo_duration = "Median 5.87 days (range 1.82-16.26)",
+    notes = paste(
       "Prospective observational cohort. 225 ticagrelor and 225 AR-C124910XX plasma",
       "concentrations (127 ON-ECMO, 98 OFF-ECMO) from 20 patients; paired sampling at pre-dose and",
       "1, 2, 3, 6, 8 and 12 h post-dose during ECMO (>= 24 h after initiation) and after weaning,",

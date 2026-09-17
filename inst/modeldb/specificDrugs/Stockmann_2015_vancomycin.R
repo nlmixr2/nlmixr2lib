@@ -31,11 +31,11 @@ Stockmann_2015_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Enters twice: allometrically on clearance as (WT/2.9)^0.75 (Equation 1) and",
         "linearly on central volume as (WT/2.9) (Equation 2). The 2.9 kg reference is the MEDIAN",
         "weight of the model development cohort in Table 1 ('Weight, kg', model development cohort",
@@ -43,14 +43,14 @@ Stockmann_2015_vancomycin <- function() {
         "The external validation cohort of Stockmann 2015 was lighter: median 1.6 kg (range 0.4-6.8).",
         sep = " "
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "WEEKS, not the register-default months. Equation 1 writes PMA explicitly as 'PMA_weeks' and",
         "its maturation constant TM50 = 34.8 is only meaningful on a week scale (see the PAGE entry",
         "in inst/references/covariate-columns.md, which provides for this). Time-varying. Drives the",
@@ -60,14 +60,14 @@ Stockmann_2015_vancomycin <- function() {
         "< 54 weeks postmenstrual age.",
         sep = " "
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine, Jaffe-method scale",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine, Jaffe-method scale",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Equation 1 writes the term as (1 / Cr_mg/dL)^0.267, i.e. the covariate is",
         "NOT normalised to a reference creatinine; the factor equals 1 at CREAT = 1 mg/dL, so the",
         "typical value 0.345 L/h is the clearance of a fully mature 2.9 kg neonate with a serum",
@@ -81,21 +81,21 @@ Stockmann_2015_vancomycin <- function() {
         "cohort median 0.6 mg/dL (range 0.3-1.5), Jaffe-standardized.",
         sep = " "
       ),
-      source_name        = "Cr"
+      source_name = "Cr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 249L,
-    n_studies      = 1L,
-    age_range      = "24-53 weeks postmenstrual age",
-    age_median     = "39 weeks postmenstrual age",
-    weight_range   = "0.5-6.3 kg",
-    weight_median  = "2.9 kg",
+    species = "human",
+    n_subjects = 249L,
+    n_studies = 1L,
+    age_range = "24-53 weeks postmenstrual age",
+    age_median = "39 weeks postmenstrual age",
+    weight_range = "0.5-6.3 kg",
+    weight_median = "2.9 kg",
     sex_female_pct = 49.0,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Neonates receiving intravenous vancomycin with therapeutic drug monitoring performed.",
       "Neonates with congenital kidney disease, major congenital heart disease (other than",
       "ventricular septal defect, atrial septal defect or patent ductus arteriosus), or",
@@ -103,16 +103,16 @@ Stockmann_2015_vancomycin <- function() {
       "Stockmann 2015 validation cohort.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous vancomycin as 1-h infusions per routine clinical practice. In the Stockmann 2015",
       "validation cohort the median dose was 15.5 mg/kg (IQR 13.9-19.3) and the median dosing",
       "interval 11.5 h (IQR 8.0-12.5).",
       sep = " "
     ),
-    regions        = "United States",
-    ga_range       = "23-42 weeks gestational age (median 34)",
+    regions = "United States",
+    ga_range = "23-42 weeks gestational age (median 34)",
     renal_function = "Serum creatinine median 0.4 mg/dL (range 0.1-2.7), Jaffe method",
-    notes          = paste(
+    notes = paste(
       "DEVELOPMENT population, from the 'Model development cohort (n = 249)' column of Stockmann 2015",
       "Table 1, whose footnote a identifies it as the cohort used to develop the model in Frymoyer",
       "2014 (reference 7). This is the cohort the parameters were estimated from, and the 2.9 kg",

@@ -1,50 +1,50 @@
 Luo_2020_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IgPro10) in Japanese and non-Japanese patients with primary immunodeficiency (Luo 2020)"
-  reference   <- "Luo D, Baheti G, Tortorici MA, Hofmann J, Rojavin MA. Pharmacometric analysis of IgPro10 in Japanese and non-Japanese patients with primary immunodeficiency. Clin Ther. 2020;42(1):196-209.e195. doi:10.1016/j.clinthera.2019.11.012 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 41)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Luo D, Baheti G, Tortorici MA, Hofmann J, Rojavin MA. Pharmacometric analysis of IgPro10 in Japanese and non-Japanese patients with primary immunodeficiency. Clin Ther. 2020;42(1):196-209.e195. doi:10.1016/j.clinthera.2019.11.012 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 41)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on CL (estimated exponent 0.881) and on Vc (estimated exponent 0.501), reference weight 58.7 kg. Q and Vp carry no weight term in van der Zeeuw 2026 Table 4.",
-      source_name        = "BW"
+      notes = "Allometric power scaling on CL (estimated exponent 0.881) and on Vc (estimated exponent 0.501), reference weight 58.7 kg. Q and Vp carry no weight term in van der Zeeuw 2026 Table 4.",
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE_JAPANESE = list(
       description = "Japanese versus non-Japanese ethnicity",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Ethnicity (Japanese / non-Japanese) was tested as a covariate -- it is the stated subject of the primary paper -- but was NOT retained in the final model: van der Zeeuw 2026 Table 3 lists 'BW, ethnicity (Japanese/non-Japanese), age, sex' under covariates tested and only 'BW on CL' under covariates in the final model.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Ethnicity (Japanese / non-Japanese) was tested as a covariate -- it is the stated subject of the primary paper -- but was NOT retained in the final model: van der Zeeuw 2026 Table 3 lists 'BW, ethnicity (Japanese/non-Japanese), age, sex' under covariates tested and only 'BW on CL' under covariates in the final model.",
       source_name = "Ethnicity (Japanese / non-Japanese)"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 202L,
-    n_studies      = 7L,
-    age_range      = "3-81 years",
-    age_median     = "21 years",
-    weight_range   = "13-135 kg",
-    weight_median  = "58.7 kg",
+    species = "human",
+    n_subjects = 202L,
+    n_studies = 7L,
+    age_range = "3-81 years",
+    age_median = "21 years",
+    weight_range = "13-135 kg",
+    weight_median = "58.7 kg",
     sex_female_pct = round(100 * 85 / 202, 1),
     race_ethnicity = "Japanese and non-Japanese (proportions not reported in the review)",
-    disease_state  = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
-    dose_range     = "IVIg 13.3-913 mg/kg every 3 or 4 weeks; SCIg 26.7-379 mg/kg every 2 weeks",
-    regions        = "United States, Canada, Europe, Asia",
-    notes          = "Pooled analysis of NCT00419341, NCT00168025, NCT00322556, NCT00542997, NCT02711228 (2016-001631-12), NCT01199705 and NCT01458171 (van der Zeeuw 2026 Table 1). Baseline IgG not reported. The residual-error structure could not be transcribed: see the ini() note and the vignette Errata."
+    disease_state = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
+    dose_range = "IVIg 13.3-913 mg/kg every 3 or 4 weeks; SCIg 26.7-379 mg/kg every 2 weeks",
+    regions = "United States, Canada, Europe, Asia",
+    notes = "Pooled analysis of NCT00419341, NCT00168025, NCT00322556, NCT00542997, NCT02711228 (2016-001631-12), NCT01199705 and NCT01458171 (van der Zeeuw 2026 Table 1). Baseline IgG not reported. The residual-error structure could not be transcribed: see the ini() note and the vignette Errata."
   )
 
   ini({

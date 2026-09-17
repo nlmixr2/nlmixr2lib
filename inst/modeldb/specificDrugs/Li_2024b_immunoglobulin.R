@@ -1,58 +1,63 @@
 Li_2024b_immunoglobulin <- function() {
   description <- "One-compartment population PK model with a grip-strength indirect-response pharmacodynamic layer for intravenous polyclonal immunoglobulin G in multifocal motor neuropathy (Li 2024, Annals of Clinical and Translational Neurology)"
-  reference   <- "Li Z, Roepcke S, Franke R, Yel L. Dose-exposure-efficacy response of intravenous immunoglobulin G 10% in multifocal motor neuropathy. Ann Clin Transl Neurol. 2024;11(8):1977-87. doi:10.1002/acn3.52107 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 23), section 3.3.1, and Supplementary Equations S1-S2"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Li Z, Roepcke S, Franke R, Yel L. Dose-exposure-efficacy response of intravenous immunoglobulin G 10% in multifocal motor neuropathy. Ann Clin Transl Neurol. 2024;11(8):1977-87. doi:10.1002/acn3.52107 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 23), section 3.3.1, and Supplementary Equations S1-S2"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   paper_specific_compartments <- c("gs")
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 56.54 kg, with an estimated allometric exponent of 2.17 on the volume of distribution -- far outside the physiological 0.75-1.0 range. Transcribed as printed; users extrapolating outside the observed LBM range should expect implausible volumes. No covariate is reported on elimination.",
-      source_name        = "LBM"
+      notes = "Reference 56.54 kg, with an estimated allometric exponent of 2.17 on the volume of distribution -- far outside the physiological 0.75-1.0 range. Transcribed as printed; users extrapolating outside the observed LBM range should expect implausible volumes. No covariate is reported on elimination.",
+      source_name = "LBM"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested but not retained: van der Zeeuw 2026 Table 3 lists 'Age, sex, BW, BMI, LBM, creatinine clearance' as covariates tested and only 'LBM on Vc' in the final model. Covariate relationships were also tested on the pharmacodynamic baseline G_BASE and on the residual-error term, and none were retained (section 3.3.1).",
+      units = "kg",
+      type = "continuous",
+      notes = "Tested but not retained: van der Zeeuw 2026 Table 3 lists 'Age, sex, BW, BMI, LBM, creatinine clearance' as covariates tested and only 'LBM on Vc' in the final model. Covariate relationships were also tested on the pharmacodynamic baseline G_BASE and on the residual-error term, and none were retained (section 3.3.1).",
       source_name = "BW"
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested but not retained (van der Zeeuw 2026 Table 3). IgG is not renally eliminated, so a null result is expected.",
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested but not retained (van der Zeeuw 2026 Table 3). IgG is not renally eliminated, so a null result is expected.",
       source_name = "Creatinine clearance"
     )
   )
 
   compartmentData <- list(
     central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
-    gs      = list(analyte = "grip strength (latent pharmacodynamic state)", units = "kg", specimen = "not applicable", verified = TRUE)
+    gs = list(
+      analyte = "grip strength (latent pharmacodynamic state)",
+      units = "kg",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 1L,
-    age_range      = "31.0-72.0 years",
-    age_median     = "52.0 years",
-    weight_range   = "56.3-107.0 kg",
-    weight_median  = "83.5 kg",
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
+    age_range = "31.0-72.0 years",
+    age_median = "52.0 years",
+    weight_range = "56.3-107.0 kg",
+    weight_median = "83.5 kg",
     sex_female_pct = round(100 * 12 / 44, 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Multifocal motor neuropathy (MMN)",
-    dose_range     = "IVIg 400-2000 mg/kg once every 2-4 weeks",
-    regions        = "United States, Canada, Europe",
-    notes          = "Single study, NCT00666263 (van der Zeeuw 2026 Table 1). Treatment-naive (endogenous) IgG median 20.2 g/L, range 11.6-37.0. Same patient cohort as Li_2024a_immunoglobulin.R; this version includes additional data and adds the grip-strength pharmacodynamic layer. Grip strength was measured by dynamometer. A change of 4 kg was taken as the minimal clinically meaningful improvement; Monte Carlo simulation showed >=70% of patients reaching that threshold at IVIg doses >=1600 mg/kg/month, and dose-splitting did not affect grip strength above 1000 mg/kg (section 3.3.1)."
+    disease_state = "Multifocal motor neuropathy (MMN)",
+    dose_range = "IVIg 400-2000 mg/kg once every 2-4 weeks",
+    regions = "United States, Canada, Europe",
+    notes = "Single study, NCT00666263 (van der Zeeuw 2026 Table 1). Treatment-naive (endogenous) IgG median 20.2 g/L, range 11.6-37.0. Same patient cohort as Li_2024a_immunoglobulin.R; this version includes additional data and adds the grip-strength pharmacodynamic layer. Grip strength was measured by dynamometer. A change of 4 kg was taken as the minimal clinically meaningful improvement; Monte Carlo simulation showed >=70% of patients reaching that threshold at IVIg doses >=1600 mg/kg/month, and dose-splitting did not affect grip strength above 1000 mg/kg (section 3.3.1)."
   )
 
   ini({

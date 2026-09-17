@@ -1,58 +1,58 @@
 Li_2022_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G across intravenous, subcutaneous and hyaluronidase-facilitated subcutaneous products in primary immunodeficiency, scaled on lean body mass (Li 2022)"
-  reference   <- "Li Z, Follman K, Freshwater E, Engler F, Yel L. Integrated population pharmacokinetics of immunoglobulin G following intravenous or subcutaneous administration of various immunoglobulin products in patients with primary immunodeficiencies. Int Immunopharmacol. 2022;113(Pt A):109331. doi:10.1016/j.intimp.2022.109331 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 42)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Li Z, Follman K, Freshwater E, Engler F, Yel L. Integrated population pharmacokinetics of immunoglobulin G following intravenous or subcutaneous administration of various immunoglobulin products in patients with primary immunodeficiencies. Int Immunopharmacol. 2022;113(Pt A):109331. doi:10.1016/j.intimp.2022.109331 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 42)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 47 kg. This is the only model among the immunodeficiency models in van der Zeeuw 2026 that scales on LEAN body mass rather than total body weight (section 3.2.1.4: 'Notably, Li et al. derived the LBM and incorporated it as a covariate on CL instead of BW'). Exponents are FIXED: 0.75 on CL and Q, 1 on Vc and Vp (sections 3.2.1.3 and 3.2.1.4). The review derives LBM with the Boer formula (section 2.3); for a 70 kg, 170 cm male that gives approximately 55 kg.",
-      source_name        = "LBM"
+      notes = "Reference 47 kg. This is the only model among the immunodeficiency models in van der Zeeuw 2026 that scales on LEAN body mass rather than total body weight (section 3.2.1.4: 'Notably, Li et al. derived the LBM and incorporated it as a covariate on CL instead of BW'). Exponents are FIXED: 0.75 on CL and Q, 1 on Vc and Vp (sections 3.2.1.3 and 3.2.1.4). The review derives LBM with the Boer formula (section 2.3); for a 70 kg, 170 cm male that gives approximately 55 kg.",
+      source_name = "LBM"
     ),
     FORM_IG_HYALURONIDASE = list(
-      description        = "Hyaluronidase-facilitated subcutaneous immunoglobulin (fSCIg) product indicator (1 = fSCIg, 0 = unfacilitated SCIg)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hyaluronidase-facilitated subcutaneous immunoglobulin (fSCIg) product indicator (1 = fSCIg, 0 = unfacilitated SCIg)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (unfacilitated subcutaneous immunoglobulin, SCIg)",
-      notes              = "Applies to subcutaneous doses only. Li 2022 is the only model in van der Zeeuw 2026 that includes fSCIg data (14.5% of included patients), and product type was the only covariate any of the reviewed models retained on bioavailability (section 3.2.1.2). Bioavailability is 70.5% without hyaluronidase and 79.4% with it.",
-      source_name        = "IgG product / hyaluronidase yes-no"
+      notes = "Applies to subcutaneous doses only. Li 2022 is the only model in van der Zeeuw 2026 that includes fSCIg data (14.5% of included patients), and product type was the only covariate any of the reviewed models retained on bioavailability (section 3.2.1.2). Bioavailability is 70.5% without hyaluronidase and 79.4% with it.",
+      source_name = "IgG product / hyaluronidase yes-no"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested but not retained: van der Zeeuw 2026 Table 3 lists 'BW, BMI, LBM, sex, age, IgG product, hyaluronidase product yes/no' as covariates tested, and LBM was carried into the final model in place of total body weight.",
+      units = "kg",
+      type = "continuous",
+      notes = "Tested but not retained: van der Zeeuw 2026 Table 3 lists 'BW, BMI, LBM, sex, age, IgG product, hyaluronidase product yes/no' as covariates tested, and LBM was carried into the final model in place of total body weight.",
       source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 340L,
-    n_studies      = 8L,
-    age_range      = "2.0-83.0 years",
-    age_median     = "31.5 years",
-    weight_range   = "11.9-162 kg",
-    weight_median  = "66.0 kg",
+    species = "human",
+    n_subjects = 340L,
+    n_studies = 8L,
+    age_range = "2.0-83.0 years",
+    age_median = "31.5 years",
+    weight_range = "11.9-162 kg",
+    weight_median = "66.0 kg",
     sex_female_pct = round(100 * 161 / 340, 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
-    dose_range     = "IVIg 300-1000 mg/kg every 3-4 weeks; SCIg weekly or Q4W equivalents (130-145% of the IVIg dose in some studies); fSCIg every 3-4 weeks",
-    regions        = "United States, Canada, Europe",
-    notes          = "Largest cohort in van der Zeeuw 2026: pooled analysis of NCT00814320, NCT01412385, NCT01218438, NCT00161993, NCT00157079, NCT00546871, NCT00782106 and NCT03277313 (Tables 1 and 2). Baseline IgG not reported in Table 1. Endogenous IgG was ESTIMATED rather than fixed in this model (section 3.2.1.6)."
+    disease_state = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
+    dose_range = "IVIg 300-1000 mg/kg every 3-4 weeks; SCIg weekly or Q4W equivalents (130-145% of the IVIg dose in some studies); fSCIg every 3-4 weeks",
+    regions = "United States, Canada, Europe",
+    notes = "Largest cohort in van der Zeeuw 2026: pooled analysis of NCT00814320, NCT01412385, NCT01218438, NCT00161993, NCT00157079, NCT00546871, NCT00782106 and NCT03277313 (Tables 1 and 2). Baseline IgG not reported in Table 1. Endogenous IgG was ESTIMATED rather than fixed in this model (section 3.2.1.6)."
   )
 
   ini({

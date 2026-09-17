@@ -5,88 +5,88 @@ Franke_2015_oxycodone_food <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "oxycodone", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "oxycodone", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "oxycodone", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; linear ratio (HT/168.5) on CL/F, the reference being the 168.5 cm median height of the 31-subject food-effect cohort (Table 2). Height rather than weight was retained on CL/F in this fit, in contrast to the pooled fasted oxycodone model where weight was retained.",
-      source_name        = "HT"
+      notes = "Baseline; linear ratio (HT/168.5) on CL/F, the reference being the 168.5 cm median height of the 31-subject food-effect cohort (Table 2). Height rather than weight was retained on CL/F in this fit, in contrast to the pooled fasted oxycodone model where weight was retained.",
+      source_name = "HT"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; linear ratio (WT/72.3) on V/F, the reference being the 72.3 kg median weight of the 31-subject food-effect cohort (Table 2, range 59.1-101.8).",
-      source_name        = "WT"
+      notes = "Baseline; linear ratio (WT/72.3) on V/F, the reference being the 72.3 kg median weight of the 31-subject food-effect cohort (Table 2, range 59.1-101.8).",
+      source_name = "WT"
     ),
     FED_LOWFAT = list(
-      description        = "Low-fat, low-calorie meal at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-fat, low-calorie meal at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted; FED_LOWFAT and FED_HIGHFAT are mutually exclusive and both 0 under fasting)",
-      notes              = "Protocol meal: approximately 25%-30% of kilocalories from fat, total 800 +/- 80 kcal (Methods 'Treatments'). Per dose record, not per subject: study 4 was a three-period six-sequence crossover in which each participant was dosed fasted, after a low-fat meal, and after a high-fat meal. Corresponds to the authors' VDIET = theta4 and KADIET = theta6 levels.",
-      source_name        = "DIET"
+      notes = "Protocol meal: approximately 25%-30% of kilocalories from fat, total 800 +/- 80 kcal (Methods 'Treatments'). Per dose record, not per subject: study 4 was a three-period six-sequence crossover in which each participant was dosed fasted, after a low-fat meal, and after a high-fat meal. Corresponds to the authors' VDIET = theta4 and KADIET = theta6 levels.",
+      source_name = "DIET"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat, high-calorie meal at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat, high-calorie meal at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted; FED_LOWFAT and FED_HIGHFAT are mutually exclusive and both 0 under fasting)",
-      notes              = "Protocol meal: approximately 50% of kilocalories from fat, total 1,000 +/- 100 kcal (Methods 'Treatments'), consistent with the FDA high-fat high-calorie definition. Per dose record, as for FED_LOWFAT. Corresponds to the authors' VDIET = theta5 and KADIET = theta7 levels.",
-      source_name        = "DIET"
+      notes = "Protocol meal: approximately 50% of kilocalories from fat, total 1,000 +/- 100 kcal (Methods 'Treatments'), consistent with the FDA high-fat high-calorie definition. Per dose record, as for FED_LOWFAT. Corresponds to the authors' VDIET = theta5 and KADIET = theta7 levels.",
+      source_name = "DIET"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex indicator, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained for oxycodone in the food-effect analysis (Table 5). Sex WAS retained on CL/F and V2/F for acetaminophen in the same analysis."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained for oxycodone in the food-effect analysis (Table 5). Sex WAS retained on CL/F and V2/F for acetaminophen in the same analysis."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained in the food-effect oxycodone model (Table 5), although race was retained in the larger 151-subject pooled fasted fit. 8 of 31 participants were Black (25.8%, Table 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained in the food-effect oxycodone model (Table 5), although race was retained in the larger 151-subject pooled fasted fit. 8 of 31 participants were Black (25.8%, Table 2)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 5). Cohort mean 30.8 years (SD 10.1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (Table 5). Cohort mean 30.8 years (SD 10.1)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 5). Cohort median 26.3 kg/m^2 (range 19.4-29.8)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Table 5). Cohort median 26.3 kg/m^2 (range 19.4-29.8)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31,
-    n_studies      = 1,
-    age_range      = "18-55 years (protocol inclusion range)",
-    age_median     = "30.8 years (mean, SD 10.1)",
-    weight_range   = "59.1-101.8 kg",
-    weight_median  = "72.3 kg",
-    height_median  = "168.5 cm (range 155.1-185.5)",
-    bmi_median     = "26.3 kg/m^2 (range 19.4-29.8)",
+    species = "human",
+    n_subjects = 31,
+    n_studies = 1,
+    age_range = "18-55 years (protocol inclusion range)",
+    age_median = "30.8 years (mean, SD 10.1)",
+    weight_range = "59.1-101.8 kg",
+    weight_median = "72.3 kg",
+    height_median = "168.5 cm (range 155.1-185.5)",
+    bmi_median = "26.3 kg/m^2 (range 19.4-29.8)",
     sex_female_pct = 32.3,
     race_ethnicity = c(White = 74.2, Black = 25.8, Other = 0),
-    disease_state  = "Healthy adults enrolled in study 4, a single-center, open-label, randomized, phase 1, three-period, six-sequence crossover food-effect study.",
-    dose_range     = "A single oral dose of two intact IR/ER OC/APAP 7.5/325 mg tablets (15 mg oxycodone) on each of three occasions: fasted, after a low-fat meal, and after a high-fat meal.",
-    regions        = "United States",
-    notes          = "Baseline demographics from Franke 2015 Table 2 (completers, n = 31, of 48 enrolled). Protocol number COV15000244. Unlike the pooled fasted analysis, the food-effect data were analysed with first-order conditional estimation WITH INTERACTION."
+    disease_state = "Healthy adults enrolled in study 4, a single-center, open-label, randomized, phase 1, three-period, six-sequence crossover food-effect study.",
+    dose_range = "A single oral dose of two intact IR/ER OC/APAP 7.5/325 mg tablets (15 mg oxycodone) on each of three occasions: fasted, after a low-fat meal, and after a high-fat meal.",
+    regions = "United States",
+    notes = "Baseline demographics from Franke 2015 Table 2 (completers, n = 31, of 48 enrolled). Protocol number COV15000244. Unlike the pooled fasted analysis, the food-effect data were analysed with first-order conditional estimation WITH INTERACTION."
   )
 
   ini({

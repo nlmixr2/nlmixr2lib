@@ -9,105 +9,105 @@ Choi_2026_melphalan <- function() {
   # quantified in plasma by LC-MS/MS) and Methods 2.4 (zero-order IV infusion
   # into the central compartment).
   compartmentData <- list(
-    central     = list(analyte = "melphalan", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "melphalan", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "melphalan", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power effect on CL, V1 and V2, each normalised to 28 kg (Choi 2026 Section 3.3 final-model equations). The Table 2 footnote states that 28 kg is the rounded-up median weight of the study population (observed median 27.6 kg, range 5.7-84.8 kg). The exponents were ESTIMATED (0.771 on CL, 0.872 on V1, 0.553 on V2), not fixed to the theoretical allometric 0.75 / 1.0 values, and weight was entered on all three parameters before any other covariate was screened (Table S1 footnote a). Q carries no weight effect: the Table 2 row is labelled 'Q (L/h)' with no '/28 kg' qualifier and the Table 2 footnote restricts the allometric exponents to CL, V1 and V2.",
-      source_name        = "WT"
+      notes = "Allometric power effect on CL, V1 and V2, each normalised to 28 kg (Choi 2026 Section 3.3 final-model equations). The Table 2 footnote states that 28 kg is the rounded-up median weight of the study population (observed median 27.6 kg, range 5.7-84.8 kg). The exponents were ESTIMATED (0.771 on CL, 0.872 on V1, 0.553 on V2), not fixed to the theoretical allometric 0.75 / 1.0 values, and weight was entered on all three parameters before any other covariate was screened (Table S1 footnote a). Q carries no weight effect: the Table 2 row is labelled 'Q (L/h)' with no '/28 kg' qualifier and the Table 2 footnote restricts the allometric exponents to CL, V1 and V2.",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine on the day of melphalan administration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine on the day of melphalan administration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL normalised to 0.51 mg/dL, the cohort median (Choi 2026 Table 1; final-model equation in Section 3.3). Exponent -0.686, i.e. clearance falls as creatinine rises. Observed range 0.34-0.67 mg/dL; all patients had normal renal function, so the covariate is only supported over that narrow interval. Creatinine-derived eGFR (Schwartz, CKiD U25) was also screened but was not retained after backward elimination (Section 4).",
-      source_name        = "creatinine"
+      notes = "Power effect on CL normalised to 0.51 mg/dL, the cohort median (Choi 2026 Table 1; final-model equation in Section 3.3). Exponent -0.686, i.e. clearance falls as creatinine rises. Observed range 0.34-0.67 mg/dL; all patients had normal renal function, so the covariate is only supported over that narrow interval. Creatinine-derived eGFR (Schwartz, CKiD U25) was also screened but was not retained after backward elimination (Section 4).",
+      source_name = "creatinine"
     ),
     CONMED_BUSULFAN = list(
-      description        = "Concomitant busulfan in the conditioning regimen (1 = busulfan-containing regimen, 0 = no busulfan)",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Concomitant busulfan in the conditioning regimen (1 = busulfan-containing regimen, 0 = no busulfan)",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 (no concomitant busulfan)",
-      notes              = "Multiplicative effect on CL: clearance is multiplied by 0.846 when the regimen contains busulfan (Choi 2026 Section 3.3, equation for CLB; Table 2 row 'CL~RegimenB'). Busulfan was given on days -9 to -6 (BuMel) or -9 to -7 (BuMelThio), i.e. finishing before the melphalan dose, so the flag marks a carried-over regimen effect rather than simultaneous exposure. In the source cohort 11 of 20 patients received a busulfan-containing regimen (7 BuMel, 4 BuMelThio). The paper's own MCMP power analysis (Table S6) supports detection of the effect at this sample size, but the authors describe the model as exploratory and the effect size as imprecise.",
-      source_name        = "RegimenB"
+      notes = "Multiplicative effect on CL: clearance is multiplied by 0.846 when the regimen contains busulfan (Choi 2026 Section 3.3, equation for CLB; Table 2 row 'CL~RegimenB'). Busulfan was given on days -9 to -6 (BuMel) or -9 to -7 (BuMelThio), i.e. finishing before the melphalan dose, so the flag marks a carried-over regimen effect rather than simultaneous exposure. In the source cohort 11 of 20 patients received a busulfan-containing regimen (7 BuMel, 4 BuMelThio). The paper's own MCMP power analysis (Table S6) supports detection of the effect at this sample size, but the authors describe the model as exploratory and the effect size as imprecise.",
+      source_name = "RegimenB"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened on CL in the stepwise analysis (Table S1) but not retained in the final model."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened on CL in the stepwise analysis (Table S1) but not retained in the final model."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (Schwartz and CKiD U25 creatinine-based equations)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened on CL (Table S1) but not retained after backward elimination; the authors kept raw serum creatinine instead (Section 4). Cystatin-C-based eGFR was considered but excluded because pre-dose cystatin C was incomplete (Section 2.5)."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened on CL (Table S1) but not retained after backward elimination; the authors kept raw serum creatinine instead (Section 4). Cystatin-C-based eGFR was considered but excluded because pre-dose cystatin C was incomplete (Section 2.5)."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened on CL (Table S1) but not retained in the final model. Observed median 32.4 % (range 26.7-40.4 %)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened on CL (Table S1) but not retained in the final model. Observed median 32.4 % (range 26.7-40.4 %)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened on V1 and V2 (Table S1) but not retained in the final model. Observed median 3.8 g/dL (range 3.3-4.3 g/dL)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened on V1 and V2 (Table S1) but not retained in the final model. Observed median 3.8 g/dL (range 3.3-4.3 g/dL)."
     ),
     PRIOR_RADIATION = list(
       description = "Prior radiation therapy indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened on CL (Table S1) but not retained in the final model. 6 of 20 patients (30 %) had prior radiation therapy."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened on CL (Table S1) but not retained in the final model. 6 of 20 patients (30 %) had prior radiation therapy."
     ),
     AGE = list(
       description = "Age at melphalan infusion",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Not part of the final model. Tested on CL only as a sensitivity analysis for maturational confounding (Section 3.3; Table S3), as a power model (AGE/9.3)^theta with theta between -0.097 and -0.343 depending on the reference model. Adding age to the final model did not remove the busulfan effect (multiplier moved 0.846 -> 0.871), so the authors retained the final model without age."
+      units = "years",
+      type = "continuous",
+      notes = "Not part of the final model. Tested on CL only as a sensitivity analysis for maturational confounding (Section 3.3; Table S3), as a power model (AGE/9.3)^theta with theta between -0.097 and -0.343 depending on the reference model. Adding age to the final model did not remove the busulfan effect (multiplier moved 0.846 -> 0.871), so the authors retained the final model without age."
     ),
     CONMED_ETOPOSIDE = list(
       description = "Concomitant etoposide in the conditioning regimen",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened on CL as one of the tested concomitant drugs (Table S1 footnote b) but not retained in the final model."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened on CL as one of the tested concomitant drugs (Table S1 footnote b) but not retained in the final model."
     ),
     CONMED_CARBOPLATIN = list(
       description = "Concomitant carboplatin in the conditioning regimen",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened on CL as one of the tested concomitant drugs (Table S1 footnote b) but not retained in the final model."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened on CL as one of the tested concomitant drugs (Table S1 footnote b) but not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = 140L,
-    age_range      = "0.6-17.4 years",
-    age_median     = "9.3 years",
-    weight_range   = "5.7-84.8 kg",
-    weight_median  = "27.6 kg",
+    age_range = "0.6-17.4 years",
+    age_median = "9.3 years",
+    weight_range = "5.7-84.8 kg",
+    weight_median = "27.6 kg",
     sex_female_pct = 50,
     race_ethnicity = "Not reported; single-centre Korean cohort",
-    disease_state  = "Pediatric autologous haematopoietic stem cell transplantation for solid tumours and haematologic disease (osteosarcoma 6, brain tumour 4, Ewing sarcoma 4, non-Hodgkin lymphoma 3, neuroblastoma 1, benign haematologic disease 2)",
-    dose_range     = "140 mg/m^2 as a single dose (BuMel, FluMel, BEAM); 50 mg/m^2 once daily on two consecutive days (BuMelThio); 140 mg/m^2 then 70 mg/m^2 on consecutive days (MEC). Every dose given as a 30-minute IV infusion.",
-    regions        = "South Korea (Seoul National University Children's Hospital; NCT04937634)",
+    disease_state = "Pediatric autologous haematopoietic stem cell transplantation for solid tumours and haematologic disease (osteosarcoma 6, brain tumour 4, Ewing sarcoma 4, non-Hodgkin lymphoma 3, neuroblastoma 1, benign haematologic disease 2)",
+    dose_range = "140 mg/m^2 as a single dose (BuMel, FluMel, BEAM); 50 mg/m^2 once daily on two consecutive days (BuMelThio); 140 mg/m^2 then 70 mg/m^2 on consecutive days (MEC). Every dose given as a 30-minute IV infusion.",
+    regions = "South Korea (Seoul National University Children's Hospital; NCT04937634)",
     renal_function = "All patients had normal renal and hepatic function on the day of conditioning. Serum creatinine median 0.51 mg/dL (range 0.34-0.67); eGFR (Schwartz Cr) median 102.05 mL/min/1.73 m^2 (range 76.10-149.35).",
-    co_medication  = "11 of 20 patients received a busulfan-containing regimen (BuMel 7, BuMelThio 4); the remaining 9 received MEC (4), BEAM (3) or FluMel (2).",
-    notes          = "Single-centre prospective study, September 2020 to November 2021. Sampling was five points per dosing occasion: pre-dose and 5, 40, 70 and 170 minutes after the end of infusion; 28 occasions x 5 samples = 140 plasma samples. Assay LLOQ 5 ng/mL (0.005 mg/L); all post-dose samples were above LLOQ. The authors describe the model as exploratory owing to the small sample size."
+    co_medication = "11 of 20 patients received a busulfan-containing regimen (BuMel 7, BuMelThio 4); the remaining 9 received MEC (4), BEAM (3) or FluMel (2).",
+    notes = "Single-centre prospective study, September 2020 to November 2021. Sampling was five points per dosing occasion: pre-dose and 5, 40, 70 and 170 minutes after the end of infusion; 28 occasions x 5 samples = 140 plasma samples. Assay LLOQ 5 ng/mL (0.005 mg/L); all post-dose samples were above LLOQ. The authors describe the model as exploratory owing to the small sample size."
   )
 
   ini({

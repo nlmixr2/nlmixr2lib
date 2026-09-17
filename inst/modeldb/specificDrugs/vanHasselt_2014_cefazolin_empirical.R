@@ -14,11 +14,11 @@ vanHasselt_2014_cefazolin_empirical <- function() {
 
   covariateData <- list(
     EGA = list(
-      description        = "Maternal estimated gestational age at the time of the observation",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Maternal estimated gestational age at the time of the observation",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the empirical gestational effect on clearance via the linear term (1 + EGA/40);",
         "the normalisation factor 40 is the maximum gestational age in the pooled dataset",
         "(paper Methods 2.3: 'For linear GA models this was the maximum GA of 40').",
@@ -29,32 +29,32 @@ vanHasselt_2014_cefazolin_empirical <- function() {
         "the paper makes exactly this point in its Discussion when contrasting the two approaches.",
         "A fixed EGA of 40 weeks was assigned to the term-pregnancy caesarean cohort (Methods 2.1)."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "cefazolin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefazolin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefazolin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 94L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 94L,
+    n_studies = 3L,
     n_observations = 187L,
-    age_range      = "20-42 years",
-    age_median     = "31 years",
-    weight_range   = "54-99 kg",
-    weight_median  = "72 kg",
+    age_range = "20-42 years",
+    age_median = "31 years",
+    weight_range = "54-99 kg",
+    weight_median = "72 kg",
     sex_female_pct = 100,
     race_ethnicity = "not reported in the source paper",
-    disease_state  = "pregnant women undergoing in utero surgical intervention, elective caesarean delivery, or fetal intervention; cefazolin given as surgical prophylaxis",
-    dose_range     = "1 g or 2 g intravenously; 2 g every 8 h for 2 days in the prospective cohort, single 1 g or 2 g bolus in the two literature cohorts",
-    ga_range       = "17-40 weeks (median 33)",
-    regions        = "Belgium (University Hospitals Leuven) plus two previously published cohorts",
+    disease_state = "pregnant women undergoing in utero surgical intervention, elective caesarean delivery, or fetal intervention; cefazolin given as surgical prophylaxis",
+    dose_range = "1 g or 2 g intravenously; 2 g every 8 h for 2 days in the prospective cohort, single 1 g or 2 g bolus in the two literature cohorts",
+    ga_range = "17-40 weeks (median 33)",
+    regions = "Belgium (University Hospitals Leuven) plus two previously published cohorts",
     renal_function = "serum creatinine median 0.64 mg/dL (range 0.33-0.88); creatinine clearance computed by Cockcroft-Gault using body weight",
-    notes          = paste(
+    notes = paste(
       "Pooled from one prospective study and two published studies with individual-level data (Methods 2.1).",
       "Prospective cohort: 41 pregnant women, 153 cefazolin observations, median GA 25 weeks (range 17-34),",
       "2 g every 8 h for 2 days during in utero surgery, free cefazolin available for 84% of observations.",

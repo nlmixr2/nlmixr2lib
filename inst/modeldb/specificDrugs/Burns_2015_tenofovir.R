@@ -42,19 +42,19 @@ Burns_2015_tenofovir <- function() {
   # Discussion). See the `kmet_tfvdp` note in ini() for the numeric check that
   # settles this reading.
   compartmentData <- list(
-    depot       = list(analyte = "tenofovir", units = "umol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tenofovir", units = "umol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "tenofovir", units = "umol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tenofovir", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tenofovir", units = "umol", specimen = "plasma", verified = TRUE),
-    pbmc_tfvdp  = list(analyte = "tenofovir diphosphate", units = "umol", specimen = "blood cell", verified = TRUE)
+    pbmc_tfvdp = list(analyte = "tenofovir diphosphate", units = "umol", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Enters Vc/F as a",
         "LINEAR, NOT allometric, term centred on the cohort median weight of",
         "73 kg: Results gives the relationship verbatim as",
@@ -68,18 +68,18 @@ Burns_2015_tenofovir <- function() {
         "being algebraically re-centred, so that the coefficient in ini()",
         "matches the coefficient in the paper's own table."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SELFADMIN = list(
-      description        = paste(
+      description = paste(
         "1 = the dose was self-administered at home without study-staff",
         "supervision (the 'preclinic' dose of the end-of-period visit);",
         "0 = the dose was taken under observation in clinic."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (observed in-clinic dose; relative bioavailability 1)",
-      notes              = paste(
+      notes = paste(
         "Carries the paper's adherence adjustment, which is the methodological",
         "point of the analysis. MTN-001 adherence was suspected to be",
         "suboptimal, so the authors applied Gibiansky's method: a",
@@ -100,7 +100,7 @@ Burns_2015_tenofovir <- function() {
         "paper, in which the unobserved dose is the one carrying the",
         "adjustment."
       ),
-      source_name        = "F1 (preclinic dose)"
+      source_name = "F1 (preclinic dose)"
     )
   )
 
@@ -109,9 +109,9 @@ Burns_2015_tenofovir <- function() {
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Creatinine clearance.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened on K20 with a linear relationship and significant in forward",
         "addition (-4 objective-function points), but Results states that once",
         "weight on Vc was in the model 'there was no significant drop in the",
@@ -123,9 +123,9 @@ Burns_2015_tenofovir <- function() {
     ),
     RACE_BLACK = list(
       description = "Race indicator, 1 = Black, 0 = non-Black.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on clearance as a two-level black / non-black split and not",
         "retained: 'Race ... on clearance was not shown to be a significant",
         "covariate and this finding was in agreement with other literature",
@@ -138,22 +138,22 @@ Burns_2015_tenofovir <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 101,
-    n_observations   = 875,
-    n_studies        = 1,
-    age_range        = "18-45 years",
-    age_mean         = "31.3 years",
-    weight_range     = "43-145 kg",
-    weight_mean      = "79.6 kg",
-    weight_median    = "73 kg",
-    sex_female_pct   = 100,
-    race_ethnicity   = c(White = 32, Black = 60, Other = 9),
-    disease_state    = "healthy HIV-negative women (pre-exposure prophylaxis target population)",
-    renal_function   = "creatinine clearance mean 130.1 (range 64-257) mL/min",
-    dose_range       = "tenofovir disoproxil fumarate 300 mg orally once daily (136 mg tenofovir equivalents = 472.058 umol)",
-    regions          = "United States, South Africa, Uganda, Zimbabwe (MTN-001 sites)",
-    notes            = paste(
+    species = "human",
+    n_subjects = 101,
+    n_observations = 875,
+    n_studies = 1,
+    age_range = "18-45 years",
+    age_mean = "31.3 years",
+    weight_range = "43-145 kg",
+    weight_mean = "79.6 kg",
+    weight_median = "73 kg",
+    sex_female_pct = 100,
+    race_ethnicity = c(White = 32, Black = 60, Other = 9),
+    disease_state = "healthy HIV-negative women (pre-exposure prophylaxis target population)",
+    renal_function = "creatinine clearance mean 130.1 (range 64-257) mL/min",
+    dose_range = "tenofovir disoproxil fumarate 300 mg orally once daily (136 mg tenofovir equivalents = 472.058 umol)",
+    regions = "United States, South Africa, Uganda, Zimbabwe (MTN-001 sites)",
+    notes = paste(
       "MTN-001, a 21-week Phase II open-label three-period crossover study of",
       "daily oral tenofovir disoproxil fumarate 300 mg and/or 1% vaginal",
       "tenofovir gel in healthy women. 168 enrolled, 144 completed at least one",

@@ -35,18 +35,18 @@ Komatsu_2016_penicillinG_clinical_success <- function() {
   vignette <- "Komatsu_2016_penicillinG"
 
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "CTROUGH and mic in ug/mL; prob_clinical_success is a probability (0-1)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Minimum (pre-dose trough) serum penicillin G concentration over the dosing interval. TOTAL, not unbound.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Minimum (pre-dose trough) serum penicillin G concentration over the dosing interval. TOTAL, not unbound.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Komatsu 2016 writes this quantity 'penicillin G Cmin' and always ",
         "uses it divided by the isolate MIC; 'Cmin' is a registered source ",
         "alias of CTROUGH. Landmark: the measured trough during penicillin ",
@@ -64,22 +64,22 @@ Komatsu_2016_penicillinG_clinical_success <- function() {
         "it is not a free-fraction measurement even though only unbound ",
         "penicillin G is microbiologically active."
       ),
-      source_name        = "Cmin"
+      source_name = "Cmin"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
     n_observations = "21 binary outcome records, one per patient (landmark analysis, no repeated measures)",
-    age_range      = "21-83 years (the parent cohort of 25; Komatsu 2016 Table 1)",
+    age_range = "21-83 years (the parent cohort of 25; Komatsu 2016 Table 1)",
     sex_female_pct = 36,
     race_ethnicity = "Not reported; single-centre Japanese cohort (Kitasato University Hospital, Sagamihara)",
-    disease_state  = "Infective endocarditis with viridans group streptococci isolated. Species distribution (Komatsu 2016 Table 2): Streptococcus sanguis 5, S. gordonii 4, species not determined 4, S. agalactiae 2, S. intermedius 2, S. mutans 1, S. mitis 1, S. oralis 1, S. constellatus 1. Observed penicillin G MIC 0.11 +/- 0.20 ug/mL overall, 0.07 +/- 0.02 in responders and 0.21 +/- 0.38 in failures. Vegetation size 11.7 +/- 6.0 mm.",
-    dose_range     = "Penicillin G potassium intravenously; individual clinical regimens are not tabulated",
-    regions        = "Japan (Kitasato University Hospital, Sagamihara, Kanagawa); patients treated between January 1997 and April 2013",
-    notes          = paste0(
+    disease_state = "Infective endocarditis with viridans group streptococci isolated. Species distribution (Komatsu 2016 Table 2): Streptococcus sanguis 5, S. gordonii 4, species not determined 4, S. agalactiae 2, S. intermedius 2, S. mutans 1, S. mitis 1, S. oralis 1, S. constellatus 1. Observed penicillin G MIC 0.11 +/- 0.20 ug/mL overall, 0.07 +/- 0.02 in responders and 0.21 +/- 0.38 in failures. Vegetation size 11.7 +/- 6.0 mm.",
+    dose_range = "Penicillin G potassium intravenously; individual clinical regimens are not tabulated",
+    regions = "Japan (Kitasato University Hospital, Sagamihara, Kanagawa); patients treated between January 1997 and April 2013",
+    notes = paste0(
       "Outcome definition, Komatsu 2016 Methods, Data source: 'Failure of ",
       "penicillin G treatment was defined as persistence of fever and/or ",
       "bacteremia by the causative pathogen requiring a change in ",

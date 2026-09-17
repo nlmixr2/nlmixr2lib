@@ -11,11 +11,16 @@ Brenner_2016_pamrevlumab_rat <- function() {
   # token makes these paper-specific. elim_target / elim_nontarget are the
   # bookkeeping integrators of Supplement Eqs. (19)-(20) used to reproduce Fig. 7.
   paper_specific_compartments <- c(
-    "target_ctgf", "target_ctgf_peripheral1",
-    "target_ctgfn", "target_ctgfn_peripheral1",
-    "complex_ctgf", "complex_ctgf_peripheral1",
-    "complex_ctgfn", "complex_ctgfn_peripheral1",
-    "elim_target", "elim_nontarget"
+    "target_ctgf",
+    "target_ctgf_peripheral1",
+    "target_ctgfn",
+    "target_ctgfn_peripheral1",
+    "complex_ctgf",
+    "complex_ctgf_peripheral1",
+    "complex_ctgfn",
+    "complex_ctgfn_peripheral1",
+    "elim_target",
+    "elim_nontarget"
   )
 
   compartmentData <- list(
@@ -23,14 +28,54 @@ Brenner_2016_pamrevlumab_rat <- function() {
     peripheral1 = list(analyte = "pamrevlumab (FG-3019), free", units = "nmol", specimen = "tissue", verified = TRUE),
     target_ctgf = list(analyte = "CTGF (intact, W), free", units = "nmol", specimen = "plasma", verified = TRUE),
     target_ctgf_peripheral1 = list(analyte = "CTGF (intact, W)", units = "nmol", specimen = "tissue", verified = TRUE),
-    target_ctgfn = list(analyte = "CTGF N-terminal fragment (N), free", units = "nmol", specimen = "plasma", verified = TRUE),
-    target_ctgfn_peripheral1 = list(analyte = "CTGF N-terminal fragment (N)", units = "nmol", specimen = "tissue", verified = TRUE),
-    complex_ctgf = list(analyte = "pamrevlumab-CTGF complex (AbW)", units = "nmol", specimen = "plasma", verified = TRUE),
-    complex_ctgf_peripheral1 = list(analyte = "pamrevlumab-CTGF complex (AbWT)", units = "nmol", specimen = "tissue", verified = TRUE),
-    complex_ctgfn = list(analyte = "pamrevlumab-CTGF-N complex (AbN)", units = "nmol", specimen = "plasma", verified = TRUE),
-    complex_ctgfn_peripheral1 = list(analyte = "pamrevlumab-CTGF-N complex (AbNT)", units = "nmol", specimen = "tissue", verified = TRUE),
-    elim_target = list(analyte = "pamrevlumab (FG-3019) cleared by the target-mediated pathway, cumulative", units = "nmol", specimen = "not applicable", verified = TRUE),
-    elim_nontarget = list(analyte = "pamrevlumab (FG-3019) cleared by non-target-mediated pathways, cumulative", units = "nmol", specimen = "not applicable", verified = TRUE)
+    target_ctgfn = list(
+      analyte = "CTGF N-terminal fragment (N), free",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    target_ctgfn_peripheral1 = list(
+      analyte = "CTGF N-terminal fragment (N)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    complex_ctgf = list(
+      analyte = "pamrevlumab-CTGF complex (AbW)",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_ctgf_peripheral1 = list(
+      analyte = "pamrevlumab-CTGF complex (AbWT)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    complex_ctgfn = list(
+      analyte = "pamrevlumab-CTGF-N complex (AbN)",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_ctgfn_peripheral1 = list(
+      analyte = "pamrevlumab-CTGF-N complex (AbNT)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    elim_target = list(
+      analyte = "pamrevlumab (FG-3019) cleared by the target-mediated pathway, cumulative",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    elim_nontarget = list(
+      analyte = "pamrevlumab (FG-3019) cleared by non-target-mediated pathways, cumulative",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()

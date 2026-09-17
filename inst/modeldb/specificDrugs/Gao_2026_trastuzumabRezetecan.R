@@ -12,91 +12,101 @@ Gao_2026_trastuzumabRezetecan <- function() {
   # The payload scale is NOT fully recoverable from the paper - see the
   # `mwr` note in model() and the vignette 'Assumptions and deviations'.
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumab rezetecan (intact ADC)", units = "mg", specimen = "serum", verified = TRUE),
-    peripheral1 = list(analyte = "trastuzumab rezetecan (intact ADC)", units = "mg", specimen = "serum", verified = TRUE),
-    central_rez = list(analyte = "released rezetecan payload", units = "mg ADC-molar-equivalent (see model() `mwr` note)", specimen = "serum", verified = TRUE)
+    central = list(analyte = "trastuzumab rezetecan (intact ADC)", units = "mg", specimen = "serum", verified = TRUE),
+    peripheral1 = list(
+      analyte = "trastuzumab rezetecan (intact ADC)",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    central_rez = list(
+      analyte = "released rezetecan payload",
+      units = "mg ADC-molar-equivalent (see model() `mwr` note)",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on intact-ADC CL (exponent 0.525) and V1 (exponent 0.544), and on the payload release-rate constant RAT (exponent -0.546). Reference 60.6 kg, the value printed as the typical patient in the Gao 2026 Figure 5 and Figure 6 captions and appearing as the denominator of every body-weight term in the Section 3.2 and Section 3.3 equations. Dosing is weight-based (1.0-8.0 mg/kg), so ADC steady-state AUC scales as BW^(1 - 0.525) rather than BW^(-0.525).",
-      source_name        = "BW"
+      notes = "Power effects on intact-ADC CL (exponent 0.525) and V1 (exponent 0.544), and on the payload release-rate constant RAT (exponent -0.546). Reference 60.6 kg, the value printed as the typical patient in the Gao 2026 Figure 5 and Figure 6 captions and appearing as the denominator of every body-weight term in the Section 3.2 and Section 3.3 equations. Dosing is weight-based (1.0-8.0 mg/kg), so ADC steady-state AUC scales as BW^(1 - 0.525) rather than BW^(-0.525).",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on intact-ADC V1 (exponent 0.198) and on payload V3 (exponent 0.420). Reference 56 years (Gao 2026 Section 3.2 and 3.3 equations; the Figure 5 / Figure 6 captions define the typical patient as 56 years old).",
-      source_name        = "AGE"
+      notes = "Power effects on intact-ADC V1 (exponent 0.198) and on payload V3 (exponent 0.420). Reference 56 years (Gao 2026 Section 3.2 and 3.3 equations; the Figure 5 / Figure 6 captions define the typical patient as 56 years old).",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on intact-ADC V1 (exponent -0.363) and V2 (exponent -1.44); both volumes decrease as albumin rises. Reference 42.5 g/L (Gao 2026 Section 3.2 equations and the Figure 5 caption). Gao 2026 Table 1 abbreviation list confirms the unit is g/L, so no g/dL conversion is required.",
-      source_name        = "ALB"
+      notes = "Power effects on intact-ADC V1 (exponent -0.363) and V2 (exponent -1.44); both volumes decrease as albumin rises. Reference 42.5 g/L (Gao 2026 Section 3.2 equations and the Figure 5 caption). Gao 2026 Table 1 abbreviation list confirms the unit is g/L, so no g/dL conversion is required.",
+      source_name = "ALB"
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on released-payload clearance CL3 (exponent -0.167); payload clearance falls, and hence payload exposure rises, as AST rises. Reference 25 U/L (Gao 2026 Section 3.3 equation and the Figure 6 caption).",
-      source_name        = "AST"
+      notes = "Power effect on released-payload clearance CL3 (exponent -0.167); payload clearance falls, and hence payload exposure rises, as AST rises. Reference 25 U/L (Gao 2026 Section 3.3 equation and the Figure 6 caption).",
+      source_name = "AST"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size: sum of diameters of target lesions at baseline (RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size: sum of diameters of target lesions at baseline (RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on intact-ADC CL (exponent 0.0686) and on the payload release-rate constant RAT (exponent 0.100). Reference 52 mm (Gao 2026 Section 3.2 and 3.3 equations; the Figure 5 / Figure 6 captions give SOD 52 mm for the typical patient). Linear sum-of-diameters construct in mm, not an SPPD area. Source column SOD_B.",
-      source_name        = "SOD_B"
+      notes = "Power effects on intact-ADC CL (exponent 0.0686) and on the payload release-rate constant RAT (exponent 0.100). Reference 52 mm (Gao 2026 Section 3.2 and 3.3 equations; the Figure 5 / Figure 6 captions give SOD 52 mm for the typical patient). Linear sum-of-diameters construct in mm, not an SPPD area. Source column SOD_B.",
+      source_name = "SOD_B"
     ),
     TUMTP_BREAST = list(
-      description        = "Tumor-type indicator: 1 = breast cancer (BC), 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: 1 = breast cancer (BC), 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NSCLC is the model reference when TUMTP_BREAST, TUMTP_GASTRIC and TUMTP_OTHER are all 0)",
-      notes              = "Gao 2026 Table 1 note: 'CT1, CT2 and CT3 represent Breast Cancer (BC), Gastric or Gastroesophageal Junction cancer (GC/GEJ) and Other Tumor types, respectively.' The effect is ADDITIVE on the release-rate constant RAT (units 1/day), applied before the body-weight and tumor-size power terms: RAT_typical = 0.814 + 0.0562 for breast cancer. Breast cancer is the largest group in the analysis (approximately 60% of the 645 patients).",
-      source_name        = "CT1"
+      notes = "Gao 2026 Table 1 note: 'CT1, CT2 and CT3 represent Breast Cancer (BC), Gastric or Gastroesophageal Junction cancer (GC/GEJ) and Other Tumor types, respectively.' The effect is ADDITIVE on the release-rate constant RAT (units 1/day), applied before the body-weight and tumor-size power terms: RAT_typical = 0.814 + 0.0562 for breast cancer. Breast cancer is the largest group in the analysis (approximately 60% of the 645 patients).",
+      source_name = "CT1"
     ),
     TUMTP_GASTRIC = list(
-      description        = "Tumor-type indicator: 1 = gastric cancer or gastroesophageal junction (GEJ) adenocarcinoma, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: 1 = gastric cancer or gastroesophageal junction (GEJ) adenocarcinoma, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NSCLC is the model reference when TUMTP_BREAST, TUMTP_GASTRIC and TUMTP_OTHER are all 0)",
-      notes              = "Gao 2026 Table 1 CT2. ADDITIVE effect on the release-rate constant RAT (units 1/day): RAT_typical = 0.814 - 0.129 for GC/GEJ. The canonical TUMTP_GASTRIC register entry already covers gastric cancer OR adenocarcinoma of the gastroesophageal junction, which is exactly the Gao 2026 CT2 definition.",
-      source_name        = "CT2"
+      notes = "Gao 2026 Table 1 CT2. ADDITIVE effect on the release-rate constant RAT (units 1/day): RAT_typical = 0.814 - 0.129 for GC/GEJ. The canonical TUMTP_GASTRIC register entry already covers gastric cancer OR adenocarcinoma of the gastroesophageal junction, which is exactly the Gao 2026 CT2 definition.",
+      source_name = "CT2"
     ),
     TUMTP_OTHER = list(
-      description        = "Tumor-type indicator: 1 = other tumor types (neither NSCLC, breast, nor gastric/GEJ), 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: 1 = other tumor types (neither NSCLC, breast, nor gastric/GEJ), 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NSCLC is the model reference when TUMTP_BREAST, TUMTP_GASTRIC and TUMTP_OTHER are all 0)",
-      notes              = "Gao 2026 Table 1 CT3. ADDITIVE effect on the release-rate constant RAT (units 1/day): RAT_typical = 0.814 + 0.0464 for other tumor types. NOTE the reference group here is NSCLC, NOT the 'other' pool: Gao 2026 Section 3.3 prints the NSCLC equation with the bare 0.814 and gives BC, GC/GEJ and Others their own additive shifts. This is the inverse orientation from papers that treat 'Other' as the residual reference, so the scope is paper-specific.",
-      source_name        = "CT3"
+      notes = "Gao 2026 Table 1 CT3. ADDITIVE effect on the release-rate constant RAT (units 1/day): RAT_typical = 0.814 + 0.0464 for other tumor types. NOTE the reference group here is NSCLC, NOT the 'other' pool: Gao 2026 Section 3.3 prints the NSCLC equation with the bare 0.814 and gives BC, GC/GEJ and Others their own additive shifts. This is the inverse orientation from papers that treat 'Other' as the residual reference, so the scope is paper-specific.",
+      source_name = "CT3"
     ),
     CYCLE = list(
-      description        = "Treatment cycle number (1 = first 21-day cycle, 2 = second, ...; integer count, time-varying across the treatment course)",
-      units              = "(count)",
-      type               = "count",
+      description = "Treatment cycle number (1 = first 21-day cycle, 2 = second, ...; integer count, time-varying across the treatment course)",
+      units = "(count)",
+      type = "count",
       reference_category = "n/a -- used as the piecewise indicator CYCLE == 1 versus CYCLE >= 2",
-      notes              = "Required for the released-payload sub-model only. Gao 2026 Section 3.3: 'Krel = RAT during Cycle 1 and Krel = RAT * ALPHA after Cycle 1' with ALPHA = 0.693, i.e. the release rate drops to 69.3% of its Cycle-1 value from Cycle 2 onward. Cycle length is 21 days (Gao 2026 Section 2.1), so CYCLE increments every 21 days on the Q3W regimen. Does not affect intact-ADC disposition or payload elimination. Gao 2026 states that a release rate varying continuously with time or cycle was evaluated and did NOT improve the fit, so the step change is the paper's selected form.",
-      source_name        = "CYCLE"
+      notes = "Required for the released-payload sub-model only. Gao 2026 Section 3.3: 'Krel = RAT during Cycle 1 and Krel = RAT * ALPHA after Cycle 1' with ALPHA = 0.693, i.e. the release rate drops to 69.3% of its Cycle-1 value from Cycle 2 onward. Cycle length is 21 days (Gao 2026 Section 2.1), so CYCLE increments every 21 days on the Q3W regimen. Does not affect intact-ADC disposition or payload elimination. Gao 2026 states that a release rate varying continuously with time or cycle was evaluated and did NOT improve the fit, so the step change is the paper's selected form.",
+      source_name = "CYCLE"
     )
   )
 
@@ -107,46 +117,46 @@ Gao_2026_trastuzumabRezetecan <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Assessed as a covariate and compared post hoc by subgroup (Gao 2026 Figure S4); not retained in the final model and no point estimate published."
+      units = "(binary)",
+      type = "binary",
+      notes = "Assessed as a covariate and compared post hoc by subgroup (Gao 2026 Figure S4); not retained in the final model and no point estimate published."
     ),
     RACE_ASIAN = list(
       description = "Race indicator (1 = Asian, 0 = otherwise)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Ethnicity subgroups compared post hoc (Gao 2026 Figure S7); 'There is no remarkable difference in predicted exposures of Trastuzumab rezetecan between ethnicity groups'. Not retained; no point estimate published."
+      units = "(binary)",
+      type = "binary",
+      notes = "Ethnicity subgroups compared post hoc (Gao 2026 Figure S7); 'There is no remarkable difference in predicted exposures of Trastuzumab rezetecan between ethnicity groups'. Not retained; no point estimate published."
     ),
     CRCL = list(
       description = "Creatinine clearance (renal function category driver)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Renal function categories compared post hoc (Gao 2026 Figure S1); no remarkable difference in exposure. Not retained; no point estimate published."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Renal function categories compared post hoc (Gao 2026 Figure S1); no remarkable difference in exposure. Not retained; no point estimate published."
     ),
     HEPIMP_MILD = list(
       description = "Mild hepatic impairment indicator (NCI-ODWG)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Hepatic function categories compared post hoc (Gao 2026 Figure S2); no remarkable difference in exposure. Not retained; no point estimate published. AST was retained as a continuous covariate on payload clearance instead."
+      units = "(binary)",
+      type = "binary",
+      notes = "Hepatic function categories compared post hoc (Gao 2026 Figure S2); no remarkable difference in exposure. Not retained; no point estimate published. AST was retained as a continuous covariate on payload clearance instead."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 645,
-    n_studies      = 3,
+    species = "human",
+    n_subjects = 645,
+    n_studies = 3,
     n_observations = "18,671 concentration records (9421 intact ADC, 9250 released payload) from 26,988 total records including 8317 dosing records",
-    age_median     = "56 years (typical-patient value used as the AGE covariate reference)",
-    weight_median  = "60.6 kg (typical-patient value used as the WT covariate reference); 5th percentile 45 kg, 95th percentile 82 kg",
-    disease_state  = "HER2-expressing or HER2-mutated advanced solid tumors: breast cancer (approximately 60% of the analysis population), gastric or gastroesophageal junction adenocarcinoma, colorectal cancer, and non-small cell lung cancer with HER2 expression, amplification or mutation.",
-    dose_range     = "1.0-8.0 mg/kg IV every 3 weeks (Q3W), 21-day treatment cycles.",
-    studies        = "Three phase 1 studies: SHR-A1811-I-101 (HER2-expressing or mutated advanced solid tumors), SHR-A1811-I-102 (HER2-expressing advanced gastric or gastroesophageal junction adenocarcinoma and colorectal cancer), and SHR-A1811-I-103 (advanced NSCLC with HER2 expression, amplification or mutation).",
+    age_median = "56 years (typical-patient value used as the AGE covariate reference)",
+    weight_median = "60.6 kg (typical-patient value used as the WT covariate reference); 5th percentile 45 kg, 95th percentile 82 kg",
+    disease_state = "HER2-expressing or HER2-mutated advanced solid tumors: breast cancer (approximately 60% of the analysis population), gastric or gastroesophageal junction adenocarcinoma, colorectal cancer, and non-small cell lung cancer with HER2 expression, amplification or mutation.",
+    dose_range = "1.0-8.0 mg/kg IV every 3 weeks (Q3W), 21-day treatment cycles.",
+    studies = "Three phase 1 studies: SHR-A1811-I-101 (HER2-expressing or mutated advanced solid tumors), SHR-A1811-I-102 (HER2-expressing advanced gastric or gastroesophageal junction adenocarcinoma and colorectal cancer), and SHR-A1811-I-103 (advanced NSCLC with HER2 expression, amplification or mutation).",
     baseline_albumin_median = "42.5 g/L (typical-patient value used as the ALB covariate reference)",
-    baseline_ast_median     = "25 U/L (typical-patient value used as the AST covariate reference)",
+    baseline_ast_median = "25 U/L (typical-patient value used as the AST covariate reference)",
     baseline_tumor_size_median = "52 mm sum of target-lesion diameters (typical-patient value used as the TUMSZ covariate reference); 5th percentile 15 mm, 95th percentile 149 mm",
-    regions        = "China (Jiangsu Hengrui Pharmaceuticals phase 1 programme)",
-    notes          = "Trastuzumab rezetecan (SHR-A1811) is a third-generation HER2-targeting ADC: anti-HER2 antibody trastuzumab, an enzyme-cleavable linker with a chiral cyclopropyl stabilising group, and the topoisomerase-I inhibitor payload rezetecan, at a drug-to-antibody ratio of approximately 6.0. Estimation used FOCE-I in NONMEM 7.5.1 with a SEQUENTIAL two-step approach: the intact-ADC fixed- and random-effect parameters were estimated first and then FIXED while the released-payload parameters were estimated. A one-step joint fit gave close estimates but ran about 6-fold longer. Gao 2026 Section 4 notes a trend toward nonlinear (TMDD-like) elimination at the 1.0 and 2.0 mg/kg dose levels (six patients each); a nonlinear component accounted for approximately 5% of total elimination and did not improve the fit, so linear clearance only was selected.",
-    dosing_note    = "Dose the `central` compartment only (IV infusion; Gao 2026 Figure 2). The released-payload compartment is driven by the intact-ADC central compartment and must NOT be dosed. Supply CYCLE as a time-varying covariate column that starts at 1 and increments every 21 days."
+    regions = "China (Jiangsu Hengrui Pharmaceuticals phase 1 programme)",
+    notes = "Trastuzumab rezetecan (SHR-A1811) is a third-generation HER2-targeting ADC: anti-HER2 antibody trastuzumab, an enzyme-cleavable linker with a chiral cyclopropyl stabilising group, and the topoisomerase-I inhibitor payload rezetecan, at a drug-to-antibody ratio of approximately 6.0. Estimation used FOCE-I in NONMEM 7.5.1 with a SEQUENTIAL two-step approach: the intact-ADC fixed- and random-effect parameters were estimated first and then FIXED while the released-payload parameters were estimated. A one-step joint fit gave close estimates but ran about 6-fold longer. Gao 2026 Section 4 notes a trend toward nonlinear (TMDD-like) elimination at the 1.0 and 2.0 mg/kg dose levels (six patients each); a nonlinear component accounted for approximately 5% of total elimination and did not improve the fit, so linear clearance only was selected.",
+    dosing_note = "Dose the `central` compartment only (IV infusion; Gao 2026 Figure 2). The released-payload compartment is driven by the intact-ADC central compartment and must NOT be dosed. Supply CYCLE as a time-varying covariate column that starts at 1 and increments every 21 days."
   )
 
   ini({

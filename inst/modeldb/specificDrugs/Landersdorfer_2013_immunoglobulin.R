@@ -1,41 +1,41 @@
 Landersdorfer_2013_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IVIg and SCIg) in primary immunodeficiency (Landersdorfer 2013)"
-  reference   <- "Landersdorfer CB, Bexon M, Edelman J, Rojavin M, Kirkpatrick CM, Lu J, et al. Pharmacokinetic modeling and simulation of biweekly subcutaneous immunoglobulin dosing in primary immunodeficiency. Postgrad Med. 2013;125(6):53-61. doi:10.3810/pgm.2013.11.2712 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 40)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Landersdorfer CB, Bexon M, Edelman J, Rojavin M, Kirkpatrick CM, Lu J, et al. Pharmacokinetic modeling and simulation of biweekly subcutaneous immunoglobulin dosing in primary immunodeficiency. Postgrad Med. 2013;125(6):53-61. doi:10.3810/pgm.2013.11.2712 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 40)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list()
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Body weight was the only covariate tested (van der Zeeuw 2026 Table 3) but was NOT retained on any parameter in the final model. Landersdorfer 2013 is absent from every 'BW on CL' and 'BW on Vc' list in van der Zeeuw 2026 sections 3.2.1.3 and 3.2.1.4, and its Table 4 row carries bare parameter values with no allometric term.",
+      units = "kg",
+      type = "continuous",
+      notes = "Body weight was the only covariate tested (van der Zeeuw 2026 Table 3) but was NOT retained on any parameter in the final model. Landersdorfer 2013 is absent from every 'BW on CL' and 'BW on Vc' list in van der Zeeuw 2026 sections 3.2.1.3 and 3.2.1.4, and its Table 4 row carries bare parameter values with no allometric term.",
       source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 151L,
-    n_studies      = 4L,
-    age_range      = "3-81 years (per-study medians 18.0-32.0 years)",
-    age_median     = "NCT00168025: 25.0; NCT00322556: 23.0; NCT00419341: 32.0; NCT00542997: 18.0 years",
-    weight_range   = "13.0-135.0 kg (per-study medians 53.5-66.5 kg)",
-    weight_median  = "NCT00168025: 66.5; NCT00322556: 62.0; NCT00419341: 66.0; NCT00542997: 53.5 kg",
+    species = "human",
+    n_subjects = 151L,
+    n_studies = 4L,
+    age_range = "3-81 years (per-study medians 18.0-32.0 years)",
+    age_median = "NCT00168025: 25.0; NCT00322556: 23.0; NCT00419341: 32.0; NCT00542997: 18.0 years",
+    weight_range = "13.0-135.0 kg (per-study medians 53.5-66.5 kg)",
+    weight_median = "NCT00168025: 66.5; NCT00322556: 62.0; NCT00419341: 66.0; NCT00542997: 53.5 kg",
     sex_female_pct = round(100 * (34 + 29 + 27 + 16) / (46 + 34 + 26 + 29 + 22 + 27 + 35 + 16), 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
-    dose_range     = "IVIg 200-888 mg/kg once every 3 to 4 weeks (NCT00168025, NCT00322556); SCIg 54-406 and 72-262 mg/kg weekly (NCT00419341, NCT00542997)",
-    regions        = "United States, Europe",
-    notes          = "Pooled analysis of four clinical trials (NCT00168025, NCT00322556, NCT00419341, NCT00542997). Demographics and dosing from van der Zeeuw 2026 Tables 1 and 2. Baseline IgG was not reported. IIV and residual error were not reported anywhere in the secondary source; see the ini() notes and the vignette Errata."
+    disease_state = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
+    dose_range = "IVIg 200-888 mg/kg once every 3 to 4 weeks (NCT00168025, NCT00322556); SCIg 54-406 and 72-262 mg/kg weekly (NCT00419341, NCT00542997)",
+    regions = "United States, Europe",
+    notes = "Pooled analysis of four clinical trials (NCT00168025, NCT00322556, NCT00419341, NCT00542997). Demographics and dosing from van der Zeeuw 2026 Tables 1 and 2. Baseline IgG was not reported. IIV and residual error were not reported anywhere in the secondary source; see the ini() notes and the vignette Errata."
   )
 
   ini({

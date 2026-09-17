@@ -30,22 +30,26 @@ Nyangwa_2026_pretomanid <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "pretomanid", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pretomanid",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "pretomanid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "pretomanid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Enters as a priori",
         "allometric body-size scaling on both apparent clearance (fixed",
         "exponent 0.75) and apparent central volume (fixed exponent 1), per",
@@ -82,7 +86,7 @@ Nyangwa_2026_pretomanid <- function() {
         "56.8 kg against a median FFM of 45.5 kg is the only in-paper",
         "calibration point available."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     )
   )
 
@@ -94,9 +98,9 @@ Nyangwa_2026_pretomanid <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened head-to-head against FFM and BMI as the allometric",
         "body-size descriptor and lost: FFM 'improved the base model fit",
         "better than weight or BMI' (Results paragraph 4). Cohort median",
@@ -105,9 +109,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened as an alternative allometric body-size descriptor and",
         "lost to FFM (Results paragraph 4). Cohort median 19.7 kg/m^2",
         "(range 14.3-47.1), Table 1."
@@ -115,9 +119,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Significant on volume of distribution at the forward-inclusion",
         "threshold (p < 0.05, dOFV > 3.84) but eliminated at the backward",
         "threshold (p < 0.001, dOFV > 10.83), so it carries no estimate in",
@@ -127,9 +131,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     RACE_BLACK = list(
       description = "Black race indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Significant on volume of distribution in forward inclusion but",
         "eliminated in backward elimination (Results paragraph 4). 52 of 94",
         "participants (55.3%) were Black, 40 (42.6%) Caucasian, 1 Asian and",
@@ -138,9 +142,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     CONMED_MOXIFLOXACIN = list(
       description = "Concomitant moxifloxacin (the BPaLM regimen arm)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "The regimen arm was screened on clearance and did not improve the",
         "fit: 'including BPaLM and BPaLC as covariates on clearance did not",
         "improve the model fit significantly, suggesting none or limited",
@@ -151,9 +155,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     CONMED_CLOFAZIMINE = list(
       description = "Concomitant clofazimine (the BPaLC regimen arm)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened on clearance with BPaLM and not retained (Discussion",
         "paragraph 4). Separately, 'BPaL regimen' was significant on volume",
         "of distribution in forward inclusion but eliminated in backward",
@@ -163,9 +167,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     HIV_POS = list(
       description = "HIV-positive comorbidity indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Not a significant covariate; no further exploration of individual",
         "antiretroviral effects was performed (Discussion paragraph 4). All",
         "39 participants living with HIV (41.5%, Table 1) were on integrase",
@@ -177,9 +181,9 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     CRCL = list(
       description = "Estimated creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Included in the Appendix 2 covariate-versus-eta correlation matrix",
         "and not retained. Cohort median 105.4 mL/min (range 43.4-243.8),",
         "Table 1. The trial excluded patients with moderate renal function",
@@ -189,18 +193,18 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "mmol/L",
+      type = "continuous",
+      notes = paste(
         "Included in the Appendix 2 correlation matrix and not retained.",
         "Cohort median 3.6 mmol/L (range 1.7-8.5), Table 1."
       )
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "IU/L",
+      type = "continuous",
+      notes = paste(
         "Included in the Appendix 2 correlation matrix and not retained.",
         "Cohort median 19.5 IU/L (range 4-113), Table 1. The trial excluded",
         "patients with moderate liver function abnormality (Discussion,",
@@ -209,18 +213,18 @@ Nyangwa_2026_pretomanid <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "IU/L",
+      type = "continuous",
+      notes = paste(
         "Included in the Appendix 2 correlation matrix and not retained.",
         "Cohort median 22 IU/L (range 4-82), Table 1."
       )
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Included in the Appendix 2 correlation matrix and not retained.",
         "Cohort median 77 g/L (range 61-118), Table 1. Note this is a",
         "screened PK covariate and is unrelated to the 85-95% plasma",
@@ -233,18 +237,18 @@ Nyangwa_2026_pretomanid <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 94L,
-    n_studies      = 1L,
-    age_range      = "19-71 years (median 36)",
-    age_median     = "36 years",
-    weight_range   = "39.2-144.4 kg (median 56.8)",
-    weight_median  = "56.8 kg",
-    ffm_range      = "28.6-75.5 kg (median 45.5); the allometric reference used here",
-    bmi_range      = "14.3-47.1 kg/m2 (median 19.7)",
+    species = "human",
+    n_subjects = 94L,
+    n_studies = 1L,
+    age_range = "19-71 years (median 36)",
+    age_median = "36 years",
+    weight_range = "39.2-144.4 kg (median 56.8)",
+    weight_median = "56.8 kg",
+    ffm_range = "28.6-75.5 kg (median 45.5); the allometric reference used here",
+    bmi_range = "14.3-47.1 kg/m2 (median 19.7)",
     sex_female_pct = 36.2,
     race_ethnicity = "Black 52 (55.3%), Caucasian 40 (42.6%), Asian 1 (1.1%), other 1 (1.1%)",
-    disease_state  = paste(
+    disease_state = paste(
       "Rifampicin-resistant pulmonary tuberculosis. 39 participants (41.5%)",
       "were living with HIV, all on integrase-inhibitor plus nucleoside /",
       "nucleotide reverse transcriptase inhibitor antiretroviral therapy.",
@@ -252,7 +256,7 @@ Nyangwa_2026_pretomanid <- function() {
       "excluded from the trial. Median estimated creatinine clearance",
       "105.4 mL/min, median ALT 19.5 IU/L, median AST 22 IU/L."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Pretomanid 200 mg orally once daily for 24 weeks in every arm.",
       "Co-administered with bedaquiline (400 mg daily for 2 weeks then",
       "200 mg three times weekly for 22 weeks) and linezolid (600 mg daily",
@@ -263,8 +267,8 @@ Nyangwa_2026_pretomanid <- function() {
       "dosing but meals were neither standardised nor recorded, so the",
       "estimates reflect real-world mixed fed / fasted absorption."
     ),
-    regions        = "South Africa and Belarus",
-    notes          = paste(
+    regions = "South Africa and Belarus",
+    notes = paste(
       "PRACTECAL-PKPD sub-study of the TB-PRACTECAL randomised controlled",
       "trial (ClinicalTrials.gov NCT04081077). 952 timed plasma samples",
       "(86 pre-first-dose, 866 post-dose) spanning the full 24-week",

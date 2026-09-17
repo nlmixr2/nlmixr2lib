@@ -14,50 +14,50 @@ CarlssonPetri_2015_liraglutide <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "liraglutide", units = "nmol", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "liraglutide", units = "nmol", specimen = "administration site", verified = TRUE),
     central = list(analyte = "liraglutide", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F only; reference weight 90 kg per Carlsson Petri 2015 Methods Sect. 2.2 ('approximate average body weight for patients with T2D in the trial populations analyzed here') and the Online Resource Table 1 CL/F equation, which centres on 90 kg. Observed range across the three pooled trials 57-214 kg (main Table 1); the covariate forest plot (Fig. 3) is drawn at 53 kg and 216 kg. Body weight was measured at randomization for Trial 1 and at sampling time for Trials 2 and 3.",
-      source_name        = "BWT"
+      notes = "Power effect on CL/F only; reference weight 90 kg per Carlsson Petri 2015 Methods Sect. 2.2 ('approximate average body weight for patients with T2D in the trial populations analyzed here') and the Online Resource Table 1 CL/F equation, which centres on 90 kg. Observed range across the three pooled trials 57-214 kg (main Table 1); the covariate forest plot (Fig. 3) is drawn at 53 kg and 216 kg. Body weight was measured at randomization for Trial 1 and at sampling time for Trials 2 and 3.",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) is the paper's reference category",
-      notes              = "Carlsson Petri 2015 Online Resource Table 1 reports the log-scale contrast 'Cov CL-Gen' = +0.365, applied in the CL/F equation as exp(CovCLGen) when the subject is male. Implemented as exp(e_male_cl * (1 - SEXF)) so SEXF = 1 (female) evaluates to 1.00 (reference) and SEXF = 0 (male) evaluates to exp(0.365) = 1.441. The higher male CL/F reproduces the main text's 31 % lower male AUC24 (1/1.441 = 0.694). The paper's reference subject is explicitly 'an adult female subject weighing 90 kg' (Online Resource Table 1 footnote).",
-      source_name        = "Gen"
+      notes = "Carlsson Petri 2015 Online Resource Table 1 reports the log-scale contrast 'Cov CL-Gen' = +0.365, applied in the CL/F equation as exp(CovCLGen) when the subject is male. Implemented as exp(e_male_cl * (1 - SEXF)) so SEXF = 1 (female) evaluates to 1.00 (reference) and SEXF = 0 (male) evaluates to exp(0.365) = 1.441. The higher male CL/F reproduces the main text's 31 % lower male AUC24 (1/1.441 = 0.694). The paper's reference subject is explicitly 'an adult female subject weighing 90 kg' (Online Resource Table 1 footnote).",
+      source_name = "Gen"
     ),
     CHILD = list(
-      description        = "Indicator for the pediatric age category (10-17 years), 0 = adult",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the pediatric age category (10-17 years), 0 = adult",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult) is the paper's reference category",
-      notes              = "Carlsson Petri 2015 treats age as a two-level category, pediatric versus adult, rather than as a continuous covariate: Methods Sect. 2.2 states that the narrow pediatric age range (10-17 y) and the gap to the youngest adult (33 y) made a continuous age covariate infeasible. Pediatric = Trial 1 (10-17 y); adult = Trials 2 and 3 (33-73 y). Online Resource Table 1 reports 'Cov CL-AGEgr' = +0.107, applied as exp(CovCLPaed) when the subject is pediatric, i.e. pediatric CL/F is 11 % higher and pediatric AUC24 is 10 % lower than an adult of the same weight and sex. The paper judges this effect NOT pharmacokinetically relevant (RSE 91 %; 90 % CI on the AUC24 ratio 0.78-1.03, only just outside the 0.80-1.25 bioequivalence window) but retains it in the full model, so it is encoded here as published.",
-      source_name        = "AGEgr"
+      notes = "Carlsson Petri 2015 treats age as a two-level category, pediatric versus adult, rather than as a continuous covariate: Methods Sect. 2.2 states that the narrow pediatric age range (10-17 y) and the gap to the youngest adult (33 y) made a continuous age covariate infeasible. Pediatric = Trial 1 (10-17 y); adult = Trials 2 and 3 (33-73 y). Online Resource Table 1 reports 'Cov CL-AGEgr' = +0.107, applied as exp(CovCLPaed) when the subject is pediatric, i.e. pediatric CL/F is 11 % higher and pediatric AUC24 is 10 % lower than an adult of the same weight and sex. The paper judges this effect NOT pharmacokinetically relevant (RSE 91 %; 90 % CI on the AUC24 ratio 0.78-1.03, only just outside the 0.80-1.25 bioequivalence window) but retains it in the full model, so it is encoded here as published.",
+      source_name = "AGEgr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L, # 13 pediatric (Trial 1) + 12 adult (Trial 2) + 32 adult (Trial 3); Carlsson Petri 2015 Table 1
-    n_studies      = 3L,  # Trial 1 NCT00943501 (pediatric), Trial 2 NCT00993304 (adult), Trial 3 NCT00873223 (adult)
-    age_range      = "10-73 years (Trial 1 pediatric 10-17; Trial 2 adult 54-73; Trial 3 adult 33-68)",
-    weight_range   = "57-214 kg overall (Trial 1 median 106, range 57-214; Trial 2 median 83, range 72-104; Trial 3 median 96, range 58-140)",
-    weight_median  = "Trial 1 106 kg, Trial 2 83 kg, Trial 3 96 kg",
+    species = "human",
+    n_subjects = 57L, # 13 pediatric (Trial 1) + 12 adult (Trial 2) + 32 adult (Trial 3); Carlsson Petri 2015 Table 1
+    n_studies = 3L, # Trial 1 NCT00943501 (pediatric), Trial 2 NCT00993304 (adult), Trial 3 NCT00873223 (adult)
+    age_range = "10-73 years (Trial 1 pediatric 10-17; Trial 2 adult 54-73; Trial 3 adult 33-68)",
+    weight_range = "57-214 kg overall (Trial 1 median 106, range 57-214; Trial 2 median 83, range 72-104; Trial 3 median 96, range 58-140)",
+    weight_median = "Trial 1 106 kg, Trial 2 83 kg, Trial 3 96 kg",
     sex_female_pct = 40.4, # 23/57 female: 8/13 (62 %) Trial 1, 6/12 (50 %) Trial 2, 9/32 (28 %) Trial 3; Carlsson Petri 2015 Table 1
-    disease_state  = "Type 2 diabetes. Pediatric subjects (Trial 1) had HbA1c 6.5-11 %, fasting plasma glucose 6.1-13.3 mmol/L, and BMI above the 85th percentile for age and sex, treated with diet and exercise alone or with a stable metformin dose; the majority were post-pubertal by Tanner stage. Subjects with impaired renal function were excluded from all three trials.",
-    dose_range     = "0.3-1.8 mg once daily subcutaneously. Trial 1 escalated weekly 0.3 -> 0.6 -> 0.9 -> 1.2 -> 1.8 mg with PK sampling at 0.3, 0.6, 1.2 and 1.8 mg; Trials 2 and 3 sampled at steady state on 1.8 mg only. Protocol deviations contributed some 0.9 mg and 1.5 mg observations (Table 1 footnote a).",
-    regions        = "Multi-national; pediatric subjects were treated in Europe and the USA (Trial 1, NCT00943501).",
-    trials         = c("NCT00943501", "NCT00993304", "NCT00873223"),
-    notes          = "Baseline demographics and PK sampling schedules are in Carlsson Petri 2015 Table 1. The pediatric median body weight (106 kg) exceeds both adult trials, driven partly by one 214 kg subject. Trial 1 sampled -0.25, 2, 4, 8, 10, 11, 12, 14, 24 h for the first four subjects and -0.25, 2, 5, 8, 10, 13 h thereafter (protocol amendment shortening the clinic stay), plus 24, 48 and 72 h after the final week-5 dose."
+    disease_state = "Type 2 diabetes. Pediatric subjects (Trial 1) had HbA1c 6.5-11 %, fasting plasma glucose 6.1-13.3 mmol/L, and BMI above the 85th percentile for age and sex, treated with diet and exercise alone or with a stable metformin dose; the majority were post-pubertal by Tanner stage. Subjects with impaired renal function were excluded from all three trials.",
+    dose_range = "0.3-1.8 mg once daily subcutaneously. Trial 1 escalated weekly 0.3 -> 0.6 -> 0.9 -> 1.2 -> 1.8 mg with PK sampling at 0.3, 0.6, 1.2 and 1.8 mg; Trials 2 and 3 sampled at steady state on 1.8 mg only. Protocol deviations contributed some 0.9 mg and 1.5 mg observations (Table 1 footnote a).",
+    regions = "Multi-national; pediatric subjects were treated in Europe and the USA (Trial 1, NCT00943501).",
+    trials = c("NCT00943501", "NCT00993304", "NCT00873223"),
+    notes = "Baseline demographics and PK sampling schedules are in Carlsson Petri 2015 Table 1. The pediatric median body weight (106 kg) exceeds both adult trials, driven partly by one 214 kg subject. Trial 1 sampled -0.25, 2, 4, 8, 10, 11, 12, 14, 24 h for the first four subjects and -0.25, 2, 5, 8, 10, 13 h thereafter (protocol amendment shortening the clinic stay), plus 24, 48 and 72 h after the final week-5 dose."
   )
 
   ini({

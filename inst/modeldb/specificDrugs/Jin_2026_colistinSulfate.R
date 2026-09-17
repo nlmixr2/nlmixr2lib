@@ -34,11 +34,11 @@ Jin_2026_colistinSulfate <- function() {
     sep = " "
   )
   vignette <- "Jin_2026_colistinSulfate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance computed by the Cockcroft-Gault method, RAW and",
         "NOT BSA-normalised. Methods Equation (unnumbered, page 3):",
         "CrCL (mL/min) = (140 - age in years) * body weight (kg) /",
@@ -57,10 +57,10 @@ Jin_2026_colistinSulfate <- function() {
         "prose is the operative description because it is the one that",
         "defines all three cases."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL centred on 116.3 mL/min, stated in the Results",
         "sentence that introduces the final model ('where 116.3 mL/min was",
         "the median of CrCL'). This is the cohort MEDIAN and is distinct from",
@@ -79,7 +79,7 @@ Jin_2026_colistinSulfate <- function() {
         "modellib('Sun_2025_colistinSulfate') and",
         "modellib('Delattre_2010_amikacin')."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
@@ -90,43 +90,63 @@ Jin_2026_colistinSulfate <- function() {
     # therefore screened or retained; they are recorded here for provenance
     # only and are not referenced in model().
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened (n = 10 < 20). Cohort 48.80 +/- 18.37 years (Table 1)."
     ),
     BMI = list(
-      description = "Body mass index", units = "kg/m^2", type = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened. Used inside the CrCL derivation to choose actual vs ideal vs adjusted body weight, but not as a covariate in its own right."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened. Cohort 65.60 +/- 50.59 U/L (Table 1)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened."
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened. Cohort 33.71 +/- 3.62 g/L (Table 1)."
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened as a covariate in its own right; it enters the model only through the CrCL derivation. Cohort 93.50 +/- 102.17 umol/L (Table 1)."
     ),
     CYSC = list(
-      description = "Serum cystatin C", units = "mg/L", type = "continuous",
+      description = "Serum cystatin C",
+      units = "mg/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened. Retained instead of CrCL by the CVVHDF sibling model modellib('Huang_2025_colistinSulfate')."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened."
     ),
     WBC = list(
-      description = "White blood cell count", units = "10^9/L", type = "continuous",
+      description = "White blood cell count",
+      units = "10^9/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened."
     ),
     PLT = list(
-      description = "Platelet count", units = "10^9/L", type = "continuous",
+      description = "Platelet count",
+      units = "10^9/L",
+      type = "continuous",
       notes = "Listed as a candidate covariate but never screened."
     )
     # The remaining named candidates -- hemoglobin, neutrophil percentage,
@@ -147,26 +167,30 @@ Jin_2026_colistinSulfate <- function() {
     # Colistin A and colistin B were also assayed separately (Figure 1,
     # Table 2) but the PK model was fitted to total colistin sulfate, i.e.
     # their sum.
-    central     = list(
-      analyte  = "colistin sulfate, unbound (sum of colistin A and colistin B)",
-      units    = "mg", specimen = "plasma", verified = TRUE
+    central = list(
+      analyte = "colistin sulfate, unbound (sum of colistin A and colistin B)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "colistin sulfate, unbound (sum of colistin A and colistin B)",
-      units    = "mg", specimen = "plasma", verified = TRUE
+      analyte = "colistin sulfate, unbound (sum of colistin A and colistin B)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 10,
+    n_studies = 1,
     n_observations = 130,
-    age_mean       = "48.80 +/- 18.37 years",
-    weight_mean    = "64.55 +/- 11.01 kg",
+    age_mean = "48.80 +/- 18.37 years",
+    weight_mean = "64.55 +/- 11.01 kg",
     sex_female_pct = 20,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults (>= 18 years) in a medical ICU with pulmonary",
       "infection caused by carbapenem-resistant Gram-negative bacteria, all",
       "treated with intravenous colistin sulfate for at least 72 h. Severe",
@@ -189,7 +213,7 @@ Jin_2026_colistinSulfate <- function() {
       "should not be trusted far below the observed values. NO nephrotoxicity",
       "events occurred during the study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous colistin sulfate (Shanghai SPH New Asia Pharmaceutical",
       "Co. Ltd.). Table 1 daily dose 1.75 (1.50, 2.00) MIU; the package",
       "insert recommends 1.0-1.5 MIU maintenance given two or three times",
@@ -200,7 +224,7 @@ Jin_2026_colistinSulfate <- function() {
       "IMPORTANT: doses are stated only in MIU; this model takes mg (see",
       "notes)."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Rich sampling across one full dosing interval at steady state: a",
       "pre-dose sample immediately before the FIFTH dose (0 h), then 0.5, 1,",
       "2, 3, 4, 5, 6, 7, 8, 9, 10 and 11 h after the END of the infusion --",
@@ -209,8 +233,8 @@ Jin_2026_colistinSulfate <- function() {
       "limitation ('model applicability to other treatment periods remains",
       "unknown'). Observed Cmin range 0.195-1.099 mg/L."
     ),
-    regions        = "People's Republic of China (single centre; West China Hospital of Sichuan University, Chengdu).",
-    notes          = paste(
+    regions = "People's Republic of China (single centre; West China Hospital of Sichuan University, Chengdu).",
+    notes = paste(
       "Baseline demographics from Jin 2026 Table 1. Single-centre prospective",
       "study, ethics approval No. [2023]1220. The final model was fitted in",
       "Phoenix NLME 8.1.0 by first-order conditional estimation with extended",

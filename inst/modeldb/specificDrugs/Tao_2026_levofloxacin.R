@@ -31,8 +31,10 @@ Tao_2026_levofloxacin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "levofloxacin", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "levofloxacin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     # Empirical distribution compartment. Only plasma was assayed (Methods
     # 'Levofloxacin dosing and concentration analysis': scavenged plasma,
@@ -40,18 +42,20 @@ Tao_2026_levofloxacin <- function() {
     # rather than a named matrix; it is labelled plasma to match the sibling
     # levofloxacin two-compartment entries.
     peripheral1 = list(
-      analyte = "levofloxacin", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "levofloxacin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mean 24.05 kg (SD 9.00), median 22.50 kg (IQR 18.00-28.00), Tao 2026 Table 1.",
         "The covariate equations printed beneath Table 2 normalize to the MEAN, 24.05 kg,",
         "not the median. Body weight was the single body-size descriptor carried into the",
@@ -61,14 +65,14 @@ Tao_2026_levofloxacin <- function() {
         "(exponent 1.11) and central volume (exponent 1.83). The Monte Carlo scenarios in",
         "Table 3 span 9-45 kg."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mean 31.77 umol/L (SD 8.03), median 30.70 umol/L (IQR 26.80-37.00), Tao 2026 Table 1.",
         "The Table 2 covariate equation normalizes to the MEAN, 31.77 umol/L. Reported and",
         "modelled in umol/L, NOT mg/dL: divide by 88.4 to convert (31.77 umol/L = 0.36 mg/dL,",
@@ -80,7 +84,7 @@ Tao_2026_levofloxacin <- function() {
         "eGFR by the modified Schwartz equation was the competing renal descriptor and dropped",
         "the objective function almost as far (-215.89 versus -216.15) but was not retained."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     )
   )
 
@@ -94,7 +98,8 @@ Tao_2026_levofloxacin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age.",
-      units = "years", type = "continuous",
+      units = "years",
+      type = "continuous",
       notes = paste(
         "Mean 7.07 years (SD 2.77), median 6.92 (IQR 5.25-8.58), full range 0.16-16 years,",
         "Tao 2026 Table 1. Not entered into the stepwise screen because of its correlation with",
@@ -108,7 +113,8 @@ Tao_2026_levofloxacin <- function() {
     ),
     HT = list(
       description = "Height.",
-      units = "cm", type = "continuous",
+      units = "cm",
+      type = "continuous",
       notes = paste(
         "Collected from medical records (Methods) and plotted in the Fig. S2 covariate",
         "correlation matrix, but no summary statistic is printed in Table 1. Not entered into",
@@ -117,7 +123,8 @@ Tao_2026_levofloxacin <- function() {
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate by the modified Schwartz equation.",
-      units = "mL/min/1.73 m^2", type = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       notes = paste(
         "Mean 149.61 (SD 34.48), median 144.30 (IQR 125.58-167.43) mL/min/1.73 m^2,",
         "Tao 2026 Table 1. Screened against clearance and, on its own, significant: it dropped",
@@ -129,32 +136,38 @@ Tao_2026_levofloxacin <- function() {
     ),
     ALB = list(
       description = "Serum albumin.",
-      units = "g/L", type = "continuous",
+      units = "g/L",
+      type = "continuous",
       notes = "Mean 38.72 g/L (SD 4.98), Tao 2026 Table 1. Screened and not significant (Results)."
     ),
     AST = list(
       description = "Aspartate aminotransferase.",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = "Mean 34.87 U/L (SD 26.14), Tao 2026 Table 1. Screened and not significant (Results)."
     ),
     ALT = list(
       description = "Alanine aminotransferase.",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = "Mean 36.39 U/L (SD 54.24), Tao 2026 Table 1. Screened and not significant (Results)."
     ),
     TBILI = list(
       description = "Total bilirubin.",
-      units = "umol/L", type = "continuous",
+      units = "umol/L",
+      type = "continuous",
       notes = "Mean 5.71 umol/L (SD 2.22), Tao 2026 Table 1. Screened and not significant (Results)."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin.",
-      units = "umol/L", type = "continuous",
+      units = "umol/L",
+      type = "continuous",
       notes = "Mean 1.86 umol/L (SD 0.68), Tao 2026 Table 1. Screened and not significant (Results)."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
       notes = paste(
         "91 of 191 patients female (47.64%), Tao 2026 Table 1. Sex is the one Table 1 variable",
@@ -166,25 +179,25 @@ Tao_2026_levofloxacin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 191,
-    n_studies      = 1,
-    age_range      = "0.16-16 years",
-    age_median     = "6.92 years (IQR 5.25-8.58); mean 7.07 (SD 2.77)",
-    weight_median  = "22.50 kg (IQR 18.00-28.00); mean 24.05 (SD 9.00)",
-    weight_range   = "IQR 18.00-28.00 kg; the full range is not reported, but the Monte Carlo scenarios span 9-45 kg",
+    species = "human",
+    n_subjects = 191,
+    n_studies = 1,
+    age_range = "0.16-16 years",
+    age_median = "6.92 years (IQR 5.25-8.58); mean 7.07 (SD 2.77)",
+    weight_median = "22.50 kg (IQR 18.00-28.00); mean 24.05 (SD 9.00)",
+    weight_range = "IQR 18.00-28.00 kg; the full range is not reported, but the Monte Carlo scenarios span 9-45 kg",
     sex_female_pct = 47.64,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "severe refractory Mycoplasma pneumoniae pneumonia (SRMPP), defined per the 2023 Chinese guidelines",
+    disease_state = "severe refractory Mycoplasma pneumoniae pneumonia (SRMPP), defined per the 2023 Chinese guidelines",
     renal_function = paste(
       "serum creatinine mean 31.77 umol/L (SD 8.03); estimated glomerular filtration rate by the",
       "modified Schwartz equation mean 149.61 mL/min/1.73 m^2 (SD 34.48). No renally impaired",
       "children were enrolled and the authors note the eGFR range was narrow."
     ),
-    co_medication  = "all patients received concomitant glucocorticoids as part of standard care; the authors caution against extrapolating the exposure-response relationship to children not receiving them",
-    dose_range     = "intravenous levofloxacin 8-10 mg/kg per dose, q12h if under 5 years and q24h if 5 years or older, not exceeding 750 mg/day, infused over 0.5-2 h; mean daily dose 11.32 mg/kg (SD 3.06)",
-    regions        = "China (single center, Children's Hospital Affiliated to Zhengzhou University)",
-    notes          = paste(
+    co_medication = "all patients received concomitant glucocorticoids as part of standard care; the authors caution against extrapolating the exposure-response relationship to children not receiving them",
+    dose_range = "intravenous levofloxacin 8-10 mg/kg per dose, q12h if under 5 years and q24h if 5 years or older, not exceeding 750 mg/day, infused over 0.5-2 h; mean daily dose 11.32 mg/kg (SD 3.06)",
+    regions = "China (single center, Children's Hospital Affiliated to Zhengzhou University)",
+    notes = paste(
       "Single-center, prospective, open-label PK/PD study run between April 2023 and April 2024",
       "(ethics approval 2022-K-L061). Baseline demographics are Tao 2026 Table 1. The PK data set",
       "is sparse and opportunistic: 293 scavenged plasma samples from 191 patients, roughly 1.5",

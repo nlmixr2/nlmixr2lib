@@ -16,91 +16,91 @@ Palmer_2025_moxifloxacin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate retained in the final model. Allometric scaling on all four apparent disposition parameters relative to a 16 kg reference child, with fixed exponents 0.75 on CL/F and Q/F and 1 on Vc/F and Vp/F (Table 2 footnote a). Body weight was selected in preference to fat-free mass as the body-size descriptor (Results paragraph 2). Observed range 6.9-42.1 kg; the paper's own dosing simulations extend to 3-31 kg and it warns that weights below 7 kg are extrapolated beyond the CATALYST data.",
-      source_name        = "WT"
+      notes = "The only covariate retained in the final model. Allometric scaling on all four apparent disposition parameters relative to a 16 kg reference child, with fixed exponents 0.75 on CL/F and Q/F and 1 on Vc/F and Vp/F (Table 2 footnote a). Body weight was selected in preference to fat-free mass as the body-size descriptor (Results paragraph 2). Observed range 6.9-42.1 kg; the paper's own dosing simulations extend to 3-31 kg and it warns that weights below 7 kg are extrapolated beyond the CATALYST data.",
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer-valued occasion index used to multiplex the interoccasion-variability etas on bioavailability and on mean absorption time",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion index used to multiplex the interoccasion-variability etas on bioavailability and on mean absorption time",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "The CATALYST design gives four occasions per child: the predose sample at the PK1 visit arises from the previous day's at-home dose (OCC = 1), the directly observed standard-formulation dose given at the PK1 visit (OCC = 2), the predose sample at the PK2 visit arising from the previous day's at-home dose (OCC = 3), and the directly observed dispersible-formulation dose given at the PK2 visit (OCC = 4). Methods 2.2: 'Predose samples resulting from prior doses were handled as a separate occasion from the actual postdose samples.' The source NONMEM control stream (Supplementary Material 9) writes a single shared IOV variance per parameter across occasions via an IF (OCC.EQ.N) block, so occasions 2-4 are encoded here as fixed etas equal to the estimated occasion-1 variance, mirroring the NONMEM $OMEGA BLOCK(1) SAME idiom that nlmixr2 has no shortcut for. Decomposed inside model() into the binary indicators oc1..oc4.",
-      source_name        = "OCC"
+      notes = "The CATALYST design gives four occasions per child: the predose sample at the PK1 visit arises from the previous day's at-home dose (OCC = 1), the directly observed standard-formulation dose given at the PK1 visit (OCC = 2), the predose sample at the PK2 visit arising from the previous day's at-home dose (OCC = 3), and the directly observed dispersible-formulation dose given at the PK2 visit (OCC = 4). Methods 2.2: 'Predose samples resulting from prior doses were handled as a separate occasion from the actual postdose samples.' The source NONMEM control stream (Supplementary Material 9) writes a single shared IOV variance per parameter across occasions via an IF (OCC.EQ.N) block, so occasions 2-4 are encoded here as fixed etas equal to the estimated occasion-1 variance, mirroring the NONMEM $OMEGA BLOCK(1) SAME idiom that nlmixr2 has no shortcut for. Decomposed inside model() into the binary indicators oc1..oc4.",
+      source_name = "OCC"
     ),
     SELFADMIN = list(
-      description        = "Binary indicator that the dosing occasion was not directly observed, i.e. the dose was given at home by the caregiver rather than under supervision at the study visit",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator that the dosing occasion was not directly observed, i.e. the dose was given at home by the caregiver rather than under supervision at the study visit",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (directly observed dose administered at the PK visit)",
-      notes              = "Source column UNOBS, defined in the Supplementary Material 9 NONMEM control stream as the '; flag for PK samples from unobserved dosing events' driving UNOBS_EFF = 1 + THETA(10) * UNOBS. Polarity matches the SELFADMIN canonical exactly (1 = unobserved / self-administered, 0 = directly observed), so no inversion is required. Unlike the founding Wallender 2021 usage, the effect here is not on the typical bioavailability but on the MAGNITUDE of the interoccasion variability: the control stream writes F1 = 1 * EXP(IOVF * UNOBS_EFF) and MAT = TVMAT * EXP(IOVMAT * UNOBS_EFF), so an unobserved occasion multiplies the IOV standard deviation on both parameters by the estimated 1.70-fold factor. The paper attributes this to caregivers reporting imprecise dosing times for at-home doses (Discussion paragraph 5). In the CATALYST design SELFADMIN = 1 exactly on OCC 1 and 3.",
-      source_name        = "UNOBS"
+      notes = "Source column UNOBS, defined in the Supplementary Material 9 NONMEM control stream as the '; flag for PK samples from unobserved dosing events' driving UNOBS_EFF = 1 + THETA(10) * UNOBS. Polarity matches the SELFADMIN canonical exactly (1 = unobserved / self-administered, 0 = directly observed), so no inversion is required. Unlike the founding Wallender 2021 usage, the effect here is not on the typical bioavailability but on the MAGNITUDE of the interoccasion variability: the control stream writes F1 = 1 * EXP(IOVF * UNOBS_EFF) and MAT = TVMAT * EXP(IOVMAT * UNOBS_EFF), so an unobserved occasion multiplies the IOV standard deviation on both parameters by the estimated 1.70-fold factor. The paper attributes this to caregivers reporting imprecise dosing times for at-home doses (Discussion paragraph 5). In the CATALYST design SELFADMIN = 1 exactly on OCC 1 and 3.",
+      source_name = "UNOBS"
     )
   )
 
   covariatesDataExcluded <- list(
     HAZ = list(
       description = "Height-for-age z-score, UK-WHO growth chart",
-      units       = "(z-score)",
-      type        = "continuous",
-      notes       = "Carried over from the Radtke model as a clearance covariate and re-tested in CATALYST, but not retained: dOFV < 0.01 and the estimated effect was -0.96% (95% CI -5.8 to 3.9)% per z-score unit, against Radtke's -9.8 (95% CI -16 to -3.8)%. Discussion paragraph 6 attributes the discrepancy to a different growth reference and to Indian and Philippine children having lower average height-for-age than the international standard."
+      units = "(z-score)",
+      type = "continuous",
+      notes = "Carried over from the Radtke model as a clearance covariate and re-tested in CATALYST, but not retained: dOFV < 0.01 and the estimated effect was -0.96% (95% CI -5.8 to 3.9)% per z-score unit, against Radtke's -9.8 (95% CI -16 to -3.8)%. Discussion paragraph 6 attributes the discrepancy to a different growth reference and to Indian and Philippine children having lower average height-for-age than the international standard."
     ),
     WAZ = list(
       description = "Weight-for-age z-score, UK-WHO growth chart",
-      units       = "(z-score)",
-      type        = "continuous",
-      notes       = "Explored as a malnutrition-status covariate on clearance (Methods 2.2) and not retained in the final model; no point estimate is reported."
+      units = "(z-score)",
+      type = "continuous",
+      notes = "Explored as a malnutrition-status covariate on clearance (Methods 2.2) and not retained in the final model; no point estimate is reported."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on clearance as both a sigmoidal maturation function (dOFV < 0.01) and a proportional effect (dOFV = -1.6, estimated at +8% in children under 2 years); neither was significant and neither was retained. A published renal-maturation function added as a fixed component worsened the OFV by 13 points (Discussion paragraph 5)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on clearance as both a sigmoidal maturation function (dOFV < 0.01) and a proportional effect (dOFV = -1.6, estimated at +8% in children under 2 years); neither was significant and neither was retained. A published renal-maturation function added as a fixed component worsened the OFV by 13 points (Discussion paragraph 5)."
     ),
     FFM = list(
       description = "Fat-free mass, calculated with a paediatric formula",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested against body weight as the allometric body-size descriptor (Methods 2.2). Body weight was selected; no FFM-based parameter estimates are reported."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested against body weight as the allometric body-size descriptor (Methods 2.2). Body weight was selected; no FFM-based parameter estimates are reported."
     ),
     HIV_POS = list(
       description = "HIV-positive status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "A clearance covariate in the Radtke model. Only 1 of the 36 CATALYST children was living with HIV, so the effect could not be meaningfully estimated, and fixing it to the previously reported value worsened the model fit; it was therefore not included (Results paragraph 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "A clearance covariate in the Radtke model. Only 1 of the 36 CATALYST children was living with HIV, so the effect could not be meaningfully estimated, and fixing it to the previously reported value worsened the model fit; it was therefore not included (Results paragraph 2)."
     ),
     FORM_DISPERSIBLE = list(
       description = "Dispersible 100 mg scored paediatric tablet versus the crushed standard 400 mg adult tablet",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The whole point of the trial, and formally estimated stepwise on bioavailability, on MAT, and on their variabilities -- but not retained, because none of the differences was significant. The bioavailability ratio (dispersible vs standard) was 105% with a log-likelihood-profiling 90% CI of 95-115%, inside the 80-125% bioequivalence limits, and the MAT ratio was 106% (90% CI 90-126%). The final model in Table 2 therefore has no formulation term, and the paper's conclusion is that dosing recommendations can be identical for the two formulations. FORM_DISPERSIBLE is not a ratified canonical -- the name is recorded here for documentation only and no covariate column is required to use this model."
+      units = "(binary)",
+      type = "binary",
+      notes = "The whole point of the trial, and formally estimated stepwise on bioavailability, on MAT, and on their variabilities -- but not retained, because none of the differences was significant. The bioavailability ratio (dispersible vs standard) was 105% with a log-likelihood-profiling 90% CI of 95-115%, inside the 80-125% bioequivalence limits, and the MAT ratio was 106% (90% CI 90-126%). The final model in Table 2 therefore has no formulation term, and the paper's conclusion is that dosing recommendations can be identical for the two formulations. FORM_DISPERSIBLE is not a ratified canonical -- the name is recorded here for documentation only and no covariate column is required to use this model."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "moxifloxacin", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
     n_observations = 384L,
-    age_range      = "Median 4.8 years (range 0.4-15); 4 children were under 1 year and 1 was under 6 months at the pharmacokinetic visit (Table 1; Discussion paragraph 5).",
-    weight_range   = "Median 15.6 kg (range 6.9-42.1); enrolment was stratified into two parallel weight cohorts, 16 participants under 15 kg of whom 6 were under 10 kg (Table 1; Results paragraph 1).",
+    age_range = "Median 4.8 years (range 0.4-15); 4 children were under 1 year and 1 was under 6 months at the pharmacokinetic visit (Table 1; Discussion paragraph 5).",
+    weight_range = "Median 15.6 kg (range 6.9-42.1); enrolment was stratified into two parallel weight cohorts, 16 participants under 15 kg of whom 6 were under 10 kg (Table 1; Results paragraph 1).",
     sex_female_pct = 61,
-    disease_state  = "Children being treated for rifampicin-resistant tuberculosis in routine TB programmes, on a regimen containing both clofazimine and a fluoroquinolone, within 16 weeks of treatment start. TB was microbiologically confirmed in 17 (47.2%) and unconfirmed in 19 (52.8%). Median height-for-age z-score -1.1 (range -4.1 to 0.46) and weight-for-age z-score -1.6 (range -4.7 to 1.2). One participant (3%) was living with HIV.",
-    dose_range     = "Daily oral moxifloxacin at the WHO weight-band doses (WHO 2022 guideline Table 4), 80-400 mg once daily. Each child was sampled twice: at visit PK1 on the standard non-dispersible 400 mg tablet crushed and suspended in water, and at visit PK2, 1-14 days later, on the first dose of the dispersible 100 mg scored tablet dispersed in water.",
-    regions        = "South Africa (n = 20), the Philippines (n = 10), India (n = 6).",
-    notes          = "CATALYST, an open-label multisite trial (Pan African Clinical Trials Registry 202012756409365). Intensive sampling at 0, 1, 2, 4, 8 and 24 h postdose on each of the two visit days, with children fasted at least 4 h before the predose draw and then fed breakfast before dosing. Moxifloxacin was assayed by validated LC-MS/MS with an LLOQ of 0.0628 ug/mL. The paper is internally inconsistent about the observation count: Results paragraph 1 states that 438 observations were obtained of which 4 predose samples were below the quantification limit and excluded, while the Table 1 header gives obs = 384 for the analysis dataset. The Table 1 figure is recorded here; see the validation vignette Errata. Fitted in NONMEM 7.5 with FOCE-I; parameter precision by sampling importance resampling, and the formulation-ratio confidence intervals by log-likelihood profiling. sex_female_pct is the complement of the 14/36 (39%) male count in Table 1."
+    disease_state = "Children being treated for rifampicin-resistant tuberculosis in routine TB programmes, on a regimen containing both clofazimine and a fluoroquinolone, within 16 weeks of treatment start. TB was microbiologically confirmed in 17 (47.2%) and unconfirmed in 19 (52.8%). Median height-for-age z-score -1.1 (range -4.1 to 0.46) and weight-for-age z-score -1.6 (range -4.7 to 1.2). One participant (3%) was living with HIV.",
+    dose_range = "Daily oral moxifloxacin at the WHO weight-band doses (WHO 2022 guideline Table 4), 80-400 mg once daily. Each child was sampled twice: at visit PK1 on the standard non-dispersible 400 mg tablet crushed and suspended in water, and at visit PK2, 1-14 days later, on the first dose of the dispersible 100 mg scored tablet dispersed in water.",
+    regions = "South Africa (n = 20), the Philippines (n = 10), India (n = 6).",
+    notes = "CATALYST, an open-label multisite trial (Pan African Clinical Trials Registry 202012756409365). Intensive sampling at 0, 1, 2, 4, 8 and 24 h postdose on each of the two visit days, with children fasted at least 4 h before the predose draw and then fed breakfast before dosing. Moxifloxacin was assayed by validated LC-MS/MS with an LLOQ of 0.0628 ug/mL. The paper is internally inconsistent about the observation count: Results paragraph 1 states that 438 observations were obtained of which 4 predose samples were below the quantification limit and excluded, while the Table 1 header gives obs = 384 for the analysis dataset. The Table 1 figure is recorded here; see the validation vignette Errata. Fitted in NONMEM 7.5 with FOCE-I; parameter precision by sampling importance resampling, and the formulation-ratio confidence intervals by log-likelihood profiling. sex_female_pct is the complement of the 14/36 (39%) male count in Table 1."
   )
 
   ini({

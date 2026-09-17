@@ -47,12 +47,12 @@ Hoglund_2016_chloroquine <- function() {
   # analysis: "Whole blood concentrations of chloroquine and
   # desethylchloroquine were measured").
   compartmentData <- list(
-    depot            = list(analyte = "chloroquine",          units = "mg", specimen = "administration site", verified = TRUE),
-    transit1         = list(analyte = "chloroquine",          units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "chloroquine",          units = "mg", specimen = "whole blood",         verified = TRUE),
-    peripheral1      = list(analyte = "chloroquine",          units = "mg", specimen = "whole blood",         verified = TRUE),
-    central_dcq      = list(analyte = "desethylchloroquine",  units = "mg", specimen = "whole blood",         verified = TRUE),
-    peripheral1_dcq  = list(analyte = "desethylchloroquine",  units = "mg", specimen = "whole blood",         verified = TRUE)
+    depot = list(analyte = "chloroquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "chloroquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "chloroquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    peripheral1 = list(analyte = "chloroquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    central_dcq = list(analyte = "desethylchloroquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    peripheral1_dcq = list(analyte = "desethylchloroquine", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   # No covariates are referenced in model(): the final model is
@@ -104,13 +104,13 @@ Hoglund_2016_chloroquine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 75L,
-    n_studies      = 1L,
-    age_range      = "17-52 years (Methods, Patients and study design)",
+    species = "human",
+    n_subjects = 75L,
+    n_studies = 1L,
+    age_range = "17-52 years (Methods, Patients and study design)",
     sex_female_pct = 52.0,
     race_ethnicity = "8 Thai and 67 Burmese migrant workers (Methods, Patients and study design)",
-    disease_state  = paste(
+    disease_state = paste(
       "Acute Plasmodium vivax mono-infection. Median (95% CI) admission",
       "parasitaemia 4898 (1206-29,480) parasites/uL. All 75 patients",
       "completed the 42-day follow-up with a 100% cure rate; neither",
@@ -118,7 +118,7 @@ Hoglund_2016_chloroquine <- function() {
       "occurred. Median (95% CI) parasite clearance time 30 (18-36) h and",
       "fever clearance time 24 (12-42) h (Results)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Standard 3-day chloroquine regimen, 25 mg base/kg body weight in",
       "total, given as 250 mg chloroquine phosphate tablets (Government",
       "Pharmaceutical Organization of Thailand): 10 mg base/kg at 0 h and",
@@ -128,8 +128,8 @@ Hoglund_2016_chloroquine <- function() {
       "Primaquine 15 mg base daily for 14 days was co-administered from",
       "day 1 onwards (Methods, Patients and study design)."
     ),
-    regions        = "Mae Tao Clinic for migrant workers, Tak Province, Thailand (Thai-Myanmar border); samples collected during the 2010-2011 clinical efficacy study",
-    notes          = paste(
+    regions = "Mae Tao Clinic for migrant workers, Tak Province, Thailand (Thai-Myanmar border); samples collected during the 2010-2011 clinical efficacy study",
+    notes = paste(
       "Whole-blood chloroquine and desethylchloroquine quantified by HPLC",
       "with UV detection; LOQ 2 ng/mL for both analytes, assay accuracy",
       "0.25-5.7% relative error and precision < 5% CV. Samples below the",

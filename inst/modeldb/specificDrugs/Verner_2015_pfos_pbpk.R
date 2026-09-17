@@ -42,47 +42,58 @@ Verner_2015_pfos_pbpk <- function() {
   vignette <- "Verner_2015_pfas_birthweight"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   paper_specific_compartments <- c(
-    "plasma", "gut", "fat", "mammary", "rest", "filtrate", "storage",
-    "placenta", "plasma_fet", "rest_fet", "amniotic",
-    "auc_plasma", "auc_plasma_fet", "a_intake"
+    "plasma",
+    "gut",
+    "fat",
+    "mammary",
+    "rest",
+    "filtrate",
+    "storage",
+    "placenta",
+    "plasma_fet",
+    "rest_fet",
+    "amniotic",
+    "auc_plasma",
+    "auc_plasma_fet",
+    "a_intake"
   )
 
   compartmentData <- list(
-    plasma         = list(analyte = "PFOS", units = "mg", specimen = "plasma",               verified = TRUE),
-    liver          = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    gut            = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    fat            = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    mammary        = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    skin           = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    kidney         = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    rest           = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    filtrate       = list(analyte = "PFOS", units = "mg", specimen = "urine",                verified = TRUE),
-    storage        = list(analyte = "PFOS", units = "mg", specimen = "urine",                verified = TRUE),
-    urine          = list(analyte = "PFOS", units = "mg", specimen = "urine",                verified = TRUE),
-    placenta       = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    plasma_fet     = list(analyte = "PFOS", units = "mg", specimen = "plasma",               verified = TRUE),
-    rest_fet       = list(analyte = "PFOS", units = "mg", specimen = "tissue",               verified = TRUE),
-    amniotic       = list(analyte = "PFOS", units = "mg", specimen = "tissue",       verified = TRUE),
-    auc_plasma     = list(analyte = "PFOS", units = "mg*h/L", specimen = "not applicable",   verified = TRUE),
-    auc_plasma_fet = list(analyte = "PFOS", units = "mg*h/L", specimen = "not applicable",   verified = TRUE),
-    a_intake       = list(analyte = "PFOS", units = "mg", specimen = "not applicable",       verified = TRUE)
+    plasma = list(analyte = "PFOS", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    fat = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    mammary = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    rest = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    filtrate = list(analyte = "PFOS", units = "mg", specimen = "urine", verified = TRUE),
+    storage = list(analyte = "PFOS", units = "mg", specimen = "urine", verified = TRUE),
+    urine = list(analyte = "PFOS", units = "mg", specimen = "urine", verified = TRUE),
+    placenta = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    plasma_fet = list(analyte = "PFOS", units = "mg", specimen = "plasma", verified = TRUE),
+    rest_fet = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    amniotic = list(analyte = "PFOS", units = "mg", specimen = "tissue", verified = TRUE),
+    auc_plasma = list(analyte = "PFOS", units = "mg*h/L", specimen = "not applicable", verified = TRUE),
+    auc_plasma_fet = list(analyte = "PFOS", units = "mg*h/L", specimen = "not applicable", verified = TRUE),
+    a_intake = list(analyte = "PFOS", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Maternal PRE-PREGNANCY body weight (acslX constant BWINIT). The",
         "acslX listing carries BWINIT = 60.9 kg, the Loccisano et al. 2013",
         "reference pregnant woman; the Monte Carlo analysis resamples it.",
@@ -98,14 +109,14 @@ Verner_2015_pfos_pbpk <- function() {
         "50-114 kg. See the vignette Errata for that conflict.",
         sep = " "
       ),
-      source_name        = "BWINIT"
+      source_name = "BWINIT"
     ),
     RENALFUNC_REL = list(
-      description        = "Relative renal function, 1 = normal",
-      units              = "(dimensionless)",
-      type               = "continuous",
+      description = "Relative renal function, 1 = normal",
+      units = "(dimensionless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The paper's GFRratio: the ratio of a woman's observed glomerular",
         "filtration rate to the MEAN GFR AT HER GESTATIONAL AGE, so 1 is",
         "normal filtration for that point in pregnancy (Verner 2015",
@@ -118,23 +129,23 @@ Verner_2015_pfos_pbpk <- function() {
         "distribution of GFRratio in Morken et al. 2014).",
         sep = " "
       ),
-      source_name        = "GFRratio"
+      source_name = "GFRratio"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 0L,
-    n_studies      = 0L,
-    age_range      = "reproductive age (not otherwise specified)",
-    weight_range   = paste(
+    species = "human",
+    n_subjects = 0L,
+    n_studies = 0L,
+    age_range = "reproductive age (not otherwise specified)",
+    weight_range = paste(
       "Pre-pregnancy 37.0-134.0 kg, mean 70.3 (SD 14.3), from the Norwegian",
       "Mother and Child Cohort Study (Table 1). The acslX listing default is",
       "the Loccisano et al. 2013 reference woman at 60.9 kg."
     ),
     sex_female_pct = 100,
-    disease_state  = "healthy singleton pregnancy, conception to delivery at 6,570 h (39.1 weeks)",
-    dose_range     = paste(
+    disease_state = "healthy singleton pregnancy, conception to delivery at 6,570 h (39.1 weeks)",
+    dose_range = paste(
       "No dose records. Chronic background environmental exposure entered as",
       "a constant hourly intake back-calculated from the pre-pregnancy plasma",
       "level under a steady-state assumption (Eq. 2). Monte Carlo initial",
@@ -142,12 +153,12 @@ Verner_2015_pfos_pbpk <- function() {
       "that mean is the equal-weight average of the reported maternal or cord",
       "means/medians of the seven epidemiologic studies in the meta-analysis."
     ),
-    regions        = paste(
+    regions = paste(
       "Exposure distributions pooled from cohorts in the USA, Denmark,",
       "Canada, Japan, Taiwan, Norway and Great Britain (Table S1);",
       "GFRratio distribution and pre-pregnancy weight from Norway (MoBa)."
     ),
-    notes          = paste(
+    notes = paste(
       "NO SUBJECTS WERE FITTED. This is a forward Monte Carlo simulation, so",
       "n_subjects and n_studies are 0. The model was run 250,000 times with",
       "the Table 1 parameter distributions to generate paired predictions of",

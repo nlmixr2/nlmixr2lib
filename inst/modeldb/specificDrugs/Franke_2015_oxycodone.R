@@ -5,80 +5,80 @@ Franke_2015_oxycodone <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "oxycodone", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "oxycodone", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "oxycodone", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; power scaling referenced to the 73.45 kg cohort median named in the Franke 2015 Results text and in the printed CL/F and V/F equations. Table 1 gives median 73.5 kg (range 50.0-120.9). Exponent 0.75 on CL/F and 1 on V/F, both structural rather than estimated.",
-      source_name        = "WT"
+      notes = "Baseline; power scaling referenced to the 73.45 kg cohort median named in the Franke 2015 Results text and in the printed CL/F and V/F equations. Table 1 gives median 73.5 kg (range 50.0-120.9). Exponent 0.75 on CL/F and 1 on V/F, both structural rather than estimated.",
+      source_name = "WT"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White reference)",
-      notes              = "38 of 151 participants (25.2%, Table 1). Enters the exponent of the multiplicative race factor as RACE_BLACK + 2 * RACE_ASIAN, reproducing the authors' theta^RACE form with the White = 0 / Black = 1 / Asian = 2 dataset coding of the Figure 4 note.",
-      source_name        = "RACE"
+      notes = "38 of 151 participants (25.2%, Table 1). Enters the exponent of the multiplicative race factor as RACE_BLACK + 2 * RACE_ASIAN, reproducing the authors' theta^RACE form with the White = 0 / Black = 1 / Asian = 2 dataset coding of the Figure 4 note.",
+      source_name = "RACE"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White reference)",
-      notes              = "Only 1 of 151 participants (0.6%, Table 1). Because the authors parameterised race as theta^RACE over a 0/1/2 integer code (Figure 4 note: White = 0, Black = 1, Asian = 2), an Asian participant receives the SQUARE of the Black multiplier. That is an artifact of the power parameterisation over an ordinal code, not a fitted Asian effect; the paper's Discussion states explicitly that PK variability in Asian participants cannot be ruled out from these data.",
-      source_name        = "RACE"
+      notes = "Only 1 of 151 participants (0.6%, Table 1). Because the authors parameterised race as theta^RACE over a 0/1/2 integer code (Figure 4 note: White = 0, Black = 1, Asian = 2), an Asian participant receives the SQUARE of the Black multiplier. That is an artifact of the power parameterisation over an ordinal code, not a fitted Asian effect; the paper's Discussion states explicitly that PK variability in Asian participants cannot be ruled out from these data.",
+      source_name = "RACE"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex indicator, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise forward-addition / backward-elimination covariate search but not retained in the final oxycodone model; Table 3 shows only weight and race. No point estimate is reported, so no effect can be implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise forward-addition / backward-elimination covariate search but not retained in the final oxycodone model; Table 3 shows only weight and race. No point estimate is reported, so no effect can be implemented."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 3). Cohort mean 29.1 years (SD 8.6); enrolment was restricted to 18-55 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (Table 3). Cohort mean 29.1 years (SD 8.6); enrolment was restricted to 18-55 years."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained in the pooled FASTED oxycodone model (Table 3). Height WAS retained on CL/F in the separate 31-subject food-effect oxycodone model; see modellib('Franke_2015_oxycodone_food')."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained in the pooled FASTED oxycodone model (Table 3). Height WAS retained on CL/F in the separate 31-subject food-effect oxycodone model; see modellib('Franke_2015_oxycodone_food')."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Table 3). Enrolment was restricted to 19 to <33 kg/m^2."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Table 3). Enrolment was restricted to 19 to <33 kg/m^2."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 151,
-    n_studies      = 4,
-    age_range      = "18-55 years (protocol inclusion range)",
-    age_median     = "29.1 years (mean, SD 8.6)",
-    weight_range   = "50.0-120.9 kg",
-    weight_median  = "73.5 kg",
-    height_median  = "172.7 cm (range 153.6-194.0)",
-    bmi_median     = "25.1 kg/m^2 (range 18.6-32.9)",
+    species = "human",
+    n_subjects = 151,
+    n_studies = 4,
+    age_range = "18-55 years (protocol inclusion range)",
+    age_median = "29.1 years (mean, SD 8.6)",
+    weight_range = "50.0-120.9 kg",
+    weight_median = "73.5 kg",
+    height_median = "172.7 cm (range 153.6-194.0)",
+    bmi_median = "25.1 kg/m^2 (range 18.6-32.9)",
     sex_female_pct = 30.5,
     race_ethnicity = c(White = 74.2, Black = 25.2, Asian = 0.6),
-    disease_state  = "Healthy adults (studies 1, 2 and 4) and healthy nondependent recreational users of prescription opioids (study 3). Protocol inclusion required BMI 19 to <33 kg/m^2 and body weight >=59 kg.",
-    dose_range     = "Single oral doses of one, two or four intact IR/ER OC/APAP 7.5/325 mg tablets, i.e. 7.5, 15 or 30 mg oxycodone, all under fasted conditions.",
-    regions        = "United States",
-    notes          = "Baseline demographics from Franke 2015 Table 1 (completers, n = 151, of 251 enrolled). Pooled from four phase 1 studies (protocol numbers COV15000170, COV15000172, COV15000255, COV15000244); only the fasted arms of study 4 contributed to this pooled analysis. Table 1 reports a minimum weight of 50.0 kg although the protocols specified a >=59 kg inclusion criterion."
+    disease_state = "Healthy adults (studies 1, 2 and 4) and healthy nondependent recreational users of prescription opioids (study 3). Protocol inclusion required BMI 19 to <33 kg/m^2 and body weight >=59 kg.",
+    dose_range = "Single oral doses of one, two or four intact IR/ER OC/APAP 7.5/325 mg tablets, i.e. 7.5, 15 or 30 mg oxycodone, all under fasted conditions.",
+    regions = "United States",
+    notes = "Baseline demographics from Franke 2015 Table 1 (completers, n = 151, of 251 enrolled). Pooled from four phase 1 studies (protocol numbers COV15000170, COV15000172, COV15000255, COV15000244); only the fasted arms of study 4 contributed to this pooled analysis. Table 1 reports a minimum weight of 50.0 kg although the protocols specified a >=59 kg inclusion criterion."
   )
 
   ini({

@@ -1,16 +1,16 @@
 Nguyen_2026_dupilumab <- function() {
   description <- "Two-compartment population PK model with a three-compartment transit absorption chain and parallel linear plus Michaelis-Menten elimination for subcutaneous dupilumab in healthy adults and in adults, adolescents and children with eosinophilic esophagitis"
-  reference   <- "Nguyen JH, Chehade M, Dellon ES, Radin A, Chittenden J, Kamal MA, Louisias M, Xu C, Kosloski MP. Population Pharmacokinetics of Dupilumab in Adults, Adolescents, and Children With Eosinophilic Esophagitis. Clin Pharmacol Ther. 2026. doi:10.1002/cpt.70233"
-  vignette    <- "Nguyen_2026_dupilumab"
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  reference <- "Nguyen JH, Chehade M, Dellon ES, Radin A, Chittenden J, Kamal MA, Louisias M, Xu C, Kosloski MP. Population Pharmacokinetics of Dupilumab in Adults, Adolescents, and Children With Eosinophilic Esophagitis. Clin Pharmacol Ther. 2026. doi:10.1002/cpt.70233"
+  vignette <- "Nguyen_2026_dupilumab"
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight. Baseline weight in adults; time-varying weight in children and adolescents, obtained by linear interpolation between observed measurements (Nguyen 2026 Methods, 'Time-varying body weight').",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Baseline weight in adults; time-varying weight in children and adolescents, obtained by linear interpolation between observed measurements (Nguyen 2026 Methods, 'Time-varying body weight').",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling with a 70 kg reference (WGTREF = 70 in the supplementary control stream).",
         "Three separate exponents: e_wt_cl = 1.08 on linear CL, e_wt_vc_vp = 0.710 shared by Vc and Vp (the",
         "paper reports this as the effect on Vss = Vc + Vp), and e_wt_q = 0.75 fixed on Q. Replacing baseline",
@@ -18,33 +18,33 @@ Nguyen_2026_dupilumab <- function() {
         "children should supply WT as a time-varying column; rxode2's default LOCF covariate interpolation should",
         "be changed to covsInterpolation = 'linear' to match the source's linear interpolation between measurements."
       ),
-      source_name        = "WGT / WGTBL"
+      source_name = "WGT / WGTBL"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling on linear CL with a 45 g/L reference (ALBBLREF = 45 in the supplementary control stream),",
         "exponent -1.16. Reported by the source in g/L, which is already the canonical SI unit, so no unit",
         "conversion is applied inside model(). Cohort mean was 46.4 g/L (Table S3)."
       ),
-      source_name        = "ALBBL"
+      source_name = "ALBBL"
     ),
     DIS_EOE = list(
-      description        = "Eosinophilic esophagitis patient indicator: 1 = patient with EoE, 0 = healthy volunteer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Eosinophilic esophagitis patient indicator: 1 = patient with EoE, 0 = healthy volunteer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy adult volunteer; the reference cohort is the 202 healthy adults from the six single-dose phase I studies of Table S1)",
-      notes              = paste(
+      notes = paste(
         "The structural parameters were estimated from healthy-volunteer data alone and then held fixed; the",
         "EoE effects on CL, Vmax and Vss were estimated when the patient data were added (Nguyen 2026 Methods,",
         "'Base model construction'). Setting DIS_EOE = 0 therefore recovers the published healthy-volunteer",
         "structural model exactly. Note that the residual-error magnitudes also differed between the two",
         "populations; see the model's population$notes."
       ),
-      source_name        = "EOE"
+      source_name = "EOE"
     )
   )
 
@@ -54,9 +54,9 @@ Nguyen_2026_dupilumab <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL, Ka and F1 (Table S2). An age effect on Ka entered in forward selection (Table S5 step 1)",
         "but was removed in backward elimination (Table S5 step 5, dOFV +1.56, P = 0.212); the corresponding",
         "THETA(22) KAAGE is 0.0 FIX in the supplementary control stream. A residual eta-vs-age trend on CL was",
@@ -66,9 +66,9 @@ Nguyen_2026_dupilumab <- function() {
     ),
     EOS = list(
       description = "Baseline peak esophageal intraepithelial eosinophil count (EEOS).",
-      units       = "cells/uL",
-      type        = "continuous",
-      notes       = paste(
+      units = "cells/uL",
+      type = "continuous",
+      notes = paste(
         "Screened on CL, Vss and Vmax (Table S2) as a disease-severity marker; not retained. THETA(19) CLEEOS and",
         "THETA(21) VMAXEOSS are both 0.0 FIX in the supplementary control stream. The source reports EEOS in",
         "eos/hpf at 400x magnification (cohort mean 84.6, Table S3), which is a microscopy field count rather",
@@ -78,9 +78,9 @@ Nguyen_2026_dupilumab <- function() {
     ),
     ADA_POS = list(
       description = "Maximum anti-drug-antibody titer category.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL as two indicator levels (Table S4 run 4204); the step did not minimize and was rejected",
         "(dOFV +6.83, P = 1.00). THETA(23) CLADA1 and THETA(24) CLADA2 are both 0.0 FIX in the supplementary",
         "control stream. The source states that 'development of anti-dupilumab antibodies was rare and did not",
@@ -90,29 +90,29 @@ Nguyen_2026_dupilumab <- function() {
   )
 
   compartmentData <- list(
-    depot        = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1     = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2     = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3     = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE),
-    peripheral1  = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE)
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 632,
-    n_studies      = 9,
+    species = "human",
+    n_subjects = 632,
+    n_studies = 9,
     n_observations = 4459,
-    age_range      = "1 to 18+ years (children >= 1 to < 12 years, n = 98; adolescents >= 12 to < 18 years, n = 97; adults >= 18 years, n = 235, in the EoE cohort)",
-    age_median     = "24.3 years (mean, EoE cohort overall; children 7.11, adolescents 15.1, adults 35.2)",
-    weight_range   = ">= 5 kg (EoE KIDS entry criterion); >= 40 kg in LIBERTY EoE TREET",
-    weight_median  = "65.7 kg (mean, EoE cohort overall; children 27.2, adolescents 63.8, adults 82.6)",
+    age_range = "1 to 18+ years (children >= 1 to < 12 years, n = 98; adolescents >= 12 to < 18 years, n = 97; adults >= 18 years, n = 235, in the EoE cohort)",
+    age_median = "24.3 years (mean, EoE cohort overall; children 7.11, adolescents 15.1, adults 35.2)",
+    weight_range = ">= 5 kg (EoE KIDS entry criterion); >= 40 kg in LIBERTY EoE TREET",
+    weight_median = "65.7 kg (mean, EoE cohort overall; children 27.2, adolescents 63.8, adults 82.6)",
     sex_female_pct = 34,
     race_ethnicity = c(White = 90, `Black or African American` = 5, Asian = 2, `Other or not reported` = 3),
-    disease_state  = "eosinophilic esophagitis (430 patients), plus 202 healthy adult volunteers contributing the dense single-dose PK that identifies the structural model",
-    dose_range     = "IV 1-12 mg/kg and SC 75-600 mg single doses in healthy adults; SC 100/200/300 mg qw, q2w or q4w weight-tiered multiple doses in EoE",
-    regions        = "not reported by the source",
-    notes          = paste(
+    disease_state = "eosinophilic esophagitis (430 patients), plus 202 healthy adult volunteers contributing the dense single-dose PK that identifies the structural model",
+    dose_range = "IV 1-12 mg/kg and SC 75-600 mg single doses in healthy adults; SC 100/200/300 mg qw, q2w or q4w weight-tiered multiple doses in EoE",
+    regions = "not reported by the source",
+    notes = paste(
       "Baseline characteristics of the EoE cohort are Table S3; the healthy-volunteer characteristics are",
       "reported in the cited Li 2020 reference rather than in this paper. Nine EoE patients with implausible",
       "concentration rises more than 40 days after the last recorded dose were excluded (Figure S1). 22% of",

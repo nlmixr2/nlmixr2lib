@@ -27,24 +27,24 @@ Komatsu_2015_digoxin <- function() {
   )
   vignette <- "Komatsu_2015_digoxin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste0(
+      description = paste0(
         "Creatinine clearance estimated from serum creatinine by the ",
         "Cockcroft-Gault method (Komatsu 2015 Methods, Data source), in RAW ",
         "mL/min and NOT BSA-normalized. Time-fixed per subject in this ",
         "analysis: the source is a cross-sectional therapeutic-drug-",
         "monitoring dataset and the paper reports one CLcr per patient."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "NOT centred and NOT normalized -- CRCL enters the ADDITIVE linear ",
         "clearance term `exp(lcl) + e_crcl_cl * CRCL` directly, so ",
         "`exp(lcl)` = 1.21 L/h is the clearance intercept extrapolated to ",
@@ -55,18 +55,18 @@ Komatsu_2015_digoxin <- function() {
         "deteriorating renal function were excluded, so the model is not ",
         "informed at the extreme low end."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     CONMED_AMIO = list(
-      description        = paste0(
+      description = paste0(
         "1 = subject is coadministered amiodarone, 0 = no concomitant ",
         "amiodarone. 15 of 192 patients (7.8%) were on amiodarone ",
         "(Komatsu 2015 Table 1, Combination medication)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant amiodarone)",
-      notes              = paste0(
+      notes = paste0(
         "ORIENTATION IS INVERTED RELATIVE TO THE SOURCE COLUMN. Komatsu ",
         "2015 defines its own indicator as 'AMD is 0 in the case of ",
         "concomitant administration of amiodarone and 1 otherwise' ",
@@ -84,10 +84,10 @@ Komatsu_2015_digoxin <- function() {
         "for the five-way dosing-nomogram arithmetic that confirms this ",
         "polarity."
       ),
-      source_name        = "AMD"
+      source_name = "AMD"
     ),
     DOSE_DIGOXIN_MGD = list(
-      description        = paste0(
+      description = paste0(
         "The patient's own total daily maintenance dose of oral digoxin ",
         "(mg/day), i.e. the administered amount D divided by the dosing ",
         "interval tau. Entered as a data column rather than as an rxode2 ",
@@ -96,10 +96,10 @@ Komatsu_2015_digoxin <- function() {
         "identity Css = D / (CL * tau) and the dose therefore appears as a ",
         "model INPUT, not as an event record."
       ),
-      units              = "mg/d",
-      type               = "continuous",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Komatsu 2015 Table 1 records five regimens, all of which reduce to ",
         "a daily dose: 0.125 mg every 3 days (0.04167 mg/d, n = 7), ",
         "0.125 mg every 2 days (0.0625 mg/d, n = 17), 0.0625 mg/day ",
@@ -110,26 +110,26 @@ Komatsu_2015_digoxin <- function() {
         "column is algebraically identical to carrying them separately, ",
         "because they only ever appear in the model as the ratio D/tau."
       ),
-      source_name        = "Dosage"
+      source_name = "Dosage"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 192L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 192L,
+    n_studies = 1L,
     n_observations = paste0(
       "287 steady-state trough serum digoxin concentrations (Komatsu 2015 ",
       "Table 1). Samples were drawn before the morning dose at least one ",
       "week after digoxin was started."
     ),
-    age_range      = "Adults; mean 71 +/- 12 years (Komatsu 2015 Table 1)",
-    age_median     = NA_character_,
-    weight_range   = "Mean 55.47 +/- 11.94 kg (Komatsu 2015 Table 1)",
-    weight_median  = NA_character_,
+    age_range = "Adults; mean 71 +/- 12 years (Komatsu 2015 Table 1)",
+    age_median = NA_character_,
+    weight_range = "Mean 55.47 +/- 11.94 kg (Komatsu 2015 Table 1)",
+    weight_median = NA_character_,
     sex_female_pct = 37.0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Japanese cardiology inpatients and outpatients receiving digoxin for ",
       "congestive heart failure or atrial fibrillation. Left-ventricular ",
       "ejection fraction >= 40% in 156 patients and < 40% in 36 (Komatsu ",
@@ -137,16 +137,16 @@ Komatsu_2015_digoxin <- function() {
       "disorders, on dialysis, or with rapidly deteriorating renal function ",
       "were excluded."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "0.0625-0.25 mg/day oral maintenance dosing, including 0.125 mg every ",
       "2 days and every 3 days (Komatsu 2015 Table 1)"
     ),
-    regions        = "Japan (single centre; Kitasato University Hospital)",
+    regions = "Japan (single centre; Kitasato University Hospital)",
     renal_function = paste0(
       "Cockcroft-Gault CLcr 56.17 +/- 33.76 mL/min (Komatsu 2015 Table 1); ",
       "the paper's dosing simulations span 5-130 mL/min"
     ),
-    co_medication  = paste0(
+    co_medication = paste0(
       "Amiodarone 15, amlodipine 21, atorvastatin 14, azelnidipine 13, ",
       "bisoprolol 28, carvedilol 53, nifedipine 13, spironolactone 35, ",
       "tolvaptan 8, class I antiarrhythmics 12, class IV antiarrhythmics 31 ",
@@ -154,7 +154,7 @@ Komatsu_2015_digoxin <- function() {
       "carvedilol and tolvaptan were each significant on CL in univariate ",
       "screening (Table 2) but only amiodarone survived backward elimination."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Observed serum digoxin concentration 0.90 +/- 0.56 ng/mL (Komatsu ",
       "2015 Table 1); assay was a cloned enzyme immunoassay with a 0.2 ng/mL ",
       "lower limit of detection and intra- and inter-assay CV below 10%. ",

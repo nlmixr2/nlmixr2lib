@@ -8,51 +8,51 @@ Desai_2016_isavuconazole_secure <- function() {
   # biological matrix. A(1) / A(2) / A(3) of the Desai 2016 equation system on
   # p. 5484 are respectively the gut, central and peripheral amounts.
   compartmentData <- list(
-    depot       = list(analyte = "isavuconazole", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "isavuconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     RACE_ASIAN = list(
-      description        = "Asian race indicator (1 = Asian, 0 = predominantly Caucasian)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (1 = Asian, 0 = predominantly Caucasian)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the group Desai 2016 Table 3 labels 'predominantly Caucasian'; 175/189 healthy subjects and 193/232 patients)",
-      notes              = "Desai 2016 Table 2 codes the source covariate as 'Race (0 for predominantly Caucasians, 1 for Asians)', which is already the canonical orientation, so no re-expression was needed. Race was the only statistically significant covariate on CL and the only one the paper considered clinically important. Asian CL is 1.51 L/h against the Caucasian 2.36 L/h (Table 5 theta_9 vs theta_1), i.e. about 36% lower, which the Discussion describes as a roughly 40% difference in exposure. The mechanism is explicitly unestablished: the Discussion rules out CYP2D6 and CYP2C19 (isavuconazole is a substrate for neither) and rules out body mass, since BMI was not significant on CL.",
-      source_name        = "Race"
+      notes = "Desai 2016 Table 2 codes the source covariate as 'Race (0 for predominantly Caucasians, 1 for Asians)', which is already the canonical orientation, so no re-expression was needed. Race was the only statistically significant covariate on CL and the only one the paper considered clinically important. Asian CL is 1.51 L/h against the Caucasian 2.36 L/h (Table 5 theta_9 vs theta_1), i.e. about 36% lower, which the Discussion describes as a roughly 40% difference in exposure. The mechanism is explicitly unestablished: the Discussion rules out CYP2D6 and CYP2C19 (isavuconazole is a substrate for neither) and rules out body mass, since BMI was not significant on CL.",
+      source_name = "Race"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator (1 = healthy phase 1 volunteer, 0 = patient with an invasive fungal infection)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator (1 = healthy phase 1 volunteer, 0 = patient with an invasive fungal infection)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with invasive aspergillosis or another filamentous-fungal infection, from the phase 3 SECURE trial)",
-      notes              = "Desai 2016 Table 2 codes the source covariate as 'SP (dichotomized into healthy subjects [0] and patients [1])' -- the OPPOSITE orientation to the canonical -- so the model file re-expresses it as DIS_HEALTHY = 1 - SP and anchors the structural typical values on the patient state. Two roles in this model: (a) a multiplicative fractional effect on peripheral volume, and (b) a binary stratifier selecting which of the two published clearance IIV terms applies (same dual-variance pattern as Li_2017_CC292.R and Mao_2012_vernakalant.R). Assignment of Table 5 theta_4 = 417 L to the PATIENT baseline and theta_11 = 260 L to the HEALTHY baseline is not stated in the table labels; it is pinned by back-solving each against the Discussion's typical volumes at the Table 3 median BMIs -- 417 * (1 + 0.060 * (23.6 - 24.80)) = 387 L against the stated patient value of about 390 L, and 260 * (1 + 0.060 * (25.7 - 24.80)) = 274 L against the stated healthy value of about 292 L. The opposite assignment yields 440 L and 241 L, contradicting both. The reference-BMI Vss, 49.1 + 417 = 466 L, independently matches the Discussion's 'V at steady state was approximately 460 liters'.",
-      source_name        = "SP"
+      notes = "Desai 2016 Table 2 codes the source covariate as 'SP (dichotomized into healthy subjects [0] and patients [1])' -- the OPPOSITE orientation to the canonical -- so the model file re-expresses it as DIS_HEALTHY = 1 - SP and anchors the structural typical values on the patient state. Two roles in this model: (a) a multiplicative fractional effect on peripheral volume, and (b) a binary stratifier selecting which of the two published clearance IIV terms applies (same dual-variance pattern as Li_2017_CC292.R and Mao_2012_vernakalant.R). Assignment of Table 5 theta_4 = 417 L to the PATIENT baseline and theta_11 = 260 L to the HEALTHY baseline is not stated in the table labels; it is pinned by back-solving each against the Discussion's typical volumes at the Table 3 median BMIs -- 417 * (1 + 0.060 * (23.6 - 24.80)) = 387 L against the stated patient value of about 390 L, and 260 * (1 + 0.060 * (25.7 - 24.80)) = 274 L against the stated healthy value of about 292 L. The opposite assignment yields 440 L and 241 L, contradicting both. The reference-BMI Vss, 49.1 + 417 = 466 L, independently matches the Discussion's 'V at steady state was approximately 460 liters'.",
+      source_name = "SP"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centering value 24.80 kg/m^2 is taken verbatim from the Desai 2016 best-covariate-model equation on p. 5485. Desai 2016 prints that equation as 'V p = theta_{4,11} x (1 + theta_10) x (BMI - 24.80)', which is dimensionally incoherent as typeset -- it makes Vp zero at BMI 24.80. It is encoded here in the sensible centered-linear reading, Vp = theta_{4,11} * (1 + theta_10 * (BMI - 24.80)), which is the only form under which the Discussion's typical volumes are recovered (see the DIS_HEALTHY note). BMI was significant on Vp but explicitly NOT on CL, and the Discussion notes that although the 43 obese individuals had a larger Vp there was no corresponding difference in exposure.",
-      source_name        = "BMI"
+      notes = "Centering value 24.80 kg/m^2 is taken verbatim from the Desai 2016 best-covariate-model equation on p. 5485. Desai 2016 prints that equation as 'V p = theta_{4,11} x (1 + theta_10) x (BMI - 24.80)', which is dimensionally incoherent as typeset -- it makes Vp zero at BMI 24.80. It is encoded here in the sensible centered-linear reading, Vp = theta_{4,11} * (1 + theta_10 * (BMI - 24.80)), which is the only form under which the Discussion's typical volumes are recovered (see the DIS_HEALTHY note). BMI was significant on Vp but explicitly NOT on CL, and the Discussion notes that although the 43 obese individuals had a larger Vp there was no corresponding difference in exposure.",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 421,
-    n_studies      = 10,
+    species = "human",
+    n_subjects = 421,
+    n_studies = 10,
     n_observations = 6363,
-    age_range      = "17-85 years (median 43 healthy, 54 patients per Table 3)",
-    weight_range   = "41.0-127.7 kg (median 77.8 healthy, 67.0 patients per Table 3)",
-    bmi_range      = "13.9-41.2 kg/m^2 (median 25.7 healthy, 23.6 patients per Table 3)",
+    age_range = "17-85 years (median 43 healthy, 54 patients per Table 3)",
+    weight_range = "41.0-127.7 kg (median 77.8 healthy, 67.0 patients per Table 3)",
+    bmi_range = "13.9-41.2 kg/m^2 (median 25.7 healthy, 23.6 patients per Table 3)",
     sex_female_pct = 35,
     race_ethnicity = "Predominantly Caucasian 175/189 (92.6%) healthy and 193/232 (83.2%) patients; Asian 14/189 (7.4%) healthy and 39/232 (16.8%) patients (Table 3).",
-    disease_state  = "189 healthy volunteers from nine phase 1 studies (including dedicated hepatic-impairment, renal-impairment, mass-balance, bioavailability and elderly studies) and 232 patients with invasive aspergillosis or other filamentous-fungal infections from the phase 3 SECURE trial.",
-    dose_range     = "Phase 1: single or multiple doses of 40 mg to 400 mg isavuconazole, p.o. or as a 1-h i.v. infusion. Phase 3 SECURE: 372 mg isavuconazonium sulfate (equivalent to 200 mg isavuconazole) i.v. every 8 h for 6 doses on days 1-2, then 372 mg once daily p.o. or i.v. from day 3.",
-    notes          = "Healthy subjects contributed 5,828 rich-sampling concentrations and patients contributed 535 predominantly trough concentrations. One patient was excluded as an outlier for an extremely low clearance of 0.2 L/h. Below-quantification-limit values were under 5% of the healthy-subject data and were dropped; no patient concentration was below the quantification limit. Estimation in NONMEM 7.2 (ADVAN4 TRANS4) with FOCE and no interaction, since both the data and the residual-error structure were log transformed; covariate selection by stepwise covariate modeling in PsN 3.7.6 (forward p < 0.01, backward p < 0.001). Validated by 500-replicate nonparametric bootstrap (13% of runs failed) and NPDE; condition number 41."
+    disease_state = "189 healthy volunteers from nine phase 1 studies (including dedicated hepatic-impairment, renal-impairment, mass-balance, bioavailability and elderly studies) and 232 patients with invasive aspergillosis or other filamentous-fungal infections from the phase 3 SECURE trial.",
+    dose_range = "Phase 1: single or multiple doses of 40 mg to 400 mg isavuconazole, p.o. or as a 1-h i.v. infusion. Phase 3 SECURE: 372 mg isavuconazonium sulfate (equivalent to 200 mg isavuconazole) i.v. every 8 h for 6 doses on days 1-2, then 372 mg once daily p.o. or i.v. from day 3.",
+    notes = "Healthy subjects contributed 5,828 rich-sampling concentrations and patients contributed 535 predominantly trough concentrations. One patient was excluded as an outlier for an extremely low clearance of 0.2 L/h. Below-quantification-limit values were under 5% of the healthy-subject data and were dropped; no patient concentration was below the quantification limit. Estimation in NONMEM 7.2 (ADVAN4 TRANS4) with FOCE and no interaction, since both the data and the residual-error structure were log transformed; covariate selection by stepwise covariate modeling in PsN 3.7.6 (forward p < 0.01, backward p < 0.001). Validated by 500-replicate nonparametric bootstrap (13% of runs failed) and NPDE; condition number 41."
   )
 
   ini({

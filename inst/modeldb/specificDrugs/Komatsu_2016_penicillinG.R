@@ -35,11 +35,11 @@ Komatsu_2016_penicillinG <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated from serum creatinine by the Cockcroft-Gault equation. RAW mL/min, NOT BSA-normalized.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated from serum creatinine by the Cockcroft-Gault equation. RAW mL/min, NOT BSA-normalized.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Komatsu 2016 Methods, Data source: 'CLcr was estimated from the ",
         "serum creatinine level by the Cockcroft-Gault method'. Cohort mean ",
         "82.52 mL/min (SD 33.29, range 11-144; Table 1). Enters clearance as ",
@@ -57,40 +57,40 @@ Komatsu_2016_penicillinG <- function() {
         "(penicillin G retains a non-renal clearance component), so do not ",
         "use this model at or near zero renal function."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on both CL and Vd (Komatsu 2016 Table 3). On CL the linear form theta1 + theta2 x BW dropped the objective function by 32.9 (P < 0.001) in forward inclusion but did not survive backward elimination once CLcr was in the model; on Vd the form theta3 + theta4 x BW gave a -2 log likelihood change of exactly 0 and is reported as not significant. No retained point estimate exists."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on both CL and Vd (Komatsu 2016 Table 3). On CL the linear form theta1 + theta2 x BW dropped the objective function by 32.9 (P < 0.001) in forward inclusion but did not survive backward elimination once CLcr was in the model; on Vd the form theta3 + theta4 x BW gave a -2 log likelihood change of exactly 0 and is reported as not significant. No retained point estimate exists."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened on CL as theta1 + theta2 x (1/sCr) (Komatsu 2016 Table 3, -2 log likelihood change 75.919, P < 0.001) but eliminated in favour of CLcr, which is itself derived from serum creatinine by Cockcroft-Gault and is the stronger predictor (-2 log likelihood change 117.303). Cohort mean 0.92 mg/dL (SD 0.56, range 0.51-3.26; Table 1). No retained point estimate exists."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened on CL as theta1 + theta2 x (1/sCr) (Komatsu 2016 Table 3, -2 log likelihood change 75.919, P < 0.001) but eliminated in favour of CLcr, which is itself derived from serum creatinine by Cockcroft-Gault and is the stronger predictor (-2 log likelihood change 117.303). Cohort mean 0.92 mg/dL (SD 0.56, range 0.51-3.26; Table 1). No retained point estimate exists."
     ),
     ALT = list(
       description = "Alanine aminotransferase, screened as a binary split at 40 IU/L",
-      units       = "IU/L",
-      type        = "binary",
-      notes       = "Screened on CL as the multiplicative binary theta1 x theta2^ALT with ALT > 40 coded 0 and ALT < 40 coded 1 (Komatsu 2016 Table 3, -2 log likelihood change 19.27, P < 0.001), but not retained after backward elimination. Cohort mean 26.80 IU/L (SD 26.45, range 4-106; Table 1). No retained point estimate exists."
+      units = "IU/L",
+      type = "binary",
+      notes = "Screened on CL as the multiplicative binary theta1 x theta2^ALT with ALT > 40 coded 0 and ALT < 40 coded 1 (Komatsu 2016 Table 3, -2 log likelihood change 19.27, P < 0.001), but not retained after backward elimination. Cohort mean 26.80 IU/L (SD 26.45, range 4-106; Table 1). No retained point estimate exists."
     ),
     SEXF = list(
       description = "Sex",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL as the multiplicative binary theta1 x theta2^sex with male coded 1 and female coded 0 (Komatsu 2016 Table 3, -2 log likelihood change 31.334, P < 0.001), but not retained. Note the source codes MALE as 1; the canonical SEXF codes FEMALE as 1, so any future use of this screen would need SEXF = 1 - sex. Cohort 16 male : 9 female (Table 1). No retained point estimate exists."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL as the multiplicative binary theta1 x theta2^sex with male coded 1 and female coded 0 (Komatsu 2016 Table 3, -2 log likelihood change 31.334, P < 0.001), but not retained. Note the source codes MALE as 1; the canonical SEXF codes FEMALE as 1, so any future use of this screen would need SEXF = 1 - sex. Cohort 16 male : 9 female (Table 1). No retained point estimate exists."
     ),
     AGE = list(
       description = "Age, screened as a binary split at 65 years",
-      units       = "years",
-      type        = "binary",
-      notes       = "Screened on CL as the multiplicative binary theta1 x theta2^age with age > 65 coded 1 and age < 64 coded 0 (Komatsu 2016 Table 3, -2 log likelihood change 8.608, P < 0.005 -- the weakest of the six screened covariates), but not retained. Cohort mean 54 years (SD 17, range 21-83; Table 1). No retained point estimate exists."
+      units = "years",
+      type = "binary",
+      notes = "Screened on CL as the multiplicative binary theta1 x theta2^age with age > 65 coded 1 and age < 64 coded 0 (Komatsu 2016 Table 3, -2 log likelihood change 8.608, P < 0.005 -- the weakest of the six screened covariates), but not retained. Cohort mean 54 years (SD 17, range 21-83; Table 1). No retained point estimate exists."
     )
   )
 
@@ -99,22 +99,22 @@ Komatsu_2016_penicillinG <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 25L,
-    n_studies       = 1L,
-    n_observations  = "46 serum penicillin G concentrations (Komatsu 2016 Table 1)",
-    age_range       = "21-83 years",
-    age_median      = "mean 54 years (SD 17); no median reported",
-    weight_range    = "33-86.9 kg",
-    weight_median   = "mean 55.35 kg; no median reported (see notes on the printed SD)",
-    sex_female_pct  = 36,
-    race_ethnicity  = "Not reported; single-centre Japanese cohort (Kitasato University Hospital, Sagamihara)",
-    disease_state   = "Suspected or documented infective endocarditis. Viridans group streptococci were isolated in 21 of the 25 patients; 15 of those 21 responded to penicillin G and 6 failed (Table 2). Treatment failure was defined as persistence of fever and/or bacteremia requiring a change of antibiotic, or infection-related mortality within 30 days.",
-    renal_function  = "Creatinine clearance (Cockcroft-Gault) mean 82.52 mL/min (SD 33.29, range 11-144); serum creatinine mean 0.92 mg/dL (SD 0.56, range 0.51-3.26)",
+    species = "human",
+    n_subjects = 25L,
+    n_studies = 1L,
+    n_observations = "46 serum penicillin G concentrations (Komatsu 2016 Table 1)",
+    age_range = "21-83 years",
+    age_median = "mean 54 years (SD 17); no median reported",
+    weight_range = "33-86.9 kg",
+    weight_median = "mean 55.35 kg; no median reported (see notes on the printed SD)",
+    sex_female_pct = 36,
+    race_ethnicity = "Not reported; single-centre Japanese cohort (Kitasato University Hospital, Sagamihara)",
+    disease_state = "Suspected or documented infective endocarditis. Viridans group streptococci were isolated in 21 of the 25 patients; 15 of those 21 responded to penicillin G and 6 failed (Table 2). Treatment failure was defined as persistence of fever and/or bacteremia requiring a change of antibiotic, or infection-related mortality within 30 days.",
+    renal_function = "Creatinine clearance (Cockcroft-Gault) mean 82.52 mL/min (SD 33.29, range 11-144); serum creatinine mean 0.92 mg/dL (SD 0.56, range 0.51-3.26)",
     hepatic_function = "Alanine aminotransferase mean 26.80 IU/L (SD 26.45, range 4-106)",
-    dose_range      = "Penicillin G potassium (Meiji Seika Pharma) intravenously; the individual clinical regimens are not tabulated. The paper's Monte Carlo dosing simulations span 0.5 million IU every 6 h to 4 million IU every 4 h, plus 1 million IU/h by continuous infusion (24 million IU/day).",
-    regions         = "Japan (Kitasato University Hospital, Sagamihara, Kanagawa); patients treated between January 1997 and April 2013",
-    notes           = paste0(
+    dose_range = "Penicillin G potassium (Meiji Seika Pharma) intravenously; the individual clinical regimens are not tabulated. The paper's Monte Carlo dosing simulations span 0.5 million IU every 6 h to 4 million IU every 4 h, plus 1 million IU/h by continuous infusion (24 million IU/day).",
+    regions = "Japan (Kitasato University Hospital, Sagamihara, Kanagawa); patients treated between January 1997 and April 2013",
+    notes = paste0(
       "Baseline demographics are Komatsu 2016 Table 1. Observed serum ",
       "penicillin G concentrations spanned 0.5-212.3 ug/mL (mean 33.2, SD ",
       "45.2); the lower limit of detection of the HPLC assay was 0.5 ug/mL. ",

@@ -35,11 +35,11 @@ Yata_2026_sildenafil_dog <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Subject-level, time-fixed. Structural, not a fitted covariate effect: Yata 2026",
         "Table 1 reports V/F in L/kg, so the apparent central volume is the per-kg value",
         "multiplied by body weight. This is the linear (exponent 1) scaling implied by the",
@@ -69,18 +69,18 @@ Yata_2026_sildenafil_dog <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on Ka, Ke and V/F; not retained. Median 11 years, range 1-16",
         "(Yata 2026 Results)."
       )
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened on Ka, Ke and V/F; not retained. Measured on the study day as part of a",
         "complete biochemical panel (Yata 2026 Methods 2.3). The paper reports neither the",
         "unit nor the distribution; mg/dL is the convention of the reporting laboratory",
@@ -91,9 +91,9 @@ Yata_2026_sildenafil_dog <- function() {
     ),
     ALP = list(
       description = "Serum alkaline phosphatase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened on Ka, Ke and V/F; not retained. Written 'ALKP' in Yata 2026 (Methods 2.6",
         "and Results), the abbreviation used by US veterinary biochemistry panels for",
         "alkaline phosphatase. Included as a marker of hepatic and biliary function because",
@@ -104,18 +104,18 @@ Yata_2026_sildenafil_dog <- function() {
     ),
     ALT = list(
       description = "Serum alanine aminotransferase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened on Ka, Ke and V/F; not retained. Hepatocellular-injury marker, screened",
         "for the same reason as ALP. No distribution is reported."
       )
     ),
     CONMED_DIURETIC = list(
       description = "Concurrent diuretic administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on Ka, Ke and V/F; not retained. Class membership for this paper is",
         "furosemide (n = 2), torsemide (n = 1) and spironolactone (n = 2) among the 20 dogs",
         "(Yata 2026 Results, concurrent-medication list), i.e. loop plus potassium-sparing",
@@ -125,9 +125,9 @@ Yata_2026_sildenafil_dog <- function() {
     ),
     CONMED_PIMOBENDAN = list(
       description = "Concurrent pimobendan administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on Ka, Ke and V/F; not retained. Pimobendan is an inodilator",
         "(calcium sensitiser plus PDE3 inhibitor) used in canine cardiac disease; it was the",
         "most common concurrent medication, given to 7 of the 20 dogs (Yata 2026 Results).",
@@ -138,14 +138,14 @@ Yata_2026_sildenafil_dog <- function() {
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "sildenafil", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "sildenafil", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "sildenafil", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "dog (client-owned, mixed and pure breeds)",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "dog (client-owned, mixed and pure breeds)",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = paste(
       "Three plasma sildenafil samples per dog (60 total) drawn from randomised",
       "allocations of nine nominal times (0, 20 min, 40 min, 1, 1.5, 2, 3, 4, 6, 8 h)",
@@ -153,12 +153,12 @@ Yata_2026_sildenafil_dog <- function() {
       "30 min instead of the scheduled 20 min. All measured concentrations were above",
       "the 5 ng/mL limit of quantitation (Yata 2026 Results)."
     ),
-    age_range      = "1-16 years",
-    age_median     = "11 years",
-    weight_range   = "not reported; dogs weighing < 4 kg were excluded (Methods 2.2)",
-    weight_median  = "not reported",
+    age_range = "1-16 years",
+    age_median = "11 years",
+    weight_range = "not reported; dogs weighing < 4 kg were excluded (Methods 2.2)",
+    weight_median = "not reported",
     sex_female_pct = 55,
-    disease_state  = paste(
+    disease_state = paste(
       "Naturally occurring moderate-to-severe pulmonary hypertension of mixed aetiology,",
       "classified per the 2020 ACVIM consensus statement: undetermined (Group 6, n = 6),",
       "heartworm disease (Group 5, n = 4), lung or airway disease (Group 3, n = 4),",
@@ -170,19 +170,19 @@ Yata_2026_sildenafil_dog <- function() {
       "gradient, and 49.4 mmHg (range 19-117) on sildenafil at the time of the study in",
       "16 dogs."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.8-3.6 mg/kg orally every 8 h (Sildenafil 20 mg tablets, Amneal Pharmaceuticals)",
       "for at least 3 days before the study day; median dose on the study day 1.8 mg/kg",
       "with a CV of 32%, median total daily dose 5.2 mg/kg (range 2.4-10.7)."
     ),
-    regions        = "United States (North Carolina State University Veterinary Hospital, January 2021 to January 2022)",
-    sex_breakdown  = "9 spayed female, 2 intact female, 7 castrated male, 2 intact male",
-    breeds         = paste(
+    regions = "United States (North Carolina State University Veterinary Hospital, January 2021 to January 2022)",
+    sex_breakdown = "9 spayed female, 2 intact female, 7 castrated male, 2 intact male",
+    breeds = paste(
       "Mixed breed (n = 7), West Highland White Terrier (n = 2), Pekingese (n = 2),",
       "Shih Tzu (n = 2), and one each of Pembroke Corgi, American Staffordshire Terrier,",
       "Miniature Dachshund, Boxer, Terrier, Miniature Pinscher and Chihuahua."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Sildenafil was monotherapy in 8 dogs and part of multi-drug therapy in 12.",
       "Concurrent medications were pimobendan (n = 7), enalapril (n = 4),",
       "spironolactone (n = 2), furosemide (n = 2), torsemide (n = 1), prednisolone",
@@ -193,7 +193,7 @@ Yata_2026_sildenafil_dog <- function() {
       "pump inhibitors) or hepatic metabolism (phenobarbital, rifampin, ketoconazole)",
       "were exclusion criteria."
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective, open-label, steady-state population PK study (IACUC # 20-430); owner",
       "consent obtained for every dog. Dogs were fasted overnight and usual morning",
       "medications were withheld; food and other morning medications were given 3 h after",

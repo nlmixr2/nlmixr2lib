@@ -8,43 +8,43 @@ Li_2015_pomalidomide <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "pomalidomide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "pomalidomide", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "pomalidomide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "pomalidomide", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "pomalidomide", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight; power effect on V2/F with reference 78.3 kg taken from the final covariate equation printed in Results 'Covariate Analysis'. Note the demographics table (Table 1) reports a cohort median of 78.1 kg; the equation's own 78.3 kg is the centering constant the reported V2/F of 58.3 L is conditioned on and is the value used here.",
-      source_name        = "WT"
+      notes = "Baseline body weight; power effect on V2/F with reference 78.3 kg taken from the final covariate equation printed in Results 'Covariate Analysis'. Note the demographics table (Table 1) reports a cohort median of 78.1 kg; the equation's own 78.3 kg is the centering constant the reported V2/F of 58.3 L is conditioned on and is the value used here.",
+      source_name = "WT"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline total serum protein; linear centered effect on V2/F with centering constant 73.0 g/L taken from the final covariate equation printed in Results 'Covariate Analysis'. Table 1 reports a cohort median of 75.0 g/L and the Discussion quotes an observed range of 56 to 148 g/L; as with WT the equation's own constant is used. The paper argues the effect is a surrogate for disease stage rather than a binding-capacity mechanism, because multiple myeloma raises serum protein and higher stage correlates with higher protein.",
-      source_name        = "TPT"
+      notes = "Baseline total serum protein; linear centered effect on V2/F with centering constant 73.0 g/L taken from the final covariate equation printed in Results 'Covariate Analysis'. Table 1 reports a cohort median of 75.0 g/L and the Discussion quotes an observed range of 56 to 148 g/L; as with WT the equation's own constant is used. The paper argues the effect is a surrogate for disease stage rather than a binding-capacity mechanism, because multiple myeloma raises serum protein and higher stage correlates with higher protein.",
+      source_name = "TPT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effect on CL/F via (1 + e_sexf_cl * SEXF) with e_sexf_cl = -0.234, i.e. female CL/F is 23.4% lower than male. The paper's own final covariate equation is written as a two-branch expression, 8.45 for male participants and 8.45 * (1 - 0.234) for female participants, which is the same linear indicator form as its generic categorical-covariate Equation 5. Sex was the only demographic covariate retained on CL/F and the paper judges it not clinically relevant.",
-      source_name        = "sex"
+      notes = "Multiplicative effect on CL/F via (1 + e_sexf_cl * SEXF) with e_sexf_cl = -0.234, i.e. female CL/F is 23.4% lower than male. The paper's own final covariate equation is written as a two-branch expression, 8.45 for male participants and 8.45 * (1 - 0.234) for female participants, which is the same linear indicator form as its generic categorical-covariate Equation 5. Sex was the only demographic covariate retained on CL/F and the paper judges it not clinically relevant.",
+      source_name = "sex"
     ),
     DIS_MM = list(
-      description        = "Relapsed / refractory multiple myeloma patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Relapsed / refractory multiple myeloma patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy normal participant)",
-      notes              = "1 = patient with relapsed and refractory multiple myeloma (the four MM studies CC-4047-MM-001, -002, -003 and -005); 0 = healthy normal participant (the two healthy-volunteer studies CC-4047-CP-006 and -007). Reference category is the healthy participant, because Table 2 reports each MM effect as a 'MM patient / HNP' ratio on top of a healthy-participant typical value. Drives FIVE things at once: the CL/F ratio 0.913, the V2/F ratio 1.20, the V3/F ratio 8.46, the Q/F ratio 3.71, and a switch between two absolute absorption lag times (0.385 h healthy, 0.206 h MM). It also selects the log-scale residual SD, the paper having fitted a separate residual magnitude for the two populations on the grounds that the healthy-volunteer studies were the better controlled.",
-      source_name        = "status of health (healthy participants vs. patients)"
+      notes = "1 = patient with relapsed and refractory multiple myeloma (the four MM studies CC-4047-MM-001, -002, -003 and -005); 0 = healthy normal participant (the two healthy-volunteer studies CC-4047-CP-006 and -007). Reference category is the healthy participant, because Table 2 reports each MM effect as a 'MM patient / HNP' ratio on top of a healthy-participant typical value. Drives FIVE things at once: the CL/F ratio 0.913, the V2/F ratio 1.20, the V3/F ratio 8.46, the Q/F ratio 3.71, and a switch between two absolute absorption lag times (0.385 h healthy, 0.206 h MM). It also selects the log-scale residual SD, the paper having fitted a separate residual magnitude for the two populations on the grounds that the healthy-volunteer studies were the better controlled.",
+      source_name = "status of health (healthy participants vs. patients)"
     )
   )
 
@@ -55,68 +55,74 @@ Li_2015_pomalidomide <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; median 53.0 years (range 19.0-83.0, Table 1). Graphic analysis suggested a negative correlation with CL/F and a positive one with V2/F, neither of which reached significance in the forward-selection step."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; median 53.0 years (range 19.0-83.0, Table 1). Graphic analysis suggested a negative correlation with CL/F and a positive one with V2/F, neither of which reached significance in the forward-selection step."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Listed among the demographic covariates tested (Methods 'Covariate Analysis'); not retained. Table 1 reports height and body mass index but not BSA itself."
+      units = "m^2",
+      type = "continuous",
+      notes = "Listed among the demographic covariates tested (Methods 'Covariate Analysis'); not retained. Table 1 reports height and body mass index but not BSA itself."
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a two-level covariate: 78% of the cohort was white, so all non-white participants were pooled into a single group for the race analysis (Results 'Covariate Analysis'). Not retained; the paper reports no apparent relationship between V2/F and race."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a two-level covariate: 78% of the cohort was white, so all non-white participants were pooled into a single group for the race analysis (Results 'Covariate Analysis'). Not retained; the paper reports no apparent relationship between V2/F and race."
     ),
     RACE_HISPANIC = list(
       description = "Hispanic or Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; Hispanic or Latino participants (22.5%) were pooled with participants of unknown ethnicity (11.9%) into a single group. Graphic analysis showed a significant CL/F difference between that pooled group and non-Hispanic participants, but ethnicity was not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; Hispanic or Latino participants (22.5%) were pooled with participants of unknown ethnicity (11.9%) into a single group. Graphic analysis showed a significant CL/F difference between that pooled group and non-Hispanic participants, but ethnicity was not retained in the final model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker; median 40.0 (range 17.0-52.0, Table 1, reported there as g/dL but numerically on the g/L scale). Positively correlated with CL/F and negatively with V2/F by graphic analysis; not significant in forward selection."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker; median 40.0 (range 17.0-52.0, Table 1, reported there as g/dL but numerically on the g/L scale). Positively correlated with CL/F and negatively with V2/F by graphic analysis; not significant in forward selection."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker; median 9.2 umol/L (range 1.9-52.3, Table 1). 12% of participants were above the 17 umol/L upper limit of normal and 3% had moderate-to-severe hepatic impairment. Negatively correlated with V2/F by graphic analysis; not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker; median 9.2 umol/L (range 1.9-52.3, Table 1). 12% of participants were above the 17 umol/L upper limit of normal and 3% had moderate-to-severe hepatic impairment. Negatively correlated with V2/F by graphic analysis; not retained."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker; median 22.0 U/L (range 9.0-73.0, Table 1). Not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker; median 22.0 U/L (range 9.0-73.0, Table 1). Not retained."
     ),
     CRCL = list(
       description = "Creatinine clearance, Cockcroft-Gault, NOT BSA-normalized",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened as the renal-function marker; median 100.4 mL/min (range 20.8-188.2, Table 1), with 17% of participants having CLcr 30-60 mL/min and 1.3% below 30 mL/min. Positively correlated with CL/F by graphic analysis (correlation coefficient 0.2042) but did not reach the prespecified significance threshold in univariate analysis, and the geometric-mean CL/F was comparable across normal, mild and moderate renal-impairment strata (Figure 4A). A post hoc linear regression of CL/F on CLcr gave an intercept of 5.93 L/h (90%CI 4.45-7.41) and a slope of 0.019 (90%CI 0.0016-0.036), i.e. non-renal clearance accounts for about 77% of whole-body clearance. This absence of a renal effect is one of the paper's principal conclusions, so CRCL is documented here rather than silently dropped."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as the renal-function marker; median 100.4 mL/min (range 20.8-188.2, Table 1), with 17% of participants having CLcr 30-60 mL/min and 1.3% below 30 mL/min. Positively correlated with CL/F by graphic analysis (correlation coefficient 0.2042) but did not reach the prespecified significance threshold in univariate analysis, and the geometric-mean CL/F was comparable across normal, mild and moderate renal-impairment strata (Figure 4A). A post hoc linear regression of CL/F on CLcr gave an intercept of 5.93 L/h (90%CI 4.45-7.41) and a slope of 0.019 (90%CI 0.0016-0.036), i.e. non-renal clearance accounts for about 77% of whole-body clearance. This absence of a renal effect is one of the paper's principal conclusions, so CRCL is documented here rather than silently dropped."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 240L,
-    n_studies      = 6L,
-    age_range      = "19.0-83.0 years",
-    age_median     = "53.0 years",
-    weight_range   = "44.4-127.0 kg",
-    weight_median  = "78.1 kg",
+    species = "human",
+    n_subjects = 240L,
+    n_studies = 6L,
+    age_range = "19.0-83.0 years",
+    age_median = "53.0 years",
+    weight_range = "44.4-127.0 kg",
+    weight_median = "78.1 kg",
     sex_female_pct = 25.8,
-    race_ethnicity = c(White = 78.0, Black = 19.9, Asian = 0.8, `Native Hawaiian or other Pacific Islander` = 0.4, Other = 0.8),
-    disease_state  = "Pooled healthy normal participants (n = 96, studies CC-4047-CP-006 and CP-007) and patients with relapsed and refractory multiple myeloma (n = 144, studies CC-4047-MM-001, -002, -003 and -005). The multiple myeloma cohort spanned disease stages I to III and included the comorbid condition of renal impairment: 40 patients had CLcr 30-60 mL/min and 3 had CLcr below 30 mL/min.",
-    dose_range     = "0.5-10 mg oral solid dosage form, once daily or once every alternate day. Healthy participants received 0.5-2 mg QD for 5 days or a single 3 or 4 mg dose; MM patients received 1-10 mg QD for up to 4 weeks, or 4 mg QD on days 1-21 of a 28-day cycle, or 1-4 mg QD on days 1-14 of a 21-day cycle (Supplementary Table 1).",
-    regions        = "Not reported.",
-    notes          = "3,909 evaluable pomalidomide plasma concentration records. Baseline characteristics are Table 1; the per-study designs and PK sampling schedules are Supplementary Table 1. Plasma was assayed by LC-MS/MS with a lower limit of quantification of 0.25 ng/mL. The final model characterised concentrations spanning 1.0-179 ng/mL. NONMEM 7.2, FOCEI, on log-transformed concentrations; stability was confirmed by a 500-replicate nonparametric bootstrap, 483 (96.6%) of which minimised successfully."
+    race_ethnicity = c(
+      White = 78.0,
+      Black = 19.9,
+      Asian = 0.8,
+      `Native Hawaiian or other Pacific Islander` = 0.4,
+      Other = 0.8
+    ),
+    disease_state = "Pooled healthy normal participants (n = 96, studies CC-4047-CP-006 and CP-007) and patients with relapsed and refractory multiple myeloma (n = 144, studies CC-4047-MM-001, -002, -003 and -005). The multiple myeloma cohort spanned disease stages I to III and included the comorbid condition of renal impairment: 40 patients had CLcr 30-60 mL/min and 3 had CLcr below 30 mL/min.",
+    dose_range = "0.5-10 mg oral solid dosage form, once daily or once every alternate day. Healthy participants received 0.5-2 mg QD for 5 days or a single 3 or 4 mg dose; MM patients received 1-10 mg QD for up to 4 weeks, or 4 mg QD on days 1-21 of a 28-day cycle, or 1-4 mg QD on days 1-14 of a 21-day cycle (Supplementary Table 1).",
+    regions = "Not reported.",
+    notes = "3,909 evaluable pomalidomide plasma concentration records. Baseline characteristics are Table 1; the per-study designs and PK sampling schedules are Supplementary Table 1. Plasma was assayed by LC-MS/MS with a lower limit of quantification of 0.25 ng/mL. The final model characterised concentrations spanning 1.0-179 ng/mL. NONMEM 7.2, FOCEI, on log-transformed concentrations; stability was confirmed by a 500-replicate nonparametric bootstrap, 483 (96.6%) of which minimised successfully."
   )
 
   ini({

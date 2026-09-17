@@ -28,18 +28,18 @@ Ambery_2015_batefenterol_fev1 <- function() {
   vignette <- "Ambery_2015_batefenterol"
 
   units <- list(
-    time          = "day (placeholder; this is a day-29 landmark dose-response and carries no time dimension)",
-    dosing        = "ug/day (total daily batefenterol dose supplied as the DOSE_BATEFENTEROL_UGD covariate; the model consumes no rxode2 dose events)",
+    time = "day (placeholder; this is a day-29 landmark dose-response and carries no time dimension)",
+    dosing = "ug/day (total daily batefenterol dose supplied as the DOSE_BATEFENTEROL_UGD covariate; the model consumes no rxode2 dose events)",
     concentration = "L (day-29 trough FEV1, a lung volume rather than a drug concentration)"
   )
 
   covariateData <- list(
     DOSE_BATEFENTEROL_UGD = list(
-      description        = "Total daily inhaled batefenterol (GSK961081) dose",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Total daily inhaled batefenterol (GSK961081) dose",
+      units = "ug/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The dose regressor of the Emax term in Ambery 2015 Eq. 1 ('Total",
         "Dose'). Set to 0 for placebo. Ambery 2015 Fig. 3d and Fig. 4",
         "plot the model against total daily dose on the six observed",
@@ -52,14 +52,14 @@ Ambery_2015_batefenterol_fev1 <- function() {
         "and twice-daily arms were combined onto a single total-daily-dose",
         "axis."
       ),
-      source_name        = "Total Dose (Ambery 2015 Eq. 1; Fig. 3d and Fig. 4 x-axis)"
+      source_name = "Total Dose (Ambery 2015 Eq. 1; Fig. 3d and Fig. 4 x-axis)"
     ),
     FEV1_BL = list(
-      description        = "Patient's own day-1 baseline trough FEV1",
-      units              = "L",
-      type               = "continuous",
+      description = "Patient's own day-1 baseline trough FEV1",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The sole retained covariate of the PD model (Ambery 2015 Sect. 3.2,",
         "Eq. 2), entering as CON * (FEV1_BL / median FEV1_BL) multiplying the",
         "zero-dose intercept. Ambery 2015 Table 1 reports 1.31 +/- 0.46 L",
@@ -73,109 +73,109 @@ Ambery_2015_batefenterol_fev1 <- function() {
         "canonical because this model also OUTPUTS FEV1, and a covariate",
         "column cannot share a name with the output state it drives."
       ),
-      source_name        = "Baseline FEV1 on Day 1 (Ambery 2015 Eq. 2; Table 1)"
+      source_name = "Baseline FEV1 on Day 1 (Ambery 2015 Eq. 2; Table 1)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at screening",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at screening",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened by stepwise forward addition (p < 0.01) and backward",
         "elimination (p < 0.001) on the PD model (Ambery 2015 Sect. 2.4) and",
         "not retained; only baseline FEV1 on day 1 survived. Reported in",
         "Table 1 as 63 +/- 8.2 years for the n = 347 PD analysis set."
       ),
-      source_name        = "Age (years)"
+      source_name = "Age (years)"
     ),
     WT = list(
-      description        = "Body weight at screening",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at screening",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on the PD model and not retained (Ambery 2015 Sect. 2.4).",
         "Reported in Table 1 as 76 +/- 14 kg for the n = 347 PD analysis set."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     HT = list(
-      description        = "Height at screening",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height at screening",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on the PD model and not retained (Ambery 2015 Sect. 2.4).",
         "Reported in Table 1 as 171 +/- 8.5 cm for the n = 347 PD analysis",
         "set."
       ),
-      source_name        = "Height (cm)"
+      source_name = "Height (cm)"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Screened on the PD model and not retained (Ambery 2015 Sect. 2.4).",
         "Table 1 reports 65% male, i.e. 35% female, for the n = 347 PD",
         "analysis set."
       ),
-      source_name        = "Male (%)"
+      source_name = "Male (%)"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former smoker",
-      notes              = paste(
+      notes = paste(
         "Screened on the PD model and not retained (Ambery 2015 Sect. 2.4).",
         "Table 1 reports 49% current smokers for the n = 347 PD analysis set."
       ),
-      source_name        = "Current smoker (%)"
+      source_name = "Current smoker (%)"
     ),
     CONMED_ICS = list(
-      description        = "Concurrent inhaled-corticosteroid use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent inhaled-corticosteroid use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concurrent ICS",
-      notes              = paste(
+      notes = paste(
         "Screened on the PD model and not retained (Ambery 2015 Sect. 2.4).",
         "Table 1 reports 58% concurrent ICS use for the n = 347 PD analysis",
         "set; patients on a stable inhaled-corticosteroid dose were eligible",
         "for enrollment (Sect. 2.2)."
       ),
-      source_name        = "Concurrent ICS use (%)"
+      source_name = "Concurrent ICS use (%)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 347L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 347L,
+    n_studies = 1L,
     n_observations = 347L,
-    age_mean_sd    = "63 +/- 8.2 years",
+    age_mean_sd = "63 +/- 8.2 years",
     weight_mean_sd = "76 +/- 14 kg",
     height_mean_sd = "171 +/- 8.5 cm",
     sex_female_pct = 35,
-    disease_state  = paste(
+    disease_state = paste(
       "Moderate-to-severe stable COPD: post-bronchodilator FEV1/FVC below",
       "70% and FEV1 30-70% of predicted by NHANES III normative values;",
       "current or former smokers aged 40 years or above with at least a",
       "10 pack-year history; diagnosed asthma excluded. Baseline trough",
       "FEV1 on day 1 was 1.31 +/- 0.46 L"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "GSK961081 DISKUS 100, 400 and 800 ug once daily and 100, 200 and",
       "400 ug twice daily for 4 weeks, plus placebo; total daily doses of",
       "0, 100, 200, 400 and 800 ug/day"
     ),
-    regimens       = "Inhaled dry powder (DISKUS), once or twice daily for 28 days",
-    regions        = "Multicenter international (GSK MAB115032 / NCT01319019)",
-    notes          = paste(
+    regimens = "Inhaled dry powder (DISKUS), once or twice daily for 28 days",
+    regions = "Multicenter international (GSK MAB115032 / NCT01319019)",
+    notes = paste(
       "One trough-FEV1 observation per patient: 347 day-29 trough FEV1",
       "values from 347 patients (Ambery 2015 Sect. 3.2). Day-29 trough FEV1",
       "was defined as the mean of the 11 h and 12 h measurements after the",

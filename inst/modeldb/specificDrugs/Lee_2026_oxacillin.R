@@ -38,11 +38,11 @@ Lee_2026_oxacillin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 3.29 kg, range 0.605-7.025 kg (Supplemental Table S2, column ",
         "'Current weight (kg)'). The published equations normalise weight to 3.4 kg, the ",
         "weight of the 'typical infant 36 days postnatal age and weighing 3.4 kg' named in ",
@@ -50,14 +50,14 @@ Lee_2026_oxacillin <- function() {
         "exponent 0.75 and central volume is linear in weight (exponent 1). Weight was ",
         "carried into the model before any other covariate was screened."
       ),
-      source_name        = "WT_Kg"
+      source_name = "WT_Kg"
     ),
     PNA = list(
-      description        = "Postnatal (chronological) age since birth",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal (chronological) age since birth",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Lee 2026 reports postnatal age in DAYS (cohort median 32 days, IQR 12-46, Table ",
         "1; raw range 4-82 days in Supplemental Table S2) and normalises the clearance ",
         "covariate to 36 days. The canonical PNA column carries MONTHS ",
@@ -68,7 +68,7 @@ Lee_2026_oxacillin <- function() {
         "time-fixed at enrolment in the source analysis, whose PK sampling spans at most ",
         "96 h."
       ),
-      source_name        = "PNA_days"
+      source_name = "PNA_days"
     )
   )
 
@@ -79,72 +79,72 @@ Lee_2026_oxacillin <- function() {
   # the OFV drop failed the 3.84 threshold and/or that the bootstrap CI spanned no effect.
   covariatesDataExcluded <- list(
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 38 weeks (IQR 30-39), Lee 2026 Table 1. Used to define the four ",
         "enrolment cohorts (<32 vs >=32 weeks) but not retained as a model covariate. The ",
         "Discussion is explicit about why: only one premature neonate under 14 days of age ",
         "could be enrolled (Table 1, Cohort 4, n = 1), 'thus, we had a limited ability to ",
         "assess the impact of GA at birth'."
       ),
-      source_name        = "GA (weeks)"
+      source_name = "GA (weeks)"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Screened and not retained. Lee 2026 Discussion: 'postmenstrual age was also not ",
         "included in the final model as it is driven by the PNA component of postmenstrual ",
         "age' -- i.e. it was collinear with the retained PNA term. Note that the canonical ",
         "PAGE column carries months; this entry records the source's weeks convention only ",
         "because the covariate is documentation, never referenced in model()."
       ),
-      source_name        = "postmenstrual age"
+      source_name = "postmenstrual age"
     ),
     HT = list(
-      description        = "Body length (recumbent height)",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body length (recumbent height)",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Raw values 32-56.5 cm (Supplemental Table S2, column 'Length (cm)'). Screened as ",
         "'height (cm)' in Lee 2026 Materials and methods and not retained."
       ),
-      source_name        = "Length (cm)"
+      source_name = "Length (cm)"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in Lee 2026 Materials and methods and not retained; no derivation formula is given.",
-      source_name        = "body surface area"
+      notes = "Screened in Lee 2026 Materials and methods and not retained; no derivation formula is given.",
+      source_name = "body surface area"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 3.2 g/dL (IQR 3.0-3.6), Lee 2026 Table 1. Note the unit: the ",
         "canonical ALB column is g/L, and this entry preserves the source's US convention ",
         "because the covariate is documentation only. Screened and not retained. The ",
         "Conclusion flags albumin as a plausible driver of the unmeasured protein binding ",
         "rather than of clearance."
       ),
-      source_name        = "Serum albumin (g/dL)"
+      source_name = "Serum albumin (g/dL)"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Cohort median 0.3 mg/dL (IQR 0.2-0.36), Lee 2026 Table 1. Screened and not ",
         "retained. The Discussion gives three reasons, all about the covariate's ",
         "resolution rather than its biology: values were tightly distributed in infants ",
@@ -154,40 +154,40 @@ Lee_2026_oxacillin <- function() {
         "infants 'may partially reflect maternal creatinine rather than neonatal ",
         "clearance'."
       ),
-      source_name        = "Serum creatinine (mg/dL)"
+      source_name = "Serum creatinine (mg/dL)"
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as 'baseline serum transaminases' in Lee 2026 Materials and methods and not retained.",
-      source_name        = "Baseline AST"
+      notes = "Screened as 'baseline serum transaminases' in Lee 2026 Materials and methods and not retained.",
+      source_name = "Baseline AST"
     ),
     ALT = list(
-      description        = "Baseline alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as 'baseline serum transaminases' in Lee 2026 Materials and methods and not retained.",
-      source_name        = "Baseline ALT"
+      notes = "Screened as 'baseline serum transaminases' in Lee 2026 Materials and methods and not retained.",
+      source_name = "Baseline ALT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
     n_observations = 79L,
-    age_range      = "4-82 days postnatal (inclusion criteria >3 to <=90 days)",
-    age_median     = "32 days postnatal (IQR 12-46)",
-    ga_range       = "23.9-40.3 weeks gestational age at birth",
-    ga_median      = "38 weeks (IQR 30-39)",
-    weight_range   = "0.605-7.025 kg",
-    weight_median  = "3.29 kg",
+    age_range = "4-82 days postnatal (inclusion criteria >3 to <=90 days)",
+    age_median = "32 days postnatal (IQR 12-46)",
+    ga_range = "23.9-40.3 weeks gestational age at birth",
+    ga_median = "38 weeks (IQR 30-39)",
+    weight_range = "0.605-7.025 kg",
+    weight_median = "3.29 kg",
     sex_female_pct = 27,
     race_ethnicity = c(Hispanic = 73, White = 14, Black = 5, `Hispanic/Black` = 5, `Hispanic/White` = 5),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Hospitalized neonates and young infants receiving oxacillin as standard of care: ",
       "11 empiric therapy for suspected infection, 9 confirmed methicillin-susceptible ",
       "Staphylococcus aureus infection (osteomyelitis n = 1, pneumonia n = 3, bacteraemia ",
@@ -198,12 +198,12 @@ Lee_2026_oxacillin <- function() {
       "and ECMO were exclusion criteria, so the model should not be extrapolated to those ",
       "states."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "25 mg/kg intravenous loading dose over 30 min, immediately followed by a continuous ",
       "intravenous infusion of 160 mg/kg/day (21 of 22 infants) or 120 mg/kg/day (1 infant ",
       "in Cohort 4: gestational age <32 weeks and postnatal age <14 days)"
     ),
-    sampling       = paste0(
+    sampling = paste0(
       "Convenience sampling, maximum five samples per infant (minimum 25 uL each): a ",
       "baseline sample before the loading dose and then 30-120 min, 8-16 h and 16-96 h ",
       "after the start of the continuous infusion, plus one within 1 h after the end of ",
@@ -215,8 +215,8 @@ Lee_2026_oxacillin <- function() {
       "between-day CV <10%. One cerebrospinal-fluid concentration was collected and was ",
       "NOT included in the final model."
     ),
-    regions        = "United States (single centre, Children's Hospital of Orange County, California)",
-    notes          = paste0(
+    regions = "United States (single centre, Children's Hospital of Orange County, California)",
+    notes = paste0(
       "Prospective, phase 1, open-label, single-centre study. Demographics are Lee 2026 ",
       "Table 1; per-patient raw values are Supplemental Table S2. Enrolment was stratified ",
       "into four cohorts by gestational age (<32 vs >=32 weeks) and postnatal age (<14 vs ",

@@ -43,17 +43,18 @@ Ooi_2026_elafibranor_alptb <- function() {
   # TIME in Supplementary Datafile S6 $INPUT), matching the turnover
   # half-lives reported in days in Table 2. There are no dose records.
   units <- list(
-    time = "day", dosing = "none (exposure enters as a static covariate)",
+    time = "day",
+    dosing = "none (exposure enters as a static covariate)",
     concentration = "U/L (ALP); umol/L (total bilirubin)"
   )
 
   covariateData <- list(
     AUC_ELA = list(
-      description        = "Steady-state dosing-interval AUC of elafibranor",
-      units              = "umol*h/L",
-      type               = "continuous",
+      description = "Steady-state dosing-interval AUC of elafibranor",
+      units = "umol*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Per-subject, time-fixed. Supplementary Datafile S6 $PK computes it ",
         "as AUCSSP = F * dose_mg / CL * 1e6 / 384.49 with CL in mL/h, i.e. ",
         "the individual relative bioavailability times the milligram dose ",
@@ -63,14 +64,14 @@ Ooi_2026_elafibranor_alptb <- function() {
         "AUC sum was 32.3 umol*h/L on 80 mg/day and 39.3 umol*h/L on ",
         "120 mg/day (Figure 5 legend)."
       ),
-      source_name        = "AUCSSP"
+      source_name = "AUCSSP"
     ),
     AUC_GFT1007 = list(
-      description        = "Steady-state dosing-interval AUC of GFT1007, the active metabolite of elafibranor",
-      units              = "umol*h/L",
-      type               = "continuous",
+      description = "Steady-state dosing-interval AUC of GFT1007, the active metabolite of elafibranor",
+      units = "umol*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Per-subject, time-fixed. Supplementary Datafile S6 $PK computes it ",
         "as AUCSSM = F * dose_mg / CL * 1e6 / 386.51, i.e. the same form as ",
         "AUC_ELA but converted with the GFT1007 molecular weight ",
@@ -79,28 +80,28 @@ Ooi_2026_elafibranor_alptb <- function() {
         "to be equipotent (Methods 2.3.2). Set to 0 for placebo. GFT1007 ",
         "contributes about five sixths of the sum at 80 mg/day."
       ),
-      source_name        = "AUCSSM"
+      source_name = "AUCSSM"
     ),
     HEPIMP = list(
-      description        = "Any NCI hepatic impairment at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any NCI hepatic impairment at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NCI hepatic impairment score 0, normal hepatic function)",
-      notes              = paste0(
+      notes = paste0(
         "Supplementary Datafile S6 $PK codes the effect as ",
         "IF(NCIHISN.EQ.0) 1 else (1 + THETA), i.e. any score above 0 - mild ",
         "or worse - shares one coefficient, which is exactly the canonical ",
         "HEPIMP dichotomy. In the PKPD analysis set 37.4% had score 0, ",
         "62.1% score 1 and 0.5% score 2 (Table S2), so HEPIMP = 1 for 62.6%."
       ),
-      source_name        = "NCIHISN"
+      source_name = "NCIHISN"
     ),
     LSM = list(
-      description        = "Baseline liver stiffness measured by transient elastography",
-      units              = "kPa",
-      type               = "continuous",
+      description = "Baseline liver stiffness measured by transient elastography",
+      units = "kPa",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power model normalised to 8.1 kPa on the baseline total-bilirubin ",
         "typical value (Supplementary Datafile S6 $PK, ",
         "EBTBILLIVSTBL = (LIVSTBL/8.1)**THETA(12); 8.1 kPa is also the ",
@@ -110,18 +111,22 @@ Ooi_2026_elafibranor_alptb <- function() {
         "measurement is missing, which is reproduced by supplying ",
         "LSM = 8.1 for such subjects."
       ),
-      source_name        = "LIVSTBL"
+      source_name = "LIVSTBL"
     )
   )
 
   compartmentData <- list(
     alp = list(
-      analyte = "alkaline phosphatase", units = "U/L",
-      specimen = "serum", verified = TRUE
+      analyte = "alkaline phosphatase",
+      units = "U/L",
+      specimen = "serum",
+      verified = TRUE
     ),
     tbili = list(
-      analyte = "total bilirubin", units = "umol/L",
-      specimen = "serum", verified = TRUE
+      analyte = "total bilirubin",
+      units = "umol/L",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
@@ -135,27 +140,32 @@ Ooi_2026_elafibranor_alptb <- function() {
   # The logit-scale Emax random effect and the random effects on the
   # proportional residual-error magnitudes.
   paper_specific_etas <- c(
-    "etalogitemax_alp", "etapropSd_alp", "etapropSd_tbili"
+    "etalogitemax_alp",
+    "etapropSd_alp",
+    "etapropSd_tbili"
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 206L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 206L,
+    n_studies = 2L,
     n_observations = 3585L,
-    age_range      = "not reported; mean 57.0 years (SD 8.6)",
-    age_median     = "mean 57.0 years (SD 8.6) (Table S2)",
+    age_range = "not reported; mean 57.0 years (SD 8.6)",
+    age_median = "mean 57.0 years (SD 8.6) (Table S2)",
     sex_female_pct = 95.6,
     race_ethnicity = c(
-      White = 92.7, Asian = 1.9, `Black or African American` = 1.5,
+      White = 92.7,
+      Asian = 1.9,
+      `Black or African American` = 1.5,
       `American Indian or Alaska Native` = 0.5,
-      `Multiple or other` = 2.4, `Unknown or not reported` = 1.0
+      `Multiple or other` = 2.4,
+      `Unknown or not reported` = 1.0
     ),
-    disease_state  = "primary biliary cholangitis; 95.6% on prior ursodeoxycholic acid and 6.8% with prior obeticholic acid",
-    dose_range     = "placebo, elafibranor 80 mg/day or 120 mg/day for up to 12 weeks (phase II) or 52 weeks (phase III)",
-    regions        = "not reported",
+    disease_state = "primary biliary cholangitis; 95.6% on prior ursodeoxycholic acid and 6.8% with prior obeticholic acid",
+    dose_range = "placebo, elafibranor 80 mg/day or 120 mg/day for up to 12 weeks (phase II) or 52 weeks (phase III)",
+    regions = "not reported",
     hepatic_function = "NCI hepatic impairment score 0 in 37.4%, 1 in 62.1%, 2 in 0.5%; mean baseline liver stiffness 10.2 kPa (SD 8.2), missing in 25.7%",
-    notes          = paste0(
+    notes = paste0(
       "Baseline ALP 308 U/L (SD 122) and baseline total bilirubin ",
       "9.79 umol/L (SD 5.1) (Table S2). The ALP data set held 206 patients ",
       "and 1892 observations, the total-bilirubin data set 205 patients and ",

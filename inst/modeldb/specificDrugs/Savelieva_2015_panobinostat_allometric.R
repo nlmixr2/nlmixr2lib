@@ -5,60 +5,60 @@ Savelieva_2015_panobinostat_allometric <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "panobinostat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "panobinostat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "panobinostat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "panobinostat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "panobinostat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "panobinostat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on every clearance and every volume, centered on 70 kg (Savelieva 2015 Supplementary Table S3a: '(WT0/70)**THETA(10)' on CL, '(WT0/70)**THETA(11)' on V2, '(WT0/70)**0.75' on Q3 and Q4, '(WT0/70)' on V3 and V4). Note that 70 kg is a standard reference weight and NOT the cohort median, which is 76.4 kg (range 41-196.4 kg); Table 3 of the paper accordingly tabulates its typical-value predictions at 76.4 kg rather than at 70 kg. The exponents are held constant at the canonical allometric values, 0.75 for clearances and 1 for volumes: the Results state that 'all clearances were assumed proportional to weight^0.75 and all volumes to weight^1', and Supplementary Table S3b reports Thetas 10 and 11 as exactly 0.750 and 1.000 with no standard error, no percent standard error and no bootstrap interval. Weight replaces the body surface area used by the first final model.",
-      source_name        = "WT0"
+      notes = "Allometric scaling on every clearance and every volume, centered on 70 kg (Savelieva 2015 Supplementary Table S3a: '(WT0/70)**THETA(10)' on CL, '(WT0/70)**THETA(11)' on V2, '(WT0/70)**0.75' on Q3 and Q4, '(WT0/70)' on V3 and V4). Note that 70 kg is a standard reference weight and NOT the cohort median, which is 76.4 kg (range 41-196.4 kg); Table 3 of the paper accordingly tabulates its typical-value predictions at 76.4 kg rather than at 70 kg. The exponents are held constant at the canonical allometric values, 0.75 for clearances and 1 for volumes: the Results state that 'all clearances were assumed proportional to weight^0.75 and all volumes to weight^1', and Supplementary Table S3b reports Thetas 10 and 11 as exactly 0.750 and 1.000 with no standard error, no percent standard error and no bootstrap interval. Weight replaces the body surface area used by the first final model.",
+      source_name = "WT0"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects centered on 61 years, the population median, applied to ALL six disposition parameters in this model - CL, V2, Q3, V3, Q4 and V4 (Savelieva 2015 Supplementary Table S3a). Extending the age effect to the intercompartmental clearances and peripheral volumes is exactly what distinguishes model 4 from model 3 in Table 2. Observed range 16-88 years, quartiles 51 and 70 years. The V2 exponent is -0.005 with a percent standard error of 213 and a bootstrap interval spanning zero, i.e. indistinguishable from no effect; it is retained here because the source retained it.",
-      source_name        = "AGE0"
+      notes = "Power effects centered on 61 years, the population median, applied to ALL six disposition parameters in this model - CL, V2, Q3, V3, Q4 and V4 (Savelieva 2015 Supplementary Table S3a). Extending the age effect to the intercompartmental clearances and peripheral volumes is exactly what distinguishes model 4 from model 3 in Table 2. Observed range 16-88 years, quartiles 51 and 70 years. The V2 exponent is -0.005 with a percent standard error of 213 and a bootstrap interval spanning zero, i.e. indistinguishable from no effect; it is retained here because the source retained it.",
+      source_name = "AGE0"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian, when RACE_BLACK and RACE_OTHER are also 0)",
-      notes              = "Multiplicative factor applied as THETA^indicator on CL and on V2 only, not on the peripheral parameters (Savelieva 2015 Supplementary Table S3a: 'IF (RACE .EQ. 3) AS=1' then 'THETA(14)**(AS)'). The canonical 1 = Asian orientation matches the source coding. The three race indicators are mutually exclusive; all three equal to 0 selects the Caucasian reference. 27 of the 581 patients were Asian (Table 1).",
-      source_name        = "AS (derived from RACE == 3)"
+      notes = "Multiplicative factor applied as THETA^indicator on CL and on V2 only, not on the peripheral parameters (Savelieva 2015 Supplementary Table S3a: 'IF (RACE .EQ. 3) AS=1' then 'THETA(14)**(AS)'). The canonical 1 = Asian orientation matches the source coding. The three race indicators are mutually exclusive; all three equal to 0 selects the Caucasian reference. 27 of the 581 patients were Asian (Table 1).",
+      source_name = "AS (derived from RACE == 3)"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian, when RACE_ASIAN and RACE_OTHER are also 0)",
-      notes              = "Multiplicative factor applied as THETA^indicator on CL and on V2 (Savelieva 2015 Supplementary Table S3a: 'IF (RACE .EQ. 2) BL=1' then 'THETA(16)**(BL)'). 34 of the 581 patients were Black (Table 1). The V2 factor of 1.817 is markedly larger than the 1.241 of the first final model and is imprecise (percent standard error 37), which is one of several signs that the race effects on V2 are less well determined in this parameterization.",
-      source_name        = "BL (derived from RACE == 2)"
+      notes = "Multiplicative factor applied as THETA^indicator on CL and on V2 (Savelieva 2015 Supplementary Table S3a: 'IF (RACE .EQ. 2) BL=1' then 'THETA(16)**(BL)'). 34 of the 581 patients were Black (Table 1). The V2 factor of 1.817 is markedly larger than the 1.241 of the first final model and is imprecise (percent standard error 37), which is one of several signs that the race effects on V2 are less well determined in this parameterization.",
+      source_name = "BL (derived from RACE == 2)"
     ),
     RACE_OTHER = list(
-      description        = "Race category 'other' indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race category 'other' indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian, when RACE_ASIAN and RACE_BLACK are also 0)",
-      notes              = "Multiplicative factor applied as THETA^indicator on CL and on V2 (Savelieva 2015 Supplementary Table S3a: 'IF (RACE .EQ. 88) OT=1' then 'THETA(18)**(OT)'). 24 of the 581 patients fell in this category (Table 1). As in the first final model this group has the lowest clearance factor, 0.665, and correspondingly the highest typical exposure of the four race categories in Table 3.",
-      source_name        = "OT (derived from RACE == 88)"
+      notes = "Multiplicative factor applied as THETA^indicator on CL and on V2 (Savelieva 2015 Supplementary Table S3a: 'IF (RACE .EQ. 88) OT=1' then 'THETA(18)**(OT)'). 24 of the 581 patients fell in this category (Table 1). As in the first final model this group has the lowest clearance factor, 0.665, and correspondingly the highest typical exposure of the four race categories in Table 3.",
+      source_name = "OT (derived from RACE == 88)"
     ),
     FORM_PANO_CSF = list(
-      description        = "Panobinostat clinical service formulation versus final market image indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Panobinostat clinical service formulation versus final market image indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (final market image, FMI, the formulation intended for commercialization)",
-      notes              = "Selects BOTH the absorption rate constant and the absorption lag time between two estimated values each (Savelieva 2015 Supplementary Table S3a: 'KA=THETA(7)*(1-FORM)+THETA(8)*FORM' and 'ALAG1=THETA(20)*(1-FORM)+THETA(21)*FORM'). 1 = clinical service formulation (CSF), used in studies B2101, B2102 and B1101; 0 = final market image (FMI), used in every other oral study. 106 of the 494 orally dosed patients received the CSF. The formulation-dependent lag is the single addition that takes model 1 to model 2 in Table 2 and is credited in the Results with the better absorption-phase fit visible in the predictive checks. Formulation does not affect bioavailability, which uses one THETA(9) for both formulations. This covariate is irrelevant to intravenous dosing, which bypasses the depot entirely.",
-      source_name        = "FORM"
+      notes = "Selects BOTH the absorption rate constant and the absorption lag time between two estimated values each (Savelieva 2015 Supplementary Table S3a: 'KA=THETA(7)*(1-FORM)+THETA(8)*FORM' and 'ALAG1=THETA(20)*(1-FORM)+THETA(21)*FORM'). 1 = clinical service formulation (CSF), used in studies B2101, B2102 and B1101; 0 = final market image (FMI), used in every other oral study. 106 of the 494 orally dosed patients received the CSF. The formulation-dependent lag is the single addition that takes model 1 to model 2 in Table 2 and is credited in the Results with the better absorption-phase fit visible in the predictive checks. Formulation does not affect bioavailability, which uses one THETA(9) for both formulations. This covariate is irrelevant to intravenous dosing, which bypasses the depot entirely.",
+      source_name = "FORM"
     )
   )
 
@@ -69,86 +69,86 @@ Savelieva_2015_panobinostat_allometric <- function() {
   covariatesDataExcluded <- list(
     BSA = list(
       description = "Baseline body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Explicitly REMOVED when this second final model was built: the Results state that 'BSA was removed from the model, and all clearances were assumed proportional to weight^0.75 and all volumes to weight^1'. BSA IS the body-size covariate of the first final model - see Savelieva_2015_panobinostat. Median 1.9 m^2, quartiles 1.8 and 2.1 m^2; computed by the authors with the Gehan-George formula BSA = 234.94 * (Weight^0.515 * Height^0.422) / 10000."
+      units = "m^2",
+      type = "continuous",
+      notes = "Explicitly REMOVED when this second final model was built: the Results state that 'BSA was removed from the model, and all clearances were assumed proportional to weight^0.75 and all volumes to weight^1'. BSA IS the body-size covariate of the first final model - see Savelieva_2015_panobinostat. Median 1.9 m^2, quartiles 1.8 and 2.1 m^2; computed by the authors with the Gehan-George formula BSA = 234.94 * (Weight^0.515 * Height^0.422) / 10000."
     ),
     HT = list(
       description = "Baseline height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Collected at screening and used only as an input to the Gehan-George BSA formula, never entered as a covariate in its own right; median 170 cm, range 143-198 cm. Missing for 35 patients, who were assigned the population median."
+      units = "cm",
+      type = "continuous",
+      notes = "Collected at screening and used only as an input to the Gehan-George BSA formula, never entered as a covariate in its own right; median 170 cm, range 143-198 cm. Missing for 35 patients, who were assigned the population median."
     ),
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a body-size covariate on CL and V2 and not retained (Savelieva 2015 Methods, Analysis of the effects of covariates). Missing for 35 patients, who were assigned the population median."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a body-size covariate on CL and V2 and not retained (Savelieva 2015 Methods, Analysis of the effects of covariates). Missing for 35 patients, who were assigned the population median."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL and V2 and not retained; the paper reports that covariate analysis 'showed no impact on panobinostat clearance and volume by patients' sex'. 219 of 581 patients were female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL and V2 and not retained; the paper reports that covariate analysis 'showed no impact on panobinostat clearance and volume by patients' sex'. 219 of 581 patients were female (Table 1)."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "L/h",
-      type        = "continuous",
-      notes       = "Screened on CL and V2 and not retained; kidney function had no statistically significant effect. Computed by the authors with the Cockcroft-Gault formula from serum creatinine in micromoles per litre. Missing for 13 patients, who were assigned the population median."
+      units = "L/h",
+      type = "continuous",
+      notes = "Screened on CL and V2 and not retained; kidney function had no statistically significant effect. Computed by the authors with the Cockcroft-Gault formula from serum creatinine in micromoles per litre. Missing for 13 patients, who were assigned the population median."
     ),
     HEPIMP_MILD = list(
       description = "Mild hepatic impairment indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part of the four-level liver-status covariate (normal 483, mild 91, moderate 6, severe 1; Table 1). Screened on CL and V2 and not retained. The Discussion attributes the null result to trial eligibility criteria that generally required baseline bilirubin at or below 1.5x ULN and AST/ALT at or below 2x ULN, and notes that dedicated organ-impairment studies DID find a significant exposure increase."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part of the four-level liver-status covariate (normal 483, mild 91, moderate 6, severe 1; Table 1). Screened on CL and V2 and not retained. The Discussion attributes the null result to trial eligibility criteria that generally required baseline bilirubin at or below 1.5x ULN and AST/ALT at or below 2x ULN, and notes that dedicated organ-impairment studies DID find a significant exposure increase."
     ),
     HEPIMP_MOD = list(
       description = "Moderate hepatic impairment indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part of the same four-level liver-status covariate; only 6 of 581 patients. Not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part of the same four-level liver-status covariate; only 6 of 581 patients. Not retained."
     ),
     HEPIMP_SEV = list(
       description = "Severe hepatic impairment indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part of the same four-level liver-status covariate; a single patient of 581. Not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part of the same four-level liver-status covariate; a single patient of 581. Not retained."
     ),
     TUMTP_OTHER = list(
       description = "Tumor-type indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tumor type was screened on CL and V2 across the pooled hematologic and solid-tumor population and not retained. Placeholder entry standing for the paper's tumor-type covariate as a whole; the source does not publish the individual category codes it tested."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tumor type was screened on CL and V2 across the pooled hematologic and solid-tumor population and not retained. Placeholder entry standing for the paper's tumor-type covariate as a whole; the source does not publish the individual category codes it tested."
     ),
     CONMED_AZOLE = list(
       description = "Strong CYP3A4/5 inhibitor comedication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "One of five comedication groups screened on CL and not retained: drugs known to prolong QT, CYP2D6 substrates, strong CYP3A4/5 inhibitors, CYP3A4 inducers, and sensitive CYP3A4 substrates. Placeholder entry standing for that comedication screen. The Discussion attributes the null result to protocol guidance that recommended avoiding strong CYP3A4 inhibitors, and notes that a dedicated ketoconazole interaction study DID show a significant exposure increase."
+      units = "(binary)",
+      type = "binary",
+      notes = "One of five comedication groups screened on CL and not retained: drugs known to prolong QT, CYP2D6 substrates, strong CYP3A4/5 inhibitors, CYP3A4 inducers, and sensitive CYP3A4 substrates. Placeholder entry standing for that comedication screen. The Discussion attributes the null result to protocol guidance that recommended avoiding strong CYP3A4 inhibitors, and notes that a dedicated ketoconazole interaction study DID show a significant exposure increase."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 581,
-    n_studies       = 14,
-    n_observations  = 7834,
-    age_range       = "16-88 years",
-    age_median      = "61 years (quartiles 51 and 70 years)",
-    weight_range    = "41-196.4 kg",
-    weight_median   = "76.4 kg",
-    height_range    = "143-198 cm",
-    height_median   = "170 cm",
-    bsa_median      = "1.9 m^2 (quartiles 1.8 and 2.1 m^2)",
-    sex_female_pct  = 37.7,
-    race_ethnicity  = c(Caucasian = 85.4, Black = 5.9, Asian = 4.6, Other = 4.1),
-    disease_state   = "Advanced hematologic and solid tumors, including cutaneous T-cell lymphoma, chronic myeloid leukemia, multiple myeloma, Hodgkin lymphoma, non-Hodgkin lymphoma and advanced solid tumors",
+    species = "human",
+    n_subjects = 581,
+    n_studies = 14,
+    n_observations = 7834,
+    age_range = "16-88 years",
+    age_median = "61 years (quartiles 51 and 70 years)",
+    weight_range = "41-196.4 kg",
+    weight_median = "76.4 kg",
+    height_range = "143-198 cm",
+    height_median = "170 cm",
+    bsa_median = "1.9 m^2 (quartiles 1.8 and 2.1 m^2)",
+    sex_female_pct = 37.7,
+    race_ethnicity = c(Caucasian = 85.4, Black = 5.9, Asian = 4.6, Other = 4.1),
+    disease_state = "Advanced hematologic and solid tumors, including cutaneous T-cell lymphoma, chronic myeloid leukemia, multiple myeloma, Hodgkin lymphoma, non-Hodgkin lymphoma and advanced solid tumors",
     hepatic_function = "Liver status graded on total bilirubin and AST against the upper limit of normal: normal 483, mild 91, moderate 6, severe 1 (Table 1)",
-    dose_range      = "Intravenous 1.2-20 mg/m^2 daily under various intermittent regimens (studies A2101 and A2102, 87 patients); oral 10-80 mg/day in the phase 1 dose-escalation studies and 20-45 mg in the phase 2 and clinical pharmacology studies, most commonly 20 mg on days 1, 3 and 5 of each week (494 patients)",
-    formulation     = "Clinical service formulation (CSF) in oral studies B2101, B2102 and B1101 (106 patients); final market image (FMI) in every other oral study (388 patients)",
-    regions         = "International; study B1101 enrolled 13 Japanese patients and B1201 was conducted in Japan",
-    notes           = "Same pooled data set as Savelieva_2015_panobinostat: 14 open-label phase 1 and phase 2 studies listed in Supplementary Table S1. This model is row 4 of the Table 2 model-development sequence and was built in response to reviewer suggestions. Its objective function is 32591 against 33758 for the first final model, and both AIC and BIC improve, but the paper records that this model did not satisfy NONMEM's default convergence criterion, so its standard errors should be read with that caveat."
+    dose_range = "Intravenous 1.2-20 mg/m^2 daily under various intermittent regimens (studies A2101 and A2102, 87 patients); oral 10-80 mg/day in the phase 1 dose-escalation studies and 20-45 mg in the phase 2 and clinical pharmacology studies, most commonly 20 mg on days 1, 3 and 5 of each week (494 patients)",
+    formulation = "Clinical service formulation (CSF) in oral studies B2101, B2102 and B1101 (106 patients); final market image (FMI) in every other oral study (388 patients)",
+    regions = "International; study B1101 enrolled 13 Japanese patients and B1201 was conducted in Japan",
+    notes = "Same pooled data set as Savelieva_2015_panobinostat: 14 open-label phase 1 and phase 2 studies listed in Supplementary Table S1. This model is row 4 of the Table 2 model-development sequence and was built in response to reviewer suggestions. Its objective function is 32591 against 33758 for the first final model, and both AIC and BIC improve, but the paper records that this model did not satisfy NONMEM's default convergence criterion, so its standard errors should be read with that caveat."
   )
 
   ini({

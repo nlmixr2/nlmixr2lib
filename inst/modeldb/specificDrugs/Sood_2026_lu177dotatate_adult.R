@@ -110,8 +110,18 @@ Sood_2026_lu177dotatate_adult <- function() {
   )
 
   compartmentData <- list(
-    central = list(analyte = "[177Lu]Lu-DOTATATE peptide (mass)", units = "ug", specimen = "whole blood", verified = TRUE),
-    peripheral1 = list(analyte = "[177Lu]Lu-DOTATATE peptide (mass)", units = "ug", specimen = "whole blood", verified = FALSE)
+    central = list(
+      analyte = "[177Lu]Lu-DOTATATE peptide (mass)",
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    peripheral1 = list(
+      analyte = "[177Lu]Lu-DOTATATE peptide (mass)",
+      units = "ug",
+      specimen = "whole blood",
+      verified = FALSE
+    )
   )
 
   population <- list(

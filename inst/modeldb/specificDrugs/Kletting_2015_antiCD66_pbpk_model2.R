@@ -40,138 +40,478 @@ Kletting_2015_antiCD66_pbpk_model2 <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sets the number of CD66-expressing cells in the red marrow,",
         "N_cells,RM = 188e8 per kg * BW (S1 Text Table B), from which the liver,",
         "spleen and blood cell numbers and hence every bivalent enhancement factor",
         "alpha_i follow. Measured individually but not published per patient; the",
         "demonstration value is the 70 kg reference adult."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters only the red-marrow readout. The UlmDos height-corrected scaling",
         "factor from the L2-L4 lumbar-spine region of interest to the entire red",
         "marrow is K = (170 / HT) / 0.06665 (S1 Text Table A, used in Eq 20). It",
         "affects no state, only the abMarrowRoi observable. Not published per",
         "patient; the demonstration value is 170 cm, which makes K = 1 / 0.06665."
       ),
-      source_name        = "height"
+      source_name = "height"
     )
   )
 
   compartmentData <- list(
     ab_fa_plasma_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "serum", verified = TRUE),
-    ab_fa_plasma_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "serum", verified = TRUE),
+    ab_fa_plasma_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
     ab_fa_liver_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_fa_liver_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_fa_liver_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_fa_spleen_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_fa_spleen_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_fa_spleen_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_fa_marrow_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_fa_marrow_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_fa_marrow_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_fa_gi_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_fa_gi_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_fa_gi_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_fa_int_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_fa_int_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_fa_int_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_ha_plasma_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "serum", verified = TRUE),
-    ab_ha_plasma_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "serum", verified = TRUE),
+    ab_ha_plasma_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
     ab_ha_liver_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_ha_liver_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_ha_liver_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_ha_spleen_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_ha_spleen_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_ha_spleen_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_ha_marrow_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_ha_marrow_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_ha_marrow_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_ha_gi_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_ha_gi_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_ha_gi_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_ha_int_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_ha_int_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_ha_int_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_na_plasma_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "serum", verified = TRUE),
-    ab_na_plasma_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "serum", verified = TRUE),
+    ab_na_plasma_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
     ab_na_liver_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_na_liver_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_na_liver_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_na_spleen_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_na_spleen_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_na_spleen_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_na_marrow_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_na_marrow_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_na_marrow_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_na_gi_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_na_gi_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
+    ab_na_gi_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ab_na_int_unlab = list(analyte = "anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    ab_na_int_lab = list(analyte = "radiolabelled anti-CD66 antibody", units = "nmol", specimen = "tissue", verified = TRUE),
-    agbi_fa_plasma_unlab = list(analyte = "anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "serum", verified = TRUE),
-    agbi_fa_plasma_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "serum", verified = TRUE),
-    agbi_fa_liver_unlab = list(analyte = "anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "tissue", verified = TRUE),
-    agbi_fa_liver_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "tissue", verified = TRUE),
-    agbi_fa_spleen_unlab = list(analyte = "anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "tissue", verified = TRUE),
-    agbi_fa_spleen_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "tissue", verified = TRUE),
-    agbi_fa_marrow_unlab = list(analyte = "anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "tissue", verified = TRUE),
-    agbi_fa_marrow_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_fa_plasma_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "serum", verified = TRUE),
-    agmono_fa_plasma_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "serum", verified = TRUE),
-    agmono_fa_liver_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_fa_liver_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_fa_spleen_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_fa_spleen_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_fa_marrow_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_fa_marrow_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_ha_plasma_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "serum", verified = TRUE),
-    agmono_ha_plasma_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "serum", verified = TRUE),
-    agmono_ha_liver_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_ha_liver_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_ha_spleen_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_ha_spleen_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_ha_marrow_unlab = list(analyte = "anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    agmono_ha_marrow_lab = list(analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen", units = "nmol", specimen = "tissue", verified = TRUE),
-    ex_fa_unlab = list(analyte = "degraded anti-CD66 antibody, extravascular delay space", units = "nmol", specimen = "tissue", verified = TRUE),
-    metap_fa_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "serum", verified = TRUE),
-    metaex1_fa_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    metaex2_fa_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    ex_fa_lab = list(analyte = "radiolabelled degraded anti-CD66 antibody, extravascular delay space", units = "nmol", specimen = "tissue", verified = TRUE),
-    metap_fa_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "serum", verified = TRUE),
-    metaex1_fa_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    metaex2_fa_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    ex_ha_unlab = list(analyte = "degraded anti-CD66 antibody, extravascular delay space", units = "nmol", specimen = "tissue", verified = TRUE),
-    metap_ha_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "serum", verified = TRUE),
-    metaex1_ha_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    metaex2_ha_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    ex_ha_lab = list(analyte = "radiolabelled degraded anti-CD66 antibody, extravascular delay space", units = "nmol", specimen = "tissue", verified = TRUE),
-    metap_ha_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "serum", verified = TRUE),
-    metaex1_ha_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    metaex2_ha_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    ex_na_unlab = list(analyte = "degraded anti-CD66 antibody, extravascular delay space", units = "nmol", specimen = "tissue", verified = TRUE),
-    metap_na_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "serum", verified = TRUE),
-    metaex1_na_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    metaex2_na_unlab = list(analyte = "anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    ex_na_lab = list(analyte = "radiolabelled degraded anti-CD66 antibody, extravascular delay space", units = "nmol", specimen = "tissue", verified = TRUE),
-    metap_na_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "serum", verified = TRUE),
-    metaex1_na_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    metaex2_na_lab = list(analyte = "radiolabelled anti-CD66 antibody degradation product", units = "nmol", specimen = "tissue", verified = TRUE),
-    cleared_unlab = list(analyte = "antibody-derived material excreted from the body", units = "nmol", specimen = "not applicable", verified = TRUE),
-    cleared_lab = list(analyte = "radiolabelled antibody-derived material excreted from the body", units = "nmol", specimen = "not applicable", verified = TRUE)
+    ab_na_int_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agbi_fa_plasma_unlab = list(
+      analyte = "anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    agbi_fa_plasma_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    agbi_fa_liver_unlab = list(
+      analyte = "anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agbi_fa_liver_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agbi_fa_spleen_unlab = list(
+      analyte = "anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agbi_fa_spleen_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agbi_fa_marrow_unlab = list(
+      analyte = "anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agbi_fa_marrow_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to two CD66 antigens",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_fa_plasma_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    agmono_fa_plasma_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    agmono_fa_liver_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_fa_liver_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_fa_spleen_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_fa_spleen_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_fa_marrow_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_fa_marrow_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_ha_plasma_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    agmono_ha_plasma_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    agmono_ha_liver_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_ha_liver_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_ha_spleen_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_ha_spleen_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_ha_marrow_unlab = list(
+      analyte = "anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    agmono_ha_marrow_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody bound to one CD66 antigen",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ex_fa_unlab = list(
+      analyte = "degraded anti-CD66 antibody, extravascular delay space",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metap_fa_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    metaex1_fa_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metaex2_fa_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ex_fa_lab = list(
+      analyte = "radiolabelled degraded anti-CD66 antibody, extravascular delay space",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metap_fa_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    metaex1_fa_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metaex2_fa_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ex_ha_unlab = list(
+      analyte = "degraded anti-CD66 antibody, extravascular delay space",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metap_ha_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    metaex1_ha_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metaex2_ha_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ex_ha_lab = list(
+      analyte = "radiolabelled degraded anti-CD66 antibody, extravascular delay space",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metap_ha_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    metaex1_ha_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metaex2_ha_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ex_na_unlab = list(
+      analyte = "degraded anti-CD66 antibody, extravascular delay space",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metap_na_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    metaex1_na_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metaex2_na_unlab = list(
+      analyte = "anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ex_na_lab = list(
+      analyte = "radiolabelled degraded anti-CD66 antibody, extravascular delay space",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metap_na_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    metaex1_na_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    metaex2_na_lab = list(
+      analyte = "radiolabelled anti-CD66 antibody degradation product",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    cleared_unlab = list(
+      analyte = "antibody-derived material excreted from the body",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cleared_lab = list(
+      analyte = "radiolabelled antibody-derived material excreted from the body",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27,
-    n_studies      = 2,
-    disease_state  = "acute leukaemia (21 acute myeloid, 6 acute lymphoblastic); radioimmunotherapy to intensify conditioning before stem-cell transplantation",
-    dose_range     = paste(
+    species = "human",
+    n_subjects = 27,
+    n_studies = 2,
+    disease_state = "acute leukaemia (21 acute myeloid, 6 acute lymphoblastic); radioimmunotherapy to intensify conditioning before stem-cell transplantation",
+    dose_range = paste(
       "Pre-therapeutic imaging: 0.5 +/- 0.1 mg anti-CD66 antibody",
       "(1 mg = 6.7 nmol; 3.3 +/- 0.6 nmol in S1 Table) carrying a mean 111In",
       "activity of 130 +/- 16 MBq, intravenous bolus. Therapy: 1.3 +/- 0.5 mg",
       "(8.7 +/- 3.1 nmol) carrying 3.2 +/- 0.9 GBq of 90Y, intravenous bolus about",
       "eight days later."
     ),
-    regions        = "Germany (Ulm University)",
-    notes          = paste(
+    regions = "Germany (Ulm University)",
+    notes = paste(
       "Both study protocols were approved by the Ethics Committee of Ulm",
       "University. Age, sex, weight and height distributions are not reported.",
       "Each patient was fitted individually (27 separate fits, SAAM II 2.2)",
@@ -634,4 +974,3 @@ Kletting_2015_antiCD66_pbpk_model2 <- function() {
       metaex2_ha_unlab + metaex2_na_unlab + cleared_unlab
   })
 }
-

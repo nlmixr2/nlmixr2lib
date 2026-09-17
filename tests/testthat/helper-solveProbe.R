@@ -22,19 +22,56 @@
 # at all, which is insensitive to the exact value but very sensitive to a
 # zero in a denominator.  Nothing here may be 0.
 .probeUnitDefaults <- c(
-  "kg" = 70, "g" = 70000, "lb" = 154,
-  "kg/m^2" = 25, "cm" = 170, "m" = 1.7, "m^2" = 1.73,
-  "years" = 40, "year" = 40, "y" = 40, "months" = 480, "month" = 480,
-  "weeks" = 2080, "week" = 2080, "days" = 14600, "day" = 14600, "h" = 350000,
-  "mL/min" = 100, "mL/min/1.73 m^2" = 90, "L/h" = 6, "mL/h" = 6000,
-  "g/L" = 40, "g/dL" = 4, "mg/dL" = 1, "mg/L" = 10,
-  "umol/L" = 80, "mmol/L" = 5, "nmol/L" = 100, "nM" = 100, "uM" = 1,
-  "U/L" = 30, "IU/L" = 30, "U" = 30,
-  "ng/mL" = 10, "ug/mL" = 1, "pg/mL" = 100,
-  "mg" = 100, "ug" = 100, "g " = 1, "nmol" = 1, "umol" = 1, "mmol" = 1,
-  "%" = 50, "fraction" = 0.5,
-  "mg/day" = 100, "mg/kg" = 1, "mg/m^2" = 100,
-  "(count)" = 1, "(binary)" = 0, "(categorical)" = 0
+  "kg" = 70,
+  "g" = 70000,
+  "lb" = 154,
+  "kg/m^2" = 25,
+  "cm" = 170,
+  "m" = 1.7,
+  "m^2" = 1.73,
+  "years" = 40,
+  "year" = 40,
+  "y" = 40,
+  "months" = 480,
+  "month" = 480,
+  "weeks" = 2080,
+  "week" = 2080,
+  "days" = 14600,
+  "day" = 14600,
+  "h" = 350000,
+  "mL/min" = 100,
+  "mL/min/1.73 m^2" = 90,
+  "L/h" = 6,
+  "mL/h" = 6000,
+  "g/L" = 40,
+  "g/dL" = 4,
+  "mg/dL" = 1,
+  "mg/L" = 10,
+  "umol/L" = 80,
+  "mmol/L" = 5,
+  "nmol/L" = 100,
+  "nM" = 100,
+  "uM" = 1,
+  "U/L" = 30,
+  "IU/L" = 30,
+  "U" = 30,
+  "ng/mL" = 10,
+  "ug/mL" = 1,
+  "pg/mL" = 100,
+  "mg" = 100,
+  "ug" = 100,
+  "g " = 1,
+  "nmol" = 1,
+  "umol" = 1,
+  "mmol" = 1,
+  "%" = 50,
+  "fraction" = 0.5,
+  "mg/day" = 100,
+  "mg/kg" = 1,
+  "mg/m^2" = 100,
+  "(count)" = 1,
+  "(binary)" = 0,
+  "(categorical)" = 0
 )
 
 # Read the leading number out of a reference_category, which is written either
@@ -42,11 +79,19 @@
 # (`reference_category = "0 (male)"`).  Returns NA when there is no leading
 # number, which is the signal to fall through to the next rule.
 .probeLeadingNumber <- function(x) {
-  if (is.null(x) || length(x) != 1L) return(NA_real_)
-  if (is.numeric(x)) return(if (is.finite(x)) as.numeric(x) else NA_real_)
-  if (!is.character(x)) return(NA_real_)
+  if (is.null(x) || length(x) != 1L) {
+    return(NA_real_)
+  }
+  if (is.numeric(x)) {
+    return(if (is.finite(x)) as.numeric(x) else NA_real_)
+  }
+  if (!is.character(x)) {
+    return(NA_real_)
+  }
   m <- regmatches(x, regexpr("^\\s*[-+]?[0-9]*\\.?[0-9]+", x))
-  if (!length(m)) return(NA_real_)
+  if (!length(m)) {
+    return(NA_real_)
+  }
   suppressWarnings(as.numeric(m))
 }
 
@@ -56,18 +101,28 @@
 # so the author's own typical value is recoverable from the source rather than
 # guessed at.  Returns NA when no such constant appears.
 .probeNormalisingWalk <- function(e, covName, hit) {
-  if (is.finite(hit$value) || !is.call(e)) return(invisible(NULL))
-  if (length(e) == 3L &&
-      (identical(e[[1]], as.name("/")) || identical(e[[1]], as.name("-")) ||
-       identical(e[[1]], as.name("+")))) {
+  if (is.finite(hit$value) || !is.call(e)) {
+    return(invisible(NULL))
+  }
+  if (
+    length(e) == 3L &&
+      (identical(e[[1]], as.name("/")) || identical(e[[1]], as.name("-")) || identical(e[[1]], as.name("+")))
+  ) {
     lhs <- e[[2]]
     rhs <- e[[3]]
-    if (is.name(lhs) && as.character(lhs) == covName && is.numeric(rhs) &&
-        length(rhs) == 1L && is.finite(rhs) && rhs != 0) {
+    if (
+      is.name(lhs) && as.character(lhs) == covName && is.numeric(rhs) && length(rhs) == 1L && is.finite(rhs) && rhs != 0
+    ) {
       hit$value <- as.numeric(rhs)
-    } else if (identical(e[[1]], as.name("/")) && is.name(rhs) &&
-               as.character(rhs) == covName && is.numeric(lhs) &&
-               length(lhs) == 1L && is.finite(lhs) && lhs != 0) {
+    } else if (
+      identical(e[[1]], as.name("/")) &&
+        is.name(rhs) &&
+        as.character(rhs) == covName &&
+        is.numeric(lhs) &&
+        length(lhs) == 1L &&
+        is.finite(lhs) &&
+        lhs != 0
+    ) {
       # `70 / WT` -- the reference sits on the other side
       hit$value <- as.numeric(lhs)
     }
@@ -92,7 +147,9 @@
 # something to walk.
 .probeModelExpr <- function(ui) {
   lst <- try(ui$lstExpr, silent = TRUE)
-  if (inherits(lst, "try-error") || is.null(lst)) return(NULL)
+  if (inherits(lst, "try-error") || is.null(lst)) {
+    return(NULL)
+  }
   as.call(c(list(as.name("{")), lst))
 }
 
@@ -121,8 +178,7 @@ probeCovariateValues <- function(ui) {
     v <- .probeLeadingNumber(entry$reference_category)
     if (is.finite(v)) {
       values[[nm]] <- v
-      why[[nm]] <- paste0("covariateData$reference_category (",
-                          as.character(entry$reference_category)[1], ")")
+      why[[nm]] <- paste0("covariateData$reference_category (", as.character(entry$reference_category)[1], ")")
       next
     }
 
@@ -174,13 +230,24 @@ probeCovariateValues <- function(ui) {
 probeTimeGrid <- function(ui) {
   u <- as.list(ui$meta)$units
   tu <- if (is.list(u) && is.character(u$time) && length(u$time) == 1L) tolower(u$time) else ""
-  end <- switch(tu,
-                "min" = 720, "minute" = 720, "minutes" = 720,
-                "h" = 48, "hr" = 48, "hour" = 48, "hours" = 48,
-                "day" = 56, "days" = 56, "d" = 56,
-                "week" = 24, "weeks" = 24,
-                "month" = 12, "months" = 12,
-                48)
+  end <- switch(
+    tu,
+    "min" = 720,
+    "minute" = 720,
+    "minutes" = 720,
+    "h" = 48,
+    "hr" = 48,
+    "hour" = 48,
+    "hours" = 48,
+    "day" = 56,
+    "days" = 56,
+    "d" = 56,
+    "week" = 24,
+    "weeks" = 24,
+    "month" = 12,
+    "months" = 12,
+    48
+  )
   seq(0, end, length.out = 97L)
 }
 
@@ -188,7 +255,9 @@ probeTimeGrid <- function(ui) {
 # rather than guessed.  Models that declare none are not probeable.
 probeDoseCmt <- function(name, db) {
   d <- db$dosing[db$name == name]
-  if (!length(d) || is.na(d) || !nzchar(d)) return(NA_character_)
+  if (!length(d) || is.na(d) || !nzchar(d)) {
+    return(NA_character_)
+  }
   strsplit(d, ",")[[1]][1]
 }
 
@@ -207,9 +276,13 @@ probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
   eps <- ui$predDf$cond
   if (length(eps) > 1L && !identical(form, "plain")) {
     if (identical(form, "dvid")) {
-      for (i in seq_along(eps)) ev <- rxode2::et(ev, times, dvid = i)
+      for (i in seq_along(eps)) {
+        ev <- rxode2::et(ev, times, dvid = i)
+      }
     } else {
-      for (ep in eps) ev <- rxode2::et(ev, times, cmt = ep)
+      for (ep in eps) {
+        ev <- rxode2::et(ev, times, cmt = ep)
+      }
     }
   } else {
     ev <- rxode2::et(ev, times)
@@ -224,8 +297,7 @@ probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
 # columns, which differ run to run and say nothing about whether the dose
 # arrived.
 .probeValueCols <- function(df) {
-  drop <- c("id", "time", "evid", "amt", "cmt", "dvid", "ii", "addl", "dur",
-            "rate", "ss", "sim", "ipredSim")
+  drop <- c("id", "time", "evid", "amt", "cmt", "dvid", "ii", "addl", "dur", "rate", "ss", "sim", "ipredSim")
   setdiff(names(df), drop)
 }
 
@@ -241,17 +313,29 @@ probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
 #' @noRd
 probeMaxRelDiff <- function(a, b) {
   cols <- intersect(a$cols, b$cols)
-  if (!length(cols) || nrow(a$dosed) != nrow(b$dosed)) return(0)
-  rel <- vapply(cols, function(cc) {
-    x <- a$dosed[[cc]]
-    y <- b$dosed[[cc]]
-    sc <- suppressWarnings(max(abs(c(x, y)), na.rm = TRUE))
-    if (!is.finite(sc) || sc == 0) return(0)
-    d <- suppressWarnings(max(abs(x - y), na.rm = TRUE))
-    if (!is.finite(d)) return(0)
-    d / sc
-  }, numeric(1))
-  if (!length(rel) || all(is.na(rel))) return(0)
+  if (!length(cols) || nrow(a$dosed) != nrow(b$dosed)) {
+    return(0)
+  }
+  rel <- vapply(
+    cols,
+    function(cc) {
+      x <- a$dosed[[cc]]
+      y <- b$dosed[[cc]]
+      sc <- suppressWarnings(max(abs(c(x, y)), na.rm = TRUE))
+      if (!is.finite(sc) || sc == 0) {
+        return(0)
+      }
+      d <- suppressWarnings(max(abs(x - y), na.rm = TRUE))
+      if (!is.finite(d)) {
+        return(0)
+      }
+      d / sc
+    },
+    numeric(1)
+  )
+  if (!length(rel) || all(is.na(rel))) {
+    return(0)
+  }
   max(rel, na.rm = TRUE)
 }
 
@@ -271,7 +355,9 @@ probeMaxRelDiff <- function(a, b) {
   env <- new.env(parent = globalenv())
   fname <- sub("[.]R$", "", basename(path))
   sys.source(path, envir = env)
-  if (!exists(fname, envir = env, inherits = FALSE)) return(NULL)
+  if (!exists(fname, envir = env, inherits = FALSE)) {
+    return(NULL)
+  }
   b <- body(get(fname, envir = env))
   for (i in seq_along(b)) {
     node <- b[[i]]
@@ -282,8 +368,10 @@ probeMaxRelDiff <- function(a, b) {
 
 # `d/dt(x)` parses as `/`(d, dt(x))
 .probeIsDdt <- function(target) {
-  is.call(target) && identical(target[[1]], as.name("/")) &&
-    identical(target[[2]], as.name("d")) && is.call(target[[3]]) &&
+  is.call(target) &&
+    identical(target[[1]], as.name("/")) &&
+    identical(target[[2]], as.name("d")) &&
+    is.call(target[[3]]) &&
     identical(target[[3]][[1]], as.name("dt"))
 }
 
@@ -307,14 +395,19 @@ probeMaxRelDiff <- function(a, b) {
 
 .probeScreenOneFile <- function(path) {
   mb <- tryCatch(.probeModelBlockOfFile(path), error = function(e) NULL)
-  if (is.null(mb)) return(FALSE)
+  if (is.null(mb)) {
+    return(FALSE)
+  }
   odes <- list()
   assigns <- list()
   for (i in seq_along(mb)) {
     st <- mb[[i]]
-    isAssign <- is.call(st) && length(st) >= 3 &&
+    isAssign <- is.call(st) &&
+      length(st) >= 3 &&
       (identical(st[[1]], as.name("<-")) || identical(st[[1]], as.name("=")))
-    if (!isAssign) next
+    if (!isAssign) {
+      next
+    }
     if (.probeIsDdt(st[[2]])) {
       odes[[length(odes) + 1L]] <- list(cmt = as.character(st[[2]][[3]][[2]]), rhs = st[[3]])
     } else if (is.name(st[[2]])) {
@@ -322,23 +415,34 @@ probeMaxRelDiff <- function(a, b) {
     }
   }
   # The converter handles at most four compartments.
-  if (!length(odes) || length(odes) > 4L) return(FALSE)
+  if (!length(odes) || length(odes) > 4L) {
+    return(FALSE)
+  }
   states <- vapply(odes, function(o) o$cmt, character(1))
   # It also needs an output line of the form `var <- <state> / <expr>`.
   hasOut <- FALSE
   for (r in assigns) {
-    if (is.call(r) && length(r) == 3L && identical(r[[1]], as.name("/")) &&
-        is.name(r[[2]]) && as.character(r[[2]]) %in% states) {
+    if (
+      is.call(r) &&
+        length(r) == 3L &&
+        identical(r[[1]], as.name("/")) &&
+        is.name(r[[2]]) &&
+        as.character(r[[2]]) %in% states
+    ) {
       hasOut <- TRUE
       break
     }
   }
-  if (!hasOut) return(FALSE)
+  if (!hasOut) {
+    return(FALSE)
+  }
   # Finally, something on a right-hand side that references no state at all:
   # an exogenous input the analytical solution cannot carry.
   for (o in odes) {
     for (tm in .probeAddTerms(o$rhs)) {
-      if (is.numeric(tm$expr) && length(tm$expr) == 1L && tm$expr == 0) next
+      if (is.numeric(tm$expr) && length(tm$expr) == 1L && tm$expr == 0) {
+        next
+      }
       if (!any(all.vars(tm$expr) %in% states)) return(TRUE)
     }
   }
@@ -354,11 +458,11 @@ probeMaxRelDiff <- function(a, b) {
 #' @noRd
 linCmtRiskCandidates <- function() {
   root <- system.file("modeldb", package = "nlmixr2lib")
-  if (!nzchar(root)) return(character(0))
+  if (!nzchar(root)) {
+    return(character(0))
+  }
   files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
-  keep <- vapply(files, function(f) isTRUE(tryCatch(.probeScreenOneFile(f),
-                                                    error = function(e) FALSE)),
-                 logical(1))
+  keep <- vapply(files, function(f) isTRUE(tryCatch(.probeScreenOneFile(f), error = function(e) FALSE)), logical(1))
   unname(sub("[.]R$", "", basename(files[keep])))
 }
 
@@ -367,9 +471,10 @@ linCmtRiskCandidates <- function() {
 # grid, same covariates, same solver settings.
 .probeSolveOnce <- function(ui, doseCmt, amt, times, covValues, useLinCmt, form) {
   ev <- probeEvents(ui, doseCmt, amt, times, form)
-  args <- list(object = ui, events = ev, returnType = "data.frame",
-               addDosing = FALSE, useLinCmt = useLinCmt)
-  if (length(covValues)) args$params <- covValues
+  args <- list(object = ui, events = ev, returnType = "data.frame", addDosing = FALSE, useLinCmt = useLinCmt)
+  if (length(covValues)) {
+    args$params <- covValues
+  }
   suppressWarnings(suppressMessages(do.call(rxode2::rxSolve, args)))
 }
 
@@ -379,10 +484,13 @@ linCmtRiskCandidates <- function() {
 .probeSolveWithAnyForm <- function(ui, doseCmt, amt, times, covValues, useLinCmt) {
   first <- NULL
   for (form in .probeEventForms) {
-    r <- try(.probeSolveOnce(ui, doseCmt, amt, times, covValues, useLinCmt, form),
-             silent = TRUE)
-    if (!inherits(r, "try-error")) return(list(result = r, form = form))
-    if (is.null(first)) first <- r
+    r <- try(.probeSolveOnce(ui, doseCmt, amt, times, covValues, useLinCmt, form), silent = TRUE)
+    if (!inherits(r, "try-error")) {
+      return(list(result = r, form = form))
+    }
+    if (is.null(first)) {
+      first <- r
+    }
     # Only the multi-endpoint tagging varies between forms; for a
     # single-endpoint model all three build the same table, so retrying is
     # pointless.
@@ -410,8 +518,7 @@ linCmtRiskCandidates <- function() {
 #' @noRd
 probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
   out <- list(name = name, status = "error", message = NA_character_)
-  ui <- try(rxode2::rxUiDecompress(rxode2::as.rxUi(nlmixr2lib::readModelDb(name))),
-            silent = TRUE)
+  ui <- try(rxode2::rxUiDecompress(rxode2::as.rxUi(nlmixr2lib::readModelDb(name))), silent = TRUE)
   if (inherits(ui, "try-error")) {
     out$message <- paste("could not load:", conditionMessage(attr(ui, "condition")))
     return(out)
@@ -437,12 +544,9 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
     return(out)
   }
   out$eventForm <- attempt$form
-  undosed <- try(.probeSolveOnce(ui, doseCmt, 0, times, cov$values, useLinCmt,
-                                 attempt$form),
-                 silent = TRUE)
+  undosed <- try(.probeSolveOnce(ui, doseCmt, 0, times, cov$values, useLinCmt, attempt$form), silent = TRUE)
   if (inherits(undosed, "try-error")) {
-    out$message <- paste("control solve failed:",
-                         conditionMessage(attr(undosed, "condition")))
+    out$message <- paste("control solve failed:", conditionMessage(attr(undosed, "condition")))
     out$covWhy <- cov$why
     return(out)
   }
@@ -453,11 +557,17 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
     out$message <- "no comparable numeric output columns"
     return(out)
   }
-  diffs <- vapply(cols, function(cc) {
-    d <- abs(dosed[[cc]] - undosed[[cc]])
-    if (all(is.na(d))) return(NA_real_)
-    max(d, na.rm = TRUE)
-  }, numeric(1))
+  diffs <- vapply(
+    cols,
+    function(cc) {
+      d <- abs(dosed[[cc]] - undosed[[cc]])
+      if (all(is.na(d))) {
+        return(NA_real_)
+      }
+      max(d, na.rm = TRUE)
+    },
+    numeric(1)
+  )
   out$status <- "ok"
   out$doseCmt <- doseCmt
   out$doseEffect <- if (all(is.na(diffs))) NA_real_ else max(diffs, na.rm = TRUE)

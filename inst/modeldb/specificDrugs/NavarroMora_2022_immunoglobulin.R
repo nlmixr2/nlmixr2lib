@@ -1,40 +1,40 @@
 NavarroMora_2022_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G given subcutaneously or intravenously in primary immunodeficiency (Navarro-Mora 2022)"
-  reference   <- "Navarro-Mora G, Alberti JJ, Mondou E, Vilardell D, Vicente Torres J, Ayguasanosa J, et al. Pharmacokinetic modeling and simulation of subcutaneous and intravenous IgG dosing in patients with primary immunodeficiency diseases. Int Immunopharmacol. 2022;104:108472. doi:10.1016/j.intimp.2021.108472 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 37)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Navarro-Mora G, Alberti JJ, Mondou E, Vilardell D, Vicente Torres J, Ayguasanosa J, et al. Pharmacokinetic modeling and simulation of subcutaneous and intravenous IgG dosing in patients with primary immunodeficiency diseases. Int Immunopharmacol. 2022;104:108472. doi:10.1016/j.intimp.2021.108472 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 37)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on CL (estimated exponent 0.744), Vc (0.686) and Vp (1.04), reference weight 65.7 kg. This is the only model in van der Zeeuw 2026 with an ESTIMATED weight exponent on Vp: section 3.2.1.3, 'While Li et al. and Lee et al. fixed the allometric scaling component to 1, Navarro-Mora et al. estimated it to be 1.04'. Q carries no weight term in Table 4.",
-      source_name        = "BW"
+      notes = "Allometric power scaling on CL (estimated exponent 0.744), Vc (0.686) and Vp (1.04), reference weight 65.7 kg. This is the only model in van der Zeeuw 2026 with an ESTIMATED weight exponent on Vp: section 3.2.1.3, 'While Li et al. and Lee et al. fixed the allometric scaling component to 1, Navarro-Mora et al. estimated it to be 1.04'. Q carries no weight term in Table 4.",
+      source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 95L,
-    n_studies      = 3L,
-    age_range      = "Not reported as a range; per-study means 10.8-42.5 years",
-    age_median     = "NCT00389324: 42.5 (SD 15.8); NCT01465958: 10.8 (SD 3.7); NCT02604810: 36.8 (SD 21.36) years, all means",
-    weight_range   = "16.7-153.0 kg",
-    weight_median  = "65.7 kg",
+    species = "human",
+    n_subjects = 95L,
+    n_studies = 3L,
+    age_range = "Not reported as a range; per-study means 10.8-42.5 years",
+    age_median = "NCT00389324: 42.5 (SD 15.8); NCT01465958: 10.8 (SD 3.7); NCT02604810: 36.8 (SD 21.36) years, all means",
+    weight_range = "16.7-153.0 kg",
+    weight_median = "65.7 kg",
     sex_female_pct = round(100 * 55 / 95, 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
-    dose_range     = "IVIg median 495 mg/kg (range 278-902) every 3 or 4 weeks; SCIg median 184.8 mg/kg (range 72.0-303.5) every 3 or 4 weeks",
-    regions        = "United States, Canada",
-    notes          = "Pooled analysis of NCT00389324, NCT01465958 and NCT02604810 (van der Zeeuw 2026 Tables 1 and 2). Baseline IgG not reported. The authors evaluated a fixed endogenous IgG of 4 g/L against a lower value of 1.5 g/L and retained 4 g/L because the change in PK parameters was minimal (section 3.2.1.6)."
+    disease_state = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
+    dose_range = "IVIg median 495 mg/kg (range 278-902) every 3 or 4 weeks; SCIg median 184.8 mg/kg (range 72.0-303.5) every 3 or 4 weeks",
+    regions = "United States, Canada",
+    notes = "Pooled analysis of NCT00389324, NCT01465958 and NCT02604810 (van der Zeeuw 2026 Tables 1 and 2). Baseline IgG not reported. The authors evaluated a fixed endogenous IgG of 4 g/L against a lower value of 1.5 g/L and retained 4 g/L because the change in PK parameters was minimal (section 3.2.1.6)."
   )
 
   ini({

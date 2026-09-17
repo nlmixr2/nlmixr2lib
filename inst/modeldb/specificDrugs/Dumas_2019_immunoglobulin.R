@@ -1,39 +1,39 @@
 Dumas_2019_immunoglobulin <- function() {
   description <- "One-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IVIg and SCIg 20%, Ig20Gly) in primary immunodeficiency (Dumas 2019)"
-  reference   <- "Dumas T, Berry NS, Wolfsegger M, Jolles S, McCoy B, Yel L. Population pharmacokinetic modeling and simulation of immunoglobulin exposure with varying dosing intervals of subcutaneous immunoglobulin 20% (Ig20Gly) in patients with primary immunodeficiency diseases. Int Immunopharmacol. 2019;71:404-10. doi:10.1016/j.intimp.2019.03.043 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 53)"
-  vignette    <- "vanderZeeuw_2026_immunoglobulin"
-  units       <- list(time = "day", dosing = "g", concentration = "g/L")
+  reference <- "Dumas T, Berry NS, Wolfsegger M, Jolles S, McCoy B, Yel L. Population pharmacokinetic modeling and simulation of immunoglobulin exposure with varying dosing intervals of subcutaneous immunoglobulin 20% (Ig20Gly) in patients with primary immunodeficiency diseases. Int Immunopharmacol. 2019;71:404-10. doi:10.1016/j.intimp.2019.03.043 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 53)"
+  vignette <- "vanderZeeuw_2026_immunoglobulin"
+  units <- list(time = "day", dosing = "g", concentration = "g/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on CL only, with reference weight 70 kg and an estimated exponent of 0.576. Dumas 2019 is listed among the 'BW on CL' models in van der Zeeuw 2026 section 3.2.1.4 but NOT among the 'BW on Vc' models in section 3.2.1.3, and its Table 4 Vc entry (4.01 L) carries no allometric term.",
-      source_name        = "BW"
+      notes = "Allometric power scaling on CL only, with reference weight 70 kg and an estimated exponent of 0.576. Dumas 2019 is listed among the 'BW on CL' models in van der Zeeuw 2026 section 3.2.1.4 but NOT among the 'BW on Vc' models in section 3.2.1.3, and its Table 4 Vc entry (4.01 L) carries no allometric term.",
+      source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "immunoglobulin G", units = "g", specimen = "administration site", verified = TRUE),
     central = list(analyte = "immunoglobulin G", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 102L,
-    n_studies      = 2L,
-    age_range      = "2.0-83 years",
-    age_median     = "30.0 years",
-    weight_range   = "13.2-161.8 kg",
-    weight_median  = "63.7 kg",
+    species = "human",
+    n_subjects = 102L,
+    n_studies = 2L,
+    age_range = "2.0-83 years",
+    age_median = "30.0 years",
+    weight_range = "13.2-161.8 kg",
+    weight_median = "63.7 kg",
     sex_female_pct = round(100 * 45 / 102, 1),
     race_ethnicity = "Not reported",
-    disease_state  = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
-    dose_range     = "IVIg 300-1000 mg/kg every 3 or 4 weeks; SCIg (Ig20Gly) weekly-equivalent dose",
-    regions        = "United States, Canada, Europe",
-    notes          = "Pooled analysis of NCT01218438 and NCT01412385 (van der Zeeuw 2026 Table 1). Median baseline total IgG 9.9 g/L (range 3.4-19.9); patients were already on stable IVIg treatment, so this baseline represents endogenous PLUS exogenous IgG (van der Zeeuw 2026 section 3.2.1.6). A one-compartment model was used because samples were collected only at steady state (van der Zeeuw 2026 section 3.2.1.3)."
+    disease_state = "Primary immunodeficiency (PID) on immunoglobulin replacement therapy",
+    dose_range = "IVIg 300-1000 mg/kg every 3 or 4 weeks; SCIg (Ig20Gly) weekly-equivalent dose",
+    regions = "United States, Canada, Europe",
+    notes = "Pooled analysis of NCT01218438 and NCT01412385 (van der Zeeuw 2026 Table 1). Median baseline total IgG 9.9 g/L (range 3.4-19.9); patients were already on stable IVIg treatment, so this baseline represents endogenous PLUS exogenous IgG (van der Zeeuw 2026 section 3.2.1.6). A one-compartment model was used because samples were collected only at steady state (van der Zeeuw 2026 section 3.2.1.3)."
   )
 
   ini({

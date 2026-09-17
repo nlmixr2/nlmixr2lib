@@ -32,18 +32,18 @@ Yang_2026_pixavir <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "pixavir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "pixavir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "pixavir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "pixavir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "pixavir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power effects on CL/F and Vc/F, each centred on the",
         "population median of 61.30 kg (the normalising constant printed in",
         "the Yang 2026 final-model equation block, Section 3.1.1). Both",
@@ -59,14 +59,14 @@ Yang_2026_pixavir <- function() {
         "mean 63.8 kg (SD 11.9); the paper's own simulations span 40-120 kg.",
         "Time-fixed at baseline in the source analysis."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE = list(
-      description        = "Administered pixavir marboxil dose at the dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered pixavir marboxil dose at the dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Use case (a) of the DOSE canonical: the per-record administered dose",
         "level drives the dose-dependent relative bioavailability",
         "F = 3.13 / (3.13 + DOSE/40) (Yang 2026 Section 3.1.1 displayed",
@@ -82,14 +82,14 @@ Yang_2026_pixavir <- function() {
         "48 h apart (Table 1). Set DOSE on every dose record to the amount of",
         "that record; for the 40 mg + 40 mg regimen both records carry 40."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     FED = list(
-      description        = "Fed-versus-fasted state at the dose record, 1 = fed",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted state at the dose record, 1 = fed",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "First of the two indicators encoding the three prandial strata Yang",
         "2026 estimated a separate absorption rate constant for (Table 3):",
         "fasted (FED = 0, FED_HIGHFAT = 0, ka = 0.56 /h), standard diet",
@@ -105,14 +105,14 @@ Yang_2026_pixavir <- function() {
         "subjects also contribute fasted records). Dose-record level and",
         "therefore time-varying within a crossover subject."
       ),
-      source_name        = "Food intake"
+      source_name = "Food intake"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal-at-dosing indicator, 1 = dosed after a high-fat meal",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal-at-dosing indicator, 1 = dosed after a high-fat meal",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted or standard diet)",
-      notes              = paste(
+      notes = paste(
         "Second indicator of the three-level prandial stratification described",
         "under FED; requires FED = 1 when set, matching the Goel 2016",
         "convention recorded in the covariate register. Only the part B",
@@ -123,7 +123,7 @@ Yang_2026_pixavir <- function() {
         "the popPK model is on ka alone and was not judged clinically",
         "meaningful in the target patient population."
       ),
-      source_name        = "Food intake"
+      source_name = "Food intake"
     )
   )
 
@@ -134,9 +134,9 @@ Yang_2026_pixavir <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Demographic covariate screened; no statistically significant effect",
         "on pixavir PK (Section 3.1.1). Cohort mean 27.1 years (SD 8.08);",
         "adolescents mean 15.20 (SD 1.57), adults mean 27.03 (SD 8.41),",
@@ -145,18 +145,18 @@ Yang_2026_pixavir <- function() {
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Demographic covariate screened; no statistically significant effect",
         "(Section 3.1.1). Cohort 190 of 423 female (44.9%), Table 2."
       )
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Evaluated as an alternative body-size descriptor alongside lean body",
         "mass; neither improved model performance nor model stability relative",
         "to total body weight (Section 3.1.1). Cohort mean 22.4 kg/m^2",
@@ -165,9 +165,9 @@ Yang_2026_pixavir <- function() {
     ),
     LBM = list(
       description = "Lean body mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Evaluated as an alternative body-size descriptor; not retained in",
         "favour of total body weight (Section 3.1.1). No summary statistics",
         "are tabulated for this covariate."
@@ -175,9 +175,9 @@ Yang_2026_pixavir <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Hepatic-function marker screened; not retained (Section 3.1.1).",
         "Cohort mean 21.4 U/L (SD 18.2), Table 2. Most participants had",
         "normal hepatic function."
@@ -185,18 +185,18 @@ Yang_2026_pixavir <- function() {
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Hepatic-function marker screened; not retained (Section 3.1.1).",
         "Cohort mean 10.8 umol/L (SD 5.30), Table 2."
       )
     ),
     TPRO = list(
       description = "Total protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a hepatic-function marker; not retained (Section 3.1.1).",
         "Cohort mean 76.0 g/L (SD 5.31), Table 2. Of interest because pixavir",
         "is more than 96% plasma-protein bound."
@@ -204,9 +204,9 @@ Yang_2026_pixavir <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Renal-function marker screened; not retained (Section 3.1.1). Cohort",
         "mean 131 umol/L (SD 35.3), Table 2. Most participants had normal",
         "renal function. Pixavir is eliminated predominantly via feces after",
@@ -215,9 +215,9 @@ Yang_2026_pixavir <- function() {
     ),
     DIS_HEALTHY = list(
       description = "Healthy-volunteer versus influenza-patient indicator, 1 = healthy",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Disease status screened as a covariate; not retained (Section",
         "3.1.1 'No statistically significant effects of age, sex, or influenza",
         "virus type'; disease status is listed among the screened covariates",
@@ -228,17 +228,17 @@ Yang_2026_pixavir <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 423L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 423L,
+    n_studies = 3L,
     n_observations = 3125L,
-    age_range      = "12 years and older (adolescents 12-17; overall mean 27.1 years, SD 8.08)",
-    age_median     = "not reported; mean 27.1 years (SD 8.08)",
-    weight_range   = "not reported; mean 63.8 kg (SD 11.9), model-centring median 61.30 kg",
-    weight_median  = "61.30 kg",
+    age_range = "12 years and older (adolescents 12-17; overall mean 27.1 years, SD 8.08)",
+    age_median = "not reported; mean 27.1 years (SD 8.08)",
+    weight_range = "not reported; mean 63.8 kg (SD 11.9), model-centring median 61.30 kg",
+    weight_median = "61.30 kg",
     sex_female_pct = 44.9,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 56 healthy adults (13.2%) from the phase I single-ascending-dose",
       "and food-effect study TG-1000-C-01, and 367 adults and adolescents",
       "(86.8%) with uncomplicated acute influenza from the phase II",
@@ -246,13 +246,13 @@ Yang_2026_pixavir <- function() {
     ),
     renal_function = "Most participants had normal renal function; mean serum creatinine 131 umol/L (SD 35.3)",
     hepatic_function = "Most participants had normal hepatic function; mean ALT 21.4 U/L (SD 18.2), mean total bilirubin 10.8 umol/L (SD 5.30)",
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral doses of 10, 20, 40, 80, 120 and 160 mg pixavir marboxil in",
       "phase I; single 40 mg or 80 mg, or two 40 mg doses 48 h apart, in phase",
       "II; single 40 mg (40-80 kg) or 80 mg (80 kg and above) in phase III"
     ),
-    regions        = "China (all studies conducted in China; all participants Chinese)",
-    notes          = paste(
+    regions = "China (all studies conducted in China; all participants Chinese)",
+    notes = paste(
       "Baseline demographics are Yang 2026 Table 2 and the study list is",
       "Table 1. Bioanalysis was validated LC-MS/MS with an LLOQ of 2.0 ng/mL",
       "for phase I and II samples and 1.0 ng/mL for phase III samples; BLQ",
