@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chotsiri 2017 dihydroartemisinin, piperaquine and piperaquine-QTc ([doi:10.1111/bcp.13372](https://doi.org/10.1111/bcp.13372)) — healthy Thai adult volunteers.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
