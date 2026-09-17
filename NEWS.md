@@ -2,6 +2,12 @@
 
 # development version
 
+- Add Yamamoto 2017 acetaminophen, atenolol, methotrexate, morphine,
+  paliperidone, phenytoin, quinidine, raclopride, remoxipride and risperidone
+  ([doi:10.1002/psp4.12250](https://doi.org/10.1002/psp4.12250)) -- male Wistar
+  rats, a comprehensive CNS PBPK model predicting brain extracellular fluid,
+  cerebrospinal fluid and total brain concentrations.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
