@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Li 2017 pomalidomide ([doi:10.2147/CPAA.S144606](https://doi.org/10.2147/CPAA.S144606)) — adults with relapsed or refractory multiple myeloma and impaired renal function, including hemodialysis.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
