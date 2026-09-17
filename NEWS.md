@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Checchio 2017 systemic antipsoriatic agents PASI-response model-based meta-analysis ([doi:10.1002/cpt.732](https://doi.org/10.1002/cpt.732)) -- adults with moderate to severe plaque psoriasis across 71 published trials, as a longitudinal PASI75 time-course model and a Week-12 landmark dose-response model covering 18 drug arms.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
