@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yang 2017 buagafuran ([doi:10.3389/fphar.2017.00683](https://doi.org/10.3389/fphar.2017.00683)) -- male Wistar rats in the elevated plus-maze.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and

@@ -636,6 +636,8 @@ navbar:
         href: articles/Koele_2025_btz043.html
       - text: "Btz043 bacterialload (Koele 2025)"
         href: articles/Koele_2025_btz043.html
+      - text: "Buagafuran rat (Yang 2017)"
+        href: articles/Yang_2017_buagafuran.html
       - text: "Bumetanide pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Buprenorphine (Bjornsson 2023)"
@@ -7244,6 +7246,7 @@ articles:
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod
   - articles/Yang_2016_dilmapimod
+  - articles/Yang_2017_buagafuran
   - articles/Yang_2017_remifentanil
   - articles/Yang_2021_cemiplimab
   - articles/Yang_2023_diclazuril
