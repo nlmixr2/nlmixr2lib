@@ -66,7 +66,7 @@ Desai_2016_isavuconazole <- function() {
     lvp <- log(410);     label("Isavuconazole peripheral volume of distribution at reference BMI 27 (V3 = Vp, L)")  # Desai 2016 Table 4: theta_4 (V3) = 410000 mL (printed in the table as '41,0000' with the comma misplaced; bootstrap mean 410661 mL confirms 410 L)
 
     # Weibull absorption parameters (Piotrovskij saturating-ka form, operator-
-    # approved interpretation -- sidecar request-001 q3 = A). The paper text
+    # approved interpretation. The paper text
     # names the three parameters but does not write the equation; the canonical
     # form for these three named parameters is
     #   ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))
@@ -130,16 +130,15 @@ Desai_2016_isavuconazole <- function() {
     q  <- exp(lq  + e_hepimp_mild_q  * HEPIMP_MILD + e_hepimp_mod_q  * HEPIMP_MOD + etalq)
     vp <- exp(lvp + etalvp) * (1 + e_bmi_vp * (BMI - 27))
 
-    # Weibull absorption (Piotrovskij saturating-ka form, operator-approved
-    # interpretation -- sidecar request-001 q3 = A). Time after most recent
-    # dose to the depot compartment drives the time-varying absorption rate;
-    # tad(depot) restarts at each new oral dose so multi-dose regimens
-    # (e.g., 200 mg q8h loading followed by 200 mg q24h maintenance per the
-    # paper's clinical-dose simulation) reproduce the Weibull rise from each
-    # individual dose. The if-gate handles IV-only subjects (no PO dose) where
-    # tad(depot) is NaN before any dose and would otherwise propagate as NaN
-    # through the entire ODE; same pattern as Cirincione_2017_exenatide.R and
-    # Horita_2018_rifampicin.R.
+    # Weibull absorption (Piotrovskij saturating-ka form, the chosen
+    # interpretation. Time after most recent dose to the depot compartment
+    # drives the time-varying absorption rate; tad(depot) restarts at each new
+    # oral dose so multi-dose regimens (e.g. 200 mg q8h loading followed by
+    # 200 mg q24h maintenance per the paper's clinical-dose simulation)
+    # reproduce the Weibull rise from each individual dose. The if-gate
+    # handles IV-only subjects (no PO dose) where tad(depot) is NaN before any
+    # dose and would otherwise propagate as NaN through the entire ODE; same
+    # pattern as Cirincione_2017_exenatide.R and Horita_2018_rifampicin.R.
     ra    <- exp(lra    + etalra)
     gam1  <- exp(lgam1  + etalgam1)
     kamax <- exp(lkamax + etalkamax)

@@ -130,11 +130,11 @@ Ooi_2026_elafibranor_alptb <- function() {
     )
   )
 
-  # `alp` and `tbili` follow the register's bare clinical-biomarker
-  # PD-output compartment pattern (`ast`, `cpk`, `ldl`, `hdl`, `urate`,
-  # `Hba1c`), but the operator ruling is that a compartment canonical needs a
-  # SECOND independent paper, so they are declared paper-specific here. A
-  # future ALP or bilirubin turnover model is the trigger to promote them.
+  # `alp` and `tbili` follow the register's bare clinical-biomarker PD-output
+  # compartment pattern (`ast`, `cpk`, `ldl`, `hdl`, `urate`, `Hba1c`), but a
+  # ruling is that a compartment canonical needs a SECOND independent paper,
+  # so they are declared paper-specific here. A future ALP or bilirubin
+  # turnover model is the trigger to promote them.
   paper_specific_compartments <- c("alp", "tbili")
 
   # The logit-scale Emax random effect and the random effects on the

@@ -102,17 +102,15 @@ Khan_2015_ciprofloxacin <- function() {
     # executeable_cipro_pkpd.mod (lines 167-185). The bundle does not ship
     # an Output_real_*.lst; output_simulated.lst is a refit on a simulated
     # dataset and round-trip-recovers the .mod initials within ~3% for
-    # THETA but with SIGMA(1) materially different (2.42 -> 1.78). Per
-    # operator decision (sidecar 025 q1 = mod_initials), the .mod $THETA
-    # initials are treated as the publication-derived point values that
-    # seeded the bundle's simulated dataset; addSd uses sqrt(SIGMA(1) =
-    # 2.41597) to match.
-    #
-    # Six of the seven strain-specific EC50s are FIX in the .mod
-    # ($THETA(3), (5)..(9)), reflecting the publication's reported
-    # per-mutant MIC values; only the wild-type LM202 EC50 ($THETA(4))
-    # was estimated. The Hill exponent on the active->NC transition
-    # ($THETA(17) = 20) is also FIX. We mirror those FIX flags here.
+    # THETA but with SIGMA(1) materially different (2.42 -> 1.78). the
+    # .mod $THETA initials are treated as the publication-derived point
+    # values that seeded the bundle's simulated dataset; addSd uses
+    # sqrt(SIGMA(1) = 2.41597) to match. Six of the seven strain-specific
+    # EC50s are FIX in the .mod ($THETA(3), (5)..(9)), reflecting the
+    # publication's reported per-mutant MIC values; only the wild-type
+    # LM202 EC50 ($THETA(4)) was estimated. The Hill exponent on the
+    # active->NC transition ($THETA(17) = 20) is also FIX. We mirror those
+    # FIX flags here.
 
     # Sensitive subpopulation: growth and drug-effect Emax / EC50
     lkgs       <- log(1.70)              ; label("Growth rate of susceptible (sensitive) subpopulation kgs (1/h)")                           # .mod $THETA(1) = (1, 1.70); init 1.70
@@ -151,9 +149,9 @@ Khan_2015_ciprofloxacin <- function() {
 
     # Across-tube residual error on log-bacterial-count scale. addSd =
     # sqrt(SIGMA(1)). The .mod additionally has four BLOCK(1) SAME SIGMA
-    # slots gated on FLG2 (sample position 1..4); per operator decision
-    # (sidecar 025 q3 = across_tube_only) those per-position random
-    # effects are documented in the vignette Errata and not encoded here.
+    # slots gated on FLG2 (sample position 1..4); those per-position
+    # random effects are documented in the vignette Errata and not
+    # encoded here.
     addSd <- 1.5544                      ; label("Additive residual SD on log-bacterial-count scale (log CFU/mL); = sqrt(.mod $SIGMA(1) = 2.41597)") # .mod $SIGMA  2.41597
   })
   model({

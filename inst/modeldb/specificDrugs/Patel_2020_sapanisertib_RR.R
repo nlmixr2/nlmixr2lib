@@ -279,7 +279,7 @@ Patel_2020_sapanisertib_RR <- function() {
     # Fostvedt_2021_glasdegib_QTcF.R, Mukker_2026_tuvusertib_QTcF.R,
     # Zhou_2025_fruquintinib_*.R), whereas `d_hr` exists precisely for a
     # change-from-baseline heart-rate-domain endpoint. Operator ruling
-    # (sidecar oare_PMC7586797 request-001 q1, answered 2026-09-02)
+    #
     # adopted `d_rr`: the bare-name precedent is for ABSOLUTE interval
     # names, and a delta is what `d_hr` already encodes, so the
     # heart-rate-domain pair (d_hr, d_rr) is kept mutually consistent.

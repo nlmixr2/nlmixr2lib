@@ -350,8 +350,8 @@ Nguyen_2026_levofloxacin <- function() {
     #    kin_saliva/kel_saliva = 4.929/5.084 = 0.9695, against the 0.928
     #    scale factor the authors' competing scale-factor saliva model
     #    estimated on the same data (Table S2) -- agreement to 4%. This is
-    #    the same reading operator-ratified for the companion linezolid
-    #    model (sidecar request-001 q2, 2026-09-02); see the vignette Errata.
+    #  the same reading ratified for the companion linezolid
+    #  model; see the vignette Errata.
     Cc <- central / vc
     Csaliva <- saliva / vc
 

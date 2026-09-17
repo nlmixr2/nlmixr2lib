@@ -269,7 +269,7 @@ Bian_2024_lefamulin_higher_ppb <- function() {
     # (Table S6: 16.12, 18.10 and 16.49 mg*h/L) by 23.1%, 21.9% and
     # 20.0%, whereas 3.45 lands within -2.1% to +1.9% across
     # all five simulated regimens. Encoding the back-solved value is an explicit operator
-    # ruling (sidecar oare_PMC11544005 request-001 q3, option B) that
+    # ruling that
     # overrides the usual "values from the paper" rule; see the
     # vignette's Assumptions and deviations section.
     # ================================================================

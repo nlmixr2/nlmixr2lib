@@ -23,9 +23,8 @@ Zhang_2025_fluconazole <- function() {
   # clearance; Vcrrt, the apparent distribution volume of the CRRT compartment"). It is a
   # kinetic construct, not an anatomical space or a circuit volume: it is the lumped body space
   # accessible to the extracorporeal filter, from which CRRT removes drug at CLcrrt/Vcrrt.
-  # Declared paper-specific rather than promoted to a canonical compartment per operator ruling
-  # (sidecar request-001 question 1, answered 2026-08-20, option A) -- reversible if a second
-  # CRRT paper needs the same role.
+  # Declared paper-specific rather than promoted to a canonical compartment -- reversible if a
+  # second CRRT paper needs the same role.
   paper_specific_compartments <- "crrt"
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

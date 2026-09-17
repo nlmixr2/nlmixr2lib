@@ -161,13 +161,13 @@ Wallender_2021_piperaquine <- function() {
     # compartments were PRE-SPECIFIED (Table 2 footnote b; the Peer
     # Review File tabulates "Absorption Compartments = 2"), and no
     # separate first-order absorption rate constant is reported, so the
-    # chain empties directly into the central compartment. Encoded in
-    # the Savic 2007 parameterisation ktr = (n + 1) / MTT with n = 2,
-    # i.e. three first-order steps between the dose record and the
-    # central compartment, giving ktr = 3 / 0.045 = 66.7 /day. The paper
-    # never writes the absorption ODEs; this reading was ratified by the
-    # operator (sidecar oare_PMC8602248 request-001 q4, option A) and the
-    # sensitivity of the alternative reading is recorded in the vignette.
+    # chain empties directly into the central compartment. Encoded in the
+    # Savic 2007 parameterisation ktr = (n + 1) / MTT with n = 2, i.e.
+    # three first-order steps between the dose record and the central
+    # compartment, giving ktr = 3 / 0.045 = 66.7 /day. The paper never
+    # writes the absorption ODEs; this reading was ratified by the
+    # operator and the sensitivity of the alternative reading is recorded
+    # in the vignette.
     lmtt <- log(0.045) ; label("Mean transit time of the absorption chain (day)")                                                      # Table 2 Absorption transit time 0.045 d (9.1% RSE, 95% CI 0.034-0.048)
 
     # Allometric exponents applied A PRIORI, not estimated: "Clearance

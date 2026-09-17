@@ -72,10 +72,9 @@ Kim_2015_valsartan <- function() {
 
     # Residual error -- NOT REPORTED in Kim 2015. Sigma was used in the
     # paper's SSE simulation but the numeric value is omitted from the
-    # publication. Approximated at 20% proportional (sidecar option A,
-    # 1501 task report): plausible default for a healthy-volunteer
-    # Phase I small-molecule oral popPK; see vignette Assumptions and
-    # deviations. Not from the paper.
+    # publication. Approximated at 20% proportional: plausible default
+    # for a healthy-volunteer Phase I small-molecule oral popPK; see
+    # vignette Assumptions and deviations. Not from the paper.
     propSd <- 0.2; label("Proportional residual error (fraction) -- approximated; not reported in Kim 2015")
   })
   model({

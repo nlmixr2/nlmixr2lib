@@ -139,7 +139,7 @@ Mehta_2023_bedaquiline_mpbpk <- function() {
     # Between-subject variability. Table 1 states 40% log-normal IIV for the
     # human simulations. ESM S2 applies exp(eta) to ka1, ka2, CLint and CLM2
     # only -- KpT and KpTM2 are plain constants in the final code -- so the
-    # etas below follow the final model code (operator decision, 2026-07-27).
+    # etas below follow the final model code.
     # Encoded as variance = 0.40^2 on the log scale.
     # ---------------------------------------------------------------------
     etalka1   ~ 0.16  # Table 1 bedaquiline 'IIV for ka1, ka2, CLint, CLM2, KpT, and KpTM2 (%) = 40'; ESM S2 ka1 = TVka1*exp(eta.ka1)

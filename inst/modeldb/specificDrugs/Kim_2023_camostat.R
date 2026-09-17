@@ -241,16 +241,16 @@ Kim_2023_camostat <- function() {
     # NOT the printed estimate. Table S1 prints Vmax = 2.215 (RSE 23%,
     # bootstrap 1.97, 5-95% 1.334-2.723) with the unit column left blank, and
     # no unit assignment reconciles it: encoded as 2.215 mg/h the metabolic
-    # branch carries almost no flux and simulated GBA AUCinf at 100 mg is
-    # 5.8 h*ng/mL against the 762.8 in the authors' own Table 2, i.e. under
-    # 1%. Neither x60 (1/min to 1/h) nor x1000 (g to mg, or mg to ug) closes
-    # the gap. 650 mg/h is the value that minimises the sum of squared log
-    # ratios between this model and the paper's own published exposures --
-    # Table 2 AUCinf for both analytes at 100, 200 and 300 mg -- and it also
+    # branch carries almost no flux and simulated GBA AUCinf at 100 mg is 5.8
+    # h*ng/mL against the 762.8 in the authors' own Table 2, i.e. under 1%.
+    # Neither x60 (1/min to 1/h) nor x1000 (g to mg, or mg to ug) closes the
+    # gap. 650 mg/h is the value that minimises the sum of squared log ratios
+    # between this model and the paper's own published exposures -- Table 2
+    # AUCinf for both analytes at 100, 200 and 300 mg -- and it also
     # reproduces the Figure 6 steady-state peaks. Residual deviations are
     # -4.5%, -3.4% and -1.5% on GBPA AUCinf and -17.7%, -2.3% and +7.3% on
-    # GBA AUCinf. Operator-ratified 2026-09-05; full derivation in the
-    # vignette Errata.
+    # GBA AUCinf. ratified 2026-09-05; full derivation in the vignette
+    # Errata.
 
     lkm <- log(1192)
     label("Michaelis constant for GBPA to GBA conversion (ng/mL)")
