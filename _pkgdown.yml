@@ -2264,6 +2264,8 @@ navbar:
         href: articles/Rietveld_2024_irinotecan.html
       - text: "Irinotecan (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Irinotecan liposomal (Adiwijaya 2017)"
+        href: articles/Adiwijaya_2017_irinotecan_liposomal.html
       - text: "Irinotecan mouse (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Iron ferriccarboxymaltose human pbpk (Fan 2025)"
@@ -5372,6 +5374,7 @@ articles:
   - articles/Adamiszak_2025_fluconazole
   - articles/Adams_1998_zalcitabine
   - articles/Adeojo_2024_levonorgestrel
+  - articles/Adiwijaya_2017_irinotecan_liposomal
   - articles/Admiraal_2023_iminobiotin
   - articles/Agarwal_2011_sorafenib_transporters
   - articles/Agerso_2004_desmopressin

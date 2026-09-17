@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Adiwijaya 2017 liposomal irinotecan ([doi:10.1002/cpt.720](https://doi.org/10.1002/cpt.720)) — adults with advanced solid tumours, pooled from six phase I-III studies.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and

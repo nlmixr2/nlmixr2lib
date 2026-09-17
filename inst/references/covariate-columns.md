@@ -9793,6 +9793,18 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `AbdullahKoolmees_2024_voriconazole_pbpk.R` (gates a step reduction of all three voriconazole CYP Michaelis constants -- CYP2C19 9.3 to 3.72 uM, CYP3A4 834.7 to 181.45 uM, CYP2C9 20 to 13.33 uM -- from a model-parameterised onset time `tind` fixed at 24 h, representing PXR-mediated CYP induction; the resulting rise in intrinsic hepatic clearance reproduces the undetectable voriconazole trough observed in the index case), `AbdullahKoolmees_2024_posaconazole_pbpk.R` (declared and carried at its reference value only -- posaconazole is 83 % excreted unchanged and its minor UGT1A4 route was assumed unaffected by PXR upregulation, so the covariate has no structural effect in that model and documents the paper's explicit negative finding).
 - **Notes:** Distinct from `CONMED_ABX` (any-other-antibiotic composite) and from `CONMED_FUSIDIC` (a different staphylococcal agent whose interaction mechanism is CYP3A4 inhibition and albumin displacement rather than PXR-mediated induction) -- flucloxacillin's documented perpetrator mechanism is enzyme *induction*, so the sign of its effect on a CYP substrate's clearance is opposite. The per-model `covariateData[[CONMED_FLUCLOXACILLIN]]$notes` must document the onset lag applied, because the induction is not instantaneous: published case reports place the fall in azole concentrations 2-7 days after flucloxacillin is started, while mechanistic CYP3A4 upregulation is reported to take 2 days to 2 weeks. Where a model implements the induction as a step change, record the step time.
 
+### CONMED_FLUOROURACIL (**canonical for concomitant fluorouracil (5-FU) coadministration indicator**)
+- **Description:** 1 = patient is coadministered fluorouracil (5-FU), conventionally with leucovorin (LV) as a biochemical modulator, alongside the modelled drug; 0 = the modelled drug is given as monotherapy. 5-FU is a fluoropyrimidine antimetabolite whose active anabolites inhibit thymidylate synthase and are incorporated into RNA and DNA; it is cleared predominantly by dihydropyrimidine dehydrogenase. Registered as a coadministration indicator because 5-FU/LV is a standard partner for irinotecan-class and platinum-class cytotoxics, so the same column recurs across oncology popPK analyses that test whether the partner regimen perturbs the modelled drug's disposition.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (modelled drug given as monotherapy).
+- **Source aliases:**
+  - `treatment contain 5FU` / `treatment contains 5FU` -- Adiwijaya 2017 Tables S6 and S7 theta row labels, stated relative to "treatment do not contain 5FU"; same orientation as the canonical.
+  - `Coadministration with 5-FU` -- Adiwijaya 2017 Table S3 covariate-structure row.
+- **Example models:** `Adiwijaya_2017_irinotecan_liposomal.R` (exponential effects of +0.075 on total-irinotecan CL and -1.53e-04 on SN-38 CL; both are small and the paper draws no drug-interaction conclusion from them, but the full-covariate approach retains them in the final model).
+- **Notes:** Distinct from `CONMED_CAPECITABINE` should one be registered: capecitabine is an oral 5-FU prodrug and a patient on it is not receiving the intravenous 5-FU/LV regimen this indicator describes. When a source reports 5-FU and leucovorin as a single combination arm -- the usual case -- record that in the per-model `covariateData[[CONMED_FLUOROURACIL]]$notes` rather than adding a separate leucovorin column, because the two are not separately identifiable.
+
 ### CONMED_FLUOXETINE (**canonical for concomitant fluoxetine (strong CYP2D6 inhibitor) coadministration indicator**)
 - **Description:** 1 = subject coadministered fluoxetine during the observation interval, 0 = no concomitant fluoxetine. Fluoxetine is a selective serotonin reuptake inhibitor and an FDA index **strong** CYP2D6 inhibitor; both fluoxetine and its long-lived metabolite norfluoxetine inhibit CYP2D6, and norfluoxetine additionally inhibits CYP3A4, so the interaction persists for weeks after the last dose. Per-model `notes` should record which pathway the source attributes the interaction to. Distinct from the class-level [[CONMED_CYP2D6_INH]] (any CYP2D6 inhibitor), which is the right column when the source pools inhibitors into one indicator rather than singling fluoxetine out. Time-fixed per subject in a therapeutic-drug-monitoring cohort where comedication is recorded once; time-varying when a study spans on / off fluoxetine periods.
 - **Units:** (binary)
@@ -11748,6 +11760,18 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Oniki_2018_nafld_risk.R` (multiplicative factor 0.592 on the (BMI50 - 17) half-saturation offset of the logit-of-NAFLD sigmoid for G/G homozygotes vs the C/C reference, Oniki 2018 Eq. 4 / Figure 2c).
 - **Notes:** General scope. Companion homozygote indicator to `PNPLA3_CG`; see `PNPLA3_CG` notes for the joint three-level usage and reference category.
 
+### UGT1A1_STAR28_HOM (**canonical for UGT1A1*28 7/7 homozygous-variant genotype indicator**)
+- **Description:** Binary germline genotype indicator for the UGT1A1*28 homozygous-variant group. 1 = subject carries two *28 alleles, i.e. the 7/7 diplotype at the (TA)n dinucleotide repeat in the UGT1A1 promoter TATA box (rs8175347/rs3064744); 0 = otherwise (the union of 6/6 wild-type homozygotes and 6/7 heterozygotes). Time-fixed per subject. The extra TA repeat reduces UGT1A1 transcription, so 7/7 is the reduced-glucuronidation stratum; it is the genotype underlying Gilbert syndrome and the historical predictor of SN-38 exposure and hematological toxicity with nonliposomal irinotecan.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (UGT1A1*28 non-7/7, i.e. 6/6 or 6/7).
+- **Source aliases:**
+  - `UGT1A1*28 == homozygous` (vs `UGT1A1*28 non-homozygous`) -- Adiwijaya 2017 Table S7 theta row label.
+  - `Non 7/7` / `7/7` -- Adiwijaya 2017 Table 1 genotype-count rows.
+- **Example models:** `Adiwijaya_2017_irinotecan_liposomal.R` (exponential effect of -1.46e-05 on SN-38 clearance -- numerically indistinguishable from zero. The coefficient is retained only because the paper's full-covariate approach kept it in the final model; the paper's own reading is that UGT1A1*28 is **not** a significant covariate for SN-38 with liposomal irinotecan, the 7/7 clearance being 1.000-times the non-7/7 clearance, in deliberate contrast to nonliposomal irinotecan. The mechanistic explanation offered is that liposomal encapsulation throttles the SN-38 load reaching UGT enzymes, so even reduced-activity genotypes keep up.)
+- **Notes:** Follows the `<GENE>_STAR<allele>_<HET|HOM>` shape established by `UGT2B15_STAR2_HET` / `UGT2B15_STAR2_HOM`; the star-allele form is used in preference to the `SNP_<GENE>_RS<rsid>` family because the source papers report diplotypes (`6/6`, `6/7`, `7/7`) rather than rsID genotypes, and because UGT1A1*28 has two rsIDs in circulation for the same repeat polymorphism. A companion `UGT1A1_STAR28_HET` should be registered by the first model that needs the 6/7 stratum separately; Adiwijaya 2017 pools 6/6 and 6/7 into the reference in its final model and only separates them in a sensitivity analysis (its Table S11), which found the 6/7 and 7/7 clearances within 0.0% and 2.7% of 6/6.
+
 ### UGT2B7_211GG (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) homozygous G/G genotype indicator**)
 - **Description:** 1 = subject is homozygous for the wild-type (ancestral) guanine at nucleotide 211 of the UGT2B7 gene, corresponding to alanine at amino-acid position 71 (Ala71/Ala71) in the substrate-binding N-terminal half of the UGT2B7 enzyme; 0 = otherwise (211GT heterozygote or 211TT homozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, also referred to as the UGT2B7*2 variant). Time-fixed per subject (germline genotype).
 - **Units:** (binary)
@@ -13346,6 +13370,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** "Study = APLIOS" (categorical effect column in Yu 2022 covariate equations).
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on Emax of B cell lysis).
 - **Notes:** Captures a between-study shift in the maximum B-cell lysis stimulatory effect not explained by the other covariates in the final model.
+
+### STUDY_NAPOLI1 (**canonical for NAPOLI-1 study / NAPOLI-1 drug-product manufacturing-site indicator**)
+- **Description:** 1 = subject enrolled in NAPOLI-1 (NCT01494506; phase 3; nanoliposomal irinotecan with or without 5-FU/LV in metastatic pancreatic cancer previously treated with gemcitabine), 0 = subject enrolled in one of the five PharmaEngine (PEI) phase I-II nal-IRI studies pooled in the Adiwijaya 2017 analysis (PEP0201, PEP0203, PEP0206, and two others listed in that paper's Table S1).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled PharmaEngine phase I-II studies / PEI manufacturing site).
+- **Source aliases:**
+  - `mfg == NAPOLI` (vs `mfg == PEI`) -- Adiwijaya 2017 Tables S6 and S7 theta row labels. The source names the covariate **manufacturing site**, not study: nal-IRI used in the phase III study was manufactured at a different site from the material used in the phase I-II studies, and Table S3 gives "Potential difference in manufacturing of nal-IRI in phase 2 and phase 3 studies" as the rationale. The two levels are perfectly collinear with the study (258 of 353 subjects are NAPOLI-1), so the canonical study indicator carries the manufacturing site rather than minting a parallel `MFGSITE_*` column that could never take a different value.
+- **Example models:** `Adiwijaya_2017_irinotecan_liposomal.R` (exponential effects on four parameters at once: total-irinotecan V1 -0.172 and CL -0.189, the SN-38 formation rate constant +3.79e-05, and the encapsulated-SN-38 mass fraction -0.615 -- the last being by far the largest, a 46% lower contaminant fraction in the phase III material, which is the effect the manufacturing rationale most directly predicts).
+- **Notes:** Scope is `specific` because the indicator names one trial. A model that needs the manufacturing site to vary independently of the study -- e.g. a later analysis pooling several trials that each drew on both sites -- should propose a separate covariate rather than reusing this one; see the Source aliases note for why the two are indistinguishable in the founding analysis.
 
 ### STUDY_MIRROR (**canonical for MIRROR dose-finding study indicator**)
 - **Description:** 1 = subject enrolled in the MIRROR dose-finding study (NCT01457924; phase 2; SC ofatumumab dose-ranging in RRMS), 0 = other study in the Yu 2022 pooled analysis.
