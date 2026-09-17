@@ -100,6 +100,8 @@
 # literally into the equation -- `(WT / 70)^0.75`, `CRCL / 68`, `AGE - 40` --
 # so the author's own typical value is recoverable from the source rather than
 # guessed at.  Returns NA when no such constant appears.
+# nolint start: cyclocomp_linter. One branch per expression shape; the
+# branch count is the rule set, not accidental complexity.
 .probeNormalisingWalk <- function(e, covName, hit) {
   if (is.finite(hit$value) || !is.call(e)) {
     return(invisible(NULL))
@@ -132,6 +134,7 @@
   }
   invisible(NULL)
 }
+# nolint end
 
 .probeNormalisingConstant <- function(expr, covName) {
   # An environment rather than a closure variable: reference semantics mean the
@@ -393,6 +396,8 @@ probeMaxRelDiff <- function(a, b) {
   c(acc, list(list(sign = sign, expr = e)))
 }
 
+# nolint start: cyclocomp_linter. Screens each model file for
+# linCmt-convertible topology; the branch count is the rule set.
 .probeScreenOneFile <- function(path) {
   mb <- tryCatch(.probeModelBlockOfFile(path), error = function(e) NULL)
   if (is.null(mb)) {
@@ -456,6 +461,7 @@ probeMaxRelDiff <- function(a, b) {
 #'
 #' @return Character vector of model names.
 #' @noRd
+# nolint end
 linCmtRiskCandidates <- function() {
   root <- system.file("modeldb", package = "nlmixr2lib")
   if (!nzchar(root)) {

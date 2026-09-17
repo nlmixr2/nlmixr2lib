@@ -288,7 +288,8 @@ test_that("the linCmt-drop quarantine contains no model that already solves", {
       # nolint next: line_length_linter.
       label = paste0(
         nm,
-        " now solves the same with and without rxode2's linCmt conversion, so it must be removed from knownLinCmtDropModels"
+        " now solves the same with and without rxode2's linCmt conversion,",
+        " so it must be removed from knownLinCmtDropModels"
       )
     )
   }
