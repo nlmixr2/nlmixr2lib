@@ -1922,6 +1922,10 @@ navbar:
         href: articles/Gotz_2025_fosfomycin.html
       - text: "Fosfomycin (Huppe 2023)"
         href: articles/Huppe_2023_fosfomycin.html
+      - text: "Fosfomycin iv (OrtizZacarias 2018)"
+        href: articles/OrtizZacarias_2018_fosfomycin.html
+      - text: "Fosfomycin oral (OrtizZacarias 2018)"
+        href: articles/OrtizZacarias_2018_fosfomycin.html
       - text: "FosfomycinCalcium (Isla 2024)"
         href: articles/Isla_2024_fosfomycinCalcium.html
       - text: "Fosmidomycin (Pfaffendorf 2026)"
@@ -6929,6 +6933,7 @@ articles:
   - articles/Ooi_2026_elafibranor
   - articles/Oosten_2016_fentanyl
   - articles/Oosten_2017_morphine
+  - articles/OrtizZacarias_2018_fosfomycin
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab
