@@ -2,6 +2,10 @@
 
 # development version
 
+- Add Geerts 2018 amyloid-beta neurotransmission QSP model
+  ([doi:10.1186/s13195-018-0343-5](https://doi.org/10.1186/s13195-018-0343-5))
+  — simulated Alzheimer's disease and mild cognitive impairment populations.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and
