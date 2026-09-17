@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gasthuys 2018 desmopressin ([doi:10.3389/fphar.2018.00041](https://doi.org/10.3389/fphar.2018.00041)) - growing piglets aged 8 days to 6 months.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and

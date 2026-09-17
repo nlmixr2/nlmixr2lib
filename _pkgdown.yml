@@ -1182,6 +1182,8 @@ navbar:
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
         href: articles/Schutte_2018_desmopressin.html
+      - text: "Desmopressin piglet (Gasthuys 2018)"
+        href: articles/Gasthuys_2018_desmopressin_piglet.html
       - text: "Deutenzalutamide (Liu 2024)"
         href: articles/Liu_2024_deutenzalutamide.html
       - text: "Dexamethasone (Ozdin 2025)"
@@ -5905,6 +5907,7 @@ articles:
   - articles/Garrett_2014_axitinib
   - articles/Gaspar_2023_apixaban
   - articles/Gaspar_2025_fexofenadine
+  - articles/Gasthuys_2018_desmopressin_piglet
   - articles/Gasthuys_2023_paracetamol
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
