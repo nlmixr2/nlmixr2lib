@@ -11224,6 +11224,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Sun_2025_maribavir_thrombocytopenia.R` (coefficient `-1.30`, OR 0.271, 95% CI 0.101-0.730, p = 0.0098 -- antilymphocyte exposure is associated with LOWER treatment-emergent thrombocytopenia risk in this cohort).
 - **Notes:** **Overlaps with, but is not the same column as, the `HCT_TCD_*` set.** `HCT_TCD_ALEMTUZUMAB` / `HCT_TCD_ATG` record the graft T-cell-depletion PROTOCOL for the current transplant -- a property of how the transplant was prepared -- whereas `CONMED_ANTILYMPHOCYTE` records antilymphocyte drug exposure as a concomitant-medication fact. Sun 2025 reports both, with different denominators (108 of 238 subjects, 45.4%, for antilymphocyte use, against 83 of 238 across the in-vivo `HCT_TCD_*` levels), and fits them in different endpoint models -- so they must not be aliased even though they are strongly correlated. The composite cannot be decomposed to named agents from the source, which reports only the class; a paper naming the agent should use `CONMED_<INN>` (e.g. `CONMED_ALEMTUZUMAB`) instead. Scope: specific.
 
+### CYP2A6 (**canonical for CYP2A6 individual metabolic-activity score**)
+- **Description:** Continuous individual-level CYP2A6 metabolic-activity score. Same intent and documentation policy as the `CYP2D6`, `CYP3A4`, `CYP2C19` and `CYP2B6` continuous canonicals: one canonical column for any CYP2A6 phenotype proxy the source paper reports as a continuous number (probe-substrate metabolic ratio, model-based individual clearance, percent-of-reference enzyme activity, copy-number-corrected expression score, or an activity-score sum from `*allele` genotypes), with the per-model `covariateData[[CYP2A6]]$units`, `description` and `notes` recording which proxy is in force and the reference value the model centers on. CYP2A6 is the principal enzyme in nicotine C-oxidation to cotinine, so this column is the natural metabolic covariate for nicotine and coumarin popPK models. Time-invariant in the known example (a single baseline determination).
+- **Units:** Paper-specific -- document per-model (e.g., `percent` in Marchand 2017, where the value is baseline CYP2A6 activity expressed as a percentage).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Models center on a population-typical value (29.2 percent in Marchand 2017); document the reference value per-model in `covariateData[[CYP2A6]]$notes`.
+- **Source aliases:**
+  - `CYP2A6 activity` -- Marchand 2017 (paper Table 2 baseline covariate summary, Suppl. Table 1 primary-covariate rationale "CYP2A6 is the major CYP enzyme involved in nicotine metabolism", and Table 4 covariate equations). Reported as a percentage; learning-dataset mean 31.5 (SD 18.2) percent.
+- **Example models:** `Marchand_2017_nicotine.R` (two power-law effects centered on 29.2 percent: `(CYP2A6 / 29.2)^0.322` on apparent nicotine clearance, so a doubling of CYP2A6 activity raises Cl/F by 25 percent; and `(CYP2A6 / 29.2)^-0.401` on the background baseline nicotine concentration C0, so a doubling lowers C0 by 24 percent -- Marchand 2017 Table 4).
+- **Notes:** Fulfils part of the prospective-registration TODO recorded under `CYP3A4` for the drug-metabolizing-CYP set (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`), following the same continuous-individual-activity-score pattern that `CYP2B6` used when it filled its own slot. A future paper reporting only discrete CYP2A6 phenotype labels (poor / intermediate / normal metabolizer) should register companion binary indicators on the `CYP2D6_PM` / `CYP2C9_EM` model rather than coercing labels into this column; a paper offering both should prefer this continuous column, per the reasoning recorded under `CYP2D6`. Note the opposite-sign pairing in the founding example: higher CYP2A6 activity raises clearance and therefore lowers the carried-over background concentration, which is a coherence check worth repeating when a future model puts this covariate on two parameters at once.
+
 ### CYP2D6 (**canonical for CYP2D6 individual metabolic-activity score**)
 - **Description:** Continuous individual-level CYP2D6 metabolic-activity score. The intent is a single canonical column for any CYP2D6 phenotype proxy that the source paper reports as a continuous number (probe-substrate model-based individual clearance, copy-number-corrected expression score, activity-score sum from `*allele` genotypes, etc.); the per-model `covariateData[[CYP2D6]]$units`, `description`, and `notes` document which proxy is in force and the population-median reference value used inside the model. Time-invariant in all known examples (germline genotype or one-time probe-substrate measurement).
 - **Units:** Paper-specific -- document per-model (e.g., `ng/L` in Ter Heine 2014 where the value is the dextromethorphan-probe model-based individual CYP2D6 clearance).
@@ -17978,6 +17989,17 @@ sibling such as `AUC_BAST_FW`.
 - **Example models:** `Schlachter_2026_atogepant.R` (two power-model effects per the Schlachter 2026 Section 3.1 display equations: `Frel = (dose/60 mg)^0.119`, reproducing the paper's statement that Frel is approximately 1.24-fold higher at 60 mg than at 10 mg since `(60/10)^0.119 = 1.24`, and `Tk0 = 0.908 * (dose/60 mg)^0.199`. The second estimate appears in Table 2 under the label "Exponential dose effect on ka" because the model derives `ka = Fk0 / (Tk0 * (1 - Fk0))`, so a covariate applied to the zero-order duration propagates into the first-order rate constant; the display equation shows it applied to Tk0).
 - **Notes:** Auto-approved member of the `DOSE_<drug>_<units>` family. As with every member of that family, the column **must not be named `DOSE`**: a covariate column literally named `DOSE` (any casing) is consumed by rxode2's `etTrans()` and never reaches `model()`, so the dose amount must be supplied both as the event-table `amt` and as this separately-named covariate column.
 
+### DOSE_NICOTINE_MG (**canonical for the nominal nicotine dose of the product used on an occasion**)
+- **Description:** Per-dose-record nominal nicotine content of the product used, in mg. For inhaled products this is the nominal nicotine ISO yield (0.5 mg for the Tobacco Heating System, 0.1-1.5 mg for conventional cigarettes depending on the individual brand); for nicotine replacement products it is the labelled nicotine content (1 mg for the regular nasal spray, 2 mg for the mentholated gum). Continuous, and time-varying in crossover designs where a subject uses more than one product. It is emphatically NOT the systemically available amount: how much of the nominal content is actually released and absorbed is exactly what the relative-bioavailability term it drives is there to estimate.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the ratio power term `(DOSE_NICOTINE_MG / 0.5)^e_dose_nicotine_mg_frel`. The reference 0.5 mg is the nominal nicotine ISO yield of the Tobacco Heating System, the reference product.
+- **Source aliases:**
+  - `nicotine ISO yield` / `nicotine dose` -- Marchand 2017 (paper Sect. 2.2 dataset composition, Suppl. Table 1 primary-covariate list, and the Table 4 Frel equation, which labels the term "nicotine ISO yield" even though the same column carries the labelled nicotine content of the non-inhaled products).
+- **Example models:** `Marchand_2017_nicotine.R` (power effect on relative bioavailability, `Frel = (DOSE_NICOTINE_MG / 0.5)^-0.573 * ...`, so a doubling of the nominal nicotine dose reduces Frel by 33 percent; Marchand 2017 Table 4 and the Sect. 4 self-titration rationale).
+- **Notes:** Auto-approved member of the `DOSE_<drug>_<units>` family. As with every member, the column **must not be named `DOSE`**: a covariate column literally named `DOSE` (any casing) is consumed by rxode2's `etTrans()` and never reaches `model()`, so the nominal dose must be supplied both as the event-table `amt` and as this separately-named covariate column. The value on a record must equal that record's `amt` when the model is simulated in mg, because the same number is doing two jobs -- setting the administered amount and indexing the dose-dependent bioavailability. Distinct from the product-type indicators `FORM_NICOTINE_CC` / `FORM_NICOTINE_NNS` / `FORM_NICOTINE_GUM`, which carry the product's identity rather than its nicotine content; Marchand 2017 fits both simultaneously, so nasal spray is not merely "a 1 mg product" but also carries its own bioavailability offset.
+
 ### FORM_ATOGEPANT_EARLYTAB (**canonical for the early phase 1 atogepant tablet formulation indicator**)
 - **Description:** 1 = dose administered as one of the early phase 1 atogepant tablet presentations, 0 = the Formulation 5 tablet used in the phase 2b/3 and phase 3 studies and carried into the marketed product. Per-dose-record indicator.
 - **Units:** (binary)
@@ -18138,3 +18160,47 @@ expected to recur in any combined-evidence model; the rest are COPD-specific.
   - `DRGOL1` / `DRGOL2` / `DRGOL3` -- the Yang 2026 control streams set an open-label flag per treatment slot.
 - **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (scales the tiotropium reference efficacy by `rel_tio_ol` = 0.918 while keeping the blinded ED50, i.e. open-label tiotropium is estimated to perform about 8% worse than the same drug given blinded).
 - **Notes:** Strictly a TRIAL-CONDUCT covariate rather than a formulation, and is registered in the `FORM_<drug>_<variant>` family only because it selects between two variants of one drug's effect in exactly the way the other members do; the alternative of a general `OPENLABEL` covariate was rejected because the estimated effect is a tiotropium-specific potency ratio, not a generic unblinding bias, and pooling it across drugs would be unsupported. The direction is counterintuitive -- open-label administration reducing rather than inflating the measured effect -- and reflects that the open-label tiotropium arms served as active comparators in trials of other drugs rather than as the trial's own test arm. The founding control stream records that "blinded tio never given with another drug being OL in dataset".
+
+### FORM_NICOTINE_CC (**canonical for the conventional-cigarette nicotine-product indicator**)
+- **Description:** 1 = the nicotine dose on this record was taken from a conventional (combusted) cigarette; 0 = any other nicotine product. Per-dose-occasion indicator. One of three mutually exclusive product-type indicators (`FORM_NICOTINE_CC`, `FORM_NICOTINE_NNS`, `FORM_NICOTINE_GUM`) whose common reference level -- all three zero -- is the Tobacco Heating System (THS), the reference product of the Marchand 2017 analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Tobacco Heating System). THS is the bioavailability anchor: Marchand 2017 Table 3 fixes Frel-THS to 1 and reports every other product as a log-scale difference from it.
+- **Source aliases:**
+  - `nature of product` -- Marchand 2017 Suppl. Table 1 (a categorical primary covariate) and Table 4, where the levels appear as the separate estimates dFreld-CC, dFreld-NNS and dFreld-GUM.
+- **Example models:** `Marchand_2017_nicotine.R` (`Frel_CC = Frel_THS * exp(0.0189)`, i.e. cigarette bioavailability is 102 percent of THS at the same nicotine ISO yield, body weight and subject characteristics; Marchand 2017 Table 4).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. Registered as a product-type rather than a dosage-form contrast because the family's defining question -- does this record's delivery form change the drug's input kinetics or extent of absorption -- is exactly what separates a combusted cigarette from a heated-tobacco stick, a nasal spray and a chewing gum. Orthogonal to `FORM_NICOTINE_MENTHOL`, which flags the mentholated variant of whichever product is in use: a mentholated cigarette record carries both indicators. Do not fold the product identity into `DOSE_NICOTINE_MG`; Marchand 2017 fits the nominal-dose power term and these indicators simultaneously, so the two carry genuinely different information.
+
+### FORM_NICOTINE_NNS (**canonical for the nicotine-nasal-spray product indicator**)
+- **Description:** 1 = the nicotine dose on this record was given as the regular nicotine nasal spray; 0 = any other nicotine product. Per-dose-occasion indicator. Sibling of `FORM_NICOTINE_CC` and `FORM_NICOTINE_GUM` with the same all-zero Tobacco Heating System reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Tobacco Heating System).
+- **Source aliases:**
+  - `nature of product` -- Marchand 2017 Suppl. Table 1 and Table 4 (level NNS, estimate dFreld-NNS).
+- **Example models:** `Marchand_2017_nicotine.R` (`Frel_NNS = Frel_THS * exp(-1.42)`, i.e. nasal-spray bioavailability is 24 percent of THS; Marchand 2017 Table 4).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. The nasal spray is not an inhaled product, yet Marchand 2017 found zero-order absorption described it adequately alongside the inhaled products (Sect. 3.2), so this indicator modifies only the extent of absorption and not the absorption model: unlike `FORM_NICOTINE_GUM` it carries no effect on the zero-order duration Tdur.
+
+### FORM_NICOTINE_GUM (**canonical for the nicotine-gum product indicator**)
+- **Description:** 1 = the nicotine dose on this record was given as nicotine chewing gum; 0 = any other nicotine product. Per-dose-occasion indicator. Sibling of `FORM_NICOTINE_CC` and `FORM_NICOTINE_NNS` with the same all-zero Tobacco Heating System reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Tobacco Heating System).
+- **Source aliases:**
+  - `nature of product` -- Marchand 2017 Suppl. Table 1 and Table 4 (level GUM, estimates dFreld-GUM and dTdurd-GUM).
+- **Example models:** `Marchand_2017_nicotine.R` (two effects: `Frel_GUM = Frel_THS * exp(-0.489)`, 61 percent of THS bioavailability; and `Tdur = 5.30 * exp(2.14) = 45 min` against 5.3 min for every other product, the authors' explicit allowance for chewing taking longer than inhaling -- Marchand 2017 Table 4 and Sect. 3.2).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. The only product-type indicator in the set that modifies the absorption *rate* structure as well as its extent, which is why the three indicators are registered separately rather than as a single categorical column. In the founding dataset every gum occasion was the mentholated variant, so `FORM_NICOTINE_MENTHOL` is also 1 on those records and the two menthol effects apply on top of the gum effects; a future dataset with regular-flavour gum would separate them.
+
+### FORM_NICOTINE_MENTHOL (**canonical for the mentholated nicotine-product variant indicator**)
+- **Description:** 1 = the nicotine product used on this record was its mentholated variant; 0 = the regular, non-mentholated variant. Per-dose-occasion indicator, and deliberately orthogonal to the product-type indicators: mentholated heated-tobacco sticks, mentholated cigarettes and mentholated gum all carry a 1 alongside whichever product indicator applies.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (regular, non-mentholated variant).
+- **Source aliases:**
+  - `menthol` -- Marchand 2017 Suppl. Table 1 (a binary secondary covariate) and Table 4 (estimates dVdMENTH and dTdurdMENTH).
+- **Example models:** `Marchand_2017_nicotine.R` (`V1/F = 70.0 * exp(0.0912)`, a 9.5 percent larger apparent central volume, and `Tdur = 5.30 * exp(0.0530)`, a 5 percent longer zero-order absorption duration; Marchand 2017 Table 4).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family, registered as a formulation-attribute rather than a product-type indicator so that it composes with `FORM_NICOTINE_CC` / `FORM_NICOTINE_NNS` / `FORM_NICOTINE_GUM` instead of competing with them. Carry the founding paper's own caveat into any reuse: Marchand 2017 Sect. 4 warns that menthol may be confounded with region, product and product-use behaviour, since the gum was a menthol variant studied only in Japanese subjects, and reports no mechanistic explanation for either effect. The two effects it does carry are on the determinants of Cmax and Tmax only -- menthol was found not to affect Frel or Cl/F, i.e. not to affect AUC -- so a model that needs only exposure can leave this column at 0 without biasing the area under the curve.

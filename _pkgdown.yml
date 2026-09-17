@@ -3148,6 +3148,8 @@ navbar:
         href: articles/Cortez_2015_nevirapine.html
       - text: "Nicorandil (Iida 2008)"
         href: articles/Iida_2008_nicorandil.html
+      - text: "Nicotine (Marchand 2017)"
+        href: articles/Marchand_2017_nicotine.html
       - text: "Nicotine pbpk (Salehi 2025)"
         href: articles/Salehi_2025_nicotine_pbpk.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
@@ -6457,6 +6459,7 @@ articles:
   - articles/Maranchick_2026_pyrazinamide_ethambutol
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
+  - articles/Marchand_2017_nicotine
   - articles/Marianski_2026_ceftriaxone
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
