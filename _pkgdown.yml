@@ -5002,6 +5002,8 @@ navbar:
         href: articles/Shen_2024_vancomycin.html
       - text: "Vancomycin (Shiau 2026)"
         href: articles/Shiau_2026_vancomycin.html
+      - text: "Vancomycin (Song 2017)"
+        href: articles/Song_2017_vancomycin.html
       - text: "Vancomycin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
@@ -6915,6 +6917,7 @@ articles:
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
+  - articles/Song_2017_vancomycin
   - articles/Song_2024_tigecycline
   - articles/Song_2025_infliximab
   - articles/Songvut_2026_andrographolide
