@@ -2527,3 +2527,42 @@ test_that("the prob_ family is an observation form, not a compartment name", {
   expect_false(nlmixr2lib:::.matchesCompartment("prob_brand_new_endpoint42", conv))
   expect_true(nlmixr2lib:::.matchesProbOutput("prob_brand_new_endpoint42", conv))
 })
+
+test_that("the model column names the model by how it was supplied", {
+  anon <- function() {
+    ini({
+      lcl <- 1
+      propSd <- 0.1
+    })
+    model({
+      cl <- exp(lcl)
+      d/dt(central) <- -cl * central
+      Cc <- central
+      Cc ~ prop(propSd)
+    })
+  }
+  # a bare function carries no name in its closure
+  res <- suppressWarnings(checkModelConventions(anon, verbose = FALSE))
+  expect_equal(unique(res$model), "<function>")
+  # a readModelDb() function carries the model name in its closure
+  res <- suppressWarnings(checkModelConventions(readModelDb("PK_1cmt"), verbose = FALSE))
+  expect_equal(unique(res$model), "PK_1cmt")
+  # an rxUi is named by rxode2; an anonymous one has a NULL modelName
+  res <- suppressWarnings(checkModelConventions(nlmixr2est::nlmixr(anon), verbose = FALSE))
+  expect_equal(unique(res$model), "anon")
+  ui <- rxode2::rxode2(function() {
+    ini({
+      lcl <- 1
+      propSd <- 0.1
+    })
+    model({
+      cl <- exp(lcl)
+      d/dt(central) <- -cl * central
+      Cc <- central
+      Cc ~ prop(propSd)
+    })
+  })
+  expect_null(ui$modelName)
+  res <- suppressWarnings(checkModelConventions(ui, verbose = FALSE))
+  expect_equal(unique(res$model), "<rxUi>")
+})
