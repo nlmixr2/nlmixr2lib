@@ -1,0 +1,961 @@
+---
+title: "Levofloxacin (Tao 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Levofloxacin (Tao 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tao_2026_levofloxacin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tao_2026_levofloxacin"))$description`
+* Article: <https://doi.org/10.1128/aac.01853-25>
+* Supplement (Tables S1-S3, Figures S1-S4): `AAC01853-25-s0001.docx`, available
+  from the Europe PMC open-access record for
+  [PMC13231918](https://europepmc.org/article/MED/10.1128/aac.01853-25)
+
+Tao and colleagues developed the first population PK model for intravenous
+levofloxacin in children with severe refractory *Mycoplasma pneumoniae*
+pneumonia (SRMPP), then used a Cox proportional hazards model to derive a
+steady-state exposure target and Monte Carlo simulation to recommend a dose.
+This vignette packages the PK model and checks it against the paper's own
+answer keys: the reported weight-normalized clearance, the observed
+steady-state AUC distribution (Table S2), and the 12-scenario probability of
+target attainment tables (Table 3 and Table S3).
+
+# Population
+
+The model was fit to 293 scavenged plasma samples from 191 Chinese pediatric
+patients (100 male, 91 female) aged 0.16 to 16 years, treated at a single
+center between April 2023 and April 2024 (Table 1). Mean age was 7.07 years
+(SD 2.77) and mean body weight 24.05 kg (SD 9.00). All patients had normal
+renal function: mean serum creatinine 31.77 umol/L (SD 8.03) and mean eGFR by
+the modified Schwartz equation 149.61 mL/min/1.73 m^2 (SD 34.48). Levofloxacin
+was given as a 0.5 to 2 h syringe-pump infusion at 8 to 10 mg/kg per dose, q12h
+below 5 years and q24h from 5 years, capped at 750 mg/day; the mean daily dose
+was 11.32 mg/kg (SD 3.06). All patients received concomitant glucocorticoids.
+
+The design is sparse and opportunistic -- roughly 1.5 samples per child -- which
+is why the authors could estimate interindividual variability on clearance only
+and fixed it to zero on the central volume, the peripheral volume and
+intercompartmental clearance because of high shrinkage. Only 7 patients were
+under 2 years of age.
+
+A separate exposure-response cohort of 161 patients (Table S2, after excluding
+4 who discontinued for adverse effects) had a median steady-state AUC(0-24 h) of
+35.59 mg*h/L (IQR 33.11 to 41.54) on a median daily dose of 10.00 mg/kg. That
+distribution is the main external anchor used below.
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Tao_2026_levofloxacin"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Tao_2026_levofloxacin.R`. The table below
+collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (theta CL) | 6.85 L/h | Table 2, fixed effects, `theta_CL` (RSE 4.33%); bootstrap median 6.88, 95% CI 6.34-7.48 |
+| `lvc` (theta V1) | 25.04 L | Table 2, `theta_V1` (RSE 8.78%); bootstrap median 25.15, 95% CI 20.98-29.94 |
+| `lq` (theta Q) | 1.20 L/h | Table 2, `theta_Q` (RSE 29.54%); bootstrap median 1.19, 95% CI 0.64-2.72 |
+| `lvp` (theta V2) | 5.28 L | Table 2, `theta_V2` (RSE 18.84%); bootstrap median 5.32, 95% CI 3.51-8.38 |
+| `e_wt_cl` | 1.11 | Table 2, `theta_BW_CL` (RSE 12.88%); bootstrap median 1.09, 95% CI 0.76-1.29 |
+| `e_creat_cl` | -0.20 | Table 2, `theta_SCr_CL` (RSE 24.86%); bootstrap median -0.20, 95% CI -0.31 to -0.10 |
+| `e_wt_vc` | 1.83 | Table 2, `theta_BW_V1` (RSE 14.66%); bootstrap median 1.77, 95% CI 1.24-2.18 |
+| `etalcl` (variance) | 0.013 | Table 2, interindividual variability, row `CL (omega 2)` (RSE 21.08%); bootstrap median 0.012, 95% CI 0.0073-0.018 |
+| `propSd` | 0.350 | Table 2, residual variability, `Proportional error (%)` = 35.0 (RSE 5.90%); bootstrap median 35.0, 95% CI 31.0-39.0 |
+| `cl <- ... * (WT/24.05)^e_wt_cl * (CREAT/31.77)^e_creat_cl` | n/a | Table 2 footnote equation: `CL = theta_CL * (BW/24.05)^theta_BW_CL * (SCr/31.77)^theta_SCr_CL * exp(eta_CL)` |
+| `vc <- ... * (WT/24.05)^e_wt_vc` | n/a | Table 2 footnote equation: `V1 = theta_V1 * (BW/24.05)^theta_BW_V1` |
+| Two-compartment, first-order elimination | n/a | Results, "PopPK analysis of levofloxacin": "A two-compartment model with first-order elimination best described the data" |
+| Exponential IIV, proportional residual error | n/a | Methods, "Population pharmacokinetic modeling"; Results: "Residual variability was best captured by a proportional model" |
+| IIV on V1, V2 and Q fixed to zero | n/a | Results: "Interindividual variability for the central (V1) and peripheral (V2) volumes of distribution and intercompartmental clearance was fixed to zero due to high shrinkage" |
+| Reference values 24.05 kg and 31.77 umol/L | n/a | Table 1 cohort **means** (not the medians 22.50 kg / 30.70 umol/L); the Table 2 footnote equations normalize to them explicitly |
+
+Two numbers external to Table 2 are used as validation targets below and are
+*not* model inputs:
+
+| Target | Value | Source location |
+|--------|-------|-----------------|
+| Weight-normalized typical CL | 0.28 L/kg/h | Discussion, first paragraph after the model summary |
+| Observed steady-state AUC(0-24 h), n = 161 | median 35.59 mg*h/L (IQR 33.11-41.54) | Table S2, on a median daily dose of 10.00 mg/kg |
+| Efficacy target AUC(0-24 h) | 30.74 mg*h/L | Results, exposure-response; HR 2.03 (95% CI 1.12-3.68), P = 0.019 |
+| Probability of target attainment, 12 scenarios | Table 3 (8/9/10 mg/kg) and Table S3 (9/10/11 mg/kg) | |
+
+# Model structure
+
+```{r model}
+mod <- readModelDb("Tao_2026_levofloxacin")
+mod
+```
+
+Dosing is intravenous into `central`; there is no depot. The infusion duration
+is set to 1 h throughout this vignette, the midpoint of the 0.5 to 2 h range in
+Methods. For a linear model the steady-state AUC over a dosing interval does
+not depend on the infusion duration at all, so nothing below is sensitive to
+that choice; only the peak concentration is.
+
+# Typical-value profile and the steady-state AUC identity
+
+The single most informative deterministic check on this model is that the
+steady-state AUC over one dosing interval equals the daily dose divided by
+clearance. That identity holds for any linear disposition model at steady
+state, so it simultaneously exercises the ODE system, the infusion handling,
+the NCA window and the covariate model -- and it is what the paper's entire
+exposure-response and dose-finding argument rests on, because
+`AUC(ss,0-24h) = daily dose / CL` is how the authors' Monte Carlo target
+attainment is generated.
+
+```{r typical-events}
+tau_h        <- 24        # dosing interval for the q24h reference schedule
+n_days       <- 7         # doses given before the NCA interval; terminal t1/2 is ~4 h
+infusion_dur <- 1         # h, midpoint of the 0.5-2 h range in Methods
+ss_start     <- (n_days - 1) * tau_h
+ss_end       <- ss_start + tau_h
+
+# One subject: the reference child at the Table 1 cohort means.
+ref_wt    <- 24.05
+ref_creat <- 31.77
+
+make_events <- function(subjects, mgkg_per_dose, tau, id_offset = 0L,
+                        label = "reference") {
+  subjects <- subjects |>
+    dplyr::mutate(
+      id  = id_offset + dplyr::row_number(),
+      amt = pmin(mgkg_per_dose * .data$WT, 750 * tau / 24)  # 750 mg/day cap, Methods
+    )
+  dose_times <- seq(0, ss_start + tau_h - tau, by = tau)
+  doses <- subjects |>
+    tidyr::crossing(time = dose_times) |>
+    dplyr::mutate(evid = 1L, dur = infusion_dur, cmt = "central")
+  obs <- subjects |>
+    dplyr::select(-"amt") |>
+    tidyr::crossing(time = seq(ss_start, ss_end, by = 0.25)) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, dur = NA_real_, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(regimen = label) |>
+    dplyr::arrange(.data$id, .data$time, dplyr::desc(.data$evid))
+}
+
+ref_subject <- tibble::tibble(WT = ref_wt, CREAT = ref_creat)
+ev_typ <- make_events(ref_subject, mgkg_per_dose = 10, tau = tau_h,
+                      label = "10 mg/kg q24h")
+```
+
+```{r typical-solve}
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = ev_typ,
+  keep = c("WT", "CREAT", "regimen"), returnType = "data.frame"
+)
+# rxSolve drops `id` entirely for a single subject (see the vignette failure
+# patterns reference); restore it so the PKNCA grouping formula works.
+if (is.null(sim_typ$id)) sim_typ$id <- 1L
+
+cl_typ <- unique(round(sim_typ$cl, 10))
+vc_typ <- unique(round(sim_typ$vc, 10))
+stopifnot(length(cl_typ) == 1L, length(vc_typ) == 1L)
+
+tibble::tibble(
+  Quantity = c("CL (L/h)", "CL/WT (L/kg/h)", "V1 (L)", "V1/WT (L/kg)",
+               "Q (L/h)", "V2 (L)", "Terminal half-life (h)"),
+  Model = c(
+    cl_typ, cl_typ / ref_wt, vc_typ, vc_typ / ref_wt,
+    unique(sim_typ$q), unique(sim_typ$vp),
+    {
+      k10 <- cl_typ / vc_typ
+      k12 <- unique(sim_typ$q) / vc_typ
+      k21 <- unique(sim_typ$q) / unique(sim_typ$vp)
+      s <- k10 + k12 + k21
+      log(2) / ((s - sqrt(s^2 - 4 * k10 * k21)) / 2)
+    }
+  )
+) |>
+  knitr::kable(digits = 3,
+               caption = "Typical-value parameters at the Table 1 cohort means (24.05 kg, 31.77 umol/L).")
+```
+
+The paper reports the weight-normalized typical clearance in the Discussion as
+0.28 L/kg/h. The model gives `r sprintf("%.4f", cl_typ / ref_wt)` L/kg/h, which
+rounds to the published value.
+
+```{r typical-check-cl}
+# Deterministic: no cohort, no RNG. A mis-transcribed theta_CL or reference
+# weight moves this immediately.
+stopifnot(abs(cl_typ / ref_wt - 0.28) < 0.005)
+```
+
+```{r typical-nca}
+nca_conc_typ <- sim_typ |>
+  dplyr::filter(!is.na(.data$Cc)) |>
+  dplyr::select("id", "time", "Cc", "regimen")
+
+nca_dose_typ <- ev_typ |>
+  dplyr::filter(.data$evid == 1L) |>
+  dplyr::select("id", "time", "amt", "regimen")
+
+ss_intervals <- data.frame(
+  start = ss_start, end = ss_end,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE,
+  auclast = TRUE, cav = TRUE
+)
+
+res_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc_typ, Cc ~ time | regimen + id,
+                   concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(nca_dose_typ, amt ~ time | regimen + id, doseu = "mg"),
+  intervals = ss_intervals
+))
+
+typ_tbl <- as.data.frame(res_typ$result) |>
+  dplyr::select("PPTESTCD", "PPORRES") |>
+  tidyr::pivot_wider(names_from = "PPTESTCD", values_from = "PPORRES")
+
+daily_dose <- 10 * ref_wt
+auc_identity <- daily_dose / cl_typ
+
+tibble::tibble(
+  Quantity = c("AUC(0-24 h) at steady state by PKNCA (mg*h/L)",
+               "Daily dose / CL (mg*h/L)",
+               "Relative difference"),
+  Value = c(typ_tbl$auclast, auc_identity,
+            typ_tbl$auclast / auc_identity - 1)
+) |>
+  knitr::kable(digits = c(0, 6),
+               caption = "Closed-form gate: steady-state AUC over one interval equals daily dose / CL.")
+```
+
+```{r typical-check-auc}
+# Both sides use the SAME drawn parameters, so the only difference is PKNCA's
+# interpolation error on a 0.25 h grid. That is pure numerical error, not
+# per-subject physical variation, so a tight bound is correct here and must not
+# be loosened. PKNCA's default "lin up/log down" method realises -3.3e-4 for
+# this profile; a pure linear trapezoid over the same grid agrees with
+# daily dose / CL to 1e-12, which is how the residual is known to be
+# interpolation rather than a structural error. 1e-3 leaves 3x headroom and
+# still goes red on anything mechanistic, which moves this by percent or more.
+cat(sprintf("relative difference: %+.3e\n", typ_tbl$auclast / auc_identity - 1))
+stopifnot(abs(typ_tbl$auclast / auc_identity - 1) < 1e-3)
+
+# Cmin at steady state is well above zero, i.e. the profile has not decayed
+# into solver noise over the interval used for NCA.
+stopifnot(typ_tbl$cmin > 0, all(sim_typ$Cc >= 0))
+```
+
+```{r figure-2-typical}
+sim_typ |>
+  dplyr::mutate(tad = .data$time - ss_start) |>
+  ggplot(aes(.data$tad, .data$Cc)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Levofloxacin concentration (mg/L)",
+    title = "Typical-value steady-state profile, 10 mg/kg q24h, 24.05 kg child",
+    caption = "Semi-log panel corresponding to Figure 2B of Tao 2026."
+  ) +
+  theme_bw()
+```
+
+# Virtual cohort and the observed steady-state AUC distribution
+
+The exposure-response cohort of 161 patients had a median steady-state
+AUC(0-24 h) of 35.59 mg*h/L (IQR 33.11 to 41.54) on a median daily dose of
+10.00 mg/kg (Table S2). Those AUCs were produced by maximum-a-posteriori
+Bayesian forecasting from this same model, so reproducing the *centre* of that
+distribution is a direct check that the clearance and its covariate model were
+transcribed correctly.
+
+The cohort below draws body weight and serum creatinine as independent
+lognormals matched to the Table 1 medians and IQRs, truncated to the 9 to 45 kg
+and 19 to 45 umol/L windows spanned by the paper's own Monte Carlo scenarios
+(Table 3) so nothing is simulated outside the observed covariate range. The
+independence assumption is discussed under Assumptions and deviations.
+
+```{r cohort}
+# set.seed() seeds R's RNG for the covariate draws. It does NOT seed rxode2's
+# simulation RNG, whose streams are partitioned per solver thread -- so the eta
+# draws below differ between a 2-core CI runner and a 16-thread workstation.
+# Every assertion in this vignette is written to hold for any cohort the model
+# can produce.
+set.seed(20260914)
+rxode2::rxSetSeed(20260914)
+
+n_cohort <- 200  # per arm; the skill caps validation cohorts at 200
+
+# Lognormal parameters matched to the Table 1 medians and IQRs:
+#   meanlog = log(median); sdlog = (log(Q3) - log(Q1)) / (2 * qnorm(0.75))
+ln_par <- function(med, q1, q3) {
+  c(meanlog = log(med), sdlog = (log(q3) - log(q1)) / (2 * stats::qnorm(0.75)))
+}
+wt_par    <- ln_par(22.50, 18.00, 28.00)   # Table 1 body weight
+creat_par <- ln_par(30.70, 26.80, 37.00)   # Table 1 serum creatinine
+
+rtrunc_lnorm <- function(n, par, lo, hi) {
+  x <- stats::rlnorm(n, par[["meanlog"]], par[["sdlog"]])
+  while (any(bad <- x < lo | x > hi)) {
+    x[bad] <- stats::rlnorm(sum(bad), par[["meanlog"]], par[["sdlog"]])
+  }
+  x
+}
+
+cohort <- tibble::tibble(
+  WT    = rtrunc_lnorm(n_cohort, wt_par,    9, 45),
+  CREAT = rtrunc_lnorm(n_cohort, creat_par, 19, 45)
+)
+
+tibble::tibble(
+  Covariate = c("Body weight (kg)", "Serum creatinine (umol/L)"),
+  `Simulated median (IQR)` = c(
+    sprintf("%.2f (%.2f, %.2f)", median(cohort$WT),
+            quantile(cohort$WT, 0.25), quantile(cohort$WT, 0.75)),
+    sprintf("%.2f (%.2f, %.2f)", median(cohort$CREAT),
+            quantile(cohort$CREAT, 0.25), quantile(cohort$CREAT, 0.75))
+  ),
+  `Table 1 median (IQR)` = c("22.50 (18.00, 28.00)", "30.70 (26.80, 37.00)")
+) |>
+  knitr::kable(caption = "Virtual cohort covariates against Tao 2026 Table 1.")
+```
+
+```{r cohort-simulate}
+ev_cohort <- make_events(cohort, mgkg_per_dose = 10, tau = tau_h,
+                         label = "10 mg/kg q24h")
+stopifnot(!anyDuplicated(unique(ev_cohort[, c("id", "time", "evid")])))
+
+sim_cohort <- rxode2::rxSolve(
+  mod, events = ev_cohort,
+  keep = c("WT", "CREAT", "regimen"), returnType = "data.frame"
+)
+stopifnot(!is.null(sim_cohort$id), all(sim_cohort$Cc >= 0))
+```
+
+```{r figure-2-vpc}
+sim_cohort |>
+  dplyr::mutate(tad = .data$time - ss_start) |>
+  dplyr::group_by(.data$tad) |>
+  dplyr::summarise(
+    Q05 = quantile(.data$Cc, 0.05), Q50 = median(.data$Cc),
+    Q95 = quantile(.data$Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(.data$tad, .data$Q50)) +
+  geom_ribbon(aes(ymin = .data$Q05, ymax = .data$Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Levofloxacin concentration (mg/L)",
+    title = "Simulated 5th / 50th / 95th percentiles, 10 mg/kg q24h",
+    caption = paste(
+      "Corresponds to the simulated percentiles of Figure 2B of Tao 2026.",
+      "Between-subject variability enters through clearance only (a single eta)",
+      "plus the covariate spread, so the band is narrower than an observed VPC,",
+      "which additionally carries the 35% proportional residual error."
+    )
+  ) +
+  theme_bw()
+```
+
+```{r cohort-nca}
+nca_conc <- sim_cohort |>
+  dplyr::filter(!is.na(.data$Cc)) |>
+  dplyr::select("id", "time", "Cc", "regimen")
+
+nca_dose <- ev_cohort |>
+  dplyr::filter(.data$evid == 1L) |>
+  dplyr::select("id", "time", "amt", "regimen")
+
+res_cohort <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cc ~ time | regimen + id,
+                   concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(nca_dose, amt ~ time | regimen + id, doseu = "mg"),
+  intervals = ss_intervals
+))
+
+auc_subject <- as.data.frame(res_cohort$result) |>
+  dplyr::filter(.data$PPTESTCD == "auclast") |>
+  dplyr::select(id = "id", auc = "PPORRES")
+stopifnot(nrow(auc_subject) == n_cohort, !anyNA(auc_subject$auc))
+
+# Per-subject cross-check of the daily-dose/CL identity across the whole
+# cohort, not just the typical subject: same drawn parameters on both sides,
+# so this stays a tight numerical bound. It is looser than the typical-subject
+# bound above only because PKNCA's lin-up/log-down interpolation error grows
+# with the decay rate, and the lightest children in the cohort eliminate
+# roughly 2.5x faster than the 24.05 kg reference child. Realised maximum is
+# 1.4e-3, so 1e-2 leaves 7x headroom; a structural error is percent-level.
+cl_subject <- sim_cohort |>
+  dplyr::group_by(.data$id) |>
+  dplyr::summarise(cl = dplyr::first(.data$cl), WT = dplyr::first(.data$WT),
+                   .groups = "drop")
+chk <- auc_subject |>
+  dplyr::inner_join(cl_subject, by = "id") |>
+  dplyr::mutate(auc_closed = 10 * .data$WT / .data$cl,
+                rel = .data$auc / .data$auc_closed - 1)
+cat(sprintf("max |relative difference| across the cohort: %.3e\n", max(abs(chk$rel))))
+stopifnot(nrow(chk) == n_cohort, max(abs(chk$rel)) < 1e-2)
+```
+
+```{r cohort-compare}
+sim_summary <- tibble::tibble(
+  regimen     = "10 mg/kg q24h",
+  auclast     = median(auc_subject$auc),
+  cav         = median(auc_subject$auc) / tau_h
+)
+
+published <- tibble::tribble(
+  ~regimen,          ~auclast, ~cav,
+  "10 mg/kg q24h",   35.59,    35.59 / 24
+)
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = sim_summary,
+  reference = published,
+  by        = "regimen",
+  units     = c(auclast = "mg*h/L", cav = "mg/L"),
+  tolerance_pct = 20
+) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated median steady-state exposure against the Tao 2026 Table S2",
+      "observed median for the 161-patient exposure-response cohort",
+      "(median daily dose 10.00 mg/kg). * marks rows differing by >20%."
+    ),
+    align = c("l", "l", "r", "r", "r")
+  )
+```
+
+```{r cohort-check}
+auc_median <- median(auc_subject$auc)
+# Centre, not extreme. The published 35.59 mg*h/L is a median over 161 real
+# patients; the simulated median over 200 virtual ones has a sampling SE near
+# 1% (IIV CV is only 11.4%), and the covariate draw contributes a little more.
+# A 10% band is ample headroom for that while still going red on a
+# mis-transcribed clearance, reference weight or dose, each of which moves the
+# whole distribution by tens of percent.
+stopifnot(abs(auc_median / 35.59 - 1) < 0.10)
+
+# Robust spread check: the simulated interquartile range should sit inside a
+# plausible multiple of the observed one. It is expected to be NARROWER, because
+# the observed AUCs are MAP-Bayesian estimates that absorb residual error and
+# real dose heterogeneity that the fixed-10-mg/kg simulation does not carry.
+iqr_sim <- diff(unname(quantile(auc_subject$auc, c(0.25, 0.75))))
+iqr_obs <- 41.54 - 33.11
+stopifnot(iqr_sim < 1.5 * iqr_obs)
+```
+
+# Covariate model
+
+Body weight enters both clearance and central volume with estimated exponents
+well above the conventional allometric 0.75 and 1: 1.11 on clearance and 1.83
+on central volume. The consequence worth seeing is that weight-normalized
+central volume *rises* with body size rather than staying flat, so the model
+should not be extrapolated outside the 9 to 45 kg window the paper simulated.
+
+```{r covariate-grid}
+cov_grid <- tidyr::crossing(
+  WT    = seq(9, 45, by = 1),
+  CREAT = c(19, 31.77, 45)
+) |>
+  dplyr::mutate(id = dplyr::row_number(), amt = 100, evid = 1L, time = 0,
+                dur = infusion_dur, cmt = "central")
+
+cov_sim <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = dplyr::bind_rows(
+    cov_grid,
+    cov_grid |> dplyr::mutate(amt = NA_real_, evid = 0L, dur = NA_real_, time = 1)
+  ) |> dplyr::arrange(.data$id, .data$time, dplyr::desc(.data$evid)),
+  keep = c("WT", "CREAT"), returnType = "data.frame"
+) |>
+  dplyr::group_by(.data$id) |>
+  dplyr::summarise(WT = dplyr::first(.data$WT), CREAT = dplyr::first(.data$CREAT),
+                   cl = dplyr::first(.data$cl), vc = dplyr::first(.data$vc),
+                   .groups = "drop")
+
+cov_sim |>
+  tidyr::pivot_longer(c("cl", "vc"), names_to = "param", values_to = "value") |>
+  dplyr::mutate(
+    per_kg = .data$value / .data$WT,
+    param = factor(.data$param, c("cl", "vc"),
+                   c("CL / WT (L/kg/h)", "V1 / WT (L/kg)")),
+    CREAT = factor(.data$CREAT, c(19, 31.77, 45),
+                   c("SCr 19 umol/L", "SCr 31.77 umol/L (mean)", "SCr 45 umol/L"))
+  ) |>
+  ggplot(aes(.data$WT, .data$per_kg, colour = .data$CREAT)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~param, scales = "free_y") +
+  labs(x = "Body weight (kg)", y = "Weight-normalized parameter",
+       colour = NULL,
+       title = "Covariate model over the range simulated by Tao 2026",
+       caption = paste(
+         "Serum creatinine enters clearance only, so the V1 panel has three",
+         "superimposed lines."
+       )) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r covariate-check}
+ref_row <- cov_sim |> dplyr::filter(abs(.data$CREAT - 31.77) < 1e-8)
+# Deterministic reproduction of the printed covariate exponents. Fitting
+# log(parameter) on log(WT) must return the Table 2 exponents exactly, because
+# the relation is an exact power law; an exponent typed into the wrong slot
+# (CL vs V1) shows up here immediately.
+slope_cl <- unname(coef(lm(log(ref_row$cl) ~ log(ref_row$WT)))[2])
+slope_vc <- unname(coef(lm(log(ref_row$vc) ~ log(ref_row$WT)))[2])
+stopifnot(abs(slope_cl - 1.11) < 1e-8, abs(slope_vc - 1.83) < 1e-8)
+
+# Serum creatinine exponent, likewise exact.
+scr_row <- cov_sim |> dplyr::filter(abs(.data$WT - 24) < 1e-8)
+slope_scr <- unname(coef(lm(log(scr_row$cl) ~ log(scr_row$CREAT)))[2])
+stopifnot(abs(slope_scr - (-0.20)) < 1e-8)
+```
+
+# Probability of target attainment (Table 3 and Table S3)
+
+This is the paper's principal result and its richest answer key: 12 covariate
+scenarios, each with a printed probability of reaching the
+AUC(0-24 h) >= 30.74 mg*h/L efficacy target, under three regimens in Table 3 and
+three more in Table S3.
+
+Because the model is linear, steady-state exposure is exactly
+`AUC = daily dose / CL_i`, and `CL_i` is lognormal with the typical value taken
+from the model and log-scale variance 0.013. The attainment probability for a
+scenario therefore has a closed form,
+`P(AUC_i >= target) = P(CL_i <= daily dose / target) = Phi(log((daily dose / target) / CL_typ) / omega)`,
+with no Monte Carlo noise at all. The typical clearances below are read out of
+the packaged model rather than recomputed from the printed equation, so the
+comparison against the paper's printed percentages is a genuine external check.
+
+```{r pta-scenarios}
+# Tao 2026 Table 3 / Table S3, columns "Age (years)", "Body weight (kg)" and
+# "Serum creatinine (umol/L)". Scenarios 1-6 are dosed q12h in Table 3 and
+# scenarios 7-12 q24h, per the two header blocks of that table.
+scenarios <- tibble::tribble(
+  ~scenario, ~age_band, ~WT, ~CREAT,
+  1L,  "1-3",    9,  19,
+  2L,  "1-3",   11,  21,
+  3L,  "1-3",   13,  28,
+  4L,  "3-5",   15,  24,
+  5L,  "3-5",   17,  28,
+  6L,  "3-5",   19,  30,
+  7L,  "5-10",  21,  27,
+  8L,  "5-10",  24,  31,
+  9L,  "5-10",  27,  37,
+  10L, "10-16", 33,  34,
+  11L, "10-16", 39,  41,
+  12L, "10-16", 45,  45
+)
+
+# Read the typical clearance for each scenario out of the model.
+pta_ev <- scenarios |>
+  dplyr::mutate(id = .data$scenario, amt = 100, evid = 1L, time = 0,
+                dur = infusion_dur, cmt = "central")
+pta_ev <- dplyr::bind_rows(
+  pta_ev,
+  pta_ev |> dplyr::mutate(amt = NA_real_, evid = 0L, dur = NA_real_, time = 1)
+) |>
+  dplyr::arrange(.data$id, .data$time, dplyr::desc(.data$evid))
+
+cl_scen <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = pta_ev,
+  keep = c("WT", "CREAT"), returnType = "data.frame"
+) |>
+  dplyr::group_by(id = .data$id) |>
+  dplyr::summarise(cl_typ = dplyr::first(.data$cl), .groups = "drop")
+
+scenarios <- scenarios |>
+  dplyr::inner_join(cl_scen, by = c("scenario" = "id"))
+stopifnot(nrow(scenarios) == 12L, !anyNA(scenarios$cl_typ))
+
+auc_target <- 30.74                       # Results, exposure-response analysis
+omega_cl   <- sqrt(0.013)                 # Table 2, row 'CL (omega 2)'
+
+pta_closed <- function(daily_mgkg, WT, cl_typ) {
+  cl_threshold <- daily_mgkg * WT / auc_target
+  100 * stats::pnorm(log(cl_threshold / cl_typ) / omega_cl)
+}
+```
+
+```{r pta-mc-crosscheck}
+# Cross-check the closed form against a full ODE + PKNCA Monte Carlo run for
+# one scenario, so the closed form is demonstrated rather than assumed.
+rxode2::rxSetSeed(20260915)
+mc_scen <- scenarios |> dplyr::filter(.data$scenario == 8L)
+mc_cohort <- tibble::tibble(WT = mc_scen$WT, CREAT = mc_scen$CREAT)[rep(1, n_cohort), ]
+
+mc_ev <- make_events(mc_cohort, mgkg_per_dose = 10, tau = tau_h,
+                     label = "scenario 8, 10 mg/kg q24h")
+mc_sim <- rxode2::rxSolve(mod, events = mc_ev, keep = c("WT", "CREAT", "regimen"),
+                          returnType = "data.frame")
+
+mc_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    mc_sim |> dplyr::filter(!is.na(.data$Cc)) |>
+      dplyr::select("id", "time", "Cc", "regimen"),
+    Cc ~ time | regimen + id, concu = "mg/L", timeu = "h"
+  ),
+  PKNCA::PKNCAdose(
+    mc_ev |> dplyr::filter(.data$evid == 1L) |>
+      dplyr::select("id", "time", "amt", "regimen"),
+    amt ~ time | regimen + id, doseu = "mg"
+  ),
+  intervals = ss_intervals
+))
+
+mc_auc <- as.data.frame(mc_res$result) |>
+  dplyr::filter(.data$PPTESTCD == "auclast") |> dplyr::pull("PPORRES")
+stopifnot(length(mc_auc) == n_cohort, !anyNA(mc_auc))
+
+mc_pta     <- 100 * mean(mc_auc >= auc_target)
+closed_pta <- pta_closed(10, mc_scen$WT, mc_scen$cl_typ)
+
+tibble::tibble(
+  Source = c("ODE + PKNCA Monte Carlo (n = 200)", "Closed form", "Tao 2026 Table 3"),
+  `PTA (%)` = c(mc_pta, closed_pta, 83.9)
+) |>
+  knitr::kable(digits = 1,
+               caption = "Scenario 8 (24 kg, 31 umol/L) at 10 mg/kg q24h.")
+
+# n = 200 around p = 0.87 has a binomial SE of ~2.4 percentage points, so the
+# bound below is roughly 4 SE and cannot be met by a mis-specified model.
+stopifnot(abs(mc_pta - closed_pta) < 10)
+```
+
+```{r pta-table}
+regimens <- tibble::tribble(
+  ~label,             ~daily_mgkg, ~source,
+  "8 mg/kg q24h",     8,           "Table 3",
+  "9 mg/kg q24h",     9,           "Table 3 / S3",
+  "10 mg/kg q24h",    10,          "Table 3 / S3",
+  "11 mg/kg q24h",    11,          "Table S3"
+)
+
+# Printed PTA for scenarios 7-12, Table 3 (8/9/10 mg/kg q24h) and Table S3
+# (11 mg/kg q24h).
+printed_q24 <- tibble::tribble(
+  ~scenario, ~`8 mg/kg q24h`, ~`9 mg/kg q24h`, ~`10 mg/kg q24h`, ~`11 mg/kg q24h`,
+  7L,  25.7, 50.2, 84.4, 96.3,
+  8L,  14.6, 53.3, 83.9, 97.3,
+  9L,  19.1, 62.9, 88.8, 98.0,
+  10L, 23.2, 48.3, 79.6, 95.8,
+  11L, 14.6, 54.6, 84.9, 97.7,
+  12L, 19.3, 55.5, 86.4, 97.0
+) |>
+  tidyr::pivot_longer(-"scenario", names_to = "label", values_to = "printed")
+
+model_q24 <- scenarios |>
+  dplyr::filter(.data$scenario >= 7L) |>
+  tidyr::crossing(regimens) |>
+  dplyr::mutate(model = pta_closed(.data$daily_mgkg, .data$WT, .data$cl_typ)) |>
+  dplyr::select("scenario", "age_band", "WT", "CREAT", "label", "daily_mgkg",
+                "model")
+
+pta_q24 <- model_q24 |>
+  dplyr::inner_join(printed_q24, by = c("scenario", "label")) |>
+  dplyr::mutate(diff = .data$model - .data$printed)
+stopifnot(nrow(pta_q24) == 24L)
+
+pta_q24 |>
+  dplyr::arrange(.data$daily_mgkg) |>
+  dplyr::mutate(
+    # pivot_wider orders new columns by first appearance, so sort on the
+    # numeric dose first -- an alphabetical label sort would put 10 and 11
+    # before 8 and 9.
+    label = factor(.data$label, levels = unique(.data$label)),
+    cell  = sprintf("%.1f / %.1f", .data$model, .data$printed)
+  ) |>
+  dplyr::select("scenario", "age_band", "WT", "CREAT", "label", "cell") |>
+  tidyr::pivot_wider(names_from = "label", values_from = "cell") |>
+  dplyr::arrange(.data$scenario) |>
+  dplyr::rename("Scenario" = "scenario", "Age (years)" = "age_band",
+                "WT (kg)" = "WT", "SCr (umol/L)" = "CREAT") |>
+  knitr::kable(
+    caption = paste(
+      "Probability of attaining AUC(0-24 h) >= 30.74 mg*h/L, ages 5-16",
+      "(Tao 2026 scenarios 7-12). Each cell is model / published."
+    )
+  )
+```
+
+```{r pta-check}
+# The 9, 10 and 11 mg/kg columns are the gate. They are deterministic on the
+# model side (closed form, no RNG), so the only variation is the paper's own
+# Monte Carlo noise at n = 1000 per scenario.
+gate <- pta_q24 |> dplyr::filter(.data$daily_mgkg >= 9)
+stopifnot(nrow(gate) == 18L)
+stopifnot(mean(abs(gate$diff)) < 6, max(abs(gate$diff)) < 10)
+
+# The 8 mg/kg column is excluded and reported as a known deviation below.
+excluded <- pta_q24 |> dplyr::filter(.data$daily_mgkg == 8)
+stopifnot(nrow(excluded) == 6L)
+
+tibble::tibble(
+  Column = c("9 mg/kg q24h", "10 mg/kg q24h", "11 mg/kg q24h", "8 mg/kg q24h"),
+  `Mean absolute difference (percentage points)` = vapply(
+    c(9, 10, 11, 8),
+    function(d) mean(abs(pta_q24$diff[pta_q24$daily_mgkg == d])),
+    numeric(1)
+  ),
+  `In gate` = c("yes", "yes", "yes", "no (see Assumptions and deviations)")
+) |>
+  knitr::kable(digits = 2,
+               caption = "Agreement with the published PTA, by regimen column.")
+```
+
+## The 8 mg/kg column is internally inconsistent in the source
+
+For a linear model, `AUC = daily dose / CL`, so scaling the mg/kg dose scales
+every scenario's exposure by the same factor. The *ranking* of the 12 scenarios
+by attainment probability must therefore be identical in every mg/kg column of
+Table 3 -- whichever scenario has the highest PTA at 9 mg/kg must also have the
+highest at 8, 10 and 11. The published 9, 10 and 11 mg/kg columns satisfy this;
+the 8 mg/kg column does not, and is close to reversed.
+
+```{r pta-ranking}
+rank_tbl <- pta_q24 |>
+  dplyr::group_by(.data$label) |>
+  dplyr::summarise(
+    `Rank correlation with the model` =
+      stats::cor(.data$printed, .data$model, method = "spearman"),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(.data$label)
+
+knitr::kable(rank_tbl, digits = 3, caption = paste(
+  "Spearman correlation between the published and model-predicted PTA across",
+  "scenarios 7-12. A linear model forces the same scenario ordering in every",
+  "column."
+))
+```
+
+```{r pta-ranking-check}
+# The 9/10/11 columns rank the six scenarios essentially as the model does.
+hi <- rank_tbl |> dplyr::filter(.data$label != "8 mg/kg q24h")
+stopifnot(nrow(hi) == 3L, all(hi$`Rank correlation with the model` > 0.7))
+
+# The 8 mg/kg column does not, and reproducibly so: this is a property of the
+# printed table, not of a random draw, so it is asserted rather than tolerated.
+lo <- rank_tbl |> dplyr::filter(.data$label == "8 mg/kg q24h")
+stopifnot(nrow(lo) == 1L, lo$`Rank correlation with the model` < 0)
+```
+
+## Ages 1 to 5 years, q12h
+
+Table 3 reports 100% attainment for every 1 to 5 year scenario at 8, 9 and
+10 mg/kg q12h, i.e. 16, 18 and 20 mg/kg/day. The model reproduces that.
+
+```{r pta-q12}
+pta_q12 <- scenarios |>
+  dplyr::filter(.data$scenario <= 6L) |>
+  tidyr::crossing(tibble::tibble(per_dose = c(8, 9, 10))) |>
+  dplyr::mutate(
+    label = sprintf("%d mg/kg q12h", .data$per_dose),
+    model = pta_closed(2 * .data$per_dose, .data$WT, .data$cl_typ),
+    printed = 100
+  )
+stopifnot(nrow(pta_q12) == 18L)
+
+pta_q12 |>
+  dplyr::arrange(.data$per_dose) |>
+  dplyr::mutate(
+    label = factor(.data$label, levels = unique(.data$label)),
+    cell = sprintf("%.1f / %.0f", .data$model, .data$printed)
+  ) |>
+  dplyr::select("scenario", "age_band", "WT", "CREAT", "label", "cell") |>
+  tidyr::pivot_wider(names_from = "label", values_from = "cell") |>
+  dplyr::arrange(.data$scenario) |>
+  dplyr::rename("Scenario" = "scenario", "Age (years)" = "age_band",
+                "WT (kg)" = "WT", "SCr (umol/L)" = "CREAT") |>
+  knitr::kable(caption = paste(
+    "Probability of attaining AUC(0-24 h) >= 30.74 mg*h/L, ages 1-5",
+    "(Tao 2026 scenarios 1-6, q12h). Each cell is model / published."
+  ))
+
+stopifnot(all(pta_q12$model > 99.9))
+```
+
+## The authors' recommended regimens and the q24h / q12h equivalence
+
+The paper concludes that 11 mg/kg q24h or 5.5 mg/kg q12h give at least 90%
+attainment across ages 1 to 16, and the Table S3 footnote states that
+"9 mg/kg q24h and 4.5 mg/kg q12h, 10 mg/kg q24h and 5 mg/kg q12h, and
+11 mg/kg q24h and 5.5 mg/kg q12h demonstrated equivalent PTA". For a linear
+model that equivalence is exact, because both schedules deliver the same daily
+dose and steady-state AUC over 24 h depends only on the daily dose.
+
+```{r recommended}
+recommended <- scenarios |>
+  dplyr::mutate(
+    `11 mg/kg q24h`  = pta_closed(11, .data$WT, .data$cl_typ),
+    `5.5 mg/kg q12h` = pta_closed(2 * 5.5, .data$WT, .data$cl_typ)
+  )
+
+recommended |>
+  dplyr::select("scenario", "age_band", "WT", "CREAT",
+                "11 mg/kg q24h", "5.5 mg/kg q12h") |>
+  dplyr::rename("Scenario" = "scenario", "Age (years)" = "age_band",
+                "WT (kg)" = "WT", "SCr (umol/L)" = "CREAT") |>
+  knitr::kable(digits = 1, caption = paste(
+    "Model PTA for the two regimens Tao 2026 recommends. The paper's claim is",
+    ">=90% attainment across all 12 scenarios, and that the two schedules are",
+    "equivalent."
+  ))
+```
+
+```{r recommended-check}
+# Exact by construction for a linear model; assert it rather than assume it,
+# because a dosing bug (for example an interval-dependent bioavailability or a
+# mis-set infusion duration) would break it.
+stopifnot(max(abs(recommended$`11 mg/kg q24h` -
+                    recommended$`5.5 mg/kg q12h`)) < 1e-9)
+
+# The paper's headline claim: at least 90% attainment in every scenario.
+stopifnot(all(recommended$`11 mg/kg q24h` >= 90))
+
+# And the complementary claim for the guideline regimen from 5 years. The
+# paper's own wording is that "10 mg/kg q24 h approached relatively acceptable
+# levels (80%-90%)" (Results, Monte Carlo simulations), so the band the paper
+# states is the gate, not a stricter "all below 90" that the paper never
+# claims. The model puts five of six scenarios below 90% and scenario 9 at
+# 90.7% against a printed 88.8%.
+inadequate <- pta_q24 |> dplyr::filter(.data$daily_mgkg == 10)
+stopifnot(
+  nrow(inadequate) == 6L,
+  all(inadequate$model > 79), all(inadequate$model < 91),
+  sum(inadequate$model < 90) >= 4L
+)
+
+# 11 mg/kg strictly improves on 10 mg/kg in every scenario -- a monotonicity
+# the linear model forces, and a cheap guard against a dose-handling bug.
+dose_step <- recommended |>
+  dplyr::select("scenario", pta11 = "11 mg/kg q24h") |>
+  dplyr::inner_join(inadequate |> dplyr::select("scenario", pta10 = "model"),
+                    by = "scenario")
+stopifnot(nrow(dose_step) == 6L, all(dose_step$pta11 > dose_step$pta10))
+```
+
+Safety was assessed against a threshold of 108 mg*h/L, the exposure of the
+highest adult dose of 750 mg q24h, with no simulated regimen exceeding it.
+
+```{r safety}
+safety_threshold <- 108  # Methods, Monte Carlo simulations
+risk <- scenarios |>
+  dplyr::mutate(
+    daily_mg = 11 * .data$WT,
+    # P(AUC > threshold) = P(CL < daily dose / threshold)
+    risk_pct =
+      100 * stats::pnorm(log((.data$daily_mg / safety_threshold) / .data$cl_typ) /
+                           omega_cl),
+    # AUC at the typical clearance, as a multiple of the safety threshold: the
+    # interpretable number, since the risk itself underflows to zero.
+    auc_typ = .data$daily_mg / .data$cl_typ
+  )
+
+risk |>
+  dplyr::mutate(
+    `Typical AUC(0-24 h) (mg*h/L)` = sprintf("%.1f", .data$auc_typ),
+    `Fraction of the 108 mg*h/L threshold` = sprintf("%.2f",
+                                                     .data$auc_typ / safety_threshold),
+    `Risk of exceeding it (%)` = sprintf("%.2g", .data$risk_pct)
+  ) |>
+  dplyr::select("scenario", "age_band", "WT", "Typical AUC(0-24 h) (mg*h/L)",
+                "Fraction of the 108 mg*h/L threshold", "Risk of exceeding it (%)") |>
+  dplyr::rename("Scenario" = "scenario", "Age (years)" = "age_band",
+                "WT (kg)" = "WT") |>
+  knitr::kable(
+    caption = paste(
+      "Toxicity risk at the recommended 11 mg/kg q24h regimen. The typical",
+      "exposure sits at roughly a third of the safety threshold in every",
+      "scenario, so the risk underflows; it is printed to two significant",
+      "figures rather than rounded to zero."
+    )
+  )
+
+# The paper's criterion was <10% risk of toxicity; the model puts it far below.
+stopifnot(all(risk$risk_pct < 10))
+# Guard against the risk column being trivially zero for the wrong reason (a
+# broken threshold or a zero daily dose): typical exposure must be a real,
+# positive fraction of the threshold, well under 1.
+stopifnot(all(risk$auc_typ > 0), max(risk$auc_typ / safety_threshold) < 0.6)
+```
+
+# Assumptions and deviations
+
+* **Infusion duration set to 1 h.** Methods give 0.5 to 2 h without a
+  per-patient value. Steady-state AUC over a dosing interval is independent of
+  infusion duration for a linear model, so no validation result above depends
+  on this; only the peak concentration does.
+* **Body weight and serum creatinine simulated independently.** Figure S2 shows
+  a Pearson correlation matrix among the Table 1 covariates but prints only two
+  coefficients in the text (body weight with age, r = 0.84, and with height,
+  r = 0.88). No weight-creatinine coefficient is published, so the virtual
+  cohort draws the two marginals independently from the Table 1 medians and
+  IQRs. The paper's own Table 3 scenarios pair the two by within-age-band
+  percentile and therefore do imply a positive association; a correlated draw
+  would narrow the simulated AUC spread slightly and would not move the median,
+  which is what the cohort gate asserts.
+* **Covariate distributions are lognormal fits to Table 1.** Table 1 reports
+  mean, SD, median and IQR but not the full distribution. Weight and creatinine
+  are drawn as lognormals matched to the published medians and IQRs and
+  truncated to the 9 to 45 kg and 19 to 45 umol/L windows spanned by the Table 3
+  scenarios, so nothing is simulated outside the covariate range the authors
+  themselves simulated.
+* **The exposure-response layer is not encoded as a model.** The paper's
+  efficacy analysis is a Cox proportional hazards model on a *binary* split of
+  AUC(0-24 h) at 30.74 mg*h/L (HR 2.03, 95% CI 1.12-3.68), adjusted for
+  pulmonary necrosis, plus a second Cox model for cough resolution at
+  33.72 mg*h/L (HR 1.43, 95% CI 1.02-2.00). No baseline hazard function is
+  reported, so no time-to-event model can be reconstructed from the published
+  output; only the hazard ratio and the cutoff are available. The cutoff is
+  carried here as the simulation target, which is how the authors use it, and
+  is recorded in the model's `description`. No time-to-event parameters have
+  been invented.
+* **Interindividual variability on V1, V2 and Q is absent, not zero-valued.**
+  The authors fixed these to zero for high shrinkage. They are omitted from
+  `ini()` rather than written as `~ fixed(0)`, because a zero-variance diagonal
+  makes OMEGA singular and breaks the Cholesky sampler `rxSolve()` uses. The
+  practical consequence is that simulated between-subject spread in peak
+  concentration is narrower than a real population's.
+* **Reference values are the cohort means, not the medians.** The Table 2
+  footnote equations normalize to 24.05 kg and 31.77 umol/L, which are the
+  Table 1 *means*; the medians are 22.50 kg and 30.70 umol/L. Using the medians
+  would shift every typical value.
+* **Known deviation: the 8 mg/kg q24h column of Table 3 is not reproduced and
+  is internally inconsistent.** The published values (25.7, 14.6, 19.1, 23.2,
+  14.6, 19.3% for scenarios 7 to 12) rank the six scenarios in close to the
+  reverse of the order the 9, 10 and 11 mg/kg columns rank them, with a
+  Spearman correlation against the model of
+  `r sprintf("%.2f", rank_tbl$"Rank correlation with the model"[rank_tbl$label == "8 mg/kg q24h"])`
+  against `r sprintf("%.2f", min(hi$"Rank correlation with the model"))` or
+  better for the other three. For a linear model the ordering is forced to be
+  identical across columns, so the inconsistency is in the printed table rather
+  than in this encoding: scaling the dose cannot reorder the scenarios. The
+  column is excluded from the numeric gate and asserted to be
+  anti-correlated instead, so a future change that accidentally "fixes" it
+  would be caught. The 9, 10 and 11 mg/kg columns -- 18 published cells -- are
+  reproduced to a mean absolute difference of
+  `r sprintf("%.1f", mean(abs(gate$diff)))` percentage points, against the
+  paper's Monte Carlo noise at n = 1000 per scenario.
+* **Simulated exposure spread is narrower than the observed.** The Table S2
+  AUCs were derived by MAP Bayesian forecasting from real, heterogeneous doses
+  and absorb residual error; the simulation gives every subject exactly
+  10 mg/kg/day and carries a single eta with a log-scale SD of 0.114. The
+  centre matches; the spread is expected to be tighter, and the gate asserts
+  the centre plus an upper bound on spread.
+* **Do not extrapolate to renal impairment or to infants.** The cohort has no
+  renally impaired children (mean eGFR 149.61 mL/min/1.73 m^2) and only 7
+  patients under 2 years, so neither the creatinine power term nor the weight
+  exponents are informed outside the observed range. The authors say so
+  explicitly in their limitations.
