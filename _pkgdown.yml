@@ -270,6 +270,8 @@ navbar:
         href: articles/Songvut_2026_andrographolide.html
       - text: "Angiotensin (BuchwalderCsajka 1999)"
         href: articles/BuchwalderCsajka_1999_angiotensin.html
+      - text: "Anidulafungin mouse qsp (Liu 2018)"
+        href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Anifrolumab (Almquist 2022)"
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
@@ -792,6 +794,8 @@ navbar:
         href: articles/Wurthwein_2013_caspofungin.html
       - text: "Caspofungin (Xu 2026)"
         href: articles/Xu_2026_caspofungin.html
+      - text: "Caspofungin mouse qsp (Liu 2018)"
+        href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Caspofungin optimalDesign (Xu 2026)"
         href: articles/Xu_2026_caspofungin.html
       - text: "Cebranopadol (Kleideiter 2017)"
@@ -3052,6 +3056,8 @@ navbar:
         href: articles/Beredaki_2023_micafungin.html
       - text: "Micafungin eucast (Beredaki 2023)"
         href: articles/Beredaki_2023_micafungin.html
+      - text: "Micafungin mouse qsp (Liu 2018)"
+        href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
       - text: "Midazolam (Collins 2025)"
@@ -4594,6 +4600,8 @@ navbar:
         href: articles/Chen_2025_cotrimoxazole.html
       - text: "Sulfamethoxazole (Leegwater 2025)"
         href: articles/Leegwater_2025_cotrimoxazole.html
+      - text: "Sulfamethoxazole mouse qsp (Liu 2018)"
+        href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Sumatriptan (Lee 2015)"
         href: articles/Lee_2015_sumatriptan.html
       - text: "Sunitinib (AitOudhia 2016)"
@@ -6692,6 +6700,7 @@ articles:
   - articles/Ling_2025_ropivacaine
   - articles/Lioger_2017_rituximab
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
+  - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
