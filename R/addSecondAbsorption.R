@@ -35,17 +35,19 @@
 #' readModelDb("PK_1cmt_des") |>
 #'   addSecondAbsorption(type = "first", delay = "lag", f1 = 0.7)
 #'
-addSecondAbsorption <- function(ui,
-                                type = c("first", "zero"),
-                                delay = c("none", "lag", "transit"),
-                                n = NULL,
-                                central = "central",
-                                depot = "depot",
-                                depot2 = "depot2",
-                                ka = "ka",
-                                ka2 = "ka2",
-                                tk0 = "tk0",
-                                f1 = 0.7) {
+addSecondAbsorption <- function(
+  ui,
+  type = c("first", "zero"),
+  delay = c("none", "lag", "transit"),
+  n = NULL,
+  central = "central",
+  depot = "depot",
+  depot2 = "depot2",
+  ka = "ka",
+  ka2 = "ka2",
+  tk0 = "tk0",
+  f1 = 0.7
+) {
   .useModelAsUi()
   type <- match.arg(type)
   delay <- match.arg(delay)
@@ -68,14 +70,18 @@ addSecondAbsorption <- function(ui,
   }
   # a split directive means a second path is already present even when
   # it addresses differently-named compartments
-  .hasSplit <- any(vapply(.ui$lstExpr,
+  .hasSplit <- any(vapply(
+    .ui$lstExpr,
     function(l) {
       .d <- deparse1(l)
       grepl("splitInfusionBolus(", .d, fixed = TRUE) ||
         grepl("splitBolusInfusion(", .d, fixed = TRUE) ||
         grepl("splitBolus(", .d, fixed = TRUE) ||
         grepl("splitInfusion(", .d, fixed = TRUE)
-    }, logical(1), USE.NAMES = FALSE))
+    },
+    logical(1),
+    USE.NAMES = FALSE
+  ))
   if (.hasSplit) {
     stop("a second absorption path is already present (model has a split directive)", call. = FALSE)
   }
@@ -86,7 +92,10 @@ addSecondAbsorption <- function(ui,
     # the first path would be rewired into the second path's chain
     # (central reading ka*transitN + ka2*transitN); refuse instead
     if (rxode2::testCompartmentExists(.ui, "transit1")) {
-      stop("a transit chain is already present; a transit second path needs its own prefix (not yet supported)", call. = FALSE)
+      stop(
+        "a transit chain is already present; a transit second path needs its own prefix (not yet supported)",
+        call. = FALSE
+      )
     }
   }
   # the second depot always starts as a first-order path; a zero-order
@@ -104,9 +113,13 @@ addSecondAbsorption <- function(ui,
   .ui <- addDepot(.ui, central = central, depot = depot2, ka = ka2)
   .src <- if (.zoFirst) central else depot
   if (type == "zero") {
-    .ui <- addLogEstimates(.ui, stats::setNames(
-      "Zero-order absorption duration on the second path (Tk0)", tk0
-    ))
+    .ui <- addLogEstimates(
+      .ui,
+      stats::setNames(
+        "Zero-order absorption duration on the second path (Tk0)",
+        tk0
+      )
+    )
     .modelLines <- .ui$lstExpr
     .w <- .whichDdt(.modelLines, depot2)
     .tmp <- .extractModelLinesAtW(.modelLines, .w)
@@ -115,7 +128,8 @@ addSecondAbsorption <- function(ui,
       rm("description", envir = .ui$meta)
     }
     rxode2::model(.ui) <- c(
-      .tmp$pre, .tmp$w,
+      .tmp$pre,
+      .tmp$w,
       str2lang(paste0("dur(", depot2, ") <- ", tk0)),
       .tmp$post
     )
@@ -182,23 +196,35 @@ convertAbsSequential <- function(ui, central = "central", depot = "depot", depot
   .cp <- .ui$props$cmtProp
   .durCmt <- if (!is.null(.cp)) .cp$Compartment[.cp$Property == "dur"] else character(0)
   if (rxode2::testCompartmentExists(.ui, depot) || !central %in% .durCmt) {
-    stop("sequential double absorption requires a zero-order first path ('", central,
-      "' has no modeled duration)", call. = FALSE)
+    stop(
+      "sequential double absorption requires a zero-order first path ('",
+      central,
+      "' has no modeled duration)",
+      call. = FALSE
+    )
   }
   .modelLines <- .ui$lstExpr
   # find the second path's lag and tie it to the first path's duration:
   # lag(depot2) <- lagDepot2 becomes lag(depot2) <- tk0, dropping lagDepot2
   .lagLine <- sprintf("lag(%s) <- ", depot2)
-  .w <- which(vapply(.modelLines, function(l) grepl(.lagLine, deparse1(l), fixed = TRUE),
-    logical(1), USE.NAMES = FALSE))
+  .w <- which(vapply(
+    .modelLines,
+    function(l) grepl(.lagLine, deparse1(l), fixed = TRUE),
+    logical(1),
+    USE.NAMES = FALSE
+  ))
   if (length(.w) == 0L) {
     stop("the second absorption path ('", depot2, "') has no lag time to tie", call. = FALSE)
   }
   # the first path's duration variable comes from its own dur() line
   # (on central, since addZeroOrderAbs() removed the depot)
   .durLine <- sprintf("dur(%s) <- ", central)
-  .wd <- which(vapply(.modelLines, function(l) grepl(.durLine, deparse1(l), fixed = TRUE),
-    logical(1), USE.NAMES = FALSE))
+  .wd <- which(vapply(
+    .modelLines,
+    function(l) grepl(.durLine, deparse1(l), fixed = TRUE),
+    logical(1),
+    USE.NAMES = FALSE
+  ))
   .durVar <- as.character(.modelLines[[.wd[1L]]][[3L]])
   .modelLines[[.w[1L]]] <- str2lang(paste0("lag(", depot2, ") <- ", .durVar))
   .ui <- rxode2::rxUiDecompress(.ui)
@@ -238,22 +264,18 @@ convertAbsForceLongerDelay <- function(ui, central = "central", depot = "depot",
   .lag1 <- sprintf("lag(%s) <- ", depot)
   .lag2 <- sprintf("lag(%s) <- ", depot2)
   .hasLag <- function(pat) {
-    any(vapply(.modelLines, function(l) grepl(pat, deparse1(l), fixed = TRUE),
-      logical(1), USE.NAMES = FALSE))
+    any(vapply(.modelLines, function(l) grepl(pat, deparse1(l), fixed = TRUE), logical(1), USE.NAMES = FALSE))
   }
   if (!.hasLag(.lag1) || !.hasLag(.lag2)) {
-    stop("forcing a longer second delay requires lag times on both absorption paths",
-      call. = FALSE)
+    stop("forcing a longer second delay requires lag times on both absorption paths", call. = FALSE)
   }
-  .w2 <- which(vapply(.modelLines, function(l) grepl(.lag2, deparse1(l), fixed = TRUE),
-    logical(1), USE.NAMES = FALSE))
+  .w2 <- which(vapply(.modelLines, function(l) grepl(.lag2, deparse1(l), fixed = TRUE), logical(1), USE.NAMES = FALSE))
   .rhs2 <- .modelLines[[.w2[1L]]][[3L]]
   .lagVar2 <- if (is.name(.rhs2)) as.character(.rhs2) else NULL
   # lag(depot2) <- <first-lag-var> + diffTlag2, estimating the
   # increment; the first path's lag variable is read from its own
   # lag() line (it need not follow the defaultCombine() convention)
-  .w1 <- which(vapply(.modelLines, function(l) grepl(.lag1, deparse1(l), fixed = TRUE),
-    logical(1), USE.NAMES = FALSE))
+  .w1 <- which(vapply(.modelLines, function(l) grepl(.lag1, deparse1(l), fixed = TRUE), logical(1), USE.NAMES = FALSE))
   .rhs1 <- .modelLines[[.w1[1L]]][[3L]]
   if (!is.name(.rhs1)) {
     stop("the first absorption path's lag time is not a plain variable", call. = FALSE)
