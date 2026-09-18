@@ -2554,6 +2554,14 @@ navbar:
         href: articles/Prohn_2021_letermovir.html
       - text: "Leuprolide (Lim 2026)"
         href: articles/Lim_2026_leuprolide.html
+      - text: "Leuprolide iv rat (Lee 2018)"
+        href: articles/Lee_2018_leuprolide.html
+      - text: "Leuprolide sc rat (Lee 2018)"
+        href: articles/Lee_2018_leuprolide.html
+      - text: "Leuprolide sr cancer rat (Lee 2018)"
+        href: articles/Lee_2018_leuprolide.html
+      - text: "Leuprolide sr rat (Lee 2018)"
+        href: articles/Lee_2018_leuprolide.html
       - text: "Leuprorelin (Snelder 2019)"
         href: articles/Snelder_2019_leuprorelin.html
       - text: "Leuprorelin 1m (Snelder 2019)"
@@ -6619,6 +6627,7 @@ articles:
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
   - articles/Lee_2017_doripenem
+  - articles/Lee_2018_leuprolide
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
