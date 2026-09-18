@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Stott 2018 amphotericin B deoxycholate ([doi:10.1128/AAC.02526-17](https://doi.org/10.1128/AAC.02526-17)) -- adults with HIV-associated cryptococcal meningitis in Vietnam and Uganda.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
