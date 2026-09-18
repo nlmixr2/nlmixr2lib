@@ -4248,8 +4248,10 @@ navbar:
         href: articles/Ren_2026_rivaroxaban.html
       - text: "Rivaroxaban (Wang 2025)"
         href: articles/Wang_2025_rivaroxaban.html
-      - text: "Rivaroxaban (Willmann 2018)"
-        href: articles/Willmann_2018_rivaroxaban.html
+      - text: "Rivaroxaban (Willmann 2018a)"
+        href: articles/Willmann_2018a_rivaroxaban.html
+      - text: "Rivaroxaban (Willmann 2018b)"
+        href: articles/Willmann_2018b_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2021)"
         href: articles/Willmann_2021_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2022)"
@@ -7506,7 +7508,8 @@ articles:
   - articles/Willemze_2008_ciclosporin
   - articles/Williams_2012_valproic_acid_pediatric
   - articles/Williams_2016_rituximab_biosimilar
-  - articles/Willmann_2018_rivaroxaban
+  - articles/Willmann_2018a_rivaroxaban
+  - articles/Willmann_2018b_rivaroxaban
   - articles/Willmann_2021_fxi_aso
   - articles/Willmann_2021_rivaroxaban
   - articles/Willmann_2022_rivaroxaban
