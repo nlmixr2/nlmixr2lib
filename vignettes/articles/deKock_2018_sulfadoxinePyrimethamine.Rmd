@@ -153,8 +153,13 @@ make_events <- function(wt, waz = 0, ids = 1L, tablets = who_tablets(wt),
     tibble::tibble(id = ids, time = 0, amt = 500 * tablets, cmt = "depot", evid = 1L),
     tibble::tibble(id = ids, time = 0, amt = 25 * tablets, cmt = "depot_pyra", evid = 1L)
   )
-  obs <- tidyr::expand_grid(id = ids, time = times, cmt = c("Cc", "Cc_pyra")) |>
-    mutate(amt = 0, evid = 0L)
+  # One observation row per time, on an ODE state, with dvid identifying the
+  # endpoint. rxode2 maps dvid 1..N onto the N declared `~` endpoints and
+  # returns EVERY algebraic output as a column, so one dvid reads out both
+  # drugs. Naming an observable in `cmt` instead is the slot-renumbering
+  # antipattern and also duplicates every time point.
+  obs <- tidyr::expand_grid(id = ids, time = times) |>
+    mutate(cmt = "central", dvid = 1L, amt = 0, evid = 0L)
   ev <- bind_rows(dose, obs) |>
     arrange(id, time, desc(evid)) |>
     mutate(
@@ -170,7 +175,10 @@ make_events <- function(wt, waz = 0, ids = 1L, tablets = who_tablets(wt),
       STUDY_BELL = as.integer(study_bell),
       site = site
     )
-  stopifnot(nrow(ev) == 2 * n + 2 * n * length(times))
+  stopifnot(
+    nrow(ev) == 2 * n + n * length(times),
+    !anyDuplicated(ev[ev$evid == 0L, c("id", "time")])
+  )
   ev
 }
 ```
@@ -491,28 +499,15 @@ structure, and non-compartmental analysis is run separately for each analyte.
 rxode2::rxSetSeed(20180501)
 n_adult <- 200L
 ev_adult <- make_events(50, ids = seq_len(n_adult))
-sim_raw <- rxode2::rxSolve(mod, ev_adult, returnType = "data.frame")
+sim_adult <- rxode2::rxSolve(mod, ev_adult, returnType = "data.frame")
 
-# The event table carries one observation record per endpoint, so every
-# (id, time) appears twice -- and rxode2 evaluates BOTH algebraic outputs on
-# each of those rows. Collapse to one row per (id, time), but assert first
-# that the duplication really is exact, so this is a de-duplication and not a
-# silent choice between two different values.
-dup <- sim_raw |>
-  group_by(id, time) |>
-  summarise(
-    n = n(),
-    spread_cc = diff(range(Cc)),
-    spread_pyra = diff(range(Cc_pyra)),
-    .groups = "drop"
-  )
+# One row per (id, time), with both analytes on it -- PKNCA rejects duplicated
+# (group, time) records, so assert the shape before building the objects.
 stopifnot(
-  all(dup$n == 2L),
-  max(dup$spread_cc) == 0,
-  max(dup$spread_pyra) == 0
+  nrow(sim_adult) == n_adult * length(obs_times_h),
+  !anyDuplicated(sim_adult[, c("id", "time")])
 )
-sim_adult <- distinct(sim_raw, id, time, .keep_all = TRUE)
-c(raw_rows = nrow(sim_raw), deduplicated_rows = nrow(sim_adult))
+c(subjects = n_adult, rows = nrow(sim_adult))
 ```
 
 ```{r pknca-sulfa, message = FALSE, warning = FALSE}
