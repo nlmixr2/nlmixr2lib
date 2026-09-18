@@ -158,7 +158,7 @@ baseline_closed_form <- ksyn / cl_ige * MWE
 # initial condition is wired up as well as arithmetically right.
 ev_nodose <- data.frame(
   id = 1L, time = c(0, 1, 7, 14, 84),
-  amt = NA_real_, evid = 0L, cmt = "Cc"
+  amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L
 )
 sim_nodose <- rxode2::rxSolve(
   mod, ev_nodose,
@@ -203,9 +203,10 @@ also arbitrates a real ambiguity, addressed in the next section.
 free_ige_d14 <- function(dose_mg, model = mod) {
   ev <- rbind(
     data.frame(time = 0, amt = dose_mg, evid = 1L, cmt = "depot"),
-    data.frame(time = seq(0, 20, by = 0.25), amt = NA_real_, evid = 0L, cmt = "Cc")
+    data.frame(time = seq(0, 20, by = 0.25), amt = NA_real_, evid = 0L, cmt = "central")
   )
   ev$id <- 1L
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   s <- rxode2::rxSolve(
     model, ev,
     omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
@@ -315,18 +316,18 @@ residual error active. This is the data the optimal-design work is reasoning
 about.
 
 A note on the event tables used throughout this vignette: doses are given on the
-ODE state `depot`, but observation rows name `Cc`. That is deliberate. This
-model declares three *endpoints* -- `Cc`, `totalIgE` and `freeIgE` each carry
-their own error model -- so `ui$predDf$cond` is `Cc, totalIgE, freeIgE` while
-`ui$state` is `depot, central, total_target`. With more than one endpoint,
-rxode2 requires an observation row to identify which endpoint it belongs to;
-pointing it at an ODE state instead fails with `'dvid'->'cmt' or 'cmt' on
-observation record`. Naming a declared endpoint here is not the same as naming a
-bare algebraic intermediate (which would inject a new compartment slot and
-renumber the states) -- `Cc` already owns an endpoint slot. All three analytes
-are returned as columns on every observation row regardless of which endpoint
-the row names, which is why one set of observation rows yields all three
-profiles below.
+ODE state `depot`, and observation rows carry `cmt = "central"` **plus**
+`dvid = 1L`. Both halves are needed. This model declares three *endpoints* --
+`Cc`, `totalIgE` and `freeIgE` each carry their own error model -- so rxode2
+maps `dvid` onto endpoint slots that sit after the three ODE states, and an
+observation row has to say which endpoint it belongs to. A bare
+`cmt = "central"` with no `dvid` fails with `'dvid'->'cmt' or 'cmt' on
+observation record`. Naming the observable instead (`cmt = "Cc"`) also runs, but
+it is the slot-renumbering anti-pattern that `lint_vignette.R` flags, and it is
+unnecessary: the two forms are numerically identical here (maximum absolute
+difference exactly 0 across all three outputs). All three analytes come back as
+columns on every observation row regardless, which is why a single set of
+observation rows yields all three profiles below.
 
 ```{r cohort}
 design_times <- c(0, 0.5, 1, 2, 4, 7, 10, 14, 28, 42, 56, 70, 84)
@@ -338,11 +339,12 @@ rxode2::rxSetSeed(20180608)
 events <- do.call(rbind, lapply(seq_along(dose_levels), function(k) {
   ids <- (k - 1L) * n_per_group + seq_len(n_per_group)
   dose <- data.frame(id = ids, time = 0, amt = dose_levels[k],
-                     evid = 1L, cmt = "depot")
+                     evid = 1L, cmt = "depot", dvid = NA_integer_)
   obs <- expand.grid(id = ids, time = design_times, KEEP.OUT.ATTRS = FALSE)
   obs$amt <- NA_real_
   obs$evid <- 0L
-  obs$cmt <- "Cc"
+  obs$cmt <- "central"
+  obs$dvid <- 1L
   out <- rbind(dose, obs[, names(dose)])
   out$dose_mg <- dose_levels[k]
   out
@@ -400,9 +402,10 @@ concentration which appeared to be linear".
 ```{r fig-freeige-typical, fig.cap = "Typical-value free IgE after a 150 mg subcutaneous dose, the dose used for the population prediction areas of Brekkan 2018 Figure 3. Dashed line: pretreatment baseline. Dotted line: the 21 ng/mL threshold."}
 ev150 <- rbind(
   data.frame(time = 0, amt = 150, evid = 1L, cmt = "depot"),
-  data.frame(time = seq(0, 84, by = 0.25), amt = NA_real_, evid = 0L, cmt = "Cc")
+  data.frame(time = seq(0, 84, by = 0.25), amt = NA_real_, evid = 0L, cmt = "central")
 )
 ev150$id <- 1L
+ev150$dvid <- ifelse(ev150$evid == 0L, 1L, NA_integer_)
 typ150 <- rxode2::rxSolve(
   mod, ev150, omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
 )
@@ -491,9 +494,10 @@ model structure.
 typ_nca <- vapply(dose_levels, function(d) {
   ev <- rbind(
     data.frame(time = 0, amt = d, evid = 1L, cmt = "depot"),
-    data.frame(time = design_times, amt = NA_real_, evid = 0L, cmt = "Cc")
+    data.frame(time = design_times, amt = NA_real_, evid = 0L, cmt = "central")
   )
   ev$id <- 1L
+  ev$dvid <- ifelse(ev$evid == 0L, 1L, NA_integer_)
   s <- rxode2::rxSolve(
     mod, ev, omega = NA, sigma = NA, useLinCmt = FALSE, returnType = "data.frame"
   )
