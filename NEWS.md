@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hard 2018 aripiprazole lauroxil nanocrystal dispersion ([doi:10.1007/s13318-018-0488-4](https://doi.org/10.1007/s13318-018-0488-4)) -- adults with schizophrenia or schizoaffective disorder.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
