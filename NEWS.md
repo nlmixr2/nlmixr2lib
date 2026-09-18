@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Taddio 2018 [11C]AM7 and [11C]MT107 ([doi:10.1155/2018/5849047](https://doi.org/10.1155/2018/5849047)) -- xenograft-bearing female SCID and CD1 nude mice imaged by dynamic PET, with and without cyclosporine.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
