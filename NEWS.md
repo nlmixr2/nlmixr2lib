@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Brekkan 2018 omalizumab ([doi:10.1007/s10928-018-9594-9](https://doi.org/10.1007/s10928-018-9594-9)) -- adults with atopic disease receiving subcutaneous omalizumab.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
