@@ -187,8 +187,8 @@ Lacy_2018_cabozantinib <- function() {
     # Paper Results: "The first-order absorption process including ... a dose-
     # dependent effect on the absorption rate constant (Ka) was described using
     # a power model." Ka(DOSE) = Ka_ref * (DOSE / DOSE_REF)^exp_dose_ka.
-    # DOSE_REF is NOT stated in the paper; the 60 mg reference was chosen per
-    # sidecar Q2-A and documented in vignette Errata.
+    # DOSE_REF is NOT stated in the paper; the 60 mg reference was chosen
+    # and is documented in vignette Errata.
     e_dose_ka <- 0.677     ; label("Dose power exponent on Ka (unitless)")                                                       # Lacy 2018 Table 3 FM dose-dependent Ka = 0.677 (90% CI 0.268, 1.085)
 
     # ---- Categorical covariate effects (multiplicative fractional change) ----
@@ -237,8 +237,8 @@ Lacy_2018_cabozantinib <- function() {
     #   omega^2_Vc/F = 0.233; omega^2_F1 = 0.466 (on the logit scale);
     #   omega^2_CL/F:Vc/F = 2.475.
     # The published off-diagonal value 2.475 violates Cauchy-Schwarz given the
-    # marginal variances (implied correlation 11.4); per sidecar Q1-A the
-    # off-diagonal is dropped and Omega is encoded as diagonal. See vignette
+    # marginal variances (implied correlation 11.4), so the off-diagonal is
+    # dropped and Omega is encoded as diagonal. See vignette
     # Errata.
     etalka      ~ 2.063   # Lacy 2018 Table 3 footnote d omega^2_Ka = 2.063
     etalcl      ~ 0.202   # Lacy 2018 Table 3 footnote d omega^2_CL/F = 0.202; off-diagonal with etalvc dropped (sidecar Q1-A; see vignette Errata)

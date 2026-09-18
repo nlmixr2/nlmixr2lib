@@ -56,17 +56,17 @@ Muller_2007_penicillin_G <- function() {
     lvp <- log(0.152); label("Peripheral volume of distribution (L)")                  # Muller 2007 Table 2: V2 = 0.152 L (SE 0.0312)
     lq  <- log(0.774); label("Intercompartmental clearance (L/h)")                     # Muller 2007 Table 2: Q  = 0.774 L/h (SE 0.277)
 
-    # Allometric / size-scaling exponent on CL. Operator sidecar-001
-    # response Q2=B selected a linear-with-weight scaling (exponent 1)
-    # at the cohort-mean reference because Muller 2007 retains body
+    # Allometric / size-scaling exponent on CL. A linear-with-weight
+    # scaling (exponent 1) at the cohort-mean reference is used because
+    # Muller 2007 retains body
     # weight on CL in the final model (P < 0.01, Results page 3724;
     # Fig. 3) but does not report the functional form or coefficient.
     e_wt_cl <- fixed(1.0); label("Exponent of (WT / 1.195 kg) on CL (unitless; imputed linear scaling)")  # Muller 2007 Results p. 3724 + Fig. 3 (form not reported; linear exponent imputed per operator sidecar-001 Q2=B)
 
     # Inter-individual variability (Muller 2007 Table 2 'Variance model
     # parameters'; reported as omega^2 of the log-normal eta).
-    # The IIV on the second volume term is encoded on V1 (central) per
-    # operator sidecar-001 response Q1=A: Table 2 explicitly labels the
+    # The IIV on the second volume term is encoded on V1 (central):
+    # Table 2 explicitly labels the
     # row 'Interindividual variability in V1' with subscript 1 and the
     # Table-2 footnote defines V1 as the central compartment, while the
     # paper body text says V2 / peripheral. See vignette Errata for
