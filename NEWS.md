@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Bi 2018 testosterone cypionate ([doi:10.1002/psp4.12287](https://doi.org/10.1002/psp4.12287)) -- healthy men receiving 14 weekly supratherapeutic intramuscular injections.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
