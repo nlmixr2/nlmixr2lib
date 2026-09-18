@@ -2,6 +2,8 @@
 
 # development version
 
+- Hong 2013 glucose-insulin ([doi:10.1208/s12248-013-9512-4](https://doi.org/10.1208/s12248-013-9512-4)) -- the HGC and MTT models now encode the inter-occasion variability on CLG and VG that Tables I and II report, using the occasion-indicator expansion (`etaiov_clg_<occ>` / `etaiov_vg_<occ>` selected by `oc<n>` indicators). **This makes `OCC` a required covariate column on both models**: simulations that previously ran without one must now supply an integer occasion index (`OCC = 1` reproduces the earlier single-occasion behaviour). The models previously omitted IOV on the stated grounds that rxode2 could not combine IIV and IOV etas on one mu-referenced line, which does not reproduce on rxode2 5.1.8.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
