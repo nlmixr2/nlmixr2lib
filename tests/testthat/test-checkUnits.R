@@ -488,6 +488,29 @@ test_that("transit absorption, bioavailability and residual structures map to th
   expect_equal(.unitRow(res, "E")$issue, NA_character_)
 })
 
+test_that("a dimensionless time unit is accepted", {
+  # an exposure-response model with no time axis declares time = "none"
+  er <- function() {
+    units <- list(time = "none", dosing = "mg", concentration = "unitless")
+    ini({ tint <- 0; tslope <- 0.1; propSd <- 0.1 })
+    model({
+      lp <- tint + tslope * AUC
+      p <- expit(lp)
+      p ~ prop(propSd)
+    })
+  }
+  res <- checkUnits(er, AUC = "mg*h/L")
+  expect_true(all(is.na(res$issue)))
+  expect_equal(.unitRow(res, "time")$unit, "unitless")
+  expect_equal(.unitRow(res, "p")$unit, "unitless")
+  # the argument of expit() is not judged, so the linear predictor and its
+  # coefficients stay unresolved rather than being forced unitless
+  expect_equal(.unitRow(res, "lp")$source, "unresolved")
+  expect_true(is.na(.unitRow(res, "tslope")$unit))
+  expect_true(is.na(.unitRow(res, "tint")$unit))
+  expect_equal(nlmixr2lib:::.unitToUdunits("L/unitless"), "L/1")
+})
+
 test_that("an undosed turnover state is unresolved until declared", {
   pd <- function() {
     ini({ tkin <- 1; tkout <- 1; addSd <- 1 })

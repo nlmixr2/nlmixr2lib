@@ -136,9 +136,9 @@
 }
 
 # The last step before a string reaches udunits, which spells the
-# dimensionless unit "1".
+# dimensionless unit "1" (also inside a compound such as "L/unitless").
 .unitToUdunits <- function(s) {
-  if (identical(s, "unitless")) "1" else s
+  gsub("(?<![A-Za-z])unitless(?![A-Za-z])", "1", s, perl = TRUE)
 }
 
 # A units object with value 1 in the given unit.
@@ -976,7 +976,10 @@
   weightBased <- !is.null(doseUnit) && "kg" %in% .unitSymbols(doseUnit)$den
   scheme <- if (weightBased) defaults$weight else defaults$mass
   out <- list()
-  if (!is.null(st$time)) {
+  # a dimensionless time (an exposure-response model with `time = "none"`)
+  # makes a clearance a volume and a rate constant a number, so only the
+  # volume default applies
+  if (!is.null(st$time) && !.unitIsDimensionless(st$time)) {
     tm <- .unitDeparse(st$time)
     st$defaultCandidates <- list(
       .unitOne(sub("<time>", tm, scheme[["clearance"]], fixed = TRUE)),
