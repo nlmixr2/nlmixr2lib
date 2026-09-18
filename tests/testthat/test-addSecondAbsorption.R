@@ -140,7 +140,8 @@ test_that("addSecondAbsorption guards", {
 })
 
 test_that("addSecondAbsorption works on a zero-order first path", {
-  res <- suppressWarnings(res0 |> addZeroOrderAbs()) |>
+  res <- suppressWarnings(res0 |> addZeroOrderAbs())
+  res <- res |>
     addSecondAbsorption(type = "first", delay = "lag")
 
   # dose records live on central; the split fans out from there and
@@ -153,7 +154,8 @@ test_that("addSecondAbsorption works on a zero-order first path", {
 })
 
 test_that("convertAbsSequential ties the second lag to the first duration", {
-  res <- suppressWarnings(res0 |> addZeroOrderAbs()) |>
+  res <- suppressWarnings(res0 |> addZeroOrderAbs())
+  res <- res |>
     addSecondAbsorption(type = "first", delay = "lag") |>
     convertAbsSequential()
 
@@ -169,8 +171,9 @@ test_that("convertAbsSequential ties the second lag to the first duration", {
   )
 
   # second path must have a lag to tie
+  resNoLag <- suppressWarnings(res0 |> addZeroOrderAbs())
   expect_error(
-    suppressWarnings(res0 |> addZeroOrderAbs()) |>
+    resNoLag |>
       addSecondAbsorption(type = "first", delay = "none") |>
       convertAbsSequential(),
     regexp = "no lag time"
