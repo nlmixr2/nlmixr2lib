@@ -4590,6 +4590,8 @@ navbar:
         href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (deKock 2017)"
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
+      - text: "SulfadoxinePyrimethamine (deKock 2018)"
+        href: articles/deKock_2018_sulfadoxinePyrimethamine.html
       - text: "Sulfamethoxazole (Chen 2025)"
         href: articles/Chen_2025_cotrimoxazole.html
       - text: "Sulfamethoxazole (Leegwater 2025)"
@@ -7742,6 +7744,7 @@ articles:
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
   - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deKock_2018_sulfadoxinePyrimethamine
   - articles/deVriesSchultink_2018_cardiotoxicity
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/deVries_2025_durvalumab
