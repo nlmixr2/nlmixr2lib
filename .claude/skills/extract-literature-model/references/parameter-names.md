@@ -377,6 +377,25 @@ The `lnn` / `nn_fix` form is reserved for Wang & co-authors'
 sigmoidicity exponent in specific BDE / morphine-like models and is a
 distinct canonical from `lhill`.
 
+## Circadian / diurnal baseline oscillations
+
+Most models fix the period at 24 h and write it straight into `model()` as
+`2 * pi / 24`; only the amplitude and (usually) the acrophase are parameters.
+The registered absolute-amplitude family is:
+
+- `lamp` -- amplitude of the oscillation, in the state's own units
+  (`GonzalezSales_2015_testosterone.R`).
+- `ltacro` -- acrophase, i.e. the clock time at which the rhythm peaks.
+- `lfcirc` -- **fitted** frequency in cycles per day, for the rarer case where
+  the paper estimates the frequency (or the period) instead of fixing it at
+  24 h: `baseline = e0 + amp * cos(2 * pi * fcirc / 24 * tday)`. Founding
+  example `Mukherjee_2018_amlodipine.R` (`fcirc = 1.76` cycles/day). A model
+  carries `lamp` plus *either* an acrophase or a frequency, not both.
+
+Do not confuse these with `cl_circ_famp_day` / `cl_circ_famp_night`, which are
+dimensionless fractional amplitudes on a clearance whose phase is set by a
+day / night window split.
+
 ## Body-weight evolution (perioperative / fluid-resuscitation models)
 
 Some surgical / critical-care popPK papers fit a transient body-weight curve in

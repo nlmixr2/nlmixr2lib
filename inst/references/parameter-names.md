@@ -1478,6 +1478,22 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `beta0`, `Intercept` -- the intercept of a binary logistic exposure-response regression `logit(p) = beta0 + beta1 * x`. The intercept IS the baseline (zero-exposure) response on the logit scale, so it takes the registered `logit` transform prefix: `logite0`. When one paper fits several parallel univariate regressions of the same endpoint against different exposure predictors, suffix by endpoint and predictor -- `logite0_<endpoint>_<predictor>` -- in the same way multi-output residual SDs are suffixed by output. The matching slope is a normal `e_<predictor>_<endpoint>` covariate-effect parameter. Used in `Assmus_2025_benznidazole_mouse.R` (`logite0_cure_auc` / `e_auc_cure` and `logite0_cure_tmic` / `e_tmic_cure`, Assmus 2025 Table 4).
 - **Example models:** `Kleijn_2011_sugammadex_rocuronium.R`, `Assmus_2025_benznidazole_mouse.R`.
 
+### lfcirc (**canonical log-transformed fitted frequency of a circadian baseline oscillation**)
+- **Type:** paper-named-param
+- **Role:** Log of the FITTED frequency, in cycles per day, of a cosine oscillation describing the drug-free baseline of a PD endpoint: `baseline = e0 + amp * cos(2 * pi * fcirc / 24 * tday)` with `tday` the clock time within the day in hours. Inside `model` the bare name is `fcirc`. Use it only when the source paper ESTIMATES the frequency (or, equivalently, the period) rather than fixing the rhythm at 24 h -- the overwhelmingly common case, in which the 24 h period is a structural constant written directly into `model()` as `2 * pi / 24`, needs no parameter at all.
+- **Source aliases:**
+  - `f` -- Mukherjee 2018 Table 3 notation, "circadian frequency", in 1/day.
+  - `om` -- the same quantity as an ANGULAR frequency in 1/h in Mukherjee 2018 supplementary Figure S2; convert with `om = 2 * pi * fcirc / 24`.
+- **Example models:** `Mukherjee_2018_amlodipine.R` (founding example; `fcirc = 1.76` cycles/day for the systolic-blood-pressure baseline of Donnelly 1993, i.e. a period of about 13.6 h rather than 24 h).
+- **Notes:** Third member of the absolute-amplitude circadian family alongside `lamp` (amplitude in the state's own units) and `ltacro` (acrophase / peak clock time); a given model normally carries `lamp` plus EITHER an acrophase or, as here, a frequency, not all three. Distinct from `cl_circ_famp_day` / `cl_circ_famp_night`, which are dimensionless FRACTIONAL amplitudes on a clearance whose phase is fixed by a day / night window split. Distinct also from any elimination or turnover rate constant: the units are cycles per day, not 1/time in the rate-constant sense, which is why the name carries `f` rather than `k`. Registered during the Mukherjee 2018 amlodipine extraction; ratification of the name is the subject of that task's naming sidecar.
+
+### fcirc (**canonical bare fitted frequency of a circadian baseline oscillation**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lfcirc`; the frequency in cycles per day used inside `model` as `cos(2 * pi * fcirc / 24 * tday)`.
+- **Source aliases:**
+  - `f` -- Mukherjee 2018 Table 3 notation.
+- **Example models:** `Mukherjee_2018_amlodipine.R`.
+
 ### kdes (**canonical desensitisation rate**)
 - **Type:** paper-named-param
 - **Role:** Receptor / target desensitisation rate constant (1 / time).
