@@ -79,11 +79,13 @@ Willmann_2018a_rivaroxaban <- function() {
       reference_category = NULL,
       notes = paste(
         "Enters V/F only, in power form as (AGE / 61)^-0.189 (Willmann 2018a",
-        "Table 3 and Supplementary Eq. 1). Age was ALSO tested on CL/F and was",
-        "removed at backward elimination (Table 2 run 10, dOFV 1.3 -- see",
-        "covariatesDataExcluded is not used here because AGE is retained on",
-        "V/F). Pooled mean 60.53 years (SD 11.82) in Table 1; the analysis",
-        "population is adults only."
+        "Table 3 and Supplementary Eq. 1). Age was ALSO tested on CL/F: it was",
+        "carried in the base model, never improved the fit (Table 2 run 6,",
+        "dOFV 0), and was dropped at backward elimination once age and sex on",
+        "V/F and weight on CL/F were in (Table 2 run 10, dOFV 1.3). AGE is",
+        "therefore a retained covariate -- it belongs in covariateData, not in",
+        "covariatesDataExcluded -- but only on V/F. Pooled mean 60.53 years",
+        "(SD 11.82) in Table 1; the analysis population is adults only."
       ),
       source_name = "AGE"
     ),
