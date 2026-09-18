@@ -249,3 +249,83 @@ test_that("double absorption solves like the simultaneous first-order seed", {
   expect_equal(dA$central + dB$central, dR$central, tolerance = 1e-6)
 
 })
+
+test_that("addSecondAbsorption resolves compartment names in all NSE forms", {
+
+  # unquoted names resolve to their spelling
+  expect_no_error(res0 |> addSecondAbsorption(depot2 = my_depot))
+
+  # quoted and variable forms work as well
+  expect_no_error(res0 |> addSecondAbsorption(depot2 = "dq"))
+
+  .v <- "dv"
+  expect_no_error(res0 |> addSecondAbsorption(depot2 = .v))
+
+  # a second call with a DIFFERENT depot2 name still refuses: the
+  # split directive means a second path is already present
+  expect_error(
+    res0 |> addSecondAbsorption(depot2 = "d2", delay = "lag") |>
+      addSecondAbsorption(depot2 = "d3", delay = "lag"),
+    regexp = "already present"
+  )
+
+})
+
+test_that("convertAbsSequential refuses a non-zero-order first path", {
+
+  # central carries a modeled duration for an IV infusion, but the
+  # depot is still first-order — the lag must NOT tie to it
+  expect_error(
+    res0 |> addDur(central) |> addSecondAbsorption(delay = "lag") |> convertAbsSequential(),
+    regexp = "zero-order first path"
+  )
+
+})
+
+test_that("convertAbsForceLongerDelay reads a custom first lag variable", {
+
+  mkT <- function() {
+    ini({
+      lka <- log(1)
+      lcl <- log(0.1)
+      lvc <- log(10)
+      propSd <- 0.5
+      ltlag1 <- log(9)
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      tlag1 <- exp(ltlag1)
+      d/dt(depot) <- -ka * depot
+      lag(depot) <- tlag1
+      d/dt(central) <- ka * depot - kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  res <- rxode2::rxode2(mkT) |>
+    addSecondAbsorption(type = "first", delay = "lag") |>
+    convertAbsForceLongerDelay()
+
+  # the increment builds on the CUSTOM first lag variable, not lagDepot
+  expect_equal(rxode2::modelExtract(res, "lag(depot2)"),
+    "lag(depot2) <- tlag1 + diffTlag2")
+  expect_true("diffTlag2" %in% res$iniDf$name)
+
+})
+
+test_that("addSecondAbsorption transit on a transit first path errors cleanly", {
+
+  # both paths would share the transit prefix, so the second
+  # addTransit() call would rewire the first path's chain (central
+  # would read ka*transit2 + ka2*transit2); refuse instead of
+  # silently cross-wiring
+  expect_error(
+    res0 |> addTransit(2) |> addSecondAbsorption(delay = "transit", n = 2),
+    regexp = "transit"
+  )
+
+})

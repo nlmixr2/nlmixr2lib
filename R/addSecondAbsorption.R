@@ -50,15 +50,44 @@ addSecondAbsorption <- function(ui,
   type <- match.arg(type)
   delay <- match.arg(delay)
   .ui <- rxode2::assertRxUi(ui)
+  .cmt <- as.character(substitute(depot2))
+  depot2 <- try(force(depot2), silent = TRUE)
+  if (inherits(depot2, "try-error")) {
+    depot2 <- .cmt
+  }
   assertCompartmentName(depot2)
+  .ka2 <- as.character(substitute(ka2))
+  ka2 <- try(force(ka2), silent = TRUE)
+  if (inherits(ka2, "try-error")) {
+    ka2 <- .ka2
+  }
   assertVariableName(ka2)
   .cp <- .ui$props$cmtProp
   if (!is.null(.cp) && any(.cp$Compartment == depot2)) {
     stop("a second absorption path ('", depot2, "') is already present", call. = FALSE)
   }
+  # a split directive means a second path is already present even when
+  # it addresses differently-named compartments
+  .hasSplit <- any(vapply(.ui$lstExpr,
+    function(l) {
+      .d <- deparse1(l)
+      grepl("splitInfusionBolus(", .d, fixed = TRUE) ||
+        grepl("splitBolusInfusion(", .d, fixed = TRUE) ||
+        grepl("splitBolus(", .d, fixed = TRUE) ||
+        grepl("splitInfusion(", .d, fixed = TRUE)
+    }, logical(1), USE.NAMES = FALSE))
+  if (.hasSplit) {
+    stop("a second absorption path is already present (model has a split directive)", call. = FALSE)
+  }
   .zoFirst <- !rxode2::testCompartmentExists(.ui, depot)
   if (delay == "transit") {
     checkmate::assertIntegerish(n, lower = 1L, len = 1L, any.missing = FALSE)
+    # addTransit() uses a single shared prefix, so a transit chain on
+    # the first path would be rewired into the second path's chain
+    # (central reading ka*transitN + ka2*transitN); refuse instead
+    if (rxode2::testCompartmentExists(.ui, "transit1")) {
+      stop("a transit chain is already present; a transit second path needs its own prefix (not yet supported)", call. = FALSE)
+    }
   }
   # the second depot always starts as a first-order path; a zero-order
   # second path is a modeled duration on depot2 itself (the depot keeps
@@ -147,10 +176,12 @@ convertAbsSequential <- function(ui, central = "central", depot = "depot", depot
   central <- rxode2::assertCompartmentExists(.ui, central)
   # sequential ordering is only defined for a zero-order first path,
   # which addZeroOrderAbs() expresses as a modeled duration on central
-  # (the depot compartment itself is gone)
+  # (the depot compartment itself is gone — a first-order depot still
+  # present means this precondition fails even when central happens
+  # to carry some other duration, e.g. an IV infusion)
   .cp <- .ui$props$cmtProp
   .durCmt <- if (!is.null(.cp)) .cp$Compartment[.cp$Property == "dur"] else character(0)
-  if (!central %in% .durCmt) {
+  if (rxode2::testCompartmentExists(.ui, depot) || !central %in% .durCmt) {
     stop("sequential double absorption requires a zero-order first path ('", central,
       "' has no modeled duration)", call. = FALSE)
   }
@@ -218,10 +249,16 @@ convertAbsForceLongerDelay <- function(ui, central = "central", depot = "depot",
     logical(1), USE.NAMES = FALSE))
   .rhs2 <- .modelLines[[.w2[1L]]][[3L]]
   .lagVar2 <- if (is.name(.rhs2)) as.character(.rhs2) else NULL
-  # lag(depot2) <- lagDepot + diffTlag2, estimating the increment; the
-  # first path's lag variable follows addLag()'s defaultCombine()
-  # convention (lagDepot)
-  .lagVar1 <- as.character(defaultCombine("lag", depot))
+  # lag(depot2) <- <first-lag-var> + diffTlag2, estimating the
+  # increment; the first path's lag variable is read from its own
+  # lag() line (it need not follow the defaultCombine() convention)
+  .w1 <- which(vapply(.modelLines, function(l) grepl(.lag1, deparse1(l), fixed = TRUE),
+    logical(1), USE.NAMES = FALSE))
+  .rhs1 <- .modelLines[[.w1[1L]]][[3L]]
+  if (!is.name(.rhs1)) {
+    stop("the first absorption path's lag time is not a plain variable", call. = FALSE)
+  }
+  .lagVar1 <- as.character(.rhs1)
   .modelLines[[.w2[1L]]] <- str2lang(paste0("lag(", depot2, ") <- ", .lagVar1, " + diffTlag2"))
   .ui <- rxode2::rxUiDecompress(.ui)
   if (exists("description", envir = .ui$meta)) {
