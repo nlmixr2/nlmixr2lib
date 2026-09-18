@@ -382,6 +382,8 @@ navbar:
         href: articles/Koh_2025_aspirin.html
       - text: "Astegolimab (Kotani 2022)"
         href: articles/Kotani_2022_astegolimab.html
+      - text: "Asunaprevir (Zhu 2018)"
+        href: articles/Zhu_2018_asunaprevir.html
       - text: "Asundexian (Yassen 2025)"
         href: articles/Yassen_2025_asundexian.html
       - text: "Atacicept (Pitsiu 2023)"
@@ -7717,6 +7719,7 @@ articles:
   - articles/Zhu_2013_ganitumab
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
+  - articles/Zhu_2018_asunaprevir
   - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zhu_2024_borneol_pbpk
