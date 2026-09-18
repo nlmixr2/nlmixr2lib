@@ -184,7 +184,7 @@ Sood_2026_lu177dotatate_adult <- function() {
     #   var(etalvc) = 0.52^2 = 0.2704   from Table 2 'IIV on Vc' = 0.52 (RSE 19.37)
     # No trailing comment sits on the eta line itself: rxode2 promotes a
     # trailing comment on an unlabelled ini() line into a label(), and a
-    # comment inside the c() breaks the re-parse outright.
+    # source trace does not belong in a parameter label.
     etalcl + etalvc ~ c(0.1681, 0.149240, 0.2704)
 
     # ==================================================================
