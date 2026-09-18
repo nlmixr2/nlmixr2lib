@@ -3048,6 +3048,8 @@ navbar:
         href: articles/Leroux_2018_fluconazole_micafungin.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
+      - text: "Micafungin (Maseda 2018)"
+        href: articles/Maseda_2018_micafungin.html
       - text: "Micafungin clsi (Beredaki 2023)"
         href: articles/Beredaki_2023_micafungin.html
       - text: "Micafungin eucast (Beredaki 2023)"
@@ -6771,6 +6773,7 @@ articles:
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
+  - articles/Maseda_2018_micafungin
   - articles/Masters_2022_avelumab
   - articles/Matcha_2025_amikacin
   - articles/Matsumoto_2005_TF_505
