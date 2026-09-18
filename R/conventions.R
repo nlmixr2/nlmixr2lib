@@ -838,7 +838,32 @@
   # 1/(nM*h), 1/nM/hour, nM^-1 h^-1, (pmol/L)^-1 h^-1, 1/(nM h) ... all the
   # same shape. Canonical form is 1/(<concentration>*<time>), which keeps the
   # concentration and time bases visible and greppable.
-  canonicalRateNotation = "1/(<conc>*<time>)"
+  canonicalRateNotation = "1/(<conc>*<time>)",
+
+  # Spellings checkUnits() rewrites before handing a unit string to udunits,
+  # which knows "week" but not "wk", "h" but not "hrs", "ug" but not "mcg".
+  # Applied to whole tokens inside compound units ("L/hrs" -> "L/h"). Units
+  # udunits lacks entirely (IU, nM, cells, CFU) are installed instead; see
+  # .unitCustomDefinitions in checkUnits.R.
+  unitSpellingAliases = c(
+    mcg = "ug",
+    wk = "week",
+    wks = "week",
+    hrs = "h",
+    mins = "min",
+    secs = "s",
+    yr = "year",
+    yrs = "year"
+  ),
+
+  # The unit checkUnits() writes for an inferred volume or clearance. The
+  # dimension comes from the equations; this only picks the spelling, and
+  # `<time>` is the model's own time unit. A dose per body weight (mg/kg)
+  # makes volumes and clearances per kilogram as well.
+  unitDefaults = list(
+    mass = c(volume = "L", clearance = "L/<time>"),
+    weight = c(volume = "mL/kg", clearance = "mL/kg/<time>")
+  )
 )
 
 # The following canonical-name lists are NOT carried on
