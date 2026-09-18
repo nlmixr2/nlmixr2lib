@@ -4904,6 +4904,8 @@ navbar:
         href: articles/DiDeo_2025_tideglusib.html
       - text: "Tideglusib healthy (DiDeo 2025)"
         href: articles/DiDeo_2025_tideglusib.html
+      - text: "Tigecycline (BorsukDeMoor 2018)"
+        href: articles/BorsukDeMoor_2018_tigecycline.html
       - text: "Tigecycline (Luo 2023)"
         href: articles/Luo_2023_tigecycline.html
       - text: "Tigecycline (Song 2024)"
@@ -5788,6 +5790,7 @@ articles:
   - articles/Bonner_2015_gastric_emptying
   - articles/Boone_2025_vinylchloride
   - articles/Borghardt_2016_olodaterol
+  - articles/BorsukDeMoor_2018_tigecycline
   - articles/Bosch_2022_liraglutide_qsp
   - articles/Bosch_2024_cotadutide_qsp
   - articles/Bosch_2024_glp1ra_bodyweight
