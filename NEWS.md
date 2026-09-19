@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Brussee 2018 midazolam ([doi:10.1007/s11095-018-2458-6](https://doi.org/10.1007/s11095-018-2458-6)) -- post-operative children 1-18 years of age.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
