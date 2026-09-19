@@ -456,6 +456,8 @@ navbar:
         href: articles/Masters_2022_avelumab.html
       - text: "Avibactam (Chen 2025)"
         href: articles/Chen_2025_ceftazidime_avibactam.html
+      - text: "Avibactam (Dimelow 2018)"
+        href: articles/Dimelow_2018_ceftazidime_avibactam_elf.html
       - text: "Avibactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Axatilimab (Yang 2024)"
@@ -882,6 +884,8 @@ navbar:
         href: articles/Chen_2025_ceftazidime_avibactam.html
       - text: "Ceftazidime (Conil 2007)"
         href: articles/Conil_2007_ceftazidime.html
+      - text: "Ceftazidime (Dimelow 2018)"
+        href: articles/Dimelow_2018_ceftazidime_avibactam_elf.html
       - text: "Ceftazidime (Georges 2009)"
         href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Launay 2024)"
@@ -6037,6 +6041,7 @@ articles:
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
+  - articles/Dimelow_2018_ceftazidime_avibactam_elf
   - articles/Ding_2024_antimalarials_pregnancy
   - articles/Ding_2026_artemether_lumefantrine_amodiaquine
   - articles/Ding_2026_vancomycin
