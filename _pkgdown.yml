@@ -664,6 +664,8 @@ navbar:
         href: articles/Frederiksen_2023_brexpiprazole.html
       - text: "Brigatinib (Hanley 2024)"
         href: articles/Hanley_2024_brigatinib.html
+      - text: "Brilaroxazine (Cantillon 2018)"
+        href: articles/Cantillon_2018_brilaroxazine.html
       - text: "Brivaracetam (Schoemaker 2017)"
         href: articles/Schoemaker_2017_brivaracetam.html
       - text: "Brodalumab (Timmermann 2019)"
@@ -5844,6 +5846,7 @@ articles:
   - articles/Candelaria_2018_rituximab
   - articles/Canini_2015_danoprevir
   - articles/Canini_2018_setrobuvir
+  - articles/Cantillon_2018_brilaroxazine
   - articles/Cao_2013_GNbAC1
   - articles/Cao_2013_MEDI528
   - articles/Cao_2013_PAmAb

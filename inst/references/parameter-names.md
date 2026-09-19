@@ -1258,6 +1258,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** 181 shipped models, e.g. `deVriesSchultink_2018_trastuzumab_LVEF.R`, `Kleijn_2011_sugammadex_rocuronium.R`, `Boucher_2018_naproxen_mbma.R`.
 - **Notes:** Documented 2026-09-01 alongside `lrbase`, for the same reason -- an established convention (181 models) that had no register entry. Pairs with `lec50` (half-maximal concentration) and `lhill` (Hill exponent). **Do not use `lemax` when the source paper estimates the attained plateau level rather than the increment** -- that is `lrmax_<output>`; the two differ by the baseline and silently substituting one for the other misstates every prediction whose baseline is not zero.
 
+### emax, imax (**canonical bare maximal drug-effect increment**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lemax` / `limax`; the maximum achievable drug effect on the linear scale. Normally this name appears only inside `model()` as the back-transform of `lemax`, but it is also the correct `ini()` parameter name in the two cases where the log transform is inapplicable: (a) the estimate is **negative**, as it is whenever a paper defines the effect as a signed change in an endpoint that improves by falling; and (b) the paper gives the parameter an **additive** random effect, `Emaxj = Emax + etaj`, which places no positivity constraint on the individual value. Both conditions hold together in the founding example. Log-transform whenever neither applies -- `lemax` remains the default.
+- **Source aliases:**
+  - `Emax`, `EMAX`, `Imax` -- equivalent paper notation.
+- **Example models:** `Cantillon_2018_brilaroxazine.R` (`emax = -31.6` PANSS units with an additive IIV of variance 464, per Cantillon 2018 Eq. 15 and Table 3; the paper notes the additive random effect is what lets an individual's Emax turn positive, i.e. worsen on treatment), `Ivaturi_2017_RBP_7000.R` and `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (bare `emax` derived inside `model()`).
+- **Notes:** The transform rule in "Transform prefixes" is conditioned on positivity -- "log-transform any parameter that must be positive" -- so a signed Emax is not an exception to the convention but an application of it. Registered here because the bare form was previously documented only as an in-`model()` name, alongside the parallel registered bare counterparts `ec50` and `e0`. The IIV partner follows the standard rule on the *transformed* name, hence `etaemax` for a bare `emax` and `etalemax` for `lemax`. Do not use `emax` for an attained plateau LEVEL -- that is `lrmax_<output>`.
+
 ### lrmax_map, lrmax_sbp, lrmax_hr (**canonical log-transformed maximum attainable plateau level of a PD output**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed maximum attainable *level* of a PD endpoint under maximal drug effect, in the endpoint's own clinical units (mmHg, beats/min,...) -- the plateau-level counterpart of `lrbase`. Used when the source paper estimates the ceiling of the response rather than the increment, so the Emax term must be recovered as a difference: `emax_map <- rmax_map - MAP_BL`. Inside `model()` the bare names are `rmax_map`, `rmax_sbp`, `rmax_hr`; the per-output suffix follows the registered multi-analyte precedent.
@@ -1378,6 +1386,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Bare counterpart of `lec50`; the half-maximal effect concentration on the linear scale.
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
+
+### lauc50, auc50 (**canonical log-transformed exposure (AUC) producing half-maximal effect**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed AUC at which an Emax / Imax term reaches half its maximum, for the family of PD models whose driver is an **exposure** metric rather than an instantaneous concentration: `effect = emax * AUC / (AUC + auc50)`. Inside `model()` the bare name is `auc50`. Units are those of the driving AUC (`ug*h/mL`, `nmol*h/L`, `ng*h/mL`, ...) and MUST match the AUC covariate or state feeding the sigmoid, so the ratio is dimensionless.
+- **Source aliases:**
+  - `AUC50`, `AUC_50`, `IAUC50`, `AUC50,sBP` -- equivalent paper notation; the `I` prefix marks an inhibitory rather than stimulatory term and does not change the canonical name.
+- **Example models:** `Johnston_2019_empagliflozin.R` (`lauc50 = log(498)` nmol*h/L), `Pohl_2022_linzagolix_e2.R` (`lauc50 = log(1.68e5)` ng*h/mL with a Hill exponent), `Rognas_2025_bitopertin.R`, `Stringer_2014_sipoglitazar.R`, the `Ibrahim_2023_ibrutinib_*` and `Ibrahim_2025_ibrutinib_*` families, `Cantillon_2018_brilaroxazine.R` (`lauc50 = log(89.6)` ug*h/mL on CUMULATIVE AUC).
+- **Notes:** Registered 2026-09-19 during the Cantillon 2018 extraction; like `lrbase` and `lemax` before it, this records a convention already in consistent use across a dozen shipped models that had never been written into the register. **Distinct from `lec50`**, which is explicitly a half-maximal CONCENTRATION: substituting `lec50` for an AUC midpoint would falsify the parameter's units and mislead any reader who assumes the driver is a concentration. Note that the driving AUC is not always the same quantity -- most members use a steady-state or dosing-interval AUC supplied as an `AUC_<DRUG>` covariate column, whereas `Cantillon_2018_brilaroxazine.R` integrates an `auc_central` state to give CUMULATIVE AUC from the first dose, which keeps rising with treatment duration. Record which convention applies in the model's own label and in `covariateData` / `compartmentData`. Pairs with `lhill` when the source fits a sigmoidal exponent.
 
 ### tvec50 (**canonical time-zero value of a time-varying EC50**)
 - **Type:** paper-named-param
