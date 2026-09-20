@@ -2,6 +2,8 @@
 
 # development version
 
+- Add van Esdonk 2018 pregabalin ([doi:10.1002/psp4.12318](https://doi.org/10.1002/psp4.12318)) -- healthy adults given a single 300 mg oral dose, with cold pressor and electrical stimulation pain-tolerance-threshold PD models.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
