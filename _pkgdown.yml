@@ -4766,6 +4766,8 @@ navbar:
         href: articles/Marier_2010_teduglutide.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
+      - text: "Tegafur rat (Kim 2017)"
+        href: articles/Kim_2017_tegafur_rat.html
       - text: "Teicoplanin (ButraguenoLaiseca 2025)"
         href: articles/ButraguenoLaiseca_2025_teicoplanin.html
       - text: "Teicoplanin (Chae 2026)"
@@ -6498,6 +6500,7 @@ articles:
   - articles/Kim_2016_piperacillin_tazobactam
   - articles/Kim_2016_udenafil
   - articles/Kim_2017_fimasartan
+  - articles/Kim_2017_tegafur_rat
   - articles/Kim_2018_tacrolimus
   - articles/Kim_2023_camostat
   - articles/Kim_2023_pyrazinamide

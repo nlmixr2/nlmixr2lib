@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kim 2017 tegafur ([doi:10.3390/molecules22091488](https://doi.org/10.3390/molecules22091488)) -- male Sprague-Dawley rats given oral S-1 with or without Sipjeondaebo-tang pretreatment.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
