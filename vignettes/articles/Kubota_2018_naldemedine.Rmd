@@ -269,9 +269,14 @@ their most extreme values, "the population predicted CL/F would range from 5.17
 to 12.1 L/h, which would decrease the population predicted AUCss by 25% or would
 increase by 76%".
 
-Reproducing those four numbers exercises **both polarities** of the categorical
-covariates at once, and is what pins down the one genuinely ambiguous coding in
-the paper (see *Assumptions and deviations*).
+Reproducing those four numbers is an end-to-end check on the continuous
+covariate terms: both centring constants (52 years, 108 mL/min), both exponents,
+and the magnitude of the two categorical factors all have to be right for the
+bounds to land. Note what it does **not** test: because the paper lets each
+covariate "independently take extreme values", the optimum is free to pick
+either level of a binary covariate, so the extremes are the same whichever way
+the race and gender indicators are coded. The polarity question is settled by
+the reference-subject anchor above, not here (see *Assumptions and deviations*).
 
 ```{r covariate-extremes}
 cl_typ <- function(age, crcl, race_white, sexf) {
@@ -1001,13 +1006,26 @@ reads as "0.870 applies to White subjects". The Table II footnote says the
 opposite: "White = 1 for non-White, White = 0 for White". The indicator is named
 for the category it *excludes*.
 
-The footnote is correct, and the paper proves it itself. The covariate-extremes
-check above reproduces the published CL/F bounds of 5.17 and 12.1 L/h to three
-significant figures **only** under the footnote's coding. Under the other
-reading the extremes would be 5.94 and 10.53 L/h, matching neither. The model
-file therefore carries the published 0.870 unchanged and raises it to the power
-`(1 - RACE_WHITE)`, so the canonical `RACE_WHITE` column keeps its usual
-polarity and the inversion is visible at the call site.
+The footnote is correct, and the paper settles it in its own Results text. The
+reference population -- the subject at which every indicator is zero, and whose
+CL/F is therefore THETA(1) unmodified -- is described as "52-year-old, 76 kg
+male, white, non-cancer, OIC patients with CLcr of 108 ml/min, administered
+under fasted condition", with CL/F = 9.10 L/h. That subject is **White** and
+carries no race factor, so `White = 0` for White subjects and the 0.870 applies
+to non-White. The reference-subject anchor check above is the mechanical gate on
+this: it solves a `RACE_WHITE = 1` subject and requires CL/F within 0.05% of
+9.10. Under the equation-as-printed reading the same subject would return
+9.10 x 0.870 = 7.92 L/h, a 13% miss that blows the gate by a factor of 260.
+
+The covariate-extremes check is *not* what decides this, despite being the more
+tempting argument: the paper's extremes let each covariate vary independently,
+so the free optimum simply attaches the 0.870 to whichever race label minimises
+CL/F, and both codings reproduce 5.17 and 12.1 L/h. It pins the continuous
+terms, not the polarity.
+
+The model file therefore carries the published 0.870 unchanged and raises it to
+the power `(1 - RACE_WHITE)`, so the canonical `RACE_WHITE` column keeps its
+usual polarity and the inversion is visible at the call site.
 
 ## Health status is carried on two ratified canonical columns
 

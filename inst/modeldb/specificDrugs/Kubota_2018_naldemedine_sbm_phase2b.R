@@ -69,7 +69,7 @@ Kubota_2018_naldemedine_sbm_phase2b <- function() {
     species = "human",
     n_subjects = 89L,
     n_studies = 1L,
-    n_observations = "89 binary a spontaneous bowel movement (SBM) responder records, one per subject",
+    n_observations = "89 binary spontaneous bowel movement (SBM) responder records, one per subject",
     age_range = "Not reported separately for the exposure-response subset; the parent population PK analysis population spans 18-90 years",
     weight_range = "Not reported separately for the exposure-response subset; the parent population PK analysis population spans 34.4-188.1 kg",
     sex_female_pct = NA_real_,
@@ -109,7 +109,7 @@ Kubota_2018_naldemedine_sbm_phase2b <- function() {
     # that is a real placebo-arm probability rather than an extrapolation.
     # ==================================================================
 
-    logit_ref <- -0.314; label("Logit of the a spontaneous bowel movement (SBM) responder probability at zero naldemedine exposure, i.e. the placebo arm (unitless logit)")  # Table V(a), row '1107V9221 (Phase 2b)', parameter a = -0.314 (95% CI -0.797 to 0.159)
+    logit_ref <- -0.314; label("Logit of the spontaneous bowel movement (SBM) responder probability at zero naldemedine exposure, i.e. the placebo arm (unitless logit)")  # Table V(a), row '1107V9221 (Phase 2b)', parameter a = -0.314 (95% CI -0.797 to 0.159)
     e_auc_logit <- 0.0191; label("Log-odds of a spontaneous bowel movement (SBM) responder per 1 ng*h/mL increase in naldemedine steady-state daily AUC (unitless logit)")  # Table V(a), row '1107V9221 (Phase 2b)', parameter b = 0.0191 (95% CI -0.00801 to 0.0497)
 
     # ----- No between-subject variability, no residual error -----

@@ -69,7 +69,7 @@ Kubota_2018_naldemedine_gi_moderate_phase2b <- function() {
     species = "human",
     n_subjects = 89L,
     n_studies = 1L,
-    n_observations = "89 binary a gastrointestinal disorder of moderate or greater severity records, one per subject",
+    n_observations = "89 binary gastrointestinal disorder of moderate or greater severity records, one per subject",
     age_range = "Not reported separately for the exposure-response subset; the parent population PK analysis population spans 18-90 years",
     weight_range = "Not reported separately for the exposure-response subset; the parent population PK analysis population spans 34.4-188.1 kg",
     sex_female_pct = NA_real_,
@@ -109,7 +109,7 @@ Kubota_2018_naldemedine_gi_moderate_phase2b <- function() {
     # that is a real placebo-arm probability rather than an extrapolation.
     # ==================================================================
 
-    logit_ref <- -2.75; label("Logit of the a gastrointestinal disorder of moderate or greater severity probability at zero naldemedine exposure, i.e. the placebo arm (unitless logit)")  # Table V(b), rows '1107V9221 (Phase 2b)' / 'Moderate, Severe', parameter a = -2.75 (95% CI -3.84 to -1.90)
+    logit_ref <- -2.75; label("Logit of the gastrointestinal disorder of moderate or greater severity probability at zero naldemedine exposure, i.e. the placebo arm (unitless logit)")  # Table V(b), rows '1107V9221 (Phase 2b)' / 'Moderate, Severe', parameter a = -2.75 (95% CI -3.84 to -1.90)
     e_auc_logit <- 0.0254; label("Log-odds of a gastrointestinal disorder of moderate or greater severity per 1 ng*h/mL increase in naldemedine steady-state daily AUC (unitless logit)")  # Table V(b), rows '1107V9221 (Phase 2b)' / 'Moderate, Severe', parameter b = 0.0254 (95% CI -0.0170 to 0.0615)
 
     # ----- No between-subject variability, no residual error -----
