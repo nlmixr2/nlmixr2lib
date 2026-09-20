@@ -1896,6 +1896,8 @@ navbar:
         href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Fluticasone inhaled (Weber 2015)"
         href: articles/Weber_2015_fluticasone_inhaled.html
+      - text: "FluticasoneFuroate (Mehta 2018)"
+        href: articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol.html
       - text: "FluticasoneFuroate (Siederer 2016)"
         href: articles/Siederer_2016_fluticasoneFuroate_vilanterol.html
       - text: "Fluvoxamine rat (Geldof 2008)"
@@ -5094,6 +5096,8 @@ navbar:
         href: articles/Kim_2016_udenafil.html
       - text: "Ulotaront (Galluppi 2021)"
         href: articles/Galluppi_2021_ulotaront.html
+      - text: "Umeclidinium (Mehta 2018)"
+        href: articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol.html
       - text: "UnfractionatedHeparin (AlSallami 2016)"
         href: articles/AlSallami_2016_unfractionatedHeparin.html
       - text: "UnfractionatedHeparin (Jia 2015)"
@@ -5324,6 +5328,8 @@ navbar:
         href: articles/Qi_2019_vestronidaseAlfa.html
       - text: "Vigabatrin (Nielsen 2015)"
         href: articles/Nielsen_2015_vigabatrin.html
+      - text: "Vilanterol (Mehta 2018)"
+        href: articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol.html
       - text: "Vilanterol (Siederer 2016)"
         href: articles/Siederer_2016_fluticasoneFuroate_vilanterol.html
       - text: "Vildagliptin (Landersdorfer 2012)"
@@ -6782,6 +6788,7 @@ articles:
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
+  - articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2023_tb_lesion_mpbpk
   - articles/Meid_2024_spironolactone_qsp
   - articles/Melander_2025_cetirizine
