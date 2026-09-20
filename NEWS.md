@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lohy Das 2018 lumefantrine and artemether ([doi:10.1128/AAC.00518-18](https://doi.org/10.1128/AAC.00518-18)) -- Rwandese pregnant women in the second or third trimester with uncomplicated Plasmodium falciparum malaria.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
