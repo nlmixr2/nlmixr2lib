@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Osawa 2018 daclatasvir and asunaprevir ([doi:10.1002/jcph.1274](https://doi.org/10.1002/jcph.1274)) -- Japanese adults with chronic genotype-1 hepatitis C virus infection.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
