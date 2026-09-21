@@ -2374,48 +2374,48 @@ Boger_2018_inhaled_pbpk <- function() {
 
   ini({
     # ---------------- drug-specific parameters (Table 2) ----------------
-    lcl <- fixed(log(         70)); label("Log blood clearance (L/h)")                        # Table 2, CL_b = 70 L/hour (1 L/h/kg x 70 kg)
+    lcl <- fixed(log(70)); label("Log blood clearance (L/h)")                        # Table 2, CL_b = 70 L/hour (1 L/h/kg x 70 kg)
     bp <- fixed(1); label("Blood/plasma ratio")                                      # Table 2, blood/plasma ratio = 1
     fup <- fixed(0.75); label("Unbound fraction in plasma")                          # Table 2, f_u,p = 0.75
     fuelf <- fixed(1); label("Unbound fraction in the epithelial lining fluid")      # Table 2, f_u,fluid = 1
-    foral <- fixed(       0.05); label("Oral bioavailability of the swallowed fraction")      # Appendix S2 +drug/loadData.m (data.F); Table 2 prints F = 0.20
+    foral <- fixed(0.05); label("Oral bioavailability of the swallowed fraction")      # Appendix S2 +drug/loadData.m (data.F); Table 2 prints F = 0.20
     lka <- fixed(log(0.6)); label("Log oral absorption rate constant (1/h)")          # Table 2, k_a = 0.6 hour-1
     cs <- fixed(100); label("Aqueous solubility (nM)")                                # Table 1, case study 1 and 3: C_s = 100 nM (case study 2 uses 250 nM)
     peff <- fixed(0.01510974984); label("Effective airway permeability (dm/h)")                  # Table 2 P_app = 1.5e-6 cm/s, converted per Sjogren 2013 (Appendix S2 +drug/CalcPeffFromPapp.m)
     vdiff <- fixed(0.0003054532316); label("Aqueous diffusion coefficient (dm^2/h)")               # Table 2, v_diff = 8.5e-6 cm^2/s (Stokes-Einstein, MW 250)
-    dens <- fixed( 4000000000); label("Particle density (nmol/dm^3)")                          # Table 2, rho = 1 g/cm^3 and MW = 250 g/mol
+    dens <- fixed(4000000000); label("Particle density (nmol/dm^3)")                          # Table 2, rho = 1 g/cm^3 and MW = 250 g/mol
     vrr <- fixed(1); label("Stagnant-layer thickness relative to particle radius")    # Appendix S2 +drug/loadData.m (data.dr = 1)
-    rmu <- fixed(    1.5e-05); label("Mean particle radius (dm)")                              # Case study 1/3 wide PSD: d ~ N(3, 0.6) um, so r ~ N(1.5, 0.3) um
-    rsd <- fixed(      3e-06); label("SD of particle radius (dm)")                             # Case study 1/3 wide PSD (Results, case study 2 definition)
-    mccvel <- fixed(       2.16); label("Mucociliary clearance velocity at the trachea (dm/h)") # Eq. 2, alpha_0 = 3.6 mm/minute (Yeates 1975)
+    rmu <- fixed(1.5e-05); label("Mean particle radius (dm)")                              # Case study 1/3 wide PSD: d ~ N(3, 0.6) um, so r ~ N(1.5, 0.3) um
+    rsd <- fixed(3e-06); label("SD of particle radius (dm)")                             # Case study 1/3 wide PSD (Results, case study 2 definition)
+    mccvel <- fixed(2.16); label("Mucociliary clearance velocity at the trachea (dm/h)") # Eq. 2, alpha_0 = 3.6 mm/minute (Yeates 1975)
 
     # ------- tissue-to-plasma partition coefficients (Table 2) -------
-    kpspleen <- fixed( 3.88275569); label("Kp, spleen")                                        # Table 2, K_p,spleen = 3.9
+    kpspleen <- fixed(3.88275569); label("Kp, spleen")                                        # Table 2, K_p,spleen = 3.9
     kprapid <- fixed(3.075006329); label("Kp, richly perfused tissue")                          # Table 2, K_p,richly = 3.1
     kpslow <- fixed(2.316650947); label("Kp, poorly perfused tissue")                           # Table 2, K_p,poorly = 2.3
     kpfat <- fixed(0.5558844999); label("Kp, adipose")                                           # Table 2, K_p,adipose = 0.56
     kpliver <- fixed(5.926939171); label("Kp, hepatic")                                         # Table 2, K_p,hepatic = 5.9
-    kpgut <- fixed( 3.69975855); label("Kp, gut")                                               # Table 2, K_p,gut = 3.7
+    kpgut <- fixed(3.69975855); label("Kp, gut")                                               # Table 2, K_p,gut = 3.7
     kpulung <- fixed(6.5); label("Unbound tissue-plasma partition coefficient, lung")  # Table 2, K_p,u,lung = 6.5
 
     # ---------------- physiology (Table S1, 70 kg adult) ----------------
-    vspleen <- fixed(      0.182); label("Spleen volume (L)")                                   # Table S1, 0.0026 x 70 kg
-    vrapid <- fixed(      2.037); label("Richly perfused tissue volume (L)")                    # Table S1, 0.0291 x 70 kg
-    vslow <- fixed(     43.862); label("Poorly perfused tissue volume (L)")                     # Table S1, 0.6266 x 70 kg
-    vfat <- fixed(     14.994); label("Adipose volume (L)")                                     # Table S1, 0.2142 x 70 kg
-    vliver <- fixed(      1.799); label("Liver volume (L)")                                     # Table S1, 0.0257 x 70 kg
-    vgut <- fixed(      1.197); label("Gut volume (L)")                                         # Table S1, 0.0171 x 70 kg
-    varterial <- fixed(      1.799); label("Arterial blood volume (L)")                         # Table S1, 0.0257 x 70 kg
-    vvenous <- fixed(      3.598); label("Venous blood volume (L)")                             # Table S1, 0.0514 x 70 kg
-    vlung <- fixed(      0.532); label("Total lung volume (L)")                                 # Table S1, 0.0076 x 70 kg
-    qco <- fixed(        312); label("Cardiac output (L/h)")                                     # Table S1, 5.2 L/minute
-    qspleen <- fixed(       6.24); label("Spleen blood flow (L/h)")                              # Table S1, 0.020 x cardiac output
-    qrapid <- fixed(      109.2); label("Richly perfused tissue blood flow (L/h)")               # Table S1, 0.35 x cardiac output
-    qslow <- fixed(      101.4); label("Poorly perfused tissue blood flow (L/h)")                # Table S1, 0.325 x cardiac output
-    qfat <- fixed(       15.6); label("Adipose blood flow (L/h)")                                # Table S1, 0.050 x cardiac output
-    qliver <- fixed(      18.72); label("Hepatic arterial blood flow (L/h)")                     # Table S1, 0.060 x cardiac output
-    qgut <- fixed(      53.04); label("Gut blood flow (L/h)")                                    # Table S1, 0.17 x cardiac output
-    qbr <- fixed(        7.8); label("Total bronchial blood flow (L/h)")                         # Table S1, 0.025 x cardiac output
+    vspleen <- fixed(0.182); label("Spleen volume (L)")                                   # Table S1, 0.0026 x 70 kg
+    vrapid <- fixed(2.037); label("Richly perfused tissue volume (L)")                    # Table S1, 0.0291 x 70 kg
+    vslow <- fixed(43.862); label("Poorly perfused tissue volume (L)")                     # Table S1, 0.6266 x 70 kg
+    vfat <- fixed(14.994); label("Adipose volume (L)")                                     # Table S1, 0.2142 x 70 kg
+    vliver <- fixed(1.799); label("Liver volume (L)")                                     # Table S1, 0.0257 x 70 kg
+    vgut <- fixed(1.197); label("Gut volume (L)")                                         # Table S1, 0.0171 x 70 kg
+    varterial <- fixed(1.799); label("Arterial blood volume (L)")                         # Table S1, 0.0257 x 70 kg
+    vvenous <- fixed(3.598); label("Venous blood volume (L)")                             # Table S1, 0.0514 x 70 kg
+    vlung <- fixed(0.532); label("Total lung volume (L)")                                 # Table S1, 0.0076 x 70 kg
+    qco <- fixed(312); label("Cardiac output (L/h)")                                     # Table S1, 5.2 L/minute
+    qspleen <- fixed(6.24); label("Spleen blood flow (L/h)")                              # Table S1, 0.020 x cardiac output
+    qrapid <- fixed(109.2); label("Richly perfused tissue blood flow (L/h)")               # Table S1, 0.35 x cardiac output
+    qslow <- fixed(101.4); label("Poorly perfused tissue blood flow (L/h)")                # Table S1, 0.325 x cardiac output
+    qfat <- fixed(15.6); label("Adipose blood flow (L/h)")                                # Table S1, 0.050 x cardiac output
+    qliver <- fixed(18.72); label("Hepatic arterial blood flow (L/h)")                     # Table S1, 0.060 x cardiac output
+    qgut <- fixed(53.04); label("Gut blood flow (L/h)")                                    # Table S1, 0.17 x cardiac output
+    qbr <- fixed(7.8); label("Total bronchial blood flow (L/h)")                         # Table S1, 0.025 x cardiac output
   })
 
   model({
