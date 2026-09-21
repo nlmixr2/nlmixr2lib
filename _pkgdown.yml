@@ -810,6 +810,8 @@ navbar:
         href: articles/Berthaud_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
+      - text: "Cefazolin dog (Cagnardi 2018)"
+        href: articles/Cagnardi_2018_cefazolin_dog.html
       - text: "Cefazolin empirical (vanHasselt 2014)"
         href: articles/vanHasselt_2014_cefazolin.html
       - text: "Cefepime (Capparelli 2005)"
@@ -5835,6 +5837,7 @@ articles:
   - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
+  - articles/Cagnardi_2018_cefazolin_dog
   - articles/Cai_2025_diamorphine
   - articles/Calderin_2025_pyrazinamide_isoniazid_tbm
   - articles/Caldes_2009_ganciclovir
