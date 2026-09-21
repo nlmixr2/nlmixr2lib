@@ -2120,6 +2120,8 @@ navbar:
         href: articles/Chen_2025_hemoporfin.html
       - text: "Hemoporfin significant improvement (Chen 2025)"
         href: articles/Chen_2025_hemoporfin.html
+      - text: "Heparin (Edrich 2015)"
+        href: articles/Edrich_2015_heparin.html
       - text: "Higenamine (Feng 2012)"
         href: articles/Feng_2012_higenamine.html
       - text: "Hosu53 dog (Na 2025)"
@@ -6077,6 +6079,7 @@ articles:
   - articles/Ebihara_2025_tebipenem
   - articles/Echterhof_2026_phage_pbpk
   - articles/Eckernas_2023_dimethyltryptamine_EEG
+  - articles/Edrich_2015_heparin
   - articles/Edstein_2001_tafenoquine
   - articles/Edwards_2016_obeticholicAcid
   - articles/Eissing_2024_finerenone

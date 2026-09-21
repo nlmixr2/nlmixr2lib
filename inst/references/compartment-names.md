@@ -1758,6 +1758,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** direct thrombin inhibitor PD models (dabigatran, argatroban, hirudin / hirulog, melagatran).
 
+### ACT (**canonical activated clotting time**)
+- **Type:** compartment
+- **Role:** Activated clotting time coagulation-test PD output, in seconds. Whole-blood clotting time after activation with a particulate activator (celite, kaolin or glass beads), read on a point-of-care coagulometer. The standard intraprocedural monitor of HIGH-dose unfractionated heparin (cardiopulmonary bypass, percutaneous coronary intervention, catheter ablation), which is where it is not interchangeable with its sibling `aPTT`: aPTT saturates at the heparin concentrations those procedures require, whereas ACT remains responsive, and a whole-blood point-of-care assay returns a result in minutes. Carried as an algebraic observable rather than an ODE state in direct-effect heparin models, where the prediction is a subject's own pre-heparin baseline plus a linear term in the scaled heparin concentration.
+- **Source aliases:** none. The paper symbol is universally `ACT`.
+- **Example models:** `Edrich_2015_heparin.R` (linear direct effect on intraprocedural heparin, `ACT = ACT_BASE + k_ACT * Cc`).
+- **Notes:** Uppercase, following the `PT` / `INR` / `aPTT` / `ECT` / `PCA` coagulation-test-output family rather than the lowercase biomarker convention. Distinct from every other clotting-time canonical in this register and NOT interconvertible with any of them: `aPTT` is activated PARTIAL thromboplastin time on citrated plasma, `ECT` is an ecarin-activated assay selective for direct thrombin inhibitors, `PT` / `INR` read the extrinsic arm, and `PCA` is a clotting-factor ACTIVITY percentage rather than a time at all. Different activators, different specimens and different dynamic ranges, so a model must name the assay it actually fitted. The per-subject baseline that such a model adds to its prediction is the covariate `ACT_BASE`, registered in `inst/references/covariate-columns.md`; the `_BASE` suffix on the covariate is what keeps it from colliding with this observation-variable name inside `model()`. Point-of-care ACT devices have a hard measurement ceiling (400 s on the Hemochron Signature Elite used by the founding example), so much published post-heparin ACT data is right-censored; that is a property of the data, not of the model, and a source's estimation-time ceiling clamp should not be reproduced in the simulation model.
+
 ### hb (**canonical hemoglobin**)
 - **Type:** compartment
 - **Role:** Hemoglobin PD output.
