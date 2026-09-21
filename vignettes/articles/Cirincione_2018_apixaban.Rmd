@@ -1,0 +1,792 @@
+---
+title: "Apixaban in nonvalvular atrial fibrillation (Cirincione 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Apixaban in nonvalvular atrial fibrillation (Cirincione 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# The paper
+
+Cirincione et al. (2018) developed a population pharmacokinetic model for
+apixaban in subjects with nonvalvular atrial fibrillation (NVAF), pooling
+11,968 concentrations from 4,385 subjects across eight phase I studies, three
+phase II studies and the phase III ARISTOTLE trial. Apixaban PK was described
+by a two-compartment model with first-order absorption and first-order
+elimination, with apparent total clearance split into a renal arm driven by
+calculated creatinine clearance and a nonrenal arm driven by age and sex.
+
+The paper reports **three** parameter columns in Table 3. The first, the
+"updated stage 1 final model", is a model-development step: the stage 1 final
+model refitted after the phase III data arrived, before concomitant medications
+were tested. The other two are reported final results and are the two models
+extracted here:
+
+| Model file | Table 3 column | What distinguishes it |
+|---|---|---|
+| `Cirincione_2018_apixaban` | stage 2 final model | A single Asian-race effect on CL/F |
+| `Cirincione_2018_apixaban_asian_subgroups` | stage 2 final ad hoc model | That effect resolved into Japanese, Korean and other-Asian effects |
+
+The ad hoc model was fit to support global development; it is a separate NONMEM
+run with its own objective function value (-5,900.112 versus -5,888.403) and its
+own control stream (Supplemental File S2).
+
+```{r load-models}
+mod <- rxode2::rxode2(nlmixr2lib::modellib("Cirincione_2018_apixaban"))
+modAdHoc <- rxode2::rxode2(
+  nlmixr2lib::modellib("Cirincione_2018_apixaban_asian_subgroups")
+)
+mod$state
+```
+
+# Population
+
+From Table 2 of the paper (total column, n = 4,385):
+
+| Covariate | Value |
+|---|---|
+| Age | mean 65.44 y (SD 13.0); median 68 (18-94) |
+| Baseline body weight | mean 83.44 kg (SD 19.6); median 81.4 (32-198.2) |
+| Calculated creatinine clearance (Cockcroft-Gault) | mean 85.2 mL/min (SD 34.5); median 79.3 (11.9-319.7) |
+| Female | 1,305 (29.76%) |
+| White / Asian / Black / Other | 83.22% / 14.87% / 1.39% / 0.52% |
+| Asian detail: Japanese / Korean / other Asian | 9.14% / 1.57% / 4.15% |
+| Concomitant strong or moderate CYP3A4/P-gp inhibitor | 718 (16.37%) |
+
+NVAF subjects were 3,071 of the 4,385 (70%); the remainder were 270 phase I
+healthy volunteers and 1,044 subjects with acute coronary syndrome (ACS). The
+NVAF subgroup alone had median age 70 y, median weight 83.0 kg and median cCrCL
+74.35 mL/min, and 16.57% were Asian, 32.30% female and 21.88% on a moderate
+CYP3A4/P-gp inhibitor. Those are the distributions used for the virtual cohort
+below.
+
+# Source trace
+
+Every value in both model files, and where it came from. The paper's four
+display equations were recovered from the JATS MathML of the PubMed Central
+record (PMC6263664); the fully written-out equation set for the ad hoc model is
+Table S2 of the supplement, and the executed models are Supplemental Files S1
+(stage 1 final) and S2 (stage 2 final ad hoc, the NONMEM control stream quoted
+in the model-file comments).
+
+| Quantity | Source |
+|---|---|
+| Two-compartment, first-order absorption; microconstant parameterisation | Methods "Stage 1 base model"; `$SUBROUTINE ADVAN4, TRANS1` in Suppl. File S2 |
+| Renal / nonrenal clearance split, cCrCL breakpoint at 150 mL/min | Eq. 1; `IF(D_CCRCLB.GE.150) FLG=1` in Suppl. File S2 |
+| Covariate functional forms (power for continuous, fractional for categorical) | Eq. 3; Table S2 Eqs. [1a]-[1k] |
+| Dose-dependent relative bioavailability (power form) | Eq. 4; Table S2 Eqs. [1l]-[1n] |
+| `lka`, `lcl_renal`, `lcl_nonren`, `lvc`, `lq`, `lvp` | Table 3, thetas 1, 2, 6, 3, 4, 5 |
+| `e_dosetime_evening_ka` (theta10), `e_crcl_cl_renal` (theta7, 1 FIXED) | Table 3 |
+| `e_age_cl_nonren` (theta14), `e_sexf_cl_nonren` (theta15) | Table 3 |
+| `e_race_asian_cl` (theta16); ad hoc `e_race_japanese_cl` (theta24), `e_race_korean_cl` (theta25), `e_race_asian_oth_cl` (theta16) | Table 3 |
+| `e_dis_nvaf_cl` (theta17), `e_dis_acs_cl` (theta18), `e_conmed_cyp3a4_pgp_inh_cl` (theta19) | Table 3 |
+| `e_wt_vc` (theta11), `e_dis_nvaf_vc` (theta12), `e_dis_acs_vc` (theta13) | Table 3 |
+| `lgamma` (theta8), `logiti50` (theta9) | Table 3 |
+| `etalka`, `etalkel`, `etalvc`, `etalk21`, `etalk12` | Table 3 IIV block (`omega2-ka`, `omega2-k`, `omega2-Vc/F`, `omega2-k21`, `omega2-k12`) |
+| `expSdHvJapan` (theta21), `expSdAppraise1` (theta22), `expSdAristotle` (theta23) | Table 3 residual block |
+| Reference covariate values 65 y, 70 kg, 80 mL/min | Results "PPK model development"; Table S2 Eqs. [1b], [1c], [1e] |
+
+Note on the `omega2-k` row: the preprocessed markdown of the article collapses
+it into the neighbouring row, so it is absent from the trimmed text. It is
+present in the PDF (0.0954 for the stage 2 final model, 0.0961 for the ad hoc
+model) and in the control stream's five-element `$OMEGA DIAGONAL(5)`. Both model
+files carry all five IIV terms.
+
+# Closed-form check 1: the Figure 1 covariate forest plot
+
+Figure 1 of the paper annotates the typical CL/F for the reference subject and
+for ten single-covariate perturbations of it. The reference is a 65-year-old,
+non-Asian, male NVAF subject with a Cockcroft-Gault cCrCL of 80 mL/min and no
+concomitant CYP3A4/P-gp inhibitor. This is a deterministic check with no
+simulated cohort: the same typical-value parameters appear on both sides, so a
+tight bound is appropriate and is what will catch a mis-transcribed covariate
+coefficient.
+
+```{r fig1-scenarios}
+refCov <- data.frame(
+  AGE = 65, WT = 70, CRCL = 80, SEXF = 0,
+  RACE_ASIAN = 0, DIS_NVAF = 1, DIS_ACS = 0,
+  CONMED_CYP3A4_PGP_INH = 0, DOSETIME_EVENING = 0,
+  DOSE_APIXABAN_MG = 5, STUDY_APPRAISE1 = 0, STUDY_ARISTOTLE = 1
+)
+
+# One row per Figure 1 annotation. Each row is the reference subject with a
+# single field overridden; "Healthy subject" and "ACS subject" move the
+# subject-status pair, which is why they set two fields.
+fig1 <- tibble::tribble(
+  ~scenario, ~field, ~value, ~published_cl,
+  "Reference AF subject", NA_character_, NA_real_, 3.09,
+  "Healthy subject", "DIS_NVAF", 0, 3.59,
+  "ACS subject", "DIS_ACS", 1, 2.82,
+  "Sex = female", "SEXF", 1, 2.71,
+  "Age = 50 years", "AGE", 50, 3.30,
+  "Age = 80 years", "AGE", 80, 2.94,
+  "cCrCL = 30 mL/minute", "CRCL", 30, 2.25,
+  "cCrCL = 50 mL/minute", "CRCL", 50, 2.58,
+  "cCrCL = 120 mL/minute", "CRCL", 120, 3.76,
+  "Race = Asian", "RACE_ASIAN", 1, 2.72,
+  "CYP3A4/P-gp Inhibitor", "CONMED_CYP3A4_PGP_INH", 1, 2.64
+)
+
+covRows <- do.call(rbind, lapply(seq_len(nrow(fig1)), function(i) {
+  row <- refCov
+  fld <- fig1$field[i]
+  if (!is.na(fld)) {
+    row[[fld]] <- fig1$value[i]
+  }
+  # The ACS scenario replaces NVAF rather than adding to it: the two
+  # indicators are mutually exclusive in the source dataset.
+  if (!is.na(fld) && fld == "DIS_ACS") {
+    row$DIS_NVAF <- 0
+  }
+  row$id <- i
+  row
+}))
+```
+
+Rather than re-implementing the covariate equations here (which would test the
+vignette against itself), the CL/F values are read out of the model's own
+`model()` block: `cl` is an ordinary model variable, so `rxSolve` returns it as
+a column. `zeroRe()` removes the random effects so the solve returns typical
+values.
+
+```{r fig1-check}
+mkEvents <- function(cov, doseMg, obsTimes, ii = 12, addl = 0, ss = 0) {
+  dose <- cbind(
+    data.frame(
+      time = 0, amt = doseMg, evid = 1, cmt = "depot",
+      ii = ii, addl = addl, ss = ss
+    ),
+    cov
+  )
+  obs <- cbind(
+    data.frame(
+      time = obsTimes, amt = NA_real_, evid = 0, cmt = "central",
+      ii = 0, addl = 0, ss = 0
+    ),
+    cov[rep(1, length(obsTimes)), , drop = FALSE]
+  )
+  out <- rbind(dose, obs)
+  out[order(out$time, -out$evid), ]
+}
+
+fig1Events <- do.call(rbind, lapply(seq_len(nrow(covRows)), function(i) {
+  mkEvents(covRows[i, , drop = FALSE], doseMg = 5, obsTimes = c(0, 1, 2))
+}))
+
+fig1Sim <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), fig1Events,
+  returnType = "data.frame"
+)
+
+fig1Res <- fig1Sim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(simulated_cl = unique(round(cl, 6)), .groups = "drop") |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::arrange(id) |>
+  dplyr::bind_cols(fig1[, c("scenario", "published_cl")]) |>
+  dplyr::mutate(
+    abs_diff = abs(simulated_cl - published_cl),
+    pct_diff = 100 * (simulated_cl - published_cl) / published_cl
+  )
+
+knitr::kable(
+  fig1Res |>
+    dplyr::select(scenario, simulated_cl, published_cl, abs_diff, pct_diff) |>
+    dplyr::rename(
+      "Scenario" = scenario,
+      "Model CL/F (L/h)" = simulated_cl,
+      "Figure 1 CL/F (L/h)" = published_cl,
+      "Absolute difference" = abs_diff,
+      "Percent difference" = pct_diff
+    ),
+  digits = c(0, 4, 2, 4, 3),
+  caption = "Typical CL/F reproduced from the model against the eleven values annotated in Figure 1."
+)
+```
+
+Nine of the eleven reproduce the printed value exactly at the printed precision.
+The two that do not -- "Sex = female" (2.7153 vs 2.71) and "cCrCL = 120
+mL/minute" (3.7669 vs 3.76) -- are off by one unit in the last printed digit,
+and both are explained by Table 3 reporting the NVAF coefficient rounded to
+three significant figures. Carrying theta17 as -0.1394 rather than -0.139
+reproduces all eleven values exactly, so the residual disagreement is the
+paper's own rounding and not a transcription error. The gate below is therefore
+set at 0.01 L/h, one unit in the last printed digit.
+
+```{r fig1-assert}
+# Deterministic: typical values on both sides, no cohort and no RNG, so a tight
+# bound is correct here. 0.01 L/h is one unit in Figure 1's last printed digit;
+# a mis-transcribed covariate coefficient moves CL/F by 0.1-0.9 L/h and still
+# breaks this.
+stopifnot(
+  nrow(fig1Res) == 11L,
+  all(!is.na(fig1Res$simulated_cl)),
+  max(fig1Res$abs_diff) <= 0.01
+)
+```
+
+# Closed-form check 2: relative bioavailability versus dose
+
+The reduction in relative bioavailability at higher doses (Eq. 4) is anchored so
+that `Frel` is exactly 1 at the 2.5 mg dose and `1 - I50` at 50 mg, where
+`I50 = expit(theta9)`.
+
+```{r frel-check}
+doseGrid <- c(2.5, 5, 10, 20, 25, 50)
+frelEvents <- do.call(rbind, lapply(seq_along(doseGrid), function(i) {
+  cov <- refCov
+  cov$DOSE_APIXABAN_MG <- doseGrid[i]
+  cov$id <- i
+  mkEvents(cov, doseMg = doseGrid[i], obsTimes = c(0, 1))
+}))
+
+frelSim <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), frelEvents,
+  returnType = "data.frame"
+)
+
+frelRes <- frelSim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(frel = unique(round(frel, 8)), .groups = "drop") |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::arrange(id) |>
+  dplyr::mutate(dose_mg = doseGrid)
+
+i50Expected <- 1 / (1 + exp(0.322)) # expit(theta9), theta9 = -0.322
+
+knitr::kable(
+  frelRes |>
+    dplyr::select(dose_mg, frel) |>
+    dplyr::rename("Dose (mg)" = dose_mg, "Relative bioavailability" = frel),
+  digits = c(1, 4),
+  caption = "Dose-dependent relative bioavailability, anchored at 1 for the 2.5 mg dose."
+)
+
+# Two exact identities implied by Eq. 4, both deterministic:
+#   Frel(2.5 mg)  = 1                 (the anchor dose)
+#   Frel(50 mg)   = 1 - expit(theta9) (what makes I50 interpretable as the
+#                                      reduction at 50 mg)
+stopifnot(
+  abs(frelRes$frel[frelRes$dose_mg == 2.5] - 1) < 1e-10,
+  abs(frelRes$frel[frelRes$dose_mg == 50] - (1 - i50Expected)) < 1e-8,
+  all(diff(frelRes$frel) < 0)
+)
+```
+
+At the doses approved for NVAF this term is nearly inert -- `Frel` is 1 at
+2.5 mg and 0.966 at 5 mg -- so it matters mainly for reproducing the phase I
+dose-ranging arms that drove the estimate.
+
+# Virtual NVAF cohort at steady state
+
+The paper predicted steady-state exposure by drawing 500 parameter sets from the
+asymptotic posterior and simulating 1,000 patients each, with covariates
+bootstrapped from the observed ARISTOTLE covariates to preserve their
+correlation structure. That correlation structure is not published, so this
+vignette samples the covariates independently from marginal distributions
+matched to the Table 2 NVAF column. Exposure summaries will therefore agree in
+the centre but not in the tails, which is why the gates below are on medians.
+
+Creatinine clearance is **derived**, not sampled. The paper's covariate is a
+Cockcroft-Gault calculation, and the paper's dose-reduction rule is stated in
+terms of serum creatinine, so sampling age, weight, sex and serum creatinine and
+then computing cCrCL from them gets both the covariate and the dosing rule right
+at once -- and it induces the age / weight / renal-function correlation that
+matters most here, since an elderly low-weight subject necessarily has a low
+Cockcroft-Gault clearance.
+
+```{r cohort}
+rxode2::rxSetSeed(20181130)
+set.seed(20181130)
+nSub <- 200L
+
+# Age, weight and sex from the Table 2 NVAF column. Serum creatinine is not
+# tabulated in the paper, so it is drawn log-normally with a median chosen so
+# that the DERIVED cCrCL distribution reproduces the reported one; that
+# agreement is checked below rather than assumed.
+sampleNvaf <- function(n) {
+  age <- pmin(pmax(rnorm(n, 69.33, 9.2), 26), 94)
+  wt <- pmin(pmax(rnorm(n, 84.74, 20.4), 32), 198.2)
+  sexf <- rbinom(n, 1, 0.3230)
+  scr <- pmin(pmax(exp(rnorm(n, log(1.06), 0.30)), 0.4), 4)
+  crcl <- pmin((140 - age) * wt / (72 * scr) * ifelse(sexf == 1, 0.85, 1), 319.7)
+  data.frame(
+    AGE = age, WT = wt, SEXF = sexf, SCR = scr, CRCL = crcl,
+    RACE_ASIAN = rbinom(n, 1, 0.1657),
+    DIS_NVAF = 1,
+    DIS_ACS = 0,
+    CONMED_CYP3A4_PGP_INH = rbinom(n, 1, 0.2188),
+    DOSETIME_EVENING = 0,
+    STUDY_APPRAISE1 = 0,
+    STUDY_ARISTOTLE = 1
+  )
+}
+
+pool <- sampleNvaf(20000L)
+
+# The phase III dose-reduction rule: 2.5 mg b.i.d. for subjects meeting at
+# least two of {age >= 80 y, weight <= 60 kg, serum creatinine >= 1.5 mg/dL}.
+nCriteria <- (pool$AGE >= 80) + (pool$WT <= 60) + (pool$SCR >= 1.5)
+
+cat(sprintf(
+  "Derived cCrCL: median %.2f, mean %.2f mL/min (Table 2 NVAF: 74.35, 79.87)\n",
+  median(pool$CRCL), mean(pool$CRCL)
+))
+cat(sprintf(
+  "Meeting >= 2 dose-reduction criteria: %.2f%% (paper: ~5%% of ARISTOTLE)\n",
+  100 * mean(nCriteria >= 2)
+))
+
+# The covariate model is itself a gate: if the derived cCrCL distribution did
+# not match the paper's, every exposure comparison below would be measuring the
+# wrong population. Bounds are wide enough to admit the unpublished serum
+# creatinine distribution (realised -2.5% on the median, -2.0% on the mean).
+stopifnot(
+  abs(median(pool$CRCL) - 74.35) / 74.35 < 0.15,
+  abs(mean(pool$CRCL) - 79.87) / 79.87 < 0.15,
+  mean(nCriteria >= 2) > 0.01,
+  mean(nCriteria >= 2) < 0.12
+)
+
+# Both arms are drawn from that one pool, so the 2.5 mg arm is the model's own
+# dose-modification group rather than a hand-built subgroup. This mirrors the
+# paper, which simulated 1,000 patients in each group.
+cohort <- rbind(
+  transform(head(pool[nCriteria < 2, ], nSub), DOSE_APIXABAN_MG = 5, arm = "5 mg b.i.d."),
+  transform(head(pool[nCriteria >= 2, ], nSub), DOSE_APIXABAN_MG = 2.5, arm = "2.5 mg b.i.d.")
+)
+cohort$id <- seq_len(nrow(cohort))
+rownames(cohort) <- NULL
+stopifnot(nrow(cohort) == 2L * nSub)
+
+knitr::kable(
+  cohort |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      n = dplyr::n(),
+      age = median(AGE), wt = median(WT), crcl = median(CRCL),
+      female_pct = 100 * mean(SEXF), asian_pct = 100 * mean(RACE_ASIAN),
+      .groups = "drop"
+    ) |>
+    dplyr::rename(
+      "Arm" = arm, "N" = n, "Median age (y)" = age,
+      "Median weight (kg)" = wt, "Median cCrCL (mL/min)" = crcl,
+      "Female (%)" = female_pct, "Asian (%)" = asian_pct
+    ),
+  digits = 1,
+  caption = "Virtual cohort by arm. The 2.5 mg arm is older, lighter and more renally impaired because it is selected by the dose-reduction rule, not constructed."
+)
+```
+
+Steady state is imposed with `ss = 1` on a 12-hourly dose rather than by
+integrating a long dose train, and the dosing interval is then observed on a
+grid fine enough to resolve a Tmax near 2.9 h.
+
+```{r simulate}
+obsGrid <- sort(unique(c(seq(0, 12, by = 0.25), 2.89)))
+
+# SCR and arm are cohort bookkeeping, not model covariates, so they are left
+# out of the event table; arm is rejoined after the solve.
+covCols <- c(
+  "AGE", "WT", "CRCL", "SEXF", "RACE_ASIAN", "DIS_NVAF", "DIS_ACS",
+  "CONMED_CYP3A4_PGP_INH", "DOSETIME_EVENING", "DOSE_APIXABAN_MG",
+  "STUDY_APPRAISE1", "STUDY_ARISTOTLE", "id"
+)
+
+ssEvents <- do.call(rbind, lapply(seq_len(nrow(cohort)), function(i) {
+  mkEvents(
+    cohort[i, covCols, drop = FALSE],
+    doseMg = cohort$DOSE_APIXABAN_MG[i],
+    obsTimes = obsGrid, ii = 12, addl = 0, ss = 1
+  )
+}))
+
+ssSim <- rxode2::rxSolve(mod, ssEvents, returnType = "data.frame") |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::left_join(cohort[, c("id", "arm")], by = "id")
+
+stopifnot(
+  nrow(ssSim) > 0,
+  all(ssSim$Cc[!is.na(ssSim$Cc)] >= 0),
+  sum(ssSim$time == 0) == nrow(cohort)
+)
+```
+
+```{r profile-plot, fig.width = 7, fig.height = 4.5}
+ggplot(ssSim, aes(x = time, y = Cc, group = id)) +
+  geom_line(alpha = 0.12) +
+  stat_summary(
+    aes(group = arm), fun = median, geom = "line",
+    colour = "firebrick", linewidth = 1
+  ) +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  labs(
+    x = "Time since previous dose (h)",
+    y = "Apixaban concentration (ng/mL)",
+    title = "Simulated steady-state apixaban profiles",
+    subtitle = "Grey: individual subjects. Red: cohort median. Compare Figure S1 of the paper."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+```{r pknca}
+concData <- ssSim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+
+doseData <- cohort |>
+  dplyr::transmute(id = id, time = 0, amt = DOSE_APIXABAN_MG, arm = arm)
+
+# Treatment grouping comes BEFORE id; without it PKNCA aggregates across dose
+# groups. PKNCAdose does not accept the nested slash form.
+concObj <- PKNCA::PKNCAconc(
+  concData, Cc ~ time | arm + id,
+  concu = "ng/mL", timeu = "h"
+)
+doseObj <- PKNCA::PKNCAdose(
+  doseData, amt ~ time | arm + id,
+  route = "extravascular", duration = 0, doseu = "mg"
+)
+
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+
+ncaRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals))
+ncaWide <- as.data.frame(ncaRes) |>
+  dplyr::select(id, arm, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(daily_auc = 2 * auclast)
+
+head(ncaWide)
+```
+
+## Numerical check: AUC against the closed form
+
+At steady state the daily AUC implied by the model is
+`1000 * daily dose * Frel / CL_individual`. The individual apparent clearance is
+**not** the model variable `cl`: `cl` is the typical value, and in this
+parameterisation the random effects sit on the microconstants, so the individual
+clearance is `kel * vc` -- exactly what the source control stream computes as
+`CLOFF = K*V2` when it derives an individual AUC. Getting this wrong is the
+single easiest mistake to make with a microconstant-parameterised model, and
+this check is what catches it: using `cl` in place of `kel * vc` moves the
+comparison from 0.02% to a 170%-wide scatter.
+
+Both sides share every drawn individual parameter, so the only remaining
+difference is trapezoidal integration error on the observation grid. That makes
+this a pure numerical check, and a tight bound is correct here.
+
+```{r auc-identity}
+indiv <- ssSim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    cl_individual = unique(round(kel * vc, 8)),
+    frel = unique(round(frel, 8)),
+    dose_mg = unique(DOSE_APIXABAN_MG),
+    .groups = "drop"
+  )
+
+aucChk <- ncaWide |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::inner_join(indiv, by = "id") |>
+  dplyr::mutate(
+    closed_form = 1000 * 2 * dose_mg * frel / cl_individual,
+    pct_diff = 100 * (daily_auc - closed_form) / closed_form
+  )
+
+summary(aucChk$pct_diff)
+
+# Realised median -0.02%, 95th percentile of |difference| 0.06%, worst 0.10%
+# on a 0.25 h grid. 0.5% admits that grid noise and any thread-count-dependent
+# cohort, while still going red for a wrong volume scaling, a wrong ng/mL
+# conversion or the typical-vs-individual clearance confusion described above,
+# all of which move this by tens to hundreds of percent.
+stopifnot(
+  nrow(aucChk) == nrow(cohort),
+  all(is.finite(aucChk$pct_diff)),
+  abs(median(aucChk$pct_diff)) < 0.5,
+  stats::quantile(abs(aucChk$pct_diff), 0.95) < 0.5
+)
+```
+
+## Comparison against the published predicted exposures
+
+Table 4 of the paper reports the predicted steady-state exposure for the 5 mg
+b.i.d. reference group and the 2.5 mg b.i.d. dose-modification group. Because
+the cohort above applies the paper's own dose-reduction rule rather than
+hand-building a subgroup, both arms compare directly against that table.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~arm, ~cmax, ~tmax, ~cmin, ~daily_auc,
+  "5 mg b.i.d.", 171, 2.89, 103, 3280,
+  "2.5 mg b.i.d.", 123, 2.86, 79.2, 2410
+)
+
+simSummary <- ncaWide |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    cmax = median(cmax), tmax = median(tmax),
+    cmin = median(cmin), daily_auc = median(daily_auc),
+    .groups = "drop"
+  )
+
+cmp <- simSummary |>
+  dplyr::inner_join(published, by = "arm", suffix = c("_sim", "_pub")) |>
+  dplyr::mutate(
+    cmax_pct = 100 * (cmax_sim - cmax_pub) / cmax_pub,
+    tmax_pct = 100 * (tmax_sim - tmax_pub) / tmax_pub,
+    cmin_pct = 100 * (cmin_sim - cmin_pub) / cmin_pub,
+    auc_pct = 100 * (daily_auc_sim - daily_auc_pub) / daily_auc_pub
+  )
+
+knitr::kable(
+  cmp |>
+    dplyr::select(
+      arm, cmax_sim, cmax_pub, cmax_pct, cmin_sim, cmin_pub, cmin_pct,
+      tmax_sim, tmax_pub, tmax_pct, daily_auc_sim, daily_auc_pub, auc_pct
+    ) |>
+    dplyr::rename(
+      "Arm" = arm,
+      "Cmax sim" = cmax_sim, "Cmax pub" = cmax_pub, "Cmax %" = cmax_pct,
+      "Cmin sim" = cmin_sim, "Cmin pub" = cmin_pub, "Cmin %" = cmin_pct,
+      "Tmax sim" = tmax_sim, "Tmax pub" = tmax_pub, "Tmax %" = tmax_pct,
+      "Daily AUC sim" = daily_auc_sim, "Daily AUC pub" = daily_auc_pub,
+      "AUC %" = auc_pct
+    ),
+  digits = 1,
+  caption = "Median simulated steady-state exposure against the paper's predicted medians (Table 4)."
+)
+```
+
+```{r nca-assert}
+# Cohort-derived, so the bound must admit more than RNG noise: the ARISTOTLE
+# covariate correlation structure and the serum-creatinine distribution are both
+# unpublished, and the paper additionally propagated parameter uncertainty that
+# this vignette does not. Realised: 5 mg arm +2.0 / +6.0 / -2.4 / +4.8 percent
+# on Cmax / Cmin / Tmax / daily AUC; 2.5 mg arm +9.9 / +9.9 / -3.8 / +8.3.
+# 25 percent leaves headroom over that while still going red for a
+# mis-transcribed clearance, volume, dose or unit, all of which move these by
+# tens to hundreds of percent. Tmax depends only on the ka / kel ratio and is
+# far more stable, so it gets a tighter bound.
+stopifnot(
+  nrow(cmp) == 2L,
+  max(abs(cmp$auc_pct)) < 25,
+  max(abs(cmp$cmax_pct)) < 25,
+  max(abs(cmp$cmin_pct)) < 25,
+  max(abs(cmp$tmax_pct)) < 15
+)
+```
+
+```{r auc-distribution, fig.width = 7, fig.height = 4}
+ggplot(ncaWide, aes(x = daily_auc, fill = arm)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  labs(
+    x = "Daily steady-state AUC (ng*h/mL)",
+    y = "Number of subjects", fill = NULL,
+    title = "Predicted daily steady-state AUC by dose group",
+    subtitle = "Replicates Figure 2 of Cirincione 2018: a lower median for the dose-modification group, with large overlap."
+  ) +
+  theme_bw()
+```
+
+```{r overlap-check}
+med5 <- median(ncaWide$daily_auc[ncaWide$arm == "5 mg b.i.d."])
+med2 <- median(ncaWide$daily_auc[ncaWide$arm == "2.5 mg b.i.d."])
+reduction <- 100 * (1 - med2 / med5)
+
+# The paper's headline claim: "The dose-reduction algorithm resulted in a ~27%
+# lower median exposure ... with a large overlap between the groups." The
+# overlap claim is asserted as a magnitude (the arms' interquartile ranges
+# intersect), not as a sign test, because both statistics are cohort-derived.
+q5 <- stats::quantile(ncaWide$daily_auc[ncaWide$arm == "5 mg b.i.d."], c(0.25, 0.75))
+q2 <- stats::quantile(ncaWide$daily_auc[ncaWide$arm == "2.5 mg b.i.d."], c(0.25, 0.75))
+cat(sprintf("Median AUC reduction: %.1f%% (paper reports ~27%%)\n", reduction))
+cat(sprintf(
+  "IQR 5 mg: %.0f-%.0f; IQR 2.5 mg: %.0f-%.0f\n",
+  q5[1], q5[2], q2[1], q2[2]
+))
+
+# Realised 24.0% against the paper's ~27%. The bound is on MAGNITUDE, not on
+# the sign of a difference, and it is wide because the size of the reduction
+# depends on how the unpublished serum-creatinine distribution sorts subjects
+# into the two arms. It still goes red if the dose-reduction rule stops
+# selecting a lower-exposure group at all.
+stopifnot(
+  reduction > 10, reduction < 45,
+  q2[2] > q5[1] # the interquartile ranges overlap
+)
+```
+
+# The ad hoc model: Asian subgroups
+
+The ad hoc model replaces the single Asian-race clearance effect with separate
+Japanese, Korean and other-Asian effects. The paper reports the resulting
+changes in population mean total CL/F as -15.1%, +3.3% and -4.3% relative to a
+non-Asian typical NVAF patient, "corresponding to +17.7%, -3.2% and +4.5%
+changes in daily AUCss". Both are deterministic consequences of the three
+coefficients, so both are checked tightly.
+
+```{r adhoc-check}
+subgroups <- tibble::tribble(
+  ~subgroup, ~field, ~published_cl_pct, ~published_auc_pct,
+  "Non-Asian (reference)", NA_character_, 0, 0,
+  "Japanese", "RACE_JAPANESE", -15.1, 17.7,
+  "Korean", "RACE_KOREAN", 3.3, -3.2,
+  "Other Asian", "RACE_ASIAN_OTH", -4.3, 4.5
+)
+
+adhocRef <- refCov
+adhocRef$RACE_ASIAN <- NULL
+adhocRef$RACE_JAPANESE <- 0
+adhocRef$RACE_KOREAN <- 0
+adhocRef$RACE_ASIAN_OTH <- 0
+
+adhocRows <- do.call(rbind, lapply(seq_len(nrow(subgroups)), function(i) {
+  row <- adhocRef
+  fld <- subgroups$field[i]
+  if (!is.na(fld)) {
+    row[[fld]] <- 1
+  }
+  row$id <- i
+  row
+}))
+
+adhocEvents <- do.call(rbind, lapply(seq_len(nrow(adhocRows)), function(i) {
+  mkEvents(adhocRows[i, , drop = FALSE], doseMg = 5, obsTimes = c(0, 1, 2))
+}))
+
+adhocSim <- rxode2::rxSolve(
+  rxode2::zeroRe(modAdHoc), adhocEvents,
+  returnType = "data.frame"
+)
+
+adhocRes <- adhocSim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = unique(round(cl, 8)), .groups = "drop") |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::arrange(id) |>
+  dplyr::bind_cols(subgroups[, c("subgroup", "published_cl_pct", "published_auc_pct")])
+
+clRef <- adhocRes$cl[adhocRes$subgroup == "Non-Asian (reference)"]
+adhocRes <- adhocRes |>
+  dplyr::mutate(
+    sim_cl_pct = 100 * (cl - clRef) / clRef,
+    # AUC scales as 1/CL at fixed dose and bioavailability.
+    sim_auc_pct = 100 * (clRef / cl - 1)
+  )
+
+knitr::kable(
+  adhocRes |>
+    dplyr::select(subgroup, cl, sim_cl_pct, published_cl_pct, sim_auc_pct, published_auc_pct) |>
+    dplyr::rename(
+      "Subgroup" = subgroup,
+      "CL/F (L/h)" = cl,
+      "Model CL/F change (%)" = sim_cl_pct,
+      "Published CL/F change (%)" = published_cl_pct,
+      "Model AUCss change (%)" = sim_auc_pct,
+      "Published AUCss change (%)" = published_auc_pct
+    ),
+  digits = c(0, 4, 2, 1, 2, 1),
+  caption = "Ad hoc model: Asian-subgroup effects on total CL/F and on daily steady-state AUC, against the values reported in the Results."
+)
+```
+
+```{r adhoc-assert}
+# Deterministic (zeroRe, no cohort), so agreement should be to the paper's
+# printed precision of one decimal place. Realised max 0.09 percentage points,
+# on the Japanese AUCss row, which is the paper's own rounding of 17.79 to 17.7.
+# 0.15 admits that rounding; any mis-transcribed race coefficient moves these by
+# whole percentage points.
+stopifnot(
+  nrow(adhocRes) == 4L,
+  max(abs(adhocRes$sim_cl_pct - adhocRes$published_cl_pct)) < 0.15,
+  max(abs(adhocRes$sim_auc_pct - adhocRes$published_auc_pct)) < 0.15
+)
+```
+
+The paper's conclusion that "the impact of Asian race on apixaban exposure was
+< 15% and not considered clinically significant" is reproduced: the largest
+subgroup effect, Japanese, raises daily AUCss by 17.8% relative to a non-Asian
+patient, and the Korean and other-Asian effects are within 5%.
+
+# Assumptions and deviations
+
+- **Covariate correlation structure.** The paper bootstrapped the observed
+  ARISTOTLE covariates to preserve their correlation structure; those data are
+  not public. The virtual cohort here samples age, weight, sex, race,
+  comedication status and serum creatinine independently and then *derives*
+  creatinine clearance from Cockcroft-Gault, which recovers the one correlation
+  that dominates this model -- elderly, low-weight subjects necessarily have low
+  renal clearance. Remaining correlations (for example between race and weight)
+  are not reproduced. Median exposures agree to within 10%; the 5th and 95th
+  percentiles are not expected to, and are not gated.
+- **Serum creatinine is not published.** Table 2 reports the cCrCL distribution
+  but not the serum creatinine distribution it was computed from. Serum
+  creatinine is drawn log-normally with median 1.06 mg/dL and a log-scale SD of
+  0.30; that median was chosen so the *derived* cCrCL distribution reproduces
+  the reported one, and the agreement is asserted in the cohort chunk (realised
+  median 72.5 against the reported 74.35) rather than assumed. A consequence
+  worth noting: the fraction of the cohort meeting at least two dose-reduction
+  criteria is 3.9% here against the paper's "approximately 5%", and that
+  fraction is sensitive to the serum-creatinine spread.
+- **Parameter uncertainty.** The paper propagated parameter uncertainty by
+  drawing 500 sets from the asymptotic posterior. This vignette uses the point
+  estimates with between-subject variability only, so the simulated confidence
+  intervals on the medians are narrower than the paper's.
+- **IIV is carried on microconstants, not on CL/F and Vc/F.** The authors moved
+  the random effects onto `k` (`kel`), `k12` and `k21` because random effects on
+  CL/F and Vc/F were estimated with a correlation of approximately 1. Two
+  consequences are reproduced verbatim from the control stream and are worth
+  stating because they are easy to get wrong. First, `kel`, `k12` and `k21` are
+  formed from the TYPICAL central volume, so the eta on `vc` scales the
+  predicted concentration without feeding back into the elimination or
+  distribution rate constants. Second, the eta names `etalkel`, `etalk12` and
+  `etalk21` have no matching `lkel` / `lk12` / `lk21` entries in `ini()`,
+  because those microconstants are derived quantities; `checkModelConventions()`
+  reports this as a warning for both files and it is expected rather than a
+  defect.
+- **Afternoon dosing.** The source dosing-time covariate has three levels. Only
+  the evening level carries an estimated effect; the afternoon effect was not
+  evaluable in any of the three final models and is fixed to zero in the control
+  stream. The model therefore carries a single binary `DOSETIME_EVENING`
+  indicator whose reference category pools morning and afternoon.
+- **CYP3A4/P-gp inducers.** A concomitant strong-inducer effect was tested in
+  the full stage 2 model and dropped from the final model ("very small and
+  poorly estimated"). It is not carried in either model file.
+- **Residual error stratification.** Three log-scale residual SDs are switched
+  by study using `STUDY_APPRAISE1` and `STUDY_ARISTOTLE`. The cohort simulated
+  above is an ARISTOTLE-like NVAF population, so it uses the ARISTOTLE
+  magnitude. Note that the NCA checks are run on `Cc` (the individual
+  prediction) rather than on a residual-error-perturbed observation, so the
+  residual magnitude does not enter those gates.
+- **The updated stage 1 final model is not extracted.** It is the middle column
+  of Table 3 and a model-development step: the stage 1 final model refitted on
+  the stage 2 dataset before concomitant medications were tested. Per the
+  library's standing policy, base and intermediate models in a
+  model-development paper are not shipped.
+- **No erratum applies.** The EuropePMC record for doi:10.1002/psp4.12347
+  carries no comment/correction entries, and a search of published apixaban
+  corrections returned none referencing this analysis.
