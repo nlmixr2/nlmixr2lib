@@ -315,10 +315,18 @@ the `V` random effect against treatment group) are not replicated: Figure 1 is a
 base-model diagnostic whose parameters are not published, and Figure 2 plots the
 empirical Bayes etas of the 17 real dogs, which no simulation from the published
 typical values can reproduce. Figure 2 is nonetheless the graphical basis of the
-covariate and is worth reading alongside the model - the LP box sits clearly
-above zero while the L and LZ boxes straddle it, which is what prompted the
-authors to add treatment group on `V` in the first place. Both figures were
+covariate and is worth reading alongside the model. Digitising it (approximately,
+from the publisher JPEG) puts the LP median eta near +0.5 and the L and LZ
+medians near -0.3 and -0.45: the LP box sits clearly above zero, while the L and
+LZ boxes both sit *below* zero and close to one another. It is that pattern -
+LP separated from a near-coincident L and LZ pair - that motivated a treatment
+covariate on `V` in which L and LZ share the reference level. Both figures were
 inspected at publisher resolution; neither carries a printed parameter value.
+
+One caveat for anyone digitising Figure 2 themselves: its y-axis tick labels read
+`2, 0, 0, -1, -2` from top to bottom on evenly spaced ticks, so the **second**
+label is a typographical error for `1` and the true zero is the *third* label.
+Measuring against the upper `0` would shift every eta by one whole unit.
 
 # PKNCA validation
 
