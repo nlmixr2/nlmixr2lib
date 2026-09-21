@@ -4712,6 +4712,8 @@ navbar:
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
         href: articles/Edstein_2001_tafenoquine.html
+      - text: "Tafenoquine (Thakkar 2018)"
+        href: articles/Thakkar_2018_tafenoquine.html
       - text: "Tak 071 (Jia 2025)"
         href: articles/Jia_2025_tak_071.html
       - text: "Tak 079 (Roepcke 2018)"
@@ -7327,6 +7329,7 @@ articles:
   - articles/Teuscher_2015_methylphenidate
   - articles/Thai_2011_aflibercept
   - articles/Thakkar_2017_amifampridine
+  - articles/Thakkar_2018_tafenoquine
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
   - articles/Thomson_1989_lisinopril
