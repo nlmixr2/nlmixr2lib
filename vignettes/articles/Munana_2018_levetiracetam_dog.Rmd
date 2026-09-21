@@ -218,6 +218,12 @@ stopifnot(
 mod <- readModelDb("Munana_2018_levetiracetam_dog")
 mod_typ <- rxode2::zeroRe(mod)
 
+# Seed rxode2's own RNG (set.seed() above does not reach it) so the stochastic
+# cohort is reproducible within an rxode2 version. It is NOT reproducible
+# across versions or thread counts, which is why the cohort-derived assertions
+# further down are absolute bounds with headroom rather than tight equalities.
+rxode2::rxSetSeed(20180501)
+
 keep_cols <- c("treatment", "CONMED_PB", "CONMED_ZNS")
 
 sim_typ_sd <- rxode2::rxSolve(mod_typ, events = events_typ_sd, keep = keep_cols) |>

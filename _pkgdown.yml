@@ -2574,6 +2574,8 @@ navbar:
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levetiracetam (Wang 2012)"
         href: articles/Wang_2012_levetiracetam.html
+      - text: "Levetiracetam dog (Munana 2018)"
+        href: articles/Munana_2018_levetiracetam_dog.html
       - text: "Levocetirizine (Hussein 2005)"
         href: articles/Hussein_2005_levocetirizine.html
       - text: "Levodopa (Suksai 2026)"
@@ -6851,6 +6853,7 @@ articles:
   - articles/Muller_2009_amoxicillin
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
+  - articles/Munana_2018_levetiracetam_dog
   - articles/Munn_2024_carprofen_moxidectin_internal_standard
   - articles/Muntau_2017_sapropterin
   - articles/Muthukrishnan_2025_clazakizumab
