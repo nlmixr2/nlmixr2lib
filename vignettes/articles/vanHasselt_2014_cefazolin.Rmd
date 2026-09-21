@@ -490,10 +490,18 @@ stopifnot(
 
 # Between-subject variability
 
-A stochastic cohort shows how differently the two models distribute clearance.
-The semiphysiological model carries a much smaller `omega_CL` (10.4 vs 19.9
-CV%) because part of the clearance variability has moved into the creatinine-
-clearance trajectory's own random effects, which this model embeds.
+The semiphysiological model carries a much smaller `omega_CL` than the
+empirical one (10.4 vs 19.9 CV%, Table 2). Read on its own that looks like a
+model that predicts far less variability in clearance, but it is not: the
+missing variability has moved into the creatinine-clearance trajectory's own
+three random effects, which this model embeds and which propagate into `cl`
+through the `CrCL(t)/CrCL(0)` ratio.
+
+The stochastic cohort below shows the consequence -- the two models produce a
+**similar** realised spread in individual clearance despite the near-twofold
+difference in their tabulated `omega_CL`. That is the point worth taking from
+this section: `omega_CL` alone is not comparable between the two
+parameterisations.
 
 ```{r vpc, fig.height = 4}
 n_sub <- 100L # per arm; the 200/arm cap is a ceiling, not a target
@@ -543,8 +551,8 @@ stopifnot(
   nrow(spread) == 2L,
   # Both cohorts show a plausible clearance spread. Bounds are wide because
   # these are cohort statistics, which rxode2 draws differently at different
-  # solver-thread counts (pattern 12); realised values here were ~20% and
-  # ~11%. A mis-entered omega would move these by a factor, not a few points.
+  # solver-thread counts (pattern 12); realised values here were 16.9% and
+  # 16.4%. A mis-entered omega would move these by a factor, not a few points.
   all(spread$cv > 3), all(spread$cv < 45)
 )
 ```
