@@ -60,13 +60,28 @@ Extracting from the archived parent alone would therefore attach each covariate
 equation to the **wrong** model. The corrected assignment was not taken on the
 corrigendum's word; it is confirmed independently two ways:
 
-1. It is the only assignment consistent with the paper's own Methods. Equation
-   (3) is a linear covariate relation normalised by `NCOV`, which Methods 2.3
-   says is "the maximum GA of 40" for linear GA models -- that is the
-   *empirical* model. Equation (6) is the `CrCL(t)/CrCL_0` ratio, introduced in
-   Methods 2.4.2 as the *semiphysiological* model.
-2. Only the corrected assignment reproduces the base model's clearance at the
-   cohort median gestational age, checked numerically below.
+1. **It is the only assignment consistent with the paper's own Methods**, and
+   this is the decisive evidence. Each footnote equation is verbatim a numbered
+   equation from the Methods section that *defines that model*. Equation (3) is
+   the linear covariate relation normalised by `NCOV`, which Methods 2.3 says is
+   "the maximum GA of 40" for linear GA models -- that section builds the
+   *empirical* model. Equation (6), `CL_i = theta_CL0 + theta_CLpreg *
+   (CrCL_i(t)/CrCL_i0)`, is introduced in Methods 2.4.2, which builds the
+   *semiphysiological* model. The archived footnotes pair each equation with the
+   other section's model.
+2. **Only the corrected assignment reproduces the difference between the two
+   approaches that the paper reports.** Results 3.3.3 states that the empirical
+   and semiphysiological predictions diverge "especially in early pregnancy".
+   Under the switched reading the two models are numerically *indistinguishable*
+   in early pregnancy -- 0.2% apart at GW 15 -- and diverge only at term, which
+   inverts the paper's own finding. Checked numerically below.
+
+A caution on what does **not** discriminate, recorded so a future reader does
+not mistake it for evidence: clearance at the cohort median GA of 33 weeks is
+**not** a usable test. All four readings land within 8% of the base model's
+0.49 L/min, and the switched empirical reading (0.469) is actually marginally
+*closer* to it than the corrected one (0.515). The median-GA arithmetic is a
+consistency check on the corrected forms, not a way to choose between them.
 
 The corrigendum also supplies the model's reference frame, which the parent
 never states: `CL0`, `VC`, `VP` and `Q` "were fit based on the free cefazolin
@@ -79,34 +94,59 @@ algebraically as `Cc = Cunbound / fu`, following the shipped
 # Methods eq 4 trajectory, typical values from Table 3.
 crcl_traj <- function(ega) 97.83 + 83.83 * ega / (13.3 + ega)
 
-ga_med <- 33 # Table 1, median gestational age
 cl_base <- 0.49 # Table 2, base model clearance (L/min)
 
-cl_emp_corrected <- 0.119 + 0.217 * (1 + ga_med / 40)
-cl_semi_corrected <- 0.142 + 0.212 * (crcl_traj(ga_med) / crcl_traj(0))
+# Empirical column thetas (Table 2): CL0 = 0.119, CLPreg = 0.217.
+# Semiphysiological column thetas (Table 2): CL0 = 0.142, CLPreg = 0.212.
+# Corrected: empirical takes the linear GA form, semiphysiological the ratio.
+cl_emp_corrected <- function(ega) 0.119 + 0.217 * (1 + ega / 40)
+cl_semi_corrected <- function(ega) 0.142 + 0.212 * (crcl_traj(ega) / crcl_traj(0))
+# Switched (as archived): the two covariate forms swapped.
+cl_emp_switched <- function(ega) 0.119 + 0.217 * (crcl_traj(ega) / crcl_traj(0))
+cl_semi_switched <- function(ega) 0.142 + 0.212 * (1 + ega / 40)
 
-# ... and the switched (as-printed) reading, for contrast.
-cl_emp_switched <- 0.119 + 0.217 * (crcl_traj(ga_med) / crcl_traj(0))
-cl_semi_switched <- 0.142 + 0.212 * (1 + ga_med / 40)
+ga_med <- 33 # Table 1, median gestational age
 
 tibble::tibble(
   Model = c("Empirical", "Semiphysiological"),
-  `CL corrected` = c(cl_emp_corrected, cl_semi_corrected),
-  `CL as-printed (switched)` = c(cl_emp_switched, cl_semi_switched),
+  `CL corrected` = c(cl_emp_corrected(ga_med), cl_semi_corrected(ga_med)),
+  `CL as-printed (switched)` = c(cl_emp_switched(ga_med), cl_semi_switched(ga_med)),
   `Base model CL` = cl_base
 ) |>
-  knitr::kable(digits = 3, caption = "Clearance (L/min) at the cohort median GA of 33 weeks.")
+  knitr::kable(digits = 3, caption = "Clearance (L/min) at the cohort median GA of 33 weeks. Note that this comparison does NOT discriminate between the two readings.")
+```
+
+The discriminating comparison is the *gap between the two models* in early
+pregnancy, which Results 3.3.3 reports as the regime where they diverge most.
+
+```{r corrigendum-gap}
+ga_early <- 15 # gestational weeks; the earliest level plotted in Figure 4
+
+gap <- function(emp, semi, ega) semi(ega) / emp(ega) - 1
+
+tibble::tibble(
+  `Gestational week` = c(15, 25, 35, 40),
+  `Gap, corrected (%)` = 100 * gap(cl_emp_corrected, cl_semi_corrected, c(15, 25, 35, 40)),
+  `Gap, switched (%)` = 100 * gap(cl_emp_switched, cl_semi_switched, c(15, 25, 35, 40))
+) |>
+  knitr::kable(digits = 1, caption = "Relative difference between the empirical and semiphysiological clearances under each reading.")
 ```
 
 ```{r corrigendum-assert}
-# Both CORRECTED forms land within 6% of the base model's 0.49 L/min; the
-# switched reading of the empirical model does not. These are closed-form
-# arithmetic on published constants, so exact bounds are appropriate here.
+# Closed-form arithmetic on published constants -- no RNG, no cohort -- so
+# exact bounds are appropriate here.
 stopifnot(
-  abs(cl_emp_corrected / cl_base - 1) < 0.06,
-  abs(cl_semi_corrected / cl_base - 1) < 0.06,
-  # The switched empirical reading misses by more than 15%.
-  abs(cl_emp_switched / cl_base - 1) > 0.15
+  # (a) Consistency: both CORRECTED forms sit within 6% of the base model's
+  # 0.49 L/min. This does not discriminate (see the caution above); it only
+  # confirms the corrected forms are self-consistent with the base model.
+  abs(cl_emp_corrected(ga_med) / cl_base - 1) < 0.06,
+  abs(cl_semi_corrected(ga_med) / cl_base - 1) < 0.06,
+  # (b) Discrimination: in early pregnancy the CORRECTED reading separates the
+  # two approaches by several percent, as Results 3.3.3 describes...
+  abs(gap(cl_emp_corrected, cl_semi_corrected, ga_early)) > 0.05,
+  # ...whereas the SWITCHED reading collapses them onto each other there,
+  # which contradicts the paper. Realised values: 7.9% vs 0.25%.
+  abs(gap(cl_emp_switched, cl_semi_switched, ga_early)) < 0.01
 )
 ```
 

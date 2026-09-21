@@ -182,10 +182,15 @@ vanHasselt_2014_cefazolin_semiphysiological <- function() {
     #    Corrigendum (Biomed Res Int 2015;2015:124035) Table 2 footnote b:
     #      CL = theta_CL0 + theta_CLPreg * (CrCL_ij(t) / CRCL_0)
     #    The ORIGINAL paper prints this equation against the EMPIRICAL column;
-    #    the corrigendum states footnotes a and b were switched. The corrected
-    #    assignment is the one that matches Methods eq 6 and that reproduces
-    #    the base model's CL of 0.49 L/min at the cohort median GA of 33 weeks
-    #    (0.142 + 0.212 * 1.6107 = 0.483 L/min).
+    #    the corrigendum states footnotes a and b were switched. The decisive
+    #    evidence for the corrected assignment is that this equation IS Methods
+    #    eq 6, which appears in Methods 2.4.2, the section that builds the
+    #    semiphysiological model. It is also the reading that reproduces the
+    #    base model's CL of 0.49 L/min at the cohort median GA of 33 weeks
+    #    (0.142 + 0.212 * 1.6107 = 0.483 L/min, vs 0.529 under the switched
+    #    reading) -- though note that clearance at the median GA does not on
+    #    its own discriminate the two readings for BOTH models; see the
+    #    vignette's corrigendum section for the comparison that does.
     #
     #    Methods eq 1 places the exponential IIV on the covariate-adjusted
     #    typical value, so the single reported omega_CL multiplies the SUM of
