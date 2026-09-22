@@ -134,6 +134,24 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** QSS-TMDD popPK extractions.
 
+### target_a, target_b (**canonical generic two-target free-receptor pair**)
+- **Type:** compartment
+- **Role:** The two free target (receptor) pools of a **generic** two-target binding model, where the paper deliberately does not commit to an antigen pair and names its targets only "A" and "B". `target_a` is the paper's `R_A` and `target_b` its `R_B`. Each carries a concentration and, in the founding example, its own zero-order synthesis and first-order degradation. Use these ONLY when the targets are genuinely unspecified; when a paper names its antigens, prefer the identity-bearing forms (`target_cd3_central`, `target_bonemarrow`, ...), which say what the receptor actually is.
+- **Source aliases:**
+  - `R_A`, `R_B` -- Schropp 2019 Eqs 3-4 typeset names.
+  - `RA`, `RB` -- Schropp 2019 NONMEM / MONOLIX supplement notation (S4-S6, S9-S10).
+- **Example models:** `Schropp_2019_bsab_tmdd_full.R` (founding example; `R_A(0) = k_synA/k_degA = 10 nM`, `R_B(0) = k_synB/k_degB = 100 nM`), `Schropp_2019_bsab_tmdd_qe.R`.
+- **Notes:** The `_a` / `_b` suffix is a target **identity**, not a location -- which is why these are enumerated here rather than folded into `targetLocationRegex`, whose suffix alternation is a closed list of anatomical locations (`csf`, `isf`, `peripheral<n>`). Do not read `target_a` as "target in compartment a".
+
+### complex_a, complex_b (**canonical generic two-target binary-complex pair**)
+- **Type:** compartment
+- **Role:** The two **binary** drug-target complexes of a generic two-target binding model: `complex_a` is drug bound to target A only (the paper's `RC_A`), `complex_b` drug bound to target B only (`RC_B`). Each can further cross-link with the opposite free receptor to form the ternary complex `trimer`, which is what distinguishes this pair from the single-target `complex`. Carries a concentration; in the founding example each has its own internalisation rate.
+- **Source aliases:**
+  - `RC_A`, `RC_B` -- Schropp 2019 Eqs 5-6 typeset names.
+  - `RCA`, `RCB` -- Schropp 2019 supplement notation.
+- **Example models:** `Schropp_2019_bsab_tmdd_full.R` (founding example).
+- **Notes:** Paired with `target_a` / `target_b`; the same identity-versus-location caveat applies. Under a quasi-equilibrium approximation these species become algebraic rather than integrated (`complex_a = C*R_A/K_D1`), in which case they are ordinary `model()` locals and not compartments at all -- see `Schropp_2019_bsab_tmdd_qe.R`.
+
 ---
 
 ## Semi-physiological organ states
@@ -680,13 +698,14 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Poels_2025_elranatamab_qsp.R`.
 - **Notes:** Founding example Poels 2025 (Supplementary Eqs 7, 30-35), adapting Chen et al. (2019) Clin Transl Sci 12:600-608. **Deliberately generic rather than `il6_*`.** Poels 2025 models "a pro-inflammatory cytokine (e.g., IL-6)" and calibrates it against observed IL-6; naming the states `il6_*` would overclaim, because IL-6 is the calibration data rather than the modelled species, and it would leave the registered `il6` canonical -- which means actual IL-6 -- competing for the name. Record the IL-6 calibration provenance in the model's source-trace comments. Operator naming ruling, task sidecar oare_PMC12402305 request-001 q2.
 
-### trimer (**canonical drug-CD3-antigen ternary complex in tumor**)
+### trimer (**canonical bispecific ternary complex**)
 - **Type:** compartment
-- **Role:** Productive drug-CD3-antigen ternary complex (trimer) in the tumor extracellular space (nM). Forms an immune synapse-mimetic bridge between a T cell and an antigen-expressing tumor cell; the paper's PD driver linking bispecific PK to tumor cell killing via `kkill = kmax * trimer / (kc50 + trimer)`. Reversible mass-action formation from either dimer (`drug_cd3_tumor` + free antigen, or `drug_pcad_tumor` + free CD3) with dissociation back to either dimer.
+- **Role:** The productive ternary complex of a cell-bridging bispecific: one drug molecule cross-linking one copy of each of its two targets (nM). Formed reversibly by mass action from EITHER binary complex plus the opposite free target, and lost by dissociation back to either binary complex and by internalisation. This is the pharmacologically active species of the bispecific class -- it is what physically bridges the two cells -- so it, and not the free drug concentration, is the PD driver. Covers both the antigen-named case (a drug-CD3-antigen trimer in the tumor extracellular space, driving tumor-cell killing via `kkill = kmax * trimer / (kc50 + trimer)`) and the generic two-target case, where the paper names its targets only A and B and the trimer is `target_a`-drug-`target_b`.
 - **Source aliases:**
   - `Trimer` -- Betts 2019 paper notation (deprecated capitalized form).
-- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
-- **Notes:** Founding example Betts 2019 (Eq 16 dTrimer/dt). The trimer concentration drives the tumor-killing rate `kkill` and is the mechanistic PD linker of the CD3-bispecific class. Trimer formation exhibits the bell-shaped concentration-response phenomenon (Betts 2019 Fig 1b): trimer decreases at very high drug concentrations because the equilibrium shifts toward drug-CD3 and drug-antigen dimers rather than the productive trimer.
+  - `RC_AB`, `RCAB` -- Schropp 2019 Eq 7 typeset name and supplement notation.
+- **Example models:** `Betts_2019_pf_06671008_qsp.R` (antigen-named case), `Schropp_2019_bsab_tmdd_full.R` (generic two-target case).
+- **Notes:** Founding example Betts 2019 (Eq 16 dTrimer/dt). Broadened from the CD3-and-tumor-specific definition to the generic bispecific ternary complex when `Schropp_2019_bsab_tmdd_full.R` was added, which is the same species in a model whose two targets are deliberately unspecified; the generic free-target and binary-complex pairs it pairs with are `target_a` / `target_b` and `complex_a` / `complex_b`. Trimer formation exhibits the bell-shaped concentration-response phenomenon (Betts 2019 Fig 1b; Schropp 2019 Fig 2a and Eq 35): trimer *decreases* at very high drug concentrations, and vanishes in the limit, because saturating both targets with binary complexes starves the cross-linking reaction. Schropp 2019 turns this into a dosing rule -- the trimer is maximal while the total drug concentration lies between the two total target concentrations (its Eq 36 "optimal working range"), so raising the dose past that window *delays* trimer build-up. Under a quasi-equilibrium approximation the trimer becomes algebraic (`trimer = C*R_A*R_B/(alpha*K_D1*K_D2)`) rather than an integrated state.
 
 ---
 
@@ -4015,6 +4034,15 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
   - `depot` (when the model has no extravascular absorption depot and the lone depot serves as the K-PD virtual drug compartment) -- used in `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Xia_2024_warfarin.R`.
 - **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Xia_2024_warfarin.R`.
 - **Notes:** Drug-suffixed variants `depot_kpd_<drug>` are accepted for combination K-PD models via the metabolite-suffix mechanism, where `<drug>` is a registered drug-name suffix below (e.g., `depot_kpd_sunitinib`, `depot_kpd_irinotecan` in Wilson 2015). Canonical `depot_kpd` adopted 2026-05-30 per the K-PD canonical-name retrofit (see `memory/kpd-model-canonical-standards.md`).
+
+### depot_ivdum (**canonical dummy i.v. input-function compartment**)
+- **Type:** compartment
+- **Role:** A numerical device, not a pharmacological space: it converts an i.v. dose event into a *readable* input-function term `In_IV(t)` for models in which the i.v. input cannot simply be added to the central state. The state receives the i.v. dose as an amount and drains at a large first-order rate `kdum`, so `kdum * depot_ivdum` reconstructs the input rate inside `model()`, where it can be multiplied by other model states. Mass-conserving: the time integral of the reconstructed input equals the administered dose exactly.
+- **Source aliases:**
+  - `In_IVDum` -- Schropp 2019 Eq 42 (the paper's own name for the device).
+  - `IN` -- the hard-coded infusion-rate variable of the authors' NONMEM streams S5, S9 and S10, which mimic an i.v. bolus by a short infusion of duration `TDUR = 0.0001` day.
+- **Example models:** `Schropp_2019_bsab_tmdd_qe.R` (founding example), `Schropp_2019_bsab_tmdd_qeconst.R`.
+- **Notes:** Needed whenever a quasi-equilibrium / quasi-steady-state reduction multiplies the input function into the right-hand side rather than leaving it additive on one state -- under rapid binding the arriving dose is instantaneously partitioned between free and bound species, so adding it to the free-drug state alone is simply the wrong model. Schropp 2019 devotes a Methods subsection to this ("Implementation of the QE approximation with an i.v. administration") and notes that NONMEM and MONOLIX cannot express it with their internal dosing mechanisms. Set `kdum = 1 / TDUR` to reproduce a published short-infusion duration. A model carrying this compartment MUST declare it in `dosing` and MUST NOT also accept i.v. doses into `central`; the two routes are not interchangeable. Distinct from `depot_kpd` (which holds an amount of real drug in a virtual body) and from `depot_placebo` (a dimensionless dummy dose driving a placebo response) -- `depot_ivdum` holds real administered drug for a few milliseconds of model time purely so that its *rate* can be referenced.
 
 ### sunitinib (**canonical sunitinib K-PD drug-name suffix**)
 - **Type:** metabolite-suffix
