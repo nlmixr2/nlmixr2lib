@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ibrahim 2019 two-compartment zero-order-absorption Michaelis-Menten methodology template ([doi:10.1208/s12248-019-0305-2](https://doi.org/10.1208/s12248-019-0305-2)) -- none; hypothetical drug simulated for a CWRES structural-diagnostic demonstration.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
