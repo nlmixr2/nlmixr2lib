@@ -35,11 +35,28 @@ ui <- rxode2::rxode(mod)
 Huang and colleagues developed a population pharmacokinetic model for
 **tiapride**, a benzamide-class D2 antagonist used for tic disorders, in 38
 Chinese children and adolescents aged 5-15 years followed as outpatients at a
-single centre. Two models are reported: a plasma model (Table 2) and a
-sequentially-fitted plasma-saliva joint model (Table 3) that adds a
-Michaelis-Menten-driven saliva compartment. **Only the plasma model is
-implemented in `nlmixr2lib`**; the joint model cannot be reconstructed from the
-published values, for the reason set out in the Errata below.
+single centre. Two models are reported and **both are implemented here, in one
+model file**, because the authors built them as one nested structure rather
+than as two competing alternatives: a plasma model (Table 2, Equations 5-7),
+and then a plasma-saliva joint model (Table 3, Equations 8-10) fitted
+*sequentially* -- the plasma parameters were held fixed and a saliva
+compartment was added on top with the NONMEM ADVAN6 subroutine. Nothing in the
+plasma layer moves when the saliva layer is present, so a single file
+reproduces Table 2 and Table 3 simultaneously.
+
+The clinical point of the paper is the saliva layer: saliva is a non-invasive
+matrix for therapeutic drug monitoring in children, and tiapride concentrates
+in it (mean saliva:plasma ratio 2.3). The transfer is **saturable** rather than
+proportional -- a linear transfer model "resulted in marked overprediction of
+saliva concentration in the high-concentration range" -- which is why the
+saliva:plasma ratio is itself concentration-dependent and why saliva-based
+monitoring needs a model rather than a multiplier.
+
+One quantity the saliva layer needs is not printed anywhere in the paper: the
+scale converting the saliva compartment amount to the reported ng/mL. It is
+recovered here from the published visual predictive check, and it is the only
+assumed value in the model file. **Read the Errata before using the saliva
+output quantitatively.**
 
 Reference:
 
@@ -99,7 +116,30 @@ knitr::kable(
     "Therapeutic window",        "560-2000 ng/mL steady-state Cmax",   "Methods Model-Based Simulations (ref 13)",
     "PTA, 100 mg bid / 75 mg tid / 100 mg tid", "98.2% / 97.1% / 97.3%", "Results Monte Carlo Simulations"
   ),
-  caption = "Source trace for the Huang 2026 plasma model."
+  caption = "Source trace for the Huang 2026 plasma model (Table 2)."
+)
+```
+
+The saliva layer, fitted sequentially on top of the fixed plasma parameters:
+
+```{r source-trace-saliva, echo = FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~Item,                        ~Value,                       ~Source,
+    "Vmax (central -> saliva)",   "34.7 mg/h",                  "Table 3; Equation 8",
+    "Km (central -> saliva)",     "762 ng/mL = 0.762 mg/L, held constant", "Table 3; Equation 9",
+    "K30 (saliva elimination)",   "6.24 1/h",                   "Table 3; Equation 10",
+    "FFM exponent on K30",        "0.38",                       "Table 3; Equation 10",
+    "IIV K30",                    "30% -> omega = 0.30",        "Table 3 'eta K30 (%)'",
+    "Saliva proportional residual", "28.4%",                    "Table 3 'eps prop (%)'",
+    "Transport structure",        "Michaelis-Menten, saturable, DRIVEN (no loss from central)", "Figure 2 (dashed arrow); Results; plasma parameters held fixed",
+    "Saliva elimination",         "first-order out of saliva",  "Figure 2; Results",
+    "Back-transfer saliva -> central", "none (tested, not retained)", "Discussion paragraph 6",
+    "Apparent saliva volume",     "1.35 L -- NOT REPORTED, recovered from Figure 4", "See Errata; operator-ratified 2026-09-21",
+    "Mean saliva:plasma ratio",   "2.3",                        "Discussion paragraph 2",
+    "Saliva assay range",         "4-2000 ng/mL",               "Methods 'Sample analysis'"
+  ),
+  caption = "Source trace for the Huang 2026 saliva layer (Table 3)."
 )
 ```
 
@@ -143,6 +183,18 @@ stopifnot(length(ui$linCmt) == 0L)
 The typical-value solve is deterministic, so it is checked against exact
 closed-form identities rather than tolerance bands.
 
+Note on `cmt` in the event tables below. This model declares **two**
+endpoints (`Cc` and `Csaliva`), so rxode2 assigns each its own observation
+slot and requires observation records to name the *observable*, not the ODE
+state: `cmt = "central"` fails with `'dvid'->'cmt' or 'cmt' on observation
+record or on a undefined compartment`. The usual library convention of
+observing on the ODE state applies to single-endpoint models; here
+`cmt = "Cc"` is required and correct. `useLinCmt = FALSE` is passed to every
+`rxSolve()` for the same reason -- rxode2's automatic conversion to an
+analytic solution corrupts the endpoint mapping for multi-output models. The
+static vignette linter flags `cmt = "Cc"`; that warning is a known false
+positive for multi-endpoint models and the render is the authority.
+
 ```{r typical-solve}
 dose_mg <- 75
 
@@ -151,7 +203,7 @@ ev_typ <- data.frame(
   time = c(0, sort(unique(c(seq(0, 4, by = 0.02), seq(0, 48, by = 0.1))))),
   amt  = NA_real_,
   evid = 0L,
-  cmt  = "central",
+  cmt  = "Cc",
   FFM  = 30.62
 )
 ev_typ$amt[1] <- dose_mg
@@ -159,7 +211,7 @@ ev_typ$evid[1] <- 1L
 ev_typ$cmt[1] <- "depot"
 
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
-                           keep = "FFM") |>
+                           keep = "FFM", useLinCmt = FALSE) |>
   as.data.frame()
 if (is.null(sim_typ$id)) sim_typ$id <- 1L
 
@@ -294,7 +346,7 @@ make_arm <- function(label, dose, ii, id_offset) {
   doses <- tidyr::expand_grid(subj, time = seq(0, 120, by = ii)) |>
     dplyr::mutate(amt = dose, evid = 1L, cmt = "depot")
   obs <- tidyr::expand_grid(subj, time = seq(120, 132, by = 0.1)) |>
-    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "Cc")
   dplyr::bind_rows(doses, obs) |>
     dplyr::mutate(regimen = label) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
@@ -316,7 +368,7 @@ stopifnot(
 
 ```{r simulate}
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("regimen", "FFM")) |>
+                       keep = c("regimen", "FFM"), useLinCmt = FALSE) |>
   as.data.frame()
 
 sim_obs <- sim |> dplyr::filter(!is.na(Cc))
@@ -430,12 +482,13 @@ ev_ss <- data.frame(
   evid = c(rep(1L, length(seq(0, 120, by = 8))),
            rep(0L, length(seq(120, 128, by = 0.02)))),
   cmt = c(rep("depot", length(seq(0, 120, by = 8))),
-          rep("central", length(seq(120, 128, by = 0.02)))),
+          rep("Cc", length(seq(120, 128, by = 0.02)))),
   FFM = 30.62
 ) |>
   dplyr::arrange(time, dplyr::desc(evid))
 
-sim_ss <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_ss) |>
+sim_ss <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_ss,
+                          useLinCmt = FALSE) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc), time >= 120)
 
@@ -451,6 +504,221 @@ stopifnot(abs(auc_tau / (75 / cl_tv) - 1) < 0.01)
 At steady state the area over one 8 h interval returns `Dose / (CL/F)` to
 better than 1%, confirming the dosing pathway and the FFM reference value are
 wired correctly.
+
+## The saliva layer
+
+```{r saliva-params}
+vmax_tv <- exp(theta[["lvmax_saliva"]])
+km_tv   <- exp(theta[["lkm_saliva"]])
+k30_tv  <- exp(theta[["lkel_saliva"]])
+vsal_tv <- exp(theta[["lvsaliva"]])
+
+c(Vmax_mg_per_h = vmax_tv, Km_ng_per_mL = 1000 * km_tv,
+  K30_per_h = k30_tv, saliva_half_life_min = 60 * log(2) / k30_tv,
+  vsaliva_L = vsal_tv)
+```
+
+### Saliva is driven, not mass-balance-coupled
+
+The single most consequential structural decision in this layer is whether the
+Michaelis-Menten transport **removes** drug from the central compartment. It
+does not, and the model file encodes it that way. Three independent facts fix
+the reading, and the third is checkable here:
+
+1. Figure 2 draws this one arrow **dashed** where every other arrow in the
+   diagram is solid.
+2. The layer was fitted with the plasma parameters held **fixed**, so a term
+   that drained central would have invalidated them -- yet the plasma
+   goodness-of-fit in Figure 3A is unchanged from the plasma-only model.
+3. The printed constants are **not mass-conserving**. `Vmax` = 34.7 mg/h
+   exceeds the entire cohort-average absorption rate (about 9 mg/h at the
+   median 215 mg/day dose), so a depleting transport term would remove more
+   drug than is ever absorbed.
+
+If the transport drained central, the plasma curve would depart from the
+one-compartment closed form -- most at the peak, where the transport term is
+largest. It does not:
+
+```{r saliva-driven-gate}
+cc_closed <- dose_mg * ka_tv / (vc_tv * (ka_tv - kel_tv)) *
+  (exp(-kel_tv * sim_typ$time) - exp(-ka_tv * sim_typ$time))
+max_rel_dev <- max(abs(sim_typ$Cc - cc_closed)) / max(cc_closed)
+
+c(max_relative_deviation_from_closed_form = max_rel_dev)
+
+stopifnot(
+  # Exact identity, not a tolerance band: the plasma layer is numerically
+  # untouched by the presence of the saliva compartment.
+  max_rel_dev < 1e-4
+)
+```
+
+Together with the `CL/F * AUC(0-inf) = dose` gate above -- which also holds
+only if no mass leaves central -- this is the numerical proof of the
+structural reading.
+
+### Quasi-steady state
+
+`K30` = `r round(k30_tv, 2)` 1/h is a
+`r round(60 * log(2) / k30_tv, 1)`-minute half-life, so saliva equilibrates
+with plasma far faster than plasma itself moves. Away from the steep
+absorption phase the saliva state therefore tracks
+
+$$A_{saliva} \approx \frac{V_{max} \cdot C_c}{(K_m + C_c) \cdot K_{30}}$$
+
+```{r saliva-qss}
+qss_amt <- vmax_tv * sim_typ$Cc / ((km_tv + sim_typ$Cc) * k30_tv)
+qss_conc <- qss_amt / vsal_tv
+
+# Restrict to the post-peak window: during the first minutes after a dose the
+# plasma concentration is changing faster than saliva can follow, so the
+# quasi-steady-state approximation is not expected to hold there.
+post_peak <- sim_typ$time >= tmax_cf
+qss_dev <- max(abs(sim_typ$Csaliva[post_peak] - qss_conc[post_peak])) /
+  max(sim_typ$Csaliva)
+
+c(max_relative_qss_deviation_after_tmax = qss_dev)
+
+stopifnot(qss_dev < 0.05)
+```
+
+This matters because the quasi-steady-state form is the algebra used to
+recover the unreported saliva volume (Errata below); the check confirms the
+approximation is sound in the region where it was applied.
+
+### The saliva:plasma ratio is concentration-dependent
+
+This is the paper's central pharmacological claim. Because saliva is at quasi
+steady state, the ratio has a closed form that is **independent of dose and of
+time**:
+
+$$\frac{C_{saliva}}{C_c} = \frac{V_{max}}{(K_m + C_c) \cdot K_{30} \cdot V_{saliva}}$$
+
+It falls as plasma concentration rises -- the saturation the paper attributes
+to a ceiling on salivary ion trapping.
+
+```{r saliva-ratio}
+sp_ratio <- function(cc_mg_per_L) {
+  vmax_tv / ((km_tv + cc_mg_per_L) * k30_tv * vsal_tv)
+}
+
+# Huang 2026 Figure 1 fits two separate linear regressions to the paired
+# samples, split at 700 ng/mL. Those give an entirely independent read of the
+# same ratio -- neither regression was used to build this model.
+fig1_low  <- function(cc_ng) (2.27 * cc_ng + 10.14) / cc_ng
+fig1_high <- function(cc_ng) (1.04 * cc_ng + 885) / cc_ng
+
+ratio_tbl <- tibble::tibble(
+  plasma_ng_mL = c(200, 400, 700, 1000, 1400, 1700)
+) |>
+  dplyr::mutate(
+    model  = sp_ratio(plasma_ng_mL / 1000),
+    figure1 = ifelse(plasma_ng_mL < 700,
+                     fig1_low(plasma_ng_mL), fig1_high(plasma_ng_mL))
+  )
+
+knitr::kable(
+  ratio_tbl |>
+    dplyr::rename(
+      "Plasma (ng/mL)" = plasma_ng_mL,
+      "Model S/P" = model,
+      "Figure 1 regression S/P" = figure1
+    ),
+  digits = 2,
+  caption = paste(
+    "Model saliva:plasma ratio against the two paired-sample regressions of",
+    "Huang 2026 Figure 1."
+  )
+)
+```
+
+```{r saliva-ratio-gates}
+sp_at_peak <- sp_ratio(max(sim_typ$Cc))
+
+c(model_SP_at_typical_peak = sp_at_peak,
+  paper_mean_SP = 2.3,
+  model_SP_at_1700 = sp_ratio(1.7),
+  figure1_SP_at_1700 = fig1_high(1700))
+
+stopifnot(
+  # Saturation direction: the ratio must DECREASE with concentration. This is
+  # the paper's qualitative central finding and is independent of the assumed
+  # saliva volume, which scales the ratio but cannot change its shape.
+  sp_ratio(0.4) > sp_ratio(1.6),
+  # Saliva exceeds plasma everywhere in the observed range (S/P > 1), the
+  # observation that motivates saliva monitoring at all.
+  sp_ratio(1.7) > 1,
+  # The mean saliva:plasma ratio of 2.3 that the Discussion reports for the
+  # paired samples was NOT used to set the saliva volume (that anchor was
+  # rejected -- see Errata), so this is an out-of-sample check. The model puts
+  # the ratio at the typical peak within 20% of it.
+  abs(sp_at_peak / 2.3 - 1) < 0.20,
+  # At the top of the observed range the model tracks the Figure 1 regression
+  # to within 25%.
+  abs(sp_ratio(1.7) / fig1_high(1700) - 1) < 0.25
+)
+```
+
+The agreement is good at high concentrations and deteriorates at low ones:
+the model puts S/P near `r round(sp_ratio(0.2), 1)` at 200 ng/mL where the
+Figure 1 regression implies about `r round(fig1_low(200), 1)`. That
+discrepancy is **inherited from the published constants, not introduced
+here** -- the shape of the S/P curve is fixed entirely by `Vmax`, `Km` and
+`K30`, and the assumed saliva volume only slides the whole curve up or down.
+With `Km` = 762 ng/mL sitting inside the observed plasma range, the model
+predicts a several-fold swing in S/P across the data where the paired data
+show a milder one. See the Errata.
+
+### Plasma and saliva profiles (replicates Figure 4)
+
+```{r saliva-profiles, fig.height = 4, fig.width = 7}
+profile_tbl <- sim_typ |>
+  dplyr::filter(time <= 12) |>
+  dplyr::transmute(
+    time,
+    Plasma = 1000 * Cc,
+    Saliva = 1000 * Csaliva
+  ) |>
+  tidyr::pivot_longer(c(Plasma, Saliva),
+                      names_to = "Matrix", values_to = "conc")
+
+ggplot2::ggplot(profile_tbl,
+                ggplot2::aes(time, conc, colour = Matrix)) +
+  ggplot2::geom_line(linewidth = 0.9) +
+  ggplot2::labs(
+    x = "Time after dose (h)",
+    y = "Tiapride concentration (ng/mL)",
+    colour = NULL,
+    title = "Typical-value profiles after a single 75 mg dose",
+    subtitle = "Saliva exceeds plasma throughout, as in Huang 2026 Figure 4"
+  ) +
+  ggplot2::theme_bw()
+```
+
+Saliva peaks later and higher than plasma, and decays in parallel with it once
+quasi steady state is reached -- the qualitative shape of Figure 4B.
+
+```{r saliva-profile-gates}
+sal_peak_time <- sim_typ$time[which.max(sim_typ$Csaliva)]
+
+c(plasma_tmax = tmax_cf, saliva_tmax = sal_peak_time,
+  saliva_peak_ng_mL = 1000 * max(sim_typ$Csaliva))
+
+stopifnot(
+  # Saliva lags plasma: the transport is driven by Cc and the saliva state
+  # needs a few of its own half-lives to catch the rising plasma curve.
+  sal_peak_time > tmax_cf,
+  # but only slightly, given the 6.7-minute saliva half-life.
+  sal_peak_time - tmax_cf < 0.5,
+  # Saliva above plasma from the peak onwards. NOT asserted before the peak:
+  # the saliva compartment starts empty and needs a few of its own half-lives
+  # to fill, so Csaliva is legitimately below Cc during the first minutes
+  # after the dose. The paper's paired samples were all drawn at clinic
+  # visits well past that window.
+  all(sim_typ$Csaliva[post_peak] >= sim_typ$Cc[post_peak]),
+  all(sim_typ$Csaliva >= 0)
+)
+```
 
 ## Covariate effect of fat-free mass
 
@@ -475,48 +743,109 @@ exponent and its wide bootstrap confidence interval (0.277-0.771).
 
 ## Assumptions and deviations
 
-### The plasma-saliva joint model is not implemented
+### The saliva volume is assumed, not reported
 
-Huang 2026 also reports a joint plasma-saliva model (Table 3, Equations 8-10,
-Figure 2): a saliva compartment fed from the central compartment through
-Michaelis-Menten transport (Vmax = 34.7 mg/h, Km = 762 ng/mL fixed) and cleared
-by a first-order rate constant `K30 = 6.24 * (FFM/30.62)^0.38 * exp(eta)`, with
-30% IIV on K30 and 28.4% proportional residual error.
+**This is the one assumed value in the model file, and it sits directly under
+the saliva layer's primary output. Read this section before using `Csaliva`
+quantitatively.**
 
-**That sub-model cannot be reconstructed from the published values.** The
-saliva state's amount is fully determined by the three printed constants, but
-converting it to the observed *saliva concentration* needs a scale -- an
-apparent saliva volume -- and no such parameter appears anywhere in the paper:
-not in Tables 1-3, not in Equations 1-10, not in any figure caption, and there
-is no supplement (EuropePMC returns HTTP 404 for
-`PMC13111164/supplementaryFiles`, reports `hasSuppl: N`, and the article
-carries no data-availability statement). Writing
-`Csaliva = Vmax * Cc / ((Km + Cc) * K30 * Vsaliva)`, the candidate values of
-`Vsaliva` disagree by more than twofold depending on which printed quantity is
-used to recover it:
+Every other saliva parameter is printed: `Vmax` = 34.7 mg/h (Equation 8),
+`Km` = 762 ng/mL held constant (Equation 9), and
+`K30 = 6.24 * (FFM/30.62)^0.38 * exp(eta)` (Equation 10), with 30% IIV on K30
+and 28.4% proportional residual error (Table 3). Those three constants fully
+determine the *amount* of drug in the saliva compartment. Converting that
+amount to the observed saliva *concentration* needs one more quantity -- an
+apparent saliva volume -- and it appears nowhere in the paper: not in
+Tables 1-3, not in Equations 1-10 (all ten were rendered from the PDF's vector
+graphics and read), not in any figure caption, and not in the Methods. In
+NONMEM this would have been a `$SCALE`/`S3` statement rather than a `$THETA`,
+which is very likely why it never reached the parameter table.
 
-| Basis for recovery | Implied `Vsaliva` |
-|---|---|
-| NONMEM's default `S3 = 1` (a unit-volume compartment) | 1 L |
-| Model median saliva / plasma at the Figure 4 VPC peak | ~1.35 L |
-| Fitting the Figure 1 regressions to the saturating form | ~1.9 L |
-| The reported mean saliva:plasma ratio of 2.3 | ~3.2 L |
-| Sharing the central volume, as in `Nguyen_2026_linezolid` | 5.77 L (falsified: gives saliva ~4x below the observed data) |
+There is nothing to acquire: the EuropePMC `supplementaryFiles` endpoint
+returns HTTP 404 for `PMC13111164`, the core record reports `hasSuppl: N`, and
+the article carries no data-availability or supplementary-material statement.
+This is a reporting gap, not an acquisition gap.
 
-Choosing any of these would fix the sub-model's primary output to within a
-factor that the source does not license, so the saliva layer is deliberately
-absent rather than guessed. It is queued for the operator.
+Writing the quasi-steady-state form
+`Csaliva = Vmax * Cc / ((Km + Cc) * K30 * Vsaliva)`, `Vsaliva` is the only
+unknown, and candidate recoveries span more than threefold depending on which
+published quantity is used to pin it:
 
-Two structural facts about that sub-model were nevertheless settled and are
-recorded here for whoever completes it: the transport is **not**
-mass-conserving as printed (Vmax = 34.7 mg/h exceeds the cohort's entire
-average absorption rate of ~9 mg/h at a 215 mg/day median dose, and at a plasma
-concentration of 780 ng/mL the transport term of 17.6 mg/h would exceed
-elimination at 11.9 mg/h -- so the plasma parameters could not have been held
-fixed if saliva drew mass from central), which is consistent with the dashed
-central-to-saliva arrow in Figure 2; and the saliva compartment is at
-quasi-steady state with plasma throughout, since `K30 = 6.24 1/h` is a 6.7 min
-half-life.
+| Basis for recovery | Implied `Vsaliva` | Disposition |
+|---|---|---|
+| Model median saliva / plasma at the Figure 4 VPC peak | **1.35 L** | **Adopted** |
+| NONMEM's default `S3 = 1` (a unit-volume compartment) | 1 L | Rejected -- puts the low-concentration S/P near 7.3 against a reported mean of 2.3, the worst agreement with the paper's own data of any candidate |
+| Fitting the Figure 1 regressions to the saturating form | ~1.9 L | Rejected -- the two regressions are not mutually consistent with a single saturating curve |
+| The reported mean saliva:plasma ratio of 2.3 | ~3.2 L | Rejected -- exact only in the low-concentration limit, and puts saliva about 35% below the Figure 4B median at the peak |
+| Sharing the central volume, as `Nguyen_2026_linezolid` does | 5.77 L | Falsified -- gives saliva *below* plasma, contradicting the paper's central finding |
+
+**The adopted value and its provenance.** `Vsaliva` = 1.35 L was recovered by
+digitising Figure 4 at 500 dpi. At the roughly 2 h peak the model's median
+plasma prediction is about 790 ng/mL and its median saliva prediction about
+2100 ng/mL; substituting into the quasi-steady-state form gives
+`A_saliva` = 34.7 x 0.790 / ((0.762 + 0.790) x 6.24) = 2.83 mg and hence
+`Vsaliva` = 1000 x 2.83 / 2100 = 1.35 L. The value is annotated inline in
+`ini()` as figure-derived. This follows the standing figure-digitisation
+policy for parameters available only graphically, and was
+**operator-ratified on 2026-09-21** (sidecar `oasweep_PMC13111164`
+`request-001` / `response-001`, question q1, option B).
+
+**What this costs.** Three caveats, in decreasing order of importance:
+
+1. *The Figure 4 peak is calibration, not validation.* `Vsaliva` was chosen to
+   make the model reproduce that point, so agreement there is circular and is
+   not claimed as a check anywhere in this vignette. The genuinely independent
+   comparisons are the mean saliva:plasma ratio of 2.3 from the Discussion and
+   the Figure 1 paired regressions, neither of which was used in the recovery;
+   both are gated above.
+2. *The recovery is uncertain by roughly twofold.* Applying the same algebra at
+   trough times rather than at the peak yields about 2.4 L. The digitisation
+   itself is good to perhaps +/- 25%, but the choice of anchor point matters
+   more than the reading precision.
+3. *`Vsaliva` cannot fix the shape.* It scales the whole S/P curve uniformly,
+   so it slides agreement between low and high concentrations without ever
+   achieving both. The model's S/P falls about threefold from 200 to 1700
+   ng/mL, whereas the Figure 1 paired regressions imply a milder decline. That
+   is a property of the published `Km` = 762 ng/mL sitting inside the observed
+   plasma range, and it would be present at any `Vsaliva`.
+
+Anyone needing quantitatively reliable saliva predictions should treat
+`Csaliva` as accurate to within a factor of about two, use it in the
+high-concentration region where it agrees best with Figure 1, and ideally
+write to the corresponding authors (Xiaorong Yin, `sunnyxrr@126.com`; Xuemei
+Wu, `wuxuemei@fjmu.edu.cn`) for the scale statement. The plasma layer carries
+none of this uncertainty.
+
+### Two saliva values differ between Table 3 and the Discussion
+
+The Discussion states "the estimated K30 was 6.19 h-1" and "an IIV of 31.3% in
+K30", where Table 3 and Equation 10 both print 6.24 1/h and 30%. The model
+follows **Table 3 and Equation 10**, on the standing rule that a printed
+equation and the final parameter table outrank a Discussion recollection. The
+difference is well inside the bootstrap interval (5.72-6.8 for K30) and moves
+no conclusion.
+
+### The saliva transport is encoded as driven, not depleting
+
+The paper never writes the central compartment's differential equation, so
+whether the Michaelis-Menten term is subtracted from central is a
+reconstruction. It is encoded as **driven** (central is untouched) on the
+three grounds set out in the saliva section above -- the dashed arrow in
+Figure 2, the sequential fit with plasma parameters held fixed, and the fact
+that the printed `Vmax` is too large to be mass-conserving. The same structural
+reading was operator-ratified for `Nguyen_2026_linezolid.R`, the other saliva
+model in this library. Were the term instead depleting, the plasma layer would
+no longer reproduce Table 2 and the `CL/F * AUC = dose` identity would fail by
+tens of percent, so this is not a fine distinction.
+
+### Much of the observed saliva data sits above the highest calibrator
+
+The LC-MS/MS saliva assay was calibrated over 4-2000 ng/mL (Methods), but
+Figure 4B shows observed saliva concentrations reaching about 3900 ng/mL and a
+median above 2000 ng/mL at the peak. A substantial part of the saliva data the
+model was fitted to therefore lies above the calibrated range. The paper does
+not comment on this. It is a property of the source, not of the
+implementation, but it bears on how much weight the saliva layer will carry.
 
 ### Interindividual variability scale
 

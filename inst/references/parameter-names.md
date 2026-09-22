@@ -2125,6 +2125,29 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`).
 - **Notes:** Paired with `lvmax_rbc`; both are meaningless alone.
 
+### lvmax_saliva, vmax_saliva (**canonical maximum rate of saturable central-to-saliva transport**)
+- **Type:** log-transformed-pk
+- **Role:** Michaelis-Menten maximum rate (amount / time) of saturable transport of drug from the central compartment into the canonical `saliva` compartment: `d/dt(saliva) <- vmax_saliva * Cc / (km_saliva + Cc) - kel_saliva * saliva`. Paired with `lkm_saliva`; both are meaningless alone. Extends the blessed `vmax_<process>` / `km_<process>` disambiguation pattern (`vmax_reab` / `km_reab`, `vmax_rbc` / `km_rbc`) to salivary secretion.
+- **Source aliases:**
+  - `Vmax` -- Huang 2026 Table 3 (`theta_Vmax`, "the maximum reaction rate") and Equation 8.
+- **Example models:** `Huang_2026_tiapride.R` (`Vmax = 34.7 mg/h`, estimated with RSE 13%; oral tiapride in children, plasma-saliva joint model).
+- **Notes:** Distinct from the bare `vmax`, which is registered for saturable ELIMINATION. Saturable rather than linear transport is a substantive model-selection result, not a default: Huang 2026 reports that a linear plasma-to-saliva transfer "resulted in marked overprediction of saliva concentration in the high-concentration range", which is the signature of the ion-trapping ceiling the Discussion attributes to salivary buffering capacity and limited proton supply. Whenever a paper instead selects a plain saliva:plasma scale factor with no saliva kinetics, the right name is `fsaliva` / `lfsaliva`, not this pair.
+
+### lkm_saliva, km_saliva (**canonical Michaelis constant for saturable central-to-saliva transport**)
+- **Type:** log-transformed-pk
+- **Role:** Michaelis-Menten constant of central-to-saliva transport -- the plasma concentration at which salivary secretion reaches half of `vmax_saliva`. Expressed as a concentration in the CENTRAL compartment, not in saliva. Paired with `lvmax_saliva`; both are meaningless alone.
+- **Source aliases:**
+  - `Km` / `KM` -- Huang 2026 Table 3 (`theta_Km`) and Equation 9.
+- **Example models:** `Huang_2026_tiapride.R` (`Km = 762 ng/mL`, held constant because its estimated RSE was unacceptably high).
+- **Notes:** Commonly unidentifiable and held constant, because a saturable secretion curve is only well determined when the observed plasma range straddles the constant. Check where it sits before trusting the saliva output: in the founding example `Km` = 762 ng/mL falls INSIDE the observed plasma range (Figure 4A spans roughly 0-1700 ng/mL), so the predicted saliva:plasma ratio varies severalfold across the data rather than behaving as a constant partition.
+
+### lvsaliva, vsaliva (**canonical apparent saliva compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the canonical `saliva` compartment, used to convert the salivary drug amount to the observed salivary concentration, `Csaliva <- saliva / vsaliva` (volume). Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, alongside `lvcsf` and `lvelf`.
+- **Source aliases:** none -- see the Notes; no source has yet printed this quantity.
+- **Example models:** `Huang_2026_tiapride.R` (`vsaliva = 1.35 L`, fixed; NOT reported by the paper and recovered from the published visual predictive check).
+- **Notes:** Use only when the saliva state has its own scale. When the saliva compartment instead shares the central volume, write `Csaliva <- saliva / vc` and register no volume at all -- that is what `Nguyen_2026_linezolid.R` does. **This quantity is a known under-reporting trap.** Papers that fit a saliva compartment with the NONMEM ADVAN6 subroutine routinely tabulate the transport and elimination parameters while leaving the compartment's scaling term (`S3`, or an apparent volume) out of the parameter table entirely, because in the control stream it is a scale statement rather than a `$THETA`. The saliva concentration output is then not reconstructable from the published record at all: in the founding example, candidate recoveries spanned 1 L to 3.2 L, a range over which every reported saliva number moves more than threefold. Treat a missing saliva scale as a reporting gap to be recovered explicitly and annotated, never as a value to be assumed silently, and state the recovery and its uncertainty in the vignette Errata.
+
 ### linieff, inieff (**canonical mid-therapy initialisation fraction for a turnover / maturation chain**)
 - **Type:** paper-named-param
 - **Role:** Dimensionless fraction of the turnover baseline (`rbase`) at which a turnover or maturation chain is initialised when the observation record starts DURING ongoing therapy rather than at drug-free baseline. The terminal state is initialised at `inieff * rbase` and the upstream chain states at the steady-state values implied by that terminal value, so the chain begins at a treatment steady state carrying an unobserved historical drug effect rather than at the untreated baseline.
