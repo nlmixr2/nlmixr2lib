@@ -140,7 +140,7 @@
 
 - Add Woillard 2017 tacrolimus ([doi:10.3389/fphar.2017.00358](https://doi.org/10.3389/fphar.2017.00358)) -- de novo cadaveric kidney transplant recipients.
 
-- Add Law 2017 tea catechins ([doi:10.1002/prp2.305](https://doi.org/10.1002/prp2.305)) -- healthy adult volunteers and male Sprague-Dawley rats; six whole-body PBPK models (EGCg, ECg, EC in rats; EGCg, EGC, EC in humans) that together reproduce the paper's tea catechin mixture model.
+- Add Law 2017 tea catechins ([doi:10.1002/prp2.305](https://doi.org/10.1002/prp2.305)) -- healthy adult volunteers and male Sprague-Dawley rats; six whole-body PBPK models (EGCg, ECg, EC in rats; EGCg, EGC, EC in humans) that together reproduce the paper's tea catechin mixture model. Registers the `bile_transit<n>` bile-duct delay chain as a canonical compartment family, and `lkreab` (intestinal reabsorption) and `lmtt_bile` (per-sub-compartment bile-duct residence time) as canonical parameters.
 
 - Add Aston 2017 omalizumab and efalizumab receptor-rebound QSP models ([doi:10.1007/s00285-016-1073-6](https://doi.org/10.1007/s00285-016-1073-6)) -- theoretical TMDD illustration and adults with moderate-to-severe plaque psoriasis.
 

@@ -193,7 +193,12 @@
   # bin sum is total hemoglobin. It is the collapsed single-state form of
   # the paired `erythrocytes[0-9]+` * `mch[0-9]+` product, used when a
   # paper carries hemoglobin per age bin directly rather than a cell count
-  # and a per-cell content.
+  # and a per-cell content. `bile_transit[0-9]+` is the Bischoff (1971) /
+  # Harrison and Gibaldi (1977) bile-duct delay chain of enterohepatic
+  # recycling models; it carries its own prefix rather than reusing the
+  # absorption `transit[0-9]+` because a model with enterohepatic recycling
+  # normally also carries an oral absorption chain, and the two would
+  # collide.
   # The optional `_slow` / `_fast` qualifier registers the dual-rate
   # effect-delay cascade families (`effect_slow<n>` / `effect_fast<n>`):
   # two parallel first-order lag chains of different speed whose terminal
@@ -210,8 +215,8 @@
   # conflict here, take the UNION of every prefix and every qualifier;
   # never take one side wholesale.
   compartmentRegex = paste0(
-    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|",
-    "moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
+    "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|",
+    "reticulocytes|mch|moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
   ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
