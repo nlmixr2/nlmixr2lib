@@ -2,6 +2,8 @@
 
 # development version
 
+- Correct the `reference` citation of `Voller_2017_phenobarbital`, which named the wrong title and co-authors for its own DOI ([doi:10.1016/j.ejps.2017.05.026](https://doi.org/10.1016/j.ejps.2017.05.026)), and fill its previously unreported cohort body-weight range from a secondary source.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
