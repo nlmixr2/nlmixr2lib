@@ -86,6 +86,8 @@ navbar:
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
         href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
+      - text: "Acetaminophen food (Franke 2015)"
+        href: articles/Franke_2015_oxycodone_acetaminophen.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
       - text: "Aciclovir (DAgate 2024)"
