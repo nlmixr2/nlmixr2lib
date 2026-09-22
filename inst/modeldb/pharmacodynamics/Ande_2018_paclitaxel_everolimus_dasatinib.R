@@ -119,13 +119,13 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
     lkd      <- log(0.0096)
     label("JIMT-1 cell-death rate constant kd (cells / h per unit caspase-3 change)")  # Ande 2018 Table 3
 
-    # Initial JIMT-1 cell count at the start of PK/PD experiment.
-    # Paper Methods seeds 8e7 cells per BelloCell bottle; after the 72-h
-    # pre-attachment / growth period the cell number visible at the
-    # start of observation (Figure 6B initial point) is approximately
-    # 1.51e8 (treatment arm) and 1.557e8 (control arm). Not reported in
-    # any table -- operator-derived from Figure 6B initial points.
-    # operator-derived from Figure 6B initial cell count (~151 million cells)
+    # Initial JIMT-1 cell count at the start of PK/PD experiment. Paper
+    # Methods seeds 8e7 cells per BelloCell bottle; after the 72-h pre-
+    # attachment / growth period the cell number visible at the start of
+    # observation (Figure 6B initial point) is approximately 1.51e8
+    # (treatment arm) and 1.557e8 (control arm). Not reported in any table --
+    # digitized from Figure 6B initial points. digitized from Figure 6B
+    # initial cell count (~151 million cells)
     lr0 <- log(1.51e8)
     label("Initial JIMT-1 cell count at start of PK/PD experiment R0 (cells)")  # Ande 2018 Figure 6B (initial point of treatment arm)
 
@@ -145,16 +145,16 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
     # ===================================================================
     # Ande 2018 reports % RSE on point estimates only; no residual SD
     # is tabulated for PAC concentration, caspase-3 activity, or cell
-    # count. The values below are small operator-chosen placeholders so
+    # count. The values below are small a chosen placeholders so
     # the multi-output model parses cleanly; see vignette Assumptions
     # and deviations.
-    # operator-chosen placeholder (paper reports no residual SD)
+    # a chosen placeholder (paper reports no residual SD)
     addSd <- fixed(1)
     label("Additive residual SD on paclitaxel concentration Cc (nM; placeholder)")
-    # operator-chosen placeholder
+    # a chosen placeholder
     addSd_caspase3Act <- fixed(0.1)
     label("Additive residual SD on caspase-3 activity (relative-to-baseline units; placeholder)")
-    # operator-chosen placeholder
+    # a chosen placeholder
     addSd_tumorCells <- fixed(5e6)
     label("Additive residual SD on JIMT-1 cell count (cells; placeholder)")
   })

@@ -289,7 +289,7 @@ Miano_2024_tacrolimus <- function() {
     # unlabelled reading is the raw NONMEM element, which is a variance.
     #   CL/F  omega^2 = 0.29 -> CV = sqrt(exp(0.29) - 1) = 58%
     #   Vd/F  omega^2 = 0.54 -> CV = sqrt(exp(0.54) - 1) = 85%
-    # Operator-ratified reading (sidecar request 001, question 1). See the
+    # ratified reading. See the
     # vignette's "Assumptions and deviations" section, which records the
     # alternative SD reading (CV 30% and 58%) so a reader holding the control
     # stream can settle it.
@@ -312,7 +312,7 @@ Miano_2024_tacrolimus <- function() {
     # point estimate was multiplied by 100. So 7.73 means a fractional
     # proportional SD of 0.0773. Corroboration: the LC-MS/MS assay's within- and
     # between-run CVs are reported as < 9.2% (Methods), and 7.73% sits just
-    # under that. Operator-ratified reading (sidecar request 001, question 3).
+    # under that. ratified reading.
     propSd <- 0.0773 ; label("Proportional residual error (fraction)")   # Miano 2024 Table 2 final model "Proportional, %" = 7.73 (95% CI 6.23-9.23, shrinkage 7.5%)
     addSd  <- 1.80   ; label("Additive residual error (ng/mL)")          # Miano 2024 Table 2 final model "Additive, ng/ml" = 1.80 (95% CI 1.08-2.52, shrinkage 14.4%)
   })

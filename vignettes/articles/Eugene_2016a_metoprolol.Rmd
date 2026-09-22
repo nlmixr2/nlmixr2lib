@@ -1,8 +1,8 @@
 ---
-title: "Metoprolol (Eugene 2016)"
+title: "Metoprolol in the elderly (Eugene 2016, Int J Clin Pharmacol Toxicol)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Metoprolol (Eugene 2016)}
+  %\VignetteIndexEntry{Metoprolol in the elderly (Eugene 2016, Int J Clin Pharmacol Toxicol)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode2(readModelDb("Eugene_2016_metoprolol"))$reference`
-* Description: `r rxode2::rxode2(readModelDb("Eugene_2016_metoprolol"))$description`
+* Citation: `r rxode2::rxode2(readModelDb("Eugene_2016a_metoprolol"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Eugene_2016a_metoprolol"))$description`
 * Article: [Int J Clin Pharmacol Toxicol 2016;5(3):209-215](https://doi.org/10.19070/2167-910X-1600035) (open access)
 
 # Population
@@ -39,12 +39,12 @@ final model (Eugene 2016 Discussion paragraph 1). Sex on apparent clearance
 was the only covariate retained in the final model.
 
 The same information is available programmatically via
-`readModelDb("Eugene_2016_metoprolol")$population`.
+`readModelDb("Eugene_2016a_metoprolol")$population`.
 
 # Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each `ini()`
-entry in `inst/modeldb/specificDrugs/Eugene_2016_metoprolol.R`. The table
+entry in `inst/modeldb/specificDrugs/Eugene_2016a_metoprolol.R`. The table
 below collects them for review.
 
 | Equation / parameter | Value | Source location |
@@ -115,7 +115,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
-mod <- rxode2::rxode2(readModelDb("Eugene_2016_metoprolol"))
+mod <- rxode2::rxode2(readModelDb("Eugene_2016a_metoprolol"))
 sim <- rxode2::rxSolve(mod, events = events, keep = c("SEXF", "WT", "treatment"))
 ```
 

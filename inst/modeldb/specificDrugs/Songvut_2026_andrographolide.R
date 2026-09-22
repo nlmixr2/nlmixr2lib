@@ -87,7 +87,7 @@ Songvut_2026_andrographolide <- function() {
     # changing anything. A baseline term e0 is added below, making the
     # encoded model the four-parameter sigmoid
     #   reduction = e0 + emax * AUC^hill / (auc50^hill + AUC^hill)
-    # rather than the printed three-parameter form. Operator-ratified
+    # rather than the printed three-parameter form. ratified
     # (sidecar oare_PMC13022710 request-001, answered 2026-08-31, option
     # B). Evidence, all internal to the paper:
     #   * Figure 5 draws the fitted curve with a clearly nonzero lower

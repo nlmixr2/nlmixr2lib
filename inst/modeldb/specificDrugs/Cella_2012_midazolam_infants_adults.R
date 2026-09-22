@@ -96,7 +96,7 @@ Cella_2012_midazolam_infants_adults <- function() {
     #       70 kg reproduces the published Model-1-extrapolated AUC0-180
     #       with a geometric-mean pred/obs ratio of 0.98 across 16 non-
     #       outlier rows (vs 0.74 for Wmed = 31 kg);
-    #   (b) Vc per-kg encoding (sidecar response 001 Q2 = A): the
+    #  (b) Vc per-kg encoding: the
     #       literal absolute reading gives k10 ~ 0.75/min for 70 kg
     #       adults, ~100x too fast vs published midazolam PK. The per-kg
     #       reading (Vc = 0.312 * WT L) is consistent with the De Wildt

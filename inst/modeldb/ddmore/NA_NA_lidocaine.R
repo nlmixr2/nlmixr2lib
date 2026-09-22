@@ -6,13 +6,12 @@
 # bundle's `Executable_ddmore_final_run249.ctl` (NONMEM control stream;
 # structure + initial values) and `Output_real_data_original_final_run249.res`
 # (NONMEM listing; final estimates after `MINIMIZATION SUCCESSFUL`).
-#
 # DDMORE_Model_Accomodations.txt asserts that the uploaded model and the model
 # in the (un-named) reference publication do not differ. The bundle's `.ctl`
 # and `.res` $PROBLEM line is `B.dat 4-cRUN249`; the License is registered to
 # BAST Inc. Ltd, suggesting the run originates from a BAST-led lidocaine
 # study, but no first-author / year is recoverable from the on-disk material.
-# The model file therefore uses the operator-supplied placeholder filename
+# The model file therefore uses the a supplied placeholder filename
 # `NA_NA_lidocaine.R` and reference text "DDMORE Foundation Model Repository:
 # DDMODEL00000281. No linked publication identified."
 

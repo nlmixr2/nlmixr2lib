@@ -106,8 +106,8 @@ Mohanan_2017_fludarabine <- function() {
         "the printed negative one. Two independent rows of the same table therefore agree on a",
         "cohort mean age of about 19-20 years only when both coefficients are positive. The",
         "printed minus sign is treated as a typesetting error; it is present in the published PDF",
-        "and is not an artefact of text extraction. This reading is recorded as an open question",
-        "for the operator and is documented in the validation vignette.",
+        "and is not an artefact of text extraction. The validation vignette reproduces both the",
+        "algebraic back-solve and a cohort simulation under each sign.",
         sep = " "
       ),
       source_name = "age"
