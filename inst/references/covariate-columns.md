@@ -18989,3 +18989,36 @@ is the experimental condition itself, held constant for the whole solve.
   - `TR:PI3Ki`, `TR:MEKi`, `TR:mTORi`, `TR:p38i`, `TR:IKKai` -- the MIDAS-format inhibitor columns of the Traynard 2017 supplement `perturbationData_LNCaP_MIDAS.csv`.
 - **Example models:** `Traynard_2017_prostateSignaling_qsp.R` (five inhibitor covariates gating the PI3K, MEK, mTOR, p38 and IKKa nodes of a 20-node logic-based ODE model; `INH_IKK` is inert in the fitted model because `tau_IKKa` is zero).
 - **Notes:** Registered by target node rather than by compound because signaling-network perturbation panels routinely identify their inhibitors only by target class ("PI3K inhibitor"), with the compound identity and concentration living in the upstream data paper -- which is exactly the situation in the founding model. When the compound IS named and the model treats it as a co-administered drug rather than as a node clamp, use `CONMED_<INN>` instead; when the model consumes an applied inhibitor concentration rather than a flag, use the `STIM_<agent>_<units>` or `CONC_<drug>_<units>` families. Distinct from `INH_MCT_KM_RATIO` / `INH_MCT_CONC_RATIO`, which are inhibitor-to-Ki concentration ratios modulating a saturable transport term rather than indicators that a node was clamped. A new member is added per inhibited node symbol; do not overload an existing member with a different target.
+
+### DOSE_LY2510924_MGD (**canonical for the administered daily LY2510924 dose**)
+- **Description:** Patient's assigned once-daily subcutaneous LY2510924 dose, in mg/day. This is the DOSE LEVEL as a covariate rather than the amount of the current dosing record: apparent clearance is a function of the daily dose the patient is assigned to, so the column is constant within a dosing regimen and changes only if the assigned daily dose changes. Set to 0 mg/day for the control arms of Studies CXAB and CXAC, which received standard of care only.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the decreasing-sigmoid dose dependence of apparent elimination clearance, `CL/F = (WT/80.1)^bCL * (CLmin/F + CLdelta/F - CLdelta/F*(dose-1)/((dose50-1)+(dose-1)))`, which is truncated at 1 mg so doses at or below 1 mg/day all take the maximum clearance `CLmin/F + CLdelta/F`.
+- **Source aliases:**
+  - `dose` -- the daily-dose symbol of Bihorel 2017 Eq. 1 ("the LY2510924 dose at which CL/F reaches half of its possible range"). Studied levels are 1, 2.5, 5, 10, 20 and 30 mg/day in the Study CXAA dose-escalation phase, 2.5 or 20 mg/day in its dose-confirmation phase, and 20 mg/day in Studies CXAB and CXAC.
+- **Example models:** `Bihorel_2017_LY2510924.R` (the only dose-on-clearance covariate in the library; drives `lcl_dosemin` / `lcl_dosespan` / `lcl_dose50`).
+- **Notes:** Member of the `DOSE_<DRUG>_<UNITS>` auto-approve family. LY2510924 has no INN, so the drug token is the development code. Distinct from every other member of the family in what it does: the sibling `DOSE_*_MGD` columns feed an exposure metric that drives a PD effect, whereas this one modifies a PK disposition parameter directly. A dose-dependent clearance is a genuine structural nonlinearity that happens to be parameterised on the dose axis rather than the concentration axis; the authors chose it over a Michaelis-Menten elimination because the phase 1 noncompartmental analysis showed clearance falling with dose while distribution volumes stayed flat.
+
+### STUDY_CXAA (**canonical for the LY2510924 phase 1 Study I2V-MC-CXAA indicator**)
+- **Description:** 1 = subject enrolled in Study I2V-MC-CXAA, the phase 1 dose-escalation and dose-confirmation study of LY2510924 in advanced metastatic cancer (richly sampled, doses 1-30 mg/day); 0 = subject enrolled in one of the two phase 2 studies, I2V-MC-CXAB or I2V-MC-CXAC. Because CXAA is the only phase 1 study of the pooled analysis, this indicator is exactly the phase 1 / phase 2 split.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (phase 2 Studies I2V-MC-CXAB and I2V-MC-CXAC).
+- **Source aliases:**
+  - "phase I studies" versus "phase II studies" -- Bihorel 2017 Results ("RV was estimated using separate additive plus CCV error models for phase I and phase II studies") and the Table 2 rows `Phase 1 RV` / `Phase 2 RV`.
+- **Example models:** `Bihorel_2017_LY2510924.R` (selects between the two LY2510924 residual-error models: additive 0.496 ng/mL with proportional 0.222 for CXAA, against additive 1.458 ng/mL with proportional 0.406 for the phase 2 studies).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family. Purely a residual-error stratum: no structural PK or PD parameter depends on it. The magnitude difference is a sampling-scheme artefact rather than a population difference -- CXAA used a rich scheme with eight samples on day 1 and day 28, while CXAB and CXAC collected two or three sparse samples per cycle with actual sampling times relative to dosing known less precisely. Paired with `STUDY_CXAC` in the same model, which is a structural covariate; a subject with both indicators 0 is in Study CXAB.
+
+### STUDY_CXAC (**canonical for the LY2510924 phase 2 Study I2V-MC-CXAC indicator**)
+- **Description:** 1 = subject enrolled in Study I2V-MC-CXAC, the randomised phase 2 study in treatment-naive extensive-stage small cell lung carcinoma in which both arms received etoposide plus carboplatin standard of care; 0 = subject enrolled in Study I2V-MC-CXAA or I2V-MC-CXAB. Applies to BOTH arms of CXAC, including the control arm that received no LY2510924.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Studies I2V-MC-CXAA and I2V-MC-CXAB).
+- **Source aliases:**
+  - `FCXAC` -- Bihorel 2017 Eq. 5, "set to 1 after the first dose for patients enrolled in Study CXAC and zero otherwise".
+- **Example models:** `Bihorel_2017_LY2510924.R` (gates the empirical `signal` state, whose build-up drives an LY2510924-independent stimulation of CD34+ cell mobilisation).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family. Unusually for a study indicator this is a STRUCTURAL covariate, not a variance stratum: it switches on an entire ODE state. The authors are explicit that it is a composite and largely empirical stand-in -- the CD34+ rise in the CXAC control arm could be due to the etoposide/carboplatin regimen, to concomitant G-CSF (used by 25-39% of CXAC patients versus none in CXAA or CXAB) or to erythropoietin, and "due to the differences in population and design across studies, the effects of SoC, cancer type, and study could not be distinguished" (Methods). Do not read it as a pure study effect, and do not reuse this canonical to carry a G-CSF or chemotherapy effect in another model -- `CONMED_<INN>` is the family for a named co-medication. Paired with `STUDY_CXAA` in the same model. Because the indicator is described as taking effect "after the first dose" and the model's `signal` state starts at zero at the time origin, the plain indicator reproduces `FCXAC` exactly when time is measured from the first dose.

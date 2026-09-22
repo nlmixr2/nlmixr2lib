@@ -2464,6 +2464,8 @@ navbar:
         href: articles/Valitalo_2017_ketorolac.html
       - text: "Kynurenicacid pbpk (Granda 2024)"
         href: articles/Granda_2024_kidney_pbpk.html
+      - text: "LY2510924 (Bihorel 2017)"
+        href: articles/Bihorel_2017_LY2510924.html
       - text: "Lacosamide (Li 2025)"
         href: articles/Li_2025_lacosamide.html
       - text: "Lacosamide (Yu 2026)"
@@ -5762,6 +5764,7 @@ articles:
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Bihorel_2017_LY2510924
   - articles/Bihorel_2023_molnupiravir
   - articles/Bihorel_2025_evinacumab
   - articles/Bijleveld_2016_gentamicin
