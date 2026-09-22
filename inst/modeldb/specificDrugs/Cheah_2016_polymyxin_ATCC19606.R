@@ -130,7 +130,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # inocula via mechanism-based modeling. Antimicrob Agents Chemother
     # 59:2315-2327. doi:10.1128/AAC.04099-14), which reports SC50,Adapt
     # = 36.5 mg/L for tobramycin against PAO1-RH. SC50 is inherited as
-    # FIXED here; operator-approved fixed-from-class proxy (see vignette
+    # FIXED here; the chosen fixed-from-class proxy (see vignette
     # Errata).
     sc50 <- fixed(36.5)
     label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015 ref 31 framework -- not reported in Cheah 2016)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy)
@@ -141,13 +141,13 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # Fitness cost (Eq 10) -- NOT estimated for ATCC 19606 (Table 1 NE)
     # ===============================================================
     # Holds f_cost identically at 0 in the susceptible-growth term of
-    # Eq 1. The operator-approved policy for unreported / not-estimated
+    # Eq 1. The the chosen policy for unreported / not-estimated
     # structural shifts is fixed(0) with a clear inline note.
     g_inhib_max <- fixed(0)
     label("Maximal fitness cost associated with adaptive resistance (G_inhib,max; 0 -- Cheah 2016 Table 1 reports NE for ATCC 19606)")  # Cheah 2016 Table 1, ATCC 19606 (NE, not estimated)
 
     # ===============================================================
-    # Medium / physical constants (NOT in Cheah 2016; operator-approved
+    # Medium / physical constants (NOT in Cheah 2016; the chosen
     # inheritance from Bulitta 2010 ref 30 + CAMHB CLSI specification)
     # ===============================================================
     # Kd_cations and Kd_polymyxin are receptor dissociation constants

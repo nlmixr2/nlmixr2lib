@@ -413,6 +413,11 @@
     # metabolite suffix in joint parent-plus-metabolite popPK models
     # (Ali 2018 doi:10.1128/AAC.02193-17).
     "deaq",
+    # Desethylchloroquine (DCQ), the principal antimalarial-active
+    # metabolite of chloroquine. Used as a metabolite suffix in joint
+    # parent-plus-metabolite popPK models
+    # (Hoglund 2016 doi:10.1186/s12936-016-1181-1).
+    "dcq",
     # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
     # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
     # suffix in parent + metabolite simultaneous popPK models
@@ -599,7 +604,18 @@
     # followed as a second analyte in joint parent + metabolite popPK
     # models (Vaddady 2024 doi:10.1111/cts.70074). Sidecar
     # request-001 / response-001, question q1, option A.
-    "ac886"
+    "ac886",
+    # adADT (acetylated dADT), the N-acetylated and only marginally
+    # anthelminthically active metabolite of dADT (deacetylated
+    # amidantel). dADT is itself the active degradation product of the
+    # prodrug tribendimidine, which hydrolyses non-enzymatically in the
+    # gut and is never measured; following the `gba` precedent above,
+    # dADT therefore takes the bare canonical names as the model's
+    # parent analyte and only adADT carries a suffix, so a "dadt"
+    # suffix is deliberately NOT registered (it would also collide
+    # visually with NONMEM's DADT derivative syntax). Founding example:
+    # Vanobberghen_2016_tribendimidine (doi:10.1128/AAC.00655-16).
+    "adadt"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
@@ -833,6 +849,33 @@
 # registeredMetabolites come from compartment-names.md; and
 # canonicalCovariates comes from covariate-columns.md.
 
+# The `- **Type:**` field of every inst/references/*.md register is a bare
+# routing token optionally followed by a parenthetical that QUALIFIES it:
+# `continuous (semantically ordinal but treated as continuous in the covariate
+# model)` is a `continuous` covariate. The token is what the canonical lists
+# are keyed on and it is matched with identical() everywhere it is consumed --
+# .namesByType(), and the `name \r type` duplicate key in
+# checkModelConventions.R -- so a qualifier left attached does not merely look
+# untidy, it drops the entry out of the canonical list with no warning
+# anywhere.
+#
+# Four functions read this field: .parseCovariateColumns() and
+# .parseTypedNamesMd() below, checkNamingRegisters.R::.parseRegister(), and
+# checkModelConventions.R::.referenceRegisterBlocks(). They are kept honest by
+# all calling this one splitter rather than by four copies of the same regex
+# agreeing -- three of them had already drifted apart once.
+.splitRegisterType <- function(x) {
+  if (length(x) != 1L || is.na(x)) {
+    return(list(type = NA_character_, qualifier = ""))
+  }
+  raw <- trimws(x)
+  m <- regmatches(raw, regexec("\\((.*)\\)\\s*$", raw))[[1]]
+  list(
+    type = trimws(sub("\\s*\\(.*$", "", raw)),
+    qualifier = if (length(m) == 2) trimws(m[[2]]) else ""
+  )
+}
+
 .covariateRegisterCache <- new.env(parent = emptyenv())
 
 .covariateColumnsPath <- function() {
@@ -857,9 +900,18 @@
 #' ending in `.R`; the `.R` suffix is stripped so the value matches the
 #' bare model function name used throughout the rest of the package.
 #'
+#' A `Type` written with a trailing parenthetical is split: the leading token
+#' becomes `type` and the parenthetical text becomes `typeQualifier`. All four
+#' readers of that field split it the same way -- this function,
+#' `.parseTypedNamesMd()`, `checkNamingRegisters.R::.parseRegister()` and
+#' `checkModelConventions.R::.referenceRegisterBlocks()` -- so they cannot
+#' drift apart on it.
+#'
 #' @param path Path to the markdown file.
 #' @return A named list keyed by canonical name. Each entry is a list with
-#'   `units`, `type`, `scope` (one of `"general"` / `"specific"` / `NA`),
+#'   `units`, `type` (a bare routing token such as `"continuous"`),
+#'   `typeQualifier` (the trailing parenthetical of the `Type` field, or `""`
+#'   when there is none), `scope` (one of `"general"` / `"specific"` / `NA`),
 #'   `aliases` (character vector of alias names), and `example_models`
 #'   (character vector of model function names).
 #' @keywords internal
@@ -884,6 +936,7 @@
       acc$entries[[nm]] <- list(
         units = current$units %||% "",
         type = current$type %||% "",
+        typeQualifier = current$typeQualifier %||% "",
         scope = current$scope %||% NA_character_,
         aliases = current$aliases %||% character(),
         example_models = current$example_models %||% character()
@@ -936,7 +989,12 @@
     }
     m <- regmatches(line, regexec("^- \\*\\*Type:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
-      current$type <- trimws(m[[2]])
+      # `WHO_PS` is written `continuous (semantically ordinal but treated as
+      # continuous in the covariate model)` and is a `continuous` covariate;
+      # see .splitRegisterType() for why the token has to stand alone.
+      sp <- .splitRegisterType(m[[2]])
+      current$type <- sp$type
+      current$typeQualifier <- sp$qualifier
       state <- "header"
       next
     }
@@ -1085,6 +1143,7 @@
       acc$entries[[length(acc$entries) + 1]] <- list(
         name = nm,
         type = current$type,
+        typeQualifier = current$typeQualifier %||% "",
         aliases = current$aliases %||% character(),
         example_models = current$example_models %||% character()
       )
@@ -1114,7 +1173,9 @@
 
     m <- regmatches(line, regexec("^- \\*\\*Type:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
-      current$type <- trimws(m[[2]])
+      sp <- .splitRegisterType(m[[2]])
+      current$type <- sp$type
+      current$typeQualifier <- sp$qualifier
       state <- "header"
       next
     }

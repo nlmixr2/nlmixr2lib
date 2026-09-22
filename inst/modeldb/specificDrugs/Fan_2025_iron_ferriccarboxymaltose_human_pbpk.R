@@ -76,7 +76,7 @@ Fan_2025_iron_ferriccarboxymaltose_human_pbpk <- function() {
   ini({
     # ---- Iron-disposition parameters ----
     # Loss clearance. NOT estimated on the human data; inherited from the mouse
-    # iron-adequate column (Table 2) per the operator ruling (sidecar q1 = B).
+    # iron-adequate column (Table 2).
     lcl <- log(1.647e-4); label("Unavoidable physiologic iron loss clearance from plasma (L/h)")  # Table 2 CLloss, iron-adequate mouse column
 
     # Partition coefficients ESTIMATED on the rat tissue data (Results text:
@@ -91,8 +91,8 @@ Fan_2025_iron_ferriccarboxymaltose_human_pbpk <- function() {
     lkp_spleen  <- log(147.9); label("Spleen-to-plasma partition coefficient (unitless)")  # Results text, IDA rat estimate
 
     # Partition coefficients for the tissues that were NOT measured. Inherited
-    # from the mouse iron-adequate column (sidecar q1 = B); the paper says only
-    # that they "were assumed to be identical ... in mice".
+    # from the mouse iron-adequate column; the paper says only that they "were
+    # assumed to be identical ... in mice".
     lkp_adipose <- log(0.258); label("Fat (adipose)-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
     lkp_brain   <- log(1.087); label("Brain-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
     lkp_gut     <- log(5.349); label("Gut-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
@@ -103,8 +103,7 @@ Fan_2025_iron_ferriccarboxymaltose_human_pbpk <- function() {
     # Methods: "TRBC used in the human simulation was 120 days" -> 2880 h.
     lmtt_rbc <- log(120 * 24); label("Mean red-blood-cell lifespan (h)")
     # Eq. (9): QE(human) = QE(mouse) * (TRBC_human / TRBC_mouse)^0.75 with b = 0.75
-    # fixed. QE(mouse) and TRBC(mouse) are the iron-adequate column per the
-    # operator ruling (sidecar q1 = B) -> 6.00e-3 L/h.
+    # fixed. QE(mouse) and TRBC(mouse) are the iron-adequate column -> 6.00e-3 L/h.
     lq_bone_rbc <- log(0.217e-3 * (2880 / 34.44)^0.75); label("Erythropoietic iron utilisation flow, bone to red cells (L/h)")
 
     # ---- Human physiology, fixed to Supplementary Table 2 ----

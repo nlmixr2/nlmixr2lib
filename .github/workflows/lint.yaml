@@ -9,6 +9,21 @@ name: lint.yaml
 
 permissions: read-all
 
+# One in-flight run per workflow per ref. A new push to a pull request -- a
+# fresh commit, or `main` merged in -- CANCELS the run it superseded instead of
+# leaving two answers to the same question racing each other for runners.
+#
+# Unlike pkgdown.yaml this cancels on `main` too: nothing here deploys, so an
+# interrupted run leaves nothing half-written, and the newer push that caused
+# the cancellation always runs the same checks to completion.
+#
+# This only covers runs superseded by a LATER PUSH. Merging a pull request
+# pushes nothing to refs/pull/N/merge, so its checks are not superseded and run
+# on regardless; cancel-on-merge.yaml handles that case.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -19,17 +34,27 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
         with:
-          # DESCRIPTION requires rxode2 (>= 5.1.7): it is the first release that
-          # works with lotri 1.0.5, and 5.1.6 + lotri 1.0.5 breaks every ini()
-          # edit with "numbers of columns of arguments do not match". 5.1.7 is on
-          # CRAN, but RSPM's snapshot lags it, so keep r-universe as a source
-          # until RSPM serves 5.1.7; then drop these two lines.
+          # DESCRIPTION requires rxode2 (>= 5.1.8). 5.1.7 is the first release that
+          # works with lotri 1.0.5, but it still defaults useLinCmt=TRUE, and the
+          # ODE-to-linCmt conversion that flag enables segfaults intermittently
+          # inside rxode2's parser (nested parse over shared global state) --
+          # it took out a pkgdown render shard on Stroh_2013_rolofylline. 5.1.8
+          # defaults that flag to FALSE. It is r-universe-only for now, so this
+          # repository is load-bearing until 5.1.8 reaches CRAN/RSPM.
           extra-repositories: https://nlmixr2.r-universe.dev
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          cache-version: 2
           extra-packages: any::lintr, any::cyclocomp, local::.
           needs: lint
+
+      # Fails fast, with a readable message, when the resolved nlmixr2 stack is
+      # not mutually compatible -- rather than letting it surface as a crash
+      # somewhere far away. See the script's header for the mechanism.
+      - name: Verify the installed R package stack is mutually compatible
+        run: Rscript .github/scripts/check-r-stack.R
 
       - name: Lint
         run: lintr::lint_package()

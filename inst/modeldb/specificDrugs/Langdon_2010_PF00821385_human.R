@@ -105,9 +105,9 @@ Langdon_2010_PF00821385_human <- function() {
     # canine Introduction text ('unbound Cmax = 56 uM' at 20 mg/kg oral
     # divided by the typical-value total Cmax = 87.8 uM computed from the
     # Langdon 2010 Table 1 canine PK parameters). The paper does not
-    # quantify fu directly for either species; the operator-chosen value
-    # fu = 0.64 is applied to both dog and human models for consistency
-    # (no species-difference in fu is reported). See vignette Errata.
+    # quantify fu directly for either species; the a chosen value fu =
+    # 0.64 is applied to both dog and human models for consistency (no
+    # species-difference in fu is reported). See vignette Errata.
     lfu <- fixed(log(0.64)); label("Plasma unbound fraction (back-calculated)")        # vignette Errata (not in source); back-calculation from paper Introduction
 
     # =====================================================================

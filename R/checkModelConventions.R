@@ -98,8 +98,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     return(list(ui = ui, name = model))
   }
   if (inherits(model, "rxUi")) {
-    nm <- tryCatch(model$modelName, error = function(e) NA_character_)
-    nm <- .pickModelName(nm, fallback = "<rxUi>")
+    # `ui$modelName` is a single character string, or NULL for an anonymous
+    # model function (rxode2 >= 5.1.7).
+    nm <- model$modelName
+    if (is.null(nm)) {
+      nm <- "<rxUi>"
+    }
     return(list(ui = model, name = nm))
   }
   if (is.function(model)) {
@@ -110,28 +114,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # explicit `<function>` placeholder so downstream scope checks can
     # recognize that the true identity is unknown rather than trusting the
     # misleading formal-parameter string.
-    closure_nm <- tryCatch(get0("name", envir = environment(model), inherits = FALSE), error = function(e) NULL)
-    nm <- .pickModelName(closure_nm, fallback = "<function>")
+    nm <- get0("name", envir = environment(model), inherits = FALSE)
+    if (is.null(nm)) {
+      nm <- "<function>"
+    }
     return(list(ui = ui, name = nm))
   }
   stop("`model` must be a character name, function, rxUi, or missing.", call. = FALSE)
-}
-
-# rxode2 may populate `ui$modelName` with the full call chain that produced the
-# UI (e.g., `c("readModelDb", "Valenzuela_2025_nipocalimab")` when a model was
-# loaded via `rxode2(readModelDb("..."))`). Collapse to a single character so
-# downstream `is.null(nm) || is.na(nm)` guards don't blow up on length > 1.
-.pickModelName <- function(nm, fallback) {
-  if (is.null(nm)) {
-    return(fallback)
-  }
-  nm <- nm[!is.na(nm) & nzchar(nm)]
-  if (length(nm) == 0) {
-    return(fallback)
-  }
-  # Prefer the last (innermost) call-chain entry -- that's the actual model
-  # function name, not the wrapper that returned it.
-  nm[[length(nm)]]
 }
 
 .emptyIssues <- function() {
@@ -2249,6 +2238,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     body <- if (end >= i + 1L) lines[(i + 1L):end] else character()
     tl <- grep(.referenceTypePattern, body, value = TRUE)
     ty <- if (length(tl)) sub(.referenceTypePattern, "\\1", tl[[1]]) else NA_character_
+    # The duplicate key below is `name \r type`, so a qualifier left on the
+    # tag would let a qualified entry and a bare one share a name and a
+    # routing tag and still slip past this check -- the exact silent clobber
+    # this function exists to catch. Split it the one shared way; see
+    # conventions.R::.splitRegisterType().
+    ty <- .splitRegisterType(ty)$type
     data.frame(name = nm, type = ty, line = i, stringsAsFactors = FALSE)
   })
   do.call(rbind, rows)

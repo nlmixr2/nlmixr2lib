@@ -162,22 +162,19 @@ Chi_2018_propofol <- function() {
     # Inter-individual variability. Chi 2018 ran NONMEM final-model
     # estimation with Wings for NONMEM bootstrap validation in a 32-patient
     # cohort but does not report any OMEGA values in the published text;
-    # operator decision (sidecar request-002 q1 = C) is to fix every eta
-    # to zero rather than borrow from Ye 2012 or insert placeholders. The
-    # etas are declared structurally so the typical-value-only intent is
-    # encoded in the ini() block (Oniki 2018 nafld_risk precedent for the
-    # `~ fixed(0)` pattern).
+    # operator decision is to fix every eta to zero rather than borrow from
+    # Ye 2012 or insert placeholders. The etas are declared structurally so
+    # the typical-value-only intent is encoded in the ini() block (Oniki
+    # 2018 nafld_risk precedent for the `~ fixed(0)` pattern).
     etalcl ~ fixed(0)
     etalvc ~ fixed(0)
     etalq  ~ fixed(0)
     etalvp ~ fixed(0)
 
-    # Residual error. Chi 2018 does not report any SIGMA values; per
-    # operator decision (sidecar request-002 q1 = C, with the explicit
-    # modification "do NOT add a propSd placeholder") no residual error
-    # term is included. The model is therefore a deterministic
-    # typical-value predictor; VPC-style validation is not possible. See
-    # vignette Assumptions and deviations.
+    # Residual error. Chi 2018 does not report any SIGMA values; no
+    # residual error term is included. The model is therefore a
+    # deterministic typical-value predictor; VPC-style validation is not
+    # possible. See vignette Assumptions and deviations.
   })
 
   model({

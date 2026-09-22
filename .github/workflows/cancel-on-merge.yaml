@@ -1,0 +1,71 @@
+# Cancels a pull request's still-running checks once the pull request closes.
+#
+# The `concurrency:` groups in the other workflows only cancel a run that a
+# LATER PUSH to the same ref superseded. Merging a pull request pushes nothing
+# to refs/pull/N/merge, so its in-flight checks are not superseded by anything
+# and run to completion against a head that is now merged -- holding runners
+# while the merge commit's own checks queue behind them. This closes that gap.
+#
+# It fires on close rather than on merge specifically: a pull request that is
+# closed unmerged has just as little use for a half-finished R CMD check.
+#
+# `pull_request_target`, not `pull_request`, because cancelling a run needs
+# `actions: write` and the GITHUB_TOKEN for a `pull_request` event raised from
+# a fork is read-only. The hazard that trigger normally carries is running
+# untrusted PR code with a privileged token; nothing below checks out the
+# repository at all, let alone executes it.
+#
+# Note for whoever edits this next: `pull_request_target` always runs the copy
+# of this file on the BASE branch, so changes here do nothing until they are on
+# main.
+on:
+  pull_request_target:
+    types: [closed]
+
+name: cancel-on-merge.yaml
+
+permissions:
+  actions: write
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel runs still in flight for this pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          THIS_RUN: ${{ github.run_id }}
+        run: |
+          set -uo pipefail
+
+          # Runs for a pull_request event carry the PR's head commit as
+          # head_sha, so this selects exactly that PR's checks. The merge
+          # commit on main has a different sha and is left alone.
+          ids=$(
+            for status in queued in_progress requested waiting pending; do
+              gh api --paginate \
+                "repos/${GH_REPO}/actions/runs?head_sha=${HEAD_SHA}&status=${status}" \
+                --jq '.workflow_runs[].id' 2>/dev/null
+            done | sort -u
+          )
+
+          if [ -z "${ids}" ]; then
+            echo "No runs still in flight for ${HEAD_SHA} (PR #${PR_NUMBER})."
+            exit 0
+          fi
+
+          for id in ${ids}; do
+            # Never cancel this job; it would abort the cancellation itself.
+            if [ "${id}" = "${THIS_RUN}" ]; then
+              continue
+            fi
+            echo "Cancelling run ${id}"
+            if ! gh api -X POST "repos/${GH_REPO}/actions/runs/${id}/cancel" >/dev/null 2>&1; then
+              # A run that finished between listing and cancelling returns 409.
+              # That is the outcome we wanted, so do not fail the job for it.
+              echo "  run ${id} was not cancellable (already finished?)"
+            fi
+          done

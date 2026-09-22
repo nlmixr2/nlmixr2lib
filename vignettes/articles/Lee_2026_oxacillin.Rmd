@@ -1,0 +1,911 @@
+---
+title: "Oxacillin (Lee 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Oxacillin (Lee 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Lee_2026_oxacillin"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.1128/aac.01777-25> (open access, CC BY 4.0)
+* Supplement: Table S1 (adverse events), Table S2 (raw per-patient data),
+  Table S3 (raw concentrations), served by EuropePMC under PMC13231926.
+
+Oxacillin is the standard-of-care antistaphylococcal penicillin for
+methicillin-susceptible *Staphylococcus aureus*, but before this study no
+pharmacokinetic data existed in neonates and young infants. Lee 2026 is a
+prospective phase 1 study in 22 infants at most 90 days old, each given a
+25 mg/kg loading dose over 30 min followed immediately by a continuous
+infusion. The paper's clinical question is whether the unbound concentration
+stays above the MIC for the whole dosing exposure (`fT 100% > MIC`), which for
+a continuous infusion reduces to whether the steady-state unbound concentration
+exceeds the MIC.
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- ui$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(
+    if (!is.null(names(x))) paste0(names(x), " ", x, "%") else as.character(x),
+    collapse = "; "), character(1))
+) |>
+  knitr::kable(caption = "Population metadata carried in the model file.")
+```
+
+Twenty-two infants completed the study (Lee 2026 Table 1). Gestational age at
+birth ranged from 23.9 to 40.3 weeks (median 38) and postnatal age at
+enrolment from 4 to 82 days (median 32). Weights, which Table 1 does not
+tabulate, are in Supplemental Table S2 and span 0.605 to 7.025 kg with a
+median of 3.29 kg. Enrolment was stratified into four cohorts by gestational
+age (<32 vs >=32 weeks) and postnatal age (<14 vs >=14 days) targeting six
+infants each; the preterm-and-youngest cohort recruited only one of six, which
+is why the paper declines to draw conclusions about gestational age. Twenty-one
+infants received 160 mg/kg/day by continuous infusion and one received
+120 mg/kg/day. Of 89 plasma samples 10 were below the 2 mcg/mL limit of
+quantification and were excluded, leaving 79 concentrations for the fit.
+
+The same information is available programmatically via
+`readModelDb("Lee_2026_oxacillin")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL for 3.4 kg, 36 d) | 1.01 L/h | Table 2, `CL (Theta1)`; bootstrap 95% CI 0.791-1.3 |
+| `lvc` (V for 3.4 kg) | 1.87 L | Table 2, `V (Theta2)`; bootstrap 95% CI 1.07-2.61 |
+| `e_pna_cl` | 0.433 | Table 2, `Effect of PNA on CL (Theta3)`; bootstrap 95% CI 0.133-0.709 |
+| `e_wt_cl` | 0.75 (fixed) | Table 2 footnote b `(WT_Kg/3.4)^0.75`; Methods states CL "was allometrically scaled by weight" -- a-priori value, no estimate or interval reported |
+| `e_wt_vc` | 1 (fixed) | Table 2 footnote b `Vd = 1.87 * WT_Kg/3.4`, i.e. linear in weight |
+| `etalcl` | 0.568 read as a log-scale SD; variance 0.322624 | Table 2, `IIV CL (etaCL)`; scale resolved below, not stated in the paper |
+| `fu` | 0.1 (fixed) | Methods, "Simulations and pharmacodynamic assessments": free concentrations "estimated at 10% of total concentrations as reported in the literature (9)" |
+| `addSd`, `propSd` | 0 (fixed) | Methods declares "a combined additive and proportional within-subject error model"; no magnitude is reported anywhere in the paper or its supplements |
+| `d/dt(central) <- -kel * central` | n/a | Results, "Pharmacokinetic model": one-compartment, first-order elimination, NONMEM ADVAN1 TRANS2 |
+| Reference weight 3.4 kg, reference PNA 36 d | n/a | Table 2 footnote b, and Results, "a typical infant 36 days postnatal age and weighing 3.4 kg" |
+
+# Reading the published between-subject variability
+
+Table 2 prints `IIV CL (etaCL) = 0.568` with no unit and no
+variance / SD / CV qualifier. Read as a NONMEM `$OMEGA` **variance** it implies
+a log-scale SD of `sqrt(0.568) = 0.754`; read as a **standard deviation** it is
+0.568 itself. The two readings differ by a third in spread and change every
+target-attainment number in the paper, so the choice cannot be left implicit.
+Two independent checks against the paper's own data both exclude the variance
+reading.
+
+## Check 1 -- individual clearances recovered from Supplemental Table S2
+
+Under a continuous infusion the steady-state concentration is exactly
+`rate / CL`, so each infant's clearance is recoverable from the supplement
+without any fitting. The table below transcribes, for all 22 infants,
+Supplemental Table S2's current weight, dose-calculating weight, postnatal age,
+daily dose and the two on-infusion samples (the 8-16 h and 16-96 h windows,
+both at or beyond the ~5 half-lives needed for steady state).
+
+```{r s2-transcribe}
+s2 <- tibble::tribble(
+  ~id,     ~wt,  ~dwt, ~pna, ~dose,     ~c2,   ~t2,     ~c3,   ~t3,
+  "Pt1",  1.605, 1.605,   82,   160,  62.536, 10.07,  35.859, 81.07,
+  "Pt3",  4.155, 4.155,   39,   160,  10.667, 10.38,  12.390, 30.15,
+  "Pt4",  3.500, 3.500,   34,   160,  16.698,  8.67,   7.895, 69.70,
+  "Pt5",  1.130, 1.130,   36,   160,      NA,    NA,   7.415, 16.93,
+  "Pt6",  2.310, 2.000,    4,   160,      NA,    NA,  85.019, 17.00,
+  "Pt8",  3.520, 3.515,   79,   160,  30.035, 14.88,  11.513, 35.35,
+  "Pt9",  1.780, 1.785,   29,   160,      NA,    NA,  13.754, 46.87,
+  "Pt11", 4.755, 3.170,   82,   160,  15.809,  8.57,  15.014, 18.13,
+  "Pt12", 2.105, 2.105,   52,   160,      NA,    NA,  18.174, 39.08,
+  "Pt14", 2.450, 2.500,    7,   160,  27.473, 11.20,  24.390, 35.28,
+  "Pt16", 3.530, 3.530,    4,   160, 109.124,  8.28, 112.986, 16.43,
+  "Pt17", 3.260, 3.260,   14,   160,   6.243,  8.15,  42.613, 44.93,
+  "Pt18", 5.345, 5.345,   47,   160,  15.529, 11.10,  13.216, 17.67,
+  "Pt21", 3.290, 3.290,   22,   160,  19.628, 11.70,  11.836, 16.57,
+  "Pt22", 3.290, 3.290,   11,   160,  49.128,  9.08,  26.448, 17.55,
+  "Pt23", 2.880, 2.880,   11,   160,  10.452, 12.38,  14.164, 63.35,
+  "Pt24", 3.390, 3.390,   42,   160,  15.892,  8.75,  14.924, 16.23,
+  "Pt25", 0.605, 0.697,    5,   120,      NA,    NA,  34.128, 16.00,
+  "Pt26", 2.975, 2.975,   18,   160,  94.543,  9.08,  28.456, 59.58,
+  "Pt27", 3.545, 3.500,   31,   160,  13.469, 12.63,  12.254, 17.52,
+  "Pt28", 4.480, 4.480,   32,   160,  26.004,  8.35,  25.228, 16.60,
+  "Pt29", 7.025, 7.025,   69,   160,  24.357,  9.20,   8.317, 15.88
+)
+stopifnot(nrow(s2) == 22L)
+
+# Published covariate model, hard-coded from Table 2 footnote b so that this
+# check is INDEPENDENT of what the model file happens to contain.
+cl_published <- function(wt, pna_days) 1.01 * (wt / 3.4)^0.75 * (pna_days / 36)^0.433
+
+s2 <- s2 |>
+  mutate(
+    rate   = dose * dwt / 24,             # mg/h delivered by the continuous infusion
+    clpred = cl_published(wt, pna),
+    eta2   = log((rate / c2) / clpred),   # log(CL_observed / CL_predicted)
+    eta3   = log((rate / c3) / clpred),
+    etabar = rowMeans(cbind(eta2, eta3), na.rm = TRUE)
+  )
+
+spread <- c(
+  `16-96 h sample`   = sd(s2$eta3, na.rm = TRUE),
+  `8-16 h sample`    = sd(s2$eta2, na.rm = TRUE),
+  `per-infant mean`  = sd(s2$etabar)
+)
+round(spread, 3)
+```
+
+Every one of those numbers is an **upper bound** on the between-subject SD,
+because it also contains residual error, assay error and any departure from
+steady state. The SD reading (0.568) sits just underneath the bound, exactly
+as a variance component should. The variance reading (0.754) exceeds it: a
+between-subject SD cannot be larger than the total observed spread it is a
+component of.
+
+```{r s2-gate}
+bound <- min(spread)
+# Deterministic -- no simulation, no RNG. Realised bound 0.571.
+stopifnot(
+  0.568 < bound,   # SD reading is admissible
+  0.754 > bound    # variance reading is not
+)
+```
+
+## Check 2 -- the slope of the Figure 3 target-attainment curves
+
+For a continuous infusion the paper's own criterion reduces to
+`Css_unbound > MIC`, and `Css_unbound` is log-normal with log-scale SD equal to
+the clearance SD. So `qnorm(PTA)` is **linear in `log(MIC)` with slope
+`-1 / SD`**. The slope does not depend on the level, which means it is immune
+to the virtual population's weight distribution -- something the paper never
+reports.
+
+The values below are read off the red 160 mg/kg/day curves of Figure 3's
+`fT >100%` sub-panels. Points at or above 99% are excluded: they are at the
+resolution limit of the plot and carry no slope information.
+
+```{r fig3-slope}
+fig3_ci <- tibble::tribble(
+  ~pnad, ~mic,   ~pta,
+      7, 0.25, 100.0,
+      7, 0.50, 100.0,
+      7, 1.00,  99.0,
+      7, 2.00,  86.0,
+     14, 0.25,  99.0,
+     14, 0.50,  99.0,
+     14, 1.00,  97.0,
+     14, 2.00,  72.0,
+     28, 0.25, 100.0,
+     28, 0.50, 100.0,
+     28, 1.00,  90.0,
+     28, 2.00,  56.0,
+     90, 0.25,  99.7,
+     90, 0.50,  96.5,
+     90, 1.00,  75.0,
+     90, 2.00,  28.0
+)
+
+slope_fit <- fig3_ci |>
+  filter(pta > 5, pta < 99) |>
+  group_by(pnad) |>
+  filter(n() >= 2) |>
+  summarise(
+    n_points = n(),
+    omega    = -1 / coef(lm(qnorm(pta / 100) ~ log(mic)))[["log(mic)"]],
+    .groups  = "drop"
+  )
+
+slope_fit |>
+  mutate(omega = round(omega, 3)) |>
+  rename("Postnatal age (days)" = pnad, "Usable points" = n_points,
+         "Implied log-scale SD" = omega) |>
+  knitr::kable(caption = "Level-free estimate of the clearance SD from the slope of Figure 3's continuous-infusion curves.")
+```
+
+```{r fig3-slope-gate}
+om_fig <- mean(slope_fit$omega)
+# Deterministic -- these are transcribed figure readings, not a simulation.
+# Realised: mean 0.575, per-stratum 0.534 / 0.613 / 0.579.
+stopifnot(
+  abs(om_fig - 0.568) < abs(om_fig - 0.754),  # figure is nearer the SD reading
+  abs(om_fig - 0.568) < 0.10,                 # and close to it in absolute terms
+  all(slope_fit$omega < 0.70)                 # no stratum approaches 0.754
+)
+round(c(figure_implied = om_fig, sd_reading = 0.568, variance_reading = 0.754), 3)
+```
+
+Both checks agree, so the model file encodes `etalcl ~ 0.568^2 = 0.322624`.
+
+# Structural checks
+
+These are deterministic: they compare the packaged model against the published
+equations and the published claims, with no random draw involved.
+
+```{r structural}
+mod <- readModelDb("Lee_2026_oxacillin")
+
+# --- 1. Steady-state identity -------------------------------------------
+# For a constant infusion, Css must equal rate / CL exactly, where CL comes
+# from the hard-coded published equation above. This catches a mis-transcribed
+# 1.01, 0.75, 0.433, 3.4, 36 or 1.87.
+grid <- expand.grid(wt = c(1.0, 2.5, 3.4, 5.0, 7.0), pna = c(5, 14, 36, 60, 90))
+ev_ss <- purrr::pmap_dfr(
+  list(seq_len(nrow(grid)), grid$wt, grid$pna),
+  function(i, wt, pna) {
+    R <- 160 * wt / 24
+    bind_rows(
+      data.frame(id = i, time = 0,  amt = R * 240, evid = 1L, cmt = "central", rate = R),
+      data.frame(id = i, time = c(200, 220, 240), amt = NA_real_, evid = 0L,
+                 cmt = "central", rate = NA_real_)
+    ) |> mutate(WT = wt, PNA = pna / 30.4375)
+  }
+)
+ss <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_ss, keep = c("WT", "PNA"),
+                      returnType = "data.frame") |>
+  group_by(WT, PNA) |>
+  summarise(css = mean(Cc), .groups = "drop") |>
+  mutate(
+    pna_days = PNA * 30.4375,
+    expected = (160 * WT / 24) / cl_published(WT, pna_days),
+    pct_diff = 100 * (css - expected) / expected
+  )
+max(abs(ss$pct_diff))
+stopifnot(max(abs(ss$pct_diff)) < 0.1)   # deterministic; realised 0.00
+
+# --- 2. The published 2.2-fold claim -------------------------------------
+# Results: PNA is "associated with a 2.2-fold increase in CL (weight adjusted)
+# from 14 to 90 days of age".
+fold_14_90 <- cl_published(3.4, 90) / cl_published(3.4, 14)
+round(fold_14_90, 3)
+stopifnot(abs(fold_14_90 - 2.2) < 0.05)
+
+# --- 3. Half-life against the range the paper quotes ---------------------
+# Methods cites "a half-life ranging from 1.2 to 3 hours according to GA and
+# PNA (21)" for prior neonatal literature. Evaluate the model's typical-value
+# half-life over the covariates of the 22 enrolled infants.
+thalf <- log(2) * (1.87 * s2$wt / 3.4) / cl_published(s2$wt, s2$pna)
+round(range(thalf), 2)
+stopifnot(min(thalf) <= 1.2, max(thalf) >= 3.0)  # model brackets the quoted range
+```
+
+The half-life for the reference infant (3.4 kg, 36 days) is
+`r round(log(2) * 1.87 / 1.01, 2)` h; across the enrolled cohort the model
+spans `r round(min(thalf), 2)`-`r round(max(thalf), 2)` h, bracketing the
+1.2-3 h the paper quotes from the prior literature.
+
+# Virtual cohort and simulation
+
+Three cohorts are simulated. Weights are held at published reference or cohort
+values rather than sampled, because the paper does not report the virtual
+population's covariate distribution -- see Assumptions.
+
+```{r cohort}
+# rxSetSeed() fixes rxode2's stream per solver thread, not across thread
+# counts, so the cohort below differs between machines. Every assertion in
+# this vignette is either deterministic or written to hold for any draw.
+rxode2::rxSetSeed(20260914)
+
+TEND  <- 48   # continuous infusion runs 0.5 -> 48 h
+TOBS  <- 60   # observation continues through washout
+WT_REF  <- 3.4;  PNA_REF  <- 36    # Lee 2026 Results, the "typical infant"
+WT_PTA  <- 3.29                    # Supplemental Table S2 cohort median weight
+N_ARM   <- 200L                    # per-arm cap
+
+# Study regimen: 25 mg/kg over 30 min, then a continuous infusion.
+study_arm <- function(ids, wt, pna, mgkgday, tend = TEND, tobs = TOBS) {
+  R <- mgkgday * wt / 24
+  dos <- tidyr::crossing(id = ids, k = 1:2) |>
+    mutate(time = if_else(k == 1L, 0, 0.5),
+           amt  = if_else(k == 1L, 25 * wt, R * (tend - 0.5)),
+           rate = if_else(k == 1L, 25 * wt / 0.5, R)) |>
+    select(-k)
+  obs <- tidyr::crossing(
+    id = ids,
+    time = sort(unique(c(seq(0, tobs, by = 0.25), 0.5, tend)))
+  ) |>
+    mutate(amt = NA_real_, rate = NA_real_)
+  bind_rows(mutate(dos, evid = 1L), mutate(obs, evid = 0L)) |>
+    mutate(cmt = "central", WT = wt, PNA = pna / 30.4375) |>
+    arrange(id, time, desc(evid))
+}
+
+# (a) typical-value arms: reference infant plus the four Figure 3 age strata
+typ_spec <- tibble::tibble(
+  cohort = c("Reference infant (3.4 kg, 36 d)",
+             "PNA 7 d", "PNA 14 d", "PNA 28 d", "PNA 90 d"),
+  wt  = c(WT_REF, rep(WT_PTA, 4)),
+  pna = c(PNA_REF, 7, 14, 28, 90)
+) |> mutate(id = row_number())
+
+ev_typ <- purrr::pmap_dfr(
+  list(typ_spec$id, typ_spec$wt, typ_spec$pna, typ_spec$cohort),
+  function(i, wt, pna, ch) study_arm(i, wt, pna, 160) |> mutate(cohort = ch)
+)
+
+# (b) stochastic cohort at the reference covariates, for the Figure 2 band
+ev_vpc <- study_arm(seq_len(N_ARM), WT_REF, PNA_REF, 160) |>
+  mutate(cohort = "Reference infant (3.4 kg, 36 d)")
+
+stopifnot(!anyDuplicated(unique(ev_typ[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(unique(ev_vpc[, c("id", "time", "evid")])))
+```
+
+```{r simulate}
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ,
+                           keep = c("cohort", "WT"), returnType = "data.frame")
+sim_vpc <- rxode2::rxSolve(mod, ev_vpc,
+                           keep = c("cohort", "WT"), returnType = "data.frame")
+if (is.null(sim_typ$id)) sim_typ$id <- 1L
+if (is.null(sim_vpc$id)) sim_vpc$id <- 1L
+c(typical_rows = nrow(sim_typ), vpc_rows = nrow(sim_vpc))
+```
+
+# Replicate Figure 2
+
+Figure 2 (top right) plots the unbound concentration of the reference infant
+under the study regimen, with a 90% interval. The loading dose lifts the
+unbound concentration to about 4 mg/L within 30 min and it then settles onto
+the steady-state plateau.
+
+```{r figure-2}
+band <- sim_vpc |>
+  filter(time <= TEND) |>
+  group_by(time) |>
+  summarise(Q05 = quantile(Cu, 0.05), Q50 = quantile(Cu, 0.50),
+            Q95 = quantile(Cu, 0.95), .groups = "drop")
+typ_ref <- sim_typ |>
+  filter(cohort == "Reference infant (3.4 kg, 36 d)", time <= TEND)
+
+ggplot(band, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "#4444aa") +
+  geom_line(linewidth = 0.8, colour = "#22226e") +
+  geom_line(data = typ_ref, aes(time, Cu), colour = "firebrick",
+            linetype = "dashed", linewidth = 0.7) +
+  geom_hline(yintercept = c(0.5, 1), linetype = "dotted") +
+  coord_cartesian(ylim = c(0, 8)) +
+  scale_x_continuous(breaks = seq(0, 48, 12)) +
+  labs(x = "Time (h)", y = "Unbound oxacillin concentration (mg/L)",
+       title = "Figure 2 (top right) -- 25 mg/kg load + 160 mg/kg/day continuous infusion",
+       subtitle = "Solid: cohort median with 90% interval. Dashed: typical value. Dotted: MIC 0.5 and 1 mg/L.",
+       caption = "Replicates Figure 2 of Lee 2026 for a 3.4 kg, 36-day-old infant.")
+```
+
+```{r figure-2-numbers}
+peak_u <- max(typ_ref$Cu)
+css_u  <- typ_ref$Cu[typ_ref$time == TEND]
+# Digitised from Figure 2 (top right), calibrated on the MIC = 0.5 and
+# MIC = 1 mg/L dotted reference lines that the panel itself draws.
+fig2 <- c(peak = 4.00, plateau = 2.48)
+round(c(model_peak = peak_u, figure_peak = fig2[["peak"]],
+        model_plateau = css_u, figure_plateau = fig2[["plateau"]]), 3)
+round(100 * (c(peak_u, css_u) - fig2) / fig2, 1)
+
+# Deterministic (zeroRe). The peak is set by the volume alone and matches to
+# 0.5%. The plateau is set by the clearance and runs 9.5% low against the
+# figure -- discussed under Assumptions; not tuned away.
+stopifnot(abs(peak_u - fig2[["peak"]]) / fig2[["peak"]] < 0.05)
+```
+
+The peak is reproduced to within 0.5%. It is a pure test of the volume, since
+both the 25 mg/kg dose and `Vd = 1.87 * WT/3.4` scale linearly with weight, so
+`Dose/Vd` is weight-free. The plateau is `Css = rate / CL` and comes out 9.5%
+below the digitised figure; see Assumptions.
+
+# Replicate Figure 3 -- probability of target attainment
+
+Figure 3 gives PTA against MIC for four postnatal ages and four regimens. For
+the continuous infusion the paper uses the steady-state concentration as the
+`fT 100% > MIC` surrogate; for the intermittent regimens `fT 100% > MIC` means
+the unbound concentration stays above the MIC across the whole dosing interval,
+which is evaluated here on the last complete interval of a 48 h simulation.
+
+```{r pta-cohort}
+regimens <- tibble::tribble(
+  ~regimen,                 ~mgkgday, ~tau,
+  "160 mg/kg/day CI",            160, NA_real_,
+  "100 mg/kg/day div q6h",       100, 6,
+  "200 mg/kg/day div q4h",       200, 4,
+  "200 mg/kg/day div q6h",       200, 6
+)
+pnads <- c(7, 14, 28, 90)
+MICS  <- c(0.25, 0.5, 1, 2)
+
+pta_arm <- function(regimen, mgkgday, tau, pna, wt, n, id_offset) {
+  ids <- id_offset + seq_len(n)
+  if (is.na(tau)) {
+    win <- 6                                     # window scored at steady state
+    ev <- study_arm(ids, wt, pna, mgkgday, tend = TEND, tobs = TEND)
+  } else {
+    win <- tau
+    per <- mgkgday * tau / 24 * wt               # mg per dose
+    dos <- tidyr::crossing(id = ids, time = seq(0, TEND - tau, by = tau)) |>
+      mutate(amt = per, rate = per / 0.5, evid = 1L)
+    obs <- tidyr::crossing(
+      id = ids,
+      time = sort(unique(c(seq(0, TEND, by = 1), seq(TEND - tau, TEND, by = 1 / 30))))
+    ) |>
+      mutate(amt = NA_real_, rate = NA_real_, evid = 0L)
+    ev <- bind_rows(dos, obs) |>
+      mutate(cmt = "central", WT = wt, PNA = pna / 30.4375) |>
+      arrange(id, time, desc(evid))
+  }
+  ev |> mutate(regimen = regimen, pnad = pna, win_h = win)
+}
+
+arms <- tidyr::crossing(regimens, pna = pnads) |> mutate(k = row_number())
+ev_pta <- purrr::pmap_dfr(arms, function(regimen, mgkgday, tau, pna, k)
+  pta_arm(regimen, mgkgday, tau, pna, WT_PTA, N_ARM, (k - 1L) * N_ARM))
+stopifnot(!anyDuplicated(unique(ev_pta[, c("id", "time", "evid")])))
+
+rxode2::rxSetSeed(20260914)
+sim_pta <- rxode2::rxSolve(mod, ev_pta, keep = c("regimen", "pnad", "win_h"),
+                           returnType = "data.frame")
+
+pta <- lapply(MICS, function(m) {
+  sim_pta |>
+    filter(time >= TEND - win_h) |>
+    group_by(regimen, pnad, id) |>
+    summarise(hit = all(Cu > m), .groups = "drop") |>
+    group_by(regimen, pnad) |>
+    summarise(pta = 100 * mean(hit), .groups = "drop") |>
+    mutate(mic = m)
+}) |> bind_rows()
+```
+
+## Continuous infusion -- gated against Figure 3
+
+```{r pta-continuous}
+cmp_ci <- pta |>
+  filter(regimen == "160 mg/kg/day CI") |>
+  select(pnad, mic, simulated = pta) |>
+  left_join(select(fig3_ci, pnad, mic, figure = pta), by = c("pnad", "mic")) |>
+  mutate(difference = simulated - figure) |>
+  arrange(pnad, mic)
+
+cmp_ci |>
+  mutate(across(c(simulated, figure, difference), ~round(.x, 1))) |>
+  rename("Postnatal age (days)" = pnad, "MIC (mg/L)" = mic,
+         "Simulated PTA (%)" = simulated, "Figure 3 PTA (%)" = figure,
+         "Difference (pp)" = difference) |>
+  knitr::kable(caption = "160 mg/kg/day continuous infusion: simulated fT 100% > MIC against the digitised red curves of Lee 2026 Figure 3.")
+```
+
+```{r pta-continuous-gate}
+# 200 subjects per arm gives a Monte Carlo SE of up to 3.5 percentage points
+# near PTA = 50%, and digitising Figure 3 is worth a further ~2 pp, so a
+# per-point bound much below ~8 pp would sit inside the noise. Realised at
+# 2 / 4 / 8 / 16 threads: mean |difference| 3.0-4.6 pp, max 13 pp (always at
+# MIC 2, where the paper's virtual cohort evidently used lower,
+# age-appropriate weights than the single 3.29 kg median assumed here).
+stopifnot(
+  mean(abs(cmp_ci$difference)) < 10,
+  max(abs(cmp_ci$difference)) < 20
+)
+```
+
+For a continuous infusion the PTA has a closed form -- `Css_unbound` is
+log-normal, so `PTA = pnorm(log(Css_typical / MIC) / SD)`. Checking the
+simulation against it separates "did the cohort solve correctly" from "does the
+model agree with the paper", and lets the published 90% claims be tested
+exactly rather than through Monte Carlo noise.
+
+```{r pta-analytic}
+pta_analytic <- function(mic, pna_days, wt = WT_PTA, sd_cl = 0.568) {
+  css_u <- 0.1 * (160 * wt / 24) / cl_published(wt, pna_days)
+  100 * pnorm(log(css_u / mic) / sd_cl)
+}
+cmp_ci <- cmp_ci |>
+  mutate(analytic = pta_analytic(mic, pnad),
+         mc_error = simulated - analytic)
+
+# Monte Carlo agreement. Realised max |mc_error| 5.0 pp at 2/4/8/16 threads.
+# A mis-transcribed clearance or exponent moves PTA by tens of points, so 10
+# still goes red on a real error.
+max(abs(cmp_ci$mc_error))
+stopifnot(max(abs(cmp_ci$mc_error)) < 10)
+
+# The paper's three headline claims, evaluated on the closed form so the test
+# is deterministic. Claim 3 is reported but NOT gated: it fails reproducibly
+# under this vignette's single-weight cohort (see Assumptions), and widening
+# the gate until it passed would hide that.
+claim_row <- function(text, value, holds, gated) {
+  tibble::tibble(Claim = text, `Binding PTA (%)` = round(value, 1),
+                 Holds = holds, Gated = gated)
+}
+a05 <- cmp_ci$analytic[cmp_ci$mic == 0.5]
+a1  <- cmp_ci$analytic[cmp_ci$mic == 1 & cmp_ci$pnad <= 28]
+a2  <- cmp_ci$analytic[cmp_ci$mic == 2]
+claims <- dplyr::bind_rows(
+  claim_row("All ages reach 90% PTA at MIC 0.5", min(a05), min(a05) >= 90, TRUE),
+  claim_row("PNA <= 28 d reaches 90% PTA at MIC 1", min(a1), min(a1) >= 90, TRUE),
+  claim_row("No age reaches 90% PTA at MIC 2 (CLSI breakpoint)", max(a2), max(a2) < 90, FALSE)
+)
+knitr::kable(claims, caption = "Published conclusions for 160 mg/kg/day continuous infusion, evaluated on the closed-form PTA. The third row is a recorded deviation.")
+stopifnot(all(claims$Holds[claims$Gated]))
+```
+
+## Intermittent regimens -- reproduced, with a recorded deviation
+
+```{r pta-intermittent}
+fig3_int <- tibble::tribble(
+  ~regimen,                ~pnad, ~mic, ~figure,
+  "100 mg/kg/day div q6h",     7, 0.25,   54.5,
+  "100 mg/kg/day div q6h",     7, 0.50,   38.0,
+  "100 mg/kg/day div q6h",     7, 1.00,   21.0,
+  "100 mg/kg/day div q6h",     7, 2.00,    8.5,
+  "200 mg/kg/day div q4h",     7, 0.25,   96.0,
+  "200 mg/kg/day div q4h",     7, 0.50,   91.0,
+  "200 mg/kg/day div q4h",     7, 1.00,   78.0,
+  "200 mg/kg/day div q4h",     7, 2.00,   47.5,
+  "200 mg/kg/day div q6h",     7, 0.25,   67.0,
+  "200 mg/kg/day div q6h",     7, 0.50,   54.0,
+  "200 mg/kg/day div q6h",     7, 1.00,   38.0,
+  "200 mg/kg/day div q6h",     7, 2.00,   21.0,
+  "100 mg/kg/day div q6h",    90, 0.25,    6.0,
+  "100 mg/kg/day div q6h",    90, 0.50,    1.5,
+  "200 mg/kg/day div q4h",    90, 0.25,   50.0,
+  "200 mg/kg/day div q4h",    90, 0.50,   35.0,
+  "200 mg/kg/day div q4h",    90, 1.00,   17.0,
+  "200 mg/kg/day div q4h",    90, 2.00,    4.0,
+  "200 mg/kg/day div q6h",    90, 0.25,   11.0,
+  "200 mg/kg/day div q6h",    90, 0.50,    6.0
+)
+
+cmp_int <- pta |>
+  filter(regimen != "160 mg/kg/day CI") |>
+  select(regimen, pnad, mic, simulated = pta) |>
+  inner_join(fig3_int, by = c("regimen", "pnad", "mic")) |>
+  mutate(difference = simulated - figure) |>
+  arrange(pnad, regimen, mic)
+
+cmp_int |>
+  mutate(across(c(simulated, figure, difference), ~round(.x, 1))) |>
+  rename("Regimen" = regimen, "Postnatal age (days)" = pnad, "MIC (mg/L)" = mic,
+         "Simulated PTA (%)" = simulated, "Figure 3 PTA (%)" = figure,
+         "Difference (pp)" = difference) |>
+  knitr::kable(caption = "Intermittent regimens: simulated fT 100% > MIC against digitised Lee 2026 Figure 3. The model is systematically more optimistic; see Assumptions.")
+```
+
+### Controlling for the unreported virtual-population weight
+
+The differences above mix two things: a genuine model-versus-figure
+disagreement, and the fact that a single 3.29 kg weight is used for every
+postnatal age while the paper's virtual cohort clearly used age-appropriate
+weights. Both PTA criteria have a closed form -- the steady-state
+concentration and the steady-state trough are each strictly decreasing in
+clearance -- so the weight can be removed as a confounder without any
+simulation.
+
+```{r pta-closedform}
+# Critical clearance above which the criterion fails, then PTA = P(CL < crit).
+pta_cf <- function(mgkgday, tau, pna, wt, mic, sd_cl = 0.568) {
+  v <- 1.87 * wt / 3.4
+  crit <- if (is.na(tau)) {
+    0.1 * (mgkgday * wt / 24) / mic                     # continuous: Css > MIC
+  } else {
+    dose <- mgkgday * tau / 24 * wt                     # intermittent: trough > MIC
+    v * log1p(0.1 * dose / (v * mic)) / tau
+  }
+  100 * pnorm(log(crit / cl_published(wt, pna)) / sd_cl)
+}
+# Reproduces the simulation it is standing in for.
+stopifnot(max(abs(sapply(MICS, function(m) pta_cf(160, NA, 90, WT_PTA, m)) -
+                  pta_analytic(MICS, 90))) < 1e-8)
+
+# Weight implied by each panel's OWN continuous-infusion curve. This makes the
+# continuous rows below circular by construction; the intermittent rows are
+# then out-of-sample predictions at that weight.
+implied_wt <- function(pna) {
+  d <- filter(fig3_ci, pnad == pna, pta > 5, pta < 99.5)
+  optimise(function(w) sum((sapply(d$mic, function(m) pta_cf(160, NA, pna, w, m)) - d$pta)^2),
+           interval = c(0.5, 8))$minimum
+}
+wt_imp <- vapply(c(7, 90), implied_wt, numeric(1))
+names(wt_imp) <- c("7", "90")
+round(wt_imp, 2)
+
+cf <- tidyr::crossing(
+  tibble::tibble(regimen = c("160 mg/kg/day CI", "100 mg/kg/day div q6h",
+                             "200 mg/kg/day div q4h", "200 mg/kg/day div q6h"),
+                 mgkgday = c(160, 100, 200, 200), tau = c(NA, 6, 4, 6)),
+  pnad = c(7, 90), mic = MICS
+) |>
+  mutate(closed_form = purrr::pmap_dbl(
+    list(mgkgday, tau, pnad, mic),
+    function(d, t, p, m) pta_cf(d, t, p, wt_imp[[as.character(p)]], m))) |>
+  inner_join(bind_rows(select(fig3_ci, pnad, mic, figure = pta) |>
+                         mutate(regimen = "160 mg/kg/day CI"),
+                       select(fig3_int, regimen, pnad, mic, figure)),
+             by = c("regimen", "pnad", "mic")) |>
+  mutate(difference = closed_form - figure) |>
+  arrange(pnad, regimen, mic)
+
+cf |>
+  mutate(across(c(closed_form, figure, difference), ~round(.x, 1))) |>
+  rename("Regimen" = regimen, "Postnatal age (days)" = pnad, "MIC (mg/L)" = mic,
+         "Closed-form PTA (%)" = closed_form, "Figure 3 PTA (%)" = figure,
+         "Difference (pp)" = difference) |>
+  select(-mgkgday, -tau) |>
+  knitr::kable(caption = "Closed-form PTA at the weight each panel's own continuous curve implies. The continuous rows are circular by construction; the intermittent rows are not.")
+```
+
+```{r pta-closedform-gate}
+by_reg <- cf |> group_by(regimen) |> summarise(max_abs = max(abs(difference)), .groups = "drop")
+by_reg |>
+  mutate(max_abs = round(max_abs, 1)) |>
+  rename("Regimen" = regimen, "Largest |difference| (pp)" = max_abs) |>
+  knitr::kable(caption = "Worst-case agreement with Figure 3 once the weight confounder is removed.")
+
+# Deterministic -- closed form, no RNG anywhere in this chunk.
+# Realised: continuous 1.0 pp, q4h 6.7 pp, 100 q6h 23.1 pp, 200 q6h 23.1 pp.
+q4h_err <- by_reg$max_abs[by_reg$regimen == "200 mg/kg/day div q4h"]
+q6h_err <- max(by_reg$max_abs[grepl("q6h", by_reg$regimen)])
+stopifnot(
+  by_reg$max_abs[by_reg$regimen == "160 mg/kg/day CI"] < 3,   # circular, so tight
+  q4h_err < 10,                                               # genuine out-of-sample agreement
+  q6h_err > 10                                                # the disagreement is real, not noise
+)
+```
+
+Once the weight is controlled for, the 200 mg/kg/day q4h curve is reproduced to
+within 6.7 percentage points at both ages -- an out-of-sample agreement, since
+nothing about that regimen entered the weight back-solve. Both q6h curves
+remain 11-23 points too optimistic. The pattern is specific enough to point at
+its cause: each published q6h curve tracks a simulation carrying **half** the
+nominal amount per dose.
+
+```{r pta-halfdose}
+half <- tibble::tribble(
+  ~published,              ~pnad, ~as_simulated,
+  "200 mg/kg/day div q6h",     7, 100,
+  "100 mg/kg/day div q6h",     7,  50,
+  "200 mg/kg/day div q6h",    90, 100,
+  "100 mg/kg/day div q6h",    90,  50
+) |>
+  tidyr::crossing(mic = MICS) |>
+  mutate(half_dose = purrr::pmap_dbl(list(as_simulated, pnad, mic),
+           function(d, p, m) pta_cf(d, 6, p, wt_imp[[as.character(p)]], m))) |>
+  inner_join(select(fig3_int, regimen, pnad, mic, figure),
+             by = c("published" = "regimen", "pnad", "mic")) |>
+  mutate(difference = half_dose - figure)
+
+half |>
+  mutate(across(c(half_dose, figure, difference), ~round(.x, 1))) |>
+  rename("Published label" = published, "Postnatal age (days)" = pnad,
+         "Simulated as (mg/kg/day)" = as_simulated, "MIC (mg/L)" = mic,
+         "Half-dose PTA (%)" = half_dose, "Figure 3 PTA (%)" = figure,
+         "Difference (pp)" = difference) |>
+  knitr::kable(caption = "Each Figure 3 q6h curve re-simulated at half the nominal per-dose amount.")
+
+# Deterministic. Halving the per-dose amount cuts the worst error from 23.1 pp
+# to 9.4 pp; anything under the full-dose error would be suggestive, and this
+# is a threefold reduction.
+stopifnot(max(abs(half$difference)) < q6h_err / 2)
+round(max(abs(half$difference)), 1)
+```
+
+This is an observation about the published figure, not a change to the model:
+the model file encodes the regimens as the paper's Methods describe them.
+
+```{r pta-intermittent-check}
+# NOT a pass/fail gate on the magnitude -- the disagreement is real and
+# reproducible, so it is recorded rather than tuned away (see Assumptions).
+# What IS gated is the ordering the paper's conclusion rests on, which the
+# model does reproduce.
+ord <- pta |>
+  mutate(reg = recode(regimen,
+                      "160 mg/kg/day CI" = "ci", "200 mg/kg/day div q4h" = "q4h",
+                      "200 mg/kg/day div q6h" = "q6h200", "100 mg/kg/day div q6h" = "q6h100")) |>
+  select(reg, pnad, mic, pta) |>
+  tidyr::pivot_wider(names_from = reg, values_from = pta)
+
+# Averaged over all 16 age x MIC points, so a single noisy cell cannot flip
+# the ordering. Realised margins across 2/4/8/16 threads: 25-27, 12-14 and
+# 13-15 percentage points respectively.
+m <- summarise(ord, across(c(ci, q4h, q6h200, q6h100), mean))
+round(unlist(m), 1)
+stopifnot(m$ci - m$q4h > 10, m$q4h - m$q6h200 > 5, m$q6h200 - m$q6h100 > 5)
+
+# Where the clinical decision is actually made (MIC >= 1) continuous beats the
+# best intermittent regimen at every age. Realised minimum margin 7 pp.
+stopifnot(all((ord$ci - ord$q4h)[ord$mic >= 1] > 3))
+
+# The paper's intermittent conclusion: 200 mg/kg/day divided q4h -- eight times
+# the FDA-labelled dose -- still misses the 90% target at the CLSI breakpoint.
+# Realised maximum 75.5%.
+stopifnot(all(ord$q4h[ord$mic == 2] < 88))
+round(mean(cmp_int$difference), 1)
+```
+
+At the single 3.29 kg weight this cohort uses, the model predicts intermittent
+PTA on average `r round(mean(cmp_int$difference), 0)` percentage points above
+Figure 3, but the ordering the paper's conclusion rests on is reproduced:
+continuous infusion beats every intermittent regimen, q4h beats q6h at the same
+daily dose, and 200 mg/kg/day q4h -- eight times the FDA-labelled dose -- still
+misses the 90% target at the CLSI breakpoint. The closed-form analysis above
+localises the residual disagreement to the two q6h curves.
+
+# PKNCA validation
+
+NCA is run on the typical-value profiles: the loading-dose peak over the first
+4 h, the steady-state interval 24-48 h, and the terminal phase after the
+infusion stops at 48 h.
+
+```{r pknca}
+sim_nca <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, cohort)
+
+# Guarantee a time = 0 record per subject; concentration before the loading
+# infusion starts is zero.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, cohort) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, cohort, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, cohort, time)
+stopifnot(nrow(sim_nca) > 0, all(sim_nca$Cc >= 0))
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id,
+                             concu = "ug/mL", timeu = "h")
+
+dose_df <- ev_typ |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, cohort)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id, doseu = "mg")
+
+intervals <- data.frame(
+  start     = c(0,  24, 48),
+  end       = c(4,  48, 60),
+  cmax      = c(TRUE,  FALSE, FALSE),
+  tmax      = c(TRUE,  FALSE, FALSE),
+  cav       = c(FALSE, TRUE,  FALSE),
+  cmin      = c(FALSE, TRUE,  FALSE),
+  auclast   = c(FALSE, TRUE,  FALSE),
+  half.life = c(FALSE, FALSE, TRUE)
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- nca_res$result |>
+  dplyr::select(cohort, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_wide |>
+  dplyr::mutate(dplyr::across(where(is.numeric), ~round(.x, 2))) |>
+  knitr::kable(caption = "Typical-value NCA by cohort. cmax/tmax over 0-4 h (loading dose), cav/cmin/auclast over the 24-48 h steady-state interval, half-life over the 48-60 h washout.")
+```
+
+## Comparison against published values
+
+The only published NCA-comparable numbers are the two levels Figure 2 draws for
+the reference infant: the unbound peak after the loading dose and the unbound
+steady-state plateau, both converted to total concentration by the model's
+fixed 10% unbound fraction.
+
+```{r nca-compare}
+published <- tibble::tibble(
+  cohort = "Reference infant (3.4 kg, 36 d)",
+  cmax   = fig2[["peak"]]    / 0.1,   # 4.00 mg/L unbound -> 40.0 ug/mL total
+  cav    = fig2[["plateau"]] / 0.1    # 2.48 mg/L unbound -> 24.8 ug/mL total
+)
+
+cmp_nca <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "cohort",
+  units     = c(cmax = "ug/mL", cav = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_nca, caption = "Simulated vs. Figure 2 of Lee 2026. * differs from reference by >20%.")
+attr(cmp_nca, "footnote")
+```
+
+```{r nca-gate}
+# Deterministic (typical values, zeroRe). Realised: cmax -0.5%, cav -9.5%.
+pd <- as.numeric(gsub("[^0-9.+-]", "", cmp_nca$`% diff`))
+stopifnot(max(abs(pd)) < 20)
+```
+
+# Assumptions, deviations and errata
+
+* **Scale of the published IIV.** Lee 2026 Table 2 prints `IIV CL (etaCL) =
+  0.568` without saying whether it is a variance, a standard deviation or a CV.
+  It is encoded as a **log-scale standard deviation** (`etalcl ~ 0.568^2`) on
+  the strength of the two checks above: the individual clearances recoverable
+  from Supplemental Table S2 bound the between-subject SD at 0.571, and the
+  slope of the Figure 3 continuous-infusion curves implies 0.575. The variance
+  reading (SD 0.754) is excluded by both.
+
+* **Residual error is not reported.** Methods state that "a combined additive
+  and proportional within-subject error model was chosen", but neither
+  magnitude appears in Table 2, in the Results text, or in any of the three
+  supplemental workbooks. Both `addSd` and `propSd` are therefore encoded as
+  `fixed(0)` rather than invented. Simulations from this model reproduce
+  individual predictions, not observations; a user who needs residual noise
+  must supply their own.
+
+* **Figure 2 plateau runs 9.5% high against the model.** Digitising the
+  Figure 2 top-right panel against the MIC 0.5 and MIC 1 reference lines the
+  panel itself draws gives an unbound peak of 4.00 mg/L and a plateau of
+  2.48 mg/L. The model, evaluated at the 3.4 kg / 36-day covariates the caption
+  names, gives 3.98 and 2.24. The peak agrees to 0.5%; the plateau is 9.5%
+  low. Since the peak depends only on the volume and the plateau only on the
+  clearance, the gap is confined to CL and is consistent with the plotted
+  profile having used a slightly younger or heavier infant than the caption
+  states (2.48 mg/L corresponds to about 28 days at 3.4 kg, or about 5 kg at 36
+  days). Table 2's `CL = 1.01` is used as printed.
+
+* **Figure 3's two q6h curves do not reproduce; the q4h and continuous curves
+  do.** Once the unreported virtual-population weight is controlled for by
+  back-solving it from each panel's own continuous-infusion curve, the closed
+  form reproduces the 200 mg/kg/day q4h curve to within 6.7 percentage points
+  at both 7 and 90 days -- an out-of-sample agreement, since that regimen plays
+  no part in the back-solve. Both q6h curves stay 11-23 points too optimistic.
+  Re-simulating each q6h curve at **half** its nominal per-dose amount
+  (25 rather than 50 mg/kg for 200 mg/kg/day q6h, 12.5 rather than 25 for
+  100 mg/kg/day q6h) cuts the worst error from 23.1 to 9.4 points, so the
+  published q6h curves behave like a half-dose simulation. Neither the paper
+  nor its supplements describe how the intermittent regimens were coded
+  (per-dose amount, infusion duration, which interval was scored), so this is
+  reported as an observation about the figure and nothing in the model file was
+  changed: the regimens are encoded exactly as Methods describes them. The
+  paper's qualitative conclusion -- intermittent dosing up to 200 mg/kg/day
+  fails the target that continuous infusion meets -- reproduces either way and
+  is gated above.
+
+* **One published claim does not reproduce: PNA 7 days at MIC 2.** Lee 2026
+  concludes that "no patient, on continuous or intermittent infusions, achieved
+  the PD target at the CLSI breakpoint MIC of 2", and Figure 3 puts the 7-day
+  continuous-infusion curve at 86% there. The closed-form PTA for this
+  vignette's cohort is 92.5% -- just over the 90% line -- and the simulation
+  gives 90.5-95.0% depending on solver thread count. Every other age is well
+  under 90% (81.8, 64.8 and 30.5% analytically at 14, 28 and 90 days). The gap
+  is the weight assumption: a 7-day-old is materially lighter than the 3.29 kg
+  cohort median used here, and `Css` scales as `WT^0.25`, so the youngest
+  stratum is the one where the single-weight simplification bites hardest.
+  This row is reported in the claims table and deliberately left out of the
+  gate rather than widened until it passes.
+
+* **Virtual-population covariates are an assumption.** The paper simulated
+  10,000 virtual patients but does not report their weight distribution. The
+  target-attainment cohort here fixes weight at the Supplemental Table S2
+  cohort median of 3.29 kg for every postnatal age. Back-solving the paper's
+  own continuous curves suggests it used age-appropriate weights (roughly
+  1.5 kg at 14 days rising to 2.8 kg at 90 days), which is why the simulated
+  PTA runs a little high at the youngest ages and matches closely at 90 days.
+  Only the level is affected; the slope-based reading of the clearance SD is
+  immune to it.
+
+* **Postnatal age unit.** The canonical `PNA` covariate column carries months.
+  Lee 2026 works in days and normalises to 36 days, so `model()` converts with
+  1 month = 30.4375 days before forming the age ratio. Supply `PNA` in months.
+
+* **Unbound fraction.** `fu = 0.1` was not measured in this study; Lee 2026
+  took it from the literature (reference 9) and its Discussion warns that
+  protein binding in preterm infants is probably lower than in adults, so the
+  true unbound concentrations -- and therefore the true target attainment --
+  may be higher than either the paper or this vignette reports.
+
+* **Screened but unused covariates.** Gestational age, postmenstrual age,
+  length, body surface area, albumin, serum creatinine and baseline
+  transaminases were all tested and rejected; they are recorded in
+  `covariatesDataExcluded` with the paper's stated reason, and none has a
+  published point estimate.
+
+* **Table 1 sex count.** Table 1's total male count (15, 68%) disagrees with
+  the sum of its own per-cohort entries (16) and with Supplemental Table S2
+  (16 male, 6 female). The population metadata follows the raw data.

@@ -47,8 +47,13 @@ readModelDb("PK_1cmt_des") |>
 }
 \seealso{
 Other absorption:
+\code{\link[=addSecondAbsorption]{addSecondAbsorption()}},
 \code{\link[=addTransit]{addTransit()}},
-\code{\link[=removeTransit]{removeTransit()}}
+\code{\link[=addZeroOrderAbs]{addZeroOrderAbs()}},
+\code{\link[=convertAbsForceLongerDelay]{convertAbsForceLongerDelay()}},
+\code{\link[=convertAbsSequential]{convertAbsSequential()}},
+\code{\link[=removeTransit]{removeTransit()}},
+\code{\link[=removeZeroOrderAbs]{removeZeroOrderAbs()}}
 }
 \author{
 Matthew L. Fidler

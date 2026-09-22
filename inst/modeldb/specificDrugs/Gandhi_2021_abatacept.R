@@ -134,10 +134,9 @@ Gandhi_2021_abatacept <- function() {
     etalogitfdepot ~ 0.516   ; label("IIV variance on logit-F (Gandhi 2021 Table 2; shrinkage 49.2%)")
 
     # Residual error - Gandhi 2021 Table 2 reports SIGMA matrix variances in
-    # the same 'Estimate' column as the IIV variances (operator decision; see
-    # vignette Errata for the rationale). The proportional and additive
-    # variances are converted to standard deviations by sqrt() for nlmixr2's
-    # add() / prop() conventions.
+    # the same 'Estimate' column as the IIV variances. The proportional and
+    # additive variances are converted to standard deviations by sqrt() for
+    # nlmixr2's add() / prop() conventions.
     propSd <- sqrt(0.0615); label("Proportional residual error (fraction)")                # Gandhi 2021 Table 2: SIGMA_PROP = 0.0615 (variance); SD = 0.248
     addSd  <- sqrt(0.00134); label("Additive residual error (mg/L = ug/mL)")                # Gandhi 2021 Table 2: SIGMA_ADD = 0.00134 (variance, mg^2/L^2); SD = 0.0366 mg/L
   })

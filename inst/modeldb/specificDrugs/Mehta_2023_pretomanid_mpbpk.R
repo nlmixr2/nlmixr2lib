@@ -139,7 +139,7 @@ Mehta_2023_pretomanid_mpbpk <- function() {
     # Between-subject variability -- 40% log-normal (Table 1). ESM S2 applies
     # exp(eta) to ka, CL, KpT and KpT1; the ED50 eta is deliberately commented
     # out ('ED50 = TVED50 ; #*exp(eta.ED50) ;'), so ED50 carries no IIV here
-    # (operator decision, 2026-07-27). Variance = 0.40^2 on the log scale.
+    # . Variance = 0.40^2 on the log scale.
     # ---------------------------------------------------------------------
     etalka             ~ 0.16  # Table 1 pretomanid 'IIV for ka, ED50, CL, KpT, and KpT2 (%) = 40'; ESM S2 ka = TVka*exp(eta.ka)
     etalcl             ~ 0.16  # Table 1 pretomanid IIV row = 40%; ESM S2 CL = TVCL*exp(eta.CL)*(BW/70)^0.75

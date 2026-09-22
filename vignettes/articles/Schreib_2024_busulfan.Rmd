@@ -146,7 +146,7 @@ tibble::tibble(
   )
 ```
 
-# Solve this model with `useLinCmt = FALSE`
+# Time-varying clearance and the `linCmt()` conversion
 
 **Every `rxSolve()` call in this vignette passes `useLinCmt = FALSE`.** That is
 now belt and braces rather than a necessity, and it is kept deliberately -- see
@@ -202,7 +202,7 @@ tibble::tibble(
   `Dosing interval`             = 1:8,
   `AUC, useLinCmt = TRUE`       = round(trap_default, 3),
   `AUC, useLinCmt = FALSE`      = round(trap_ode, 3),
-  `Under-prediction`            = sprintf("%.1f%%", 100 * (trap_default / trap_ode - 1))
+  `Difference`                  = sprintf("%.1f%%", 100 * (trap_default / trap_ode - 1))
 ) |>
   knitr::kable(
     caption = paste(
@@ -789,15 +789,18 @@ Section 2.2 rather than a transcribed NCA table.
 
 # Assumptions and deviations
 
-* **`useLinCmt = FALSE` is mandatory.** The model is one-compartment with linear
-  elimination, so `rxSolve()`'s default ODE-to-`linCmt()` conversion replaces it
-  with a closed form that can only hold a constant elimination rate constant,
-  silently discarding the time dependence and under-predicting steady-state
-  exposure per interval by about 17% (45% in the HLH/XLP group). Rewriting the
-  ODE does not help: an explicit rate variable and a clearance-form denominator
-  were both tested and are converted identically. The flag is the only
-  mitigation, and it is recorded in the model's `description` as well as here.
-  This is a property of the solver's default, not of the published model.
+* **`useLinCmt = FALSE` on rxode2 5.1.6 and earlier.** The model is
+  one-compartment with linear elimination, so `rxSolve()`'s default
+  ODE-to-`linCmt()` conversion used to replace it with a closed form that can
+  only hold a constant elimination rate constant, silently discarding the time
+  dependence and under-predicting steady-state exposure per interval by about
+  17% (45% in the HLH/XLP group). Rewriting the ODE did not help: an explicit
+  rate variable and a clearance-form denominator were both tested and were
+  converted identically, so the flag was the only mitigation. rxode2 now
+  5.1.7 refuses the conversion when it would change the model (rxode2 issue 1370)
+  and the flag is no longer required; this vignette keeps it so that it stays
+  correct on older installations. This was always a property of the solver's
+  default, not of the published model.
 * **Equation (2), not Equation (3).** The packaged model integrates the
   instantaneous rate constant `k*(t)` of Equation (2). Equation (3)'s `k'(t)` is
   a running time-average that exists only to give `saemix` a closed-form

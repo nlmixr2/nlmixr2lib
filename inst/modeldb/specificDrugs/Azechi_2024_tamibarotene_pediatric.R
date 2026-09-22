@@ -150,9 +150,8 @@ Azechi_2024_tamibarotene_pediatric <- function() {
     # (ka, CL/F, V1/F, V2/F, Q/F) as theta_i = tvtheta * exp(eta_i).
     # No per-parameter omega magnitudes are reported in Table 4, any
     # other table, or any supplement (Europe PMC: hasSuppl = N for
-    # PMC11592880). Per operator decision (sidecar request-001
-    # q1 = A, 2026-06-21), the five eta terms are encoded as fixed(0)
-    # so the published structural IIV declaration is preserved while
+    # PMC11592880). the five eta terms are encoded as fixed(0) so the
+    # published structural IIV declaration is preserved while
     # remaining faithful to the absence of reported variance values.
     # Stochastic VPCs built from this model show no between-subject
     # variability around the typical-value predictions; see vignette

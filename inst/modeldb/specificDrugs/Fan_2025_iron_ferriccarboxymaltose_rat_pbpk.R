@@ -77,7 +77,7 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
   ini({
     # ---- Iron-disposition parameters ----
     # Loss clearance. NOT estimated on the rat data; inherited from the mouse
-    # iron-adequate column (Table 2) per the operator ruling (sidecar q1 = B).
+    # iron-adequate column (Table 2).
     lcl <- log(1.647e-4); label("Unavoidable physiologic iron loss clearance from plasma (L/h)")  # Table 2 CLloss, iron-adequate mouse column
 
     # Partition coefficients ESTIMATED on the rat tissue data (Results text:
@@ -92,8 +92,8 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
     lkp_spleen  <- log(147.9); label("Spleen-to-plasma partition coefficient (unitless)")  # Results text, IDA rat estimate
 
     # Partition coefficients for the tissues that were NOT measured. Inherited
-    # from the mouse iron-adequate column (sidecar q1 = B); the paper says only
-    # that they "were assumed to be identical ... in mice".
+    # from the mouse iron-adequate column; the paper says only that they "were
+    # assumed to be identical ... in mice".
     lkp_adipose <- log(0.258); label("Fat (adipose)-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
     lkp_brain   <- log(1.087); label("Brain-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
     lkp_gut     <- log(5.349); label("Gut-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
@@ -101,11 +101,11 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
     lkp_other   <- log(2.30e-9); label("Remainder (rest of body)-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
     lkp_skin    <- log(4.651); label("Skin-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
 
-    # NOT REPORTED for the rat anywhere on disk. Derived by the operator ruling
-    # (sidecar q2 = B) from the paper's OWN two lifespan anchors: mouse
-    # iron-adequate TRBC = 34.44 h at 0.025 kg and human TRBC = 120 d = 2880 h
-    # at 73 kg fix an allometric exponent b_T = log(2880/34.44)/log(73/0.025) =
-    # 0.5547, evaluated at the paper's rat body weight of 0.345 kg -> 147.7 h.
+    # NOT REPORTED for the rat anywhere on disk. Derived by a ruling from the
+    # paper's OWN two lifespan anchors: mouse iron-adequate TRBC = 34.44 h at
+    # 0.025 kg and human TRBC = 120 d = 2880 h at 73 kg fix an allometric
+    # exponent b_T = log(2880/34.44)/log(73/0.025) = 0.5547, evaluated at the
+    # paper's rat body weight of 0.345 kg -> 147.7 h.
     lmtt_rbc <- log(34.44 * (0.345 / 0.025)^(log(2880 / 34.44) / log(73 / 0.025))); label("Mean red-blood-cell lifespan (h)")
     # NOT REPORTED for the rat. Scaled from the mouse iron-adequate QE by the
     # paper's own RBC-lifespan allometry, Eq. (9) with b = 0.75, using the

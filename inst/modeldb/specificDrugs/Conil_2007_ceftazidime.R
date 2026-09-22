@@ -90,9 +90,8 @@ Conil_2007_ceftazidime <- function() {
     etalvp ~ 1.5280  # log(1.90^2 + 1); 190% CV on V2 (Conil 2007 Results p. 31 basic-model value carried forward; final model silent on V2 IIV)
 
     # Proportional residual error (Conil 2007 Results p. 31 basic-model
-    # value 38%, carried forward to the final model per the operator's
-    # standing instruction; the final-model section does not re-report the
-    # residual error).
+    # value 38%, carried forward to the final model; the final-model
+    # section does not re-report the residual error).
     propSd <- 0.38; label("Proportional residual error (fraction)") # Conil 2007 Results p. 31 basic-model proportional CV = 38%; final-model residual not separately reported
   })
   model({

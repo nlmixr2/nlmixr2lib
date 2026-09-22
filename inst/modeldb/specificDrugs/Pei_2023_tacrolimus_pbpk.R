@@ -336,7 +336,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
     # up to 16 fold. The value encoded here, 9.15 = 11.9 / 1.3, is the
     # mouse-to-human average-Kp ratio that the Methods sentence above
     # motivates directly; it is read off the paper rather than fitted by
-    # us. Operator-ratified 2026-08-05 (sidecar oare_PMC10675244 q1 = A).
+    # us. ratified 2026-08-05.
     # The companion popPK model corroborates the 9-30 range independently:
     # Vd/F 656.8 L at Fg 0.2 implies a true Vd of about 131 L, which needs
     # a of roughly 29 rather than 350. See the vignette Errata.

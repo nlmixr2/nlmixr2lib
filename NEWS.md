@@ -2,6 +2,270 @@
 
 # development version
 
+- Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
+
+- Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
+
+- Add Yata 2026 sildenafil ([doi:10.1111/jvp.70057](https://doi.org/10.1111/jvp.70057)) -- client-owned dogs with naturally occurring pulmonary hypertension.
+
+- Add Nyang'wa 2026 pretomanid ([doi:10.1038/s41598-026-46217-2](https://doi.org/10.1038/s41598-026-46217-2)) -- adults with rifampicin-resistant tuberculosis on the BPaL/BPaLM/BPaLC regimens.
+
+- Add Brandon 2026 mitoxantrone ([doi:10.1002/bcp.70436](https://doi.org/10.1002/bcp.70436)) -- children aged 0.9-17 years with acute myeloid leukaemia.
+
+- Add Yang 2026 pixavir ([doi:10.3390/pharmaceutics18050550](https://doi.org/10.3390/pharmaceutics18050550)) -- Chinese adults and adolescents aged 12 years and older with acute influenza, plus healthy volunteers.
+
+- Add Gallego-Hernandez 2026 linezolid ([doi:10.3390/pharmaceutics18050528](https://doi.org/10.3390/pharmaceutics18050528)) -- elderly hospitalized adults aged 65-87 years under routine therapeutic drug monitoring.
+
+- Add Sood 2026 [177Lu]Lu-DOTATATE ([doi:10.2967/jnumed.125.270202](https://doi.org/10.2967/jnumed.125.270202)) -- adults and adolescents with somatostatin-receptor-positive gastroenteropancreatic neuroendocrine tumours, plus kidney and bone-marrow exposure-dosimetry models.
+
+- Add Tao 2026 levofloxacin ([doi:10.1128/aac.01853-25](https://doi.org/10.1128/aac.01853-25)) -- Chinese children aged 0.16-16 years with severe refractory *Mycoplasma pneumoniae* pneumonia.
+
+- Add Lee 2026 oxacillin ([doi:10.1128/aac.01777-25](https://doi.org/10.1128/aac.01777-25)) -- preterm and term neonates and infants up to 90 days old on continuous infusion.
+
+- Add Kang 2026 ticagrelor ([doi:10.1002/cpt.70282](https://doi.org/10.1002/cpt.70282)) -- adults with acute coronary syndrome supported by veno-arterial ECMO.
+
+- Add Beliveau 2026 tenofovir alafenamide subdermal implant ([doi:10.1038/s41598-026-48746-2](https://doi.org/10.1038/s41598-026-48746-2)) -- South African cisgender women in the CAPRISA 018 HIV-1 prevention trial, as zero-order-release and Weibull-release model files.
+
+- Add Zhang 2026 linezolid ([doi:10.3389/fphar.2026.1817282](https://doi.org/10.3389/fphar.2026.1817282)) -- critically ill children in a paediatric intensive care unit.
+
+- Add twelve polyclonal immunoglobulin (IVIg/SCIg) popPK models transcribed from the van der Zeeuw 2026 systematic review ([doi:10.1007/s40262-026-01641-5](https://doi.org/10.1007/s40262-026-01641-5)) -- primary and secondary immunodeficiency, very low birth-weight neonates, CIDP and multifocal motor neuropathy, one with a grip-strength PD layer.
+
+- Add Gao 2026 trastuzumab rezetecan ([doi:10.1002/psp4.70259](https://doi.org/10.1002/psp4.70259)) -- adults with HER2-expressing or mutated advanced solid tumors.
+
+- Add Ooi 2026 elafibranor ([doi:10.1002/psp4.70247](https://doi.org/10.1002/psp4.70247)) -- pooled healthy volunteers and patients with renal or hepatic impairment, MASH or primary biliary cholangitis, plus the GFT1007 active-metabolite PK model and the joint alkaline-phosphatase / total-bilirubin exposure-response model.
+
+- Add Choi 2026 melphalan ([doi:10.1007/s13318-026-01000-6](https://doi.org/10.1007/s13318-026-01000-6)) -- pediatric autologous haematopoietic stem cell transplant recipients.
+
+- Add Jin 2026 colistin sulfate ([doi:10.2147/IDR.S611711](https://doi.org/10.2147/IDR.S611711)) -- critically ill adults with carbapenem-resistant Gram-negative pneumonia.
+
+- Add Mulford 2026 vonoprazan ([doi:10.1002/psp4.70291](https://doi.org/10.1002/psp4.70291)) -- healthy adults and children and adolescents aged 6 to 17 years with gastroesophageal reflux disease.
+
+- Add Li 2015 pomalidomide ([doi:10.1002/jcph.455](https://doi.org/10.1002/jcph.455)) -- healthy adults and patients with relapsed and refractory multiple myeloma.
+
+- Add Savelieva 2015 panobinostat ([doi:10.1007/s00228-015-1846-7](https://doi.org/10.1007/s00228-015-1846-7)) -- adults with advanced hematologic and solid tumours; both of the paper's final models are included.
+
+- Add Kletting 2015 anti-CD66 antibody (BW 250/183) radioimmunotherapy whole-body PBPK, models 1 and 2 ([doi:10.1371/journal.pone.0127934](https://doi.org/10.1371/journal.pone.0127934)) -- adults with acute leukaemia conditioned before stem-cell transplantation.
+
+- Add Keizer 2015 indisulam ([doi:10.1002/prp2.131](https://doi.org/10.1002/prp2.131)) -- adults with advanced solid tumours in a phase I indisulam plus irinotecan dose-escalation trial.
+
+- Add Carlsson Petri 2015 liraglutide ([doi:10.1007/s40262-014-0229-z](https://doi.org/10.1007/s40262-014-0229-z)) -- pediatric (10-17 years) and adult subjects with type 2 diabetes.
+
+- Add Zhou 2015 BMS-911543 in vitro enzyme kinetics ([doi:10.1002/psp4.35](https://doi.org/10.1002/psp4.35)) -- pooled human liver microsomes and recombinant CYP1A2, CYP3A4 and CYP2J2, plus mechanism-based inactivation of CYP1A2.
+
+- Add Stockmann 2015 vancomycin ([doi:10.1007/s40121-015-0067-9](https://doi.org/10.1007/s40121-015-0067-9)) -- neonates up to 54 weeks postmenstrual age.
+
+- Add Isbister 2015 Indian F(ab')2 snake antivenom ([doi:10.1371/journal.pntd.0003873](https://doi.org/10.1371/journal.pntd.0003873)) -- Sri Lankan adults with Russell's viper envenoming.
+
+- Add Franke 2015 oxycodone and acetaminophen ([doi:10.2147/DDDT.S79499](https://doi.org/10.2147/DDDT.S79499)) -- healthy adults and nondependent recreational opioid users given single oral doses of biphasic IR/ER oxycodone/acetaminophen tablets, fasted and with a meal.
+
+- Add Ambery 2015 batefenterol ([doi:10.1007/s40268-015-0104-x](https://doi.org/10.1007/s40268-015-0104-x)) -- adults with moderate-to-severe COPD, plus a trough-FEV1 Emax dose-response model.
+
+- Add van Rongen 2015 midazolam ([doi:10.1002/psp4.12007](https://doi.org/10.1002/psp4.12007)) -- healthy adult male volunteers, 24-hour variation in oral and intravenous PK.
+
+- Add Kloprogge 2015 artesunate ([doi:10.1111/bcp.12660](https://doi.org/10.1111/bcp.12660)) -- pregnant women with uncomplicated falciparum malaria on the Thailand-Myanmar border, restudied three months post-partum.
+
+- Add Chen 2015 zinc oxide nanoparticles (10 nm and 71 nm) and zinc nitrate ([doi:10.2147/IJN.S86785](https://doi.org/10.2147/IJN.S86785)) -- male ICR mice given a single intravenous dose.
+
+- Add Reddy 2015 oseltamivir ([doi:10.1371/journal.pone.0138069](https://doi.org/10.1371/journal.pone.0138069)) -- ferrets, uninfected or inoculated with influenza A (H5N1, H3N2) or influenza B.
+
+- Add Verner 2015 PFOS and PFOA gestational PBPK ([doi:10.1289/ehp.1408837](https://doi.org/10.1289/ehp.1408837)) -- pregnant women with background environmental exposure.
+
+- Add Yoshii 2016 acotiamide ([doi:10.1007/s11095-015-1787-y](https://doi.org/10.1007/s11095-015-1787-y)) -- male Sprague-Dawley rats.
+
+- Add Akil 2016 citalopram ([doi:10.1007/s10928-015-9457-6](https://doi.org/10.1007/s10928-015-9457-6)) -- elderly Alzheimer's disease patients treated for agitation in the CitAD trial.
+
+- Add Komatsu 2015 digoxin ([doi:10.1186/s40780-015-0023-6](https://doi.org/10.1186/s40780-015-0023-6)) -- adult Japanese cardiology patients.
+
+- Add Boucher 2016 naproxen and topiramate landmark model-based meta-analyses ([doi:10.1002/psp4.12041](https://doi.org/10.1002/psp4.12041)) -- adults with osteoarthritis pain across 13 naproxen trials, and adults with episodic migraine across six topiramate prophylaxis trials.
+
+- Add Navid 2016 theophylline, caffeine and ciprofloxacin whole-body PBPK ([doi:10.1002/psp4.12061](https://doi.org/10.1002/psp4.12061)) -- adults, reference man and woman, with the drug-drug interactions of theophylline with caffeine and ciprofloxacin.
+
+- Add Hoglund 2016 chloroquine and desethylchloroquine ([doi:10.1186/s12936-016-1181-1](https://doi.org/10.1186/s12936-016-1181-1)) -- adults with Plasmodium vivax mono-infection on the Thai-Myanmar border.
+
+- Add Jonsson 2016 tanezumab ([doi:10.1111/bcp.12850](https://doi.org/10.1111/bcp.12850)) -- adults with moderate to severe osteoarthritis of the knee or hip.
+
+- Add Komatsu 2016 penicillin G ([doi:10.1186/s40780-016-0043-x](https://doi.org/10.1186/s40780-016-0043-x)) -- Japanese adults treated for infective endocarditis, with a companion clinical-success exposure-response model.
+
+- Add Zhang 2015 methotrexate ([doi:10.4103/0366-6999.147829](https://doi.org/10.4103/0366-6999.147829)) -- Chinese osteosarcoma patients aged 6-49 receiving high-dose intravenous methotrexate.
+
+- Add Zierhut 2016 antiangiogenic therapy in advanced hepatocellular carcinoma ([doi:10.1002/psp4.12078](https://doi.org/10.1002/psp4.12078)) -- a median-overall-survival MBMA over 68 trial arms from 59 published studies.
+
+- Add Brenner 2016 pamrevlumab (FG-3019) ([doi:10.1007/s11095-016-1918-0](https://doi.org/10.1007/s11095-016-1918-0)) -- male Sprague-Dawley rats; target-mediated disposition against endogenous CTGF and its N-fragment.
+
+- Add Bustinduy 2016 praziquantel ([doi:10.1128/mBio.00227-16](https://doi.org/10.1128/mBio.00227-16)) -- Ugandan children aged 3-8 years with intestinal schistosomiasis.
+
+- Add Desai 2016 isavuconazole, phase 1 + phase 3 SECURE pooled analysis ([doi:10.1128/AAC.02819-15](https://doi.org/10.1128/AAC.02819-15)) -- healthy adults and adults with invasive aspergillosis or other filamentous-fungal infections. Distinct from the same author's same-year hepatic-impairment analysis already carried as `Desai_2016_isavuconazole`.
+
+- Add Burns 2015 tenofovir and tenofovir-diphosphate ([doi:10.1002/jcph.461](https://doi.org/10.1002/jcph.461)) -- healthy HIV-negative women in the MTN-001 trial.
+
+- Add Cordes 2016 isoniazid antimycobacterial PD ([doi:10.1128/AAC.00508-16](https://doi.org/10.1128/AAC.00508-16)) — adults with active pulmonary tuberculosis.
+
+- Add Vanobberghen 2016 tribendimidine ([doi:10.1128/AAC.00655-16](https://doi.org/10.1128/AAC.00655-16)) -- Lao adults infected with the liver fluke *Opisthorchis viverrini*.
+
+- Add Jiang 2016 harmaline + 5-MeO-DMT thermoregulation PK/PD ([doi:10.1016/j.apsb.2016.07.007](https://doi.org/10.1016/j.apsb.2016.07.007)) — wild-type and CYP2D6-humanized transgenic mice.
+
+- Add Loprete 2016 safinamide ([doi:10.1002/prp2.251](https://doi.org/10.1002/prp2.251)) -- adults with Parkinson's disease on stable dopamine-agonist or levodopa therapy; a population PK model and a linear ON-time disease-progression model.
+
+- Add Kim 2016 piperacillin and tazobactam ([doi:10.3947/ic.2016.48.3.209](https://doi.org/10.3947/ic.2016.48.3.209)) — Korean adult inpatients with acute infections.
+
+- Add Choi 2016 GCC-4401C and rivaroxaban PK/PD ([doi:10.1002/psp4.12103](https://doi.org/10.1002/psp4.12103)) — healthy male volunteers.
+
+- Add Togawa 2016 bilastine ([doi:10.1007/s40261-016-0447-2](https://doi.org/10.1007/s40261-016-0447-2)) -- healthy adult Japanese men; population PK plus indirect-response PK/PD models for the histamine-induced skin wheal and flare.
+
+- Add Schlender 2016 whole-body aging physiology ([doi:10.1007/s40262-016-0422-3](https://doi.org/10.1007/s40262-016-0422-3)) -- healthy European adults from 30 to 100 years; a PBPK system layer of organ masses, blood flows and a new GFR aging function, with no drug.
+
+- Add Hong 2016 pregabalin ([doi:10.2147/DDDT.S123318](https://doi.org/10.2147/DDDT.S123318)) -- healthy Korean male volunteers dosed fasted or after a meal.
+
+- Add Chen 2016 deoxypodophyllotoxin ([doi:10.3389/fphar.2016.00488](https://doi.org/10.3389/fphar.2016.00488)) -- whole-body PBPK in mouse, rat, cynomolgus monkey, beagle dog and predicted human, plus an interspecies-allometric human model.
+
+- Rename the existing `Eugene_2016_metoprolol` to `Eugene_2016a_metoprolol`. It
+  is a different Eugene 2016 metoprolol paper
+  ([doi:10.19070/2167-910X-1600035](https://doi.org/10.19070/2167-910X-1600035),
+  elderly inpatients) from the one added above, and the two collided on the
+  `Author_Year_drug` stem.
+
+- Add Lu 2016 pinatuzumab vedotin + polatuzumab vedotin ([doi:10.1002/psp4.12137](https://doi.org/10.1002/psp4.12137)) — adults with relapsed/refractory B-cell non-Hodgkin lymphoma.
+
+- Add Pelligand 2016 robenacoxib ([doi:10.1002/psp4.12141](https://doi.org/10.1002/psp4.12141)) -- healthy laboratory cats and clinical cats spayed under general anaesthesia, dosed intravenously and subcutaneously.
+
+- Add Chatterjee 2017 pembrolizumab ([doi:10.1002/psp4.12140](https://doi.org/10.1002/psp4.12140)) -- adults with advanced melanoma in KEYNOTE-001, -002 and -006; two tumour-size models, a four-class mixture and the pooled consolidated exposure-response structure.
+
+- Add Dumond 2017 efavirenz, atazanavir and ritonavir ([doi:10.1002/psp4.12151](https://doi.org/10.1002/psp4.12151)) -- HIV-infected adults aged 22-73 years, with total and unbound plasma concentrations modelled simultaneously.
+
+- Add Lyauk 2016 methylphenidate ([doi:10.1111/cts.12423](https://doi.org/10.1111/cts.12423)) — healthy Caucasian adults genotyped for CES1.
+
+- Add Sadiq 2017 ciprofloxacin whole-body PBPK ([doi:10.1007/s10928-016-9486-9](https://doi.org/10.1007/s10928-016-9486-9)) — adults in intensive care.
+
+- Add Santamaria 2017 rupatadine ([doi:10.1371/journal.pone.0176091](https://doi.org/10.1371/journal.pone.0176091)) -- 6-11 year old children with allergic rhinitis.
+
+- Add Woillard 2017 tacrolimus ([doi:10.3389/fphar.2017.00358](https://doi.org/10.3389/fphar.2017.00358)) -- de novo cadaveric kidney transplant recipients.
+
+- Add Law 2017 tea catechins ([doi:10.1002/prp2.305](https://doi.org/10.1002/prp2.305)) -- healthy adult volunteers and male Sprague-Dawley rats; six whole-body PBPK models (EGCg, ECg, EC in rats; EGCg, EGC, EC in humans) that together reproduce the paper's tea catechin mixture model.
+
+- Add Aston 2017 omalizumab and efalizumab receptor-rebound QSP models ([doi:10.1007/s00285-016-1073-6](https://doi.org/10.1007/s00285-016-1073-6)) -- theoretical TMDD illustration and adults with moderate-to-severe plaque psoriasis.
+
+- Add Oosten 2017 morphine, M3G and M6G ([doi:10.1007/s40262-016-0471-7](https://doi.org/10.1007/s40262-016-0471-7)) -- adults with nociceptive cancer pain on oral and subcutaneous morphine.
+
+- Add Toshimoto 2017 irinotecan whole-body PBPK ([doi:10.1007/s11095-017-2153-z](https://doi.org/10.1007/s11095-017-2153-z)) -- adults with advanced or metastatic solid tumours; irinotecan plus SN-38, SN-38G, NPC and APC as five coupled PBPK modules.
+
+- Add Hard 2017 aripiprazole lauroxil ([doi:10.1007/s40263-017-0447-7](https://doi.org/10.1007/s40263-017-0447-7)) - adults with schizophrenia or schizoaffective disorder.
+
+- Add Hanley 2017 bortezomib ([doi:10.1002/jcph.906](https://doi.org/10.1002/jcph.906)) -- children and adolescents aged 2-16 years with relapsed acute lymphoblastic leukemia or de novo acute myelogenous leukemia.
+
+- Add Traynard 2017 prostate cancer signaling logic-based ODE network ([doi:10.1002/psp4.12225](https://doi.org/10.1002/psp4.12225)) -- in vitro LNCaP human prostate cancer cell line.
+
+- Add Tamai 2017 lenvatinib ([doi:10.1002/jcph.917](https://doi.org/10.1002/jcph.917)) -- adults with advanced hepatocellular carcinoma Child-Pugh class A, pooled with healthy adults and mixed solid tumors; population PK plus an exposure-response model for early dose modification.
+
+- Generate the model database and the pkgdown navbar in the C collation
+  whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
+  `list.files()` and `Sys.glob()` all follow the collation locale, and C and
+  en_US.UTF-8 disagree about case: "ABT 102 (Othman 2013)" sorts before
+  "Abacavir (Archary 2019)" under C and after it under en_US. Rebuilding
+  outside the C locale therefore reordered 2509 of the 2912 `modeldb` rows and
+  most of the `_pkgdown.yml` navbar, thousands of lines of diff that said
+  nothing about the change being made. `addDirToModelDb()` now returns its
+  rows in C order on every machine, which is the order already committed to
+  `data/modeldb.rda` and `inst/modeldb.rds`.
+
+- Require `rxode2 (>= 5.1.8)`. 5.1.7 is the first release that works with lotri
+  1.0.5, but it still defaults `useLinCmt = TRUE`, and the ODE-to-`linCmt()`
+  conversion that flag enables segfaults intermittently inside rxode2's model
+  parser -- `linCmtGen()` generates model text and the result is parsed again
+  while the outer parse is still live, over parser state held in C globals. It
+  took out a pkgdown render shard on `Stroh_2013_rolofylline` with
+  `memory not mapped`, having rendered the same article successfully minutes
+  earlier on another branch. 5.1.8 defaults the flag to `FALSE`, which is also
+  the more accurate path: the conversion holds `kel` at its `t = 0` value and
+  drops exogenous input terms, and it changes 92 of the library's models'
+  solutions, five of them by more than 1%.
+
+- **These vignettes now require an rxode2 that does not silently rewrite an ODE
+  system into `linCmt()`** ([rxode2 issue
+  1370](https://github.com/nlmixr2/rxode2/issues/1370)). On rxode2 5.1.6 and
+  earlier, `Marques_2025_salbutamol`, `Schreib_2024_busulfan` and
+  `Sawe_2025_levofloxacin` fail to build rather than render numbers taken from
+  a model other than the one written. That is deliberate: the same three
+  vignettes previously rendered cleanly against the rewritten model. rxode2
+  5.1.7 refuses the conversion and `DESCRIPTION` already requires it, so the
+  constraint is now enforced by the dependency solver rather than only
+  described here.
+
+- Fix `Sawe_2025_levofloxacin`, which administered twice the dose. The model
+  omitted `f(depot) <- 0`, so each dose entered `depot` as a bolus *and* again
+  through the analytical `transit()` chain: `AUC(0-inf) * CL` came to 1999.98 mg
+  for a 1000 mg dose. The line had been left out on the belief that it zeroed
+  the transit input, which was in fact rxode2's ODE-to-`linCmt()` auto-conversion
+  ([rxode2 issue 1370](https://github.com/nlmixr2/rxode2/issues/1370)) discarding
+  the `transit()` term. The vignette's steady-state AUC identity now holds
+  because the model is right, not because the solver had replaced it. A sweep of
+  all 47 models that call `transit()` found no other instance.
+
+- Update the vignettes that documented rxode2's ODE-to-`linCmt()` auto-conversion
+  defect, now that rxode2 refuses the conversion when it would change the model.
+  `Marques_2025_salbutamol` no longer describes its plain-ODE twin as a
+  `transit()`/`rxUi` workaround -- that diagnosis was wrong -- and now asserts the
+  two model handles agree. `Schreib_2024_busulfan` keeps `useLinCmt = FALSE` so it
+  stays correct on older rxode2, but its demonstration of the constant-`kel`
+  rewrite becomes an agreement check. Both vignettes previously carried assertions
+  that required the defect to be present and failed once it was fixed.
+
+- Fix the `Smythe_2013_gatifloxacin` NCA interval. The chunk filtered `time > 0`
+  out of the concentration data while asking PKNCA for an interval starting at 0,
+  so `auclast` and `aucinf.obs` came back `NA` for every subject and the
+  simulated-versus-published AUC table was empty. Simulated AUC0-inf is 35.97
+  (first dose) and 32.44 mg*h/L (steady state) against published medians of 41.2
+  and 35.4.
+
+- Correct two vignette claims that were written against unusable output.
+  `Barras_2009_enoxaparin` said ~20-30% discrepancies in cAUC were expected; the
+  simulated median is 2.7-fold the published one, because Table 3's cAUC runs to
+  the bleeding event over a mean 3.5-day therapy while the vignette integrates a
+  fixed 96-h course. `Dong_2014_mycophenolic_acid` quoted a typical Cmax of
+  8-12 mg/L and IMPDH activity of ~13-18% of baseline; the values are 7-10 mg/L
+  and ~15-20%.
+
+- Read the registers' `- **Type:**` field the same way in every parser. Four
+  places read that one field and only `checkNamingRegisters.R::.parseRegister()`
+  split off a trailing parenthetical qualifier; the other three kept it. So
+  `WHO_PS` -- written `continuous (semantically ordinal but treated as
+  continuous in the covariate model)` -- carried that whole sentence as its
+  routing tag where every other covariate with a `Type:` line carried a bare
+  token. Nothing branches on a covariate's type yet, so this was a latent trap
+  rather than a live bug -- the first code to filter covariates by type would
+  have silently missed that entry. `conventions.R::.parseCovariateColumns()`,
+  `conventions.R::.parseTypedNamesMd()` and
+  `checkModelConventions.R::.referenceRegisterBlocks()` now all split the
+  field: the bare token lands in `type` and the parenthetical in a new
+  `typeQualifier` field. The tag is matched with `identical()` wherever it is
+  consumed (`.namesByType()`, and the `name` + `type` duplicate key), so a
+  qualifier left on it drops an entry out of the canonical lists with no
+  warning anywhere. All four now call one splitter,
+  `conventions.R::.splitRegisterType()`, so they cannot diverge by
+  construction rather than only by four copies of a regex happening to agree;
+  a new `tests/testthat/test-conventions.R` covers the splitter directly and
+  enumerates every entry of every register on top of that.
+
+- Remove the `as`, `ag` and `DIAL` deprecation tombstones from the naming
+  registers. All three names were introduced, deprecated and replaced entirely
+  within the 0.3.2.9000 development cycle -- `inst/references/` did not exist at
+  the 0.3.2 release, no released model ever used the `_as` / `_ag` paracetamol
+  suffixes, and no model has ever carried `DIAL` as a covariate column -- so
+  none of them ever reached a user and a tombstone pointing at the replacement
+  had no audience. The canonical replacements (`apaps`, `apapg`,
+  `RRT_HEMODIAL_ACTIVE` / `RRT_HEMODIAL_STATUS`) are unaffected, and `DIAL`
+  survives as a source alias on both `RRT_HEMODIAL_*` canonicals, which is what
+  actually records that the source papers named the column that way. The `BFR`
+  and `DFR` entries now gate on `RRT_HEMODIAL_ACTIVE` rather than on the
+  removed name.
+
+  Removing the tombstones also dissolves a trap: `metabolite-suffix
+  (deprecated)` was the only thing keeping `as` and `ag` out of
+  `registeredMetabolites`, and it did so by failing an `identical()` match
+  rather than by an explicit flag, so making the parsers consistent would have
+  silently re-admitted both. With the entries gone there is nothing left to
+  re-admit. Verified that every canonical list
+  (`compartments`, `registeredMetabolites`, `pkParams`, `pkBareParams`,
+  `paperNamedParams`) is byte-identical to before.
 - `addBioavailability()` gains a `scale` argument. `scale = "logit"`
   constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
   the Monolix-style oral/SC `F` and the form the `PK_double_sim_*` seeds

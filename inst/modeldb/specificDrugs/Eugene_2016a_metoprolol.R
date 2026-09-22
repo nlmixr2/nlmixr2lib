@@ -1,7 +1,7 @@
-Eugene_2016_metoprolol <- function() {
+Eugene_2016a_metoprolol <- function() {
   description <- "One-compartment population PK model for oral metoprolol tartrate with first-order absorption and lag time in elderly inpatients with multiple comorbidities; sex as the only covariate on apparent clearance (Eugene 2016)."
   reference <- "Eugene AR. Gender based Dosing of Metoprolol in the Elderly using Population Pharmacokinetic Modeling and Simulations. Int J Clin Pharmacol Toxicol. 2016;5(3):209-215. doi:10.19070/2167-910X-1600035"
-  vignette <- "Eugene_2016_metoprolol"
+  vignette <- "Eugene_2016a_metoprolol"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
