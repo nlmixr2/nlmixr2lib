@@ -1194,6 +1194,8 @@ navbar:
         href: articles/Agoram_2006_darbepoetin_alfa_cia.html
       - text: "Darunavir (Brochot 2015)"
         href: articles/Brochot_2015_darunavir.html
+      - text: "Darunavir (Daskapan 2019)"
+        href: articles/Daskapan_2019_darunavir.html
       - text: "Dasabuvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Dasatinib (Hassouneh 2024)"
@@ -6003,6 +6005,7 @@ articles:
   - articles/Darwish_2025a_trofinetide
   - articles/Darwish_2025b_trofinetide
   - articles/Darwish_2026_remlifanserin
+  - articles/Daskapan_2019_darunavir
   - articles/Dasti_2025_mrna_vaccines
   - articles/Davis_2008_maraviroc
   - articles/DeCock_2012_propyleneGlycol
