@@ -177,7 +177,7 @@ Xu_2017_daptomycin <- function() {
       ),
       source_name = "DIAM[High flux]"
     ),
-    DIS_IE_LEFT = list(
+    DIS_IEAC_LEFT = list(
       description = "Left-sided infective endocarditis indicator (IEAC category 1); multiplicative factor 1.16 on clearance",
       units = "(binary)",
       type = "binary",
@@ -190,15 +190,15 @@ Xu_2017_daptomycin <- function() {
       ),
       source_name = "IEAC[IEAC 1]"
     ),
-    DIS_IE_RIGHT_COMPL = list(
+    DIS_IEAC_RIGHT_COMP = list(
       description = "Complicated right-sided infective endocarditis indicator (IEAC category 2); multiplicative factor 1.3 on clearance",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (diagnosis not adjudicated / not available)",
-      notes = "Xu 2017 Table 1: 13 (3%) of 459 subjects. See DIS_IE_LEFT for the shared reference level.",
+      notes = "Xu 2017 Table 1: 13 (3%) of 459 subjects. See DIS_IEAC_LEFT for the shared reference level.",
       source_name = "IEAC[IEAC 2]"
     ),
-    DIS_IE_RIGHT_UNCOMPL = list(
+    DIS_IEAC_RIGHT_UNCOMP = list(
       description = "Uncomplicated right-sided infective endocarditis indicator (IEAC category 3); multiplicative factor 1.3 on clearance",
       units = "(binary)",
       type = "binary",
@@ -210,7 +210,7 @@ Xu_2017_daptomycin <- function() {
       ),
       source_name = "IEAC[IEAC 3]"
     ),
-    DIS_BACTEREMIA_COMPL = list(
+    DIS_BACTEREMIA_COMP = list(
       description = "Complicated Staphylococcus aureus bacteraemia indicator (IEAC category 4); multiplicative factor 1.10 on clearance",
       units = "(binary)",
       type = "binary",
@@ -218,7 +218,7 @@ Xu_2017_daptomycin <- function() {
       notes = "Xu 2017 Table 1: 58 (13%) of 459 subjects, the most frequent adjudicated diagnosis.",
       source_name = "IEAC[IEAC 4]"
     ),
-    DIS_BACTEREMIA_UNCOMPL = list(
+    DIS_BACTEREMIA_UNCOMP = list(
       description = "Uncomplicated Staphylococcus aureus bacteraemia indicator (IEAC category 5); multiplicative factor 1.13 on clearance",
       units = "(binary)",
       type = "binary",
@@ -314,11 +314,11 @@ Xu_2017_daptomycin <- function() {
     # ---- Clearance covariates shared by Eq 1 and Eq 6 ----
     e_bodytemp_cl <- 2.28; label("Exponent on (BODYTEMP / 37 degC) for clearance (unitless)")  # Table S2, *(TEMP/37)^theta 9 = 2.28 (60% RSE)
     e_sexf_cl <- 0.867; label("Female factor on clearance (unitless)")  # Table S2, *theta 8 SEX [Female] = 0.867 (3% RSE)
-    e_ie_left_cl <- 1.16; label("Left-sided infective endocarditis factor on clearance (unitless)")  # Table S2, *theta 15 IEAC [LIE] = 1.16 (12% RSE)
-    e_ie_right_compl_cl <- 1.3; label("Complicated right-sided infective endocarditis factor on clearance (unitless)")  # Table S2, *theta 16 IEAC [Complicated RIE] = 1.3 (9% RSE)
-    e_ie_right_uncompl_cl <- 1.3; label("Uncomplicated right-sided infective endocarditis factor on clearance (unitless)")  # Table S2, *theta 17 IEAC [Uncomplicated RIE] = 1.3 (10% RSE)
-    e_bacteremia_compl_cl <- 1.10; label("Complicated bacteraemia factor on clearance (unitless)")  # Table S2, *theta 18 IEAC [Complicated Bacteraemia] = 1.10 (4% RSE)
-    e_bacteremia_uncompl_cl <- 1.13; label("Uncomplicated bacteraemia factor on clearance (unitless)")  # Table S2, *theta 19 IEAC [Uncomplicated Bacteraemia] = 1.13 (5% RSE)
+    e_ieac_left_cl <- 1.16; label("Left-sided infective endocarditis factor on clearance (unitless)")  # Table S2, *theta 15 IEAC [LIE] = 1.16 (12% RSE)
+    e_ieac_right_comp_cl <- 1.3; label("Complicated right-sided infective endocarditis factor on clearance (unitless)")  # Table S2, *theta 16 IEAC [Complicated RIE] = 1.3 (9% RSE)
+    e_ieac_right_uncomp_cl <- 1.3; label("Uncomplicated right-sided infective endocarditis factor on clearance (unitless)")  # Table S2, *theta 17 IEAC [Uncomplicated RIE] = 1.3 (10% RSE)
+    e_bacteremia_comp_cl <- 1.10; label("Complicated bacteraemia factor on clearance (unitless)")  # Table S2, *theta 18 IEAC [Complicated Bacteraemia] = 1.10 (4% RSE)
+    e_bacteremia_uncomp_cl <- 1.13; label("Uncomplicated bacteraemia factor on clearance (unitless)")  # Table S2, *theta 19 IEAC [Uncomplicated Bacteraemia] = 1.13 (5% RSE)
 
     # ---- Central volume (Xu 2017 Eq 2) ----
     lvc <- log(4.86); label("Central volume, all strata except CVVHD and CVVHDF (L)")  # Table S2, V1 other = theta 2 = 4.86 (4% RSE)
@@ -367,11 +367,11 @@ Xu_2017_daptomycin <- function() {
     # Covariate multipliers shared by Eq 1 and Eq 6.
     covTempCl <- (BODYTEMP / 37)^e_bodytemp_cl
     covSexCl <- e_sexf_cl^SEXF
-    covIeacCl <- e_ie_left_cl^DIS_IE_LEFT *
-      e_ie_right_compl_cl^DIS_IE_RIGHT_COMPL *
-      e_ie_right_uncompl_cl^DIS_IE_RIGHT_UNCOMPL *
-      e_bacteremia_compl_cl^DIS_BACTEREMIA_COMPL *
-      e_bacteremia_uncompl_cl^DIS_BACTEREMIA_UNCOMPL
+    covIeacCl <- e_ieac_left_cl^DIS_IEAC_LEFT *
+      e_ieac_right_comp_cl^DIS_IEAC_RIGHT_COMP *
+      e_ieac_right_uncomp_cl^DIS_IEAC_RIGHT_UNCOMP *
+      e_bacteremia_comp_cl^DIS_BACTEREMIA_COMP *
+      e_bacteremia_uncomp_cl^DIS_BACTEREMIA_UNCOMP
 
     # Eq 1: dialysis clearance, modality-specific and scaled by membrane flux.
     clDialysis <- (RRT_HEMODIAL_STATUS * exp(lcl_hemodialysis) +

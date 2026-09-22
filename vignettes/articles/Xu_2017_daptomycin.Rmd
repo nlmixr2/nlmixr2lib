@@ -84,11 +84,11 @@ three significant figures.
 | `e_sexf_cl` | 0.867 | Table S2, `*theta 8 SEX [Female]` (3% RSE) |
 | `e_filt_flux_low_cl` | 0.96 | Table S2, `*theta 13 DIAM [Low Flux]` (14% RSE) |
 | `e_filt_flux_high_cl` | 1.36 | Table S2, `*theta 14 DIAM [High Flux]` (8% RSE) |
-| `e_ie_left_cl` | 1.16 | Table S2, `*theta 15 IEAC [LIE]` (12% RSE) |
-| `e_ie_right_compl_cl` | 1.3 | Table S2, `*theta 16 IEAC [Complicated RIE]` (9% RSE) |
-| `e_ie_right_uncompl_cl` | 1.3 | Table S2, `*theta 17 IEAC [Uncomplicated RIE]` (10% RSE) |
-| `e_bacteremia_compl_cl` | 1.10 | Table S2, `*theta 18 IEAC [Complicated Bacteraemia]` (4% RSE) |
-| `e_bacteremia_uncompl_cl` | 1.13 | Table S2, `*theta 19 IEAC [Uncomplicated Bacteraemia]` (5% RSE) |
+| `e_ieac_left_cl` | 1.16 | Table S2, `*theta 15 IEAC [LIE]` (12% RSE) |
+| `e_ieac_right_comp_cl` | 1.3 | Table S2, `*theta 16 IEAC [Complicated RIE]` (9% RSE) |
+| `e_ieac_right_uncomp_cl` | 1.3 | Table S2, `*theta 17 IEAC [Uncomplicated RIE]` (10% RSE) |
+| `e_bacteremia_comp_cl` | 1.10 | Table S2, `*theta 18 IEAC [Complicated Bacteraemia]` (4% RSE) |
+| `e_bacteremia_uncomp_cl` | 1.13 | Table S2, `*theta 19 IEAC [Uncomplicated Bacteraemia]` (5% RSE) |
 | `lvc` | 4.86 L | Table S2, `V1 other (L) = theta 2` (4% RSE) |
 | `lvc_cvvhd` | 5.736 L | Table S2, `V1 CVVHD (L) = theta 24` (8% RSE); Table 2 prints 5.74 |
 | `lvc_cvvhdf` | 6.526 L | Table S2, `V1 CVVHDF (L) = theta 25` (6% RSE); Table 2 prints 6.53 |
@@ -160,8 +160,8 @@ refCov <- list(
   RRT_HEMODIAL_STATUS = 0, PERIT_DIAL = 0,
   RRT_CVVHD_STATUS = 0, RRT_CVVHDF_STATUS = 0,
   FILT_FLUX_LOW = 0, FILT_FLUX_HIGH = 0,
-  DIS_IE_LEFT = 0, DIS_IE_RIGHT_COMPL = 0, DIS_IE_RIGHT_UNCOMPL = 0,
-  DIS_BACTEREMIA_COMPL = 0, DIS_BACTEREMIA_UNCOMPL = 0,
+  DIS_IEAC_LEFT = 0, DIS_IEAC_RIGHT_COMP = 0, DIS_IEAC_RIGHT_UNCOMP = 0,
+  DIS_BACTEREMIA_COMP = 0, DIS_BACTEREMIA_UNCOMP = 0,
   DIS_INFECT_ACTIVE = 0, ASSAY_LCMSMS = 1
 )
 
