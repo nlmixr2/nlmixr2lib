@@ -731,9 +731,6 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (is.null(units)) {
     return(issues)
   }
-  if (.unitsMetaForm(units) == "named") {
-    return(.checkUnitSpellingsNamed(units, conv))
-  }
   spellings <- list(time = conv$timeUnitSpellings, dosing = conv$doseUnitSpellings)
   for (fld in names(spellings)) {
     val <- units[[fld]]
@@ -757,127 +754,6 @@ checkModelConventions <- function(model, verbose = TRUE) {
         )
       )
     }
-  }
-  issues
-}
-
-# Which shape the `units` metadata block has: the legacy
-# `list(time=, dosing=, concentration=)`, or the named form
-# `list(time=, <compartment>=, <output>=, ...)` that addUnits() writes.
-.unitsMetaForm <- function(units) {
-  if (is.null(units) || !is.list(units)) {
-    return("none")
-  }
-  if (any(c("dosing", "concentration") %in% names(units))) {
-    return("legacy")
-  }
-  "named"
-}
-
-# Spelling check for the named form: every token of every entry must be a
-# canonical spelling ("L/hr" is flagged, "L/h" is not).
-.checkUnitSpellingsNamed <- function(units, conv) {
-  issues <- .emptyIssues()
-  maps <- c(conv$timeUnitSpellings, conv$doseUnitSpellings)
-  for (fld in names(units)) {
-    val <- units[[fld]]
-    if (is.null(val) || !is.character(val) || length(val) != 1 || is.na(val)) {
-      next
-    }
-    tokens <- strsplit(val, "[/*() ^]+")[[1]]
-    for (tok in tokens) {
-      key <- tolower(tok)
-      if (key %in% names(maps)) {
-        issues <- rbind(
-          issues,
-          .issue(
-            "unit_spelling",
-            "error",
-            sprintf("units$%s", fld),
-            sprintf("units$%s = '%s' uses the non-canonical spelling '%s'.", fld, val, tok),
-            sprintf("Use '%s'. Same unit, one spelling -- consumers cannot canonicalise otherwise.", maps[[key]])
-          )
-        )
-      }
-    }
-  }
-  issues
-}
-
-# The named form must name the time unit, every dosed compartment and every
-# endpoint; with the `units` package installed the arithmetic is then checked
-# by checkUnits().
-.checkUnitsNamed <- function(ui, conv, units) {
-  issues <- .emptyIssues()
-  endo <- .isEndogenousOrTemplate(ui)
-  sev <- if (endo) "info" else "error"
-  required <- c("time", .unitDosedCompartments(ui))
-  predDf <- ui$predDf
-  if (is.data.frame(predDf) && nrow(predDf) > 0) {
-    required <- c(required, sub("^rxLinCmt$", "linCmt", unique(predDf$var)))
-  }
-  for (fld in unique(required)) {
-    if (is.null(units[[fld]]) || !nzchar(units[[fld]] %||% "")) {
-      issues <- rbind(
-        issues,
-        .issue(
-          "units",
-          sev,
-          fld,
-          sprintf("units$%s is missing.", fld),
-          sprintf("Add `%s = \"<unit>\"` to the `units <- list(...)` metadata block.", fld)
-        )
-      )
-    }
-  }
-  if (!.unitsAvailable()) {
-    return(rbind(
-      issues,
-      .issue(
-        "units",
-        "info",
-        "units",
-        "The 'units' package is not installed, so the model's arithmetic was not checked against its units.",
-        "Install it with `install.packages(\"units\")` (needs the udunits-2 system library)."
-      )
-    ))
-  }
-  res <- tryCatch(checkUnits(ui), error = function(e) e)
-  if (inherits(res, "error")) {
-    return(rbind(
-      issues,
-      .issue(
-        "units",
-        "error",
-        "units",
-        sprintf("checkUnits() failed: %s", conditionMessage(res)),
-        "Fix the `units` metadata so `checkUnits()` runs."
-      )
-    ))
-  }
-  for (i in which(!is.na(res$issue))) {
-    issues <- rbind(
-      issues,
-      .issue(
-        "units",
-        "error",
-        res$name[i],
-        res$issue[i],
-        "Fix the arithmetic or the declared unit; `checkUnits()` shows the inferred units."
-      )
-    )
-  }
-  for (i in which(!is.na(res$conversion))) {
-    issues <- rbind(
-      issues,
-      .issue(
-        "units",
-        "warning",
-        res$name[i],
-        sprintf("'%s' needs a unit conversion constant: %s.", res$name[i], res$conversion[i]),
-        "Run `addUnits()` to insert it and record it in `unitConversions`."
-      )
-    )
   }
   issues
 }
@@ -1316,9 +1192,6 @@ checkModelConventions <- function(model, verbose = TRUE) {
   units <- as.list(ui$meta)$units
   if (is.null(units)) {
     return(issues)
-  }
-  if (.unitsMetaForm(units) == "named") {
-    return(.checkUnitsNamed(ui, conv, units))
   }
   endo <- .isEndogenousOrTemplate(ui)
   for (fld in conv$requiredUnits) {

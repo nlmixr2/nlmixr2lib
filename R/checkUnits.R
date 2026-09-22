@@ -591,20 +591,6 @@
 
 # ---- inputs ---------------------------------------------------------------------------
 
-# The compartments doses go into when the metadata does not say.
-.unitDosedCompartments <- function(ui) {
-  meta <- as.list(ui$meta)
-  states <- ui$state
-  if (is.character(meta$dosing) && length(meta$dosing) > 0) {
-    return(intersect(meta$dosing, states))
-  }
-  props <- ui$props$cmtProp
-  if (is.data.frame(props) && nrow(props) > 0) {
-    return(intersect(unique(props$Compartment), states))
-  }
-  utils::head(intersect(c("depot", "central"), states), 1)
-}
-
 .unitParses <- function(s) {
   tryCatch(
     {
@@ -615,69 +601,60 @@
   )
 }
 
-# Unit strings from the model's `units` metadata. Legacy `dosing` and
-# `concentration` keys map onto the dosed compartments and a single endpoint;
-# a value that does not parse or a key that names nothing in the model is
-# skipped with a note.
-.unitDeclaredMeta <- function(legacy, known, dosed, endpoints) {
+# Declared unit strings, `...` over `units` over `covariateData` over the
+# model's `units` metadata. A metadata entry counts when its key names a
+# model symbol and its value is a unit; otherwise it is skipped with a note.
+# An argument that does not parse or names nothing in the model is an error.
+.unitDeclared <- function(ui, dots, unitsArg, known) {
+  meta <- as.list(ui$meta)
   decl <- list()
   notes <- character()
-  for (nm in names(legacy)) {
-    val <- legacy[[nm]]
+  for (nm in names(meta$units)) {
+    val <- meta$units[[nm]]
     if (!is.character(val) || length(val) != 1L || is.na(val)) {
       next
     }
-    keys <- switch(
-      nm,
-      dosing = dosed,
-      concentration = if (length(endpoints) == 1L) endpoints else character(),
-      if (nm %in% known) nm else character()
-    )
-    if (length(keys) == 0) {
+    if (!nm %in% known) {
       notes <- c(notes, sprintf("units$%s ignored: it names nothing in the model", nm))
     } else if (!.unitParses(val)) {
       notes <- c(notes, sprintf("units$%s = '%s' ignored: not a unit", nm, val))
     } else {
-      for (k in keys) {
-        decl[[k]] <- val
-      }
+      decl[[nm]] <- val
     }
   }
-  list(decl = decl, notes = notes)
-}
-
-# Declared unit strings, `...` over `units` over `covariateData` over the
-# model's `units` metadata. An argument that does not parse or names nothing
-# in the model is an error.
-.unitDeclared <- function(ui, dots, unitsArg, known, dosed, endpoints) {
-  meta <- as.list(ui$meta)
-  fromMeta <- .unitDeclaredMeta(meta$units, known, dosed, endpoints)
-  decl <- fromMeta$decl
-  notes <- fromMeta$notes
   for (nm in names(meta$covariateData)) {
     v <- if (is.list(meta$covariateData[[nm]])) meta$covariateData[[nm]]$units
     if (is.character(v) && length(v) == 1L && !is.na(v) && is.null(decl[[nm]]) && nm %in% known && .unitParses(v)) {
       decl[[nm]] <- v
     }
   }
-  if (!is.null(unitsArg)) {
-    checkmate::assertList(unitsArg, types = "character", names = "unique")
-    decl[names(unitsArg)] <- unitsArg
-  }
-  if (length(dots) > 0) {
-    if (is.null(names(dots)) || any(!nzchar(names(dots))) || anyDuplicated(names(dots)) > 0) {
-      stop(.unitError("units passed through `...` must have unique names, e.g. `depot = \"mg\"`"))
-    }
-    for (nm in names(dots)) {
-      checkmate::assertString(dots[[nm]], .var.name = nm)
-      decl[[nm]] <- dots[[nm]]
-    }
-  }
+  args <- .unitDeclaredArgs(dots, unitsArg)
+  decl[names(args)] <- args
   if (!is.null(decl$linCmt)) {
     decl$rxLinCmt <- decl$linCmt
     decl$linCmt <- NULL
   }
   list(decl = decl, notes = notes)
+}
+
+# The unit strings given as arguments, `...` over `units`, validated.
+.unitDeclaredArgs <- function(dots, unitsArg) {
+  decl <- list()
+  if (!is.null(unitsArg)) {
+    checkmate::assertList(unitsArg, types = "character", names = "unique")
+    decl[names(unitsArg)] <- unitsArg
+  }
+  if (length(dots) == 0) {
+    return(decl)
+  }
+  if (is.null(names(dots)) || any(!nzchar(names(dots))) || anyDuplicated(names(dots)) > 0) {
+    stop(.unitError("units passed through `...` must have unique names, e.g. `depot = \"mg\"`"))
+  }
+  for (nm in names(dots)) {
+    checkmate::assertString(dots[[nm]], .var.name = nm)
+    decl[[nm]] <- dots[[nm]]
+  }
+  decl
 }
 
 # "mg/L * 1000 = ng/mL", or a division when the reciprocal is a clean integer.
@@ -707,11 +684,11 @@
 #' or `mL/kg` and `mL/kg/<time>` for a dose per body weight); anything else
 #' keeps what the equations gave. `addUnits()` applies the result.
 #'
-#' Units in the model's `units` metadata are the defaults, arguments override
-#' them, and a legacy `list(time =, dosing =, concentration =)` block is read
-#' as the dose unit of the dosed compartments and the unit of a single
-#' endpoint. Covariate units come from `covariateData`; an undeclared covariate
-#' is unknown like any other symbol.
+#' Entries of the model's `units` metadata whose key names a model symbol
+#' (`time`, a compartment, an output, a parameter) are the defaults and
+#' arguments override them; any other key is ignored with a note. Covariate
+#' units come from `covariateData`; an undeclared covariate is unknown like any
+#' other symbol.
 #'
 #' The rules: `+` and `-` need convertible operands; a bare number added to or
 #' subtracted from a quantity is a value in that quantity's unit (`AGE - 40`),
@@ -789,8 +766,7 @@ checkUnits <- function(ui, ..., units = NULL) {
     "target"
   ))
   known <- c("time", states, endpoints, ini$name, covs, inter)
-  dosed <- .unitDosedCompartments(.ui)
-  d <- .unitDeclared(.ui, list(...), units, c(known, "linCmt"), dosed, endpoints)
+  d <- .unitDeclared(.ui, list(...), units, c(known, "linCmt"))
   bad <- setdiff(names(d$decl), known)
   if (length(bad) > 0) {
     stop(.unitError(sprintf("units given for names that are not in the model: %s", paste(bad, collapse = ", "))))
@@ -896,10 +872,12 @@ addUnits <- function(ui, ..., units = NULL) {
   }
   .ui <- rxode2::rxUiDecompress(.ui)
   meta <- .ui$meta
+  # the dosed compartments are the states given a dose unit, by argument or
+  # by the metadata as it was before this call
+  declared <- c(names(get0("units", envir = meta, inherits = FALSE)), names(list(...)), names(units))
+  dosing <- intersect(unique(declared), .ui$state)
   resolved <- res[!is.na(res$unit) & !grepl("[()]", res$name), , drop = FALSE]
   assign("units", stats::setNames(as.list(resolved$unit), resolved$name), envir = meta)
-  declared <- c(names(list(...)), names(units))
-  dosing <- intersect(unique(c(.unitDosedCompartments(.ui), declared)), .ui$state)
   if (length(dosing) > 0) {
     assign("dosing", dosing, envir = meta)
   }

@@ -38,11 +38,11 @@ or `mL/kg` and `mL/kg/<time>` for a dose per body weight); anything else
 keeps what the equations gave. `addUnits()` applies the result.
 }
 \details{
-Units in the model's `units` metadata are the defaults, arguments override
-them, and a legacy `list(time =, dosing =, concentration =)` block is read
-as the dose unit of the dosed compartments and the unit of a single
-endpoint. Covariate units come from `covariateData`; an undeclared covariate
-is unknown like any other symbol.
+Entries of the model's `units` metadata whose key names a model symbol
+(`time`, a compartment, an output, a parameter) are the defaults and
+arguments override them; any other key is ignored with a note. Covariate
+units come from `covariateData`; an undeclared covariate is unknown like any
+other symbol.
 
 The rules: `+` and `-` need convertible operands; a bare number added to or
 subtracted from a quantity is a value in that quantity's unit (`AGE - 40`),

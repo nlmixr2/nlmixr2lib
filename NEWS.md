@@ -15,13 +15,13 @@
   resolved symbol into `units` (`"unitless"` for a dimensionless one). Needs
   the `units` package (now in Suggests) and its udunits-2 system library.
 
-- The `units` metadata block may now name the dosed compartments and the
-  output variables directly, `units <- list(time = "h", depot = "mg",
-  Cc = "ng/mL")`, alongside a `dosing <- c("depot")` line. `checkModelConventions()`
-  accepts this form, and when `units` is installed validates it with
-  `checkUnits()`. The `list(time =, dosing =, concentration =)` form the
-  library uses today is still accepted; migrating the library is a separate
-  step.
+- `addUnits()` writes the `units` metadata block keyed by the dosed
+  compartments and the output variables, `units <- list(time = "h", depot =
+  "mg", Cc = "ng/mL", ...)`, alongside a `dosing <- c("depot")` line, and
+  `checkUnits()` reads a block of that shape as its defaults.
+  `checkModelConventions()` still expects the `list(time =, dosing =,
+  concentration =)` form the library uses today; moving the library and the
+  checker to the new form is a separate step.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

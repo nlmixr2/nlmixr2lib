@@ -466,9 +466,9 @@ test_that("a linCmt() model keeps its output at the boundary and leaves paramete
   expect_equal(.unitRow(res, "propSd")$unit, "unitless")
 })
 
-test_that("legacy metadata is the default and arguments override it", {
+test_that("units metadata keyed by symbol is the default and arguments override it", {
   legacy <- function() {
-    units <- list(time = "h", dosing = "mg", concentration = "ng/mL", weight = "kg")
+    units <- list(time = "h", depot = "mg", Cc = "ng/mL", weight = "kg")
     ini({ lka <- 0.1; lcl <- 1; lvc <- 1; propSd <- 0.1 })
     model({
       ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
@@ -504,13 +504,20 @@ test_that("legacy metadata is the default and arguments override it", {
   res <- checkUnits(placeholder)
   expect_true(all(is.na(res$issue)))
   expect_true(is.na(.unitRow(res, "time")$unit))
-  expect_equal(length(attr(res, "notes")), 3L)
-  expect_match(attr(res, "notes")[1], "units\\$time = 'time_unit' ignored: not a unit")
+  expect_true(is.na(.unitRow(res, "depot")$unit))
+  expect_equal(
+    attr(res, "notes"),
+    c(
+      "units$time = 'time_unit' ignored: not a unit",
+      "units$dosing ignored: it names nothing in the model",
+      "units$concentration ignored: it names nothing in the model"
+    )
+  )
 })
 
 test_that("a dimensionless time unit is accepted", {
   er <- function() {
-    units <- list(time = "none", dosing = "mg", concentration = "unitless")
+    units <- list(time = "none", p = "unitless")
     ini({ tint <- 0; tslope <- 0.1; propSd <- 0.1 })
     model({
       lp <- tint + tslope * AUC
@@ -641,20 +648,29 @@ test_that("addUnits() applies a conversion inside an if branch", {
   expect_equal(after$kel, before$kel * 0.06)
 })
 
-test_that("addUnits() metadata survives further piping and a legacy library model converts", {
+test_that("addUnits() metadata survives further piping and a library model converts", {
   out <- addUnits(.unitFixture1cmtFixed, time = "h", depot = "mg", Cc = "ng/mL")
   piped <- rxode2::model(out, Cc <- central / vc * 1000)
   expect_equal(piped$meta$units$Cc, "ng/mL")
   expect_equal(piped$meta$dosing, "depot")
   expect_equal(piped$meta$unitConversions, list(Cc = "mg/L * 1000 = ng/mL"))
+  # the library's `dosing`/`concentration` keys name nothing; the dosed
+  # compartment and the output are given by name
   van <- rxode2::rxode2(readModelDb("Zhao_2014_vancomycin"))
-  res <- checkUnits(van)
+  res <- checkUnits(van, central = "mg", Cc = "mg/L")
   expect_true(all(is.na(res$issue)))
   expect_true(all(is.na(res$conversion)))
   expect_equal(.unitRow(res, "vc")$unit, "L")
   expect_equal(.unitRow(res, "cl")$unit, "L/h")
   expect_equal(.unitRow(res, "WT")$unit, "kg")
-  out <- addUnits(van)
+  expect_equal(
+    attr(res, "notes"),
+    c(
+      "units$dosing ignored: it names nothing in the model",
+      "units$concentration ignored: it names nothing in the model"
+    )
+  )
+  out <- addUnits(van, central = "mg", Cc = "mg/L")
   expect_equal(out$meta$units$central, "mg")
   expect_equal(out$meta$units$Cc, "mg/L")
   expect_null(out$meta$units$dosing)
