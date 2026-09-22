@@ -2418,6 +2418,8 @@ navbar:
         href: articles/Vinnard_2017_isoniazid.html
       - text: "Isoniazid (Wilkins 2011)"
         href: articles/Wilkins_2011_isoniazid.html
+      - text: "Isoniazid pbpk (Garessus 2019)"
+        href: articles/Garessus_2019_isoniazid_breast_milk.html
       - text: "Isoniazid pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Isoniazid pd (Cordes 2016)"
@@ -6176,6 +6178,7 @@ articles:
   - articles/Gaohua_2023_permeabilityLimited_pbpk
   - articles/GarciaHervalejo_2026_teicoplanin
   - articles/Garcia_2025_garadacimab
+  - articles/Garessus_2019_isoniazid_breast_milk
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
   - articles/Garonzik_2016_daptomycin
