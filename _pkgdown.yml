@@ -3922,6 +3922,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Primaquine (Chotsiri 2024)"
         href: articles/Chotsiri_2024_primaquine_metabolites.html
+      - text: "Primaquine (Sridharan 2019)"
+        href: articles/Sridharan_2019_primaquine.html
       - text: "Primaquine (Wattanakul 2024)"
         href: articles/Wattanakul_2024_primaquine_lactation.html
       - text: "Primaquine motherinfant (Wattanakul 2024)"
@@ -7235,6 +7237,7 @@ articles:
   - articles/SoriaChacartegui_2026_tramadol
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
+  - articles/Sridharan_2019_primaquine
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Standing_2008_diclofenac
   - articles/Standing_2012_oseltamivir
