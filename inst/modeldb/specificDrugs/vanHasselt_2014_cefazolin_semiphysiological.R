@@ -170,13 +170,13 @@ vanHasselt_2014_cefazolin_semiphysiological <- function() {
     crcl_ega0 <- exp(lcrcl_ega0 + etalcrcl_ega0)
     crcl_matspan <- exp(lcrcl_matspan + etalcrcl_matspan)
     crcl_ega50 <- exp(lcrcl_ega50 + etalcrcl_ega50)
-    CrCL <- crcl_ega0 + crcl_matspan * EGA / (crcl_ega50 + EGA)
+    crcl <- crcl_ega0 + crcl_matspan * EGA / (crcl_ega50 + EGA)
 
     # 2. Normalised gestational change in renal function.
     #    Methods eq 6 divides by 'the baseline CrCL_i0 prior to start of
     #    pregnancy', which is exactly the EGA = 0 value of eq 4, i.e.
     #    crcl_ega0. The ratio is therefore 1 at EGA = 0 by construction.
-    preg_cl <- CrCL / crcl_ega0
+    preg_cl <- crcl / crcl_ega0
 
     # 3. Individual parameters.
     #    Corrigendum (Biomed Res Int 2015;2015:124035) Table 2 footnote b:

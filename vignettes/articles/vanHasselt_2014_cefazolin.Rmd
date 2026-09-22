@@ -197,7 +197,7 @@ are collected here for review. Table 2 columns are named as in the paper;
 | `propSd`, `addSd` | 0.0328, 0.842 (variances) | Table 2, Proportional / Additive total concentration, empirical |
 | `propSd_Cunbound`, `addSd_Cunbound` | 0.0158, 0.229 (variances) | Table 2, Proportional / Additive free concentration, empirical |
 | **Semiphysiological model** | | |
-| `preg_cl <- CrCL / crcl_ega0` | n/a | Corrigendum Table 2 footnote b; Methods eq (6) |
+| `preg_cl <- crcl / crcl_ega0` | n/a | Corrigendum Table 2 footnote b; Methods eq (6) |
 | `lcl_nonren` | 0.142 L/min | Table 2, Clearance `theta_CL0`, semiphysiological (RSE 44%) |
 | `lcl_renal` | 0.212 | Table 2, Gestation effect `theta_CLPreg`, semiphysiological (RSE 38%) |
 | `lvc` | 14.1 L | Table 2, Central volume `V_C`, semiphysiological (RSE 25%) |
@@ -208,7 +208,7 @@ are collected here for review. Table 2 columns are named as in the paper;
 | `propSd`, `addSd` | 0.0328, 0.681 (variances) | Table 2, Proportional / Additive total concentration, semiphysiological |
 | `propSd_Cunbound`, `addSd_Cunbound` | 0.0153, 0.217 (variances) | Table 2, Proportional / Additive free concentration, semiphysiological |
 | **Creatinine-clearance model** | | |
-| `CrCL <- crcl_ega0 + crcl_matspan * EGA/(crcl_ega50 + EGA)` | n/a | Methods eq (4) |
+| `crcl <- crcl_ega0 + crcl_matspan * EGA/(crcl_ega50 + EGA)` | n/a | Methods eq (4) |
 | `lcrcl_ega0` | 97.83 mL/min, FIXED | Table 3, Baseline CrCL `CrCL0` (upstream RSE 3.91%) |
 | `lcrcl_matspan` | 83.83 mL/min, FIXED | Table 3, Maximum CrCL `CrCLMAX` (upstream RSE 12.48%) |
 | `lcrcl_ega50` | 13.3 weeks, FIXED | Table 3, Time of half-maximum CrCL `CrCL50` (upstream RSE 37.59%) |
@@ -232,7 +232,7 @@ crcl_typ <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 
-ggplot(crcl_typ, aes(time, CrCL)) +
+ggplot(crcl_typ, aes(time, crcl)) +
   geom_line(linewidth = 0.9) +
   geom_hline(yintercept = 97.83, linetype = "dashed", colour = "grey40") +
   geom_vline(xintercept = 13.3, linetype = "dotted", colour = "grey40") +
@@ -256,7 +256,7 @@ they are asserted exactly.
 crcl_at <- function(w) {
   i <- which(abs(crcl_typ$time - w) < 1e-9)
   if (length(i) != 1L) stop("no exact grid point at EGA ", w)
-  crcl_typ$CrCL[i]
+  crcl_typ$crcl[i]
 }
 
 stopifnot(
@@ -267,7 +267,7 @@ stopifnot(
   # At EGA = crcl_ega50 exactly half the span has been covered.
   isTRUE(all.equal(crcl_at(13.3), 97.83 + 83.83 / 2, tolerance = 1e-6)),
   # Monotone increasing over gestation.
-  all(diff(crcl_typ$CrCL) > 0)
+  all(diff(crcl_typ$crcl) > 0)
 )
 
 tibble::tibble(
@@ -320,7 +320,7 @@ solve_profile <- function(ui, ega, ii, typical = TRUE, n = 1L, id_offset = 0L) {
   out$GW <- ega
   out$regimen <- names(tau)[match(ii, tau)]
   # Return a FIXED column set. The semiphysiological model emits its embedded
-  # CrCL intermediates as extra columns, so the two models' raw outputs are
+  # creatinine-clearance intermediates as extra columns, so the two models' raw
   # not row-bindable without this.
   out[, c("id", "time", "tad", "GW", "regimen", "cl", "Cc", "Cunbound")]
 }

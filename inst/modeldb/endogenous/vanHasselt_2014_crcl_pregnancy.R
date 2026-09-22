@@ -128,8 +128,13 @@ vanHasselt_2014_crcl_pregnancy <- function() {
     # Methods eq (4). At ega = 0 this collapses exactly to the nonpregnant
     # baseline crcl_ega0, which is the anchor the sibling semiphysiological
     # PK model divides by to form its CrCL(t)/CrCL(0) ratio.
-    CrCL <- crcl_ega0 + crcl_matspan * ega / (crcl_ega50 + ega)
+    # The output is named `crcl` (lowercase), the canonical renal PD-output
+    # state registered in inst/references/compartment-names.md, following the
+    # lowercase-state / uppercase-covariate split this family already uses
+    # (`uacr` vs the `UACR` column, `egfr` vs the `EGFR` column) rather than
+    # the paper's own `CrCL` capitalisation. Operator ruling 2026-09-21.
+    crcl <- crcl_ega0 + crcl_matspan * ega / (crcl_ega50 + ega)
 
-    CrCL ~ prop(propSd)
+    crcl ~ prop(propSd)
   })
 }
