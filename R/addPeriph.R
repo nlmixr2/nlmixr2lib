@@ -33,7 +33,11 @@ addPeriph <- function(ui, n = NULL, central = "central", model) {
   .have1 <- rxode2::testCompartmentExists(.ui, "peripheral1")
   .have2 <- rxode2::testCompartmentExists(.ui, "peripheral2")
   if (is.null(n)) {
-    n <- if (!.have1) 1L else if (!.have2) 2L else {
+    n <- if (!.have1) {
+      1L
+    } else if (!.have2) {
+      2L
+    } else {
       stop("both peripheral compartments are already present", call. = FALSE)
     }
   }
@@ -67,10 +71,27 @@ addPeriph <- function(ui, n = NULL, central = "central", model) {
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   # extend the central ODE in place: - kIn*central + kOut*peripheralN
   .centralNew <- str2lang(paste0(
-    deparse1(.tmp$w), " - ", .kIn, "*", central, " + ", .kOut, "*", .periph
+    deparse1(.tmp$w),
+    " - ",
+    .kIn,
+    "*",
+    central,
+    " + ",
+    .kOut,
+    "*",
+    .periph
   ))
   .periphLine <- str2lang(paste0(
-    "d/dt(", .periph, ") <- ", .kIn, "*", central, " - ", .kOut, "*", .periph
+    "d/dt(",
+    .periph,
+    ") <- ",
+    .kIn,
+    "*",
+    central,
+    " - ",
+    .kOut,
+    "*",
+    .periph
   ))
   .rateLines <- list(
     str2lang(paste0(.q, " <- exp(l", .q, ")")),
@@ -87,10 +108,8 @@ addPeriph <- function(ui, n = NULL, central = "central", model) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui <- .iniAddTheta(.ui, paste0("l", .q), est = 0.1,
-    label = paste0("Intercompartmental clearance (", .q, ")"))
-  .ui <- .iniAddTheta(.ui, paste0("l", .vp), est = 5,
-    label = paste0("Peripheral volume of distribution (", .vp, ")"))
+  .ui <- .iniAddTheta(.ui, paste0("l", .q), est = 0.1, label = paste0("Intercompartmental clearance (", .q, ")"))
+  .ui <- .iniAddTheta(.ui, paste0("l", .vp), est = 5, label = paste0("Peripheral volume of distribution (", .vp, ")"))
   rxode2::rxUiCompress(rxode2::as.rxUi(.ui))
 }
 
@@ -124,7 +143,11 @@ removePeriph <- function(ui, n = NULL, central = "central", model) {
   .have1 <- rxode2::testCompartmentExists(.ui, "peripheral1")
   .have2 <- rxode2::testCompartmentExists(.ui, "peripheral2")
   if (is.null(n)) {
-    n <- if (.have2) 2L else if (.have1) 1L else {
+    n <- if (.have2) {
+      2L
+    } else if (.have1) {
+      1L
+    } else {
       stop("no peripheral compartment is present", call. = FALSE)
     }
   }
@@ -157,7 +180,9 @@ removePeriph <- function(ui, n = NULL, central = "central", model) {
   .kOut <- if (n == 1L) "k21" else "k31"
   .centralNew <- .dropDotAddExpr(.replaceMult(
     .replaceMult(.tmp$w, .kIn, central, "."),
-    .kOut, .periph, "."
+    .kOut,
+    .periph,
+    "."
   ))[[1L]]
   # after the peripheral terms drop out, the right-hand side must
   # still mention the compartment or another state; a bare "." means
@@ -165,9 +190,7 @@ removePeriph <- function(ui, n = NULL, central = "central", model) {
   # is cryptic, so refuse with a message instead)
   .rhs <- deparse1(.centralNew[[3L]])
   .mentions <- grepl(central, .rhs, fixed = TRUE) ||
-    any(vapply(rxode2::rxModelVars(.ui)$state,
-      function(s) grepl(s, .rhs, fixed = TRUE),
-      logical(1), USE.NAMES = FALSE))
+    any(vapply(rxode2::rxModelVars(.ui)$state, function(s) grepl(s, .rhs, fixed = TRUE), logical(1), USE.NAMES = FALSE))
   if (!.mentions) {
     stop("removing '", .periph, "' would leave '", central, "' with no input", call. = FALSE)
   }
@@ -182,15 +205,21 @@ removePeriph <- function(ui, n = NULL, central = "central", model) {
   # used here — its .removeLines() template leaves k12/k21 in place
   # and its cascade strips vc <-, which kel <- cl/vc still needs.
   .rm <- c(.kIn, .kOut, .q, .vp)
-  .exprs <- unlist(lapply(.rm, function(v) {
-    list(str2lang(paste0(v, "<- .")), str2lang(paste0(v, "= .")))
-  }), recursive = FALSE)
-  .w <- which(vapply(seq_along(.modelLines),
+  .exprs <- unlist(
+    lapply(.rm, function(v) {
+      list(str2lang(paste0(v, "<- .")), str2lang(paste0(v, "= .")))
+    }),
+    recursive = FALSE
+  )
+  .w <- which(vapply(
+    seq_along(.modelLines),
     function(i) {
       .cur <- .modelLines[[i]]
-      any(vapply(.exprs, function(e) rxode2::.matchesLangTemplate(.cur, e),
-        logical(1), USE.NAMES = FALSE))
-    }, logical(1), USE.NAMES = FALSE))
+      any(vapply(.exprs, function(e) rxode2::.matchesLangTemplate(.cur, e), logical(1), USE.NAMES = FALSE))
+    },
+    logical(1),
+    USE.NAMES = FALSE
+  ))
   if (length(.w) > 0L) {
     .modelLines <- .modelLines[-.w]
   }
