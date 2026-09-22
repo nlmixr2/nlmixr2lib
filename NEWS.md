@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2019 tacrolimus ([doi:10.3892/etm.2019.7446](https://doi.org/10.3892/etm.2019.7446)) -- Chinese children aged 2.4-16.4 years with refractory nephrotic syndrome.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
