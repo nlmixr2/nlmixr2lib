@@ -24,7 +24,12 @@
 addPeriph <- function(ui, n = NULL, central = "central", model) {
   .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
-  assertCompartmentExists(.ui, central)
+  .cmt <- as.character(substitute(central))
+  central <- try(force(central), silent = TRUE)
+  if (inherits(central, "try-error")) {
+    central <- .cmt
+  }
+  central <- rxode2::assertCompartmentExists(.ui, central)
   .have1 <- rxode2::testCompartmentExists(.ui, "peripheral1")
   .have2 <- rxode2::testCompartmentExists(.ui, "peripheral2")
   if (is.null(n)) {
@@ -49,6 +54,14 @@ addPeriph <- function(ui, n = NULL, central = "central", model) {
   .vp <- paste0("vp", .sfx)
   .kIn <- if (n == 1L) "k12" else "k13"
   .kOut <- if (n == 1L) "k21" else "k31"
+  # q/vp/kIn/kOut are this function's own variables: refuse when the
+  # model already uses any of them, instead of silently overwriting
+  # the user's lines and thetas
+  for (.v in c(.q, .vp, .kIn, .kOut, paste0("l", .q), paste0("l", .vp))) {
+    if (rxode2::testVariableExists(.ui, .v)) {
+      stop("'", .v, "' is already present in the model", call. = FALSE)
+    }
+  }
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
@@ -65,6 +78,9 @@ addPeriph <- function(ui, n = NULL, central = "central", model) {
     str2lang(paste0(.kIn, " <- ", .q, "/vc")),
     str2lang(paste0(.kOut, " <- ", .q, "/", .vp))
   )
+  # NOTE: the central volume is always `vc` (the seed convention);
+  # models using another name (V, V1) fail loudly at solve time with
+  # an undefined-variable error
   .modelLines <- c(.tmp$pre, .rateLines, list(.centralNew), list(.periphLine), .tmp$post)
   .ui <- rxode2::rxUiDecompress(.ui)
   if (exists("description", envir = .ui$meta)) {
@@ -99,7 +115,12 @@ addPeriph <- function(ui, n = NULL, central = "central", model) {
 removePeriph <- function(ui, n = NULL, central = "central", model) {
   .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
-  assertCompartmentExists(.ui, central)
+  .cmt <- as.character(substitute(central))
+  central <- try(force(central), silent = TRUE)
+  if (inherits(central, "try-error")) {
+    central <- .cmt
+  }
+  central <- rxode2::assertCompartmentExists(.ui, central)
   .have1 <- rxode2::testCompartmentExists(.ui, "peripheral1")
   .have2 <- rxode2::testCompartmentExists(.ui, "peripheral2")
   if (is.null(n)) {
@@ -126,7 +147,10 @@ removePeriph <- function(ui, n = NULL, central = "central", model) {
   .lvp <- paste0("l", .vp)
   .modelLines <- .rmDdt(.ui$lstExpr, .periph)
   .modelLines <- .rmCmtPropLines(.modelLines, .periph)
-  # strip the peripheral's terms from the central ODE
+  # strip the peripheral's terms from the central ODE; when nothing
+  # but peripheral terms remain the ODE is gone too, and only an
+  # explicit central input (e.g. an IV model) can follow — refuse
+  # instead of emitting an empty d/dt() line
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .kIn <- if (n == 1L) "k12" else "k13"
@@ -134,7 +158,19 @@ removePeriph <- function(ui, n = NULL, central = "central", model) {
   .centralNew <- .dropDotAddExpr(.replaceMult(
     .replaceMult(.tmp$w, .kIn, central, "."),
     .kOut, .periph, "."
-  ))
+  ))[[1L]]
+  # after the peripheral terms drop out, the right-hand side must
+  # still mention the compartment or another state; a bare "." means
+  # the ODE would be empty (the rxode2 error for `d/dt(central) <- .`
+  # is cryptic, so refuse with a message instead)
+  .rhs <- deparse1(.centralNew[[3L]])
+  .mentions <- grepl(central, .rhs, fixed = TRUE) ||
+    any(vapply(rxode2::rxModelVars(.ui)$state,
+      function(s) grepl(s, .rhs, fixed = TRUE),
+      logical(1), USE.NAMES = FALSE))
+  if (!.mentions) {
+    stop("removing '", .periph, "' would leave '", central, "' with no input", call. = FALSE)
+  }
   .modelLines <- c(.tmp$pre, .centralNew, .tmp$post)
   .tmp2 <- .getEtaTheta(.ui)
   .theta <- .tmp2$theta

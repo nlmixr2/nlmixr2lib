@@ -114,3 +114,89 @@ test_that("2cmt + addPeriph solves like the 3cmt seed at matched params", {
   expect_equal(dP$Cc, dR$Cc, tolerance = 1e-6)
 
 })
+
+test_that("addPeriph/removePeriph resolve central in all NSE forms", {
+
+  expect_no_error(res0 |> addPeriph(central = central))
+  expect_no_error(res0 |> addPeriph(central = "central"))
+
+  .v <- "central"
+  expect_no_error(res0 |> addPeriph(central = .v))
+
+  expect_no_error(res0 |> addPeriph() |> removePeriph(central = central))
+
+})
+
+test_that("addPeriph refuses colliding q/vp/k variables", {
+
+  mkQ <- function() {
+    ini({
+      lka <- log(1)
+      lcl <- log(0.1)
+      lvc <- log(10)
+      propSd <- 0.5
+      lq <- 2
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      myq <- exp(lq)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - kel * central - myq * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  # the user's lq estimate would be silently overwritten
+  expect_error(rxode2::rxode2(mkQ) |> addPeriph(),
+    regexp = "already present")
+
+})
+
+test_that("removePeriph refuses to empty the central ODE", {
+
+  mkE <- function() {
+    ini({
+      lcl <- log(0.1)
+      lvc <- log(10)
+      lq <- 0.1
+      lvp <- 5
+      propSd <- 0.5
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      q <- exp(lq)
+      vp <- exp(lvp)
+      k12 <- q / vc
+      k21 <- q / vp
+      kel <- cl / vc
+      d/dt(central) <- -k12 * central + k21 * peripheral1
+      d/dt(peripheral1) <- k12 * central - k21 * peripheral1
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(rxode2::rxode2(mkE) |> removePeriph(),
+    regexp = "no input")
+
+})
+
+test_that("removePeriph strips uppercase F() property lines", {
+
+  res <- res0 |> addPeriph()
+  le <- res$lstExpr
+  resF <- rxode2::rxUiDecompress(res)
+  rxode2::model(resF) <- c(le, list(str2lang("F(peripheral1) <- 0.5")))
+  resF <- rxode2::rxUiCompress(resF)
+
+  resOut <- resF |> removePeriph()
+
+  expect_false("peripheral1" %in% resOut$state)
+  expect_equal(length(grep("peripheral1", vapply(resOut$lstExpr, deparse1, character(1)))), 0L)
+
+})
