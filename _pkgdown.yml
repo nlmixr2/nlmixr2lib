@@ -1180,6 +1180,8 @@ navbar:
         href: articles/Subrtova_2026_daptomycin.html
       - text: "Daptomycin (Wu 2024)"
         href: articles/Wu_2024_daptomycin.html
+      - text: "Daptomycin (Xu 2017)"
+        href: articles/Xu_2017_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
       - text: "Daratumumab qsstmdd (Li 2021)"
@@ -7549,6 +7551,7 @@ articles:
   - articles/Xie_2025_midazolam
   - articles/Xu_2011_sirukumab
   - articles/Xu_2013_ranibizumab
+  - articles/Xu_2017_daptomycin
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
