@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hong 2019 evofosfamide ([doi:10.1016/j.neo.2018.11.009](https://doi.org/10.1016/j.neo.2018.11.009)) -- HCT116 and H460 human carcinoma cells in vitro and as nude-mouse xenografts.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
