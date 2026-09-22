@@ -2,6 +2,27 @@
 
 # development version
 
+- New `checkUnits()` and `addUnits()` track the physical units of any
+  rxode2/nlmixr2 model. Given the units at the model's boundary (`time`, the
+  dose unit of each dosed compartment, the unit of each output variable) and any
+  per-parameter override, `checkUnits()` walks the `model({})` expressions with
+  `units` objects, infers a unit for every symbol it can (forward through
+  assignments, backward from a line whose target unit is known to the one
+  unknown symbol in it), and returns a data frame of `name`, `unit`, `issue`
+  and `conversion`. `addUnits()` inserts the conversion constants the
+  arithmetic needs as bare literals (`Cc <- central/vc * 1000`), explains each
+  one in the new `unitConversions` metadata, and writes the unit of every
+  resolved symbol into `units` (`"unitless"` for a dimensionless one). Needs
+  the `units` package (now in Suggests) and its udunits-2 system library.
+
+- The `units` metadata block may now name the dosed compartments and the
+  output variables directly, `units <- list(time = "h", depot = "mg",
+  Cc = "ng/mL")`, alongside a `dosing <- c("depot")` line. `checkModelConventions()`
+  accepts this form, and when `units` is installed validates it with
+  `checkUnits()`. The `list(time =, dosing =, concentration =)` form the
+  library uses today is still accepted; migrating the library is a separate
+  step.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.

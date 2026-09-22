@@ -303,7 +303,7 @@ unchanged. Then re-read the source independently and walk through
 - Reference weight / age for allometric and maturation terms (70 kg? 5 kg? 40 weeks PMA?).
 - Reference category for categorical effects after composite-group renames.
 - Bioavailability target compartment.
-- Units consistency (dose × F ÷ V must give the declared concentration units).
+- Units consistency (dose × F ÷ V must give the declared concentration units). `checkUnits(<model>)` checks this mechanically: every row's `issue` must be `NA`, and a non-`NA` `conversion` means the arithmetic is missing a constant that `addUnits()` would insert.
 
 Every parameter's in-file source-trace comment must be verified — the comment states where it came from, so checking is a line-by-line audit. 
 

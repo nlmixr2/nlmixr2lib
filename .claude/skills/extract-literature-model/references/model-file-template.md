@@ -28,6 +28,12 @@ Related references:
   #! hours would misstate every number.
   #! Generic dimensionless models may use the placeholders "time_unit" /
   #! "dose_unit"; real extractions may not.
+  #! The block may instead name the dosed compartments and the output variables
+  #! directly -- `list(time = "h", depot = "mg", Cc = "ng/mL")` with a matching
+  #! `dosing <- c("depot")` line -- which is what `addUnits()` writes; it also
+  #! records every inferred parameter unit there ("unitless" for dimensionless
+  #! ones) and any conversion constant it inserted in `unitConversions`. Run
+  #! `checkUnits(<model>)` to see the inferred units and any inconsistency.
 
   covariateData <- list(
     #! One entry per covariate. Canonical names come from inst/references/covariate-columns.md.

@@ -209,11 +209,17 @@ Files in a model library should have the following characteristics:
   will be defined a depends value should be specified. For example if there is 
   a tumor growth model that is driven by the drug concentration in the central 
   compartment, then the following could be used:  `depends <"Cc"` 
-* It can also be helpful to specify the compartments where dosing is expected. 
+* It can also be helpful to specify the compartments where dosing is expected.
   This can be done in the following manner: `dosing <- c("central", "depot")`
-* Units used in the model can be specified using a list
-  `units  <- list(dosing= "mg/kg", time="hr")`
-  To add more fields to this list please discuss first in a GitHub issue.
+* Units used in the model are specified in a list named by the time unit, the
+  dosed compartments and the output variables, for example
+  `units <- list(time = "h", depot = "mg", Cc = "ng/mL")`. Use the canonical
+  spellings (`"h"`, not `"hr"` or `"hour"`; `"ug"`, not `"mcg"`).
+  `checkUnits()` infers the units of every other parameter from these and
+  `addUnits()` writes them all into the block, inserting any conversion
+  constant the arithmetic needs (see `?addUnits`). The older form
+  `units <- list(time = "h", dosing = "mg", concentration = "ng/mL")` is still
+  accepted.
 * The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.
