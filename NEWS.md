@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Cheng 2019 lobaplatin ([doi:10.1097/MD.0000000000014136](https://doi.org/10.1097/MD.0000000000014136)) -- elderly Chinese adults aged 65 years and older with small cell lung cancer.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
