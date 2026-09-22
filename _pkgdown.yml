@@ -160,6 +160,8 @@ navbar:
         href: articles/Djebli_2017_alirocumab.html
       - text: "Alirocumab (Martinez 2019)"
         href: articles/Martinez_2019_alirocumab.html
+      - text: "Alirocumab (Nicolas 2019)"
+        href: articles/Nicolas_2019_alirocumab.html
       - text: "Allopurinol (Chu 2024)"
         href: articles/Chu_2024_allopurinol.html
       - text: "Allopurinol (Wright 2013)"
@@ -6895,6 +6897,7 @@ articles:
   - articles/Ni_2013_ciclosporin
   - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam
+  - articles/Nicolas_2019_alirocumab
   - articles/Nie_2023_nalbuphine
   - articles/Nie_2025_sufentanil
   - articles/Niebecker_2015_edoxaban
