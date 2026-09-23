@@ -7,7 +7,10 @@ Sy_2018_etirinotecanPegol <- function() {
     "with a two-compartment disposition model for each of the five analytes.",
     "Metabolite conversion fractions and volumes are not separately",
     "identifiable, so every metabolite volume is an aggregate ratio and only",
-    "EP's central volume is a true volume."
+    "EP's central volume is a true volume. One deliberate deviation from the",
+    "published parameter table: the SN-38 aggregate volume is back-solved from",
+    "the paper's Figure 5 rather than taken from its Table 4, which is",
+    "internally inconsistent by 4.6-fold. See the vignette."
   )
   reference <- paste(
     "Sy SKB, Chia YL, Gordi T, Hoch U, Eldon MA (2018).",
@@ -223,7 +226,7 @@ Sy_2018_etirinotecanPegol <- function() {
     lk21_irinotecan <- log(3.2e-3); label("Irinotecan peripheral-to-central rate constant kp2 (1/h)") # Sy 2018 Table 4, Irinotecan row 'kp2 (h-1)': 3.2e-3 +/- 1.5e-4
 
     # ---- SN-38 ----
-    lvc_sn38 <- log(80); label("SN-38 aggregate central volume V3** = V3/(F12*F23) (L)") # Sy 2018 Table 4, SN38 row 'V3** = V3/(F12 F23) (L)': 80 +/- 190. See the vignette 'Assumptions and deviations': this printed value is the one parameter in Table 4 whose standard error exceeds its estimate, and it is inconsistent by a factor of 4.6 with the absolute SN-38 exposures the same paper prints in Figure 5 and with the SN-38 concentration range of the Figure 3 goodness-of-fit panels.
+    lvc_sn38 <- log(365); label("SN-38 aggregate central volume V3** = V3/(F12*F23) (L)") # NOT the printed table value: back-solved from Sy 2018 Figure 5, reference 60-yr SN-38 Cmax = 4.0 ng/mL, via AUC(SN-38) = Dose/(V3** k3e) from Eq. 4. Sy 2018 Table 4, SN38 row 'V3** = V3/(F12 F23) (L)' prints 80 +/- 190, which is the one entry in Table 4 whose standard error exceeds its estimate (238% RSE) and which over-predicts the same paper's Figure 5 SN-38 exposures by 4.6-fold and exceeds the Figure 3 goodness-of-fit SN-38 range. The Figure 5 cumulative-AUC anchor gives 369 L, agreeing with the Cmax anchor to 1.3%. Deliberate operator-directed deviation from print; see the vignette 'Assumptions and deviations'.
     lkel_sn38 <- log(0.0602); label("SN-38 total elimination rate constant k3e (1/h)") # Sy 2018 Table 4, SN38 row 'k3e (h-1)': 0.0602 +/- 0.0042
     lk12_sn38 <- log(0.23); label("SN-38 central-to-peripheral rate constant k3p (1/h)") # Sy 2018 Table 4, SN38 row 'k3p (h-1)': 0.23 +/- 0.023
     lk21_sn38 <- log(8.75e-3); label("SN-38 peripheral-to-central rate constant kp3 (1/h)") # Sy 2018 Table 4, SN38 row 'kp3 (h-1)': 8.75e-3 +/- 5.4e-4

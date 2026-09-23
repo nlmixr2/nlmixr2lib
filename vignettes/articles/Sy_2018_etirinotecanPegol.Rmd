@@ -142,7 +142,8 @@ drops all of them.
 | `lcl` 0.237 L/h, `lvc` 5.05 L, `lk12` 6.78e-3, `lk21` 5.8e-4 | | Table 4, EP block |
 | `e_age_cl` -0.271, `e_bsa_cl` 1.32, `e_crcl_cl` 0.2, `e_bsa_vc` 1.1 | | Table 4, EP block |
 | `lvc_irinotecan` 1.8 L, `lkel_irinotecan` 27.6, `lk12_irinotecan` 18.8, `lk21_irinotecan` 3.2e-3 | | Table 4, Irinotecan block |
-| `lvc_sn38` 80 L, `lkel_sn38` 0.0602, `lk12_sn38` 0.23, `lk21_sn38` 8.75e-3 | | Table 4, SN38 block |
+| `lkel_sn38` 0.0602, `lk12_sn38` 0.23, `lk21_sn38` 8.75e-3 | | Table 4, SN38 block |
+| `lvc_sn38` 365 L | **Not from Table 4.** Back-solved from the reference SN-38 Cmax of 4.0 ng/mL via `AUC(SN-38) = Dose/(V3* k3e)`; see Deviations | Figure 5, "Reference 60 yrs" row |
 | `e_snp_ugt1a1_rs8175347_hom_kel_sn38` -0.67 | | Table 4, SN38 block |
 | `lvc_sn38g` 11.6 L, `lkel_sn38g` 1.41, `lk12_sn38g` 0.548, `lk21_sn38g` 0.104 | | Table 4, SN38G block |
 | `lfm_sn38` 0.631, `lkel_apc` 0.0235, `lk12_apc` 0.0236, `lk21_apc` 1.39e-3 | | Table 4, APC block |
@@ -271,6 +272,11 @@ inf <- rxode2::rxSolve(mod_typ, tail_ev, returnType = "data.frame", useLinCmt = 
 auc_of <- function(v) PKNCA::pk.calc.auc.last(conc = inf[[v]], time = inf$time)
 dose1 <- ep_dose_nmol(145, 1.86)
 fm <- 0.631
+# named once rather than inlined three times: V3* is the one parameter in this
+# model that is not the printed Table 4 value (see "Assumptions and
+# deviations"), and it enters both the SN-38 and the APC identity because the
+# paper assumes V5 = V3
+v3 <- 365
 
 balance <- tibble::tibble(
   Identity = c(
@@ -283,9 +289,9 @@ balance <- tibble::tibble(
   Value = c(
     0.237 * auc_of("Cc") / dose1,
     27.6 * 1.8 * auc_of("Cc_irinotecan") / dose1,
-    0.0602 * 80 * auc_of("Cc_sn38") / dose1,
-    1.41 * 11.6 * auc_of("Cc_sn38g") / (0.0602 * 80 * auc_of("Cc_sn38")),
-    0.0235 * 80 * auc_of("Cc_apc") /
+    0.0602 * v3 * auc_of("Cc_sn38") / dose1,
+    1.41 * 11.6 * auc_of("Cc_sn38g") / (0.0602 * v3 * auc_of("Cc_sn38")),
+    0.0235 * v3 * auc_of("Cc_apc") /
       ((1 - fm) / fm * 27.6 * 1.8 * auc_of("Cc_irinotecan"))
   )
 )
@@ -438,9 +444,14 @@ qualitative point the paper makes with them: because SN-38 kinetics after EP are
 formation-rate limited, halving SN-38 elimination raises AUC substantially more
 than it raises Cmax.
 
-## SN-38 absolute scale: a documented deviation, not a gate
+## SN-38 absolute scale
 
-The same comparison on **absolute** values does not agree.
+The same comparison on **absolute** values. Note that one cell of this table is
+circular: `lvc_sn38` was back-solved from the wild-type Cmax of 4.0 ng/mL (see
+"Assumptions and deviations"), so that entry is pinned by construction and
+cannot fail. The other three cells are genuine out-of-sample checks -- the
+wild-type AUC tests the integration window and the two homozygous cells test the
+UGT1A1 covariate arm, and none of the three entered the back-solve.
 
 ```{r fig5-absolute}
 fig5_sim <- tibble::tibble(
@@ -463,26 +474,32 @@ knitr::kable(
   )
 )
 
-deviation_factor <- c(
-  Cmax = fig5_sim$cmax[1] / fig5_pub$cmax[1],
-  AUC = fig5_sim$auclast[1] / fig5_pub$auclast[1]
-)
-round(deviation_factor, 3)
+fig5_pct_diff <- 100 * (as.matrix(fig5_sim[, c("cmax", "auclast")]) /
+  as.matrix(fig5_pub[, c("cmax", "auclast")]) - 1)
+dimnames(fig5_pct_diff) <- list(fig5_sim$genotype, c("Cmax", "AUC"))
+round(fig5_pct_diff, 1)
+
+# The three non-circular cells: wild-type AUC, and both homozygous cells. These
+# are typical-value (zeroRe) solves compared against the paper's own printed
+# summary numbers, so the residual difference is digitisation and six-cycle
+# truncation of a long terminal phase -- not per-subject sampling. A 15% bound
+# is therefore the right shape here.
+stopifnot(abs(fig5_pct_diff["Wild-type / heterozygous", "AUC"]) < 15)
+stopifnot(all(abs(fig5_pct_diff["TA(7)/TA(7) homozygous", ]) < 15))
 ```
 
-Both rows are flagged. The packaged model over-predicts SN-38 by a factor of
-about 4.6 relative to the paper's own Figure 5, and the factor is the same for
-Cmax and AUC, which makes it a pure scale error rather than a structural one.
-Because SN-38's ODE is exactly
+With `lvc_sn38` set from the Figure 5 Cmax anchor, all four cells agree with the
+paper. Because SN-38's ODE is exactly
 
 ```
 d[SN38]/dt = k2e V2* [irinotecan] / V3* - (k3e + k3p)[SN38] + kp3[SN38p]
 ```
 
-and integrating it to infinity gives `AUC(SN-38) = Dose / (V3* k3e)`, the only
-parameter that can carry a pure scale error on SN-38 is the aggregate volume
-`V3*`. This is treated as a source deviation and **not** gated; see
-"Assumptions and deviations" below for the evidence and its consequences.
+and integrating it to infinity gives `AUC(SN-38) = Dose / (V3* k3e)`, `V3*` is
+the only parameter that can put a pure scale error on SN-38 without disturbing
+any other analyte -- which is what made the back-solve well posed. The printed
+Table 4 value of 80 L puts this table 4.6-fold high on every cell; see
+"Assumptions and deviations" for why the printed value was not used.
 
 # Virtual cohort
 
@@ -655,8 +672,9 @@ stopifnot(
 Sy 2018 report no NCA table, but Figures 4 and 5 give the model-predicted
 reference exposures over six cycles, which are the appropriate published
 comparators. They were compared above by scenario (Figure 4, all rows within
-tolerance) and by genotype (Figure 5, both rows flagged on absolute scale but
-both ratios reproduced). The combined view:
+tolerance) and by genotype (Figure 5, both ratios reproduced and all four
+absolute cells within tolerance, one of which is pinned by the `lvc_sn38`
+back-solve described in "Assumptions and deviations"). The combined view:
 
 ```{r combined-comparison}
 combined_sim <- tibble::tibble(
@@ -682,13 +700,20 @@ knitr::kable(
 
 ## SN-38 aggregate volume: Table 4 contradicts Figures 3 and 5 by 4.6-fold
 
-This is the one material unresolved conflict in the source, and it affects the
-absolute SN-38 and APC concentrations the packaged model predicts.
+This is the one material conflict in the source, and it governs the absolute
+SN-38 and APC concentrations the packaged model predicts.
 
-**What the model uses.** `lvc_sn38 = log(80)`, the value printed in Table 4 for
-`V3** = V3 / (F12 F23)`.
+**What the model uses.** `lvc_sn38 = log(365)`, **not** the 80 L printed in
+Table 4 for `V3** = V3 / (F12 F23)`. This is a deliberate, documented deviation
+from the published parameter table -- the only one in this model -- and it is the
+one number in the file that does not come from the paper's own tables. The
+value was back-solved from the reference SN-38 Cmax of 4.0 ng/mL printed in
+Figure 5, inverting `AUC(SN-38) = Dose / (V3* k3e)` (which follows exactly from
+Eq. 4). The Cmax anchor was preferred over the cumulative-AUC anchor because it
+needs no integration window; the AUC anchor independently gives 369 L, agreeing
+to 1.3%.
 
-**Why that value is doubtful.**
+**Why the printed value was not used.**
 
 1. It is the only entry in Table 4 whose standard error exceeds its estimate
    (80 +/- 190, a relative standard error of 238%). Every other volume is
@@ -698,32 +723,51 @@ absolute SN-38 and APC concentrations the packaged model predicts.
    only parameter that can scale SN-38 without changing anything else. With
    `V3* = 80` the model over-predicts the paper's own Figure 5 reference values
    by 4.55-fold on Cmax and 4.61-fold on AUC. The agreement of those two factors
-   rules out a structural error: it is a pure scale error in one number.
+   to within 1.3% is what rules out a structural transcription error: a wrong
+   equation would move Cmax and AUC by different amounts. It is one number.
 3. The Figure 3 goodness-of-fit panels place both observed and
    individual-predicted SN-38 between about 0.4 and 25 nmol/L across the whole
-   dose range. The packaged model predicts 47.6 nmol/L for a typical patient at
-   145 mg/m^2, above the top of the paper's own cloud before any dose escalation
-   is considered.
+   dose range. With `V3* = 80` the model predicts 47.6 nmol/L for a typical
+   patient at 145 mg/m^2, above the top of the paper's own cloud before any dose
+   escalation or IIV is considered. With `V3* = 365` it predicts about
+   10.4 nmol/L, inside that cloud.
 4. The Table 4 additive residual error for SN-38 is 0.383 nmol/L, which is 4% of
-   the Figure 5 reference Cmax of 4.0 ng/mL (10.5 nmol/L) but under 1% of the
-   packaged model's prediction. An additive term exists to describe the
+   the Figure 5 reference Cmax of 4.0 ng/mL (10.5 nmol/L) but under 1% of what
+   `V3* = 80` predicts. An additive term exists to describe the
    near-quantitation-limit end of the range, and 4% is the plausible magnitude.
 
-**What the alternative would be.** Inverting the Figure 5 reference values gives
-`V3*` near 365 L (from Cmax, which needs no integration window) or 369 L (from
-AUC). Every other analyte is unaffected: SN-38G's level depends on the SN-38
-*amount* rather than its concentration, so it is independent of `V3*`, and it
-already reproduces the Figure 3 range.
+**What the substitution does and does not touch.** Only SN-38 and APC move.
+SN-38G's level depends on the SN-38 *amount* rather than its concentration, so
+it is independent of `V3*` and already reproduced the Figure 3 range under
+either value. APC moves with SN-38 because the model sets `vc_apc <- vc_sn38`
+(the paper assumes `V5 = V3`), so the override propagates to APC automatically --
+which is the intended behaviour, since Figure 3's APC panel has the same scale
+problem under the printed value. EP and irinotecan are untouched.
 
-**What was done.** The printed Table 4 value is used, because it is the source's
-own parameter table and substituting a back-solved value would replace a
-published number with a derived one. The consequence is recorded here, the
-SN-38 absolute comparison above is reported as a flagged deviation rather than
-gated, and every check that does not depend on the SN-38 concentration scale
-(the mass-balance identities, the Figure 4 EP replication, and both Figure 5
-ratios) passes. A user who needs SN-38 or APC on an absolute scale should
-override `lvc_sn38`, and should note that `vc_apc` is defined as `vc_sn38` so
-the override propagates to APC automatically.
+**Why this was decided the way it was.** Substituting 365 L replaces a published
+parameter-table value with one back-solved from a figure in the same paper, so
+it is not a call this workflow makes on its own: the standing policy sanctions
+digitising figures for parameters the tables *omit*, whereas here the table does
+print a value. It was therefore escalated as an unresolvable value conflict
+between two places in one source and ruled on explicitly (operator decision,
+2026-09-21) in favour of the figure-anchored value, on the grounds that the
+printed 80 L cannot be reconciled with three other independent statements the
+same paper makes. Both readings were implemented and gated before the ruling;
+the printed value is recoverable in one line for anyone who wants the literal
+transcription:
+
+```r
+mod <- nlmixr2lib::modellib("Sy_2018_etirinotecanPegol")
+mod <- rxode2::ini(mod, lvc_sn38 = log(80))
+```
+
+**What this buys.** With the substitution, the SN-38 absolute comparison above
+becomes a real gate rather than a flagged deviation, and it passes on the three
+cells that did not enter the back-solve. Everything that never depended on the
+SN-38 concentration scale is unchanged and still passes: the mass-balance
+identities, the EP terminal-slope check, the Figure 4 EP replication across all
+six covariate scenarios, and both Figure 5 UGT1A1 ratios (which are ratios, so
+they were always invariant to `V3*`).
 
 ## Equation transcription
 
