@@ -993,12 +993,18 @@ disagrees grossly.
   shows that pair reproduces the paper's own measured mean unbound fraction of
   0.65 percent at the cohort median albumin to three significant figures, which
   no materially different pair would do.
-- **Table 7 is internally inconsistent at one cell.** For 700 mg q8h x 4 at
-  MIC 0.5 mg/L the paper marks the total AUC/MIC 100 target as not attained but
-  the unbound fAUC/MIC 0.65 target as attained, even though the authors derived
-  0.65 from 100 x 0.0065 precisely so the two would coincide. The packaged model
-  attains neither. The transcription above reproduces the paper's marks as
-  printed.
+- **Table 7's total and unbound criteria disagree at two cells.** The authors
+  derived the unbound target 0.65 from 100 x 0.0065, i.e. from the *mean* free
+  fraction, so the AUC/MIC 100 and fAUC/MIC 0.65 columns look as though they
+  should classify identically. They do not at 700 mg q8h x 4 / MIC 0.5 mg/L and
+  at 500 mg q12h x 3 / MIC 0.25 mg/L, where the total target is marked not
+  attained but the unbound target attained. This is expected rather than an
+  error: the free fraction is subject-specific (about 28 percent CV here even at
+  fixed albumin, since `kon` and `koff` carry their own IIV), so
+  `P(AUC >= 100 x MIC)` and `P(fu x AUC >= 0.65 x MIC)` are two different
+  probabilities and coincide only in the degenerate case where every subject
+  has exactly the mean free fraction. The transcription above reproduces the
+  paper's marks as printed.
 
 ## Modelling assumptions
 
@@ -1021,7 +1027,10 @@ disagrees grossly.
   free-bound exchange equilibrates in microseconds against PK rate constants of
   order 0.3-2 1/h. Check 2 above demonstrates the consequence: the explicit
   kon/koff ODE and the algebraic Eq. 2 isotherm agree to better than 1 part in
-  1e5. The two constants are nonetheless carried separately because that is how
+  1000 over the whole profile, and to better than 1 part in 4000 once the
+  infusion has ended (the residual is the physical quasi-equilibrium lag while
+  the free pool is being driven, not solver error). The two constants are
+  nonetheless carried separately because that is how
   the authors parameterised and reported the model; an extraction that collapsed
   them to `KD` would lose the reported CVs on each -- and those CVs are not
   cosmetic: together they give `KD` a coefficient of variation of about
@@ -1030,7 +1039,7 @@ disagrees grossly.
   the 93 measured pairs.
 - **Known deviation: the model falls a few points short of the paper's
   80 percent PTA at the regimens Tables 3-8 select.** The median subject clears
-  every recommended target with a 1.4- to 1.9-fold margin, but the simulated
+  every recommended target with a 1.3- to 2.0-fold margin, but the simulated
   probability of attainment lands at 0.65-0.74 where the paper reports at least
   0.80, and 23 of the 140 Tables 7-8 classification cells flip (84 percent
   agreement). Every discrepancy
