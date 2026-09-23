@@ -512,8 +512,9 @@ stopifnot(all(abs(molar - printed) < 0.15))
   and 5.6%, so the n = 5 estimate is far too unstable to falsify either
   reading, and the model was fitted to a pooled dataset spanning separately
   conducted experiments, which inflates BSV relative to any one group.
-  **This reading is flagged for confirmation**; only the stochastic cohort
-  figures and the PKNCA spread depend on it, not the structural gate.
+  The variance reading was **ratified by the operator on 2026-09-21** after
+  this evidence was reviewed; only the stochastic cohort figures and the PKNCA
+  spread depend on it, not the structural gate, which uses `zeroRe()`.
 - **Residual error is not published.** Section 4.5 states that an additive plus
   proportional residual model was used for both analytes, but Table 2 reports
   no residual estimates and no supplement exists. The error structure is
@@ -547,14 +548,20 @@ stopifnot(all(abs(molar - printed) < 0.15))
   pretreated group". Two independent statements (Table 2 and Section 2.3) agree
   against one sentence in Section 4.5, so the model splits `ka`,
   `k_precursor_5fu_form` and `cl_5fu` and shares `fm`.
-- **Non-canonical compartment pending ratification.** The 5-FU precursor pool
-  (5'-hydroxytegafur) has no volume and no measured concentration, so it is not
-  a `central_<metab>` state. It is named `precursor_5fu` and declared in
-  `paper_specific_compartments` pending operator ratification as a canonical
-  compartment; the numbered `precursor<n>` canonical denotes indirect-response
-  maturation chains and is a different role. The two formation rate constants
-  follow the library's existing `k_<destination>_form` grammar
-  (`Urien_2005_capecitabine.R`, `NA_NA_lidocaine.R`).
+- **The 5-FU precursor pool founds a new canonical compartment family.** The
+  precursor (5'-hydroxytegafur) has no volume and no measured concentration --
+  the paper's equations 4 and 5 act on its amount -- so it is not a
+  `central_<metab>` state, and asserting a volume for it would invent a
+  concentration the paper never defines. It is named `precursor_5fu`, and
+  `precursor_<metab>` was **ratified by the operator on 2026-09-21** as a
+  canonical compartment family for amount-only chemical precursors; this model
+  is the founding example registered in
+  `inst/references/compartment-names.md`. The family is distinct from the
+  numbered `precursor<n>` canonical, which denotes indirect-response maturation
+  chains -- a time-delay device with no chemical identity. The two formation
+  rate constants follow the library's `k_<destination>_form` grammar, in use
+  since `Urien_2005_capecitabine.R` and `NA_NA_lidocaine.R` and registered in
+  `inst/references/parameter-names.md` under the same ratification.
 - **Gimeracil is out of scope of the model.** The paper's mechanistic
   explanation runs through reduced gimeracil absorption, but gimeracil was
   analysed only noncompartmentally (Table 1) and no gimeracil structural model

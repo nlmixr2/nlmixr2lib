@@ -47,10 +47,10 @@ Kim_2017_tegafur_rat <- function() {
   )
 
   # XPre,5FU is an amount-only kinetic intermediate with no volume and no
-  # measured concentration (Kim 2017 equation 4 acts on the amount). It is
-  # whitelisted here pending operator ratification of `precursor_5fu` as a
-  # canonical compartment -- see vignette Errata.
-  paper_specific_compartments <- c("precursor_5fu")
+  # measured concentration (Kim 2017 equation 4 acts on the amount), which is
+  # why it is `precursor_5fu` rather than a `central_5fu`-style state with an
+  # invented volume. `precursor_<metab>` is registered in
+  # inst/references/compartment-names.md; this model is its founding example.
 
   covariateData <- list(
     CONMED_SDT = list(
