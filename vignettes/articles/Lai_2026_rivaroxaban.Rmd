@@ -799,10 +799,33 @@ stopifnot(
   median(auc15) < 5434
 )
 
-# Dose proportionality: this model is linear, so with covariates drawn from the
-# same distribution in both arms the AUC ratio must be 1.5 up to sampling noise.
-auc10 <- ss_chk |> filter(treatment == "10 mg QD") |> pull(auclast)
-stopifnot(abs(median(auc15) / median(auc10) - 1.5) < 0.15)
+# Dose proportionality: this model is linear, so the same subject at 15 mg must
+# have exactly 1.5x the steady-state AUC at 10 mg. The two arms above are
+# independent cohorts, so a ratio of their medians carries roughly 10% of
+# sampling noise and cannot be held tightly. Instead the 10 mg cohort is solved
+# at both doses with the same subjects and the same eta draw -- rxSetSeed()
+# immediately before each solve gives common random numbers -- and the
+# per-subject ratio is held to solver tolerance.
+solve_paired <- function(dose_mg) {
+  ev <- ss_events |>
+    filter(treatment == "10 mg QD") |>
+    mutate(amt = ifelse(evid == 1L, dose_mg, amt))
+  rxode2::rxSetSeed(20260901)
+  rxode2::rxSolve(mod, events = ev, keep = c("treatment")) |> as.data.frame()
+}
+paired <- list(lo = solve_paired(10), hi = solve_paired(15))
+# Common random numbers actually held: identical individual clearances.
+stopifnot(isTRUE(all.equal(distinct(paired$lo, id, cl)$cl, distinct(paired$hi, id, cl)$cl)))
+auc_tau <- function(d) {
+  d |>
+    filter(!is.na(Cc)) |>
+    group_by(id) |>
+    arrange(time, .by_group = TRUE) |>
+    summarise(auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2), .groups = "drop")
+}
+prop_chk <- inner_join(auc_tau(paired$lo), auc_tau(paired$hi), by = "id", suffix = c("_10", "_15")) |>
+  mutate(ratio = auc_15 / auc_10)
+stopifnot(nrow(prop_chk) == n_per_arm, max(abs(prop_chk$ratio / 1.5 - 1)) < 1e-4)
 ```
 
 # Assumptions and deviations
