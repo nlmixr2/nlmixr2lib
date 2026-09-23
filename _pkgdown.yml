@@ -984,6 +984,8 @@ navbar:
         href: articles/Clegg_2024_tixagevimab_cilgavimab.html
       - text: "Cilostazol (Yoo 2009)"
         href: articles/Yoo_2009_cilostazol.html
+      - text: "Cimetidine pbpk (Nishiyama 2019)"
+        href: articles/Nishiyama_2019_metformin_cimetidine.html
       - text: "Cipaglucosidase (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Cipargamin (Hien 2017)"
@@ -2968,6 +2970,10 @@ navbar:
         href: articles/Yoon_2013_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
+      - text: "Metformin cimetidine ddi pbpk (Nishiyama 2019)"
+        href: articles/Nishiyama_2019_metformin_cimetidine.html
+      - text: "Metformin pbpk (Nishiyama 2019)"
+        href: articles/Nishiyama_2019_metformin_cimetidine.html
       - text: "Methadone (Watt 2026)"
         href: articles/Watt_2026_methadone.html
       - text: "Methotrexate (Aumente 2006)"
@@ -6903,6 +6909,7 @@ articles:
   - articles/Nielsen_2015_vigabatrin
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
+  - articles/Nishiyama_2019_metformin_cimetidine
   - articles/Niu_2017_veliparib
   - articles/Noe_1996_factor_viii
   - articles/Novakovic_2017_cladribine
