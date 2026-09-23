@@ -2498,6 +2498,8 @@ navbar:
         href: articles/Hussein_1997_lamotrigine.html
       - text: "Lamotrigine (Milosheska 2016)"
         href: articles/Milosheska_2016_lamotrigine.html
+      - text: "Lamotrigine (Wang 2019)"
+        href: articles/Wang_2019_lamotrigine.html
       - text: "Lampalizumab (Le 2015)"
         href: articles/Le_2015_lampalizumab.html
       - text: "Lampalizumab cyno (Le 2015)"
@@ -7444,6 +7446,7 @@ articles:
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
   - articles/Wang_2018_daclatasvir_asunaprevir
+  - articles/Wang_2019_lamotrigine
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
