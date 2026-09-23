@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Trang 2019 plazomicin ([doi:10.1128/AAC.02329-18](https://doi.org/10.1128/AAC.02329-18)) -- healthy adults and adults with complicated urinary tract infection, acute pyelonephritis, bloodstream infection or hospital-/ventilator-acquired bacterial pneumonia.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.

@@ -3836,6 +3836,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Pixavir (Yang 2026)"
         href: articles/Yang_2026_pixavir.html
+      - text: "Plazomicin (Trang 2019)"
+        href: articles/Trang_2019_plazomicin.html
       - text: "Plozasiran (Ousey 2026)"
         href: articles/Ousey_2026_plozasiran.html
       - text: "Polatuzumab (Lu 2019)"
@@ -7355,6 +7357,7 @@ articles:
   - articles/Toshimoto_2017_irinotecan_pbpk
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
+  - articles/Trang_2019_plazomicin
   - articles/Traynard_2017_prostateSignaling_qsp
   - articles/Tremoulet_2014_ampicillin
   - articles/Troy_2020_arylsulfataseA
