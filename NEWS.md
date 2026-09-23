@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Faisal 2019 enalapril and enalaprilat ([doi:10.3389/fped.2019.00281](https://doi.org/10.3389/fped.2019.00281)) -- healthy adults given enalapril as orodispersible minitablets or reference tablets.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
