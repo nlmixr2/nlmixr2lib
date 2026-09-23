@@ -1982,6 +1982,22 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Kurup_2024_DZIF10c.R` (inhaled lung deposition, human `F1h = 29.6%`; the species-specific sibling is `logitfdepot_macaque` at `F1m = 1.00%`).
 - **Notes:** Follows the `logit`-transform-prefix family (`logitffo`, `logitemax`, `logitfm`) applied to the existing `fdepot` root. Prefer `logitfdepot` over `lfdepot` when the source paper's control stream estimates the fraction on the logit scale, for the reason given in the `logitfm` entry: a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Species-specific and stratum-specific values take the usual suffix (`logitfdepot_macaque`, per the `lfdepot_macaque` precedent in `Nagy_2017_obiltoxaximab.R`), with the reference species keeping the bare name.
 
+### logitifdepot50 (**canonical logit-transformed fractional depot-bioavailability reduction at a 50-unit anchor dose**)
+- **Type:** log-transformed-pk
+- **Role:** Logit-scale encoding of the fractional REDUCTION in relative depot bioavailability produced at a specific anchor dose, in a saturable-dissolution model of the form `frel = 1 - ifdepot50 * ((DOSE - DOSE_anchor) / (DOSE_50 - DOSE_anchor))^gamma`. Held on the logit scale because the reduction is bounded in (0, 1). Inside `model` the bare form is `ifdepot50 <- expit(logitifdepot50)`. The trailing `50` is the anchor dose in the model's own dose units, read off `label()`; a paper anchored at a different dose takes the corresponding numeral (`logitifdepot100`, etc.).
+- **Source aliases:**
+  - `I50` -- Cirincione 2018 Table 3 (`theta9`) and Table S2 Eq. [1n]; the paper's bare symbol for the same quantity.
+- **Example models:** `Cirincione_2018_apixaban.R` (founding example; `logitifdepot50 = -0.322`, i.e. a 42.0% reduction in relative bioavailability at 50 mg against the 2.5 mg anchor), `Cirincione_2018_apixaban_asian_subgroups.R` (`-0.327`).
+- **Notes:** Ratified 2026-09-22 (operator sidecar `oasweep_PMC6263664` request-001 / response-001, question q3, option B). The operator deliberately rejected the paper's bare `I50` spelling (`logiti50` / `i50`), which had been the extracting agent's recommendation: a bare `i50` gives a reader no indication of WHICH quantity is being halved, and collides conceptually with the registered `ki50` / `ed50` / `ec50` half-maximal family. The canonical name instead states the affected parameter (`fdepot`) and the anchor dose. Deliberately NOT folded into `limax`: this is the reduction at ONE specific dose, not an asymptotic maximum -- the published form exceeds it above 50 mg -- so recording it under `limax` would mislead a downstream reader into reading 0.42 as a ceiling on the bioavailability loss. Distinct from `led50` / `ed50`, which is the dose producing a HALF-MAXIMAL effect; here the dose is fixed by the anchor and the estimated quantity is the effect size at it.
+
+### ifdepot50 (**canonical bare fractional depot-bioavailability reduction at a 50-unit anchor dose**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `logitifdepot50`; the fractional reduction in relative depot bioavailability at the anchor dose on the linear scale (unitless, in (0, 1)), for use inside `model` after the inverse-logit back-transform.
+- **Source aliases:**
+  - `I50` -- Cirincione 2018 notation.
+- **Example models:** `Cirincione_2018_apixaban.R`, `Cirincione_2018_apixaban_asian_subgroups.R`.
+- **Notes:** See the `logitifdepot50` entry for the naming ruling and for why this is not a member of the `ec50` / `ed50` / `ki50` half-maximal family.
+
 ### pcmilk (**canonical milk:plasma partition coefficient**)
 - **Type:** paper-named-param
 - **Role:** Milk:plasma partition coefficient -- the fraction of the drug in the central compartment that is freely distributed into breast milk. Unitless, normally in (0, 1]. Enters the central-to-milk micro-rate constant as `k = (q_milk / vc) * pcmilk`, so at pseudo-equilibrium the milk:plasma concentration ratio (and hence the milk:plasma AUC ratio) equals `pcmilk` exactly. That identity is the natural falsifier for a lactation extraction: a published milk:plasma AUC ratio that does not equal the published partition coefficient means the model that produced it had an additional milk sink. Metabolite forms take the standard suffix (`pcmilk_<metab>`).

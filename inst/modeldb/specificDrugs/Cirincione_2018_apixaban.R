@@ -177,7 +177,7 @@ Cirincione_2018_apixaban <- function() {
     # logit-Imax and ED50 were correlated above rho = 0.95.
     lgamma <- log(0.857)
     label("Shape parameter of the dose-relative-bioavailability relationship (gamma, theta8, unitless)")
-    logiti50 <- -0.322
+    logitifdepot50 <- -0.322
     label("Logit of the fractional reduction in relative bioavailability at a 50-mg dose (I50, theta9, unitless)")
 
     # IIV: Table 3, 'stage 2 final model' column. Exponential on the
@@ -248,9 +248,9 @@ Cirincione_2018_apixaban <- function() {
     # (DOSE - 2.5) excess is clamped at zero so doses at or below the
     # anchor cannot produce a fractional power of a negative number.
     gamma <- exp(lgamma)
-    i50 <- expit(logiti50)
+    ifdepot50 <- expit(logitifdepot50)
     doseExcess <- (DOSE_APIXABAN_MG > 2.5) * (DOSE_APIXABAN_MG - 2.5)
-    frel <- 1 - i50 * (doseExcess / 47.5)^gamma
+    frel <- 1 - ifdepot50 * (doseExcess / 47.5)^gamma
 
     d/dt(depot) <- -ka * depot
     d/dt(central) <- ka * depot - kel * central - k12 * central + k21 * peripheral1

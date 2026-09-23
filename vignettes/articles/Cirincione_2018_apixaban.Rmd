@@ -97,7 +97,7 @@ in the model-file comments).
 | `e_race_asian_cl` (theta16); ad hoc `e_race_japanese_cl` (theta24), `e_race_korean_cl` (theta25), `e_race_asian_oth_cl` (theta16) | Table 3 |
 | `e_dis_nvaf_cl` (theta17), `e_dis_acs_cl` (theta18), `e_conmed_cyp3a4_pgp_inh_cl` (theta19) | Table 3 |
 | `e_wt_vc` (theta11), `e_dis_nvaf_vc` (theta12), `e_dis_acs_vc` (theta13) | Table 3 |
-| `lgamma` (theta8), `logiti50` (theta9) | Table 3 |
+| `lgamma` (theta8), `logitifdepot50` (theta9, the paper's `I50`) | Table 3 |
 | `etalka`, `etalkel`, `etalvc`, `etalk21`, `etalk12` | Table 3 IIV block (`omega2-ka`, `omega2-k`, `omega2-Vc/F`, `omega2-k21`, `omega2-k12`) |
 | `expSdHvJapan` (theta21), `expSdAppraise1` (theta22), `expSdAristotle` (theta23) | Table 3 residual block |
 | Reference covariate values 65 y, 70 kg, 80 mL/min | Results "PPK model development"; Table S2 Eqs. [1b], [1c], [1e] |
@@ -245,8 +245,10 @@ stopifnot(
 # Closed-form check 2: relative bioavailability versus dose
 
 The reduction in relative bioavailability at higher doses (Eq. 4) is anchored so
-that `Frel` is exactly 1 at the 2.5 mg dose and `1 - I50` at 50 mg, where
-`I50 = expit(theta9)`.
+that `Frel` is exactly 1 at the 2.5 mg dose and `1 - ifdepot50` at 50 mg, where
+`ifdepot50 = expit(theta9)`. The paper writes this quantity as `I50`; the model
+files carry it under the canonical name `logitifdepot50` / `ifdepot50`, which
+names the parameter it acts on (`fdepot`) and the 50 mg anchor dose.
 
 ```{r frel-check}
 doseGrid <- c(2.5, 5, 10, 20, 25, 50)
@@ -269,7 +271,7 @@ frelRes <- frelSim |>
   dplyr::arrange(id) |>
   dplyr::mutate(dose_mg = doseGrid)
 
-i50Expected <- 1 / (1 + exp(0.322)) # expit(theta9), theta9 = -0.322
+ifdepot50Expected <- 1 / (1 + exp(0.322)) # expit(theta9), theta9 = -0.322
 
 knitr::kable(
   frelRes |>
@@ -281,11 +283,11 @@ knitr::kable(
 
 # Two exact identities implied by Eq. 4, both deterministic:
 #   Frel(2.5 mg)  = 1                 (the anchor dose)
-#   Frel(50 mg)   = 1 - expit(theta9) (what makes I50 interpretable as the
-#                                      reduction at 50 mg)
+#   Frel(50 mg)   = 1 - expit(theta9) (what makes ifdepot50 interpretable as
+#                                      the reduction at 50 mg)
 stopifnot(
   abs(frelRes$frel[frelRes$dose_mg == 2.5] - 1) < 1e-10,
-  abs(frelRes$frel[frelRes$dose_mg == 50] - (1 - i50Expected)) < 1e-8,
+  abs(frelRes$frel[frelRes$dose_mg == 50] - (1 - ifdepot50Expected)) < 1e-8,
   all(diff(frelRes$frel) < 0)
 )
 ```
