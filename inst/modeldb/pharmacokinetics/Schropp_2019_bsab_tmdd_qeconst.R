@@ -24,7 +24,7 @@ Schropp_2019_bsab_tmdd_qeconst <- function() {
   # example (Figure 5d-f) is simulated with the FULL model instead, which is
   # available as Schropp_2019_bsab_tmdd_full.
   compartmentData <- list(
-    depot_ivdum = list(
+    depot_iv = list(
       analyte = "bispecific antibody (i.v. input-function device)",
       units = "nmol",
       specimen = "not applicable",
@@ -39,8 +39,8 @@ Schropp_2019_bsab_tmdd_qeconst <- function() {
     central = list(analyte = "bispecific antibody (free)", units = "nM", specimen = "plasma", verified = TRUE)
   )
 
-  # An i.v. dose MUST be given into `depot_ivdum`, never into `central`.
-  dosing <- c("depot_ivdum", "depot_sc")
+  # An i.v. dose MUST be given into `depot_iv`, never into `central`.
+  dosing <- c("depot_iv", "depot_sc")
 
   covariateData <- list()
 
@@ -119,8 +119,8 @@ Schropp_2019_bsab_tmdd_qeconst <- function() {
     kint <- exp(lkint)
 
     # Eq 42: dummy i.v. input compartment supplying the paper's In_IV(t).
-    d/dt(depot_ivdum) <- -kdum * depot_ivdum
-    in_iv <- kdum * depot_ivdum
+    d/dt(depot_iv) <- -kdum * depot_iv
+    in_iv <- kdum * depot_iv
 
     # Eq 15: s.c. depot.
     d/dt(depot_sc) <- -ka * depot_sc

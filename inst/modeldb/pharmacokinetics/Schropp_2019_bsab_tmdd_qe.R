@@ -14,13 +14,13 @@ Schropp_2019_bsab_tmdd_qe <- function() {
 
   # Units and the amount/concentration split are identical to the full model;
   # see Schropp_2019_bsab_tmdd_full.R for the reasoning. `central` holds the
-  # free BsAb CONCENTRATION (nM), `peripheral1` / `depot_sc` / `depot_ivdum`
+  # free BsAb CONCENTRATION (nM), `peripheral1` / `depot_sc` / `depot_iv`
   # hold AMOUNTS (nmol), and doses are nmol (1 mg = 6.7 nmol per the paper's
   # own conversion factor).
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
 
   compartmentData <- list(
-    depot_ivdum = list(
+    depot_iv = list(
       analyte = "bispecific antibody (i.v. input-function device)",
       units = "nmol",
       specimen = "not applicable",
@@ -38,9 +38,9 @@ Schropp_2019_bsab_tmdd_qe <- function() {
     target_b = list(analyte = "target receptor B (free)", units = "nM", specimen = "not applicable", verified = TRUE)
   )
 
-  # An i.v. dose MUST be given into `depot_ivdum`, never into `central`. See the
+  # An i.v. dose MUST be given into `depot_iv`, never into `central`. See the
   # `kdum` comment in ini() and the vignette for why.
-  dosing <- c("depot_ivdum", "depot_sc")
+  dosing <- c("depot_iv", "depot_sc")
 
   covariateData <- list()
 
@@ -136,8 +136,8 @@ Schropp_2019_bsab_tmdd_qe <- function() {
     target_b(0) <- ksynb / kdegb
 
     # Eq 42: the dummy i.v. input compartment. `in_iv` is the paper's In_IV(t).
-    d/dt(depot_ivdum) <- -kdum * depot_ivdum
-    in_iv <- kdum * depot_ivdum
+    d/dt(depot_iv) <- -kdum * depot_iv
+    in_iv <- kdum * depot_iv
 
     # Eq 15: s.c. depot, which needs no special treatment - the paper notes that
     # 'in case of an absorption compartment, the internal dosing mechanisms from
