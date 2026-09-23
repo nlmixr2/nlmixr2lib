@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Guidi 2019 artesunate and mefloquine ([doi:10.1186/s12936-019-2754-6](https://doi.org/10.1186/s12936-019-2754-6)) -- African children aged 6-59 months with uncomplicated falciparum malaria.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.

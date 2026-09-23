@@ -354,6 +354,8 @@ navbar:
         href: articles/Birgersson_2016_artemisinin.html
       - text: "Artemisinin (Sidhu 1998)"
         href: articles/Sidhu_1998_artemisinin.html
+      - text: "Artesunate (Guidi 2019)"
+        href: articles/Guidi_2019_artesunate_mefloquine.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
       - text: "Artesunate (Kloprogge 2015)"
@@ -2892,6 +2894,8 @@ navbar:
         href: articles/Koumaki_2023_mecillinam.html
       - text: "Medi7836 (Hood 2021)"
         href: articles/Hood_2021_medi7836.html
+      - text: "Mefloquine (Guidi 2019)"
+        href: articles/Guidi_2019_artesunate_mefloquine.html
       - text: "Mefloquine (Hoglund 2018)"
         href: articles/Hoglund_2018_mefloquine.html
       - text: "Mefloquine (Ramharter 2019)"
@@ -6229,6 +6233,7 @@ articles:
   - articles/Gu_2025_heart_failure_pbpk
   - articles/Gu_2025_rivaroxaban
   - articles/Guiastrennec_2016_gastric_emptying
+  - articles/Guidi_2019_artesunate_mefloquine
   - articles/Guo_2016_taurocholate_schh
   - articles/Guo_2022_PF_06939999
   - articles/Guo_2025_glp1ReceptorAgonists_mbma
