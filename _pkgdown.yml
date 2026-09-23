@@ -82,6 +82,8 @@ navbar:
         href: articles/Zhang_2025_abemaciclib.html
       - text: "Acetaminophen (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Acetaminophen (Mian 2019)"
+        href: articles/Mian_2019_acetaminophen.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
@@ -6793,6 +6795,7 @@ articles:
   - articles/Mercier_2014_tramadol_tapentadol
   - articles/Mi_2023_cefquinome_pbpk
   - articles/Mi_2024_aditoprim
+  - articles/Mian_2019_acetaminophen
   - articles/Miano_2024_tacrolimus
   - articles/Miao_2023_teclistamab
   - articles/Michelet_2025_BI754111_mpbpk
