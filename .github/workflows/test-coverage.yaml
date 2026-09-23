@@ -47,8 +47,15 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          cache-version: 2
           extra-packages: any::covr, any::xml2
           needs: coverage
+
+      # Fails fast, with a readable message, when the resolved nlmixr2 stack is
+      # not mutually compatible -- rather than letting it surface as a crash
+      # somewhere far away. See the script's header for the mechanism.
+      - name: Verify the installed R package stack is mutually compatible
+        run: Rscript .github/scripts/check-r-stack.R
 
       - name: Test coverage
         run: |

@@ -140,8 +140,8 @@ Bonner_2015_gastric_emptying <- function() {
     # ---------------------------------------------------------------------
     # Meal-type coefficients. Bonner 2015 Table 3 reports five theta_meal
     # coefficient estimates. The paper does not state which Eq. 1
-    # parameter the meal-type theta modifies. The operator-approved
-    # (response-003, 2026-07-24) best-effort choice implemented here is
+    # parameter the meal-type theta modifies. The the chosen
+    #  best-effort choice implemented here is
     # that theta_meal multiplies gamma1 with aqueous as the renormalised
     # reference (theta_meal_ratio = theta_meal / theta_Aqueous), so an
     # aqueous record leaves gamma1 unchanged and a solid record scales
@@ -160,7 +160,7 @@ Bonner_2015_gastric_emptying <- function() {
     # omega^2 (RSE)" column. The paper does not state the unit convention
     # for the omega^2 values (114, 38.6, 14.1, 58.7, 19.2), and the
     # NONMEM control stream is not on disk to disambiguate. The operator-
-    # approved (response-003, 2026-07-24) best-effort interpretation
+    # approved best-effort interpretation
     # implemented here is that the reported values are CV% (percent
     # coefficient of variation of the corresponding structural
     # parameter), converted to log-scale variance via
@@ -210,7 +210,7 @@ Bonner_2015_gastric_emptying <- function() {
     # gives ratio = 1 by construction, and MEAL_SOLID = 1 gives ratio =
     # 1.99 / 0.697 = 2.855. Exactly one MEAL_* indicator is expected to
     # be 1 per record (the event table must enforce mutual exclusivity).
-    # This attachment point is the operator-approved (response-003,
+    # This attachment point is the the chosen (response-003,
     # 2026-07-24) best-effort choice among the three plausible
     # placements (gamma1, gamma2, or both); see vignette Errata.
     # ---------------------------------------------------------------------

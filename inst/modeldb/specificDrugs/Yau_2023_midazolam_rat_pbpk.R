@@ -162,14 +162,14 @@ Yau_2023_midazolam_rat_pbpk <- function() {
     # monkey (123.4 = 90.4 + 11 + 14.9 + 7.1 mL/min) that row equals
     # the splanchnic sum exactly. q_pv is therefore rebuilt from the
     # splanchnic rows and the hepatic artery is recovered as the
-    # cardiac-output balance, which makes the ODE system
-    # mass-conservative by construction and reproduces the companion
-    # paper's own rat control-stream fractions exactly
-    # (FCO_PV = 0.151, FCO_HA = 0.024, summing to 0.175 of cardiac
-    # output = the 17.50% recovered here). Total hepatic flow then
-    # sits at 17.5% of cardiac output in rat, 20.7% in monkey and
-    # 20.5% in human. Ratified by the operator (sidecar request-002
-    # q2), which also keeps the twice-tabulated rest-of-body flow.
+    # cardiac-output balance, which makes the ODE system mass-
+    # conservative by construction and reproduces the companion
+    # paper's own rat control-stream fractions exactly (FCO_PV =
+    # 0.151, FCO_HA = 0.024, summing to 0.175 of cardiac output =
+    # the 17.50% recovered here). Total hepatic flow then sits at
+    # 17.5% of cardiac output in rat, 20.7% in monkey and 20.5% in
+    # human. Ratified by the operator, which also keeps the twice-
+    # tabulated rest-of-body flow.
     q_pv <- q_gut + q_stomach + q_spleen + q_pancreas
     q_ha <- q_co - (q_adipose + q_bone + q_brain + q_gut + q_heart +
                     q_kidney + q_muscle + q_other + q_pancreas +

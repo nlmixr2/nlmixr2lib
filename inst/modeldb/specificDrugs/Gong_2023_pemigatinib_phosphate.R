@@ -43,8 +43,7 @@ Gong_2023_pemigatinib_phosphate <- function() {
   # drug concentration and not an ODE state, so it has no canonical
   # compartment name. Declared here so checkModelConventions() treats it as a
   # documented paper-mechanistic output rather than a naming deviation. The
-  # sibling model Gong_2023_pemigatinib_creatinine uses the same convention
-  # (operator decision, sidecar request 001 q2: keep the paper-named form).
+  # sibling model Gong_2023_pemigatinib_creatinine uses the same convention.
   paper_specific_compartments <- c("phosChange")
   units <- list(time = "h", dosing = "mg", concentration = "nM")
 

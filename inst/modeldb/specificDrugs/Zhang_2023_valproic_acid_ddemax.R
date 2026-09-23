@@ -109,7 +109,7 @@ Zhang_2023_valproic_acid_ddemax <- function() {
     # from the body text. It is carried over from the same Ding 2015
     # source as Emax and gamma, where Zhang's own Table 1 tabulates
     # Ding's CL/F term as (1 + 2.8 * DDW^1.68 / (37.4^1.68 + DDW^1.68)).
-    # OPERATOR-RATIFIED READING (sidecar oare_PMC10587682 q2, option C):
+    # ratified READING:
     # DD50 = 37.4 evaluated on the mg/DAY scale, even though Ding
     # tabulates it against DDW in mg/kg/day. Rationale: only the mg/day
     # reading reproduces Zhang's own numbers - typical CL/F comes out at

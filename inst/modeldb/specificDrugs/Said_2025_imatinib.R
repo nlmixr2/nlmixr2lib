@@ -236,7 +236,7 @@ Said_2025_imatinib <- function() {
     # expSd = sqrt(sigma^2).
     #
     # The endpoint-to-variance assignment follows the Data S1 control stream,
-    # per operator ruling on task sidecar oare_PMC11919263 request-001 q2.
+    #  on task sidecar oare_PMC11919263 request-001 q2.
     # Data S1 maps ERR(1) -> Q0 -> CTOT (total), ERR(2) -> Q1 -> CFREE
     # (unbound), ERR(3) -> Q2 -> CMTOT (metabolite) positionally, and its
     # inline comments (;CT, ;CF, ;CM) agree. Said 2025 Table 2 prints the

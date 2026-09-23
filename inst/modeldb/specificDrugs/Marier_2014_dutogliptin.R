@@ -185,18 +185,18 @@ Marier_2014_dutogliptin <- function() {
     lcl <- log(176);        label("Apparent clearance at CrCL 115.7 mL/min (L/h)")  # Table 2: CL/F = 176 * (CrCL/115.7)^0.848
     e_crcl_cl <- 0.848;     label("Power exponent of creatinine clearance on CL/F (unitless)")  # Table 2 exponent; reproduces the printed CL/F of 121 L/h at CrCL 75 (121.9) and 79 L/h at CrCL 45 (79.0), Results p.302
 
-    # Vss/F = 2041 L is the only distribution parameter Marier 2014 prints
-    # (Table 2 and Results p.302-303, which defines it as the "sum of central and
+    # Vss/F = 2041 L is the only distribution parameter Marier 2014 prints (Table
+    # 2 and Results p.302-303, which defines it as the "sum of central and
     # peripheral volume of distribution"). Table S3 nonetheless carries SEPARATE
-    # etas on Vc/F and Vp/F, so the fitted model had distinct typical values.
-    # The split below is BACK-SOLVED, not paper-printed: the three published
-    # (CL/F, terminal t1/2) pairs -- (176, 12.2 h), (121, 15.4 h), (79, 21.3 h)
-    # from Results p.302-303 -- together with Vc + Vp = 2041 L over-determine
-    # the two unknowns (Vc, Q) and reproduce all three half-lives to four
-    # significant figures (12.199 / 15.430 / 21.290 h). Sweeping the full
-    # 3-significant-figure rounding envelope of the printed half-lives admits
-    # only Vc/F 1167-1306 L, Vp/F 735-874 L, Q/F 70.2-91.6 L/h, so the solve is
-    # tightly bounded. Operator ruling 2026-08-26 (sidecar request-001 q2 = A).
+    # etas on Vc/F and Vp/F, so the fitted model had distinct typical values. The
+    # split below is BACK-SOLVED, not paper-printed: the three published (CL/F,
+    # terminal t1/2) pairs -- (176, 12.2 h), (121, 15.4 h), (79, 21.3 h) from
+    # Results p.302-303 -- together with Vc + Vp = 2041 L over-determine the two
+    # unknowns (Vc, Q) and reproduce all three half-lives to four significant
+    # figures (12.199 / 15.430 / 21.290 h). Sweeping the full 3-significant-
+    # figure rounding envelope of the printed half-lives admits only Vc/F
+    # 1167-1306 L, Vp/F 735-874 L, Q/F 70.2-91.6 L/h, so the solve is tightly
+    # bounded. Operator ruling 2026-08-26.
     lvc <- log(1250);       label("Apparent central volume at 82.5 kg, Caucasian/Asian (L)")            # BACK-SOLVED from Table 2 Vss/F = 2041 L plus the three printed terminal half-lives (Results p.302-303); not printed in Marier 2014
     lvp <- log(791);        label("Apparent peripheral volume at 82.5 kg, Caucasian/Asian (L)")         # BACK-SOLVED; 2041 - 1250 = 791 L preserves the printed Vss/F exactly
     lq  <- log(78.6);       label("Apparent intercompartmental clearance (L/h)")                         # BACK-SOLVED from the same three (CL/F, t1/2) pairs

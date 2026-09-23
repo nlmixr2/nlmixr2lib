@@ -1993,6 +1993,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Zhang_2025_bietti_crystalline_dystrophy_mbma.R`.
 - **Notes:** **`<state>cfb` is the library-wide change-from-baseline convention** -- operator ruling, sidecar `oasweep_PMC11997835` request-001 q1, answered 2026-09-11. The register previously carried two competing forms: this `cfb` suffix (`das28cfb`, `druglikingvascfb`, `tmccfb`) and a `d_<instrument>` prefix (`d_updrs`, `d_hr`, `d_rr`, `d_viral_load`). The suffix governs; the surviving `d_`-prefixed names are scheduled for conversion to it in a separate follow-up, and a new change-score endpoint must be named `<state>cfb` rather than `d_<state>`. This entry was itself minted as `d_bcva` and renamed under that ruling. The distinction once drawn between "a change score that is the model's only output" and "a change-score variant of a state that also exists in absolute form" is NOT a naming criterion -- Zhang 2025 is algebraic with no absolute-acuity state of its own and still takes the suffix. The scale is LogMAR (higher = worse vision), so a positive `bcvacfb` is vision loss; note that the covariate register's `SCORE_BCVA` is defined on the ETDRS-letter scale instead (higher = better) and the two are not interchangeable without conversion.
 
+### mos (**canonical median overall survival**)
+- **Type:** compartment
+- **Role:** Median overall survival of a population -- the time by which half of a trial arm (or cohort) has died from any cause. A **summary statistic of a survival distribution**, carried in time units, and therefore a study-arm-level quantity: one value describes a whole arm and there is no per-patient counterpart. Used as the modelled observation of model-based meta-analyses that regress published survival outcomes on trial-level design and population covariates.
+- **Source aliases:** `mOS` -- the near-universal abbreviation in oncology trial reporting and in Zierhut 2016 throughout; `ln(mOS)`, `ln(mOS_ij)` -- the log-transformed form in which such models are usually fitted, which is the *transform* of this quantity and not a separate canonical (see Notes).
+- **Example models:** `Zierhut_2016_hcc_antiangiogenic_os_mbma.R` (median overall survival in months of an advanced-hepatocellular-carcinoma trial arm receiving systemic antiangiogenic therapy, predicted from arm-level treatment and population indicators).
+- **Notes:** **Not a hazard and not a survival curve.** `mos` is a single scalar per arm with no time axis, so a model observing it cannot produce S(t), a hazard ratio, or an individual patient's survival time; it is distinct from `cumhaz` (the cumulative-hazard ODE state of a time-to-event model) and from the `T_<event>` covariate family (an observed event time supplied as an input). A published hazard ratio can be approximated from a ratio of `mos` values only under an exponential-survival assumption, which the consuming model must state explicitly. **The log transform does not get its own canonical.** These models are conventionally fitted on ln(mOS), because median survival is right-skewed across trials and a log scale makes covariate effects proportional; encode that as `mos <- exp(<linear predictor>)` with a `lnorm()` residual rather than observing a separate `lnmos` state, which keeps the output on the time scale the sources report and the `units$response` metadata honest. Suffix per endpoint if a future source models more than one survival summary in one file (`mos_pfs` for median progression-free survival), and note that a median PFS is a different endpoint rather than a variant of this one.
+
 ### score (**canonical generic pain score**)
 - **Type:** compartment
 - **Role:** Generic pain-score PD output.
@@ -2078,8 +2085,8 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Absolute (pre-bronchodilator) forced expiratory volume in 1 second -- the standard spirometric lung-function PD output of asthma and COPD trials. An algebraic output state rather than an ODE state: the longitudinal FEV1 models that use it build the response as baseline + placebo term + treatment term, with no differential equation.
 - **Source aliases:** `FEV1`, `FEVB` / `FEV1baseline` (the *baseline* parameter of the same endpoint, which is a model parameter and not this output state).
-- **Example models:** `Zhang_2025_dupilumab_fev1.R` (dual `Cc` + `FEV1` output; concentration-driven Emax; FEV1 in L), `Jin_2025_benralizumab_fev1.R` (single `FEV1` output; time-driven `Emax * t / (T50 + t)` because the FEV1 exposure-response relationship was flat over the studied dose range; FEV1 in mL).
-- **Notes:** Registered with the uppercase paper spelling `FEV1`, which is how every source and both current models write it, so that a single-output FEV1 model is recognised as canonical without renaming the endpoint to `Cc`. Holds a **volume in whichever unit the source reports** -- mL in `Jin_2025_benralizumab_fev1`, L in `Zhang_2025_dupilumab_fev1` -- so the per-model `units` field, not this name, fixes the scale; never convert a source's FEV1 values to match a sibling model. Distinct from `fev1pp`, which is the same measurement expressed as a percentage of a reference-equation predicted value and is therefore dimensionless and not interconvertible without that reference equation. Residual error on this output uses the `<param>_FEV1` suffix form (`addSd_FEV1`, `propSd_FEV1`).
+- **Example models:** `Zhang_2025_dupilumab_fev1.R` (dual `Cc` + `FEV1` output; concentration-driven Emax; FEV1 in L), `Jin_2025_benralizumab_fev1.R` (single `FEV1` output; time-driven `Emax * t / (T50 + t)` because the FEV1 exposure-response relationship was flat over the studied dose range; FEV1 in mL), `Ambery_2015_batefenterol_fev1.R` (single `FEV1` output; a day-29 landmark Emax in TOTAL DAILY DOSE rather than in concentration or time, with the zero-dose intercept scaled by the patient's own baseline; FEV1 in L).
+- **Notes:** Registered with the uppercase paper spelling `FEV1`, which is how every source and both current models write it, so that a single-output FEV1 model is recognised as canonical without renaming the endpoint to `Cc`. Holds a **volume in whichever unit the source reports** -- mL in `Jin_2025_benralizumab_fev1`, L in `Zhang_2025_dupilumab_fev1` -- so the per-model `units` field, not this name, fixes the scale; never convert a source's FEV1 values to match a sibling model. Distinct from `fev1pp`, which is the same measurement expressed as a percentage of a reference-equation predicted value and is therefore dimensionless and not interconvertible without that reference equation. Residual error on this output uses the `<param>_FEV1` suffix form (`addSd_FEV1`, `propSd_FEV1`). A model that consumes the patient's own baseline FEV1 as an input column cannot name that column `FEV1` -- it would collide with this output state -- and must use the `FEV1_BL` covariate canonical instead (`inst/references/covariate-columns.md`); `Ambery_2015_batefenterol_fev1.R` is the founding case.
 
 ### fvcpp (**canonical FVC percent predicted**)
 - **Type:** compartment
@@ -2386,6 +2393,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Chen_2025_hemoporfin_patient_rating.R` (founding example; Chen 2025 Table S1, beta0 = -12.9, beta1 = 0.981 per h*ug/mL, p = 0.0148 -- SIGNIFICANT; odds ratio exp(0.981) = 2.67 per h*ug/mL).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex` rather than by enumeration; this entry is documentation of what the endpoint means, not a gate. Chen 2025 fitted each endpoint as a SEPARATE univariate frequentist logistic regression in R 3.4.2 (Methods 2.9, Equation 3), independently of the NONMEM population PK run, with the single regressor `AUC_HEMO` (registered in `covariate-columns.md`) -- hemoporfin AUC(0-30min) over the photodynamic-therapy treatment window, supplied as a per-subject covariate column derived from the population PK model's empirical Bayes estimates. The model carries no PK layer and no ODE state, so the probability is algebraic and is evaluated once per subject. Founding models expose a small placeholder additive residual so the nlmixr2 observation machinery accepts the model; the source likelihood is Bernoulli and estimates no residual error. The steepest of the five Chen 2025 exposure slopes and the most significant. Sibling of [[prob_investigator_rating]] -- see that entry for why the two raters are kept as separate canonicals. Note the cohort is pediatric (aged 7-14), so the rating is given by the child or their legal representative; the paper does not separate the two, so the column cannot be split into self-reported versus proxy-reported.
 
+### prob_paresthesia (**canonical paresthesia adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that paresthesia -- an abnormal skin sensation of tingling, pricking or numbness -- is reported as an adverse event. In the founding model this is a STUDY-ARM incidence rate in a landmark model-based meta-analysis, not an individual patient's risk; a future individual-level exposure-response model of the same adverse event would use the same canonical.
+- **Source aliases:** none.
+- **Example models:** `Boucher_2016_topiramate_mbma.R` (founding example; landmark logistic dose-response MBMA across 17 arms of six episodic migraine prophylaxis trials, `logit(p) = E0 + eta_study + Emax * DOSE_TPM_MGD / (ED50 + DOSE_TPM_MGD)` with E0 = -2.56, Emax = 2.91, ED50 = 17.5 mg/day).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex` rather than by enumeration; this entry is documentation of what the endpoint means, not a gate. Paresthesia is the commonest dose-limiting adverse event of topiramate, which is why it is the safety side of a therapeutic-index comparison -- the founding paper fitted it as part of a larger benchmarking exercise on topiramate's therapeutic window. The founding model's likelihood is BINOMIAL on each arm's event count out of its arm size (`Yij ~ Binomial(Nij, pij)`), not Bernoulli on an individual, so the placeholder additive residual it exposes is even further from the source likelihood than in the individual-level `prob_<endpoint>` models: a simulation that wants an arm's observed rate should draw `rbinom(1, N_arm, prob_paresthesia) / N_arm`. Distinct from [[prob_peripheral_neuropathy_grade3]], which is a GRADED (CTCAE) neurotoxicity endpoint from an oncology exposure-safety analysis -- paresthesia here is an ungraded all-severity incidence, so the two must not be pooled. Because the driver is a study-arm assigned DOSE rather than an individual exposure metric, a model carrying this output may legitimately have no AUC / Cavg covariate at all.
+
 ### prolactin (**canonical serum prolactin output**)
 - **Type:** compartment
 - **Role:** Serum prolactin PD output (endocrinology).
@@ -2439,7 +2453,14 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Percentage of a patient's awake time spent in the OFF state (the state of reduced levodopa benefit, with re-emergent motor symptoms) in Parkinson disease with levodopa-related motor response complications. The standard primary efficacy endpoint of adjunctive-therapy trials in that population, recorded from patient diaries. **Sign convention: LOWER is better** -- a treatment effect drives the state down, so an Emax term acting on this endpoint carries a negative Emax. The state is a percentage on a 0-100 scale but is not bounded by the model, so it should not be given a logit / probit transform unless the source paper declares one.
 - **Source aliases:** `POFF` -- Knebel 2012 paper notation (the structural equations write `POFFi = PDDPEi + IEi` and the observation `POFF = POFFi * exp(eps1) + eps2`).
 - **Example models:** `Knebel_2012_istradefylline_offtime.R` (sum of a disease-progression/placebo-response Emax term in study time, proportional to the individual baseline `E0`, and an additive istradefylline Emax term in steady-state exposure `AUC_ISTRA`).
-- **Notes:** Distinct from the covariate `OFFTIME_BL` in `covariate-columns.md`, which carries the baseline daily OFF time in **hours per day** rather than as a percentage; the two are related through each subject's awake-time denominator, which Knebel 2012 does not report, so neither can be derived from the other. Also distinct from the endpoint's own structural baseline, which is the `e0` parameter rather than a separate state. A future Parkinson model fitting the ABSOLUTE daily OFF time in hours should register a companion `offtime`, and one fitting the change from baseline should register `pctofftimecfb`, exactly as `das28` and `das28cfb` are separated.
+- **Notes:** Distinct from the covariate `OFFTIME_BL` in `covariate-columns.md`, which carries the baseline daily OFF time in **hours per day** rather than as a percentage; the two are related through each subject's awake-time denominator, which Knebel 2012 does not report, so neither can be derived from the other. Also distinct from the endpoint's own structural baseline, which is the `e0` parameter rather than a separate state. A future Parkinson model fitting the ABSOLUTE daily OFF time in hours should register a companion `offtime`, and one fitting the change from baseline should register `pctofftimecfb`, exactly as `das28` and `das28cfb` are separated. The ON-time mirror of that anticipated companion is now registered as `ontime`, immediately below; `offtime` itself is still unregistered and awaits a model that fits it.
+
+### ontime (**canonical absolute daily ON-time PD output**)
+- **Type:** compartment
+- **Role:** Absolute daily ON time in **hours**, the number of hours per diary-recording window a Parkinson disease patient spends in the ON state (the state of adequate levodopa benefit). The standard primary efficacy endpoint of adjunctive-therapy trials in patients with levodopa-related motor fluctuations, recorded from patient diaries. **Sign convention: HIGHER is better** -- a treatment effect drives the state up, so a beneficial drug effect carries a POSITIVE coefficient. This is the opposite orientation to its `pctofftime` sibling and is the single most likely thing to get backwards when porting a coefficient between the two. The recording window is set by the trial protocol and is usually shorter than the waking day, so the value is hours-per-window rather than hours-per-day and the window must be recorded per model; Loprete 2016 used the 18 h window 0600-2400 of the Hauser diary and counted ON time plus ON time with minor dyskinesia, excluding ON time with troublesome dyskinesia. The state is bounded above by the window length but is not bounded by the model, so it should not be given a logit / probit transform unless the source paper declares one.
+- **Source aliases:** `PD` -- Loprete 2016 paper notation (the structural equations write `PD = BL + INTPLAC + INTTREAT + SLOPPLAC * TIMEmonths`); `ON-time` -- the paper's prose name for the endpoint.
+- **Example models:** `Loprete_2016_safinamide_ontime.R` (individual observed baseline plus an additive intercept carrying the safinamide treatment effect plus a linear slope in study time; Loprete 2016 equation 7 and Table 4. Founding example).
+- **Notes:** Distinct from `pctofftime` on two axes at once, and both differences are load-bearing. (1) UNIT: `ontime` is absolute hours while `pctofftime` is a 0-100 percentage; the two are related through the recording-window denominator, which neither source paper reports for the other's cohort, so neither can be derived from the other. (2) ORIENTATION: higher `ontime` is better, lower `pctofftime` is better. A model that fits absolute daily OFF time in hours should register the `offtime` companion that `pctofftime`'s notes anticipate rather than negating this one, and a model fitting the change from baseline in either should register the `cfb` variant (`ontimecfb`), exactly as `das28` and `das28cfb` are separated. Distinct from the covariate `ONTIME_BL` in `covariate-columns.md`: that column carries the per-subject BASELINE value supplied as data, whereas this is the modelled endpoint at each observation time. In the founding model the two appear in the same equation, the covariate acting as the endpoint's additive baseline, because Loprete 2016 supplied observed individual baselines rather than estimating a typical one (Table 4 reports the interindividual variance on BL as 0 FIX). A model that instead estimates a typical baseline ON time should carry it as the canonical parameter `lrbase` and leave this name for the observation.
 
 ### prob_asas20 (**canonical ASAS20 response probability output**)
 - **Type:** compartment
@@ -2604,6 +2625,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sun_2025_maribavir_sae.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.04 per 10 ug*h/mL; reference-patient probability 0.19 at zero exposure)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. **Distinct from `prob_teae_grade3`**, and the distinction is a common source of error: SERIOUSNESS is a regulatory reporting criterion whereas CTCAE grade >= 3 is a severity scale, and the two sets overlap without nesting -- a grade 3 laboratory abnormality requiring no hospitalisation is not serious, while a grade 2 event causing hospitalisation is. Distinct also from `prob_adr`, which pools every reaction with no threshold at all. As a composite it subsumes the single-preferred-term members of the family and must NOT be modelled alongside them as a competing risk.
 
+### prob_clinical_success (**canonical antimicrobial clinical-cure / treatment-success probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a course of antimicrobial therapy achieves a positive clinical outcome -- the infection resolves and the patient does not need the agent changed -- in a static landmark exposure-response logistic model whose driver is a PK/PD index. The endpoint is the classic antibacterial clinical-cure-versus-failure dichotomy adjudicated at or shortly after end of therapy, not a microbiological-eradication endpoint and not a survival endpoint.
+- **Source aliases:** `clinical efficacy`, `positive clinical outcome`, `clinical success` (the complement, `clinical failure`, is the same endpoint with the coding reversed -- record the orientation per model).
+- **Example models:** `Komatsu_2016_penicillinG_clinical_success.R` (founding example; logistic regression of clinical outcome in viridans-streptococcal infective endocarditis on the penicillin G Cmin/MIC ratio, `expit(-1.609 + 0.0524 * CTROUGH / mic)`, fitted in JMP on 21 patients of whom 15 succeeded. Failure was defined as persistence of fever and/or bacteremia requiring a change in antibiotic therapy, or infection-related mortality within 30 days).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape and is shape-validated by `conv$probOutputRegex`, so no sidecar was filed; this entry is the required documentation. **The cure definition is NOT part of the name and must be recorded per model**, because antibacterial trials differ in whether relapse, all-cause mortality, adjunctive surgery or a switch of agent counts as failure, and in whether the assessment is at end of therapy or at a test-of-cure visit. **A second thing this canonical cannot carry, and which the founding model's description records instead, is that a paper may not actually recommend dosing off the fitted curve.** Komatsu 2016 derives a ROC cut-off from the logistic and then sets its entire dosing nomogram against that threshold (Cmin/MIC > 60, sensitivity 68 %, specificity 100 %) rather than against a probability contour; the fitted probability at the chosen threshold is only 0.82, so a user who reads the curve as the decision rule will not reproduce the paper's recommendations. Distinct from `prob_infection`, which is the probability of ACQUIRING an infection as a safety endpoint rather than of curing one; distinct from `prob_cmv_clearance_wk8` and its siblings, which are virologic-clearance endpoints defined by an assay result rather than by clinical adjudication.
+
 ### prob_clinrem (**canonical clinical-remission probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient with inflammatory bowel disease achieves CLINICAL REMISSION, a symptom-based composite endpoint, in a static landmark exposure-response logistic model.
@@ -2624,6 +2652,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `endoscopic remission`, `mucosal healing`.
 - **Example models:** `Moein_2025_etrolizumab_induction_endorem.R` (founding example; landmark binomial logistic regression at end of induction, exposure slope 0.0495 log-odds per ug/mL, not significant at P = 0.297; the most heavily covariate-adjusted of the paper's six models, retaining prior-TNF status, both Montreal disease-location indicators, baseline SES-CD and baseline CDAI), `Moein_2025_etrolizumab_maintenance_endorem.R` (the end-of-maintenance sibling, slope 0.257 log-odds per ug/mL, P = 0.000555).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Record the threshold per model**, including any anatomical qualifier: in the founding paper endoscopic remission means a Simple Endoscopic Score for Crohn's Disease <= 4, tightened to <= 2 for patients with ileal-only disease, with no bowel segment scoring above 1 in any subcategory. That ileal exception is why a disease-location covariate can enter this endpoint's model through the endpoint DEFINITION as well as through biology, and it should not be mistaken for a purely biological covariate effect. See `prob_endoimp` for why the absolute-threshold and relative-change endoscopic endpoints are kept as two canonicals. `mucosal healing` is carried as a source alias because older inflammatory-bowel-disease literature uses it for the same construct, but it is a looser term and a paper using it should have its exact criterion recorded rather than assumed.
+
+### prob_teae_dosemod (**canonical dose-modification-driving-adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences, within a defined early treatment window, a treatment-emergent adverse event severe enough to force a DOSE MODIFICATION -- study-drug withdrawal, discontinuation, or dose reduction -- in a static landmark exposure-safety logistic model. The endpoint is defined by the clinical ACTION taken, not by a CTCAE grade or by a preferred term, and it pools every adverse-event type into a single event.
+- **Source aliases:** none. Source papers describe it as "TEAE leading to study drug withdrawal or dose reduction" or "dose reduction or discontinuation".
+- **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Record the window and the action set per model** -- they are the whole definition. The action-defined endpoint is a different construct from the severity-defined `prob_teae_grade3`: it is driven by what the treating physician did, so it is sensitive to the trial's dose-modification guidance and to how much headroom the starting dose leaves, and a drug studied at its maximum tolerated dose will show a high rate of it regardless of grade distribution. That sensitivity is the point rather than a defect -- in the founding paper the endpoint exists precisely to choose a STARTING DOSE, 74% of the phase 2 cohort having required reduction from 12 mg to 8 mg. Exposure for this endpoint must be frozen at the starting dose: because the modelled event IS the first dose change, an exposure column that tracks the current dose would be contaminated by the outcome. Do not treat it as a competing risk against grade-based or preferred-term endpoints, which it overlaps.
 
 ### venous (**canonical bare venous-blood compartment**)
 - **Type:** compartment
@@ -3824,6 +3859,34 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Lin_2024_TB_multistate.R` (five-state pharmacometric multistate model; `prob_scc <- s_converted` is the observation variable and carries the placeholder additive residual, while `prob_active_tb`, `prob_recurrent_tb`, `prob_dropout` and `prob_death` expose the other four state-occupancy probabilities).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Distinct from `sur` (a survival probability derived from a cumulative hazard in a time-to-event sub-model) because `prob_scc` is a state-occupancy probability of a *transient, re-enterable* state: a patient can leave the converted state for recurrent TB and return to it, so `prob_scc` is not monotone in time and is not the complement of any cumulative hazard. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc`. Founding models expose `prob_scc` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises an exact multistate event likelihood on the observed categorical state and has no observation-error model.
 
+### prob_escape (**canonical escape-subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "escape" latent class of a four-class longitudinal tumour-size mixture model -- the progressor class, in which the drug-driven kill rate is zero, the tumour grows unopposed and the baseline tumour burden is larger than in the responder classes. Time-invariant per subject: it is the output of a multinomial logistic regression on baseline covariates and a scalar exposure metric, not a state-occupancy probability that evolves along the solve. The reference (intercept) category of that regression, so its logit is fixed at 0 and the three responder logits are estimated relative to it.
+- **Source aliases:** `P1` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the paper's second-stage multinomial regression; together with `prob_monophasic_slow`, `prob_biphasic` and `prob_monophasic_fast` it supplies the class-assignment distribution for the mixture tumour-size model, whose observation variable is `TS`).
+- **Notes:** Exposed as a derived model variable rather than as the observation endpoint, following `Lin_2024_TB_multistate.R`, because the endpoint the source paper actually observes is tumour size. Do not confuse this class probability with a clinical progression probability: a patient in the escape class is one whose tumour-size trajectory the model describes with no kill term, which is a modelling construct, not a RECIST progressive-disease call. The four probabilities sum to 1 by construction.
+
+### prob_monophasic_slow (**canonical monophasic-slow-responder subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "monophasic slow" latent class of a four-class longitudinal tumour-size mixture model -- steady first-order shrinkage at the base kill rate, with no static residual tumour mass. Time-invariant per subject; output of a multinomial logistic regression on baseline covariates and a scalar exposure metric.
+- **Source aliases:** `P2` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_MONO_SLOW`).
+- **Notes:** The most prevalent class in the founding cohort (about 39%). See `prob_escape` for why these are derived variables rather than observation endpoints.
+
+### prob_biphasic (**canonical biphasic-responder subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "biphasic" latent class of a four-class longitudinal tumour-size mixture model -- fast initial shrinkage of the accessible tumour onto a durable static plateau. Time-invariant per subject; output of a multinomial logistic regression on baseline covariates and a scalar exposure metric.
+- **Source aliases:** `P3` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_BIPHASIC`).
+- **Notes:** The durable-plateau class is the one whose existence motivated the source authors to fix the resistance term of the Claret 2009 tumour-growth model to zero. See `prob_escape` for why these are derived variables rather than observation endpoints.
+
+### prob_monophasic_fast (**canonical monophasic-fast-responder subpopulation membership probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient belongs to the "monophasic fast" latent class of a four-class longitudinal tumour-size mixture model -- accelerated first-order shrinkage with no static residual. Time-invariant per subject; output of a multinomial logistic regression on baseline covariates and a scalar exposure metric.
+- **Source aliases:** `P4` -- Chatterjee 2017 main-article Table 2 and supplementary Table 2B row label.
+- **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_MONO_FAST`).
+- **Notes:** The rarest of the four classes in the founding cohort (about 6%); the source Discussion warns that classes this small are hard to distinguish from sparse tumour-size data. See `prob_escape` for why these are derived variables rather than observation endpoints.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
@@ -4269,9 +4332,33 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 
 ### sn38 (**canonical SN-38 payload suffix**)
 - **Type:** metabolite-suffix
-- **Role:** SN-38 (topoisomerase-I-inhibitor) ADC payload species suffix.
+- **Role:** SN-38 (topoisomerase-I-inhibitor) ADC payload species suffix. Also the active-metabolite suffix for irinotecan (CPT-11), of which SN-38 is the carboxylesterase hydrolysis product; the same token serves both roles because it names the same chemical species.
 - **Source aliases:** none.
-- **Example models:** ADC popPK extractions with SN-38 payload.
+- **Example models:** ADC popPK extractions with SN-38 payload; `Toshimoto_2017_irinotecan_pbpk.R` (irinotecan whole-body PBPK, where SN-38 is a full 23-state PBPK module rather than a released payload).
+
+### sn38g (**canonical SN-38 glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** SN-38G (7-ethyl-10-hydroxy-camptothecin glucuronide), the UGT1A1-mediated phase-II conjugate of `sn38` and the principal inactivation route for irinotecan's active metabolite. One composite token rather than `sn38_gluc`, following the two-layer-metabolite convention that a conjugate of a named metabolite gets a single suffix (compare `m3g` / `m6g` for the morphine glucuronides and `acmpag` for the MPA acyl-glucuronide). SN-38G is deconjugated back to SN-38 by intestinal bacterial beta-glucuronidase, so models carrying this suffix generally also carry an enterohepatic-recycling path.
+- **Source aliases:**
+  - `SN-38G` -- Toshimoto 2017 throughout (Figure 1 metabolic scheme, Supplementary Text ODE system, Supplementary Table 4C).
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (founding example; SN-38G is one of five coupled whole-body PBPK modules, formed from `sn38` in both hepatocyte and enterocyte and deconjugated back to it in the intestinal lumen at `kdec`).
+- **Notes:** Distinct from the generic `gluc` suffix, which names an unspecified glucuronide of the parent compound: a model that carries BOTH a parent glucuronide and an SN-38 glucuronide needs the two tokens to be separable. Distinct from `sn38`, which is the aglycone.
+
+### npc (**canonical irinotecan NPC metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** NPC, 7-ethyl-10-[4-amino-1-piperidino]carbonyloxycamptothecin, the CYP3A4-mediated oxidative metabolite of irinotecan that retains the terminal amine and is itself hydrolysed onward to `sn38` by carboxylesterase. Because it is a precursor of the active metabolite rather than a terminal product, a model carrying `npc` normally needs a metabolic path from `npc` to `sn38` as well as one from the parent to `npc`.
+- **Source aliases:**
+  - `NPC` -- Toshimoto 2017 throughout (Figure 1 metabolic scheme, Supplementary Text, Supplementary Table 4D).
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (founding example).
+- **Notes:** Paired with `apc`, the other CYP3A4 oxidative metabolite of irinotecan; the two are formed in parallel from the parent but only `npc` is converted onward to `sn38`, which is why they are separate tokens rather than one lumped oxidative-metabolite suffix.
+
+### apc (**canonical irinotecan APC metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** APC, 7-ethyl-10-[4-N-(5-aminopentanoic acid)-1-piperidino]carbonyloxycamptothecin, the other CYP3A4-mediated oxidative metabolite of irinotecan. APC is pharmacologically inactive and is a terminal product: it is not hydrolysed onward to `sn38`.
+- **Source aliases:**
+  - `APC` -- Toshimoto 2017 throughout (Figure 1 metabolic scheme, Supplementary Text, Supplementary Table 4E).
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (founding example).
+- **Notes:** Paired with `npc` (see that entry for why the two CYP3A4 oxidative metabolites are separate tokens). Not to be confused with `apap` / `apapg`, the paracetamol tokens.
 
 ### dm4 (**canonical DM4 payload suffix**)
 - **Type:** metabolite-suffix
@@ -4284,6 +4371,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** Me-DM4 (S-methyl DM4) ADC payload metabolite species suffix.
 - **Source aliases:** none.
 - **Example models:** ADC popPK extractions with Me-DM4 metabolite.
+
+### rez (**canonical rezetecan payload suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rezetecan (topoisomerase-I-inhibitor, exatecan-derivative) ADC payload species suffix.
+- **Source aliases:** none.
+- **Example models:** `Gao_2026_trastuzumabRezetecan.R` (released payload of trastuzumab rezetecan / SHR-A1811, drug-to-antibody ratio approximately 6.0).
+- **Notes:** Named for the released payload, not for the conjugate. The parent ADC's INN is *trastuzumab rezetecan*, so the unsuffixed states (`central`, `peripheral1`) hold the INTACT ADC and `_rez` marks the free payload -- the same orientation as `dxd` in `Lu_2022_patritumab.R`, where the ADC is *patritumab deruxtecan* and `_dxd` marks the released DXd. Distinct from `dxd`: rezetecan and DXd are different exatecan derivatives with different linkers, and Gao 2026 reports rezetecan as more membrane-permeable and more potently cell-killing than the deruxtecan payload.
 
 - **Type:** metabolite-suffix
 - **Source aliases:** none.
@@ -4679,6 +4773,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (one-compartment carboxyprimaquine disposition fed both by first-pass metabolism from the last transit compartment and by the entirety of systemic primaquine clearance, plus its own breast-milk compartment).
 
+### dcq (**canonical desethylchloroquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desethylchloroquine (also mono-desethylchloroquine), the principal circulating and pharmacologically active metabolite of chloroquine, formed by CYP-mediated N-deethylation of the tertiary amine side chain. It carries antimalarial activity in its own right, which is why joint chloroquine + desethylchloroquine popPK models are fitted to both analytes and why the combined chloroquine-plus-desethylchloroquine whole-blood concentration is the quantity compared against resistance thresholds. Conversion is 1:1 molar; joint models apply a molar correction of `MW_DCQ / MW_CQ = 291.82 / 319.87 = 0.9123` to the mass flux leaving the chloroquine central compartment (desethylchloroquine is chloroquine less an ethyl group, C2H4, 28.05 g/mol). Unlike the `deaq` amodiaquine family, bioconversion is NOT assumed complete: chloroquine is only partly metabolised to desethylchloroquine, so the formed fraction enters as a separate `fm` term and the remainder of parent clearance leaves as other elimination.
+- **Source aliases:**
+  - `DCQ`, `desethylchloroquine`, `mono-desethylchloroquine`, `N-desethylchloroquine` -- publication spellings; same species, no transformation.
+- **Example models:** `Hoglund_2016_chloroquine.R` (adults with Plasmodium vivax mono-infection on the Thai-Myanmar border; two-compartment desethylchloroquine disposition fed by a fixed `fm = 0.18` fraction of systemic chloroquine clearance, the fraction being taken from urinary recovery data rather than estimated).
+- **Notes:** Founding example `Hoglund_2016_chloroquine.R`. Registered as a family-conforming metabolite suffix. Do not confuse with `deaq` (desethylamodiaquine) -- both are 4-aminoquinoline desethyl metabolites and both appear in antimalarial extractions, but they are different species with different parents. Note also that the parent of this suffix is chloroquine, not hydroxychloroquine; a hydroxychloroquine extraction whose metabolite is desethylhydroxychloroquine needs its own suffix rather than reuse of this one.
+
 ### deaq (**canonical desethylamodiaquine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desethylamodiaquine, the major circulating and pharmacologically active metabolite of amodiaquine, formed almost entirely by CYP2C8-mediated N-deethylation. Desethylamodiaquine carries substantially higher exposure and a far longer terminal half-life than the parent (roughly 14 days versus 26 hours), so it is the species responsible for the post-treatment prophylactic effect and the one whose day-7 concentration is used as the efficacy anchor in antimalarial trials. Joint amodiaquine + desethylamodiaquine popPK models assume complete bioconversion and apply a molar correction of `MW_DEAQ / MW_AQ = 327.81 / 355.85 = 0.9212` to the mass flux leaving the amodiaquine central compartment.
@@ -4847,6 +4949,26 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:**
   - `s` -- prior canonical name (pre-2026-06-19 disambiguation standardization).
 - **Example models:** `Valitalo_2017_ketorolac.R`.
+
+### dcit_r_enant (**canonical R-desmethylcitalopram suffix**)
+- **Type:** metabolite-suffix
+- **Role:** R-desmethylcitalopram (R-DCT), the R-enantiomer of the primary N-demethylated metabolite of citalopram. Used for the compartment, parameter, observation and residual-SD names of joint enantiomer-resolved parent-plus-metabolite citalopram popPK models (`central_dcit_r_enant`, `lcl_dcit_r_enant`, `Cc_dcit_r_enant`, `propSd_dcit_r_enant`, `e_wt_cl_dcit_r_enant`).
+- **Source aliases:**
+  - `R-desmethylcitalopram` / `R-Dcit` -- Akil 2016 Abstract, Table 1 and Table 3.
+  - `C(3)` -- the concentration symbol for this analyte in Akil 2016 equations (1)-(4).
+  - `CL Rm /F` -- the Akil 2016 Table 3 parameter-symbol stem for its apparent clearance.
+- **Example models:** `Akil_2016_citalopram.R` (founding example; doi:10.1007/s10928-015-9457-6).
+- **Notes:** Registered as a **single composite token** (`dcit_r_enant`) rather than as a composable `dcit` plus the existing `r_enant`, because `checkModelConventions()` strips exactly one registered suffix when validating a *parameter* name (`.isPkParam` / `.isPkBareParam` are non-recursive, unlike `.matchesCompartment`). A two-layer `lcl_dcit_r_enant` would therefore fail parameter validation while passing compartment validation. The composite token keeps one grammar for all four analytes of a racemate-plus-metabolite model: `_r_enant` / `_s_enant` for the parent enantiomers and `_dcit_r_enant` / `_dcit_s_enant` for their metabolites, so the enantiomer label stays in the same trailing position throughout. Paired with `dcit_s_enant`. A future citalopram model that measures only racemic desmethylcitalopram should register a separate `dcit` token rather than overloading either of these.
+
+### dcit_s_enant (**canonical S-desmethylcitalopram suffix**)
+- **Type:** metabolite-suffix
+- **Role:** S-desmethylcitalopram (S-DCT, desmethylescitalopram), the S-enantiomer of the primary N-demethylated metabolite of citalopram.
+- **Source aliases:**
+  - `S-desmethylcitalopram` / `S-Dcit` -- Akil 2016 Abstract, Table 1 and Table 3.
+  - `C(4)` -- the concentration symbol for this analyte in Akil 2016 equations (1)-(4).
+  - `CL Sm /F` -- the Akil 2016 Table 3 parameter-symbol stem for its apparent clearance.
+- **Example models:** `Akil_2016_citalopram.R` (founding example; doi:10.1007/s10928-015-9457-6).
+- **Notes:** Companion to `dcit_r_enant`; see that entry for why the enantiomer label is folded into a single composite token.
 
 ### noxide (**canonical roflumilast N-oxide suffix**)
 - **Type:** metabolite-suffix
@@ -5049,6 +5171,16 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** `R-143047`, `R143047` -- Kastrissios 2012 Figure 1 and Table III. No chemical or INN name is supplied by the paper.
 - **Example models:** `Kastrissios_2012_managlinatDialanetil_linked.R` (doi:10.1177/0091270010396373).
 - **Notes:** Modelled as 1-compartment; the paper reports no improvement from adding a second compartment. Apparent-parameter and 1:1-flux semantics as for `r134450` -- and note that here the unknown absorbed fraction is genuinely well below 1, because R-125338 is cleared by renal excretion in parallel with the N-acetylation route that forms this metabolite.
+
+### adadt (**canonical acetylated-dADT tribendimidine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** adADT (acetylated dADT), the N-acetylation product of dADT and a metabolite with marginal or no anthelminthic activity of its own. Drives `central_adadt`, the `lcl_adadt` / `lvc_adadt` parameters, the `e_<cov>_<param>_adadt` covariate effects, the `Cc_adadt` observation and the `expSd_adadt` residual SD.
+- **Source aliases:**
+  - `adADT` -- the abbreviation used throughout the tribendimidine literature.
+  - `acetylated dADT` -- expanded form.
+  - `Metabolite 2` / `CM` / `V3` -- the `$MODEL` and `$PK` names in the Vanobberghen 2016 final NONMEM control stream (supplemental File S1), which numbers dADT as metabolite 1 and adADT as metabolite 2.
+- **Example models:** `Vanobberghen_2016_tribendimidine.R` (founding example; doi:10.1128/AAC.00655-16, one-compartment adADT disposition formed at 1:1 molar stoichiometry from a fixed 65% of dADT elimination, with the remaining 35% assumed renal).
+- **Notes:** The dosed compound, tribendimidine, hydrolyses non-enzymatically to dADT in the gut and is never measured, so -- following the `gba` precedent, where camostat itself is never measured and its active metabolite GBPA takes the bare canonical names -- **dADT is the model's parent analyte and keeps the unsuffixed `central` / `Cc` / `lcl` names, and only adADT carries a suffix.** A `dadt` suffix is deliberately NOT registered, both for that reason and because it would read as NONMEM's `DADT(n)` derivative syntax in any control stream quoted alongside the model. Chemically the closest sibling in this register is `r143047`, likewise a terminal N-acetylated metabolite of an active moiety; as there, every `*_adadt` parameter is an APPARENT value that also absorbs the assumed metabolic fraction, i.e. CL/(F x fm) rather than CL/F, which the founding model records in its `description`. adADT is formation-rate-limited, so its terminal slope reflects the dADT half-life rather than its own.
 
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
@@ -5274,8 +5406,10 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 ### tfvdp (**canonical tenofovir diphosphate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Tenofovir diphosphate active intracellular metabolite suffix.
-- **Source aliases:** none.
-- **Example models:** `Chen_2016_tenofovir_emtricitabine.R`.
+- **Source aliases:**
+  - `TFV-DP` -- the standard antiretroviral-literature abbreviation.
+- **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants).
+- **Notes:** Prefer the matrix-qualified `pbmc_tfvdp` / `rbc_tfvdp` form over the bare `tfvdp`: tenofovir diphosphate is assayed in more than one cell type, the two compartments have materially different kinetics, and `pbmc` / `rbc_<analyte>` are themselves canonical so the qualified name validates natively without a per-model escape hatch. The paired rate-constant names take a SINGLE suffix (`kmet_tfvdp`, `kel_tfvdp`) rather than repeating the matrix, because `.isPkParam()` strips only one suffix and a two-layer `kel_pbmc_tfvdp` would pass compartment validation but fail parameter validation.
 
 ### ftctp (**canonical emtricitabine triphosphate suffix**)
 - **Type:** metabolite-suffix
@@ -5371,11 +5505,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
   - `DACT` -- used in `Ahsman_2010_cefotaxime.R` (paper notation).
 - **Example models:** `Ahsman_2010_cefotaxime.R`.
 
-### tam (**canonical tamoxifen tracking-species suffix**)
+### tam (**canonical ticagrelor-active-metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Tamoxifen tracking species suffix (documented as the ticagrelor-paired tracking species in Almquist 2016).
-- **Source aliases:** none.
-- **Example models:** `Almquist_2016_ticagrelor.R`.
+- **Role:** Ticagrelor active metabolite AR-C124910XX, abbreviated TAM (ticagrelor active metabolite) by both registering papers. Note the acronym collision: `tam` here is NOT tamoxifen -- tamoxifen's own tracking species is registered separately (see `TerHeine_2014_tamoxifen.R` and the `endoxifen` entry).
+- **Source aliases:**
+  - `TAM` -- Almquist 2016 notation for the tracking species paired with ticagrelor.
+  - `AR-C124910XX` -- the compound code used throughout Kang 2026 (main text, Table 2, Figure 1).
+- **Example models:** `Almquist_2016_ticagrelor.R` (preclinical mouse interaction model; `central_tam` / `peripheral1_tam` / `peripheral2_tam` states plus a `complex_tam` MEDI2452-bound species), `Kang_2026_ticagrelor.R` (clinical joint parent-metabolite popPK during VA-ECMO; single `central_tam` state with `lcl_tam` / `lvc_tam` / `etalcl_tam` / `addSd_tam` and the `Cc_tam` output).
 
 ### vact (**canonical vascular-active lesion-state suffix**)
 - **Type:** metabolite-suffix
@@ -5906,5 +6042,43 @@ turned over. Name the state for the co-substrate, not for the drug.
   - `A_GSH` -- the symbol used in Cao 2025 Equation 2.
 - **Example models:** `Cao_2025_busulfan.R`.
 - **Notes:** Dimensionless and normalised, so it is deliberately NOT named `gsh`: the bare name belongs to the "Endogenous metabolic species" family, every member of which carries a real measured concentration, and Cao 2025 explicitly states that active glutathione levels were not assayed and "full GSH dynamics could not be reconstructed". Initial condition `gsh_pool(0) <- 1`. The coupling constant that scales metabolic flux to the pool is the paired parameter `sdep_gsh` (see `parameter-names.md`); the two are introduced together and should stay paired. Extend to a sibling (`sdep_<pool>` / `<pool>_pool`) for any other consumable co-substrate, e.g. NADPH, sulfate, or acetyl-CoA.
+
+---
+
+## Methylxanthine / CYP1A2 drug-drug-interaction suffixes (Navid 2016)
+
+Four-compound whole-body PBPK models of the CYP1A2 methylxanthine network carry every state and every compound-specific parameter with a short drug token, because no compound can claim the bare canonical names: theophylline and caffeine are simultaneously substrate, product and mutual inhibitor, and ciprofloxacin is a perpetrator that is also a substrate. The tokens are the abbreviations the source paper itself uses throughout its text, tables and figures.
+
+### thp (**canonical theophylline drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Theophylline drug-name suffix for the per-compound states and parameters of a multi-compound PBPK network (`liver_thp`, `venous_thp`, `transit1_thp`, `kp_liver_thp`, `eren_thp`, `mw_thp`). Theophylline is both a directly dosed drug and a caffeine metabolite in the same model, which is exactly why it cannot hold the bare names.
+- **Source aliases:**
+  - `THP` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** Three-letter abbreviation rather than the full INN, following the `van` / `mero` / `dap` / `lzd` precedent for combination models whose state count makes full INN suffixes unwieldy -- this model carries 87 states, and a full-INN scheme would produce names such as `transit1_theophylline`. Distinct from the caffeine metabolite token `tb` (theobromine), which is a terminal sink here and not carried as a state.
+
+### caf (**canonical caffeine drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Caffeine drug-name suffix in multi-compound CYP1A2 PBPK networks (`liver_caf`, `stomach_caf`, `kp_adipose_caf`, `vmax_caf_px_1a2`). Caffeine is the upstream parent whose CYP1A2 demethylation generates both paraxanthine and theophylline.
+- **Source aliases:**
+  - `CAF` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** Caffeine appears elsewhere in the library as a parent analyte with bare canonical names; this suffix is for models in which it is one of several simultaneously tracked compounds.
+
+### px (**canonical paraxanthine drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Paraxanthine drug-name suffix (`liver_px`, `venous_px`, `kp_liver_px`, `km_px_1a2`). Paraxanthine is the major CYP1A2 demethylation product of caffeine and is carried as a full compound rather than a terminal sink because it competitively inhibits theophylline metabolism at CYP1A2.
+- **Source aliases:**
+  - `PX` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** A metabolite in the strict sense, unlike its three siblings in this family: it is never dosed and therefore carries no absorption chain. Record which parent generates it, since the same token would be reused for a paraxanthine-probe CYP1A2 phenotyping model where caffeine is the only dosed species.
+
+### cip (**canonical ciprofloxacin drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ciprofloxacin drug-name suffix in drug-drug-interaction PBPK models (`liver_cip`, `urine_cip`, `kp_muscle_cip`, `eren_cip`, `km_cip_3a4_inhib`). Ciprofloxacin is the interaction perpetrator: it is a CYP1A2 substrate and inhibitor, and a CYP3A4 inhibitor that is not itself a CYP3A4 substrate.
+- **Source aliases:**
+  - `CIP` -- the abbreviation used throughout Navid 2016 and its supplement.
+- **Example models:** `Navid_2016_theophylline_pbpk.R`.
+- **Notes:** Ciprofloxacin already appears in the library as a parent analyte with bare canonical names (`Khan_2015_ciprofloxacin.R`); this suffix is for multi-compound models in which it is a co-administered perpetrator. Same role as the members of the "Transporter-DDI perpetrator drug suffixes" family, but placed here because ciprofloxacin is also a substrate of the enzyme it inhibits, so its own disposition has to be solved rather than assumed constant.
 
 ---

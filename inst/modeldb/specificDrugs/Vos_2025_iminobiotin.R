@@ -68,8 +68,7 @@ Vos_2025_iminobiotin <- function() {
     e_alteplase_cl <- 0.6469;  label("Fractional change in CL with concomitant alteplase (unitless)")  # Vos 2025 Supplemental Table S8: derived from "CL (L/h) + IVT" 15.3 vs no-IVT 9.29, i.e. 15.3/9.29 - 1
 
     # Baseline eGFR allometric power exponent on CL (Vos 2025 Supplemental
-    # Table S8: "COVeGFR0 CL"). Reference eGFR = 90 mL/min/1.73 m^2
-    # (sidecar Q4 = A; the paper does not state the reference).
+    # Table S8: "COVeGFR0 CL"). Reference eGFR = 90 mL/min/1.73 m^2.
     e_crcl_cl <- 0.817;        label("Power-law exponent of (CRCL/90) on CL (unitless)")              # Vos 2025 Supplemental Table S8: "COVeGFR0 CL" = 0.817 (RSE 17.2%)
 
     # Inter-individual variability on CL only (Vc, Q, Vp are fixed therefore

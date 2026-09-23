@@ -192,7 +192,7 @@ Schmid_2017_nintedanib <- function() {
   #   non-Indian Asian). The RACE_IND_CHI_TWN canonical handles the F1
   #   composite; RACE_INDIAN handles the F2 Indian-only effect; the
   #   non-Indian Asian F2 flag is derived inside model() from
-  #   RACE_ASIAN AND NOT RACE_INDIAN. Operator-ratified sidecar
+  #  RACE_ASIAN AND NOT RACE_INDIAN. ratified sidecar
   #   2026-06-21 (request-002 Q1, option B) instructed full-fidelity
   #   extraction with new race canonicals.
   # * BIBF 1202 ka2 = ka * theta_ka2ka * theta_Trial_ka2 *

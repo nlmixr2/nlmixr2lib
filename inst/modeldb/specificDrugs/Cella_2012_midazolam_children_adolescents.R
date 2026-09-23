@@ -83,12 +83,12 @@ Cella_2012_midazolam_children_adolescents <- function() {
 
   ini({
     # Structural parameters from Table 2 ('Mean' column for Model 2
-    # 'Children and adolescents'). Vc per-kg encoding (sidecar response
-    # 001 Q2 = A) gives physically plausible kinetics (k10 ~ 0.0034/min,
-    # t1/2 ~ 206 min for a typical 29 kg child); the literal absolute
-    # reading gives t1/2 ~ 7 min, ~25x too fast. Vp uses the published
-    # 'Vp (l x months/74)' linear normalisation, with the 74 months
-    # representing the population-median age in months.
+    # 'Children and adolescents'). Vc per-kg encoding gives physically
+    # plausible kinetics (k10 ~ 0.0034/min, t1/2 ~ 206 min for a typical
+    # 29 kg child); the literal absolute reading gives t1/2 ~ 7 min,
+    # ~25x too fast. Vp uses the published 'Vp (l x months/74)' linear
+    # normalisation, with the 74 months representing the population-
+    # median age in months.
     lcl <- log(0.19);   label("Clearance (L/min)")                                              # Cella 2012 Table 2 (CL = 0.19)
     lvc <- log(1.95);   label("Central volume of distribution per kg body weight (L/kg)")    # Cella 2012 Table 2 (Vc = 1.95; per-kg interpretation per sidecar response 001 Q2)
     lq  <- log(0.105);  label("Inter-compartmental clearance (L/min)")                           # Cella 2012 Table 2

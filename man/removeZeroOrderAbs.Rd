@@ -32,9 +32,12 @@ readModelDb("PK_1cmt_des") |> addZeroOrderAbs() |> removeZeroOrderAbs()
 }
 \seealso{
 Other absorption:
+\code{\link[=addSecondAbsorption]{addSecondAbsorption()}},
 \code{\link[=addTransit]{addTransit()}},
 \code{\link[=addWeibullAbs]{addWeibullAbs()}},
 \code{\link[=addZeroOrderAbs]{addZeroOrderAbs()}},
+\code{\link[=convertAbsForceLongerDelay]{convertAbsForceLongerDelay()}},
+\code{\link[=convertAbsSequential]{convertAbsSequential()}},
 \code{\link[=removeTransit]{removeTransit()}}
 }
 \author{

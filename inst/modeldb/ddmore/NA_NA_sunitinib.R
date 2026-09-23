@@ -81,9 +81,8 @@ NA_NA_sunitinib <- function() {
     # All values come from the MDL parObj STRUCTURAL{} and VARIABILITY{}
     # blocks (Sunitinib_MPD6_model.mdl). For DDMORE-source extractions the
     # final estimates normally come from Output_real_*.lst, but this bundle
-    # ships no listing -- see vignette Errata. Per the operator decision
-    # (sidecar response 030/response-001.json: extract_mdl), the parObj
-    # values are treated as the deposited final estimates.
+    # ships no listing -- see vignette Errata, so the parObj values are
+    # treated as the deposited final estimates.
     #
     # Time unit: day (the MDL multiplies all rate constants by 24 inside
     # MODEL_PREDICTION, e.g. Kah = Ka*24, q = 24*Cl/V1).
