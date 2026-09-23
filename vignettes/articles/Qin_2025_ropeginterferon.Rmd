@@ -419,7 +419,7 @@ ggplot(prof, aes(time / 7, med, colour = treatment)) +
        title = "Replicates Figure 2A-C of Qin 2025",
        subtitle = paste(
          "Hematocrit separates clearly between titration schedules;",
-         "platelets and white cells barely do.")) +
+         "white cells barely do and platelets vary by cohort.")) +
   theme_bw() + theme(legend.position = "top")
 ```
 
@@ -427,7 +427,9 @@ Qin 2025's own reading of Figure 2 (Results 3.2.3 and the Discussion) is that
 hematocrit is the only endpoint for which fast titration matters, because
 platelets and white cells "were more sensitive to ropeg treatment, with lower
 IC50 values achieving notable effects" and are therefore already near maximal
-suppression under either schedule. The simulation reproduces that ordering.
+suppression under either schedule. The simulation reproduces the
+hematocrit-versus-white-cell part of that ordering in every cohort; the platelet
+separation varies too much at this cohort size to rank it against hematocrit.
 
 The separation has to be measured **relative to each endpoint's own dynamic
 range**, not as a plain percentage difference. Hematocrit falls only from 0.459
@@ -465,10 +467,15 @@ knitr::kable(sep, digits = 3,
                "cells (p = 0.105)."))
 
 frac <- function(e) sep$`Gap as fraction of excursion`[sep$endpoint == e]
-# Ordering only: the paper's qualitative result is that hematocrit separates
-# more, relative to its own dynamic range, than either cell count does.
-stopifnot(frac("HCT (fraction)") > frac("PLT (10^9/L)"),
-          frac("HCT (fraction)") > frac("WBC (10^9/L)"))
+# The paper's qualitative result is that hematocrit separates more, relative to
+# its own dynamic range, than either cell count. With 150 common-random-number
+# subjects the hematocrit fraction is 0.21-0.28 across seeds and the white-cell
+# fraction 0.10-0.13, so that contrast is asserted with a margin. The platelet
+# fraction swings from 0.12 to 0.23 across seeds -- sometimes above hematocrit --
+# so the paper's strict hematocrit-over-platelet ordering is a tendency of this
+# model at this cohort size, not a property every cohort shows, and it is not
+# asserted.
+stopifnot(frac("HCT (fraction)") - frac("WBC (10^9/L)") > 0.05)
 ```
 
 ## Figure 2D: time to first hematocrit below 0.45
