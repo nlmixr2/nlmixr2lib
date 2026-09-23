@@ -560,6 +560,8 @@ navbar:
         href: articles/Jin_2025_benralizumab.html
       - text: "Benralizumab fev1 (Jin 2025)"
         href: articles/Jin_2025_benralizumab.html
+      - text: "Benzathine benzylpenicillin g (Hand 2019)"
+        href: articles/Hand_2019_benzathine_benzylpenicillin_g.html
       - text: "Benzathine benzylpenicillin g (Kado 2020)"
         href: articles/Kado_2020_benzathine_benzylpenicillin_g.html
       - text: "Benzathine benzylpenicillin g (Kado 2023)"
@@ -6257,6 +6259,7 @@ articles:
   - articles/Han_2025_fluoxetine
   - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
+  - articles/Hand_2019_benzathine_benzylpenicillin_g
   - articles/Hanley_2017_bortezomib
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_dbp
