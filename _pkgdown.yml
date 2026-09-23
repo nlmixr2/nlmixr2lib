@@ -1112,6 +1112,8 @@ navbar:
         href: articles/Campagne_2019_cyclophosphamide_mouse.html
       - text: "Cyclophosphamide mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Cycloserine (Alghamdi 2019)"
+        href: articles/Alghamdi_2019_cycloserine.html
       - text: "Cycloserine (ResendizGalvan 2025)"
         href: articles/ResendizGalvan_2025_cycloserine.html
       - text: "Cyclosporin (Debord 2001)"
@@ -5652,6 +5654,7 @@ articles:
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/AlZubaydi_2024_gabapentin
   - articles/AlfoseaCuadrado_2024_reserpine_rat
+  - articles/Alghamdi_2019_cycloserine
   - articles/Ali_2018_amodiaquine
   - articles/Allegaert_2015_paracetamol
   - articles/Almond_2016_cyp3a4_induction
