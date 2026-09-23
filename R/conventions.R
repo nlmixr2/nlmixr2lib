@@ -361,10 +361,20 @@
     # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
     # (Svensson 2016 DDMODEL00000219).
     "m2",
-    # G-037720 metabolite (M1) of ipatasertib, formed mainly by
-    # CYP3A4-mediated metabolism and pharmacologically active (2- to
-    # 4-fold less potent than the parent). Used in parent + metabolite
-    # joint popPK extractions (Yoshida 2021 doi:10.1002/jcph.1942).
+    # Positional "metabolite 1" designator, for papers whose own
+    # nomenclature for the first-named metabolite IS "M1". Two current
+    # users: the G-037720 metabolite (M1) of ipatasertib, formed mainly
+    # by CYP3A4-mediated metabolism and pharmacologically active (2- to
+    # 4-fold less potent than the parent; Yoshida 2021
+    # doi:10.1002/jcph.1942), and O-desmethyltramadol (M1), the
+    # CYP2D6-derived active metabolite of tramadol that carries its
+    # mu-opioid analgesia (Lee 2019 doi:10.2147/DDDT.S199574). The
+    # suffix is scoped PER MODEL FILE -- `central_m1` means whichever
+    # M1 that file's parent forms -- so the same positional label can
+    # serve several drugs, exactly as `m2` does for bedaquiline above.
+    # Prefer a chemical-abbreviation suffix (`deaq`, `dcq`, `mhd`,
+    # `desbutlum`, ...) when the source paper names the metabolite
+    # chemically rather than positionally.
     "m1",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen -- Ter Heine 2014.

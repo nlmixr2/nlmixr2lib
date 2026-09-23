@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lee 2019 tramadol and O-desmethyltramadol ([doi:10.2147/DDDT.S199574](https://doi.org/10.2147/DDDT.S199574)) -- healthy Korean male volunteers genotyped for CYP2D6*10.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
