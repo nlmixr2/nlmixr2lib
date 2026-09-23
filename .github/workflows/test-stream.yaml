@@ -1,0 +1,77 @@
+# Diagnostic twin of R-CMD-check.yaml for the two Linux legs that build rxode2
+# from source (devel, oldrel-1). Since the 2026-09-17 consolidation those legs
+# have died ~33 minutes into `Running 'testthat.R'` with "The runner has
+# received a shutdown signal" (exit 143) on every push to main and every PR,
+# while the release legs pass. R CMD check buffers test output until the tests
+# finish, and a shutdown skips the artifact upload, so nothing about the death
+# has ever reached a log. This workflow runs the same test suite with a
+# streaming reporter and a once-a-minute memory/disk monitor so the log shows
+# how far the tests got and what the machine looked like when it stopped.
+#
+# It runs only on manual dispatch and on pushes to the CI-fix branch; it is not
+# part of the merge gate.
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/ci-main-green]
+
+name: test-stream.yaml
+
+permissions: read-all
+
+jobs:
+  test-stream:
+    runs-on: ubuntu-latest
+    name: stream tests (${{ matrix.config.r }})
+    timeout-minutes: 170
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {r: 'devel', http-user-agent: 'release'}
+          - {r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      NOT_CRAN: true
+      TESTTHAT_PROBLEMS: false
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          extra-repositories: https://nlmixr2.r-universe.dev
+          use-public-rspm: true
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          extra-packages: any::rcmdcheck, any::devtools
+          needs: check
+
+      - name: Verify the installed R package stack is mutually compatible
+        run: Rscript .github/scripts/check-r-stack.R
+
+      - name: Machine and stack at the start
+        run: |
+          nproc; free -m; df -h / /tmp
+          Rscript -e 'cat("Ncpus option:", getOption("Ncpus", NA), " TESTTHAT_CPUS:", Sys.getenv("TESTTHAT_CPUS", "<unset>"), "\n"); for (p in c("rxode2", "rxode2ll", "rxode2lincmt", "nlmixr2est", "lotri", "testthat")) cat(sprintf("%-13s %s %s\n", p, as.character(packageVersion(p)), packageDescription(p)$RemoteSha %||% ""))'
+
+      - name: Run the test suite with streaming output and a resource monitor
+        shell: bash
+        run: |
+          set -o pipefail
+          ( while true; do
+              echo "[monitor $(date -u +%T)] $(free -m | awk '/Mem:/{printf "mem used %d/%d MB, swap %d MB", $3, $2, $0 ~ /Swap/ ? 0 : 0}') | $(free -m | awk '/Swap:/{printf "swap used %d/%d MB", $3, $2}') | disk free $(df -h / | awk 'NR==2{print $4}') | tmp $(du -sm "${TMPDIR:-/tmp}" 2>/dev/null | cut -f1) MB | R procs $(pgrep -c -x R)"
+              sleep 60
+            done ) &
+          MON=$!
+          trap 'kill $MON 2>/dev/null || true' EXIT
+          Rscript -e 'devtools::load_all(".", quiet = TRUE); r <- testthat::test_local(".", reporter = testthat::ProgressReporter$new(show_praise = FALSE, min_time = 5), stop_on_failure = FALSE); df <- as.data.frame(r); cat(sprintf("\nTESTS DONE pass=%d fail=%d error=%d skip=%d\n", sum(df$passed), sum(df$failed), sum(df$error), sum(df$skipped))); if (sum(df$failed) + sum(df$error) > 0) quit(status = 1)'
