@@ -1122,6 +1122,8 @@ navbar:
         href: articles/Philippe_2015_cyclosporine.html
       - text: "Cysteamine (Belldina 2003)"
         href: articles/Belldina_2003_cysteamine.html
+      - text: "Cytarabine cpx351 (Wang 2019)"
+        href: articles/Wang_2019_cpx351.html
       - text: "DZIF10c (Kurup 2024)"
         href: articles/Kurup_2024_DZIF10c.html
       - text: "Dabigatran (Liesenfeld 2013)"
@@ -1204,6 +1206,8 @@ navbar:
         href: articles/Bogason_2011_daunorubicin.html
       - text: "Daunorubicin (Varatharajan 2016)"
         href: articles/Varatharajan_2016_daunorubicin.html
+      - text: "Daunorubicin cpx351 (Wang 2019)"
+        href: articles/Wang_2019_cpx351.html
       - text: "Daunorubicin liposomal (Hempel 2003)"
         href: articles/Hempel_2003_daunorubicin_liposomal.html
       - text: "Decitabine (Han 2015)"
@@ -7444,6 +7448,7 @@ articles:
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
   - articles/Wang_2018_daclatasvir_asunaprevir
+  - articles/Wang_2019_cpx351
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
