@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhou 2019 vancomycin ([doi:10.1007/s13318-018-0534-2](https://doi.org/10.1007/s13318-018-0534-2)) -- Chinese geriatric inpatients aged 65 years and older with pulmonary infections.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
