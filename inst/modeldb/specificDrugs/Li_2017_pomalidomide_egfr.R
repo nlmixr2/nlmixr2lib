@@ -1,5 +1,5 @@
 Li_2017_pomalidomide_egfr <- function() {
-  description <- "One-compartment population PK model with first-order absorption for orally administered pomalidomide in patients with relapsed or refractory multiple myeloma (rrMM) and various degrees of renal impairment (Li 2017, Table 5, eGFR column). Renal function enters as a CONTINUOUS covariate on apparent clearance through the paper's 'reverse-hockey-stick' relationship: CL/F rises linearly with MDRD-estimated glomerular filtration rate up to a breakpoint and is constant above it, so CL/F = cl_nonren + slope * min(CRCL, crcl_cap). The intercept of 3.96 L/h is the non-renal clearance and the shallow slope is the paper's evidence that pomalidomide clearance is insensitive to renal function. Interindividual variability on Ka, V/F, the intercept and the slope; residual error is additive on the log scale (log-normal). This model has NO absorption lag time -- Table 5 does not report one. Companion to Li_2017_pomalidomide_crcl, which is the same structure fitted with Cockcroft-Gault creatinine clearance as the renal marker."
+  description <- "One-compartment population PK model with first-order absorption for orally administered pomalidomide in patients with relapsed or refractory multiple myeloma (rrMM) and various degrees of renal impairment (Li 2017, Table 5, eGFR column). Renal function enters as a CONTINUOUS covariate on apparent clearance through the paper's 'reverse-hockey-stick' relationship: CL/F rises linearly with MDRD-estimated glomerular filtration rate up to a breakpoint and is constant above it, so CL/F = cl_nonren + slope * min(CRCL, crcl_hinge). The intercept of 3.96 L/h is the non-renal clearance and the shallow slope is the paper's evidence that pomalidomide clearance is insensitive to renal function. Interindividual variability on Ka, V/F, the intercept and the slope; residual error is additive on the log scale (log-normal). This model has NO absorption lag time -- Table 5 does not report one. Companion to Li_2017_pomalidomide_crcl, which is the same structure fitted with Cockcroft-Gault creatinine clearance as the renal marker."
   reference <- "Li Y, Wang X, O'Mara E, Dimopoulos MA, Sonneveld P, Weisel KC, Matous J, Siegel DS, Shah JJ, Kueenburg E, Sternas L, Cavanaugh C, Zaki M, Palmisano M, Zhou S. Population pharmacokinetics of pomalidomide in patients with relapsed or refractory multiple myeloma with various degrees of impaired renal function. Clin Pharmacol Adv Appl. 2017;9:133-145. doi:10.2147/CPAA.S144606"
   vignette <- "Li_2017_pomalidomide"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -10,7 +10,7 @@ Li_2017_pomalidomide_egfr <- function() {
       units = "mL/min/1.73 m^2",
       type = "continuous",
       reference_category = NULL,
-      notes = "BSA-normalized (mL/min/1.73 m^2), the canonical CRCL normalisation. Li 2017 Equation 4: eGFR = 175 * (Scr,std)^-1.154 * (age)^-0.203 * (0.742 if female) * (1.212 if African American), with Scr,std the serum creatinine measured by a standardized assay. Cohort median 27 mL/min/1.73 m^2 (range 5-84), Table 2. Enters the reverse-hockey-stick clearance relationship of Equation 7 as an UNCENTERED linear term with an upper clamp at crcl_cap = 26.0 mL/min/1.73 m^2. NOTE: the female factor is printed as '0.724' in the Li 2017 Equation 4 typesetting, whereas the published MDRD-175 equation uses 0.742; the printed value appears to be a digit transposition in the source. Only the covariate DERIVATION is affected, never a model parameter, and downstream users supplying their own eGFR column are unaffected. The sibling model Li_2017_pomalidomide_crcl uses the same CRCL column to carry raw Cockcroft-Gault CrCl in mL/min, so the two are not interchangeable.",
+      notes = "BSA-normalized (mL/min/1.73 m^2), the canonical CRCL normalisation. Li 2017 Equation 4: eGFR = 175 * (Scr,std)^-1.154 * (age)^-0.203 * (0.742 if female) * (1.212 if African American), with Scr,std the serum creatinine measured by a standardized assay. Cohort median 27 mL/min/1.73 m^2 (range 5-84), Table 2. Enters the reverse-hockey-stick clearance relationship of Equation 7 as an UNCENTERED linear term with an upper clamp at crcl_hinge = 26.0 mL/min/1.73 m^2. NOTE: the female factor is printed as '0.724' in the Li 2017 Equation 4 typesetting, whereas the published MDRD-175 equation uses 0.742; the printed value appears to be a digit transposition in the source. Only the covariate DERIVATION is affected, never a model parameter, and downstream users supplying their own eGFR column are unaffected. The sibling model Li_2017_pomalidomide_crcl uses the same CRCL column to carry raw Cockcroft-Gault CrCl in mL/min, so the two are not interchangeable.",
       source_name = "eGFR"
     )
   )
@@ -67,7 +67,7 @@ Li_2017_pomalidomide_egfr <- function() {
     # ------------------------------------------------------------------
     lcl_nonren <- log(3.96); label("Non-renal apparent clearance, the intercept of the CL/F vs eGFR relationship (L/h)") # Table 5 eGFR column: Intercept = 3.96 L/h (90% bootstrap CI 2.577-5.086)
     e_crcl_cl_renal <- 0.0483; label("Slope of the renal clearance arm with respect to eGFR (L/h per mL/min/1.73 m^2)") # Table 5 eGFR column: Slope = 0.0483 (90% bootstrap CI 0.001-0.115)
-    lcrcl_cap <- log(26.0); label("Breakpoint above which the CL/F vs eGFR relationship is flat (mL/min/1.73 m^2)") # Table 5 eGFR column: eGFR0 = 26.0 mL/min/1.73 m^2 (90% bootstrap CI 25.01-30.899)
+    lcrcl_hinge <- log(26.0); label("Breakpoint above which the CL/F vs eGFR relationship is flat (mL/min/1.73 m^2)") # Table 5 eGFR column: eGFR0 = 26.0 mL/min/1.73 m^2 (90% bootstrap CI 25.01-30.899)
 
     # ------------------------------------------------------------------
     # Interindividual variability. Li 2017 Equation 1 (P_i = P * exp(eta)),
@@ -97,12 +97,12 @@ Li_2017_pomalidomide_egfr <- function() {
     vc <- exp(lvc + etalvc)
 
     # 2. Reverse-hockey-stick clearance, Li 2017 Equation 7. Clamping the
-    #    covariate axis at crcl_cap gives the linear arm below the
+    #    covariate axis at crcl_hinge gives the linear arm below the
     #    breakpoint and the flat arm above it in a single expression, with
-    #    the two arms meeting continuously at CRCL = crcl_cap.
+    #    the two arms meeting continuously at CRCL = crcl_hinge.
     cl_nonren <- exp(lcl_nonren + etalcl_nonren)
-    crcl_cap <- exp(lcrcl_cap)
-    cl_renal <- e_crcl_cl_renal * exp(etae_crcl_cl_renal) * min(CRCL, crcl_cap)
+    crcl_hinge <- exp(lcrcl_hinge)
+    cl_renal <- e_crcl_cl_renal * exp(etae_crcl_cl_renal) * min(CRCL, crcl_hinge)
     cl <- cl_nonren + cl_renal
 
     # 3. Micro-constants.

@@ -99,14 +99,14 @@ trace <- tibble::tribble(
   "crcl", "`lvc`", "60.7 L", "Table 5, CrCl column, V/F",
   "crcl", "`lcl_nonren`", "3.71 L/h", "Table 5, CrCl column, Intercept",
   "crcl", "`e_crcl_cl_renal`", "0.0469 L/h per mL/min", "Table 5, CrCl column, Slope",
-  "crcl", "`crcl_cap`", "37.7 mL/min", "Table 5, CrCl column, CrCl0",
+  "crcl", "`crcl_hinge`", "37.7 mL/min", "Table 5, CrCl column, CrCl0",
   "crcl", "`etalka` / `etalvc` / `etalcl_nonren` / `etae_crcl_cl_renal`", "0.986 / 0.0293 / 0.163 / 0.3", "Table 5, CrCl column, omega^2 rows",
   "crcl", "`expSd`", "0.5925", "Table 5, delta^2 = 0.351; sqrt(0.351)",
   "egfr", "`lka`", "0.678 1/h", "Table 5, eGFR column, Ka",
   "egfr", "`lvc`", "60.5 L", "Table 5, eGFR column, V/F",
   "egfr", "`lcl_nonren`", "3.96 L/h", "Table 5, eGFR column, Intercept",
   "egfr", "`e_crcl_cl_renal`", "0.0483 L/h per mL/min/1.73 m^2", "Table 5, eGFR column, Slope",
-  "egfr", "`crcl_cap`", "26.0 mL/min/1.73 m^2", "Table 5, eGFR column, eGFR0",
+  "egfr", "`crcl_hinge`", "26.0 mL/min/1.73 m^2", "Table 5, eGFR column, eGFR0",
   "egfr", "`etalka` / `etalvc` / `etalcl_nonren` / `etae_crcl_cl_renal`", "0.99 / 0.0278 / 0.147 / 0.516", "Table 5, eGFR column, omega^2 rows",
   "egfr", "`expSd`", "0.5925", "Table 5, delta^2 = 0.351; sqrt(0.351)",
   "all", "IIV form `P_i = P * exp(eta)`", "n/a", "Equation 1",
@@ -308,23 +308,23 @@ ggplot(curves, aes(marker, cl)) +
 # Deterministic structural gates on Equation 7. These are exact arithmetic on
 # typical values (no cohort, no RNG), so they are asserted tightly.
 knee <- tibble::tribble(
-  ~model, ~cap, ~intercept, ~slope,
+  ~model, ~hinge, ~intercept, ~slope,
   "crcl", 37.7, 3.71, 0.0469,
   "egfr", 26.0, 3.96, 0.0483
 ) |>
   rowwise() |>
   mutate(
     cl_at_zero = cl_curve(mods[[model]], 0),
-    cl_at_knee = cl_curve(mods[[model]], cap),
+    cl_at_knee = cl_curve(mods[[model]], hinge),
     cl_far_above = cl_curve(mods[[model]], 120),
-    plateau_expected = intercept + slope * cap
+    plateau_expected = intercept + slope * hinge
   ) |>
   ungroup()
 
 knitr::kable(
   knee |>
     dplyr::rename(
-      "Model" = model, "Breakpoint" = cap, "Intercept (L/h)" = intercept,
+      "Model" = model, "Breakpoint" = hinge, "Intercept (L/h)" = intercept,
       "Slope" = slope, "CL/F at marker 0" = cl_at_zero,
       "CL/F at breakpoint" = cl_at_knee, "CL/F at marker 120" = cl_far_above,
       "Expected plateau" = plateau_expected

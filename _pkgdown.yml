@@ -3872,6 +3872,8 @@ navbar:
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
       - text: "PolymyxinB meropenem fosfomycin KP00521 (Mahadevan 2026)"
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "Pomalidomide (Li 2015)"
+        href: articles/Li_2015_pomalidomide.html
       - text: "Pomalidomide crcl (Li 2017)"
         href: articles/Li_2017_pomalidomide.html
       - text: "Pomalidomide egfr (Li 2017)"
@@ -3880,8 +3882,6 @@ navbar:
         href: articles/Li_2017_pomalidomide.html
       - text: "Pomalidomide renalcat (Li 2017)"
         href: articles/Li_2017_pomalidomide.html
-      - text: "Pomalidomide (Li 2015)"
-        href: articles/Li_2015_pomalidomide.html
       - text: "Ponezumab (Nicholas 2009)"
         href: articles/Nicholas_2009_ponezumab.html
       - text: "Posaconazole (Dvorackova 2023)"

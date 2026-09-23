@@ -1,5 +1,5 @@
 Li_2017_pomalidomide_crcl <- function() {
-  description <- "One-compartment population PK model with first-order absorption for orally administered pomalidomide in patients with relapsed or refractory multiple myeloma (rrMM) and various degrees of renal impairment (Li 2017, Table 5, CrCl column). Renal function enters as a CONTINUOUS covariate on apparent clearance through the paper's 'reverse-hockey-stick' relationship: CL/F rises linearly with Cockcroft-Gault creatinine clearance up to a breakpoint and is constant above it, so CL/F = cl_nonren + slope * min(CRCL, crcl_cap). The intercept of 3.71 L/h is the non-renal clearance, about 70% of the 5.13 L/h total body clearance, and the shallow slope is the paper's evidence that pomalidomide clearance is insensitive to renal function. Interindividual variability on Ka, V/F, the intercept and the slope; residual error is additive on the log scale (log-normal). Unlike the categorical parameterisation (Li_2017_pomalidomide_renalcat) this model has NO absorption lag time -- Table 5 does not report one. See Li_2017_pomalidomide_egfr for the same structure fitted with MDRD eGFR as the renal marker."
+  description <- "One-compartment population PK model with first-order absorption for orally administered pomalidomide in patients with relapsed or refractory multiple myeloma (rrMM) and various degrees of renal impairment (Li 2017, Table 5, CrCl column). Renal function enters as a CONTINUOUS covariate on apparent clearance through the paper's 'reverse-hockey-stick' relationship: CL/F rises linearly with Cockcroft-Gault creatinine clearance up to a breakpoint and is constant above it, so CL/F = cl_nonren + slope * min(CRCL, crcl_hinge). The intercept of 3.71 L/h is the non-renal clearance, about 70% of the 5.13 L/h total body clearance, and the shallow slope is the paper's evidence that pomalidomide clearance is insensitive to renal function. Interindividual variability on Ka, V/F, the intercept and the slope; residual error is additive on the log scale (log-normal). Unlike the categorical parameterisation (Li_2017_pomalidomide_renalcat) this model has NO absorption lag time -- Table 5 does not report one. See Li_2017_pomalidomide_egfr for the same structure fitted with MDRD eGFR as the renal marker."
   reference <- "Li Y, Wang X, O'Mara E, Dimopoulos MA, Sonneveld P, Weisel KC, Matous J, Siegel DS, Shah JJ, Kueenburg E, Sternas L, Cavanaugh C, Zaki M, Palmisano M, Zhou S. Population pharmacokinetics of pomalidomide in patients with relapsed or refractory multiple myeloma with various degrees of impaired renal function. Clin Pharmacol Adv Appl. 2017;9:133-145. doi:10.2147/CPAA.S144606"
   vignette <- "Li_2017_pomalidomide"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -10,7 +10,7 @@ Li_2017_pomalidomide_crcl <- function() {
       units = "mL/min",
       type = "continuous",
       reference_category = NULL,
-      notes = "RAW, NOT BSA-normalized (mL/min, not mL/min/1.73 m^2). Li 2017 Equation 3: CrCl = [(140 - age) * body weight] / (72 * serum creatinine) * (0.85 for females), capped at a physiological ceiling of 150 mL/min. Cohort median 28.3 mL/min (range 8.7-115.4), Table 2. Enters the reverse-hockey-stick clearance relationship of Equation 7 as an UNCENTERED linear term with an upper clamp at crcl_cap = 37.7 mL/min; supplying a BSA-normalized value instead would silently rescale the renal arm. The sibling model Li_2017_pomalidomide_egfr uses the same CRCL column to carry MDRD eGFR in mL/min/1.73 m^2 with its own breakpoint, so the two are not interchangeable.",
+      notes = "RAW, NOT BSA-normalized (mL/min, not mL/min/1.73 m^2). Li 2017 Equation 3: CrCl = [(140 - age) * body weight] / (72 * serum creatinine) * (0.85 for females), capped at a physiological ceiling of 150 mL/min. Cohort median 28.3 mL/min (range 8.7-115.4), Table 2. Enters the reverse-hockey-stick clearance relationship of Equation 7 as an UNCENTERED linear term with an upper clamp at crcl_hinge = 37.7 mL/min; supplying a BSA-normalized value instead would silently rescale the renal arm. The sibling model Li_2017_pomalidomide_egfr uses the same CRCL column to carry MDRD eGFR in mL/min/1.73 m^2 with its own breakpoint, so the two are not interchangeable.",
       source_name = "CrCl"
     )
   )
@@ -70,7 +70,7 @@ Li_2017_pomalidomide_crcl <- function() {
     # ------------------------------------------------------------------
     lcl_nonren <- log(3.71); label("Non-renal apparent clearance, the intercept of the CL/F vs CrCl relationship (L/h)") # Table 5 CrCl column: Intercept = 3.71 L/h (bootstrap CI 2.321-4.796)
     e_crcl_cl_renal <- 0.0469; label("Slope of the renal clearance arm with respect to CrCl (L/h per mL/min)") # Table 5 CrCl column: Slope = 0.0469 (bootstrap CI 0.013-0.095)
-    lcrcl_cap <- log(37.7); label("Breakpoint above which the CL/F vs CrCl relationship is flat (mL/min)") # Table 5 CrCl column: CrCl0 = 37.7 mL/min (bootstrap CI 35.027-50.343)
+    lcrcl_hinge <- log(37.7); label("Breakpoint above which the CL/F vs CrCl relationship is flat (mL/min)") # Table 5 CrCl column: CrCl0 = 37.7 mL/min (bootstrap CI 35.027-50.343)
 
     # ------------------------------------------------------------------
     # Interindividual variability. Li 2017 Equation 1 (P_i = P * exp(eta)),
@@ -103,12 +103,12 @@ Li_2017_pomalidomide_crcl <- function() {
     vc <- exp(lvc + etalvc)
 
     # 2. Reverse-hockey-stick clearance, Li 2017 Equation 7. Clamping the
-    #    covariate axis at crcl_cap gives the linear arm below the
+    #    covariate axis at crcl_hinge gives the linear arm below the
     #    breakpoint and the flat arm above it in a single expression, with
-    #    the two arms meeting continuously at CRCL = crcl_cap.
+    #    the two arms meeting continuously at CRCL = crcl_hinge.
     cl_nonren <- exp(lcl_nonren + etalcl_nonren)
-    crcl_cap <- exp(lcrcl_cap)
-    cl_renal <- e_crcl_cl_renal * exp(etae_crcl_cl_renal) * min(CRCL, crcl_cap)
+    crcl_hinge <- exp(lcrcl_hinge)
+    cl_renal <- e_crcl_cl_renal * exp(etae_crcl_cl_renal) * min(CRCL, crcl_hinge)
     cl <- cl_nonren + cl_renal
 
     # 3. Micro-constants.
