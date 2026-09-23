@@ -4558,6 +4558,8 @@ navbar:
         href: articles/Meid_2024_spironolactone_qsp.html
       - text: "Sudapyridine (Kong 2025)"
         href: articles/Kong_2025_sudapyridine.html
+      - text: "Sufentanil (Hahn 2019)"
+        href: articles/Hahn_2019_sufentanil.html
       - text: "Sufentanil (Khaowroongrueng 2024)"
         href: articles/Khaowroongrueng_2024_sufentanil.html
       - text: "Sufentanil (Nie 2025)"
@@ -6238,6 +6240,7 @@ articles:
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Hadigol_2026_talazoparib_enzalutamide
+  - articles/Hahn_2019_sufentanil
   - articles/Hajjar_2018_DMD_6MWT
   - articles/Hajjar_2018_pompe_disease
   - articles/Hall_2017_dapsone
