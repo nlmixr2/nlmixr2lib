@@ -846,6 +846,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Cefotaxime (Roelofsen 2023)"
         href: articles/Roelofsen_2023_cefotaxime.html
+      - text: "Cefotiam (Shah 2019)"
+        href: articles/Shah_2019_cefotiam.html
       - text: "Cefoxitin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefpirome (Bulitta 2011)"
@@ -7165,6 +7167,7 @@ articles:
   - articles/Setiawan_2023_ampicillin_sulbactam
   - articles/Sexton_2024_lanadelumab_qsp
   - articles/Shah_2012_mAb_PBPK
+  - articles/Shah_2019_cefotiam
   - articles/Shah_2023_benzylpenicillin
   - articles/Shah_2025_clarithromycin
   - articles/Shao_2023_bedaquiline
