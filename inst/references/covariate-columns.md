@@ -13757,16 +13757,19 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Notes:** Captures a between-study shift in the B cell elimination rate not explained by the other covariates in the final model.
 
 ### STUDY_MICP220 (**canonical for benralizumab phase II study MI-CP220 indicator**)
-- **Description:** 1 = subject enrolled in the phase II benralizumab study MI-CP220, 0 = subject enrolled in any of the other studies of the pooled analysis. MI-CP220 is one of the two phase II studies that administered benralizumab 2-200 mg subcutaneously Q4W/Q8W and is the single study in the Jin 2025 12-study pool that carries both its own absolute subcutaneous bioavailability and its own residual-error magnitude.
+- **Description:** 1 = subject enrolled in the phase II benralizumab study MI-CP220 (NCT01238861), 0 = subject enrolled in any of the other studies of the pooled analysis. MI-CP220 is one of the two phase II studies that administered benralizumab 2-200 mg subcutaneously Q4W/Q8W, and in both benralizumab pooled analyses that use this indicator it is the single study carrying both its own absolute subcutaneous bioavailability and its own residual-error magnitude.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (any of the other 11 studies in the Jin 2025 pooled analysis).
+- **Reference category:** 0 (any of the other pooled studies -- the other 11 in the Jin 2025 analysis, the other 8 in the Yan 2019 analysis).
 - **Source aliases:**
   - `STUDYN` -- the numeric study identifier column (Jin 2025 Resource 1); the indicator is derived from it.
   - `Fa1S220`, `study 220` -- the parameter-name and footnote spellings Jin 2025 Resource 10 uses for the study-specific bioavailability.
-- **Example models:** `Jin_2025_benralizumab.R` (selects an absolute subcutaneous bioavailability of 0.457, with its own lognormal IIV of omega 0.373, in place of the reference 0.539; the same study also has its own log-scale additive residual error of 0.549 versus 0.175 for the other early studies, encoded as the separate `Cc_micp220` endpoint).
-- **Notes:** Sibling of `STUDY_AMES`, the other study-specific bioavailability stratum in the same model; the two are mutually exclusive per subject and a subject in neither takes the reference bioavailability. Distinct from a bare between-study shift on a disposition parameter -- here the study effect is on bioavailability, which is why the strata are estimated as three separate absolute fractions rather than as relative multipliers.
+  - `CP220`, `study CP220` -- the short form Yan 2019 Table 5 uses in the row label "Change in F with study CP220, fraction".
+- **Example models:**
+  - `Jin_2025_benralizumab.R` (selects an absolute subcutaneous bioavailability of 0.457, with its own lognormal IIV of omega 0.373, in place of the reference 0.539; the same study also has its own log-scale additive residual error of 0.549 versus 0.175 for the other early studies, encoded as the separate `Cc_micp220` endpoint).
+  - `Yan_2019_benralizumab.R` (the legacy nine-study analysis that Jin 2025 updates: selects an absolute subcutaneous bioavailability of 0.490, with its own lognormal IIV of omega 0.350, in place of the reference 0.589; the same study likewise has its own residual error of 0.545 versus 0.250 for the other early studies, encoded as the separate `Cc_micp220` endpoint).
+- **Notes:** Sibling of `STUDY_AMES`, the other study-specific bioavailability stratum in the Jin 2025 model; the two are mutually exclusive per subject and a subject in neither takes the reference bioavailability. Distinct from a bare between-study shift on a disposition parameter -- here the study effect is on bioavailability, which is why the strata are estimated as separate absolute fractions rather than as relative multipliers. That reading is what lets the two analyses be compared directly: Yan 2019 Table 5 labels the row "Change in F with study CP220" but tabulates an absolute fraction, and the resulting MI-CP220-to-reference bioavailability ratio is 0.569 / 0.671 = 0.848 in the Yan 2019 base model and 0.457 / 0.539 = 0.848 in the Jin 2025 final model -- an agreement the relative-multiplier reading of the Yan 2019 row could not produce.
 
 ### STUDY_AMES (**canonical for the benralizumab AMES autoinjector-versus-prefilled-syringe study indicator**)
 - **Description:** 1 = subject enrolled in the phase I AMES study (NCT02968914), which compared benralizumab PK exposure after administration by accessorized prefilled syringe versus autoinjector in 180 healthy volunteers given a single 30 mg subcutaneous dose, 0 = subject enrolled in any of the other studies of the pooled analysis.
