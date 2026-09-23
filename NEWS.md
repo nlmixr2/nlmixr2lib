@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Larizza 2018 C-peptide kinetics and insulin secretion ([doi:10.1002/psp4.12285](https://doi.org/10.1002/psp4.12285)) -- 207 normal, obese and diabetic adults for the C-peptide kinetics regressions, and one normal adult man for the IVGTT insulin minimal model.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
