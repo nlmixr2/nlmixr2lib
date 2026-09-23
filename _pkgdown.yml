@@ -2350,6 +2350,8 @@ navbar:
         href: articles/Kim_2025_infliximab.html
       - text: "Infliximab wojciechowski (Kim 2025)"
         href: articles/Kim_2025_infliximab.html
+      - text: "Inotuzumab (Garrett 2019)"
+        href: articles/Garrett_2019_inotuzumab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
@@ -6181,6 +6183,7 @@ articles:
   - articles/Garonzik_2016_daptomycin
   - articles/Garot_2011_ceftriaxone
   - articles/Garrett_2014_axitinib
+  - articles/Garrett_2019_inotuzumab
   - articles/Gaspar_2023_apixaban
   - articles/Gaspar_2025_fexofenadine
   - articles/Gasthuys_2023_paracetamol
