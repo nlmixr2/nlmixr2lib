@@ -832,7 +832,14 @@ subject_pk <- sim |>
   mutate(auc_ref = 4500 / cl,
          hl_ref = log(2) * vc / cl,
          cav_ref = 4500 / (cl * tau_nca),
-         cmin_ref = ctrough_analytic(4500, 1, tau_nca, cl, vc))
+         # The NCA interval opens just BEFORE the 10th dose, so its minimum is
+         # the trough after 9 doses, not the steady-state trough. For a
+         # one-compartment model that is the steady-state value times
+         # (1 - exp(-9 k tau)); a subject drawn with eGFR ~60 (t1/2 6.5 h) is
+         # still 0.3% short of steady state there, which the tight bound below
+         # would otherwise flag as an NCA error.
+         cmin_ref = ctrough_analytic(4500, 1, tau_nca, cl, vc) *
+           (1 - exp(-(n_doses - 1) * (cl / vc) * tau_nca)))
 
 nca_wide <- nca |>
   dplyr::select(id, PPTESTCD, PPORRES) |>
