@@ -4958,6 +4958,8 @@ navbar:
         href: articles/Frey_2013_tocilizumab.html
       - text: "Tofacitinib (Tsuchiwata 2026)"
         href: articles/Tsuchiwata_2026_tofacitinib.html
+      - text: "Tofacitinib (Xie 2019)"
+        href: articles/Xie_2019_tofacitinib.html
       - text: "Tolcapone fluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
@@ -7545,6 +7547,7 @@ articles:
   - articles/Xiang_2025_tacrolimus
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
+  - articles/Xie_2019_tofacitinib
   - articles/Xie_2025_aztreonam_avibactam
   - articles/Xie_2025_midazolam
   - articles/Xu_2011_sirukumab
