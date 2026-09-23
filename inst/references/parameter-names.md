@@ -2167,6 +2167,41 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Zhang_2023_brazikumab_il22.R` (`iplac = 0.209`, i.e. placebo inhibits the CDAI input rate by 20.9%), `Zhang_2023_brazikumab_crp.R` (`iplac = 0.178`).
 - **Notes:** Kept on the bare (untransformed) linear scale rather than log-transformed because the published between-subject variability on it is ADDITIVE (Zhang 2023 Methods: "the placebo effect... is modeled to have an additive variability (i.e., PLAC_i = PLAC_TV + eta_i), with the assumption that the placebo effect in any individual may be higher or lower than the typical value... by an equal probability"), so an `etaiplac` enters as `iplac + etaiplac`. Distinct from `imax`, which is the MAXIMUM of a driver-dependent (sigmoid) inhibition; `iplac` is a driver-free constant. Distinct also from `lplac` as used in `Schoemaker_2018_levetiracetam.R`, which is a log-scale placebo effect on a seizure RATE rather than a fractional inhibition of an IDR input function. Later placebo-controlled IDR extractions in the IBD / CDAI family (certolizumab, ustekinumab, mirikizumab,...) should reuse this canonical.
 
+### fcl_noinh (**canonical bare fraction of clearance not subject to inhibition**)
+- **Type:** paper-named-param
+- **Role:** In a time-dependent auto-inhibition (or inhibition) model where a clearance is multiplied by a driver-dependent inhibition factor, `fcl_noinh` is the FLOOR of that factor -- the share of the uninhibited clearance that remains no matter how completely the inhibitory driver saturates. Unitless, bounded in `[0, 1]`. The canonical shape inside `model` is
+
+  ```
+  inh <- fcl_noinh + (1 - fcl_noinh) * ic50 / (ic50 + effect)
+  cl  <- cl0 * inh
+  ```
+
+  so `inh = 1` (no inhibition) when the inhibition compartment is empty and `inh -> fcl_noinh` as it fills. The complement `(1 - fcl_noinh)` is the maximally inhibitable share; the two published models that use this canonical both estimate the *residual* rather than the complement, which is why the residual carries the name.
+- **Source aliases:**
+  - `RCLF` -- Kim 2019 notation ("the fraction of clearance which cannot be inhibited", Table 2 / Equation 2).
+  - `FCLp` -- Abduljalil 2009 notation ("fraction of CLp not subject to inhibition", Table 1). The trailing `p` denotes the parent drug in a parent + metabolite model and is dropped in the canonical, which carries no analyte token.
+- **Example models:** `Kim_2019_voriconazole.R` (founding example; `lfcl_noinh = log(0.162)` for CYP2C19 extensive metabolizers, with IIV 54.4% CV and two exponential CYP2C19 covariate effects `e_cyp2c19_im_fcl_noinh = -0.51` / `e_cyp2c19_pm_fcl_noinh = -0.44`), `Abduljalil_2009_clarithromycin.R` (`logitfcl_noinh = log(0.10 / 0.90)`, i.e. FCLp = 0.10, no IIV).
+- **Notes:** Ratified 2026-09-22 with the Kim 2019 voriconazole extraction (sidecar `oasweep_PMC6406770` request-001, operator answer q1 = A; q2 = B migrated the pre-existing `Abduljalil_2009_clarithromycin.R` spelling `fclp` / `logitfclp` onto this canonical in the same branch, so there is no legacy spelling left in the repo). Distinct from four neighbours that are all *some* kind of fraction or plateau:
+  - `limax` / `lemax` -- the maximal drug-effect INCREMENT, and the register's own Notes there already warn against using `lemax` for an attained plateau LEVEL. `fcl_noinh` is neither: it is an attained fractional FLOOR, and `1 - fcl_noinh` (not `fcl_noinh`) is the quantity that plays the `imax` role. Reparameterising a paper's `fcl_noinh` onto `limax` is a different model whenever the paper puts IIV or covariate effects on the residual, because those effects would move onto the complement.
+  - `iplac` -- a driver-free CONSTANT fractional inhibition of an IDR production rate. `fcl_noinh` is the residual of a driver-DEPENDENT inhibition and is meaningless without its `ic50` / driver state.
+  - `frac` -- a generic mixture weight / fraction-of-arm, a population-partition quantity rather than a per-subject clearance property.
+  - `fm` / `fm_<pathway>`, `fe`, `fu`, `fsen`, `frel`, `fdepot` -- the other fraction families, none of which covers a non-inhibitable clearance share.
+  Use the log form `lfcl_noinh` in `ini()` when the paper's variability is reported as a log-normal %CV, and the logit form `logitfcl_noinh` when the paper's own estimation bounded the fraction in (0, 1); both are registered below and the choice is a legitimate per-paper difference, not a convention drift. Covariate effects follow the standard `e_<cov>_<param>` grammar on the bare root (`e_cyp2c19_im_fcl_noinh`), which matches `covEffectPattern` without needing its own entry.
+
+### lfcl_noinh (**canonical log-transformed fraction of clearance not subject to inhibition**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `fcl_noinh` for use in `ini`. Individual value `fcl_noinh_i = exp(lfcl_noinh + etalfcl_noinh) * exp(<covariate effects>)`.
+- **Source aliases:** none.
+- **Example models:** `Kim_2019_voriconazole.R`.
+- **Notes:** See `fcl_noinh` for the full role description. As with `lfsen`, a log encoding of a bounded fraction can in principle exceed 1 for an extreme eta; it is used here because Kim 2019 reports the between-subject variability on RCLF as a log-normal %CV (Table 2, 54.4%) and reinterpreting that on a logit scale would not reproduce the published variability. Prefer `logitfcl_noinh` when the source paper's own estimation held the fraction on the logit scale.
+
+### logitfcl_noinh (**canonical logit-transformed fraction of clearance not subject to inhibition**)
+- **Type:** paper-named-param
+- **Role:** Logit-transformed counterpart of `fcl_noinh` for use in `ini`, with the bare form recovered inside `model` as `fcl_noinh <- expit(logitfcl_noinh)`. Used when the source paper's estimation bounded the fraction in (0, 1), so that covariates and etas cannot push it outside the feasible range.
+- **Source aliases:** `FCLp` -- Abduljalil 2009 notation; see `fcl_noinh`.
+- **Example models:** `Abduljalil_2009_clarithromycin.R` (`logitfcl_noinh <- log(0.10 / (1 - 0.10))`, whose inverse-logit is exactly the published FCLp = 0.10, 95% CI 0.02-0.17).
+- **Notes:** Follows the `logit` transform-prefix family (`logitfm`, `logitfrel`, `logitffo`, `logitfdepot`) applied to the `fcl_noinh` root. See `fcl_noinh` for the full role description and for when to prefer the `l` form instead.
+
 ### rbase (**canonical baseline-value parameter**)
 - **Type:** paper-named-param
 - **Role:** Baseline-value parameter for IDR / turnover state initial conditions and TGI initial tumour sizes.

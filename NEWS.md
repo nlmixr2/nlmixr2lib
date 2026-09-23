@@ -4,6 +4,8 @@
 
 - Add Kim 2019 voriconazole ([doi:10.3390/jcm8020227](https://doi.org/10.3390/jcm8020227)) -- Korean healthy volunteers and patients genotyped for CYP2C19.
 
+- Ratify `fcl_noinh` (fraction of clearance not subject to inhibition) as the canonical name for the auto-inhibition floor, with the `lfcl_noinh` and `logitfcl_noinh` transform forms. `Abduljalil_2009_clarithromycin` renames its `fclp` / `logitfclp` parameters onto this canonical.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
