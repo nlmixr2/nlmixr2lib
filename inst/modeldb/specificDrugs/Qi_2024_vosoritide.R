@@ -296,7 +296,7 @@ Qi_2024_vosoritide <- function() {
       kel * central
 
     # NOTE: deliberately no record-level `ka <- ka1 * (tad() < t_change) +
-    # ka2 * (tad() >= t_change)` reporting copy. rxode2 5.1.3 normalises
+    # ka2 * (tad() >= t_change)` reporting copy. rxode2 normalises
     # `t - tlast()` to `tad()`, so such a line becomes syntactically
     # identical to the inline d/dt switch above; common-subexpression
     # elimination then folds the ODE right-hand sides onto that single
@@ -304,8 +304,7 @@ Qi_2024_vosoritide <- function() {
     # pattern, and rxSolve's automatic ODE -> linCmt conversion replaces
     # the whole ODE system with an analytic solution driven by a
     # record-level `ka`. That silently reintroduces the grid dependence
-    # this inline form exists to avoid. Simulations should additionally
-    # pass useLinCmt = FALSE to rxSolve().
+    # this inline form exists to avoid.
 
     # ------------------------------------------------------------------
     # Observation. Doses are in ug and volumes in L, so central / vc is
