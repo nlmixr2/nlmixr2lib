@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sime 2019 unbound ceftolozane and unbound tazobactam ([doi:10.1128/AAC.01265-19](https://doi.org/10.1128/AAC.01265-19)) -- critically ill adults without renal dysfunction.
+- Add Willmann 2019 moxifloxacin ([doi:10.1002/psp4.12446](https://doi.org/10.1002/psp4.12446)) -- children and adolescents aged 3 months to under 18 years, including those with complicated intra-abdominal infection.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

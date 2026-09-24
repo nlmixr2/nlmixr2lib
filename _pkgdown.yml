@@ -3388,6 +3388,8 @@ navbar:
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Moxifloxacin (Palmer 2025)"
         href: articles/Palmer_2025_moxifloxacin.html
+      - text: "Moxifloxacin (Willmann 2019)"
+        href: articles/Willmann_2019_moxifloxacin.html
       - text: "Mrna1273 qsp (Dasti 2025)"
         href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Mt107 cyclosporine mouse pbpk (Taddio 2018)"
@@ -7931,8 +7933,8 @@ articles:
   - articles/Willemze_2008_ciclosporin
   - articles/Williams_2012_valproic_acid_pediatric
   - articles/Williams_2016_rituximab_biosimilar
-  - articles/Willmann_2018a_rivaroxaban
-  - articles/Willmann_2018b_rivaroxaban
+  - articles/Willmann_2018_rivaroxaban
+  - articles/Willmann_2019_moxifloxacin
   - articles/Willmann_2021_fxi_aso
   - articles/Willmann_2021_rivaroxaban
   - articles/Willmann_2022_rivaroxaban
