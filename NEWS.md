@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2019 PF-05280014 (trastuzumab biosimilar) and reference trastuzumab ([doi:10.1007/s00280-019-03850-1](https://doi.org/10.1007/s00280-019-03850-1)) -- adults with HER2-positive metastatic breast cancer.
+- Add Hand 2019 benzathine benzylpenicillin G ([doi:10.1093/jac/dkz076](https://doi.org/10.1093/jac/dkz076)) -- children and adolescents with rheumatic heart disease on monthly intramuscular secondary prophylaxis.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
