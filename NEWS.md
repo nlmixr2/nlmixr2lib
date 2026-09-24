@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2018 guanfacine ([doi:10.1007/s40272-017-0270-0](https://doi.org/10.1007/s40272-017-0270-0)) -- healthy adults.
+- Add Zhang 2018 sunitinib ([doi:10.18632/oncotarget.23881](https://doi.org/10.18632/oncotarget.23881)) -- Chinese adults with renal-cell carcinoma.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

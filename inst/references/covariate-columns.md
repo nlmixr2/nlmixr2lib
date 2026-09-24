@@ -13768,16 +13768,60 @@ Per-model `covariateData[[CYP2C19]]$notes` must document which orientation is in
 - **Example models:** `Stringer_2013_sipoglitazar_mixture.R` (selects `lcl_pm = log(1.53)` L/h; Stringer 2013 supplementary Table A1).
 - **Notes:** Companion to `UGT2B15_IM`; see that entry's Notes for the latent-phenotype-versus-observed-genotype boundary.
 
-### SNP_NT5E_RS2295890 (**canonical for NT5E (CD73) 5'-UTR rs2295890 G>C variant-allele carrier indicator**)
-- **Description:** Binary genotype indicator for the *NT5E* rs2295890 single-nucleotide polymorphism (G>C, 5'-untranslated / promoter region; *NT5E* encodes ecto-5'-nucleotidase, CD73, the GPI-anchored ectoenzyme that dephosphorylates extracellular nucleoside monophosphates in the purine salvage pathway). 1 = subject carries at least one variant C allele (heterozygous GC or homozygous CC); 0 = homozygous wild-type GG. Time-fixed per subject (germline genotype). This is the carrier / dominant-model encoding that is the default of the `SNP_<GENE>_<RSID>` family.
+### SNP_ABCB1_RS2032582_TG (**canonical for ABCB1 rs2032582 TG genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs2032582 single-nucleotide polymorphism (conventionally written c.2677G>T/A, p.Ala893Ser/Thr; exon 21; encodes P-glycoprotein / MDR1). 1 = the subject's reported genotype string is `TG`; 0 = otherwise. Time-fixed per subject (germline genotype). One of five indicators (`_TG`, `_GG`, `_TT`, `_AG`, `_GT`) that together encode the founding source's six-level genotype covariate, with the `AT` genotype as the common reference (all five indicators 0). Named by the **reported genotype letters**, following the `SNP_ABCB1_RS1045642_GA` / `_GG` precedent, because the founding source does not state which allele is wild type.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (homozygous wild-type GG).
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS2032582_GG`, `_TT`, `_AG` and `_GT` all 0, i.e. the `AT` genotype group (`Z3 = 0` in Zhang 2018).
 - **Source aliases:**
-  - `rs2295890` (coded 0 = WT, 1 = heterozygous variant or mutant) -- Mohanan 2017 Table 2 footnote a and the Results covariate-definition caption; same orientation as the canonical, no value transformation.
-- **Example models:** `Mohanan_2017_fludarabine.R` (log-scale multiplicative effect on the BSA-normalised clearance of the fludarabine nucleoside F-ara-A, `exp(e_snp_nt5e_rs2295890_cl * SNP_NT5E_RS2295890)` with `e_snp_nt5e_rs2295890_cl = log(5.03 / 7.12) = -0.347`, i.e. variant carriers clear F-ara-A 29% more slowly than GG wild-type homozygotes, P = 0.038; Mohanan 2017 Abstract and Table 2).
-- **Notes:** **Complete linkage disequilibrium caveat.** Mohanan 2017 reports that rs2295890 was in complete linkage disequilibrium with four other *NT5E* 5'-region SNPs in its cohort -- rs9450278, rs9450279, rs4599602 and rs4458647 -- so in that dataset the column may equivalently be derived from any of the five markers, and the effect cannot be attributed to rs2295890 specifically. A paper that genotypes one of the other four and reports it separately should record the alias here rather than registering a sibling canonical, unless it also breaks the LD block. Variant-carrier rate in the founding cohort was 15 of 48 successfully genotyped patients (31%), with a variant-allele frequency of 0.18 matching the 1000 Genomes expectation. Mohanan 2017 states this is the first report of an *NT5E* polymorphism affecting fludarabine pharmacokinetics and that the functional mechanism was still under investigation, so the coefficient should be treated as an empirical cohort association rather than an established transporter- or enzyme-mediated effect; scope is `specific` for that reason as well as because the affected parameter is paper-defined. Distinct from the nucleoside-transporter SNPs screened but not retained in the same analysis (*SLC28A3*/CNT3 rs7853758, *SLC29A1*/hENT1 rs747199) and from *NT5C2* rs4917996, which is a different 5'-nucleotidase gene (cytosolic NT5C2 rather than ecto-5'-nucleotidase NT5E); those three are carried in that model's `covariatesDataExcluded` because no coefficient was reported for any of them. Promote to general if a second paper ratifies the same carrier-versus-GG semantics.
+  - `Z3 = 1` -- the Zhang 2018 "final equation" genotype code for the TG stratum (coefficient `dClmdZ31`, Table 6).
+- **Example models:** `Zhang_2018_sunitinib.R` (linear proportional effect on the apparent clearance of the metabolite SU12662: `cl_su12662 = exp(lcl_su12662 + etalcl_su12662) * (WT / 68.3)^0.538 * (1 - e_snp_abcb1_rs2032582_tg_cl_su12662 * SNP_ABCB1_RS2032582_TG) * ...` with `e_snp_abcb1_rs2032582_tg_cl_su12662 = 0.314`, i.e. TG subjects have about 31% lower apparent SU12662 clearance than the AT reference group).
+- **Notes:** rs2032582 is **tri-allelic** (G / T / A), so the genotype space is larger than the usual three levels; Zhang 2018 observed six genotype strings (AT, TG, GG, TT, AG, GT) in 53 Chinese renal-cell-carcinoma patients and fitted a separate coefficient for each non-reference level. **The source distinguishes `TG` from `GT`** and assigns them materially different coefficients (0.314 versus 0.0456) even though the two strings denote the same unordered heterozygous genotype; the allele order in the source's genotype strings is therefore load-bearing and is reproduced rather than collapsed, since collapsing would require choosing one of two published estimates. An extraction whose source reports rs2032582 as unordered genotypes should register its own members rather than reusing this pair. Distinct from the pooled-stratum encoding in Zhang 2018 Table 2 (GG / "GT/A" / "AA/TT/TA"), which is the association analysis's grouping and does **not** match the popPK model's six-level coding, so the Table 2 counts cannot be used to recover per-level frequencies for this family. Both indicators in a pair must always be used together with the other three: a model that references a subset has mis-specified the reference category.
+
+### SNP_ABCB1_RS2032582_GG (**canonical for ABCB1 rs2032582 GG genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs2032582 single-nucleotide polymorphism (c.2677G>T/A). 1 = the subject's reported genotype string is `GG` (homozygous for the G allele); 0 = otherwise. Time-fixed per subject. Member of the five-indicator `AT`-referenced family described under `SNP_ABCB1_RS2032582_TG`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS2032582_TG`, `_TT`, `_AG` and `_GT` all 0, i.e. the `AT` genotype group (`Z3 = 0` in Zhang 2018).
+- **Source aliases:**
+  - `Z3 = 2` -- the Zhang 2018 "final equation" genotype code for the GG stratum (coefficient `dClmdZ32`, Table 6).
+- **Example models:** `Zhang_2018_sunitinib.R` (`e_snp_abcb1_rs2032582_gg_cl_su12662 = 0.269`, i.e. GG subjects have about 27% lower apparent SU12662 clearance than the AT reference group).
+- **Notes:** Zhang 2018 Table 2 reports 10 of 53 subjects (18.87%) as GG, the only one of the six model strata whose count is directly recoverable from the publication; the other five are pooled in that table. Always used together with the other four members of the family -- see `SNP_ABCB1_RS2032582_TG` for the reference-category and tri-allelic notes.
+
+### SNP_ABCB1_RS2032582_TT (**canonical for ABCB1 rs2032582 TT genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs2032582 single-nucleotide polymorphism (c.2677G>T/A). 1 = the subject's reported genotype string is `TT` (homozygous for the T allele); 0 = otherwise. Time-fixed per subject. Member of the five-indicator `AT`-referenced family described under `SNP_ABCB1_RS2032582_TG`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS2032582_TG`, `_GG`, `_AG` and `_GT` all 0, i.e. the `AT` genotype group (`Z3 = 0` in Zhang 2018).
+- **Source aliases:**
+  - `Z3 = 3` -- the Zhang 2018 "final equation" genotype code for the TT stratum (coefficient `dClmdZ33`, Table 6).
+- **Example models:** `Zhang_2018_sunitinib.R` (`e_snp_abcb1_rs2032582_tt_cl_su12662 = 0.308`, i.e. TT subjects have about 31% lower apparent SU12662 clearance than the AT reference group).
+- **Notes:** Zhang 2018 Table 2 pools TT with AA and TA into a single 17-subject (32.08%) row, so the TT-only count is not recoverable from the publication. Always used together with the other four members of the family.
+
+### SNP_ABCB1_RS2032582_AG (**canonical for ABCB1 rs2032582 AG genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs2032582 single-nucleotide polymorphism (c.2677G>T/A). 1 = the subject's reported genotype string is `AG`; 0 = otherwise. Time-fixed per subject. Member of the five-indicator `AT`-referenced family described under `SNP_ABCB1_RS2032582_TG`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS2032582_TG`, `_GG`, `_TT` and `_GT` all 0, i.e. the `AT` genotype group (`Z3 = 0` in Zhang 2018).
+- **Source aliases:**
+  - `Z3 = 4` -- the Zhang 2018 "final equation" genotype code for the AG stratum (coefficient `dClmdZ34`, Table 6).
+- **Example models:** `Zhang_2018_sunitinib.R` (`e_snp_abcb1_rs2032582_ag_cl_su12662 = 0.0368`, i.e. AG subjects have about 4% lower apparent SU12662 clearance than the AT reference group).
+- **Notes:** Genotypes containing an A allele exist at this locus because rs2032582 is tri-allelic; Zhang 2018 Table 2 reports an A-allele frequency of 0.12 in its cohort and notes that only G and T alleles were listed for this SNP in dbSNP at the time, attributing the discrepancy to the cohort not being exclusively Han. Always used together with the other four members of the family.
+
+### SNP_ABCB1_RS2032582_GT (**canonical for ABCB1 rs2032582 GT genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs2032582 single-nucleotide polymorphism (c.2677G>T/A). 1 = the subject's reported genotype string is `GT`; 0 = otherwise. Time-fixed per subject. Member of the five-indicator `AT`-referenced family described under `SNP_ABCB1_RS2032582_TG`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS2032582_TG`, `_GG`, `_TT` and `_AG` all 0, i.e. the `AT` genotype group (`Z3 = 0` in Zhang 2018).
+- **Source aliases:**
+  - `Z3 = 5` -- the Zhang 2018 "final equation" genotype code for the GT stratum (coefficient `dClmdZ35`, Table 6).
+- **Example models:** `Zhang_2018_sunitinib.R` (`e_snp_abcb1_rs2032582_gt_cl_su12662 = 0.0456`, i.e. GT subjects have about 5% lower apparent SU12662 clearance than the AT reference group).
+- **Notes:** **Not interchangeable with `SNP_ABCB1_RS2032582_TG`**, despite denoting the same unordered heterozygous genotype -- Zhang 2018 fitted the two strings as separate strata with coefficients an order of magnitude apart (0.0456 here versus 0.314 for TG). Reproducing the source's allele ordering is the only way to apply its published equation; see `SNP_ABCB1_RS2032582_TG` Notes. Always used together with the other four members of the family.
 
 ## Lifestyle / medical history
 

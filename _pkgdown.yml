@@ -4704,6 +4704,8 @@ navbar:
         href: articles/AitOudhia_2016_sunitinib.html
       - text: "Sunitinib (Yu 2015)"
         href: articles/Yu_2015_sunitinib.html
+      - text: "Sunitinib (Zhang 2018)"
+        href: articles/Zhang_2018_sunitinib.html
       - text: "Sunitinib (vanErp 2010)"
         href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
@@ -7777,6 +7779,7 @@ articles:
   - articles/Zhang_2016_burosumab
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen
+  - articles/Zhang_2018_sunitinib
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
