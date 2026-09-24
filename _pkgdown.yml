@@ -904,6 +904,8 @@ navbar:
         href: articles/Zazo_2024_ceftazidime_avibactam.html
       - text: "Ceftazidime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Ceftiofur dog (Wang 2019)"
+        href: articles/Wang_2019_ceftiofur_dog.html
       - text: "Ceftobiprole (Cojutti 2023)"
         href: articles/Cojutti_2023_ceftobiprole.html
       - text: "Ceftolozane (Chandorkar 2015)"
@@ -7444,6 +7446,7 @@ articles:
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
   - articles/Wang_2018_daclatasvir_asunaprevir
+  - articles/Wang_2019_ceftiofur_dog
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
