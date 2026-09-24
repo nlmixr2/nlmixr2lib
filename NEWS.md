@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ogasawara 2019 fedratinib ([doi:10.1007/s00280-019-03929-9](https://doi.org/10.1007/s00280-019-03929-9)) -- adults with myelofibrosis, polycythemia vera or essential thrombocythemia.
+- Record the Journal of Pain Research Expression of Concern ([doi:10.2147/JPR.S231531](https://doi.org/10.2147/JPR.S231531)) on the Zhang 2018 flurbiprofen source article, and correct the `population` metadata that had reproduced the article's mis-ascribed clinical trial registration number as an ethics approval number.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
