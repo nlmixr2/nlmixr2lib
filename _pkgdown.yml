@@ -304,6 +304,8 @@ navbar:
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "AntiCD66 pbpk model2 (Kletting 2015)"
         href: articles/Kletting_2015_antiCD66_pbpk.html
+      - text: "Antipcsk9 qsp (Sokolov 2019)"
+        href: articles/Sokolov_2019_antipcsk9_qsp.html
       - text: "Antithrombin (DeJongh 2014)"
         href: articles/DeJongh_2014_antithrombin.html
       - text: "Antithrombin (Moffett 2017)"
@@ -7629,6 +7631,7 @@ articles:
   - articles/Snelder_2019_leuprorelin
   - articles/Snelder_2020_ASP8232
   - articles/Soehoel_2022_tralokinumab
+  - articles/Sokolov_2019_antipcsk9_qsp
   - articles/Sokolov_2023_dapagliflozin
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027

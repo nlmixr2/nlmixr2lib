@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van der Stoep 2019 treosulfan ([doi:10.1111/bcp.13995](https://doi.org/10.1111/bcp.13995)) -- paediatric patients aged 0.1-18.2 years undergoing haematopoietic stem cell transplantation.
+- Add Sokolov 2019 anti-PCSK9 mAb and siRNA lipoprotein QSP ([doi:10.1194/jlr.M092486](https://doi.org/10.1194/jlr.M092486)) -- healthy adults and adults with familial or nonfamilial hypercholesterolemia on background statins.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
