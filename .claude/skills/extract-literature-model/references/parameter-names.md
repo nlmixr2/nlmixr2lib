@@ -53,6 +53,38 @@ Inside `model()` the bare names are `cl_ss`, `cl_time`, `cl_renal`, `cl_nonren`.
 - `clt` (time-varying CL component) → `cl_time`.
 - `cld` (distributional clearance, i.e., inter-compartmental) → `lq`.
 
+#### Piecewise-linear covariate relationships: `<cov>_hinge`
+
+When a covariate-parameter relationship is a segmented ("reverse hockey
+stick") line -- a rising linear arm that meets a flat arm at an estimated
+knot -- name the knot `<cov>_hinge`, log form `l<cov>_hinge`. The founding
+example is `crcl_hinge` / `lcrcl_hinge`:
+
+```r
+ini({ lcrcl_hinge <- log(37.7); label("Breakpoint above which the CL/F vs CrCl relationship is flat (mL/min)") })
+model({
+  cl_nonren  <- exp(lcl_nonren + etalcl_nonren)
+  crcl_hinge <- exp(lcrcl_hinge)
+  cl         <- cl_nonren + e_crcl_cl_renal * exp(etae_crcl_cl_renal) * min(CRCL, crcl_hinge)
+})
+```
+
+`min()` is exact in rxode2, so the clamp needs no smooth-step workaround.
+The plateau is NOT a separate parameter -- by continuity it is
+`cl_nonren + e_crcl_cl_renal * crcl_hinge` -- so a source tabulating an
+intercept, a slope and a breakpoint but no plateau is reporting this shape.
+
+- NOT `<cov>50`: there is no half-maximal point in a hinge (`pna50`, `ec50`
+  etc. all denote one).
+- NOT `<cov>_cap`: a `_cap` is a preprocessing clamp imposed on the data
+  (`Tong_2026_vancomycin_thomson.R` `crcl_cap <- fixed(150)`), with no second
+  arm and nothing fitted at the breakpoint. A `_hinge` is an estimated
+  structural parameter joining two arms.
+- Distinct from `tclchange` / `tkacut`, which are breakpoints on the TIME
+  axis joining piecewise-CONSTANT arms that need not meet.
+
+Founding example: `Li_2017_pomalidomide_crcl.R` (operator-ratified 2026-09-21).
+
 ### Parent drug + metabolite parameters
 
 Same rule as compartments: the **parent uses the canonical name**, and
