@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bulitta 2019 pefloxacin ([doi:10.3390/pharmaceutics11070323](https://doi.org/10.3390/pharmaceutics11070323)) -- adults with cystic fibrosis and healthy volunteers.
+- Add Xie 2019 tofacitinib ([doi:10.5414/CP203516](https://doi.org/10.5414/CP203516)) -- adults with active psoriatic arthritis.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
