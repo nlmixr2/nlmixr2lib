@@ -1110,6 +1110,8 @@ navbar:
         href: articles/Han_2025_clozapine.html
       - text: "Clozapine (Li 2012)"
         href: articles/Li_2012_clozapine.html
+      - text: "Clozapine (Olmos 2019)"
+        href: articles/Olmos_2019_clozapine.html
       - text: "Cobicistat (Overbeek 2025)"
         href: articles/Overbeek_2025_cobicistat_olaparib_boosting.html
       - text: "Codeine (Ashraf 2024)"
@@ -7222,6 +7224,7 @@ articles:
   - articles/Olivo_2024_methotrexate
   - articles/Olivo_2025_vancomycin
   - articles/Ollier_2015_ropivacaine
+  - articles/Olmos_2019_clozapine
   - articles/OlssonGisleskog_2025_ibrutinib
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Onita_2025_sulbactam
