@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Garessus 2019 isoniazid ([doi:10.3389/fphar.2019.00005](https://doi.org/10.3389/fphar.2019.00005)) -- lactating women on isoniazid and their breastfed newborns.
+- Add Daskapan 2019 darunavir ([doi:10.1097/FTD.0000000000000576](https://doi.org/10.1097/FTD.0000000000000576)) -- HIV-1-infected adult outpatients on ritonavir-boosted darunavir under routine therapeutic drug monitoring.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
