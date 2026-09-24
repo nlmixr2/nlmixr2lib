@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stott 2018 fluconazole ([doi:10.1128/AAC.00885-18](https://doi.org/10.1128/AAC.00885-18)) -- adults with HIV-associated cryptococcal meningitis in Vietnam and Uganda.
+- Add Dimelow 2018 ceftazidime and avibactam ([doi:10.1007/s40268-018-0241-0](https://doi.org/10.1007/s40268-018-0241-0)) -- healthy male volunteers, plasma and epithelial lining fluid.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
