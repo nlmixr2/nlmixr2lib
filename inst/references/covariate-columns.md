@@ -15754,6 +15754,36 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Passey_2011_tacrolimus.R` (multiplicative effect on apparent oral CL: `cl_typ * e_ccb_cl^CONMED_CCB` with `e_ccb_cl = 0.812`, i.e. CCB coadministration reduces tacrolimus CL/F by ~19% in adult kidney transplant recipients; Passey 2011 final model Table 4 row "CCB").
 - **Notes:** Specific scope because the CCB-tacrolimus interaction is documented for CYP3A4 substrates and the magnitude is drug-pair specific. Future popPK models for CYP3A4 substrates that need a CCB conmed indicator should reuse this canonical.
 
+### CONMED_OMEPRAZOLE (**canonical for concomitant omeprazole indicator**)
+- **Description:** Binary indicator of concomitant omeprazole; `1` = omeprazole co-administered, `0` = not. Drug-specific member of the `CONMED_<INN>` family, used when a paper estimates an omeprazole effect separately rather than pooling proton-pump inhibitors.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no omeprazole).
+- **Source aliases:** `omeprazole` (Wang 2019 covariate name; same orientation).
+- **Example models:** `Wang_2019_tacrolimus.R` (fractional effect on CL/F, `(1 - 0.362 * CONMED_OMEPRAZOLE)`; attributed to CYP3A inhibition), `Gao_2021_methotrexate.R`, `Zhang_2026_linezolid.R`.
+- **Notes:** Distinct from the class-level `CONMED_PPI`; use `CONMED_PPI` when the paper pools PPIs. Record whether the indicator is time-varying in the per-model notes. Auto-approved as a well-formed `CONMED_<INN>` member during the Wang 2019 tacrolimus extraction (task `oasweep_PMC6861867`).
+
+### CONMED_LORATADINE (**canonical for concomitant loratadine indicator**)
+- **Description:** Binary indicator of concomitant loratadine; `1` = loratadine co-administered, `0` = not. Member of the `CONMED_<INN>` family.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no loratadine).
+- **Source aliases:** `loratadine` (Wang 2019 covariate name; same orientation).
+- **Example models:** `Wang_2019_tacrolimus.R` (fractional effect on CL/F, `(1 - 0.322 * CONMED_LORATADINE)`; attributed to competition for CYP3A).
+- **Notes:** Auto-approved as a well-formed `CONMED_<INN>` member during the Wang 2019 tacrolimus extraction (task `oasweep_PMC6861867`).
+
+### CONMED_DILTIAZEM (**canonical for concomitant diltiazem indicator**)
+- **Description:** Binary indicator of concomitant diltiazem; `1` = diltiazem co-administered, `0` = not. Drug-specific member of the `CONMED_<INN>` family.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no diltiazem).
+- **Source aliases:** `diltiazem` (Wang 2019 covariate name; same orientation).
+- **Example models:** `Wang_2019_tacrolimus.R` (fractional effect on CL/F, `(1 - 0.307 * CONMED_DILTIAZEM)`; attributed to CYP3A inhibition).
+- **Notes:** Distinct from the class-level `CONMED_CCB`, which pools calcium-channel blockers of differing CYP3A-inhibition potency (diltiazem, amlodipine, verapamil). Use `CONMED_DILTIAZEM` when the paper estimates the diltiazem effect separately. Auto-approved as a well-formed `CONMED_<INN>` member during the Wang 2019 tacrolimus extraction (task `oasweep_PMC6861867`).
+
 ### CONMED_ABATACEPT_DOSE, CONMED_ADALIMUMAB_DOSE, CONMED_ANAKINRA_DOSE, CONMED_CERTOLIZUMAB_DOSE, CONMED_ETANERCEPT_DOSE, CONMED_GOLIMUMAB_DOSE, CONMED_INFLIXIMAB_DOSE, CONMED_RITUXIMAB_DOSE, CONMED_TOCILIZUMAB_DOSE, CONMED_USTEKINUMAB_DOSE, CONMED_MTX_DOSE (**canonical for the dose of a named biologic DMARD or immunomodulatory monoclonal antibody, or of randomized methotrexate, in an immune-mediated-inflammatory-disease dose-response meta-analysis**)
 - **Description:** Dose of the named agent assigned to the study arm (per-arm MBMA) or to the individual subject (subject-level trial simulation), expressed on the dose metric the source paper's ED50 is written against. 0 = the agent was not given as a randomized treatment, so it contributes nothing to the dose-response; every column of the family 0 = a placebo (or background-therapy-only) arm or subject. Suffix is the INN, except `MTX` for methotrexate, matching the abbreviation already used by `CONMED_MTX` and `DOSE_MTX_MGM2`. Members of the `CONMED_<drug>_DOSE` family; each column drives its own drug's dose-response term in a model-based meta-analysis, exactly as the statin and anticoagulant members of that family do. The family spans indications: rheumatoid arthritis (`Mandema_2011_biologicDMARDs_mbma.R`) and plaque psoriasis (`Dodds_2013_psoriasis_biologics_mbma.R`).
 - **Units:** Per drug AND per model, and NOT interchangeable. In the rheumatoid-arthritis maintenance-regimen setting: mg per administration for adalimumab (q2w), certolizumab pegol (q2w), etanercept (twice weekly), golimumab (q4w) and rituximab (weeks 0 and 2); mg/day for anakinra; mg/kg per administration for abatacept (q4w), infliximab (weeks 0, 2, 6 then q8w) and tocilizumab (q4w); mg/week for methotrexate. In the psoriasis single-dose setting: flat mg for a SINGLE administration of adalimumab, golimumab or ustekinumab. The unit of each column must match the unit of the matching ED50 parameter in the model. Record the per-column unit in `covariateData[[<name>]]$units`.
