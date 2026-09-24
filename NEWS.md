@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cantillon 2018 brilaroxazine ([doi:10.1007/s13318-018-0472-z](https://doi.org/10.1007/s13318-018-0472-z)) -- adults with an acute exacerbation of schizophrenia or schizoaffective disorder.
+- Add Kim 2017 tegafur ([doi:10.3390/molecules22091488](https://doi.org/10.3390/molecules22091488)) -- male Sprague-Dawley rats given oral S-1 with or without Sipjeondaebo-tang pretreatment.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

@@ -134,6 +134,14 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** QSS-TMDD popPK extractions.
 
+### precursor (**canonical amount-only metabolite-precursor pool**)
+- **Type:** compartment
+- **Role:** Chemical intermediate standing between a parent drug and a downstream metabolite, which the source model carries as an AMOUNT with no volume and no measured concentration. Used in metabolite-suffixed form `precursor_<metab>`, where `<metab>` is the registered suffix of the species the pool converts INTO, not of the precursor itself -- such a pool is identified in the source's own equations only by what it forms, and frequently has no assay at all. The pool is fed by one or more formation fluxes (pre-systemic first pass out of `depot`, and/or a systemic fraction of parent clearance out of `central`) and drains by a first-order conversion into `central_<metab>`.
+- **Source aliases:**
+  - `XPre,5FU` -- Kim 2017 equations 1, 4 and 5 (amount of the 5-FU precursor 5'-hydroxytegafur).
+- **Example models:** `Kim_2017_tegafur_rat.R` (founding example; doi:10.3390/molecules22091488 -- `precursor_5fu` holds 5'-hydroxytegafur, fed pre-systemically from `depot` at `k_precursor_5fu_form` and systemically by `cl * fmet * Cc`, converting to `central_5fu` at `k_5fu_form`).
+- **Notes:** Distinct from the numbered `precursor<n>` chain accepted by `compartmentRegex`, which is a maturation / delayed-feedback stage of an indirect-response or Friberg-style cascade (see `circ`): that family is a TIME-DELAY device whose states have no chemical identity, whereas `precursor_<metab>` is a named chemical species. Distinct from `central_<metab>`: use `central_<metab>` whenever the source defines a metabolite CONCENTRATION, fixing `vc_<metab>` to 1 where the volume is not identifiable (`Urien_2005_capecitabine.R` does exactly this), and reach for `precursor_<metab>` only when the source's equations act on an amount and there is no volume to assert -- asserting one would invent a concentration the paper never defines. The bare `precursor` is registered only so the `<canonical>_<metab>` composition resolves; a chemical pool always carries the metabolite suffix, and a paper that models the precursor's own concentration should register a metabolite suffix for the precursor species instead (compare `npc` and `or1855`, both obligate precursors of an active metabolite that ARE assayed and so carry `central_<suffix>`). Ratified by operator sidecar `oasweep_PMC6151713` q2 (2026-09-21), replacing a `paper_specific_compartments` whitelist entry.
+
 ---
 
 ## Semi-physiological organ states
@@ -5022,11 +5030,11 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Urien_2005_capecitabine.R`.
 
-### 5fu (**canonical 5-fluorouracil capecitabine metabolite suffix**)
+### 5fu (**canonical 5-fluorouracil metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** 5-fluorouracil (5-FU), formed from 5'-DFUR by thymidine phosphorylase preferentially in tumour tissue.
+- **Role:** 5-fluorouracil (5-FU), the common active species of the oral fluoropyrimidine prodrugs. Formed from 5'-DFUR by thymidine phosphorylase preferentially in tumour tissue (capecitabine), or from 5'-hydroxytegafur after CYP2A6 oxidation of tegafur (S-1, UFT).
 - **Source aliases:** none.
-- **Example models:** `Urien_2005_capecitabine.R`, `Blesch_2003_capecitabine.R`.
+- **Example models:** `Urien_2005_capecitabine.R`, `Blesch_2003_capecitabine.R`, `Kim_2017_tegafur_rat.R` (the tegafur route, via the `precursor_5fu` pool).
 
 ### fbal (**canonical alpha-fluoro-beta-alanine capecitabine catabolite suffix**)
 - **Type:** metabolite-suffix
