@@ -4100,6 +4100,8 @@ navbar:
         href: articles/Kohl_2010_posaconazole.html
       - text: "Posaconazole (Shu 2024)"
         href: articles/Shu_2024_posaconazole.html
+      - text: "Posaconazole (Sime 2019)"
+        href: articles/Sime_2019_posaconazole.html
       - text: "Posaconazole (Winchell 2024)"
         href: articles/Winchell_2024_posaconazole.html
       - text: "Posaconazole (vanIersel 2018)"
@@ -7550,6 +7552,7 @@ articles:
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
   - articles/Silva_2024_apx3330
+  - articles/Sime_2019_posaconazole
   - articles/Simpson_2006_artesunate
   - articles/Simpson_2013_artesunate
   - articles/Simpson_2013_chloroquine

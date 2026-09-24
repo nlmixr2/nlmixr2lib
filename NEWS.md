@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Britz 2019 fluvoxamine ([doi:10.1002/psp4.12397](https://doi.org/10.1002/psp4.12397)) -- healthy volunteers stratified by CYP2D6 phenotype and by cigarette smoking.
+- Add Sime 2019 posaconazole ([doi:10.1186/s13054-019-2483-9](https://doi.org/10.1186/s13054-019-2483-9)) -- critically ill adults with invasive fungal infection, total and unbound concentrations.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
