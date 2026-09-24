@@ -2940,6 +2940,8 @@ navbar:
         href: articles/Kim_2024_meropenem.html
       - text: "Meropenem (Liu 2025)"
         href: articles/Liu_2025_meropenem.html
+      - text: "Meropenem (Lu 2016)"
+        href: articles/Lu_2016_meropenem.html
       - text: "Meropenem (Padari 2012)"
         href: articles/Padari_2012_meropenem.html
       - text: "Meropenem (Peng 2025)"
@@ -6730,6 +6732,7 @@ articles:
   - articles/Lu_2014_trastuzumabemtansine
   - articles/Lu_2015_tacrolimus
   - articles/Lu_2015_vismodegib
+  - articles/Lu_2016_meropenem
   - articles/Lu_2016_pinatuzumab_polatuzumab
   - articles/Lu_2016_tenofovir
   - articles/Lu_2017_polatuzumab_neuropathy

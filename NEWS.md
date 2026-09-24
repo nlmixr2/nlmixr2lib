@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tchaparian 2016 lumefantrine ([doi:10.1093/infdis/jiw338](https://doi.org/10.1093/infdis/jiw338)) -- Ugandan children aged 6 months to 2 years treated with artemether-lumefantrine for uncomplicated malaria.
+- Add Lu 2016 meropenem ([doi:10.1128/AAC.00997-16](https://doi.org/10.1128/AAC.00997-16)) -- adults with bacterial meningitis after neurosurgery.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
