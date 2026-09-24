@@ -4724,6 +4724,8 @@ navbar:
         href: articles/Tsuda_2010_tamsulosin.html
       - text: "Tanezumab (Jonsson 2016)"
         href: articles/Jonsson_2016_tanezumab.html
+      - text: "Tapentadol (Watson 2019)"
+        href: articles/Watson_2019_tapentadol.html
       - text: "Taranabant (Li 2010)"
         href: articles/Li_2010_taranabant.html
       - text: "Taspoglutide mbma (Li 2015)"
@@ -7474,6 +7476,7 @@ articles:
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
+  - articles/Watson_2019_tapentadol
   - articles/Watt_2015_fluconazole
   - articles/Watt_2026_methadone
   - articles/Wattanakul_2016_paracetamol
