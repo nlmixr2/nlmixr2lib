@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chantharit 2019 voriconazole ([doi:10.1093/ofid/ofz360.1430](https://doi.org/10.1093/ofid/ofz360.1430)) -- Thai adults treated with oral voriconazole for invasive aspergillosis.
+- Add Wang 2019 ceftiofur ([doi:10.3389/fvets.2019.00363](https://doi.org/10.3389/fvets.2019.00363)) -- healthy beagle dogs.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
