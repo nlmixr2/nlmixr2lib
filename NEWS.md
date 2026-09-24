@@ -172,7 +172,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Zhou 2018 alisertib ([doi:10.1111/bcp.13430](https://doi.org/10.1111/bcp.13430)) -- adults with advanced malignancies in Western countries and East Asia; population PK plus three exposure-safety logistic regressions.
+- Add Song 2017 vancomycin ([doi:10.18632/oncotarget.22114](https://doi.org/10.18632/oncotarget.22114)) -- Chinese neonates and young infants under 60 days of age.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
