@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hardiansyah 2019 anti-CD19 CAR T-cell QSP ([doi:10.1111/cts.12636](https://doi.org/10.1111/cts.12636)) — adults with advanced chronic lymphocytic leukaemia.
+- Add Wang 2019 lamotrigine ([doi:10.3389/fphar.2019.00832](https://doi.org/10.3389/fphar.2019.00832)) -- Chinese children and adults aged 4-63 years with epilepsy.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
