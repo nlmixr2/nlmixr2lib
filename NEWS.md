@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Voller 2019 midazolam ([doi:10.1002/jcph.1429](https://doi.org/10.1002/jcph.1429)) -- preterm neonates of 24-34 weeks gestational age in neonatal intensive care.
+- Add Zhang 2019 nivolumab ([doi:10.1002/jcph.1432](https://doi.org/10.1002/jcph.1432)) -- Chinese and global adults with previously treated advanced solid tumors, including NSCLC and nasopharyngeal carcinoma.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
