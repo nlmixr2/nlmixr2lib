@@ -1,0 +1,519 @@
+---
+title: "Artemether + lumefantrine in pregnancy (Lohy Das 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Artemether + lumefantrine in pregnancy (Lohy Das 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Lohy Das J, Rulisa S, de Vries PJ, Mens PF, Kaligirwa N, Agaba S, Tarning J, Karlsson MO, Dorlo TPC (2018). Population pharmacokinetics of artemether, dihydroartemisinin, and lumefantrine in Rwandese pregnant women treated for uncomplicated *Plasmodium falciparum* malaria. *Antimicrobial Agents and Chemotherapy* **62**(10):e00518-18.
+* Article: <https://doi.org/10.1128/AAC.00518-18> (PMC6153812, open access)
+* Ethics: Rwanda National Ethics Committee study IRB 00001497
+
+Lohy Das 2018 reports **two separate** population PK models from a single cohort of 22 Rwandese pregnant women receiving the standard fixed-dose oral artemether-lumefantrine combination:
+
+* a **lumefantrine** model: 5-transit-compartment absorption followed by two-compartment disposition (Fig. 1A, Table 2), and
+* a joint **artemether + dihydroartemisinin** model: 2-transit-compartment absorption, one-compartment disposition for each analyte, and an enzyme turnover compartment producing autoinduction of artemether clearance (Fig. 1B, Table 2, Eqs. 1 and 4-6).
+
+The authors explicitly attempted and then abandoned a simultaneous fit of the two drugs -- "adding off-diagonal correlation elements to explore MTT correlations resulted in an unstable model" and simultaneous modelling "substantially increased the computational time (>18-fold increase)". Per the `replicate-author-structure` policy the two independent fits are therefore extracted as two model files, with this single vignette walking the paper as a unit.
+
+```{r load-models}
+mod_lf <- rxode2::rxode2(readModelDb("LohyDas_2018_lumefantrine")())
+mod_am <- rxode2::rxode2(readModelDb("LohyDas_2018_artemether")())
+```
+
+# Population
+
+Twenty-two Rwandese pregnant women with microscopy-confirmed uncomplicated *P. falciparum* malaria were enrolled at Rwamagana district hospital between June 2007 and July 2009 (Table 1): 11 in the second trimester (estimated gestational age 15.7-27.6 weeks) and 11 in the third (28.3-39.0 weeks), median EGA 27.9 weeks. Median age was 26 years (range 18-39), median body weight 59.0 kg (range 40.0-65.0), median body mass index 21.9 kg/m^2 (range 15.6-25.4), and median baseline parasitemia 24,970 parasites/uL (range 3,060-160,000).
+
+All patients received 4 tablets (80 mg artemether / 480 mg lumefantrine) twice daily for 3 days at 0, 8, 24, 36, 48 and 60 h, supervised, with a glass of milk and/or a small cake. Venous plasma was sampled pre-dose, at 2 and 4 h after each dose, before doses 2-6, at 0.25 h after doses 1 and 2, at 6, 8 and 12 h after the last dose, and on day 7. Every patient cleared microscopic parasitemia by day 3 and a single recrudescence (4.55%) was observed.
+
+Estimation used NONMEM 7.3 on natural-log **molar** concentrations. Lumefantrine used FOCEI with the <8% below-limit-of-quantification observations discarded; artemether and dihydroartemisinin used Laplacian estimation with the M3 method for the 24% and 28% censored observations respectively. Because the lumefantrine data were sparse in the elimination phase, frequentist informative priors from an earlier Ugandan lumefantrine study were applied, which is what allowed the peripheral compartment to be identified. The values encoded here are the paper's **final** Table 2 estimates, not the priors.
+
+# Units: the models are molar
+
+Both model files carry doses in `nmol` and concentrations in `nmol/L`. This is not a stylistic choice -- the paper states that "the molar units of LF, ARM, and DHA concentration were transformed to their natural logarithms for this modeling analysis", and the artemether autoinduction `EC50` is reported in nM and is compared directly against the artemether concentration. A mass-unit encoding would silently mis-scale the induction term.
+
+```{r molar-conversion}
+mw <- c(lumefantrine = 528.94, artemether = 298.37, dihydroartemisinin = 284.35)
+dose_nmol <- c(
+  lumefantrine = 480 / mw[["lumefantrine"]] * 1e6,
+  artemether = 80 / mw[["artemether"]] * 1e6
+)
+round(dose_nmol)
+```
+
+The paper's own reporting confirms the lumefantrine conversion: it gives a day-7 target of "280 ng/ml (529 nM)" and a simulated median of "709 ng/ml (corresponding to 1,340 [509 to 3,670] nM)".
+
+```{r molar-crosscheck}
+c(target_nM = 280 / mw[["lumefantrine"]] * 1e3, median_nM = 709 / mw[["lumefantrine"]] * 1e3)
+stopifnot(
+  abs(280 / mw[["lumefantrine"]] * 1e3 - 529) < 1,
+  abs(709 / mw[["lumefantrine"]] * 1e3 - 1340) < 5
+)
+```
+
+# Source trace
+
+Every `ini()` value in both model files, with its location in the source.
+
+```{r source-trace-lf, echo = FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~Parameter, ~Value, ~Source,
+    "lfdepot", "F = 1 (fixed)", "Table 2, Lumefantrine block, row 'F' = '1 fixed'; Methods 'Population pharmacokinetics'",
+    "lmtt", "MTT = 4.04 h", "Table 2, row 'MTT (h)' (%RSE 5.16, 90% CI 3.71-4.41)",
+    "lcl", "CL/F = 4.49 L/h", "Table 2, row 'CL/F (liters/h)' (%RSE 6.59, 90% CI 4.18-5.17)",
+    "lvc", "Vc/F = 139 L", "Table 2, row 'Vc/F (liters)' (%RSE 6.77, 90% CI 119-149)",
+    "lq", "Q/F = 0.924 L/h", "Table 2, row 'Q/F (liters/h)' (%RSE 13.3, 90% CI 0.770-1.21)",
+    "lvp", "Vp/F = 111 L", "Table 2, row 'Vp/F (liters)' (%RSE 8.69, 90% CI 96.5-129)",
+    "boxcox_lfdepot", "lambda = -0.605", "Table 2, row 'Box-Cox shape parameter for BSV on F' (%RSE 34.9); Methods Eq. 3",
+    "e_wt_cl / e_wt_vc", "0.75 / 1.0 (fixed)", "Methods 'For body size descriptors...': allometric power exponents 0.75 for clearances and 1 for volumes, scaled to median total body weight 59 kg",
+    "etalmtt", "BSV MTT 132% CV -> var 1.7424", "Table 2 BSV column (%RSE 37.9); footnote a scale",
+    "etalvc", "BSV Vc 48.7% CV -> var 0.2372", "Table 2 BSV column (%RSE 56.8); footnote a scale",
+    "etaiov_fdepot_*", "BOV F 144% CV -> var 2.0736", "Table 2 BOV column, footnote b (%RSE 19.7)",
+    "etaiov_mtt_*", "BOV MTT 46.0% CV -> var 0.2116", "Table 2 BOV column, footnote b (%RSE 43.6)",
+    "propSd", "RUV 48.7% -> 0.487", "Table 2, row 'RUV (%)' (%RSE 4.82); Methods: additive on the log scale"
+  ),
+  caption = "Source trace for LohyDas_2018_lumefantrine."
+)
+```
+
+```{r source-trace-am, echo = FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~Parameter, ~Value, ~Source,
+    "lfdepot", "F = 1 (fixed)", "Table 2, Artemether block, row 'F' = '1 fixed'",
+    "lmtt", "MTT = 0.738 h", "Table 2, row 'MTT (h)' (%RSE 12.5); Discussion '45 min versus 4 h'",
+    "lcl", "CL_ARM/F = 467 L/h (pre-induced)", "Table 2, row 'CL_ARM/F' (%RSE 17.9); Abstract 'started at 467 liters/h'",
+    "lvc", "V_ARM/F = 3,000 L", "Table 2, row 'V_ARM/F (liters)' (%RSE 14.1)",
+    "lcl_dihydroart", "CL_DHA/F = 611 L/h", "Table 2, Dihydroartemisinin block (%RSE 15.4)",
+    "lvc_dihydroart", "V_DHA/F = 137 L", "Table 2, Dihydroartemisinin block (%RSE 38.9)",
+    "lemax", "Emax = 0.986", "Table 2, row 'Emax' (%RSE 22.8); Eq. 1",
+    "lec50", "EC50 = 9.37 nM", "Table 2, row 'EC50 (nM)' (%RSE 25.4); Results 'the EC50 was 9.37 nM'",
+    "lkenz", "K_ENZ = ln(2)/30.4 h = 0.02280 /h", "Table 2, row 'TIME_ENZ (h)' = 30.4 (%RSE 42.1) combined with Eq. 6",
+    "e_wt_cl / e_wt_vc", "0.75 / 1.0 (fixed)", "Methods: allometric exponents on CL_ARM/F, CL_DHA/F and V_ARM/F, V_DHA/F; median 59 kg",
+    "etalfdepot", "BSV F 57.6% CV -> var 0.3318", "Table 2 BSV column (%RSE 36.8)",
+    "etalmtt", "BSV MTT 110% CV -> var 1.2100", "Table 2 BSV column (%RSE 32.5)",
+    "etalcl / etalvc", "BSV 27.9% / 20.5% CV -> var 0.0778 / 0.0420", "Table 2 BSV column (%RSE 44.1 / 43.1)",
+    "etalcl_dihydroart / etalvc_dihydroart", "BSV 20.7% / 40.5% CV -> var 0.0428 / 0.1640", "Table 2 BSV column (%RSE 50.2 / 48.9)",
+    "etaiov_fdepot_* / etaiov_mtt_*", "BOV 48.2% / 53.2% CV -> var 0.2323 / 0.2830", "Table 2 BOV column, footnote b",
+    "propSd / propSd_dihydroart", "RUV 98.4% / 113% -> 0.984 / 1.13", "Table 2 'RUV (%)' rows (%RSE 5.54 / 6.01)"
+  ),
+  caption = "Source trace for LohyDas_2018_artemether."
+)
+```
+
+Model equations, all from the Materials and Methods section:
+
+| Equation | Form | Used in |
+|---|---|---|
+| Fig. 1A legend | `ktr = (n + 1) / MTT` | both models' transit chains (n = 5 and n = 2) |
+| Eq. 1 | `EFF = Emax * CP / (EC50 + CP)` | artemether autoinduction |
+| Eq. 3 | Box-Cox transform of the F random effect | lumefantrine `phi_fdepot` |
+| Eq. 4 | `dA_ENZ/dt = K_ENZ * (1 + EFF) - K_ENZ * A_ENZ` | `d/dt(enzyme)` |
+| Eq. 5 | `(CL_ARM/F)_induced = (CL_ARM/F)_preinduced * A_ENZ` | `cl_induced` |
+| Eq. 6 | `K_ENZ = ln(2) / t_(1/2)ENZ` | `lkenz` |
+
+# Dosing and the occasion column
+
+Both models use an `OCC` column (1-6) to index the dosing occasion for the between-occasion random effects, and a `WT` column for the allometric scaling.
+
+```{r events}
+dose_times_3day <- c(0, 8, 24, 36, 48, 60)
+dose_times_5day <- c(dose_times_3day, 72, 84, 96, 108)
+
+# OCC is capped at 6 because the paper estimated only six occasion slots.
+occ_of <- function(tm, dose_times) pmin(6L, pmax(1L, findInterval(tm, dose_times)))
+
+build_data <- function(drug, dose_times, obs_times, wt = 59, n = 1L) {
+  ev <- rxode2::et(amt = dose_nmol[[drug]], time = dose_times, cmt = "depot",
+                   id = seq_len(n)) |>
+    rxode2::et(obs_times, cmt = "central", id = seq_len(n))
+  d <- as.data.frame(ev)
+  d <- d[order(d$id, d$time, -d$evid), ]
+  d$WT <- if (length(wt) == 1L) wt else wt[d$id]
+  d$OCC <- occ_of(d$time, dose_times)
+  d
+}
+```
+
+# Lumefantrine: typical-value profile and structural checks
+
+`rxode2::zeroRe()` gives the typical subject (all random effects zero), which is where the paper's own closed-form identities can be checked exactly.
+
+```{r lf-typical}
+lf_typ <- rxode2::zeroRe(mod_lf)
+obs_lf <- sort(unique(c(seq(0, 120, by = 0.25), seq(120, 1200, by = 1))))
+sim_lf <- rxode2::rxSolve(lf_typ, build_data("lumefantrine", dose_times_3day, obs_lf),
+                          returnType = "data.frame", addDosing = FALSE)
+```
+
+The two-compartment disposition has a closed-form terminal rate constant; the paper reports a "terminal elimination half-life of ~4 days".
+
+```{r lf-halflife}
+k10 <- 4.49 / 139; k12 <- 0.924 / 139; k21 <- 0.924 / 111
+ksum <- k10 + k12 + k21
+beta <- 0.5 * (ksum - sqrt(ksum^2 - 4 * k10 * k21))
+t_half_closed <- log(2) / beta
+
+tail_lf <- dplyr::filter(sim_lf, time > 700, time < 1200)
+t_half_solved <- -log(2) / coef(lm(log(Cc) ~ time, data = tail_lf))[["time"]]
+
+c(closed_form_h = t_half_closed, closed_form_days = t_half_closed / 24,
+  solved_h = t_half_solved)
+
+# The solve must reproduce its own closed form: this is pure numerical error,
+# so a tight bound is correct here (see CLAUDE.md on when tight bounds apply).
+stopifnot(abs(t_half_solved / t_half_closed - 1) < 0.01)
+```
+
+Dose recovery. With F fixed at 1 and no random effects, `CL * AUC(0-inf)` must equal the total administered amount exactly. This is the gate that would catch a mis-scaled dose, a dropped transit compartment, or a bioavailability applied to the wrong compartment.
+
+```{r lf-mass-balance}
+trap <- function(tm, cc) sum(diff(tm) * (head(cc, -1) + tail(cc, -1)) / 2)
+auc_lf_nM <- trap(sim_lf$time, sim_lf$Cc) + tail(sim_lf$Cc, 1) / beta
+recovery <- 4.49 * auc_lf_nM / (length(dose_times_3day) * dose_nmol[["lumefantrine"]])
+recovery
+stopifnot(abs(recovery - 1) < 0.005)
+```
+
+Expressed in the paper's mass units, that AUC is the published value:
+
+```{r lf-auc-published}
+auc_lf_mass <- auc_lf_nM * mw[["lumefantrine"]] * 1e-9 * 1e3   # nM*h -> mg*h/L
+c(simulated = auc_lf_mass, published = 641)
+stopifnot(abs(auc_lf_mass / 641 - 1) < 0.01)
+```
+
+```{r lf-profile-plot, fig.cap = "Typical-subject lumefantrine plasma profile after the standard 3-day regimen. The dashed line is the 280 ng/mL day-7 target; the dotted line marks day 7."}
+sim_lf |>
+  dplyr::mutate(ng_mL = Cc * mw[["lumefantrine"]] / 1000) |>
+  dplyr::filter(time <= 400) |>
+  ggplot(aes(time, ng_mL)) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 280, linetype = "dashed", colour = "firebrick") +
+  geom_vline(xintercept = 168, linetype = "dotted") +
+  scale_y_log10() +
+  labs(x = "Time since first dose (h)", y = "Lumefantrine (ng/mL)") +
+  theme_bw()
+```
+
+# Lumefantrine: PKNCA
+
+```{r lf-pknca}
+conc_lf <- sim_lf |>
+  dplyr::transmute(treatment = "LF 480 mg x 6", id = 1L, time = time, Cc = Cc) |>
+  dplyr::filter(!is.na(Cc))
+
+# Time-zero anchor (defensive; the grid already starts at 0).
+conc_lf <- dplyr::distinct(dplyr::bind_rows(
+  tibble::tibble(treatment = "LF 480 mg x 6", id = 1L, time = 0, Cc = 0),
+  conc_lf
+), treatment, id, time, .keep_all = TRUE)
+
+dose_lf_df <- tibble::tibble(
+  treatment = "LF 480 mg x 6", id = 1L,
+  time = dose_times_3day, amt = dose_nmol[["lumefantrine"]]
+)
+
+o_conc_lf <- PKNCA::PKNCAconc(conc_lf, Cc ~ time | treatment + id,
+                              concu = "nmol/L", timeu = "h")
+o_dose_lf <- PKNCA::PKNCAdose(dose_lf_df, amt ~ time | treatment + id,
+                              doseu = "nmol", timeu = "h")
+
+# A flat-tailed biexponential makes PKNCA's automatic lambda-z window
+# dependent, so the half-life is requested on an explicit terminal window.
+intervals_lf <- data.frame(
+  start = c(0, 400), end = c(Inf, 1200),
+  cmax = c(TRUE, FALSE), tmax = c(TRUE, FALSE),
+  auclast = c(TRUE, FALSE), aucinf.obs = c(TRUE, FALSE),
+  half.life = c(FALSE, TRUE)
+)
+res_lf <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc_lf, o_dose_lf, intervals = intervals_lf))
+nca_lf <- as.data.frame(summary(res_lf, drop.group = c()))
+knitr::kable(nca_lf, caption = "PKNCA results, typical-subject lumefantrine profile.")
+```
+
+# Lumefantrine: virtual cohort and the 3-day vs 5-day comparison
+
+This replicates Fig. 3 and the "Model-based simulations of alternative dosing regimens" results. The cohort is capped at 200 subjects per arm.
+
+```{r lf-cohort}
+set.seed(20180518)
+rxode2::rxSetSeed(20180518)
+n_sub <- 200L
+
+sim_regimen <- function(dose_times) {
+  wt <- pmin(pmax(rnorm(n_sub, 59, 6), 40), 65)   # Table 1: median 59, range 40-65
+  obs <- sort(unique(c(seq(0, 120, by = 2), seq(120, 360, by = 2), 168)))
+  d <- build_data("lumefantrine", dose_times, obs, wt = wt, n = n_sub)
+  rxode2::rxSolve(mod_lf, d, returnType = "data.frame", addDosing = FALSE) |>
+    dplyr::mutate(ng_mL = Cc * mw[["lumefantrine"]] / 1000)
+}
+
+coh_3day <- sim_regimen(dose_times_3day) |> dplyr::mutate(regimen = "3-day (standard)")
+coh_5day <- sim_regimen(dose_times_5day) |> dplyr::mutate(regimen = "5-day (extended)")
+cohort <- dplyr::bind_rows(coh_3day, coh_5day)
+```
+
+```{r lf-fig3, fig.cap = "Replicates Figure 3 of Lohy Das 2018: simulated lumefantrine profiles for the standard 3-day (A) and extended 5-day (B) regimens. Solid line = median, ribbon = 5th-95th percentiles, dashed line = 280 ng/mL day-7 target."}
+cohort |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    med = median(ng_mL), lo = quantile(ng_mL, 0.05), hi = quantile(ng_mL, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::filter(time > 0) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey75") +
+  geom_line(colour = "firebrick", linewidth = 0.7) +
+  geom_hline(yintercept = 280, linetype = "dashed") +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  labs(x = "Time since first dose (h)", y = "Lumefantrine (ng/mL)") +
+  theme_bw()
+```
+
+Day-7 concentrations and target attainment. The 280 ng/mL threshold is a *measured* concentration, so attainment is evaluated on the simulated observation, which carries the residual error.
+
+```{r lf-day7}
+day7 <- cohort |>
+  dplyr::filter(abs(time - 168) < 1e-6) |>
+  dplyr::mutate(observed = ng_mL * exp(rnorm(dplyr::n(), 0, 0.487)))
+
+day7_summary <- day7 |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(
+    median_ng_mL = median(ng_mL),
+    p5 = quantile(ng_mL, 0.05),
+    p95 = quantile(ng_mL, 0.95),
+    pct_below_280 = 100 * mean(observed < 280),
+    .groups = "drop"
+  )
+day7_summary |>
+  dplyr::rename(
+    "Regimen" = regimen, "Median (ng/mL)" = median_ng_mL,
+    "5th pct" = p5, "95th pct" = p95, "% below 280 ng/mL" = pct_below_280
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated day-7 lumefantrine concentrations.")
+```
+
+Published comparators: a median of 709 ng/mL (range 269-1,940) and 11.5% below target for the 3-day regimen; 2,010 ng/mL (769-4,580) and 0.3% below target for the 5-day regimen; and a 2.8-fold day-7 increase from extending the regimen.
+
+```{r lf-day7-gates}
+med3 <- day7_summary$median_ng_mL[day7_summary$regimen == "3-day (standard)"]
+med5 <- day7_summary$median_ng_mL[day7_summary$regimen == "5-day (extended)"]
+c(median_3day = med3, published_3day = 709,
+  median_5day = med5, published_5day = 2010,
+  fold_increase = med5 / med3, published_fold = 2.8)
+
+# Assertions are on the CENTRE and on the fold-change, not on the extremes: the
+# relative-bioavailability random effect has a 144% CV and a Box-Cox-stretched
+# lower tail, so which subjects land in the tails is not reproducible across
+# rxode2 builds. See CLAUDE.md, "Vignette assertions over a simulated cohort".
+stopifnot(
+  abs(med3 / 709 - 1) < 0.30,
+  abs(med5 / 2010 - 1) < 0.30,
+  abs((med5 / med3) / 2.8 - 1) < 0.25,
+  med5 > med3
+)
+```
+
+# Artemether and dihydroartemisinin: autoinduction
+
+```{r am-typical}
+am_typ <- rxode2::zeroRe(mod_am)
+obs_am <- sort(unique(c(seq(0, 80, by = 0.05), seq(80, 400, by = 0.5))))
+d_am <- build_data("artemether", dose_times_3day, obs_am)
+d_am$dvid <- 1      # two endpoints: one solve returns both as wide columns
+sim_am <- rxode2::rxSolve(am_typ, d_am, returnType = "data.frame", addDosing = FALSE)
+```
+
+The `enzyme` state is normalised to 1 at baseline and, by Eq. 5, *is* the multiplier on artemether clearance. The paper reports that "typical clearance of ARM increased 43% at occasion six compared to occasion one" (Abstract: "increased 1.43-fold at the end of treatment"), with an enzyme half-life of 30.4 h.
+
+```{r am-induction}
+occ_mean_enzyme <- function(a, b) mean(sim_am$enzyme[sim_am$time >= a & sim_am$time <= b])
+enz_occ1 <- occ_mean_enzyme(0, 8)
+enz_occ6 <- occ_mean_enzyme(60, 68)
+c(enzyme_t0 = sim_am$enzyme[1], occasion1_mean = enz_occ1,
+  occasion6_mean = enz_occ6, ratio = enz_occ6 / enz_occ1, published_ratio = 1.43)
+
+stopifnot(
+  abs(sim_am$enzyme[1] - 1) < 1e-6,            # Methods: initialised at 1
+  abs((enz_occ6 / enz_occ1) / 1.43 - 1) < 0.05
+)
+```
+
+```{r am-enzyme-plot, fig.cap = "Enzyme turnover compartment (relative to its pre-induced baseline of 1) and the resulting time-varying artemether clearance over the 3-day regimen and washout."}
+sim_am |>
+  dplyr::filter(time <= 200) |>
+  dplyr::mutate(`CL_ARM/F (L/h)` = 467 * enzyme, `Relative enzyme amount` = enzyme) |>
+  tidyr::pivot_longer(c(`CL_ARM/F (L/h)`, `Relative enzyme amount`)) |>
+  ggplot(aes(time, value)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = dose_times_3day, linetype = "dotted", alpha = 0.4) +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time since first dose (h)", y = NULL) +
+  theme_bw()
+```
+
+Setting `Emax` to zero must abolish the time dependence entirely -- a structural control on the induction arm.
+
+```{r am-induction-control}
+am_noind <- rxode2::ini(am_typ, lemax = log(1e-8))
+sim_noind <- rxode2::rxSolve(am_noind, d_am, returnType = "data.frame", addDosing = FALSE)
+stopifnot(
+  abs(max(sim_noind$enzyme) - 1) < 1e-4,
+  abs(min(sim_noind$enzyme) - 1) < 1e-4
+)
+```
+
+Metabolite mass balance. Under the paper's assumption of complete and irreversible molar conversion, *all* artemether clearance forms dihydroartemisinin, so `CL_DHA * AUC_DHA` must equal the total molar artemether dose. This is the gate that catches a broken parent-to-metabolite coupling; the parent's own dose recovery is blind to it.
+
+```{r am-mass-balance}
+auc_dha <- trap(sim_am$time, sim_am$Cc_dihydroart)
+dha_recovery <- 611 * auc_dha / (length(dose_times_3day) * dose_nmol[["artemether"]])
+dha_recovery
+stopifnot(abs(dha_recovery - 1) < 0.005)
+```
+
+A perturbation confirms the coupling is directional: doubling `CL_DHA` must halve the metabolite AUC while leaving the parent untouched.
+
+```{r am-perturbation}
+am_fast <- rxode2::ini(am_typ, lcl_dihydroart = log(2 * 611))
+sim_fast <- rxode2::rxSolve(am_fast, d_am, returnType = "data.frame", addDosing = FALSE)
+c(dha_auc_ratio = trap(sim_fast$time, sim_fast$Cc_dihydroart) / auc_dha,
+  arm_auc_ratio = trap(sim_fast$time, sim_fast$Cc) / trap(sim_am$time, sim_am$Cc))
+stopifnot(
+  abs(trap(sim_fast$time, sim_fast$Cc_dihydroart) / auc_dha - 0.5) < 0.01,
+  abs(trap(sim_fast$time, sim_fast$Cc) / trap(sim_am$time, sim_am$Cc) - 1) < 0.01
+)
+```
+
+```{r am-profile-plot, fig.cap = "Typical-subject artemether and dihydroartemisinin plasma profiles. The declining artemether peaks across the six doses are the autoinduction; the dashed lines are the assay LLOQs (4.79 and 5.03 nmol/L)."}
+sim_am |>
+  dplyr::filter(time <= 80) |>
+  dplyr::select(time, Artemether = Cc, Dihydroartemisinin = Cc_dihydroart) |>
+  tidyr::pivot_longer(-time, names_to = "Analyte", values_to = "nM") |>
+  ggplot(aes(time, nM, colour = Analyte)) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 4.79, linetype = "dashed", alpha = 0.5) +
+  labs(x = "Time since first dose (h)", y = "Concentration (nmol/L)") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+# Artemether and dihydroartemisinin: PKNCA
+
+```{r am-pknca}
+conc_am <- sim_am |>
+  dplyr::select(time, Artemether = Cc, Dihydroartemisinin = Cc_dihydroart) |>
+  tidyr::pivot_longer(-time, names_to = "analyte", values_to = "Cc") |>
+  dplyr::mutate(treatment = paste(analyte, "80 mg ARM x 6"), id = 1L) |>
+  dplyr::filter(!is.na(Cc))
+
+o_conc_am <- PKNCA::PKNCAconc(conc_am, Cc ~ time | treatment + id,
+                              concu = "nmol/L", timeu = "h")
+o_dose_am <- PKNCA::PKNCAdose(
+  tibble::tibble(
+    treatment = rep(unique(conc_am$treatment), each = length(dose_times_3day)),
+    id = 1L,
+    time = rep(dose_times_3day, times = 2),
+    amt = dose_nmol[["artemether"]]
+  ),
+  amt ~ time | treatment + id, doseu = "nmol", timeu = "h"
+)
+intervals_am <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+res_am <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc_am, o_dose_am, intervals = intervals_am))
+nca_am <- as.data.frame(summary(res_am, drop.group = c()))
+knitr::kable(nca_am, caption = "PKNCA results, typical-subject artemether and dihydroartemisinin profiles.")
+```
+
+# Comparison against published values
+
+The paper reports no NCA table, so the comparison is against the derived quantities it does publish.
+
+```{r nca-comparison}
+sim_vals <- tibble::tribble(
+  ~quantity, ~PPTESTCD, ~PPORRES,
+  "Lumefantrine", "aucinf.obs", auc_lf_mass,
+  "Lumefantrine", "half.life", t_half_solved,
+  "Artemether", "auclast", 611 * auc_dha / (length(dose_times_3day) * dose_nmol[["artemether"]])
+)
+ref_vals <- tibble::tribble(
+  ~quantity, ~aucinf.obs, ~half.life, ~auclast,
+  "Lumefantrine", 641, 4 * 24, NA_real_,
+  "Artemether", NA_real_, NA_real_, 1
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_vals, ref_vals, by = "quantity",
+  units = c(aucinf.obs = "h*mg/L", half.life = "h", auclast = "fraction recovered")
+)
+knitr::kable(cmp, digits = 3,
+             caption = "Simulated versus published lumefantrine AUC and terminal half-life, and the dihydroartemisinin molar dose recovery.")
+attr(cmp, "footnote")
+```
+
+```{r headline-summary, echo = FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~Quantity, ~Published, ~Reproduced,
+    "LF AUC(0-inf), typical subject", "641 h*mg/L", sprintf("%.1f h*mg/L", auc_lf_mass),
+    "LF terminal half-life", "about 4 days", sprintf("%.2f days", t_half_solved / 24),
+    "LF mean absorption time", "4.04 h", "4.04 h (ktr = 6/MTT, n = 5)",
+    "LF day-7 median, 3-day regimen", "709 ng/mL", sprintf("%.0f ng/mL", med3),
+    "LF day-7 median, 5-day regimen", "2,010 ng/mL", sprintf("%.0f ng/mL", med5),
+    "ARM CL increase, occasion 6 vs 1", "1.43-fold", sprintf("%.3f-fold", enz_occ6 / enz_occ1),
+    "ARM mean absorption time", "0.738 h (about 45 min)", "0.738 h (ktr = 3/MTT, n = 2)",
+    "DHA molar dose recovery", "1 (complete conversion)", sprintf("%.4f", dha_recovery)
+  ),
+  caption = "Headline reproduction of the source paper's published quantities."
+)
+```
+
+# Assumptions and deviations
+
+**Omega scale.** Table 2 footnote a states the scale explicitly: "Coefficient of variation (CV) for BSV and BOV was calculated as 100 x (variance)^1/2", so the printed percentage is 100 times the eta-scale standard deviation and `variance = (CV/100)^2`. That footnote is what the model files encode. The competing reading -- the conventional log-normal relation `variance = log(1 + CV^2)`, which many popPK papers use for the same column heading -- was tested against the paper's own simulation output under an identical cohort, seed and observation grid:
+
+| Reading | Day-7 median, 3-day | Day-7 5th pct | Day-7 median, 5-day | 5-day / 3-day fold |
+|---|---|---|---|---|
+| Published | 709 ng/mL | 269 ng/mL | 2,010 ng/mL | 2.8 |
+| `variance = (CV/100)^2` (footnote, encoded) | 726 (+2.5%) | 276 (+2.6%) | 2,070 (+3.0%) | 2.85 (+1.8%) |
+| `variance = log(1 + CV^2)` | 644 (-9.2%) | 281 (+4.5%) | 1,996 (-0.7%) | 3.10 (+10.7%) |
+
+The footnote reading is the better match on three of the four comparators, so the explicit footnote and the paper's own simulations agree and the encoding is not in tension with either. Neither reading reproduces the published 95th percentile (1,940 ng/mL; 2,604 and 2,185 respectively), which is expected: the paper resampled the covariates of its own 22 patients rather than drawing from a smooth weight distribution, and it does not state whether its reported "range" includes residual error.
+
+**The paper's day-7 numbers are mutually inconsistent.** Results reports a simulated day-7 range of 269-1,940 ng/mL *and* that 11.5% of patients fall below 280 ng/mL. If 269 ng/mL is the 5th percentile, the fraction below 280 ng/mL must be only slightly above 5%, not 11.5%. The two statements cannot both describe the same distribution. The vignette therefore asserts on the median and on the 3-day-to-5-day fold change, and reports the tail statistics without gating on them.
+
+**Emax units.** Table 2 prints the unit of `Emax` as "h-1". Eq. 4 adds the Emax-scaled effect to 1 inside `K_ENZ * (1 + EFF)`, so `EFF` -- and therefore `Emax` -- must be dimensionless. The printed unit is treated as a typographical error.
+
+**"BSV" versus "BOV" on lumefantrine F.** The Results text says a Box-Cox transformation was applied to "the BSV for F", and Table 2 labels its row "Box-Cox shape parameter for BSV on F". However, the only variability term Table 2 prints for lumefantrine F is flagged with footnote b, i.e. it is a *between-occasion* variance, and the shrinkage paragraph reports a BOV shrinkage range for F but no BSV shrinkage. The model file follows the table: lumefantrine F carries an occasion-level random effect (six slots) and no subject-level one, with the Box-Cox transform applied to it. The artemether model, where Table 2 prints both a BSV and a BOV row for F, carries both.
+
+**Box-Cox implementation.** rxode2's `boxCox()` attaches to the residual-error model and cannot transform an eta, so Eq. 3 is written out explicitly in `model()` in the Petersson (2009) form used by the canonical `boxcox_<param>` family. Because the shape is negative, the resulting bioavailability distribution is bounded above at `exp(1/0.605) = 5.2` but has a long lower tail; occasional simulated occasions therefore absorb very little drug. That is a property of the published model, not of the encoding.
+
+**Between-occasion variability encoding.** NONMEM shares one variance across occasion slots. The model files encode six `etaiov_*` slots per affected parameter, with the first estimable and the remaining five `fixed()` to the same value, following the sibling `Ding_2026_artemether` model. The `OCC` column is capped at 6 for the extended 5-day regimen because the paper estimated only six occasions and does not say how it handled the four additional doses in its own 5-day simulation.
+
+**Covariates screened but not retained.** Estimated gestational age, baseline and time-varying parasitemia density, and body temperature were all explored and are recorded in `covariatesDataExcluded` rather than `covariateData`: each was either rejected outright or selected in forward selection but dropped in backward elimination, and none carries a published point estimate. Ideal body weight, fat-free mass and normal fat mass were explored allometrically (Methods Eqs. 7-9) and none improved the fit, so only total body weight allometry is encoded.
+
+**Informative priors.** The lumefantrine fit used frequentist informative priors drawn from an earlier Ugandan study to identify the peripheral compartment. Only the paper's final posterior estimates are encoded; the priors themselves are not reproduced here and the upstream paper was not required for the extraction.
+
+**Weight distribution.** Table 1 gives only the median (59 kg) and range (40-65 kg) of body weight, so the virtual cohort draws weights from a truncated normal matching those summaries. The paper's own simulations resampled the actual 22 patients' covariates.
+
+**Not encoded.** The paper reports no PD or parasite-clearance model, so none is extracted. The two drugs are deliberately in separate model files because the authors' own simultaneous fit was unstable; no correlation between the lumefantrine and artemether absorption parameters is encoded, matching the published final models.

@@ -364,6 +364,8 @@ navbar:
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Artemether (Hoglund 2015)"
         href: articles/Hoglund_2015_artemether_lumefantrine.html
+      - text: "Artemether (LohyDas 2018)"
+        href: articles/LohyDas_2018_artemether_lumefantrine.html
       - text: "Artemether (Mosha 2014)"
         href: articles/Mosha_2014_artemether_lumefantrine.html
       - text: "Artemether (Tarning 2012)"
@@ -2846,6 +2848,8 @@ navbar:
         href: articles/Kloprogge_2015_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2018)"
         href: articles/Kloprogge_2018_lumefantrine.html
+      - text: "Lumefantrine (LohyDas 2018)"
+        href: articles/LohyDas_2018_artemether_lumefantrine.html
       - text: "Lumefantrine (Mosha 2014)"
         href: articles/Mosha_2014_artemether_lumefantrine.html
       - text: "Lumefantrine (Simpson 2013)"
@@ -6912,6 +6916,7 @@ articles:
   - articles/Llanos_2017_gentamicin
   - articles/LledoGarcia_2022_rozanolixizumab
   - articles/Lodise_2018_iclaprim
+  - articles/LohyDas_2018_artemether_lumefantrine
   - articles/LohyDas_2018_artesunate
   - articles/Lommerse_2019_raltegravir
   - articles/Lon_2013_abatacept
