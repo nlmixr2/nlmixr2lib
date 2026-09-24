@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Wang_2019_tacrolimus"))$meta$reference`
-* Description: `r rxode2::rxode(readModelDb("Wang_2019_tacrolimus"))$meta$description`
+* Citation: `r rxode2::rxode(readModelDb("Wang_2019b_tacrolimus"))$meta$reference`
+* Description: `r rxode2::rxode(readModelDb("Wang_2019b_tacrolimus"))$meta$description`
 * Article: <https://doi.org/10.3892/etm.2019.8129> (open access, PMC6861867)
 
 Wang et al. (2019) fitted a one-compartment model with first-order absorption
@@ -75,7 +75,7 @@ within each 24 h (1.5 mg/day). The trough reported is the one before the
 1 mg dose (i.e., 12 h after the 0.5 mg dose); see Assumptions.
 
 ```{r table4-sim}
-mod <- readModelDb("Wang_2019_tacrolimus")
+mod <- readModelDb("Wang_2019b_tacrolimus")
 
 weights <- c(5, 15, 20, 25, 30, 35, 40, 45, 50)
 nsub <- 200
