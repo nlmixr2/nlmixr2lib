@@ -1354,6 +1354,8 @@ navbar:
         href: articles/PerezGuille_2018_dexmedetomidine.html
       - text: "Dexmedetomidine (Smuszkiewicz 2017)"
         href: articles/Smuszkiewicz_2017_dexmedetomidine.html
+      - text: "Dexmedetomidine (Song 2019)"
+        href: articles/Song_2019_dexmedetomidine.html
       - text: "Dexmedetomidine (Su 2016)"
         href: articles/Su_2016_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
@@ -7675,7 +7677,7 @@ articles:
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
-  - articles/Song_2017_vancomycin
+  - articles/Song_2019_dexmedetomidine
   - articles/Song_2024_tigecycline
   - articles/Song_2025_infliximab
   - articles/Songvut_2026_andrographolide

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bhagunde 2019 imipenem and relebactam ([doi:10.1002/psp4.12462](https://doi.org/10.1002/psp4.12462)) -- healthy adults and adults with complicated intra-abdominal infection, complicated urinary tract infection, or hospital-acquired/ventilator-associated bacterial pneumonia.
+- Add Song 2019 dexmedetomidine ([doi:10.3390/jcm8101563](https://doi.org/10.3390/jcm8101563)) -- mechanically ventilated children aged 2-12 years in the ICU after neurosurgery.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
