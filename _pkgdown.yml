@@ -486,8 +486,8 @@ navbar:
         href: articles/Masters_2022_avelumab.html
       - text: "Avibactam (Chen 2025)"
         href: articles/Chen_2025_ceftazidime_avibactam.html
-      - text: "Avibactam (Dimelow 2018)"
-        href: articles/Dimelow_2018_ceftazidime_avibactam_elf.html
+      - text: "Avibactam (Li 2019)"
+        href: articles/Li_2019_ceftazidime_avibactam.html
       - text: "Avibactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Axatilimab (Yang 2024)"
@@ -936,6 +936,8 @@ navbar:
         href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Launay 2024)"
         href: articles/Launay_2024_ceftazidime.html
+      - text: "Ceftazidime (Li 2019)"
+        href: articles/Li_2019_ceftazidime_avibactam.html
       - text: "Ceftazidime (Li 2024)"
         href: articles/Li_2024_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"

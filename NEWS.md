@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Francis 2019 rifapentine ([doi:10.1128/AAC.01964-18](https://doi.org/10.1128/AAC.01964-18)) -- southern African adults with drug-susceptible pulmonary tuberculosis.
+- Add Li 2019 ceftazidime and avibactam ([doi:10.1111/cts.12585](https://doi.org/10.1111/cts.12585)) -- adults with complicated intra-abdominal infection, complicated urinary tract infection or nosocomial pneumonia.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
