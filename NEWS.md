@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Klunder 2019 upadacitinib ([doi:10.1007/s40262-019-00739-3](https://doi.org/10.1007/s40262-019-00739-3)) -- healthy adults and adults with rheumatoid arthritis across phase I-III trials.
+- Add Hahn 2019 sufentanil ([doi:10.1186/s13054-019-2508-4](https://doi.org/10.1186/s13054-019-2508-4)) -- critically ill adults supported with venoarterial extracorporeal membrane oxygenation.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
