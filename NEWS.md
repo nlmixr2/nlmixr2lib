@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nicolas 2019 alirocumab ([doi:10.1007/s40262-018-0670-5](https://doi.org/10.1007/s40262-018-0670-5)) -- healthy volunteers and adults with familial or non-familial hypercholesterolemia.
+- Correct the `reference` citation of `Voller_2017_phenobarbital`, which named the wrong title and co-authors for its own DOI ([doi:10.1016/j.ejps.2017.05.026](https://doi.org/10.1016/j.ejps.2017.05.026)), and fill its previously unreported cohort body-weight range from a secondary source.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
