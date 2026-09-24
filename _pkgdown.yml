@@ -724,6 +724,12 @@ navbar:
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
+      - text: "CalcitriolQuantumDot earlyIBC mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
+      - text: "CalcitriolQuantumDot healthy mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
+      - text: "CalcitriolQuantumDot lateIBC mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "Camizestrant (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Camostat (Kim 2023)"
@@ -1086,6 +1092,12 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "ConestatAlfa (Farrell 2013)"
         href: articles/Farrell_2013_conestatAlfa.html
+      - text: "ControlQuantumDot earlyIBC mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
+      - text: "ControlQuantumDot healthy mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
+      - text: "ControlQuantumDot lateIBC mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "Copanlisib (Morcos 2023)"
         href: articles/Morcos_2023_copanlisib.html
       - text: "Corifollitropin alfa (Zandvliet 2016)"
@@ -4508,6 +4520,12 @@ navbar:
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
       - text: "Sitafloxacin (Wu 2025)"
         href: articles/Wu_2025_sitafloxacin.html
+      - text: "Sm3CalcitriolQuantumDot earlyIBC mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
+      - text: "Sm3CalcitriolQuantumDot healthy mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
+      - text: "Sm3CalcitriolQuantumDot lateIBC mouse pbpk (Forder 2019)"
+        href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "Sn38 organoid (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Snake antivenom (Isbister 2015)"
@@ -6134,6 +6152,7 @@ articles:
   - articles/Flint_2017_s_ketamine
   - articles/Foissac_2011_atazanavir
   - articles/Foo_2016_droperidol
+  - articles/Forder_2019_calcitriolQuantumDots
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fournier_2018_amoxicillin
