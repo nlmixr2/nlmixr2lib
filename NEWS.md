@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mian 2019 acetaminophen ([doi:10.1002/jcph.1373](https://doi.org/10.1002/jcph.1373)) -- infants and young children after cardiac surgery with cardiopulmonary bypass.
+- Add Wang 2019 CPX-351 liposomal cytarabine and daunorubicin ([doi:10.1002/jcph.1366](https://doi.org/10.1002/jcph.1366)) -- adults with hematologic malignancies.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
