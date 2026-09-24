@@ -262,20 +262,28 @@ tune parameters to match.
 
 # Assumptions and deviations
 
+<!-- Articles are read by package users, not by the pipeline. Write every
+     decision as "the maintainers decided/ratified/digitised ..." with its
+     reason. Never mention the operator, sidecars or their request/option
+     ids, task or queue identifiers, the extraction skill or its files,
+     worktrees, local paths, "trimmed" sources, dispatch metadata, or the PR.
+     Dated literature checks ("no correction notice as of <date>") are
+     provenance and stay. -->
+
 - <Any distributional assumption you had to make because the paper did not
   specify, e.g., "Race distribution set to X% White / Y% Black to match Table 1."
 - <Any simplification, e.g., "Time-varying weight held constant at the baseline
   z-score over the follow-up window."
 - <Any parameter the paper did not publish, and what was used instead.>
 - **Non-paper-derived parameter values** — call out any value that came from a
-  source other than the paper's text or tables. Cite the followup-register
-  entry (`tracking/operator_followups.md F<n>`) when applicable. Examples:
+  source other than the paper's text or tables, and say where it did come
+  from. Examples:
   - "`kdeg = 0.0231 1/day` was supplied by the corresponding author
-    (J. Almquist, email 2026-04-29; see `tracking/operator_followups.md F12`);
-    the paper's Wiley supplement holds the value but is subscription-blocked."
-  - "`V_DXd = 0.038 L/kg` was extracted by the operator from Figure 2 of
-    <Author Year> via on-screen digitisation; ±10% uncertainty estimated from
-    the figure's gridline resolution."
+    (J. Almquist, email 2026-04-29); the paper's Wiley supplement holds the
+    value but is subscription-blocked."
+  - "`V_DXd = 0.038 L/kg` was digitised by the maintainers from Figure 2 of
+    <Author Year>; ±10% uncertainty estimated from the figure's gridline
+    resolution."
   - "PK structural parameters (`CL`, `Vc`, `Q`, `Vp`) were carried from the
     upstream model `<Upstream_Year_drug>` (this paper fixes its PK from that
     publication and reports only PD parameters)."
