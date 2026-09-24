@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Larizza 2018 C-peptide kinetics and insulin secretion ([doi:10.1002/psp4.12285](https://doi.org/10.1002/psp4.12285)) -- 207 normal, obese and diabetic adults for the C-peptide kinetics regressions, and one normal adult man for the IVGTT insulin minimal model.
+- Add Dorajoo 2019 vancomycin ([doi:10.3389/fphar.2019.00641](https://doi.org/10.3389/fphar.2019.00641)) -- adults with chronic kidney disease not receiving renal replacement therapy.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
