@@ -4920,6 +4920,8 @@ navbar:
         href: articles/Rower_2017_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
+      - text: "Tacrolimus (Wang 2019)"
+        href: articles/Wang_2019_tacrolimus.html
       - text: "Tacrolimus (Wang 2024)"
         href: articles/Wang_2024_tacrolimus.html
       - text: "Tacrolimus (Woillard 2011)"
@@ -7769,7 +7771,7 @@ articles:
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
   - articles/Wang_2018_daclatasvir_asunaprevir
-  - articles/Wang_2019_cyclosporin
+  - articles/Wang_2019_tacrolimus
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sridharan 2019 primaquine ([doi:10.4103/ijp.ijp_230_16](https://doi.org/10.4103/ijp.ijp_230_16)) -- Indian adults, healthy or with hepatic or renal dysfunction.
+- Add Wang 2019 tacrolimus ([doi:10.3892/etm.2019.7446](https://doi.org/10.3892/etm.2019.7446)) -- Chinese children aged 2.4-16.4 years with refractory nephrotic syndrome.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
