@@ -372,6 +372,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Heathman_2024_efavirenz.R`.
 - **Notes:** Founding example: `Heathman_2024_efavirenz.R` (parent CL-EFV,2A6 = 0.0947 L/h; modulated dynamically by `enzyme_2a6(t)`).
 
+### lcl_2c9 (**canonical log-transformed CYP2C9-mediated clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** CYP2C9-mediated metabolic clearance arm of a total clearance decomposed by metabolic route. Sibling of `lcl_2b6` / `lcl_2a6`, and the arm a CYP2C9 diplotype or a CYP2C9 inhibitor / inducer acts on. In a genotype-aware model the entry holds the arm in the reference diplotype and the genotype effect enters as a multiplicative relative activity (`e_cyp2c9_<diplotype>_cl`), so the arm itself stays a single canonical parameter.
+- **Source aliases:**
+  - `fm,CYP2C9` -- the usual reporting form is a fraction metabolised rather than an absolute arm; multiply by the total clearance before use (Huth 2019 Table 5 section 4: fm CYP2C9 = 0.804 against CL = 3.12 L/h).
+- **Example models:** `Huth_2019_siponimod.R` (2.508 L/h in the CYP2C9*1/*1 reference diplotype; scaled by a diplotype relative activity running from 1 to 0.021 and by the relative CYP2C9 activity of a coadministered dual perpetrator).
+- **Notes:** Registered 2026-09-24 with the Huth 2019 siponimod extraction, as the direct isoform sibling of the already-registered `lcl_2b6` and `lcl_2a6`. Distinct from `fm_cyp2c9`-style fraction parameters: this arm is in flow units and the arms sum to the total clearance, whereas an `fm_<pathway>` is a unitless share. Use the arm form when a perpetrator or genotype must scale one route while the others stay fixed, which is what makes the total clearance respond non-proportionally.
+
+### lcl_3a4 (**canonical log-transformed CYP3A4-mediated clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** CYP3A4-mediated metabolic clearance arm of a total clearance decomposed by metabolic route. Sibling of `lcl_2b6` / `lcl_2a6` / `lcl_2c9`. In a CYP2C9-genotype model this arm is genotype-invariant, and that invariance is what converts a table of per-genotype fractions metabolised into per-genotype total clearances.
+- **Source aliases:**
+  - `fm,CYP3A4` -- reported as a fraction metabolised; multiply by the total clearance before use (Huth 2019 Table 5 section 4: fm CYP3A4 = 0.175 against CL = 3.12 L/h).
+- **Example models:** `Huth_2019_siponimod.R` (0.546 L/h, genotype-invariant; scaled by the relative CYP3A4 activity of each of seven coadministered perpetrators, back-solved from the published AUC ratios), `Tian_2025_pirtobrutinib.R` (0.676 L/h CYP3A4 arm of the systemic clearance; used the name before it had a register entry).
+- **Notes:** Registered 2026-09-24 with the Huth 2019 siponimod extraction, backfilling a name `Tian_2025_pirtobrutinib.R` already shipped with the same meaning. The bare counterpart is `cl_3a4`. Do not confuse with the covariate column `CYP3A4` (an individual metabolic-activity score) registered in `covariate-columns.md`.
+
 ### lcl_ugt (**canonical log-transformed UGT-mediated clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** UGT (uridine-diphosphate glucuronosyltransferase, typically UGT2B7) -mediated metabolic clearance arm of a parent + metabolite popPK decomposition. Not autoinduced by the drugs in the founding example (EFV does not induce UGT2B7 in Heathman 2024); the arm is constant in time.
@@ -1041,6 +1057,32 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Role:** Bare counterpart of `lcl_2a6`. CYP2A6-mediated metabolic clearance arm; dynamically multiplied by `enzyme_2a6(t)` for the autoinduction contribution.
 - **Source aliases:** none.
 - **Example models:** `Heathman_2024_efavirenz.R`.
+
+### cl_2c9 (**canonical bare CYP2C9-mediated clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_2c9`. CYP2C9-mediated metabolic clearance arm; multiplied by a CYP2C9 diplotype relative activity and by a coadministered CYP2C9 perpetrator's relative activity.
+- **Source aliases:** none.
+- **Example models:** `Huth_2019_siponimod.R`.
+
+### cl_3a4 (**canonical bare CYP3A4-mediated clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_3a4`. CYP3A4-mediated metabolic clearance arm; multiplied by a coadministered CYP3A4 perpetrator's relative activity, which in an oral model simultaneously rescales gut-wall and hepatic first-pass extraction through the well-stirred relation.
+- **Source aliases:** none.
+- **Example models:** `Huth_2019_siponimod.R`.
+
+### cl_other (**canonical bare residual clearance arm**)
+- **Type:** bare-pk
+- **Role:** The part of total clearance not attributed to any named arm in a route-decomposed clearance model, formed inside `model()` as the total minus the named arms. Untouched by the covariates and perpetrators that scale the named arms, so it is what bounds the attainable interaction magnitude: a complete inhibitor of one route can at most raise exposure by the reciprocal of the remaining share.
+- **Source aliases:** none.
+- **Example models:** `Huth_2019_siponimod.R` (`cl_other <- cl_ref - cl_2c9 - cl_3a4` = 0.0655 L/h, the CYP2B6 + CYP2C8 + CYP2C19 residue of Huth 2019 Table 5 section 4), `Smythe_2013_gatifloxacin.R`, `Franken_2015_morphine.R` (both used the name bare before it had a register entry).
+- **Notes:** Registered 2026-09-24 as a backfill of a name already shipping bare in two models. Matches the singular `_other` member registered for `fm_other` and `lkp_other`; a plural `cl_others` is not a permitted alias. Keep it a derived `model()` quantity formed by subtraction rather than an `ini()` parameter, so the arms provably sum to the total.
+
+### cl_ref (**canonical bare reference-condition total clearance**)
+- **Type:** bare-pk
+- **Role:** Total clearance in the model's reference condition (reference genotype, no perpetrator, reference covariate values), used inside `model()` as the denominator that turns an absolute clearance into a relative one. Its principal use is a well-stirred hepatic-extraction term: writing `eh_current = eh * cl / cl_ref` lets the reference extraction ratio be the only `ini()` entry and cancels the unpublished hepatic blood flow out of the arithmetic entirely.
+- **Source aliases:** none.
+- **Example models:** `Huth_2019_siponimod.R` (`cl_ref <- exp(lcl)` = 3.12 L/h, the CYP2C9*1/*1 no-perpetrator clearance), `Falkenhagen_2023_warfarin_qsp.R` (`cl_ref` = the CYP2C9*1/*1 reference clearance used as the denominator of a genotype ratio; used the name before it had a register entry).
+- **Notes:** Registered 2026-09-24 with the Huth 2019 siponimod extraction. Distinct from `cl_ss` (a steady-state arm of a time-varying clearance) and from `clr` (renal clearance): `cl_ref` is the same quantity as `cl` evaluated at the reference condition, carried separately only so relative terms can be written without repeating the expression.
 
 ### cl_ugt (**canonical bare UGT-mediated clearance arm**)
 - **Type:** bare-pk
