@@ -5136,8 +5136,8 @@ navbar:
         href: articles/DiDeo_2025_tideglusib.html
       - text: "Tideglusib healthy (DiDeo 2025)"
         href: articles/DiDeo_2025_tideglusib.html
-      - text: "Tigecycline (BorsukDeMoor 2018)"
-        href: articles/BorsukDeMoor_2018_tigecycline.html
+      - text: "Tigecycline (Broeker 2018)"
+        href: articles/Broeker_2018_tigecycline.html
       - text: "Tigecycline (Luo 2023)"
         href: articles/Luo_2023_tigecycline.html
       - text: "Tigecycline (Song 2024)"
@@ -6054,6 +6054,7 @@ articles:
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
   - articles/Brochot_2015_darunavir
+  - articles/Broeker_2018_tigecycline
   - articles/Brooks_2021_tacrolimus
   - articles/Brossard_2025_emapalumab
   - articles/Brown_2017_osimertinib
