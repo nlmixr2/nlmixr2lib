@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sy 2018 etirinotecan pegol ([doi:10.1007/s00280-018-3562-3](https://doi.org/10.1007/s00280-018-3562-3)) -- adults with advanced solid tumors.
+- Add Borsuk-De Moor 2018 tigecycline ([doi:10.1128/AAC.02273-17](https://doi.org/10.1128/AAC.02273-17)) -- adults with sepsis or septic shock in intensive care, on the high-dose regimen.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
