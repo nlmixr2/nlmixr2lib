@@ -5350,6 +5350,8 @@ navbar:
         href: articles/Mulford_2026_vonoprazan.html
       - text: "Voriconazole (Akbar 2025)"
         href: articles/Akbar_2025_voriconazole.html
+      - text: "Voriconazole (Chantharit 2019)"
+        href: articles/Chantharit_2019_voriconazole.html
       - text: "Voriconazole (Chen 2015)"
         href: articles/Chen_2015_voriconazole.html
       - text: "Voriconazole (Friberg 2012)"
@@ -5886,6 +5888,7 @@ articles:
   - articles/Chandorkar_2015_ceftolozane_tazobactam
   - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
+  - articles/Chantharit_2019_voriconazole
   - articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta
   - articles/Charles_2007_tafenoquine
   - articles/Chatelut_1999_interferon_alfa_2b
