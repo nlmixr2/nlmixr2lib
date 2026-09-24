@@ -590,6 +590,8 @@ navbar:
         href: articles/Jin_2025_benralizumab.html
       - text: "Benralizumab (Wang 2017)"
         href: articles/Wang_2017_benralizumab.html
+      - text: "Benralizumab (Yan 2019)"
+        href: articles/Yan_2019_benralizumab.html
       - text: "Benralizumab aaer (Jin 2025)"
         href: articles/Jin_2025_benralizumab.html
       - text: "Benralizumab fev1 (Jin 2025)"
@@ -7927,6 +7929,7 @@ articles:
   - articles/Yamamoto_2017_cns_pbpk_rat
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
+  - articles/Yan_2019_benralizumab
   - articles/Yan_2024_amisulpride
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod

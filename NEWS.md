@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dorajoo 2019 vancomycin ([doi:10.3389/fphar.2019.00641](https://doi.org/10.3389/fphar.2019.00641)) -- adults with chronic kidney disease not receiving renal replacement therapy.
+- Add Yan 2019 benralizumab ([doi:10.1007/s40262-019-00738-4](https://doi.org/10.1007/s40262-019-00738-4)) -- adult and adolescent patients with asthma.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
