@@ -716,10 +716,14 @@ navbar:
         href: articles/Lacy_2018_cabozantinib.html
       - text: "Cabozantinib (Ly 2023)"
         href: articles/Ly_2023_cabozantinib.html
+      - text: "Cabozantinib (Nguyen 2019)"
+        href: articles/Nguyen_2019_cabozantinib.html
       - text: "Cabozantinib (Tan 2024)"
         href: articles/Tan_2024_cabozantinib.html
       - text: "Cabozantinib dose modification (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
+      - text: "Cabozantinib liver dysfunction (Nguyen 2019)"
+        href: articles/Nguyen_2019_cabozantinib.html
       - text: "Cabozantinib tumor (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
@@ -6888,6 +6892,7 @@ articles:
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
+  - articles/Nguyen_2019_cabozantinib
   - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Nguyen_2026_dupilumab
   - articles/Nguyen_2026_levofloxacin
