@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huth 2019 siponimod ([doi:10.1002/cpt.1547](https://doi.org/10.1002/cpt.1547)) -- healthy adults across the six clinically relevant CYP2C9 genotypes.
+- Add Forder 2019 calcitriol-conjugated quantum dots (control, calcitriol and SM3 anti-MUC1 + calcitriol QDs; nine PBPK models) ([doi:10.1111/cts.12664](https://doi.org/10.1111/cts.12664)) -- healthy mice and mice with early- or late-stage inflammatory breast cancer.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
