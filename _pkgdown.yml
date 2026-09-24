@@ -5294,6 +5294,8 @@ navbar:
         href: articles/Danielak_2017_treosulfan.html
       - text: "Triazolam (Okada 2024)"
         href: articles/Okada_2024_triazolam.html
+      - text: "Tribendimidine (Meister 2019)"
+        href: articles/Meister_2019_tribendimidine.html
       - text: "Tribendimidine (Vanobberghen 2016)"
         href: articles/Vanobberghen_2016_tribendimidine.html
       - text: "Triflusal (Park 2014)"
@@ -7083,6 +7085,7 @@ articles:
   - articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2023_tb_lesion_mpbpk
   - articles/Meid_2024_spironolactone_qsp
+  - articles/Meister_2019_tribendimidine
   - articles/Melander_2025_cetirizine
   - articles/Melhem_2018_g_csf
   - articles/Melhem_2022_dostarlimab
