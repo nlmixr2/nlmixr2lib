@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Guidi 2019 artesunate and mefloquine ([doi:10.1186/s12936-019-2754-6](https://doi.org/10.1186/s12936-019-2754-6)) -- African children aged 6-59 months with uncomplicated falciparum malaria.
+- Add Alghamdi 2019 cycloserine ([doi:10.1128/AAC.00055-19](https://doi.org/10.1128/AAC.00055-19)) -- adults with drug-resistant tuberculosis and healthy volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
