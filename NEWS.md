@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Du 2019 magnesium sulfate exposure-response for eclampsia ([doi:10.1002/jcph.1448](https://doi.org/10.1002/jcph.1448)) -- women with preeclampsia in the Magpie Trial and a Thai study.
+- Add Watson 2019 tapentadol ([doi:10.2147/JPR.S208454](https://doi.org/10.2147/JPR.S208454)) -- children and adolescents aged 2 to under 18 years with acute postsurgical pain.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
