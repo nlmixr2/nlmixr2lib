@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sime 2019 unbound ceftolozane and unbound tazobactam ([doi:10.1128/AAC.01265-19](https://doi.org/10.1128/AAC.01265-19)) -- critically ill adults without renal dysfunction.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
