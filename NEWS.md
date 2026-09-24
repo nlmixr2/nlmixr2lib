@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cagnardi 2018 cefazolin ([doi:10.3389/fphar.2018.01137](https://doi.org/10.3389/fphar.2018.01137)) -- client-owned dogs given surgical antimicrobial prophylaxis.
+- Add Thakkar 2018 tafenoquine ([doi:10.1128/AAC.00711-18](https://doi.org/10.1128/AAC.00711-18)) -- healthy volunteers and patients aged 15 years and older with acute Plasmodium vivax malaria.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
