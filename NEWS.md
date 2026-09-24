@@ -172,7 +172,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Chan 2017 idiopathic pulmonary fibrosis %predicted FVC model-based meta-analysis ([doi:10.1002/psp4.12227](https://doi.org/10.1002/psp4.12227)) -- 4,919 adults with idiopathic pulmonary fibrosis across 43 arms in 20 trials; 15 treatment regimens including pirfenidone and nintedanib.
+- Add Zhou 2018 alisertib ([doi:10.1111/bcp.13430](https://doi.org/10.1111/bcp.13430)) -- adults with advanced malignancies in Western countries and East Asia; population PK plus three exposure-safety logistic regressions.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
