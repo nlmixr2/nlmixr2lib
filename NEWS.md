@@ -2,11 +2,7 @@
 
 # development version
 
-- Add Yamamoto 2017 acetaminophen, atenolol, methotrexate, morphine,
-  paliperidone, phenytoin, quinidine, raclopride, remoxipride and risperidone
-  ([doi:10.1002/psp4.12250](https://doi.org/10.1002/psp4.12250)) -- male Wistar
-  rats, a comprehensive CNS PBPK model predicting brain extracellular fluid,
-  cerebrospinal fluid and total brain concentrations.
+- Add Kawaguchi 2018 cefiderocol ([doi:10.1128/AAC.01391-17](https://doi.org/10.1128/AAC.01391-17)) -- healthy subjects, subjects spanning normal renal function to end-stage renal disease, and patients with complicated urinary tract infection or acute uncomplicated pyelonephritis. Three model files, one per renal-function marker (`_clcr`, `_egfrabs`, `_egfradj`), as the authors fitted them.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,

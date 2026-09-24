@@ -858,6 +858,12 @@ navbar:
         href: articles/Koenig_2025_cefiderocol.html
       - text: "Cefiderocol (Zhang 2025)"
         href: articles/Zhang_2025_cefiderocol.html
+      - text: "Cefiderocol clcr (Kawaguchi 2018)"
+        href: articles/Kawaguchi_2018_cefiderocol.html
+      - text: "Cefiderocol egfrabs (Kawaguchi 2018)"
+        href: articles/Kawaguchi_2018_cefiderocol.html
+      - text: "Cefiderocol egfradj (Kawaguchi 2018)"
+        href: articles/Kawaguchi_2018_cefiderocol.html
       - text: "Cefotaxime (Ahsman 2010)"
         href: articles/Ahsman_2010_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
@@ -6567,6 +6573,7 @@ articles:
   - articles/Kata_2025_ganciclovir
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
+  - articles/Kawaguchi_2018_cefiderocol
   - articles/Kawamura_2018_eribulin
   - articles/Kawuma_2023_dolutegravir
   - articles/Kawuma_2023_tenofovir
