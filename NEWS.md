@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Bhagunde 2019 imipenem and relebactam ([doi:10.1002/psp4.12462](https://doi.org/10.1002/psp4.12462)) -- healthy adults and adults with complicated intra-abdominal infection, complicated urinary tract infection, or hospital-acquired/ventilator-associated bacterial pneumonia.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.

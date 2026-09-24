@@ -2232,6 +2232,8 @@ navbar:
         href: articles/Vos_2025_iminobiotin.html
       - text: "Imipenem (Bai 2024)"
         href: articles/Bai_2024_imipenem.html
+      - text: "Imipenem (Bhagunde 2019)"
+        href: articles/Bhagunde_2019_imipenem_relebactam.html
       - text: "Imipenem (Chen 2020)"
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Couffignal 2014)"
@@ -4078,6 +4080,8 @@ navbar:
         href: articles/Keunecke_2020_regorafenib.html
       - text: "Regorafenib phase3 (Keunecke 2020)"
         href: articles/Keunecke_2020_regorafenib.html
+      - text: "Relebactam (Bhagunde 2019)"
+        href: articles/Bhagunde_2019_imipenem_relebactam.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
@@ -5755,6 +5759,7 @@ articles:
   - articles/Bertrand_2011_S33138
   - articles/Betts_2018_mAb_linear_PK
   - articles/Betts_2019_pf_06671008
+  - articles/Bhagunde_2019_imipenem_relebactam
   - articles/Bhagunde_2026_lecanemab_biomarkers
   - articles/Bhatnagar_2024_upadacitinib
   - articles/Bi_2017_peginterferon_alfa_2a
