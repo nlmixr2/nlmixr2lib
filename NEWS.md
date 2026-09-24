@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cheng 2019 lobaplatin ([doi:10.1097/MD.0000000000014136](https://doi.org/10.1097/MD.0000000000014136)) -- elderly Chinese adults aged 65 years and older with small cell lung cancer.
+- Add Andrews 2019 tacrolimus ([doi:10.1111/bcp.13838](https://doi.org/10.1111/bcp.13838)) -- adult renal transplant recipients in the first 3 months post-transplantation, with a companion starting-dose model.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
