@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Maseda 2018 micafungin ([doi:10.1186/s13054-018-2019-8](https://doi.org/10.1186/s13054-018-2019-8)) -- nonobese critically ill, obese noncritically ill, and morbidly obese critically ill adults.
+- Add Sy 2018 etirinotecan pegol ([doi:10.1007/s00280-018-3562-3](https://doi.org/10.1007/s00280-018-3562-3)) -- adults with advanced solid tumors.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

@@ -1714,6 +1714,8 @@ navbar:
         href: articles/Ye_2017_ethaselen.html
       - text: "Ethinylestradiol (Reif 2013)"
         href: articles/Reif_2013_ethinylestradiol_drospirenone.html
+      - text: "EtirinotecanPegol (Sy 2018)"
+        href: articles/Sy_2018_etirinotecanPegol.html
       - text: "Etoposide (Freyer 2000)"
         href: articles/Freyer_2000_AVI_regimen.html
       - text: "Etoposide (Toffoli 2001)"
@@ -7415,6 +7417,7 @@ articles:
   - articles/Svensson_2018_bedaquiline
   - articles/Svensson_2018_rifampicin
   - articles/Swart_2004_lorazepam_midazolam
+  - articles/Sy_2018_etirinotecanPegol
   - articles/Syvanen_2011_verapamil_rat
   - articles/Syvanen_2012_quinidine_rat
   - articles/Tadayasu_2014_linagliptin
