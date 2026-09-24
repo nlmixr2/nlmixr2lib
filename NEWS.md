@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Willmann 2019 moxifloxacin ([doi:10.1002/psp4.12446](https://doi.org/10.1002/psp4.12446)) -- children and adolescents aged 3 months to under 18 years, including those with complicated intra-abdominal infection.
+- Add Stroh 2019 anti-CD166 PROBODY therapeutic QSP models ([doi:10.1002/psp4.12448](https://doi.org/10.1002/psp4.12448)) -- cynomolgus monkey calibration and human projection.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
