@@ -124,7 +124,8 @@ With the random effects zeroed, the model for the typical patient
 (age 66.7 years, BMI 21.8 kg/m^2, AST 25.3 IU/L, CrCl 79.9 mL/min) must
 reproduce the analytic one-compartment oral solution with CL/F = 20.0 L/h and
 V/F = 795.8 L. Both sides use identical parameters, so the difference is
-purely numerical and a tight bound is correct.
+purely numerical (the ODE is integrated with tight tolerances) and a tight
+bound is correct.
 
 ```{r typical}
 ref_pt <- data.frame(AGE = 66.7, BMI = 21.8, CRCL = 79.9, AST = 25.3)
@@ -132,7 +133,8 @@ ev_typ <- dplyr::bind_rows(dose_rows, obs_rows) |>
   dplyr::arrange(time, dplyr::desc(evid)) |>
   dplyr::mutate(id = 1L) |>
   cbind(ref_pt)
-typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ) |> as.data.frame()
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
 
 ka <- 0.60
 kel <- 20.0 / 795.8
@@ -146,7 +148,9 @@ chk <- data.frame(time = typ$time, sim = typ$Cc, closed = closed(typ$time))
 chk <- chk[chk$time != 0, ]
 max_rel_err <- max(abs(chk$sim - chk$closed) / chk$closed)
 max_rel_err
-stopifnot(max_rel_err < 1e-4)
+# Numeric integration at rtol = 1e-10; the bound keeps >= 10x headroom over
+# the measured floor.
+stopifnot(max_rel_err < 1e-6)
 
 # Typical half-life (paper: 37 h at steady state from the label; NCA day 1
 # geometric mean 27.6 h, Table S1)
@@ -279,6 +283,7 @@ stochastic cohort.
 ```{r nca}
 conc <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
   dplyr::mutate(day = ifelse(time < 168, "Day 1", "Day 8"),
                 treatment = "40 mg QD") |>
   dplyr::select(id, time, Cc, day, treatment)
@@ -332,11 +337,18 @@ sim_auc <- nca_res |>
 ratio <- sim_auc$med / reference$auclast
 ratio
 # Structural gate on the centre of the distribution: a mis-transcribed CL/F,
-# V/F, dose or unit moves the median AUC by far more than 30%.
-stopifnot(all(abs(ratio - 1) < 0.30))
+# V/F, dose or unit moves the median AUC by far more than 20%. With omega(CL/F)
+# ~ 0.68 on the log scale the Monte-Carlo SE of a 200-subject median is ~6%,
+# so 20% sits > 3 SE from the model-true value.
+stopifnot(all(abs(ratio - 1) < 0.20))
 ```
 
-Day 1 and day 8 Cmax and AUC0-24 agree with the observed geometric means.
+Day 1 and day 8 AUC0-24 agree with the observed geometric means to within
+2%, and Cmax to within 16%. Tmax is flagged because it is a median of a
+discrete quantity: the simulated grid has samples at 4 and 5 h, whereas the
+observed samples were drawn in the 2-3 h and 4-6 h windows, so a 1-2 h
+offset in a median Tmax is sampling-grid granularity rather than a model
+discrepancy.
 The NCA half-life from a single 24-h window is a poor estimate of a ~27 h
 terminal half-life for either the observed or simulated data, and the
 observed day 8 value (38.3 h) also reflects the smaller day 8 CL/F seen in

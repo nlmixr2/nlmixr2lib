@@ -124,6 +124,8 @@ navbar:
         href: articles/Mi_2024_aditoprim.html
       - text: "Aditoprim pbpkpd (Mi 2024)"
         href: articles/Mi_2024_aditoprim.html
+      - text: "Afatinib (Nakao 2019)"
+        href: articles/Nakao_2019_afatinib.html
       - text: "Aficamten (Xu 2025)"
         href: articles/Xu_2025_aficamten.html
       - text: "Aflibercept (Thai 2011)"
@@ -6871,6 +6873,7 @@ articles:
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nakai_2025_tranexamicAcid
+  - articles/Nakao_2019_afatinib
   - articles/Nakashima_2015_valproic_acid_seizure_control
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
