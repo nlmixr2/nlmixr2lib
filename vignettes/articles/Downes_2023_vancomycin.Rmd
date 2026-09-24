@@ -169,7 +169,9 @@ solve_typical <- function(nm, ev) {
   # zeroRe() is only meaningful when the model actually declares etas; the two
   # reduced models declare none (Table S4 reports no CV%).
   if (any(!is.na(rxode2::rxode(m)$iniDf$neta1))) m <- rxode2::zeroRe(m)
-  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame"))
+  # Tight tolerances: the closed-form gate below is held to 1e-6; the ODE at
+  # default tolerances lands at 1-2e-6, at rtol 1e-10 far below.
+  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12))
 }
 
 one_subject_ss <- function(dose, covs, times) {

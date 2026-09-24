@@ -229,8 +229,12 @@ ev_base <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(time, dplyr::desc(evid))
 
+# Tight tolerances: the closed-form gate below asserts 1e-8 relative
+# agreement, and the default rtol = 1e-6 leaves about 2e-7 when the model is
+# integrated numerically.
 sim_base <- rxode2::rxSolve(
-  mod_base, events = ev_base, returnType = "data.frame"
+  mod_base, events = ev_base, returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
 )
 if (is.null(sim_base$id)) sim_base$id <- 1L
 

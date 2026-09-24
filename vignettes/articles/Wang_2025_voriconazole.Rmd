@@ -322,7 +322,11 @@ closed_form <- function(D, CL, V, Tinf, tau) {
     (1 - exp(-k * tau))
 }
 
-cf_chk <- rxode2::rxSolve(mod, as_cohort(ev_ss, 0), returnType = "data.frame") |>
+# Tight integrator and ss = 1 steady-state tolerances: the bound below is
+# 1e-6 percent, so the ODE error must sit well under 1e-8 relative.
+cf_chk <- rxode2::rxSolve(mod, as_cohort(ev_ss, 0), returnType = "data.frame",
+                          rtol = 1e-10, atol = 1e-12,
+                          ssRtol = 1e-10, ssAtol = 1e-12) |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(analytic = closed_form(4 * WT, cl, vc, 4 / 3, 12),
                 pct_diff = 100 * (Cc - analytic) / analytic)

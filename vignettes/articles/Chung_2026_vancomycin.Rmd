@@ -171,7 +171,11 @@ assertion.
 cfSubject <- makeSubject(1L, WT = 1.06, pma_wk = 28.9, CREAT = 56,
                          cohort = "closed form", nDoses = 4L, ii = 12,
                          grid_by = 0.25)
-cf_sim <- rxode2::rxSolve(mod, events = cfSubject) |> as.data.frame()
+# Tight solver tolerances: this identity is asserted to the numerical floor.
+# rxode2's ODE-to-linCmt() conversion met it analytically until the
+# conversion became opt-in (September 2026, rxode2 issue 1389); the ODE as
+# written must meet it too, so the tolerances are set where it is asserted.
+cf_sim <- rxode2::rxSolve(mod, events = cfSubject, rtol = 1e-10, atol = 1e-12) |> as.data.frame()
 
 cf_cl  <- cf_sim$cl[1]
 cf_vc  <- cf_sim$vc[1]
@@ -399,7 +403,10 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("cohort", "tau", "WT", "pma_wk", "CREAT")
+  keep   = c("cohort", "tau", "WT", "pma_wk", "CREAT"),
+  # The ODE is integrated numerically; the PKNCA identities below are asserted
+  # to 1e-6 %, which needs tighter step tolerances than the defaults.
+  rtol = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 ```

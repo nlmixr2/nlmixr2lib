@@ -224,7 +224,11 @@ ctrough_solved <- function(BW, SEXF, mgkgd, sr) {
   ev <- rxode2::et(amt = BW * mgkgd / 2, ii = tau, ss = 1, cmt = "depot") |>
     rxode2::et(tau, cmt = "central")
   d <- add_cov(ev, WT = BW, SEXF = SEXF, FORM_VPA_SR = as.numeric(sr))
-  r <- rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA)
+  # Tight integrator and ss = 1 steady-state tolerances: this solve is compared
+  # to its closed form below, so the ODE error must sit well under the bound.
+  r <- rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA,
+                       rtol = 1e-10, atol = 1e-12,
+                       ssRtol = 1e-10, ssAtol = 1e-12)
   r$Cc[!is.na(r$Cc)][1]
 }
 

@@ -301,7 +301,9 @@ parameters, so it is asserted tightly.
 ```{r closed-form}
 mod_typ <- rxode2::zeroRe(mod)
 sim_typ <- rxode2::rxSolve(mod_typ, events = events,
-                           keep = c("treatment", "tau")) |>
+                           keep = c("treatment", "tau"),
+                           # tight tolerances for the 1e-6 closed-form gate
+                           rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
 cl_of <- function(wt, pma) 0.0487 * wt^0.919 * (pma / 30)^1.53

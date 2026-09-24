@@ -153,8 +153,11 @@ cf_ev <- data.frame(
   cmt = "central",
   CRCL = crcl_ref
 )
+# Tolerances well below the defaults: the gate below holds the ODE solution to
+# the closed form within 1e-8 relative (measured ~3e-10 at rtol 1e-10).
 cf_sim <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), cf_ev, returnType = "data.frame"
+  rxode2::zeroRe(mod), cf_ev, rtol = 1e-10, atol = 1e-12,
+  returnType = "data.frame"
 )
 cf_cmp <- data.frame(
   time = cf_sim$time,

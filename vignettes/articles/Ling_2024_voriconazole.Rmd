@@ -215,7 +215,13 @@ rxode2::rxSetSeed(20240820)
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("arm", "phenotype", "dose_mg", "CRP", "CYP2C19_IM", "CYP2C19_PM"),
-  returnType = "data.frame", addDosing = FALSE
+  returnType = "data.frame", addDosing = FALSE,
+  # Tight tolerances for the 1e-6 closed-form gate below. The `ss = 1` record
+  # has its own convergence test (ssRtol / ssAtol, defaults 1e-6 / 1e-8) that
+  # stops once successive dosing intervals differ by less than the tolerance;
+  # for slowly equilibrating subjects that leaves a residual of roughly
+  # ssRtol / (k * tau), so it is tightened together with rtol / atol.
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 )
 trough <- sim |> filter(time == obs_time, !is.na(Cc))
 nrow(trough)

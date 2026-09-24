@@ -188,9 +188,13 @@ solve_ss <- function(co, dose, tinf, tau, grid = 0.1, bsa_scale = 1) {
   # (BSA / r)^b == ((BSA * 1.88 / r) / 1.88)^b.
   evdf$BSA <- evdf$BSA * bsa_scale
   evdf$RRT_HEMODIAL_ACTIVE <- 0
+  # The ODE is integrated numerically and ss = 1 is found iteratively, so both
+  # the step tolerances and the steady-state convergence tolerances are
+  # tightened; the closed-form comparison is asserted to 1e-8.
   suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
-                    returnType = "data.frame")
+                    returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                    ssRtol = 1e-10, ssAtol = 1e-12)
   )
 }
 
@@ -272,9 +276,13 @@ nca_conc <- dplyr::bind_rows(lapply(nca_groups, function(g) {
   evdf <- as.data.frame(ev)
   evdf <- dplyr::left_join(evdf, co[, c("id", "CRCL", "BSA")], by = "id")
   evdf$RRT_HEMODIAL_ACTIVE <- 0
+  # The ODE is integrated numerically and ss = 1 is found iteratively, so both
+  # the step tolerances and the steady-state convergence tolerances are
+  # tightened; the closed-form comparison is asserted to 1e-8.
   suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
-                    returnType = "data.frame")
+                    returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                    ssRtol = 1e-10, ssAtol = 1e-12)
   ) |>
     dplyr::mutate(egfr_group = paste0("eGFR ", g, " mL/min"))
 }))
@@ -590,7 +598,8 @@ solve_hd <- function(co, dose, tinf, tau, days = 4, supp_dose = 0,
   )
   sol <- suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
-                    returnType = "data.frame")
+                    returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                    ssRtol = 1e-10, ssAtol = 1e-12)
   )
   # Bound the interval at BOTH ends. The attainment statistic is defined over
   # one dosing interval, and the session-transition records added above can sit
