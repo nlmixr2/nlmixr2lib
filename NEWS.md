@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hand 2019 benzathine benzylpenicillin G ([doi:10.1093/jac/dkz076](https://doi.org/10.1093/jac/dkz076)) -- children and adolescents with rheumatic heart disease on monthly intramuscular secondary prophylaxis.
+- Add Mian 2019 acetaminophen ([doi:10.1002/jcph.1373](https://doi.org/10.1002/jcph.1373)) -- infants and young children after cardiac surgery with cardiopulmonary bypass.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
