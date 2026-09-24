@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Blusse van Oud-Alblas 2019 propofol ([doi:10.1186/s12871-019-0684-z](https://doi.org/10.1186/s12871-019-0684-z)) -- adolescents undergoing scoliosis surgery with an intraoperative wake-up test.
+- Add Garessus 2019 isoniazid ([doi:10.3389/fphar.2019.00005](https://doi.org/10.3389/fphar.2019.00005)) -- lactating women on isoniazid and their breastfed newborns.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

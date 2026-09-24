@@ -373,6 +373,20 @@ The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` an
 - **Role:** Peripheral distribution compartments of the breastfed infant in a mother-to-infant dyad model.
 - **Source aliases:** none.
 
+### infant_lung, infant_brain, infant_heart, infant_liver, infant_spleen, infant_kidney, infant_adipose, infant_skin, infant_muscle, infant_bone, infant_blood (**canonical breastfed-infant whole-body PBPK organ set**)
+- **Type:** compartment
+- **Role:** Perfusion-limited organ and blood compartments of the breastfed infant in a mother-to-infant dyad model whose infant side is a whole-body PBPK rather than a compartmental PK model. Same semantics as the bare `lung` / `brain` / `heart` / `liver` / `spleen` / `kidney` / `adipose` / `skin` / `muscle` / `bone` / `blood` organ canonicals, applied to the infant partner.
+- **Source aliases:** `A2C`, `A3C`, `A4C`, `A5C`, `A6C`, `A7C`, `A8C`, `A9C`, `A10C`, `A11C`, `A13C` -- the `<state>C` ("child") state names of the Garessus 2019 supplementary deSolve script, whose maternal counterparts drop the `C`.
+- **Example models:** `Garessus_2019_isoniazid_pbpk.R` (founding example; ten ICRP 2002 reference-newborn tissue compartments plus blood, perfused at the adult female percentages of cardiac output applied to the newborn cardiac output of 36 L/h, sharing the mother's tissue:blood partition coefficients and fed only by `infant_depot`).
+- **Notes:** These are the whole-body-PBPK members of the `infant_<canonical>` namespace declared at the head of this section, registered explicitly because `checkModelConventions()` matches compartment names against the enumerated register rather than applying the `infant_` prefix rule mechanically. A dyad model whose infant side is compartmental uses `infant_central` / `infant_peripheral1` instead; a dyad model whose infant side is a PBPK uses this set. `infant_blood` is the infant's systemic blood pool and the denominator of its plasma observable `Cinfant`, exactly as the bare `blood` canonical is for the mother.
+
+### infant_a_oral, infant_a_metabolized (**canonical breastfed-infant process accumulators**)
+- **Type:** compartment
+- **Role:** `infant_a_oral` is the cumulative amount of drug ingested by the breastfed infant via milk, integrating the milk-to-infant transfer rate (`d/dt(infant_a_oral) <- kmilkinf * milk * <feeding gate>`). `infant_a_metabolized` is the cumulative amount the infant has eliminated, integrating its metabolic rate. Dyad-partner forms of the `a_oral` and `a_metabolized` process accumulators: both only ever increase and are never drained, unlike `infant_depot`, which holds milk-derived drug still awaiting absorption.
+- **Source aliases:** `Milk_intake` and `Metab_c` -- the accumulator states of the Garessus 2019 supplementary deSolve script.
+- **Example models:** `Garessus_2019_isoniazid_pbpk.R` (founding example).
+- **Notes:** This is the mechanistically consistent external infant dose, i.e. the amount the coupled ODE system actually moved from milk into the infant. It is deliberately distinct from the "relative infant dose" bookkeeping figure that lactation papers usually headline, which is a sum of the milk AMOUNT standing in the compartment at each feed time and so presumes every feed empties the compartment completely. When a paper reports the bookkeeping figure, reproduce it in the vignette from the solved milk trajectory and state the difference; do not redefine this state to match it.
+
 ---
 
 
