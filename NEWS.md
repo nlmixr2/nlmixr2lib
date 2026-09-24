@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Watson 2019 tapentadol ([doi:10.2147/JPR.S208454](https://doi.org/10.2147/JPR.S208454)) -- children and adolescents aged 2 to under 18 years with acute postsurgical pain.
+- Add Chantharit 2019 voriconazole ([doi:10.1093/ofid/ofz360.1430](https://doi.org/10.1093/ofid/ofz360.1430)) -- Thai adults treated with oral voriconazole for invasive aspergillosis.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
