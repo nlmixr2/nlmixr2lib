@@ -2754,6 +2754,10 @@ navbar:
         href: articles/Mosha_2014_artemether_lumefantrine.html
       - text: "Lumefantrine (Simpson 2013)"
         href: articles/Simpson_2013_lumefantrine.html
+      - text: "Lumefantrine (Tchaparian 2016)"
+        href: articles/Tchaparian_2016_lumefantrine.html
+      - text: "Lumefantrine recurrence (Tchaparian 2016)"
+        href: articles/Tchaparian_2016_lumefantrine.html
       - text: "Lumiracoxib rat (VasquezBahena 2009)"
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Lumiracoxib rat (VelezdeMendizabal 2012)"
@@ -7325,6 +7329,7 @@ articles:
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
   - articles/Taylor_2026_methotrexate
+  - articles/Tchaparian_2016_lumefantrine
   - articles/Teixeira_2026_meloxicam_dog
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
