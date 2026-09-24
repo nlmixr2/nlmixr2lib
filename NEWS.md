@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cirincione 2018 apixaban ([doi:10.1002/psp4.12347](https://doi.org/10.1002/psp4.12347)) -- adults with nonvalvular atrial fibrillation or acute coronary syndrome and healthy volunteers.
+- Add Ezuruike 2018 ethinylestradiol ([doi:10.1002/cpt.1085](https://doi.org/10.1002/cpt.1085)) -- healthy adult women taking combined oral contraceptives.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

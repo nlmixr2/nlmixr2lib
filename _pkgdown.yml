@@ -1760,6 +1760,8 @@ navbar:
         href: articles/Nemoto_2017_ethanol.html
       - text: "Ethaselen (Ye 2017)"
         href: articles/Ye_2017_ethaselen.html
+      - text: "Ethinylestradiol (Ezuruike 2018)"
+        href: articles/Ezuruike_2018_ethinylestradiol.html
       - text: "Ethinylestradiol (Reif 2013)"
         href: articles/Reif_2013_ethinylestradiol_drospirenone.html
       - text: "EtirinotecanPegol (Sy 2018)"
@@ -6343,6 +6345,7 @@ articles:
   - articles/Eugene_2016a_metoprolol
   - articles/Eugene_2016b_metoprolol_gender_dose_equivalence
   - articles/Eyler_2014_ertapenem
+  - articles/Ezuruike_2018_ethinylestradiol
   - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
