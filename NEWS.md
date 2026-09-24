@@ -2,7 +2,7 @@
 
 # development version
 
-- Correct the `reference` citation of `Voller_2017_phenobarbital`, which named the wrong title and co-authors for its own DOI ([doi:10.1016/j.ejps.2017.05.026](https://doi.org/10.1016/j.ejps.2017.05.026)), and fill its previously unreported cohort body-weight range from a secondary source.
+- Add Blusse van Oud-Alblas 2019 propofol ([doi:10.1186/s12871-019-0684-z](https://doi.org/10.1186/s12871-019-0684-z)) -- adolescents undergoing scoliosis surgery with an intraoperative wake-up test.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

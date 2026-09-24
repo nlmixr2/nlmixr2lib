@@ -4138,6 +4138,10 @@ navbar:
         href: articles/Wahlquist_2024_propofol.html
       - text: "Propofol (Wang 2012)"
         href: articles/Wang_2012_propofol.html
+      - text: "Propofol bis (BlussevanOudAlblas 2019)"
+        href: articles/BlussevanOudAlblas_2019_propofol.html
+      - text: "Propofol caai (BlussevanOudAlblas 2019)"
+        href: articles/BlussevanOudAlblas_2019_propofol.html
       - text: "Propofol human (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
       - text: "Propofol pbpk (Levitt 2005)"
@@ -6018,6 +6022,7 @@ articles:
   - articles/Blackman_2026_methotrexate
   - articles/Blair_2004_raltitrexed
   - articles/Blesch_2003_capecitabine
+  - articles/BlussevanOudAlblas_2019_propofol
   - articles/Boak_2014_linezolid
   - articles/BoerPerez_2026_piperacillin
   - articles/Boer_2015_cisplatin
