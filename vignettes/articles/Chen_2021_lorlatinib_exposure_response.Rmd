@@ -880,8 +880,7 @@ stopifnot(p_trig_asian > p_trig_nonasian)
   canonical existed before this extraction; `CMAX` and `CAV` were already
   registered as the peak and average of the same triple, and several register
   entries explicitly direct a trough model to "register a parallel canonical
-  rather than overload" theirs. Ratified as `CTROUGH` (sidecar request 001
-  q1, operator answer A, 2026-09-02).
+  rather than overload" theirs. Ratified as `CTROUGH` by the maintainers.
 * **Four new canonical output states.** `prob_hypercholesterolemia`,
   `prob_hypertriglyceridemia`, `prob_weight_gain` and `prob_icorr` are
   registered in `inst/references/compartment-names.md` as members of the

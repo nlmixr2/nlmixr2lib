@@ -75,7 +75,7 @@ GLP-1 arm (`S1` is reported in g^-1 and multiplies `Glc_Gut`), so `V_glc` is a
 free constant that sets the magnitude of every glucose excursion and, through
 the glucose-insulin feedback, the insulin profile too.
 
-Per operator ruling (2026-09-02) it was **back-solved from the Figure 3 placebo
+By maintainer decision it was **back-solved from the Figure 3 placebo
 panel**: the published median curve was digitised and `V_glc` fitted to it,
 giving **250 dL (25.0 L)**. Ninety-six combinations of the unreported meal
 times and food-intake durations bracket the estimate at 246-255 dL, so the
@@ -689,7 +689,7 @@ vildagliptin concentrations increased more than proportionally with dose."
 * **`V_glc` is not published.** Back-solved from the Figure 3 placebo median at
   **250 dL**; sensitivity across the unreported meal timings and food-intake
   durations is 246-255 dL. The Figure 3 comparison above is therefore partly
-  circular; Figures 2, 4, 6 and 7 are not. Operator ruling 2026-09-02 chose the
+  circular; Figures 2, 4, 6 and 7 are not. The maintainers chose the
   back-solve over author correspondence.
 * **`S5` is applied as 0.584 mL/mIU, not the printed 0.584 L/mIU.** Established
   from Figure 7B's own axis, which plots `ST_ins` over 0 to 0.009 L/mIU and
