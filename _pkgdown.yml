@@ -5264,6 +5264,8 @@ navbar:
         href: articles/Baverel_2015_tralokinumab.html
       - text: "Tralokinumab (Soehoel 2022)"
         href: articles/Soehoel_2022_tralokinumab.html
+      - text: "Tramadol (Lee 2019)"
+        href: articles/Lee_2019_tramadol.html
       - text: "Tramadol (SoriaChacartegui 2026)"
         href: articles/SoriaChacartegui_2026_tramadol.html
       - text: "Tramadol tapentadol mbma (Mercier 2014)"
@@ -6938,7 +6940,7 @@ articles:
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
   - articles/Lee_2017_doripenem
-  - articles/Lee_2018_leuprolide
+  - articles/Lee_2019_tramadol
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Garrett 2019 inotuzumab ([doi:10.1007/s10928-018-9614-9](https://doi.org/10.1007/s10928-018-9614-9)) -- adults with relapsed/refractory B-cell acute lymphoblastic leukemia or B-cell non-Hodgkin lymphoma.
+- Add Lee 2019 tramadol and O-desmethyltramadol ([doi:10.2147/DDDT.S199574](https://doi.org/10.2147/DDDT.S199574)) -- healthy Korean male volunteers genotyped for CYP2D6*10.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
