@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ortiz Zacarias 2018 fosfomycin, intravenous and oral ([doi:10.1002/prp2.378](https://doi.org/10.1002/prp2.378)) -- adults; a literature-assembled simulation model.
+- Add Li 2018 guanfacine ([doi:10.1007/s40272-017-0270-0](https://doi.org/10.1007/s40272-017-0270-0)) -- healthy adults.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
