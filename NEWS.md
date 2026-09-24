@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2018 olanzapine ([doi:10.1136/bmjopen-2017-020070](https://doi.org/10.1136/bmjopen-2017-020070)) -- Han Chinese healthy male volunteers and adults with schizophrenia.
+- Add Stott 2018 fluconazole ([doi:10.1128/AAC.00885-18](https://doi.org/10.1128/AAC.00885-18)) -- adults with HIV-associated cryptococcal meningitis in Vietnam and Uganda.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
