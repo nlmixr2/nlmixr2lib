@@ -974,6 +974,8 @@ navbar:
         href: articles/Cojutti_2023_ceftobiprole.html
       - text: "Ceftolozane (Chandorkar 2015)"
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
+      - text: "Ceftolozane (Sime 2019)"
+        href: articles/Sime_2019_ceftolozane_tazobactam.html
       - text: "Ceftriaxone (FernandezRubio 2025)"
         href: articles/FernandezRubio_2025_ceftriaxone.html
       - text: "Ceftriaxone (Garot 2011)"
@@ -5052,6 +5054,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Tazobactam (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
+      - text: "Tazobactam (Sime 2019)"
+        href: articles/Sime_2019_ceftolozane_tazobactam.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tbaj587 (Leding 2026)"
@@ -7615,7 +7619,7 @@ articles:
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
   - articles/Silva_2024_apx3330
-  - articles/Sime_2019_posaconazole
+  - articles/Sime_2019_ceftolozane_tazobactam
   - articles/Simpson_2006_artesunate
   - articles/Simpson_2013_artesunate
   - articles/Simpson_2013_chloroquine

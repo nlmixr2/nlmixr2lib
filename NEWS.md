@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Salinger 2019 pretomanid ([doi:10.1128/AAC.00907-19](https://doi.org/10.1128/AAC.00907-19)) -- healthy adults and adults with drug-sensitive, multidrug-resistant or extensively drug-resistant pulmonary tuberculosis.
+- Add Sime 2019 unbound ceftolozane and unbound tazobactam ([doi:10.1128/AAC.01265-19](https://doi.org/10.1128/AAC.01265-19)) -- critically ill adults without renal dysfunction.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
