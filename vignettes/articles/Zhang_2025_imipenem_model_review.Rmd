@@ -333,8 +333,18 @@ sim |>
 # PKNCA validation
 
 ```{r pknca}
+# Drop each profile's numerically-zero tail before NCA. The 120 h grid takes
+# the fast-clearing adult models (terminal half-lives 1-2 h) down to
+# ~1e-17 mg/L, far below the ODE integrator's absolute error; there the
+# solution scatters around zero (Jaruratanasirikul 2021 dips negative at
+# 74-76 h), PKNCA's log-down trapezoid returns NaN across the sign change and
+# the terminal fit follows the noise. Keeping Cc >= 1e-6 x Cmax leaves every
+# model's extrapolated AUC below 0.001%.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(model) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id = model, time, Cc) |>
   dplyr::mutate(treatment = "IV bolus")
 
@@ -583,12 +593,17 @@ renal_cl <- function(nm) {
     cov$CRCL <- cr
     for (cv in names(cov)) ev[[cv]] <- cov[[cv]]
     out <- rxode2::rxSolve(mod, events = ev)
+    # Same numerically-zero-tail floor as the NCA above: a tail point that
+    # the integrator puts at or below zero turns this AUC into NaN.
+    keep <- out$Cc >= 1e-6 * max(out$Cc)
+    cc <- out$Cc[keep]
+    tt <- out$time[keep]
     # Dose / AUC recovers CL without reading any model internal.
-    spec$dose / PKNCA::pk.calc.auc(out$Cc, out$time, interval = c(0, Inf),
+    spec$dose / PKNCA::pk.calc.auc(cc, tt, interval = c(0, Inf),
                                   auc.type = "AUCinf",
                                   lambda.z = PKNCA::pk.calc.half.life(
-                                    out$Cc, out$time)$lambda.z,
-                                  clast = PKNCA::pk.calc.clast.obs(out$Cc, out$time))
+                                    cc, tt)$lambda.z,
+                                  clast = PKNCA::pk.calc.clast.obs(cc, tt))
   }, numeric(1))
 }
 
