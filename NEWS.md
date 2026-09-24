@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Boger 2018 inhalation PBPK ([doi:10.1002/psp4.12344](https://doi.org/10.1002/psp4.12344)) -- simulated 70 kg reference adult; hypothetical neutral small molecule.
+- Add Ashraf 2018 S-ketamine + norketamine + ticlopidine ([doi:10.1002/psp4.12346](https://doi.org/10.1002/psp4.12346)) -- healthy adult volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

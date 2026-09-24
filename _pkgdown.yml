@@ -4542,6 +4542,8 @@ navbar:
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "S ketamine (Flint 2017)"
         href: articles/Flint_2017_s_ketamine.html
+      - text: "S ketamine ticlopidine (Ashraf 2018)"
+        href: articles/Ashraf_2018_s_ketamine_ticlopidine.html
       - text: "S methadone (Aruldhas 2021)"
         href: articles/Aruldhas_2021_methadone.html
       - text: "S33138 (Bertrand 2011)"
@@ -5913,6 +5915,7 @@ articles:
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
   - articles/Aruldhas_2021_methadone
+  - articles/Ashraf_2018_s_ketamine_ticlopidine
   - articles/Ashraf_2024_codeine
   - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin
