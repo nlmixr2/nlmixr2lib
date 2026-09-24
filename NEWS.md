@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2019 lamotrigine ([doi:10.3389/fphar.2019.00832](https://doi.org/10.3389/fphar.2019.00832)) -- Chinese children and adults aged 4-63 years with epilepsy.
+- Add Wang 2019 linezolid ([doi:10.3892/etm.2019.7747](https://doi.org/10.3892/etm.2019.7747)) -- Chinese critically ill adults with and without shock.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
