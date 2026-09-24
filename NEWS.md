@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hong 2019 evofosfamide ([doi:10.1016/j.neo.2018.11.009](https://doi.org/10.1016/j.neo.2018.11.009)) -- HCT116 and H460 human carcinoma cells in vitro and as nude-mouse xenografts.
+- Add Nicolas 2019 alirocumab ([doi:10.1007/s40262-018-0670-5](https://doi.org/10.1007/s40262-018-0670-5)) -- healthy volunteers and adults with familial or non-familial hypercholesterolemia.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
