@@ -5360,6 +5360,8 @@ navbar:
         href: articles/Hwang_2022_tremelimumab.html
       - text: "Treosulfan (Danielak 2017)"
         href: articles/Danielak_2017_treosulfan.html
+      - text: "Treosulfan (vanderStoep 2019)"
+        href: articles/vanderStoep_2019_treosulfan.html
       - text: "Triazolam (Okada 2024)"
         href: articles/Okada_2024_triazolam.html
       - text: "Tribendimidine (Meister 2019)"
@@ -8193,6 +8195,7 @@ articles:
   - articles/vandenBerg_2025_genericMab
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
+  - articles/vanderStoep_2019_treosulfan
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vanderZeeuw_2026_immunoglobulin
   - articles/vonHentig_2009_saquinavir
