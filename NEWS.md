@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Geerts 2018 amyloid-beta neurotransmission QSP model
-  ([doi:10.1186/s13195-018-0343-5](https://doi.org/10.1186/s13195-018-0343-5))
-  — simulated Alzheimer's disease and mild cognitive impairment populations.
+- Add Gasthuys 2018 desmopressin ([doi:10.3389/fphar.2018.00041](https://doi.org/10.3389/fphar.2018.00041)) - growing piglets aged 8 days to 6 months.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
