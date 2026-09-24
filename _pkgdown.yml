@@ -1922,6 +1922,8 @@ navbar:
         href: articles/Iwama_2024_febuxostat.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
+      - text: "Fedratinib (Ogasawara 2019)"
+        href: articles/Ogasawara_2019_fedratinib.html
       - text: "Felodipine (Henin 2012)"
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Felodipine pbpk (Gu 2025)"
@@ -7326,6 +7328,7 @@ articles:
   - articles/OBrien_2017_ramucirumab
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
+  - articles/Ogasawara_2019_fedratinib
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
   - articles/Ogusu_2014_valproic_acid
