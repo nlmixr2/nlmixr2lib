@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Shemesh 2019 atezolizumab ([doi:10.1186/s40425-019-0791-x](https://doi.org/10.1186/s40425-019-0791-x)) -- pediatric and young adult patients (7 months to 29 years) with relapsed or refractory solid tumors or lymphoma.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
