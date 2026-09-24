@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Thakkar 2018 tafenoquine ([doi:10.1128/AAC.00711-18](https://doi.org/10.1128/AAC.00711-18)) -- healthy volunteers and patients aged 15 years and older with acute Plasmodium vivax malaria.
+- Add Boger 2018 inhalation PBPK ([doi:10.1002/psp4.12344](https://doi.org/10.1002/psp4.12344)) -- simulated 70 kg reference adult; hypothetical neutral small molecule.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

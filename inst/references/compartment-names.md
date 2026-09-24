@@ -1159,6 +1159,14 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Zurlinden_2016_paracetamol.R`.
 
+### a_spleen (**canonical PBPK spleen-amount compartment**)
+- **Type:** compartment
+- **Role:** Spleen organ compartment in mass-balance PBPK extractions. Drains into the liver with the rest of the portal circulation rather than directly into venous blood, so it is not interchangeable with a lumped `a_rapidly_perfused` pool: a model that carries the spleen separately is almost always doing so because the splenic outflow has to reach the hepatic compartment before the systemic circulation.
+- **Source aliases:**
+  - `sp` -- Boger 2018 (Appendix S1 Eq. S8 and the deposited `+phys/pbpk.csv` compartment key).
+- **Example models:** `Boger_2018_inhaled_pbpk.R` (founding example).
+- **Notes:** Routine spelled-out-organ extension of the `a_<organ>` namespace, added alongside the already-registered `a_liver`, `a_kidney`, `a_heart`, `a_brain` and `a_gut`. Pair with `kpspleen` and `qspleen`; the corresponding membrane-limited sub-compartment prefix (`bc_spleen`, `is_spleen`, ...) already exists in `pbpkSubCompartmentRegex`.
+
 ### a_venous (**canonical PBPK venous-blood compartment**)
 - **Type:** compartment
 - **Role:** Venous blood compartment in mass-balance PBPK extractions.
@@ -1433,10 +1441,8 @@ Rules for using the family:
 - **Role:** One spatial slab of a tissue across which a diffusion PDE is solved by the method of lines. Slab 1 carries the entry-face boundary condition (a flux, or a partition-coefficient-mediated concentration), interior slabs exchange with their two neighbours by `D * A / h * (C_i - C_i+1)`, and the far face carries the exit boundary condition -- typically a perfect sink `C(t, l) = 0`, whose flux is computed over a half-cell distance and delivered to the paired perfused compartment.
 - **Source aliases:**
   - `Ctiss(x)` -- Salehi 2025 Equation 1 (the continuous field these slabs discretise).
-- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1`.. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`); `CherkaouiRbati_2017_midazolam_qsp.R` (**convection** rather than diffusion -- `sinusoid_slab1`..`sinusoid_slab21`, `hepatocyte_slab1`..`hepatocyte_slab21` and `enzyme_liver_slab1`..`enzyme_liver_slab21` over the 691.1 um blood path of a liver lobule, with a second drug on the same mesh as `sinusoid_perpetrator_slab<n>`).
-- **Notes:** Validated by `slabCompartmentRegex` rather than by an enumerated list, since the slab count varies per model. Do not use this family for physiologically distinct serial compartments -- those get role-based names.
-- **Not only diffusion.** The family covers any PDE reduced by the method of lines, including first-order **convection** (`dC/dt + v(x) dC/dx = ...`), where the inter-slab term is an upwind difference carrying flow from slab `n-1` to slab `n` rather than a symmetric diffusive exchange. Two consequences worth checking when adding such a model: slab 1 takes the **inflow boundary condition** (the concentration entering the tissue) instead of a flux, and the scheme is mass-conservative only if the per-slab volume and velocity are mutually consistent -- in `CherkaouiRbati_2017_midazolam_qsp` the product `V_slab * v(x) / dx` is the whole-organ blood flow at **every** slab, so the advection terms telescope to `Q * (C_in - C_out)` and whole-organ mass balance is an exact test of the mesh.
-- **A non-drug field may share the mesh.** When the paper's PDE couples drug transport to a spatially varying local quantity -- an enzyme level, a binding-site density, an oxygen tension -- give that field its own slab chain on the same mesh (`enzyme_liver_slab<n>`) rather than averaging it, and state in `compartmentData` that the state is a fold-of-baseline rather than an amount. Spatial variation in the coupled field is usually the paper's point.
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1`.. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`); `Boger_2018_inhaled_pbpk.R` (six parallel chains -- `elf_tb_slab<n>`, `epithelium_tb_slab<n>`, `subepithelium_tb_slab<n>` and the `_alv_` counterparts -- indexing lung *depth* rather than tissue thickness, plus the paired particle-phase chains `particles_<region>_<class>_slab<n>` / `pmass_<region>_<class>_slab<n>`).
+- **Notes:** Validated by `slabCompartmentRegex` rather than by an enumerated list, since the slab count varies per model. Do not use this family for physiologically distinct serial compartments -- those get role-based names. The spatial coordinate need not be a thickness: in Boger 2018 the slab index runs along cumulative airway depth `x`, and several co-located tissue layers each carry their own chain on the same grid, so `elf_tb_slab7`, `epithelium_tb_slab7` and `subepithelium_tb_slab7` are three layers of the *same* slice. When a second, non-spatial coordinate is also discretised (there, particle size), put it in the stem as a letter-coded class (`particles_tb_c_slab7`) and keep `_slab<n>` for the spatial index, so the slab numbering means the same thing across every chain in the model.
 
 ---
 
