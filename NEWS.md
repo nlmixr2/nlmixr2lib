@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2019 tramadol and O-desmethyltramadol ([doi:10.2147/DDDT.S199574](https://doi.org/10.2147/DDDT.S199574)) -- healthy Korean male volunteers genotyped for CYP2D6*10.
+- Add Britz 2019 fluvoxamine ([doi:10.1002/psp4.12397](https://doi.org/10.1002/psp4.12397)) -- healthy volunteers stratified by CYP2D6 phenotype and by cigarette smoking.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
