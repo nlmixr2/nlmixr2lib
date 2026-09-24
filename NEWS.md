@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Siederer 2016 inhaled fluticasone furoate and vilanterol ([doi:10.1007/s13318-015-0303-4](https://doi.org/10.1007/s13318-015-0303-4)) -- adults with COPD and healthy volunteers.
+- Add Xu 2017 daptomycin ([doi:10.1111/bcp.13131](https://doi.org/10.1111/bcp.13131)) -- adults spanning normal renal function, intermittent haemodialysis, CAPD and continuous renal replacement therapy.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
