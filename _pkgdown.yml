@@ -406,8 +406,8 @@ navbar:
         href: articles/Koh_2025_aspirin.html
       - text: "Astegolimab (Kotani 2022)"
         href: articles/Kotani_2022_astegolimab.html
-      - text: "Asunaprevir (Zhu 2018)"
-        href: articles/Zhu_2018_asunaprevir.html
+      - text: "Asunaprevir (Osawa 2018)"
+        href: articles/Osawa_2018_daclatasvir_asunaprevir.html
       - text: "Asundexian (Yassen 2025)"
         href: articles/Yassen_2025_asundexian.html
       - text: "Atacicept (Pitsiu 2023)"
@@ -1186,6 +1186,8 @@ navbar:
         href: articles/Liesenfeld_2006_dabigatran.html
       - text: "Dabigatran sheep (Eaton 2025)"
         href: articles/Eaton_2025_dabigatran_sheep.html
+      - text: "Daclatasvir (Osawa 2018)"
+        href: articles/Osawa_2018_daclatasvir_asunaprevir.html
       - text: "Daclizumab (Othman 2014)"
         href: articles/Othman_2014_daclizumab.html
       - text: "Daclizumab cd25 (Diao 2016)"
@@ -7150,7 +7152,7 @@ articles:
   - articles/Ooi_2026_elafibranor
   - articles/Oosten_2016_fentanyl
   - articles/Oosten_2017_morphine
-  - articles/OrtizZacarias_2018_fosfomycin
+  - articles/Osawa_2018_daclatasvir_asunaprevir
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab

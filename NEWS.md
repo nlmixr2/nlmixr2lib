@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van Esdonk 2018 pregabalin ([doi:10.1002/psp4.12318](https://doi.org/10.1002/psp4.12318)) -- healthy adults given a single 300 mg oral dose, with cold pressor and electrical stimulation pain-tolerance-threshold PD models.
+- Add Osawa 2018 daclatasvir and asunaprevir ([doi:10.1002/jcph.1274](https://doi.org/10.1002/jcph.1274)) -- Japanese adults with chronic genotype-1 hepatitis C virus infection.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
