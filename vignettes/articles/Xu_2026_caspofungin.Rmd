@@ -293,8 +293,14 @@ ss_interval <- function(mod, covs, amt, ndose = 60L, step = 0.002) {
                    amt = 0, evid = 0L, rate = 0, cmt = "central")
   )
   for (nm in names(covs)) ev[[nm]] <- covs[[nm]]
+  # maxsteps: rxode2 derives its automatic `hmax` from the spacing of the
+  # sampling times, so the 0.002 h observation grid caps the integrator's step
+  # size over the whole 1,440 h run-in (about 720,000 steps) and the default
+  # 70,000-step budget is exhausted ("could not solve the system"). Only the
+  # budget is raised; the tolerances are unchanged.
   s <- rxode2::rxSolve(mod, dplyr::arrange(ev, id, time, dplyr::desc(evid)),
-                       returnType = "data.frame", atol = 1e-12, rtol = 1e-12)
+                       returnType = "data.frame", atol = 1e-12, rtol = 1e-12,
+                       maxsteps = 1e6)
   s <- s[!is.na(s$Cc) & s$time >= lo, ]
   list(auc = trapz(s$time, s$Cc), cmin = s$Cc[nrow(s)], cmax = max(s$Cc), cl = s$cl[1])
 }

@@ -251,7 +251,15 @@ make_arm <- function(dose_mg, extra_times, extra_amts, win_start, win_end, covs,
 # relative-difference comparisons against Table 2 meaningful.
 solve_arm <- function(mod, ev, keep_cols) {
   set.seed(SIM_SEED)
-  rxode2::rxSolve(mod, ev, keep = keep_cols, returnType = "data.frame")
+  # maxsteps: the `ss = 1` dose is reached in ODE mode by integrating 12 h
+  # intervals until the trough converges. Rong's V2/F carries an IIV variance
+  # of 1.16, so a draw of vp ~ 10,000 L (terminal half-life > 500 h) needs
+  # several hundred intervals, and the integrator (liblsoda) counts every
+  # step of that pre-solve against `maxsteps` (default 70000) without an
+  # observation record to re-zero it. Exhausting the budget returns NA for
+  # that subject. Raising the budget changes nothing else.
+  rxode2::rxSolve(mod, ev, keep = keep_cols, returnType = "data.frame",
+                  maxsteps = 1e6)
 }
 ```
 
