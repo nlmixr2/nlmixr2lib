@@ -90,6 +90,8 @@ navbar:
         href: articles/Franke_2015_oxycodone_acetaminophen.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
+      - text: "Acetaminophen rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Aciclovir (DAgate 2024)"
         href: articles/DAgate_2024_aciclovir.html
       - text: "Acotiamide rat pbpk (Yoshii 2016)"
@@ -416,6 +418,8 @@ navbar:
         href: articles/Fu_2022_atenolol_qsp.html
       - text: "Atenolol rat pbpk (Kir 2025)"
         href: articles/Kir_2025_atenolol_metoprolol_malnutrition.html
+      - text: "Atenolol rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Atezolizumab (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab (Zeng 2026)"
@@ -3054,6 +3058,8 @@ navbar:
         href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Methotrexate rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Methoxsalen blood (Billard 1995)"
         href: articles/Billard_1995_methoxsalen.html
       - text: "Methoxsalen plasma (Billard 1995)"
@@ -3206,6 +3212,8 @@ navbar:
         href: articles/Groenendaal_2007_morphine_brain_rat.html
       - text: "Morphine rat eeg (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_rat_eeg.html
+      - text: "Morphine rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Mosunetuzumab (Bender 2024)"
         href: articles/Bender_2024_mosunetuzumab.html
       - text: "Motesanib (Gosselin 2015)"
@@ -3624,6 +3632,8 @@ navbar:
         href: articles/Panetta_2024_palbociclib.html
       - text: "Paliperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Paliperidone rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
       - text: "Pamiparib (Wickramasinghe 2025)"
@@ -3810,8 +3820,8 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Phenytoin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
-      - text: "Pinatuzumab polatuzumab (Lu 2016)"
-        href: articles/Lu_2016_pinatuzumab_polatuzumab.html
+      - text: "Phenytoin rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Piperacillin (BoerPerez 2026)"
         href: articles/BoerPerez_2026_piperacillin.html
       - text: "Piperacillin (Bulitta 2007)"
@@ -4070,6 +4080,8 @@ navbar:
         href: articles/Kervezee_2014_quinidine_rat.html
       - text: "Quinidine rat (Syvanen 2012)"
         href: articles/Syvanen_2012_quinidine_rat.html
+      - text: "Quinidine rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Quinine (Kloprogge 2014)"
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine (LeJouan 2005)"
@@ -4090,6 +4102,8 @@ navbar:
         href: articles/Darpo_2014_racSotalol.html
       - text: "RacSotalol QTcI (Darpo 2014)"
         href: articles/Darpo_2014_racSotalol.html
+      - text: "Raclopride rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Ractopamine goat pbpk (Ai 2024)"
         href: articles/Ai_2024_ractopamine_goat_pbpk.html
       - text: "Radamts13 (Patel 2025)"
@@ -4162,6 +4176,8 @@ navbar:
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Remlifanserin (Darwish 2026)"
         href: articles/Darwish_2026_remlifanserin.html
+      - text: "Remoxipride rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Repotrectinib (Du 2025)"
         href: articles/Du_2025_repotrectinib.html
       - text: "Reserpine rat (AlfoseaCuadrado 2024)"
@@ -4256,6 +4272,8 @@ navbar:
         href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Risperidone rat pbpk (Yamamoto 2017)"
+        href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Risperidone rykindo (Wang 2024)"
         href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone tv46000 (Perlstein 2025)"
@@ -7635,6 +7653,7 @@ articles:
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
   - articles/Yamada_2025_zolbetuximab
+  - articles/Yamamoto_2017_cns_pbpk_rat
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yan_2024_amisulpride
