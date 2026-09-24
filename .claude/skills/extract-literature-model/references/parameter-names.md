@@ -167,6 +167,13 @@ block, not with the structural PK. Founding examples:
 
 - `lmtt` — log mean transit time.
 - `lktr` — log first-order transit rate constant (= n_transit / MTT for a chain of length n).
+- `lmtt_bile` — log residence time of **one** sub-compartment of a
+  `bile_transit<n>` bile-duct delay chain (bile volume / bile flow). Bare name
+  `mtt_bile`. **Not** a total transit time: the chain's whole delay is
+  `n * mtt_bile`, unlike the plain `lmtt` / `lmtt_rbc` / `lmtt_infant`, which
+  name totals. Source alias `Rt`. Founding example:
+  `Law_2017_egcg_rat_pbpk.R` (`Rt = 3.00 min`; the five Law 2017 siblings
+  carry 0.30 / 2.00 min and 0.03 h). Ratified 2026-09-21.
 
 Inside `model()` the bare names are `mtt` and `ktr`. Source-paper aliases
 (`MAT`, `MTT`, `KTR`) translate silently.
@@ -257,8 +264,16 @@ that resolve the gastric and intestinal lumen as explicit states (`stomach`,
   `Kbile`, `KbileC`. Founding example: `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC`,
   terminal biliary elimination); also `Yang_2025_matrine_pig_pbpk.R`
   (`kbi = 0.05835 /h`, liver into gut lumen).
+- `lkreab` -- **intestinal reabsorption rate constant**, the *return leg* of
+  enterohepatic recycling: drug moving out of `gut_lumen` back into the
+  perfused `gut` tissue after biliary delivery. Competes with `lkfec` for the
+  same pool, so a recycling model normally carries both. Source-paper aliases:
+  `krac`, `k_ra`, `kr`. Founding example: `Law_2017_egcg_rat_pbpk.R`
+  (`krac = 0.67 /min per kg^-0.3`). Ratified 2026-09-21. Where the source
+  tabulates a body-weight scaling coefficient rather than a rate, `ini()` holds
+  the coefficient and `model()` applies the exponent.
 
-Three boundaries to respect:
+Four boundaries to respect:
 
 - `lkbile` is **not** `kbm`. `kbm` is registered as the biliary-*metabolite*
   excretion rate constant (a metabolite leaving a plasma / central compartment);
@@ -268,6 +283,11 @@ Three boundaries to respect:
   this section and is an unregistered legacy spelling; use `lkfec` in new models.
 - The absorption rate constant out of `gut_lumen` remains the ordinary canonical
   `lka` -- do not mint a gut-specific absorption name.
+- `lkreab` is **not** `lka`. `lka` is the first-pass absorption of the
+  administered dose, normally reached from `depot`; `lkreab` is the colonic
+  reabsorption of biliary-recycled drug out of `gut_lumen`. A paper that gives
+  the two different values is distinguishing the initial absorption site from
+  the reabsorption site, and collapsing them erases that.
 
 ## Time-varying protein binding
 
