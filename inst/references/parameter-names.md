@@ -988,6 +988,30 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Example models:** `Kata_2025_ganciclovir_maturation.R` (founding example; `theta4` = 95.8 days, 95% CI 79.5-112), `Wu_2024_gfr_maturation.R` (`TVPNA50` = 34 days, power-scaled by gestational age).
 - **Notes:** Ratified 2026-09-11 with the Kata 2025 ganciclovir extraction (sidecar request-001 question q1, operator answer C), formalising the previously-informal usage already shipped in `Wu_2024_gfr_maturation.R`. Distinct from [[cl_t50]]: that half-time belongs to a clearance drifting with time on study or on treatment, whereas `pna50` is anchored to the subject's postnatal age, which is a property of the subject. A model may legitimately carry both. The `pna` anchor in the name is what keeps this out of the bare-`t50` namespace the `cl_time_` family forbids.
 
+### crcl_ega0 (**canonical baseline creatinine clearance at gestational age zero**)
+- **Type:** bare-pk
+- **Role:** Intercept of a gestational-age maturation curve for maternal creatinine clearance: the nonpregnant CrCL the trajectory takes at EGA 0, in mL/min. Log form `lcrcl_ega0`. Used in the additive hyperbolic form `CrCL <- crcl_ega0 + crcl_matspan * EGA / (crcl_ega50 + EGA)`. It is the INTERCEPT, not the plateau. It is also the denominator a semiphysiological PK model divides by to form the normalised change in renal function `CrCL(EGA)/CrCL(0)`, which is 1 at EGA 0 by construction.
+- **Source aliases:**
+  - `CrCL0` -- van Hasselt 2014 Methods eq 4 and Table 3 ("CrCL0 represented baseline (nonpregnant CrCL)").
+- **Example models:** `vanHasselt_2014_crcl_pregnancy.R` (founding example; `CrCL0` = 97.83 mL/min, fixed from the upstream meta-analysis), `vanHasselt_2014_cefazolin_semiphysiological.R` (same trajectory embedded as the clearance-driving covariate layer).
+- **Notes:** Ratified 2026-09-21 with the van Hasselt 2014 cefazolin-in-pregnancy extraction (sidecar request-001 question q1, operator answer B). This is the same additive Anderson-Holford shape as [[cl_pna0]] with `hill` = 1, but on a MATERNAL GESTATIONAL AGE axis rather than a postnatal-age axis, so it is a sibling family and not an instance of that one: reusing [[pna50]] here would contradict that entry's own rationale, which is that the age anchor in the name is what keeps the half-point out of the bare-`t50` namespace. The operator ruling kept every token of the curve inside the `crcl_` namespace rather than minting a bare `ega50`, so the axis anchor is carried as an infix. Driven by the ratified covariate column `EGA`.
+
+### crcl_matspan (**canonical span of a gestational creatinine-clearance rise**)
+- **Type:** bare-pk
+- **Role:** Absolute amount of creatinine clearance gained between the nonpregnant baseline and the asymptote of the gestational rise, in mL/min, in the additive form `CrCL <- crcl_ega0 + crcl_matspan * EGA / (crcl_ega50 + EGA)`. Log form `lcrcl_matspan`. It is the SPAN, not the plateau, and not the value reached at term: the asymptote is `crcl_ega0 + crcl_matspan`, and at a term EGA of 40 weeks the curve has only covered `40/(crcl_ega50 + 40)` of the span.
+- **Source aliases:**
+  - `CrCLMAX` -- van Hasselt 2014 Methods eq 4 and Table 3 ("CrCLMAX represented maximum typical increase in CrCL").
+- **Example models:** `vanHasselt_2014_crcl_pregnancy.R` (founding example; `CrCLMAX` = 83.83 mL/min, fixed), `vanHasselt_2014_cefazolin_semiphysiological.R`.
+- **Notes:** Ratified 2026-09-21 with the van Hasselt 2014 extraction (sidecar request-001 question q1, operator answer B). Named `matspan` for exactly the reason [[cl_matspan]] is: the paper's own symbol `CrCLMAX` invites a reader to use it as the maximum creatinine clearance, which it is not. Table 3 leaves the unit cell blank for this row; mL/min is forced by the dimensional coherence of eq 4, where it is added to a mL/min baseline.
+
+### crcl_ega50 (**canonical gestational age at half of a creatinine-clearance span**)
+- **Type:** bare-pk
+- **Role:** Maternal gestational age, in weeks, at which the gestational creatinine-clearance rise has covered half of its span, i.e. at which `CrCL` equals `crcl_ega0 + crcl_matspan / 2`. Log form `lcrcl_ega50`.
+- **Source aliases:**
+  - `CrCL50` -- van Hasselt 2014 Methods eq 4 and Table 3 ("CrCL50 represented the time of half-maximum change in CrCL").
+- **Example models:** `vanHasselt_2014_crcl_pregnancy.R` (founding example; `CrCL50` = 13.3 weeks, fixed), `vanHasselt_2014_cefazolin_semiphysiological.R`.
+- **Notes:** Ratified 2026-09-21 with the van Hasselt 2014 extraction (sidecar request-001 question q1, operator answer B). Distinct from [[pna50]], which is anchored to POSTNATAL age; the two axes are not interchangeable and a name anchored to one must not be reused for the other. Also distinct from [[cl_t50]], a half-time on time-on-study. The paper's symbol `CrCL50` reads as a CrCL value when it is in fact a TIME in weeks, which is why the canonical carries the `ega` anchor instead. Units are weeks, matching the `EGA` covariate column.
+
 ### cl_renal (**canonical bare renal clearance arm**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `lcl_renal`. Renal component of an additive renal + non-renal clearance decomposition.

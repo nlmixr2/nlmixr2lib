@@ -812,6 +812,8 @@ navbar:
         href: articles/Duke_2024_cefazolin.html
       - text: "Cefazolin empirical (vanHasselt 2014)"
         href: articles/vanHasselt_2014_cefazolin.html
+      - text: "Cefazolin semiphysiological (vanHasselt 2014)"
+        href: articles/vanHasselt_2014_cefazolin.html
       - text: "Cefepime (Capparelli 2005)"
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
@@ -7753,6 +7755,7 @@ articles:
   - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/vanErp_2010_sunitinib
   - articles/vanHasselt_2013_eribulin
+  - articles/vanHasselt_2014_cefazolin
   - articles/vanHasselt_2015_eribulin
   - articles/vanIersel_2018_posaconazole
   - articles/vanMaanen_2025_amyloid
