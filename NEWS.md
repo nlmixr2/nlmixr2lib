@@ -2,13 +2,7 @@
 
 # development version
 
-- Cite the published corrigendum to Patel 2017 selumetinib
-  ([doi:10.1002/psp4.12254](https://doi.org/10.1002/psp4.12254)) in
-  `Patel_2017_selumetinib` and its vignette. The corrigendum corrects the
-  Table 2 unit for `theta1` and `theta9` from `nmol/hr` to `hr`, confirming
-  the hours interpretation the model already encoded; no parameter value
-  changes. The open-access archived copy of the parent article is the
-  uncorrected version, so the citation is the only on-disk record of the fix.
+- Add Marchand 2017 nicotine ([doi:10.1007/s13318-017-0405-2](https://doi.org/10.1007/s13318-017-0405-2)) — healthy adult smokers using heated tobacco, cigarettes, nasal spray or gum.
 
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
