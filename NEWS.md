@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stott 2018 amphotericin B deoxycholate ([doi:10.1128/AAC.02526-17](https://doi.org/10.1128/AAC.02526-17)) -- adults with HIV-associated cryptococcal meningitis in Vietnam and Uganda.
+- Add Liu 2018 Pneumocystis treatment QSP models ([doi:10.1186/s12918-018-0603-9](https://doi.org/10.1186/s12918-018-0603-9)) -- Pneumocystis murina-infected immunosuppressed C3H/HeN mice treated with anidulafungin, caspofungin, micafungin or TMP-SMX, plus the drug-free two-stage life-cycle module.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
