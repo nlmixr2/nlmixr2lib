@@ -8,7 +8,9 @@
 #
 # WHAT GOES WRONG
 #
-# rxode2's `rxSolve()` defaults to `useLinCmt = TRUE`. Under that default
+# rxode2's `rxSolve()` defaulted to `useLinCmt = TRUE` until the conversion was
+# made opt-in in September 2026 (rxode2 issue 1389); the probes below pass the
+# flag explicitly, so the gate is unaffected by the default. Under conversion
 # `.odeToLinDetect()` pattern-matches a depot/central/peripheral ODE system and
 # rewrites it as the analytical `linCmt()` solution. The rewrite keeps the
 # compartment topology and the transfer-rate parameters and DISCARDS every

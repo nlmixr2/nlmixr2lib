@@ -189,7 +189,9 @@ demonstration, not production VPC).
 
 If you've already followed pattern 2 (named ODE-state `cmt =` in event tables + `dvid = 1L` on observation rows for multi-output models) and rxSolve STILL errors with the dvid mapping complaint or a "required parameter" for one of the ODE states, you've hit the second rxode2 bug catalogued in `reports/rxode2-tad-state-arg-bug-issue.md`: `rxSolve.rxUi`'s default `useLinCmt = TRUE` performs an automatic ODE→linCmt conversion that corrupts the dvid→cmt mapping for many multi-output / multi-state models.
 
-**Workaround.** Pass `useLinCmt = FALSE` to every `rxode2::rxSolve()` call in the vignette:
+**Since the rxode2 build of 2026-09-24 the default is already `useLinCmt = FALSE`** (rxode2 issue 1389), so on a current build this cannot occur unless something set `options(rxode2.useLinCmt = TRUE)`; the explicit argument below stays harmless and documents the intent.
+
+**Workaround (older builds).** Pass `useLinCmt = FALSE` to every `rxode2::rxSolve()` call in the vignette:
 
 ```r
 sim <- rxode2::rxSolve(
@@ -455,6 +457,74 @@ disagreement disappeared.
 cohort would then depend on a call the reader has to notice, and the
 published numbers would still be one draw. Write assertions that
 hold for any cohort the model can produce.
+
+## 13. A gate that only an analytic solution can meet: `rel_err < 1e-8`, `all(Cc >= 0)`, PKNCA half-life == log(2)*V/CL, "did not reproduce the analytic steady state"
+
+Since the rxode2 build of 2026-09-24 (rxode2 issue 1389 / PR 1395)
+`rxSolve()` no longer converts an ODE model to `linCmt()` by default
+(`useLinCmt = getOption("rxode2.useLinCmt", FALSE)`). Every model is
+integrated with LSODA at the default `rtol = 1e-6`, `atol = 1e-8`. A
+gate written against the analytic path then sees: ~1e-6 relative
+error on any closed-form identity; a negative undershoot of about
+`atol` at troughs (so `all(Cc >= 0)` fails, and PKNCA's log-down
+trapezoid returns `NaN` for the subject); ~1e-5 residual on `ss = 1`
+records for slowly equilibrating subjects (the steady-state search
+has its own `ssRtol = 1e-6` criterion, residual ~ `ssRtol / (k * tau)`);
+and `NA` rows or "could not solve the system" when the step budget
+runs out. About 55 articles failed in the sweep that followed the
+build, while the host library (still on the analytic default) rendered
+all of them.
+
+**Write gates for the numeric path from the start:**
+
+```r
+# Identity-feeding solves: tight step tolerances, and tight steady-state
+# tolerances whenever the event table carries ss = 1.
+sim <- rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12,
+                       ssRtol = 1e-10, ssAtol = 1e-12)
+stopifnot(max(abs(sim$Cc / closed_form - 1)) < 1e-8)   # measured ~1e-10
+
+# Non-negativity: a relative floor, never an absolute one (the undershoot is
+# in state units and scales with dose and volume).
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
+
+# Before PKNCA: assert the undershoot is noise, floor it, and drop the
+# numerically-zero tail so a half-life fit does not follow integrator noise.
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE))
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
+
+# Subjects that return NA: raise the step budget before anything else.
+sim <- rxode2::rxSolve(mod, events = ev, maxsteps = 1e6)
+```
+
+- Measure the floor your gate actually achieves under the numeric path
+  and keep the bound at least 10x above it; do not write "machine
+  precision" or "seven orders of headroom" comments that only the
+  analytic path earned.
+- **Monte-Carlo gates.** The eta stream differs between the analytic and
+  the ODE path after the first solve in a chunk, so a PTA or quantile
+  gate tuned on one seed can flip. Size the cohort so the bound sits
+  >= 3 binomial standard errors from the model-true value and write the
+  arithmetic in a comment (pattern 12 has the general rule).
+- Do not reach for `useLinCmt = TRUE` to make a gate pass, and never set
+  `options(rxode2.useLinCmt = TRUE)`: the conversion drops transit,
+  zero-order and production inputs for some models and was made opt-in
+  for that reason. The ODE path is the validation. The one legitimate use
+  is an event structure the numeric path provably cannot integrate (so far:
+  an occasion-switched `ka` via a time-varying `OCC` covariate combined
+  with lag-shifted doses, Tsirizani 2025 ritonavir -- liblsoda meets the
+  parameter jump inside a step and returns `NA`). Then pass
+  `useLinCmt = TRUE` explicitly on that solve, and FIRST verify the
+  conversion is faithful: solve the subjects the ODE can integrate both
+  ways with the same seed and require profile-level agreement (not just an
+  AUC identity, which holds regardless of absorption shape); write the
+  measured agreement and the mechanism into a comment beside the call.
+- Never `filter(!is.na(Cc))` past a failure you have not explained.
 
 ## Process reminder
 
