@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sime 2019 posaconazole ([doi:10.1186/s13054-019-2483-9](https://doi.org/10.1186/s13054-019-2483-9)) -- critically ill adults with invasive fungal infection, total and unbound concentrations.
+- Add Larizza 2018 C-peptide kinetics and insulin secretion ([doi:10.1002/psp4.12285](https://doi.org/10.1002/psp4.12285)) -- 207 normal, obese and diabetic adults for the C-peptide kinetics regressions, and one normal adult man for the IVGTT insulin minimal model.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
