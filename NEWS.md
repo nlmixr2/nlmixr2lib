@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Meister 2019 tribendimidine ([doi:10.1128/AAC.01391-18](https://doi.org/10.1128/AAC.01391-18)) -- Lao adolescents and adults infected with the liver fluke *Opisthorchis viverrini*.
+- Add Francis 2019 rifapentine ([doi:10.1128/AAC.01964-18](https://doi.org/10.1128/AAC.01964-18)) -- southern African adults with drug-susceptible pulmonary tuberculosis.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

@@ -4390,6 +4390,8 @@ navbar:
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Rifapentine (Francis 2019)"
+        href: articles/Francis_2019_rifapentine.html
       - text: "Rifapentine (Zvada 2010)"
         href: articles/Zvada_2010_rifapentine.html
       - text: "Rilotumumab (Zhang 2016)"
@@ -6419,6 +6421,7 @@ articles:
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fournier_2018_amoxicillin
+  - articles/Francis_2019_rifapentine
   - articles/Francke_2025_tacrolimus
   - articles/Franke_2015_oxycodone_acetaminophen
   - articles/Franken_2015_morphine
