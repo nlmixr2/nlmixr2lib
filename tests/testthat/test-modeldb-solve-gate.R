@@ -133,6 +133,80 @@ knownBrokenModels <- c(
   if (identical(tolower(Sys.getenv("NLMIXR2LIB_SOLVE_GATE", "")), "full")) "full" else "screened"
 }
 
+# ---- Probing in bounded subprocesses ----------------------------------------
+#
+# Every probe used to run in the test process. On GitHub's ubuntu R-devel and
+# R-oldrel-1 legs that process grew from 1.9 GB to 15.5 GB plus 2.7 GB of swap
+# in the 22 minutes after this file started -- about 1 GB a minute -- and the
+# hosted runner was shut down ("The runner has received a shutdown signal",
+# exit 143) on every push to main and every pull request since the 2026-09-17
+# consolidation. The same loop is flat on R 4.6.1 with the identical rxode2
+# build (240 -> 330 MB over 40 models, warm or cold compile cache, 1 to 16
+# solver threads) and in an R 4.5.3 container, so the growth is specific to
+# the hosted runner and not yet root-caused; test-stream.yaml traces it with
+# NLMIXR2LIB_SOLVE_GATE_TRACE=1. Probing each block of models in a fresh R
+# process bounds the damage to one block whatever leaks, at the cost of one
+# package load per block. Both solve paths are probed once per model and
+# shared by the tests below, which is no more work than before.
+.probeBlockSize <- 20L
+
+.probeInChild <- function(nms) {
+  dev <- pkgload::is_dev_package("nlmixr2lib")
+  root <- if (dev) normalizePath(testthat::test_path("..", "..")) else NA_character_
+  helper <- normalizePath(testthat::test_path("helper-solveProbe.R"))
+  trace <- nzchar(Sys.getenv("NLMIXR2LIB_SOLVE_GATE_TRACE")) && .Platform$OS.type == "unix"
+  res <- callr::r(
+    function(nms, dev, root, helper, trace) {
+      if (dev) {
+        pkgload::load_all(root, quiet = TRUE)
+      } else {
+        library(nlmixr2lib)
+      }
+      probes <- new.env()
+      sys.source(helper, envir = probes)
+      db <- nlmixr2lib::modeldb
+      out <- lapply(nms, function(n) {
+        list(
+          lin = probes$probeSolveModel(n, db, useLinCmt = TRUE),
+          ode = probes$probeSolveModel(n, db, useLinCmt = FALSE)
+        )
+      })
+      names(out) <- nms
+      if (trace) {
+        rss <- as.numeric(system(sprintf("ps -o rss= -p %d", Sys.getpid()), intern = TRUE)) / 1024
+        message(sprintf(
+          "solve-gate block of %d models: child RSS %.0f MB, %d DLLs loaded",
+          length(nms), rss, length(getLoadedDLLs())
+        ))
+      }
+      out
+    },
+    args = list(nms = nms, dev = dev, root = root, helper = helper, trace = trace),
+    show = trace
+  )
+  if (trace) {
+    # The parent's own footprint, to tell a child-side leak from one in the
+    # process that collects the results.
+    rss <- as.numeric(system(sprintf("ps -o rss= -p %d", Sys.getpid()), intern = TRUE)) / 1024
+    message(sprintf("solve-gate parent after block: RSS %.0f MB, %d DLLs loaded", rss, length(getLoadedDLLs())))
+  }
+  res
+}
+
+# Probe results keyed by model name, computed once per set of names. An
+# environment rather than a variable so the memo survives across test_that()
+# blocks without superassignment.
+.gateCache <- new.env(parent = emptyenv())
+.gateProbe <- function(names_) {
+  key <- paste(names_, collapse = "\r")
+  if (!identical(.gateCache$key, key)) {
+    blocks <- split(names_, ceiling(seq_along(names_) / .probeBlockSize))
+    .gateCache$res <- do.call(c, unname(lapply(blocks, .probeInChild)))
+    .gateCache$key <- key
+  }
+  .gateCache$res
+}
+
 test_that("every model in the registry responds to a dose", {
   skip_on_cran()
   skip_if_not_installed("rxode2")
@@ -142,11 +216,12 @@ test_that("every model in the registry responds to a dose", {
   names_ <- if (scope == "full") db$name else intersect(db$name, linCmtRiskCandidates())
   expect_gt(length(names_), 0)
 
+  res <- .gateProbe(names_)
   dead <- character(0)
   brokenByConversion <- character(0)
   unsupported <- character(0)
   for (n in names_) {
-    r <- probeSolveModel(n, db)
+    r <- res[[n]]$lin
     if (identical(r$status, "skip")) {
       next
     }
@@ -157,7 +232,7 @@ test_that("every model in the registry responds to a dose", {
       # so an event table that names an endpoint compartment stops resolving
       # and rxode2 raises "'dvid'->'cmt' or 'cmt' on observation record". If it
       # fails both ways, the probe cannot drive the model.
-      ode <- probeSolveModel(n, db, useLinCmt = FALSE)
+      ode <- res[[n]]$ode
       if (identical(ode$status, "ok")) {
         brokenByConversion <- c(brokenByConversion, n)
       } else {
@@ -233,10 +308,11 @@ test_that("rxode2's linCmt() optimisation never changes a model's solution", {
   }
   expect_gt(length(names_), 0)
 
+  res <- .gateProbe(names_)
   divergent <- character(0)
   for (n in names_) {
-    lin <- probeSolveModel(n, db, useLinCmt = TRUE)
-    ode <- probeSolveModel(n, db, useLinCmt = FALSE)
+    lin <- res[[n]]$lin
+    ode <- res[[n]]$ode
     if (!identical(lin$status, "ok") || !identical(ode$status, "ok")) {
       next
     }

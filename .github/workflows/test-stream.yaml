@@ -37,6 +37,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       NOT_CRAN: true
       TESTTHAT_PROBLEMS: false
+      NLMIXR2LIB_SOLVE_GATE_TRACE: 1
 
     steps:
       - uses: actions/checkout@v6
@@ -69,7 +70,7 @@ jobs:
         run: |
           set -o pipefail
           ( while true; do
-              echo "[monitor $(date -u +%T)] $(free -m | awk '/Mem:/{printf "mem used %d/%d MB, swap %d MB", $3, $2, $0 ~ /Swap/ ? 0 : 0}') | $(free -m | awk '/Swap:/{printf "swap used %d/%d MB", $3, $2}') | disk free $(df -h / | awk 'NR==2{print $4}') | tmp $(du -sm "${TMPDIR:-/tmp}" 2>/dev/null | cut -f1) MB | R procs $(pgrep -c -x R)"
+              echo "[monitor $(date -u +%T)] $(free -m | awk '/Mem:/{printf "mem used %d/%d MB", $3, $2}') | $(free -m | awk '/Swap:/{printf "swap used %d/%d MB", $3, $2}') | disk free $(df -h / | awk 'NR==2{print $4}') | tmp $(du -sm "${TMPDIR:-/tmp}" 2>/dev/null | cut -f1) MB | R procs $(pgrep -c -x R) | top: $(ps -eo rss=,pid=,comm= --sort=-rss | head -3 | awk '{printf "%s(%d)=%dMB ", $3, $2, $1/1024}')"
               sleep 60
             done ) &
           MON=$!
