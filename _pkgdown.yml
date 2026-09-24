@@ -932,6 +932,12 @@ navbar:
         href: articles/Viberg_2006_cefuroxime.html
       - text: "Cefuroxime axetil (Bulitta 2009)"
         href: articles/Bulitta_2009_cefuroxime_axetil.html
+      - text: "Celecoxib cockatiel iv (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Celecoxib cockatiel oral cf (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Celecoxib cockatiel oral std (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
       - text: "Cenicriviroc hiv1rna (Marier 2011)"
@@ -2900,6 +2906,12 @@ navbar:
         href: articles/Yang_2025_matrine_pig_pbpk.html
       - text: "Matuzumab (Kuester 2008)"
         href: articles/Kuester_2008_matuzumab.html
+      - text: "Mavacoxib cockatiel iv (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Mavacoxib cockatiel oral cf (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Mavacoxib cockatiel oral std (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Mavoglurant pbpk (Elmokadem 2023)"
         href: articles/Elmokadem_2023_mavoglurant_pbpk.html
       - text: "Mavrilimumab (Stein 2018)"
@@ -2914,6 +2926,10 @@ navbar:
         href: articles/Ramharter_2019_mefloquine.html
       - text: "Mefloquine (Simpson 2013)"
         href: articles/Simpson_2013_mefloquine.html
+      - text: "Meloxicam cockatiel iv (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Meloxicam cockatiel oral (Dhondt 2017)"
+        href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Meloxicam dog (Teixeira 2026)"
         href: articles/Teixeira_2026_meloxicam_dog.html
       - text: "Melphalan (Choi 2026)"
@@ -6047,6 +6063,7 @@ articles:
   - articles/Desai_2024_crisprCas9
   - articles/Desikan_2022_covidVaccine
   - articles/Desmee_2015_PSA_mCRPC
+  - articles/Dhondt_2017_cox2inhibitors_cockatiel
   - articles/Dhoro_2015_efavirenz
   - articles/DiDeo_2025_tideglusib
   - articles/Diao_2014_rFIXFc
