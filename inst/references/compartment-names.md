@@ -3893,6 +3893,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for each clinical endpoint. The placebo arm captures the background placebo response; the drug arm carries the drug-driven delta.
 
+### prob_eclampsia (**canonical eclampsia-occurrence probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a woman with preeclampsia progresses to eclampsia (an eclamptic seizure) during a course of anticonvulsant prophylaxis, in a static landmark exposure-response logistic model. The endpoint is the occurrence of a first seizure at any point over the treatment course, not a per-interval hazard.
+- **Source aliases:** none.
+- **Example models:** `Du_2019_magnesiumSulfate_eclampsia.R` (logistic regression of eclampsia occurrence on the area under the change-from-baseline serum magnesium curve and a piece-wise linear maternal-age effect with a knot at 22 years, fit to 10280 women pooled from the Magpie Trial and a Thai study; `prob_eclampsia <- expit(logit_eclampsia)` is the observation variable and carries the placeholder additive residual).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc`; regex-validated, so this entry is documentation of what the endpoint means rather than a gate. Static (no time dimension): the exposure metric is a whole-course AUC and the probability is evaluated once per woman, which is why the founding model carries no ODE state and no dose events. Distinct in a way that matters clinically from the toxicity-grade members of the family (`prob_anemia` and relatives): here a HIGHER drug exposure gives a LOWER probability, because the endpoint is a prophylaxis failure rather than an adverse effect -- the founding model's exposure coefficient is negative (-0.00164 per mg*h/L). The founding source pairs this efficacy endpoint with a separate safety criterion expressed as a peak-concentration threshold (3.5 mmol/L) rather than as a second probability model, so there is no sibling `prob_magnesium_toxicity`; a future paper that fits one must register it separately. Do not reuse this name for an eclampsia endpoint measured on a different scale, such as a time-to-seizure hazard or a seizure count -- those are not landmark probabilities and belong under their own canonicals.
+
 ### fpg_placebo (**canonical fasting plasma glucose placebo arm**)
 - **Type:** compartment
 - **Role:** Fasting plasma glucose placebo-arm output state.

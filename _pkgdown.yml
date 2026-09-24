@@ -2828,6 +2828,8 @@ navbar:
         href: articles/Deng_2024_magnesiumSulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
+      - text: "MagnesiumSulfate eclampsia (Du 2019)"
+        href: articles/Du_2019_magnesiumSulfate_eclampsia.html
       - text: "ManaglinatDialanetil activeMoiety (Kastrissios 2012)"
         href: articles/Kastrissios_2012_managlinatDialanetil.html
       - text: "ManaglinatDialanetil linked (Kastrissios 2012)"
@@ -6061,6 +6063,7 @@ articles:
   - articles/Downes_2022_tobramycin
   - articles/Downes_2023_vancomycin
   - articles/Drweesh_2026_adalimumab
+  - articles/Du_2019_magnesiumSulfate_eclampsia
   - articles/Du_2025_repotrectinib
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
