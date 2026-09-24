@@ -3268,6 +3268,8 @@ navbar:
         href: articles/McCann_2025_midazolam.html
       - text: "Midazolam (Swart 2004)"
         href: articles/Swart_2004_lorazepam_midazolam.html
+      - text: "Midazolam (Voller 2019)"
+        href: articles/Voller_2019_midazolam.html
       - text: "Midazolam (Xie 2025)"
         href: articles/Xie_2025_midazolam.html
       - text: "Midazolam (vanRongen 2015)"
@@ -7850,6 +7852,7 @@ articles:
   - articles/Visscher_2025_parathyroidHormone
   - articles/Volkova_2023_lipidLowering_mace_mbma
   - articles/Voller_2017_phenobarbital
+  - articles/Voller_2019_midazolam
   - articles/Vollmer_2023_cefepime_enmetazobactam
   - articles/Vonk_2025_tezacaftor_ivacaftor
   - articles/Vorontsova_2022_misoprostol
