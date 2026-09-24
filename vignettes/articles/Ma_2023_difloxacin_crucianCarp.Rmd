@@ -404,7 +404,12 @@ sim_cohort <-
   rxode2::rxSolve(mod, ev_cohort, returnType = "data.frame") |>
   mutate(treatment = "20 mg/kg")
 
-stopifnot(dplyr::n_distinct(sim_cohort$id) == n_fish, all(sim_cohort$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(
+  dplyr::n_distinct(sim_cohort$id) == n_fish,
+  all(sim_cohort$Cc >= -1e-6 * max(sim_cohort$Cc, na.rm = TRUE))
+)
 ```
 
 ```{r figure-4, echo = FALSE}

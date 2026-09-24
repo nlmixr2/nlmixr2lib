@@ -446,7 +446,9 @@ subj <- cohort |>
 
 stopifnot(
   nrow(subj) == nrow(armGrid) * N_ARM,
-  all(cohort$Cc[!is.na(cohort$Cc)] >= 0)
+  # a numerically integrated ODE undershoots zero by about its absolute
+  # tolerance on a decaying tail (observed -5.6e-12 at atol 1e-10)
+  all(cohort$Cc[!is.na(cohort$Cc)] >= -1e-9)
 )
 cat("simulated subjects:", nrow(subj), "in", nrow(armGrid), "arms\n")
 ```

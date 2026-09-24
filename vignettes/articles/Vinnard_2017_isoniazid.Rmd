@@ -484,7 +484,10 @@ sim <- rxode2::rxSolve(mod, events, keep = c("genotype", "CD8_CD38DR_PCT"),
                        returnType = "data.frame")
 sim <- sim[!is.na(sim$Cc), ]
 sim$genotype <- factor(sim$genotype, levels = genotypes$genotype)
-stopifnot(nrow(sim) > 0, all(sim$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance on the
+# way to the 48 h trough; a genuinely negative concentration would be
+# comparable to the peak.
+stopifnot(nrow(sim) > 0, all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
 ```
 
 ```{r vpc}
