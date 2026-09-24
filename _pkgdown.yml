@@ -4504,6 +4504,8 @@ navbar:
         href: articles/Nikanjam_2019_siltuximab.html
       - text: "Simvastatin (Jin 2014)"
         href: articles/Jin_2014_simvastatin.html
+      - text: "Simvastatin qsp (PichardoAlmarza 2017)"
+        href: articles/PichardoAlmarza_2017_simvastatin_qsp.html
       - text: "Sipoglitazar (Stringer 2013)"
         href: articles/Stringer_2013_sipoglitazar.html
       - text: "Sipoglitazar (Stringer 2014)"
@@ -7026,6 +7028,7 @@ articles:
   - articles/Pettersen_2009_pantoprazole
   - articles/Pfaffendorf_2026_fosmidomycin_clindamycin
   - articles/Philippe_2015_cyclosporine
+  - articles/PichardoAlmarza_2017_simvastatin_qsp
   - articles/Pierre_2017_morphine
   - articles/PillaReddy_2013_panss_subscales
   - articles/Pillai_2004_ibandronate

@@ -170,6 +170,8 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
+- Add Pichardo-Almarza 2017 simvastatin ([doi:10.3389/fphar.2017.00635](https://doi.org/10.3389/fphar.2017.00635)) -- healthy adult male volunteers; the PKPD module of a QSP model of atherosclerosis and statin adherence.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
