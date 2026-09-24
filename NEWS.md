@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kay 2018 dapivirine ([doi:10.1111/bcp.13625](https://doi.org/10.1111/bcp.13625)) -- healthy non-pregnant women using a vaginal ring or film for HIV pre-exposure prophylaxis.
+- Add Brussee 2018 midazolam ([doi:10.1007/s11095-018-2458-6](https://doi.org/10.1007/s11095-018-2458-6)) -- post-operative children 1-18 years of age.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

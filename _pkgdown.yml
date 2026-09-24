@@ -3174,6 +3174,8 @@ navbar:
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam children adolescents (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam children pbpk (Brussee 2018b)"
+        href: articles/Brussee_2018b_midazolam_children_pbpk.html
       - text: "Midazolam circadian (vanRongen 2015)"
         href: articles/vanRongen_2015_midazolam_circadian.html
       - text: "Midazolam crrt (McKnite 2026)"
