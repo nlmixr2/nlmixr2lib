@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nishiyama 2019 metformin and cimetidine PBPK models and their combined renal-transporter interaction model ([doi:10.1002/psp4.12398](https://doi.org/10.1002/psp4.12398)) -- healthy adults.
+- Add Faisal 2019 enalapril and enalaprilat ([doi:10.3389/fped.2019.00281](https://doi.org/10.3389/fped.2019.00281)) -- healthy adults given enalapril as orodispersible minitablets or reference tablets.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

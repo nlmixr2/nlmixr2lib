@@ -1666,10 +1666,16 @@ navbar:
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
         href: articles/Valade_2015_emtricitabine.html
+      - text: "Enalapril (Faisal 2019)"
+        href: articles/Faisal_2019_enalapril.html
       - text: "Enalapril enalaprilat pediatric (Steichert 2025)"
         href: articles/Steichert_2025_enalapril_enalaprilat_pediatric.html
+      - text: "Enalapril odmt (Faisal 2019)"
+        href: articles/Faisal_2019_enalapril.html
       - text: "Enalapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Enalapril reference (Faisal 2019)"
+        href: articles/Faisal_2019_enalapril.html
       - text: "Encorafenib (Yang 2026)"
         href: articles/Yang_2026_encorafenib.html
       - text: "Enflicoxib (Cendros 2025)"
@@ -6438,6 +6444,7 @@ articles:
   - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
+  - articles/Faisal_2019_enalapril
   - articles/Falkenhagen_2023_warfarin_qsp
   - articles/Fan_2024_sirolimus
   - articles/Fan_2025_antiCD4_nanobody_HIV
