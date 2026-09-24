@@ -4818,6 +4818,8 @@ navbar:
         href: articles/Stringer_2014_sipoglitazar.html
       - text: "Sipoglitazar mixture (Stringer 2013)"
         href: articles/Stringer_2013_sipoglitazar.html
+      - text: "Siponimod (Huth 2019)"
+        href: articles/Huth_2019_siponimod.html
       - text: "Sirolimus (Fan 2024)"
         href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
@@ -6784,6 +6786,7 @@ articles:
   - articles/Hurtado_2014_levofloxacin_rat
   - articles/Hussein_1997_lamotrigine
   - articles/Hussein_2005_levocetirizine
+  - articles/Huth_2019_siponimod
   - articles/HuttonSmith_2018_ranibizumab
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
