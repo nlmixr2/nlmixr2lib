@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Brussee 2018 midazolam ([doi:10.1007/s11095-018-2458-6](https://doi.org/10.1007/s11095-018-2458-6)) -- post-operative children 1-18 years of age.
+- Add Gidal 2018 eslicarbazepine acetate ([doi:10.1111/ane.12950](https://doi.org/10.1111/ane.12950)) -- adults with focal-onset seizures and healthy subjects; one population PK model plus seven exposure-response models for safety and efficacy.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
