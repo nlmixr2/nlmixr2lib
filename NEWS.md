@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Forder 2019 calcitriol-conjugated quantum dots (control, calcitriol and SM3 anti-MUC1 + calcitriol QDs; nine PBPK models) ([doi:10.1111/cts.12664](https://doi.org/10.1111/cts.12664)) -- healthy mice and mice with early- or late-stage inflammatory breast cancer.
+- Add Dave 2019 venetoclax ([doi:10.1111/cts.12665](https://doi.org/10.1111/cts.12665)) -- healthy female subjects (PK and B-lymphocyte PD).
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
