@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Du 2019 magnesium sulfate ([doi:10.1002/jcph.1328](https://doi.org/10.1002/jcph.1328)) -- pregnant women with preeclampsia.
+- Add Zhou 2019 vancomycin ([doi:10.1007/s13318-018-0534-2](https://doi.org/10.1007/s13318-018-0534-2)) -- Chinese geriatric inpatients aged 65 years and older with pulmonary infections.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
