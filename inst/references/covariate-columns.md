@@ -6371,6 +6371,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive -3.63 shift on pre-ART CD4 z-score intercept; Ukraine reference; small-sample subgroup with n = 2).
 - **Notes:** Specific scope; pairs with the other EPPICC REGION indicators.
 
+### REGION_MOLDOVA (**canonical for Moldova study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Moldova, 0 = otherwise. Country-level study-site indicator used when a multi-regional trial reports a Moldova-vs-other contrast in popPK / PD parameters.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Moldova sites; specific reference set varies per model -- in Cantillon 2018 the reference is the pooled USA, India, Philippines and Malaysia sites).
+- **Source aliases:**
+  - `GEOG 5`, `GEOG5` -- Cantillon 2018 notation, the fifth level of a five-level "geographic area of clinical site" factor (USA, India, Philippines, Malaysia, Moldova).
+- **Example models:** `Cantillon_2018_brilaroxazine.R` (multiplicative effect on the PD Emax only, `Emaxj = Emax * (1 + c1 * REGION_MOLDOVA)` with c1 = -1.93, so Emax moves from -31.6 to +29.4 PANSS units and predicted PANSS RISES with cumulative exposure at those sites).
+- **Notes:** Specific scope. A worked example of a region indicator that the source authors interpret as a MEASUREMENT artefact rather than as pharmacology: Cantillon 2018 found the site effect on the PANSS endpoint only, with no geographic-site effect on the pharmacokinetics, and reads it as an isolated rating discrepancy at one multi-centre site ("such data would be considered as an outlier"). Encode the effect as published, but a downstream user reproducing the paper's base dose-response relationship should set the indicator to 0. A sign flip of this magnitude on a PD parameter is the signature of a single-site artefact rather than a regional pharmacological difference -- contrast the `REGION_JAPAN` entries, where the effects are modest multiplicative shifts on clearance.
+
 ### REGION_EASTASIA (**canonical for East Asian region-of-origin study-site indicator**)
 - **Description:** 1 = subject enrolled at a study site in the East Asian region, 0 = enrolled elsewhere. Multi-country regional grouping (broader than a single-country `REGION_<COUNTRY>` indicator, narrower than a Rest-of-World `REGION_ROW` bucket). The exact country membership is protocol-specific and must be documented in per-model `covariateData[[REGION_EASTASIA]]$notes`. Distinct from the `RACE_ASIAN*` family: `REGION_EASTASIA` records where a subject was enrolled, not self-reported race; source papers routinely test the two separately and can find one significant and the other not.
 - **Units:** (binary)

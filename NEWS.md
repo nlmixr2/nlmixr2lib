@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dimelow 2018 ceftazidime and avibactam ([doi:10.1007/s40268-018-0241-0](https://doi.org/10.1007/s40268-018-0241-0)) -- healthy male volunteers, plasma and epithelial lining fluid.
+- Add Cantillon 2018 brilaroxazine ([doi:10.1007/s13318-018-0472-z](https://doi.org/10.1007/s13318-018-0472-z)) -- adults with an acute exacerbation of schizophrenia or schizoaffective disorder.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
