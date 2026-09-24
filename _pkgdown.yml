@@ -3928,6 +3928,10 @@ navbar:
         href: articles/Wattanakul_2024_primaquine_lactation.html
       - text: "PrimaquineCarbamoylGlucuronide (Chotsiri 2024)"
         href: articles/Chotsiri_2024_primaquine_metabolites.html
+      - text: "Probody cd166 human qsp (Stroh 2019)"
+        href: articles/Stroh_2019_probody_cd166_qsp.html
+      - text: "Probody cd166 monkey qsp (Stroh 2019)"
+        href: articles/Stroh_2019_probody_cd166_qsp.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
       - text: "Proguanil (Khwarg 2024)"
@@ -7257,6 +7261,7 @@ articles:
   - articles/Stringer_2014_sipoglitazar
   - articles/Stringer_2015_pioglitazone
   - articles/Stroh_2013_rolofylline
+  - articles/Stroh_2019_probody_cd166_qsp
   - articles/Struemper_2017_belimumab
   - articles/Struemper_2025_tumorsize_OS_nsclc
   - articles/Su_2016_dexmedetomidine
