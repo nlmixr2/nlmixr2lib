@@ -2786,6 +2786,8 @@ navbar:
         href: articles/Thomson_1989_lisinopril.html
       - text: "LngIus52mg (Jensen 2023)"
         href: articles/Jensen_2023_lngIus52mg.html
+      - text: "Lobaplatin (Cheng 2019)"
+        href: articles/Cheng_2019_lobaplatin.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
       - text: "Lopinavir (Crommentuyn 2005)"
@@ -6185,6 +6187,7 @@ articles:
   - articles/Chen_2025_remimazolam
   - articles/Chen_2025_vancomycin
   - articles/Chen_2026_nsclc_os_mbma
+  - articles/Cheng_2019_lobaplatin
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/Chetty_2014_efalizumab_cd11a_pasi

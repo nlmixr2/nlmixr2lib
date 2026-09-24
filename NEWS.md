@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2019 one-compartment missing-dosing-history simulation models ([doi:10.1002/psp4.12374](https://doi.org/10.1002/psp4.12374)) -- a hypothetical drug in simulated virtual subjects (methodology reference; base and covariate variants).
+- Add Cheng 2019 lobaplatin ([doi:10.1097/MD.0000000000014136](https://doi.org/10.1097/MD.0000000000014136)) -- elderly Chinese adults aged 65 years and older with small cell lung cancer.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
