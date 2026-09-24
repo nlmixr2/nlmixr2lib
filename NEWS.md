@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Borsuk-De Moor 2018 tigecycline ([doi:10.1128/AAC.02273-17](https://doi.org/10.1128/AAC.02273-17)) -- adults with sepsis or septic shock in intensive care, on the high-dose regimen.
+- Add Bi 2018 testosterone cypionate ([doi:10.1002/psp4.12287](https://doi.org/10.1002/psp4.12287)) -- healthy men receiving 14 weekly supratherapeutic intramuscular injections.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
