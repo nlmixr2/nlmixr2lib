@@ -573,7 +573,7 @@
   ([doi:10.1016/j.bonr.2026.101916](https://doi.org/10.1016/j.bonr.2026.101916))
   — Chinese postmenopausal women with osteoporosis.
 
-- Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders.
+- Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Darwish 2026 remlifanserin ([doi:10.1002/trc2.70254](https://doi.org/10.1002/trc2.70254)) -- healthy young and older adults across seven Phase 1 studies.
 
