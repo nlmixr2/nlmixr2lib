@@ -3534,6 +3534,8 @@ navbar:
         href: articles/Kretsos_2014_olokizumab.html
       - text: "Olprinone (Kunisawa 2014)"
         href: articles/Kunisawa_2014_olprinone.html
+      - text: "Omalizumab (Brekkan 2018)"
+        href: articles/Brekkan_2018_omalizumab.html
       - text: "Omalizumab (Hayashi 2007)"
         href: articles/Hayashi_2007_omalizumab.html
       - text: "Omalizumab (Lowe 2009)"
@@ -5959,6 +5961,7 @@ articles:
   - articles/Brandon_2026_mitoxantrone
   - articles/Braniff_2025_lorlatinib_qsp
   - articles/Brekkan_2016_factorIX
+  - articles/Brekkan_2018_omalizumab
   - articles/Brenner_2016_pamrevlumab_rat
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
