@@ -852,6 +852,12 @@ navbar:
         href: articles/Bulitta_2011_cefpirome.html
       - text: "Cefpirome (Kang 2020)"
         href: articles/Kang_2020_cefpirome.html
+      - text: "Cefprozil cis (Jang 2019)"
+        href: articles/Jang_2019_cefprozil.html
+      - text: "Cefprozil total (Jang 2019)"
+        href: articles/Jang_2019_cefprozil.html
+      - text: "Cefprozil trans (Jang 2019)"
+        href: articles/Jang_2019_cefprozil.html
       - text: "Cefquinome enrofloxacin lung aucmic (Wei 2026)"
         href: articles/Wei_2026_enrofloxacin_cefquinome.html
       - text: "Cefquinome enrofloxacin lung cmaxmic (Wei 2026)"
@@ -6391,6 +6397,7 @@ articles:
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
   - articles/James_2025_fepixnebart
+  - articles/Jang_2019_cefprozil
   - articles/Jang_2023_zaltoprofen
   - articles/Jansen_2023_itraconazole
   - articles/Janssen_2017_cabazitaxel_phenotyping
