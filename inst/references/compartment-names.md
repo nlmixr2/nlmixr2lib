@@ -885,6 +885,20 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Willemin_2024_interleukin6_cyp_talquetamab.R`.
 - **Notes:** Initial condition `enzyme_3a4(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_talquetamab.R`. Distinct from a tissue-resolved `enzyme_liver` / `enzyme_gut` pair, which names the organ rather than the isoenzyme; use `enzyme_3a4` when several isoenzymes are resolved within one tissue, and the organ-suffixed form when one isoenzyme is resolved across several organs.
 
+### enzyme_liver (**canonical tissue-resolved hepatic enzyme pool**)
+- **Type:** compartment
+- **Role:** Hepatic drug-metabolising enzyme pool in a model that resolves **one** isoenzyme across **several organs**, rather than several isoenzymes within one organ. The state is the enzyme level as a fraction of its untreated baseline, so the initial condition is `enzyme_liver(0) <- 1`. Which isoenzyme it represents is carried by the model's `description` and `compartmentData$analyte`, not by the name -- that is the division of labour the `enzyme_3a4` entry prescribes ("use `enzyme_3a4` when several isoenzymes are resolved within one tissue, and the organ-suffixed form when one isoenzyme is resolved across several organs").
+- **Source aliases:** `E`, `E_Tot`, `E-bar_Tot`.
+- **Example models:** `CherkaouiRbati_2017_midazolam_qsp.R` (founding example; CYP3A4, spatially resolved along the sinusoid as `enzyme_liver_slab1`..`enzyme_liver_slab21` and paired with `enzyme_gut`).
+- **Notes:** Composes with the `<tissue>_slab<n>` method-of-lines family below, which is why the stem is alphabetic: `slabCompartmentRegex` admits only lowercase letters and underscores before `_slab`, so an isoenzyme-named stem such as `enzyme_3a4_liver` cannot be discretised while `enzyme_liver` can. A model that needs both several isoenzymes and several organs should register the combined form explicitly rather than assuming it composes.
+
+### enzyme_gut (**canonical tissue-resolved gut-wall enzyme pool**)
+- **Type:** compartment
+- **Role:** Enterocyte (gut-wall) drug-metabolising enzyme pool, the intestinal counterpart of `enzyme_liver` in a model that resolves one isoenzyme across several organs. Normalised to its untreated baseline, so `enzyme_gut(0) <- 1`. Gut-wall enzyme turns over faster than hepatic enzyme (for CYP3A4, `k_deg` 0.0288 vs 0.0192 /h), so intestinal induction and mechanism-based inactivation reach steady state sooner than hepatic; carrying the two pools separately is what lets a DDI model split first-pass from systemic interaction.
+- **Source aliases:** `E_g`, `E-bar_Tot,g`.
+- **Example models:** `CherkaouiRbati_2017_midazolam_qsp.R` (founding example; CYP3A4 in the enterocyte sub-compartment of a two-part gut, paired with `enzyme_liver_slab<n>`).
+- **Notes:** Distinct from `a_gut`, which is the drug amount in the same tissue. See `enzyme_liver` for why the isoenzyme is named in metadata rather than in the state name.
+
 ### enzyme_3a5 (**canonical CYP3A5 enzyme pool**)
 - **Type:** compartment
 - **Role:** CYP3A5 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
@@ -1149,6 +1163,19 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Zurlinden_2016_paracetamol.R`.
 
+### a_portal (**canonical PBPK portal-vein compartment**)
+- **Type:** compartment
+- **Role:** Portal-vein blood compartment on the PBPK organ-amount namespace, collecting splanchnic venous outflow and delivering it to the liver alongside the hepatic artery. The amount-namespace sibling of the bare `portal` root, exactly as `a_venous` is to `venous`; use `a_portal` in a mass-balance PBPK model whose other states are `a_<organ>` amounts, and `portal` in a concentration-state model.
+- **Source aliases:** `C_pv`, `PV`.
+- **Example models:** `CherkaouiRbati_2017_midazolam_qsp.R` (founding example; the portal-vein sub-compartment of the paper's two-part gut, receiving arterial inflow at `Q_pv` plus the enterocyte efflux `Q_g * f_u^g * C_g`).
+
+### a_remainder (**canonical PBPK lumped rest-of-body compartment**)
+- **Type:** compartment
+- **Role:** Single lumped compartment for every tissue a PBPK model does not resolve individually -- the "rest of body" of a model that carries only a few named organs. Perfusion-limited, with its own volume and a volume-weighted average partition coefficient formed from the tissues it absorbs. Distinct from `a_rapidly_perfused` / `a_slowly_perfused`, which are a **two-way** kinetic split of the unresolved tissues; `a_remainder` is used when the source lumps them all into one.
+- **Source aliases:** `RB`, `C_RB`, `rest of the body`.
+- **Example models:** `CherkaouiRbati_2017_midazolam_qsp.R` (founding example; adipose, bone, brain, heart, muscle, pancreas, skin, spleen and stomach lumped into 63.67 L with `K_p,RB` the volume-weighted mean of their individual partition coefficients).
+- **Notes:** The register already admits `remainder` as an organ token in `pbpkSubCompartmentRegex`; this entry adds the bare organ-amount form. Prefer a named organ whenever the source resolves one -- `a_remainder` should be the model's only lumped state, not a dumping ground alongside other lumps.
+
 ### a_urine (**canonical PBPK urinary excretion compartment**)
 - **Type:** compartment
 - **Role:** Urinary excretion compartment on the PBPK organ-amount namespace. Distinct from the bare `urine` compartment; PBPK models track urine on the `a_<organ>` namespace alongside the other amount-tracking compartments.
@@ -1398,8 +1425,10 @@ Rules for using the family:
 - **Role:** One spatial slab of a tissue across which a diffusion PDE is solved by the method of lines. Slab 1 carries the entry-face boundary condition (a flux, or a partition-coefficient-mediated concentration), interior slabs exchange with their two neighbours by `D * A / h * (C_i - C_i+1)`, and the far face carries the exit boundary condition -- typically a perfect sink `C(t, l) = 0`, whose flux is computed over a half-cell distance and delivered to the paired perfused compartment.
 - **Source aliases:**
   - `Ctiss(x)` -- Salehi 2025 Equation 1 (the continuous field these slabs discretise).
-- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1`.. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`).
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1`.. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`); `CherkaouiRbati_2017_midazolam_qsp.R` (**convection** rather than diffusion -- `sinusoid_slab1`..`sinusoid_slab21`, `hepatocyte_slab1`..`hepatocyte_slab21` and `enzyme_liver_slab1`..`enzyme_liver_slab21` over the 691.1 um blood path of a liver lobule, with a second drug on the same mesh as `sinusoid_perpetrator_slab<n>`).
 - **Notes:** Validated by `slabCompartmentRegex` rather than by an enumerated list, since the slab count varies per model. Do not use this family for physiologically distinct serial compartments -- those get role-based names.
+- **Not only diffusion.** The family covers any PDE reduced by the method of lines, including first-order **convection** (`dC/dt + v(x) dC/dx = ...`), where the inter-slab term is an upwind difference carrying flow from slab `n-1` to slab `n` rather than a symmetric diffusive exchange. Two consequences worth checking when adding such a model: slab 1 takes the **inflow boundary condition** (the concentration entering the tissue) instead of a flux, and the scheme is mass-conservative only if the per-slab volume and velocity are mutually consistent -- in `CherkaouiRbati_2017_midazolam_qsp` the product `V_slab * v(x) / dx` is the whole-organ blood flow at **every** slab, so the advection terms telescope to `Q * (C_in - C_out)` and whole-organ mass balance is an exact test of the mesh.
+- **A non-drug field may share the mesh.** When the paper's PDE couples drug transport to a spatially varying local quantity -- an enzyme level, a binding-site density, an oxygen tension -- give that field its own slab chain on the same mesh (`enzyme_liver_slab<n>`) rather than averaging it, and state in `compartmentData` that the state is a fold-of-baseline rather than an amount. Spatial variation in the coupled field is usually the paper's point.
 
 ---
 
@@ -5689,6 +5718,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Role:** Glucuronide suffix used by paracetamol PBPK template / placeholder extraction. Sibling of the Allegaert 2015 `gluc`.
 - **Source aliases:** none.
 - **Example models:** `NA_NA_paracetamol.R`.
+
+### perpetrator (**canonical interacting-drug analyte-role suffix**)
+- **Type:** metabolite-suffix
+- **Role:** The **second drug** carried by a drug-drug-interaction model: the perpetrator (precipitant) whose presence perturbs the disposition of the victim (object) drug, which keeps the bare canonical names. Unlike every other suffix in this register, it names an analyte **role** rather than a specific molecule, because a DDI model's perpetrator slot is parameterised -- one model file reproduces a whole panel of interacting drugs by substituting that drug's `ini()` values, and hard-coding any one molecule into the state names would misname the model the moment a different perpetrator is simulated.
+- **Source aliases:** `perpetrator`, `precipitant`, `inhibitor`, `inducer`, `drug 2`.
+- **Example models:** `CherkaouiRbati_2017_midazolam_qsp.R` (founding example; midazolam is the victim probe and takes the bare names `a_venous` / `a_gut` / `sinusoid_slab<n>`, while `a_venous_perpetrator` / `a_gut_perpetrator` / `sinusoid_perpetrator_slab<n>` carry whichever of the paper's ten CYP3A4 perpetrators is parameterised).
+- **Notes:** Use only when the second analyte is genuinely a parameterised slot. A DDI model that studies one named perpetrator and only that perpetrator should register and use that drug's own suffix instead, so the state names say what they hold. Because the `<tissue>_slab<n>` family requires the suffix to sit **inside** the stem, the spatially discretised form is `sinusoid_perpetrator_slab<n>`, not `sinusoid_slab<n>_perpetrator`.
 
 ### cot (**canonical cotinine suffix**)
 - **Type:** metabolite-suffix

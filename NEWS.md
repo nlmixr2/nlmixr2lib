@@ -2,7 +2,10 @@
 
 # development version
 
-- Add Bursi 2017 lidocaine 5% medicated plaster ([doi:10.1007/s13318-017-0400-7](https://doi.org/10.1007/s13318-017-0400-7)) - adults with post-herpetic neuralgia. Identifies the previously unlinked publication behind the DDMORE model `NA_NA_lidocaine` (DDMODEL00000281); the two are now cross-linked via `replicate_of`.
+- Add Cherkaoui-Rbati 2017 midazolam CYP3A4 drug-drug interaction QSP model
+  ([doi:10.1371/journal.pone.0183794](https://doi.org/10.1371/journal.pone.0183794))
+  -- healthy adults across 10 published interaction studies.
+
 - Generate the model database and the pkgdown navbar in the C collation
   whatever the rebuilding machine's `LC_COLLATE` is. `sort()`, `order()`,
   `list.files()` and `Sys.glob()` all follow the collation locale, and C and

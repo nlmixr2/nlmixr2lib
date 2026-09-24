@@ -3110,6 +3110,8 @@ navbar:
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Midazolam postecmo (Kim 2026)"
         href: articles/Kim_2026_midazolam.html
+      - text: "Midazolam qsp (CherkaouiRbati 2017)"
+        href: articles/CherkaouiRbati_2017_midazolam_qsp.html
       - text: "Midazolam rat pbpk (Yau 2023)"
         href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Midazolam rugt1a4 (Hyland 2009)"
