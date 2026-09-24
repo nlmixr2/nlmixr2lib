@@ -4025,33 +4025,12 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Chatterjee_2017_pembrolizumab_mixture.R` (derived output of the second-stage multinomial regression; the corresponding class indicator covariate is `MIX_MONO_FAST`).
 - **Notes:** The rarest of the four classes in the founding cohort (about 6%); the source Discussion warns that classes this small are hard to distinguish from sparse tumour-size data. See `prob_escape` for why these are derived variables rather than observation endpoints.
 
-### prob_sbm_responder (**canonical spontaneous-bowel-movement responder probability output**)
+### prob_moaas0 ... prob_moaas5, prob_moaas_le0 ... prob_moaas_le4 (**canonical MOAA/S sedation-score category and cumulative probability outputs**)
 - **Type:** compartment
-- **Role:** Probability that a patient with opioid-induced constipation (OIC) meets the trial's composite spontaneous-bowel-movement (SBM) responder definition over the whole treatment period. A landmark efficacy endpoint: one binary record per subject, regressed on the steady-state exposure metric. The responder definition is trial-specific and must be read from the model file -- it is NOT a fixed clinical threshold. In the founding paper the 28-day phase 2b definition (3 or more SBMs per week in the last 2 weeks AND an average increase of 1 or more per week from baseline) differs from the 12-week phase 3 definition (9 or more positive response weeks out of 12 AND 3 out of the last 4), which is precisely why the authors fitted the two study sets separately.
-- **Source aliases:** none. Source papers write `SBM responder`, `Responder`, or `P(SBM responder)`.
-- **Example models:** `Kubota_2018_naldemedine_sbm_phase2b.R`, `Kubota_2018_naldemedine_sbm_phase3.R` (founding examples; logistic in `AUC_NALD`, with placebo subjects entering at AUCss = 0).
-- **Notes:** An SBM is a bowel movement with no rescue laxative in the preceding 24 h, so this is a *spontaneous*-defecation endpoint and is not interchangeable with a total-bowel-movement or laxative-use endpoint. A subject with insufficient response data was counted as a NON-responder in the founding phase 3 analysis, so the endpoint is conservative with respect to missing data.
-
-### prob_gi_mild_or_worse (**canonical mild-or-worse gastrointestinal-disorder probability output**)
-- **Type:** compartment
-- **Role:** Probability of a treatment-emergent adverse event in the gastrointestinal-disorders system organ class of MILD or greater severity -- i.e. the probability of any reported GI event, the least strict of the cumulative severity thresholds. Landmark safety endpoint, one binary record per subject.
-- **Source aliases:** none. Source tables label the row `Mild, Moderate, Severe`.
-- **Example models:** `Kubota_2018_naldemedine_gi_mild_phase2b.R`, `Kubota_2018_naldemedine_gi_mild_phase3.R` (founding examples).
-- **Notes:** The three `prob_gi_*` endpoints are CUMULATIVE thresholds on one severity scale, not disjoint categories, so `prob_gi_mild_or_worse >= prob_gi_moderate_or_worse >= prob_gi_severe` by construction. They are nonetheless fitted as INDEPENDENT logistic regressions in the founding paper -- each threshold gets its own freely estimated intercept and slope, with no proportional-odds constraint linking them. Do not read the set as an ordinal model, and do not difference two of them to obtain a per-category probability without checking that the ordering actually holds at the exposure of interest.
-
-### prob_gi_moderate_or_worse (**canonical moderate-or-worse gastrointestinal-disorder probability output**)
-- **Type:** compartment
-- **Role:** Probability of a treatment-emergent gastrointestinal-disorder adverse event of MODERATE or greater severity. Landmark safety endpoint, one binary record per subject.
-- **Source aliases:** none. Source tables label the row `Moderate, Severe`.
-- **Example models:** `Kubota_2018_naldemedine_gi_moderate_phase2b.R`, `Kubota_2018_naldemedine_gi_moderate_phase3.R` (founding examples).
-- **Notes:** See `prob_gi_mild_or_worse` for why the three severity thresholds are cumulative but independently fitted.
-
-### prob_gi_severe (**canonical severe gastrointestinal-disorder probability output**)
-- **Type:** compartment
-- **Role:** Probability of a SEVERE treatment-emergent gastrointestinal-disorder adverse event, the strictest of the cumulative severity thresholds. Landmark safety endpoint, one binary record per subject.
-- **Source aliases:** none. Source tables label the row `Severe`.
-- **Example models:** `Kubota_2018_naldemedine_gi_severe_phase3.R` (founding example).
-- **Notes:** See `prob_gi_mild_or_worse` for why the three severity thresholds are cumulative but independently fitted. A severe-only threshold is often unestimable in a small study because no severe event occurs -- the founding paper has no phase 2b counterpart to this model for exactly that reason -- so the absence of a severe-threshold companion alongside a mild and moderate pair is informative, not an omission.
+- **Role:** Probabilities (0..1) attached to the Modified Observer's Assessment of Alertness/Sedation (MOAA/S) scale, a six-level ordinal sedation score running 5 (fully alert, responds readily to name spoken in a normal tone) down to 0 (does not respond to a painful trapezius squeeze). `prob_moaas<k>` is the probability of scoring exactly `k`; `prob_moaas_le<k>` is the cumulative probability of scoring `k` or lower, i.e. being at least that deeply sedated. Output by an ordered-categorical (proportional-odds) PD model in which a drug term raises every cumulative logit, so that deeper sedation becomes more likely as exposure rises.
+- **Source aliases:** `P0` ... `P5` and `P0_1` -- the trace labels of Zhou 2018 Figure 5, where `P0_1` is `P0 + P1` and equals `prob_moaas_le1`.
+- **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint).
+- **Notes:** Probability outputs in `[0, 1]`. Members of the `prob_<endpoint>` family and validated by `probOutputRegex` rather than by enumeration, but documented here because the two suffix conventions are load-bearing and cannot be read off the name alone. **`_le<k>` is cumulative and `<k>` bare is exact**; the bare form is obtained by differencing adjacent cumulative forms, and the two must never be mixed in one comparison. **The scale is inverted relative to intuition**: a HIGHER MOAA/S score means a MORE alert subject, so `prob_moaas_le1` -- the standard clinical definition of loss of consciousness, "MOAA/S < 2" -- INCREASES with drug exposure. A six-level scale has only five free cutpoints because the top cumulative probability `P(MOAA/S <= 5)` is identically 1 and is therefore not registered; a source reporting five baseline values is reporting cutpoints for scores 0 through 4, which their required monotone ordering confirms. Unlike most of the `prob_<endpoint>` family these are **time-varying**: the driver is an effect-site concentration evolving under an ODE, not a scalar landmark exposure metric, which puts them alongside `prob_scc` rather than alongside `prob_orr_central`. Distinct from the continuous processed-EEG sedation index `BIS`, which the same papers often model in parallel from the same effect compartment but with its own equilibration rate constant; MOAA/S is an observer-scored ordinal judgement and BIS is an instrument reading, and the two do not share cutpoints.
 
 ---
 

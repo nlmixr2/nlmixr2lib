@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ashraf 2018 S-ketamine + norketamine + ticlopidine ([doi:10.1002/psp4.12346](https://doi.org/10.1002/psp4.12346)) -- healthy adult volunteers.
+- Add Zhou 2018 remimazolam ([doi:10.3389/fphar.2018.01316](https://doi.org/10.3389/fphar.2018.01316)) -- Chinese healthy adult volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
