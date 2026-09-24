@@ -4114,6 +4114,8 @@ navbar:
         href: articles/Wang_2011_raltegravir.html
       - text: "Raltitrexed (Blair 2004)"
         href: articles/Blair_2004_raltitrexed.html
+      - text: "Ramucirumab (OBrien 2017)"
+        href: articles/OBrien_2017_ramucirumab.html
       - text: "Ranibizumab (HuttonSmith 2018)"
         href: articles/HuttonSmith_2018_ranibizumab.html
       - text: "Ranibizumab (Mulyukov 2018)"
@@ -6969,7 +6971,7 @@ articles:
   - articles/Niu_2017_veliparib
   - articles/Noe_1996_factor_viii
   - articles/Novakovic_2017_cladribine
-  - articles/Nyangwa_2026_pretomanid
+  - articles/OBrien_2017_ramucirumab
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
