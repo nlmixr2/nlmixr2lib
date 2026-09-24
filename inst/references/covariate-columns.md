@@ -6411,6 +6411,67 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Sun_2025_maribavir_cmv_clearance_wk8.R` (coefficient `-1.45` on the primary efficacy logit), `Sun_2025_maribavir_cmv_clearance_wk16.R` (`-1.49`), `Sun_2025_maribavir_dysgeusia.R` (`-0.455`), `Sun_2025_maribavir_anemia.R` (`+1.14`, OR 3.12).
 - **Notes:** Broader than `REGION_JAPAN` and `REGION_EASTASIA`, which it therefore does NOT alias: Asia Pacific as a trial-operations region conventionally spans East Asia, South-East Asia and Oceania, so a subject enrolled in Australia has `REGION_ASIAPACIFIC = 1` and `REGION_EASTASIA = 0`. Distinct from `RACE_ASIAN` (subject ancestry): Sun 2025 Table S2 records 41 subjects enrolled in Asia Pacific but 31 of Asian race, so the two columns disagree for at least ten subjects in the founding cohort alone -- a concrete reminder that region and ancestry are not interchangeable. Where a paper's three-way split has North America rather than the US as the reference, the reference arm is "both `REGION_EUROPE` and `REGION_ASIAPACIFIC` equal 0" and no separate North America indicator is registered. Scope: specific until a second model ratifies the name; at that point consider promoting to `general` alongside the rest of the `REGION_*` family.
 
+### REGION_MPUMALANGA (**canonical for the Mpumalanga (South Africa) study-site indicator**)
+- **Description:** 1 = study site is Mpumalanga, South Africa, 0 = otherwise. Sub-country study-site indicator for pooled sub-Saharan African antimalarial analyses that estimate an effect for an individual site rather than for a whole country.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Mpumalanga sites; the reference set is paper-specific -- in de Kock 2018 the sulfadoxine reference group is Magude, Bancoumana, Bela Vista, Catuane and Chileka).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (one of three sites sharing a single estimated -39.7% multiplicative scaling of the predicted sulfadoxine whole-blood concentration; carries no pyrimethamine effect).
+- **Notes:** First member of the `REGION_*` family to name a study SITE below country level. The extension is deliberate: the family is documented as a "study-site / enrollment-country indicator", and a pooled analysis with several sites in one country (de Kock 2018 has five Mozambican sites) cannot express its site effects with country indicators. Per-site indicators are preferred over one composite column per estimated group because the grouping is the source paper's modelling choice, not a property of the data -- `model()` sums the member indicators into a group-membership flag. Compare `REGION_MOZAMBIQUE` / `REGION_SUDAN` / `REGION_ZAMBIA`, which serve the same role in the sibling `deKock_2017_sulfadoxinePyrimethamine.R` where each country contributed exactly one site.
+
+### REGION_BOANE (**canonical for the Boane (Mozambique) study-site indicator**)
+- **Description:** 1 = study site is Boane, Mozambique, 0 = otherwise. Sub-country study-site indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Boane sites; in de Kock 2018 the sulfadoxine reference group is Magude, Bancoumana, Bela Vista, Catuane and Chileka).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (shares the -39.7% sulfadoxine observation-scaling effect with `REGION_MPUMALANGA` and `REGION_NAMAACHA`; carries no pyrimethamine effect).
+- **Notes:** One of the four Allen et al. sites in the de Kock 2018 pool (Boane, Catuane, Magude, Namaacha). Nested inside `REGION_MOZAMBIQUE`; a model that needs the country contrast rather than the site contrast should use that column instead of summing the site indicators.
+
+### REGION_NAMAACHA (**canonical for the Namaacha (Mozambique) study-site indicator**)
+- **Description:** 1 = study site is Namaacha, Mozambique, 0 = otherwise. Sub-country study-site indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Namaacha sites; the reference set differs per drug in de Kock 2018 -- see Notes).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (the only site carrying a scaling effect for BOTH drugs: it shares the -39.7% sulfadoxine observation scaling with `REGION_MPUMALANGA` and `REGION_BOANE`, and it is alone in the -22.0% pyrimethamine observation-scaling group).
+- **Notes:** Namaacha contributed patients to two of the four pooled trials in de Kock 2018 -- Barnes et al. (n = 91) and Allen et al. (n = 72) -- and appears twice in that paper's Table 1 for that reason; the covariate model treats the site as one group regardless of which trial enrolled the patient, so this indicator is set for both. A worked caution on why per-site indicators beat composite group columns: Namaacha belongs to a different group for each drug, so a composite-per-group encoding would need the same subject flagged in two mutually inconsistent columns.
+
+### REGION_BANCOUMANA (**canonical for the Bancoumana (Mali) study-site indicator**)
+- **Description:** 1 = study site is Bancoumana, Mali, 0 = otherwise. Sub-country study-site indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Bancoumana sites; in de Kock 2018 the pyrimethamine reference group is Magude, Mpumalanga, Boane and Chileka).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (one of three sites sharing a single estimated +20.2% multiplicative scaling of the predicted pyrimethamine whole-blood concentration; carries no sulfadoxine effect).
+- **Notes:** The sole site of the Tekete et al. trial (n = 114) in the de Kock 2018 pool, and the only Malian site; a model needing the country contrast can use this column directly.
+
+### REGION_BELAVISTA (**canonical for the Bela Vista (Mozambique) study-site indicator**)
+- **Description:** 1 = study site is Bela Vista, Mozambique, 0 = otherwise. Sub-country study-site indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Bela-Vista sites; in de Kock 2018 the pyrimethamine reference group is Magude, Mpumalanga, Boane and Chileka).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (shares the +20.2% pyrimethamine observation-scaling effect with `REGION_BANCOUMANA` and `REGION_CATUANE`; carries no sulfadoxine effect).
+- **Notes:** The two-word place name is run together without a separator so the canonical stays a single token, matching `REGION_EASTASIA` and `REGION_ASIAPACIFIC`. Nested inside `REGION_MOZAMBIQUE`.
+
+### REGION_CATUANE (**canonical for the Catuane (Mozambique) study-site indicator**)
+- **Description:** 1 = study site is Catuane, Mozambique, 0 = otherwise. Sub-country study-site indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Catuane sites; in de Kock 2018 the pyrimethamine reference group is Magude, Mpumalanga, Boane and Chileka).
+- **Source aliases:**
+  - `Cutuane` -- the spelling used in the de Kock 2018 Table 1 column header. The same site is spelled `Catuane` in that paper's Table 2 footnotes and Results text, which is where the covariate effect itself is reported, so `Catuane` is the canonical spelling.
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (shares the +20.2% pyrimethamine observation-scaling effect with `REGION_BANCOUMANA` and `REGION_BELAVISTA`; carries no sulfadoxine effect).
+- **Notes:** The smallest site in the de Kock 2018 pool (n = 33). Nested inside `REGION_MOZAMBIQUE`.
+
 ## Pediatric comorbidities
 
 ### DIS_CLD_PREM (**canonical for chronic lung disease of prematurity**)
@@ -16302,6 +16363,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** derived per subject from the pooled-analysis study identifier (`study B` -> 1; `study A` / `study C` / `study D` -> 0).
 - **Example models:** `Gotz_2025_fosfomycin.R` (gates the body-clearance arm to zero: `cl_body <- diuresis * (1 - STUDY_GERECKE) * exp(lcl_body + etalcl_body) * (CRCL/48.4)^e_crcl_cl_body`).
 - **Notes:** Gotz 2025 Table 2 footnote b prints the gate literally as `(x 0 if study B)`, and Results explains it: "CL_body was fixed to 0 for study B since these patients presented no fosfomycin elimination without KRT (Fig. 2), which led to individual CL_body estimates close to zero." The gate is NOT redundant with the anuria gate that the same model carries on `URINE_VOL_24H`: study B's median (IQR) 24-hour urine output was 700 (500-1000) mL, so no study B patient meets that model's < 100 mL anuria criterion, and both gates have to be carried separately. Study B contributed 8 of the 45 pooled patients (17.8%) and also had no height, BMI, BSA or laboratory markers recorded, which is why Gotz 2025 additionally reports a sensitivity re-fit on a reduced data set (n = 37) that excludes it; Table 2 shows the two parameter sets to be consistent. Set to 0 for simulation -- the paper's own Monte Carlo scenarios (Methods, Simulations; Fig. S6) never invoke it. Specific scope because the indicator is tied to one named cohort of one pooled analysis.
+
+### STUDY_BELL (**canonical for the Bell 2011 cohort indicator in the de Kock 2018 pooled sulfadoxine-pyrimethamine analysis**)
+- **Description:** 1 = the patient is from the Bell et al. trial at Chileka, Malawi (n = 102), one of the four trials pooled in the de Kock 2018 sulfadoxine-pyrimethamine analysis; 0 = the patient is from the Barnes, Tekete or Allen trials. Multiplicative covariate on apparent pyrimethamine clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the Barnes, Tekete and Allen trials, which share the structural pyrimethamine clearance).
+- **Source aliases:**
+  - `reference 5` -- the de Kock 2018 Table 2 row label is "Difference from clearance in reference 5 (%)", where reference 5 of that paper is Bell et al.; the Results text names the study explicitly ("The study of Bell et al. (5) showed a 54.9% lower pyrimethamine clearance").
+- **Example models:** `deKock_2018_sulfadoxinePyrimethamine.R` (`cl_pyra <- ... * (1 + e_study_bell_cl_pyra * STUDY_BELL)` with `e_study_bell_cl_pyra = -0.549`, i.e. apparent pyrimethamine clearance 54.9% lower in this cohort; the sulfadoxine arm carries no corresponding effect).
+- **Notes:** Registered as a `STUDY_<id>` rather than a `REGION_<site>` indicator because de Kock 2018 attributes the difference to the trial's bioanalysis, not its geography: Bell et al. "was the only one that assayed whole-blood liquid samples (capillary blood dried-spot samples were assayed in all the other studies), and its samples were assayed in a different lab", so the paper could not determine whether the shift reflects matrix, assay method or population. Study and site are perfectly confounded here -- Chileka is the only Bell et al. site -- so there is deliberately no `REGION_CHILEKA` column; Chileka sits in the reference group for both drugs' observation scaling, and a Bell et al. subject therefore sets `STUDY_BELL = 1` with every `REGION_*` site indicator at 0. Set to 0 when simulating a new patient: de Kock 2018's own dose-optimisation simulations use the reference-site parameters. Author-named like `STUDY_GERECKE`, `STUDY_SALEM` and `STUDY_CHEN`, which follow the same convention for pooled analyses whose component trials have no protocol number in the source text.
 
 ### STUDY_FARLETUZUMAB_PHASE2 (**canonical for Phase II study cohort indicator in the Farrell 2012 farletuzumab pooled analysis**)
 - **Description:** 1 = subject enrolled in the Phase II study (MORAb-003-002) of the Farrell 2012 pooled farletuzumab analysis; 0 = Phase I study (MORAb-003-001). Used to switch the residual-error magnitude per study.

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bi 2018 testosterone cypionate ([doi:10.1002/psp4.12287](https://doi.org/10.1002/psp4.12287)) -- healthy men receiving 14 weekly supratherapeutic intramuscular injections.
+- Add de Kock 2018 sulfadoxine-pyrimethamine ([doi:10.1128/AAC.01370-17](https://doi.org/10.1128/AAC.01370-17)) -- African children and adults with uncomplicated malaria.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
