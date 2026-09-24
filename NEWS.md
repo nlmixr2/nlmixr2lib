@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Apgar 2018 ALXN1540 hUGT1A1-modRNA ([doi:10.1002/psp4.12301](https://doi.org/10.1002/psp4.12301)) -- Gunn rats and projected Crigler-Najjar syndrome type 1 patients.
+- Add Ibrahim 2019 two-compartment zero-order-absorption Michaelis-Menten methodology template ([doi:10.1208/s12248-019-0305-2](https://doi.org/10.1208/s12248-019-0305-2)) -- none; hypothetical drug simulated for a CWRES structural-diagnostic demonstration.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
