@@ -654,8 +654,20 @@ navbar:
         href: articles/Li_2017_brentuximab.html
       - text: "Brentuximab (Suri 2018)"
         href: articles/Suri_2018_brentuximab.html
+      - text: "Brentuximab (Suri 2019)"
+        href: articles/Suri_2019_brentuximab.html
       - text: "Brentuximab (Zhou 2025)"
         href: articles/Zhou_2025_brentuximab.html
+      - text: "Brentuximab fn adc (Suri 2019)"
+        href: articles/Suri_2019_brentuximab.html
+      - text: "Brentuximab fn mmae (Suri 2019)"
+        href: articles/Suri_2019_brentuximab.html
+      - text: "Brentuximab neutropenia (Suri 2019)"
+        href: articles/Suri_2019_brentuximab.html
+      - text: "Brentuximab pn (Suri 2019)"
+        href: articles/Suri_2019_brentuximab.html
+      - text: "Brentuximab teae (Suri 2019)"
+        href: articles/Suri_2019_brentuximab.html
       - text: "Brepocitinib (Hughes 2022)"
         href: articles/Hughes_2022_brepocitinib.html
       - text: "Brepocitinib (Maleki 2024)"
@@ -7275,6 +7287,7 @@ articles:
   - articles/Sun_2026_tilmicosin
   - articles/Sunnaker_2026_mitiperstat
   - articles/Suri_2018_brentuximab
+  - articles/Suri_2019_brentuximab
   - articles/Suyagh_2011_metronidazole
   - articles/Suyagh_2012_canrenone
   - articles/Suzuki_2024_mycophenolic_acid
