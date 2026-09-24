@@ -2,6 +2,8 @@
 
 # development version
 
+- Record the Journal of Pain Research Expression of Concern ([doi:10.2147/JPR.S231531](https://doi.org/10.2147/JPR.S231531)) on the Zhang 2018 flurbiprofen source article, and correct the `population` metadata that had reproduced the article's mis-ascribed clinical trial registration number as an ethics approval number.
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
