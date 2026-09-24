@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Broeker 2018 tigecycline ([doi:10.1186/s13054-018-2278-4](https://doi.org/10.1186/s13054-018-2278-4)) -- critically ill adults with acute kidney injury on continuous renal replacement therapy.
+- Add Hong 2019 evofosfamide ([doi:10.1016/j.neo.2018.11.009](https://doi.org/10.1016/j.neo.2018.11.009)) -- HCT116 and H460 human carcinoma cells in vitro and as nude-mouse xenografts.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
