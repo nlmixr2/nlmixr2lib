@@ -149,11 +149,11 @@ design <-
     STIM_IL6_NORM = ifelse(TR_IL6 == 1, 1, 0.5),
     STIM_TNFA_NORM = ifelse(TR_TNFa == 1, 1, 0.5),
     STIM_DHT_NORM = ifelse(TR_DHT == 1, 1, 0.5),
-    INH_PI3K = TR_PI3Ki,
-    INH_MEK = TR_MEKi,
-    INH_MTOR = TR_mTORi,
-    INH_P38 = TR_p38i,
-    INH_IKK = TR_IKKai
+    PI3K_INHIBITED = TR_PI3Ki,
+    MEK_INHIBITED = TR_MEKi,
+    MTOR_INHIBITED = TR_mTORi,
+    P38_INHIBITED = TR_p38i,
+    IKK_INHIBITED = TR_IKKai
   )
 
 stopifnot(nrow(design) == 44L)
@@ -257,8 +257,8 @@ design_long <-
   dplyr::mutate(
     EGF = STIM_EGF_NORM == 1, IGF_1 = STIM_IGF1_NORM == 1, IL6 = STIM_IL6_NORM == 1,
     TNFa = STIM_TNFA_NORM == 1, DHT = STIM_DHT_NORM == 1,
-    `PI3K i` = INH_PI3K == 1, `IKK i` = INH_IKK == 1, `MEK i` = INH_MEK == 1,
-    `mTOR i` = INH_MTOR == 1, `p38 i` = INH_P38 == 1
+    `PI3K i` = PI3K_INHIBITED == 1, `IKK i` = IKK_INHIBITED == 1, `MEK i` = MEK_INHIBITED == 1,
+    `mTOR i` = MTOR_INHIBITED == 1, `p38 i` = P38_INHIBITED == 1
   ) |>
   dplyr::select(id, EGF, IGF_1, IL6, TNFa, DHT, `PI3K i`, `IKK i`, `MEK i`, `mTOR i`, `p38 i`) |>
   tidyr::pivot_longer(-id, names_to = "row", values_to = "on") |>
@@ -305,9 +305,9 @@ condition_label <-
     condition = trimws(paste0(
       ifelse(STIM_EGF_NORM == 1, "EGF ", ""), ifelse(STIM_IGF1_NORM == 1, "IGF1 ", ""),
       ifelse(STIM_IL6_NORM == 1, "IL6 ", ""), ifelse(STIM_TNFA_NORM == 1, "TNFa ", ""),
-      ifelse(STIM_DHT_NORM == 1, "DHT ", ""), ifelse(INH_PI3K == 1, "+PI3Ki ", ""),
-      ifelse(INH_MEK == 1, "+MEKi ", ""), ifelse(INH_MTOR == 1, "+mTORi ", ""),
-      ifelse(INH_P38 == 1, "+p38i ", ""), ifelse(INH_IKK == 1, "+IKKi ", "")
+      ifelse(STIM_DHT_NORM == 1, "DHT ", ""), ifelse(PI3K_INHIBITED == 1, "+PI3Ki ", ""),
+      ifelse(MEK_INHIBITED == 1, "+MEKi ", ""), ifelse(MTOR_INHIBITED == 1, "+mTORi ", ""),
+      ifelse(P38_INHIBITED == 1, "+p38i ", ""), ifelse(IKK_INHIBITED == 1, "+IKKi ", "")
     ))
   ) |>
   dplyr::mutate(condition = ifelse(nzchar(condition), condition, "control"))
@@ -331,10 +331,10 @@ sim_dense <- rxode2::rxSolve(mod, events = ev_dense, params = design, returnType
 
 examples <- tibble::tribble(
   ~id, ~node,
-  which(design$STIM_EGF_NORM == 1 & rowSums(design[, c("INH_PI3K", "INH_MEK", "INH_MTOR", "INH_P38", "INH_IKK")]) == 0)[1], "ERK1_2",
+  which(design$STIM_EGF_NORM == 1 & rowSums(design[, c("PI3K_INHIBITED", "MEK_INHIBITED", "MTOR_INHIBITED", "P38_INHIBITED", "IKK_INHIBITED")]) == 0)[1], "ERK1_2",
   which(rowSums(design[, 2:6] == 1) == 0 & rowSums(design[, 7:11]) == 0)[1], "p38",
-  which(design$STIM_DHT_NORM == 1 & rowSums(design[, c("INH_PI3K", "INH_MEK", "INH_MTOR", "INH_P38", "INH_IKK")]) == 0)[1], "AKT",
-  which(design$INH_PI3K == 1)[1], "RPS6"
+  which(design$STIM_DHT_NORM == 1 & rowSums(design[, c("PI3K_INHIBITED", "MEK_INHIBITED", "MTOR_INHIBITED", "P38_INHIBITED", "IKK_INHIBITED")]) == 0)[1], "AKT",
+  which(design$PI3K_INHIBITED == 1)[1], "RPS6"
 ) |>
   dplyr::mutate(panel = sprintf("condition %d: %s", id, node))
 
@@ -392,7 +392,7 @@ control <- dplyr::mutate(
   design[1, ],
   STIM_EGF_NORM = 0.5, STIM_IGF1_NORM = 0.5, STIM_IL6_NORM = 0.5,
   STIM_TNFA_NORM = 0.5, STIM_DHT_NORM = 0.5,
-  INH_PI3K = 0, INH_MEK = 0, INH_MTOR = 0, INH_P38 = 0, INH_IKK = 0
+  PI3K_INHIBITED = 0, MEK_INHIBITED = 0, MTOR_INHIBITED = 0, P38_INHIBITED = 0, IKK_INHIBITED = 0
 )
 tgrid <- as.data.frame(rxode2::et(seq(0, 240, by = 5)))
 solve_one <- function(p) {
@@ -411,7 +411,7 @@ stopifnot(dev_igf1 == 0, dev_tnfa == 0)
 ## 3. A fully inhibited node is pinned at the basal value
 
 ```{r gate-inhibitor}
-inh_map <- c(PI3K = "INH_PI3K", MEK = "INH_MEK", mTOR = "INH_MTOR", p38 = "INH_P38", IKKa = "INH_IKK")
+inh_map <- c(PI3K = "PI3K_INHIBITED", MEK = "MEK_INHIBITED", mTOR = "MTOR_INHIBITED", p38 = "P38_INHIBITED", IKKa = "IKK_INHIBITED")
 stimulated <- dplyr::mutate(control, STIM_EGF_NORM = 1, STIM_DHT_NORM = 1, STIM_IL6_NORM = 1)
 
 dev_inh <- vapply(names(inh_map), function(nm) {
@@ -544,7 +544,7 @@ it -- is reproducible here.
 
 ```{r table1-nodes}
 arm <- function(lab, dht, pi3ki) {
-  p <- dplyr::mutate(control, STIM_DHT_NORM = dht, INH_PI3K = pi3ki)
+  p <- dplyr::mutate(control, STIM_DHT_NORM = dht, PI3K_INHIBITED = pi3ki)
   p$id <- 1L
   sv <- rxode2::rxSolve(mod, events = cbind(id = 1L, tgrid), params = p, returnType = "data.frame")
   tibble::tibble(
@@ -617,8 +617,8 @@ node-level counterpart of the survival result the paper reports (survival
 * **Ligand and inhibitor concentrations are not recoverable from this paper.** The
   applied concentrations live in Lescarbeau 2014, the upstream data paper. The
   `STIM_*` covariates are therefore expressed on the model's own normalized
-  activity scale (0.5 = absent, 1 = applied) and the `INH_*` covariates are binary
-  flags, which is exactly the resolution the trained model uses.
+  activity scale (0.5 = absent, 1 = applied) and the `*_INHIBITED` covariates are
+  binary flags, which is exactly the resolution the trained model uses.
 * **Inhibition pins a node at basal rather than driving it to zero.** This is the
   `CNORode2017` convention (`src/rhsODE.c` multiplies the whole derivative by
   `1 - inhibitor`), and it is coherent with the normalization in which 0.5 is the
