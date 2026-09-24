@@ -2,7 +2,7 @@
 
 # development version
 
-- Add de Kock 2018 sulfadoxine-pyrimethamine ([doi:10.1128/AAC.01370-17](https://doi.org/10.1128/AAC.01370-17)) -- African children and adults with uncomplicated malaria.
+- Add Mukherjee 2018 amlodipine ([doi:10.1007/s10928-018-9574-0](https://doi.org/10.1007/s10928-018-9574-0)) -- healthy adults and adults with essential hypertension.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

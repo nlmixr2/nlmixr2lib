@@ -220,6 +220,8 @@ navbar:
         href: articles/Marcantonio_2022_efa.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
+      - text: "Amlodipine (Mukherjee 2018)"
+        href: articles/Mukherjee_2018_amlodipine.html
       - text: "Amlodipine (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Amlodipine valsartan (Heo 2016)"
@@ -6975,6 +6977,7 @@ articles:
   - articles/Mouton_2025_cefuroxime
   - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
+  - articles/Mukherjee_2018_amlodipine
   - articles/Mukker_2026_tuvusertib
   - articles/Mukker_2026_tuvusertib_QTc
   - articles/Mukonzo_2009_efavirenz
