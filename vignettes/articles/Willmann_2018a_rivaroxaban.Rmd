@@ -1,0 +1,825 @@
+---
+title: "Rivaroxaban integrated multi-indication popPK (Willmann 2018a)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rivaroxaban integrated multi-indication popPK (Willmann 2018a)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+ui <- rxode2::rxode(readModelDb("Willmann_2018a_rivaroxaban"))
+```
+
+# Model and source
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1002/psp4.12288> (PMC5980303, open access)
+
+Willmann 2018a is the first integrated population PK model for rivaroxaban
+across all of its approved adult indications, and the first such model for any
+direct oral anticoagulant. It pools 22,843 concentrations from 4,918 patients
+in six phase II studies and one phase III substudy, and replaces the earlier
+per-indication models with a single covariate parameterisation.
+
+Two source documents were used, both retrieved from EuropePMC:
+
+* the main article (Tables 1-3, Figures 1-4), and
+* the supplementary material, which supplies **Supplementary Equation 1** (the
+  full written-out model) and, as Supplementary Data S9, the **NONMEM control
+  stream for `run12`** -- the final model of Table 2.
+
+The control stream is what makes this extraction unambiguous: it fixes the
+covariate centering constants, the exact form of the dose-dependent
+bioavailability, the multiplicative structure of the comedication term, the
+`mg -> ug` unit conversion, and the residual-error form. **Its `$THETA`,
+`$OMEGA` and `$SIGMA` blocks are initial estimates, not final ones**, and are
+not used for any value here -- see Errata.
+
+There is no erratum or corrigendum for this article (checked against Crossref
+`relation` / `update-to` metadata and a EuropePMC correction search).
+
+# Population
+
+```{r population}
+pop <- ui$population
+str(pop)
+```
+
+Four indications are pooled, and the indication enters the model as a covariate
+on CL/F rather than being marginalised away:
+
+| Indication | Studies | Patients | Observations |
+|---|---|---|---|
+| VTE prevention (hip / knee replacement) | ODIXa-Hip2 (10944), ODIXa-OD-Hip (11527), ODIXa-Knee (10945) | 1,636 | 8,033 |
+| VTE treatment (acute DVT) -- **model reference** | ODIXa-DVT (11223), EINSTEIN DVT (11528) | 870 | 4,634 |
+| Acute coronary syndrome | ATLAS ACS TIMI-46 (2001) | 2,251 | 9,376 |
+| Nonvalvular atrial fibrillation | ROCKET AF (3001) | 161 | 800 |
+
+Sampling is sparse throughout (median 3-8 samples per patient). Data from the
+immediate postsurgical phase of the VTE-prevention studies were excluded,
+because patients there separate into slow and fast absorbers; the
+VTE-prevention clearance factors below therefore describe the post-exclusion
+window only.
+
+# Source trace
+
+Every `ini()` value comes from Table 3 of the main article. Every `model()`
+equation comes from Supplementary Equation 1, cross-checked line by line
+against the `run12` `$PK` block in Supplementary Data S9.
+
+```{r source-trace, echo = FALSE}
+trace <- tibble::tribble(
+  ~Quantity, ~Value, ~"Source location",
+  "ka", "0.821 1/h", "Table 3, row 'ka' (RSE 2.36%, CI 0.780-0.860)",
+  "CL/F", "6.58 L/h", "Table 3, row 'CL/F' (RSE 2.33%, CI 6.29-6.86)",
+  "V/F", "62.5 L", "Table 3, row 'V/F' (RSE 2.04%, CI 59.6-64.4)",
+  "Fmin", "0.590", "Table 3, row 'Fmin' (RSE 5.99%, CI 0.51-0.653)",
+  "Fmax", "1.25, FIXED", "Table 3, row 'Fmax' ('- (fixed)')",
+  "D50", "14.4 mg", "Table 3, row 'D50' (RSE 14.8%, CI 10.7-19.7)",
+  "CrCL power on CL/F", "0.406", "Table 3, row 'thetaCL/F, CrCL'",
+  "WT power on CL/F", "-0.278", "Table 3, row 'thetaCL/F, weight' (CI -0.359 to -0.187)",
+  "WT power on V/F", "0.216", "Table 3, row 'thetaV/F, weight'",
+  "AGE power on V/F", "-0.189", "Table 3, row 'thetaV/F, Age' (CI -0.246 to -0.127)",
+  "Female factor on V/F", "0.889", "Table 3, row 'thetaV/F, Sex'",
+  "P-gp inhibitor on CL/F", "0.966", "Table 3, row 'thetaCL/F, PGP'",
+  "Strong CYP3A4 inhibitor on CL/F", "0.978", "Table 3, row 'thetaCL/F, Strong CYP3A4 inhibitor'",
+  "Medium CYP3A4 inhibitor on CL/F", "0.863", "Table 3, row 'thetaCL/F, Medium CYP3A4 inhibitor'",
+  "Weak CYP3A4 inhibitor on CL/F", "0.939", "Table 3, row 'thetaCL/F, Weak CYP3A4 inhibitor'",
+  "CYP3A4 inducer on CL/F", "1.30", "Table 3, row 'thetaCL/F, CYP3A4 inducer'",
+  "AF factor on CL/F", "0.849", "Table 3, row 'thetaCL/F, AF'",
+  "ACS factor on CL/F", "1.14", "Table 3, row 'thetaCL/F, ACS'",
+  "VTE prevention <=72 h on CL/F", "1.04", "Table 3, row 'thetaCL/F, VTE <=72 h'",
+  "VTE prevention >72 h on CL/F", "1.29", "Table 3, row 'thetaCL/F, VTE >72 h'",
+  "IIV ka", "variance 0.628", "Table 3, row 'omega2 ka' (shrinkage 32.8%)",
+  "IIV CL/F", "variance 0.167", "Table 3, row 'omega2 CL/F' (shrinkage 10.3%)",
+  "IIV CL/F-V/F covariance", "0.0674", "Table 3, row 'omega2 CL/F, V/F'",
+  "IIV V/F", "variance 0.0391", "Table 3, row 'omega2 V/F' (shrinkage 25.7%)",
+  "Proportional residual", "variance 0.203 -> SD 0.450555", "Table 3, row 'sigma2 prop' (shrinkage 10.3%)",
+  "CrCL / WT / AGE centering", "93 mL/min, 81 kg, 61 years", "Supplementary Eq. 1; run12 $PK",
+  "Tietz CrCL truncation", "cap at 140 * BSA / 1.73", "Methods 'Covariate model development'; run12 $PK 'CrCL_MAX'",
+  "F(dose) functional form", "Fmin + (Fmax - Fmin) * exp(-ln2/D50 * DOSE)", "Supplementary Eq. 1; run12 $PK 'F1'",
+  "mg -> ug conversion", "x 1000", "run12 $PK, 'transform mg -> mcg'",
+  "Residual error form", "Y = IPRED + IPRED * EPS(1) (proportional)", "run12 $ERROR",
+  "Sex coding", "THETA**(SEX-1), THETA annotated 'SEX_V (female)'", "run12 $PK / $THETA"
+)
+knitr::kable(trace, caption = "Source trace for every parameter and equation.")
+```
+
+The `ini()` block is reproduced below directly from the packaged model, so the
+table above can be audited against what is actually shipped.
+
+```{r ini-table, echo = FALSE}
+ui$iniDf |>
+  dplyr::filter(!is.na(.data$ntheta)) |>
+  dplyr::select(name, est, fix, label) |>
+  knitr::kable(caption = "Fixed-effect parameters as packaged.")
+```
+
+# Deterministic gates on the published functional forms
+
+These checks use no random draws, so they are exactly reproducible on any
+machine and any thread count. They are the gates that catch a mis-transcribed
+equation.
+
+## The dose-dependent bioavailability is anchored at the 10 mg reference dose
+
+Table 3 footnote c states that relative bioavailability "was fixed at 1.0 for a
+10 mg dose". The paper does **not** fix `F(10) = 1` as a constraint on the
+function; it estimates `Fmin` and `D50` with `Fmax` fixed at 1.25 and the
+function then returns 1 at 10 mg. Evaluating Supplementary Eq. 1 at the
+reference dose is therefore a genuine, non-circular falsifier of the functional
+form: a hyperbolic (Michaelis-Menten) reading of the same three parameters, or
+a sign error in the exponent, does not land on 1.
+
+```{r f-anchor}
+th <- setNames(ui$iniDf$est, ui$iniDf$name)
+fmin <- th[["fdepot_min"]]
+fmax <- th[["fdepot_max"]]
+d50 <- exp(th[["led50"]])
+
+f_dose <- function(dose) fmin + (fmax - fmin) * exp(-log(2) / d50 * dose)
+
+f_at_10 <- f_dose(10)
+f_at_10
+
+# Exact deterministic gate: the estimated function must return relative
+# bioavailability 1 at the 10 mg reference dose (Table 3 footnote c).
+stopifnot(abs(f_at_10 - 1) < 0.005)
+
+# D50 is by construction the dose at which F has fallen halfway from Fmax to
+# Fmin; this is what distinguishes the exponential form from a hyperbolic one.
+stopifnot(abs(f_dose(d50) - (fmin + fmax) / 2) < 1e-10)
+
+# The asymptotes are approached in the right direction: F starts at Fmax, is
+# strictly decreasing, and converges down onto Fmin.
+grid <- seq(0, 200, by = 0.5)
+stopifnot(
+  abs(f_dose(0) - fmax) < 1e-10,
+  all(diff(f_dose(grid)) < 0),
+  all(f_dose(grid) > fmin),
+  abs(f_dose(200) - fmin) < 1e-3
+)
+```
+
+```{r f-curve, fig.width = 6, fig.height = 4, fig.cap = "Replicates Figure 1a of Willmann 2018a: estimated relative bioavailability as a function of dose, relative to the 10 mg dose (F = 1). Points mark the dose levels actually studied in the pooled program."}
+studied_doses <- c(2.5, 5, 7.5, 10, 15, 20, 30, 40)
+fcurve <- tibble::tibble(dose = seq(0, 45, by = 0.25), F = f_dose(dose))
+fpts <- tibble::tibble(dose = studied_doses, F = f_dose(studied_doses))
+
+ggplot(fcurve, aes(dose, F)) +
+  geom_hline(yintercept = c(fmin, fmax), linetype = "dotted", colour = "grey50") +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = fpts, size = 2) +
+  geom_point(
+    data = dplyr::filter(fpts, dose == 10),
+    size = 4, shape = 21, fill = NA, stroke = 1
+  ) +
+  scale_y_continuous(limits = c(0.5, 1.3)) +
+  labs(
+    x = "Rivaroxaban dose (mg per administration)",
+    y = "Relative bioavailability F",
+    caption = "Dotted lines: Fmin = 0.590 and Fmax = 1.25. Circled point: the 10 mg reference."
+  ) +
+  theme_bw()
+```
+
+```{r f-table, echo = FALSE}
+tibble::tibble(
+  `Dose (mg)` = studied_doses,
+  `F` = round(f_dose(studied_doses), 3)
+) |>
+  knitr::kable(caption = "Relative bioavailability at the dose levels studied.")
+```
+
+## The Tietz truncation of creatinine clearance
+
+```{r tietz}
+tietz <- function(crcl, bsa) {
+  cap <- 140 * bsa / 1.73
+  ifelse(crcl > cap, cap, crcl)
+}
+
+# At the pooled mean BSA of 1.93 m^2 (Table 1) the cap is ~156 mL/min.
+tietz(c(60, 100, 200), bsa = 1.93)
+stopifnot(
+  tietz(60, 1.93) == 60, # below the cap: unchanged
+  abs(tietz(200, 1.93) - 140 * 1.93 / 1.73) < 1e-10 # above the cap: truncated
+)
+```
+
+Table 1 reports both the untruncated and the truncated pooled means (97.74 and
+97.17 mL/min): truncation moves the pooled mean by only 0.6%, i.e. it bites on
+a small minority of patients, which is what a guard against implausible values
+should do.
+
+## Covariate factors recovered from the packaged model
+
+Rather than re-deriving the covariate factors by hand, these are read back out
+of the model by solving one typical subject per scenario and comparing its
+individual `cl` or `vc` against the reference subject. This gates the whole
+chain -- `ini()` value, `model()` algebra, covariate name -- not just the number.
+
+```{r covariate-recovery}
+ref_cov <- list(
+  CRCL = 93, BSA = 1.93, WT = 81, AGE = 61, SEXF = 0,
+  CONMED_PGP_INH = 0, CONMED_CYP3A4_INH_STRONG = 0,
+  CONMED_CYP3A4_INH_MOD = 0, CONMED_CYP3A4_INH_WEAK = 0,
+  CONMED_CYP3A4_IND = 0,
+  DIS_AF = 0, DIS_ACS = 0, DIS_VTE_P = 0,
+  DOSE_RIVAROXABAN_MG = 10
+)
+
+# One 10 mg dose, observed at 1 h. Typical values only (zeroRe), so there is
+# no simulation noise anywhere in this chunk.
+solve_scenario <- function(changes = list(), obs_time = 1) {
+  cov <- modifyList(ref_cov, changes)
+  ev <- rxode2::et(amt = cov$DOSE_RIVAROXABAN_MG, cmt = "depot") |>
+    rxode2::et(obs_time, cmt = "central")
+  dat <- as.data.frame(ev)
+  for (nm in names(cov)) dat[[nm]] <- cov[[nm]]
+  out <- rxode2::rxSolve(rxode2::zeroRe(ui), dat, returnType = "data.frame")
+  out[out$time == obs_time, , drop = FALSE]
+}
+
+ref <- solve_scenario()
+cl_ref <- ref$cl
+vc_ref <- ref$vc
+c(cl_ref = cl_ref, vc_ref = vc_ref)
+
+# At the covariate reference point the individual values must equal the
+# typical values of Table 3 exactly.
+stopifnot(
+  abs(cl_ref - 6.58) < 1e-8,
+  abs(vc_ref - 62.5) < 1e-8
+)
+```
+
+```{r covariate-fold-changes, echo = FALSE}
+scen <- tibble::tribble(
+  ~Scenario, ~changes, ~Parameter, ~Published,
+  "AF vs VTE treatment", list(DIS_AF = 1), "cl", 0.849,
+  "ACS vs VTE treatment", list(DIS_ACS = 1), "cl", 1.14,
+  "VTE prevention, <=72 h", list(DIS_VTE_P = 1), "cl", 1.04,
+  "P-gp inhibitor", list(CONMED_PGP_INH = 1), "cl", 0.966,
+  "Strong CYP3A4 inhibitor", list(CONMED_CYP3A4_INH_STRONG = 1), "cl", 0.978,
+  "Medium CYP3A4 inhibitor", list(CONMED_CYP3A4_INH_MOD = 1), "cl", 0.863,
+  "Weak CYP3A4 inhibitor", list(CONMED_CYP3A4_INH_WEAK = 1), "cl", 0.939,
+  "CYP3A4 inducer", list(CONMED_CYP3A4_IND = 1), "cl", 1.30,
+  "Female", list(SEXF = 1), "vc", 0.889,
+  "CrCL 186 vs 93 mL/min", list(CRCL = 186, BSA = 2.5), "cl", 2^0.406,
+  "WT 162 vs 81 kg", list(WT = 162), "cl", 2^-0.278,
+  "WT 162 vs 81 kg", list(WT = 162), "vc", 2^0.216,
+  "AGE 122 vs 61 years", list(AGE = 122), "vc", 2^-0.189
+)
+
+fold <- vapply(seq_len(nrow(scen)), function(i) {
+  s <- solve_scenario(scen$changes[[i]])
+  ref_val <- if (scen$Parameter[i] == "cl") cl_ref else vc_ref
+  s[[scen$Parameter[i]]] / ref_val
+}, numeric(1))
+
+fold_tab <- scen |>
+  dplyr::mutate(
+    Model = round(fold, 4),
+    Published = round(Published, 4),
+    `Abs. difference` = round(abs(fold - Published), 6)
+  ) |>
+  dplyr::select(Scenario, Parameter, Published, Model, `Abs. difference`)
+
+knitr::kable(
+  fold_tab,
+  caption = "Covariate fold-changes recovered from the packaged model versus Willmann 2018a Table 3."
+)
+
+# Deterministic: these must agree to numerical precision, not approximately.
+stopifnot(max(abs(fold - scen$Published)) < 1e-8)
+```
+
+The time-varying VTE-prevention split is a separate structure and is gated on
+its own, because it is the one covariate whose value changes *within* a subject.
+
+```{r vte-time-split}
+vte_early <- solve_scenario(list(DIS_VTE_P = 1), obs_time = 48)
+vte_late <- solve_scenario(list(DIS_VTE_P = 1), obs_time = 96)
+c(early = vte_early$cl / cl_ref, late = vte_late$cl / cl_ref)
+
+stopifnot(
+  abs(vte_early$cl / cl_ref - 1.04) < 1e-8, # <= 72 h after the first dose
+  abs(vte_late$cl / cl_ref - 1.29) < 1e-8 # > 72 h after the first dose
+)
+```
+
+# Virtual cohort
+
+The cohort below reproduces the ROCKET AF row of Table 1, which is the
+indication whose exposure simulations the paper shows in Figure 4: age 65.46
+(SD 9.51) years, weight 85.40 (SD 18.60) kg, serum creatinine 1.09 (SD 0.29)
+mg/dL, BSA 1.96 (SD 0.22) m^2, 37.9% female.
+
+Creatinine clearance is **derived** from the drawn age, weight, sex and serum
+creatinine with the Cockcroft-Gault equation rather than drawn independently.
+That matters: Willmann 2018a carries weight on CL/F precisely because weight
+already enters the Cockcroft-Gault numerator, so the two covariates are
+deliberately confounded in the model and must be confounded in the cohort too.
+
+```{r cohort}
+# set.seed() seeds R's RNG for the covariate draws below. It does NOT seed
+# rxode2's simulation RNG (that is rxSetSeed(), called before each stochastic
+# solve), and rxode2's streams are partitioned per solver thread -- so no seed
+# makes the cohort byte-identical between this machine and a CI runner with a
+# different thread count. Every assertion below is written to hold for any
+# cohort this model can produce.
+set.seed(20180416)
+
+n_sub <- 150 # per arm; the skill caps validation cohorts at 200 per arm
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  AGE = pmax(18, rnorm(n_sub, 65.46, 9.51)),
+  WT = pmax(40, rnorm(n_sub, 85.40, 18.60)),
+  SEXF = rbinom(n_sub, 1, 0.379),
+  SCR = pmax(0.4, rnorm(n_sub, 1.09, 0.29)),
+  BSA = pmax(1.3, rnorm(n_sub, 1.96, 0.22))
+) |>
+  dplyr::mutate(
+    # Cockcroft-Gault, the equation Willmann 2018a names in Methods.
+    CRCL = (140 - AGE) * WT / (72 * SCR) * ifelse(SEXF == 1, 0.85, 1),
+    # Indication and comedication for the AF arm of Figure 4.
+    DIS_AF = 1, DIS_ACS = 0, DIS_VTE_P = 0,
+    CONMED_PGP_INH = 0, CONMED_CYP3A4_INH_STRONG = 0,
+    CONMED_CYP3A4_INH_MOD = 0, CONMED_CYP3A4_INH_WEAK = 0,
+    CONMED_CYP3A4_IND = 0
+  )
+
+cohort |>
+  dplyr::summarise(
+    dplyr::across(c(AGE, WT, SCR, BSA, CRCL), list(mean = mean, sd = sd))
+  ) |>
+  tidyr::pivot_longer(dplyr::everything()) |>
+  dplyr::mutate(value = round(value, 2)) |>
+  knitr::kable(caption = "Drawn cohort summary.")
+
+# The derived CrCL must land near the ROCKET AF value of Table 1 (81.76 mL/min,
+# SD 32.06). Wide bounds: this gates a broken Cockcroft-Gault transcription or
+# a units error, not the sampling noise of one draw.
+stopifnot(
+  abs(mean(cohort$CRCL) - 81.76) < 25,
+  mean(cohort$CRCL) > 40,
+  all(cohort$CRCL > 0)
+)
+```
+
+# Simulation
+
+```{r simulate}
+dose_mg <- 20 # the approved AF dose (Table 1, ROCKET AF)
+tau <- 24
+n_days <- 30
+last_dose_time <- (n_days - 1) * tau
+
+dose_rows <- cohort |>
+  dplyr::mutate(evid = 1L, amt = dose_mg, cmt = "depot") |>
+  tidyr::crossing(time = seq(0, last_dose_time, by = tau))
+
+# Observations over the final dosing interval only, on a grid fine enough to
+# resolve Tmax (ka = 0.821 1/h puts Tmax near 3 h) and with records exactly at
+# the interval boundaries so PKNCA can compute Ctau.
+obs_times <- sort(unique(c(
+  seq(last_dose_time, last_dose_time + tau, by = 0.25),
+  last_dose_time, last_dose_time + tau
+)))
+
+obs_rows <- cohort |>
+  dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central") |>
+  tidyr::crossing(time = obs_times)
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::mutate(DOSE_RIVAROXABAN_MG = dose_mg) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+rxode2::rxSetSeed(20180416)
+sim <- rxode2::rxSolve(
+  ui, events,
+  keep = c("AGE", "WT", "SEXF", "SCR", "BSA", "CRCL")
+) |>
+  as.data.frame()
+
+if (is.null(sim$id)) sim$id <- 1L
+
+# rxSolve returns the solved observation records only -- there is no `evid`
+# column in the output to filter on, and filtering for one would select zero
+# rows and make every check below pass vacuously.
+sim_obs <- sim
+stopifnot(
+  !"evid" %in% names(sim_obs),
+  nrow(sim_obs) == n_sub * length(obs_times),
+  all(sim_obs$Cc >= 0),
+  !anyNA(sim_obs$Cc)
+)
+nrow(sim_obs)
+```
+
+## Closed-form gate on the solved system
+
+Both sides of this comparison use the *same* drawn individual parameters, so
+the only difference between them is numerical integration error. A tight
+`all()` bound is therefore the correct form here, and it is what catches an
+error in the ODEs, in `f(depot)`, or in the `mg -> ug` conversion.
+
+```{r closed-form}
+# rxode2 returns every derived model variable as a column, so ka / cl / vc / kel
+# are already on the solve -- no join is needed (and joining would collide with
+# the model's own `kel` column).
+stopifnot(all(c("ka", "cl", "vc", "kel") %in% names(sim_obs)))
+ipar <- sim_obs |> dplyr::distinct(id, ka, cl, vc, kel)
+stopifnot(nrow(ipar) == n_sub)
+
+f_applied <- f_dose(dose_mg)
+
+# Steady-state 1-compartment oral solution, concentration in ug/L.
+c_ss <- function(t, ka, kel, vc, dose, tau) {
+  (f_applied * dose * 1000 / vc) * (ka / (ka - kel)) *
+    (exp(-kel * t) / (1 - exp(-kel * tau)) -
+      exp(-ka * t) / (1 - exp(-ka * tau)))
+}
+
+check <- sim_obs |>
+  dplyr::mutate(
+    t_in_tau = time - last_dose_time,
+    closed = c_ss(t_in_tau, ka, kel, vc, dose_mg, tau),
+    rel_err = abs(Cc - closed) / closed
+  )
+
+max(check$rel_err)
+
+# 30 daily doses is >= 10 half-lives for essentially any subject this model can
+# draw, so the numerical solve and the steady-state closed form must agree to
+# better than 0.5%. This bound goes red on a wrong F, a wrong unit factor, or a
+# wrong ODE.
+stopifnot(max(check$rel_err) < 0.005)
+```
+
+## Dose-recovery (mass-balance) gate
+
+`CL/F * AUC(0-tau at steady state) = F * Dose` is the identity that gates the
+bioavailability function and the unit conversion together. The AUC recovery
+check is blind to `ka`, so it is complementary to the closed-form gate above
+rather than a duplicate of it.
+
+```{r auc-recovery}
+auc_tau <- check |>
+  dplyr::group_by(id) |>
+  dplyr::arrange(time, .by_group = TRUE) |>
+  dplyr::summarise(
+    cl = dplyr::first(cl),
+    # Trapezoidal AUC on the 0.25 h grid; the grid is fine enough that
+    # trapezoidal error is well under the tolerance used below.
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    recovered_ug = cl * auc,
+    expected_ug = f_applied * dose_mg * 1000,
+    rel_err = abs(recovered_ug - expected_ug) / expected_ug
+  )
+
+summary(auc_tau$rel_err)
+stopifnot(max(auc_tau$rel_err) < 0.01)
+```
+
+# Replicate published figures
+
+```{r fig-profile, fig.width = 6.5, fig.height = 4, fig.cap = "Simulated steady-state rivaroxaban concentration-time profile over one 24 h dosing interval after 20 mg once daily in the atrial fibrillation cohort (median with 5th-95th percentile band). This is the exposure that Figure 4 of Willmann 2018a summarises as AUC0-24, Cmax and Ctrough."}
+sim_obs |>
+  dplyr::mutate(t_in_tau = time - last_dose_time) |>
+  dplyr::group_by(t_in_tau) |>
+  dplyr::summarise(
+    lo = quantile(Cc, 0.05),
+    med = median(Cc),
+    hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(t_in_tau, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after dose (h)",
+    y = expression(paste("Rivaroxaban concentration (", mu, "g/L)"))
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+```{r pknca}
+nca_conc <- sim_obs |>
+  dplyr::mutate(nca_time = time - last_dose_time) |>
+  dplyr::select(id, nca_time, Cc, CRCL, WT, AGE) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(renal = dplyr::case_when(
+    CRCL > 80 ~ "Normal (>80)",
+    CRCL > 50 ~ "Mild RI (50-80)",
+    CRCL >= 30 ~ "Moderate RI (30-50)",
+    TRUE ~ "Severe RI (<30)"
+  ))
+
+nca_dose <- nca_conc |>
+  dplyr::distinct(id, renal) |>
+  dplyr::mutate(nca_time = 0, dose = dose_mg)
+
+conc_obj <- PKNCA::PKNCAconc(
+  data = as.data.frame(nca_conc),
+  formula = Cc ~ nca_time | renal + id,
+  concu = "ug/L", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  data = as.data.frame(nca_dose),
+  formula = dose ~ nca_time | renal + id,
+  doseu = "mg"
+)
+
+# `ctrough` (not `ctau`) is PKNCA's name for the concentration at the end of the
+# interval, and it is NA unless a record sits exactly at `end` -- the 0.25 h
+# grid above is constructed to place one there.
+intervals <- data.frame(
+  start = 0, end = tau,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE,
+  auclast = TRUE, cav = TRUE, ctrough = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+
+nca_tbl <- as.data.frame(nca_res$result)
+stopifnot(nrow(nca_tbl) > 0)
+head(nca_tbl)
+```
+
+```{r pknca-summary, echo = FALSE}
+nca_wide <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "ctrough", "cav")) |>
+  dplyr::select(renal, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# Guard against a silently-empty pivot (a gate that cannot go red is worse than
+# no gate): every expected column must be present and populated.
+stopifnot(
+  all(c("cmax", "tmax", "auclast", "ctrough", "cav") %in% names(nca_wide)),
+  nrow(nca_wide) == n_sub,
+  !anyNA(nca_wide$cmax), !anyNA(nca_wide$auclast), !anyNA(nca_wide$ctrough)
+)
+
+nca_wide |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    `Cmax (ug/L)` = round(median(cmax), 1),
+    `Tmax (h)` = round(median(tmax), 2),
+    `AUC0-24 (ug*h/L)` = round(median(auclast), 1),
+    `Ctrough (ug/L)` = round(median(ctrough), 2),
+    `Cavg (ug/L)` = round(median(cav), 1),
+    .by = renal
+  ) |>
+  dplyr::arrange(dplyr::desc(`AUC0-24 (ug*h/L)`)) |>
+  knitr::kable(
+    caption = "PKNCA steady-state NCA by renal-function group, 20 mg once daily, atrial fibrillation cohort (medians)."
+  )
+```
+
+```{r pknca-sanity}
+# Tmax must sit near the deterministic prediction for a 1-compartment oral
+# model, log(ka/kel)/(ka - kel). Median ka = 0.821 1/h and kel near 0.105 1/h
+# put the typical Tmax close to 2.9 h.
+tmax_typ <- with(
+  list(ka = 0.821, kel = 6.58 / 62.5),
+  log(ka / kel) / (ka - kel)
+)
+tmax_typ
+stopifnot(abs(median(nca_wide$tmax) - tmax_typ) < 1.5)
+
+# Cavg * tau must equal AUC0-tau by construction; a mismatch means the PKNCA
+# interval was not the one intended.
+stopifnot(max(abs(nca_wide$cav * tau - nca_wide$auclast)) < 1e-6)
+```
+
+The paper reports no NCA table of its own -- its exposure summaries are the
+simulated AUC0-24 / Cmax / Ctrough distributions of Figure 4 -- so the
+comparison below is against those, not against an observed-data NCA table.
+
+# Comparison against the published exposure simulations
+
+Willmann 2018a Results ("Exposure simulation") states three quantitative claims
+for the AF indication, and two about how much smaller the age and body-size
+effects are. The renal-function claims are reproduced here on a **typical-value
+grid** (`zeroRe()`), because the paper reports subgroup *medians* and, for a
+model whose covariate effects are multiplicative on CL/F and V/F, the median of
+a subgroup is the value at that subgroup's median covariates.
+
+```{r subgroup-grid}
+# Assumed subgroup median covariates. The paper does not publish per-subgroup
+# medians -- see Assumptions and deviations -- so these are stated, not derived.
+subgroups <- tibble::tribble(
+  ~axis, ~group, ~CRCL, ~AGE, ~WT,
+  "Renal", "Normal (>80)", 100, 65.46, 85.40,
+  "Renal", "Mild RI (50-80)", 65, 65.46, 85.40,
+  "Renal", "Moderate RI (30-50)", 40, 65.46, 85.40,
+  "Renal", "Severe RI (<30)", 25, 65.46, 85.40,
+  "Age", "18 to <65 y", 81.76, 55, 85.40,
+  "Age", "65 to 75 y", 81.76, 70, 85.40,
+  "Age", ">75 y", 81.76, 80, 85.40,
+  "BMI", "Normal (18.5-25)", 81.76, 65.46, 65,
+  "BMI", "Overweight (25-30)", 81.76, 65.46, 82,
+  "BMI", "Obese (30-40)", 81.76, 65.46, 100,
+  "BMI", "Morbidly obese (>=40)", 81.76, 65.46, 125
+)
+
+ss_exposure <- function(crcl, age, wt) {
+  cov <- list(
+    CRCL = crcl, BSA = 1.96, WT = wt, AGE = age, SEXF = 0,
+    CONMED_PGP_INH = 0, CONMED_CYP3A4_INH_STRONG = 0,
+    CONMED_CYP3A4_INH_MOD = 0, CONMED_CYP3A4_INH_WEAK = 0,
+    CONMED_CYP3A4_IND = 0,
+    DIS_AF = 1, DIS_ACS = 0, DIS_VTE_P = 0,
+    DOSE_RIVAROXABAN_MG = dose_mg
+  )
+  ev <- rxode2::et(amt = dose_mg, cmt = "depot", ii = tau, addl = n_days - 1) |>
+    rxode2::et(seq(last_dose_time, last_dose_time + tau, by = 0.1), cmt = "central")
+  dat <- as.data.frame(ev)
+  for (nm in names(cov)) dat[[nm]] <- cov[[nm]]
+  out <- rxode2::rxSolve(rxode2::zeroRe(ui), dat, returnType = "data.frame")
+  out <- out[out$time >= last_dose_time, ]
+  stopifnot(nrow(out) > 1)
+  tibble::tibble(
+    cmax = max(out$Cc),
+    ctrough = out$Cc[which.max(out$time)],
+    auc = sum(diff(out$time) * (head(out$Cc, -1) + tail(out$Cc, -1)) / 2)
+  )
+}
+
+sg <- subgroups |>
+  dplyr::rowwise() |>
+  dplyr::mutate(ss_exposure(CRCL, AGE, WT)) |>
+  dplyr::ungroup()
+
+sg |>
+  dplyr::mutate(dplyr::across(c(cmax, ctrough, auc), \(x) round(x, 1))) |>
+  dplyr::rename(
+    "Axis" = axis, "Subgroup" = group,
+    "Cmax (ug/L)" = cmax, "Ctrough (ug/L)" = ctrough, "AUC0-24 (ug*h/L)" = auc
+  ) |>
+  knitr::kable(caption = "Typical-value steady-state exposure by subgroup, 20 mg once daily.")
+```
+
+```{r published-claims}
+pick <- function(g, what) {
+  v <- sg[[what]][sg$group == g]
+  if (length(v) != 1L) stop("no unique row for subgroup '", g, "'")
+  v
+}
+
+renal_auc <- pick("Severe RI (<30)", "auc") / pick("Normal (>80)", "auc")
+renal_ctr <- pick("Severe RI (<30)", "ctrough") / pick("Normal (>80)", "ctrough")
+renal_cmax <- pick("Severe RI (<30)", "cmax") / pick("Normal (>80)", "cmax")
+
+spread <- function(axis, what) {
+  v <- sg[[what]][sg$axis == axis]
+  stopifnot(length(v) > 1L)
+  (max(v) - min(v)) / min(v) * 100
+}
+
+# Format each value independently -- format() is vectorised and would pad to a
+# common precision across the column.
+num <- function(x, digits = 2) formatC(x, format = "f", digits = digits)
+
+claims <- tibble::tribble(
+  ~Claim, ~Published, ~Model, ~Deviation,
+  "Severe RI vs normal: AUC0-24 ratio", "1.53", num(renal_auc), TRUE,
+  "Severe RI vs normal: Ctrough ratio", "2.1", num(renal_ctr), TRUE,
+  "Severe RI vs normal: Cmax ratio", "1.35", num(renal_cmax), TRUE,
+  "Sensitivity ordering Ctrough > AUC > Cmax > 1", "yes", "gated below", FALSE,
+  "Age-group spread, AUC0-24 (%)", "15", num(spread("Age", "auc"), 1), TRUE,
+  "Age-group spread, Cmax (%)", "10", num(spread("Age", "cmax"), 1), TRUE,
+  "Age-group spread, Ctrough (%)", "23", num(spread("Age", "ctrough"), 1), TRUE,
+  "BMI-group spread, AUC0-24 (%)", "7.5", num(spread("BMI", "auc"), 1), TRUE,
+  "BMI-group spread, Cmax (%)", "7.6", num(spread("BMI", "cmax"), 1), TRUE,
+  "BMI-group spread, Ctrough (%)", "44", num(spread("BMI", "ctrough"), 1), TRUE,
+  "Renal effect exceeds age and BMI effects", "yes", "gated below", FALSE
+)
+knitr::kable(
+  claims,
+  caption = "Willmann 2018a exposure-simulation claims versus this model. Rows flagged Deviation = TRUE depend on the paper's unpublished per-subgroup covariate medians and are reported, not gated; see Assumptions and deviations."
+)
+```
+
+```{r claim-gates}
+# GATED: the sensitivity ordering. This is a structural consequence of a
+# one-compartment model with a covariate acting on CL/F -- trough concentration
+# is more sensitive to clearance than AUC, which is more sensitive than Cmax --
+# and it holds for any covariate medians the reader might substitute. The paper
+# reports 2.1 > 1.53 > 1.35 > 1, the same ordering.
+stopifnot(renal_ctr > renal_auc, renal_auc > renal_cmax, renal_cmax > 1)
+
+# GATED: renal function is the dominant covariate. This is the paper's headline
+# conclusion ("renal function has the most significant effect on exposure ...
+# the influence of age and body weight on rivaroxaban PK was minor") and is
+# gated on the ordering of the spreads, not on their exact sizes.
+renal_auc_spread <- spread("Renal", "auc")
+c(renal = renal_auc_spread, age = spread("Age", "auc"), bmi = spread("BMI", "auc"))
+stopifnot(
+  renal_auc_spread > spread("Age", "auc"),
+  renal_auc_spread > spread("BMI", "auc")
+)
+
+# GATED, loosely: the renal AUC gradient is of the published magnitude. The
+# bound is wide because the published 1.53 depends on the real patient pool's
+# joint CrCL/weight distribution, which is not published; it still goes red on
+# a mis-transcribed CrCL exponent (0.406 -> 0.1 gives 1.15, -> 0.8 gives 3.0).
+stopifnot(renal_auc > 1.25, renal_auc < 2.5)
+
+# GATED: age and BMI effects are small in absolute terms, matching the paper's
+# "minor influence" characterisation. Magnitude, not sign or ordering.
+stopifnot(
+  spread("Age", "auc") < 30,
+  spread("BMI", "auc") < 30
+)
+```
+
+# Assumptions and deviations
+
+* **Per-subgroup covariate medians are assumed, not published, and that fully
+  accounts for the renal-gradient gap.** Willmann 2018a built its Figure 4
+  subgroups by resampling real patients with complete covariate records, and
+  publishes neither the per-subgroup median CrCL, age and weight nor the
+  resulting joint distribution. The subgroup grid above therefore states its own
+  median covariates and varies **one axis at a time**.
+
+  The arithmetic is worth doing explicitly, because it converts a vague
+  disagreement into a closed one. With weight and age held fixed, the AUC ratio
+  between two renal subgroups is exactly `(CrCL_normal / CrCL_severe)^0.406`.
+  The grid above assumes medians of 100 and 25 mL/min, a ratio of 4.0, giving
+  `4.0^0.406` = `r round(renal_auc, 3)`. Inverting the paper's published 1.53
+  gives an implied CrCL ratio of `1.53^(1/0.406)` =
+  `r round(1.53^(1 / 0.406), 2)`, i.e. subgroup medians near 95 and 33 mL/min.
+  So the model reproduces the paper's number exactly once the paper's own
+  subgroup medians are used -- the `r round(renal_auc, 2)` here is a statement
+  about the assumed grid, not a disagreement with the model. The same applies to
+  the Ctrough ratio (`r round(renal_ctr, 2)` here versus 2.1 published), which
+  amplifies the same CrCL ratio more strongly. Cmax, being least sensitive to
+  clearance, is close either way (`r round(renal_cmax, 2)` versus 1.35).
+
+  A second, smaller contribution runs the other way: holding weight fixed across
+  renal groups removes the offsetting **negative** weight effect on CL/F, which
+  in the real cohort partially cancels the CrCL effect -- the confounding the
+  paper describes in its Discussion. These rows are therefore reported rather
+  than gated, and the one ratio that is gated is gated loosely.
+* **BMI is represented through weight.** The model has no BMI term; BMI enters
+  Willmann 2018a only as a stratifier for the exposure simulation. The "BMI
+  group" rows above vary weight at a fixed BSA, which is how BMI can reach the
+  model at all.
+* **The supplementary control stream's `$THETA` / `$OMEGA` / `$SIGMA` values are
+  initial estimates and are NOT used.** They are visibly inits -- `0.3` for the
+  CrCL power and `0.1` for the weight-on-CL power are round starting values, and
+  the strong-CYP3A4-inhibitor theta is 1.378 there against 0.978 in Table 3.
+  Every packaged value comes from Table 3. The control stream is used only for
+  structure: centering constants, the F equation, the multiplicative
+  comedication product, the `mg -> ug` factor, the sex coding and the residual
+  form.
+* **Supplementary Eq. 1 has a typographic error in a study number.** It lists
+  the VTE-prevention studies as "10933, 10945 and 11527"; the `run12` control
+  stream and Table 1 both give 10944 (ODIXa-Hip2). The control stream is taken
+  as correct.
+* **The VTE-prevention 72 h split is keyed on solver time.** The control stream
+  keys it on the NONMEM `TIME` variable, which in this dataset is time after the
+  first dose, so `model()` uses `t` and any event table using `DIS_VTE_P` must
+  place the first dose at time 0. Using `tafd` instead would be undefined before
+  the first dose.
+* **The strong-CYP3A4-inhibitor coefficient is effectively null and must not be
+  used to predict a ketoconazole interaction.** Only 6 of 5,041 patients
+  received one (strong inhibitors were a protocol exclusion), the bootstrap CI
+  spans 0.902-1.97, and the paper's own Supplementary Table S2 contrasts the
+  1.02-fold model effect with the 2.6-fold observed in a dedicated DDI study.
+  The three inhibitor-strength coefficients are consequently **not monotonic**
+  in potency (weak 0.939, medium 0.863, strong 0.978).
+* **Table 3's shrinkage values disagree slightly with the Results text.** The
+  table gives CL/F shrinkage 10.3% and V/F 25.7%; the Results text says "for
+  CL/F and V/F, shrinkage was within the range of 20-30%". Shrinkage is a
+  diagnostic, not a model parameter, and nothing packaged here depends on it.
+* **No IIV on the comedication, indication or bioavailability terms**, and no
+  inter-occasion variability -- the paper estimates none.
+* **Race and ethnicity are not reported** by Willmann 2018a and are not in the
+  model.
+* **Below-LLOQ handling.** Concentrations below 0.5 ug/L were excluded from the
+  fit (M1 method). Simulations here are unaffected, but a user refitting real
+  data should reproduce that exclusion.

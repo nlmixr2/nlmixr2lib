@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Mukherjee 2018 amlodipine ([doi:10.1007/s10928-018-9574-0](https://doi.org/10.1007/s10928-018-9574-0)) -- healthy adults and adults with essential hypertension.
+- Add Willmann 2018a rivaroxaban ([doi:10.1002/psp4.12288](https://doi.org/10.1002/psp4.12288)) -- adults across four approved indications (VTE prevention, VTE treatment, acute coronary syndrome and nonvalvular atrial fibrillation).
+
+- Rename the existing Willmann 2018 rivaroxaban model to `Willmann_2018b_rivaroxaban` to resolve the year collision with the new `Willmann_2018a_rivaroxaban`; the 2018b paediatric EINSTEIN-Jr model itself is unchanged.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
