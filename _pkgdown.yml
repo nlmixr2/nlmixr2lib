@@ -4064,6 +4064,12 @@ navbar:
         href: articles/Hong_2016_pregabalin.html
       - text: "Pregabalin (Shoji 2011)"
         href: articles/Shoji_2011_pregabalin.html
+      - text: "Pregabalin (vanEsdonk 2018)"
+        href: articles/vanEsdonk_2018_pregabalin_pain_models.html
+      - text: "Pregabalin coldpressor (vanEsdonk 2018)"
+        href: articles/vanEsdonk_2018_pregabalin_pain_models.html
+      - text: "Pregabalin electricalstim (vanEsdonk 2018)"
+        href: articles/vanEsdonk_2018_pregabalin_pain_models.html
       - text: "Pregabalin rat binary (Bender 2009)"
         href: articles/Bender_2009_pregabalin_rat.html
       - text: "Pregabalin rat smetab (Bender 2009)"
@@ -7980,6 +7986,7 @@ articles:
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/vanErp_2010_sunitinib
+  - articles/vanEsdonk_2018_pregabalin_pain_models
   - articles/vanHasselt_2013_eribulin
   - articles/vanHasselt_2014_cefazolin
   - articles/vanHasselt_2015_eribulin
