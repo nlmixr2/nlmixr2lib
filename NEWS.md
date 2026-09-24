@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van Hasselt 2014 cefazolin ([doi:10.1155/2014/897216](https://doi.org/10.1155/2014/897216)) -- pregnant women undergoing in utero surgery, caesarean delivery or fetal intervention; empirical and semiphysiological gestational models plus the underlying creatinine-clearance trajectory.
+- Add Franke 2015 acetaminophen food-effect model ([doi:10.2147/DDDT.S79499](https://doi.org/10.2147/DDDT.S79499)) -- healthy adults dosed fasted and after low-fat and high-fat meals; completes the paper's four models.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
