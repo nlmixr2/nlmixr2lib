@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Alghamdi 2019 cycloserine ([doi:10.1128/AAC.00055-19](https://doi.org/10.1128/AAC.00055-19)) -- adults with drug-resistant tuberculosis and healthy volunteers.
+- Add Trang 2019 plazomicin ([doi:10.1128/AAC.02329-18](https://doi.org/10.1128/AAC.02329-18)) -- healthy adults and adults with complicated urinary tract infection, acute pyelonephritis, bloodstream infection or hospital-/ventilator-acquired bacterial pneumonia.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
