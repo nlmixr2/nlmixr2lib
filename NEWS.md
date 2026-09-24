@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Taddio 2018 [11C]AM7 and [11C]MT107 ([doi:10.1155/2018/5849047](https://doi.org/10.1155/2018/5849047)) -- xenograft-bearing female SCID and CD1 nude mice imaged by dynamic PET, with and without cyclosporine.
+- Add Lee 2018 leuprolide ([doi:10.3390/molecules23040909](https://doi.org/10.3390/molecules23040909)) -- normal Wistar and prostate-cancer-bearing Iar:COP rats.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
