@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Brekkan 2018 omalizumab ([doi:10.1007/s10928-018-9594-9](https://doi.org/10.1007/s10928-018-9594-9)) -- adults with atopic disease receiving subcutaneous omalizumab.
+- Add Kay 2018 dapivirine ([doi:10.1111/bcp.13625](https://doi.org/10.1111/bcp.13625)) -- healthy non-pregnant women using a vaginal ring or film for HIV pre-exposure prophylaxis.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

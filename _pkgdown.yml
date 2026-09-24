@@ -1214,6 +1214,8 @@ navbar:
         href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Dapagliflozin pbpk (Nemitz 2026)"
         href: articles/Nemitz_2026_dapagliflozin_pbpk.html
+      - text: "Dapivirine pbpk (Kay 2018)"
+        href: articles/Kay_2018_dapivirine.html
       - text: "Dapsone (Gatti 1996)"
         href: articles/Gatti_1996_dapsone.html
       - text: "Dapsone (Hall 2017)"
@@ -6640,6 +6642,7 @@ articles:
   - articles/Kawamura_2018_eribulin
   - articles/Kawuma_2023_dolutegravir
   - articles/Kawuma_2023_tenofovir
+  - articles/Kay_2018_dapivirine
   - articles/Kay_2020_lumefantrine
   - articles/Kay_2022_lumefantrine
   - articles/Keij_2023_amoxicillin
