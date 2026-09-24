@@ -174,7 +174,7 @@
   entries it describes, in both directions, so a type outside a file's own
   documented vocabulary fails the test suite rather than reaching a release.
 
-- Add Pichardo-Almarza 2017 simvastatin ([doi:10.3389/fphar.2017.00635](https://doi.org/10.3389/fphar.2017.00635)) -- healthy adult male volunteers; the PKPD module of a QSP model of atherosclerosis and statin adherence.
+- Add Chan 2017 idiopathic pulmonary fibrosis %predicted FVC model-based meta-analysis ([doi:10.1002/psp4.12227](https://doi.org/10.1002/psp4.12227)) -- 4,919 adults with idiopathic pulmonary fibrosis across 43 arms in 20 trials; 15 treatment regimens including pirfenidone and nintedanib.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
