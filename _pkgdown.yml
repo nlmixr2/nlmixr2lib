@@ -5306,6 +5306,8 @@ navbar:
         href: articles/Waterhouse_2024_vedolizumab.html
       - text: "Veliparib (Niu 2017)"
         href: articles/Niu_2017_veliparib.html
+      - text: "Venetoclax (Dave 2019)"
+        href: articles/Dave_2019_venetoclax.html
       - text: "Venetoclax (Yang 2025)"
         href: articles/Yang_2025_venetoclax.html
       - text: "Venetoclax (Zhao 2026)"
@@ -6004,6 +6006,7 @@ articles:
   - articles/Darwish_2025b_trofinetide
   - articles/Darwish_2026_remlifanserin
   - articles/Dasti_2025_mrna_vaccines
+  - articles/Dave_2019_venetoclax
   - articles/Davis_2008_maraviroc
   - articles/DeCock_2012_propyleneGlycol
   - articles/DeJongh_2014_antithrombin

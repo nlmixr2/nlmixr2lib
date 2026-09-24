@@ -2728,7 +2728,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `Bcell0` -- used in `Yu_2022_ofatumumab.R`.
   - `BBCC` (NHL Phase I/Ib/II convention; values in 10^6 cells/L = cells/uL) -- used in `Lu_2019_polatuzumab.R`.
-- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/uL), `Lu_2019_polatuzumab.R` (two distinct effects: power on CL_INF with input floored at 1 cell/uL, and a thresholded power on CL_T with the BLBCELL/121-cells/uL ratio floored at 1), `Lu_2017_polatuzumab_neuropathy.R` (carries forward the Lu 2019 acMMAE PK-side effects via the inlined acMMAE popPK layer; not used directly by the Lu 2017 TTE PD layer).
+- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/uL), `Lu_2019_polatuzumab.R` (two distinct effects: power on CL_INF with input floored at 1 cell/uL, and a thresholded power on CL_T with the BLBCELL/121-cells/uL ratio floored at 1), `Lu_2017_polatuzumab_neuropathy.R` (carries forward the Lu 2019 acMMAE PK-side effects via the inlined acMMAE popPK layer; not used directly by the Lu 2017 TTE PD layer), `Dave_2019_venetoclax.R` (not a covariate effect: the individual observed pre-dose CD19+ B-lymphocyte count, source column `MIBTCD19` in 10^6 cells/L = cells/uL, IS the baseline of the Friberg-type B-lymphocyte PD model, `circ0 = BLBCELL * exp(etalcirc0)`, and sets every PD initial condition).
 - **Notes:** Distinct from a *time-varying* B cell count, which is the PD response variable rather than a covariate. Scope: specific because the clinically relevant baseline depends on the surface marker (CD19, CD20, CD22) and whether the panel reports total B cells or memory/naive subsets -- register a new canonical name if a future paper uses a different marker. Both Yu 2022 (anti-CD20 ofatumumab) and Lu 2019 (anti-CD79b polatuzumab vedotin) use CD19+ counts, so the canonical is reused; subtype-specific differences are documented in each model's `covariateData[[BLBCELL]]$notes`.
 
 ### BL_PARP_PBL (**canonical for baseline poly(ADP-ribose) polymerase activity in peripheral blood lymphocytes**)
@@ -9717,6 +9717,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Source aliases:** `AZA` -- used in `Rosario_2015_vedolizumab.R`.
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.998^CONMED_AZA`; effect ~= null).
 - **Notes:** Thiopurine immunomodulator used as maintenance therapy in IBD. Standard convention is baseline-use-only, but time-varying use is permitted; document per-model.
+
+### CONMED_AZITHROMYCIN (**canonical for concomitant azithromycin coadministration indicator**)
+- **Description:** 1 = azithromycin coadministered with the victim-drug dose record, 0 = no concomitant azithromycin. Azithromycin is a macrolide antibiotic and a P-glycoprotein inhibitor with little CYP3A inhibition, so its DDI effects are usually attributed to intestinal P-gp.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant azithromycin).
+- **Source aliases:**
+  - `AZIFL` -- used in `Dave_2019_venetoclax.R` (Dave 2019 PK control stream `IF(AZIFL.EQ.1) TVFA = THETA(11) ; Azithromycin`).
+- **Example models:** `Dave_2019_venetoclax.R` (multiplicative factor 0.65 on venetoclax relative bioavailability, i.e. 35% lower F, Dave 2019 Table 2 'Azithromycin on F1'; healthy-volunteer DDI study V, Agarwal 2018 Adv Ther 35:2015; indicator set on the venetoclax dose record).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model whether the effect is placed on bioavailability or on clearance, and whether it is time-varying (on the dose record only) or per-subject.
 
 ### CONMED_AZOLE (**canonical for concomitant azole antifungal therapy (CYP3A4/P-gp inhibitor)**)
 - **Description:** 1 = patient coadministered an azole antifungal (itraconazole, voriconazole, fluconazole, ketoconazole, posaconazole, isavuconazole, or another systemic azole) during the observation interval, 0 = no concomitant azole antifungal. Time-varying per subject because azole exposure starts and stops during the observation period.
