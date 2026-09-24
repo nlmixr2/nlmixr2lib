@@ -1174,6 +1174,8 @@ navbar:
         href: articles/ResendizGalvan_2025_cycloserine.html
       - text: "Cyclosporin (Debord 2001)"
         href: articles/Debord_2001_cyclosporin.html
+      - text: "Cyclosporin (Wang 2019)"
+        href: articles/Wang_2019_cyclosporin.html
       - text: "Cyclosporine (Feng 2023)"
         href: articles/Feng_2023_cyclosporine.html
       - text: "Cyclosporine (Philippe 2015)"
@@ -7756,7 +7758,7 @@ articles:
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
   - articles/Wang_2018_daclatasvir_asunaprevir
-  - articles/Wang_2019_missing_dosing_history
+  - articles/Wang_2019_cyclosporin
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
