@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2019 ceftazidime and avibactam ([doi:10.1111/cts.12585](https://doi.org/10.1111/cts.12585)) -- adults with complicated intra-abdominal infection, complicated urinary tract infection or nosocomial pneumonia.
+- Add Sridharan 2019 primaquine ([doi:10.4103/ijp.ijp_230_16](https://doi.org/10.4103/ijp.ijp_230_16)) -- Indian adults, healthy or with hepatic or renal dysfunction.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
