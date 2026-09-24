@@ -5614,6 +5614,8 @@ navbar:
         href: articles/Hu_2023_voriconazole.html
       - text: "Voriconazole (Karlsson 2009)"
         href: articles/Karlsson_2009_voriconazole.html
+      - text: "Voriconazole (Kim 2019)"
+        href: articles/Kim_2019_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
         href: articles/Lin_2018_voriconazole.html
       - text: "Voriconazole (Ling 2024)"
@@ -6781,6 +6783,7 @@ articles:
   - articles/Kim_2017_fimasartan
   - articles/Kim_2017_tegafur_rat
   - articles/Kim_2018_tacrolimus
+  - articles/Kim_2019_voriconazole
   - articles/Kim_2023_camostat
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
