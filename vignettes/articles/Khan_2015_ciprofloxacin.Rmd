@@ -54,26 +54,25 @@ bundle for `DDMODEL00000225` (scraped to
 
 The packaged model uses the **`.mod` `$THETA` initial values** as
 its parameter values, not the simulated-refit lst final estimates.
-That choice was confirmed by the operator (sidecar 025 q1 =
-`mod_initials`) on these grounds: the `.mod` initials appear to be
-the publication-derived point values that seeded the bundle's
-simulated dataset -- `output_simulated.lst` round-trip-recovers them
-within ~3 % for every theta -- so the `.mod` initials are the closest
-available proxy for Khan 2015 Table 2 / Table 3, while no
-`Output_real_*.lst` is available. The `output_simulated.lst` final
-estimates differ materially only for `SIGMA(1)` (2.42 -> 1.78); the
-`.mod` initial 2.41597 is what the model file uses for `addSd`.
+That choice was confirmed by the maintainers on these grounds: the
+`.mod` initials appear to be the publication-derived point values that
+seeded the bundle's simulated dataset -- `output_simulated.lst`
+round-trip-recovers them within ~3 % for every theta -- so the `.mod`
+initials are the closest available proxy for Khan 2015 Table 2 /
+Table 3, while no `Output_real_*.lst` is available. The
+`output_simulated.lst` final estimates differ materially only for
+`SIGMA(1)` (2.42 -> 1.78); the `.mod` initial 2.41597 is what the model
+file uses for `addSd`.
 
 The Khan et al. 2015 publication itself (J Antimicrob Chemother
-70(11):3051-3060) is paywalled and is not on disk in this worktree;
+70(11):3051-3060) is paywalled and is not on disk;
 PMID 26349518 has no PMC full-text mirror. A side-by-side comparison
 against the publication's per-strain MIC table or per-tube
 time-kill figure is therefore out of scope here. Validation in
-this vignette is the F.3 mechanistic-sanity check from the
-extraction skill: the typical-value bacterial-count trajectory is
-qualitatively consistent with a 24-hour ciprofloxacin time-kill
-experiment on `Escherichia coli` LM202 wild-type at concentrations
-spanning 0-8 x MIC.
+this vignette is a mechanistic-sanity check: the typical-value
+bacterial-count trajectory is qualitatively consistent with a 24-hour
+ciprofloxacin time-kill experiment on `Escherichia coli` LM202
+wild-type at concentrations spanning 0-8 x MIC.
 
 # Population
 
@@ -239,7 +238,7 @@ ggplot(sim_typical, aes(time, log_cfu, colour = factor(treatment, levels = treat
 
 # Mechanistic sanity checks
 
-Three F.3 mechanistic-sanity checks for this PD model.
+Three mechanistic-sanity checks for this PD model.
 
 ## 1 -- No-drug control reproduces sigmoidal growth
 
@@ -346,10 +345,8 @@ concentration `CAB` (mg/L) held constant for the lifetime of each
 tube. There is no plasma-concentration time-course to take an
 NCA over and no clinical dose / clearance / volume to compare
 Cmax / AUC / half-life against. The validation strategy chosen by
-the operator (sidecar 025 q2 = `verbatim`) and the extraction
-skill's `references/ddmore-source.md` Section  "Validation strategy by
-model type" decision tree is the F.3 mechanistic-sanity recipe used
-above instead.
+the maintainers for this model type is the mechanistic-sanity
+check used above instead.
 
 # Assumptions and deviations
 
@@ -357,13 +354,12 @@ above instead.
   estimates.** The DDMORE bundle does not ship an
   `Output_real_*.lst` from the published real-data fit; only
   `output_simulated.lst` (a refit on the bundled simulated dataset)
-  is available. Per operator decision (sidecar 025 q1 =
-  `mod_initials`), the model file uses the `.mod` `$THETA` initial
-  values as the closest available proxy for the publication's
-  Table 2 / Table 3 final estimates. The `output_simulated.lst`
-  values round-trip-recover the `.mod` initials within ~3 % for
-  every theta but report `SIGMA(1) = 1.78` instead of the `.mod`'s
-  initial `2.41597`; the model file uses
+  is available. Per maintainer decision, the model file uses the
+  `.mod` `$THETA` initial values as the closest available proxy for
+  the publication's Table 2 / Table 3 final estimates. The
+  `output_simulated.lst` values round-trip-recover the `.mod` initials
+  within ~3 % for every theta but report `SIGMA(1) = 1.78` instead of
+  the `.mod`'s initial `2.41597`; the model file uses
   `addSd = sqrt(2.41597) = 1.5544` to remain consistent with the
   publication-derived initials.
 
@@ -383,9 +379,8 @@ above instead.
   `SIGMA(1) = 2.41597` (across-tube random effect) plus four
   `BLOCK(1) SAME` `SIGMA(2..5)` slots gated on `FLG2` (sample
   position 1..4) reflecting between-replicate variability. Per
-  operator decision (sidecar 025 q3 = `across_tube_only`), only
-  the across-tube `SIGMA(1)` is encoded as `addSd =
-  sqrt(SIGMA(1))`; the four per-position residual slots are
+  maintainer decision, only the across-tube `SIGMA(1)` is encoded
+  as `addSd = sqrt(SIGMA(1))`; the four per-position residual slots are
   documented here but not reproduced. For typical-value time-kill
   trajectories this simplification has no effect; for stochastic
   VPC reproduction against a 4-replicate experiment a richer
@@ -405,11 +400,11 @@ above instead.
 - **NONMEM `MTIME(2)` translated to a step on `t`.** The `.mod`
   uses `MTIME(2) = THETA(19)` and `FLAG = MPAST(1) - MPAST(2)` to
   switch off the active -> non-colony-forming transition once
-  experimental time exceeds `tmtime` hours. Per operator decision
-  (sidecar 025 q4 = `if_t_in_model`), the nlmixr2 translation is
-  the literal `flag <- 1.0 * (t < tmtime)` step on the rxode2 model
-  time variable. A smooth (logistic) replacement was rejected as a
-  deviation from the publication's intended discrete switch.
+  experimental time exceeds `tmtime` hours. Per maintainer decision,
+  the nlmixr2 translation is the literal `flag <- 1.0 * (t < tmtime)`
+  step on the rxode2 model time variable. A smooth (logistic)
+  replacement was rejected as a deviation from the publication's
+  intended discrete switch.
 
 - **`M3` BLQ method dropped.** The `.mod` `$ERROR` lines 156-164
   use NONMEM's M3 method (`F_FLAG = 1; Y = PHI((LLOQ - IPRED)/SIG)`
@@ -480,7 +475,7 @@ above instead.
   `NSIG = 5` reached. That warning is recorded here for
   completeness; it does not affect the packaged model because the
   packaged model uses `.mod` initials, not lst final estimates,
-  per the q1 decision above.
+  per the maintainer decision above.
 
 - **"M3, B2, MTIME and L2 not included in mdl file."** The
   bundle's `Model_Accommodations.txt` records that the **MDL**

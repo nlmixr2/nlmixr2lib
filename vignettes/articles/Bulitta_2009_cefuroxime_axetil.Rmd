@@ -295,7 +295,7 @@ Bulitta 2009 Table 1 reports noncompartmental PK parameters for the same
 250 mg single oral cefuroxime dose. The block below runs PKNCA on the
 24-subject stochastic simulation (matching the published study size) and
 compares the simulated mean +/- SD to the published values. A treatment
-grouping is included for consistency with the skill convention even though
+grouping is included for consistency with the package convention even though
 only one regimen is studied in the paper.
 
 The integration window is extended to 48 h (about 35 cefuroxime half-lives

@@ -545,7 +545,7 @@ med <- cmp |> dplyr::filter(stat == "median")
 # term that is steep in infancy. A cohort whose median weight sits a kilogram
 # off the paper's therefore shifts exposure by several percent even with an
 # identical model. So gate on the CENTRE across arms and on a robust envelope,
-# per the guidance in CLAUDE.md -- never on the extreme arm.
+# never on the extreme arm.
 #
 # Realised on this cohort: median +5.0%, 80th percentile of |diff| 7.2%, worst
 # arm 20.1% (the 6-10 kg / 1-<6 month arm, where the unpublished age window

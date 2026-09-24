@@ -232,7 +232,7 @@ comment instructs.
 
 ```{r rat-events}
 # Helper: one deterministic arm. `dose_cmt` is an ODE state name, never an
-# algebraic observable such as `Cc` (see the skill's failure-pattern 2).
+# algebraic observable such as `Cc`.
 make_arm <- function(id, dose, dose_cmt, times, label,
                      rate = 0, extra = NULL) {
   dosing <- data.frame(

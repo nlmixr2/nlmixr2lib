@@ -844,8 +844,7 @@ stopifnot(round(mppgl(2 / 12)) == 26, round(mppgl(18)) == 38)
   ratio (1.59-1.74) somewhat better but departs further from the Table 3 ratio,
   and those post-hoc means come from the *initial* PPK model, which contained no
   healthy factor and rested on only 10 adult patients with SMA. Ratified by the
-  operator (sidecar `request-002` q2, option A). No parameter was tuned to any
-  target.
+  maintainers. No parameter was tuned to any target.
 - **Three transit compartments means four sequential transfers.** Sect. 2.1
   describes "a three-transit compartment for absorption connected to a linear
   disposition model with two compartments". This is encoded as
@@ -857,11 +856,11 @@ stopifnot(round(mppgl(2 / 12)) == 26, round(mppgl(18)) == 38)
   estimates separate proportional residual errors for venous (23.4% CV) and
   capillary (34.2% CV) samples, with capillary samples 3% of the dataset. No
   register entry covered blood sampling site, so `SAMPLE_CAPILLARY` was added to
-  `inst/references/covariate-columns.md` in the same pull request (operator
-  ratification, sidecar `request-002` q1, option A). Both matrices used the same
-  validated LC-MS/MS assay, so the contrast is the collection site rather than
-  the assay. In this vignette roughly 3% of observation records are flagged
-  capillary, concentrated in the youngest arm.
+  `inst/references/covariate-columns.md` in the same pull request (maintainer
+  ratification). Both matrices used the same validated LC-MS/MS assay, so the
+  contrast is the collection site rather than the assay. In this vignette
+  roughly 3% of observation records are flagged capillary, concentrated in the
+  youngest arm.
 - **Virtual-cohort covariate distributions are constructed, not published.**
   Individual demographics are not available. Ages were drawn uniformly within
   each arm's label band and weights from a WHO/CDC-style median weight-for-age
@@ -882,7 +881,7 @@ stopifnot(round(mppgl(2 / 12)) == 26, round(mppgl(18)) == 38)
   paper's own quantitative statements plus two exact linear-model identities.
 - **The Mech-PPK model of Table 3 is deferred, not dropped.** It requires the
   closed-access Upreti & Wahlstrom (2016) CYP3A ontogeny coefficients and an
-  unpublished blood-to-plasma ratio; both are queued for acquisition. The
-  ontogeny functions and the ESM Eq. S1-S11 physiology chain have been decoded
-  and verified here so the follow-up extraction can proceed directly once the
-  upstream paper is available.
+  unpublished blood-to-plasma ratio; neither was available when this model was
+  built. The ontogeny functions and the ESM Eq. S1-S11 physiology chain have
+  been decoded and verified here so the follow-up extraction can proceed
+  directly once the upstream paper is available.

@@ -571,7 +571,7 @@ stopifnot(all(nca_wide$aucinf.obs >= nca_wide$auclast))
   dose was physically administered. The discrepancy is recorded here rather
   than resolved, as it cannot be resolved from the paper.
 
-* **Figure 4 targets are operator-digitised, not tabulated.** Kutumova 2024
+* **Figure 4 targets are maintainer-digitised, not tabulated.** Kutumova 2024
   presents Figure 4 and Supplementary Figure 1 only graphically; no numeric
   biodistribution values are tabulated anywhere in the paper or its
   supplement (which contains figure captions only). The comparison values in

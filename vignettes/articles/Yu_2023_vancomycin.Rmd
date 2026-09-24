@@ -129,7 +129,7 @@ n_cohort <- 200L
 # Deterministic stratified representation of the log-normal CL distribution:
 # the i-th of n equally spaced probability points. No RNG is involved anywhere
 # in this vignette, so every number below is reproducible on any machine and any
-# thread count (see known-vignette-failure-patterns.md pattern 12).
+# thread count.
 etas <- stats::qnorm((seq_len(n_cohort) - 0.5) / n_cohort, mean = 0, sd = omega)
 
 pta_closed <- function(cl_fun, daily_dose, uv, lo = 400, hi = Inf) {
@@ -200,10 +200,10 @@ published `qnorm(PTA)` on `ln(1000 / (400 * CL_typ))` recovers `1 / omega` as
 the slope.
 
 ```{r omega-scale}
-# Digitised by the operator from Yu 2023 Figure 3A, 500 mg q12h series (filled
-# circles). Read against the 20-unit gridlines; roughly +/-3 percentage points.
-# Used ONLY as a comparison reference and for this slope check -- no parameter
-# value in the model file comes from a figure.
+# Digitised by the maintainers from Yu 2023 Figure 3A, 500 mg q12h series
+# (filled circles). Read against the 20-unit gridlines; roughly +/-3 percentage
+# points. Used ONLY as a comparison reference and for this slope check -- no
+# parameter value in the model file comes from a figure.
 fig3a_500q12h <- tibble(
   uv  = uv_grid,
   pta = c(88, 64, 41, 29, 21.5, 22)
@@ -489,7 +489,7 @@ pta |>
 ## Comparison against the published Figure 3A
 
 ```{r figure-3a-compare}
-# Digitised by the operator from Yu 2023 Figure 3A against the 20-unit
+# Digitised by the maintainers from Yu 2023 Figure 3A against the 20-unit
 # gridlines; roughly +/-3 percentage points, and the curves that sit on the
 # 100% ceiling are recorded as 100.
 fig3a_published <- tibble::tribble(
@@ -672,9 +672,9 @@ stopifnot(all(claims$Pass[!claims$Deviation]))
   fixed urine-volume scenario -- exactly as in Yu 2023 Figure 3.
 
 - **Figure-derived values.** The `fig3a_published` and `fig3a_500q12h` tables
-  were digitised by the operator from Yu 2023 Figure 3A (roughly +/-3 percentage
-  points). They are used only as comparison references and for the `omega` slope
-  check; no parameter value in
+  were digitised by the maintainers from Yu 2023 Figure 3A (roughly +/-3
+  percentage points). They are used only as comparison references and for the
+  `omega` slope check; no parameter value in
   `inst/modeldb/specificDrugs/Yu_2023_vancomycin.R` comes from a figure.
 
 - **Screened but unretained covariates** (age, sex, weight, BMI, daily dose,

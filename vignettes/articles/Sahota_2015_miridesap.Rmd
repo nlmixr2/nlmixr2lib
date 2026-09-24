@@ -323,7 +323,7 @@ knitr::kable(nca_summary,
   KON estimate (1.94e6 L/(mol h)) absorbs the choice.
 * **`target_peripheral` compartment name.** The model carries the SAP
   peripheral pool in a state named `target_peripheral` rather than the
-  canonical `peripheral2`. The skill's compartment register
+  canonical `peripheral2`. The package's compartment register
   (`R/conventions.R::targetLocationRegex`) currently recognises
   `target_csf`, `target_isf`, `complex_csf`, `complex_isf` but not
   `target_peripheral`; nonetheless the name is the natural extension

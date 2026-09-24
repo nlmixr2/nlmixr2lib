@@ -448,7 +448,7 @@ I3=[4,8), I4=[8,12), I5=[12,80) weeks).
   (Bayesian Stan) rather than ODE-form pharmacometric models; the
   parameter tables and equations are reproduced in the sections above
   for reviewer traceability. Adding them as separate `.R` files is a
-  scope-scope for a future PR if the operator wants them.
+  scope-scope for a future PR if the maintainers want them.
 
 - **Table S2 residual-error CI reported as `(0.595, 0.613)` for the
   proportional-SD point estimate of 0.365 appears to be a supplement

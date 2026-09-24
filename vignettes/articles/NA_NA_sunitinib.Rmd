@@ -55,16 +55,14 @@ expansion); the MDL itself is dose-input-agnostic.
 
 The same information is available programmatically via the model's
 `population` metadata
-(`readModelDb("NA_NA_sunitinib")$population` after
-`devtools::load_all()` against the worktree).
+(`readModelDb("NA_NA_sunitinib")$population`).
 
 # Source trace
 
 All parameter values come from `Sunitinib_MPD6_model.mdl`'s `parObj`
-`STRUCTURAL{}` and `VARIABILITY{}` blocks. Per the operator decision
-recorded in the queue sidecar (`response-001.json`, value
-`extract_mdl`), these are treated as the deposited final estimates.
-The `.mod`/`.lst` cross-check that the DDMORE-source extraction skill
+`STRUCTURAL{}` and `VARIABILITY{}` blocks. Per a maintainer decision,
+these are treated as the deposited final estimates.
+The `.mod`/`.lst` cross-check that the DDMORE-source extraction protocol
 normally requires is unavailable for this bundle; see Errata.
 
 | Equation / parameter | Value | Source location (DDMODEL00000231) |
@@ -275,9 +273,8 @@ data.frame(
   is run.
 * **No `.lst` cross-check on parameter values.** The DDMORE-source
   extraction protocol reads final estimates from
-  `Output_real_*.lst`. This bundle ships no listing. Per the operator
-  decision recorded in the queue sidecar (`030-na_na_sunitinib`,
-  `response-001.json`, value `extract_mdl`), the MDL parObj
+  `Output_real_*.lst`. This bundle ships no listing. Per a maintainer
+  decision, the MDL parObj
   `STRUCTURAL{}` and `VARIABILITY{}` numeric values are treated as the
   deposited final estimates; whether they actually represent
   converged final estimates or initial guesses is not externally
@@ -341,7 +338,7 @@ data.frame(
     metabolite list (`R/conventions.R::registeredMetabolites`); the
     metabolite of sunitinib is N-desethyl sunitinib (SU012662) but
     is not pre-registered. Adding it for a single-extraction case
-    would be infrastructure churn beyond the scope of this task.
+    would be infrastructure churn beyond the scope of this model.
   `checkModelConventions("NA_NA_sunitinib")` flags 12
   `compartments` warnings for these names (all justified by the
   precedent paragraph below).

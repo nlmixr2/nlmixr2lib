@@ -28,7 +28,7 @@ Hoglund 2015 reports two joint parent-metabolite popPK models from a single pool
 * a 2-compartment lumefantrine + 1-compartment desbutyl-lumefantrine joint model with 1-transit-compartment absorption (Table 2), and
 * a 1-compartment artemether + 1-compartment dihydroartemisinin joint model with 3-transit-compartment absorption and enzymatic auto-induction of artemether clearance (Table 3).
 
-Per the `replicate-author-structure` policy each joint fit is extracted as its own model file, with this single vignette walking the paper as a unit:
+Following the package's convention of replicating the authors' model structure, each joint fit is extracted as its own model file, with this single vignette walking the paper as a unit:
 
 ```{r load-models}
 mod_lf_fn <- readModelDb("Hoglund_2015_lumefantrine")
@@ -492,7 +492,7 @@ knitr::kable(
 
 # Assumptions and deviations
 
-- **Auto-induction time variable.** The artemether maturation function is computed as a Hill function of model time `t`. In rxode2 this is the simulation time relative to dose-time 0; users who want time-since-first-dose semantics must arrange their event tables so the first artemether dose lands at t = 0. The skill convention is satisfied in this vignette by starting each subject's regimen at t = 0.
+- **Auto-induction time variable.** The artemether maturation function is computed as a Hill function of model time `t`. In rxode2 this is the simulation time relative to dose-time 0; users who want time-since-first-dose semantics must arrange their event tables so the first artemether dose lands at t = 0. This vignette satisfies that requirement by starting each subject's regimen at t = 0.
 - **Mutually exclusive ARV regimens.** Each trial subject was on at most one of EFV, NVP, or LPV/r at a time. The encoded multiplicative form `CL = TVCL * (1 + e_efv_cl * CONMED_EFV) * (1 + e_lpv_cl * CONMED_LPV)` is the canonical encoding for independently estimated categorical effects; for any single subject only one of the indicators is 1, so the multiplicative form collapses to a single linear-deviation factor.
 - **Molecular weights.** Molar conversion at the AM -> DHA and LF -> desbutyl-lumefantrine formation steps uses canonical values from the IUPAC compound database (AM C16H26O5 = 298.37 g/mol; DHA C15H24O5 = 284.35 g/mol; LF C30H32Cl3NO = 528.94 g/mol; desbutyl-lumefantrine C26H24Cl3NO = 472.83 g/mol). The source paper does not state MWs explicitly.
 - **No body-weight, BMI, age, sex, or study covariate.** All were tested in the source paper's stepwise covariate search and none were retained in the final lumefantrine or artemether model (Results paragraphs). The cohort WT distribution in this vignette is illustrative only.

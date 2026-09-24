@@ -151,9 +151,9 @@ and height as if they were independent.
 # rxode2's simulation RNG, whose streams are partitioned per solver thread -- so the
 # IIV draws in the VPC section differ between a 2-core CI runner and a 16-thread
 # workstation. Every assertion below is written to hold for any cohort the model can
-# produce; see pattern 12 of the skill's known-vignette-failure-patterns reference.
+# produce.
 set.seed(20240905)
-n_subj <- 200L  # per model arm; the skill caps cohorts at 200/arm
+n_subj <- 200L  # per model arm; cohorts are capped at 200/arm
 
 clamp <- function(x, lo, hi) pmin(pmax(x, lo), hi)
 

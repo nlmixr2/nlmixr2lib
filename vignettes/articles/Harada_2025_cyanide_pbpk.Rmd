@@ -166,13 +166,13 @@ simulate_exposure <- function(ppm, tmax = 30, dt = 0.05) {
 
 Harada et al. report no NCA-style analysis of any model output -- there is no
 dose, no administered amount, and no reported Cmax / AUC / half-life -- so PKNCA
-is not the right validation instrument here and is deliberately not used (see
-`references/endogenous-validation.md`). What the paper *does* provide is far
-stronger: **13 published answer keys**. For each reconstructed case, Table 2
-gives an air concentration and an exposure time that the model must map back onto
-the measured left and right cardiac cyanide concentrations. Those are checked
-below, followed by the reverse direction -- re-running the paper's grid search to
-see whether it returns the published estimates.
+is not the right validation instrument here and is deliberately not used. What
+the paper *does* provide is far stronger: **13 published answer keys**. For each
+reconstructed case, Table 2 gives an air concentration and an exposure time that
+the model must map back onto the measured left and right cardiac cyanide
+concentrations. Those are checked below, followed by the reverse direction --
+re-running the paper's grid search to see whether it returns the published
+estimates.
 
 ## 1. Zero-exposure and sign checks
 

@@ -375,7 +375,7 @@ Serum T4 is suppressed to about 68% of control at the end of dosing and returns 
 
 ## 5. What drives NIS inhibition: the `CBthy` ambiguity
 
-This is the single most consequential interpretation decision in the extraction, and it is flagged as the primary review point for this PR.
+This is the single most consequential interpretation decision in the extraction, and it was flagged as the primary review point when this model was added.
 
 The inhibition functions are driven by a quantity the paper calls `CBthy`, described in prose as "the concentration of chemical in the thyroid cells (in vitro) or tissue (in vivo)". But the packaged models use the thyroid **blood** concentration. Four independent lines of evidence support that reading:
 
@@ -558,7 +558,7 @@ Both functions return approximately 1 at zero exposure (1.0098 rat, 1.006 human)
 
 **Interpretation decisions**
 
-1. **`CBthy` is the thyroid blood concentration, not the thyroid tissue concentration** (section 5). This contradicts one clause of the paper's prose but is supported by the symbol name, the basolateral-NIS mechanism the paper itself describes, correspondence with the in-vitro exposure metric, and reproduction of both species' published points of departure. It changes the predicted dose-response by a factor of `pc_thyroid` = 8.5. **This is the primary review point for this PR.**
+1. **`CBthy` is the thyroid blood concentration, not the thyroid tissue concentration** (section 5). This contradicts one clause of the paper's prose but is supported by the symbol name, the basolateral-NIS mechanism the paper itself describes, correspondence with the in-vitro exposure metric, and reproduction of both species' published points of departure. It changes the predicted dose-response by a factor of `pc_thyroid` = 8.5. **This was the primary review point when this model was added.**
 2. **`kin_TSH` carries a `VD_TSH` factor relative to the printed expression**, because these files hold the TSH state as an amount (mg) rather than the concentration that Table 5's `kin_TSH = TSH_BL * k_TSH` (mg/L/h) implies; Table 5's own Units column lists `kin_TSH` as mg/h. The amount and concentration formulations are algebraically identical, since the state enters only via `c_tsh = tsh_serum / vd_tsh`. Combining the printed expression with an amount-valued state -- the easy error -- inflates baseline T4 synthesis by about 41% (section 2).
 3. **`T4_BL` in `feed1`/`feed2` is the serum basal T4 (58.4e-3 mg/L rat, 85e-3 human), not the thyroid-tissue `T4_BL` (208 / 288 mg/L) that shares the printed symbol.** Only the serum reading is dimensionally consistent and only it gives `feed1 = feed2 = 1` at homeostasis; the tissue reading makes `feed1` of order 1e9 and the TSH state diverges.
 4. **The blood-pool ODE is reconstructed**, being the one chemical equation the paper does not print. Mass-balance closure of the ten printed tissue equations determines it uniquely, and section 1 verifies mass conservation to 1e-13.

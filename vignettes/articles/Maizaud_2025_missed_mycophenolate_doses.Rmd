@@ -735,7 +735,7 @@ stopifnot(nrow(half_dose) >= 3L, all(half_dose$rel_pct > 0), all(half_dose$rel_p
   access. Unpaywall reports `is_oa = False` with zero OA locations for Rong; for
   van Hest both listed OA locations are metadata-only Erasmus repository records
   with no retrievable PDF. Europe PMC has no PMCID, no full text, and no PDF for
-  either. Both are queued for acquisition.
+  either. Neither was available when this model was built.
 - Every parameter value therefore comes from the **Maizaud 2025 S1 File**
   `mrgsolve` source plus Maizaud 2025 Table 1. The two are independent
   transcriptions of the same models and cross-check on all 13 random-effect

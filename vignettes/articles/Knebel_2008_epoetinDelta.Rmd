@@ -1084,8 +1084,8 @@ stopifnot(
   entirely on dialysis and `PERIT_DIAL` is read against hemodialysis; the
   reference category is recorded per model in `covariateData`.
 - **`FORM_EPO_ALFA` is a new canonical covariate**, registered in
-  `inst/references/covariate-columns.md` as a member of the auto-approved
-  `FORM_<DRUG>_<FEATURE>` family. Its closest precedent is `FORM_GCSF_PEG`,
+  `inst/references/covariate-columns.md` as a member of the accepted
+  `FORM_<DRUG>_<FEATURE>` naming family. Its closest precedent is `FORM_GCSF_PEG`,
   which likewise carries two marketed recombinant-protein products of one parent
   cytokine through a single joint fit via effects on subcutaneous absorption and
   bioavailability.

@@ -602,7 +602,7 @@ auc_med <- nca_med |>
   dplyr::mutate(auc_pct = 100 * (aucinf.obs - aucinf.obs_ref) / aucinf.obs_ref)
 
 # Cohort-derived, so assert on the CENTRE rather than on any subject's extreme
-# (see the repo CLAUDE.md note on thread-fragile assertions). Realised
+# Realised
 # |auc_pct| was at most 3.9% across all three arms at 2 threads and 3.7% at 16;
 # the residual is trapezoidal error on a peak that Tmax reaches in under an
 # hour, not cohort noise. A bound of 12 leaves room for a different cohort draw

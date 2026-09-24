@@ -119,8 +119,7 @@ t_ss_grid <- 0
 # the trough straight to the peak, inflating AUC by roughly 1%. Adding a point
 # an instant before each interior dose collapses that spurious segment to zero
 # width. Without it the identity check below fails for the right reason on a
-# correct model -- see pattern 11 of the skill's
-# known-vignette-failure-patterns reference.
+# correct model.
 obs_times <- function(tau, by) {
   interior <- seq(tau, 24 - tau, by = tau)
   sort(unique(c(seq(0, 24, by = by), interior - 1e-6)))
@@ -343,8 +342,7 @@ because the paper reports no correlation between them.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so the residual draws below are not reproducible across
 # machines with different thread counts; every assertion in this vignette is
-# written to hold for any cohort the model can produce (see pattern 12 of the
-# skill's known-vignette-failure-patterns reference).
+# written to hold for any cohort the model can produce.
 set.seed(20250401)
 rxode2::rxSetSeed(20250401)
 

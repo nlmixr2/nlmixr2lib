@@ -105,7 +105,7 @@ genotype contrast is not confounded by weight.
 # rxode2's streams are partitioned PER SOLVER THREAD, so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion below is written to hold for ANY cohort the
-# model can produce (see known-vignette-failure-patterns.md pattern 12).
+# model can produce.
 set.seed(20240201)
 
 # The eight CYP2C9 diplotypes observed in the cohort, as per-allele counts.

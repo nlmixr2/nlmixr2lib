@@ -528,6 +528,6 @@ fixed at its mouse estimate, and all human lung outputs are extrapolations whose
 is the successful healthy-lung extrapolation to rats and dogs.
 
 **Caseum compartment naming.** `caseum1` to `caseum6` are declared through
-`paper_specific_compartments` rather than as canonical compartments, pending operator
+`paper_specific_compartments` rather than as canonical compartments, pending maintainer
 ratification of a `caseum<n>` canonical chain prefix in
 `inst/references/compartment-names.md`.

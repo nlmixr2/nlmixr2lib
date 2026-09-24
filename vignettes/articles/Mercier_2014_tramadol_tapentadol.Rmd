@@ -429,7 +429,7 @@ ggplot(env_summary, aes(x = time)) +
   are between-study/arm random effects capturing the correlation between
   repeated timepoints within a study arm. They are encoded as `eta_study_e0`
   and `eta_study_emax` to flag them as MBMA study-level variability rather
-  than individual between-subject variability, per SKILL Phase-1 Step-3a MBMA
+  than individual between-subject variability, per the package's MBMA
   guidance. `checkModelConventions()` warns that these etas have no matching
   structural fixed-effect parameter of the same suffix; this is expected for
   the MBMA between-study naming convention and is not a defect. The `ini()`

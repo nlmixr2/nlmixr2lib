@@ -687,7 +687,7 @@ stopifnot(all(tab$Pass[!tab$Deviation]))
   equation -- nor in Tables S1-S5, nor inside any figure panel (the publisher's
   native-resolution figure files were checked).
 
-  Per operator decision (2026-09-11), the model carries `Imax_pacl = 1.15`
+  Per a maintainer decision (2026-09-11), the model carries `Imax_pacl = 1.15`
   across from the 2024 parent (`FernandezTeruel_2024_capivasertib.R`,
   Fernandez-Teruel 2024 Table 3: RSE 12.5%, bootstrap 95% CI 1-6.91), held
   constant via `fixed()`. **This is a cross-fit borrow, not a 2025 estimate.**

@@ -717,10 +717,10 @@ reproduced exactly on AUC. No parameter was tuned to close the gap.
   analytes: not drug concentrations, and not backed by ODE states, so no existing
   canonical compartment name fits. Both models declare the name in
   `paper_specific_compartments`, which suppresses the compartment warning but not
-  the observation warning. The operator's decision (sidecar request 001 q2) is to
-  keep the paper-named forms and accept the warning rather than found a PD-output
-  canonical family on two examples; the names may change if a canonical family is
-  ratified later. The population PK model `Gong_2023_pemigatinib` lints clean.
+  the observation warning. The maintainers' decision is to keep the paper-named
+  forms and accept the warning rather than found a PD-output canonical family on
+  two examples; the names may change if a canonical family is ratified later.
+  The population PK model `Gong_2023_pemigatinib` lints clean.
 * **`AUC_PEMI` is a static covariate, not an integrated state.** This mirrors the
   authors' own workflow: AUCss was derived noncompartmentally from a dense
   simulated steady-state profile in NONMEM and then used as a regressor in SAS.

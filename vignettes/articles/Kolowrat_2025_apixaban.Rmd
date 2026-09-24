@@ -345,8 +345,7 @@ that the dose comparison is not confounded by a different age draw.
 # RNG (the etas), but rxode2 partitions its streams PER SOLVER THREAD, so the
 # eta draw is reproducible on this machine and different on a machine with a
 # different thread count. Every assertion below is written to hold for any
-# cohort the model can produce; see pattern 12 of
-# references/known-vignette-failure-patterns.md.
+# cohort the model can produce.
 set.seed(20250909)
 rxode2::rxSetSeed(20250909)
 

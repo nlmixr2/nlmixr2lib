@@ -128,7 +128,7 @@ head(events, 6)
 # Mechanistic-sanity simulation (F.3)
 
 The HFS model is a Markov + proportional-odds modality without a
-published NCA table; the F.3 mechanistic-sanity recipe applies.
+published NCA table; the F.3 mechanistic-sanity check applies.
 Typical-value simulation should reproduce sVEGFR-3 depletion under
 drug, `bm` (the effect-compartment-smoothed relative-change signal)
 moving negative, and each per-state P(grade >= 1) rising.
@@ -228,7 +228,7 @@ probability of escalation conditional on already having grade 1
   `addSd_hfs_grade = 0.5`. The published 0.5 placeholder is **not**
   from the source; users fitting the actual likelihood need to extend
   the model with a per-record `PDV` column and a conditional
-  `~ ll(...)` form outside the scope of this skill.
+  `~ ll(...)` form outside the scope of this extraction.
 
 * **PX3+ IIV fixed at tiny non-zero.** Table 3 HFS reports
   `omega x|>=3 = NE` (Not Estimated). The strict source-faithful

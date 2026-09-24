@@ -516,7 +516,7 @@ get_pta <- function(reg) {
 }
 
 # These are cohort-derived, so only structural relations and wide-margin
-# classifications are asserted (see known-vignette-failure-patterns pattern 12).
+# classifications are asserted.
 # Realised over four cohort scenarios (two seeds x two PMA-weight relations)
 # and four solver-thread counts (1 / 2 / 4 / 8):
 #   25 q6h  0.975-1.000   25 q8h  0.875-0.895   25 q12h 0.480-0.550

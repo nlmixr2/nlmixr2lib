@@ -163,7 +163,7 @@ sim_typical <- function(ui, wt, age = NULL, mgkg, tau, hours, by = 0.25) {
   ev <- rxode2::et(ev, seq(0, hours, by = by), cmt = "central")
   cov <- if (is.null(age)) data.frame(WT = wt) else data.frame(WT = wt, AGE = age)
   out <- rxode2::rxSolve(ui, ev, cov, omega = NA, returnType = "data.frame")
-  # rxSolve omits `id` for a single subject (see known-vignette-failure-patterns #8)
+  # rxSolve omits `id` for a single subject
   if (is.null(out$id)) out$id <- 1L
   out
 }

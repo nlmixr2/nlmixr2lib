@@ -88,8 +88,7 @@ The same information is available programmatically via each model's
 
 Because the source data are CFU/mL counts under a fixed drug-PK kernel and
 the paper does not report NCA-style metrics, PKNCA is not the appropriate
-validation target (see `references/endogenous-validation.md` in the skill
-for the rationale). Instead the vignette walks the typical-value
+validation target. Instead the vignette walks the typical-value
 trajectories under three scenarios:
 
 1. **Natural growth control** (no drug) -- confirms the saturable-growth +

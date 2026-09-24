@@ -148,8 +148,8 @@ Original individual-level data are not publicly available (the
 poster only shows the population fits and VPC summaries in Figures
 1-4). The simulations below use two virtual cohorts whose
 DIS_DMD assignment matches the pooled training-set composition:
-16 healthy + 200 DMD subjects (the per-arm 200 ceiling required by
-the vignette template). The healthy cohort size matches Hajjar
+16 healthy + 200 DMD subjects (the package's per-arm ceiling of 200 for
+validation cohorts). The healthy cohort size matches Hajjar
 2018 Results bullet 1; the DMD cohort sample is reduced from the
 training 219 down to the 200/arm ceiling without changing the per-
 subject variability structure.
@@ -251,9 +251,8 @@ sim_tv |>
 # Sanity checks (closed-form algebra)
 
 This is a disease-progression model with no drug input, so PKNCA-
-style NCA validation does not apply (see
-`references/endogenous-validation.md`). We spot-check the rxode2
-output against closed-form algebra at four canonical ages.
+style NCA validation does not apply. We spot-check the rxode2 output
+against closed-form algebra at four canonical ages.
 
 The closed-form expectations:
 

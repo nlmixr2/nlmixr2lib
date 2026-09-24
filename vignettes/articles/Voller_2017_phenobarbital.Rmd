@@ -37,7 +37,7 @@ This vignette validates the packaged `Voller_2017_phenobarbital` model
 against the DDMORE Foundation Model Repository entry **DDMODEL00000256**, the
 source from which it was extracted. The Voller 2017 publication PDF is not
 available on this machine, so the validation strategy follows the F.2
-self-consistency recipe from the `extract-literature-model` skill: re-simulate
+self-consistency recipe from the package's validation checklist: re-simulate
 the bundle's shipped event table with typical-value parameters and confirm
 the trajectory is in the expected clinical range for phenobarbital in
 newborns receiving a loading dose followed by oral maintenance.
@@ -360,14 +360,13 @@ knitr::kable(
 
 ## Comparison against published NCA
 
-The Voller 2017 publication PDF is not on disk under
-`/home/bill/github/mab_human_consensus/literature/`, so the in-paper
-NCA tables (Cmax, AUC, trough by birth-weight or postnatal-age stratum)
-cannot be reproduced here. This is the F.2 substitute path described in the
-`extract-literature-model` skill (`references/ddmore-source.md` Section
-"Validation strategy by model type"). Operator follow-up: pull the
-publication PDF and compare the PKNCA outputs above against any in-paper
-loading-dose Cmax / AUC / trough values reported by Voller et al.
+The Voller 2017 publication PDF is not on disk in the maintainers' literature
+mirror, so the in-paper NCA tables (Cmax, AUC, trough by birth-weight or
+postnatal-age stratum) cannot be reproduced here. This is the F.2 substitute
+path of the package's validation strategy for DDMORE bundles. Maintainer
+follow-up: pull the publication PDF and compare the PKNCA outputs above
+against any in-paper loading-dose Cmax / AUC / trough values reported by
+Voller et al.
 
 # Assumptions and deviations
 
@@ -395,8 +394,7 @@ loading-dose Cmax / AUC / trough values reported by Voller et al.
   2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body
   weight (`WT`), so reusing `BWT` for birth weight would silently break
   those mappings. The naming choice (`WT_BIRTH` vs `BIRTH_WT` vs
-  `BWTBIRTH`) was confirmed by the operator via the runner sidecar
-  protocol.
+  `BWTBIRTH`) was confirmed by the maintainers.
 
 - **Bioavailability `lfdepot` is not bounded in `ini()`.** The source
   `$THETA` declared `(0, 0.594, 1)` for F1, an explicit (0, 1) bound. The
@@ -412,18 +410,16 @@ loading-dose Cmax / AUC / trough values reported by Voller et al.
   nlmixr2 model preserves the diagonal structure
   (`etalcl ~ 0.0898; etalvc ~ 0.0504`).
 
-- **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` Section "Validation strategy by model type"
-  decision tree, leaf 1: linked publication exists but is not on disk).
-  PKNCA values shown above are informational; comparison against the
-  Voller 2017 published NCA / population-prediction figures could not be
-  performed.
+- **Validation strategy is F.2 self-consistency** (per the package's
+  validation strategy for DDMORE bundles whose linked publication exists
+  but is not on disk). PKNCA values shown above are informational;
+  comparison against the Voller 2017 published NCA / population-prediction
+  figures could not be performed.
 
 - **No external publication cross-check.** The Voller 2017 publication
-  PDF is not on disk under `/home/bill/github/mab_human_consensus/literature/`;
+  PDF is not on disk in the maintainers' literature mirror;
   parameter values were not cross-checked against published tables in the
-  paper. The skill's runner sidecar pre-resolved this case (the task YAML
-  states "If not, proceed using the .lst only and note the absence of an
-  external check in the vignette Errata"). Operator follow-up: pull the
-  publication PDF and verify the `.lst` final estimates against the
-  paper's parameter table.
+  paper. The maintainers resolved this case in advance: proceed using the
+  .lst only and note the absence of an external check in the vignette
+  Errata. Maintainer follow-up: pull the publication PDF and verify the
+  `.lst` final estimates against the paper's parameter table.

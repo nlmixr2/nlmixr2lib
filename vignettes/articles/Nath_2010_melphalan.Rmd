@@ -283,7 +283,7 @@ sim_nca <- sim |>
   select(id, time, Cc, matrix)
 
 # Guarantee a time = 0 row per (id, matrix); IV-infusion plasma is zero
-# at the start of the infusion. See PKNCA recipe time-zero guard.
+# at the start of the infusion.
 sim_nca <- bind_rows(
   sim_nca,
   sim_nca |> distinct(id, matrix) |> mutate(time = 0, Cc = 0)
@@ -409,10 +409,10 @@ knitr::kable(
   (`(cl_nonren + cl_renal) * exp(etalcl)`), matching the canonical
   precedent in `Capparelli_2005_cefepime` (cefepime additive
   renal-plus-non-renal CL).
-- **One vignette per paper.** Per the `replicate-author-structure`
-  policy, the paper's two parallel models are extracted as two
-  registered model files (`Nath_2010_melphalan_total` and
-  `Nath_2010_melphalan_unbound`) but documented under a single
+- **One vignette per paper.** Following the policy of building models
+  as their authors built them, the paper's two parallel models are
+  extracted as two registered model files (`Nath_2010_melphalan_total`
+  and `Nath_2010_melphalan_unbound`) but documented under a single
   validation vignette so the reviewer sees the paper as a unit.
 - **Combined proportional + additive residual error.** The paper
   defines `Y = Yhat * (1 + epsilon_1) + epsilon_2` with separate SDs

@@ -475,7 +475,7 @@ in the source documentation that needed re-derivation.
   (`central_mmae`, `peripheral1_mmae`). The same precedent applies to
   `Li_2017_brentuximab`, `Lu_2014_trastuzumabemtansine`, and
   `Zhou_2025_brentuximab`. The canonical `target` compartment from
-  `naming-conventions.md` is reused here for the irreversibly-depletable
+  `inst/references/compartment-names.md` is reused here for the irreversibly-depletable
   hypothetical-target binding pool described in the paper page 994.
 * **Source-paper unit error on Kd / ALFM / Klag.** The main paper's Results
   page 994 prints these three rate constants with units of `L/h`; the

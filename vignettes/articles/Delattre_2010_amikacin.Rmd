@@ -83,7 +83,7 @@ column.
 | `etalq  ~ 0.02751`                                | log(0.167^2 + 1)  | Table 2 row "Q (CV)"  final model = 16.7% |
 | `propSd <- 0.268`                                 | 0.268             | Table 2 row "Proportional error (CV)" |
 | `addSd  <- 1.03`                                  | 1.03 mg/L         | Table 2 row "Additive error (SD)" |
-| `cl <- (exp(lcl) + e_crcl_cl * (CRCL / 55.5)) * exp(etalcl)` | n/a | Methods Eq. [5] linear covariate model with median-normalized CRCL (operator-resolved interpretation; see Assumptions) |
+| `cl <- (exp(lcl) + e_crcl_cl * (CRCL / 55.5)) * exp(etalcl)` | n/a | Methods Eq. [5] linear covariate model with median-normalized CRCL (maintainer-resolved interpretation; see Assumptions) |
 | `d/dt(central) ... d/dt(peripheral1)`             | n/a               | Methods page 753 ("two-compartment model with first-order elimination"); Table 2 parameterization (V1, V2, Q, CL) |
 | `Cc ~ add(addSd) + prop(propSd)`                  | n/a               | Methods Eq. [4] combined error model |
 
@@ -351,8 +351,7 @@ are possible:
     by structural-model consistency.
 
   The model file uses interpretation (B). The interpretation was confirmed
-  by the operator via the `extract-literature-model` skill's stop-and-ask
-  protocol (sidecar request 001) before drafting. The "mL/min" unit label
+  by the maintainers before the model was drafted. The "mL/min" unit label
   in Table 2 refers to the source covariate's unit; both `theta_1 = 0.77`
   (CL intercept) and `theta_CL-CLCR = 1.42` (CL slope per unit
   `CRCL / 55.5`) carry units of L/h. No NONMEM control stream is available

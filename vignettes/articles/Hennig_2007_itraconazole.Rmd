@@ -280,12 +280,12 @@ ggplot(sim_vpc, aes(time, p50, colour = treatment, fill = treatment)) +
 
 # PKNCA validation
 
-Single-dose, 72-hour NCA per the recipe in `references/pknca-recipes.md`,
-with the formulation arm carried as the treatment grouping variable so
-the per-arm Cmax / Tmax / AUC can be summarised side-by-side. NCA is
-run separately for itraconazole (`Cc`) and hydroxy-itraconazole
-(`Cc_ohi`). The PKNCA dose object only carries the parent dose; the
-metabolite NCA therefore does not report a dose-normalised AUC.
+Single-dose, 72-hour NCA, with the formulation arm carried as the treatment
+grouping variable so the per-arm Cmax / Tmax / AUC can be summarised
+side-by-side. NCA is run separately for itraconazole (`Cc`) and
+hydroxy-itraconazole (`Cc_ohi`). The PKNCA dose object only carries the
+parent dose; the metabolite NCA therefore does not report a dose-normalised
+AUC.
 
 ```{r pknca-itz}
 sim_nca_itz <- sim |>

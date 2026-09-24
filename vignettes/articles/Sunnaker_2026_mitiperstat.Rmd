@@ -153,8 +153,7 @@ NDOSE <- 100    # once daily for 100 days, as in Sunnaker 2026 Table 4 note
 T_LAST <- TAU * (NDOSE - 1)
 
 # Observation grid over the final dosing interval. Dense through the absorption
-# and distribution phases so the trapezoidal AUC resolves Tmax (~1.6 h);
-# see pattern 11 of the skill's known-vignette-failure-patterns reference.
+# and distribution phases so the trapezoidal AUC resolves Tmax (~1.6 h).
 ss_grid <- T_LAST + c(seq(0, 6, by = 0.05), seq(6.25, TAU, by = 0.25))
 
 ss_events <- function(dose, cov, n = 1L, id_offset = 0L) {
@@ -421,7 +420,7 @@ with the remaining covariates at the SATELLITE typical values.
 # set.seed() seeds R's RNG; rxSetSeed() seeds rxode2's, per solver thread.
 # Neither makes the drawn cohort identical across machines with different
 # thread counts, so nothing downstream asserts on an individual subject.
-N_ARM  <- 150   # per arm; the skill caps cohorts at 200 per arm
+N_ARM  <- 150   # per arm; cohorts are capped at 200 per arm
 SIM_D  <- 90
 
 arms <- tidyr::expand_grid(dose = c(2.5, 5), egfr = c(30, 72, 90)) |>

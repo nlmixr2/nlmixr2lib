@@ -590,8 +590,7 @@ tibble::tibble(
 # The claim being gated is that the model predicts NO clinically meaningful
 # separation between the arms, i.e. that every ratio is near 1. Assert the
 # MAGNITUDE of the deviation, never its sign or the ordering of the two arms --
-# with a difference this small, sign is a coin flip across cohort draws
-# (pattern 12 of known-vignette-failure-patterns.md).
+# with a difference this small, sign is a coin flip across cohort draws.
 ratios <- c(ratio_of("cl"), ratio_of("vd"), ratio_of("auc"), ratio_of("cmax"))
 stopifnot(all(abs(ratios - 1) < 0.25))
 ```

@@ -278,7 +278,7 @@ published range.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so a machine with a different thread count draws a different
 # cohort. Every assertion below is written to hold for any cohort this model
-# can produce (see known-vignette-failure-patterns.md pattern 12).
+# can produce.
 set.seed(20240510)
 
 n_per_arm <- 200L   # cap is 200/arm
@@ -315,8 +315,7 @@ summary(subj[, c("CRCL", "BUN")])
 #
 # Observation rows point at "central" -- the ODE STATE -- never at the
 # algebraic observable Cc. Naming an observable as a compartment injects a slot
-# after the ODE states and renumbers them
-# (known-vignette-failure-patterns.md pattern 2). rxode2 returns Cc as an output
+# after the ODE states and renumbers them. rxode2 returns Cc as an output
 # column regardless of which compartment the observation row points at.
 build_arm <- function(i) {
   r   <- regimens[i, ]

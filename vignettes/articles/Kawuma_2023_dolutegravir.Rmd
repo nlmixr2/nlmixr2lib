@@ -271,8 +271,7 @@ n_subj <- 200
 # rxode2's simulation RNG, and rxode2's streams are partitioned per solver
 # thread -- so the etas drawn below are reproducible on this machine and
 # different on a machine with a different thread count. Every assertion in this
-# vignette is written to hold for any cohort the model can produce; see
-# pattern 12 of the extraction skill's known-vignette-failure-patterns.
+# vignette is written to hold for any cohort the model can produce.
 set.seed(20260905)
 sex_draw <- stats::rbinom(n_subj, 1, 0.32)
 

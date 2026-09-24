@@ -257,7 +257,7 @@ does not tabulate paired weights -- and it is listed in the Errata.
 # are partitioned per solver thread. The cohort below therefore differs between
 # a 16-thread workstation and a 2-core CI runner, and no seed can make them
 # agree. Every assertion downstream is written to hold for any cohort the model
-# can produce -- see pattern 12 of known-vignette-failure-patterns.md.
+# can produce.
 set.seed(20260112)
 
 N_ARM     <- 200L

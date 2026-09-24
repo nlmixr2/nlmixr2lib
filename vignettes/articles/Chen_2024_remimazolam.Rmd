@@ -607,8 +607,8 @@ fraction; maximum attainable suppression is `92.5 - 54.5 = 38` BIS units.
 Tables 3 and 4 report BSV as percentages for an exponential BSV model
 (Equation 1) without stating whether the percentage is a coefficient of
 variation or `omega * 100`. They are read here as coefficients of variation and
-converted with `omega^2 = log(CV^2 + 1)`, which is the convention this skill's
-verification checklist prescribes for exponential IIV reported as a percentage.
+converted with `omega^2 = log(CV^2 + 1)`, which is the package's convention for
+exponential IIV reported as a percentage.
 The choice is immaterial for the small IIVs and shifts `omega` by at most
 about 6 percent for the largest (V1, 55 percent).
 

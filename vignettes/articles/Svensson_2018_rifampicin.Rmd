@@ -64,19 +64,19 @@ bundle for `DDMODEL00000244` (scraped to
 - `Command.txt`, `244.json` -- provenance.
 
 There is no `Model_Accomodations.text` shipped in this bundle. The
-publication identification comes from the task metadata
-(Svensson et al., Clin Pharmacol Ther 2018, doi:10.1002/cpt.778)
+publication identification comes from the metadata this model was built
+from (Svensson et al., Clin Pharmacol Ther 2018, doi:10.1002/cpt.778)
 and is corroborated by the `.mod` header (`HIGHRIF1 PK MODEL`,
 `Based on final model by Smythe run 106`, NONMEM license registered
 to Uppsala University) and the RDF abstract describing exactly the
 auto-induction / MM-CL / dose-dependent-F structure of the Svensson
 2018 paper.
 
-The Svensson 2018 publication itself is **not** on disk in this
-worktree, so a side-by-side comparison against the paper's parameter
-table or PK figures (Figures 2-4) is out of scope here. The
+The Svensson 2018 publication itself was **not** on disk when this
+model was built, so a side-by-side comparison against the paper's
+parameter table or PK figures (Figures 2-4) is out of scope here. The
 validation in this vignette is the F.2 self-consistency check from
-the extraction skill: re-simulate the bundle's
+the validation checklist: re-simulate the bundle's
 `DDMODEL00000244_Simulated_Rif_PK_data.csv` through this
 `rxode2`-translated model and verify that the typical-value
 trajectory tracks the bundle's own observed-DV (`NDV` column) cloud,
@@ -150,7 +150,7 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `etaiov_mtt_<k>` | 0.318 (each, OCC 1-2)  | `.lst` OMEGA(9,9) / OMEGA(10,10); IOV log-MTT variance per occasion. |
 | `etaiov_km_<k>`  | 0.0355 (each, OCC 1-2) | `.lst` OMEGA(11,11) / OMEGA(12,12); IOV log-KM variance per occasion. |
 | `etaiov_ka_<k>`  | 0.0985 (each, OCC 1-2) | `.lst` OMEGA(13,13) / OMEGA(14,14); IOV log-KA variance per occasion. |
-| `propSd`        | 0.2356      | `.lst` SIGMA(1,1) = 0.0555 = 0.2356^2; NONMEM `Y = LOG(F) + EPS(1)` == proportional in linear space (naming-conventions.md Section  Residual error). |
+| `propSd`        | 0.2356      | `.lst` SIGMA(1,1) = 0.0555 = 0.2356^2; NONMEM `Y = LOG(F) + EPS(1)` == proportional in linear space (the package's residual-error convention). |
 | `transit(nn, mtt, bio)` | n/a | `.mod` `$DES` lines 117-124: `CUMUL = LOG(BIO*PD) + LOG(KTR) - L`, `DADT(1) = EXP(CUMUL + NN*LOG(KTR*TEMPO) - KTR*TEMPO) - KA*A(1)` with `L` the Stirling approximation of `log(gamma(NN+1))`; rxode2's `transit()` is the same closed-form gamma-density input using `podo()` and `tad()` internally. |
 | `bio` (saturable f(DOSE))  | n/a | `.mod` `$PK` line 96: `TVBIO = 1 * (1 + FEMAX*(DOSE-450)/(FED50+(DOSE-450)))`; reference dose 450 mg gives bio = 1. |
 | `d/dt(central)`  | n/a | `.mod` `$DES` line 126: `DADT(2) = KA*A(1) - (((VMAX/(KM+CP))*ALLMCL)/V2)*A(2)*A(3)`; collected to `ka * depot - vmax * Cc / (km + Cc) * enzyme` because `VMAX*ALLMCL` is the FFM-scaled vmax in the model file and `A(2)/V2` is `Cc`. |
@@ -242,7 +242,7 @@ sim_typical <- rxode2::rxSolve(
 # Self-consistency vs the bundle's simulated dataset
 
 Because the original publication is not on disk, the validation here
-is the F.2 self-consistency check from the extraction skill: the
+is the F.2 self-consistency check from the validation checklist: the
 typical-value trajectory of this `rxode2`-translated model should
 match the shape of the per-record `NDV` (back-transformed observed
 concentration in mg/L; the `DV` column is `LOG(NDV)`) cloud shipped
@@ -493,7 +493,7 @@ nca_res$result |>
 The HIGHRIF1 600 mg arm in Svensson 2018 reports day-7 (OCC = 1)
 geometric-mean Cmax ~= 8-10 mg/L and AUC_0-_2_4 ~= 40-50 mg*h/L for the
 ~60 kg adult cohort (see the publication's Figure 2 / Table 2 -- not
-on disk in this worktree; the substitution here is the bundle's
+on disk when this model was built; the substitution here is the bundle's
 single-subject simulated-data row sequence, which has Cmax ~=
 9 mg/L at TADO = 3 h and matches this magnitude). The simulated
 median should land in the same range; see the table above.
@@ -575,12 +575,12 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
 
 # Assumptions and deviations
 
-- **The Svensson 2018 publication is not on disk in this worktree.**
-  The package metadata (description, units, citation, DOI) reflects
-  the publication as listed in the task metadata
-  (doi:10.1002/cpt.778), but a side-by-side comparison against the
-  paper's parameter table or PK figures (Figures 2-4) is out of
-  scope here. The validation is restricted to the F.2
+- **The Svensson 2018 publication was not on disk when this model was
+  built.** The package metadata (description, units, citation, DOI)
+  reflects the publication as listed in the metadata this model was
+  built from (doi:10.1002/cpt.778), but a side-by-side comparison
+  against the paper's parameter table or PK figures (Figures 2-4) is
+  out of scope here. The validation is restricted to the F.2
   self-consistency check against the bundle's own
   `Simulated_Rif_PK_data.csv`, plus mechanistic spot-checks on the
   auto-induction time-course and the dose-dependent bioavailability.
@@ -604,10 +604,8 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
   with `model-implementation-source-discrepancies-freetext: "No
   difference"`. The packaged values are those reported `FINAL
   PARAMETER ESTIMATE` numbers; treat the parameter standard errors
-  with the usual caution. The operator was sidecar-asked
-  (sequence 1 q1, 2026-05-06) and approved extraction with this
-  caveat documented; see the queue's
-  `037-svensson_2018_rifampicin/response-001.json`.
+  with the usual caution. The maintainers approved extraction on
+  2026-05-06 with this caveat documented.
 - **Closed-form `transit()` replaces the .mod's verbatim FORTRAN.**
   The .mod writes the Erlang transit-compartment input directly in
   `$DES` via the Stirling approximation of `log(gamma(NN+1))`:
@@ -647,8 +645,7 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
 - **`propSd = 0.2356 = sqrt(0.0555)`.** NONMEM `Y = LOG(F) + EPS(1)`
   with `SIGMA(1,1) = 0.0555` is the linearized form of a
   proportional residual error in nlmixr2's linear space (CV ~= 24%
-  on Cc); the back-transformation rule
-  (`naming-conventions.md` Section  Residual error) gives
+  on Cc); the package's residual-error back-transformation rule gives
   `propSd = sqrt(SIGMA(1,1))`.
 - **2-occasion IOV `$OMEGA BLOCK(1) SAME` was unrolled into pairs of
   independent etas with `fix(.)` after the first.** nlmixr2 has no

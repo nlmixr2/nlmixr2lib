@@ -307,7 +307,7 @@ tamoxifen in adult breast-cancer patients.
   estimates of `tlag` (2.02 h re-fit vs 0.455 h published) and smaller
   shifts in several other parameters. The
   `Model_Accommodations.txt` in the bundle calls out the deviation.
-  Per the `extract-literature-model` skill, this model file uses the
+  Per the package's convention, this model file uses the
   **publication** values; the DDMORE convertor's `.lst` re-fit values
   are not used.
 

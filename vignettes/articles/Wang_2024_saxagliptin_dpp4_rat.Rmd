@@ -275,8 +275,7 @@ pars_sax <- tibble::tribble(
 
 ```{r per-animal-sim}
 # Observation rows are anchored on the ODE state `central` with dvid = 1L; rxode2
-# returns Cc and DPP4inh as columns at every output row (see
-# known-vignette-failure-patterns pattern 2 / 5b).
+# returns Cc and DPP4inh as columns at every output row.
 make_events <- function(rat, amt, dose_cmt, tmax, dt) {
   dplyr::bind_rows(
     data.frame(id = rat, time = 0, amt = amt, evid = 1L,

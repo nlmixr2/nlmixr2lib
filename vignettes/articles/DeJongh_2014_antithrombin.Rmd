@@ -437,8 +437,8 @@ nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 Table 2 reports the mean baseline-corrected Cmax (% of normal), tmax
 (h), t1/2 (h), and AUC0-inf (% * h) per dose group, plus the
 incremental recovery (%/IU/kg). The block below builds a single
-side-by-side table via `nlmixr2lib::ncaComparisonTable()` at the 20%
-tolerance the skill's PKNCA-recipe recommends. Cmax is expected to sit
+side-by-side table via `nlmixr2lib::ncaComparisonTable()` at the
+package's standard 20% tolerance. Cmax is expected to sit
 slightly above the reported mean because the simulation captures the
 model's typical-value trajectory (which is monotonically decreasing
 from the end-of-infusion concentration), whereas the paper's observed
