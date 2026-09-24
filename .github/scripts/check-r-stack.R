@@ -61,11 +61,52 @@ for (p in STACK) {
     version = as.character(utils::packageVersion(p)),
     repository = src,
     built = (strsplit(d$Built %||% "", ";")[[1]][1]) %||% "-",
+    # The build timestamp is the only field that tells two r-universe builds
+    # of the same version apart: pak records RemoteSha as the version string
+    # for standard-repository installs, so "@5.1.8" above is not a commit.
+    packaged = (strsplit(d$Packaged %||% "", ";")[[1]][1]) %||% "-",
     stringsAsFactors = FALSE
   )
 }
 tbl <- do.call(rbind, rows)
 print(tbl, row.names = FALSE)
+cat("\n")
+
+# ---- 1b. Is an r-universe build stale against what r-universe serves now? ---
+#
+# setup-r-dependencies keys its cache on resolved versions, and r-universe
+# rebuilds under a fixed version string, so a restored cache can be days older
+# than the build pak resolved. The 2026-09-24 pull-request run tested the
+# release legs against a pre-issue-1381 rxode2 while the freshly compiled legs
+# had the current one. The workflows now key the cache on the r-universe build
+# time; this check reports the comparison so a stale build is visible in the
+# log, and annotates the job when one slips through.
+runiverse_created <- function(pkg) {
+  tryCatch({
+    con <- url(sprintf("https://nlmixr2.r-universe.dev/api/packages/%s", pkg), open = "rb")
+    on.exit(close(con), add = TRUE)
+    txt <- paste(readLines(con, warn = FALSE), collapse = "")
+    m <- regmatches(txt, regexpr("\"_created\":\"[^\"]+\"", txt))
+    if (!length(m)) return(NA_character_)
+    sub("\"_created\":\"([^\"]+)\"", "\\1", m)
+  }, error = function(e) NA_character_)
+}
+for (p in tbl$package) {
+  if (!grepl("nlmixr2/|r-universe", tbl$repository[tbl$package == p])) next
+  have <- tbl$packaged[tbl$package == p]
+  have_t <- suppressWarnings(as.POSIXct(have, tz = "UTC"))
+  now <- runiverse_created(p)
+  now_t <- suppressWarnings(as.POSIXct(now, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"))
+  if (is.na(have_t) || is.na(now_t)) {
+    cat(sprintf("%s: installed build %s; r-universe build time unavailable (%s)\n", p, have, now %||% "no response"))
+    next
+  }
+  lag <- as.numeric(difftime(now_t, have_t, units = "hours"))
+  cat(sprintf("%s: installed build %s UTC; r-universe current %s (%+.1f h)\n", p, have, now, lag))
+  if (lag > 1) {
+    cat(sprintf("::warning title=Stale r-universe build::%s installed here was built %s UTC but nlmixr2.r-universe.dev now serves a build from %s; the dependency cache restored an older build. Check that the cache key includes the r-universe build time.\n", p, have, now))
+  }
+}
 cat("\n")
 
 # ---- 2. rxode2 satisfies this package's declared floor ----------------------
