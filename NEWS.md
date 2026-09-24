@@ -2,7 +2,7 @@
 
 # development version
 
-- Record the Journal of Pain Research Expression of Concern ([doi:10.2147/JPR.S231531](https://doi.org/10.2147/JPR.S231531)) on the Zhang 2018 flurbiprofen source article, and correct the `population` metadata that had reproduced the article's mis-ascribed clinical trial registration number as an ethics approval number.
+- Add Nguyen 2019 cabozantinib ([doi:10.1002/jcph.1467](https://doi.org/10.1002/jcph.1467)) -- healthy volunteers and patients with hepatocellular carcinoma or other advanced malignancies, with a companion model carrying NCI-ODWG liver-dysfunction covariates.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
