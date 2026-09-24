@@ -385,7 +385,9 @@ sim_arm <- function(dose, lbl) {
     dplyr::arrange(id, time, dplyr::desc(evid))
   stopifnot(!anyDuplicated(unique(ev[, c("id", "time", "evid")])))
   set.seed(4)
-  rxode2::rxSolve(mod, events = ev) |>
+  # Tight tolerances: dose proportionality is asserted per subject to 1e-6,
+  # and the ODE at default tolerances lands at 1.6e-6.
+  rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12) |>
     as.data.frame() |>
     dplyr::mutate(treatment = lbl, amt_mg = dose)
 }
@@ -488,7 +490,11 @@ paper and evaluates at 72 h.
 
 ```{r pta}
 set.seed(72)
-n_pta <- 200
+# 5000 virtual subjects per arm: the binomial standard error of a PTA is then at
+# most 0.7 percentage points, so every claim asserted below (each >= 1.8 points
+# clear of the 90% threshold) sits more than 3 standard errors from it. With the
+# original 200 the 81-130 class (true PTA ~92%) failed for some eta streams.
+n_pta <- 5000
 free_fraction <- 0.84   # Methods 2.4: 16% protein binding
 
 # Methods 2.4 regimens. Representative eGFR per class = the class midpoint
@@ -691,10 +697,10 @@ required.
   reference 20) but does not print. PTA by MIC, which is the model-dependent
   quantity, is reproduced instead.
 - **Cohort size.** The paper ran 1000 Monte Carlo simulations per scenario; the
-  vignette uses 200 per arm to stay within the repository's render budget, so
-  PTA values carry a Monte Carlo standard error of roughly 2 percentage points.
-  The asserted claims are those where the simulated PTA is comfortably clear of
-  the 90% threshold.
+  vignette uses 5000 per arm so that PTA values carry a Monte Carlo standard
+  error of at most 0.7 percentage points. The asserted claims are those where
+  the simulated PTA is clear of the 90% threshold by more than three standard
+  errors.
 - **Virtual cohort covariates.** The eGFR distribution is a piecewise-linear
   interpolation through the Table 1 quartiles with tails set to 10 and
   180 mL/min/1.73 m^2; the paper reports only the median and IQR. Subjects are

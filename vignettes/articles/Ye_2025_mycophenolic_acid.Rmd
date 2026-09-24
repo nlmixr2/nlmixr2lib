@@ -169,8 +169,18 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # residual error) alongside `Cc` (the individual prediction, noise-free).
 # The data frame is deliberately NOT called `sim`, so the column and the
 # frame cannot shadow each other.
+#
+# maxsteps: when the model is integrated as ODEs, the ss = 1 steady-state
+# search integrates one 12 h interval after another until the state stops
+# changing. Every subject with a terminal half-life above ~60 h (62-1900 h
+# here, driven by high Vp/F draws) needs hundreds to thousands of intervals
+# and exhausts the default budget of 70000 solver steps; rxSolve() then
+# returns NA for that subject (79 of 146 here; 4 still at 1e6). At 1e7 every subject -- and, in testing, even a
+# +4 SD Vp/F draw -- reaches steady state or rxode2's maxSS = 10000 interval
+# cap before the step budget. The analytic linCmt() path ignores maxsteps.
 simdf <- rxode2::rxSolve(
-  mod, events = events, keep = c("WT", "treatment"), addDosing = FALSE
+  mod, events = events, keep = c("WT", "treatment"), addDosing = FALSE,
+  maxsteps = 1e7
 ) |>
   as.data.frame()
 
@@ -187,11 +197,12 @@ auc_by_subject <- simdf |>
 summary(auc_by_subject$pct_diff)
 
 # Deterministic identity, not a cohort statistic: the only error is the
-# trapezoidal quadrature on the grid above. Realised worst-subject |pct| was
-# 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid), so 0.25
-# carries ~25x headroom for an unluckier low-Vc draw while still failing
-# instantly on a mis-transcribed CL, dose or unit -- those move it by tens of
-# percent.
+# trapezoidal quadrature on the grid above (plus, when integrated as ODEs,
+# the ss = 1 convergence tolerance). Realised worst-subject |pct| was
+# 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid), and
+# 0.0148 integrated as ODEs, so 0.25 carries ~17-25x headroom for an
+# unluckier low-Vc draw while still failing instantly on a mis-transcribed
+# CL, dose or unit -- those move it by tens of percent.
 stopifnot(max(abs(auc_by_subject$pct_diff)) < 0.25)
 ```
 
@@ -219,8 +230,11 @@ probe_events <- tibble::tibble(id = seq_along(wt_probe), WT = wt_probe) |>
   ))() |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
+# maxsteps: same ss = 1 step budget as the cohort solve above (WT 41.13,
+# 55 and 70 kg fail at the default).
 probe <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), probe_events, keep = "WT", addDosing = FALSE
+  rxode2::zeroRe(mod), probe_events, keep = "WT", addDosing = FALSE,
+  maxsteps = 1e7
 ) |>
   as.data.frame()
 
@@ -268,16 +282,21 @@ stopifnot(max(probe_summary$vp) / min(probe_summary$vp) > 4)
 
 The model writes an explicit three-state ODE system, but its `cl`/`vc`/`q`/`vp`
 parameterisation also matches rxode2's linear-compartment solver, which
-`rxSolve()` may substitute automatically (`useLinCmt = TRUE` is the default).
-The substitution is only safe if the hand-written ODE rates really are the
-standard two-compartment rates, so that is checked rather than assumed.
+`rxSolve()` may substitute automatically (with `useLinCmt = TRUE`, the default
+until rxode2 made the conversion opt-in). The substitution is only safe if the
+hand-written ODE rates really are the standard two-compartment rates, so that
+is checked rather than assumed.
 
 The check runs on an explicit q12h schedule rather than on the `ss = 1` records
-used above, because `ss = 1` on this model *requires* the analytic solver:
-with a terminal half-life near 80 h against a 12 h dosing interval, the ODE
-path's steady-state iteration does not converge and `rxSolve()` fails with
-"could not solve the system". Establishing the equivalence on explicit dosing
-is what licenses the `ss = 1` results in the rest of this vignette.
+used above, because the two solvers reach steady state by different routes:
+the analytic solver computes it in closed form, while the ODE path iterates one
+dosing interval after another. With a terminal half-life near 80 h against a
+12 h dosing interval (far longer for high-Vp/F subjects) that iteration runs
+for hundreds to thousands of intervals, and under rxode2's default step budget
+it fails with "could not solve the ODEs correctly" -- hence `maxsteps = 1e7` on
+the `ss = 1` solves above. Establishing the equivalence on explicit dosing
+keeps the steady-state search out of the comparison, and is what licenses the
+`ss = 1` results in the rest of this vignette.
 
 ```{r repeat-dosing}
 one <- probe_events |> dplyr::filter(id == 3L)

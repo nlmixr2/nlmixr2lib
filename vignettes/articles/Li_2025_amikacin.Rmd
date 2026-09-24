@@ -354,7 +354,9 @@ sim <- do.call(bind_rows, lapply(arms$arm, solve_arm)) |>
   filter(!is.na(Cc)) |>
   mutate(tad = time - tlast)
 
-stopifnot(all(sim$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
 
 # Confirm the common random numbers actually landed: subject j must have the
 # same individual V in every arm (V depends only on WT and etalvc, both common).
@@ -449,7 +451,17 @@ stopifnot(
 Steady-state NCA over the final dosing interval, grouped by simulation arm.
 
 ```{r pknca}
+# The ODE integrator leaves a numerically-zero tail once a fast-clearing
+# subject is eight or more half-lives past the dose (|Cc| ~ 1e-9 ug/mL, some
+# of it slightly negative), and PKNCA's log-down trapezoid cannot take the
+# log of a negative value. Rows below 1e-6 of the subject's own peak are
+# dropped before NCA, except the interval's time-zero anchor, which PKNCA
+# needs and which is set to zero when it sits in that band.
 sim_nca <- sim |>
+  group_by(id) |>
+  filter(Cc >= 1e-6 * max(Cc) | tad == 0) |>
+  mutate(Cc = ifelse(Cc < 1e-6 * max(Cc), 0, Cc)) |>
+  ungroup() |>
   select(id, arm, time = tad, Cc) |>
   arrange(arm, id, time) |>
   as.data.frame()

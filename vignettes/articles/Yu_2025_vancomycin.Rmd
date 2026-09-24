@@ -278,6 +278,9 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("subject", "treatment", "renal", "WT", "CRCL"),
   omega  = NA,
+  # Gate 3 below holds the ss = 1 trough to 1e-8 relative, which needs tighter
+  # integration and steady-state-search tolerances than the defaults.
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
   returnType = "data.frame"
 )
 

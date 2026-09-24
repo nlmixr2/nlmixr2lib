@@ -212,11 +212,19 @@ buildEvents <- function(subj, doseTimes, obsTimes, tau = NA_real_) {
 
 # `po` is a route flag consumed by buildEvents(), not a model covariate, and
 # rxode2 must not be handed any character column. Both are dropped here.
+#
+# `maxsteps` is raised above the 70,000 default. With `ss = 1` the ODE
+# integrator marches each subject through 12 h intervals until the
+# steady-state search converges, and the cohort's most extreme subject (Vp at
+# the top quantile, low clearance; terminal half-life about 450 h with CRRT
+# off) needs several hundred intervals, which exhausts the default step budget
+# and returns NA for that subject.
 solveEvents <- function(mod, ev) {
   ev$po <- NULL
   ev <- ev[, !vapply(ev, is.character, logical(1)) | names(ev) == "cmt",
            drop = FALSE]
-  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame")
+  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame",
+                  maxsteps = 1e6)
 }
 ```
 

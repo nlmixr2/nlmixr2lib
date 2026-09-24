@@ -563,14 +563,25 @@ sd_ev <- dplyr::bind_rows(
                 stratum = paste0("IBW ", IBW, " kg")) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
+# Tight solver tolerances: the profile feeds exact identities (AUC = Dose/CL,
+# t1/2 = ln2 * V/CL), so the ODE integration error must stay well below them.
 sd_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), sd_ev,
-                          keep = c("IBW", "stratum")) |>
+                          keep = c("IBW", "stratum"),
+                          rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
-# Filter on !is.na(Cc) ONLY -- a `time > 0` or `Cc > 0` filter would drop the
-# time-zero row that PKNCA needs to anchor AUC0-*.
+# Filter on !is.na(Cc) plus a per-subject relative floor -- a `time > 0` or
+# `Cc > 0` filter would drop the time-zero row that PKNCA needs to anchor
+# AUC0-*. The floor is needed because the 4000 h grid runs to about 1e-50 mg/L
+# at IBW 80 kg (t1/2 ~ 21 h); down there the integrator's relative error
+# dwarfs the terminal slope and PKNCA's log-linear half-life fit follows the
+# noise (measured 7.6% half-life error without it). Keeping Cc >= 1e-6 of the
+# peak retains ~20 half-lives, so the AUC extrapolation stays negligible.
 sd_conc <- sd_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time == 0 | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, stratum)
 
 # Guarantee a time = 0 row per (id, stratum); for an IV dose Cc = 0 pre-dose.

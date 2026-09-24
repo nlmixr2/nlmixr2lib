@@ -118,7 +118,10 @@ ev_typ <- as.data.frame(
     rxode2::et(seq(0, 72, by = 0.25))
 )
 ev_typ$WT <- 70
-s_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame")
+# Tight solver tolerances: this solve is compared with the analytic solution
+# to 1e-8 below, and the default rtol of 1e-6 leaves ~5e-7 relative error.
+s_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame",
+                         rtol = 1e-10, atol = 1e-12)
 
 # Analytic two-compartment IV-bolus solution.
 coefA <- (lam1 - k21) / (v1_ref * (lam1 - lam2))

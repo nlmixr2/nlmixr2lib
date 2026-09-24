@@ -142,14 +142,17 @@ This is the single most important structural check in this vignette, and it is
 here because the natural way to write this model is silently wrong.
 
 The paper's total clearance is additive, `CLtot = CL + CLdial`, with the dialysis
-arm contributing only while a session runs. rxode2 recognises the joint presence
-of `cl` and `vc` and solves the one-compartment system analytically from that
-pair, **discarding the explicit `d/dt()`**. A model that assigns only the
+arm contributing only while a session runs. When rxode2's ODE-to-`linCmt()`
+conversion is enabled (`useLinCmt = TRUE`; the default until rxode2 made it
+opt-in in September 2026, issue 1389) it recognises the joint presence of `cl`
+and `vc` and solves the one-compartment system analytically from that pair,
+**discarding the explicit `d/dt()`**. A model that assigns only the
 interdialytic arm to `cl` and then eliminates via a separate `cl_total / vc`
 therefore reports a correct-looking `cl_total` and `kel` while the simulated
 concentrations decay at the interdialytic rate in both states -- the dialysis arm
 is inert and the model silently loses its entire reason for existing. The
-packaged model avoids this by assigning the gated sum to `cl` itself.
+packaged model avoids this by assigning the gated sum to `cl` itself, which is
+correct under either solve path.
 
 The check below is a genuine two-state comparison of the simulated *amounts*, not
 of the reported clearance columns, so it fails if the gate ever stops being
@@ -162,8 +165,12 @@ gate_events <- function(gate, wt = 70, sa = 1) {
   e$WT <- wt; e$FILT_SA <- sa; e$RRT_HEMODIAL_ACTIVE <- gate
   e
 }
-sim_on  <- rxode2::rxSolve(mod_typ, events = gate_events(1), returnType = "data.frame")
-sim_off <- rxode2::rxSolve(mod_typ, events = gate_events(0), returnType = "data.frame")
+# Tight solver tolerances: the identity below is held to 1e-8, which the
+# analytic linCmt() path meets trivially but a numerically integrated ODE at
+# the default rtol = 1e-6 misses by about 1e-6. The check must hold on either
+# path, so the tolerances are set where the identity is asserted.
+sim_on  <- rxode2::rxSolve(mod_typ, events = gate_events(1), returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
+sim_off <- rxode2::rxSolve(mod_typ, events = gate_events(0), returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
 
 kel_emp <- function(s) -diff(log(s$central[c(1, nrow(s))])) / diff(s$time[c(1, nrow(s))])
 kel_on_obs  <- kel_emp(sim_on)
@@ -363,6 +370,12 @@ sim_nca_raw <- rxode2::rxSolve(ui, events = nca_events,
 ```{r pknca}
 sim_nca <- sim_nca_raw |>
   dplyr::filter(!is.na(Cc)) |>
+  # Drop the numerically-zero tail (the 240 h grid runs to ~1e-25 mg/L). With
+  # the ODE integrated numerically those points carry relative error far above
+  # the terminal-slope signal, and PKNCA's half-life fit would follow the noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc, na.rm = TRUE)) |>
+  dplyr::ungroup() |>
   dplyr::mutate(treatment = "15 mg/kg IV, interdialytic") |>
   dplyr::select(id, time, Cc, treatment)
 

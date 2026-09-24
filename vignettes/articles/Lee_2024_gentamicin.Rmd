@@ -557,12 +557,22 @@ nca_events <- do.call(dplyr::bind_rows, lapply(seq_len(n_subj), function(i) {
 })) |>
   as.data.frame()
 
+# Tight tolerances: the closed-form comparison below is asserted to 1%.
 nca_sim <- rxode2::rxSolve(mod, nca_events, covsInterpolation = "locf",
-                           keep = c("CRCL", "treatment")) |>
+                           keep = c("CRCL", "treatment"),
+                           rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
+# Drop the numerically-zero tail before NCA. The 720 h grid runs the
+# fastest-clearing subjects (t1/2 ~ 6 h) out to 1e-30 mg/L, where the ODE
+# integrator's relative error dwarfs the terminal slope and PKNCA's
+# log-linear half-life fit follows that noise (measured: 13% half-life
+# error). Per subject, keep Cc >= 1e-6 * max(Cc).
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 sim_nca <- dplyr::bind_rows(

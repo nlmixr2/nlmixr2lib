@@ -275,7 +275,8 @@ ss_events <- do.call(dplyr::bind_rows, lapply(seq_len(nrow(regimens)), function(
   )
 }))
 
-ss <- rxode2::rxSolve(mod_typ, events = ss_events, keep = "regimen") |>
+ss <- rxode2::rxSolve(mod_typ, events = ss_events, keep = "regimen",
+                      rtol = 1e-10, atol = 1e-12) |>
   as.data.frame() |>
   dplyr::filter(time == 480) |>
   dplyr::transmute(regimen, cl, Cc,
@@ -295,8 +296,10 @@ knitr::kable(
 
 # Both sides use the same drawn parameters, so this is pure numerical error and
 # a tight all() bound is the correct assertion here. Observed max deviation is
-# ~2e-12 %; the bound is set six orders above that so it tolerates solver and
-# rxode2-version differences while still failing instantly on a real regression.
+# ~2e-10 % with the ODE integrated at rtol 1e-10 (~2e-12 % with the analytic
+# linCmt() solution); the bound is set about four orders above that so it
+# tolerates solver and rxode2-version differences while still failing instantly
+# on a real regression.
 stopifnot(max(abs(ss$pct_diff)) < 1e-6)
 ```
 
@@ -489,15 +492,23 @@ nca_events <- tibble::tibble(
   ))() |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment") |>
+nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment",
+                          rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
 stopifnot(all(nca_sim$Cc > 0))
 ```
 
 ```{r pknca}
+# The fastest-clearing subjects fall below 1e-16 mg/L by 24 h, where the ODE
+# integrator's absolute tolerance dwarfs the terminal slope and PKNCA's
+# log-linear half-life fit would follow the noise. Keep each profile down to
+# 1e-6 of its own peak, which here still leaves 30 or more points per subject.
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
@@ -561,10 +572,12 @@ knitr::kable(
 # Per-subject, same-parameters comparisons: numerical error only, so bound them
 # tightly rather than on a quantile. lin-up/log-down trapezoidal AUC is exact
 # for a mono-exponential decay, which is what a one-compartment IV bolus is --
-# and the observed deviations are ~2e-13 %, i.e. floating-point noise, not
-# approximation error. The bounds below sit several orders above what was
-# actually achieved so they survive a solver or PKNCA version change, while
-# still being tight enough that any structural regression fails immediately.
+# so the observed deviations are ODE integration error, ~1.6e-8 % for AUC and
+# half-life at rtol 1e-10 (~2e-13 % with the analytic linCmt() solution), not
+# approximation error. Cmax is read off the time-zero record, so it is exact.
+# The bounds below sit well above what was actually achieved so they survive a
+# solver or PKNCA version change, while still being tight enough that any
+# structural regression fails immediately.
 stopifnot(
   max(abs(ident$auc_pct_diff))   < 1e-6,
   max(abs(ident$cmax_pct_diff))  < 1e-9,
