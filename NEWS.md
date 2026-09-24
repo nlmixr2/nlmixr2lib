@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tylutki 2018 amitriptyline ([doi:10.1007/s10928-018-9597-6](https://doi.org/10.1007/s10928-018-9597-6)) -- pooled literature cohort of healthy volunteers, therapeutically dosed patients and acute-overdose cases.
+- Add Munana 2018 extended-release levetiracetam ([doi:10.1111/jvim.15298](https://doi.org/10.1111/jvim.15298)) -- client-owned dogs with idiopathic epilepsy on maintenance therapy alone, with phenobarbital or with zonisamide.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
