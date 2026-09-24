@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2019 linezolid ([doi:10.3892/etm.2019.7747](https://doi.org/10.3892/etm.2019.7747)) -- Chinese critically ill adults with and without shock.
+- Add Bulitta 2019 pefloxacin ([doi:10.3390/pharmaceutics11070323](https://doi.org/10.3390/pharmaceutics11070323)) -- adults with cystic fibrosis and healthy volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

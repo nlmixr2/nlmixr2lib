@@ -630,7 +630,22 @@
     # suffix is deliberately NOT registered (it would also collide
     # visually with NONMEM's DADT derivative syntax). Founding example:
     # Vanobberghen_2016_tribendimidine (doi:10.1128/AAC.00655-16).
-    "adadt"
+    "adadt",
+    # Norfloxacin, one of the two main metabolites of pefloxacin (formed by
+    # N-demethylation) and a marketed fluoroquinolone in its own right, so
+    # the suffix serves both parent + metabolite extractions in which
+    # pefloxacin is the parent and any future model in which norfloxacin is
+    # a sibling drug. Parallels the registered `cipro` suffix, which carries
+    # ciprofloxacin in exactly that dual role. Founding example:
+    # Bulitta_2019_pefloxacin (doi:10.3390/pharmaceutics11070323).
+    "norflox",
+    # Pefloxacin N-oxide, the second main metabolite of pefloxacin. A
+    # separate suffix is required because the registered `noxide` is scoped
+    # to roflumilast N-oxide; an N-oxide suffix is only meaningful when it
+    # names its parent, so the pattern is <modifier><parent-stem> following
+    # `ohcla` (14-OH-clarithromycin) and `norfluox` (norfluoxetine).
+    # Founding example: Bulitta_2019_pefloxacin.
+    "noxpeflox"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

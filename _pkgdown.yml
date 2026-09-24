@@ -3870,6 +3870,8 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
+      - text: "Pefloxacin (Bulitta 2019)"
+        href: articles/Bulitta_2019_pefloxacin.html
       - text: "Pefloxacin (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pegasparaginase (Kloos 2021)"
@@ -6173,7 +6175,9 @@ articles:
   - articles/Bulitta_2010_colistin
   - articles/Bulitta_2010_piperacillin
   - articles/Bulitta_2011_cefpirome
-  - articles/Bursi_2017_lidocaine
+  - articles/Bulitta_2019_pefloxacin
+  - articles/Burns_2015_tenofovir
+  - articles/Bustinduy_2016_praziquantel
   - articles/ButraguenoLaiseca_2022_piperacillin
   - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
