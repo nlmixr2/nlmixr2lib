@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Kim 2019 voriconazole ([doi:10.3390/jcm8020227](https://doi.org/10.3390/jcm8020227)) -- Korean healthy volunteers and patients genotyped for CYP2C19.
-
-- Ratify `fcl_noinh` (fraction of clearance not subject to inhibition) as the canonical name for the auto-inhibition floor, with the `lfcl_noinh` and `logitfcl_noinh` transform forms. `Abduljalil_2009_clarithromycin` renames its `fclp` / `logitfclp` parameters onto this canonical.
+- Add Schropp 2019 bispecific antibody TMDD ([doi:10.1002/psp4.12369](https://doi.org/10.1002/psp4.12369)) -- theoretical model, no fitted population; full, quasi-equilibrium and constant-total-receptor variants.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

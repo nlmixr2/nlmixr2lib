@@ -134,13 +134,23 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** QSS-TMDD popPK extractions.
 
-### precursor (**canonical amount-only metabolite-precursor pool**)
+### target_a, target_b (**canonical generic two-target free-receptor pair**)
 - **Type:** compartment
-- **Role:** Chemical intermediate standing between a parent drug and a downstream metabolite, which the source model carries as an AMOUNT with no volume and no measured concentration. Used in metabolite-suffixed form `precursor_<metab>`, where `<metab>` is the registered suffix of the species the pool converts INTO, not of the precursor itself -- such a pool is identified in the source's own equations only by what it forms, and frequently has no assay at all. The pool is fed by one or more formation fluxes (pre-systemic first pass out of `depot`, and/or a systemic fraction of parent clearance out of `central`) and drains by a first-order conversion into `central_<metab>`.
+- **Role:** The two free target (receptor) pools of a **generic** two-target binding model, where the paper deliberately does not commit to an antigen pair and names its targets only "A" and "B". `target_a` is the paper's `R_A` and `target_b` its `R_B`. Each carries a concentration and, in the founding example, its own zero-order synthesis and first-order degradation. Use these ONLY when the targets are genuinely unspecified; when a paper names its antigens, prefer the identity-bearing forms (`target_cd3_central`, `target_bonemarrow`, ...), which say what the receptor actually is.
 - **Source aliases:**
-  - `XPre,5FU` -- Kim 2017 equations 1, 4 and 5 (amount of the 5-FU precursor 5'-hydroxytegafur).
-- **Example models:** `Kim_2017_tegafur_rat.R` (founding example; doi:10.3390/molecules22091488 -- `precursor_5fu` holds 5'-hydroxytegafur, fed pre-systemically from `depot` at `k_precursor_5fu_form` and systemically by `cl * fmet * Cc`, converting to `central_5fu` at `k_5fu_form`).
-- **Notes:** Distinct from the numbered `precursor<n>` chain accepted by `compartmentRegex`, which is a maturation / delayed-feedback stage of an indirect-response or Friberg-style cascade (see `circ`): that family is a TIME-DELAY device whose states have no chemical identity, whereas `precursor_<metab>` is a named chemical species. Distinct from `central_<metab>`: use `central_<metab>` whenever the source defines a metabolite CONCENTRATION, fixing `vc_<metab>` to 1 where the volume is not identifiable (`Urien_2005_capecitabine.R` does exactly this), and reach for `precursor_<metab>` only when the source's equations act on an amount and there is no volume to assert -- asserting one would invent a concentration the paper never defines. The bare `precursor` is registered only so the `<canonical>_<metab>` composition resolves; a chemical pool always carries the metabolite suffix, and a paper that models the precursor's own concentration should register a metabolite suffix for the precursor species instead (compare `npc` and `or1855`, both obligate precursors of an active metabolite that ARE assayed and so carry `central_<suffix>`). Ratified by operator sidecar `oasweep_PMC6151713` q2 (2026-09-21), replacing a `paper_specific_compartments` whitelist entry.
+  - `R_A`, `R_B` -- Schropp 2019 Eqs 3-4 typeset names.
+  - `RA`, `RB` -- Schropp 2019 NONMEM / MONOLIX supplement notation (S4-S6, S9-S10).
+- **Example models:** `Schropp_2019_bsab_tmdd_full.R` (founding example; `R_A(0) = k_synA/k_degA = 10 nM`, `R_B(0) = k_synB/k_degB = 100 nM`), `Schropp_2019_bsab_tmdd_qe.R`.
+- **Notes:** The `_a` / `_b` suffix is a target **identity**, not a location -- which is why these are enumerated here rather than folded into `targetLocationRegex`, whose suffix alternation is a closed list of anatomical locations (`csf`, `isf`, `peripheral<n>`). Do not read `target_a` as "target in compartment a".
+
+### complex_a, complex_b (**canonical generic two-target binary-complex pair**)
+- **Type:** compartment
+- **Role:** The two **binary** drug-target complexes of a generic two-target binding model: `complex_a` is drug bound to target A only (the paper's `RC_A`), `complex_b` drug bound to target B only (`RC_B`). Each can further cross-link with the opposite free receptor to form the ternary complex `trimer`, which is what distinguishes this pair from the single-target `complex`. Carries a concentration; in the founding example each has its own internalisation rate.
+- **Source aliases:**
+  - `RC_A`, `RC_B` -- Schropp 2019 Eqs 5-6 typeset names.
+  - `RCA`, `RCB` -- Schropp 2019 supplement notation.
+- **Example models:** `Schropp_2019_bsab_tmdd_full.R` (founding example).
+- **Notes:** Paired with `target_a` / `target_b`; the same identity-versus-location caveat applies. Under a quasi-equilibrium approximation these species become algebraic rather than integrated (`complex_a = C*R_A/K_D1`), in which case they are ordinary `model()` locals and not compartments at all -- see `Schropp_2019_bsab_tmdd_qe.R`.
 
 ---
 
@@ -710,13 +720,14 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Poels_2025_elranatamab_qsp.R`.
 - **Notes:** Founding example Poels 2025 (Supplementary Eqs 7, 30-35), adapting Chen et al. (2019) Clin Transl Sci 12:600-608. **Deliberately generic rather than `il6_*`.** Poels 2025 models "a pro-inflammatory cytokine (e.g., IL-6)" and calibrates it against observed IL-6; naming the states `il6_*` would overclaim, because IL-6 is the calibration data rather than the modelled species, and it would leave the registered `il6` canonical -- which means actual IL-6 -- competing for the name. Record the IL-6 calibration provenance in the model's source-trace comments. Operator naming ruling, task sidecar oare_PMC12402305 request-001 q2.
 
-### trimer (**canonical drug-CD3-antigen ternary complex in tumor**)
+### trimer (**canonical bispecific ternary complex**)
 - **Type:** compartment
-- **Role:** Productive drug-CD3-antigen ternary complex (trimer) in the tumor extracellular space (nM). Forms an immune synapse-mimetic bridge between a T cell and an antigen-expressing tumor cell; the paper's PD driver linking bispecific PK to tumor cell killing via `kkill = kmax * trimer / (kc50 + trimer)`. Reversible mass-action formation from either dimer (`drug_cd3_tumor` + free antigen, or `drug_pcad_tumor` + free CD3) with dissociation back to either dimer.
+- **Role:** The productive ternary complex of a cell-bridging bispecific: one drug molecule cross-linking one copy of each of its two targets (nM). Formed reversibly by mass action from EITHER binary complex plus the opposite free target, and lost by dissociation back to either binary complex and by internalisation. This is the pharmacologically active species of the bispecific class -- it is what physically bridges the two cells -- so it, and not the free drug concentration, is the PD driver. Covers both the antigen-named case (a drug-CD3-antigen trimer in the tumor extracellular space, driving tumor-cell killing via `kkill = kmax * trimer / (kc50 + trimer)`) and the generic two-target case, where the paper names its targets only A and B and the trimer is `target_a`-drug-`target_b`.
 - **Source aliases:**
   - `Trimer` -- Betts 2019 paper notation (deprecated capitalized form).
-- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
-- **Notes:** Founding example Betts 2019 (Eq 16 dTrimer/dt). The trimer concentration drives the tumor-killing rate `kkill` and is the mechanistic PD linker of the CD3-bispecific class. Trimer formation exhibits the bell-shaped concentration-response phenomenon (Betts 2019 Fig 1b): trimer decreases at very high drug concentrations because the equilibrium shifts toward drug-CD3 and drug-antigen dimers rather than the productive trimer.
+  - `RC_AB`, `RCAB` -- Schropp 2019 Eq 7 typeset name and supplement notation.
+- **Example models:** `Betts_2019_pf_06671008_qsp.R` (antigen-named case), `Schropp_2019_bsab_tmdd_full.R` (generic two-target case).
+- **Notes:** Founding example Betts 2019 (Eq 16 dTrimer/dt). Broadened from the CD3-and-tumor-specific definition to the generic bispecific ternary complex when `Schropp_2019_bsab_tmdd_full.R` was added, which is the same species in a model whose two targets are deliberately unspecified; the generic free-target and binary-complex pairs it pairs with are `target_a` / `target_b` and `complex_a` / `complex_b`. Trimer formation exhibits the bell-shaped concentration-response phenomenon (Betts 2019 Fig 1b; Schropp 2019 Fig 2a and Eq 35): trimer *decreases* at very high drug concentrations, and vanishes in the limit, because saturating both targets with binary complexes starves the cross-linking reaction. Schropp 2019 turns this into a dosing rule -- the trimer is maximal while the total drug concentration lies between the two total target concentrations (its Eq 36 "optimal working range"), so raising the dose past that window *delays* trimer build-up. Under a quasi-equilibrium approximation the trimer becomes algebraic (`trimer = C*R_A*R_B/(alpha*K_D1*K_D2)`) rather than an integrated state.
 
 ---
 
@@ -4128,6 +4139,16 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
 - **Notes:** Deliberately preferred over the numbered `depot1` / `depot2` form because the route is load-bearing: the two depots in a parallel-route model are not interchangeable, they carry route-specific absorption rate constants, and a study arm selects exactly one of them.
 
+
+### depot_iv (**canonical named i.v. bolus input compartment**)
+- **Type:** compartment
+- **Role:** The named state that receives an intravenous dose event when the dose cannot simply be added to the central state. It holds the administered drug as an amount and drains at a first-order rate into the rest of the system, so the i.v. input becomes an explicit, referenceable term of the model rather than an implicit event on `central`. Two established uses: (a) a whole-body PBPK model whose plasma state is a concentration in a specific vascular volume, so the dose is routed through `depot_iv` and drains additively into the arterial or venous pool; (b) a quasi-equilibrium / quasi-steady-state reduction, where a large drain rate makes `k * depot_iv` reconstruct the instantaneous input rate `In_IV(t)` for use on the right-hand side. Mass-conserving in both: the time integral of the drained rate equals the administered dose exactly.
+- **Source aliases:**
+  - `Xdose` -- Tsuchitani 2026 Data S1 (`d/dt(Xdose)`).
+  - `In_IVDum` -- Schropp 2019 Eq 42 (the paper's own name for the device).
+  - `IN` -- the hard-coded infusion-rate variable of Schropp 2019's NONMEM streams S5, S9 and S10, which mimic an i.v. bolus by a short infusion of duration `TDUR = 0.0001` day.
+- **Example models:** `Nemitz_2026_dapagliflozin_pbpk.R`, `Tsuchitani_2026_apixaban_pbpk.R`, `Schropp_2019_bsab_tmdd_qe.R`, `Schropp_2019_bsab_tmdd_qeconst.R`.
+- **Notes:** Canonical name ratified by the operator on 2026-09-21 (PMC5732473 q5) as the single named i.v. bolus input compartment, parallel to `depot_kpd`; do not mint a second name for this role. Use case (b) is needed whenever a QE/QSS reduction multiplies the input function into the right-hand side rather than leaving it additive on one state -- under rapid binding the arriving dose is instantaneously partitioned between free and bound species, so adding it to the free-drug state alone is simply the wrong model. Schropp 2019 devotes a Methods subsection to this ("Implementation of the QE approximation with an i.v. administration") and notes that NONMEM and MONOLIX cannot express it with their internal dosing mechanisms; there the drain rate is set to `1 / TDUR` to reproduce a published short-infusion duration. A model carrying this compartment MUST declare it in `dosing` and MUST NOT also accept i.v. doses into `central`; the two routes are not interchangeable. Distinct from `depot` (extravascular absorption of a real dose), from `depot_kpd` (which holds an amount of real drug in a virtual body with no measured concentration), and from `depot_placebo` (a dimensionless dummy dose driving a placebo response).
 
 ### depot_lung (**canonical pulmonary deposition depot**)
 - **Type:** compartment
