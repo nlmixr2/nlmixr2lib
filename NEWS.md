@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Song 2019 dexmedetomidine ([doi:10.3390/jcm8101563](https://doi.org/10.3390/jcm8101563)) -- mechanically ventilated children aged 2-12 years in the ICU after neurosurgery.
+- Add Jang 2019 cefprozil ([doi:10.3390/pharmaceutics11100531](https://doi.org/10.3390/pharmaceutics11100531)) -- healthy adult Korean males, as separate cis-, trans- and total-isomer models.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
