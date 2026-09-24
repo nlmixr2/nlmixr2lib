@@ -5400,6 +5400,8 @@ navbar:
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib (Klunder 2017)"
         href: articles/Klunder_2017_upadacitinib.html
+      - text: "Upadacitinib (Klunder 2019)"
+        href: articles/Klunder_2019_upadacitinib.html
       - text: "Upadacitinib asas20 as (Bhatnagar 2024)"
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib asas20 nraxspa (Bhatnagar 2024)"
@@ -6871,6 +6873,7 @@ articles:
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
   - articles/Klunder_2017_upadacitinib
+  - articles/Klunder_2019_upadacitinib
   - articles/Knebel_2008_epoetinDelta
   - articles/Knebel_2011_pantoprazole
   - articles/Knebel_2012_istradefylline

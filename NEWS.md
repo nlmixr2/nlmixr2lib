@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2019 CPX-351 liposomal cytarabine and daunorubicin ([doi:10.1002/jcph.1366](https://doi.org/10.1002/jcph.1366)) -- adults with hematologic malignancies.
+- Add Klunder 2019 upadacitinib ([doi:10.1007/s40262-019-00739-3](https://doi.org/10.1007/s40262-019-00739-3)) -- healthy adults and adults with rheumatoid arthritis across phase I-III trials.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
