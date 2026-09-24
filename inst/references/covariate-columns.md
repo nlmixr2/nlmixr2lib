@@ -12642,7 +12642,8 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS2306283_HOM` = 0).
 - **Source aliases:**
   - `SLCO1B1 c.388A>G` -- Toshimoto 2017 Supplementary Table 2A.
-- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 1.61; Supplementary Table 2A).
+  - `RS2306283` / `RS230` (1 = G/G, 2 = A/G, 3 = A/A; derive HET = (RS2306283 == 2), HOM = (RS2306283 == 1)) -- Wang 2019 Abstract and Section 3.3.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 1.61; Supplementary Table 2A); `Wang_2019_methotrexate.R` (multiplies methotrexate clearance by 0.647; Table 3 theta6 -- a REDUCTION, the opposite direction to Toshimoto 2017).
 - **Notes:** Paired with `SNP_SLCO1B1_RS2306283_HOM`. **Direction of effect is opposite to most transporter variants:** c.388A>G INCREASES OATP1B1 uptake activity (161 percent of wild type in heterozygotes, 221 percent in homozygotes per Toshimoto 2017 Supplementary Table 2A), so a carrier clears the substrate from blood into the liver FASTER. A model that assumes every variant reduces function will get the sign wrong. See `SNP_SLCO1B1_RS4149056_HET` Notes for the relationship to the `SLCO1B1_HAP15_*` haplotype canonicals, for the linkage-disequilibrium joint sampling with c.521T>C, and for the unpublished-ratio caveat (Supplementary Table 2A footnote b).
 
 ### SNP_SLCO1B1_RS2306283_HOM (**canonical for SLCO1B1 c.388A>G homozygous-variant (388G/G) indicator**)
@@ -12653,7 +12654,8 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS2306283_HET` = 0).
 - **Source aliases:**
   - `SLCO1B1 c.388A>G` -- Toshimoto 2017 Supplementary Table 2A.
-- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 2.21; Supplementary Table 2A).
+  - `RS2306283` / `RS230` (1 = G/G, 2 = A/G, 3 = A/A; derive HET = (RS2306283 == 2), HOM = (RS2306283 == 1)) -- Wang 2019 Abstract and Section 3.3.
+- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 2.21; Supplementary Table 2A); `Wang_2019_methotrexate.R` (multiplies methotrexate clearance by 0.805; Table 3 theta5 -- a REDUCTION, the opposite direction to Toshimoto 2017).
 - **Notes:** Companion to `SNP_SLCO1B1_RS2306283_HET`; see that entry's Notes, in particular that this variant INCREASES rather than decreases OATP1B1 activity (221 percent of wild type).
 
 ### SNP_ABCC2_RS717620_HET (**canonical for ABCC2 c.-24C>T heterozygote indicator**)
