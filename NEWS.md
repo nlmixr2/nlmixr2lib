@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Andrews 2019 tacrolimus ([doi:10.1111/bcp.13838](https://doi.org/10.1111/bcp.13838)) -- adult renal transplant recipients in the first 3 months post-transplantation, with a companion starting-dose model.
+- Add Apgar 2018 ALXN1540 hUGT1A1-modRNA ([doi:10.1002/psp4.12301](https://doi.org/10.1002/psp4.12301)) -- Gunn rats and projected Crigler-Najjar syndrome type 1 patients.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

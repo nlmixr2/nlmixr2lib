@@ -42,6 +42,10 @@ navbar:
         href: articles/Scheuher_2023_ADC_platform_qsp.html
       - text: "ADC mouse qsp (Scheuher 2023)"
         href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ALXN1540 human qsp (Apgar 2018)"
+        href: articles/Apgar_2018_ALXN1540.html
+      - text: "ALXN1540 rat qsp (Apgar 2018)"
+        href: articles/Apgar_2018_ALXN1540.html
       - text: "APTM aucmic (Yang 2026)"
         href: articles/Yang_2026_APTM.html
       - text: "APTM cmaxmic (Yang 2026)"
@@ -5931,6 +5935,7 @@ articles:
   - articles/Aoki_2024_intratarget_microdosing_pbpk
   - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
+  - articles/Apgar_2018_ALXN1540
   - articles/ArabAlameddine_2012_raltegravir
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir
