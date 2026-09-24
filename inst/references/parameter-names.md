@@ -285,6 +285,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Only the LATE arm carries a suffix, because the early arm is an ordinary clearance already covered by `lcl`. Covariates may act on the two arms independently -- in the founding example sex acts on `lcl` only and the late arm is sex-independent.
 
+### ltclchange2 (**canonical log-transformed second clearance-step breakpoint time**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale time, measured from treatment initiation, of the SECOND breakpoint of a piecewise-constant clearance that steps more than once (time). Numbered extension of `ltclchange`, following the registry's established numbering idiom for repeated roles (`lq` / `lq2` / `lq3`, `lvp` / `lvp2`).
+- **Source aliases:**
+  - `SSWK6` -- Salinger 2019 supplemental Table S3, where the indicator is formed as `IF(STUDYNO.EQ.201.AND.STWEEK.GE.6) SSWK6 = 1`.
+- **Example models:** `Salinger_2019_pretomanid.R` (`fixed(log(1008))`, i.e. 6 weeks after the first dose, and active only for Nix-TB subjects).
+- **Notes:** Use only for a genuine THIRD constant arm, i.e. a clearance with two breakpoints and three levels; a single breakpoint remains `ltclchange` alone. The arms stay asymmetric in the same way `ltclchange` documents: the earliest arm is the plain `lcl`, the first post-breakpoint arm is `lcl_late`, and the second is `lcl_late2`. A breakpoint that applies to only part of the population is gated by multiplying the step indicator by the relevant covariate rather than by introducing a stratum-suffixed name -- Salinger 2019 writes `clStep2 <- STUDY_NIXTB * (tafdNow >= tclchange2)`. Breakpoints are usually structural (fixed from the source's own `MTIME` / study-day conditional) rather than estimated, so expect `fixed()`. Distinct from `lcl_t50`, which is the half-time of a SMOOTH sigmoidal transition rather than a step, and from the additive `lcl_ss` / `lcl_time` decomposition.
+
+### lcl_late2 (**canonical log-transformed second post-breakpoint clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Clearance in force after the SECOND breakpoint of a piecewise-constant time-varying clearance (volume / time). Paired with `ltclchange2`; the preceding arms are `lcl_late` and, earliest, the plain `lcl`.
+- **Source aliases:**
+  - `THETA(2) + THETA(11) + THETA(38)` -- Salinger 2019 supplemental Table S3, which writes the three arms additively inside a single logarithm as `LOG(THETA(2) + SSD*THETA(11) + SSWK6*THETA(38))`.
+- **Example models:** `Salinger_2019_pretomanid.R` (`log(3.30 + 0.175 + 0.466)`; the Nix-TB week-6 arm).
+- **Notes:** A source that reports its later arms as additive INCREMENTS on the first arm -- as Salinger 2019 does, tabulating 0.175 L/h for "SS CL" and 0.466 L/h for "CL NIX WK >= 6" rather than the attained totals -- must be transcribed as the SUM, because this canonical names an attained clearance level and not an increment. Record each reported increment and its confidence interval in the in-file source-trace comment, since the summed level has no published interval of its own. Encoding an increment here would understate the clearance by the value of every earlier arm, the same class of error the `lemax` / `lrmax_<output>` boundary guards against. Only the post-breakpoint arms carry suffixes; there is no `lcl_early`.
+
 ### lcl_renal (**canonical log-transformed renal clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Renal (glomerular-filtration / tubular-secretion) component of an additive renal + non-renal clearance decomposition `CL_total = CL_renal + CL_nonren`.
@@ -1226,6 +1242,22 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
   - `CL>TCLchange` -- Park 2025.
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
+
+### tclchange2 (**canonical bare second clearance-step breakpoint time**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ltclchange2`. Time from treatment initiation of the second breakpoint of a piecewise-constant clearance.
+- **Source aliases:**
+  - `SSWK6` -- Salinger 2019.
+- **Example models:** `Salinger_2019_pretomanid.R`.
+- **Notes:** See `ltclchange2` for the full form and for the rule that a population-restricted breakpoint is gated by a covariate product rather than a stratum suffix.
+
+### cl_late2 (**canonical bare second post-breakpoint clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_late2`. Clearance in force after the `tclchange2` breakpoint.
+- **Source aliases:**
+  - `THETA(2) + THETA(11) + THETA(38)` -- Salinger 2019.
+- **Example models:** `Salinger_2019_pretomanid.R`.
+- **Notes:** Paired with `tclchange2`; the preceding arms are `cl_late` and the plain `cl`. See `lcl_late2` for the increment-versus-level transcription rule.
 
 ### vbmax, vba50, kgutex (**canonical bare empirical-binding and gut-extraction parameters**)
 - **Type:** bare-pk

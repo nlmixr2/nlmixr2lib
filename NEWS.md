@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sokolov 2019 anti-PCSK9 mAb and siRNA lipoprotein QSP ([doi:10.1194/jlr.M092486](https://doi.org/10.1194/jlr.M092486)) -- healthy adults and adults with familial or nonfamilial hypercholesterolemia on background statins.
+- Add Salinger 2019 pretomanid ([doi:10.1128/AAC.00907-19](https://doi.org/10.1128/AAC.00907-19)) -- healthy adults and adults with drug-sensitive, multidrug-resistant or extensively drug-resistant pulmonary tuberculosis.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
