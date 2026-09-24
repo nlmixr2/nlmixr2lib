@@ -176,7 +176,9 @@ knownBrokenModels <- c(
         rss <- as.numeric(system(sprintf("ps -o rss= -p %d", Sys.getpid()), intern = TRUE)) / 1024
         message(sprintf(
           "solve-gate block of %d models: child RSS %.0f MB, %d DLLs loaded",
-          length(nms), rss, length(getLoadedDLLs())
+          length(nms),
+          rss,
+          length(getLoadedDLLs())
         ))
       }
       out
