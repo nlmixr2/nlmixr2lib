@@ -2254,6 +2254,8 @@ navbar:
         href: articles/Fostvedt_2021_glasdegib.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
+      - text: "Glibenclamide rifampicin pbpk (Asaumi 2019)"
+        href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
       - text: "Glp1ra bodyweight (Bosch 2024)"
         href: articles/Bosch_2024_glp1ra_bodyweight.html
       - text: "Glp1ra hba1c (Bosch 2025)"
@@ -4048,8 +4050,10 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Phenytoin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
-      - text: "Phenytoin rat pbpk (Yamamoto 2017)"
-        href: articles/Yamamoto_2017_cns_pbpk_rat.html
+      - text: "Pinatuzumab polatuzumab (Lu 2016)"
+        href: articles/Lu_2016_pinatuzumab_polatuzumab.html
+      - text: "Pioglitazone rifampicin pbpk (Asaumi 2019)"
+        href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
       - text: "Piperacillin (BoerPerez 2026)"
         href: articles/BoerPerez_2026_piperacillin.html
       - text: "Piperacillin (Bulitta 2007)"
@@ -4196,6 +4200,8 @@ navbar:
         href: articles/Fang_2013_pramlintide.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
+      - text: "Pravastatin rifampicin pbpk (Asaumi 2019)"
+        href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
       - text: "Praziquantel (Bustinduy 2016)"
         href: articles/Bustinduy_2016_praziquantel.html
       - text: "Prednisolone (Bouazza 2025)"
@@ -4434,8 +4440,8 @@ navbar:
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Remlifanserin (Darwish 2026)"
         href: articles/Darwish_2026_remlifanserin.html
-      - text: "Remoxipride rat pbpk (Yamamoto 2017)"
-        href: articles/Yamamoto_2017_cns_pbpk_rat.html
+      - text: "Repaglinide rifampicin pbpk (Asaumi 2019)"
+        href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
       - text: "Repotrectinib (Du 2025)"
         href: articles/Du_2025_repotrectinib.html
       - text: "Reserpine rat (AlfoseaCuadrado 2024)"
@@ -6100,7 +6106,7 @@ articles:
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
   - articles/Aruldhas_2021_methadone
-  - articles/Ashraf_2018_s_ketamine_ticlopidine
+  - articles/Asaumi_2019_rifampicin_ddi_pbpk
   - articles/Ashraf_2024_codeine
   - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin

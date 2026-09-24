@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shemesh 2019 atezolizumab ([doi:10.1186/s40425-019-0791-x](https://doi.org/10.1186/s40425-019-0791-x)) -- pediatric and young adult patients (7 months to 29 years) with relapsed or refractory solid tumors or lymphoma.
+- Add Asaumi 2019 rifampicin DDI PBPK with pravastatin, pioglitazone, glibenclamide, repaglinide and coproporphyrin I ([doi:10.1002/psp4.12457](https://doi.org/10.1002/psp4.12457)) -- healthy adults (mean clinical DDI data).
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
