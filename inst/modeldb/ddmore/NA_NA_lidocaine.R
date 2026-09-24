@@ -14,6 +14,54 @@
 # The model file therefore uses the a supplied placeholder filename
 # `NA_NA_lidocaine.R` and reference text "DDMORE Foundation Model Repository:
 # DDMODEL00000281. No linked publication identified."
+#
+# PUBLICATION SUBSEQUENTLY IDENTIFIED. The unnamed reference publication is
+# Bursi R, Piana C, Grevel J, Huntjens D, Boesl I, "Evaluation of the
+# Population Pharmacokinetic Properties of Lidocaine and its Metabolites After
+# Long-Term Multiple Applications of a Lidocaine Plaster in Post-Herpetic
+# Neuralgia Patients", Eur J Drug Metab Pharmacokinet 2017;42(5):801-814,
+# doi:10.1007/s13318-017-0400-7, PMCID PMC5597703 -- extracted separately as
+# `inst/modeldb/specificDrugs/Bursi_2017_lidocaine.R` and cross-linked below
+# via `replicate_of`. Concordances: identical ADVAN5 topology; k12 and k14
+# fixed at the same 0.03 and 0.007; V2/V3/V4 fixed at 100; the same seven
+# covariates at the same thresholds; all 16 thetas, 3 omegas and 4 sigmas
+# agreeing to ~3 significant figures; the exact observation count (1989); the
+# bundle dataset's AMT 21600 / RATE 1800 matching the paper's stated plaster
+# delivery of 1800 ug/h for 12 h; and the licence-holder BAST Inc. Ltd being
+# co-author Joachim Grevel's affiliation. The bundle's run date of 29/11/2016
+# precedes the paper's 12/01/2017 online publication.
+#
+# This resolves two open questions recorded below and in the vignette Errata,
+# and they are left in place unedited as the record of what the bundle alone
+# could support:
+#   * UNITS. The `units$*` placeholders below are noted as operator-defaults
+#     chosen for internal consistency, with a flagged deviation that lidocaine
+#     t1/2 ~ 18.7 h is far slower than the textbook IV value of 1.5-2 h. The
+#     paper resolves both: the units are h / ug / ug/L, and the drug is a
+#     TOPICAL 12-h plaster whose apparent disposition is absorption-rate-
+#     limited, so the long apparent half-life and the very large apparent
+#     V1 = 1320 L are expected -- the paper back-calculates a topical
+#     bioavailability of roughly 5%, making V1 an apparent V/F.
+#   * COVARIATE MEANING. `DLVL` is the number of plasters applied
+#     simultaneously (1-3), and `S1A2` is a concomitant CYP1A2-SUBSTRATE
+#     co-medication indicator (the bundle's integer level 3 being the paper's
+#     binary "yes"), not the CYP1A2-induction indicator guessed at here.
+#
+# run249 is a NEIGHBOURING run rather than the published final model: five
+# estimates differ in the third significant figure (THETA 6 -0.529 vs -0.526,
+# THETA 7 -0.319 vs -0.32, THETA 8 0.853 vs 0.852, THETA 9 0.939 vs 0.938,
+# OMEGA 0.391/0.200/0.311 vs 0.39/0.2/0.312) and the `.res` reports 325
+# individuals against the paper's 212 patients. Parameter values here are NOT
+# changed to the published ones: this file's contract is to reproduce the
+# DDMORE bundle as deposited. Use `Bursi_2017_lidocaine.R` for the published
+# final estimates.
+#
+# FOLLOW-UP (out of scope for the extraction that added this note, which only
+# adds models): renaming this file to `Bursi_2017_lidocaine_ddmore.R` would
+# match the `_ddmore` pairing convention already used by
+# `Bajaj_2017_nivolumab_ddmore.R`, `Jonsson_2011_ethambutol_ddmore.R` and
+# `Kovalenko_2016_dupilumab_ddmore.R`. That rename also touches this model's
+# vignette basename and registry entries and is left for a separate PR.
 
 NA_NA_lidocaine <- function() {
   description <- paste(
@@ -47,7 +95,7 @@ NA_NA_lidocaine <- function() {
   reference <- "DDMORE Foundation Model Repository: DDMODEL00000281. No linked publication identified in the bundle (Model_Accommodations.txt asserts equivalence to an unspecified reference publication). Source $PROBLEM line `B.dat 4-cRUN249`; license registered to BAST Inc. Ltd; NONMEM run dated 29/11/2016."
   vignette <- "NA_NA_lidocaine"
   ddmore_id <- "DDMODEL00000281"
-  replicate_of <- NULL
+  replicate_of <- "inst/modeldb/specificDrugs/Bursi_2017_lidocaine.R"
   units <- list(
     time = "h",
     dosing = "mg",

@@ -2620,6 +2620,8 @@ navbar:
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Levosimendan (Bertin 2026)"
         href: articles/Bertin_2026_levosimendan.html
+      - text: "Lidocaine (Bursi 2017)"
+        href: articles/Bursi_2017_lidocaine.html
       - text: "Lidocaine (He 2025)"
         href: articles/He_2025_lidocaine.html
       - text: "Ligelizumab (Bienczak 2025)"
@@ -5845,8 +5847,7 @@ articles:
   - articles/Bulitta_2010_colistin
   - articles/Bulitta_2010_piperacillin
   - articles/Bulitta_2011_cefpirome
-  - articles/Burns_2015_tenofovir
-  - articles/Bustinduy_2016_praziquantel
+  - articles/Bursi_2017_lidocaine
   - articles/ButraguenoLaiseca_2022_piperacillin
   - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
