@@ -312,6 +312,8 @@ navbar:
         href: articles/Moein_2024_apitolisib.html
       - text: "Apitolisib mouse (Moein 2024)"
         href: articles/Moein_2024_apitolisib.html
+      - text: "Apixaban (Cirincione 2018)"
+        href: articles/Cirincione_2018_apixaban.html
       - text: "Apixaban (Gaspar 2023)"
         href: articles/Gaspar_2023_apixaban.html
       - text: "Apixaban (Kolowrat 2025)"
@@ -320,6 +322,8 @@ navbar:
         href: articles/Morath_2025_apixaban.html
       - text: "Apixaban (Ueshima 2018)"
         href: articles/Ueshima_2018_apixaban.html
+      - text: "Apixaban asian subgroups (Cirincione 2018)"
+        href: articles/Cirincione_2018_apixaban.html
       - text: "Apixaban pbpk (Tsuchitani 2026)"
         href: articles/Tsuchitani_2026_apixaban_pbpk.html
       - text: "Apomine (Bonate 2004)"
@@ -6200,6 +6204,7 @@ articles:
   - articles/Chung_2026_vancomycin
   - articles/Cirincione_2017_exenatide
   - articles/Cirincione_2017_exenatide_er
+  - articles/Cirincione_2018_apixaban
   - articles/CirrincioneDall_2011_tacrolimus
   - articles/Claret_2014_DCR_OS_PFS_nsclc
   - articles/Claret_2014_motesanib_nsclc

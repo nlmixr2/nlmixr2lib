@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2018 remimazolam ([doi:10.3389/fphar.2018.01316](https://doi.org/10.3389/fphar.2018.01316)) -- Chinese healthy adult volunteers.
+- Add Cirincione 2018 apixaban ([doi:10.1002/psp4.12347](https://doi.org/10.1002/psp4.12347)) -- adults with nonvalvular atrial fibrillation or acute coronary syndrome and healthy volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
