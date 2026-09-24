@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Faisal 2019 enalapril and enalaprilat ([doi:10.3389/fped.2019.00281](https://doi.org/10.3389/fped.2019.00281)) -- healthy adults given enalapril as orodispersible minitablets or reference tablets.
+- Add Shah 2019 cefotiam ([doi:10.3390/pharmaceutics11060286](https://doi.org/10.3390/pharmaceutics11060286)) -- adults with cystic fibrosis and healthy volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
