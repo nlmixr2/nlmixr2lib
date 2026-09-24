@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lu 2016 meropenem ([doi:10.1128/AAC.00997-16](https://doi.org/10.1128/AAC.00997-16)) -- adults with bacterial meningitis after neurosurgery.
+- Add Siederer 2016 inhaled fluticasone furoate and vilanterol ([doi:10.1007/s13318-015-0303-4](https://doi.org/10.1007/s13318-015-0303-4)) -- adults with COPD and healthy volunteers.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
