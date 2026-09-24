@@ -3730,6 +3730,8 @@ navbar:
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
         href: articles/Wang_2021_pertuzumab.html
+      - text: "Pevonedistat (Faessel 2019)"
+        href: articles/Faessel_2019_pevonedistat.html
       - text: "Pexidartinib (Yin 2020)"
         href: articles/Yin_2020_pexidartinib.html
       - text: "Pexidartinib (Yin 2021)"
@@ -6095,6 +6097,7 @@ articles:
   - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
+  - articles/Faessel_2019_pevonedistat
   - articles/Falkenhagen_2023_warfarin_qsp
   - articles/Fan_2024_sirolimus
   - articles/Fan_2025_antiCD4_nanobody_HIV
