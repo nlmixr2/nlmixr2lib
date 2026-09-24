@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gidal 2018 eslicarbazepine acetate ([doi:10.1111/ane.12950](https://doi.org/10.1111/ane.12950)) -- adults with focal-onset seizures and healthy subjects; one population PK model plus seven exposure-response models for safety and efficacy.
+- Add Li 2018 olanzapine ([doi:10.1136/bmjopen-2017-020070](https://doi.org/10.1136/bmjopen-2017-020070)) -- Han Chinese healthy male volunteers and adults with schizophrenia.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

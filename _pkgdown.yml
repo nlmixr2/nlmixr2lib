@@ -3522,6 +3522,8 @@ navbar:
         href: articles/Yu_2022_ofatumumab.html
       - text: "Ofloxacin (Chigutsa 2012)"
         href: articles/Chigutsa_2012_ofloxacin.html
+      - text: "Olanzapine (Li 2018)"
+        href: articles/Li_2018_olanzapine.html
       - text: "Olanzapine (Zhang 2024)"
         href: articles/Zhang_2024_olanzapine.html
       - text: "Olanzapine (Zhang 2025)"
@@ -6839,7 +6841,7 @@ articles:
   - articles/Li_2017_naproxen_rat
   - articles/Li_2017_pomalidomide
   - articles/Li_2018_PF04236921
-  - articles/Li_2018_guanfacine
+  - articles/Li_2018_olanzapine
   - articles/Li_2018_vancomycin
   - articles/Li_2019_abatacept
   - articles/Li_2021_daratumumab_qsstmdd
