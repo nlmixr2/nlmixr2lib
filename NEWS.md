@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2018 sunitinib ([doi:10.18632/oncotarget.23881](https://doi.org/10.18632/oncotarget.23881)) -- Chinese adults with renal-cell carcinoma.
+- Add Maseda 2018 micafungin ([doi:10.1186/s13054-018-2019-8](https://doi.org/10.1186/s13054-018-2019-8)) -- nonobese critically ill, obese noncritically ill, and morbidly obese critically ill adults.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
