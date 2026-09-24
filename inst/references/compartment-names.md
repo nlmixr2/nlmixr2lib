@@ -3301,8 +3301,24 @@ Indirect-response state variables of the Xiang 2018 baicalein anti-inflammatory 
 - **Type:** compartment
 - **Role:** IL-6 indirect-response state (pg/mL) produced at a rate proportional to the lag-delayed TNF-alpha signal, with first-order elimination.
 - **Source aliases:** none.
-- **Example models:** `Xiang_2018_baicalein.R`.
-- **Notes:** Distinct namespace from the `IL6` covariate (an upstream interleukin-6 covariate column); the lowercase `il6` compartment is the modelled IL-6 PD state, not a covariate.
+- **Example models:** `Xiang_2018_baicalein.R`, `Hardiansyah_2019_CART_upn1_qsp.R`, `Hardiansyah_2019_CART_upn3_qsp.R`.
+- **Notes:** Distinct namespace from the `IL6` covariate (an upstream interleukin-6 covariate column); the lowercase `il6` compartment is the modelled IL-6 PD state, not a covariate. The state is not restricted to the founding TNF-alpha cascade: any model carrying a named IL-6 turnover pool with endogenous production and first-order elimination uses this name, including the CAR T-cell cytokine-release-syndrome models where production is driven by the effector-cell / target-cell product rather than by an upstream mediator.
+
+### il10 (**canonical IL-10 indirect-response state**)
+- **Type:** compartment
+- **Role:** Interleukin-10 turnover state (pg/mL) with endogenous zero-order production and first-order elimination. IL-10 is the anti-inflammatory counter-regulator of the CRS mediator panel: in the founding example it both accumulates in response to CAR T-cell activity and feeds back to inhibit IFN-gamma secretion through a decreasing Hill function.
+- **Source aliases:**
+  - `IL10`, `IL-10` -- prose, table and figure-axis notation.
+- **Example models:** `Hardiansyah_2019_CART_upn1_qsp.R` (founding example -- `d/dt(il10) <- dil10 * bl_il10 + pil10 * 1e6 * b_pb * carte_pb - dil10 * il10`), `Hardiansyah_2019_CART_upn3_qsp.R`.
+- **Notes:** A well-formed member of the inflammatory-mediator family alongside `tnf` / `il6` / `inos` / `no` / `ifna` / `ifng`, following the same lowercase analyte-named-state convention. Distinct from the generic `cytokine_bonemarrow` / `cytokine_transit1..5` / `cytokine_central` release-and-delay chain, which models an UNNAMED cytokine. Distinct namespace from any future `IL10` covariate column, exactly as `il6` is from `IL6`. The residual-error name would be the standard non-parent-output form `addSd_il10` / `propSd_il10`.
+
+### ifng (**canonical gamma-interferon indirect-response state**)
+- **Type:** compartment
+- **Role:** Interferon-gamma turnover state, in whatever mass or activity concentration units the source assay reports (pg/mL in the founding example). Endogenous zero-order production plus a stimulated production term, with first-order elimination. IFN-gamma is one of the three mediators (with IL-6 and IL-10) whose elevation defines cytokine release syndrome after CAR T-cell infusion.
+- **Source aliases:**
+  - `IFNY`, `IFN-gamma`, `IFNg`, `IFN gamma` -- prose, table and figure-axis notation.
+- **Example models:** `Hardiansyah_2019_CART_upn1_qsp.R` (founding example -- `d/dt(ifng) <- difng * bl_ifng + pifng * 1e6 * b_pb * carte_pb * fd_il10 - difng * ifng`, where `fd_il10` is the IL-10 inhibition bracket), `Hardiansyah_2019_CART_upn3_qsp.R`.
+- **Notes:** The sibling name anticipated by the `ifna` entry below, which ratified the interferon-subtype-letter convention on 2026-09-02 precisely so that IFN-beta and IFN-gamma would get `ifnb` and `ifng` without an asymmetric retrofit. No separate operator ratification was sought for `ifng`: it is the name the existing register entry names in advance, applied to the analyte that entry describes. The residual-error name is the standard non-parent-output form `addSd_ifng` / `propSd_ifng`.
 
 ### inos (**canonical iNOS-expression indirect-response state**)
 - **Type:** compartment
