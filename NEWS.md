@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2019 tacrolimus ([doi:10.3892/etm.2019.8129](https://doi.org/10.3892/etm.2019.8129)) -- Chinese children with systemic-onset juvenile idiopathic arthritis.
+- Add Shemesh 2019 atezolizumab ([doi:10.1186/s40425-019-0791-x](https://doi.org/10.1186/s40425-019-0791-x)) -- pediatric and young adult patients (7 months to 29 years) with relapsed or refractory solid tumors or lymphoma.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 

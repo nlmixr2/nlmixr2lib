@@ -454,6 +454,8 @@ navbar:
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Atezolizumab (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
+      - text: "Atezolizumab (Shemesh 2019)"
+        href: articles/Shemesh_2019_atezolizumab.html
       - text: "Atezolizumab (Zeng 2026)"
         href: articles/Zeng_2026_atezolizumab.html
       - text: "Atezolizumab aeg35 (Chan 2025)"
@@ -7658,6 +7660,7 @@ articles:
   - articles/Shchelokov_2023_nivolumab_qsp
   - articles/Sheiner_1979_tubocurarine
   - articles/Shekar_2014_meropenem
+  - articles/Shemesh_2019_atezolizumab
   - articles/Shen_2013_belatacept
   - articles/Shen_2024_vancomycin
   - articles/Shen_2025_voriconazole
