@@ -699,14 +699,31 @@ selfchk |>
     "AUC0-inf simulated (ug*h/mL)" = aucinf.obs,
     "t1/2 simulated (h)" = half.life
   ) |>
-  knitr::kable(digits = 3, caption = "Median simulated NCA against the closed form.")
+  knitr::kable(digits = 3, caption = "Median simulated NCA against the TYPICAL-value closed form (orientation only; the gate below is per subject).")
 
-# Both sides use the same drawn parameters, so the difference here is pure
-# numerical error (trapezoidal AUC on a 15-minute grid, log-linear lambda-z)
-# and a tight bound is correct. It is not a cohort-extreme assertion.
+# The table puts a cohort MEDIAN against the typical-value closed form, so it
+# carries sampling noise (about 3% on a 200-subject median at this CV) and is
+# shown for orientation only. The gate compares each subject's NCA result with
+# the closed form evaluated at that subject's OWN drawn clearance and volume, so
+# the difference really is pure numerical error (trapezoidal AUC on a 15-minute
+# grid, log-linear lambda-z) and a tight bound is correct.
+ipar_nca <- nca_sim |>
+  mutate(id = as.integer(as.character(id))) |>
+  distinct(id, treatment, cl, vc)
+per_subject <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  mutate(id = as.integer(as.character(id))) |>
+  select(id, treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(ipar_nca, by = c("id", "treatment")) |>
+  mutate(
+    auc_pct   = 100 * (aucinf.obs - 4 * MU / cl) / (4 * MU / cl),
+    thalf_pct = 100 * (half.life - log(2) * vc / cl) / (log(2) * vc / cl)
+  )
 stopifnot(
-  max(abs(selfchk$`AUC % diff`)) < 5,
-  max(abs(selfchk$`t1/2 % diff`)) < 5
+  nrow(per_subject) == 3L * 200L, !anyNA(per_subject$auc_pct), !anyNA(per_subject$thalf_pct),
+  max(abs(per_subject$auc_pct)) < 5,
+  max(abs(per_subject$thalf_pct)) < 5
 )
 ```
 

@@ -447,7 +447,9 @@ sim <- rxode2::rxSolve(
 ) |>
   as.data.frame()
 
-stopifnot(nrow(sim) > 0, all(sim$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(nrow(sim) > 0, all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
 
 sim <- sim |>
   dplyr::mutate(id = as.integer(as.character(id)), t_rel = time)
@@ -500,8 +502,14 @@ stopifnot(conc_chk$med > 0.25, conc_chk$med < 34, conc_chk$q95 < 50)
 # PKNCA validation
 
 ```{r pknca}
+# The ODE integrator's undershoot below zero (about its absolute tolerance,
+# gated above) occurs only where a short-half-life subject's concentration has
+# decayed to ~1e-20 of its peak, i.e. where it is numerically zero. PKNCA's
+# log-down trapezoid cannot take a negative value (log(Cc) is NaN and the AUC
+# comes back NA), so those values are clamped to zero here.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
   dplyr::select(id, time, Cc, arm)
 
 dose_df <- events |>
@@ -528,8 +536,13 @@ intervals <- data.frame(
   cav     = TRUE
 )
 
+# The clamped zeros are model-predicted zeros, not assay BLQs, so they stay in
+# place: PKNCA's default drops zeros from the middle of a profile, which would
+# re-open the spurious pre-dose segment that the `interior - 1e-6` observation
+# points exist to close (see `obs_times()` above).
 res <- PKNCA::pk.nca(
-  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals,
+                   options = list(conc.blq = "keep"))
 )
 
 nca <- as.data.frame(res) |>

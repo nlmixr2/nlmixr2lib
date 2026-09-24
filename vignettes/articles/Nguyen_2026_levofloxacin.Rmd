@@ -762,13 +762,36 @@ c(auc_pct_diff = auc_pct, half_life_pct_diff = thalf_pct)
 stopifnot(abs(auc_pct) < 12)
 stopifnot(abs(thalf_pct) < 12)
 
-# Dose proportionality is exact in this linear model and is a cheap check that
-# the 1000 mg arm was simulated as intended.
-auc_1000 <- as.data.frame(nca_res$result) |>
-  filter(treatment == "1000 mg q24h", PPTESTCD == "auclast") |>
-  pull(PPORRES) |>
-  median()
-stopifnot(abs(auc_1000 / get_median("auclast") / (1000 / 750) - 1) < 0.05)
+# Dose proportionality is exact in this linear model. The two arms above are
+# independent cohorts, so a ratio of their medians carries about 5% of sampling
+# noise (two 41%-CV medians over 200 subjects) and cannot be held tightly.
+# Instead the 750 mg cohort is solved at both doses with the same subjects and
+# the same eta draw -- rxSetSeed() immediately before each solve gives common
+# random numbers -- so every subject's AUC ratio must be 1000/750 to solver
+# tolerance (the trapezoid scales with dose and cancels).
+solve_paired <- function(dose_mg) {
+  ev <- events |>
+    filter(treatment == "750 mg q24h") |>
+    mutate(amt = ifelse(evid == 1L, dose_mg, amt))
+  rxode2::rxSetSeed(10750)
+  rxode2::rxSolve(mod, events = ev, keep = c("treatment", "WT"), useLinCmt = FALSE) |>
+    as.data.frame() |>
+    mutate(tad = time - t_last) |>
+    filter(tad >= 0, tad <= tau)
+}
+paired <- list(lo = solve_paired(750), hi = solve_paired(1000))
+# Common random numbers actually held: identical individual clearances.
+stopifnot(isTRUE(all.equal(distinct(paired$lo, id, cl)$cl, distinct(paired$hi, id, cl)$cl)))
+auc_tau <- function(d) {
+  d |>
+    filter(!is.na(Cc)) |>
+    group_by(id) |>
+    arrange(tad, .by_group = TRUE) |>
+    summarise(auc = sum(diff(tad) * (head(Cc, -1) + tail(Cc, -1)) / 2), .groups = "drop")
+}
+prop_chk <- inner_join(auc_tau(paired$lo), auc_tau(paired$hi), by = "id", suffix = c("_750", "_1000")) |>
+  mutate(ratio = auc_1000 / auc_750)
+stopifnot(nrow(prop_chk) == n_per_arm, max(abs(prop_chk$ratio / (1000 / 750) - 1)) < 1e-4)
 ```
 
 The saliva NCA has no published comparator at all -- the paper reports saliva

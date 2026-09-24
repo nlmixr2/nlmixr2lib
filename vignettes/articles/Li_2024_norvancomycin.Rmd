@@ -273,8 +273,15 @@ sim_fwd <- rxode2::rxSolve(mod, events = events_fwd,
                            keep = c("AGE", "CREAT", "regimen")) |>
   as.data.frame()
 
+# `ss = 1` on an ODE model is reached by integrating repeated 12 h dosing
+# cycles until the state converges, and rxode2's `maxsteps` (default 70000)
+# caps the integrator steps over that whole search. Subjects who draw a large
+# V2 (terminal half-life 600-800 h, a 2-3 SD draw on etalvp) need 700 or more
+# cycles and exceed the default cap, which under the default strict steady
+# state returns NA for the whole subject. Raising the cap lets them converge.
 sim_ss <- rxode2::rxSolve(mod, events = events_ss,
-                          keep = c("AGE", "CREAT", "regimen")) |>
+                          keep = c("AGE", "CREAT", "regimen"),
+                          maxsteps = 1e6) |>
   as.data.frame()
 
 stopifnot(all(sim_fwd$Cc >= 0), all(sim_ss$Cc >= 0))

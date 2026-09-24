@@ -276,7 +276,10 @@ solve_drug <- function(mod, events, extra_cov = list()) {
   events$OCC <- 1
   s <- rxode2::rxSolve(
     rxode2::zeroRe(mod, "sigma"), events,
-    keep = c("band"), returnType = "data.frame", omega = NULL, sigma = NULL
+    keep = c("band"), returnType = "data.frame", omega = NULL, sigma = NULL,
+    # Two lamivudine weight bands lost subjects to LSODA's default step budget
+    # once the ODE was integrated rather than solved analytically.
+    maxsteps = 1e6
   )
   # rxSolve occasionally drops subjects silently; assert the count.
   stopifnot(dplyr::n_distinct(s$id) == dplyr::n_distinct(events$id))
@@ -340,8 +343,13 @@ band so the results line up with Chandasana 2024 Table 4.
 
 ```{r pknca}
 run_nca <- function(sim, events) {
+  # A few fast-eliminating subjects reach a numerically-zero trough and the ODE
+  # integrator undershoots it by ~1e-12; PKNCA's log-down trapezoid returns NaN
+  # for a negative concentration. Assert the undershoot is noise, then floor it.
+  stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE))
   conc <- sim |>
     dplyr::filter(!is.na(Cc)) |>
+    dplyr::mutate(Cc = pmax(Cc, 0)) |>
     dplyr::select(id, band, time, Cc)
 
   # Guarantee a time = 0 row per subject (pre-dose at steady state is the

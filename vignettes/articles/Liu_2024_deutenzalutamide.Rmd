@@ -570,7 +570,12 @@ ss_events <- tibble::tibble(id = 1L, WT = 64) |>
   ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-ss_sim <- rxode2::rxSolve(mod_typ, events = ss_events) |>
+# maxsteps: 300 daily doses with no observation record until the last one.
+# The ODE integrator (liblsoda) counts its internal steps against `maxsteps`
+# (default 70000) and only re-zeroes that count at an observation record, so
+# a dose-only stretch of 7176 h exhausts the budget and the solve aborts with
+# "could not solve the system". Raising the budget changes nothing else.
+ss_sim <- rxode2::rxSolve(mod_typ, events = ss_events, maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(tad = time - tau * 299)

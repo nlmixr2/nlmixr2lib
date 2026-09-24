@@ -903,32 +903,52 @@ make_pop <- function(demo, tag, id_base) {
     dplyr::mutate(population = tag)
 }
 
-bridge_events <- dplyr::bind_rows(
-  make_pop(japan, "Japanese", 0L),
-  make_pop(west,  "Western",  as.integer(nrow(arms)) * n_bridge)
-)
-stopifnot(!anyDuplicated(unique(bridge_events[, c("id", "time", "evid")])))
+# Common random numbers across the two populations. The paper's question is
+# whether the PK differences it models (body weight, metaboliser-phenotype
+# frequencies) change the onset time, so every other source of variation is
+# shared: both populations use subject ids 1..300, the same eta draw
+# (rxSetSeed() immediately before each solve), the same demographic draw order
+# (set.seed() before each build, so a subject's uniform draws are compared
+# against each population's own frequencies) and the same rescue-mixture
+# uniforms, indexed by id. With two independent 60-subject arms the
+# Japanese-Western gap in an arm mean carried about 0.5 h of pure sampling
+# noise against a 0.75 h bound.
+bridge_pop <- function(demo, tag) {
+  set.seed(20080601)
+  ev <- make_pop(demo, tag, 0L)
+  stopifnot(!anyDuplicated(unique(ev[, c("id", "time", "evid")])))
+  rxode2::rxSetSeed(20080601)
+  rxode2::rxSolve(mod, events = ev, keep = c("treatment", "dose_mg", "population")) |>
+    as.data.frame() |>
+    dplyr::filter(abs(time - 24) < 1e-8)
+}
 
-bridge <- rxode2::rxSolve(
-  mod,
-  events = bridge_events,
-  keep   = c("treatment", "dose_mg", "population")
-) |>
-  as.data.frame() |>
-  dplyr::filter(abs(time - 24) < 1e-8)
+bridge <- dplyr::bind_rows(bridge_pop(japan, "Japanese"), bridge_pop(west, "Western")) |>
+  dplyr::mutate(id = as.integer(as.character(id)))
+# The eta draw really is shared: every random-effect column agrees by id.
+eta_cols <- grep("^eta", names(bridge), value = TRUE)
+if (length(eta_cols)) {
+  jp <- bridge[bridge$population == "Japanese", c("id", eta_cols)]
+  we <- bridge[bridge$population == "Western", c("id", eta_cols)]
+  stopifnot(isTRUE(all.equal(jp[order(jp$id), ], we[order(we$id), ], check.attributes = FALSE)))
+}
 
 # Equation 3: the onset time is a mixture over whether rescue medication was
 # required. In the no-rescue branch TMPR is the model's absolute time; in the
 # rescue branch it is the modelled fraction of that subject's own rescue time,
-# which is drawn from the fitted hazard and right-censored at 24 h.
+# which is drawn from the fitted hazard and right-censored at 24 h. The two
+# uniforms are drawn once per subject id and shared by both populations.
+set.seed(20080602)
+u_rescue <- stats::runif(nrow(arms) * n_bridge)
+u_mix    <- stats::runif(nrow(arms) * n_bridge)
 bridge <- bridge |>
   dplyr::mutate(
     # Individual rescue time implied by the subject's own cumulative hazard,
     # inverted at a uniform draw and censored at the 24 h study end.
-    t_rescue = pmin(24, -log(1 - runif(dplyr::n()) * premd_remd) /
+    t_rescue = pmin(24, -log(1 - u_rescue[id] * premd_remd) /
                       pmax(cumhaz / 24, 1e-8)),
     tmpr_mix = ifelse(
-      runif(dplyr::n()) < premd_remd,
+      u_mix[id] < premd_remd,
       ratio_mpr * t_rescue,
       tmpr_mpr
     )

@@ -172,7 +172,16 @@ sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep = c("treatment", "CONMED_CSA", "OCC", "dose_mg"),
-  addDosing = FALSE
+  addDosing = FALSE,
+  # The occasion-k trough and the occasion-(k+1) dose share a time stamp, and
+  # rxode2 orders the dose row first internally, so under the default
+  # last-observation-carried-forward interpolation the ODE integrator carries
+  # occasion k's OCC -- and so its CL/F -- into the first step of occasion
+  # k+1 (measured: 0.38% median / 9% max error in the mass balance below).
+  # Next-observation-carried-backward, the NONMEM convention, applies each
+  # row's OCC to the interval that ends at that row, which is the design
+  # described above and what the analytic solution does.
+  covsInterpolation = "nocb"
 ) |>
   as.data.frame() |>
   dplyr::mutate(

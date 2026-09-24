@@ -422,7 +422,7 @@ make_human_arm <- function(mgkg, id_offset) {
                          treatment = paste0(mgkg, " mg/kg qd"))
   doses <- tidyr::crossing(subj, time = seq(0, 24 * (days_human - 1), by = 24)) |>
     mutate(evid = 1L, amt = mgkg * wt_human, cmt = "depot")
-  obs <- tidyr::crossing(subj, time = seq(0, 24 * days_human, by = 6)) |>
+  obs <- tidyr::crossing(subj, time = seq(0, 24 * days_human, by = 1)) |>
     mutate(evid = 0L, amt = NA_real_, cmt = "central")
   bind_rows(doses, obs) |> arrange(id, time, desc(evid))
 }
@@ -559,8 +559,13 @@ cmp_human |>
   knitr::kable(digits = 1,
                caption = "Simulated vs published human AUCss,0-24h (Henninger 2026 Results 3.2.6).")
 
-# The simulated median is slightly below Dose/CL because the trapezoidal AUC is
-# taken on a 6 h grid; the closed-form check above already pins Dose/CL exactly.
+# The simulated median sits a few percent below the published AUC: the trapezoidal
+# rule on a discrete grid cannot recover the absorption peak exactly, and the
+# closed-form check above already pins Dose/CL. The observation grid is hourly
+# (it was 6-hourly until 2026-09-18, which missed the peak badly enough to bias
+# the 4 mg/kg arm by -10.0% and trip this gate; the mouse arm above uses 0.5 h).
+# Hourly is converged -- halving the step again to 0.5 h moves the
+# worst arm by 0.1 percentage points, from -5.51% to -5.41%.
 stopifnot(max(abs(cmp_human$pct_diff)) < 8)
 ```
 

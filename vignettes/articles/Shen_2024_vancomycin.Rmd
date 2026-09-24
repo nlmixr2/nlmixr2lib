@@ -389,11 +389,23 @@ sd_events <- dplyr::bind_rows(
   as.data.frame()
 
 sd_sim <- rxode2::rxSolve(mod, sd_events, keep = c("dose_group"),
-                          returnType = "data.frame")
+                          returnType = "data.frame",
+                          # The half-life identity below is asserted to 1%
+                          # against log(2) * V / CL over a 14-day washout, so
+                          # the ODE integration has to be tight.
+                          rtol = 1e-10, atol = 1e-12)
 
+# Drop the numerically-zero tail before NCA. Over 14 days the concentration
+# falls below 1e-20 mg/L, where the ODE integrator's error dwarfs the true
+# terminal slope and PKNCA's log-linear fit follows the noise (observed: 39%
+# half-life error). Keep each subject's profile up to the last point at or
+# above 1e-6 of its peak; the discarded tail holds < 1e-6 of the AUC.
 sd_conc <- sd_sim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, dose_group)
+  dplyr::select(id, time, Cc, dose_group) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= max(time[Cc >= 1e-6 * max(Cc)])) |>
+  dplyr::ungroup()
 
 sd_dose <- sd_events |>
   dplyr::filter(evid == 1) |>

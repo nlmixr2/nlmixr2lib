@@ -691,8 +691,12 @@ stopifnot(stage_ratio_trough[["s4"]] < 0.75, stage_ratio_trough[["pp"]] > 1.2)
 #    exact statement therefore has to be made on typical values, and the
 #    cohort version gets a bound outside the range observed across thread
 #    counts. Do not tighten the second bound back toward the first.
+#    The profiles are integrated numerically, so the solver runs at tight
+#    tolerances here: at the default rtol of 1e-6 the ratio carries ~6e-6 of
+#    integration error, which is above the 1e-6 identity bound.
 sim_fig5_typ <- rxode2::rxSolve(mod_typ, events = fig5_ev,
-                                keep = c("stage_lbl", "dose_lbl")) |>
+                                keep = c("stage_lbl", "dose_lbl"),
+                                rtol = 1e-10, atol = 1e-12) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc)) |>
   group_by(stage_lbl, dose_lbl) |>

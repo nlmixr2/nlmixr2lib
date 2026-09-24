@@ -182,9 +182,15 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```{r simulate}
 mod <- readModelDb("Su_2024_tigecycline")
 
+# The steady-state trough identity below is gated at 1e-6 %, so both the ODE
+# solve and the `ss = 1` steady-state search run at tight tolerances: at the
+# defaults the steady-state search alone leaves ~2e-4 % of residual between
+# C(0) and C(12). Measured with these tolerances: max 1.0e-7 % for this
+# cohort, 1.6e-7 % worst of five seeds.
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("stratum", "WT", "CRCL", "ALB", "GGT", "TBILI", "t_ref")
+  keep = c("stratum", "WT", "CRCL", "ALB", "GGT", "TBILI", "t_ref"),
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 ) |>
   as.data.frame() |>
   dplyr::mutate(tad = time - t_ref,

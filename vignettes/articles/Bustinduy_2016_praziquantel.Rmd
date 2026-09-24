@@ -156,7 +156,9 @@ closed_form <- function(t, dose, ka, cl, vc, kcp, kpc, tlag) {
 typ_profile <- function(dose) {
   ev <- rxode2::et(amt = dose, cmt = "depot") |>
     rxode2::et(seq(0, 24, by = 0.02), cmt = "central")
-  rxode2::rxSolve(mod_typ, ev, returnType = "data.frame")
+  # Tight tolerances: the closed form below is held to 1e-6, which the ODE
+  # meets at rtol 1e-10 (3.8e-10) but not at the default 1e-6 (3.2e-5).
+  rxode2::rxSolve(mod_typ, ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
 }
 
 dose40 <- 40 * 21.8   # arm mean weight, Table 1
@@ -181,7 +183,8 @@ stopifnot(cf_err < 1e-6)
 # (An auto-solved one-compartment rewrite would leave it untouched.)
 s_nok12 <- rxode2::rxSolve(mod_typ, rxode2::et(amt = dose40, cmt = "depot") |>
                              rxode2::et(seq(0, 24, by = 0.02), cmt = "central"),
-                           returnType = "data.frame", params = c(lk12 = log(1e-9)))
+                           returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                           params = c(lk12 = log(1e-9)))
 k12_effect <- max(abs(s_nok12$Cc - s40$Cc) / pmax(s40$Cc, 1e-12))
 stopifnot(k12_effect > 0.01)
 
@@ -269,7 +272,9 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```{r simulate}
 sim <- rxode2::rxSolve(mod, events = events, keep = c("WT", "treatment")) |>
   as.data.frame()
-stopifnot(nrow(sim) > 0, all(sim$Cc >= 0))
+# A numerically integrated ODE can undershoot zero by about its absolute
+# tolerance (1e-8) on a decaying tail; NA would mean a subject failed to solve.
+stopifnot(nrow(sim) > 0, !anyNA(sim$Cc), all(sim$Cc >= -1e-7))
 ```
 
 # Replicate published figures
