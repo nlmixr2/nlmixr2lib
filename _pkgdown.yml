@@ -3372,6 +3372,22 @@ navbar:
         href: articles/Chen_2024_nadroparin.html
       - text: "Nalbuphine (Nie 2023)"
         href: articles/Nie_2023_nalbuphine.html
+      - text: "Naldemedine (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine gi mild phase2b (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine gi mild phase3 (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine gi moderate phase2b (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine gi moderate phase3 (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine gi severe phase3 (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine sbm phase2b (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
+      - text: "Naldemedine sbm phase3 (Kubota 2018)"
+        href: articles/Kubota_2018_naldemedine.html
       - text: "Nalmefene (Kyhl 2016)"
         href: articles/Kyhl_2016_nalmefene.html
       - text: "Nalmefene (Laffont 2024)"
@@ -6780,6 +6796,7 @@ articles:
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
   - articles/Ku_2018_diazepam
   - articles/Kuan_2023_flipflop
+  - articles/Kubota_2018_naldemedine
   - articles/Kuchimanchi_2018_evolocumab
   - articles/Kuchimanchi_2024_dostarlimab
   - articles/Kuester_2008_matuzumab

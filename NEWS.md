@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mehta 2018 fluticasone furoate, umeclidinium and vilanterol ([doi:10.1002/jcph.1253](https://doi.org/10.1002/jcph.1253)) -- adults with symptomatic COPD receiving single-inhaler triple therapy.
+- Add Kubota 2018 naldemedine ([doi:10.1007/s11095-018-2501-7](https://doi.org/10.1007/s11095-018-2501-7)) -- healthy subjects and patients with opioid-induced constipation due to chronic non-cancer pain or cancer, plus seven exposure-response models.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
