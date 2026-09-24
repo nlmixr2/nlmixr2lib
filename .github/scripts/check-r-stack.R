@@ -86,9 +86,9 @@ runiverse_created <- function(pkg) {
     con <- url(sprintf("https://nlmixr2.r-universe.dev/api/packages/%s", pkg), open = "rb")
     on.exit(close(con), add = TRUE)
     txt <- paste(readLines(con, warn = FALSE), collapse = "")
-    m <- regmatches(txt, regexpr("\"_created\":\"[^\"]+\"", txt))
+    m <- regmatches(txt, regexpr("\"_created\": *\"[^\"]+\"", txt))
     if (!length(m)) return(NA_character_)
-    sub("\"_created\":\"([^\"]+)\"", "\\1", m)
+    sub("\"_created\": *\"([^\"]+)\"", "\\1", m)
   }, error = function(e) NA_character_)
 }
 for (p in tbl$package) {
