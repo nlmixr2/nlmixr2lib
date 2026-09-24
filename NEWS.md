@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2019 cabozantinib ([doi:10.1002/jcph.1467](https://doi.org/10.1002/jcph.1467)) -- healthy volunteers and patients with hepatocellular carcinoma or other advanced malignancies, with a companion model carrying NCI-ODWG liver-dysfunction covariates.
+- Add Du 2019 magnesium sulfate exposure-response for eclampsia ([doi:10.1002/jcph.1448](https://doi.org/10.1002/jcph.1448)) -- women with preeclampsia in the Magpie Trial and a Thai study.
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
